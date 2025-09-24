@@ -49,7 +49,7 @@ namespace Dal.Configuration
             {
                 var settings = new DatabaseSettings
                 {
-                    ConnectionString = ConnectionStringHelper.LayConnectionStringMacDinh(),
+                    ConnectionString = ConnectionStringHelper.GetDefaultConnectionString(),
                     CommandTimeout = GetIntFromConfig("Database.CommandTimeout", 30),
                     ConnectionTimeout = GetIntFromConfig("Database.ConnectionTimeout", 15),
                     EnableRetryOnFailure = GetBoolFromConfig("Database.EnableRetryOnFailure", true),

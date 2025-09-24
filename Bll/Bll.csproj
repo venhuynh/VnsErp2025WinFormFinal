@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authentication\LoginBll.cs" />
+    <Compile Include="Common\OverlayManager.cs" />
     <Compile Include="Common\SplashScreenHelper.cs" />
     <Compile Include="Common\VnsSplashScreen.cs">
       <SubType>Form</SubType>

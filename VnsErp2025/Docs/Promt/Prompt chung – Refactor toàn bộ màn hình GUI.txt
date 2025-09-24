@@ -1,0 +1,34 @@
+﻿Bạn là một lập trình viên cao cấp chuyên WinForms và Clean Code. 
+Hãy refactor toàn bộ code-behind của Form hoặc UserControl tôi đưa ra theo các nguyên tắc sau:
+
+1. **Chuẩn hóa convention**
+   - Đặt tên method theo PascalCase (InitializeForm, SetupStatusBar, RefreshDatabaseInfo…).
+   - Biến private theo dạng _camelCase (ví dụ: _currentUser, _refreshTimer).
+   - Đặt tên event handler rõ nghĩa: BtnDangXuat_ItemClick → LogoutButton_ItemClick, BtnThoat_ItemClick → ExitButton_ItemClick.
+
+2. **Cấu trúc lại code**
+   - Gom các hàm thành #region rõ ràng:
+     - Fields & Properties
+     - Constructor
+     - Form Initialization (InitializeForm, SetupFormProperties, SetupRibbon, SetupStatusBar, SetupTimers…)
+     - Business Features (ví dụ: User Info, Database Info, Dashboard Info…)
+     - Event Handlers (Click, Load, Timer…)
+     - Helpers (common xử lý lỗi, format message…)
+   - Loại bỏ code thừa, gom logic lặp lại vào private helper method (ví dụ: HandleException, BuildDatabaseInfo).
+
+3. **Comment tiếng Việt chuyên nghiệp**
+   - Sử dụng XML Documentation (`<summary>`, `<param>`, `<returns>`).
+   - Giải thích mục đích business: ví dụ *“Hiển thị thông tin user trên status bar sau khi đăng nhập”*.
+   - Comment ngắn gọn, dễ hiểu cho đồng nghiệp, không dịch literal tên hàm.
+
+4. **Refactor logic**
+   - Đảm bảo quản lý tài nguyên đúng chuẩn (dispose Timer, connection…).
+   - Đưa logic xử lý lỗi lặp lại vào helper chung: `HandleException(Exception ex, string contextMessage)`.
+   - Đảm bảo không swallow exception quan trọng, chỉ log hoặc hiển thị phù hợp.
+
+5. **Output**
+   - Trả về code đã refactor hoàn chỉnh.
+   - Giữ nguyên logic nghiệp vụ và UI, chỉ làm code sạch, rõ ràng, dễ bảo trì.
+   - Code có đầy đủ comment tiếng Việt chuyên nghiệp.
+
+Hãy refactor Form/UserControl tôi đưa ra theo các nguyên tắc trên.

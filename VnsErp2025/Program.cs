@@ -1,13 +1,9 @@
-﻿using DevExpress.LookAndFeel;
-using DevExpress.Skins;
-using DevExpress.UserSkins;
+﻿using Bll.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
-using Authentication.Form;
 using VnsErp2025.Form;
-using Bll.Utils;
+using Dal.Connection;
+using Authentication.Form;
 
 namespace VnsErp2025
 {
@@ -25,33 +21,42 @@ namespace VnsErp2025
             // Cấu hình DevExpress Skin
             SkinHelper.KhoiTaoSkin("WXI");
 
-            #region Quy trình để debug - Comment khi Build Release
+            // 1) Tải connection string từ Settings (ConnectionManager default sẽ ưu tiên User Settings)
+            var connectionManager = new ConnectionManager();
 
-            Application.Run(new FormMain());
-            return;
+            // 2) Kiểm tra kết nối
+            if (!connectionManager.TestConnection())
+            {
+                // 2a) Không kết nối được -> mở màn hình cấu hình DB
+                using (var configForm = new FrmDatabaseConfig())
+                {
+                    configForm.ShowDialog();
+                }
 
-            #endregion
+                // Thử kiểm tra lại sau khi người dùng lưu cấu hình
+                connectionManager = new ConnectionManager();
+                if (!connectionManager.TestConnection())
+                {
+                    // Không kết nối được sau cấu hình -> thoát
+                    Application.Exit();
+                    return;
+                }
+            }
 
-
-            #region Quy trình đúng để chạy màn hình Login - Xóa comment để chạy
-
-            // Hiển thị form đăng nhập
-            //using (var loginForm = new FrmLogin())
-            //{
-            //    if (loginForm.ShowDialog() == DialogResult.OK)
-            //    {
-            //        // Đăng nhập thành công, hiển thị form chính
-            //        Application.Run(new FormMain());
-            //    }
-            //    else
-            //    {
-            //        // Người dùng hủy đăng nhập, thoát ứng dụng
-            //        Application.Exit();
-            //    }
-            //}
-
-            #endregion
-
+            // 3) Kết nối OK -> hiển thị màn hình đăng nhập
+            using (var loginForm = new FrmLogin())
+            {
+                if (loginForm.ShowDialog() == DialogResult.OK)
+                {
+                    // Đăng nhập thành công, hiển thị form chính
+                    Application.Run(new FormMain());
+                }
+                else
+                {
+                    // Người dùng hủy đăng nhập, thoát ứng dụng
+                    Application.Exit();
+                }
+            }
         }
 
     }

@@ -101,7 +101,7 @@ namespace Dal.Configuration
         {
             return new DatabaseSettings
             {
-                ConnectionString = ConnectionStringHelper.LayConnectionStringMacDinh(),
+                ConnectionString = ConnectionStringHelper.GetDefaultConnectionString(),
                 CommandTimeout = 30,
                 ConnectionTimeout = 15,
                 EnableRetryOnFailure = true,

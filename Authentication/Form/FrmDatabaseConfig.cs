@@ -65,7 +65,7 @@ namespace Authentication.Form
                 _databaseConfig.DatabaseName = settings.DatabaseName ?? "VnsErp2025";
                 _databaseConfig.UserId = settings.DatabaseUserId ?? string.Empty;
                 // Giải mã mật khẩu trước khi dùng
-                _databaseConfig.Password = Dal.Connection.ConnectionStringHelper.GiaiMaConnectionString(settings.DatabasePassword ?? string.Empty);
+                _databaseConfig.Password = Dal.Connection.ConnectionStringHelper.DecodeConnectionString(settings.DatabasePassword ?? string.Empty);
                 // Luôn dùng SQL Authentication
                 _databaseConfig.UseIntegratedSecurity = false;
             }
@@ -221,7 +221,7 @@ namespace Authentication.Form
                 var password = PasswordTextEdit.Text; // không Trim để tránh cắt khoảng trắng hợp lệ
 
                 // Luôn dùng SQL Authentication theo yêu cầu
-                var connectionString = Dal.Connection.ConnectionStringHelper.TaoConnectionStringChiTiet(
+                var connectionString = Dal.Connection.ConnectionStringHelper.BuildDetailedConnectionString(
                     server,
                     database,
                     integratedSecurity: false,
@@ -235,8 +235,8 @@ namespace Authentication.Form
                 );
 
                 // Thiết lập connection string mới cho ConnectionManager và test kết nối
-                _connectionManager.ThietLapConnectionString(connectionString);
-                return _connectionManager.TestKetNoi();
+                _connectionManager.SetConnectionString(connectionString);
+                return _connectionManager.TestConnection();
             }
             catch (Exception ex)
             {
@@ -279,7 +279,7 @@ namespace Authentication.Form
                 settings.DatabaseName = _databaseConfig.DatabaseName;
                 settings.DatabaseUserId = _databaseConfig.UserId;
                 // Mã hóa mật khẩu trước khi lưu
-                settings.DatabasePassword = Dal.Connection.ConnectionStringHelper.MaHoaConnectionString(_databaseConfig.Password);
+                settings.DatabasePassword = Dal.Connection.ConnectionStringHelper.EncodeConnectionString(_databaseConfig.Password);
                 settings.UseIntegratedSecurity = _databaseConfig.UseIntegratedSecurity;
                 
                 // Lưu settings

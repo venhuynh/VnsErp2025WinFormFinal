@@ -5,6 +5,8 @@ using DevExpress.XtraBars;
 using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using Bll.Common;
+using Authentication.Form;
 
 namespace VnsErp2025.Form
 {
@@ -332,6 +334,33 @@ namespace VnsErp2025.Form
         }
 
         /// <summary>
+        /// Xử lý sự kiện nút cấu hình SQL Server: hiển thị overlay, mở FrmDatabaseConfig.
+        /// Sau khi cấu hình thành công, refresh thông tin DB trên status bar.
+        /// </summary>
+        private void ConfigSqlServerInfoBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var configForm = new FrmDatabaseConfig())
+                    {
+                        var result = configForm.ShowDialog();
+                        if (result == DialogResult.OK)
+                        {
+                            RefreshDatabaseInfo();
+                            MsgBox.ShowInfo("Cấu hình kết nối đã được cập nhật.", "Thông báo");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi cấu hình SQL Server");
+            }
+        }
+
+        /// <summary>
         /// Hiển thị thông tin chi tiết về database
         /// </summary>
         private void ShowDatabaseDetails()
@@ -357,7 +386,7 @@ namespace VnsErp2025.Form
                                  $"Connection Timeout: {builder.ConnectTimeout} giây\n" +
                                  $"Command Timeout: {connectionManager.CommandTimeout} giây\n" +
                                  $"Trạng thái: {connectionManager.State}\n" +
-                                 $"Kết nối hoạt động: {(connectionManager.KiemTraHoatDong() ? "Có" : "Không")}\n\n" +
+                                 $"Kết nối hoạt động: {(connectionManager.IsHealthy() ? "Có" : "Không")}\n\n" +
                                  $"Connection String:\n{connectionString}";
                     
                     MsgBox.ShowInfo(details, "Thông tin Database");

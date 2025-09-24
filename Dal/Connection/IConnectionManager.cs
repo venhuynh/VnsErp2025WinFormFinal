@@ -5,11 +5,12 @@ using System.Data.SqlClient;
 namespace Dal.Connection
 {
     /// <summary>
-    /// Interface quản lý kết nối cơ sở dữ liệu
+    /// Interface quản lý kết nối cơ sở dữ liệu cho DAL (thread-safe lifecycle, command factory, health checks).
+    /// Khớp với API của ConnectionManager.
     /// </summary>
     public interface IConnectionManager : IDisposable
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
         /// <summary>
         /// Chuỗi kết nối hiện tại
@@ -33,86 +34,86 @@ namespace Dal.Connection
 
         #endregion
 
-        #region phuongThuc
+        #region Connection Lifecycle / Factory Methods
 
         /// <summary>
         /// Mở kết nối database
         /// </summary>
         /// <returns>True nếu mở thành công</returns>
-        bool MoKetNoi();
+        bool OpenConnection();
 
         /// <summary>
         /// Đóng kết nối database
         /// </summary>
-        void DongKetNoi();
+        void CloseConnection();
 
         /// <summary>
-        /// Lấy SqlConnection object
+        /// Lấy SqlConnection object (đảm bảo đã mở)
         /// </summary>
         /// <returns>SqlConnection object</returns>
-        SqlConnection LayKetNoi();
+        SqlConnection GetConnection();
 
         /// <summary>
         /// Kiểm tra kết nối có đang mở không
         /// </summary>
         /// <returns>True nếu kết nối đang mở</returns>
-        bool KiemTraKetNoi();
+        bool IsOpen();
 
         /// <summary>
-        /// Kiểm tra kết nối có hoạt động không
+        /// Kiểm tra kết nối có hoạt động không (truy vấn nhẹ)
         /// </summary>
         /// <returns>True nếu kết nối hoạt động bình thường</returns>
-        bool KiemTraHoatDong();
+        bool IsHealthy();
 
         /// <summary>
         /// Tạo SqlCommand với connection hiện tại
         /// </summary>
         /// <param name="sql">Câu lệnh SQL</param>
         /// <returns>SqlCommand object</returns>
-        SqlCommand TaoCommand(string sql);
+        SqlCommand CreateCommand(string sql);
 
         /// <summary>
-        /// Tạo SqlCommand với stored procedure
+        /// Tạo SqlCommand cho stored procedure
         /// </summary>
         /// <param name="storedProcedureName">Tên stored procedure</param>
         /// <returns>SqlCommand object</returns>
-        SqlCommand TaoStoredProcedureCommand(string storedProcedureName);
+        SqlCommand CreateStoredProcedureCommand(string storedProcedureName);
 
         /// <summary>
-        /// Thực hiện test kết nối
+        /// Thực hiện test kết nối (truy vấn GETDATE())
         /// </summary>
         /// <returns>True nếu kết nối thành công</returns>
-        bool TestKetNoi();
+        bool TestConnection();
 
         /// <summary>
-        /// Reset kết nối
+        /// Reset kết nối (đóng và khởi tạo lại)
         /// </summary>
-        void ResetKetNoi();
+        void ResetConnection();
 
         /// <summary>
-        /// Thiết lập connection string mới
+        /// Thiết lập connection string mới và khởi tạo lại kết nối
         /// </summary>
         /// <param name="connectionString">Chuỗi kết nối mới</param>
-        void ThietLapConnectionString(string connectionString);
+        void SetConnectionString(string connectionString);
 
         #endregion
 
-        #region suKien
+        #region Events
 
         /// <summary>
         /// Sự kiện khi kết nối được mở
         /// </summary>
-        event EventHandler<ConnectionEventArgs> KetNoiMo;
+        event EventHandler<ConnectionEventArgs> ConnectionOpened;
 
         /// <summary>
         /// Sự kiện khi kết nối bị đóng
         /// </summary>
-        event EventHandler<ConnectionEventArgs> KetNoiDong;
+        event EventHandler<ConnectionEventArgs> ConnectionClosed;
 
         /// <summary>
         /// Sự kiện khi có lỗi kết nối
         /// </summary>
-        event EventHandler<ConnectionErrorEventArgs> LoiKetNoi;
+        event EventHandler<ConnectionErrorEventArgs> ConnectionError;
 
         #endregion
     }
@@ -122,7 +123,7 @@ namespace Dal.Connection
     /// </summary>
     public class ConnectionEventArgs : EventArgs
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
         /// <summary>
         /// Thời gian xảy ra sự kiện
@@ -141,7 +142,7 @@ namespace Dal.Connection
 
         #endregion
 
-        #region phuongThuc
+        #region Constructors
 
         /// <summary>
         /// Constructor mặc định
@@ -171,7 +172,7 @@ namespace Dal.Connection
     /// </summary>
     public class ConnectionErrorEventArgs : ConnectionEventArgs
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
         /// <summary>
         /// Exception xảy ra
@@ -190,7 +191,7 @@ namespace Dal.Connection
 
         #endregion
 
-        #region phuongThuc
+        #region Constructors
 
         /// <summary>
         /// Constructor mặc định

@@ -118,7 +118,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Docs\Promt\Prompt chung – Refactor toàn bộ màn hình GUI.txt" />
     <Content Include="Docs\Promt\Tái cấu trúc source code.txt" />
+    <None Include="Resources\publish_32x32.png" />
+    <None Include="Resources\publish_16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

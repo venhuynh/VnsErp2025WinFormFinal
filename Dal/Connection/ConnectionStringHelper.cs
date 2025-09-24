@@ -374,46 +374,46 @@ namespace Dal.Connection
 
         #endregion
 
-        #region Obsolete Aliases (Backward Compatibility)
+        //#region Obsolete Aliases (Backward Compatibility)
 
-        [Obsolete("Use GetDefaultConnectionString() instead")]
-        public static string LayConnectionStringMacDinh() => GetDefaultConnectionString();
+        //[Obsolete("Use GetDefaultConnectionString() instead")]
+        //public static string LayConnectionStringMacDinh() => GetDefaultConnectionString();
 
-        [Obsolete("Use GetConnectionStringByName(string) instead")]
-        public static string LayConnectionString(string connectionName) => GetConnectionStringByName(connectionName);
+        //[Obsolete("Use GetConnectionStringByName(string) instead")]
+        //public static string LayConnectionString(string connectionName) => GetConnectionStringByName(connectionName);
 
-        [Obsolete("Use BuildDefaultConnectionString() instead")]
-        public static string TaoConnectionStringMacDinh() => BuildDefaultConnectionString();
+        //[Obsolete("Use BuildDefaultConnectionString() instead")]
+        //public static string TaoConnectionStringMacDinh() => BuildDefaultConnectionString();
 
-        [Obsolete("Use BuildConnectionString(string,string,bool,string,string) instead")]
-        public static string TaoConnectionString(string server, string database, bool integratedSecurity = true, string userId = null, string password = null)
-            => BuildConnectionString(server, database, integratedSecurity, userId, password);
+        //[Obsolete("Use BuildConnectionString(string,string,bool,string,string) instead")]
+        //public static string TaoConnectionString(string server, string database, bool integratedSecurity = true, string userId = null, string password = null)
+        //    => BuildConnectionString(server, database, integratedSecurity, userId, password);
 
-        [Obsolete("Use BuildDetailedConnectionString(...) instead")]
-        public static string TaoConnectionStringChiTiet(string server, string database, bool integratedSecurity = true,
-            string userId = null, string password = null, int timeout = DEFAULT_CONNECTION_TIMEOUT,
-            int commandTimeout = DEFAULT_TIMEOUT, bool pooling = true, int minPoolSize = 1, int maxPoolSize = 100)
-            => BuildDetailedConnectionString(server, database, integratedSecurity, userId, password, timeout, commandTimeout, pooling, minPoolSize, maxPoolSize);
+        //[Obsolete("Use BuildDetailedConnectionString(...) instead")]
+        //public static string TaoConnectionStringChiTiet(string server, string database, bool integratedSecurity = true,
+        //    string userId = null, string password = null, int timeout = DEFAULT_CONNECTION_TIMEOUT,
+        //    int commandTimeout = DEFAULT_TIMEOUT, bool pooling = true, int minPoolSize = 1, int maxPoolSize = 100)
+        //    => BuildDetailedConnectionString(server, database, integratedSecurity, userId, password, timeout, commandTimeout, pooling, minPoolSize, maxPoolSize);
 
-        [Obsolete("Use ParseConnectionString(string) instead")]
-        public static ConnectionStringInfo PhanTichConnectionString(string connectionString) => ParseConnectionString(connectionString);
+        //[Obsolete("Use ParseConnectionString(string) instead")]
+        //public static ConnectionStringInfo PhanTichConnectionString(string connectionString) => ParseConnectionString(connectionString);
 
-        [Obsolete("Use IsValidConnectionString(string) instead")]
-        public static bool KiemTraConnectionString(string connectionString) => IsValidConnectionString(connectionString);
+        //[Obsolete("Use IsValidConnectionString(string) instead")]
+        //public static bool KiemTraConnectionString(string connectionString) => IsValidConnectionString(connectionString);
 
-        [Obsolete("Use EncodeConnectionString(string) instead")]
-        public static string MaHoaConnectionString(string connectionString) => EncodeConnectionString(connectionString);
+        //[Obsolete("Use EncodeConnectionString(string) instead")]
+        //public static string MaHoaConnectionString(string connectionString) => EncodeConnectionString(connectionString);
 
-        [Obsolete("Use DecodeConnectionString(string) instead")]
-        public static string GiaiMaConnectionString(string encryptedConnectionString) => DecodeConnectionString(encryptedConnectionString);
+        //[Obsolete("Use DecodeConnectionString(string) instead")]
+        //public static string GiaiMaConnectionString(string encryptedConnectionString) => DecodeConnectionString(encryptedConnectionString);
 
-        [Obsolete("Use GetSafeConnectionString(string) instead")]
-        public static string LayConnectionStringAnToan(string connectionString) => GetSafeConnectionString(connectionString);
+        //[Obsolete("Use GetSafeConnectionString(string) instead")]
+        //public static string LayConnectionStringAnToan(string connectionString) => GetSafeConnectionString(connectionString);
 
-        [Obsolete("Use BuildByEnvironment(string) instead")]
-        public static string TaoConnectionStringTheoEnvironment(string environment) => BuildByEnvironment(environment);
+        //[Obsolete("Use BuildByEnvironment(string) instead")]
+        //public static string TaoConnectionStringTheoEnvironment(string environment) => BuildByEnvironment(environment);
 
-        #endregion
+        //#endregion
 
         #region Nested Types
 

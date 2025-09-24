@@ -103,7 +103,7 @@ namespace Dal.Connection
             {
                 if (string.IsNullOrEmpty(ConnectionString))
                 {
-                    ConnectionString = ConnectionStringHelper.LayConnectionStringMacDinh();
+                    ConnectionString = ConnectionStringHelper.GetDefaultConnectionString();
                 }
 
                 _connection = new SqlConnection(ConnectionString);
@@ -402,39 +402,39 @@ namespace Dal.Connection
 
         #endregion
 
-        #region Obsolete Aliases (Backward Compatibility)
+        //#region Obsolete Aliases (Backward Compatibility)
 
-        [Obsolete("Use OpenConnection() instead")]
-        public bool MoKetNoi() => OpenConnection();
+        //[Obsolete("Use OpenConnection() instead")]
+        //public bool MoKetNoi() => OpenConnection();
 
-        [Obsolete("Use CloseConnection() instead")]
-        public void DongKetNoi() => CloseConnection();
+        //[Obsolete("Use CloseConnection() instead")]
+        //public void DongKetNoi() => CloseConnection();
 
-        [Obsolete("Use GetConnection() instead")]
-        public SqlConnection LayKetNoi() => GetConnection();
+        //[Obsolete("Use GetConnection() instead")]
+        //public SqlConnection LayKetNoi() => GetConnection();
 
-        [Obsolete("Use IsOpen() instead")]
-        public bool KiemTraKetNoi() => IsOpen();
+        //[Obsolete("Use IsOpen() instead")]
+        //public bool KiemTraKetNoi() => IsOpen();
 
-        [Obsolete("Use IsHealthy() instead")]
-        public bool KiemTraHoatDong() => IsHealthy();
+        //[Obsolete("Use IsHealthy() instead")]
+        //public bool KiemTraHoatDong() => IsHealthy();
 
-        [Obsolete("Use CreateCommand(string) instead")]
-        public SqlCommand TaoCommand(string sql) => CreateCommand(sql);
+        //[Obsolete("Use CreateCommand(string) instead")]
+        //public SqlCommand TaoCommand(string sql) => CreateCommand(sql);
 
-        [Obsolete("Use CreateStoredProcedureCommand(string) instead")]
-        public SqlCommand TaoStoredProcedureCommand(string storedProcedureName) => CreateStoredProcedureCommand(storedProcedureName);
+        //[Obsolete("Use CreateStoredProcedureCommand(string) instead")]
+        //public SqlCommand TaoStoredProcedureCommand(string storedProcedureName) => CreateStoredProcedureCommand(storedProcedureName);
 
-        [Obsolete("Use TestConnection() instead")]
-        public bool TestKetNoi() => TestConnection();
+        //[Obsolete("Use TestConnection() instead")]
+        //public bool TestKetNoi() => TestConnection();
 
-        [Obsolete("Use ResetConnection() instead")]
-        public void ResetKetNoi() => ResetConnection();
+        //[Obsolete("Use ResetConnection() instead")]
+        //public void ResetKetNoi() => ResetConnection();
 
-        [Obsolete("Use SetConnectionString(string) instead")]
-        public void ThietLapConnectionString(string connectionString) => SetConnectionString(connectionString);
+        //[Obsolete("Use SetConnectionString(string) instead")]
+        //public void ThietLapConnectionString(string connectionString) => SetConnectionString(connectionString);
 
-        #endregion
+        //#endregion
 
         #region Dispose Pattern
 

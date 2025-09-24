@@ -21,13 +21,7 @@ namespace Dal.Exceptions
         /// <summary>
         /// Loại lỗi kết nối (tiếng Việt - tương thích cũ).
         /// </summary>
-        [Obsolete("Use ErrorType instead")]
         public ConnectionErrorType LoaiLoi { get; }
-
-        /// <summary>
-        /// Loại lỗi kết nối (API mới, tiếng Anh).
-        /// </summary>
-        public ConnectionErrorType ErrorType => LoaiLoi;
 
         /// <summary>
         /// Mã lỗi SQL Server (nếu có) - shadow thuộc tính từ lớp cha để lưu số lỗi SQL.
@@ -37,12 +31,7 @@ namespace Dal.Exceptions
         /// <summary>
         /// Thời gian xảy ra lỗi (tiếng Việt - tương thích cũ).
         /// </summary>
-        public new DateTime ThoiGianLoi { get; }
-
-        /// <summary>
-        /// Thời gian xảy ra lỗi (API mới, tiếng Anh).
-        /// </summary>
-        public DateTime ErrorTime => ThoiGianLoi;
+        public new DateTime ErrorTime { get; }
 
         #endregion
 
@@ -53,7 +42,7 @@ namespace Dal.Exceptions
         /// </summary>
         public ConnectionException() : base()
         {
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
@@ -61,7 +50,7 @@ namespace Dal.Exceptions
         /// </summary>
         public ConnectionException(string message) : base(message)
         {
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
@@ -70,7 +59,7 @@ namespace Dal.Exceptions
         public ConnectionException(string message, Exception innerException)
             : base(message, innerException)
         {
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
@@ -80,7 +69,7 @@ namespace Dal.Exceptions
             : base(message, innerException)
         {
             ConnectionString = connectionString;
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
@@ -91,7 +80,7 @@ namespace Dal.Exceptions
         {
             ConnectionString = connectionString;
             LoaiLoi = loaiLoi;
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
@@ -103,7 +92,7 @@ namespace Dal.Exceptions
             ConnectionString = info.GetString(nameof(ConnectionString));
             LoaiLoi = (ConnectionErrorType)info.GetValue(nameof(LoaiLoi), typeof(ConnectionErrorType));
             SqlErrorNumber = (int?)info.GetValue(nameof(SqlErrorNumber), typeof(int?));
-            ThoiGianLoi = info.GetDateTime(nameof(ThoiGianLoi));
+            ErrorTime = info.GetDateTime(nameof(ErrorTime));
         }
 
         #endregion
@@ -240,7 +229,7 @@ namespace Dal.Exceptions
             info.AddValue(nameof(ConnectionString), ConnectionString);
             info.AddValue(nameof(LoaiLoi), LoaiLoi);
             info.AddValue(nameof(SqlErrorNumber), SqlErrorNumber);
-            info.AddValue(nameof(ThoiGianLoi), ThoiGianLoi);
+            info.AddValue(nameof(ErrorTime), ErrorTime);
         }
 
         /// <summary>
@@ -265,7 +254,7 @@ namespace Dal.Exceptions
                 result += $"\nMã lỗi SQL: {SqlErrorNumber.Value}";
             }
             
-            result += $"\nThời gian: {ThoiGianLoi:yyyy-MM-dd HH:mm:ss}";
+            result += $"\nThời gian: {ErrorTime:yyyy-MM-dd HH:mm:ss}";
             
             return result;
         }
