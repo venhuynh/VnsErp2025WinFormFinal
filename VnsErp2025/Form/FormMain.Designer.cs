@@ -29,24 +29,38 @@
         private void InitializeComponent()
         {
             this.ribbon = new DevExpress.XtraBars.Ribbon.RibbonControl();
+            this.DBInfoBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
+            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbon)).BeginInit();
             this.SuspendLayout();
             // 
             // ribbon
             // 
+            this.ribbon.CaptionBarItemLinks.Add(this.DBInfoBarStaticItem);
+            this.ribbon.CaptionBarItemLinks.Add(this.barButtonItem1);
             this.ribbon.ExpandCollapseItem.Id = 0;
             this.ribbon.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.ribbon.ExpandCollapseItem});
+            this.DBInfoBarStaticItem,
+            this.ribbon.ExpandCollapseItem,
+            this.barButtonItem1});
             this.ribbon.Location = new System.Drawing.Point(0, 0);
-            this.ribbon.MaxItemId = 1;
+            this.ribbon.MaxItemId = 4;
             this.ribbon.Name = "ribbon";
             this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1});
             this.ribbon.Size = new System.Drawing.Size(1303, 158);
             this.ribbon.StatusBar = this.ribbonStatusBar;
+            // 
+            // DBInfoBarStaticItem
+            // 
+            this.DBInfoBarStaticItem.Caption = "barStaticItem1";
+            this.DBInfoBarStaticItem.Id = 1;
+            this.DBInfoBarStaticItem.ImageOptions.Image = global::VnsErp2025.Properties.Resources.database_16x16;
+            this.DBInfoBarStaticItem.ImageOptions.LargeImage = global::VnsErp2025.Properties.Resources.database_32x32;
+            this.DBInfoBarStaticItem.Name = "DBInfoBarStaticItem";
             // 
             // ribbonPage1
             // 
@@ -66,6 +80,13 @@
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbon;
             this.ribbonStatusBar.Size = new System.Drawing.Size(1303, 24);
+            // 
+            // barButtonItem1
+            // 
+            this.barButtonItem1.Caption = "barButtonItem1";
+            this.barButtonItem1.Id = 2;
+            this.barButtonItem1.ImageOptions.Image = global::VnsErp2025.Properties.Resources.database_16x16;
+            this.barButtonItem1.Name = "barButtonItem1";
             // 
             // FormMain
             // 
@@ -90,5 +111,7 @@
         private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage1;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
         private DevExpress.XtraBars.Ribbon.RibbonStatusBar ribbonStatusBar;
+        private DevExpress.XtraBars.BarStaticItem DBInfoBarStaticItem;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
     }
 }
