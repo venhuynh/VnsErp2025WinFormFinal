@@ -84,7 +84,7 @@ namespace Dal.DataContext
 		
 		private string _UserName;
 		
-		private string _HassPassword;
+		private string _HashPassword;
 		
 		private bool _Active;
 		
@@ -96,8 +96,8 @@ namespace Dal.DataContext
     partial void OnIdChanged();
     partial void OnUserNameChanging(string value);
     partial void OnUserNameChanged();
-    partial void OnHassPasswordChanging(string value);
-    partial void OnHassPasswordChanged();
+    partial void OnHashPasswordChanging(string value);
+    partial void OnHashPasswordChanged();
     partial void OnActiveChanging(bool value);
     partial void OnActiveChanged();
     #endregion
@@ -147,22 +147,22 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HassPassword", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
-		public string HassPassword
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HashPassword", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
+		public string HashPassword
 		{
 			get
 			{
-				return this._HassPassword;
+				return this._HashPassword;
 			}
 			set
 			{
-				if ((this._HassPassword != value))
+				if ((this._HashPassword != value))
 				{
-					this.OnHassPasswordChanging(value);
+					this.OnHashPasswordChanging(value);
 					this.SendPropertyChanging();
-					this._HassPassword = value;
-					this.SendPropertyChanged("HassPassword");
-					this.OnHassPasswordChanged();
+					this._HashPassword = value;
+					this.SendPropertyChanged("HashPassword");
+					this.OnHashPasswordChanged();
 				}
 			}
 		}

@@ -253,7 +253,7 @@ namespace Dal.DataAccess
                 if (user == null)
                     throw new DataAccessException($"Không tìm thấy user với ID: {id}");
 
-                user.HassPassword = matKhauMoi;
+                user.HashPassword = matKhauMoi;
                 context.SubmitChanges();
             }
             catch (Exception ex)
@@ -287,7 +287,7 @@ namespace Dal.DataAccess
                 {
                     Id = Guid.NewGuid(),
                     UserName = userName,
-                    HassPassword = matKhau,
+                    HashPassword = matKhau,
                     Active = active
                 };
 
@@ -343,7 +343,7 @@ namespace Dal.DataAccess
                 {
                     Id = Guid.NewGuid(),
                     UserName = userName,
-                    HassPassword = matKhau,
+                    HashPassword = matKhau,
                     Active = active
                 };
 
@@ -426,7 +426,7 @@ namespace Dal.DataAccess
 
                 // Transfer data
                 toUser.UserName = newUserName;
-                toUser.HassPassword = fromUser.HassPassword;
+                toUser.HashPassword = fromUser.HashPassword;
                 toUser.Active = fromUser.Active;
 
                 // Deactivate source user

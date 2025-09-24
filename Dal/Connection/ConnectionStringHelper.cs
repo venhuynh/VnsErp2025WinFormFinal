@@ -15,7 +15,7 @@ namespace Dal.Connection
 
         private const string DEFAULT_CONNECTION_NAME = "VnsErp2025ConnectionString";
         private const string DEFAULT_SERVER = "localhost";
-        private const string DEFAULT_DATABASE = "VnsErp2025";
+        private const string DEFAULT_DATABASE = "VnsErp2025Final";
         private const int DEFAULT_TIMEOUT = 30;
         private const int DEFAULT_CONNECTION_TIMEOUT = 15;
 

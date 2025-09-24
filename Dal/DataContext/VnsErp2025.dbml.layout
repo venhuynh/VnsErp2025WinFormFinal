@@ -2,10 +2,10 @@
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="VnsErp2025">
   <DataContextMoniker Name="/VnsErp2025DataContext" />
   <nestedChildShapes>
-    <classShape Id="2ebb65e2-05ec-47dc-b68e-5ef331096c65" absoluteBounds="6.875, 2.875, 2, 1.5785953776041666">
+    <classShape Id="046ed6da-09a2-48d5-90ec-f71b37026917" absoluteBounds="6.375, 2.25, 2, 1.5785953776041666">
       <DataClassMoniker Name="/VnsErp2025DataContext/ApplicationUser" />
       <nestedChildShapes>
-        <elementListCompartment Id="54f8fd95-41fa-43a7-a358-1fef3d44c398" absoluteBounds="6.89, 3.335, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="5f2f64d0-3d8d-44f9-8933-cfaf43519d94" absoluteBounds="6.39, 2.71, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using DevExpress.XtraEditors.DXErrorProvider;
 using BllValidation = Bll.Validation;
 using Bll.Utils;
+using Bll.Authentication;
 
 namespace Authentication.Form
 {
@@ -19,6 +20,8 @@ namespace Authentication.Form
         private const int MIN_PASSWORD_LENGTH = 3;
         #endregion
 
+        private readonly LoginBll _loginBll = new LoginBll();
+
         #region Constructor
         /// <summary>
         /// Khởi tạo form đăng nhập
@@ -28,6 +31,8 @@ namespace Authentication.Form
             InitializeComponent();
             InitializeValidation();
             SetupEventHandlers();
+
+            TaoTaiKhoanAdminPublic();
         }
         #endregion
 
@@ -47,6 +52,7 @@ namespace Authentication.Form
 
         /// <summary>
         /// Thiết lập validation cho trường tên đăng nhập
+        /// Kiểm tra: không rỗng, độ dài từ 3-50 ký tự
         /// </summary>
         private void SetupUserNameValidation()
         {
@@ -149,15 +155,21 @@ namespace Authentication.Form
                 // Bước 2: Lấy thông tin đăng nhập
                 var loginCredentials = GetLoginCredentials();
 
-                // Bước 3: Thực hiện xác thực
-                if (AuthenticateUser(loginCredentials.Username, loginCredentials.Password))
+                // Bước 3: Thực hiện xác thực thông qua LoginBll
+                var loginResult = _loginBll.XacThucDangNhap(loginCredentials.Username, loginCredentials.Password);
+
+                if (loginResult.ThanhCong)
                 {
+                    // Lưu thông tin user vào session/static variable nếu cần
+                    // ApplicationSystemUtils.SetCurrentUser(loginResult.User);
+                    
                     ShowSuccessMessage();
                     CloseFormWithSuccess();
                 }
                 else
                 {
-                    ShowAuthenticationFailedMessage();
+                    // Hiển thị thông báo lỗi cụ thể từ LoginBll
+                    ShowAuthenticationFailedMessage(loginResult.ThongBaoLoi);
                 }
             }
             catch (Exception ex)
@@ -221,18 +233,6 @@ namespace Authentication.Form
             return (UserNameTextEdit.Text.Trim(), PasswordTextEdit.Text);
         }
 
-        /// <summary>
-        /// Thực hiện xác thực người dùng
-        /// </summary>
-        /// <param name="username">Tên đăng nhập</param>
-        /// <param name="password">Mật khẩu</param>
-        /// <returns>True nếu xác thực thành công</returns>
-        private bool AuthenticateUser(string username, string password)
-        {
-            // TODO: Thay thế logic xác thực thực tế
-            // Hiện tại sử dụng hardcoded credentials để demo
-            return username == "admin" && password == "password";
-        }
         #endregion
 
         #region Private Methods - UI Messages
@@ -255,13 +255,107 @@ namespace Authentication.Form
         }
 
         /// <summary>
-        /// Hiển thị thông báo đăng nhập thất bại
+        /// Hiển thị thông báo đăng nhập thất bại với message cụ thể
         /// </summary>
-        private void ShowAuthenticationFailedMessage()
+        /// <param name="message">Thông báo lỗi</param>
+        private void ShowAuthenticationFailedMessage(string message = null)
         {
-            MsgBox.ShowError("Tên đăng nhập hoặc mật khẩu không đúng.", "Đăng nhập thất bại");
+            var errorMessage = message ?? "Tên đăng nhập hoặc mật khẩu không đúng.";
+            MsgBox.ShowError(errorMessage, "Đăng nhập thất bại");
         }
 
+        #endregion
+
+        #region Public Methods - User Management
+        /// <summary>
+        /// Tạo tài khoản admin mặc định để test hệ thống
+        /// Có thể gọi từ bên ngoài form
+        /// </summary>
+        public void TaoTaiKhoanAdminPublic()
+        {
+            TaoTaiKhoanAdmin();
+        }
+
+        /// <summary>
+        /// Tạo tài khoản user tùy chỉnh
+        /// Có thể gọi từ bên ngoài form
+        /// </summary>
+        /// <param name="userName">Tên đăng nhập</param>
+        /// <param name="password">Mật khẩu</param>
+        /// <param name="active">Trạng thái active</param>
+        public void TaoTaiKhoanUserPublic(string userName, string password, bool active = true)
+        {
+            TaoTaiKhoanUser(userName, password, active);
+        }
+        #endregion
+
+        #region Private Methods - User Management
+        /// <summary>
+        /// Tạo tài khoản admin mặc định để test hệ thống
+        /// </summary>
+        private void TaoTaiKhoanAdmin()
+        {
+            try
+            {
+                // Kiểm tra xem admin đã tồn tại chưa
+                var existingUser = _loginBll.XacThucDangNhap("admin", "admin");
+                if (existingUser.MaLoi != LoginErrorCode.UserKhongTonTai)
+                {
+                    MsgBox.ShowInfo("Tài khoản admin đã tồn tại trong hệ thống.", "Thông báo");
+                    return;
+                }
+
+                // Tạo tài khoản admin mới
+                var adminUser = _loginBll.TaoUserMoi("admin", "admin", true);
+                
+                if (adminUser != null)
+                {
+                    MsgBox.ShowInfo($"Đã tạo tài khoản admin thành công!\nUsername: admin\nPassword: admin\nID: {adminUser.Id}", "Tạo tài khoản thành công");
+                }
+                else
+                {
+                    MsgBox.ShowError("Không thể tạo tài khoản admin.", "Lỗi");
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi khi tạo tài khoản admin");
+            }
+        }
+
+        /// <summary>
+        /// Tạo tài khoản user tùy chỉnh
+        /// </summary>
+        /// <param name="userName">Tên đăng nhập</param>
+        /// <param name="password">Mật khẩu</param>
+        /// <param name="active">Trạng thái active</param>
+        private void TaoTaiKhoanUser(string userName, string password, bool active = true)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
+                {
+                    MsgBox.ShowWarning("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.", "Thông báo");
+                    return;
+                }
+
+                // Tạo user mới
+                var newUser = _loginBll.TaoUserMoi(userName, password, active);
+                
+                if (newUser != null)
+                {
+                    MsgBox.ShowInfo($"Đã tạo tài khoản thành công!\nUsername: {userName}\nPassword: {password}\nID: {newUser.Id}", "Tạo tài khoản thành công");
+                }
+                else
+                {
+                    MsgBox.ShowError("Không thể tạo tài khoản.", "Lỗi");
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi khi tạo tài khoản");
+            }
+        }
         #endregion
 
         #region Private Methods - Form Management
@@ -288,12 +382,14 @@ namespace Authentication.Form
     #region Custom Validation Rules - Form Specific
     /// <summary>
     /// Custom validation rule cho tên đăng nhập - Form specific
+    /// Kiểm tra: không rỗng, độ dài từ 3-50 ký tự
     /// Sử dụng ValidationHelper từ BLL để thực hiện các check
     /// </summary>
     public class CustomUserNameValidationRule : ValidationRule
     {
         /// <summary>
         /// Thực hiện validation cho tên đăng nhập
+        /// Kiểm tra: không rỗng, độ dài từ 3-50 ký tự
         /// </summary>
         /// <param name="control">Control cần validate</param>
         /// <param name="value">Giá trị cần kiểm tra</param>
@@ -314,14 +410,6 @@ namespace Authentication.Form
             if (!BllValidation.ValidationHelper.IsValidLength(username, 3, 50))
             {
                 ErrorText = "Tên đăng nhập phải có từ 3 đến 50 ký tự";
-                ErrorType = ErrorType.Warning;
-                return false;
-            }
-
-            // Rule 3: Kiểm tra định dạng email - sử dụng BLL ValidationHelper
-            if (!BllValidation.ValidationHelper.IsValidEmail(username))
-            {
-                ErrorText = "Tên đăng nhập phải có định dạng email hợp lệ";
                 ErrorType = ErrorType.Warning;
                 return false;
             }
