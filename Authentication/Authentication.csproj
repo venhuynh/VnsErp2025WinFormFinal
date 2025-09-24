@@ -52,6 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Form\FrmDatabaseConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\FrmDatabaseConfig.Designer.cs">
+      <DependentUpon>FrmDatabaseConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form\FrmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +77,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Form\FrmDatabaseConfig.resx">
+      <DependentUpon>FrmDatabaseConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form\FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
     </EmbeddedResource>
@@ -80,6 +89,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\DataSources\Dal.Connection.DatabaseConfig.datasource" />
     <None Include="Resources\apply_16x16.png" />
   </ItemGroup>
   <ItemGroup>

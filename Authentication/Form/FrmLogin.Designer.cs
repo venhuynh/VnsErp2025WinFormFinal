@@ -199,6 +199,7 @@
             this.simpleLabelItem2.Location = new System.Drawing.Point(0, 37);
             this.simpleLabelItem2.Name = "simpleLabelItem2";
             this.simpleLabelItem2.OptionsTableLayoutItem.RowIndex = 1;
+            this.simpleLabelItem2.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 2, 2, 2);
             this.simpleLabelItem2.Size = new System.Drawing.Size(100, 24);
             this.simpleLabelItem2.Text = "Tên đăng nhập";
             this.simpleLabelItem2.TextSize = new System.Drawing.Size(87, 13);
@@ -208,6 +209,7 @@
             this.simpleLabelItem3.Location = new System.Drawing.Point(0, 61);
             this.simpleLabelItem3.Name = "simpleLabelItem3";
             this.simpleLabelItem3.OptionsTableLayoutItem.RowIndex = 2;
+            this.simpleLabelItem3.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 2, 2, 2);
             this.simpleLabelItem3.Size = new System.Drawing.Size(100, 24);
             this.simpleLabelItem3.Text = "Mật khẩu";
             this.simpleLabelItem3.TextSize = new System.Drawing.Size(87, 13);

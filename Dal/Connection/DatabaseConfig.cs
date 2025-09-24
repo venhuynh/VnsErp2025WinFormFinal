@@ -1,7 +1,6 @@
 using System;
-using System.Configuration;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Configuration;
 
 namespace Dal.Connection
 {
