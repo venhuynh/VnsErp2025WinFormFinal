@@ -3,20 +3,22 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading;
 using Dal.Exceptions;
-using Dal.Helpers;
 
 namespace Dal.Connection
 {
     /// <summary>
-    /// Class quản lý kết nối cơ sở dữ liệu
+    /// Quản lý vòng đời kết nối SQL Server an toàn (thread-safe) cho DAL.
+    /// - Khởi tạo từ Connection String mặc định (ưu tiên User Settings), hoặc chuỗi truyền vào.
+    /// - Cung cấp API mở/đóng, tạo lệnh SQL/stored procedure, test kết nối.
+    /// - Phát sự kiện khi kết nối mở/đóng/lỗi để lớp cao hơn theo dõi.
     /// </summary>
     public class ConnectionManager : IConnectionManager
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
-        private SqlConnection _connection;
-        private readonly object _lockObject = new object();
-        private bool _disposed = false;
+        private SqlConnection _connection; // Kết nối hiện hành (quản lý nội bộ)
+        private readonly object _lockObject = new object(); // Khóa đồng bộ khi mở/đóng/reset
+        private bool _disposed; // Đánh dấu đã giải phóng tài nguyên
 
         /// <summary>
         /// Chuỗi kết nối hiện tại
@@ -40,49 +42,62 @@ namespace Dal.Connection
 
         #endregion
 
-        #region suKien
+        #region Events
 
         /// <summary>
-        /// Sự kiện khi kết nối được mở
+        /// Sự kiện khi kết nối được mở (mới)
         /// </summary>
+        public event EventHandler<ConnectionEventArgs> ConnectionOpened;
+
+        /// <summary>
+        /// Sự kiện khi kết nối bị đóng (mới)
+        /// </summary>
+        public event EventHandler<ConnectionEventArgs> ConnectionClosed;
+
+        /// <summary>
+        /// Sự kiện khi có lỗi kết nối (mới)
+        /// </summary>
+        public event EventHandler<ConnectionErrorEventArgs> ConnectionError;
+
+        [Obsolete("Use ConnectionOpened instead")]
         public event EventHandler<ConnectionEventArgs> KetNoiMo;
 
-        /// <summary>
-        /// Sự kiện khi kết nối bị đóng
-        /// </summary>
+        [Obsolete("Use ConnectionClosed instead")]
         public event EventHandler<ConnectionEventArgs> KetNoiDong;
 
-        /// <summary>
-        /// Sự kiện khi có lỗi kết nối
-        /// </summary>
+        [Obsolete("Use ConnectionError instead")]
         public event EventHandler<ConnectionErrorEventArgs> LoiKetNoi;
 
         #endregion
 
-        #region phuongThuc
+        #region Constructors
 
         /// <summary>
-        /// Constructor mặc định
+        /// Khởi tạo với Connection String mặc định (ưu tiên Settings/UI, sau đó config).
         /// </summary>
         public ConnectionManager()
         {
-            KhoiTaoKetNoi();
+            InitializeConnection();
         }
 
         /// <summary>
-        /// Constructor với connection string
+        /// Khởi tạo với Connection String chỉ định.
         /// </summary>
         /// <param name="connectionString">Chuỗi kết nối</param>
         public ConnectionManager(string connectionString)
         {
             ConnectionString = connectionString;
-            KhoiTaoKetNoi();
+            InitializeConnection();
         }
 
+        #endregion
+
+        #region Connection Lifecycle / Factory Methods
+
         /// <summary>
-        /// Khởi tạo kết nối
+        /// Tạo instance SqlConnection và gắn xử lý sự kiện trạng thái.
         /// </summary>
-        private void KhoiTaoKetNoi()
+        private void InitializeConnection()
         {
             try
             {
@@ -96,16 +111,16 @@ namespace Dal.Connection
             }
             catch (Exception ex)
             {
-                OnConnectionError(ex, "Lỗi khởi tạo kết nối");
+                OnConnectionError(ex);
                 throw new ConnectionException("Không thể khởi tạo kết nối database", ex);
             }
         }
 
         /// <summary>
-        /// Mở kết nối database
+        /// Mở kết nối (thread-safe). Nếu đang Closed sẽ thực sự mở và phát sự kiện.
         /// </summary>
-        /// <returns>True nếu mở thành công</returns>
-        public bool MoKetNoi()
+        /// <returns>True nếu sau khi gọi, kết nối đang ở trạng thái Open</returns>
+        public bool OpenConnection()
         {
             lock (_lockObject)
             {
@@ -113,30 +128,30 @@ namespace Dal.Connection
                 {
                     if (_connection == null)
                     {
-                        KhoiTaoKetNoi();
+                        InitializeConnection();
                     }
 
-                    if (_connection.State == ConnectionState.Closed)
+                    if (_connection is { State: ConnectionState.Closed })
                     {
                         _connection.Open();
                         OnConnectionOpened();
                         return true;
                     }
 
-                    return _connection.State == ConnectionState.Open;
+                    return _connection is { State: ConnectionState.Open };
                 }
                 catch (Exception ex)
                 {
-                    OnConnectionError(ex, "Lỗi mở kết nối database");
+                    OnConnectionError(ex);
                     throw new ConnectionException("Không thể mở kết nối database", ex);
                 }
             }
         }
 
         /// <summary>
-        /// Đóng kết nối database
+        /// Đóng kết nối nếu đang mở (thread-safe) và phát sự kiện đóng.
         /// </summary>
-        public void DongKetNoi()
+        public void CloseConnection()
         {
             lock (_lockObject)
             {
@@ -150,49 +165,88 @@ namespace Dal.Connection
                 }
                 catch (Exception ex)
                 {
-                    OnConnectionError(ex, "Lỗi đóng kết nối database");
+                    OnConnectionError(ex);
                     throw new ConnectionException("Không thể đóng kết nối database", ex);
                 }
             }
         }
 
         /// <summary>
-        /// Lấy SqlConnection object
+        /// Lấy SqlConnection đã sẵn sàng (đảm bảo mở trước khi trả về).
         /// </summary>
-        /// <returns>SqlConnection object</returns>
-        public SqlConnection LayKetNoi()
+        /// <returns>Đối tượng SqlConnection đã Open</returns>
+        public SqlConnection GetConnection()
         {
             if (_connection == null)
             {
-                KhoiTaoKetNoi();
+                InitializeConnection();
             }
 
-            if (_connection.State != ConnectionState.Open)
+            if (_connection is not { State: ConnectionState.Open })
             {
-                MoKetNoi();
+                OpenConnection();
             }
 
             return _connection;
         }
 
+        #endregion
+
+        #region Command Factory
+
         /// <summary>
-        /// Kiểm tra kết nối có đang mở không
+        /// Tạo SqlCommand (text) gắn với kết nối hiện tại.
         /// </summary>
-        /// <returns>True nếu kết nối đang mở</returns>
-        public bool KiemTraKetNoi()
+        /// <param name="sql">Câu lệnh SQL dạng text</param>
+        /// <returns>Đối tượng SqlCommand đã thiết lập CommandTimeout</returns>
+        public SqlCommand CreateCommand(string sql)
+        {
+            var connection = GetConnection();
+            var command = new SqlCommand(sql, connection)
+            {
+                CommandTimeout = CommandTimeout
+            };
+            return command;
+        }
+
+        /// <summary>
+        /// Tạo SqlCommand cho Stored Procedure.
+        /// </summary>
+        /// <param name="storedProcedureName">Tên Stored Procedure</param>
+        /// <returns>Đối tượng SqlCommand đã thiết lập CommandType và CommandTimeout</returns>
+        public SqlCommand CreateStoredProcedureCommand(string storedProcedureName)
+        {
+            var connection = GetConnection();
+            var command = new SqlCommand(storedProcedureName, connection)
+            {
+                CommandType = CommandType.StoredProcedure,
+                CommandTimeout = CommandTimeout
+            };
+            return command;
+        }
+
+        #endregion
+
+        #region Health Checks
+
+        /// <summary>
+        /// Kiểm tra trạng thái kết nối có đang mở không.
+        /// </summary>
+        /// <returns>True nếu kết nối đang ở trạng thái Open</returns>
+        public bool IsOpen()
         {
             return _connection?.State == ConnectionState.Open;
         }
 
         /// <summary>
-        /// Kiểm tra kết nối có hoạt động không
+        /// Kiểm tra nhanh tính sẵn sàng của kết nối bằng câu lệnh đơn giản.
         /// </summary>
-        /// <returns>True nếu kết nối hoạt động bình thường</returns>
-        public bool KiemTraHoatDong()
+        /// <returns>True nếu truy vấn thử thành công</returns>
+        public bool IsHealthy()
         {
             try
             {
-                if (!KiemTraKetNoi())
+                if (!IsOpen())
                 {
                     return false;
                 }
@@ -211,45 +265,14 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Tạo SqlCommand với connection hiện tại
+        /// Thực hiện truy vấn test để xác nhận kết nối hoạt động.
         /// </summary>
-        /// <param name="sql">Câu lệnh SQL</param>
-        /// <returns>SqlCommand object</returns>
-        public SqlCommand TaoCommand(string sql)
-        {
-            var connection = LayKetNoi();
-            var command = new SqlCommand(sql, connection)
-            {
-                CommandTimeout = CommandTimeout
-            };
-            return command;
-        }
-
-        /// <summary>
-        /// Tạo SqlCommand với stored procedure
-        /// </summary>
-        /// <param name="storedProcedureName">Tên stored procedure</param>
-        /// <returns>SqlCommand object</returns>
-        public SqlCommand TaoStoredProcedureCommand(string storedProcedureName)
-        {
-            var connection = LayKetNoi();
-            var command = new SqlCommand(storedProcedureName, connection)
-            {
-                CommandType = CommandType.StoredProcedure,
-                CommandTimeout = CommandTimeout
-            };
-            return command;
-        }
-
-        /// <summary>
-        /// Thực hiện test kết nối
-        /// </summary>
-        /// <returns>True nếu kết nối thành công</returns>
-        public bool TestKetNoi()
+        /// <returns>True nếu thực thi truy vấn thành công</returns>
+        public bool TestConnection()
         {
             try
             {
-                var connection = LayKetNoi();
+                var connection = GetConnection();
                 using (var command = new SqlCommand("SELECT GETDATE()", connection))
                 {
                     command.CommandTimeout = 10;
@@ -259,99 +282,103 @@ namespace Dal.Connection
             }
             catch (Exception ex)
             {
-                OnConnectionError(ex, "Test kết nối thất bại");
+                OnConnectionError(ex);
                 return false;
             }
         }
 
         /// <summary>
-        /// Reset kết nối
+        /// Đóng và mở lại kết nối an toàn để làm mới trạng thái.
         /// </summary>
-        public void ResetKetNoi()
+        public void ResetConnection()
         {
             lock (_lockObject)
             {
                 try
                 {
-                    DongKetNoi();
+                    CloseConnection();
                     Thread.Sleep(100); // Chờ một chút trước khi tạo lại
-                    KhoiTaoKetNoi();
+                    InitializeConnection();
                 }
                 catch (Exception ex)
                 {
-                    OnConnectionError(ex, "Lỗi reset kết nối");
+                    OnConnectionError(ex);
                     throw new ConnectionException("Không thể reset kết nối", ex);
                 }
             }
         }
 
         /// <summary>
-        /// Thiết lập connection string mới
+        /// Thay đổi Connection String và tạo lại kết nối (thread-safe).
         /// </summary>
         /// <param name="connectionString">Chuỗi kết nối mới</param>
-        public void ThietLapConnectionString(string connectionString)
+        public void SetConnectionString(string connectionString)
         {
             lock (_lockObject)
             {
                 try
                 {
-                    DongKetNoi();
+                    CloseConnection();
                     ConnectionString = connectionString;
-                    KhoiTaoKetNoi();
+                    InitializeConnection();
                 }
                 catch (Exception ex)
                 {
-                    OnConnectionError(ex, "Lỗi thiết lập connection string mới");
+                    OnConnectionError(ex);
                     throw new ConnectionException("Không thể thiết lập connection string mới", ex);
                 }
             }
         }
 
+        #endregion
+
+        #region Event Raisers & Error Handling
+
         /// <summary>
-        /// Xử lý sự kiện thay đổi trạng thái connection
+        /// Bắt sự kiện khi trạng thái kết nối thay đổi (có thể dùng để log/giám sát).
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="e">State change event args</param>
+        /// <param name="sender">Nguồn phát sự kiện</param>
+        /// <param name="e">Thông tin trạng thái cũ/mới</param>
         private void OnConnectionStateChange(object sender, StateChangeEventArgs e)
         {
-            // Có thể thêm logic xử lý khi trạng thái connection thay đổi
-            var currentState = e.CurrentState.ToString();
-            var previousState = e.OriginalState.ToString();
+
         }
 
         /// <summary>
-        /// Xử lý sự kiện kết nối được mở
+        /// Phát sự kiện thông báo kết nối đã mở.
         /// </summary>
         private void OnConnectionOpened()
         {
+            ConnectionOpened?.Invoke(this, new ConnectionEventArgs(ConnectionString, "Kết nối database đã được mở"));
             KetNoiMo?.Invoke(this, new ConnectionEventArgs(ConnectionString, "Kết nối database đã được mở"));
         }
 
         /// <summary>
-        /// Xử lý sự kiện kết nối bị đóng
+        /// Phát sự kiện thông báo kết nối đã đóng.
         /// </summary>
         private void OnConnectionClosed()
         {
+            ConnectionClosed?.Invoke(this, new ConnectionEventArgs(ConnectionString, "Kết nối database đã được đóng"));
             KetNoiDong?.Invoke(this, new ConnectionEventArgs(ConnectionString, "Kết nối database đã được đóng"));
         }
 
         /// <summary>
-        /// Xử lý sự kiện lỗi kết nối
+        /// Phát sự kiện lỗi kết nối kèm mức độ nghiêm trọng.
         /// </summary>
-        /// <param name="exception">Exception xảy ra</param>
-        /// <param name="message">Thông điệp lỗi</param>
-        private void OnConnectionError(Exception exception, string message)
+        /// <param name="exception">Lỗi phát sinh</param>
+        private void OnConnectionError(Exception exception)
         {
-            var severity = XacDinhMucDoLoi(exception);
+            var severity = DetermineErrorSeverity(exception);
+            ConnectionError?.Invoke(this, new ConnectionErrorEventArgs(exception, ConnectionString, severity));
             LoiKetNoi?.Invoke(this, new ConnectionErrorEventArgs(exception, ConnectionString, severity));
         }
 
         /// <summary>
-        /// Xác định mức độ nghiêm trọng của lỗi
+        /// Quy đổi Exception thành mức độ nghiêm trọng để cảnh báo phù hợp.
         /// </summary>
-        /// <param name="exception">Exception</param>
-        /// <returns>Mức độ nghiêm trọng</returns>
-        private ErrorSeverity XacDinhMucDoLoi(Exception exception)
+        /// <param name="exception">Ngoại lệ phát sinh</param>
+        /// <returns>Mức độ nghiêm trọng của lỗi</returns>
+        private ErrorSeverity DetermineErrorSeverity(Exception exception)
         {
             if (exception is SqlException sqlEx)
             {
@@ -375,7 +402,41 @@ namespace Dal.Connection
 
         #endregion
 
-        #region giaiPhongTaiNguyen
+        #region Obsolete Aliases (Backward Compatibility)
+
+        [Obsolete("Use OpenConnection() instead")]
+        public bool MoKetNoi() => OpenConnection();
+
+        [Obsolete("Use CloseConnection() instead")]
+        public void DongKetNoi() => CloseConnection();
+
+        [Obsolete("Use GetConnection() instead")]
+        public SqlConnection LayKetNoi() => GetConnection();
+
+        [Obsolete("Use IsOpen() instead")]
+        public bool KiemTraKetNoi() => IsOpen();
+
+        [Obsolete("Use IsHealthy() instead")]
+        public bool KiemTraHoatDong() => IsHealthy();
+
+        [Obsolete("Use CreateCommand(string) instead")]
+        public SqlCommand TaoCommand(string sql) => CreateCommand(sql);
+
+        [Obsolete("Use CreateStoredProcedureCommand(string) instead")]
+        public SqlCommand TaoStoredProcedureCommand(string storedProcedureName) => CreateStoredProcedureCommand(storedProcedureName);
+
+        [Obsolete("Use TestConnection() instead")]
+        public bool TestKetNoi() => TestConnection();
+
+        [Obsolete("Use ResetConnection() instead")]
+        public void ResetKetNoi() => ResetConnection();
+
+        [Obsolete("Use SetConnectionString(string) instead")]
+        public void ThietLapConnectionString(string connectionString) => SetConnectionString(connectionString);
+
+        #endregion
+
+        #region Dispose Pattern
 
         /// <summary>
         /// Dispose resources
@@ -399,7 +460,7 @@ namespace Dal.Connection
                     if (_connection != null)
                     {
                         _connection.StateChange -= OnConnectionStateChange;
-                        DongKetNoi();
+                        CloseConnection();
                         _connection.Dispose();
                         _connection = null;
                     }
@@ -407,7 +468,7 @@ namespace Dal.Connection
                 catch (Exception ex)
                 {
                     // Log error nhưng không throw exception trong Dispose
-                    OnConnectionError(ex, "Lỗi trong quá trình dispose connection");
+                    OnConnectionError(ex);
                 }
                 finally
                 {

@@ -50,7 +50,6 @@
     <Compile Include="Configuration\DatabaseSettings.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Connection\ConnectionManager.cs" />
-    <Compile Include="Connection\ConnectionManagerExample.cs" />
     <Compile Include="Connection\ConnectionStringHelper.cs" />
     <Compile Include="Connection\DatabaseConfig.cs" />
     <Compile Include="Connection\IConnectionManager.cs" />
@@ -69,15 +68,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\ApplicationUserDataAccess.cs" />
-    <Compile Include="Examples\DataAccessUsageExample.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Helpers\RetryHelper.cs" />
     <Compile Include="LinqExtensions\QueryExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\NullLogger.cs" />
-    <Compile Include="Test\Phase1TestProgram.cs" />
-    <Compile Include="Test\Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -98,6 +94,12 @@
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
+    <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Examples\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

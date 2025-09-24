@@ -67,7 +67,7 @@ namespace Bll.Authentication
                 }
 
                 // Tìm user theo userName
-                var user = _userDataAccess.LayTheoUserName(userName.Trim());
+                var user = _userDataAccess.GetByUserName(userName.Trim());
                 if (user == null)
                 {
                     return new LoginResult
@@ -153,7 +153,7 @@ namespace Bll.Authentication
                 string hashedPassword = SecurityHelper.HashPassword(password);
                 
                 // Tạo user mới
-                return _userDataAccess.ThemUserMoi(userName, hashedPassword, active);
+                return _userDataAccess.AddNewUser(userName, hashedPassword, active);
             }
             catch (Exception ex)
             {

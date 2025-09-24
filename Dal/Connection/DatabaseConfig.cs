@@ -5,11 +5,13 @@ using System.Configuration;
 namespace Dal.Connection
 {
     /// <summary>
-    /// Class cấu hình database
+    /// Cấu hình Database cấp ứng dụng: lưu thông số kết nối, pooling, cache và môi trường.
+    /// - Cung cấp API nạp/ghi cấu hình từ App.config, tạo connection string theo profile.
+    /// - Hỗ trợ singleton truy cập nhanh và đảm bảo giá trị hợp lệ trước khi sử dụng.
     /// </summary>
     public class DatabaseConfig
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
         private static DatabaseConfig _instance;
         private static readonly object _lockObject = new object();
@@ -116,28 +118,29 @@ namespace Dal.Connection
 
         #endregion
 
-        #region phuongThuc
+        #region Constructors
 
         /// <summary>
         /// Constructor mặc định
         /// </summary>
         public DatabaseConfig()
         {
-            TaiCauHinhTuConfig();
+            LoadFromConfig();
         }
 
         /// <summary>
-        /// Constructor với tham số
+        /// Constructor với tham số cơ bản
         /// </summary>
-        /// <param name="serverName">Tên server</param>
-        /// <param name="databaseName">Tên database</param>
-        /// <param name="useIntegratedSecurity">Sử dụng Windows Auth</param>
         public DatabaseConfig(string serverName, string databaseName, bool useIntegratedSecurity = true)
         {
             ServerName = serverName;
             DatabaseName = databaseName;
             UseIntegratedSecurity = useIntegratedSecurity;
         }
+
+        #endregion
+
+        #region Singleton Accessor
 
         /// <summary>
         /// Singleton instance
@@ -160,55 +163,54 @@ namespace Dal.Connection
             }
         }
 
+        #endregion
+
+        #region Loaders
+
         /// <summary>
         /// Tải cấu hình từ App.config
         /// </summary>
-        public void TaiCauHinhTuConfig()
+        public void LoadFromConfig()
         {
             try
             {
-                // Đọc từ appSettings
-                ServerName = LayGiaTriConfig("DatabaseServer", ServerName);
-                DatabaseName = LayGiaTriConfig("DatabaseName", DatabaseName);
-                UseIntegratedSecurity = bool.Parse(LayGiaTriConfig("UseIntegratedSecurity", UseIntegratedSecurity.ToString()));
-                UserId = LayGiaTriConfig("DatabaseUserId", UserId);
-                Password = LayGiaTriConfig("DatabasePassword", Password);
+                ServerName = GetConfigValue("DatabaseServer", ServerName);
+                DatabaseName = GetConfigValue("DatabaseName", DatabaseName);
+                UseIntegratedSecurity = bool.Parse(GetConfigValue("UseIntegratedSecurity", UseIntegratedSecurity.ToString()));
+                UserId = GetConfigValue("DatabaseUserId", UserId);
+                Password = GetConfigValue("DatabasePassword", Password);
                 
-                ConnectionTimeout = int.Parse(LayGiaTriConfig("ConnectionTimeout", ConnectionTimeout.ToString()));
-                CommandTimeout = int.Parse(LayGiaTriConfig("CommandTimeout", CommandTimeout.ToString()));
+                ConnectionTimeout = int.Parse(GetConfigValue("ConnectionTimeout", ConnectionTimeout.ToString()));
+                CommandTimeout = int.Parse(GetConfigValue("CommandTimeout", CommandTimeout.ToString()));
                 
-                EnablePooling = bool.Parse(LayGiaTriConfig("EnablePooling", EnablePooling.ToString()));
-                MinPoolSize = int.Parse(LayGiaTriConfig("MinPoolSize", MinPoolSize.ToString()));
-                MaxPoolSize = int.Parse(LayGiaTriConfig("MaxPoolSize", MaxPoolSize.ToString()));
-                ConnectionLifetime = int.Parse(LayGiaTriConfig("ConnectionLifetime", ConnectionLifetime.ToString()));
-                EnlistInDistributedTransaction = bool.Parse(LayGiaTriConfig("EnlistInDistributedTransaction", EnlistInDistributedTransaction.ToString()));
+                EnablePooling = bool.Parse(GetConfigValue("EnablePooling", EnablePooling.ToString()));
+                MinPoolSize = int.Parse(GetConfigValue("MinPoolSize", MinPoolSize.ToString()));
+                MaxPoolSize = int.Parse(GetConfigValue("MaxPoolSize", MaxPoolSize.ToString()));
+                ConnectionLifetime = int.Parse(GetConfigValue("ConnectionLifetime", ConnectionLifetime.ToString()));
+                EnlistInDistributedTransaction = bool.Parse(GetConfigValue("EnlistInDistributedTransaction", EnlistInDistributedTransaction.ToString()));
                 
-                Environment = LayGiaTriConfig("Environment", Environment);
+                Environment = GetConfigValue("Environment", Environment);
                 
-                EnableSqlLogging = bool.Parse(LayGiaTriConfig("EnableSqlLogging", EnableSqlLogging.ToString()));
-                LogLevel = int.Parse(LayGiaTriConfig("LogLevel", LogLevel.ToString()));
+                EnableSqlLogging = bool.Parse(GetConfigValue("EnableSqlLogging", EnableSqlLogging.ToString()));
+                LogLevel = int.Parse(GetConfigValue("LogLevel", LogLevel.ToString()));
                 
-                EnablePerformanceMonitoring = bool.Parse(LayGiaTriConfig("EnablePerformanceMonitoring", EnablePerformanceMonitoring.ToString()));
-                SlowQueryThreshold = int.Parse(LayGiaTriConfig("SlowQueryThreshold", SlowQueryThreshold.ToString()));
+                EnablePerformanceMonitoring = bool.Parse(GetConfigValue("EnablePerformanceMonitoring", EnablePerformanceMonitoring.ToString()));
+                SlowQueryThreshold = int.Parse(GetConfigValue("SlowQueryThreshold", SlowQueryThreshold.ToString()));
                 
-                EnableCaching = bool.Parse(LayGiaTriConfig("EnableCaching", EnableCaching.ToString()));
-                CacheTimeout = int.Parse(LayGiaTriConfig("CacheTimeout", CacheTimeout.ToString()));
-                MaxCacheSize = int.Parse(LayGiaTriConfig("MaxCacheSize", MaxCacheSize.ToString()));
+                EnableCaching = bool.Parse(GetConfigValue("EnableCaching", EnableCaching.ToString()));
+                CacheTimeout = int.Parse(GetConfigValue("CacheTimeout", CacheTimeout.ToString()));
+                MaxCacheSize = int.Parse(GetConfigValue("MaxCacheSize", MaxCacheSize.ToString()));
             }
             catch (Exception)
             {
-                // Log error nhưng không throw exception
-                // Có thể sử dụng logging framework ở đây
+                // TODO: log nếu cần; không throw để không chặn khởi tạo ứng dụng
             }
         }
 
         /// <summary>
-        /// Lấy giá trị từ config với fallback
+        /// Lấy giá trị cấu hình từ AppSettings, có fallback mặc định.
         /// </summary>
-        /// <param name="key">Key trong config</param>
-        /// <param name="defaultValue">Giá trị mặc định</param>
-        /// <returns>Giá trị từ config hoặc default</returns>
-        private string LayGiaTriConfig(string key, string defaultValue)
+        private string GetConfigValue(string key, string defaultValue)
         {
             try
             {
@@ -221,22 +223,28 @@ namespace Dal.Connection
             }
         }
 
+        #endregion
+
+        #region Factory Methods
+
         /// <summary>
-        /// Lấy connection string từ cấu hình
+        /// Lấy connection string hiện tại theo cấu hình.
         /// </summary>
-        /// <returns>Connection string</returns>
-        public string LayConnectionString()
+        public string GetConnectionString()
         {
-            return ConnectionStringHelper.TaoConnectionStringChiTiet(
+            return ConnectionStringHelper.BuildDetailedConnectionString(
                 ServerName, DatabaseName, UseIntegratedSecurity, UserId, Password,
                 ConnectionTimeout, CommandTimeout, EnablePooling, MinPoolSize, MaxPoolSize);
         }
 
+        #endregion
+
+        #region Environment Profiles
+
         /// <summary>
-        /// Thiết lập cấu hình cho environment
+        /// Thiết lập profile môi trường (Development/Testing/Staging/Production).
         /// </summary>
-        /// <param name="environment">Environment</param>
-        public void ThietLapEnvironment(string environment)
+        public void SetEnvironment(string environment)
         {
             Environment = environment ?? "Development";
             
@@ -244,25 +252,25 @@ namespace Dal.Connection
             {
                 case "development":
                 case "dev":
-                    ThietLapCauHinhDevelopment();
+                    ConfigureDevelopment();
                     break;
                     
                 case "testing":
                 case "test":
-                    ThietLapCauHinhTesting();
+                    ConfigureTesting();
                     break;
                     
                 case "staging":
-                    ThietLapCauHinhStaging();
+                    ConfigureStaging();
                     break;
                     
                 case "production":
                 case "prod":
-                    ThietLapCauHinhProduction();
+                    ConfigureProduction();
                     break;
                     
                 default:
-                    ThietLapCauHinhDevelopment();
+                    ConfigureDevelopment();
                     break;
             }
         }
@@ -270,7 +278,7 @@ namespace Dal.Connection
         /// <summary>
         /// Thiết lập cấu hình cho Development
         /// </summary>
-        private void ThietLapCauHinhDevelopment()
+        private void ConfigureDevelopment()
         {
             ServerName = "localhost";
             DatabaseName = "VnsErp2025_Dev";
@@ -285,7 +293,7 @@ namespace Dal.Connection
         /// <summary>
         /// Thiết lập cấu hình cho Testing
         /// </summary>
-        private void ThietLapCauHinhTesting()
+        private void ConfigureTesting()
         {
             ServerName = "localhost";
             DatabaseName = "VnsErp2025_Test";
@@ -301,7 +309,7 @@ namespace Dal.Connection
         /// <summary>
         /// Thiết lập cấu hình cho Staging
         /// </summary>
-        private void ThietLapCauHinhStaging()
+        private void ConfigureStaging()
         {
             ServerName = "staging-server";
             DatabaseName = "VnsErp2025_Staging";
@@ -317,7 +325,7 @@ namespace Dal.Connection
         /// <summary>
         /// Thiết lập cấu hình cho Production
         /// </summary>
-        private void ThietLapCauHinhProduction()
+        private void ConfigureProduction()
         {
             ServerName = "production-server";
             DatabaseName = "VnsErp2025_Production";
@@ -331,31 +339,29 @@ namespace Dal.Connection
             MaxPoolSize = 200;
         }
 
+        #endregion
+
+        #region Validation & Utilities
+
         /// <summary>
-        /// Kiểm tra cấu hình có hợp lệ không
+        /// Kiểm tra cấu hình có hợp lệ không.
         /// </summary>
-        /// <returns>True nếu hợp lệ</returns>
-        public bool KiemTraCauHinhHopLe()
+        public bool IsValid()
         {
             try
             {
-                // Kiểm tra thông tin bắt buộc
                 if (string.IsNullOrEmpty(ServerName) || string.IsNullOrEmpty(DatabaseName))
                     return false;
 
-                // Kiểm tra authentication
                 if (!UseIntegratedSecurity && string.IsNullOrEmpty(UserId))
                     return false;
 
-                // Kiểm tra timeout values
                 if (ConnectionTimeout <= 0 || CommandTimeout <= 0)
                     return false;
 
-                // Kiểm tra pool settings
                 if (EnablePooling && (MinPoolSize < 0 || MaxPoolSize <= 0 || MinPoolSize > MaxPoolSize))
                     return false;
 
-                // Kiểm tra cache settings
                 if (EnableCaching && (CacheTimeout <= 0 || MaxCacheSize <= 0))
                     return false;
 
@@ -370,7 +376,7 @@ namespace Dal.Connection
         /// <summary>
         /// Reset về cấu hình mặc định
         /// </summary>
-        public void ResetVeCauHinhMacDinh()
+        public void ResetToDefaults()
         {
             ServerName = "localhost";
             DatabaseName = "VnsErp2025";
@@ -397,7 +403,6 @@ namespace Dal.Connection
         /// <summary>
         /// Clone cấu hình hiện tại
         /// </summary>
-        /// <returns>DatabaseConfig mới</returns>
         public DatabaseConfig Clone()
         {
             return new DatabaseConfig
@@ -426,9 +431,8 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Chuyển đổi thành dictionary
+        /// Chuyển cấu hình thành dictionary (hỗ trợ hiển thị/logging).
         /// </summary>
-        /// <returns>Dictionary chứa tất cả cấu hình</returns>
         public Dictionary<string, object> ToDictionary()
         {
             return new Dictionary<string, object>
@@ -455,6 +459,28 @@ namespace Dal.Connection
                 { "MaxCacheSize", MaxCacheSize }
             };
         }
+
+        #endregion
+
+        #region Obsolete Aliases (Backward Compatibility)
+
+        [Obsolete("Use LoadFromConfig() instead")]
+        public void TaiCauHinhTuConfig() => LoadFromConfig();
+
+        [Obsolete("Use GetConfigValue(string,string) instead")]
+        private string LayGiaTriConfig(string key, string defaultValue) => GetConfigValue(key, defaultValue);
+
+        [Obsolete("Use GetConnectionString() instead")]
+        public string LayConnectionString() => GetConnectionString();
+
+        [Obsolete("Use SetEnvironment(string) instead")]
+        public void ThietLapEnvironment(string environment) => SetEnvironment(environment);
+
+        [Obsolete("Use IsValid() instead")]
+        public bool KiemTraCauHinhHopLe() => IsValid();
+
+        [Obsolete("Use ResetToDefaults() instead")]
+        public void ResetVeCauHinhMacDinh() => ResetToDefaults();
 
         #endregion
     }

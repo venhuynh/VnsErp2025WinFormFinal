@@ -12,12 +12,14 @@ using Dal.Helpers;
 namespace Dal.BaseDataAccess
 {
     /// <summary>
-    /// Base class cho tất cả DataAccess classes (Enhanced with Configuration, Logging, Retry)
+    /// Lớp cơ sở cho tất cả lớp DataAccess.
+    /// Vai trò: Cung cấp API CRUD chung (Create/Read/Update/Delete), quản lý DataContext theo cấu hình,
+    /// và xử lý lỗi/log tập trung để mã nguồn clear, dễ bảo trì.
     /// </summary>
-    /// <typeparam name="T">Entity type</typeparam>
+    /// <typeparam name="T">Kiểu thực thể</typeparam>
     public abstract class BaseDataAccess<T> where T : class
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
         /// <summary>
         /// Database settings
@@ -36,7 +38,7 @@ namespace Dal.BaseDataAccess
 
         #endregion
 
-        #region phuongThuc
+        #region Constructors
 
         /// <summary>
         /// Constructor mặc định
@@ -60,110 +62,15 @@ namespace Dal.BaseDataAccess
             _settings = ConfigurationManager.DatabaseSettings;
         }
 
-        /// <summary>
-        /// Lấy tất cả records
-        /// </summary>
-        /// <returns>Danh sách tất cả records</returns>
-        public virtual List<T> LayTatCa()
-        {
-            var operationName = $"LayTatCa_{typeof(T).Name}";
-            _logger.LogDebug("Starting {0}", operationName);
+        #endregion
 
-            if (_settings.EnableRetryOnFailure)
-            {
-                return RetryHelper.ExecuteWithRetry(
-                    () =>
-                    {
-                        using var context = CreateContext();
-                        var result = context.GetTable<T>().ToList();
-                        _logger.LogDebug("{0} completed successfully", operationName);
-                        return result;
-                    },
-                    _settings.MaxRetryCount,
-                    _settings.RetryDelayMs,
-                    RetryHelper.ShouldRetrySqlException,
-                    _logger
-                );
-            }
-            else
-            {
-                return ExecuteWithErrorHandling(
-                    () =>
-                    {
-                        using var context = CreateContext();
-                        return context.GetTable<T>().ToList();
-                    },
-                    operationName
-                );
-            }
-        }
-
-        /// <summary>
-        /// Lấy tất cả records (Async)
-        /// </summary>
-        /// <returns>Danh sách tất cả records</returns>
-        public virtual async Task<List<T>> LayTatCaAsync()
-        {
-            try
-            {
-                using var context = new VnsErp2025DataContext(_connStr);
-                // LINQ to SQL không có async methods, sử dụng Task.Run
-                return await Task.Run(() => context.GetTable<T>().ToList());
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx)
-            {
-                throw new DataAccessException($"Lỗi SQL khi lấy tất cả {typeof(T).Name}: {sqlEx.Message}", sqlEx)
-                {
-                    SqlErrorNumber = sqlEx.Number,
-                    ThoiGianLoi = DateTime.Now
-                };
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy tất cả {typeof(T).Name}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy record theo ID
-        /// </summary>
-        /// <param name="id">ID của record</param>
-        /// <returns>Record tìm được hoặc null</returns>
-        public virtual T LayTheoId(object id)
-        {
-            try
-            {
-                if (id == null)
-                    return null;
-
-                using var context = new VnsErp2025DataContext(_connStr);
-                var table = context.GetTable<T>();
-                var primaryKeyProperty = LayPrimaryKeyProperty();
-                
-                if (primaryKeyProperty == null)
-                    throw new DataAccessException($"Không tìm thấy primary key cho {typeof(T).Name}");
-
-                // Sử dụng reflection để tìm theo primary key
-                foreach (var item in table)
-                {
-                    var value = primaryKeyProperty.GetValue(item);
-                    if (Equals(value, id))
-                        return item;
-                }
-                
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy {typeof(T).Name} theo ID {id}: {ex.Message}", ex);
-            }
-        }
+        #region CRUD - Create
 
         /// <summary>
         /// Thêm record mới
         /// </summary>
         /// <param name="entity">Entity cần thêm</param>
-        public virtual void Them(T entity)
+        public virtual void Add(T entity)
         {
             try
             {
@@ -208,7 +115,7 @@ namespace Dal.BaseDataAccess
         /// Thêm record mới (Async)
         /// </summary>
         /// <param name="entity">Entity cần thêm</param>
-        public virtual async Task ThemAsync(T entity)
+        public virtual async Task AddAsync(T entity)
         {
             try
             {
@@ -249,11 +156,149 @@ namespace Dal.BaseDataAccess
             }
         }
 
+        #endregion
+
+        #region CRUD - Read
+
+        /// <summary>
+        /// Lấy tất cả records
+        /// </summary>
+        /// <returns>Danh sách tất cả records</returns>
+        public virtual List<T> GetAll()
+        {
+            var operationName = $"GetAll_{typeof(T).Name}";
+            _logger.LogDebug("Starting {0}", operationName);
+
+            if (_settings.EnableRetryOnFailure)
+            {
+                return RetryHelper.ExecuteWithRetry(
+                    () =>
+                    {
+                        using var context = CreateContext();
+                        var result = context.GetTable<T>().ToList();
+                        _logger.LogDebug("{0} completed successfully", operationName);
+                        return result;
+                    },
+                    _settings.MaxRetryCount,
+                    _settings.RetryDelayMs,
+                    RetryHelper.ShouldRetrySqlException,
+                    _logger
+                );
+            }
+            return ExecuteWithErrorHandling(
+                () =>
+                {
+                    using var context = CreateContext();
+                    return context.GetTable<T>().ToList();
+                },
+                operationName
+            );
+        }
+
+        /// <summary>
+        /// Lấy tất cả records (Async)
+        /// </summary>
+        /// <returns>Danh sách tất cả records</returns>
+        public virtual async Task<List<T>> GetAllAsync()
+        {
+            try
+            {
+                using var context = new VnsErp2025DataContext(_connStr);
+                // LINQ to SQL không có async methods, sử dụng Task.Run
+                return await Task.Run(() => context.GetTable<T>().ToList());
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx)
+            {
+                throw new DataAccessException($"Lỗi SQL khi lấy tất cả {typeof(T).Name}: {sqlEx.Message}", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy tất cả {typeof(T).Name}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy record theo ID
+        /// </summary>
+        /// <param name="id">ID của record</param>
+        /// <returns>Record tìm được hoặc null</returns>
+        public virtual T GetById(object id)
+        {
+            try
+            {
+                if (id == null)
+                    return null;
+
+                using var context = new VnsErp2025DataContext(_connStr);
+                var table = context.GetTable<T>();
+                var primaryKeyProperty = GetPrimaryKeyProperty();
+                
+                if (primaryKeyProperty == null)
+                    throw new DataAccessException($"Không tìm thấy primary key cho {typeof(T).Name}");
+
+                // Sử dụng reflection để tìm theo primary key
+                foreach (var item in table)
+                {
+                    var value = primaryKeyProperty.GetValue(item);
+                    if (Equals(value, id))
+                        return item;
+                }
+                
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy {typeof(T).Name} theo ID {id}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra entity có tồn tại không
+        /// </summary>
+        /// <param name="id">ID của entity</param>
+        /// <returns>True nếu tồn tại</returns>
+        public virtual bool Exists(object id)
+        {
+            try
+            {
+                return GetById(id) != null;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi kiểm tra tồn tại {typeof(T).Name} với ID {id}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Đếm số lượng records
+        /// </summary>
+        /// <returns>Số lượng records</returns>
+        public virtual int Count()
+        {
+            try
+            {
+                using var context = new VnsErp2025DataContext(_connStr);
+                return context.GetTable<T>().Count();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi đếm số lượng {typeof(T).Name}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region CRUD - Update
+
         /// <summary>
         /// Cập nhật record
         /// </summary>
         /// <param name="entity">Entity cần cập nhật</param>
-        public virtual void CapNhat(T entity)
+        public virtual void Update(T entity)
         {
             try
             {
@@ -270,18 +315,22 @@ namespace Dal.BaseDataAccess
             }
         }
 
+        #endregion
+
+        #region CRUD - Delete
+
         /// <summary>
         /// Xóa record theo ID
         /// </summary>
         /// <param name="id">ID của record cần xóa</param>
-        public virtual void Xoa(object id)
+        public virtual void DeleteById(object id)
         {
             try
             {
-                var entity = LayTheoId(id);
+                var entity = GetById(id);
                 if (entity != null)
                 {
-                    Xoa(entity);
+                    Delete(entity);
                 }
             }
             catch (Exception ex)
@@ -294,7 +343,7 @@ namespace Dal.BaseDataAccess
         /// Xóa entity
         /// </summary>
         /// <param name="entity">Entity cần xóa</param>
-        public virtual void Xoa(T entity)
+        public virtual void Delete(T entity)
         {
             try
             {
@@ -311,45 +360,16 @@ namespace Dal.BaseDataAccess
             }
         }
 
-        /// <summary>
-        /// Kiểm tra entity có tồn tại không
-        /// </summary>
-        /// <param name="id">ID của entity</param>
-        /// <returns>True nếu tồn tại</returns>
-        public virtual bool TonTai(object id)
-        {
-            try
-            {
-                return LayTheoId(id) != null;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi kiểm tra tồn tại {typeof(T).Name} với ID {id}: {ex.Message}", ex);
-            }
-        }
+        #endregion
 
-        /// <summary>
-        /// Đếm số lượng records
-        /// </summary>
-        /// <returns>Số lượng records</returns>
-        public virtual int DemSoLuong()
-        {
-            try
-            {
-                using var context = new VnsErp2025DataContext(_connStr);
-                return context.GetTable<T>().Count();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi đếm số lượng {typeof(T).Name}: {ex.Message}", ex);
-            }
-        }
+        #region Validation & Utilities
 
         /// <summary>
         /// Lấy primary key property của entity
         /// </summary>
         /// <returns>Primary key property</returns>
-        protected virtual System.Reflection.PropertyInfo LayPrimaryKeyProperty()
+        
+        protected virtual System.Reflection.PropertyInfo GetPrimaryKeyProperty()
         {
             var properties = typeof(T).GetProperties();
             return properties.FirstOrDefault(p => 
@@ -357,6 +377,10 @@ namespace Dal.BaseDataAccess
                  .Cast<System.Data.Linq.Mapping.ColumnAttribute>()
                  .Any(attr => attr.IsPrimaryKey));
         }
+
+        #endregion
+
+        #region Connection Lifecycle / Factory Methods
 
         /// <summary>
         /// Create DataContext với settings
@@ -367,6 +391,10 @@ namespace Dal.BaseDataAccess
             context.CommandTimeout = _settings.CommandTimeout;
             return context;
         }
+
+        #endregion
+
+        #region Error Handling
 
         /// <summary>
         /// Execute operation với error handling
@@ -394,5 +422,6 @@ namespace Dal.BaseDataAccess
         }
 
         #endregion
+
     }
 }

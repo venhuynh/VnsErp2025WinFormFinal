@@ -1,0 +1,40 @@
+﻿Bạn là một lập trình viên cao cấp chuyên C# và Clean Code. 
+Hãy refactor toàn bộ file C# tôi đưa ra trong Project Dal theo các nguyên tắc sau:
+
+1. **Chuẩn hóa code theo convention C#**
+   - Đặt tên class, method, property theo PascalCase.
+   - Đặt tên biến private theo dạng _camelCase.
+   - Xóa bỏ tiền tố tiếng Việt trong tên hàm nếu không cần thiết, thay bằng tiếng Anh ngắn gọn, dễ hiểu.
+   - Với các hàm nghiệp vụ cần giữ tiếng Việt thì chuẩn hóa lại nhưng vẫn rõ nghĩa.
+
+2. **Cấu trúc lại code**
+   - Sắp xếp code thành các nhóm có #region rõ ràng:
+     - Constants
+     - Fields & Properties
+     - Constructors
+     - Events
+     - Connection Lifecycle / Factory Methods (nếu có)
+     - Business Methods
+     - Validation & Utilities
+     - Error Handling
+     - Dispose Pattern (nếu có)
+     - Nested Classes / Structs
+   - Loại bỏ code thừa, gom logic lặp vào private helper methods.
+
+3. **Comment tiếng Việt chuyên nghiệp**
+   - Sử dụng XML Documentation (`<summary>`, `<param>`, `<returns>`).
+   - Giải thích mục đích, khi nào dùng, input/output của method.
+   - Comment phải ngắn gọn, dễ hiểu cho đồng nghiệp, không dịch literal tên hàm.
+   - Với các class quan trọng, thêm phần mô tả vai trò trong kiến trúc (ví dụ: *“Quản lý kết nối database, cung cấp API mở/đóng, reset và kiểm tra trạng thái”*).
+
+4. **Refactor logic**
+   - Dùng try-catch gọn gàng, không lặp code xử lý lỗi.
+   - Gom xử lý exception/error raising vào 1 method helper nếu có nhiều nơi lặp lại.
+   - Giữ nguyên business logic ban đầu, chỉ làm code dễ đọc và dễ bảo trì hơn.
+
+5. **Output**
+   - Trả về code đã refactor đầy đủ.
+   - Không thay đổi chức năng gốc.
+   - Code phải rõ ràng, sạch, dễ maintain.
+
+Hãy áp dụng các nguyên tắc trên cho bất kỳ file nào trong Project Dal mà tôi đưa ra.

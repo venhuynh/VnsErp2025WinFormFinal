@@ -80,43 +80,43 @@
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(455, 159);
+            this.layoutControl1.Size = new System.Drawing.Size(473, 186);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
             // RememberMeCheckBox
             // 
-            this.RememberMeCheckBox.Location = new System.Drawing.Point(320, 105);
+            this.RememberMeCheckBox.Location = new System.Drawing.Point(323, 128);
             this.RememberMeCheckBox.Name = "RememberMeCheckBox";
-            this.RememberMeCheckBox.Size = new System.Drawing.Size(115, 20);
+            this.RememberMeCheckBox.Size = new System.Drawing.Size(127, 20);
             this.RememberMeCheckBox.TabIndex = 4;
             this.RememberMeCheckBox.Text = "Ghi nhớ";
             this.RememberMeCheckBox.UseVisualStyleBackColor = true;
             // 
             // UserNameTextEdit
             // 
-            this.UserNameTextEdit.Location = new System.Drawing.Point(112, 49);
+            this.UserNameTextEdit.Location = new System.Drawing.Point(116, 53);
             this.UserNameTextEdit.Name = "UserNameTextEdit";
-            this.UserNameTextEdit.Size = new System.Drawing.Size(331, 20);
+            this.UserNameTextEdit.Size = new System.Drawing.Size(341, 28);
             this.UserNameTextEdit.StyleController = this.layoutControl1;
             this.UserNameTextEdit.TabIndex = 0;
             // 
             // PasswordTextEdit
             // 
-            this.PasswordTextEdit.Location = new System.Drawing.Point(112, 73);
+            this.PasswordTextEdit.Location = new System.Drawing.Point(116, 87);
             this.PasswordTextEdit.Name = "PasswordTextEdit";
             this.PasswordTextEdit.Properties.PasswordChar = '*';
             this.PasswordTextEdit.Properties.UseSystemPasswordChar = true;
-            this.PasswordTextEdit.Size = new System.Drawing.Size(331, 20);
+            this.PasswordTextEdit.Size = new System.Drawing.Size(341, 28);
             this.PasswordTextEdit.StyleController = this.layoutControl1;
             this.PasswordTextEdit.TabIndex = 2;
             // 
             // OkButton
             // 
             this.OkButton.ImageOptions.Image = global::Authentication.Properties.Resources.apply_16x16;
-            this.OkButton.Location = new System.Drawing.Point(120, 105);
+            this.OkButton.Location = new System.Drawing.Point(123, 128);
             this.OkButton.Name = "OkButton";
-            this.OkButton.Size = new System.Drawing.Size(80, 22);
+            this.OkButton.Size = new System.Drawing.Size(80, 28);
             this.OkButton.StyleController = this.layoutControl1;
             this.OkButton.TabIndex = 3;
             this.OkButton.Text = "Đăng nhập";
@@ -125,9 +125,9 @@
             // CancelSimpleButton
             // 
             this.CancelSimpleButton.ImageOptions.Image = global::Authentication.Properties.Resources.cancel_16x16;
-            this.CancelSimpleButton.Location = new System.Drawing.Point(220, 105);
+            this.CancelSimpleButton.Location = new System.Drawing.Point(223, 128);
             this.CancelSimpleButton.Name = "CancelSimpleButton";
-            this.CancelSimpleButton.Size = new System.Drawing.Size(80, 22);
+            this.CancelSimpleButton.Size = new System.Drawing.Size(80, 28);
             this.CancelSimpleButton.StyleController = this.layoutControl1;
             this.CancelSimpleButton.TabIndex = 5;
             this.CancelSimpleButton.Text = "Hủy";
@@ -155,7 +155,7 @@
             columnDefinition3.SizeType = System.Windows.Forms.SizeType.Absolute;
             columnDefinition3.Width = 100D;
             columnDefinition4.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            columnDefinition4.Width = 135D;
+            columnDefinition4.Width = 147D;
             this.Root.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] {
             columnDefinition1,
             columnDefinition2,
@@ -163,18 +163,18 @@
             columnDefinition4});
             rowDefinition1.Height = 37D;
             rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition2.Height = 24D;
+            rowDefinition2.Height = 34D;
             rowDefinition2.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition3.Height = 24D;
+            rowDefinition3.Height = 34D;
             rowDefinition3.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition4.Height = 54D;
+            rowDefinition4.Height = 55D;
             rowDefinition4.SizeType = System.Windows.Forms.SizeType.AutoSize;
             this.Root.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
             rowDefinition1,
             rowDefinition2,
             rowDefinition3,
             rowDefinition4});
-            this.Root.Size = new System.Drawing.Size(455, 159);
+            this.Root.Size = new System.Drawing.Size(473, 186);
             this.Root.TextVisible = false;
             // 
             // simpleLabelItem1
@@ -190,7 +190,7 @@
             this.simpleLabelItem1.Name = "simpleLabelItem1";
             this.simpleLabelItem1.OptionsTableLayoutItem.ColumnSpan = 4;
             this.simpleLabelItem1.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
-            this.simpleLabelItem1.Size = new System.Drawing.Size(435, 37);
+            this.simpleLabelItem1.Size = new System.Drawing.Size(447, 37);
             this.simpleLabelItem1.Text = "ĐĂNG NHẬP";
             this.simpleLabelItem1.TextSize = new System.Drawing.Size(87, 17);
             // 
@@ -200,17 +200,17 @@
             this.simpleLabelItem2.Name = "simpleLabelItem2";
             this.simpleLabelItem2.OptionsTableLayoutItem.RowIndex = 1;
             this.simpleLabelItem2.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 2, 2, 2);
-            this.simpleLabelItem2.Size = new System.Drawing.Size(100, 24);
+            this.simpleLabelItem2.Size = new System.Drawing.Size(100, 34);
             this.simpleLabelItem2.Text = "Tên đăng nhập";
             this.simpleLabelItem2.TextSize = new System.Drawing.Size(87, 13);
             // 
             // simpleLabelItem3
             // 
-            this.simpleLabelItem3.Location = new System.Drawing.Point(0, 61);
+            this.simpleLabelItem3.Location = new System.Drawing.Point(0, 71);
             this.simpleLabelItem3.Name = "simpleLabelItem3";
             this.simpleLabelItem3.OptionsTableLayoutItem.RowIndex = 2;
             this.simpleLabelItem3.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 2, 2, 2);
-            this.simpleLabelItem3.Size = new System.Drawing.Size(100, 24);
+            this.simpleLabelItem3.Size = new System.Drawing.Size(100, 34);
             this.simpleLabelItem3.Text = "Mật khẩu";
             this.simpleLabelItem3.TextSize = new System.Drawing.Size(87, 13);
             // 
@@ -222,58 +222,58 @@
             this.layoutControlItem1.OptionsTableLayoutItem.ColumnIndex = 1;
             this.layoutControlItem1.OptionsTableLayoutItem.ColumnSpan = 3;
             this.layoutControlItem1.OptionsTableLayoutItem.RowIndex = 1;
-            this.layoutControlItem1.Size = new System.Drawing.Size(335, 24);
+            this.layoutControlItem1.Size = new System.Drawing.Size(347, 34);
             this.layoutControlItem1.TextVisible = false;
             // 
             // layoutControlItem2
             // 
             this.layoutControlItem2.Control = this.PasswordTextEdit;
-            this.layoutControlItem2.Location = new System.Drawing.Point(100, 61);
+            this.layoutControlItem2.Location = new System.Drawing.Point(100, 71);
             this.layoutControlItem2.Name = "layoutControlItem2";
             this.layoutControlItem2.OptionsTableLayoutItem.ColumnIndex = 1;
             this.layoutControlItem2.OptionsTableLayoutItem.ColumnSpan = 3;
             this.layoutControlItem2.OptionsTableLayoutItem.RowIndex = 2;
-            this.layoutControlItem2.Size = new System.Drawing.Size(335, 24);
+            this.layoutControlItem2.Size = new System.Drawing.Size(347, 34);
             this.layoutControlItem2.TextVisible = false;
             // 
             // layoutControlItem3
             // 
             this.layoutControlItem3.Control = this.RememberMeCheckBox;
-            this.layoutControlItem3.Location = new System.Drawing.Point(300, 85);
+            this.layoutControlItem3.Location = new System.Drawing.Point(300, 105);
             this.layoutControlItem3.Name = "layoutControlItem3";
             this.layoutControlItem3.OptionsTableLayoutItem.ColumnIndex = 3;
             this.layoutControlItem3.OptionsTableLayoutItem.RowIndex = 3;
             this.layoutControlItem3.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
-            this.layoutControlItem3.Size = new System.Drawing.Size(135, 54);
+            this.layoutControlItem3.Size = new System.Drawing.Size(147, 55);
             this.layoutControlItem3.TextVisible = false;
             // 
             // layoutControlItem4
             // 
             this.layoutControlItem4.Control = this.OkButton;
-            this.layoutControlItem4.Location = new System.Drawing.Point(100, 85);
+            this.layoutControlItem4.Location = new System.Drawing.Point(100, 105);
             this.layoutControlItem4.Name = "layoutControlItem4";
             this.layoutControlItem4.OptionsTableLayoutItem.ColumnIndex = 1;
             this.layoutControlItem4.OptionsTableLayoutItem.RowIndex = 3;
             this.layoutControlItem4.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
-            this.layoutControlItem4.Size = new System.Drawing.Size(100, 54);
+            this.layoutControlItem4.Size = new System.Drawing.Size(100, 55);
             this.layoutControlItem4.TextVisible = false;
             // 
             // layoutControlItem5
             // 
             this.layoutControlItem5.Control = this.CancelSimpleButton;
-            this.layoutControlItem5.Location = new System.Drawing.Point(200, 85);
+            this.layoutControlItem5.Location = new System.Drawing.Point(200, 105);
             this.layoutControlItem5.Name = "layoutControlItem5";
             this.layoutControlItem5.OptionsTableLayoutItem.ColumnIndex = 2;
             this.layoutControlItem5.OptionsTableLayoutItem.RowIndex = 3;
             this.layoutControlItem5.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
-            this.layoutControlItem5.Size = new System.Drawing.Size(100, 54);
+            this.layoutControlItem5.Size = new System.Drawing.Size(100, 55);
             this.layoutControlItem5.TextVisible = false;
             // 
             // FrmLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(455, 159);
+            this.ClientSize = new System.Drawing.Size(473, 186);
             this.Controls.Add(this.layoutControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FrmLogin";

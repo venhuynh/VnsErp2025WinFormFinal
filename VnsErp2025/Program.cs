@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Authentication.Form;
 using VnsErp2025.Form;
+using Bll.Utils;
 
 namespace VnsErp2025
 {
@@ -20,26 +21,38 @@ namespace VnsErp2025
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
-            // Khởi tạo DevExpress Look and Feel
-            DevExpress.UserSkins.BonusSkins.Register();
-            DevExpress.Skins.SkinManager.EnableFormSkins();
-            DevExpress.LookAndFeel.UserLookAndFeel.Default.SetSkinStyle("Office 2019 Colorful");
-            
+
+            // Cấu hình DevExpress Skin
+            SkinHelper.KhoiTaoSkin("WXI");
+
+            #region Quy trình để debug - Comment khi Build Release
+
+            Application.Run(new FormMain());
+            return;
+
+            #endregion
+
+
+            #region Quy trình đúng để chạy màn hình Login - Xóa comment để chạy
+
             // Hiển thị form đăng nhập
-            using (var loginForm = new FrmLogin())
-            {
-                if (loginForm.ShowDialog() == DialogResult.OK)
-                {
-                    // Đăng nhập thành công, hiển thị form chính
-                    Application.Run(new FormMain());
-                }
-                else
-                {
-                    // Người dùng hủy đăng nhập, thoát ứng dụng
-                    Application.Exit();
-                }
-            }
+            //using (var loginForm = new FrmLogin())
+            //{
+            //    if (loginForm.ShowDialog() == DialogResult.OK)
+            //    {
+            //        // Đăng nhập thành công, hiển thị form chính
+            //        Application.Run(new FormMain());
+            //    }
+            //    else
+            //    {
+            //        // Người dùng hủy đăng nhập, thoát ứng dụng
+            //        Application.Exit();
+            //    }
+            //}
+
+            #endregion
+
         }
+
     }
 }

@@ -4,68 +4,70 @@ using Dal.Connection;
 namespace Dal.Configuration
 {
     /// <summary>
-    /// Database settings configuration
+    /// Cấu hình cho Database/DataContext dùng trong DAL.
+    /// - Quản lý các tham số kết nối, timeout, retry, logging và performance.
+    /// - Cung cấp hàm Validate để đảm bảo cấu hình hợp lệ trước khi sử dụng.
     /// </summary>
     public class DatabaseSettings
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
         /// <summary>
-        /// Connection string
+        /// Connection string dùng để khởi tạo DataContext/kết nối DB.
         /// </summary>
         public string ConnectionString { get; set; }
 
         /// <summary>
-        /// Command timeout in seconds
+        /// Thời gian timeout cho lệnh (giây).
         /// </summary>
         public int CommandTimeout { get; set; } = 30;
 
         /// <summary>
-        /// Connection timeout in seconds
+        /// Thời gian timeout kết nối (giây).
         /// </summary>
         public int ConnectionTimeout { get; set; } = 15;
 
         /// <summary>
-        /// Enable retry on failure
+        /// Bật cơ chế retry khi lỗi kết nối/tạm thời.
         /// </summary>
         public bool EnableRetryOnFailure { get; set; } = true;
 
         /// <summary>
-        /// Maximum retry count
+        /// Số lần retry tối đa.
         /// </summary>
         public int MaxRetryCount { get; set; } = 3;
 
         /// <summary>
-        /// Retry delay in milliseconds
+        /// Thời gian chờ giữa các lần retry (milliseconds).
         /// </summary>
         public int RetryDelayMs { get; set; } = 1000;
 
         /// <summary>
-        /// Enable detailed error logging
+        /// Bật log chi tiết lỗi.
         /// </summary>
         public bool EnableDetailedErrors { get; set; } = false;
 
         /// <summary>
-        /// Enable sensitive data logging (for debugging only)
+        /// Bật log dữ liệu nhạy cảm (chỉ nên bật khi debug).
         /// </summary>
         public bool EnableSensitiveDataLogging { get; set; } = false;
 
         /// <summary>
-        /// Enable performance monitoring
+        /// Bật theo dõi hiệu năng truy vấn.
         /// </summary>
         public bool EnablePerformanceMonitoring { get; set; } = true;
 
         /// <summary>
-        /// Performance threshold in milliseconds (log if operation takes longer)
+        /// Ngưỡng thời gian (ms) để cảnh báo log chậm.
         /// </summary>
         public long PerformanceThresholdMs { get; set; } = 1000;
 
         #endregion
 
-        #region phuongThuc
+        #region Validation & Utilities
 
         /// <summary>
-        /// Validate settings
+        /// Kiểm tra tính hợp lệ của cấu hình. Ném exception nếu có giá trị không hợp lệ.
         /// </summary>
         public void Validate()
         {
@@ -88,8 +90,12 @@ namespace Dal.Configuration
                 throw new InvalidOperationException("PerformanceThresholdMs must be greater than 0");
         }
 
+        #endregion
+
+        #region Factory Methods
+
         /// <summary>
-        /// Create default settings
+        /// Tạo cấu hình mặc định dựa trên AppSettings và giá trị gợi ý.
         /// </summary>
         public static DatabaseSettings CreateDefault()
         {
