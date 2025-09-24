@@ -31,6 +31,7 @@ namespace Authentication.Form
             InitializeComponent();
             InitializeValidation();
             SetupEventHandlers();
+            LoadSavedCredentials();
 
             TaoTaiKhoanAdminPublic();
         }
@@ -83,6 +84,92 @@ namespace Authentication.Form
             // Keyboard navigation events
             UserNameTextEdit.KeyDown += TextEdit_KeyDown;
             PasswordTextEdit.KeyDown += TextEdit_KeyDown;
+            
+            // Remember Me checkbox event
+            RememberMeCheckBox.CheckedChanged += RememberMeCheckBox_CheckedChanged;
+        }
+        #endregion
+
+        #region Private Methods - Remember Me
+        /// <summary>
+        /// Lưu thông tin đăng nhập vào User Settings
+        /// </summary>
+        /// <param name="username">Tên đăng nhập</param>
+        /// <param name="password">Mật khẩu (đã mã hóa)</param>
+        private void SaveCredentials(string username, string password)
+        {
+            try
+            {
+                // Lưu vào User Settings (an toàn hơn Registry)
+                Properties.Settings.Default.RememberMe = true;
+                Properties.Settings.Default.SavedUsername = username;
+                Properties.Settings.Default.SavedPassword = password; // Đã được mã hóa từ LoginBll
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi lưu thông tin đăng nhập");
+            }
+        }
+
+        /// <summary>
+        /// Xóa thông tin đăng nhập đã lưu
+        /// </summary>
+        private void ClearSavedCredentials()
+        {
+            try
+            {
+                Properties.Settings.Default.RememberMe = false;
+                Properties.Settings.Default.SavedUsername = string.Empty;
+                Properties.Settings.Default.SavedPassword = string.Empty;
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi xóa thông tin đăng nhập");
+            }
+        }
+
+        /// <summary>
+        /// Tải thông tin đăng nhập đã lưu và hiển thị lên form
+        /// </summary>
+        private void LoadSavedCredentials()
+        {
+            try
+            {
+                if (Properties.Settings.Default.RememberMe && 
+                    !string.IsNullOrWhiteSpace(Properties.Settings.Default.SavedUsername))
+                {
+                    // Hiển thị thông tin đã lưu
+                    UserNameTextEdit.Text = Properties.Settings.Default.SavedUsername;
+                    RememberMeCheckBox.Checked = true;
+                    
+                    // Chỉ hiển thị mật khẩu nếu có (có thể là mật khẩu đã mã hóa)
+                    if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.SavedPassword))
+                    {
+                        PasswordTextEdit.Text = Properties.Settings.Default.SavedPassword;
+                        // Focus vào password field và select all để user có thể nhập mật khẩu mới
+                        PasswordTextEdit.Focus();
+                        PasswordTextEdit.SelectAll();
+                    }
+                    else
+                    {
+                        // Không có mật khẩu đã lưu, focus vào password field
+                        PasswordTextEdit.Focus();
+                    }
+                }
+                else
+                {
+                    // Không có thông tin đã lưu, focus vào username
+                    UserNameTextEdit.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi tải thông tin đăng nhập");
+                // Nếu có lỗi, focus vào username field
+                UserNameTextEdit.Focus();
+            }
         }
         #endregion
 
@@ -134,6 +221,27 @@ namespace Authentication.Form
                 e.Handled = true;
             }
         }
+
+        /// <summary>
+        /// Xử lý sự kiện thay đổi trạng thái Remember Me checkbox
+        /// </summary>
+        /// <param name="sender">Control gửi sự kiện</param>
+        /// <param name="e">Thông tin sự kiện</param>
+        private void RememberMeCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Nếu user bỏ check Remember Me, xóa thông tin đã lưu ngay lập tức
+                if (!RememberMeCheckBox.Checked)
+                {
+                    ClearSavedCredentials();
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi xử lý Remember Me");
+            }
+        }
         #endregion
 
         #region Event Handlers - Button Actions
@@ -166,6 +274,9 @@ namespace Authentication.Form
                         ApplicationSystemUtils.SetCurrentUser(loginResult.User);
                     }
                     
+                    // Xử lý Remember Me
+                    HandleRememberMe(loginCredentials.Username, loginCredentials.Password);
+                    
                     ShowSuccessMessage();
                     CloseFormWithSuccess();
                 }
@@ -189,6 +300,32 @@ namespace Authentication.Form
         private void CancelButton_Click(object sender, EventArgs e)
         {
             CloseFormWithCancel();
+        }
+
+        /// <summary>
+        /// Xử lý chức năng Remember Me
+        /// </summary>
+        /// <param name="username">Tên đăng nhập</param>
+        /// <param name="password">Mật khẩu</param>
+        private void HandleRememberMe(string username, string password)
+        {
+            try
+            {
+                if (RememberMeCheckBox.Checked)
+                {
+                    // Lưu thông tin đăng nhập
+                    SaveCredentials(username, password);
+                }
+                else
+                {
+                    // Xóa thông tin đăng nhập đã lưu
+                    ClearSavedCredentials();
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi xử lý Remember Me");
+            }
         }
         #endregion
 
