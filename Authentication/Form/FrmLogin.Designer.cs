@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition1 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition2 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition3 = new DevExpress.XtraLayout.ColumnDefinition();
@@ -38,32 +39,34 @@
             DevExpress.XtraLayout.RowDefinition rowDefinition4 = new DevExpress.XtraLayout.RowDefinition();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.RememberMeCheckBox = new System.Windows.Forms.CheckBox();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.simpleLabelItem1 = new DevExpress.XtraLayout.SimpleLabelItem();
-            this.simpleLabelItem2 = new DevExpress.XtraLayout.SimpleLabelItem();
-            this.simpleLabelItem3 = new DevExpress.XtraLayout.SimpleLabelItem();
-            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             this.UserNameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.PasswordTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.OkButton = new DevExpress.XtraEditors.SimpleButton();
             this.CancelButton = new DevExpress.XtraEditors.SimpleButton();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.simpleLabelItem1 = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.simpleLabelItem2 = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.simpleLabelItem3 = new DevExpress.XtraLayout.SimpleLabelItem();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.dxValidationProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXValidationProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.UserNameTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PasswordTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.UserNameTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PasswordTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dxValidationProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -89,6 +92,46 @@
             this.RememberMeCheckBox.TabIndex = 4;
             this.RememberMeCheckBox.Text = "Ghi nhớ";
             this.RememberMeCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // UserNameTextEdit
+            // 
+            this.UserNameTextEdit.Location = new System.Drawing.Point(112, 49);
+            this.UserNameTextEdit.Name = "UserNameTextEdit";
+            this.UserNameTextEdit.Size = new System.Drawing.Size(331, 20);
+            this.UserNameTextEdit.StyleController = this.layoutControl1;
+            this.UserNameTextEdit.TabIndex = 0;
+            // 
+            // PasswordTextEdit
+            // 
+            this.PasswordTextEdit.Location = new System.Drawing.Point(112, 73);
+            this.PasswordTextEdit.Name = "PasswordTextEdit";
+            this.PasswordTextEdit.Properties.PasswordChar = '*';
+            this.PasswordTextEdit.Properties.UseSystemPasswordChar = true;
+            this.PasswordTextEdit.Size = new System.Drawing.Size(331, 20);
+            this.PasswordTextEdit.StyleController = this.layoutControl1;
+            this.PasswordTextEdit.TabIndex = 2;
+            // 
+            // OkButton
+            // 
+            this.OkButton.ImageOptions.Image = global::Authentication.Properties.Resources.apply_16x16;
+            this.OkButton.Location = new System.Drawing.Point(120, 105);
+            this.OkButton.Name = "OkButton";
+            this.OkButton.Size = new System.Drawing.Size(80, 22);
+            this.OkButton.StyleController = this.layoutControl1;
+            this.OkButton.TabIndex = 3;
+            this.OkButton.Text = "Đăng nhập";
+            this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
+            // 
+            // CancelButton
+            // 
+            this.CancelButton.ImageOptions.Image = global::Authentication.Properties.Resources.cancel_16x16;
+            this.CancelButton.Location = new System.Drawing.Point(220, 105);
+            this.CancelButton.Name = "CancelButton";
+            this.CancelButton.Size = new System.Drawing.Size(80, 22);
+            this.CancelButton.StyleController = this.layoutControl1;
+            this.CancelButton.TabIndex = 5;
+            this.CancelButton.Text = "Hủy";
+            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // Root
             // 
@@ -169,55 +212,6 @@
             this.simpleLabelItem3.Text = "Mật khẩu";
             this.simpleLabelItem3.TextSize = new System.Drawing.Size(87, 13);
             // 
-            // layoutControlItem3
-            // 
-            this.layoutControlItem3.Control = this.RememberMeCheckBox;
-            this.layoutControlItem3.Location = new System.Drawing.Point(300, 85);
-            this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.OptionsTableLayoutItem.ColumnIndex = 3;
-            this.layoutControlItem3.OptionsTableLayoutItem.RowIndex = 3;
-            this.layoutControlItem3.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
-            this.layoutControlItem3.Size = new System.Drawing.Size(135, 54);
-            this.layoutControlItem3.TextVisible = false;
-            // 
-            // UserNameTextEdit
-            // 
-            this.UserNameTextEdit.Location = new System.Drawing.Point(112, 49);
-            this.UserNameTextEdit.Name = "UserNameTextEdit";
-            this.UserNameTextEdit.Size = new System.Drawing.Size(331, 20);
-            this.UserNameTextEdit.StyleController = this.layoutControl1;
-            this.UserNameTextEdit.TabIndex = 0;
-            // 
-            // PasswordTextEdit
-            // 
-            this.PasswordTextEdit.Location = new System.Drawing.Point(112, 73);
-            this.PasswordTextEdit.Name = "PasswordTextEdit";
-            this.PasswordTextEdit.Properties.PasswordChar = '*';
-            this.PasswordTextEdit.Properties.UseSystemPasswordChar = true;
-            this.PasswordTextEdit.Size = new System.Drawing.Size(331, 20);
-            this.PasswordTextEdit.StyleController = this.layoutControl1;
-            this.PasswordTextEdit.TabIndex = 2;
-            // 
-            // OkButton
-            // 
-            this.OkButton.ImageOptions.Image = global::Authentication.Properties.Resources.apply_16x16;
-            this.OkButton.Location = new System.Drawing.Point(120, 105);
-            this.OkButton.Name = "OkButton";
-            this.OkButton.Size = new System.Drawing.Size(80, 22);
-            this.OkButton.StyleController = this.layoutControl1;
-            this.OkButton.TabIndex = 3;
-            this.OkButton.Text = "Đăng nhập";
-            // 
-            // CancelButton
-            // 
-            this.CancelButton.ImageOptions.Image = global::Authentication.Properties.Resources.cancel_16x16;
-            this.CancelButton.Location = new System.Drawing.Point(220, 105);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(80, 22);
-            this.CancelButton.StyleController = this.layoutControl1;
-            this.CancelButton.TabIndex = 5;
-            this.CancelButton.Text = "Hủy";
-            // 
             // layoutControlItem1
             // 
             this.layoutControlItem1.Control = this.UserNameTextEdit;
@@ -239,6 +233,17 @@
             this.layoutControlItem2.OptionsTableLayoutItem.RowIndex = 2;
             this.layoutControlItem2.Size = new System.Drawing.Size(335, 24);
             this.layoutControlItem2.TextVisible = false;
+            // 
+            // layoutControlItem3
+            // 
+            this.layoutControlItem3.Control = this.RememberMeCheckBox;
+            this.layoutControlItem3.Location = new System.Drawing.Point(300, 85);
+            this.layoutControlItem3.Name = "layoutControlItem3";
+            this.layoutControlItem3.OptionsTableLayoutItem.ColumnIndex = 3;
+            this.layoutControlItem3.OptionsTableLayoutItem.RowIndex = 3;
+            this.layoutControlItem3.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.layoutControlItem3.Size = new System.Drawing.Size(135, 54);
+            this.layoutControlItem3.TextVisible = false;
             // 
             // layoutControlItem4
             // 
@@ -273,17 +278,18 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.UserNameTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PasswordTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.UserNameTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PasswordTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dxValidationProvider1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -305,5 +311,6 @@
         private DevExpress.XtraEditors.SimpleButton CancelButton;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
+        private DevExpress.XtraEditors.DXErrorProvider.DXValidationProvider dxValidationProvider1;
     }
 }
