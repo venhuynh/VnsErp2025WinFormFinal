@@ -6,87 +6,52 @@
 **Mục đích:** Truy cập và thao tác với cơ sở dữ liệu MS SQL Server  
 **Loại Project:** Class Library (.dll)  
 **Target Framework:** .NET Framework 4.8  
-**ORM Framework:** LINQ to SQL  
+**ORM Framework:** LINQ to SQL (Drag & Drop Approach)  
 **Database:** Microsoft SQL Server  
+
+### Đặc điểm LINQ to SQL Implementation:
+- **Drag & Drop Design:** Kéo thả bảng từ Server Explorer vào file `.dbml`
+- **Auto-generated Entities:** Tự động tạo entity classes từ database schema
+- **Direct CRUD Operations:** Thao tác CRUD trực tiếp trên các entity được generate
+- **Simple & Fast:** Phù hợp cho dự án nội bộ, không cần phức tạp
+- **Visual Designer:** Sử dụng LINQ to SQL Designer trong Visual Studio  
 
 ## 2. Cấu Trúc Thư Mục Đề Xuất
 
 ```
 Dal/
-├── DataContext/                  # LINQ to SQL Data Context
-│   ├── VnsErp2025.dbml          # LINQ to SQL Designer file
-│   ├── VnsErp2025.dbml.layout   # Layout file
-│   ├── VnsErp2025.designer.cs   # Auto-generated designer code
-│   └── VnsErpDataContext.cs     # Custom DataContext wrapper
-├── Entities/                     # LINQ to SQL Entity Classes
-│   ├── NhanVien/                # Module nhân viên
-│   │   ├── NhanVienEntity.cs    # Entity class
-│   │   ├── NhanVienRepository.cs # Repository pattern
-│   │   └── NhanVienMapping.cs   # Custom mapping
-│   ├── KhachHang/               # Module khách hàng
-│   │   ├── KhachHangEntity.cs
-│   │   ├── KhachHangRepository.cs
-│   │   └── KhachHangMapping.cs
-│   ├── SanPham/                 # Module sản phẩm
-│   │   ├── SanPhamEntity.cs
-│   │   ├── SanPhamRepository.cs
-│   │   └── SanPhamMapping.cs
-│   ├── DonHang/                 # Module đơn hàng
-│   │   ├── DonHangEntity.cs
-│   │   ├── ChiTietDonHangEntity.cs
-│   │   ├── DonHangRepository.cs
-│   │   └── DonHangMapping.cs
-│   ├── Kho/                     # Module quản lý kho
-│   │   ├── PhieuNhapKhoEntity.cs
-│   │   ├── PhieuXuatKhoEntity.cs
-│   │   ├── TonKhoEntity.cs
-│   │   ├── KhoRepository.cs
-│   │   └── KhoMapping.cs
-│   ├── TaiChinh/                # Module tài chính
-│   │   ├── PhieuThuEntity.cs
-│   │   ├── PhieuChiEntity.cs
-│   │   ├── BaoCaoTaiChinhEntity.cs
-│   │   ├── TaiChinhRepository.cs
-│   │   └── TaiChinhMapping.cs
-│   └── HeThong/                 # Module hệ thống
-│       ├── NguoiDungEntity.cs
-│       ├── PhanQuyenEntity.cs
-│       ├── LogHeThongEntity.cs
-│       ├── HeThongRepository.cs
-│       └── HeThongMapping.cs
-├── Repositories/                 # Repository Pattern Implementation
-│   ├── BaseRepository.cs        # Base repository class
-│   ├── IRepository.cs           # Repository interface
-│   ├── IUnitOfWork.cs           # Unit of Work interface
-│   ├── UnitOfWork.cs            # Unit of Work implementation
-│   └── RepositoryFactory.cs     # Factory for creating repositories
+├── DataContext/                  # LINQ to SQL Data Context (Auto-generated)
+│   ├── VnsErp2025.dbml          # LINQ to SQL Designer file (Drag & Drop)
+│   ├── VnsErp2025.dbml.layout   # Layout file (Auto-generated)
+│   ├── VnsErp2025.designer.cs   # Auto-generated designer code + Entities
+│   └── VnsErpDataContext.cs     # Custom DataContext wrapper (Optional)
+├── DataAccess/                   # CRUD Operations cho từng Entity
+│   ├── NhanVienDataAccess.cs    # CRUD operations cho NhanVien
+│   ├── KhachHangDataAccess.cs   # CRUD operations cho KhachHang
+│   ├── SanPhamDataAccess.cs     # CRUD operations cho SanPham
+│   ├── DonHangDataAccess.cs     # CRUD operations cho DonHang
+│   ├── KhoDataAccess.cs         # CRUD operations cho Kho entities
+│   ├── TaiChinhDataAccess.cs    # CRUD operations cho TaiChinh entities
+│   └── HeThongDataAccess.cs     # CRUD operations cho HeThong entities
+├── BaseDataAccess/              # Base Classes cho Data Access
+│   ├── BaseDataAccess.cs        # Base class cho tất cả DataAccess classes
+│   ├── IDataAccess.cs           # Interface cho DataAccess
+│   └── DataAccessHelper.cs      # Helper methods chung
 ├── Connection/                   # Database Connection Management
 │   ├── ConnectionManager.cs     # Quản lý kết nối
 │   ├── ConnectionStringHelper.cs # Helper cho connection string
 │   ├── DatabaseConfig.cs        # Cấu hình database
 │   └── IConnectionManager.cs    # Interface connection manager
-├── StoredProcedures/             # Stored Procedures Support
-│   ├── SP_NhanVien.cs           # Stored procedures cho nhân viên
-│   ├── SP_KhachHang.cs          # Stored procedures cho khách hàng
-│   ├── SP_SanPham.cs            # Stored procedures cho sản phẩm
-│   ├── SP_DonHang.cs            # Stored procedures cho đơn hàng
-│   ├── SP_Kho.cs                # Stored procedures cho kho
-│   ├── SP_TaiChinh.cs           # Stored procedures cho tài chính
-│   └── SP_HeThong.cs            # Stored procedures cho hệ thống
-├── Mappings/                     # Entity Mappings
-│   ├── EntityMapping.cs         # Base mapping class
-│   ├── NhanVienMapping.cs       # Mapping cho nhân viên
-│   ├── KhachHangMapping.cs      # Mapping cho khách hàng
-│   ├── SanPhamMapping.cs        # Mapping cho sản phẩm
-│   ├── DonHangMapping.cs        # Mapping cho đơn hàng
-│   ├── KhoMapping.cs            # Mapping cho kho
-│   ├── TaiChinhMapping.cs       # Mapping cho tài chính
-│   └── HeThongMapping.cs        # Mapping cho hệ thống
-├── Extensions/                   # LINQ Extensions
+├── Extensions/                   # Entity Extensions (Optional)
+│   ├── NhanVienExtensions.cs    # Extension methods cho NhanVien
+│   ├── KhachHangExtensions.cs   # Extension methods cho KhachHang
+│   ├── SanPhamExtensions.cs     # Extension methods cho SanPham
+│   └── CommonExtensions.cs      # Common extension methods
+├── LinqExtensions/              # LINQ Extensions
 │   ├── QueryExtensions.cs       # Extension methods cho queries
 │   ├── LinqExtensions.cs        # Custom LINQ extensions
 │   ├── ExpressionExtensions.cs  # Expression tree extensions
-│   └── DbContextExtensions.cs   # DataContext extensions
+│   └── DataContextExtensions.cs # DataContext extensions
 ├── Helpers/                      # Helper Classes
 │   ├── SqlHelper.cs             # SQL helper utilities
 │   ├── DataHelper.cs            # Data manipulation helpers
@@ -126,16 +91,6 @@ Dal/
 │   ├── ConnectionSettings.cs    # Connection settings
 │   ├── PerformanceSettings.cs   # Performance settings
 │   └── CacheSettings.cs         # Cache settings
-├── Scripts/                      # Database Scripts
-│   ├── CreateTables.sql         # Script tạo bảng
-│   ├── CreateIndexes.sql        # Script tạo index
-│   ├── CreateStoredProcedures.sql # Script tạo stored procedures
-│   ├── CreateFunctions.sql      # Script tạo functions
-│   ├── SampleData.sql           # Dữ liệu mẫu
-│   └── Migrations/              # Migration scripts
-│       ├── 001_InitialSchema.sql
-│       ├── 002_AddIndexes.sql
-│       └── 003_AddStoredProcedures.sql
 ├── Tests/                        # Unit Tests cho DAL
 │   ├── RepositoryTests/         # Tests cho repositories
 │   ├── EntityTests/             # Tests cho entities
@@ -148,49 +103,101 @@ Dal/
 ## 3. Mô Tả Chi Tiết Các Thư Mục
 
 ### 3.1 DataContext/
-**Mục đích:** Quản lý LINQ to SQL Data Context
+**Mục đích:** LINQ to SQL Data Context (Auto-generated từ Visual Studio Designer)
 
 **Files:**
-- `VnsErp2025.dbml`: LINQ to SQL Designer file (đã có)
-- `VnsErp2025.designer.cs`: Auto-generated code từ designer
-- `VnsErpDataContext.cs`: Custom wrapper cho DataContext
+- `VnsErp2025.dbml`: LINQ to SQL Designer file (Drag & Drop từ Server Explorer)
+- `VnsErp2025.designer.cs`: Auto-generated code từ designer (KHÔNG EDIT)
+- `VnsErpDataContext.cs`: Custom wrapper cho DataContext (Optional)
+
+**Cách sử dụng:**
+1. Mở Server Explorer trong Visual Studio
+2. Kéo thả các bảng từ database vào file `.dbml`
+3. Visual Studio tự động generate entity classes
+4. Sử dụng DataContext để thao tác với entities
 
 **Chức năng:**
-- Kết nối database
-- Quản lý entity mappings
-- Transaction management
-- Connection pooling
+- Auto-generated entity classes từ database schema
+- Automatic mapping giữa database tables và C# classes
+- Built-in CRUD operations
+- Change tracking và concurrency control
 
-### 3.2 Entities/
-**Mục đích:** LINQ to SQL Entity Classes và Repository Pattern
+### 3.2 Entities (Trong VnsErp2025.designer.cs)
+**Mục đích:** Auto-generated Entity Classes từ LINQ to SQL Designer
 
-**Cấu trúc mỗi module:**
-- `{EntityName}Entity.cs`: Entity class từ LINQ to SQL
-- `{EntityName}Repository.cs`: Repository implementation
-- `{EntityName}Mapping.cs`: Custom mapping logic
+**Vị trí:** Tất cả entities được generate trong file `VnsErp2025.designer.cs`
+
+**Cách tạo:**
+- Kéo thả bảng từ Server Explorer vào file `.dbml`
+- Visual Studio tự động generate entity class trong `.designer.cs`
+- Không cần viết code, chỉ cần drag & drop
 
 **Quy ước:**
-- Entity classes sử dụng tiếng Việt không dấu CamelCase
-- Repository pattern cho encapsulation
-- Custom mapping cho business logic
+- Entity classes tự động map với database tables
+- Property names giữ nguyên như database columns
+- Relationships tự động được tạo
+- KHÔNG EDIT file `.designer.cs` (sẽ bị mất khi regenerate)
 
-### 3.3 Repositories/
-**Mục đích:** Repository Pattern Implementation
+**Ví dụ từ file hiện tại:**
+```csharp
+// Auto-generated trong VnsErp2025.designer.cs
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ApplicationUser")]
+public partial class ApplicationUser : INotifyPropertyChanging, INotifyPropertyChanged
+{
+    [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+    public System.Guid Id { get; set; }
+    
+    [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserName", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+    public string UserName { get; set; }
+    
+    [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HassPassword", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
+    public string HassPassword { get; set; }
+    
+    [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Active", DbType="Bit NOT NULL")]
+    public bool Active { get; set; }
+}
+```
+
+### 3.2 DataAccess/
+**Mục đích:** CRUD Operations cho từng Entity (Thay thế Repository Pattern)
 
 **Files:**
-- `BaseRepository.cs`: Base repository với common operations
-- `IRepository.cs`: Generic repository interface
-- `IUnitOfWork.cs`: Unit of Work pattern
-- `UnitOfWork.cs`: Implementation của Unit of Work
-- `RepositoryFactory.cs`: Factory pattern cho repositories
+- `NhanVienDataAccess.cs`: CRUD operations cho NhanVien entity
+- `KhachHangDataAccess.cs`: CRUD operations cho KhachHang entity
+- `SanPhamDataAccess.cs`: CRUD operations cho SanPham entity
+- ... và các entity khác
 
 **Chức năng:**
-- CRUD operations
-- Query optimization
-- Transaction management
-- Caching support
+- Direct CRUD operations trên auto-generated entities
+- Simple và straightforward approach
+- Không cần phức tạp Repository pattern
+- Sử dụng LINQ to SQL DataContext trực tiếp
 
-### 3.4 Connection/
+**Ví dụ:**
+```csharp
+public class NhanVienDataAccess
+{
+    private VnsErp2025DataContext _context;
+    
+    public List<NhanVien> LayTatCa()
+    {
+        return _context.NhanViens.ToList();
+    }
+    
+    public NhanVien LayTheoId(int id)
+    {
+        return _context.NhanViens.FirstOrDefault(n => n.Id == id);
+    }
+    
+    public void Them(NhanVien nhanVien)
+    {
+        _context.NhanViens.InsertOnSubmit(nhanVien);
+        _context.SubmitChanges();
+    }
+}
+```
+
+### 3.3 Connection/
 **Mục đích:** Quản lý kết nối database
 
 **Files:**
@@ -205,32 +212,8 @@ Dal/
 - Database configuration
 - Connection monitoring
 
-### 3.5 StoredProcedures/
-**Mục đích:** Hỗ trợ Stored Procedures
 
-**Files:**
-- `SP_{Module}.cs`: Stored procedure wrappers cho từng module
-
-**Chức năng:**
-- Execute stored procedures
-- Parameter mapping
-- Result set handling
-- Performance optimization
-
-### 3.6 Mappings/
-**Mục đích:** Entity Mappings và Data Transformation
-
-**Files:**
-- `EntityMapping.cs`: Base mapping class
-- `{Module}Mapping.cs`: Mapping cho từng module
-
-**Chức năng:**
-- Entity to DTO mapping
-- DTO to Entity mapping
-- Data transformation
-- Validation mapping
-
-### 3.7 Extensions/
+### 3.4 Extensions/
 **Mục đích:** LINQ Extensions và Custom Query Methods
 
 **Files:**
@@ -245,7 +228,7 @@ Dal/
 - Reusable query patterns
 - Expression tree manipulation
 
-### 3.8 Helpers/
+### 3.5 Helpers/
 **Mục đích:** Helper Classes cho Data Access
 
 **Files:**
@@ -261,7 +244,7 @@ Dal/
 - Performance monitoring
 - Transaction management
 
-### 3.9 Cache/
+### 3.6 Cache/
 **Mục đích:** Caching Layer cho Performance
 
 **Files:**
@@ -276,7 +259,7 @@ Dal/
 - Cache invalidation
 - Performance optimization
 
-### 3.10 Logging/
+### 3.7 Logging/
 **Mục đích:** Data Access Logging
 
 **Files:**
@@ -291,74 +274,142 @@ Dal/
 - Error logging
 - Audit trail
 
-## 4. LINQ to SQL Implementation
+## 4. LINQ to SQL Implementation (Drag & Drop Approach)
 
-### 4.1 DataContext Configuration
+### 4.1 Cách Tạo Entities
+1. **Mở Server Explorer** trong Visual Studio
+2. **Kết nối database** (nếu chưa có)
+3. **Mở file VnsErp2025.dbml** trong Designer
+4. **Kéo thả bảng** từ Server Explorer vào Designer
+5. **Visual Studio tự động generate** entity classes
+
+### 4.2 Auto-generated DataContext
 ```csharp
-public partial class VnsErpDataContext : DataContext
+// File: VnsErp2025.designer.cs (KHÔNG EDIT)
+public partial class VnsErp2025DataContext : System.Data.Linq.DataContext
 {
-    public VnsErpDataContext() : base(GetConnectionString()) { }
+    public System.Data.Linq.Table<NhanVien> NhanViens
+    {
+        get { return this.GetTable<NhanVien>(); }
+    }
     
-    public Table<NhanVien> NhanViens => GetTable<NhanVien>();
-    public Table<KhachHang> KhachHangs => GetTable<KhachHang>();
-    public Table<SanPham> SanPhams => GetTable<SanPham>();
+    public System.Data.Linq.Table<KhachHang> KhachHangs
+    {
+        get { return this.GetTable<KhachHang>(); }
+    }
+    
     // ... other tables
 }
 ```
 
-### 4.2 Entity Classes
+### 4.3 Auto-generated Entity Classes
 ```csharp
-[Table(Name = "nhan_vien")]
-public partial class NhanVien
+// File: VnsErp2025.designer.cs (KHÔNG EDIT)
+// Ví dụ từ ApplicationUser entity hiện tại:
+[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ApplicationUser")]
+public partial class ApplicationUser : INotifyPropertyChanging, INotifyPropertyChanged
 {
-    [Column(IsPrimaryKey = true, IsDbGenerated = true)]
-    public int Id { get; set; }
+    private System.Guid _Id;
+    private string _UserName;
+    private string _HassPassword;
+    private bool _Active;
     
-    [Column(Name = "ho_ten")]
-    public string HoTen { get; set; }
+    [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+    public System.Guid Id
+    {
+        get { return this._Id; }
+        set { /* auto-generated with change tracking */ }
+    }
     
-    [Column(Name = "email")]
-    public string Email { get; set; }
+    [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserName", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+    public string UserName
+    {
+        get { return this._UserName; }
+        set { /* auto-generated with change tracking */ }
+    }
     
     // ... other properties
 }
 ```
 
-### 4.3 Repository Pattern
+### 4.4 DataAccess Pattern (Thay thế Repository)
 ```csharp
-public interface IRepository<T> where T : class
+public class ApplicationUserDataAccess
 {
-    IEnumerable<T> GetAll();
-    T GetById(int id);
-    void Add(T entity);
-    void Update(T entity);
-    void Delete(int id);
-    void SaveChanges();
+    private VnsErp2025DataContext _context;
+    
+    public ApplicationUserDataAccess()
+    {
+        _context = new VnsErp2025DataContext();
+    }
+    
+    // CRUD Operations
+    public List<ApplicationUser> LayTatCa()
+    {
+        return _context.ApplicationUsers.ToList();
+    }
+    
+    public ApplicationUser LayTheoId(Guid id)
+    {
+        return _context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+    }
+    
+    public ApplicationUser LayTheoUserName(string userName)
+    {
+        return _context.ApplicationUsers.FirstOrDefault(u => u.UserName == userName);
+    }
+    
+    public void Them(ApplicationUser user)
+    {
+        _context.ApplicationUsers.InsertOnSubmit(user);
+        _context.SubmitChanges();
+    }
+    
+    public void CapNhat(ApplicationUser user)
+    {
+        // LINQ to SQL tự động track changes
+        _context.SubmitChanges();
+    }
+    
+    public void Xoa(Guid id)
+    {
+        var user = LayTheoId(id);
+        if (user != null)
+        {
+            _context.ApplicationUsers.DeleteOnSubmit(user);
+            _context.SubmitChanges();
+        }
+    }
+    
+    public void Dispose()
+    {
+        _context?.Dispose();
+    }
 }
 ```
 
 ## 5. Quy Ước Naming
 
 ### 5.1 File Naming
-- **Entity Classes:** `{TenEntity}Entity.cs`
-- **Repository Classes:** `{TenEntity}Repository.cs`
-- **Mapping Classes:** `{TenEntity}Mapping.cs`
-- **Stored Procedures:** `SP_{TenModule}.cs`
+- **Entity Classes:** Auto-generated từ .dbml (KHÔNG ĐỔI TÊN)
+- **DataAccess Classes:** `{TenEntity}DataAccess.cs`
+- **Extension Classes:** `{TenEntity}Extensions.cs`
+- **Helper Classes:** `{TenHelper}Helper.cs`
 
 ### 5.2 Class Naming
-- Sử dụng tiếng Việt không dấu CamelCase
-- Entity classes: `NhanVienEntity`, `KhachHangEntity`
-- Repository classes: `NhanVienRepository`, `KhachHangRepository`
+- **Entity Classes:** Tự động từ database table names
+- **DataAccess Classes:** `NhanVienDataAccess`, `KhachHangDataAccess`
+- **Extension Classes:** `NhanVienExtensions`, `KhachHangExtensions`
 
 ### 5.3 Method Naming
 - **CRUD Operations:** `LayTatCa`, `LayTheoId`, `Them`, `CapNhat`, `Xoa`
 - **Query Operations:** `TimKiem`, `LocTheo`, `SapXepTheo`
-- **Custom Operations:** `ThucThiStoredProcedure`, `TinhToan`
+- **Custom Operations:** `TinhToan`, `XuLy`, `KiemTra`
 
 ### 5.4 Database Naming
 - **Table Names:** snake_case tiếng Việt không dấu
 - **Column Names:** snake_case tiếng Việt không dấu
-- **Stored Procedures:** `sp_{ten_module}_{hanh_dong}`
+- **Database Schema:** Simple và straightforward
 
 ## 6. Dependencies
 
@@ -399,23 +450,70 @@ public interface IRepository<T> where T : class
 - Cache invalidation policies
 - Memory management
 
-## 8. Security Considerations
+## 8. Workflow Phát Triển DAL
 
-### 8.1 SQL Injection Prevention
-- Parameterized queries
-- Stored procedure usage
-- Input validation
+### 8.1 Quy Trình Tạo Entity
+1. **Thiết kế Database Schema** trước
+2. **Mở Visual Studio Server Explorer**
+3. **Kết nối database** (nếu chưa có)
+4. **Mở file VnsErp2025.dbml** trong Designer
+5. **Kéo thả bảng** từ Server Explorer vào Designer
+6. **Kiểm tra mapping** trong Designer
+7. **Build solution** để generate code
+8. **KHÔNG EDIT** các file .designer.cs
+
+### 8.2 Quy Trình Tạo DataAccess
+1. **Tạo class DataAccess** cho entity mới
+2. **Inherit từ BaseDataAccess** (nếu có)
+3. **Implement CRUD methods** cơ bản
+4. **Thêm business logic** nếu cần
+5. **Test CRUD operations**
+
+### 8.3 Quy Trình Cập Nhật Entity
+1. **Thay đổi database schema** trước
+2. **Refresh trong Server Explorer**
+3. **Update trong .dbml Designer**
+4. **Build solution** để regenerate
+5. **Update DataAccess class** nếu cần
+6. **Test lại functionality**
+
+## 9. Security Considerations
+
+### 9.1 SQL Injection Prevention
+- LINQ to SQL tự động parameterize queries
+- Sử dụng LINQ thay vì raw SQL
+- Input validation ở BLL layer
 - User permission management
 
-### 8.2 Data Access Security
+### 9.2 Data Access Security
 - Connection string encryption
 - Role-based access control
 - Audit logging
 - Data encryption for sensitive fields
 
+## 10. Best Practices
+
+### 10.1 Entity Management
+- **KHÔNG EDIT** auto-generated entity classes
+- Sử dụng **partial classes** nếu cần extend
+- **Backup .dbml file** trước khi thay đổi
+- **Test thoroughly** sau khi regenerate
+
+### 10.2 DataAccess Pattern
+- **Simple CRUD** operations
+- **Business logic** ở BLL layer
+- **Error handling** comprehensive
+- **Transaction management** khi cần
+
+### 10.3 Performance
+- **Lazy loading** cho relationships
+- **CompiledQuery** cho queries thường xuyên
+- **Connection pooling** được enable
+- **Proper disposal** của DataContext
+
 ---
 
-**Ngày tạo:** $(Get-Date -Format "dd/MM/yyyy")  
-**Phiên bản:** 1.0  
+**Ngày tạo:** 15/01/2025  
+**Phiên bản:** 2.0  
 **Người tạo:** Project Manager  
-**Trạng thái:** Đề xuất
+**Trạng thái:** Cập nhật cho Drag & Drop Approach

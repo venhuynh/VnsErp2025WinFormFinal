@@ -1,8 +1,8 @@
 using System;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Security;
 using System.Text;
-using Dal.Helpers;
 
 namespace Dal.Connection
 {
@@ -41,7 +41,7 @@ namespace Dal.Connection
 
                 return connectionString;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Fallback về connection string mặc định
                 return TaoConnectionStringMacDinh();
@@ -63,13 +63,13 @@ namespace Dal.Connection
                 var connectionString = ConfigurationManager.ConnectionStrings[connectionName]?.ConnectionString;
                 
                 if (string.IsNullOrEmpty(connectionString))
-                    throw new ConfigurationException($"Không tìm thấy connection string với tên: {connectionName}");
+                    throw new ConfigurationErrorsException($"Không tìm thấy connection string với tên: {connectionName}");
 
                 return connectionString;
             }
             catch (Exception ex)
             {
-                throw new ConfigurationException($"Lỗi lấy connection string: {ex.Message}", ex);
+                throw new ConfigurationErrorsException($"Lỗi lấy connection string: {ex.Message}", ex);
             }
         }
 
@@ -100,11 +100,9 @@ namespace Dal.Connection
                 InitialCatalog = database ?? DEFAULT_DATABASE,
                 IntegratedSecurity = integratedSecurity,
                 ConnectTimeout = DEFAULT_CONNECTION_TIMEOUT,
-                CommandTimeout = DEFAULT_TIMEOUT,
                 Pooling = true,
                 MinPoolSize = 1,
                 MaxPoolSize = 100,
-                ConnectionLifetime = 0,
                 Enlist = true
             };
 
@@ -141,11 +139,9 @@ namespace Dal.Connection
                 InitialCatalog = database,
                 IntegratedSecurity = integratedSecurity,
                 ConnectTimeout = timeout,
-                CommandTimeout = commandTimeout,
                 Pooling = pooling,
                 MinPoolSize = minPoolSize,
                 MaxPoolSize = maxPoolSize,
-                ConnectionLifetime = 0,
                 Enlist = true
             };
 
@@ -180,7 +176,7 @@ namespace Dal.Connection
                     UserId = builder.UserID,
                     Password = builder.Password,
                     ConnectionTimeout = builder.ConnectTimeout,
-                    CommandTimeout = builder.CommandTimeout,
+                    CommandTimeout = DEFAULT_TIMEOUT, // Default value since SqlConnectionStringBuilder doesn't have this property
                     Pooling = builder.Pooling,
                     MinPoolSize = builder.MinPoolSize,
                     MaxPoolSize = builder.MaxPoolSize

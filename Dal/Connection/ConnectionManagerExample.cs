@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using Dal.Exceptions;
+using Dal.Helpers;
 
 namespace Dal.Connection
 {

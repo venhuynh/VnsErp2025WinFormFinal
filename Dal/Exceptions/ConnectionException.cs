@@ -24,12 +24,12 @@ namespace Dal.Exceptions
         /// <summary>
         /// Mã lỗi SQL Server (nếu có)
         /// </summary>
-        public int? SqlErrorNumber { get; }
+        public new int? SqlErrorNumber { get; set; }
 
         /// <summary>
         /// Thời gian xảy ra lỗi
         /// </summary>
-        public DateTime ThoiGianLoi { get; }
+        public new DateTime ThoiGianLoi { get; }
 
         #endregion
 

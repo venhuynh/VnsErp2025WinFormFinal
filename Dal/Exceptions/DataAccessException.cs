@@ -14,7 +14,7 @@ namespace Dal.Exceptions
         /// <summary>
         /// Thời gian xảy ra lỗi
         /// </summary>
-        public DateTime ThoiGianLoi { get; }
+        public DateTime ThoiGianLoi { get; set; }
 
         /// <summary>
         /// Mô tả chi tiết lỗi
@@ -25,6 +25,11 @@ namespace Dal.Exceptions
         /// Context của lỗi (tên method, class...)
         /// </summary>
         public string Context { get; set; }
+
+        /// <summary>
+        /// SQL Error Number (nếu có)
+        /// </summary>
+        public int? SqlErrorNumber { get; set; }
 
         #endregion
 
@@ -82,6 +87,7 @@ namespace Dal.Exceptions
             ThoiGianLoi = info.GetDateTime(nameof(ThoiGianLoi));
             MoTaChiTiet = info.GetString(nameof(MoTaChiTiet));
             Context = info.GetString(nameof(Context));
+            SqlErrorNumber = info.GetInt32(nameof(SqlErrorNumber));
         }
 
         /// <summary>
@@ -95,6 +101,7 @@ namespace Dal.Exceptions
             info.AddValue(nameof(ThoiGianLoi), ThoiGianLoi);
             info.AddValue(nameof(MoTaChiTiet), MoTaChiTiet);
             info.AddValue(nameof(Context), Context);
+            info.AddValue(nameof(SqlErrorNumber), SqlErrorNumber);
         }
 
         #endregion

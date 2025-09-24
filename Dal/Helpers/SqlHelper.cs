@@ -219,7 +219,7 @@ namespace Dal.Helpers
             var upperSql = sql.TrimStart().ToUpper();
             if (upperSql.StartsWith("SELECT"))
             {
-                return sql.Replace("SELECT", $"SELECT TOP {topCount}", StringComparison.OrdinalIgnoreCase);
+                return sql.Substring(0, 6) + $"TOP {topCount} " + sql.Substring(6);
             }
 
             return sql;
@@ -276,11 +276,18 @@ namespace Dal.Helpers
                 return false;
 
             // Kiểm tra ký tự đặc biệt
-            var invalidChars = new[] { ' ', ';', '--', '/*', '*/', '\'', '"', '[', ']', '(', ')' };
+            var invalidChars = new[] { ' ', ';', '\'', '"', '[', ']', '(', ')' };
+            var invalidStrings = new[] { "--", "/*", "*/" };
             
             foreach (var invalidChar in invalidChars)
             {
                 if (tableName.Contains(invalidChar.ToString()))
+                    return false;
+            }
+            
+            foreach (var invalidString in invalidStrings)
+            {
+                if (tableName.Contains(invalidString))
                     return false;
             }
 

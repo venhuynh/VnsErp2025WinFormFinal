@@ -196,7 +196,7 @@ namespace Dal.Connection
                 CacheTimeout = int.Parse(LayGiaTriConfig("CacheTimeout", CacheTimeout.ToString()));
                 MaxCacheSize = int.Parse(LayGiaTriConfig("MaxCacheSize", MaxCacheSize.ToString()));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log error nhưng không throw exception
                 // Có thể sử dụng logging framework ở đây
