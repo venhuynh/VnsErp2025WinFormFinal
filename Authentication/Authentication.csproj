@@ -79,5 +79,15 @@
   <ItemGroup>
     <None Include="Resources\cancel_16x16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bll\Bll.csproj">
+      <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
+      <Name>Bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dal\Dal.csproj">
+      <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
+      <Name>Dal</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

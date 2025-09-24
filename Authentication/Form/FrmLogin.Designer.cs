@@ -42,7 +42,7 @@
             this.UserNameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.PasswordTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.OkButton = new DevExpress.XtraEditors.SimpleButton();
-            this.CancelButton = new DevExpress.XtraEditors.SimpleButton();
+            this.CancelSimpleButton = new DevExpress.XtraEditors.SimpleButton();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.simpleLabelItem1 = new DevExpress.XtraLayout.SimpleLabelItem();
             this.simpleLabelItem2 = new DevExpress.XtraLayout.SimpleLabelItem();
@@ -75,7 +75,7 @@
             this.layoutControl1.Controls.Add(this.UserNameTextEdit);
             this.layoutControl1.Controls.Add(this.PasswordTextEdit);
             this.layoutControl1.Controls.Add(this.OkButton);
-            this.layoutControl1.Controls.Add(this.CancelButton);
+            this.layoutControl1.Controls.Add(this.CancelSimpleButton);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
@@ -122,16 +122,16 @@
             this.OkButton.Text = "Đăng nhập";
             this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
-            // CancelButton
+            // CancelSimpleButton
             // 
-            this.CancelButton.ImageOptions.Image = global::Authentication.Properties.Resources.cancel_16x16;
-            this.CancelButton.Location = new System.Drawing.Point(220, 105);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(80, 22);
-            this.CancelButton.StyleController = this.layoutControl1;
-            this.CancelButton.TabIndex = 5;
-            this.CancelButton.Text = "Hủy";
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            this.CancelSimpleButton.ImageOptions.Image = global::Authentication.Properties.Resources.cancel_16x16;
+            this.CancelSimpleButton.Location = new System.Drawing.Point(220, 105);
+            this.CancelSimpleButton.Name = "CancelSimpleButton";
+            this.CancelSimpleButton.Size = new System.Drawing.Size(80, 22);
+            this.CancelSimpleButton.StyleController = this.layoutControl1;
+            this.CancelSimpleButton.TabIndex = 5;
+            this.CancelSimpleButton.Text = "Hủy";
+            this.CancelSimpleButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // Root
             // 
@@ -258,7 +258,7 @@
             // 
             // layoutControlItem5
             // 
-            this.layoutControlItem5.Control = this.CancelButton;
+            this.layoutControlItem5.Control = this.CancelSimpleButton;
             this.layoutControlItem5.Location = new System.Drawing.Point(200, 85);
             this.layoutControlItem5.Name = "layoutControlItem5";
             this.layoutControlItem5.OptionsTableLayoutItem.ColumnIndex = 2;
@@ -308,7 +308,7 @@
         private System.Windows.Forms.CheckBox RememberMeCheckBox;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
         private DevExpress.XtraEditors.SimpleButton OkButton;
-        private DevExpress.XtraEditors.SimpleButton CancelButton;
+        private DevExpress.XtraEditors.SimpleButton CancelSimpleButton;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
         private DevExpress.XtraEditors.DXErrorProvider.DXValidationProvider dxValidationProvider1;
