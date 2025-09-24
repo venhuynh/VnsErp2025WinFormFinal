@@ -3,15 +3,20 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Security;
 using System.Text;
+using System.Linq;
+using System.Reflection;
 
 namespace Dal.Connection
 {
     /// <summary>
-    /// Helper class để quản lý connection string
+    /// Helper quản lý Connection String cho toàn bộ ứng dụng.
+    /// - Ưu tiên nguồn cấu hình: User Settings (do UI lưu) → ConnectionStrings (App.config) → Mặc định.
+    /// - Hỗ trợ tạo, phân tích, kiểm tra, mã hóa/giải mã, và ẩn mật khẩu.
+    /// - Đọc User Settings qua reflection để không phụ thuộc dự án UI.
     /// </summary>
     public static class ConnectionStringHelper
     {
-        #region thuocTinhDonGian
+        #region Constants
 
         private const string DEFAULT_CONNECTION_NAME = "VnsErp2025ConnectionString";
         private const string DEFAULT_SERVER = "localhost";
@@ -21,39 +26,43 @@ namespace Dal.Connection
 
         #endregion
 
-        #region phuongThuc
+        #region Public API
 
         /// <summary>
-        /// Lấy connection string mặc định từ config
+        /// Lấy Connection String mặc định theo luồng ưu tiên:
+        /// 1) User Settings (UI) → 2) ConnectionStrings trong cấu hình → 3) Chuỗi mặc định build sẵn.
         /// </summary>
-        /// <returns>Connection string</returns>
-        public static string LayConnectionStringMacDinh()
+        public static string GetDefaultConnectionString()
         {
             try
             {
+                if (TryGetFromUserSettings(out var csFromSettings))
+                {
+                    return csFromSettings;
+                }
+
                 var connectionString = ConfigurationManager.ConnectionStrings[DEFAULT_CONNECTION_NAME]?.ConnectionString;
                 
                 if (string.IsNullOrEmpty(connectionString))
                 {
-                    // Tạo connection string mặc định nếu không tìm thấy trong config
-                    connectionString = TaoConnectionStringMacDinh();
+                    connectionString = BuildDefaultConnectionString();
                 }
 
                 return connectionString;
             }
             catch (Exception)
             {
-                // Fallback về connection string mặc định
-                return TaoConnectionStringMacDinh();
+                return BuildDefaultConnectionString();
             }
         }
 
         /// <summary>
-        /// Lấy connection string theo tên
+        /// Lấy Connection String theo tên trong ConnectionStrings của cấu hình ứng dụng.
         /// </summary>
-        /// <param name="connectionName">Tên connection string trong config</param>
-        /// <returns>Connection string</returns>
-        public static string LayConnectionString(string connectionName)
+        /// <param name="connectionName">Tên Connection String trong App.config/Web.config</param>
+        /// <returns>Connection String tương ứng</returns>
+        /// <exception cref="ConfigurationErrorsException">Ném lỗi khi không tìm thấy hoặc cấu hình không hợp lệ</exception>
+        public static string GetConnectionStringByName(string connectionName)
         {
             try
             {
@@ -74,24 +83,22 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Tạo connection string mặc định
+        /// Tạo Connection String mặc định (localhost, DB mặc định, Windows Authentication).
         /// </summary>
-        /// <returns>Connection string mặc định</returns>
-        public static string TaoConnectionStringMacDinh()
+        public static string BuildDefaultConnectionString()
         {
-            return TaoConnectionString(DEFAULT_SERVER, DEFAULT_DATABASE, true, null, null);
+            return BuildConnectionString(DEFAULT_SERVER, DEFAULT_DATABASE, true, null, null);
         }
 
         /// <summary>
-        /// Tạo connection string với thông tin cơ bản
+        /// Tạo Connection String với thông tin cơ bản.
         /// </summary>
         /// <param name="server">Tên server</param>
         /// <param name="database">Tên database</param>
         /// <param name="integratedSecurity">Sử dụng Windows Authentication</param>
         /// <param name="userId">User ID (nếu không dùng Windows Auth)</param>
         /// <param name="password">Password (nếu không dùng Windows Auth)</param>
-        /// <returns>Connection string</returns>
-        public static string TaoConnectionString(string server, string database, bool integratedSecurity = true, 
+        public static string BuildConnectionString(string server, string database, bool integratedSecurity = true, 
             string userId = null, string password = null)
         {
             var builder = new SqlConnectionStringBuilder
@@ -116,20 +123,9 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Tạo connection string với SqlConnectionStringBuilder
+        /// Tạo Connection String chi tiết bằng SqlConnectionStringBuilder.
         /// </summary>
-        /// <param name="server">Tên server</param>
-        /// <param name="database">Tên database</param>
-        /// <param name="integratedSecurity">Sử dụng Windows Authentication</param>
-        /// <param name="userId">User ID</param>
-        /// <param name="password">Password</param>
-        /// <param name="timeout">Connection timeout</param>
-        /// <param name="commandTimeout">Command timeout</param>
-        /// <param name="pooling">Enable connection pooling</param>
-        /// <param name="minPoolSize">Minimum pool size</param>
-        /// <param name="maxPoolSize">Maximum pool size</param>
-        /// <returns>Connection string</returns>
-        public static string TaoConnectionStringChiTiet(string server, string database, bool integratedSecurity = true,
+        public static string BuildDetailedConnectionString(string server, string database, bool integratedSecurity = true,
             string userId = null, string password = null, int timeout = DEFAULT_CONNECTION_TIMEOUT,
             int commandTimeout = DEFAULT_TIMEOUT, bool pooling = true, int minPoolSize = 1, int maxPoolSize = 100)
         {
@@ -155,11 +151,9 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Parse connection string thành các thành phần
+        /// Phân tích Connection String thành cấu trúc thông tin.
         /// </summary>
-        /// <param name="connectionString">Connection string cần parse</param>
-        /// <returns>ConnectionStringInfo object</returns>
-        public static ConnectionStringInfo PhanTichConnectionString(string connectionString)
+        public static ConnectionStringInfo ParseConnectionString(string connectionString)
         {
             try
             {
@@ -176,7 +170,7 @@ namespace Dal.Connection
                     UserId = builder.UserID,
                     Password = builder.Password,
                     ConnectionTimeout = builder.ConnectTimeout,
-                    CommandTimeout = DEFAULT_TIMEOUT, // Default value since SqlConnectionStringBuilder doesn't have this property
+                    CommandTimeout = DEFAULT_TIMEOUT, // SqlConnectionStringBuilder không có property này
                     Pooling = builder.Pooling,
                     MinPoolSize = builder.MinPoolSize,
                     MaxPoolSize = builder.MaxPoolSize
@@ -189,11 +183,9 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Kiểm tra connection string có hợp lệ không
+        /// Kiểm tra Connection String có hợp lệ (server/database + thông tin xác thực nếu cần).
         /// </summary>
-        /// <param name="connectionString">Connection string cần kiểm tra</param>
-        /// <returns>True nếu hợp lệ</returns>
-        public static bool KiemTraConnectionString(string connectionString)
+        public static bool IsValidConnectionString(string connectionString)
         {
             try
             {
@@ -202,11 +194,9 @@ namespace Dal.Connection
 
                 var builder = new SqlConnectionStringBuilder(connectionString);
                 
-                // Kiểm tra các thông tin bắt buộc
                 if (string.IsNullOrEmpty(builder.DataSource) || string.IsNullOrEmpty(builder.InitialCatalog))
                     return false;
 
-                // Kiểm tra authentication
                 if (!builder.IntegratedSecurity && string.IsNullOrEmpty(builder.UserID))
                     return false;
 
@@ -219,11 +209,9 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Mã hóa connection string
+        /// Mã hóa Connection String (Base64) để lưu trữ an toàn hơn.
         /// </summary>
-        /// <param name="connectionString">Connection string cần mã hóa</param>
-        /// <returns>Connection string đã mã hóa</returns>
-        public static string MaHoaConnectionString(string connectionString)
+        public static string EncodeConnectionString(string connectionString)
         {
             try
             {
@@ -240,11 +228,9 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Giải mã connection string
+        /// Giải mã Connection String đã mã hóa bằng Base64.
         /// </summary>
-        /// <param name="encryptedConnectionString">Connection string đã mã hóa</param>
-        /// <returns>Connection string đã giải mã</returns>
-        public static string GiaiMaConnectionString(string encryptedConnectionString)
+        public static string DecodeConnectionString(string encryptedConnectionString)
         {
             try
             {
@@ -261,11 +247,9 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Lấy connection string an toàn (ẩn password)
+        /// Ẩn mật khẩu trong Connection String để ghi log/hiển thị an toàn.
         /// </summary>
-        /// <param name="connectionString">Connection string gốc</param>
-        /// <returns>Connection string đã ẩn password</returns>
-        public static string LayConnectionStringAnToan(string connectionString)
+        public static string GetSafeConnectionString(string connectionString)
         {
             try
             {
@@ -283,47 +267,162 @@ namespace Dal.Connection
             }
             catch
             {
-                // Nếu không thể parse, trả về connection string gốc
                 return connectionString;
             }
         }
 
         /// <summary>
-        /// Tạo connection string cho environment khác nhau
+        /// Tạo Connection String theo môi trường (Development/Testing/Production).
         /// </summary>
-        /// <param name="environment">Environment (Development, Testing, Production)</param>
-        /// <returns>Connection string phù hợp với environment</returns>
-        public static string TaoConnectionStringTheoEnvironment(string environment)
+        public static string BuildByEnvironment(string environment)
         {
             switch (environment?.ToLower())
             {
                 case "development":
                 case "dev":
-                    return TaoConnectionString("localhost", "VnsErp2025_Dev", true);
+                    return BuildConnectionString("localhost", "VnsErp2025_Dev", true);
                 
                 case "testing":
                 case "test":
-                    return TaoConnectionString("localhost", "VnsErp2025_Test", true);
+                    return BuildConnectionString("localhost", "VnsErp2025_Test", true);
                 
                 case "production":
                 case "prod":
-                    return LayConnectionString("VnsErp2025_Production");
+                    return GetConnectionStringByName("VnsErp2025_Production");
                 
                 default:
-                    return LayConnectionStringMacDinh();
+                    return GetDefaultConnectionString();
             }
         }
 
         #endregion
 
-        #region lopHoTro
+        #region Internal Helpers
 
         /// <summary>
-        /// Class chứa thông tin connection string
+        /// Thử lấy Connection String từ User Settings (Properties.Settings) bằng reflection.
+        /// Kỳ vọng các khóa: DatabaseServer, DatabaseName, UseIntegratedSecurity, DatabaseUserId, DatabasePassword.
+        /// </summary>
+        private static bool TryGetFromUserSettings(out string connectionString)
+        {
+            connectionString = null;
+            try
+            {
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var asm in assemblies)
+                {
+                    var settingsType = asm.GetTypes()
+                        .FirstOrDefault(t => t.Name == "Settings" && t.Namespace != null && t.Namespace.EndsWith(".Properties", StringComparison.OrdinalIgnoreCase));
+                    if (settingsType == null) continue;
+
+                    var defaultProp = settingsType.GetProperty("Default", BindingFlags.Public | BindingFlags.Static);
+                    if (defaultProp == null) continue;
+                    var settingsInstance = defaultProp.GetValue(null);
+                    if (settingsInstance == null) continue;
+
+                    string server = ReadSetting<string>(settingsInstance, "DatabaseServer");
+                    string database = ReadSetting<string>(settingsInstance, "DatabaseName");
+                    bool? useIntegrated = ReadSetting<bool?>(settingsInstance, "UseIntegratedSecurity");
+                    string userId = ReadSetting<string>(settingsInstance, "DatabaseUserId");
+                    string encPwd = ReadSetting<string>(settingsInstance, "DatabasePassword");
+                    string password = string.IsNullOrEmpty(encPwd) ? null : DecodeConnectionString(encPwd);
+
+                    if (!string.IsNullOrEmpty(server) && !string.IsNullOrEmpty(database))
+                    {
+                        bool integrated = useIntegrated ?? true;
+                        connectionString = BuildDetailedConnectionString(
+                            server,
+                            database,
+                            integrated,
+                            integrated ? null : userId,
+                            integrated ? null : password,
+                            DEFAULT_CONNECTION_TIMEOUT,
+                            DEFAULT_TIMEOUT,
+                            true,
+                            1,
+                            100
+                        );
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                // Bỏ qua và fallback
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Đọc một thuộc tính từ đối tượng Settings (Properties.Settings.Default) một cách an toàn.
+        /// </summary>
+        private static T ReadSetting<T>(object settingsInstance, string propertyName)
+        {
+            try
+            {
+                var prop = settingsInstance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+                if (prop == null) return default;
+                var value = prop.GetValue(settingsInstance);
+                if (value == null) return default;
+                return (T)value;
+            }
+            catch
+            {
+                return default;
+            }
+        }
+
+        #endregion
+
+        //#region Obsolete Aliases (Backward Compatibility)
+
+        //[Obsolete("Use GetDefaultConnectionString() instead")]
+        //public static string LayConnectionStringMacDinh() => GetDefaultConnectionString();
+
+        //[Obsolete("Use GetConnectionStringByName(string) instead")]
+        //public static string LayConnectionString(string connectionName) => GetConnectionStringByName(connectionName);
+
+        //[Obsolete("Use BuildDefaultConnectionString() instead")]
+        //public static string TaoConnectionStringMacDinh() => BuildDefaultConnectionString();
+
+        //[Obsolete("Use BuildConnectionString(string,string,bool,string,string) instead")]
+        //public static string TaoConnectionString(string server, string database, bool integratedSecurity = true, string userId = null, string password = null)
+        //    => BuildConnectionString(server, database, integratedSecurity, userId, password);
+
+        //[Obsolete("Use BuildDetailedConnectionString(...) instead")]
+        //public static string TaoConnectionStringChiTiet(string server, string database, bool integratedSecurity = true,
+        //    string userId = null, string password = null, int timeout = DEFAULT_CONNECTION_TIMEOUT,
+        //    int commandTimeout = DEFAULT_TIMEOUT, bool pooling = true, int minPoolSize = 1, int maxPoolSize = 100)
+        //    => BuildDetailedConnectionString(server, database, integratedSecurity, userId, password, timeout, commandTimeout, pooling, minPoolSize, maxPoolSize);
+
+        //[Obsolete("Use ParseConnectionString(string) instead")]
+        //public static ConnectionStringInfo PhanTichConnectionString(string connectionString) => ParseConnectionString(connectionString);
+
+        //[Obsolete("Use IsValidConnectionString(string) instead")]
+        //public static bool KiemTraConnectionString(string connectionString) => IsValidConnectionString(connectionString);
+
+        //[Obsolete("Use EncodeConnectionString(string) instead")]
+        //public static string MaHoaConnectionString(string connectionString) => EncodeConnectionString(connectionString);
+
+        //[Obsolete("Use DecodeConnectionString(string) instead")]
+        //public static string GiaiMaConnectionString(string encryptedConnectionString) => DecodeConnectionString(encryptedConnectionString);
+
+        //[Obsolete("Use GetSafeConnectionString(string) instead")]
+        //public static string LayConnectionStringAnToan(string connectionString) => GetSafeConnectionString(connectionString);
+
+        //[Obsolete("Use BuildByEnvironment(string) instead")]
+        //public static string TaoConnectionStringTheoEnvironment(string environment) => BuildByEnvironment(environment);
+
+        //#endregion
+
+        #region Nested Types
+
+        /// <summary>
+        /// Cấu trúc thông tin connection string (để parse/hiển thị).
         /// </summary>
         public class ConnectionStringInfo
         {
-            #region thuocTinhDonGian
+            #region Fields & Properties
 
             /// <summary>
             /// Tên server
@@ -377,15 +476,14 @@ namespace Dal.Connection
 
             #endregion
 
-            #region phuongThuc
+            #region Methods
 
             /// <summary>
-            /// Chuyển đổi thành connection string
+            /// Chuyển đổi thành connection string chi tiết.
             /// </summary>
-            /// <returns>Connection string</returns>
             public override string ToString()
             {
-                return ConnectionStringHelper.TaoConnectionStringChiTiet(
+                return ConnectionStringHelper.BuildDetailedConnectionString(
                     Server, Database, IntegratedSecurity, UserId, Password,
                     ConnectionTimeout, CommandTimeout, Pooling, MinPoolSize, MaxPoolSize);
             }

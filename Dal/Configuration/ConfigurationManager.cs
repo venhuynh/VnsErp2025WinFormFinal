@@ -4,17 +4,19 @@ using Dal.Connection;
 namespace Dal.Configuration
 {
     /// <summary>
-    /// Centralized configuration manager
+    /// Trình quản lý cấu hình tập trung (Configuration Manager) cho DAL.
+    /// - Chịu trách nhiệm tải, cung cấp và cho phép override cấu hình database.
+    /// - Đảm bảo thread-safe khi truy xuất cấu hình.
     /// </summary>
     public static class ConfigurationManager
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
         private static DatabaseSettings _databaseSettings;
         private static readonly object _lockObject = new object();
 
         /// <summary>
-        /// Database settings (thread-safe singleton)
+        /// Cấu hình database (singleton, thread-safe).
         /// </summary>
         public static DatabaseSettings DatabaseSettings
         {
@@ -36,10 +38,10 @@ namespace Dal.Configuration
 
         #endregion
 
-        #region phuongThuc
+        #region Loaders
 
         /// <summary>
-        /// Load database settings from configuration
+        /// Nạp cấu hình database từ AppSettings và hợp lệ hóa.
         /// </summary>
         private static DatabaseSettings LoadDatabaseSettings()
         {
@@ -47,7 +49,7 @@ namespace Dal.Configuration
             {
                 var settings = new DatabaseSettings
                 {
-                    ConnectionString = ConnectionStringHelper.LayConnectionStringMacDinh(),
+                    ConnectionString = ConnectionStringHelper.GetDefaultConnectionString(),
                     CommandTimeout = GetIntFromConfig("Database.CommandTimeout", 30),
                     ConnectionTimeout = GetIntFromConfig("Database.ConnectionTimeout", 15),
                     EnableRetryOnFailure = GetBoolFromConfig("Database.EnableRetryOnFailure", true),
@@ -68,8 +70,12 @@ namespace Dal.Configuration
             }
         }
 
+        #endregion
+
+        #region Parsing Helpers
+
         /// <summary>
-        /// Get integer value from configuration with default
+        /// Đọc giá trị int từ AppSettings với giá trị mặc định.
         /// </summary>
         private static int GetIntFromConfig(string key, int defaultValue)
         {
@@ -85,7 +91,7 @@ namespace Dal.Configuration
         }
 
         /// <summary>
-        /// Get long value from configuration with default
+        /// Đọc giá trị long từ AppSettings với giá trị mặc định.
         /// </summary>
         private static long GetLongFromConfig(string key, long defaultValue)
         {
@@ -101,7 +107,7 @@ namespace Dal.Configuration
         }
 
         /// <summary>
-        /// Get boolean value from configuration with default
+        /// Đọc giá trị bool từ AppSettings với giá trị mặc định.
         /// </summary>
         private static bool GetBoolFromConfig(string key, bool defaultValue)
         {
@@ -116,20 +122,27 @@ namespace Dal.Configuration
             }
         }
 
+        #endregion
+
+        #region Management
+
         /// <summary>
-        /// Reload configuration (useful for testing or dynamic updates)
+        /// Reload toàn bộ cấu hình (hữu ích cho test hoặc cập nhật động).
+        /// Lần truy cập tiếp theo vào <see cref="DatabaseSettings"/> sẽ tự động nạp lại.
         /// </summary>
         public static void ReloadConfiguration()
         {
             lock (_lockObject)
             {
-                _databaseSettings = null; // Will be reloaded on next access
+                _databaseSettings = null;
             }
         }
 
         /// <summary>
-        /// Override settings (useful for testing)
+        /// Ghi đè cấu hình hiện tại (hữu ích cho test).
         /// </summary>
+        /// <param name="settings">Đối tượng cấu hình hợp lệ</param>
+        /// <exception cref="ArgumentNullException">Khi <paramref name="settings"/> null</exception>
         public static void OverrideSettings(DatabaseSettings settings)
         {
             if (settings == null)

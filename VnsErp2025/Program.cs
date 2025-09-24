@@ -1,12 +1,9 @@
-﻿using DevExpress.LookAndFeel;
-using DevExpress.Skins;
-using DevExpress.UserSkins;
+﻿using Bll.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
-using Authentication.Form;
 using VnsErp2025.Form;
+using Dal.Connection;
+using Authentication.Form;
 
 namespace VnsErp2025
 {
@@ -20,13 +17,33 @@ namespace VnsErp2025
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
-            // Khởi tạo DevExpress Look and Feel
-            DevExpress.UserSkins.BonusSkins.Register();
-            DevExpress.Skins.SkinManager.EnableFormSkins();
-            DevExpress.LookAndFeel.UserLookAndFeel.Default.SetSkinStyle("Office 2019 Colorful");
-            
-            // Hiển thị form đăng nhập
+
+            // Cấu hình DevExpress Skin
+            SkinHelper.KhoiTaoSkin("WXI");
+
+            // 1) Tải connection string từ Settings (ConnectionManager default sẽ ưu tiên User Settings)
+            var connectionManager = new ConnectionManager();
+
+            // 2) Kiểm tra kết nối
+            if (!connectionManager.TestConnection())
+            {
+                // 2a) Không kết nối được -> mở màn hình cấu hình DB
+                using (var configForm = new FrmDatabaseConfig())
+                {
+                    configForm.ShowDialog();
+                }
+
+                // Thử kiểm tra lại sau khi người dùng lưu cấu hình
+                connectionManager = new ConnectionManager();
+                if (!connectionManager.TestConnection())
+                {
+                    // Không kết nối được sau cấu hình -> thoát
+                    Application.Exit();
+                    return;
+                }
+            }
+
+            // 3) Kết nối OK -> hiển thị màn hình đăng nhập
             using (var loginForm = new FrmLogin())
             {
                 if (loginForm.ShowDialog() == DialogResult.OK)
@@ -41,5 +58,6 @@ namespace VnsErp2025
                 }
             }
         }
+
     }
 }

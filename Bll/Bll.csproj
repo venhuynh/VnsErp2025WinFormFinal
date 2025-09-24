@@ -39,6 +39,7 @@
     <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.BonusSkins.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -52,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authentication\LoginBll.cs" />
+    <Compile Include="Common\OverlayManager.cs" />
     <Compile Include="Common\SplashScreenHelper.cs" />
     <Compile Include="Common\VnsSplashScreen.cs">
       <SubType>Form</SubType>
@@ -69,9 +71,11 @@
     <Compile Include="Utils\ApplicationSystemUtils.cs" />
     <Compile Include="Utils\MsgBox.cs" />
     <Compile Include="Utils\SecurityHelper.cs" />
+    <Compile Include="Utils\SkinHelper.cs" />
     <Compile Include="Validation\ValidationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Doc\BllFolderStructure.md" />
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +91,11 @@
       <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
       <Name>Dal</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
+    <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

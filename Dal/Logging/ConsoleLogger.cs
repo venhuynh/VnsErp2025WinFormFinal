@@ -3,28 +3,30 @@ using System;
 namespace Dal.Logging
 {
     /// <summary>
-    /// Console logger implementation
+    /// Trình ghi log ra Console đơn giản.
+    /// Mục tiêu: ghi nhanh các mức INFO/WARN/ERROR/DEBUG/PERF với timestamp.
     /// </summary>
     public class ConsoleLogger : ILogger
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
         private readonly bool _enableDebug;
 
         #endregion
 
-        #region phuongThuc
+        #region Methods
 
         /// <summary>
-        /// Constructor
+        /// Khởi tạo logger.
         /// </summary>
+        /// <param name="enableDebug">Bật ghi DEBUG và StackTrace cho lỗi</param>
         public ConsoleLogger(bool enableDebug = false)
         {
             _enableDebug = enableDebug;
         }
 
         /// <summary>
-        /// Log information message
+        /// Ghi log mức thông tin (INFO).
         /// </summary>
         public void LogInfo(string message, params object[] args)
         {
@@ -33,7 +35,7 @@ namespace Dal.Logging
         }
 
         /// <summary>
-        /// Log warning message
+        /// Ghi log mức cảnh báo (WARN).
         /// </summary>
         public void LogWarning(string message, params object[] args)
         {
@@ -42,7 +44,7 @@ namespace Dal.Logging
         }
 
         /// <summary>
-        /// Log error message
+        /// Ghi log mức lỗi (ERROR). In kèm Exception và StackTrace (nếu bật DEBUG).
         /// </summary>
         public void LogError(string message, Exception ex = null, params object[] args)
         {
@@ -60,7 +62,7 @@ namespace Dal.Logging
         }
 
         /// <summary>
-        /// Log debug message
+        /// Ghi log mức DEBUG (chỉ khi bật).
         /// </summary>
         public void LogDebug(string message, params object[] args)
         {
@@ -71,7 +73,7 @@ namespace Dal.Logging
         }
 
         /// <summary>
-        /// Log performance message
+        /// Ghi log hiệu năng (PERF) kèm thời gian thực thi.
         /// </summary>
         public void LogPerformance(string operationName, long elapsedMs, params object[] args)
         {
@@ -86,7 +88,7 @@ namespace Dal.Logging
         }
 
         /// <summary>
-        /// Format log message with timestamp and level
+        /// Chuẩn hóa định dạng log với timestamp và level.
         /// </summary>
         private string FormatMessage(string level, string message, params object[] args)
         {

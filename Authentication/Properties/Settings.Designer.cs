@@ -58,5 +58,65 @@ namespace Authentication.Properties {
                 this["SavedPassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        public string DatabaseServer {
+            get {
+                return ((string)(this["DatabaseServer"]));
+            }
+            set {
+                this["DatabaseServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("VnsErp2025")]
+        public string DatabaseName {
+            get {
+                return ((string)(this["DatabaseName"]));
+            }
+            set {
+                this["DatabaseName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DatabaseUserId {
+            get {
+                return ((string)(this["DatabaseUserId"]));
+            }
+            set {
+                this["DatabaseUserId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DatabasePassword {
+            get {
+                return ((string)(this["DatabasePassword"]));
+            }
+            set {
+                this["DatabasePassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseIntegratedSecurity {
+            get {
+                return ((bool)(this["UseIntegratedSecurity"]));
+            }
+            set {
+                this["UseIntegratedSecurity"] = value;
+            }
+        }
     }
 }

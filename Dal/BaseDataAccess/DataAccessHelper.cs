@@ -7,52 +7,59 @@ using Dal.Exceptions;
 namespace Dal.BaseDataAccess
 {
     /// <summary>
-    /// Helper methods chung cho Data Access
+    /// Helper chung cho Data Access: cung cấp tiện ích về khóa chính, kiểm tra dữ liệu, clone và so sánh.
+    /// Dùng để giảm lặp code và tăng tính nhất quán ở các lớp DAL.
     /// </summary>
     public static class DataAccessHelper
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
-        private static readonly Dictionary<Type, PropertyInfo> PrimaryKeyCache = new Dictionary<Type, PropertyInfo>();
+        /// <summary>
+        /// Bộ nhớ đệm PropertyInfo của khóa chính theo kiểu entity.
+        /// </summary>
+        private static readonly Dictionary<Type, PropertyInfo> _primaryKeyCache = new Dictionary<Type, PropertyInfo>();
 
         #endregion
 
-        #region phuongThuc
+        #region Validation & Utilities (New API)
 
         /// <summary>
-        /// Lấy primary key property của entity type
+        /// Lấy Property khóa chính của kiểu thực thể.
         /// </summary>
-        /// <param name="entityType">Entity type</param>
-        /// <returns>Primary key property</returns>
-        public static PropertyInfo LayPrimaryKeyProperty(Type entityType)
+        /// <param name="entityType">Kiểu thực thể</param>
+        /// <returns>PropertyInfo là khóa chính; có thể null nếu không tìm thấy</returns>
+        /// <exception cref="ArgumentNullException">Khi <paramref name="entityType"/> null</exception>
+        public static PropertyInfo GetPrimaryKeyProperty(Type entityType)
         {
             if (entityType == null)
                 throw new ArgumentNullException(nameof(entityType));
 
-            if (PrimaryKeyCache.ContainsKey(entityType))
-                return PrimaryKeyCache[entityType];
+            if (_primaryKeyCache.ContainsKey(entityType))
+                return _primaryKeyCache[entityType];
 
             var properties = entityType.GetProperties();
-            var primaryKeyProperty = properties.FirstOrDefault(p => 
+            var primaryKeyProperty = properties.FirstOrDefault(p =>
                 p.GetCustomAttributes(typeof(System.Data.Linq.Mapping.ColumnAttribute), false)
                  .Cast<System.Data.Linq.Mapping.ColumnAttribute>()
                  .Any(attr => attr.IsPrimaryKey));
 
-            PrimaryKeyCache[entityType] = primaryKeyProperty;
+            _primaryKeyCache[entityType] = primaryKeyProperty;
             return primaryKeyProperty;
         }
 
         /// <summary>
-        /// Lấy giá trị primary key của entity
+        /// Lấy giá trị khóa chính của một thực thể.
         /// </summary>
-        /// <param name="entity">Entity</param>
-        /// <returns>Giá trị primary key</returns>
-        public static object LayGiaTriPrimaryKey(object entity)
+        /// <param name="entity">Thực thể cần đọc</param>
+        /// <returns>Giá trị khóa chính</returns>
+        /// <exception cref="ArgumentNullException">Khi <paramref name="entity"/> null</exception>
+        /// <exception cref="DataAccessException">Khi không tìm thấy khóa chính</exception>
+        public static object GetPrimaryKeyValue(object entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var primaryKeyProperty = LayPrimaryKeyProperty(entity.GetType());
+            var primaryKeyProperty = GetPrimaryKeyProperty(entity.GetType());
             if (primaryKeyProperty == null)
                 throw new DataAccessException($"Không tìm thấy primary key cho {entity.GetType().Name}");
 
@@ -60,38 +67,41 @@ namespace Dal.BaseDataAccess
         }
 
         /// <summary>
-        /// Kiểm tra entity có null hay không
+        /// Đảm bảo entity khác null.
         /// </summary>
         /// <param name="entity">Entity cần kiểm tra</param>
-        /// <param name="entityName">Tên entity (cho error message)</param>
-        public static void KiemTraEntityNull(object entity, string entityName)
+        /// <param name="entityName">Tên entity (phục vụ thông báo lỗi)</param>
+        /// <exception cref="ArgumentNullException">Khi <paramref name="entity"/> null</exception>
+        public static void EnsureEntityNotNull(object entity, string entityName)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity), $"{entityName} không được null");
         }
 
         /// <summary>
-        /// Kiểm tra ID có hợp lệ hay không
+        /// Đảm bảo ID hợp lệ (khác null).
         /// </summary>
         /// <param name="id">ID cần kiểm tra</param>
-        /// <param name="entityName">Tên entity (cho error message)</param>
-        public static void KiemTraIdHopLe(object id, string entityName)
+        /// <param name="entityName">Tên entity (phục vụ thông báo lỗi)</param>
+        /// <exception cref="ArgumentException">Khi <paramref name="id"/> null</exception>
+        public static void EnsureValidId(object id, string entityName)
         {
             if (id == null)
                 throw new ArgumentException($"{entityName} ID không được null", nameof(id));
         }
 
         /// <summary>
-        /// Tạo predicate để tìm entity theo primary key
+        /// Tạo biểu thức predicate so sánh khóa chính bằng giá trị chỉ định.
         /// </summary>
-        /// <typeparam name="T">Entity type</typeparam>
-        /// <param name="id">Primary key value</param>
-        /// <returns>Predicate function</returns>
-        public static System.Linq.Expressions.Expression<Func<T, bool>> TaoPredicateTimTheoId<T>(object id)
+        /// <typeparam name="T">Kiểu thực thể</typeparam>
+        /// <param name="id">Giá trị khóa chính</param>
+        /// <returns>Biểu thức predicate dạng x =&gt; x.Id == id</returns>
+        /// <exception cref="DataAccessException">Khi không tìm thấy khóa chính</exception>
+        public static System.Linq.Expressions.Expression<Func<T, bool>> BuildIdPredicate<T>(object id)
         {
             var entityType = typeof(T);
-            var primaryKeyProperty = LayPrimaryKeyProperty(entityType);
-            
+            var primaryKeyProperty = GetPrimaryKeyProperty(entityType);
+
             if (primaryKeyProperty == null)
                 throw new DataAccessException($"Không tìm thấy primary key cho {entityType.Name}");
 
@@ -99,16 +109,16 @@ namespace Dal.BaseDataAccess
             var property = System.Linq.Expressions.Expression.Property(parameter, primaryKeyProperty);
             var constant = System.Linq.Expressions.Expression.Constant(id);
             var equality = System.Linq.Expressions.Expression.Equal(property, constant);
-            
+
             return System.Linq.Expressions.Expression.Lambda<Func<T, bool>>(equality, parameter);
         }
 
         /// <summary>
-        /// Clone entity (shallow copy)
+        /// Tạo bản sao (shallow copy) của một thực thể.
         /// </summary>
-        /// <typeparam name="T">Entity type</typeparam>
-        /// <param name="source">Source entity</param>
-        /// <returns>Cloned entity</returns>
+        /// <typeparam name="T">Kiểu thực thể</typeparam>
+        /// <param name="source">Thực thể nguồn</param>
+        /// <returns>Thực thể sao chép</returns>
         public static T CloneEntity<T>(T source) where T : class, new()
         {
             if (source == null)
@@ -128,12 +138,12 @@ namespace Dal.BaseDataAccess
         }
 
         /// <summary>
-        /// So sánh hai entities có cùng primary key hay không
+        /// Kiểm tra hai thực thể có cùng khóa chính hay không.
         /// </summary>
-        /// <param name="entity1">Entity 1</param>
-        /// <param name="entity2">Entity 2</param>
-        /// <returns>True nếu cùng primary key</returns>
-        public static bool CungPrimaryKey(object entity1, object entity2)
+        /// <param name="entity1">Thực thể 1</param>
+        /// <param name="entity2">Thực thể 2</param>
+        /// <returns>true nếu cùng khóa chính</returns>
+        public static bool HasSamePrimaryKey(object entity1, object entity2)
         {
             if (entity1 == null || entity2 == null)
                 return false;
@@ -141,20 +151,20 @@ namespace Dal.BaseDataAccess
             if (entity1.GetType() != entity2.GetType())
                 return false;
 
-            var primaryKeyValue1 = LayGiaTriPrimaryKey(entity1);
-            var primaryKeyValue2 = LayGiaTriPrimaryKey(entity2);
+            var primaryKeyValue1 = GetPrimaryKeyValue(entity1);
+            var primaryKeyValue2 = GetPrimaryKeyValue(entity2);
 
             return Equals(primaryKeyValue1, primaryKeyValue2);
         }
 
         /// <summary>
-        /// Kiểm tra entity có thay đổi hay không
+        /// Kiểm tra hai thực thể có khác nhau (theo giá trị property) hay không.
         /// </summary>
-        /// <typeparam name="T">Entity type</typeparam>
-        /// <param name="original">Entity gốc</param>
-        /// <param name="modified">Entity đã sửa</param>
-        /// <returns>True nếu có thay đổi</returns>
-        public static bool CoThayDoi<T>(T original, T modified)
+        /// <typeparam name="T">Kiểu thực thể</typeparam>
+        /// <param name="original">Thực thể gốc</param>
+        /// <param name="modified">Thực thể đã sửa</param>
+        /// <returns>true nếu có thay đổi</returns>
+        public static bool HasChanges<T>(T original, T modified)
         {
             if (original == null || modified == null)
                 return true;
@@ -173,6 +183,31 @@ namespace Dal.BaseDataAccess
 
             return false;
         }
+
+        #endregion
+
+        #region Obsolete Aliases (Backward Compatibility)
+
+        [Obsolete("Use GetPrimaryKeyProperty(Type) instead")]
+        public static PropertyInfo LayPrimaryKeyProperty(Type entityType) => GetPrimaryKeyProperty(entityType);
+
+        [Obsolete("Use GetPrimaryKeyValue(object) instead")]
+        public static object LayGiaTriPrimaryKey(object entity) => GetPrimaryKeyValue(entity);
+
+        [Obsolete("Use EnsureEntityNotNull(object, string) instead")]
+        public static void KiemTraEntityNull(object entity, string entityName) => EnsureEntityNotNull(entity, entityName);
+
+        [Obsolete("Use EnsureValidId(object, string) instead")]
+        public static void KiemTraIdHopLe(object id, string entityName) => EnsureValidId(id, entityName);
+
+        [Obsolete("Use BuildIdPredicate<T>(object) instead")]
+        public static System.Linq.Expressions.Expression<Func<T, bool>> TaoPredicateTimTheoId<T>(object id) => BuildIdPredicate<T>(id);
+
+        [Obsolete("Use HasSamePrimaryKey(object, object) instead")]
+        public static bool CungPrimaryKey(object entity1, object entity2) => HasSamePrimaryKey(entity1, entity2);
+
+        [Obsolete("Use HasChanges<T>(T, T) instead")]
+        public static bool CoThayDoi<T>(T original, T modified) => HasChanges(original, modified);
 
         #endregion
     }

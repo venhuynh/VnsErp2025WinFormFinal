@@ -1,0 +1,25 @@
+﻿Bạn là một lập trình viên cao cấp kiêm reviewer code. 
+Hãy thực hiện các yêu cầu sau trên toàn bộ source code tôi cung cấp:
+
+1. **Cấu trúc lại code**:
+   - Áp dụng clean code principles (SOLID, DRY, KISS).
+   - Sắp xếp lại thứ tự khai báo biến, hàm, class theo chuẩn.
+   - Format code theo convention (C#, .NET style guide hoặc ngôn ngữ tương ứng).
+   - Loại bỏ code thừa, code lặp, và tối ưu logic nếu cần.
+
+2. **Thêm comment bằng tiếng Việt**:
+   - Comment phải **ngắn gọn, dễ hiểu**, giải thích được **mục đích** và **cách hoạt động** của từng hàm/class/đoạn code quan trọng.
+   - Comment theo chuẩn XML Documentation (`///`) hoặc `//` nếu chỉ chú thích ngắn.
+   - Giải thích rõ các tham số đầu vào, đầu ra, và xử lý chính của function.
+
+3. **Phong cách comment**:
+   - Ngôn ngữ: **Tiếng Việt**.
+   - Giọng văn: **chuyên nghiệp, dễ hiểu cho đồng nghiệp**.
+   - Có thể thêm ví dụ sử dụng (nếu phù hợp).
+
+4. **Output mong muốn**:
+   - Trả về code đã được refactor.
+   - Code có đầy đủ comment bằng tiếng Việt, đảm bảo khi đọc vào sẽ nắm được ngay chức năng.
+   - Giữ nguyên ngữ cảnh và chức năng ban đầu, không thay đổi business logic.
+
+Hãy bắt đầu refactor và comment code tôi đưa ra.

@@ -4,132 +4,109 @@ using System.Runtime.Serialization;
 namespace Dal.Exceptions
 {
     /// <summary>
-    /// Exception cho các lỗi liên quan đến kết nối database
+    /// Ngoại lệ cho các lỗi liên quan đến kết nối database.
+    /// Vai trò: Chuẩn hóa thông tin lỗi (mã lỗi SQL, loại lỗi, chuỗi kết nối, thời điểm),
+    /// và cung cấp helper để tạo exception từ SqlException.
     /// </summary>
     [Serializable]
     public class ConnectionException : DataAccessException
     {
-        #region thuocTinhDonGian
+        #region Fields & Properties
 
         /// <summary>
-        /// Connection string gây ra lỗi
+        /// Connection string gây ra lỗi.
         /// </summary>
         public string ConnectionString { get; }
 
         /// <summary>
-        /// Loại lỗi kết nối
+        /// Loại lỗi kết nối (tiếng Việt - tương thích cũ).
         /// </summary>
         public ConnectionErrorType LoaiLoi { get; }
 
         /// <summary>
-        /// Mã lỗi SQL Server (nếu có)
+        /// Mã lỗi SQL Server (nếu có) - shadow thuộc tính từ lớp cha để lưu số lỗi SQL.
         /// </summary>
         public new int? SqlErrorNumber { get; set; }
 
         /// <summary>
-        /// Thời gian xảy ra lỗi
+        /// Thời gian xảy ra lỗi (tiếng Việt - tương thích cũ).
         /// </summary>
-        public new DateTime ThoiGianLoi { get; }
+        public new DateTime ErrorTime { get; }
 
         #endregion
 
-        #region phuongThuc
+        #region Constructors
 
         /// <summary>
-        /// Constructor mặc định
+        /// Khởi tạo mặc định.
         /// </summary>
         public ConnectionException() : base()
         {
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
-        /// Constructor với message
+        /// Khởi tạo với thông điệp lỗi.
         /// </summary>
-        /// <param name="message">Thông điệp lỗi</param>
         public ConnectionException(string message) : base(message)
         {
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
-        /// Constructor với message và inner exception
+        /// Khởi tạo với thông điệp lỗi và inner exception.
         /// </summary>
-        /// <param name="message">Thông điệp lỗi</param>
-        /// <param name="innerException">Inner exception</param>
-        public ConnectionException(string message, Exception innerException) 
+        public ConnectionException(string message, Exception innerException)
             : base(message, innerException)
         {
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
-        /// Constructor với message, inner exception và connection string
+        /// Khởi tạo đầy đủ: thông điệp, inner, connection string.
         /// </summary>
-        /// <param name="message">Thông điệp lỗi</param>
-        /// <param name="innerException">Inner exception</param>
-        /// <param name="connectionString">Connection string</param>
-        public ConnectionException(string message, Exception innerException, string connectionString) 
+        public ConnectionException(string message, Exception innerException, string connectionString)
             : base(message, innerException)
         {
             ConnectionString = connectionString;
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
-        /// Constructor với message, inner exception, connection string và loại lỗi
+        /// Khởi tạo đầy đủ: thông điệp, inner, connection string và loại lỗi.
         /// </summary>
-        /// <param name="message">Thông điệp lỗi</param>
-        /// <param name="innerException">Inner exception</param>
-        /// <param name="connectionString">Connection string</param>
-        /// <param name="loaiLoi">Loại lỗi kết nối</param>
-        public ConnectionException(string message, Exception innerException, string connectionString, ConnectionErrorType loaiLoi) 
+        public ConnectionException(string message, Exception innerException, string connectionString, ConnectionErrorType loaiLoi)
             : base(message, innerException)
         {
             ConnectionString = connectionString;
             LoaiLoi = loaiLoi;
-            ThoiGianLoi = DateTime.Now;
+            ErrorTime = DateTime.Now;
         }
 
         /// <summary>
-        /// Constructor cho serialization
+        /// Khởi tạo cho serialization.
         /// </summary>
-        /// <param name="info">Serialization info</param>
-        /// <param name="context">Streaming context</param>
-        protected ConnectionException(SerializationInfo info, StreamingContext context) 
+        protected ConnectionException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             ConnectionString = info.GetString(nameof(ConnectionString));
             LoaiLoi = (ConnectionErrorType)info.GetValue(nameof(LoaiLoi), typeof(ConnectionErrorType));
             SqlErrorNumber = (int?)info.GetValue(nameof(SqlErrorNumber), typeof(int?));
-            ThoiGianLoi = info.GetDateTime(nameof(ThoiGianLoi));
+            ErrorTime = info.GetDateTime(nameof(ErrorTime));
         }
 
-        /// <summary>
-        /// Lấy thông tin cho serialization
-        /// </summary>
-        /// <param name="info">Serialization info</param>
-        /// <param name="context">Streaming context</param>
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-            info.AddValue(nameof(ConnectionString), ConnectionString);
-            info.AddValue(nameof(LoaiLoi), LoaiLoi);
-            info.AddValue(nameof(SqlErrorNumber), SqlErrorNumber);
-            info.AddValue(nameof(ThoiGianLoi), ThoiGianLoi);
-        }
+        #endregion
+
+        #region Factory Methods
 
         /// <summary>
-        /// Tạo ConnectionException từ SqlException
+        /// Tạo ConnectionException từ SqlException (API mới).
         /// </summary>
-        /// <param name="sqlException">SqlException</param>
-        /// <param name="connectionString">Connection string</param>
-        /// <returns>ConnectionException</returns>
-        public static ConnectionException TaoTuSqlException(System.Data.SqlClient.SqlException sqlException, string connectionString = null)
+        public static ConnectionException FromSqlException(System.Data.SqlClient.SqlException sqlException, string connectionString = null)
         {
-            var loaiLoi = XacDinhLoaiLoi(sqlException);
-            var message = TaoThongDiepLoi(sqlException, loaiLoi);
-            
+            var loaiLoi = DetermineErrorType(sqlException);
+            var message = BuildErrorMessage(sqlException, loaiLoi);
+
             return new ConnectionException(message, sqlException, connectionString, loaiLoi)
             {
                 SqlErrorNumber = sqlException.Number
@@ -137,11 +114,22 @@ namespace Dal.Exceptions
         }
 
         /// <summary>
-        /// Xác định loại lỗi từ SqlException
+        /// Tạo ConnectionException từ SqlException (tương thích cũ).
         /// </summary>
-        /// <param name="sqlException">SqlException</param>
-        /// <returns>Loại lỗi kết nối</returns>
-        private static ConnectionErrorType XacDinhLoaiLoi(System.Data.SqlClient.SqlException sqlException)
+        [Obsolete("Use FromSqlException(SqlException,string) instead")]
+        public static ConnectionException TaoTuSqlException(System.Data.SqlClient.SqlException sqlException, string connectionString = null)
+        {
+            return FromSqlException(sqlException, connectionString);
+        }
+
+        #endregion
+
+        #region Validation & Utilities
+
+        /// <summary>
+        /// Xác định loại lỗi từ SqlException (API mới).
+        /// </summary>
+        private static ConnectionErrorType DetermineErrorType(System.Data.SqlClient.SqlException sqlException)
         {
             switch (sqlException.Number)
             {
@@ -167,12 +155,18 @@ namespace Dal.Exceptions
         }
 
         /// <summary>
-        /// Tạo thông điệp lỗi thân thiện
+        /// Xác định loại lỗi (tương thích cũ).
         /// </summary>
-        /// <param name="sqlException">SqlException</param>
-        /// <param name="loaiLoi">Loại lỗi</param>
-        /// <returns>Thông điệp lỗi</returns>
-        private static string TaoThongDiepLoi(System.Data.SqlClient.SqlException sqlException, ConnectionErrorType loaiLoi)
+        [Obsolete("Use DetermineErrorType(SqlException) instead")]
+        private static ConnectionErrorType XacDinhLoaiLoi(System.Data.SqlClient.SqlException sqlException)
+        {
+            return DetermineErrorType(sqlException);
+        }
+
+        /// <summary>
+        /// Tạo thông điệp lỗi thân thiện (API mới).
+        /// </summary>
+        private static string BuildErrorMessage(System.Data.SqlClient.SqlException sqlException, ConnectionErrorType loaiLoi)
         {
             switch (loaiLoi)
             {
@@ -194,10 +188,18 @@ namespace Dal.Exceptions
         }
 
         /// <summary>
-        /// Kiểm tra lỗi có thể retry không
+        /// Tạo thông điệp lỗi (tương thích cũ).
         /// </summary>
-        /// <returns>True nếu có thể retry</returns>
-        public bool CoTheRetry()
+        [Obsolete("Use BuildErrorMessage(SqlException,ConnectionErrorType) instead")]
+        private static string TaoThongDiepLoi(System.Data.SqlClient.SqlException sqlException, ConnectionErrorType loaiLoi)
+        {
+            return BuildErrorMessage(sqlException, loaiLoi);
+        }
+
+        /// <summary>
+        /// Kiểm tra lỗi có thể retry không (API mới).
+        /// </summary>
+        public bool CanRetry()
         {
             return LoaiLoi == ConnectionErrorType.Timeout ||
                    LoaiLoi == ConnectionErrorType.NetworkError ||
@@ -206,9 +208,33 @@ namespace Dal.Exceptions
         }
 
         /// <summary>
-        /// Lấy thông tin chi tiết lỗi
+        /// Kiểm tra lỗi có thể retry không (tương thích cũ).
         /// </summary>
-        /// <returns>Thông tin chi tiết</returns>
+        [Obsolete("Use CanRetry() instead")]
+        public bool CoTheRetry()
+        {
+            return CanRetry();
+        }
+
+        #endregion
+
+        #region Error Handling
+
+        /// <summary>
+        /// Ghi thông tin phục vụ serialization.
+        /// </summary>
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue(nameof(ConnectionString), ConnectionString);
+            info.AddValue(nameof(LoaiLoi), LoaiLoi);
+            info.AddValue(nameof(SqlErrorNumber), SqlErrorNumber);
+            info.AddValue(nameof(ErrorTime), ErrorTime);
+        }
+
+        /// <summary>
+        /// Chuỗi mô tả chi tiết lỗi.
+        /// </summary>
         public override string ToString()
         {
             var result = base.ToString();
@@ -228,7 +254,7 @@ namespace Dal.Exceptions
                 result += $"\nMã lỗi SQL: {SqlErrorNumber.Value}";
             }
             
-            result += $"\nThời gian: {ThoiGianLoi:yyyy-MM-dd HH:mm:ss}";
+            result += $"\nThời gian: {ErrorTime:yyyy-MM-dd HH:mm:ss}";
             
             return result;
         }
@@ -237,7 +263,7 @@ namespace Dal.Exceptions
     }
 
     /// <summary>
-    /// Enum các loại lỗi kết nối
+    /// Enum các loại lỗi kết nối.
     /// </summary>
     public enum ConnectionErrorType
     {

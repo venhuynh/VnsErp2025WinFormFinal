@@ -1,17 +1,12 @@
-﻿using DevExpress.XtraBars;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Utils;
-using Bll.Authentication;
-using Dal.DataAccess;
+﻿using Bll.Utils;
+using Dal.Connection;
 using Dal.DataContext;
+using DevExpress.XtraBars;
+using System;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+using Bll.Common;
+using Authentication.Form;
 
 namespace VnsErp2025.Form
 {
@@ -26,6 +21,11 @@ namespace VnsErp2025.Form
         /// Thông tin user hiện tại đã đăng nhập
         /// </summary>
         private ApplicationUser _currentUser;
+
+        /// <summary>
+        /// Timer để refresh thông tin database định kỳ
+        /// </summary>
+        private System.Windows.Forms.Timer _dbRefreshTimer;
         #endregion
 
         #region Constructor
@@ -58,6 +58,9 @@ namespace VnsErp2025.Form
                 
                 // Thiết lập status bar
                 SetupStatusBar();
+                
+                // Thiết lập timer refresh database
+                SetupDatabaseRefreshTimer();
                 
                 // Hiển thị thông báo chào mừng
                 ShowWelcomeMessage();
@@ -133,6 +136,82 @@ namespace VnsErp2025.Form
             var userInfo = new BarStaticItem();
             userInfo.Caption = $"User: {_currentUser?.UserName ?? "Unknown"} | Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}";
             ribbonStatusBar.ItemLinks.Add(userInfo);
+
+            // Thêm thông tin database vào status bar
+            var dbInfo = GetDatabaseInfo();
+            DBInfoBarStaticItem.Caption = dbInfo;
+
+            // Thêm event handler cho database info item
+            DBInfoBarStaticItem.ItemClick += BarStaticItem1_ItemClick;
+        }
+
+        /// <summary>
+        /// Lấy thông tin database để hiển thị
+        /// </summary>
+        /// <returns>Thông tin database dạng string</returns>
+        private string GetDatabaseInfo()
+        {
+            try
+            {
+                using (var connectionManager = new ConnectionManager())
+                {
+                    var connectionString = connectionManager.ConnectionString;
+                    
+                    if (string.IsNullOrEmpty(connectionString))
+                    {
+                        return "DB: Không có thông tin kết nối";
+                    }
+
+                    // Parse connection string để lấy thông tin server và database
+                    var builder = new SqlConnectionStringBuilder(connectionString);
+                    
+                    var serverName = builder.DataSource ?? "Unknown";
+                    var databaseName = builder.InitialCatalog ?? "Unknown";
+                    var connectionState = connectionManager.State.ToString();
+                    
+                    return $"DB: {serverName} | {databaseName}";
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"DB: Lỗi kết nối - {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập timer để refresh thông tin database định kỳ
+        /// </summary>
+        private void SetupDatabaseRefreshTimer()
+        {
+            try
+            {
+                _dbRefreshTimer = new System.Windows.Forms.Timer();
+                _dbRefreshTimer.Interval = 30000; // 30 giây
+                _dbRefreshTimer.Tick += DbRefreshTimer_Tick;
+                _dbRefreshTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi thiết lập timer refresh database");
+            }
+        }
+
+        /// <summary>
+        /// Event handler cho timer refresh database
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event args</param>
+        private void DbRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                RefreshDatabaseInfo();
+            }
+            catch (Exception ex)
+            {
+                // Không hiển thị lỗi cho timer để tránh spam
+                System.Diagnostics.Debug.WriteLine($"Lỗi refresh database info: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -235,6 +314,107 @@ namespace VnsErp2025.Form
                 MsgBox.ShowException(ex, "Lỗi hiển thị thông tin user");
             }
         }
+
+        /// <summary>
+        /// Xử lý sự kiện click vào database info item
+        /// </summary>
+        /// <param name="sender">Control gửi sự kiện</param>
+        /// <param name="e">Thông tin sự kiện</param>
+        private void BarStaticItem1_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                // Hiển thị thông tin chi tiết về database
+                ShowDatabaseDetails();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị thông tin database");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện nút cấu hình SQL Server: hiển thị overlay, mở FrmDatabaseConfig.
+        /// Sau khi cấu hình thành công, refresh thông tin DB trên status bar.
+        /// </summary>
+        private void ConfigSqlServerInfoBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var configForm = new FrmDatabaseConfig())
+                    {
+                        var result = configForm.ShowDialog();
+                        if (result == DialogResult.OK)
+                        {
+                            RefreshDatabaseInfo();
+                            MsgBox.ShowInfo("Cấu hình kết nối đã được cập nhật.", "Thông báo");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi cấu hình SQL Server");
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị thông tin chi tiết về database
+        /// </summary>
+        private void ShowDatabaseDetails()
+        {
+            try
+            {
+                using (var connectionManager = new ConnectionManager())
+                {
+                    var connectionString = connectionManager.ConnectionString;
+                    
+                    if (string.IsNullOrEmpty(connectionString))
+                    {
+                        MsgBox.ShowWarning("Không có thông tin kết nối database.", "Thông tin Database");
+                        return;
+                    }
+
+                    var builder = new SqlConnectionStringBuilder(connectionString);
+                    
+                    var details = $"Thông tin Database:\n\n" +
+                                 $"Server: {builder.DataSource ?? "Unknown"}\n" +
+                                 $"Database: {builder.InitialCatalog ?? "Unknown"}\n" +
+                                 $"User: {builder.UserID ?? "Windows Authentication"}\n" +
+                                 $"Connection Timeout: {builder.ConnectTimeout} giây\n" +
+                                 $"Command Timeout: {connectionManager.CommandTimeout} giây\n" +
+                                 $"Trạng thái: {connectionManager.State}\n" +
+                                 $"Kết nối hoạt động: {(connectionManager.IsHealthy() ? "Có" : "Không")}\n\n" +
+                                 $"Connection String:\n{connectionString}";
+                    
+                    MsgBox.ShowInfo(details, "Thông tin Database");
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi lấy thông tin database");
+            }
+        }
+
+        /// <summary>
+        /// Refresh thông tin database trên status bar
+        /// </summary>
+        public void RefreshDatabaseInfo()
+        {
+            try
+            {
+                var dbInfo = GetDatabaseInfo();
+                DBInfoBarStaticItem.Caption = dbInfo;
+            }
+            catch (Exception ex)
+            {
+                DBInfoBarStaticItem.Caption = $"DB: Lỗi - {ex.Message}";
+            }
+        }
         #endregion
+
+        
     }
 }

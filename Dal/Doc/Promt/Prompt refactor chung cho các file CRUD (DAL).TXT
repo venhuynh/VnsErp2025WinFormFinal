@@ -1,0 +1,32 @@
+﻿Bạn là một lập trình viên cao cấp chuyên C# và Clean Code. 
+Hãy refactor toàn bộ file CRUD (Data Access Layer) tôi đưa ra theo các nguyên tắc sau:
+
+1. **Chuẩn hóa tên và cấu trúc**
+   - Đặt tên class, method, property theo PascalCase (ví dụ: InsertNhanVien → AddEmployeeAsync).
+   - Đặt tên biến private theo dạng _camelCase.
+   - Các method CRUD phải rõ ràng: Add / Get / Update / Delete.
+   - Gom nhóm method theo CRUD, sắp xếp Create → Read → Update → Delete.
+
+2. **Quản lý tài nguyên đúng chuẩn**
+   - Sử dụng `using` hoặc `await using` với `SqlConnection`, `SqlCommand`, `SqlDataReader`.
+   - Không để kết nối mở lâu, đảm bảo giải phóng tài nguyên đúng cách.
+
+3. **Xử lý lỗi & logging**
+   - Bao try-catch gọn gàng, ném exception có ngữ cảnh rõ ràng.
+   - Gom code xử lý lỗi vào private helper nếu lặp lại nhiều nơi.
+
+4. **Comment tiếng Việt chuyên nghiệp**
+   - Dùng XML Documentation (`<summary>`, `<param>`, `<returns>`).
+   - Giải thích mục đích, khi nào dùng, dữ liệu vào/ra của hàm.
+   - Comment ngắn gọn, giúp người mới dễ đọc hiểu.
+
+5. **Tối ưu code**
+   - Tránh code lặp khi build command: tạo private helper `CreateCommand(string sql, params)` nếu cần.
+   - Trả về object hoặc DTO thay vì DataTable khi có thể.
+   - Dùng async/await cho truy vấn I/O.
+
+6. **Output**
+   - Trả về code đã refactor, đầy đủ CRUD, comment tiếng Việt rõ ràng.
+   - Giữ nguyên logic nghiệp vụ nhưng code phải clean, dễ maintain.
+
+Hãy refactor file CRUD tôi đưa ra theo đúng nguyên tắc trên.
