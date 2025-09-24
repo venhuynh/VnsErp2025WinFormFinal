@@ -37,6 +37,7 @@
     <Reference Include="DevExpress.Data.v25.1" />
     <Reference Include="DevExpress.Utils.v25.1" />
     <Reference Include="DevExpress.Sparkline.v25.1.Core" />
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v25.1" />
     <Reference Include="DevExpress.Printing.v25.1.Core" />
     <Reference Include="DevExpress.Drawing.v25.1" />
@@ -58,10 +59,19 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -90,7 +100,16 @@
       <Project>{9cc30df9-45dd-4d4e-9b65-a68dac21ba42}</Project>
       <Name>Authentication</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Bll\Bll.csproj">
+      <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
+      <Name>Bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dal\Dal.csproj">
+      <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
+      <Name>Dal</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

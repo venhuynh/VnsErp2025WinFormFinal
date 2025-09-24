@@ -160,8 +160,11 @@ namespace Authentication.Form
 
                 if (loginResult.ThanhCong)
                 {
-                    // Lưu thông tin user vào session/static variable nếu cần
-                    // ApplicationSystemUtils.SetCurrentUser(loginResult.User);
+                    // Lưu thông tin user vào ApplicationSystemUtils
+                    if (loginResult.User != null)
+                    {
+                        ApplicationSystemUtils.SetCurrentUser(loginResult.User);
+                    }
                     
                     ShowSuccessMessage();
                     CloseFormWithSuccess();
