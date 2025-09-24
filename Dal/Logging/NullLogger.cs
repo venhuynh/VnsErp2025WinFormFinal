@@ -1,14 +1,15 @@
 namespace Dal.Logging
 {
     /// <summary>
-    /// Null logger implementation (no-op)
+    /// Trình ghi log rỗng (không thực hiện gì) dùng khi không muốn ghi log.
+    /// Hữu ích cho test hoặc vô hiệu hóa logging theo cấu hình.
     /// </summary>
     public class NullLogger : ILogger
     {
-        #region phuongThuc
+        #region Methods
 
         /// <summary>
-        /// Log information message (no-op)
+        /// Ghi log mức thông tin (no-op).
         /// </summary>
         public void LogInfo(string message, params object[] args)
         {
@@ -16,7 +17,7 @@ namespace Dal.Logging
         }
 
         /// <summary>
-        /// Log warning message (no-op)
+        /// Ghi log mức cảnh báo (no-op).
         /// </summary>
         public void LogWarning(string message, params object[] args)
         {
@@ -24,7 +25,7 @@ namespace Dal.Logging
         }
 
         /// <summary>
-        /// Log error message (no-op)
+        /// Ghi log mức lỗi (no-op).
         /// </summary>
         public void LogError(string message, System.Exception ex = null, params object[] args)
         {
@@ -32,7 +33,7 @@ namespace Dal.Logging
         }
 
         /// <summary>
-        /// Log debug message (no-op)
+        /// Ghi log mức debug (no-op).
         /// </summary>
         public void LogDebug(string message, params object[] args)
         {
@@ -40,7 +41,7 @@ namespace Dal.Logging
         }
 
         /// <summary>
-        /// Log performance message (no-op)
+        /// Ghi log hiệu năng (no-op).
         /// </summary>
         public void LogPerformance(string operationName, long elapsedMs, params object[] args)
         {

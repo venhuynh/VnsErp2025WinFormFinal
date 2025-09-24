@@ -1,13 +1,11 @@
+using Dal.Configuration;
+using Dal.DataContext;
+using Dal.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataContext;
-using Dal.Exceptions;
-using Dal.Connection;
-using Dal.Configuration;
 using Dal.Logging;
-using Dal.Helpers;
 
 namespace Dal.BaseDataAccess
 {

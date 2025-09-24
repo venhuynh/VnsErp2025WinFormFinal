@@ -3,47 +3,48 @@ using System;
 namespace Dal.Logging
 {
     /// <summary>
-    /// Simple logger interface
+    /// Giao diện logger đơn giản cho ứng dụng.
+    /// Định nghĩa các mức log cơ bản: Info/Warning/Error/Debug và Performance.
     /// </summary>
     public interface ILogger
     {
-        #region phuongThuc
+        #region Methods
 
         /// <summary>
-        /// Log information message
+        /// Ghi log mức thông tin.
         /// </summary>
-        /// <param name="message">Message to log</param>
-        /// <param name="args">Format arguments</param>
+        /// <param name="message">Thông điệp</param>
+        /// <param name="args">Tham số format</param>
         void LogInfo(string message, params object[] args);
 
         /// <summary>
-        /// Log warning message
+        /// Ghi log mức cảnh báo.
         /// </summary>
-        /// <param name="message">Message to log</param>
-        /// <param name="args">Format arguments</param>
+        /// <param name="message">Thông điệp</param>
+        /// <param name="args">Tham số format</param>
         void LogWarning(string message, params object[] args);
 
         /// <summary>
-        /// Log error message
+        /// Ghi log mức lỗi.
         /// </summary>
-        /// <param name="message">Message to log</param>
-        /// <param name="ex">Exception (optional)</param>
-        /// <param name="args">Format arguments</param>
+        /// <param name="message">Thông điệp</param>
+        /// <param name="ex">Exception (tùy chọn)</param>
+        /// <param name="args">Tham số format</param>
         void LogError(string message, Exception ex = null, params object[] args);
 
         /// <summary>
-        /// Log debug message
+        /// Ghi log mức debug.
         /// </summary>
-        /// <param name="message">Message to log</param>
-        /// <param name="args">Format arguments</param>
+        /// <param name="message">Thông điệp</param>
+        /// <param name="args">Tham số format</param>
         void LogDebug(string message, params object[] args);
 
         /// <summary>
-        /// Log performance message
+        /// Ghi log hiệu năng (tên tác vụ và thời gian thực thi).
         /// </summary>
-        /// <param name="operationName">Operation name</param>
-        /// <param name="elapsedMs">Elapsed time in milliseconds</param>
-        /// <param name="args">Additional arguments</param>
+        /// <param name="operationName">Tên tác vụ</param>
+        /// <param name="elapsedMs">Thời gian thực thi (ms)</param>
+        /// <param name="args">Tham số bổ sung</param>
         void LogPerformance(string operationName, long elapsedMs, params object[] args);
 
         #endregion
