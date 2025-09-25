@@ -31,9 +31,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DevExpress.Data.Desktop.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Drawing.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,15 +54,66 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Customer\UcBusinessPartnerList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Customer\UcBusinessPartnerList.Designer.cs">
+      <DependentUpon>UcBusinessPartnerList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dto\BusinessPartnerCategoryDto.cs" />
     <Compile Include="Dto\BusinessPartnerContactDto.cs" />
     <Compile Include="Dto\BusinessPartnerDetailDto.cs" />
     <Compile Include="Dto\BusinessPartnerListDto.cs" />
     <Compile Include="Dto\PartnerCategoryMappingDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Customer\" />
+    <EmbeddedResource Include="Customer\UcBusinessPartnerList.resx">
+      <DependentUpon>UcBusinessPartnerList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dto\DTO_README.md" />
+    <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerListDto.datasource" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\list_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\list_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\addnewdatasource_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\addnewdatasource_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edittask_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edittask_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\deletelist_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\deletelist_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxls_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxls_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
