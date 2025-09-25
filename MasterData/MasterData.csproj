@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -41,6 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\BusinessPartnerCategoryDto.cs" />
+    <Compile Include="Dto\BusinessPartnerContactDto.cs" />
+    <Compile Include="Dto\BusinessPartnerDetailDto.cs" />
+    <Compile Include="Dto\BusinessPartnerListDto.cs" />
+    <Compile Include="Dto\PartnerCategoryMappingDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
