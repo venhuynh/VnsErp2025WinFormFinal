@@ -107,6 +107,7 @@
             this.ListDataBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.list_16x16;
             this.ListDataBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.list_32x32;
             this.ListDataBarButtonItem.Name = "ListDataBarButtonItem";
+            this.ListDataBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.ListDataBarButtonItem_ItemClick);
             // 
             // NewBarButtonItem
             // 
@@ -223,6 +224,7 @@
             this.BusinessPartnerListGridView.OptionsView.ColumnAutoWidth = false;
             this.BusinessPartnerListGridView.OptionsView.RowAutoHeight = true;
             this.BusinessPartnerListGridView.OptionsView.ShowAutoFilterRow = true;
+            this.BusinessPartnerListGridView.OptionsView.ShowFooter = true;
             this.BusinessPartnerListGridView.OptionsView.ShowGroupPanel = false;
             this.BusinessPartnerListGridView.OptionsView.ShowViewCaption = true;
             this.BusinessPartnerListGridView.ViewCaption = "BẢNG DỮ LIỆU ĐỐI TÁC";
@@ -238,6 +240,8 @@
             // 
             this.colPartnerName.FieldName = "PartnerName";
             this.colPartnerName.Name = "colPartnerName";
+            this.colPartnerName.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Count, "PartnerName", "Có {0} dòng")});
             this.colPartnerName.Visible = true;
             this.colPartnerName.VisibleIndex = 2;
             // 
@@ -246,49 +250,49 @@
             this.colPartnerTypeName.FieldName = "PartnerTypeName";
             this.colPartnerTypeName.Name = "colPartnerTypeName";
             this.colPartnerTypeName.Visible = true;
-            this.colPartnerTypeName.VisibleIndex = 4;
+            this.colPartnerTypeName.VisibleIndex = 3;
             // 
             // colTaxCode
             // 
             this.colTaxCode.FieldName = "TaxCode";
             this.colTaxCode.Name = "colTaxCode";
             this.colTaxCode.Visible = true;
-            this.colTaxCode.VisibleIndex = 5;
+            this.colTaxCode.VisibleIndex = 4;
             // 
             // colPhone
             // 
             this.colPhone.FieldName = "Phone";
             this.colPhone.Name = "colPhone";
             this.colPhone.Visible = true;
-            this.colPhone.VisibleIndex = 6;
+            this.colPhone.VisibleIndex = 5;
             // 
             // colEmail
             // 
             this.colEmail.FieldName = "Email";
             this.colEmail.Name = "colEmail";
             this.colEmail.Visible = true;
-            this.colEmail.VisibleIndex = 7;
+            this.colEmail.VisibleIndex = 6;
             // 
             // colCity
             // 
             this.colCity.FieldName = "City";
             this.colCity.Name = "colCity";
             this.colCity.Visible = true;
-            this.colCity.VisibleIndex = 8;
+            this.colCity.VisibleIndex = 7;
             // 
             // colIsActive
             // 
             this.colIsActive.FieldName = "IsActive";
             this.colIsActive.Name = "colIsActive";
             this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 9;
+            this.colIsActive.VisibleIndex = 8;
             // 
             // colCreatedDate
             // 
             this.colCreatedDate.FieldName = "CreatedDate";
             this.colCreatedDate.Name = "colCreatedDate";
             this.colCreatedDate.Visible = true;
-            this.colCreatedDate.VisibleIndex = 10;
+            this.colCreatedDate.VisibleIndex = 9;
             // 
             // Root
             // 

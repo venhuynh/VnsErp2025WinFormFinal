@@ -82,6 +82,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerDetail.resx">
+      <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Customer\UcBusinessPartnerList.resx">
       <DependentUpon>UcBusinessPartnerList.cs</DependentUpon>
     </EmbeddedResource>
@@ -92,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Dto\DTO_README.md" />
+    <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerDetailDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerListDto.datasource" />
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +137,10 @@
       <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
       <Name>Dal</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

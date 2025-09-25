@@ -1,0 +1,37 @@
+﻿Bạn là Senior .NET WinForms Developer. 
+Hãy refactor và tái cấu trúc lại code-behind của form [TênForm] theo các tiêu chí chuyên nghiệp:
+
+### Tiêu chí Refactor
+1. **Tách biệt logic**
+   - Chỉ giữ lại event handler trong code-behind.
+   - Business logic (CRUD, validation, service call) phải gọi qua Service/Helper riêng.
+   - Tránh viết SQL hoặc DataContext trực tiếp trong Form.
+
+2. **Cấu trúc rõ ràng**
+   - Sử dụng region: Fields, Constructor, Event Handlers, Private Methods, Helpers.
+   - Tách logic lặp lại thành hàm private (LoadData, BindGrid, ShowError, ValidateInput…).
+   - Dùng async/await khi gọi service để UI không bị treo.
+
+3. **Naming convention**
+   - Event handler theo chuẩn: `btnSave_Click`, `gridView_RowCellClick`.
+   - Biến đặt tên rõ nghĩa: `currentPartner`, `selectedRowId`.
+
+4. **Exception handling**
+   - Toàn bộ thao tác CRUD phải wrap try/catch.
+   - Dùng phương thức chung `ShowError(Exception ex)` để hiển thị lỗi qua XtraMessageBox.
+
+5. **Comment & Documentation**
+   - XML doc cho method private/public.
+   - Comment ngắn trong event handler để dev dễ hiểu.
+   - Mỗi event có 1 dòng summary: xử lý khi người dùng click nút, chọn dòng, load form…
+
+6. **UI binding**
+   - GridControl: bind với List<DTO>, không bind trực tiếp entity.
+   - Sử dụng DataAnnotations để DevExpress tự sinh caption/validation.
+
+### Output mong muốn
+1. Code-behind Form đã được refactor gọn, sạch.
+2. Các event handler ngắn, chỉ gọi sang method riêng.
+3. Có comment chuyên nghiệp (XML doc + inline comment).
+4. Ví dụ minh họa: btnAdd, btnSave, btnDelete, gridView_RowCellClick.
+

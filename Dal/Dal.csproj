@@ -53,6 +53,7 @@
     <Compile Include="Connection\ConnectionStringHelper.cs" />
     <Compile Include="Connection\DatabaseConfig.cs" />
     <Compile Include="Connection\IConnectionManager.cs" />
+    <Compile Include="DataAccess\MasterData\BusinessPartnerDataAccess.cs" />
     <Compile Include="DataContext\VnsErp2025.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -94,6 +95,7 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Doc\Promt\Prompt cho AI Cursor %28CRUD DataAccess Class%29.txt" />
     <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
   </ItemGroup>
