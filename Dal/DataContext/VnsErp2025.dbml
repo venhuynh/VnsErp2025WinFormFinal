@@ -8,4 +8,58 @@
       <Column Name="Active" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
+  <Table Name="dbo.BusinessPartner" Member="BusinessPartners">
+    <Type Name="BusinessPartner">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PartnerCode" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="PartnerName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="PartnerType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TaxCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Website" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Country" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="ContactPerson" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="ContactPosition" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="BankAccount" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="BankName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="CreditLimit" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="PaymentTerm" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="BusinessPartner_BusinessPartnerContact" Member="BusinessPartnerContacts" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartnerContact" />
+      <Association Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartner_BusinessPartnerCategory" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BusinessPartnerContact" Member="BusinessPartnerContacts">
+    <Type Name="BusinessPartnerContact">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PartnerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="FullName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Position" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="IsPrimary" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="BusinessPartner_BusinessPartnerContact" Member="BusinessPartner" ThisKey="PartnerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories">
+    <Type Name="BusinessPartner_BusinessPartnerCategory">
+      <Column Name="PartnerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CategoryId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner" ThisKey="PartnerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="BusinessPartnerCategory_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartnerCategory" ThisKey="CategoryId" OtherKey="Id" Type="BusinessPartnerCategory" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BusinessPartnerCategory" Member="BusinessPartnerCategories">
+    <Type Name="BusinessPartnerCategory">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CategoryName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Association Name="BusinessPartnerCategory_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="CategoryId" Type="BusinessPartner_BusinessPartnerCategory" />
+    </Type>
+  </Table>
 </Database>

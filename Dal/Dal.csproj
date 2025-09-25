@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="DataContext\VnsErp2025.md" />
     <None Include="DataContext\VnsErp2025.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>VnsErp2025.designer.cs</LastGenOutput>
