@@ -43,20 +43,31 @@ namespace VnsErp2025
                 }
             }
 
+            #region Dành cho debug
+
+            Application.Run(new Form1());
+
+            #endregion
+
+            #region Dành cho Release - bỏ comment
             // 3) Kết nối OK -> hiển thị màn hình đăng nhập
-            using (var loginForm = new FrmLogin())
-            {
-                if (loginForm.ShowDialog() == DialogResult.OK)
-                {
-                    // Đăng nhập thành công, hiển thị form chính
-                    Application.Run(new FormMain());
-                }
-                else
-                {
-                    // Người dùng hủy đăng nhập, thoát ứng dụng
-                    Application.Exit();
-                }
-            }
+            //using (var loginForm = new FrmLogin())
+            //{
+            //    if (loginForm.ShowDialog() == DialogResult.OK)
+            //    {
+            //        // Đăng nhập thành công, hiển thị form chính
+            //        Application.Run(new FormMain());
+            //    }
+            //    else
+            //    {
+            //        // Người dùng hủy đăng nhập, thoát ứng dụng
+            //        Application.Exit();
+            //    }
+            //}
+
+
+            #endregion
+
         }
 
     }

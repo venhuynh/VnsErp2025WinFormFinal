@@ -54,6 +54,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\BusinessPartnerCategoryConverters.cs" />
+    <Compile Include="Converters\BusinessPartnerContactConverters.cs" />
+    <Compile Include="Converters\BusinessPartnerConverters.cs" />
+    <Compile Include="Customer\FrmBusinessPartnerDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerDetail.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Customer\UcBusinessPartnerList.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -114,6 +123,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\exporttoxls_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bll\Bll.csproj">
+      <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
+      <Name>Bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dal\Dal.csproj">
+      <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
+      <Name>Dal</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
