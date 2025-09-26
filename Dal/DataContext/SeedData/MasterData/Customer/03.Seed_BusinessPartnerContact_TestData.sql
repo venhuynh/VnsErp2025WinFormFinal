@@ -65,9 +65,9 @@ BEGIN TRY
         FROM dbo.BusinessPartner p WHERE p.PartnerCode = 'BOTH001';
     END
 
-    -- 6. Bulk insert contacts cho các TEST partners (TEST001-TEST020)
+    -- 6. Bulk insert contacts cho các TEST partners (TEST001-TEST100)
     DECLARE @i INT = 1;
-    WHILE (@i <= 20)
+    WHILE (@i <= 100)
     BEGIN
         DECLARE @code NVARCHAR(20) = CONCAT('TEST', RIGHT('000' + CAST(@i AS VARCHAR(3)), 3));
         
@@ -156,3 +156,4 @@ ORDER BY p.[PartnerCode]
 GO
 
 PRINT 'Đã hoàn thành việc tạo dữ liệu mẫu cho BusinessPartnerContact'
+PRINT 'Tổng số bản ghi đã thêm: Contacts cho 103 đối tác (3 đối tác mẫu + 100 đối tác test)'

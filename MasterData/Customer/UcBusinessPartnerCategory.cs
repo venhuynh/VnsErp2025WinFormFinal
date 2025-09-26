@@ -37,6 +37,7 @@ namespace MasterData.Customer
             InitializeComponent();
 
             // Toolbar events
+            ListDataBarButtonItem.ItemClick += ListDataBarButtonItem_ItemClick;
             NewBarButtonItem.ItemClick += NewBarButtonItem_ItemClick;
             EditBarButtonItem.ItemClick += EditBarButtonItem_ItemClick;
             DeleteBarButtonItem.ItemClick += DeleteBarButtonItem_ItemClick;
@@ -468,5 +469,6 @@ namespace MasterData.Customer
         }
 
         #endregion
+
     }
 }

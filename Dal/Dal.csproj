@@ -99,6 +99,7 @@
   <ItemGroup>
     <Content Include="DataContext\SeedData\MasterData\Customer\01.Seed_BusinessPartnerCategory_TestData.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\02.Seed_All_BusinessPartner_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Customer\00.Seed_BusinessPartner_TestData.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\04.Seed_BusinessPartnerCategoryMapping_TestData.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\Seed_BusinessPartnerCategory_TestData.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\03.Seed_BusinessPartnerContact_TestData.sql" />

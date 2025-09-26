@@ -80,7 +80,7 @@ BEGIN TRY
         -- Mapping dựa trên PartnerType
         IF (@type = 1) -- Khách hàng
         BEGIN
-            -- Khách hàng cá nhân hoặc doanh nghiệp
+            -- Khách hàng cá nhân hoặc doanh nghiệp (cả hai đều là sub-category của Khách hàng doanh nghiệp)
             DECLARE @categoryName NVARCHAR(100) = CASE WHEN (@i % 2 = 0) THEN N'Khách hàng doanh nghiệp' ELSE N'Khách hàng cá nhân' END;
             
             IF NOT EXISTS (
@@ -98,12 +98,13 @@ BEGIN TRY
         END
         ELSE IF (@type = 2) -- Nhà cung cấp
         BEGIN
-            -- Nhà cung cấp (ngẫu nhiên loại)
-            DECLARE @supplierCategory NVARCHAR(100) = CASE (@i % 4)
-                WHEN 0 THEN N'Nhà cung cấp dịch vụ'
-                WHEN 1 THEN N'Nhà cung cấp nguyên vật liệu'
-                WHEN 2 THEN N'Nhà cung cấp thiết bị'
-                ELSE N'Nhà cung cấp công nghệ' END;
+            -- Nhà cung cấp (ngẫu nhiên loại - chủ yếu là sub-category)
+            DECLARE @supplierCategory NVARCHAR(100) = CASE (@i % 5)
+                WHEN 0 THEN N'Nhà cung cấp nguyên vật liệu'
+                WHEN 1 THEN N'Nhà cung cấp thiết bị'
+                WHEN 2 THEN N'Nhà cung cấp công nghệ'
+                WHEN 3 THEN N'Nhà cung cấp marketing'
+                ELSE N'Nhà cung cấp dịch vụ' END;
             
             IF NOT EXISTS (
                 SELECT 1
@@ -121,7 +122,7 @@ BEGIN TRY
         ELSE IF (@type = 3) -- Cả hai
         BEGIN
             -- Mapping cho cả khách hàng và nhà cung cấp
-            -- Khách hàng doanh nghiệp
+            -- Khách hàng doanh nghiệp (category chính)
             IF NOT EXISTS (
                 SELECT 1
                 FROM dbo.BusinessPartner_BusinessPartnerCategory m
@@ -135,7 +136,7 @@ BEGIN TRY
                 WHERE p.PartnerCode = @code;
             END
 
-            -- Nhà cung cấp dịch vụ
+            -- Nhà cung cấp dịch vụ (category chính)
             IF NOT EXISTS (
                 SELECT 1
                 FROM dbo.BusinessPartner_BusinessPartnerCategory m
@@ -163,30 +164,47 @@ END CATCH
 
 GO
 
--- Kiểm tra dữ liệu mapping đã insert
+-- Kiểm tra dữ liệu mapping đã insert với cấu trúc hierarchical
 SELECT 
     p.[PartnerCode],
     p.[PartnerName],
     p.[PartnerType],
     c.[CategoryName],
-    c.[Description] as CategoryDescription
+    c.[Description] as CategoryDescription,
+    CASE 
+        WHEN c.[ParentId] IS NULL THEN N'Category chính'
+        ELSE N'Sub-category'
+    END as CategoryType,
+    parent.[CategoryName] as ParentCategory
 FROM [dbo].[BusinessPartner_BusinessPartnerCategory] m
 JOIN [dbo].[BusinessPartner] p ON p.Id = m.PartnerId
 JOIN [dbo].[BusinessPartnerCategory] c ON c.Id = m.CategoryId
-ORDER BY p.[PartnerCode], c.[CategoryName]
+LEFT JOIN [dbo].[BusinessPartnerCategory] parent ON parent.Id = c.ParentId
+ORDER BY p.[PartnerCode], 
+    CASE WHEN c.[ParentId] IS NULL THEN 0 ELSE 1 END,
+    c.[CategoryName]
 
 GO
 
--- Thống kê mapping theo category
+-- Thống kê mapping theo category với cấu trúc hierarchical
 SELECT 
     c.[CategoryName],
+    CASE 
+        WHEN c.[ParentId] IS NULL THEN N'Category chính'
+        ELSE N'Sub-category'
+    END as CategoryType,
+    parent.[CategoryName] as ParentCategory,
     COUNT(m.[PartnerId]) as PartnerCount,
     STRING_AGG(p.[PartnerCode], ', ') as PartnerCodes
 FROM [dbo].[BusinessPartnerCategory] c
+LEFT JOIN [dbo].[BusinessPartnerCategory] parent ON parent.Id = c.ParentId
 LEFT JOIN [dbo].[BusinessPartner_BusinessPartnerCategory] m ON m.CategoryId = c.Id
 LEFT JOIN [dbo].[BusinessPartner] p ON p.Id = m.PartnerId
-GROUP BY c.[CategoryName]
-ORDER BY PartnerCount DESC, c.[CategoryName]
+GROUP BY c.[CategoryName], c.[ParentId], parent.[CategoryName]
+ORDER BY 
+    CASE WHEN c.[ParentId] IS NULL THEN 0 ELSE 1 END,
+    PartnerCount DESC, 
+    c.[CategoryName]
 
 GO
 
@@ -208,3 +226,4 @@ ORDER BY p.[PartnerType]
 GO
 
 PRINT 'Đã hoàn thành việc tạo dữ liệu mapping cho BusinessPartner_BusinessPartnerCategory'
+PRINT 'Tổng số bản ghi đã thêm: Mapping cho 103 đối tác với các danh mục tương ứng'

@@ -33,12 +33,12 @@ namespace Dal.DataContext
     partial void InsertApplicationUser(ApplicationUser instance);
     partial void UpdateApplicationUser(ApplicationUser instance);
     partial void DeleteApplicationUser(ApplicationUser instance);
-    partial void InsertBusinessPartner(BusinessPartner instance);
-    partial void UpdateBusinessPartner(BusinessPartner instance);
-    partial void DeleteBusinessPartner(BusinessPartner instance);
     partial void InsertBusinessPartnerContact(BusinessPartnerContact instance);
     partial void UpdateBusinessPartnerContact(BusinessPartnerContact instance);
     partial void DeleteBusinessPartnerContact(BusinessPartnerContact instance);
+    partial void InsertBusinessPartner(BusinessPartner instance);
+    partial void UpdateBusinessPartner(BusinessPartner instance);
+    partial void DeleteBusinessPartner(BusinessPartner instance);
     partial void InsertBusinessPartner_BusinessPartnerCategory(BusinessPartner_BusinessPartnerCategory instance);
     partial void UpdateBusinessPartner_BusinessPartnerCategory(BusinessPartner_BusinessPartnerCategory instance);
     partial void DeleteBusinessPartner_BusinessPartnerCategory(BusinessPartner_BusinessPartnerCategory instance);
@@ -85,19 +85,19 @@ namespace Dal.DataContext
 			}
 		}
 		
-		public System.Data.Linq.Table<BusinessPartner> BusinessPartners
-		{
-			get
-			{
-				return this.GetTable<BusinessPartner>();
-			}
-		}
-		
 		public System.Data.Linq.Table<BusinessPartnerContact> BusinessPartnerContacts
 		{
 			get
 			{
 				return this.GetTable<BusinessPartnerContact>();
+			}
+		}
+		
+		public System.Data.Linq.Table<BusinessPartner> BusinessPartners
+		{
+			get
+			{
+				return this.GetTable<BusinessPartner>();
 			}
 		}
 		
@@ -227,6 +227,253 @@ namespace Dal.DataContext
 					this._Active = value;
 					this.SendPropertyChanged("Active");
 					this.OnActiveChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.BusinessPartnerContact")]
+	public partial class BusinessPartnerContact : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _PartnerId;
+		
+		private string _FullName;
+		
+		private string _Position;
+		
+		private string _Phone;
+		
+		private string _Email;
+		
+		private bool _IsPrimary;
+		
+		private EntityRef<BusinessPartner> _BusinessPartner;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnPartnerIdChanging(System.Guid value);
+    partial void OnPartnerIdChanged();
+    partial void OnFullNameChanging(string value);
+    partial void OnFullNameChanged();
+    partial void OnPositionChanging(string value);
+    partial void OnPositionChanged();
+    partial void OnPhoneChanging(string value);
+    partial void OnPhoneChanged();
+    partial void OnEmailChanging(string value);
+    partial void OnEmailChanged();
+    partial void OnIsPrimaryChanging(bool value);
+    partial void OnIsPrimaryChanged();
+    #endregion
+		
+		public BusinessPartnerContact()
+		{
+			this._BusinessPartner = default(EntityRef<BusinessPartner>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PartnerId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid PartnerId
+		{
+			get
+			{
+				return this._PartnerId;
+			}
+			set
+			{
+				if ((this._PartnerId != value))
+				{
+					if (this._BusinessPartner.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPartnerIdChanging(value);
+					this.SendPropertyChanging();
+					this._PartnerId = value;
+					this.SendPropertyChanged("PartnerId");
+					this.OnPartnerIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FullName", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string FullName
+		{
+			get
+			{
+				return this._FullName;
+			}
+			set
+			{
+				if ((this._FullName != value))
+				{
+					this.OnFullNameChanging(value);
+					this.SendPropertyChanging();
+					this._FullName = value;
+					this.SendPropertyChanged("FullName");
+					this.OnFullNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Position", DbType="NVarChar(100)")]
+		public string Position
+		{
+			get
+			{
+				return this._Position;
+			}
+			set
+			{
+				if ((this._Position != value))
+				{
+					this.OnPositionChanging(value);
+					this.SendPropertyChanging();
+					this._Position = value;
+					this.SendPropertyChanged("Position");
+					this.OnPositionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Phone", DbType="NVarChar(50)")]
+		public string Phone
+		{
+			get
+			{
+				return this._Phone;
+			}
+			set
+			{
+				if ((this._Phone != value))
+				{
+					this.OnPhoneChanging(value);
+					this.SendPropertyChanging();
+					this._Phone = value;
+					this.SendPropertyChanged("Phone");
+					this.OnPhoneChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="NVarChar(100)")]
+		public string Email
+		{
+			get
+			{
+				return this._Email;
+			}
+			set
+			{
+				if ((this._Email != value))
+				{
+					this.OnEmailChanging(value);
+					this.SendPropertyChanging();
+					this._Email = value;
+					this.SendPropertyChanged("Email");
+					this.OnEmailChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPrimary", DbType="Bit NOT NULL")]
+		public bool IsPrimary
+		{
+			get
+			{
+				return this._IsPrimary;
+			}
+			set
+			{
+				if ((this._IsPrimary != value))
+				{
+					this.OnIsPrimaryChanging(value);
+					this.SendPropertyChanging();
+					this._IsPrimary = value;
+					this.SendPropertyChanged("IsPrimary");
+					this.OnIsPrimaryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartner_BusinessPartnerContact", Storage="_BusinessPartner", ThisKey="PartnerId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public BusinessPartner BusinessPartner
+		{
+			get
+			{
+				return this._BusinessPartner.Entity;
+			}
+			set
+			{
+				BusinessPartner previousValue = this._BusinessPartner.Entity;
+				if (((previousValue != value) 
+							|| (this._BusinessPartner.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._BusinessPartner.Entity = null;
+						previousValue.BusinessPartnerContacts.Remove(this);
+					}
+					this._BusinessPartner.Entity = value;
+					if ((value != null))
+					{
+						value.BusinessPartnerContacts.Add(this);
+						this._PartnerId = value.Id;
+					}
+					else
+					{
+						this._PartnerId = default(System.Guid);
+					}
+					this.SendPropertyChanged("BusinessPartner");
 				}
 			}
 		}
@@ -826,253 +1073,6 @@ namespace Dal.DataContext
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.BusinessPartnerContact")]
-	public partial class BusinessPartnerContact : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private System.Guid _Id;
-		
-		private System.Guid _PartnerId;
-		
-		private string _FullName;
-		
-		private string _Position;
-		
-		private string _Phone;
-		
-		private string _Email;
-		
-		private bool _IsPrimary;
-		
-		private EntityRef<BusinessPartner> _BusinessPartner;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(System.Guid value);
-    partial void OnIdChanged();
-    partial void OnPartnerIdChanging(System.Guid value);
-    partial void OnPartnerIdChanged();
-    partial void OnFullNameChanging(string value);
-    partial void OnFullNameChanged();
-    partial void OnPositionChanging(string value);
-    partial void OnPositionChanged();
-    partial void OnPhoneChanging(string value);
-    partial void OnPhoneChanged();
-    partial void OnEmailChanging(string value);
-    partial void OnEmailChanged();
-    partial void OnIsPrimaryChanging(bool value);
-    partial void OnIsPrimaryChanged();
-    #endregion
-		
-		public BusinessPartnerContact()
-		{
-			this._BusinessPartner = default(EntityRef<BusinessPartner>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
-		public System.Guid Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PartnerId", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid PartnerId
-		{
-			get
-			{
-				return this._PartnerId;
-			}
-			set
-			{
-				if ((this._PartnerId != value))
-				{
-					if (this._BusinessPartner.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnPartnerIdChanging(value);
-					this.SendPropertyChanging();
-					this._PartnerId = value;
-					this.SendPropertyChanged("PartnerId");
-					this.OnPartnerIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FullName", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string FullName
-		{
-			get
-			{
-				return this._FullName;
-			}
-			set
-			{
-				if ((this._FullName != value))
-				{
-					this.OnFullNameChanging(value);
-					this.SendPropertyChanging();
-					this._FullName = value;
-					this.SendPropertyChanged("FullName");
-					this.OnFullNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Position", DbType="NVarChar(100)")]
-		public string Position
-		{
-			get
-			{
-				return this._Position;
-			}
-			set
-			{
-				if ((this._Position != value))
-				{
-					this.OnPositionChanging(value);
-					this.SendPropertyChanging();
-					this._Position = value;
-					this.SendPropertyChanged("Position");
-					this.OnPositionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Phone", DbType="NVarChar(50)")]
-		public string Phone
-		{
-			get
-			{
-				return this._Phone;
-			}
-			set
-			{
-				if ((this._Phone != value))
-				{
-					this.OnPhoneChanging(value);
-					this.SendPropertyChanging();
-					this._Phone = value;
-					this.SendPropertyChanged("Phone");
-					this.OnPhoneChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="NVarChar(100)")]
-		public string Email
-		{
-			get
-			{
-				return this._Email;
-			}
-			set
-			{
-				if ((this._Email != value))
-				{
-					this.OnEmailChanging(value);
-					this.SendPropertyChanging();
-					this._Email = value;
-					this.SendPropertyChanged("Email");
-					this.OnEmailChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPrimary", DbType="Bit NOT NULL")]
-		public bool IsPrimary
-		{
-			get
-			{
-				return this._IsPrimary;
-			}
-			set
-			{
-				if ((this._IsPrimary != value))
-				{
-					this.OnIsPrimaryChanging(value);
-					this.SendPropertyChanging();
-					this._IsPrimary = value;
-					this.SendPropertyChanged("IsPrimary");
-					this.OnIsPrimaryChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartner_BusinessPartnerContact", Storage="_BusinessPartner", ThisKey="PartnerId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
-		public BusinessPartner BusinessPartner
-		{
-			get
-			{
-				return this._BusinessPartner.Entity;
-			}
-			set
-			{
-				BusinessPartner previousValue = this._BusinessPartner.Entity;
-				if (((previousValue != value) 
-							|| (this._BusinessPartner.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._BusinessPartner.Entity = null;
-						previousValue.BusinessPartnerContacts.Remove(this);
-					}
-					this._BusinessPartner.Entity = value;
-					if ((value != null))
-					{
-						value.BusinessPartnerContacts.Add(this);
-						this._PartnerId = value.Id;
-					}
-					else
-					{
-						this._PartnerId = default(System.Guid);
-					}
-					this.SendPropertyChanged("BusinessPartner");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.BusinessPartner_BusinessPartnerCategory")]
 	public partial class BusinessPartner_BusinessPartnerCategory : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1253,7 +1253,13 @@ namespace Dal.DataContext
 		
 		private string _Description;
 		
+		private System.Nullable<System.Guid> _ParentId;
+		
 		private EntitySet<BusinessPartner_BusinessPartnerCategory> _BusinessPartner_BusinessPartnerCategories;
+		
+		private EntitySet<BusinessPartnerCategory> _BusinessPartnerCategories;
+		
+		private EntityRef<BusinessPartnerCategory> _BusinessPartnerCategory1;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1265,11 +1271,15 @@ namespace Dal.DataContext
     partial void OnCategoryNameChanged();
     partial void OnDescriptionChanging(string value);
     partial void OnDescriptionChanged();
+    partial void OnParentIdChanging(System.Nullable<System.Guid> value);
+    partial void OnParentIdChanged();
     #endregion
 		
 		public BusinessPartnerCategory()
 		{
 			this._BusinessPartner_BusinessPartnerCategories = new EntitySet<BusinessPartner_BusinessPartnerCategory>(new Action<BusinessPartner_BusinessPartnerCategory>(this.attach_BusinessPartner_BusinessPartnerCategories), new Action<BusinessPartner_BusinessPartnerCategory>(this.detach_BusinessPartner_BusinessPartnerCategories));
+			this._BusinessPartnerCategories = new EntitySet<BusinessPartnerCategory>(new Action<BusinessPartnerCategory>(this.attach_BusinessPartnerCategories), new Action<BusinessPartnerCategory>(this.detach_BusinessPartnerCategories));
+			this._BusinessPartnerCategory1 = default(EntityRef<BusinessPartnerCategory>);
 			OnCreated();
 		}
 		
@@ -1333,6 +1343,30 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ParentId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ParentId
+		{
+			get
+			{
+				return this._ParentId;
+			}
+			set
+			{
+				if ((this._ParentId != value))
+				{
+					if (this._BusinessPartnerCategory1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnParentIdChanging(value);
+					this.SendPropertyChanging();
+					this._ParentId = value;
+					this.SendPropertyChanged("ParentId");
+					this.OnParentIdChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartnerCategory_BusinessPartner_BusinessPartnerCategory", Storage="_BusinessPartner_BusinessPartnerCategories", ThisKey="Id", OtherKey="CategoryId")]
 		public EntitySet<BusinessPartner_BusinessPartnerCategory> BusinessPartner_BusinessPartnerCategories
 		{
@@ -1343,6 +1377,53 @@ namespace Dal.DataContext
 			set
 			{
 				this._BusinessPartner_BusinessPartnerCategories.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartnerCategory_BusinessPartnerCategory", Storage="_BusinessPartnerCategories", ThisKey="Id", OtherKey="ParentId")]
+		public EntitySet<BusinessPartnerCategory> BusinessPartnerCategories
+		{
+			get
+			{
+				return this._BusinessPartnerCategories;
+			}
+			set
+			{
+				this._BusinessPartnerCategories.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartnerCategory_BusinessPartnerCategory", Storage="_BusinessPartnerCategory1", ThisKey="ParentId", OtherKey="Id", IsForeignKey=true)]
+		public BusinessPartnerCategory BusinessPartnerCategory1
+		{
+			get
+			{
+				return this._BusinessPartnerCategory1.Entity;
+			}
+			set
+			{
+				BusinessPartnerCategory previousValue = this._BusinessPartnerCategory1.Entity;
+				if (((previousValue != value) 
+							|| (this._BusinessPartnerCategory1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._BusinessPartnerCategory1.Entity = null;
+						previousValue.BusinessPartnerCategories.Remove(this);
+					}
+					this._BusinessPartnerCategory1.Entity = value;
+					if ((value != null))
+					{
+						value.BusinessPartnerCategories.Add(this);
+						this._ParentId = value.Id;
+					}
+					else
+					{
+						this._ParentId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("BusinessPartnerCategory1");
+				}
 			}
 		}
 		
@@ -1376,6 +1457,18 @@ namespace Dal.DataContext
 		{
 			this.SendPropertyChanging();
 			entity.BusinessPartnerCategory = null;
+		}
+		
+		private void attach_BusinessPartnerCategories(BusinessPartnerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.BusinessPartnerCategory1 = this;
+		}
+		
+		private void detach_BusinessPartnerCategories(BusinessPartnerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.BusinessPartnerCategory1 = null;
 		}
 	}
 }

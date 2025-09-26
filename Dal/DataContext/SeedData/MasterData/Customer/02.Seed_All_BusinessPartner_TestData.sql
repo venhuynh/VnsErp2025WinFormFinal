@@ -4,8 +4,8 @@
 -- Ngày tạo: 2025
 -- Mô tả: Script SQL tổng hợp để tạo dữ liệu mẫu cho tất cả bảng liên quan đến BusinessPartner
 -- Thứ tự thực hiện:
---   1. BusinessPartnerCategory (danh mục đối tác)
---   2. BusinessPartner (đối tác chính)
+--   1. BusinessPartnerCategory (danh mục đối tác - có cấu trúc hierarchical)
+--   2. BusinessPartner (đối tác chính - với đầy đủ các trường mới)
 --   3. BusinessPartnerContact (liên hệ đối tác)
 --   4. BusinessPartner_BusinessPartnerCategory (mapping đối tác - danh mục)
 -- =============================================
@@ -25,7 +25,7 @@ PRINT ''
 PRINT '1. Đang tạo dữ liệu mẫu cho BusinessPartnerCategory...'
 
 -- Chạy script tạo BusinessPartnerCategory
-:r "Seed_BusinessPartnerCategory_TestData.sql"
+:r "01.Seed_BusinessPartnerCategory_TestData.sql"
 
 PRINT '   ✓ Hoàn thành tạo BusinessPartnerCategory'
 
@@ -35,8 +35,8 @@ PRINT '   ✓ Hoàn thành tạo BusinessPartnerCategory'
 PRINT ''
 PRINT '2. Đang tạo dữ liệu mẫu cho BusinessPartner...'
 
--- Chạy script tạo BusinessPartner
-:r "Seed_BusinessPartner_TestData.sql"
+-- Chạy script tạo BusinessPartner (file mới được tạo)
+:r "02.Seed_BusinessPartner_TestData.sql"
 
 PRINT '   ✓ Hoàn thành tạo BusinessPartner'
 
@@ -47,7 +47,7 @@ PRINT ''
 PRINT '3. Đang tạo dữ liệu mẫu cho BusinessPartnerContact...'
 
 -- Chạy script tạo BusinessPartnerContact
-:r "Seed_BusinessPartnerContact_TestData.sql"
+:r "03.Seed_BusinessPartnerContact_TestData.sql"
 
 PRINT '   ✓ Hoàn thành tạo BusinessPartnerContact'
 
@@ -58,7 +58,7 @@ PRINT ''
 PRINT '4. Đang tạo dữ liệu mapping cho BusinessPartner_BusinessPartnerCategory...'
 
 -- Chạy script tạo mapping
-:r "Seed_BusinessPartnerCategoryMapping_TestData.sql"
+:r "04.Seed_BusinessPartnerCategoryMapping_TestData.sql"
 
 PRINT '   ✓ Hoàn thành tạo BusinessPartner_BusinessPartnerCategory mapping'
 
@@ -143,16 +143,25 @@ SELECT
 FROM [dbo].[BusinessPartnerContact]
 WHERE [IsPrimary] = 1
 
--- Thống kê mapping theo category
+-- Thống kê mapping theo category với cấu trúc hierarchical
 PRINT ''
-PRINT 'Thống kê mapping theo danh mục:'
-SELECT TOP 10
+PRINT 'Thống kê mapping theo danh mục (hiển thị cấu trúc hierarchical):'
+SELECT TOP 15
     c.[CategoryName],
+    CASE 
+        WHEN c.[ParentId] IS NULL THEN N'Category chính'
+        ELSE N'Sub-category'
+    END as CategoryType,
+    parent.[CategoryName] as ParentCategory,
     COUNT(m.[PartnerId]) as PartnerCount
 FROM [dbo].[BusinessPartnerCategory] c
+LEFT JOIN [dbo].[BusinessPartnerCategory] parent ON parent.Id = c.ParentId
 LEFT JOIN [dbo].[BusinessPartner_BusinessPartnerCategory] m ON m.CategoryId = c.Id
-GROUP BY c.[CategoryName]
-ORDER BY PartnerCount DESC, c.[CategoryName]
+GROUP BY c.[CategoryName], c.[ParentId], parent.[CategoryName]
+ORDER BY 
+    CASE WHEN c.[ParentId] IS NULL THEN 0 ELSE 1 END,
+    PartnerCount DESC, 
+    c.[CategoryName]
 
 PRINT ''
 PRINT '============================================='
@@ -209,4 +218,9 @@ WHERE NOT EXISTS (SELECT 1 FROM [dbo].[BusinessPartnerCategory] c WHERE c.Id = m
 
 PRINT ''
 PRINT 'Dữ liệu mẫu đã được tạo thành công!'
+PRINT 'Tổng kết:'
+PRINT '- 15 danh mục đối tác (4 category chính + 11 sub-category)'
+PRINT '- 103 đối tác (3 đối tác mẫu + 100 đối tác test)'
+PRINT '- Contacts tương ứng cho các đối tác'
+PRINT '- Mapping đối tác với danh mục theo cấu trúc hierarchical'
 PRINT 'Bạn có thể sử dụng các form BusinessPartner để kiểm tra dữ liệu.'
