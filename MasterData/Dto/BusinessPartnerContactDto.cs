@@ -1,37 +1,38 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace MasterData.Dto
 {
     public class BusinessPartnerContactDto
     {
-        [Display(Name = "ID")]
+        [DisplayName("ID")]
         public Guid Id { get; set; }
 
-        [Display(Name = "ID đối tác")]
+        [DisplayName("ID đối tác")]
         [Required(ErrorMessage = "ID đối tác không được để trống")]
         public Guid PartnerId { get; set; }
 
-        [Display(Name = "Họ và tên")]
+        [DisplayName("Họ và tên")]
         [Required(ErrorMessage = "Họ và tên không được để trống")]
         [StringLength(100, ErrorMessage = "Họ và tên không được vượt quá 100 ký tự")]
         public string FullName { get; set; }
 
-        [Display(Name = "Chức vụ")]
+        [DisplayName("Chức vụ")]
         [StringLength(100, ErrorMessage = "Chức vụ không được vượt quá 100 ký tự")]
         public string Position { get; set; }
 
-        [Display(Name = "Số điện thoại")]
+        [DisplayName("Số điện thoại")]
         [Phone(ErrorMessage = "Số điện thoại không đúng định dạng")]
         [StringLength(20, ErrorMessage = "Số điện thoại không được vượt quá 20 ký tự")]
         public string Phone { get; set; }
 
-        [Display(Name = "Email")]
+        [DisplayName("Email")]
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
         [StringLength(100, ErrorMessage = "Email không được vượt quá 100 ký tự")]
         public string Email { get; set; }
 
-        [Display(Name = "Liên hệ chính")]
+        [DisplayName("Liên hệ chính")]
         public bool IsPrimary { get; set; }
     }
 }

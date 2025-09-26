@@ -58,7 +58,7 @@
     <Compile Include="Converters\BusinessPartnerContactConverters.cs" />
     <Compile Include="Converters\BusinessPartnerConverters.cs" />
     <Compile Include="Customer\FrmBusinessPartnerDetail.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Customer\FrmBusinessPartnerDetail.Designer.cs">
       <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>
@@ -141,6 +141,11 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
+    <Content Include="Doc\Prompt cho AI Cursor %28Refactor DTOs với Notation tiếng Việt%29.txt" />
+    <None Include="Resources\cancel_32x32.png" />
+    <None Include="Resources\cancel_16x16.png" />
+    <None Include="Resources\save_32x32.png" />
+    <None Include="Resources\save_16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

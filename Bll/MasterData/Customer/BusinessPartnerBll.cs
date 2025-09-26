@@ -61,5 +61,53 @@ namespace Bll.MasterData.Customer
         {
             _businessPartnerDataAccess.DeletePartner(id);
         }
+
+        /// <summary>
+        /// Lấy đối tác theo Id (entity).
+        /// </summary>
+        public BusinessPartner GetById(Guid id)
+        {
+            return _businessPartnerDataAccess.GetById(id);
+        }
+
+        /// <summary>
+        /// Lấy đối tác theo Id (Async, entity).
+        /// </summary>
+        public Task<BusinessPartner> GetByIdAsync(Guid id)
+        {
+            return _businessPartnerDataAccess.GetByIdAsync(id);
+        }
+
+        /// <summary>
+        /// Tạo mới đối tác cơ bản.
+        /// </summary>
+        public BusinessPartner AddNew(string code, string name, int partnerType, bool isActive)
+        {
+            return _businessPartnerDataAccess.AddNewPartner(code, name, partnerType, isActive);
+        }
+
+        /// <summary>
+        /// Cập nhật thông tin liên hệ cơ bản.
+        /// </summary>
+        public void UpdateContact(Guid id, string phone, string email)
+        {
+            _businessPartnerDataAccess.UpdateContactInfo(id, phone, email);
+        }
+
+        /// <summary>
+        /// Cập nhật trạng thái kích hoạt.
+        /// </summary>
+        public void SetActive(Guid id, bool isActive)
+        {
+            _businessPartnerDataAccess.SetActive(id, isActive);
+        }
+
+        /// <summary>
+        /// Lưu/cập nhật đầy đủ thông tin đối tác.
+        /// </summary>
+        public void SaveOrUpdate(BusinessPartner entity)
+        {
+            _businessPartnerDataAccess.SaveOrUpdate(entity);
+        }
     }
 }

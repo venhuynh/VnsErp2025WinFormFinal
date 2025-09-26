@@ -1,37 +1,54 @@
 ﻿Bạn là Senior .NET WinForms Developer. 
-Hãy refactor và tái cấu trúc lại code-behind của form [TênForm] theo các tiêu chí chuyên nghiệp:
+Hãy refactor và tái cấu trúc lại code-behind của form [FrmBusinessPartnerDetail] theo các tiêu chí chuyên nghiệp, 
+đảm bảo code sạch, có tổ chức từng region rõ ràng, và comment bằng tiếng Việt.
 
-### Tiêu chí Refactor
-1. **Tách biệt logic**
-   - Chỉ giữ lại event handler trong code-behind.
-   - Business logic (CRUD, validation, service call) phải gọi qua Service/Helper riêng.
-   - Tránh viết SQL hoặc DataContext trực tiếp trong Form.
+### Tiêu chí tái cấu trúc
 
-2. **Cấu trúc rõ ràng**
-   - Sử dụng region: Fields, Constructor, Event Handlers, Private Methods, Helpers.
-   - Tách logic lặp lại thành hàm private (LoadData, BindGrid, ShowError, ValidateInput…).
-   - Dùng async/await khi gọi service để UI không bị treo.
+1. **Cấu trúc code chuẩn**
+   - Sử dụng các region rõ ràng: 
+     - #region Fields
+     - #region Constructor
+     - #region Form Events
+     - #region Event Handlers
+     - #region Private Methods
+     - #region Helpers
+   - Các event handler (btnSave, btnClose, gridView_RowClick…) chỉ giữ logic ngắn gọn, gọi sang phương thức xử lý riêng.
+
+2. **Phân tách logic**
+   - UI event → gọi sang phương thức riêng (LoadDetailAsync, SavePartner, ValidateInput, BuildDto).
+   - Business logic (CRUD, mapping) không viết trực tiếp trong Form, phải gọi qua BLL/Service (ví dụ: BusinessPartnerBll).
+   - Không để SQL hoặc DataContext trong Form.
 
 3. **Naming convention**
-   - Event handler theo chuẩn: `btnSave_Click`, `gridView_RowCellClick`.
-   - Biến đặt tên rõ nghĩa: `currentPartner`, `selectedRowId`.
+   - Event handler: btnSave_ItemClick, btnClose_ItemClick, FrmBusinessPartnerDetail_Shown.
+   - Biến private: _partnerService, _currentPartnerId, _selectedRowId.
+   - Phương thức private đặt tên rõ nghĩa: LoadDetailAsync, BuildDetailDtoFromForm, ValidateInput, ShowError.
 
-4. **Exception handling**
-   - Toàn bộ thao tác CRUD phải wrap try/catch.
-   - Dùng phương thức chung `ShowError(Exception ex)` để hiển thị lỗi qua XtraMessageBox.
+4. **Comment & XML Documentation**
+   - Mỗi phương thức phải có XML doc bằng tiếng Việt:
+     - <summary>: mô tả ngắn gọn mục đích.
+     - <param>: mô tả tham số (nếu có).
+     - <returns>: mô tả kết quả trả về (nếu có).
+   - Trong thân code: thêm comment ngắn giải thích tại các bước quan trọng (VD: validate dữ liệu, map DTO, xử lý lỗi).
+   - Các comment cần chuyên nghiệp, ngắn gọn, dễ hiểu.
 
-5. **Comment & Documentation**
-   - XML doc cho method private/public.
-   - Comment ngắn trong event handler để dev dễ hiểu.
-   - Mỗi event có 1 dòng summary: xử lý khi người dùng click nút, chọn dòng, load form…
+5. **Exception handling**
+   - Toàn bộ thao tác CRUD phải nằm trong try/catch.
+   - Viết phương thức dùng chung ShowError(Exception ex, string action) để hiển thị lỗi qua XtraMessageBox.
+   - Exception message phải rõ ràng, tiếng Việt.
 
-6. **UI binding**
-   - GridControl: bind với List<DTO>, không bind trực tiếp entity.
-   - Sử dụng DataAnnotations để DevExpress tự sinh caption/validation.
+6. **UI binding & Validation**
+   - Form bind với DTO (BusinessPartnerDetailDto).
+   - Sử dụng [Display(Name="...")] từ DTO để DevExpress tự sinh caption.
+   - Validation: sử dụng DataAnnotations + DXErrorProvider/DXValidationProvider, thông báo lỗi tiếng Việt.
 
 ### Output mong muốn
-1. Code-behind Form đã được refactor gọn, sạch.
-2. Các event handler ngắn, chỉ gọi sang method riêng.
-3. Có comment chuyên nghiệp (XML doc + inline comment).
-4. Ví dụ minh họa: btnAdd, btnSave, btnDelete, gridView_RowCellClick.
-
+1. Code-behind đã được refactor sạch sẽ, dễ đọc.
+2. Cấu trúc code có region rõ ràng, phân tách hợp lý.
+3. Event handler gọn nhẹ, gọi sang private method.
+4. Có XML doc bằng tiếng Việt cho tất cả public/private method.
+5. Có comment nội tuyến giải thích từng bước quan trọng trong code.
+6. Ví dụ minh họa:
+   - `FrmBusinessPartnerDetail_Shown` → Gọi LoadDetailAsync.
+   - `btnSave_ItemClick` → Validate → Build DTO → Gọi Service.Save → Thông báo kết quả.
+   - `btnClose_ItemClick` → Đóng form.

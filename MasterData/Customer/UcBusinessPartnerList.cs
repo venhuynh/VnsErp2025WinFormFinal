@@ -1,13 +1,16 @@
 ﻿using Bll.MasterData.Customer;
 using Bll.Utils;
+using Bll.Common;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraSplashScreen;
 using MasterData.Converters;
 using MasterData.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MasterData.Customer
 {
@@ -20,6 +23,7 @@ namespace MasterData.Customer
 
         private readonly BusinessPartnerBll _businessPartnerBll = new BusinessPartnerBll();
         private List<Guid> _selectedPartnerIds = new List<Guid>();
+        private bool _isLoading; // guard tránh gọi LoadDataAsync song song (Splash đã hiển thị)
 
         #endregion
 
@@ -48,6 +52,31 @@ namespace MasterData.Customer
 
         #endregion
 
+        #region Private Helper Methods
+
+        /// <summary>
+        /// Thực hiện operation async với WaitingForm1 hiển thị.
+        /// </summary>
+        /// <param name="operation">Operation async cần thực hiện</param>
+        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
+        {
+            try
+            {
+                // Hiển thị WaitingForm1
+                SplashScreenManager.ShowForm(typeof(WaitForm1));
+
+                // Thực hiện operation
+                await operation();
+            }
+            finally
+            {
+                // Đóng WaitingForm1
+                SplashScreenManager.CloseForm();
+            }
+        }
+
+        #endregion
+
         #region Event Handlers
 
         /// <summary>
@@ -61,9 +90,27 @@ namespace MasterData.Customer
         /// <summary>
         /// Người dùng bấm "Mới".
         /// </summary>
-        private void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            MsgBox.ShowInfo("Tính năng tạo mới sẽ được triển khai ở bước kế tiếp.");
+            // Tham khảo mẫu ConfigSqlServerInfoBarButtonItem_ItemClick: dùng ShowScope để auto-close overlay
+            try
+            {
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var form = new FrmBusinessPartnerDetail(Guid.Empty))
+                    {
+                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.ShowDialog(this);
+
+                        await LoadDataAsync();
+                        UpdateButtonStates();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi hiển thị màn hình thêm mới");
+            }
         }
 
         /// <summary>
@@ -87,8 +134,8 @@ namespace MasterData.Customer
         /// </summary>
         private void BusinessPartnerListGridView_CustomDrawRowIndicator(object sender, RowIndicatorCustomDrawEventArgs e)
         {
-            if (!e.Info.IsRowIndicator || e.RowHandle < 0) return;
-            e.Info.DisplayText = (e.RowHandle + 1).ToString();
+            // Sử dụng helper chung để vẽ số thứ tự dòng
+            GridViewHelper.CustomDrawRowIndicator(BusinessPartnerListGridView, e);
         }
 
         private void UpdateButtonStates()
@@ -215,7 +262,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Người dùng bấm "Điều chỉnh".
         /// </summary>
-        private void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             // Chỉ cho phép chỉnh sửa 1 dòng dữ liệu
             if (_selectedPartnerIds == null || _selectedPartnerIds.Count == 0)
@@ -253,7 +300,25 @@ namespace MasterData.Customer
                 return;
             }
 
-            MsgBox.ShowInfo($"Mở chỉnh sửa: {dto.PartnerCode} - {dto.PartnerName}");
+            // Tham khảo mẫu ConfigSqlServerInfoBarButtonItem_ItemClick: dùng ShowScope để auto-close overlay
+            try
+            {
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var form = new FrmBusinessPartnerDetail(dto.Id))
+                    {
+                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.ShowDialog(this);
+                        
+                        await LoadDataAsync();
+                        UpdateButtonStates();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi hiển thị màn hình điều chỉnh");
+            }
         }
 
         /// <summary>
@@ -273,25 +338,22 @@ namespace MasterData.Customer
 
             if (!MsgBox.GetConfirmFromYesNoDialog(confirmMessage)) return;
 
-            // Hiển thị WaitForm trong quá trình xóa nhiều
-            DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(typeof(Bll.Common.WaitForm1));
             try
             {
-                // Xóa đồng bộ – có thể nâng cấp lên song song nếu cần
-                foreach (var id in _selectedPartnerIds.ToList())
+                await ExecuteWithWaitingFormAsync(async () =>
                 {
-                    _businessPartnerBll.Delete(id);
-                }
-                ClearSelectionState();
-                await LoadDataAsync();
+                    foreach (var id in _selectedPartnerIds.ToList())
+                    {
+                        _businessPartnerBll.Delete(id);
+                    }
+                    ClearSelectionState();
+                    // Gọi LoadDataAsyncWithoutSplash để tránh xung đột WaitingForm1
+                    await LoadDataAsyncWithoutSplash();
+                });
             }
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi xóa dữ liệu");
-            }
-            finally
-            {
-                DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
             }
         }
 
@@ -320,7 +382,30 @@ namespace MasterData.Customer
         /// </summary>
         private async System.Threading.Tasks.Task LoadDataAsync()
         {
-            DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(typeof(Bll.Common.WaitForm1));
+            if (_isLoading) return; // tránh re-entrancy
+            _isLoading = true;
+            try
+            {
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    await LoadDataAsyncWithoutSplash();
+                });
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tải dữ liệu");
+            }
+            finally
+            {
+                _isLoading = false;
+            }
+        }
+
+        /// <summary>
+        /// Tải dữ liệu và bind vào Grid (Async, không hiển thị WaitForm).
+        /// </summary>
+        private async System.Threading.Tasks.Task LoadDataAsyncWithoutSplash()
+        {
             try
             {
                 var entities = await _businessPartnerBll.GetAllAsync();
@@ -330,10 +415,6 @@ namespace MasterData.Customer
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi tải dữ liệu");
-            }
-            finally
-            {
-                DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
             }
         }
 

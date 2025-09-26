@@ -181,7 +181,6 @@ public static class SplashScreenHelper
     /// <summary>
     /// Hiển thị màn hình chờ xử lý dữ liệu (legacy)
     /// </summary>
-    [Obsolete("Sử dụng ShowVnsSplashScreen thay thế")]
     public static void ShowWaitingSplashScreen()
     {
         try

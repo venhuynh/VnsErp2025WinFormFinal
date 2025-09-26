@@ -402,5 +402,58 @@ namespace Dal.DataAccess
 		}
 
 		#endregion
-	}
+
+        #region Save/Update Full Entity
+
+        /// <summary>
+        /// Thêm mới hoặc cập nhật đầy đủ thông tin đối tác.
+        /// Nếu Id tồn tại -> cập nhật tất cả trường theo entity truyền vào.
+        /// Nếu không tồn tại -> thêm mới.
+        /// </summary>
+        public void SaveOrUpdate(BusinessPartner source)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            try
+            {
+                using var context = CreateContext();
+                var existing = context.BusinessPartners.FirstOrDefault(x => x.Id == source.Id);
+                if (existing == null || source.Id == Guid.Empty)
+                {
+                    // ensure new Id
+                    if (source.Id == Guid.Empty) source.Id = Guid.NewGuid();
+                    source.CreatedDate = DateTime.Now;
+                    context.BusinessPartners.InsertOnSubmit(source);
+                }
+                else
+                {
+                    // copy fields
+                    existing.PartnerCode = source.PartnerCode;
+                    existing.PartnerName = source.PartnerName;
+                    existing.PartnerType = source.PartnerType;
+                    existing.TaxCode = source.TaxCode;
+                    existing.Phone = source.Phone;
+                    existing.Email = source.Email;
+                    existing.Website = source.Website;
+                    existing.Address = source.Address;
+                    existing.City = source.City;
+                    existing.Country = source.Country;
+                    existing.ContactPerson = source.ContactPerson;
+                    existing.ContactPosition = source.ContactPosition;
+                    existing.BankAccount = source.BankAccount;
+                    existing.BankName = source.BankName;
+                    existing.CreditLimit = source.CreditLimit;
+                    existing.PaymentTerm = source.PaymentTerm;
+                    existing.IsActive = source.IsActive;
+                    existing.UpdatedDate = DateTime.Now;
+                }
+                context.SubmitChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lưu/cập nhật đối tác: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+    }
 }
