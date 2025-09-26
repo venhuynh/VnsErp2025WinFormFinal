@@ -70,6 +70,12 @@
     <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.Designer.cs">
       <DependentUpon>FrmBusinessPartnerCategoryDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerContactDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerContactDetail.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerContactDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +87,12 @@
     </Compile>
     <Compile Include="Customer\UcBusinessPartnerCategory.Designer.cs">
       <DependentUpon>UcBusinessPartnerCategory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Customer\UcBusinessPartnerContact.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Customer\UcBusinessPartnerContact.Designer.cs">
+      <DependentUpon>UcBusinessPartnerContact.cs</DependentUpon>
     </Compile>
     <Compile Include="Customer\UcBusinessPartnerList.cs">
       <SubType>UserControl</SubType>
@@ -107,11 +119,17 @@
     <EmbeddedResource Include="Customer\FrmBusinessPartnerCategoryDetail.resx">
       <DependentUpon>FrmBusinessPartnerCategoryDetail.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerContactDetail.resx">
+      <DependentUpon>FrmBusinessPartnerContactDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Customer\FrmBusinessPartnerDetail.resx">
       <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Customer\UcBusinessPartnerCategory.resx">
       <DependentUpon>UcBusinessPartnerCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\UcBusinessPartnerContact.resx">
+      <DependentUpon>UcBusinessPartnerContact.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Customer\UcBusinessPartnerList.resx">
       <DependentUpon>UcBusinessPartnerList.cs</DependentUpon>
@@ -122,8 +140,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Dto\DTO_README.md" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />
+    <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerContactDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerDetailDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerListDto.datasource" />
   </ItemGroup>

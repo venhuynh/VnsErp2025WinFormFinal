@@ -1,6 +1,5 @@
 ﻿using Bll.Common;
 using Dal.DataContext.SeedData.MasterData.Customer;
-using DevExpress.XtraBars.FluentDesignSystem;
 using System;
 using System.Windows.Forms;
 
@@ -13,7 +12,7 @@ namespace MasterData.Customer
         private UserControlManager _userControlManager;
         private UcBusinessPartnerList _businessPartnerListControl;
         private UcBusinessPartnerCategory _businessPartnerCategoryControl;
-
+        private UcBusinessPartnerContact _businessPartnerContactControl;
         #endregion
 
         #region Constructor
@@ -67,7 +66,7 @@ namespace MasterData.Customer
                 //SeedMasterData();
 
                 // Hiển thị màn hình mặc định (Danh sách đối tác)
-                ShowBusinessPartnerList();
+                //ShowBusinessPartnerList();
             }
             catch (Exception ex)
             {
@@ -129,6 +128,21 @@ namespace MasterData.Customer
             }
         }
 
+        /// <summary>
+        /// Xử lý click nút Liên hệ đối tác
+        /// </summary>
+        private void BusinessPartnerContactBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ShowBusinessPartnerContact();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi hiển thị liên hệ đối tác: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         #endregion
 
         #region Navigation Methods
@@ -173,6 +187,26 @@ namespace MasterData.Customer
             }
         }
 
+        /// <summary>
+        /// Hiển thị màn hình liên hệ đối tác
+        /// </summary>
+        private void ShowBusinessPartnerContact()
+        {
+            try
+            {
+                if (_businessPartnerContactControl == null)
+                {
+                    _businessPartnerContactControl = new UcBusinessPartnerContact();
+                }
+
+                _userControlManager?.ShowControl(_businessPartnerContactControl, "Liên hệ đối tác");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi hiển thị liên hệ đối tác: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         #endregion
 
         #region Form Management
@@ -187,6 +221,7 @@ namespace MasterData.Customer
                 // Cleanup resources
                 _businessPartnerListControl?.Dispose();
                 _businessPartnerCategoryControl?.Dispose();
+                _businessPartnerContactControl?.Dispose();
                 _userControlManager = null;
 
                 base.OnFormClosing(e);
@@ -213,5 +248,6 @@ namespace MasterData.Customer
         }
 
         #endregion
+
     }
 }

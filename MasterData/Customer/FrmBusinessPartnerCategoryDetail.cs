@@ -141,6 +141,15 @@ namespace MasterData.Customer
                 return false;
             }
 
+            // Kiểm tra trùng lặp tên phân loại (không tính bản ghi đang chỉnh sửa)
+            var categoryName = CategoryNameTextEdit.Text.Trim();
+            if (_businessPartnerCategoryBll.IsCategoryNameExists(categoryName, _categoryId))
+            {
+                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại đã tồn tại trong hệ thống", DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical);
+                CategoryNameTextEdit?.Focus();
+                return false;
+            }
+
             // Kiểm tra độ dài Description
             if (!string.IsNullOrWhiteSpace(DescriptionMemoEdit?.Text) && DescriptionMemoEdit.Text.Trim().Length > 255)
             {

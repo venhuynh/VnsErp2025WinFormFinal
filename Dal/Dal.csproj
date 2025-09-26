@@ -54,6 +54,7 @@
     <Compile Include="Connection\DatabaseConfig.cs" />
     <Compile Include="Connection\IConnectionManager.cs" />
     <Compile Include="DataAccess\MasterData\BusinessPartnerCategoryDataAccess.cs" />
+    <Compile Include="DataAccess\MasterData\BusinessPartnerContactDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\BusinessPartnerDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\BusinessPartnerInfo.cs" />
     <Compile Include="DataContext\SeedData\MasterData\Customer\SeedData_Master_Customer.cs" />

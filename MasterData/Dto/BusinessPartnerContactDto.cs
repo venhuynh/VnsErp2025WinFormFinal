@@ -13,6 +13,10 @@ namespace MasterData.Dto
         [Required(ErrorMessage = "ID đối tác không được để trống")]
         public Guid PartnerId { get; set; }
 
+        [DisplayName("Tên đối tác")]
+        [Description("Tên đối tác mà contact này thuộc về (chỉ để hiển thị)")]
+        public string PartnerName { get; set; }
+
         [DisplayName("Họ và tên")]
         [Required(ErrorMessage = "Họ và tên không được để trống")]
         [StringLength(100, ErrorMessage = "Họ và tên không được vượt quá 100 ký tự")]
