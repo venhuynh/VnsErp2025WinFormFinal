@@ -37,26 +37,23 @@
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.businessPartnerCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.BusinessPartnerCategoryGridControl = new DevExpress.XtraGrid.GridControl();
-            this.BusinessPartnerCategoryGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colCategoryName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDescription = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.treeList1 = new DevExpress.XtraTreeList.TreeList();
+            this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colPartnerCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colPartnerCount = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerCategoryGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerCategoryGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeList1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -75,8 +72,7 @@
             this.ListDataBarButtonItem,
             this.EditBarButtonItem,
             this.DeleteBarButtonItem,
-            this.ExportBarButtonItem,
-            this.barButtonItem1});
+            this.ExportBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
             this.barManager1.MaxItemId = 6;
             // 
@@ -92,8 +88,7 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NewBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.DeleteBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -138,13 +133,6 @@
             this.ExportBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.exporttoxls_32x32;
             this.ExportBarButtonItem.Name = "ExportBarButtonItem";
             // 
-            // barButtonItem1
-            // 
-            this.barButtonItem1.Caption = "Lưu";
-            this.barButtonItem1.Id = 5;
-            this.barButtonItem1.ImageOptions.Image = global::MasterData.Properties.Resources.save_16x16;
-            this.barButtonItem1.Name = "barButtonItem1";
-            // 
             // barDockControlTop
             // 
             this.barDockControlTop.CausesValidation = false;
@@ -183,7 +171,7 @@
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.BusinessPartnerCategoryGridControl);
+            this.layoutControl1.Controls.Add(this.treeList1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
@@ -192,54 +180,52 @@
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // BusinessPartnerCategoryGridControl
+            // treeList1
             // 
-            this.BusinessPartnerCategoryGridControl.DataSource = this.businessPartnerCategoryDtoBindingSource;
-            this.BusinessPartnerCategoryGridControl.Location = new System.Drawing.Point(16, 16);
-            this.BusinessPartnerCategoryGridControl.MainView = this.BusinessPartnerCategoryGridView;
-            this.BusinessPartnerCategoryGridControl.MenuManager = this.barManager1;
-            this.BusinessPartnerCategoryGridControl.Name = "BusinessPartnerCategoryGridControl";
-            this.BusinessPartnerCategoryGridControl.Size = new System.Drawing.Size(1045, 590);
-            this.BusinessPartnerCategoryGridControl.TabIndex = 5;
-            this.BusinessPartnerCategoryGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.BusinessPartnerCategoryGridView});
-            // 
-            // BusinessPartnerCategoryGridView
-            // 
-            this.BusinessPartnerCategoryGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.BusinessPartnerCategoryGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
-            this.BusinessPartnerCategoryGridView.Appearance.ViewCaption.Options.UseFont = true;
-            this.BusinessPartnerCategoryGridView.Appearance.ViewCaption.Options.UseForeColor = true;
-            this.BusinessPartnerCategoryGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.treeList1.Appearance.Caption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.treeList1.Appearance.Caption.ForeColor = System.Drawing.Color.Blue;
+            this.treeList1.Appearance.Caption.Options.UseFont = true;
+            this.treeList1.Appearance.Caption.Options.UseForeColor = true;
+            this.treeList1.Caption = "BẢNG QUẢN LÝ PHÂN LOẠI ĐỔI TÁC";
+            this.treeList1.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
             this.colCategoryName,
             this.colDescription,
             this.colPartnerCount});
-            this.BusinessPartnerCategoryGridView.GridControl = this.BusinessPartnerCategoryGridControl;
-            this.BusinessPartnerCategoryGridView.IndicatorWidth = 40;
-            this.BusinessPartnerCategoryGridView.Name = "BusinessPartnerCategoryGridView";
-            this.BusinessPartnerCategoryGridView.OptionsSelection.MultiSelect = true;
-            this.BusinessPartnerCategoryGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.BusinessPartnerCategoryGridView.OptionsView.ColumnAutoWidth = false;
-            this.BusinessPartnerCategoryGridView.OptionsView.RowAutoHeight = true;
-            this.BusinessPartnerCategoryGridView.OptionsView.ShowAutoFilterRow = true;
-            this.BusinessPartnerCategoryGridView.OptionsView.ShowFooter = true;
-            this.BusinessPartnerCategoryGridView.OptionsView.ShowGroupPanel = false;
-            this.BusinessPartnerCategoryGridView.OptionsView.ShowViewCaption = true;
-            this.BusinessPartnerCategoryGridView.ViewCaption = "BẢNG DỮ LIỆU ĐỐI TÁC";
+            this.treeList1.DataSource = this.businessPartnerCategoryDtoBindingSource;
+            this.treeList1.KeyFieldName = "Id";
+            this.treeList1.Location = new System.Drawing.Point(16, 16);
+            this.treeList1.MenuManager = this.barManager1;
+            this.treeList1.Name = "treeList1";
+            this.treeList1.OptionsBehavior.AllowRecursiveNodeChecking = true;
+            this.treeList1.OptionsSelection.MultiSelect = true;
+            this.treeList1.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check;
+            this.treeList1.OptionsView.ShowCaption = true;
+            this.treeList1.ParentFieldName = "ParentId";
+            this.treeList1.Size = new System.Drawing.Size(1045, 590);
+            this.treeList1.TabIndex = 4;
             // 
             // colCategoryName
             // 
             this.colCategoryName.FieldName = "CategoryName";
             this.colCategoryName.Name = "colCategoryName";
             this.colCategoryName.Visible = true;
-            this.colCategoryName.VisibleIndex = 1;
+            this.colCategoryName.VisibleIndex = 0;
             // 
             // colDescription
             // 
             this.colDescription.FieldName = "Description";
             this.colDescription.Name = "colDescription";
             this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 3;
+            this.colDescription.VisibleIndex = 1;
+            // 
+            // colPartnerCount
+            // 
+            this.colPartnerCount.Caption = "Số lượng";
+            this.colPartnerCount.FieldName = "PartnerCount";
+            this.colPartnerCount.Name = "colPartnerCount";
+            this.colPartnerCount.Visible = true;
+            this.colPartnerCount.VisibleIndex = 2;
+            // 
             // 
             // Root
             // 
@@ -253,18 +239,11 @@
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.BusinessPartnerCategoryGridControl;
+            this.layoutControlItem1.Control = this.treeList1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1051, 596);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // colPartnerCount
-            // 
-            this.colPartnerCount.FieldName = "PartnerCount";
-            this.colPartnerCount.Name = "colPartnerCount";
-            this.colPartnerCount.Visible = true;
-            this.colPartnerCount.VisibleIndex = 2;
             // 
             // UcBusinessPartnerCategory
             // 
@@ -281,8 +260,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerCategoryGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerCategoryGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeList1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
@@ -299,19 +277,17 @@
         private DevExpress.XtraBars.BarDockControl barDockControlLeft;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraGrid.GridControl BusinessPartnerCategoryGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView BusinessPartnerCategoryGridView;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraBars.BarButtonItem ListDataBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem NewBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ExportBarButtonItem;
         private System.Windows.Forms.BindingSource businessPartnerCategoryDtoBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colCategoryName;
-        private DevExpress.XtraGrid.Columns.GridColumn colDescription;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
-        private DevExpress.XtraGrid.Columns.GridColumn colPartnerCount;
+        private DevExpress.XtraTreeList.TreeList treeList1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryName;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colPartnerCount;
     }
 }

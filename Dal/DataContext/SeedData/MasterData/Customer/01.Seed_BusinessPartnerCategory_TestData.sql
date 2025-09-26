@@ -17,6 +17,13 @@ BEGIN TRY
     
     -- Tạo các category chính trước (không có ParentId)
     
+    -- 0. Chưa phân loại (category mặc định - phải tồn tại đầu tiên)
+    IF NOT EXISTS (SELECT 1 FROM dbo.BusinessPartnerCategory WHERE CategoryName = N'Chưa phân loại')
+    BEGIN
+        INSERT INTO dbo.BusinessPartnerCategory (Id, CategoryName, [Description], ParentId)
+        VALUES (NEWID(), N'Chưa phân loại', N'Danh mục mặc định cho các đối tác chưa được phân loại', NULL);
+    END
+    
     -- 1. Khách hàng doanh nghiệp (category chính)
     IF NOT EXISTS (SELECT 1 FROM dbo.BusinessPartnerCategory WHERE CategoryName = N'Khách hàng doanh nghiệp')
     BEGIN
@@ -201,4 +208,5 @@ ORDER BY CategoryType
 GO
 
 PRINT 'Đã hoàn thành việc tạo dữ liệu mẫu cho BusinessPartnerCategory'
-PRINT 'Tổng số bản ghi đã thêm: 15 danh mục đối tác (4 category chính + 11 sub-category)'
+PRINT 'Tổng số bản ghi đã thêm: 16 danh mục đối tác (5 category chính + 11 sub-category)'
+PRINT 'Bao gồm category "Chưa phân loại" làm danh mục mặc định'

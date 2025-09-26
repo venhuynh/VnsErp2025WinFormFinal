@@ -1,7 +1,8 @@
 ﻿using Bll.Common;
+using Dal.DataContext.SeedData.MasterData.Customer;
+using DevExpress.XtraBars.FluentDesignSystem;
 using System;
 using System.Windows.Forms;
-using DevExpress.XtraBars.FluentDesignSystem;
 
 namespace MasterData.Customer
 {
@@ -37,9 +38,9 @@ namespace MasterData.Customer
                 // Khởi tạo UserControlManager với container
                 _userControlManager = new UserControlManager(this.fluentDesignFormContainer1);
 
-                // Khởi tạo các UserControl
-                _businessPartnerListControl = new UcBusinessPartnerList();
-                _businessPartnerCategoryControl = new UcBusinessPartnerCategory();
+                //// Khởi tạo các UserControl
+                //_businessPartnerListControl = new UcBusinessPartnerList();
+                //_businessPartnerCategoryControl = new UcBusinessPartnerCategory();
 
                 // Thiết lập form properties
                 this.Text = "VnsErp2025 - Quản lý Đối tác";
@@ -62,12 +63,39 @@ namespace MasterData.Customer
         {
             try
             {
+                // Gọi hàm SeedData_Master_Customer để tạo dữ liệu mẫu
+                //SeedMasterData();
+
                 // Hiển thị màn hình mặc định (Danh sách đối tác)
                 ShowBusinessPartnerList();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi load form: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Gọi hàm SeedData_Master_Customer để tạo dữ liệu mẫu
+        /// Sử dụng ConnectionManager để lấy connection string, không tạo context ở GUI
+        /// </summary>
+        private void SeedMasterData()
+        {
+            try
+            {
+                // Gọi hàm tạo tất cả dữ liệu mẫu - sử dụng ConnectionManager
+                SeedData_Master_Customer.SeedAllData();
+                
+                MessageBox.Show("Đã tạo dữ liệu mẫu thành công!\n\n" +
+                              "• 31 BusinessPartnerCategory (3 cấp phân cấp)\n" +
+                              "• 100 BusinessPartner\n" +
+                              "• 100-300 BusinessPartner_BusinessPartnerCategory mappings\n" +
+                              "• 500 BusinessPartnerContact", 
+                              "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tạo dữ liệu mẫu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -178,7 +206,7 @@ namespace MasterData.Customer
             {
                 base.OnFormClosed(e);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Silent error handling
             }

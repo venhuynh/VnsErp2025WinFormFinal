@@ -1,8 +1,8 @@
+using Dal.DataAccess.MasterData;
+using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataAccess;
-using Dal.DataContext;
 
 namespace Bll.MasterData.Customer
 {
@@ -81,6 +81,7 @@ namespace Bll.MasterData.Customer
             var counts = await GetPartnerCountByCategoryAsync();
             return (categories, counts);
         }
+
 
         /// <summary>
         /// Kiểm tra xem danh mục có đối tác nào không.

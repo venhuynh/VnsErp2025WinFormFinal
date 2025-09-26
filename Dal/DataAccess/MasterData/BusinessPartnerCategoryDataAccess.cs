@@ -7,7 +7,7 @@ using Dal.DataContext;
 using Dal.Exceptions;
 using Dal.Logging;
 
-namespace Dal.DataAccess
+namespace Dal.DataAccess.MasterData
 {
     /// <summary>
     /// Data Access cho thực thể BusinessPartnerCategory (LINQ to SQL trên VnsErp2025DataContext).
@@ -283,7 +283,7 @@ namespace Dal.DataAccess
         #region Delete
 
         /// <summary>
-        /// Xóa danh mục theo Id.
+        /// Xóa danh mục theo Id. Nếu có partners, chuyển sang category "Chưa phân loại".
         /// </summary>
         public void DeleteCategory(Guid id)
         {
@@ -294,9 +294,11 @@ namespace Dal.DataAccess
                 if (entity == null)
                     return;
 
-                // Kiểm tra xem danh mục có đang được sử dụng không
+                // Nếu có partners, chuyển sang category "Chưa phân loại"
                 if (HasPartners(id))
-                    throw new DataAccessException($"Không thể xóa danh mục '{entity.CategoryName}' vì đang được sử dụng bởi các đối tác");
+                {
+                    MovePartnersToUncategorizedCategory(id, context);
+                }
 
                 context.BusinessPartnerCategories.DeleteOnSubmit(entity);
                 context.SubmitChanges();
@@ -308,7 +310,7 @@ namespace Dal.DataAccess
         }
 
         /// <summary>
-        /// Xóa danh mục theo Id (Async).
+        /// Xóa danh mục theo Id (Async). Nếu có partners, chuyển sang category "Chưa phân loại".
         /// </summary>
         public async Task DeleteCategoryAsync(Guid id)
         {
@@ -319,9 +321,11 @@ namespace Dal.DataAccess
                 if (entity == null)
                     return;
 
-                // Kiểm tra xem danh mục có đang được sử dụng không
+                // Nếu có partners, chuyển sang category "Chưa phân loại"
                 if (await HasPartnersAsync(id))
-                    throw new DataAccessException($"Không thể xóa danh mục '{entity.CategoryName}' vì đang được sử dụng bởi các đối tác");
+                {
+                    await MovePartnersToUncategorizedCategoryAsync(id, context);
+                }
 
                 context.BusinessPartnerCategories.DeleteOnSubmit(entity);
                 await Task.Run(() => context.SubmitChanges());
@@ -329,6 +333,72 @@ namespace Dal.DataAccess
             catch (Exception ex)
             {
                 throw new DataAccessException($"Lỗi khi xóa danh mục {id}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Chuyển tất cả partners từ category này sang category "Chưa phân loại".
+        /// </summary>
+        private void MovePartnersToUncategorizedCategory(Guid categoryId, VnsErp2025DataContext context)
+        {
+            // Tìm hoặc tạo category "Chưa phân loại"
+            var uncategorizedCategory = context.BusinessPartnerCategories
+                .FirstOrDefault(x => x.CategoryName.Trim().ToLower() == "chưa phân loại");
+
+            if (uncategorizedCategory == null)
+            {
+                // Tạo category "Chưa phân loại" nếu chưa có
+                uncategorizedCategory = new BusinessPartnerCategory
+                {
+                    Id = Guid.NewGuid(),
+                    CategoryName = "Chưa phân loại",
+                    Description = "Danh mục mặc định cho các đối tác chưa được phân loại",
+                    ParentId = null
+                };
+                context.BusinessPartnerCategories.InsertOnSubmit(uncategorizedCategory);
+                context.SubmitChanges(); // Submit để có ID
+            }
+
+            // Chuyển tất cả partners từ category cũ sang "Chưa phân loại"
+            var mappings = context.BusinessPartner_BusinessPartnerCategories
+                .Where(m => m.CategoryId == categoryId).ToList();
+
+            foreach (var mapping in mappings)
+            {
+                mapping.CategoryId = uncategorizedCategory.Id;
+            }
+        }
+
+        /// <summary>
+        /// Chuyển tất cả partners từ category này sang category "Chưa phân loại" (Async).
+        /// </summary>
+        private async Task MovePartnersToUncategorizedCategoryAsync(Guid categoryId, VnsErp2025DataContext context)
+        {
+            // Tìm hoặc tạo category "Chưa phân loại"
+            var uncategorizedCategory = context.BusinessPartnerCategories
+                .FirstOrDefault(x => x.CategoryName.Trim().ToLower() == "chưa phân loại");
+
+            if (uncategorizedCategory == null)
+            {
+                // Tạo category "Chưa phân loại" nếu chưa có
+                uncategorizedCategory = new BusinessPartnerCategory
+                {
+                    Id = Guid.NewGuid(),
+                    CategoryName = "Chưa phân loại",
+                    Description = "Danh mục mặc định cho các đối tác chưa được phân loại",
+                    ParentId = null
+                };
+                context.BusinessPartnerCategories.InsertOnSubmit(uncategorizedCategory);
+                await Task.Run(() => context.SubmitChanges()); // Submit để có ID
+            }
+
+            // Chuyển tất cả partners từ category cũ sang "Chưa phân loại"
+            var mappings = context.BusinessPartner_BusinessPartnerCategories
+                .Where(m => m.CategoryId == categoryId).ToList();
+
+            foreach (var mapping in mappings)
+            {
+                mapping.CategoryId = uncategorizedCategory.Id;
             }
         }
 
@@ -467,23 +537,228 @@ namespace Dal.DataAccess
         }
 
         /// <summary>
-        /// Đếm số lượng đối tác theo từng danh mục.
+        /// Đếm số lượng đối tác theo từng danh mục (bao gồm cả đối tác của sub-categories).
         /// </summary>
         public Dictionary<Guid, int> GetPartnerCountByCategory()
         {
             try
             {
                 using var context = CreateContext();
-                var counts = context.BusinessPartner_BusinessPartnerCategories
-                    .GroupBy(m => m.CategoryId)
-                    .Select(g => new { CategoryId = g.Key, Count = g.Count() })
-                    .ToDictionary(x => x.CategoryId, x => x.Count);
+                
+                // Debug: Kiểm tra dữ liệu mapping
+                var totalMappings = context.BusinessPartner_BusinessPartnerCategories.Count();
+                System.Diagnostics.Debug.WriteLine($"Total mappings in database: {totalMappings}");
+                
+                // Lấy tất cả categories để xây dựng cây phân cấp
+                var allCategories = context.BusinessPartnerCategories.ToList();
+                var categoryDict = allCategories.ToDictionary(c => c.Id);
+                
+                // Lấy tất cả mappings trực tiếp
+                var directMappings = context.BusinessPartner_BusinessPartnerCategories.ToList();
 
-                return counts;
+                var result = new Dictionary<Guid, int>();
+                
+                // Với mỗi category, đếm tất cả đối tác (bao gồm cả sub-categories)
+                foreach (var category in allCategories)
+                {
+                    var allPartnerIds = new HashSet<Guid>();
+                    
+                    // Lấy đối tác trực tiếp
+                    var directPartners = directMappings.Where(m => m.CategoryId == category.Id).Select(m => m.PartnerId);
+                    foreach (var partnerId in directPartners)
+                    {
+                        allPartnerIds.Add(partnerId);
+                    }
+                    
+                    // Lấy đối tác từ tất cả sub-categories
+                    var subCategories = GetSubCategories(category.Id, categoryDict);
+                    foreach (var subCategoryId in subCategories)
+                    {
+                        var subPartners = directMappings.Where(m => m.CategoryId == subCategoryId).Select(m => m.PartnerId);
+                        foreach (var partnerId in subPartners)
+                        {
+                            allPartnerIds.Add(partnerId);
+                        }
+                    }
+                    
+                    result[category.Id] = allPartnerIds.Count;
+                }
+
+                // Debug: Log counts
+                System.Diagnostics.Debug.WriteLine($"GetPartnerCountByCategory - Found {result.Count} categories with partners");
+                foreach (var count in result)
+                {
+                    System.Diagnostics.Debug.WriteLine($"CategoryId: {count.Key}, Count: {count.Value}");
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
                 throw new DataAccessException($"Lỗi khi đếm số lượng đối tác theo danh mục: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tên các đối tác theo từng danh mục (bao gồm cả đối tác của sub-categories).
+        /// </summary>
+        public Dictionary<Guid, string> GetPartnerNamesByCategory()
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                // Lấy tất cả categories để xây dựng cây phân cấp
+                var allCategories = context.BusinessPartnerCategories.ToList();
+                var categoryDict = allCategories.ToDictionary(c => c.Id);
+                
+                // Lấy tất cả mappings trực tiếp
+                var directMappings = context.BusinessPartner_BusinessPartnerCategories
+                    .Join(context.BusinessPartners, m => m.PartnerId, p => p.Id, (m, p) => new { m.CategoryId, p.PartnerName })
+                    .ToList();
+
+                var result = new Dictionary<Guid, string>();
+                
+                // Với mỗi category, lấy tất cả đối tác (bao gồm cả sub-categories)
+                foreach (var category in allCategories)
+                {
+                    var allPartnerNames = new HashSet<string>();
+                    
+                    // Lấy đối tác trực tiếp
+                    var directPartners = directMappings.Where(m => m.CategoryId == category.Id).Select(m => m.PartnerName);
+                    foreach (var partnerName in directPartners)
+                    {
+                        allPartnerNames.Add(partnerName);
+                    }
+                    
+                    // Lấy đối tác từ tất cả sub-categories
+                    var subCategories = GetSubCategories(category.Id, categoryDict);
+                    foreach (var subCategoryId in subCategories)
+                    {
+                        var subPartners = directMappings.Where(m => m.CategoryId == subCategoryId).Select(m => m.PartnerName);
+                        foreach (var partnerName in subPartners)
+                        {
+                            allPartnerNames.Add(partnerName);
+                        }
+                    }
+                    
+                    result[category.Id] = string.Join(", ", allPartnerNames.OrderBy(x => x));
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy tên đối tác theo danh mục: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy mã các đối tác theo từng danh mục (bao gồm cả đối tác của sub-categories).
+        /// </summary>
+        public Dictionary<Guid, string> GetPartnerCodesByCategory()
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                // Lấy tất cả categories để xây dựng cây phân cấp
+                var allCategories = context.BusinessPartnerCategories.ToList();
+                var categoryDict = allCategories.ToDictionary(c => c.Id);
+                
+                // Lấy tất cả mappings trực tiếp
+                var directMappings = context.BusinessPartner_BusinessPartnerCategories
+                    .Join(context.BusinessPartners, m => m.PartnerId, p => p.Id, (m, p) => new { m.CategoryId, p.PartnerCode })
+                    .ToList();
+
+                var result = new Dictionary<Guid, string>();
+                
+                // Với mỗi category, lấy tất cả đối tác (bao gồm cả sub-categories)
+                foreach (var category in allCategories)
+                {
+                    var allPartnerCodes = new HashSet<string>();
+                    
+                    // Lấy đối tác trực tiếp
+                    var directPartners = directMappings.Where(m => m.CategoryId == category.Id).Select(m => m.PartnerCode);
+                    foreach (var partnerCode in directPartners)
+                    {
+                        allPartnerCodes.Add(partnerCode);
+                    }
+                    
+                    // Lấy đối tác từ tất cả sub-categories
+                    var subCategories = GetSubCategories(category.Id, categoryDict);
+                    foreach (var subCategoryId in subCategories)
+                    {
+                        var subPartners = directMappings.Where(m => m.CategoryId == subCategoryId).Select(m => m.PartnerCode);
+                        foreach (var partnerCode in subPartners)
+                        {
+                            allPartnerCodes.Add(partnerCode);
+                        }
+                    }
+                    
+                    result[category.Id] = string.Join(", ", allPartnerCodes.OrderBy(x => x));
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy mã đối tác theo danh mục: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả sub-categories của một category (đệ quy).
+        /// </summary>
+        private List<Guid> GetSubCategories(Guid categoryId, Dictionary<Guid, BusinessPartnerCategory> categoryDict)
+        {
+            var result = new List<Guid>();
+            var directChildren = categoryDict.Values.Where(c => c.ParentId == categoryId).ToList();
+            
+            System.Diagnostics.Debug.WriteLine($"GetSubCategories for {categoryId}: Found {directChildren.Count} direct children");
+            
+            foreach (var child in directChildren)
+            {
+                result.Add(child.Id);
+                System.Diagnostics.Debug.WriteLine($"  Added child: {child.CategoryName} ({child.Id})");
+                // Đệ quy lấy các cháu
+                var grandChildren = GetSubCategories(child.Id, categoryDict);
+                result.AddRange(grandChildren);
+                System.Diagnostics.Debug.WriteLine($"  Added {grandChildren.Count} grand children");
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"GetSubCategories for {categoryId}: Total {result.Count} sub-categories");
+            return result;
+        }
+
+        /// <summary>
+        /// Lấy danh sách đối tác theo từng danh mục (chỉ đối tác trực tiếp, không bao gồm sub-categories).
+        /// </summary>
+        public Dictionary<Guid, List<BusinessPartnerInfo>> GetPartnersByCategory()
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                var partnersByCategory = context.BusinessPartner_BusinessPartnerCategories
+                    .Join(context.BusinessPartners, m => m.PartnerId, p => p.Id, (m, p) => new { m.CategoryId, Partner = p })
+                    .GroupBy(x => x.CategoryId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(x => new BusinessPartnerInfo
+                        {
+                            Id = x.Partner.Id,
+                            PartnerCode = x.Partner.PartnerCode,
+                            PartnerName = x.Partner.PartnerName,
+                            CategoryId = x.CategoryId
+                        }).ToList()
+                    );
+
+                return partnersByCategory;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy danh sách đối tác theo danh mục: {ex.Message}", ex);
             }
         }
 
