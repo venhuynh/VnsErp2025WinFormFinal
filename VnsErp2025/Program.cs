@@ -1,9 +1,10 @@
-﻿using Bll.Utils;
+﻿using Authentication.Form;
+using Bll.Utils;
+using Dal.Connection;
+using MasterData.Customer;
 using System;
 using System.Windows.Forms;
 using VnsErp2025.Form;
-using Dal.Connection;
-using Authentication.Form;
 
 namespace VnsErp2025
 {
@@ -45,7 +46,7 @@ namespace VnsErp2025
 
             #region Dành cho debug
 
-            Application.Run(new Form1());
+            Application.Run(new FluentPartner());
 
             #endregion
 

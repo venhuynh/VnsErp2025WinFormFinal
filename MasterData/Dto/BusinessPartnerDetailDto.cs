@@ -11,12 +11,12 @@ namespace MasterData.Dto
 
         [DisplayName("Mã đối tác")]
         [Required(ErrorMessage = "Mã đối tác không được để trống")]
-        [StringLength(20, ErrorMessage = "Mã đối tác không được vượt quá 20 ký tự")]
+        [StringLength(50, ErrorMessage = "Mã đối tác không được vượt quá 50 ký tự")]
         public string PartnerCode { get; set; }
 
         [DisplayName("Tên đối tác")]
         [Required(ErrorMessage = "Tên đối tác không được để trống")]
-        [StringLength(200, ErrorMessage = "Tên đối tác không được vượt quá 200 ký tự")]
+        [StringLength(255, ErrorMessage = "Tên đối tác không được vượt quá 255 ký tự")]
         public string PartnerName { get; set; }
 
         [DisplayName("Loại đối tác")]
@@ -24,16 +24,15 @@ namespace MasterData.Dto
         public int PartnerType { get; set; } // Enum value
 
         [DisplayName("Loại đối tác")]
-        [Required(ErrorMessage = "Tên đối tác không được để trống")]
         public string PartnerTypeName { get; set; } // Text hiển thị
 
         [DisplayName("Mã số thuế")]
-        [StringLength(20, ErrorMessage = "Mã số thuế không được vượt quá 20 ký tự")]
+        [StringLength(50, ErrorMessage = "Mã số thuế không được vượt quá 50 ký tự")]
         public string TaxCode { get; set; }
 
         [DisplayName("Số điện thoại")]
         [Phone(ErrorMessage = "Số điện thoại không đúng định dạng")]
-        [StringLength(20, ErrorMessage = "Số điện thoại không được vượt quá 20 ký tự")]
+        [StringLength(50, ErrorMessage = "Số điện thoại không được vượt quá 50 ký tự")]
         public string Phone { get; set; }
 
         [DisplayName("Email")]
@@ -43,11 +42,11 @@ namespace MasterData.Dto
 
         [DisplayName("Website")]
         [Url(ErrorMessage = "Website không đúng định dạng")]
-        [StringLength(200, ErrorMessage = "Website không được vượt quá 200 ký tự")]
+        [StringLength(100, ErrorMessage = "Website không được vượt quá 100 ký tự")]
         public string Website { get; set; }
 
         [DisplayName("Địa chỉ")]
-        [StringLength(500, ErrorMessage = "Địa chỉ không được vượt quá 500 ký tự")]
+        [StringLength(255, ErrorMessage = "Địa chỉ không được vượt quá 255 ký tự")]
         public string Address { get; set; }
 
         [DisplayName("Thành phố")]
@@ -71,7 +70,7 @@ namespace MasterData.Dto
         public string BankAccount { get; set; }
 
         [DisplayName("Tên ngân hàng")]
-        [StringLength(200, ErrorMessage = "Tên ngân hàng không được vượt quá 200 ký tự")]
+        [StringLength(100, ErrorMessage = "Tên ngân hàng không được vượt quá 100 ký tự")]
         public string BankName { get; set; }
 
         [DisplayName("Hạn mức tín dụng")]
@@ -80,7 +79,7 @@ namespace MasterData.Dto
         public decimal? CreditLimit { get; set; }
 
         [DisplayName("Điều khoản thanh toán")]
-        [StringLength(200, ErrorMessage = "Điều khoản thanh toán không được vượt quá 200 ký tự")]
+        [StringLength(50, ErrorMessage = "Điều khoản thanh toán không được vượt quá 50 ký tự")]
         public string PaymentTerm { get; set; }
 
         [DisplayName("Trạng thái")]

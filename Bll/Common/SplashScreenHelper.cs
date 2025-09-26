@@ -38,7 +38,7 @@ public static class SplashScreenHelper
                 _currentSplashScreen = null;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Silent error handling
         }
@@ -73,7 +73,7 @@ public static class SplashScreenHelper
             // Hiển thị VNS splash screen
             SplashScreenManager.ShowForm(typeof(Bll.Common.VnsSplashScreen));
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Silent error handling
         }
@@ -95,7 +95,7 @@ public static class SplashScreenHelper
             // Hiển thị VNS splash screen
             SplashScreenManager.ShowForm(typeof(Bll.Common.VnsSplashScreen));
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Silent error handling
         }
@@ -127,7 +127,7 @@ public static class SplashScreenHelper
             // Thực hiện operation
             await operation();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -163,7 +163,7 @@ public static class SplashScreenHelper
             // Thực hiện operation
             await operation(progressCallback);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -189,7 +189,7 @@ public static class SplashScreenHelper
             CloseSplashScreen();
             SplashScreenManager.ShowForm(typeof(Bll.Common.WaitForm1));
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Silent error handling
         }

@@ -15,7 +15,11 @@ namespace MasterData.Dto
         public string CategoryName { get; set; }
 
         [DisplayName("Mô tả")]
-        [StringLength(500, ErrorMessage = "Mô tả không được vượt quá 500 ký tự")]
+        [StringLength(255, ErrorMessage = "Mô tả không được vượt quá 255 ký tự")]
         public string Description { get; set; }
+
+        [DisplayName("Số lượng đối tác")]
+        [Description("Tổng số đối tác thuộc phân loại này")]
+        public int PartnerCount { get; set; }
     }
 }

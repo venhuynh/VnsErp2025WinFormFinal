@@ -53,6 +53,7 @@
     <Compile Include="Connection\ConnectionStringHelper.cs" />
     <Compile Include="Connection\DatabaseConfig.cs" />
     <Compile Include="Connection\IConnectionManager.cs" />
+    <Compile Include="DataAccess\MasterData\BusinessPartnerCategoryDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\BusinessPartnerDataAccess.cs" />
     <Compile Include="DataContext\VnsErp2025.designer.cs">
       <AutoGen>True</AutoGen>
@@ -76,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="DataContext\SeedData\MasterData\Customer\README_SeedData.md" />
     <None Include="DataContext\VnsErp2025.md" />
     <None Include="DataContext\VnsErp2025.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
@@ -95,6 +97,11 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataContext\SeedData\MasterData\Customer\01.Seed_BusinessPartnerCategory_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Customer\02.Seed_All_BusinessPartner_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Customer\04.Seed_BusinessPartnerCategoryMapping_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Customer\Seed_BusinessPartnerCategory_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Customer\03.Seed_BusinessPartnerContact_TestData.sql" />
     <Content Include="Doc\Promt\Prompt cho AI Cursor %28CRUD DataAccess Class%29.txt" />
     <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
