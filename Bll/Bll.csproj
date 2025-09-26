@@ -38,8 +38,11 @@
     <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.BonusSkins.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -55,6 +58,7 @@
     <Compile Include="Authentication\LoginBll.cs" />
     <Compile Include="Common\OverlayManager.cs" />
     <Compile Include="Common\SplashScreenHelper.cs" />
+    <Compile Include="Common\UserControlManager.cs" />
     <Compile Include="Common\VnsSplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,8 +71,17 @@
     <Compile Include="Common\WaitForm1.Designer.cs">
       <DependentUpon>WaitForm1.cs</DependentUpon>
     </Compile>
+    <Compile Include="MasterData\Customer\BusinessPartnerBll.cs" />
+    <Compile Include="MasterData\Customer\BusinessPartnerCategoryBll.cs" />
+    <Compile Include="MasterData\Customer\BusinessPartnerContactBll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utils\ApplicationSystemUtils.cs" />
+    <Compile Include="Utils\GridViewHelper.cs" />
     <Compile Include="Utils\MsgBox.cs" />
     <Compile Include="Utils\SecurityHelper.cs" />
     <Compile Include="Utils\SkinHelper.cs" />
@@ -85,6 +98,10 @@
     <EmbeddedResource Include="Common\WaitForm1.resx">
       <DependentUpon>WaitForm1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dal\Dal.csproj">
@@ -96,6 +113,7 @@
   <ItemGroup>
     <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
+    <None Include="Resources\Ven - Solutions logo_GoogleBZ_H480.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

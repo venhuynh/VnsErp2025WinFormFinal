@@ -1,11 +1,7 @@
 ﻿using Bll.Utils;
 using Dal.Connection;
-using DevExpress.XtraEditors.DXErrorProvider;
 using System;
 using System.Windows.Forms;
-using ValidationHelper = Bll.Validation.ValidationHelper;
-using System.Net;
-using System.Net.Sockets;
 
 namespace Authentication.Form
 {
@@ -13,7 +9,7 @@ namespace Authentication.Form
     {
         #region thuocTinhDonGian
 
-        public DatabaseConfig _databaseConfig;
+        private DatabaseConfig _databaseConfig;
         private ConnectionManager _connectionManager;
 
         #endregion

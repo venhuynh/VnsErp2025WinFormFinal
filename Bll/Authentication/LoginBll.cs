@@ -115,7 +115,7 @@ namespace Bll.Authentication
                     }
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new LoginResult
                 {
@@ -155,7 +155,7 @@ namespace Bll.Authentication
                 // Tạo user mới
                 return _userDataAccess.AddNewUser(userName, hashedPassword, active);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

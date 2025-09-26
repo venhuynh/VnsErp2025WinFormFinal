@@ -1,0 +1,34 @@
+﻿Bạn là Senior .NET Developer. 
+Hãy refactor lại các DTO trong module MasterData (BusinessPartnerListDto, BusinessPartnerDetailDto, BusinessPartnerContactDto, BusinessPartnerCategoryDto) 
+theo các tiêu chí sau:
+
+### Yêu cầu chung
+1. Namespace: `MasterData.Dto`
+2. Mỗi DTO là class POCO, chỉ chứa dữ liệu để binding UI và truyền giữa Service ↔ WinForms.
+3. Áp dụng **DataAnnotations chuẩn .NET** với nội dung tiếng Việt:
+   - [DisplayName("…")] → Caption hiển thị tiếng Việt trên DevExpress GridControl / DataLayoutControl.
+   - [Required(ErrorMessage = "…")] → bắt buộc nhập với thông báo tiếng Việt.
+   - [StringLength(n, ErrorMessage = "…")] hoặc [MaxLength(n)] → giới hạn ký tự với thông báo tiếng Việt.
+   - [EmailAddress(ErrorMessage = "…")] → validate email tiếng Việt.
+   - [Phone(ErrorMessage = "…")] → validate số điện thoại tiếng Việt.
+   - [DataType(DataType.Currency)] cho tiền tệ, [DataType(DataType.Date)] cho ngày tháng.
+   - [Range(min, max, ErrorMessage = "…")] cho giá trị số.
+4. Các property enum/lookup (PartnerType) phải có thêm field text (`PartnerTypeName`) để hiển thị trên UI.
+5. Code phải sạch, theo chuẩn naming convention C#.
+
+### DTO cần refactor
+- BusinessPartnerListDto
+  - Dùng cho GridControl (Id, PartnerCode, PartnerName, PartnerType, PartnerTypeName, TaxCode, Phone, Email, City, IsActive, CreatedDate).
+- BusinessPartnerDetailDto
+  - Dùng cho DataLayoutControl (bao gồm Address, BankInfo, PaymentTerm, CreditLimit, IsActive).
+- BusinessPartnerContactDto
+  - Dùng cho tab liên hệ (FullName, Position, Phone, Email, IsPrimary).
+- BusinessPartnerCategoryDto
+  - Dùng cho quản lý phân loại (CategoryName, Description).
+
+### Output mong muốn
+1. Code refactor cho tất cả các DTO, mỗi property có DataAnnotation đầy đủ bằng tiếng Việt.
+2. Đảm bảo dễ binding vào DevExpress GridControl và DataLayoutControl, ValidationProvider có thể đọc thông báo lỗi.
+3. Ví dụ minh họa:
+   - Bind `List<BusinessPartnerListDto>` vào GridControl, cột hiển thị caption tiếng Việt.
+   - Validate một BusinessPartnerDetailDto bằng DataAnnotationsValidator, hiển thị lỗi tiếng Việt.

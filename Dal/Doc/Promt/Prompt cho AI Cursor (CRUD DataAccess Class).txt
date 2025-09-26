@@ -1,0 +1,46 @@
+﻿Bạn là Senior .NET Developer. 
+Hãy triển khai một DataAccess class cho Entity [TênEntity] (LINQ to SQL trên VnsErp2025DataContext) 
+theo phong cách chuyên nghiệp, tương tự ApplicationUserDataAccess, với các yêu cầu sau:
+
+### Yêu cầu chung
+1. Namespace: Dal.DataAccess
+2. Kế thừa từ BaseDataAccess<[TênEntity]> để tái sử dụng CreateContext(), logging.
+3. Sử dụng try/catch, throw DataAccessException với thông điệp chi tiết tiếng Việt.
+4. Hỗ trợ cả phiên bản Sync và Async (Task).
+5. Xử lý SQL exception phổ biến:
+   - 2627: Duplicate key
+   - 1205: Deadlock
+6. Code phải clean, dễ đọc, đầy đủ XML documentation (summary, param, returns).
+
+### CRUD cần có
+- **Create**
+  - Thêm entity mới với validation cơ bản (Required, unique).
+  - Trả về entity đã tạo.
+  - Phiên bản async.
+- **Read**
+  - GetById(Guid id)
+  - GetAll()
+  - Các hàm đặc thù: GetByCode, SearchByName (nếu entity có Code/Name).
+  - Phiên bản async.
+- **Update**
+  - Cập nhật entity với validation.
+  - Các thao tác nghiệp vụ chuyên biệt (VD: Activate/Deactivate, ChangeStatus).
+- **Delete**
+  - Xóa entity theo Id.
+  - Phiên bản async.
+- **Check Exists**
+  - Kiểm tra entity tồn tại theo Id hoặc Code.
+
+### Ví dụ cụ thể
+Nếu entity là BusinessPartner:
+- Create: AddNewPartner(code, name, type, …).
+- Read: GetByCode(string code), GetActivePartners().
+- Update: UpdateContactInfo(Guid id, string phone, string email).
+- Delete: DeletePartner(Guid id).
+- Check Exists: IsPartnerCodeExists(string code).
+
+### Output mong muốn
+1. Code class DataAccess với đầy đủ CRUD cho entity.
+2. Các method Sync + Async.
+3. Xử lý ngoại lệ chi tiết với DataAccessException.
+4. Có ví dụ minh họa gọi class từ tầng BLL/Service.

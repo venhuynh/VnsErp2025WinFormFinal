@@ -1,9 +1,10 @@
-﻿using Bll.Utils;
+﻿using Authentication.Form;
+using Bll.Utils;
+using Dal.Connection;
+using MasterData.Customer;
 using System;
 using System.Windows.Forms;
 using VnsErp2025.Form;
-using Dal.Connection;
-using Authentication.Form;
 
 namespace VnsErp2025
 {
@@ -43,20 +44,31 @@ namespace VnsErp2025
                 }
             }
 
+            #region Dành cho debug
+
+            Application.Run(new FluentPartner());
+
+            #endregion
+
+            #region Dành cho Release - bỏ comment
             // 3) Kết nối OK -> hiển thị màn hình đăng nhập
-            using (var loginForm = new FrmLogin())
-            {
-                if (loginForm.ShowDialog() == DialogResult.OK)
-                {
-                    // Đăng nhập thành công, hiển thị form chính
-                    Application.Run(new FormMain());
-                }
-                else
-                {
-                    // Người dùng hủy đăng nhập, thoát ứng dụng
-                    Application.Exit();
-                }
-            }
+            //using (var loginForm = new FrmLogin())
+            //{
+            //    if (loginForm.ShowDialog() == DialogResult.OK)
+            //    {
+            //        // Đăng nhập thành công, hiển thị form chính
+            //        Application.Run(new FormMain());
+            //    }
+            //    else
+            //    {
+            //        // Người dùng hủy đăng nhập, thoát ứng dụng
+            //        Application.Exit();
+            //    }
+            //}
+
+
+            #endregion
+
         }
 
     }
