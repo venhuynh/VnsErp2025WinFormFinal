@@ -8,16 +8,33 @@
       <Column Name="Active" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
-  <Table Name="dbo.BusinessPartnerContact" Member="BusinessPartnerContacts">
-    <Type Name="BusinessPartnerContact">
+  <Table Name="dbo.VariantAttribute" Member="VariantAttributes">
+    <Type Name="VariantAttribute">
+      <Column Name="VariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AttributeId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AttributeValueId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Attribute_VariantAttribute" Member="Attribute" ThisKey="AttributeId" OtherKey="Id" Type="Attribute" IsForeignKey="true" />
+      <Association Name="AttributeValue_VariantAttribute" Member="AttributeValue" ThisKey="AttributeValueId" OtherKey="Id" Type="AttributeValue" IsForeignKey="true" />
+      <Association Name="ProductVariant_VariantAttribute" Member="ProductVariant" ThisKey="VariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Attribute" Member="Attributes">
+    <Type Name="Attribute">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="PartnerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="FullName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Position" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="Phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="IsPrimary" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Association Name="BusinessPartner_BusinessPartnerContact" Member="BusinessPartner" ThisKey="PartnerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="DataType" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Association Name="Attribute_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="AttributeId" Type="VariantAttribute" />
+      <Association Name="Attribute_AttributeValue" Member="AttributeValues" ThisKey="Id" OtherKey="AttributeId" Type="AttributeValue" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AttributeValue" Member="AttributeValues">
+    <Type Name="AttributeValue">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AttributeId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="AttributeValue_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="AttributeValueId" Type="VariantAttribute" />
+      <Association Name="Attribute_AttributeValue" Member="Attribute" ThisKey="AttributeId" OtherKey="Id" Type="Attribute" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.BusinessPartner" Member="BusinessPartners">
@@ -42,8 +59,8 @@
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Association Name="BusinessPartner_BusinessPartnerContact" Member="BusinessPartnerContacts" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartnerContact" />
       <Association Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartner_BusinessPartnerCategory" />
+      <Association Name="BusinessPartner_BusinessPartnerContact" Member="BusinessPartnerContacts" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartnerContact" />
     </Type>
   </Table>
   <Table Name="dbo.BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories">
@@ -63,6 +80,82 @@
       <Association Name="BusinessPartnerCategory_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="CategoryId" Type="BusinessPartner_BusinessPartnerCategory" />
       <Association Name="BusinessPartnerCategory_BusinessPartnerCategory" Member="BusinessPartnerCategories" ThisKey="Id" OtherKey="ParentId" Type="BusinessPartnerCategory" />
       <Association Name="BusinessPartnerCategory_BusinessPartnerCategory" Member="BusinessPartnerCategory1" ThisKey="ParentId" OtherKey="Id" Type="BusinessPartnerCategory" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.BusinessPartnerContact" Member="BusinessPartnerContacts">
+    <Type Name="BusinessPartnerContact">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PartnerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="FullName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Position" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="IsPrimary" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="BusinessPartner_BusinessPartnerContact" Member="BusinessPartner" ThisKey="PartnerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductImage" Member="ProductImages">
+    <Type Name="ProductImage">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProductId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="VariantId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ImagePath" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="SortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsPrimary" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="ProductService_ProductImage" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />
+      <Association Name="ProductVariant_ProductImage" Member="ProductVariant" ThisKey="VariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductService" Member="ProductServices">
+    <Type Name="ProductService">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="CategoryId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="IsService" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ThumbnailPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Association Name="ProductService_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="ProductId" Type="ProductImage" />
+      <Association Name="ProductService_ProductVariant" Member="ProductVariants" ThisKey="Id" OtherKey="ProductId" Type="ProductVariant" />
+      <Association Name="ProductServiceCategory_ProductService" Member="ProductServiceCategory" ThisKey="CategoryId" OtherKey="Id" Type="ProductServiceCategory" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductServiceCategory" Member="ProductServiceCategories">
+    <Type Name="ProductServiceCategory">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CategoryName" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="ParentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="ProductServiceCategory_ProductService" Member="ProductServices" ThisKey="Id" OtherKey="CategoryId" Type="ProductService" />
+      <Association Name="ProductServiceCategory_ProductServiceCategory" Member="ProductServiceCategories" ThisKey="Id" OtherKey="ParentId" Type="ProductServiceCategory" />
+      <Association Name="ProductServiceCategory_ProductServiceCategory" Member="ProductServiceCategory1" ThisKey="ParentId" OtherKey="Id" Type="ProductServiceCategory" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductVariant" Member="ProductVariants">
+    <Type Name="ProductVariant">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProductId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="VariantCode" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="UnitId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="PurchasePrice" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="SalePrice" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ThumbnailPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
+      <Association Name="ProductVariant_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="VariantId" Type="ProductImage" />
+      <Association Name="ProductService_ProductVariant" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />
+      <Association Name="UnitOfMeasure_ProductVariant" Member="UnitOfMeasure" ThisKey="UnitId" OtherKey="Id" Type="UnitOfMeasure" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UnitOfMeasure" Member="UnitOfMeasures">
+    <Type Name="UnitOfMeasure">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Code" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="UnitOfMeasure_ProductVariant" Member="ProductVariants" ThisKey="Id" OtherKey="UnitId" Type="ProductVariant" />
     </Type>
   </Table>
 </Database>
