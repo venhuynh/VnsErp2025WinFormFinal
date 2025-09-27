@@ -105,6 +105,7 @@
     <Compile Include="Customer\Dto\BusinessPartnerDetailDto.cs" />
     <Compile Include="Customer\Dto\BusinessPartnerListDto.cs" />
     <Compile Include="Customer\Dto\PartnerCategoryMappingDto.cs" />
+    <Compile Include="ProductService\Converters\ProductServiceCategoryConverters.cs" />
     <Compile Include="ProductService\Dto\ProductServiceCategoryDto.cs" />
     <Compile Include="ProductService\FluentProductService.cs">
       <SubType>Form</SubType>
@@ -112,11 +113,41 @@
     <Compile Include="ProductService\FluentProductService.Designer.cs">
       <DependentUpon>FluentProductService.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProductService\FrmProductServiceCategoryDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceCategoryDetail.Designer.cs">
+      <DependentUpon>FrmProductServiceCategoryDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\UcAttribute.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProductService\UcAttribute.Designer.cs">
+      <DependentUpon>UcAttribute.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProductService\UcProductServiceCategory.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ProductService\UcProductServiceCategory.Designer.cs">
       <DependentUpon>UcProductServiceCategory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\UcProductServiceList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProductService\UcProductServiceList.Designer.cs">
+      <DependentUpon>UcProductServiceList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\UcProductVariant.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProductService\UcProductVariant.Designer.cs">
+      <DependentUpon>UcProductVariant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\UcUnitOfMeasure.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProductService\UcUnitOfMeasure.Designer.cs">
+      <DependentUpon>UcUnitOfMeasure.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

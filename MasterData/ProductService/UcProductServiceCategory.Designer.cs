@@ -46,12 +46,14 @@
             this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colPartnerCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.productServiceCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.treeList1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceCategoryDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -185,6 +187,7 @@
             this.colCategoryName,
             this.colDescription,
             this.colPartnerCount});
+            this.treeList1.DataSource = this.productServiceCategoryDtoBindingSource;
             this.treeList1.KeyFieldName = "Id";
             this.treeList1.Location = new System.Drawing.Point(16, 16);
             this.treeList1.MenuManager = this.barManager1;
@@ -214,10 +217,14 @@
             // colPartnerCount
             // 
             this.colPartnerCount.Caption = "Số lượng";
-            this.colPartnerCount.FieldName = "PartnerCount";
+            this.colPartnerCount.FieldName = "ProductCount";
             this.colPartnerCount.Name = "colPartnerCount";
             this.colPartnerCount.Visible = true;
             this.colPartnerCount.VisibleIndex = 2;
+            // 
+            // productServiceCategoryDtoBindingSource
+            // 
+            this.productServiceCategoryDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductServiceCategoryDto);
             // 
             // Root
             // 
@@ -252,6 +259,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.treeList1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceCategoryDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
@@ -279,6 +287,7 @@
         private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryName;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colPartnerCount;
+        
         private System.Windows.Forms.BindingSource productServiceCategoryDtoBindingSource;
     }
 }

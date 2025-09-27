@@ -2,6 +2,7 @@
 using Bll.Utils;
 using Dal.Connection;
 using MasterData.Customer;
+using MasterData.ProductService;
 using System;
 using System.Windows.Forms;
 using VnsErp2025.Form;
@@ -46,7 +47,7 @@ namespace VnsErp2025
 
             #region Dành cho debug
 
-            Application.Run(new FluentPartner());
+            Application.Run(new FluentProductService());
 
             #endregion
 

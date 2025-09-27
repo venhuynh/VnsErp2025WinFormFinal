@@ -353,7 +353,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
         /// <param name="context">DataContext để lưu dữ liệu</param>
         public static void SeedProductServices(VnsErp2025DataContext context)
         {
-            var products = new List<ProductService>();
+            var products = new List<DataContext.ProductService>();
             var random = new Random();
 
             // Lấy danh sách categories
@@ -393,7 +393,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                                selectedCategory.CategoryName.Contains("Phát triển") ||
                                selectedCategory.CategoryName.Contains("Bảo trì");
 
-                var product = new ProductService
+                var product = new DataContext.ProductService
                 {
                     Id = Guid.NewGuid(),
                     Code = isService ? $"SV{i:D6}" : $"SP{i:D6}",

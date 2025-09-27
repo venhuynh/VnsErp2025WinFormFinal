@@ -57,7 +57,9 @@
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerContactDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerInfo.cs" />
+    <Compile Include="DataAccess\MasterData\ProductService\ProductServiceCategoryDataAccess.cs" />
     <Compile Include="DataContext\SeedData\MasterData\Customer\SeedData_Master_Customer.cs" />
+    <Compile Include="DataContext\SeedData\MasterData\ProductService\SeedData_Master_ProductService.cs" />
     <Compile Include="DataContext\VnsErp2025.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -91,7 +93,7 @@
       <DependentUpon>VnsErp2025.dbml</DependentUpon>
     </None>
     <None Include="Doc\DalFolderStructure.md" />
-    <None Include="DataAccess\MasterData\ProductServicce\MasterData_ProductService_Entities.md" />
+    <None Include="DataAccess\MasterData\ProductService\MasterData_ProductService_Entities.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -115,7 +117,6 @@
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataContext\SeedData\MasterData\ProductService\" />
     <Folder Include="Examples\" />
     <Folder Include="LinqExtensions\" />
   </ItemGroup>
