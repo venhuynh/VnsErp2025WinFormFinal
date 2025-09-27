@@ -115,6 +115,7 @@
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="DataContext\SeedData\MasterData\ProductService\" />
     <Folder Include="Examples\" />
     <Folder Include="LinqExtensions\" />
   </ItemGroup>

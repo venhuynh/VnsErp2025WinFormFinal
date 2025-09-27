@@ -3,15 +3,13 @@ using Bll.MasterData.Customer;
 using Bll.Utils;
 using DevExpress.XtraSplashScreen;
 using DevExpress.XtraTreeList;
-using MasterData.Converters;
-using MasterData.Dto;
+using DevExpress.XtraTreeList.Nodes;
+using MasterData.Customer.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DevExpress.XtraTreeList.Nodes;
-using MasterData.Converters.Customer;
-using MasterData.Dto.Customer;
+using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {

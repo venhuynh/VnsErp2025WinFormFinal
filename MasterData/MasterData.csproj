@@ -147,6 +147,9 @@
     <EmbeddedResource Include="Customer\UcBusinessPartnerList.resx">
       <DependentUpon>UcBusinessPartnerList.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FluentProductService.resx">
+      <DependentUpon>FluentProductService.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProductService\UcProductServiceCategory.resx">
       <DependentUpon>UcProductServiceCategory.cs</DependentUpon>
     </EmbeddedResource>
@@ -164,6 +167,7 @@
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerListDto.datasource" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceCategoryDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +207,7 @@
       <Name>Dal</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Customer\Dto\Customer\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor DTOs với Notation tiếng Việt%29.txt" />

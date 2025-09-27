@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MasterData.Dto.Customer
+namespace MasterData.Customer.Dto
 {
     public class BusinessPartnerCategoryDto
     {

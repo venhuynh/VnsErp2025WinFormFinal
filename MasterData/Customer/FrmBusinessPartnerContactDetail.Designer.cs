@@ -1,4 +1,4 @@
-﻿using MasterData.Dto.Customer;
+﻿using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {

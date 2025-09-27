@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MasterData.Dto
+namespace MasterData.ProductService.Dto
 {
 	public class ProductServiceCategoryDto
 	{

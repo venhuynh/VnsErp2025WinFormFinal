@@ -1,8 +1,8 @@
 using System;
 using Dal.DataContext;
-using MasterData.Dto.Customer;
+using MasterData.Customer.Dto;
 
-namespace MasterData.Converters.Customer
+namespace MasterData.Customer.Converters
 {
     public static class BusinessPartnerContactConverters
     {
