@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MasterData.Dto
+namespace MasterData.Dto.Customer
 {
     public class PartnerCategoryMappingDto
     {

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dal.DataContext;
-using MasterData.Dto;
+using MasterData.Dto.Customer;
 
-namespace MasterData.Converters
+namespace MasterData.Converters.Customer
 {
     public static class BusinessPartnerConverters
     {

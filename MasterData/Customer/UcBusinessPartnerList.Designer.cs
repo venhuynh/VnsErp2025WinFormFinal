@@ -1,4 +1,6 @@
-﻿namespace MasterData.Customer
+﻿using MasterData.Dto.Customer;
+
+namespace MasterData.Customer
 {
     partial class UcBusinessPartnerList
     {
@@ -198,7 +200,7 @@
             // 
             // businessPartnerListDtoBindingSource
             // 
-            this.businessPartnerListDtoBindingSource.DataSource = typeof(MasterData.Dto.BusinessPartnerListDto);
+            this.businessPartnerListDtoBindingSource.DataSource = typeof(BusinessPartnerListDto);
             // 
             // BusinessPartnerListGridView
             // 

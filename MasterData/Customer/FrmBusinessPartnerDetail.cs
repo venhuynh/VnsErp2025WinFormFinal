@@ -12,6 +12,8 @@ using Bll.Utils;
 using DevExpress.XtraEditors.DXErrorProvider;
 using MasterData.Dto;
 using MasterData.Converters;
+using MasterData.Converters.Customer;
+using MasterData.Dto.Customer;
 
 namespace MasterData.Customer
 {
@@ -48,7 +50,7 @@ namespace MasterData.Customer
             try
             {
                 // Đánh dấu Required dựa trên BusinessPartnerListDto
-                MarkRequiredFields(typeof(Dto.BusinessPartnerListDto));
+                MarkRequiredFields(typeof(BusinessPartnerListDto));
 
                 // Cấu hình combobox Loại đối tác
                 SetupPartnerTypeComboBox();

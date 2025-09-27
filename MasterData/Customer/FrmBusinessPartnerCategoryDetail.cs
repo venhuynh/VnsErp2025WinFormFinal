@@ -4,6 +4,8 @@ using MasterData.Converters;
 using MasterData.Dto;
 using System;
 using System.Windows.Forms;
+using MasterData.Converters.Customer;
+using MasterData.Dto.Customer;
 
 namespace MasterData.Customer
 {

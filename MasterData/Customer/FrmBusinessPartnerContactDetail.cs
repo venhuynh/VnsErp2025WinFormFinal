@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using MasterData.Dto;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using MasterData.Dto.Customer;
 
 namespace MasterData.Customer
 {
