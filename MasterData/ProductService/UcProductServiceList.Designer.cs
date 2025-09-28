@@ -500,7 +500,6 @@ namespace MasterData.ProductService
         private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand1;
         private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand3;
         private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand2;
-        private DevExpress.XtraBars.BarButtonItem CountVariantAndImageBtn;
         private DevExpress.XtraBars.Bar bar1;
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;

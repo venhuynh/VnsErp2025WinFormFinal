@@ -102,6 +102,16 @@
       <Column Name="ImagePath" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
       <Column Name="SortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="IsPrimary" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ImageData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="ImageType" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="ImageSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="ImageWidth" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ImageHeight" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Caption" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="AltText" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="ProductService_ProductImage" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />
       <Association Name="ProductVariant_ProductImage" Member="ProductVariant" ThisKey="VariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
     </Type>

@@ -1,13 +1,16 @@
 ﻿using Bll.MasterData.ProductService;
 using Bll.Utils;
 using DevExpress.Utils;
+using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.DXErrorProvider;
 using MasterData.ProductService.Converters;
 using MasterData.ProductService.Dto;
 using System;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -23,8 +26,10 @@ namespace MasterData.ProductService
 
         private readonly ProductServiceBll _productServiceBll = new ProductServiceBll();
         private readonly ProductServiceCategoryBll _productServiceCategoryBll = new ProductServiceCategoryBll();
+        private readonly ProductImageBll _productImageBll = new ProductImageBll();
         private readonly Guid _productServiceId;
         private bool IsEditMode => _productServiceId != Guid.Empty;
+        private bool _hasImageChanged = false;
 
         #endregion
 
@@ -92,6 +97,22 @@ namespace MasterData.ProductService
                 // Thiết lập giá trị mặc định
                 IsActiveToggleSwitch.IsOn = true; // Mặc định là hoạt động
                 IsServiceToggleSwitch.IsOn = false; // Mặc định là sản phẩm
+
+                // Trong EditMode, không cho phép thay đổi mã và phân loại
+                if (IsEditMode)
+                {
+                    CodeTextEdit.Enabled = false;
+                    CategoryIdTreeListLookUpEdit.Enabled = false;
+                    
+                    // Thêm tooltip để giải thích
+                    CodeTextEdit.Properties.NullText = "Mã không thể thay đổi khi chỉnh sửa";
+                    CategoryIdTreeListLookUpEdit.Properties.NullText = "Phân loại không thể thay đổi khi chỉnh sửa";
+                }
+
+                // Đăng ký event handlers
+                SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
+                CloseBarButtonItem.ItemClick += CancelBarButtonItem_ItemClick;
+                ClearThumbnailBarButtonItem.ItemClick += ClearThumbnailBarButtonItem_ItemClick;
             }
             catch (Exception ex)
             {
@@ -222,8 +243,85 @@ namespace MasterData.ProductService
             // Load ảnh thumbnail nếu có
             if (dto.ThumbnailImage != null && dto.ThumbnailImage.Length > 0)
             {
-                ThumbnailImagePictureEdit.Image = Image.FromStream(new MemoryStream(dto.ThumbnailImage));
+                try
+                {
+                    using (var originalImage = Image.FromStream(new MemoryStream(dto.ThumbnailImage)))
+                    {
+                        // Nén ảnh khi load để tránh lỗi Out of memory
+                        var compressedImage = _productImageBll.CompressImage(originalImage, 80, 2048);
+                        ThumbnailImagePictureEdit.Image = compressedImage;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ShowError(ex, "Lỗi khi load ảnh thumbnail từ database");
+                }
             }
+            
+            
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu từ các control và tạo DTO.
+        /// </summary>
+        /// <returns>DTO chứa dữ liệu từ form</returns>
+        private ProductServiceDto GetDataFromControls()
+        {
+            Guid? categoryId = null;
+            
+            // Lấy giá trị từ TreeListLookUpEdit
+            if (CategoryIdTreeListLookUpEdit.EditValue != null && CategoryIdTreeListLookUpEdit.EditValue != DBNull.Value)
+            {
+                categoryId = (Guid)CategoryIdTreeListLookUpEdit.EditValue;
+            }
+
+            // Lấy ảnh thumbnail nếu có
+            byte[] thumbnailImage = null;
+            if (ThumbnailImagePictureEdit.Image != null)
+            {
+                try
+                {
+                    // Tạo một bản sao của ảnh để tránh lỗi GDI+
+                    using (var imageCopy = new Bitmap(ThumbnailImagePictureEdit.Image))
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            // Lưu ảnh với định dạng JPEG và chất lượng cao
+                            var jpegCodec = GetJpegCodec();
+                            if (jpegCodec != null)
+                            {
+                                var encoderParams = new EncoderParameters(1);
+                                encoderParams.Param[0] = new EncoderParameter(Encoder.Quality, 90L);
+                                imageCopy.Save(ms, jpegCodec, encoderParams);
+                            }
+                            else
+                            {
+                                // Fallback nếu không có JPEG codec
+                                imageCopy.Save(ms, ImageFormat.Jpeg);
+                            }
+                            thumbnailImage = ms.ToArray();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ShowError(ex, "Lỗi khi xử lý ảnh thumbnail");
+                    thumbnailImage = null;
+                }
+            }
+
+            return new ProductServiceDto
+            {
+                Id = _productServiceId, // Sử dụng _productServiceId (Guid.Empty cho thêm mới, ID thực cho edit)
+                Code = CodeTextEdit?.Text?.Trim(),
+                Name = NameTextEdit?.Text?.Trim(),
+                Description = DescriptionTextEdit?.Text?.Trim(),
+                CategoryId = categoryId,
+                IsService = IsServiceToggleSwitch.IsOn,
+                IsActive = IsActiveToggleSwitch.IsOn,
+                ThumbnailPath = ThumbnailPathButtonEdit?.Text?.Trim(),
+                ThumbnailImage = thumbnailImage
+            };
         }
 
         /// <summary>
@@ -258,6 +356,133 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
+        /// Lấy JPEG codec để lưu ảnh với chất lượng cao
+        /// </summary>
+        /// <returns>JPEG codec hoặc null</returns>
+        private ImageCodecInfo GetJpegCodec()
+        {
+            try
+            {
+                var codecs = ImageCodecInfo.GetImageEncoders();
+                foreach (var codec in codecs)
+                {
+                    if (codec.FormatID == ImageFormat.Jpeg.Guid)
+                    {
+                        return codec;
+                    }
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Validate dữ liệu đầu vào.
+        /// </summary>
+        /// <returns>True nếu hợp lệ, False nếu không</returns>
+        private bool ValidateInput()
+        {
+            dxErrorProvider1.ClearErrors();
+
+            // Code bắt buộc
+            if (string.IsNullOrWhiteSpace(CodeTextEdit?.Text))
+            {
+                dxErrorProvider1.SetError(CodeTextEdit, "Mã sản phẩm/dịch vụ không được để trống", ErrorType.Critical);
+                CodeTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra độ dài Code
+            var code = CodeTextEdit.Text.Trim();
+            if (code.Length > 50)
+            {
+                dxErrorProvider1.SetError(CodeTextEdit, "Mã sản phẩm/dịch vụ không được vượt quá 50 ký tự", ErrorType.Critical);
+                CodeTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra trùng lặp Code (chỉ kiểm tra khi thêm mới)
+            if (!IsEditMode && _productServiceBll.IsCodeExists(code, _productServiceId))
+            {
+                dxErrorProvider1.SetError(CodeTextEdit, "Mã sản phẩm/dịch vụ đã tồn tại trong hệ thống", ErrorType.Critical);
+                CodeTextEdit?.Focus();
+                return false;
+            }
+
+            // Name bắt buộc
+            if (string.IsNullOrWhiteSpace(NameTextEdit?.Text))
+            {
+                dxErrorProvider1.SetError(NameTextEdit, "Tên sản phẩm/dịch vụ không được để trống", ErrorType.Critical);
+                NameTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra độ dài Name
+            if (NameTextEdit.Text.Trim().Length > 200)
+            {
+                dxErrorProvider1.SetError(NameTextEdit, "Tên sản phẩm/dịch vụ không được vượt quá 200 ký tự", ErrorType.Critical);
+                NameTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra trùng lặp Name (chỉ kiểm tra khi thêm mới)
+            var name = NameTextEdit.Text.Trim();
+            if (!IsEditMode && _productServiceBll.IsNameExists(name, _productServiceId))
+            {
+                dxErrorProvider1.SetError(NameTextEdit, "Tên sản phẩm/dịch vụ đã tồn tại trong hệ thống", ErrorType.Critical);
+                NameTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra độ dài Description
+            if (!string.IsNullOrWhiteSpace(DescriptionTextEdit?.Text) && DescriptionTextEdit.Text.Trim().Length > 1000)
+            {
+                dxErrorProvider1.SetError(DescriptionTextEdit, "Mô tả không được vượt quá 1000 ký tự", ErrorType.Critical);
+                DescriptionTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra độ dài ThumbnailPath
+            if (!string.IsNullOrWhiteSpace(ThumbnailPathButtonEdit?.Text) && ThumbnailPathButtonEdit.Text.Trim().Length > 500)
+            {
+                dxErrorProvider1.SetError(ThumbnailPathButtonEdit, "Đường dẫn ảnh không được vượt quá 500 ký tự", ErrorType.Critical);
+                ThumbnailPathButtonEdit?.Focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Lưu dữ liệu sản phẩm/dịch vụ.
+        /// </summary>
+        private void SaveProductService()
+        {
+            try
+            {
+                var dto = GetDataFromControls();
+                var entity = dto.ToEntity();
+
+                // Sử dụng SaveOrUpdateWithImage để xử lý hình ảnh
+                var imagePath = ThumbnailPathButtonEdit.Text?.Trim();
+                _productServiceBll.SaveOrUpdateWithImage(entity, imagePath, _hasImageChanged);
+
+                var message = IsEditMode ? "Cập nhật sản phẩm/dịch vụ thành công!" : "Thêm mới sản phẩm/dịch vụ thành công!";
+                ShowInfo(message);
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi lưu dữ liệu sản phẩm/dịch vụ");
+            }
+        }
+
+        /// <summary>
         /// Event handler khi user thay đổi danh mục -> tự động tạo mã sản phẩm.
         /// </summary>
         private void CategoryIdTreeListLookUpEdit_EditValueChanged(object sender, EventArgs e)
@@ -288,6 +513,140 @@ namespace MasterData.ProductService
             {
                 ShowError(ex, "Lỗi khi tự động tạo mã sản phẩm");
             }
+        }
+
+        #endregion
+
+        #region Event Handlers
+
+        /// <summary>
+        /// Người dùng bấm nút Lưu.
+        /// </summary>
+        private void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if (ValidateInput())
+            {
+                SaveProductService();
+            }
+        }
+
+        /// <summary>
+        /// Người dùng bấm nút Hủy.
+        /// </summary>
+        private void CancelBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        /// <summary>
+        /// Người dùng bấm nút Browse để chọn ảnh thumbnail.
+        /// </summary>
+        private void ThumbnailPathButtonEdit_ButtonClick(object sender, ButtonPressedEventArgs e)
+        {
+            try
+            {
+                // Sử dụng xtraOpenFileDialog1 đã được cấu hình trong Designer
+                if (xtraOpenFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    var selectedFilePath = xtraOpenFileDialog1.FileName;
+                    
+                    // Kiểm tra file có tồn tại không
+                    if (!System.IO.File.Exists(selectedFilePath))
+                    {
+                        ShowError("File đã chọn không tồn tại trên hệ thống");
+                        return;
+                    }
+
+                    // Kiểm tra kích thước file (giới hạn 5MB)
+                    var fileInfo = new System.IO.FileInfo(selectedFilePath);
+                    //if (fileInfo.Length > 5 * 1024 * 1024) // 5MB
+                    //{
+                    //    ShowError("File ảnh quá lớn. Vui lòng chọn file nhỏ hơn 5MB");
+                    //    return;
+                    //}
+
+                    // Cập nhật đường dẫn
+                    ThumbnailPathButtonEdit.Text = selectedFilePath;
+
+                    // Load và hiển thị ảnh
+                    try
+                    {
+                        // Xóa ảnh cũ trước khi load ảnh mới
+                        if (ThumbnailImagePictureEdit.Image != null)
+                        {
+                            ThumbnailImagePictureEdit.Image.Dispose();
+                            ThumbnailImagePictureEdit.Image = null;
+                        }
+
+                        // Nén ảnh trước khi hiển thị để tránh lỗi Out of memory
+                        var compressedImage = _productImageBll.CompressImage(selectedFilePath, 80, 2048);
+                        ThumbnailImagePictureEdit.Image = compressedImage;
+                        
+                        // Đánh dấu đã thay đổi hình ảnh
+                        _hasImageChanged = true;
+                        
+                        ShowInfo($"Đã chọn và nén ảnh thành công: {fileInfo.Name} ({(fileInfo.Length / 1024.0):F1} KB)");
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowError(ex, "Không thể load ảnh từ file đã chọn. File có thể bị hỏng hoặc không phải định dạng ảnh hợp lệ");
+                        ThumbnailPathButtonEdit.Text = string.Empty;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi chọn file ảnh");
+            }
+        }
+
+        /// <summary>
+        /// Người dùng bấm nút Clear để xóa ảnh thumbnail.
+        /// </summary>
+        private void ClearThumbnailBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                // Xóa đường dẫn
+                ThumbnailPathButtonEdit.Text = string.Empty;
+                
+                // Dispose và xóa ảnh
+                if (ThumbnailImagePictureEdit.Image != null)
+                {
+                    ThumbnailImagePictureEdit.Image.Dispose();
+                    ThumbnailImagePictureEdit.Image = null;
+                }
+                
+                // Đánh dấu đã thay đổi hình ảnh (xóa ảnh)
+                _hasImageChanged = true;
+                
+                ShowInfo("Đã xóa ảnh thumbnail thành công");
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi xóa ảnh thumbnail");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý phím tắt.
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.S))
+            {
+                SaveBarButtonItem_ItemClick(null, null);
+                return true;
+            }
+
+            if (keyData == Keys.Escape)
+            {
+                CancelBarButtonItem_ItemClick(null, null);
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         #endregion

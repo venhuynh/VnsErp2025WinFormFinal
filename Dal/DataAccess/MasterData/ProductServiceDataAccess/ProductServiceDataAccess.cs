@@ -579,31 +579,39 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
         /// <param name="productService">Sản phẩm/dịch vụ cần lưu hoặc cập nhật</param>
         public void SaveOrUpdate(ProductService productService)
         {
-            if (productService == null) throw new ArgumentNullException(nameof(productService));
-            
-            using var context = CreateContext();
-            var existing = productService.Id != Guid.Empty ? context.ProductServices.FirstOrDefault(x => x.Id == productService.Id) : null;
-            
-            if (existing == null)
+            try
             {
-                // Thêm mới
-                if (productService.Id == Guid.Empty)
-                    productService.Id = Guid.NewGuid();
-                context.ProductServices.InsertOnSubmit(productService);
+                if (productService == null) 
+                    throw new ArgumentNullException(nameof(productService));
+                
+                using var context = CreateContext();
+                var existing = productService.Id != Guid.Empty ? context.ProductServices.FirstOrDefault(x => x.Id == productService.Id) : null;
+                
+                if (existing == null)
+                {
+                    // Thêm mới
+                    if (productService.Id == Guid.Empty)
+                        productService.Id = Guid.NewGuid();
+                    context.ProductServices.InsertOnSubmit(productService);
+                }
+                else
+                {
+                    // Cập nhật
+                    existing.Code = productService.Code;
+                    existing.Name = productService.Name;
+                    existing.CategoryId = productService.CategoryId;
+                    existing.IsService = productService.IsService;
+                    existing.Description = productService.Description;
+                    existing.IsActive = productService.IsActive;
+                    existing.ThumbnailPath = productService.ThumbnailPath;
+                }
+                
+                context.SubmitChanges();
             }
-            else
+            catch (Exception ex)
             {
-                // Cập nhật
-                existing.Code = productService.Code;
-                existing.Name = productService.Name;
-                existing.CategoryId = productService.CategoryId;
-                existing.IsService = productService.IsService;
-                existing.Description = productService.Description;
-                existing.IsActive = productService.IsActive;
-                existing.ThumbnailPath = productService.ThumbnailPath;
+                throw new DataAccessException($"Lỗi khi lưu hoặc cập nhật sản phẩm/dịch vụ '{productService?.Name}': {ex.Message}", ex);
             }
-            
-            context.SubmitChanges();
         }
 
         #endregion
@@ -686,5 +694,6 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
                 throw new DataAccessException($"Lỗi khi lấy mã danh mục: {ex.Message}", ex);
             }
         }
+
     }
 }

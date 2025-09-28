@@ -2180,6 +2180,26 @@ namespace Dal.DataContext
 		
 		private System.Nullable<bool> _IsPrimary;
 		
+		private System.Data.Linq.Binary _ImageData;
+		
+		private string _ImageType;
+		
+		private System.Nullable<long> _ImageSize;
+		
+		private System.Nullable<int> _ImageWidth;
+		
+		private System.Nullable<int> _ImageHeight;
+		
+		private string _Caption;
+		
+		private string _AltText;
+		
+		private System.Nullable<bool> _IsActive;
+		
+		private System.Nullable<System.DateTime> _CreatedDate;
+		
+		private System.Nullable<System.DateTime> _ModifiedDate;
+		
 		private EntityRef<ProductService> _ProductService;
 		
 		private EntityRef<ProductVariant> _ProductVariant;
@@ -2200,6 +2220,26 @@ namespace Dal.DataContext
     partial void OnSortOrderChanged();
     partial void OnIsPrimaryChanging(System.Nullable<bool> value);
     partial void OnIsPrimaryChanged();
+    partial void OnImageDataChanging(System.Data.Linq.Binary value);
+    partial void OnImageDataChanged();
+    partial void OnImageTypeChanging(string value);
+    partial void OnImageTypeChanged();
+    partial void OnImageSizeChanging(System.Nullable<long> value);
+    partial void OnImageSizeChanged();
+    partial void OnImageWidthChanging(System.Nullable<int> value);
+    partial void OnImageWidthChanged();
+    partial void OnImageHeightChanging(System.Nullable<int> value);
+    partial void OnImageHeightChanged();
+    partial void OnCaptionChanging(string value);
+    partial void OnCaptionChanged();
+    partial void OnAltTextChanging(string value);
+    partial void OnAltTextChanged();
+    partial void OnIsActiveChanging(System.Nullable<bool> value);
+    partial void OnIsActiveChanged();
+    partial void OnCreatedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnCreatedDateChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
     #endregion
 		
 		public ProductImage()
@@ -2333,6 +2373,206 @@ namespace Dal.DataContext
 					this._IsPrimary = value;
 					this.SendPropertyChanged("IsPrimary");
 					this.OnIsPrimaryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageData", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary ImageData
+		{
+			get
+			{
+				return this._ImageData;
+			}
+			set
+			{
+				if ((this._ImageData != value))
+				{
+					this.OnImageDataChanging(value);
+					this.SendPropertyChanging();
+					this._ImageData = value;
+					this.SendPropertyChanged("ImageData");
+					this.OnImageDataChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageType", DbType="NVarChar(10)")]
+		public string ImageType
+		{
+			get
+			{
+				return this._ImageType;
+			}
+			set
+			{
+				if ((this._ImageType != value))
+				{
+					this.OnImageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._ImageType = value;
+					this.SendPropertyChanged("ImageType");
+					this.OnImageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageSize", DbType="BigInt")]
+		public System.Nullable<long> ImageSize
+		{
+			get
+			{
+				return this._ImageSize;
+			}
+			set
+			{
+				if ((this._ImageSize != value))
+				{
+					this.OnImageSizeChanging(value);
+					this.SendPropertyChanging();
+					this._ImageSize = value;
+					this.SendPropertyChanged("ImageSize");
+					this.OnImageSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageWidth", DbType="Int")]
+		public System.Nullable<int> ImageWidth
+		{
+			get
+			{
+				return this._ImageWidth;
+			}
+			set
+			{
+				if ((this._ImageWidth != value))
+				{
+					this.OnImageWidthChanging(value);
+					this.SendPropertyChanging();
+					this._ImageWidth = value;
+					this.SendPropertyChanged("ImageWidth");
+					this.OnImageWidthChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageHeight", DbType="Int")]
+		public System.Nullable<int> ImageHeight
+		{
+			get
+			{
+				return this._ImageHeight;
+			}
+			set
+			{
+				if ((this._ImageHeight != value))
+				{
+					this.OnImageHeightChanging(value);
+					this.SendPropertyChanging();
+					this._ImageHeight = value;
+					this.SendPropertyChanged("ImageHeight");
+					this.OnImageHeightChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Caption", DbType="NVarChar(255)")]
+		public string Caption
+		{
+			get
+			{
+				return this._Caption;
+			}
+			set
+			{
+				if ((this._Caption != value))
+				{
+					this.OnCaptionChanging(value);
+					this.SendPropertyChanging();
+					this._Caption = value;
+					this.SendPropertyChanged("Caption");
+					this.OnCaptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AltText", DbType="NVarChar(255)")]
+		public string AltText
+		{
+			get
+			{
+				return this._AltText;
+			}
+			set
+			{
+				if ((this._AltText != value))
+				{
+					this.OnAltTextChanging(value);
+					this.SendPropertyChanging();
+					this._AltText = value;
+					this.SendPropertyChanged("AltText");
+					this.OnAltTextChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit")]
+		public System.Nullable<bool> IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
+		{
+			get
+			{
+				return this._ModifiedDate;
+			}
+			set
+			{
+				if ((this._ModifiedDate != value))
+				{
+					this.OnModifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
 				}
 			}
 		}

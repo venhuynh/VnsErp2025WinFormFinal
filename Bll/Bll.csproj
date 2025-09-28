@@ -51,6 +51,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -74,6 +75,7 @@
     <Compile Include="MasterData\Customer\BusinessPartnerBll.cs" />
     <Compile Include="MasterData\Customer\BusinessPartnerCategoryBll.cs" />
     <Compile Include="MasterData\Customer\BusinessPartnerContactBll.cs" />
+    <Compile Include="MasterData\ProductService\ProductImageBll.cs" />
     <Compile Include="MasterData\ProductService\ProductServiceBll.cs" />
     <Compile Include="MasterData\ProductService\ProductServiceCategoryBll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

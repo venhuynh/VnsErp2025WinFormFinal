@@ -18,6 +18,7 @@ namespace Bll.MasterData.ProductService
 
         private readonly ProductServiceDataAccess _dataAccess;
         private readonly ProductServiceCategoryDataAccess _categoryDataAccess;
+        private readonly ProductImageBll _productImageBll;
 
         #endregion
 
@@ -30,6 +31,7 @@ namespace Bll.MasterData.ProductService
         {
             _dataAccess = new ProductServiceDataAccess();
             _categoryDataAccess = new ProductServiceCategoryDataAccess();
+            _productImageBll = new ProductImageBll();
         }
 
         #endregion
@@ -85,6 +87,63 @@ namespace Bll.MasterData.ProductService
             catch (Exception ex)
             {
                 throw new BusinessLogicException($"Lỗi khi lưu sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lưu hoặc cập nhật sản phẩm/dịch vụ
+        /// </summary>
+        /// <param name="productService">ProductService entity cần lưu hoặc cập nhật</param>
+        public void SaveOrUpdate(Dal.DataContext.ProductService productService)
+        {
+            try
+            {
+                if (productService == null)
+                    throw new ArgumentNullException(nameof(productService));
+
+                _dataAccess.SaveOrUpdate(productService);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lưu hoặc cập nhật sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lưu hoặc cập nhật sản phẩm/dịch vụ với xử lý hình ảnh
+        /// </summary>
+        /// <param name="productService">ProductService entity cần lưu hoặc cập nhật</param>
+        /// <param name="imageFilePath">Đường dẫn file ảnh (nếu có)</param>
+        /// <param name="hasImageChanged">Có thay đổi hình ảnh không</param>
+        public void SaveOrUpdateWithImage(Dal.DataContext.ProductService productService, string imageFilePath = null, bool hasImageChanged = false)
+        {
+            try
+            {
+                if (productService == null)
+                    throw new ArgumentNullException(nameof(productService));
+
+                // Lưu thông tin sản phẩm/dịch vụ
+                _dataAccess.SaveOrUpdate(productService);
+
+                // Xử lý hình ảnh nếu có thay đổi
+                if (hasImageChanged && !string.IsNullOrWhiteSpace(imageFilePath))
+                {
+                    // Cập nhật hình ảnh chính
+                    _productImageBll.UpdatePrimaryImage(productService.Id, imageFilePath);
+                }
+                else if (hasImageChanged && string.IsNullOrWhiteSpace(imageFilePath))
+                {
+                    // Xóa hình ảnh chính nếu user đã xóa
+                    var existingImages = _productImageBll.GetByProductId(productService.Id);
+                    foreach (var image in existingImages.Where(x => x.IsPrimary == true))
+                    {
+                        _productImageBll.DeleteImage(image.Id);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lưu hoặc cập nhật sản phẩm/dịch vụ với hình ảnh: {ex.Message}", ex);
             }
         }
 
@@ -230,6 +289,28 @@ namespace Bll.MasterData.ProductService
             {
                 return string.Empty;
             }
+        }
+
+        /// <summary>
+        /// Kiểm tra mã sản phẩm/dịch vụ có tồn tại không.
+        /// </summary>
+        /// <param name="code">Mã sản phẩm/dịch vụ cần kiểm tra</param>
+        /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
+        /// <returns>True nếu tồn tại, False nếu không</returns>
+        public bool IsCodeExists(string code, Guid? excludeId = null)
+        {
+            return _dataAccess.IsCodeExists(code, excludeId);
+        }
+
+        /// <summary>
+        /// Kiểm tra tên sản phẩm/dịch vụ có tồn tại không.
+        /// </summary>
+        /// <param name="name">Tên sản phẩm/dịch vụ cần kiểm tra</param>
+        /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
+        /// <returns>True nếu tồn tại, False nếu không</returns>
+        public bool IsNameExists(string name, Guid? excludeId = null)
+        {
+            return _dataAccess.IsNameExists(name, excludeId);
         }
 
         #endregion
