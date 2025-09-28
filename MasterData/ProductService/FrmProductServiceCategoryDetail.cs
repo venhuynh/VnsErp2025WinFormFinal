@@ -54,6 +54,35 @@ namespace MasterData.ProductService
         #region Private Methods
 
         /// <summary>
+        /// Tạo mã danh mục từ tên danh mục.
+        /// </summary>
+        /// <param name="categoryName">Tên danh mục</param>
+        /// <returns>Mã danh mục</returns>
+        private string GenerateCategoryCode(string categoryName)
+        {
+            if (string.IsNullOrWhiteSpace(categoryName)) return "CAT";
+            
+            // Lấy chữ cái đầu của mỗi từ trong tên danh mục
+            var words = categoryName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var code = string.Empty;
+            
+            foreach (var word in words)
+            {
+                if (!string.IsNullOrWhiteSpace(word))
+                {
+                    var firstChar = word.Trim().FirstOrDefault();
+                    if (char.IsLetter(firstChar))
+                    {
+                        code += char.ToUpper(firstChar);
+                    }
+                }
+            }
+            
+            // Đảm bảo mã có ít nhất 2 ký tự
+            return code.Length >= 2 ? code : "CAT";
+        }
+
+        /// <summary>
         /// Khởi tạo form và load dữ liệu nếu cần.
         /// </summary>
         private void InitializeForm()
@@ -71,6 +100,9 @@ namespace MasterData.ProductService
 
                 // Load danh sách danh mục cha
                 LoadParentCategories();
+
+                // Đăng ký event để tự động tạo mã danh mục khi thay đổi tên danh mục
+                CategoryNameTextEdit.TextChanged += CategoryNameTextEdit_TextChanged;
 
                 // Thiết lập focus cho control đầu tiên
                 CategoryNameTextEdit.Focus();
@@ -184,6 +216,7 @@ namespace MasterData.ProductService
         /// <param name="dto">DTO chứa dữ liệu</param>
         private void BindDataToControls(ProductServiceCategoryDto dto)
         {
+            CategoryCodeTextEdit.Text = dto.CategoryCode;
             CategoryNameTextEdit.Text = dto.CategoryName;
             DescriptionMemoEdit.Text = dto.Description;
             
@@ -217,6 +250,7 @@ namespace MasterData.ProductService
             return new ProductServiceCategoryDto
             {
                 Id = _categoryId, // Sử dụng _categoryId (Guid.Empty cho thêm mới, ID thực cho edit)
+                CategoryCode = CategoryCodeTextEdit?.Text?.Trim(),
                 CategoryName = CategoryNameTextEdit?.Text?.Trim(),
                 Description = DescriptionMemoEdit?.Text?.Trim(),
                 ParentId = parentId
@@ -231,6 +265,46 @@ namespace MasterData.ProductService
         private bool ValidateInput()
         {
             dxErrorProvider1.ClearErrors();
+
+            // CategoryCode bắt buộc
+            if (string.IsNullOrWhiteSpace(CategoryCodeTextEdit?.Text))
+            {
+                dxErrorProvider1.SetError(CategoryCodeTextEdit, "Mã danh mục không được để trống", ErrorType.Critical);
+                CategoryCodeTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra độ dài CategoryCode
+            var categoryCode = CategoryCodeTextEdit.Text.Trim();
+            if (categoryCode.Length < 2)
+            {
+                dxErrorProvider1.SetError(CategoryCodeTextEdit, "Mã danh mục phải có ít nhất 2 ký tự", ErrorType.Critical);
+                CategoryCodeTextEdit?.Focus();
+                return false;
+            }
+
+            if (categoryCode.Length > 50)
+            {
+                dxErrorProvider1.SetError(CategoryCodeTextEdit, "Mã danh mục không được vượt quá 50 ký tự", ErrorType.Critical);
+                CategoryCodeTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra format CategoryCode (chỉ chữ cái và số)
+            if (!System.Text.RegularExpressions.Regex.IsMatch(categoryCode, @"^[A-Z0-9]+$"))
+            {
+                dxErrorProvider1.SetError(CategoryCodeTextEdit, "Mã danh mục chỉ được chứa chữ cái và số (không có khoảng trắng, ký tự đặc biệt)", ErrorType.Critical);
+                CategoryCodeTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra trùng lặp CategoryCode (không tính bản ghi đang chỉnh sửa)
+            if (_productServiceCategoryBll.IsCategoryCodeExists(categoryCode, _categoryId))
+            {
+                dxErrorProvider1.SetError(CategoryCodeTextEdit, "Mã danh mục đã tồn tại trong hệ thống", ErrorType.Critical);
+                CategoryCodeTextEdit?.Focus();
+                return false;
+            }
 
             // CategoryName bắt buộc
             if (string.IsNullOrWhiteSpace(CategoryNameTextEdit?.Text))
@@ -334,6 +408,39 @@ namespace MasterData.ProductService
                 MsgBox.ShowException(ex);
             else
                 MsgBox.ShowException(new Exception(context + ": " + ex.Message, ex));
+        }
+
+        /// <summary>
+        /// Event handler khi user thay đổi tên danh mục -> tự động tạo mã danh mục.
+        /// </summary>
+        private void CategoryNameTextEdit_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Chỉ tự động tạo mã khi đang thêm mới (không phải edit mode)
+                // hoặc khi CategoryCode đang trống
+                if (IsEditMode && !string.IsNullOrWhiteSpace(CategoryCodeTextEdit?.Text))
+                    return;
+
+                // Lấy tên danh mục
+                var categoryName = CategoryNameTextEdit?.Text?.Trim();
+                if (string.IsNullOrWhiteSpace(categoryName))
+                {
+                    CategoryCodeTextEdit.Text = string.Empty;
+                    return;
+                }
+
+                // Tự động tạo mã danh mục
+                var newCode = GenerateCategoryCode(categoryName);
+                if (!string.IsNullOrEmpty(newCode))
+                {
+                    CategoryCodeTextEdit.Text = newCode;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi tự động tạo mã danh mục");
+            }
         }
 
         /// <summary>

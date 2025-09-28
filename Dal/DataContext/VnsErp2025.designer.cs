@@ -2767,6 +2767,8 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _ParentId;
 		
+		private string _CategoryCode;
+		
 		private EntitySet<ProductService> _ProductServices;
 		
 		private EntitySet<ProductServiceCategory> _ProductServiceCategories;
@@ -2785,6 +2787,8 @@ namespace Dal.DataContext
     partial void OnDescriptionChanged();
     partial void OnParentIdChanging(System.Nullable<System.Guid> value);
     partial void OnParentIdChanged();
+    partial void OnCategoryCodeChanging(string value);
+    partial void OnCategoryCodeChanged();
     #endregion
 		
 		public ProductServiceCategory()
@@ -2875,6 +2879,26 @@ namespace Dal.DataContext
 					this._ParentId = value;
 					this.SendPropertyChanged("ParentId");
 					this.OnParentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CategoryCode", DbType="NVarChar(50)")]
+		public string CategoryCode
+		{
+			get
+			{
+				return this._CategoryCode;
+			}
+			set
+			{
+				if ((this._CategoryCode != value))
+				{
+					this.OnCategoryCodeChanging(value);
+					this.SendPropertyChanging();
+					this._CategoryCode = value;
+					this.SendPropertyChanged("CategoryCode");
+					this.OnCategoryCodeChanged();
 				}
 			}
 		}

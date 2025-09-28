@@ -28,8 +28,10 @@ namespace MasterData.ProductService
 
             InitializeUserControls();
             
+            //Xóa hết dữ liệu test
             //DeleteAllData();
             
+            //Tạo dữ liệu test
             //SeedMasterData();
         }
 

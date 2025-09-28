@@ -14,6 +14,7 @@ namespace MasterData.ProductService.Converters
             return new ProductServiceCategoryDto
             {
                 Id = entity.Id,
+                CategoryCode = entity.CategoryCode,
                 CategoryName = entity.CategoryName,
                 Description = entity.Description,
                 ParentId = entity.ParentId,
@@ -31,6 +32,7 @@ namespace MasterData.ProductService.Converters
             return new ProductServiceCategoryDto
             {
                 Id = entity.Id,
+                CategoryCode = entity.CategoryCode,
                 CategoryName = entity.CategoryName,
                 Description = entity.Description,
                 ParentId = entity.ParentId,
@@ -93,6 +95,7 @@ namespace MasterData.ProductService.Converters
 
             // Set ID: tạo mới nếu Guid.Empty (thêm mới), dùng ID hiện tại nếu edit
             entity.Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id;
+            entity.CategoryCode = dto.CategoryCode;
             entity.CategoryName = dto.CategoryName;
             entity.Description = dto.Description;
             entity.ParentId = dto.ParentId;

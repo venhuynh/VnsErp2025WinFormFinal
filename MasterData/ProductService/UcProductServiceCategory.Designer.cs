@@ -46,6 +46,7 @@
             this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colPartnerCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colCategoryCode = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.productServiceCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -186,7 +187,8 @@
             this.treeList1.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
             this.colCategoryName,
             this.colDescription,
-            this.colPartnerCount});
+            this.colPartnerCount,
+            this.colCategoryCode});
             this.treeList1.DataSource = this.productServiceCategoryDtoBindingSource;
             this.treeList1.KeyFieldName = "Id";
             this.treeList1.Location = new System.Drawing.Point(16, 16);
@@ -213,7 +215,7 @@
             this.colDescription.FieldName = "Description";
             this.colDescription.Name = "colDescription";
             this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 1;
+            this.colDescription.VisibleIndex = 2;
             // 
             // colPartnerCount
             // 
@@ -221,7 +223,15 @@
             this.colPartnerCount.FieldName = "ProductCount";
             this.colPartnerCount.Name = "colPartnerCount";
             this.colPartnerCount.Visible = true;
-            this.colPartnerCount.VisibleIndex = 2;
+            this.colPartnerCount.VisibleIndex = 3;
+            // 
+            // colCategoryCode
+            // 
+            this.colCategoryCode.Caption = "Mã danh mục";
+            this.colCategoryCode.FieldName = "CategoryCode";
+            this.colCategoryCode.Name = "colCategoryCode";
+            this.colCategoryCode.Visible = true;
+            this.colCategoryCode.VisibleIndex = 1;
             // 
             // productServiceCategoryDtoBindingSource
             // 
@@ -290,5 +300,6 @@
         private DevExpress.XtraTreeList.Columns.TreeListColumn colPartnerCount;
         
         private System.Windows.Forms.BindingSource productServiceCategoryDtoBindingSource;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryCode;
     }
 }

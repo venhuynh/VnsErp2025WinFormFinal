@@ -230,6 +230,59 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
             }
         }
 
+        /// <summary>
+        /// Kiểm tra mã danh mục có tồn tại không.
+        /// </summary>
+        /// <param name="categoryCode">Mã danh mục</param>
+        /// <param name="excludeId">ID danh mục cần loại trừ (khi cập nhật)</param>
+        /// <returns>True nếu tồn tại</returns>
+        public bool IsCategoryCodeExists(string categoryCode, Guid? excludeId = null)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(categoryCode))
+                    return false;
+
+                using var context = CreateContext();
+                var query = context.ProductServiceCategories.Where(x => x.CategoryCode == categoryCode.Trim());
+                
+                if (excludeId.HasValue)
+                    query = query.Where(x => x.Id != excludeId.Value);
+
+                return query.Any();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi kiểm tra mã danh mục '{categoryCode}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra mã danh mục có tồn tại không (Async).
+        /// </summary>
+        /// <param name="categoryCode">Mã danh mục</param>
+        /// <param name="excludeId">ID danh mục cần loại trừ (khi cập nhật)</param>
+        /// <returns>Task chứa True nếu tồn tại</returns>
+        public async Task<bool> IsCategoryCodeExistsAsync(string categoryCode, Guid? excludeId = null)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(categoryCode))
+                    return false;
+
+                using var context = CreateContext();
+                var query = context.ProductServiceCategories.Where(x => x.CategoryCode == categoryCode.Trim());
+                
+                if (excludeId.HasValue)
+                    query = query.Where(x => x.Id != excludeId.Value);
+
+                return await Task.Run(() => query.Any());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi kiểm tra mã danh mục '{categoryCode}': {ex.Message}", ex);
+            }
+        }
 
         /// <summary>
         /// Đếm số lượng sản phẩm/dịch vụ theo từng danh mục.

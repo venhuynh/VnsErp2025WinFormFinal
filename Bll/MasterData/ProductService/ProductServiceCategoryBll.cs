@@ -146,6 +146,28 @@ namespace Bll.MasterData.ProductService
         }
 
         /// <summary>
+        /// Kiểm tra mã danh mục có tồn tại không.
+        /// </summary>
+        /// <param name="categoryCode">Mã danh mục cần kiểm tra</param>
+        /// <param name="excludeId">ID danh mục cần loại trừ (khi cập nhật)</param>
+        /// <returns>True nếu tồn tại, False nếu không</returns>
+        public bool IsCategoryCodeExists(string categoryCode, Guid? excludeId = null)
+        {
+            return _productServiceCategoryDataAccess.IsCategoryCodeExists(categoryCode, excludeId);
+        }
+
+        /// <summary>
+        /// Kiểm tra mã danh mục có tồn tại không (Async).
+        /// </summary>
+        /// <param name="categoryCode">Mã danh mục cần kiểm tra</param>
+        /// <param name="excludeId">ID danh mục cần loại trừ (khi cập nhật)</param>
+        /// <returns>Task chứa True nếu tồn tại, False nếu không</returns>
+        public Task<bool> IsCategoryCodeExistsAsync(string categoryCode, Guid? excludeId = null)
+        {
+            return _productServiceCategoryDataAccess.IsCategoryCodeExistsAsync(categoryCode, excludeId);
+        }
+
+        /// <summary>
         /// Xóa danh mục sản phẩm/dịch vụ theo ID.
         /// </summary>
         /// <param name="id">ID của danh mục cần xóa</param>

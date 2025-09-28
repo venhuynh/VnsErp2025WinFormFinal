@@ -38,6 +38,35 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
         #endregion
 
         /// <summary>
+        /// Tạo mã phân loại từ tên danh mục
+        /// </summary>
+        /// <param name="categoryName">Tên danh mục</param>
+        /// <returns>Mã phân loại</returns>
+        private static string GenerateCategoryCode(string categoryName)
+        {
+            if (string.IsNullOrWhiteSpace(categoryName)) return "CAT";
+            
+            // Lấy chữ cái đầu của mỗi từ trong tên danh mục
+            var words = categoryName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var code = string.Empty;
+            
+            foreach (var word in words)
+            {
+                if (!string.IsNullOrWhiteSpace(word))
+                {
+                    var firstChar = word.Trim().FirstOrDefault();
+                    if (char.IsLetter(firstChar))
+                    {
+                        code += char.ToUpper(firstChar);
+                    }
+                }
+            }
+            
+            // Đảm bảo mã có ít nhất 2 ký tự
+            return code.Length >= 2 ? code : "CAT";
+        }
+
+        /// <summary>
         /// Tạo dữ liệu mẫu cho ProductServiceCategory với 3 cấp phân cấp
         /// </summary>
         /// <param name="context">DataContext để lưu dữ liệu</param>
@@ -129,6 +158,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                 {
                     Id = Guid.NewGuid(),
                     CategoryName = cat.Name,
+                    CategoryCode = GenerateCategoryCode(cat.Name),
                     Description = cat.Description,
                     ParentId = null
                 };
@@ -145,6 +175,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                     {
                         Id = Guid.NewGuid(),
                         CategoryName = cat.Name,
+                        CategoryCode = GenerateCategoryCode(cat.Name),
                         Description = cat.Description,
                         ParentId = categoryDict[cat.ParentName]
                     };
@@ -162,6 +193,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                     {
                         Id = Guid.NewGuid(),
                         CategoryName = cat.Name,
+                        CategoryCode = GenerateCategoryCode(cat.Name),
                         Description = cat.Description,
                         ParentId = categoryDict[cat.ParentName]
                     };
@@ -175,6 +207,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
             {
                 Id = Guid.NewGuid(),
                 CategoryName = "Chưa phân loại",
+                CategoryCode = "CPL",
                 Description = "Danh mục mặc định cho các sản phẩm/dịch vụ chưa được phân loại",
                 ParentId = null
             };
@@ -393,10 +426,14 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                                selectedCategory.CategoryName.Contains("Phát triển") ||
                                selectedCategory.CategoryName.Contains("Bảo trì");
 
+                // Tạo mã sản phẩm dựa trên CategoryCode
+                var categoryCode = selectedCategory.CategoryCode ?? "SP";
+                var productCode = isService ? $"SV{i:D6}" : $"{categoryCode}{i:D4}";
+
                 var product = new DataContext.ProductService
                 {
                     Id = Guid.NewGuid(),
-                    Code = isService ? $"SV{i:D6}" : $"SP{i:D6}",
+                    Code = productCode,
                     Name = productNames[random.Next(productNames.Length)] + $" {i}",
                     CategoryId = selectedCategory.Id,
                     IsService = isService,

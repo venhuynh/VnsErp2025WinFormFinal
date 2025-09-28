@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.MasterData.ProductServiceDataAccess;
 using Dal.DataContext;
@@ -181,6 +182,53 @@ namespace Bll.MasterData.ProductService
             {
                 // Trả về dictionary rỗng nếu có lỗi
                 return new Dictionary<Guid, (int, int)>();
+            }
+        }
+
+        /// <summary>
+        /// Tự động tạo mã sản phẩm dựa trên danh mục.
+        /// Format: [CategoryCode] + [4 số từ 0001-9999]
+        /// </summary>
+        /// <param name="categoryId">ID của danh mục</param>
+        /// <returns>Mã sản phẩm được tạo</returns>
+        public string GenerateProductCode(Guid categoryId)
+        {
+            try
+            {
+                // Lấy mã danh mục
+                var categoryCode = GetCategoryCode(categoryId);
+                if (string.IsNullOrWhiteSpace(categoryCode))
+                {
+                    return string.Empty;
+                }
+
+                // Tìm số tiếp theo trong danh mục này
+                var nextNumber = _dataAccess.GetNextProductNumber(categoryId, categoryCode);
+
+                // Tạo mã hoàn chỉnh
+                return $"{categoryCode}{nextNumber:D4}";
+            }
+            catch (Exception)
+            {
+                // Trả về chuỗi rỗng nếu có lỗi
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Lấy mã danh mục từ ID danh mục.
+        /// </summary>
+        /// <param name="categoryId">ID của danh mục</param>
+        /// <returns>Mã danh mục</returns>
+        private string GetCategoryCode(Guid categoryId)
+        {
+            try
+            {
+                return _dataAccess.GetCategoryCode(categoryId);
+            }
+            catch (Exception)
+            {
+                return string.Empty;
             }
         }
 

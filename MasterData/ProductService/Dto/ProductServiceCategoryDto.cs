@@ -9,6 +9,11 @@ namespace MasterData.ProductService.Dto
         [DisplayName("ID")]
         public Guid Id { get; set; }
 
+        [DisplayName("Mã danh mục")]
+        [Required(ErrorMessage = "Mã danh mục không được để trống")]
+        [StringLength(200, ErrorMessage = "Mã danh mục không được vượt quá 200 ký tự")]
+        public string CategoryCode { get; set; }
+
         [DisplayName("Tên danh mục")]
         [Required(ErrorMessage = "Tên danh mục không được để trống")]
         [StringLength(200, ErrorMessage = "Tên danh mục không được vượt quá 200 ký tự")]

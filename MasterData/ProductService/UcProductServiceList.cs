@@ -105,20 +105,17 @@ namespace MasterData.ProductService
             // Tham khảo mẫu ConfigSqlServerInfoBarButtonItem_ItemClick: dùng ShowScope để auto-close overlay
             try
             {
-                // TODO: Cần tạo FrmProductServiceDetail form
-                ShowInfo("Chức năng thêm mới sản phẩm/dịch vụ chưa được triển khai. Vui lòng tạo form FrmProductServiceDetail trước.");
-                
-                // using (OverlayManager.ShowScope(this))
-                // {
-                //     using (var form = new FrmProductServiceDetail(Guid.Empty))
-                //     {
-                //         form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-                //         form.ShowDialog(this);
-                //
-                //         await LoadDataAsync();
-                //         UpdateButtonStates();
-                //     }
-                // }
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var form = new FrmProductServiceDetail(Guid.Empty))
+                    {
+                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.ShowDialog(this);
+
+                        await LoadDataAsyncWithoutSplash();
+                        UpdateButtonStates();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -435,20 +432,17 @@ namespace MasterData.ProductService
             // Tham khảo mẫu ConfigSqlServerInfoBarButtonItem_ItemClick: dùng ShowScope để auto-close overlay
             try
             {
-                // TODO: Cần tạo FrmProductServiceDetail form
-                ShowInfo("Chức năng chỉnh sửa sản phẩm/dịch vụ chưa được triển khai. Vui lòng tạo form FrmProductServiceDetail trước.");
-                
-                // using (OverlayManager.ShowScope(this))
-                // {
-                //     using (var form = new FrmProductServiceDetail(dto.Id))
-                //     {
-                //         form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-                //         form.ShowDialog(this);
-                //         
-                //         await LoadDataAsync();
-                //         UpdateButtonStates();
-                //     }
-                // }
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var form = new FrmProductServiceDetail(dto.Id))
+                    {
+                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.ShowDialog(this);
+                        
+                        await LoadDataAsyncWithoutSplash();
+                        UpdateButtonStates();
+                    }
+                }
             }
             catch (Exception ex)
             {

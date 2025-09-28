@@ -616,5 +616,75 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
         {
             DeleteProductService(id);
         }
+
+        /// <summary>
+        /// Lấy số tiếp theo cho mã sản phẩm trong danh mục.
+        /// </summary>
+        /// <param name="categoryId">ID danh mục</param>
+        /// <param name="prefix">Prefix chữ cái đầu</param>
+        /// <returns>Số tiếp theo (1-9999)</returns>
+        public int GetNextProductNumber(Guid categoryId, string prefix)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(prefix))
+                    return 1;
+
+                using var context = CreateContext();
+                
+                // Tìm mã sản phẩm có prefix giống và cùng categoryId
+                var existingCodes = context.ProductServices
+                    .Where(ps => ps.CategoryId == categoryId && ps.Code.StartsWith(prefix))
+                    .Select(ps => ps.Code)
+                    .ToList();
+
+                if (!existingCodes.Any())
+                    return 1;
+
+                // Tìm số lớn nhất trong các mã hiện có
+                var maxNumber = 0;
+                foreach (var code in existingCodes)
+                {
+                    // Lấy phần số cuối (4 chữ số)
+                    if (code.Length >= prefix.Length + 4)
+                    {
+                        var numberPart = code.Substring(prefix.Length, 4);
+                        if (int.TryParse(numberPart, out var number))
+                        {
+                            maxNumber = Math.Max(maxNumber, number);
+                        }
+                    }
+                }
+
+                // Trả về số tiếp theo, nhưng không vượt quá 9999
+                return Math.Min(maxNumber + 1, 9999);
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy số tiếp theo cho mã sản phẩm: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy mã danh mục từ ID danh mục.
+        /// </summary>
+        /// <param name="categoryId">ID của danh mục</param>
+        /// <returns>Mã danh mục</returns>
+        public string GetCategoryCode(Guid categoryId)
+        {
+            try
+            {
+                using var context = CreateContext();
+                var category = context.ProductServiceCategories
+                    .Where(c => c.Id == categoryId)
+                    .Select(c => c.CategoryCode)
+                    .FirstOrDefault();
+                return category ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy mã danh mục: {ex.Message}", ex);
+            }
+        }
     }
 }
