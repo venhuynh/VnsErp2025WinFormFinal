@@ -317,24 +317,5 @@ namespace Bll.MasterData.ProductService
             return _productServiceCategoryDataAccess.AddNewCategoryAsync(categoryName, description, parentId);
         }
 
-        /// <summary>
-        /// Kiểm tra danh mục có sản phẩm/dịch vụ không.
-        /// </summary>
-        /// <param name="categoryId">ID danh mục</param>
-        /// <returns>True nếu có sản phẩm/dịch vụ</returns>
-        public bool HasProducts(Guid categoryId)
-        {
-            return _productServiceCategoryDataAccess.HasProducts(categoryId);
-        }
-
-        /// <summary>
-        /// Kiểm tra danh mục có sản phẩm/dịch vụ không (Async).
-        /// </summary>
-        /// <param name="categoryId">ID danh mục</param>
-        /// <returns>Task chứa True nếu có sản phẩm/dịch vụ</returns>
-        public Task<bool> HasProductsAsync(Guid categoryId)
-        {
-            return _productServiceCategoryDataAccess.HasProductsAsync(categoryId);
-        }
     }
 }

@@ -192,8 +192,8 @@
             this.treeList1.Location = new System.Drawing.Point(16, 16);
             this.treeList1.MenuManager = this.barManager1;
             this.treeList1.Name = "treeList1";
-            this.treeList1.OptionsBehavior.AllowRecursiveNodeChecking = true;
             this.treeList1.OptionsSelection.MultiSelect = true;
+            this.treeList1.OptionsSelection.UseIndicatorForSelection = true;
             this.treeList1.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check;
             this.treeList1.OptionsView.ShowCaption = true;
             this.treeList1.ParentFieldName = "ParentId";

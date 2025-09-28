@@ -593,38 +593,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
         {
             using (var context = CreateContext())
             {
-                // Xóa dữ liệu cũ (nếu có) theo thứ tự ngược lại để tránh foreign key constraint
-                context.ProductImages.DeleteAllOnSubmit(context.ProductImages);
-                context.VariantAttributes.DeleteAllOnSubmit(context.VariantAttributes);
-                context.ProductVariants.DeleteAllOnSubmit(context.ProductVariants);
-                context.ProductServices.DeleteAllOnSubmit(context.ProductServices);
-                context.AttributeValues.DeleteAllOnSubmit(context.AttributeValues);
-                context.Attributes.DeleteAllOnSubmit(context.Attributes);
-                context.UnitOfMeasures.DeleteAllOnSubmit(context.UnitOfMeasures);
-                context.ProductServiceCategories.DeleteAllOnSubmit(context.ProductServiceCategories);
-                context.SubmitChanges();
-
-                // Tạo dữ liệu mới theo thứ tự đúng
-                SeedProductServiceCategories(context);
-                context.SubmitChanges();
-
-                SeedUnitOfMeasures(context);
-                context.SubmitChanges();
-
-                SeedAttributesAndValues(context);
-                context.SubmitChanges();
-
-                SeedProductServices(context);
-                context.SubmitChanges();
-
-                SeedProductVariants(context);
-                context.SubmitChanges();
-
-                SeedVariantAttributes(context);
-                context.SubmitChanges();
-
-                SeedProductImages(context);
-                context.SubmitChanges();
+                SeedAllData(context);
             }
         }
 
@@ -636,7 +605,23 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
         {
             using (var context = new VnsErp2025DataContext(connectionString))
             {
-                // Xóa dữ liệu cũ (nếu có) theo thứ tự ngược lại để tránh foreign key constraint
+                SeedAllData(context);
+            }
+        }
+
+        /// <summary>
+        /// Xóa tất cả dữ liệu trong các entity ProductService theo thứ tự ngược lại để tránh foreign key constraint
+        /// </summary>
+        /// <param name="context">DataContext để xóa dữ liệu</param>
+        /// <returns>Dictionary chứa thông tin số lượng dữ liệu đã xóa</returns>
+        public static Dictionary<string, int> DeleteAllProductServiceData(VnsErp2025DataContext context)
+        {
+            try
+            {
+                // Lấy số lượng dữ liệu trước khi xóa
+                var countsBefore = GetProductServiceDataCounts(context);
+                
+                // Xóa dữ liệu theo thứ tự ngược lại để tránh foreign key constraint
                 context.ProductImages.DeleteAllOnSubmit(context.ProductImages);
                 context.VariantAttributes.DeleteAllOnSubmit(context.VariantAttributes);
                 context.ProductVariants.DeleteAllOnSubmit(context.ProductVariants);
@@ -645,29 +630,92 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                 context.Attributes.DeleteAllOnSubmit(context.Attributes);
                 context.UnitOfMeasures.DeleteAllOnSubmit(context.UnitOfMeasures);
                 context.ProductServiceCategories.DeleteAllOnSubmit(context.ProductServiceCategories);
+                
                 context.SubmitChanges();
+                
+                return countsBefore;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi xóa dữ liệu ProductService: {ex.Message}", ex);
+            }
+        }
 
-                // Tạo dữ liệu mới theo thứ tự đúng
-                SeedProductServiceCategories(context);
-                context.SubmitChanges();
+        /// <summary>
+        /// Xóa tất cả dữ liệu trong các entity ProductService sử dụng connection string từ ConfigurationManager
+        /// </summary>
+        /// <returns>Dictionary chứa thông tin số lượng dữ liệu đã xóa</returns>
+        public static Dictionary<string, int> DeleteAllProductServiceData()
+        {
+            using (var context = CreateContext())
+            {
+                return DeleteAllProductServiceData(context);
+            }
+        }
 
-                SeedUnitOfMeasures(context);
-                context.SubmitChanges();
+        /// <summary>
+        /// Xóa tất cả dữ liệu trong các entity ProductService sử dụng connection string được truyền vào
+        /// </summary>
+        /// <param name="connectionString">Connection string để kết nối database</param>
+        /// <returns>Dictionary chứa thông tin số lượng dữ liệu đã xóa</returns>
+        public static Dictionary<string, int> DeleteAllProductServiceData(string connectionString)
+        {
+            using (var context = new VnsErp2025DataContext(connectionString))
+            {
+                return DeleteAllProductServiceData(context);
+            }
+        }
 
-                SeedAttributesAndValues(context);
-                context.SubmitChanges();
+        /// <summary>
+        /// Lấy thông tin số lượng dữ liệu trong các entity ProductService
+        /// </summary>
+        /// <param name="context">DataContext để đếm dữ liệu</param>
+        /// <returns>Dictionary chứa tên entity và số lượng records</returns>
+        public static Dictionary<string, int> GetProductServiceDataCounts(VnsErp2025DataContext context)
+        {
+            var counts = new Dictionary<string, int>();
+            
+            try
+            {
+                counts["ProductImages"] = context.ProductImages.Count();
+                counts["VariantAttributes"] = context.VariantAttributes.Count();
+                counts["ProductVariants"] = context.ProductVariants.Count();
+                counts["ProductServices"] = context.ProductServices.Count();
+                counts["AttributeValues"] = context.AttributeValues.Count();
+                counts["Attributes"] = context.Attributes.Count();
+                counts["UnitOfMeasures"] = context.UnitOfMeasures.Count();
+                counts["ProductServiceCategories"] = context.ProductServiceCategories.Count();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi đếm dữ liệu ProductService: {ex.Message}", ex);
+            }
+            
+            return counts;
+        }
 
-                SeedProductServices(context);
-                context.SubmitChanges();
+        /// <summary>
+        /// Lấy thông tin số lượng dữ liệu trong các entity ProductService sử dụng connection string từ ConfigurationManager
+        /// </summary>
+        /// <returns>Dictionary chứa tên entity và số lượng records</returns>
+        public static Dictionary<string, int> GetProductServiceDataCounts()
+        {
+            using (var context = CreateContext())
+            {
+                return GetProductServiceDataCounts(context);
+            }
+        }
 
-                SeedProductVariants(context);
-                context.SubmitChanges();
-
-                SeedVariantAttributes(context);
-                context.SubmitChanges();
-
-                SeedProductImages(context);
-                context.SubmitChanges();
+        /// <summary>
+        /// Lấy thông tin số lượng dữ liệu trong các entity ProductService sử dụng connection string được truyền vào
+        /// </summary>
+        /// <param name="connectionString">Connection string để kết nối database</param>
+        /// <returns>Dictionary chứa tên entity và số lượng records</returns>
+        public static Dictionary<string, int> GetProductServiceDataCounts(string connectionString)
+        {
+            using (var context = new VnsErp2025DataContext(connectionString))
+            {
+                return GetProductServiceDataCounts(context);
             }
         }
 
@@ -678,15 +726,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
         public static void SeedAllData(VnsErp2025DataContext context)
         {
             // Xóa dữ liệu cũ (nếu có) theo thứ tự ngược lại để tránh foreign key constraint
-            context.ProductImages.DeleteAllOnSubmit(context.ProductImages);
-            context.VariantAttributes.DeleteAllOnSubmit(context.VariantAttributes);
-            context.ProductVariants.DeleteAllOnSubmit(context.ProductVariants);
-            context.ProductServices.DeleteAllOnSubmit(context.ProductServices);
-            context.AttributeValues.DeleteAllOnSubmit(context.AttributeValues);
-            context.Attributes.DeleteAllOnSubmit(context.Attributes);
-            context.UnitOfMeasures.DeleteAllOnSubmit(context.UnitOfMeasures);
-            context.ProductServiceCategories.DeleteAllOnSubmit(context.ProductServiceCategories);
-            context.SubmitChanges();
+            var deletedCounts = DeleteAllProductServiceData(context);
 
             // Tạo dữ liệu mới theo thứ tự đúng
             SeedProductServiceCategories(context);

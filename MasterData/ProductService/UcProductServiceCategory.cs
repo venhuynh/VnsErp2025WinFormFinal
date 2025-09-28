@@ -21,8 +21,9 @@ namespace MasterData.ProductService
         #region Fields
 
         private readonly ProductServiceCategoryBll _productServiceCategoryBll = new ProductServiceCategoryBll();
-        private List<Guid> _selectedCategoryIds = new List<Guid>();
+        private readonly List<Guid> _selectedCategoryIds = new List<Guid>();
         private bool _isLoading; // guard tránh gọi LoadDataAsync song song
+        private bool _isProcessingCheckbox; // flag để ngăn chặn selection khi đang xử lý checkbox
 
         #endregion
 
@@ -44,7 +45,9 @@ namespace MasterData.ProductService
 
             // TreeList events
             treeList1.SelectionChanged += TreeList1_SelectionChanged;
+            treeList1.BeforeCheckNode += TreeList1_BeforeCheckNode;
             treeList1.AfterCheckNode += TreeList1_AfterCheckNode;
+            treeList1.MouseDown += TreeList1_MouseDown;
             treeList1.CustomDrawNodeIndicator += TreeList1_CustomDrawNodeIndicator;
             treeList1.CustomDrawNodeCell += TreeList1_CustomDrawNodeCell;
 
@@ -115,17 +118,44 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// TreeList selection thay đổi -> cập nhật danh sách Id đã chọn và trạng thái nút.
+        /// Lưu ý: Selection khác với Checkbox - Selection dùng để chọn row, Checkbox dùng để chọn item
         /// </summary>
         private void TreeList1_SelectionChanged(object sender, EventArgs e)
         {
             try
             {
-                // Cập nhật danh sách selected IDs khi selection thay đổi
-                UpdateSelectedCategoryIds();
+                // Bỏ qua nếu đang xử lý checkbox để tránh conflict
+                if (_isProcessingCheckbox) return;
+                
+                // SelectionChanged chỉ xử lý việc chọn row, không xử lý checkbox
+                // Checkbox logic được xử lý riêng trong AfterCheckNode
                 UpdateButtonStates();
             }
             catch (Exception ex)
             {
+                ShowError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Event handler trước khi checkbox của node thay đổi.
+        /// Lưu ý: Chỉ xử lý checkbox, không can thiệp vào selection
+        /// </summary>
+        private void TreeList1_BeforeCheckNode(object sender, CheckNodeEventArgs e)
+        {
+            try
+            {
+                // Đánh dấu đang xử lý checkbox
+                _isProcessingCheckbox = true;
+                
+                // Cho phép checkbox thay đổi
+                e.CanCheck = true;
+                
+                System.Diagnostics.Debug.WriteLine($"BeforeCheckNode: {e.Node.GetDisplayText("CategoryName")}, Will be checked: {!e.Node.Checked}");
+            }
+            catch (Exception ex)
+            {
+                _isProcessingCheckbox = false;
                 ShowError(ex);
             }
         }
@@ -137,9 +167,42 @@ namespace MasterData.ProductService
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"AfterCheckNode: {e.Node.GetDisplayText("CategoryName")}, Checked: {e.Node.Checked}");
+                
+                // Xử lý logic parent-child checkbox
+                HandleParentChildCheckboxLogic(e.Node);
+                
+                // Reset flag
+                _isProcessingCheckbox = false;
+                
                 // Cập nhật danh sách selected IDs khi checkbox thay đổi
                 UpdateSelectedCategoryIds();
                 UpdateButtonStates();
+            }
+            catch (Exception ex)
+            {
+                _isProcessingCheckbox = false;
+                ShowError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi click chuột - detect click vào checkbox.
+        /// Lưu ý: Không can thiệp vào selection, để DevExpress tự xử lý
+        /// </summary>
+        private void TreeList1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            try
+            {
+                // Lấy thông tin về vị trí click
+                var hitInfo = treeList1.CalcHitInfo(e.Location);
+                
+                // Nếu click vào checkbox
+                if (hitInfo.HitInfoType == DevExpress.XtraTreeList.HitInfoType.NodeCheckBox)
+                {
+                    System.Diagnostics.Debug.WriteLine($"MouseDown on checkbox: {hitInfo.Node.GetDisplayText("CategoryName")}");
+                    // Không cần can thiệp gì thêm, để DevExpress tự xử lý checkbox và selection
+                }
             }
             catch (Exception ex)
             {
@@ -148,23 +211,279 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Cập nhật danh sách selected category IDs.
+        /// Xử lý logic parent-child checkbox: 
+        /// - Khi chọn node cha thì tự động chọn tất cả node con
+        /// - Khi bỏ chọn node con thì tự động bỏ chọn node cha
+        /// - Cập nhật trạng thái parent dựa trên trạng thái của tất cả children
+        /// </summary>
+        private void HandleParentChildCheckboxLogic(TreeListNode changedNode)
+        {
+            try
+            {
+                if (changedNode == null) return;
+                
+                bool isChecked = changedNode.Checked;
+                System.Diagnostics.Debug.WriteLine($"=== HandleParentChildCheckboxLogic ===");
+                System.Diagnostics.Debug.WriteLine($"Node: {changedNode.GetDisplayText("CategoryName")}, Checked: {isChecked}");
+                
+                // Tạm thời disable event để tránh recursive calls
+                treeList1.AfterCheckNode -= TreeList1_AfterCheckNode;
+                
+                if (isChecked)
+                {
+                    // Khi chọn node cha -> chọn tất cả node con
+                    CheckAllChildNodes(changedNode);
+                }
+                
+                // Luôn cập nhật trạng thái parent nodes (cho cả trường hợp check và uncheck)
+                UpdateParentNodeStates(changedNode);
+                
+                // Re-enable event
+                treeList1.AfterCheckNode += TreeList1_AfterCheckNode;
+                
+                System.Diagnostics.Debug.WriteLine("=== End HandleParentChildCheckboxLogic ===");
+            }
+            catch (Exception ex)
+            {
+                // Re-enable event trong trường hợp lỗi
+                treeList1.AfterCheckNode += TreeList1_AfterCheckNode;
+                System.Diagnostics.Debug.WriteLine($"Error in HandleParentChildCheckboxLogic: {ex.Message}");
+                ShowError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật trạng thái của tất cả parent nodes dựa trên trạng thái của children.
+        /// Logic mới:
+        /// - Nếu có node con bỏ chọn thì bỏ chọn chính nó, sau đó truy ngược lên để bỏ chọn cha của nó
+        /// - Nếu tất cả các node con của nó có chọn thì chọn lại chính nó và truy ngược lên node cha nó
+        /// </summary>
+        private void UpdateParentNodeStates(TreeListNode changedNode)
+        {
+            try
+            {
+                var currentNode = changedNode.ParentNode;
+                while (currentNode != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  Updating parent state: {currentNode.GetDisplayText("CategoryName")}");
+                    
+                    // Kiểm tra trạng thái của tất cả children (chỉ direct children, không đệ quy)
+                    bool allChildrenChecked = AreAllDirectChildrenChecked(currentNode);
+                    bool hasAnyUncheckedChild = HasAnyDirectUncheckedChild(currentNode);
+                    
+                    System.Diagnostics.Debug.WriteLine($"    All direct children checked: {allChildrenChecked}, Has any unchecked child: {hasAnyUncheckedChild}");
+                    
+                    if (hasAnyUncheckedChild)
+                    {
+                        // Có ít nhất 1 node con bị bỏ chọn -> bỏ chọn parent
+                        if (currentNode.Checked)
+                        {
+                            currentNode.Checked = false;
+                            System.Diagnostics.Debug.WriteLine($"    Unchecked parent (has unchecked child): {currentNode.GetDisplayText("CategoryName")}");
+                        }
+                    }
+                    else if (allChildrenChecked)
+                    {
+                        // Tất cả node con đều được chọn -> chọn parent
+                        if (!currentNode.Checked)
+                        {
+                            currentNode.Checked = true;
+                            System.Diagnostics.Debug.WriteLine($"    Checked parent (all children checked): {currentNode.GetDisplayText("CategoryName")}");
+                        }
+                    }
+                    
+                    currentNode = currentNode.ParentNode;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in UpdateParentNodeStates: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra xem tất cả direct children của node có được chọn không.
+        /// </summary>
+        private bool AreAllDirectChildrenChecked(TreeListNode parentNode)
+        {
+            try
+            {
+                if (parentNode == null || parentNode.Nodes.Count == 0) return true; // Không có con = true
+                
+                foreach (TreeListNode childNode in parentNode.Nodes)
+                {
+                    if (!childNode.Checked)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"      Direct child not checked: {childNode.GetDisplayText("CategoryName")}");
+                        return false;
+                    }
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"      All direct children checked for: {parentNode.GetDisplayText("CategoryName")}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in AreAllDirectChildrenChecked: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra xem có direct child nào không được chọn không.
+        /// </summary>
+        private bool HasAnyDirectUncheckedChild(TreeListNode parentNode)
+        {
+            try
+            {
+                if (parentNode == null || parentNode.Nodes.Count == 0) return false; // Không có con = false
+                
+                foreach (TreeListNode childNode in parentNode.Nodes)
+                {
+                    if (!childNode.Checked)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"      Direct child unchecked: {childNode.GetDisplayText("CategoryName")}");
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in HasAnyDirectUncheckedChild: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra xem node có node con nào không được chọn không (kiểm tra tất cả các level).
+        /// </summary>
+        private bool HasAnyUncheckedChild(TreeListNode parentNode)
+        {
+            try
+            {
+                if (parentNode == null || parentNode.Nodes.Count == 0) return false;
+                
+                // Kiểm tra các node con trực tiếp
+                foreach (TreeListNode childNode in parentNode.Nodes)
+                {
+                    if (!childNode.Checked)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"      Found unchecked direct child: {childNode.GetDisplayText("CategoryName")}");
+                        return true;
+                    }
+                    
+                    // Đệ quy kiểm tra các node con ở level sâu hơn
+                    if (HasAnyUncheckedChild(childNode))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"      Found unchecked descendant child: {childNode.GetDisplayText("CategoryName")}");
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in HasAnyUncheckedChild: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Chọn tất cả node con của node cha.
+        /// </summary>
+        private void CheckAllChildNodes(TreeListNode parentNode)
+        {
+            try
+            {
+                if (parentNode == null || parentNode.Nodes.Count == 0) return;
+                
+                System.Diagnostics.Debug.WriteLine($"  Checking all children of: {parentNode.GetDisplayText("CategoryName")}");
+                
+                foreach (TreeListNode childNode in parentNode.Nodes)
+                {
+                    if (!childNode.Checked)
+                    {
+                        childNode.Checked = true;
+                        System.Diagnostics.Debug.WriteLine($"    Checked child: {childNode.GetDisplayText("CategoryName")}");
+                    }
+                    
+                    // Đệ quy cho các node con sâu hơn
+                    CheckAllChildNodes(childNode);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in CheckAllChildNodes: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Bỏ chọn node cha nếu có node con bị bỏ chọn.
+        /// (Phương thức này giờ được thay thế bởi UpdateParentNodeStates)
+        /// </summary>
+        private void UncheckParentNode(TreeListNode childNode)
+        {
+            // Logic này đã được chuyển vào UpdateParentNodeStates để xử lý toàn diện hơn
+            UpdateParentNodeStates(childNode);
+        }
+
+        /// <summary>
+        /// Kiểm tra xem node có node con nào được chọn không (kiểm tra tất cả các level).
+        /// </summary>
+        private bool HasAnyCheckedChild(TreeListNode parentNode)
+        {
+            try
+            {
+                if (parentNode == null || parentNode.Nodes.Count == 0) return false;
+                
+                // Kiểm tra các node con trực tiếp
+                foreach (TreeListNode childNode in parentNode.Nodes)
+                {
+                    if (childNode.Checked)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"      Found checked direct child: {childNode.GetDisplayText("CategoryName")}");
+                        return true;
+                    }
+                    
+                    // Đệ quy kiểm tra các node con ở level sâu hơn
+                    if (HasAnyCheckedChild(childNode))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"      Found checked descendant child: {childNode.GetDisplayText("CategoryName")}");
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in HasAnyCheckedChild: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật danh sách selected category IDs dựa trên checkbox state.
+        /// Lưu ý: Chỉ dựa vào checkbox, không dựa vào selection
         /// </summary>
         private void UpdateSelectedCategoryIds()
         {
             _selectedCategoryIds.Clear();
             
-            System.Diagnostics.Debug.WriteLine("=== UpdateSelectedCategoryIds ===");
+            System.Diagnostics.Debug.WriteLine("=== UpdateSelectedCategoryIds (Checkbox-based) ===");
             System.Diagnostics.Debug.WriteLine($"Total nodes in TreeList: {treeList1.Nodes.Count}");
             
-            // Lấy tất cả nodes đã được chọn (bao gồm cả checkbox selection)
+            // Chỉ lấy các nodes có checkbox được check (không dựa vào selection)
             foreach (TreeListNode node in treeList1.Nodes)
             {
                 System.Diagnostics.Debug.WriteLine($"Checking root node: {node.GetDisplayText("CategoryName")}, Checked: {node.Checked}");
                 CheckNodeRecursive(node);
             }
             
-            System.Diagnostics.Debug.WriteLine($"Final selected IDs: {string.Join(", ", _selectedCategoryIds)}");
+            System.Diagnostics.Debug.WriteLine($"Final selected IDs (from checkboxes): {string.Join(", ", _selectedCategoryIds)}");
         }
 
         /// <summary>
@@ -174,19 +493,15 @@ namespace MasterData.ProductService
         {
             string nodeName = node.GetDisplayText("CategoryName");
             bool isChecked = node.Checked;
-            bool isSelected = treeList1.Selection.Contains(node);
             
-            System.Diagnostics.Debug.WriteLine($"  Checking node: {nodeName}, Checked: {isChecked}, Selected: {isSelected}");
+            System.Diagnostics.Debug.WriteLine($"  Checking node: {nodeName}, Checked: {isChecked}");
             
-            if (isChecked || isSelected)
+            // Chỉ thêm vào danh sách nếu checkbox được check (không dựa vào selection)
+            if (isChecked)
             {
-                // Lấy dữ liệu từ binding source dựa trên node
-                var index = treeList1.GetVisibleIndexByNode(node);
-                System.Diagnostics.Debug.WriteLine($"    Node index: {index}, BindingSource count: {productServiceCategoryDtoBindingSource.Count}");
-                
-                if (index >= 0 && productServiceCategoryDtoBindingSource.Count > index)
-                {
-                    if (productServiceCategoryDtoBindingSource[index] is ProductServiceCategoryDto dto)
+                // Lấy dữ liệu trực tiếp từ node thay vì dựa vào index
+                var dto = GetDtoFromNode(node);
+                if (dto != null)
                     {
                         if (!_selectedCategoryIds.Contains(dto.Id))
                         {
@@ -194,6 +509,9 @@ namespace MasterData.ProductService
                             System.Diagnostics.Debug.WriteLine($"    Added ID: {dto.Id} for {dto.CategoryName}");
                         }
                     }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"    Could not get DTO for node: {nodeName}");
                 }
             }
             
@@ -201,6 +519,72 @@ namespace MasterData.ProductService
             foreach (TreeListNode childNode in node.Nodes)
             {
                 CheckNodeRecursive(childNode);
+            }
+        }
+
+        /// <summary>
+        /// Lấy DTO từ TreeListNode một cách chính xác.
+        /// </summary>
+        private ProductServiceCategoryDto GetDtoFromNode(TreeListNode node)
+        {
+            try
+            {
+                // Cách 1: Lấy trực tiếp từ TreeList DataSource bằng cách sử dụng GetDataRecordByNode
+                if (treeList1.DataSource != null)
+                {
+                    // Sử dụng GetDataRecordByNode để lấy dữ liệu trực tiếp từ node
+                    var dataRecord = treeList1.GetDataRecordByNode(node);
+                    if (dataRecord is ProductServiceCategoryDto dto)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"    Found DTO from GetDataRecordByNode: {dto.Id} - {dto.CategoryName}");
+                        return dto;
+                    }
+                }
+                
+                // Cách 2: Lấy từ BindingSource bằng cách tìm kiếm theo ID nếu có
+                if (productServiceCategoryDtoBindingSource.DataSource is List<ProductServiceCategoryDto> bindingDataSource)
+                {
+                    // Thử lấy ID từ node nếu có
+                    var nodeId = node.GetValue("Id");
+                    if (nodeId is Guid id)
+                    {
+                        var dto = bindingDataSource.FirstOrDefault(d => d.Id == id);
+                        if (dto != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"    Found DTO by ID from BindingSource: {dto.Id} - {dto.CategoryName}");
+                            return dto;
+                        }
+                    }
+                    
+                    // Fallback: Tìm theo tên và mô tả
+                    var nodeName = node.GetDisplayText("CategoryName");
+                    var nodeDescription = node.GetDisplayText("Description");
+                    
+                    var dtoByName = bindingDataSource.FirstOrDefault(d => 
+                        d.CategoryName == nodeName && 
+                        d.Description == nodeDescription);
+                    
+                    if (dtoByName != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"    Found DTO by name match from BindingSource: {dtoByName.Id} - {dtoByName.CategoryName}");
+                        return dtoByName;
+                    }
+                }
+                
+                // Cách 3: Thử lấy từ node.Tag nếu có
+                if (node.Tag is ProductServiceCategoryDto tagDto)
+                {
+                    System.Diagnostics.Debug.WriteLine($"    Found DTO from node.Tag: {tagDto.Id} - {tagDto.CategoryName}");
+                    return tagDto;
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"    Could not find DTO for node: {node.GetDisplayText("CategoryName")}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"    Error getting DTO from node: {ex.Message}");
+                return null;
             }
         }
 
@@ -281,6 +665,17 @@ namespace MasterData.ProductService
                 // Cấu hình không cho edit
                 treeList1.OptionsBehavior.Editable = false;
                 treeList1.OptionsSelection.EnableAppearanceFocusedCell = false;
+                
+                // Cấu hình selection behavior theo tài liệu DevExpress
+                treeList1.OptionsSelection.MultiSelect = true;
+                treeList1.OptionsSelection.MultiSelectMode = DevExpress.XtraTreeList.TreeListMultiSelectMode.RowSelect;
+                
+                // Cấu hình checkbox behavior
+                treeList1.OptionsBehavior.AllowIndeterminateCheckState = false;
+                
+                // Cho phép selection và checkbox hoạt động độc lập
+                treeList1.OptionsSelection.UseIndicatorForSelection = true;
+                treeList1.OptionsSelection.EnableAppearanceFocusedRow = true;
 
                 // RepositoryItemMemoEdit cho wrap text
                 var memo = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit
@@ -614,9 +1009,24 @@ namespace MasterData.ProductService
             // Clear selection trước khi bind data mới
             ClearSelectionState();
             
+            // Bind dữ liệu vào BindingSource
             productServiceCategoryDtoBindingSource.DataSource = data;
+            
+            // Đảm bảo TreeList được bind đúng cách
+            if (treeList1.DataSource != productServiceCategoryDtoBindingSource)
+            {
+                treeList1.DataSource = productServiceCategoryDtoBindingSource;
+            }
+            
+            // Cấu hình hiển thị
             treeList1.BestFitColumns();
             ConfigureMultiLineGridView();
+            
+            // Debug: Kiểm tra binding
+            System.Diagnostics.Debug.WriteLine($"=== BindGrid Debug ===");
+            System.Diagnostics.Debug.WriteLine($"DataSource count: {data.Count}");
+            System.Diagnostics.Debug.WriteLine($"BindingSource count: {productServiceCategoryDtoBindingSource.Count}");
+            System.Diagnostics.Debug.WriteLine($"TreeList nodes count: {treeList1.Nodes.Count}");
             
             // Đảm bảo selection được clear sau khi bind và update button states
             ClearSelectionState();

@@ -27,8 +27,10 @@ namespace MasterData.ProductService
             ProductServiceCategoryBtn.Click += ProductServiceCategoryBtn_Click;
 
             InitializeUserControls();
-
-           // SeedMasterData();
+            
+            DeleteAllData();
+            
+            SeedMasterData();
         }
 
         #endregion
@@ -78,6 +80,27 @@ namespace MasterData.ProductService
             }
         }
 
+        public static void DeleteAllData()
+        {
+            try
+            {
+                Console.WriteLine("=== Ví dụ 1: Xóa tất cả dữ liệu ProductService ===");
+
+                // Xóa tất cả dữ liệu và lấy thông tin số lượng đã xóa
+                var deletedCounts = SeedData_Master_ProductService.DeleteAllProductServiceData();
+
+                Console.WriteLine("Đã xóa thành công các dữ liệu sau:");
+                foreach (var item in deletedCounts)
+                {
+                    Console.WriteLine($"  {item.Key}: {item.Value} records");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi: {ex.Message}");
+            }
+        }
+        
         /// <summary>
         /// Gọi hàm SeedData_Master_ProductService để tạo dữ liệu mẫu
         /// Sử dụng ConnectionManager để lấy connection string, không tạo context ở GUI
