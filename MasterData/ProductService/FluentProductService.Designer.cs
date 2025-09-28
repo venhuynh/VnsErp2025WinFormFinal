@@ -31,12 +31,14 @@
             this.components = new System.ComponentModel.Container();
             this.fluentDesignFormContainer1 = new DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormContainer();
             this.accordionControl1 = new DevExpress.XtraBars.Navigation.AccordionControl();
-            this.fluentDesignFormControl1 = new DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormControl();
-            this.fluentFormDefaultManager1 = new DevExpress.XtraBars.FluentDesignSystem.FluentFormDefaultManager(this.components);
             this.ProductServiceCategoryBtn = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.ProductServiceBtn = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.ProductServiceVariantBtn = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.ProductServiceImagesBtn = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.fluentDesignFormControl1 = new DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormControl();
+            this.fluentFormDefaultManager1 = new DevExpress.XtraBars.FluentDesignSystem.FluentFormDefaultManager(this.components);
+            this.UnitOfMeasureBtn = new DevExpress.XtraBars.Navigation.AccordionControlElement();
+            this.AttributeBtn = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             ((System.ComponentModel.ISupportInitialize)(this.accordionControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fluentDesignFormControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fluentFormDefaultManager1)).BeginInit();
@@ -57,13 +59,41 @@
             this.ProductServiceCategoryBtn,
             this.ProductServiceBtn,
             this.ProductServiceVariantBtn,
-            this.ProductServiceImagesBtn});
+            this.ProductServiceImagesBtn,
+            this.UnitOfMeasureBtn,
+            this.AttributeBtn});
             this.accordionControl1.Location = new System.Drawing.Point(0, 33);
             this.accordionControl1.Name = "accordionControl1";
             this.accordionControl1.ScrollBarMode = DevExpress.XtraBars.Navigation.ScrollBarMode.Touch;
             this.accordionControl1.Size = new System.Drawing.Size(260, 698);
             this.accordionControl1.TabIndex = 1;
             this.accordionControl1.ViewType = DevExpress.XtraBars.Navigation.AccordionControlViewType.HamburgerMenu;
+            // 
+            // ProductServiceCategoryBtn
+            // 
+            this.ProductServiceCategoryBtn.Name = "ProductServiceCategoryBtn";
+            this.ProductServiceCategoryBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.ProductServiceCategoryBtn.Text = "Phân loại";
+            // 
+            // ProductServiceBtn
+            // 
+            this.ProductServiceBtn.Name = "ProductServiceBtn";
+            this.ProductServiceBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.ProductServiceBtn.Text = "Danh mục SPDV";
+            this.ProductServiceBtn.Click += new System.EventHandler(this.ProductServiceListBtn_Click);
+            // 
+            // ProductServiceVariantBtn
+            // 
+            this.ProductServiceVariantBtn.Name = "ProductServiceVariantBtn";
+            this.ProductServiceVariantBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.ProductServiceVariantBtn.Text = "Biến thể SPDV";
+            this.ProductServiceVariantBtn.Click += new System.EventHandler(this.ProductVariantBtn_Click);
+            // 
+            // ProductServiceImagesBtn
+            // 
+            this.ProductServiceImagesBtn.Name = "ProductServiceImagesBtn";
+            this.ProductServiceImagesBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.ProductServiceImagesBtn.Text = "Hình ảnh";
             // 
             // fluentDesignFormControl1
             // 
@@ -79,29 +109,19 @@
             // 
             this.fluentFormDefaultManager1.Form = this;
             // 
-            // ProductServiceCategoryBtn
+            // UnitOfMeasureBtn
             // 
-            this.ProductServiceCategoryBtn.Name = "ProductServiceCategoryBtn";
-            this.ProductServiceCategoryBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.ProductServiceCategoryBtn.Text = "Phân loại";
+            this.UnitOfMeasureBtn.Name = "UnitOfMeasureBtn";
+            this.UnitOfMeasureBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.UnitOfMeasureBtn.Text = "Đơn vị tính";
+            this.UnitOfMeasureBtn.Click += new System.EventHandler(this.UnitOfMeasureBtn_Click);
             // 
-            // ProductServiceBtn
+            // AttributeBtn
             // 
-            this.ProductServiceBtn.Name = "ProductServiceBtn";
-            this.ProductServiceBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.ProductServiceBtn.Text = "Danh mục SPDV";
-            // 
-            // ProductServiceVariantBtn
-            // 
-            this.ProductServiceVariantBtn.Name = "ProductServiceVariantBtn";
-            this.ProductServiceVariantBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.ProductServiceVariantBtn.Text = "Biến thể SPDV";
-            // 
-            // ProductServiceImagesBtn
-            // 
-            this.ProductServiceImagesBtn.Name = "ProductServiceImagesBtn";
-            this.ProductServiceImagesBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.ProductServiceImagesBtn.Text = "Hình ảnh";
+            this.AttributeBtn.Name = "AttributeBtn";
+            this.AttributeBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
+            this.AttributeBtn.Text = "Thuộc tính SPDV";
+            this.AttributeBtn.Click += new System.EventHandler(this.AttributeBtn_Click);
             // 
             // FluentProductService
             // 
@@ -132,5 +152,7 @@
         private DevExpress.XtraBars.Navigation.AccordionControlElement ProductServiceBtn;
         private DevExpress.XtraBars.Navigation.AccordionControlElement ProductServiceVariantBtn;
         private DevExpress.XtraBars.Navigation.AccordionControlElement ProductServiceImagesBtn;
+        private DevExpress.XtraBars.Navigation.AccordionControlElement UnitOfMeasureBtn;
+        private DevExpress.XtraBars.Navigation.AccordionControlElement AttributeBtn;
     }
 }

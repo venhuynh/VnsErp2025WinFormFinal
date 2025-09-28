@@ -23,7 +23,9 @@ namespace MasterData.ProductService
         private readonly ProductServiceCategoryBll _productServiceCategoryBll = new ProductServiceCategoryBll();
         private readonly Guid _categoryId;
         private bool IsEditMode => _categoryId != Guid.Empty;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
         private bool _hasUserSelectedParent; // Track xem user có thực sự chọn parent category hay không
+#pragma warning restore CS0414 // Field is assigned but its value is never used
 
         #endregion
 

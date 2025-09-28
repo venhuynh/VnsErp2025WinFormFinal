@@ -45,6 +45,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -106,7 +107,9 @@
     <Compile Include="Customer\Dto\BusinessPartnerListDto.cs" />
     <Compile Include="Customer\Dto\PartnerCategoryMappingDto.cs" />
     <Compile Include="ProductService\Converters\ProductServiceCategoryConverters.cs" />
+    <Compile Include="ProductService\Converters\ProductServiceConverters.cs" />
     <Compile Include="ProductService\Dto\ProductServiceCategoryDto.cs" />
+    <Compile Include="ProductService\Dto\ProductServiceDto.cs" />
     <Compile Include="ProductService\FluentProductService.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,6 +121,12 @@
     </Compile>
     <Compile Include="ProductService\FrmProductServiceCategoryDetail.Designer.cs">
       <DependentUpon>FrmProductServiceCategoryDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceDetail.Designer.cs">
+      <DependentUpon>FrmProductServiceDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="ProductService\UcAttribute.cs">
       <SubType>UserControl</SubType>
@@ -184,8 +193,14 @@
     <EmbeddedResource Include="ProductService\FrmProductServiceCategoryDetail.resx">
       <DependentUpon>FrmProductServiceCategoryDetail.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductServiceDetail.resx">
+      <DependentUpon>FrmProductServiceDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProductService\UcProductServiceCategory.resx">
       <DependentUpon>UcProductServiceCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\UcProductServiceList.resx">
+      <DependentUpon>UcProductServiceList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -195,6 +210,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Customer\Dto\DTO_README.md" />
+    <None Include="Properties\DataSources\Dal.DataContext.ProductService.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerContactDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerDetailDto.datasource" />
@@ -202,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceCategoryDto.datasource" />
+    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +262,8 @@
   <ItemGroup>
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor DTOs với Notation tiếng Việt%29.txt" />
+    <None Include="Resources\functionsum_32x32.png" />
+    <None Include="Resources\functionsum_16x16.png" />
     <None Include="Resources\cancel_32x32.png" />
     <None Include="Resources\cancel_16x16.png" />
     <None Include="Resources\save_32x32.png" />

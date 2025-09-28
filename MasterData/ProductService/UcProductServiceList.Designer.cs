@@ -1,4 +1,6 @@
-﻿namespace MasterData.ProductService
+﻿using MasterData.ProductService.Dto;
+
+namespace MasterData.ProductService
 {
     partial class UcProductServiceList
     {
@@ -20,6 +22,7 @@
             base.Dispose(disposing);
         }
 
+
         #region Component Designer generated code
 
         /// <summary> 
@@ -28,10 +31,480 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.components = new System.ComponentModel.Container();
+            this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
+            this.bar2 = new DevExpress.XtraBars.Bar();
+            this.ListDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.CountVariantAndImageBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ExportBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
+            this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
+            this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
+            this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.ProductServiceListGridControl = new DevExpress.XtraGrid.GridControl();
+            this.productServiceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ProductServiceAdvBandedGridView = new DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView();
+            this.gridBand1 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
+            this.colCode = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colTypeDisplay = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colDescription = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.gridBand3 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
+            this.colCategoryName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colStatusDisplay = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colVariantCount = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colImageCount = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colIsActive = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.gridBand2 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
+            this.colThumbnail = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
+            this.colId = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.bar1 = new DevExpress.XtraBars.Bar();
+            this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
+            this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
+            this.barHeaderItem2 = new DevExpress.XtraBars.BarHeaderItem();
+            this.SelectedRowBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
+            ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
+            this.layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceListGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceAdvBandedGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // barManager1
+            // 
+            this.barManager1.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
+            this.bar2,
+            this.bar1});
+            this.barManager1.DockControls.Add(this.barDockControlTop);
+            this.barManager1.DockControls.Add(this.barDockControlBottom);
+            this.barManager1.DockControls.Add(this.barDockControlLeft);
+            this.barManager1.DockControls.Add(this.barDockControlRight);
+            this.barManager1.Form = this;
+            this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
+            this.NewBarButtonItem,
+            this.ListDataBarButtonItem,
+            this.EditBarButtonItem,
+            this.DeleteBarButtonItem,
+            this.ExportBarButtonItem,
+            this.CountVariantAndImageBarButtonItem,
+            this.barHeaderItem1,
+            this.DataSummaryBarStaticItem,
+            this.barHeaderItem2,
+            this.SelectedRowBarStaticItem});
+            this.barManager1.MainMenu = this.bar2;
+            this.barManager1.MaxItemId = 10;
+            this.barManager1.StatusBar = this.bar1;
+            // 
+            // bar2
+            // 
+            this.bar2.BarName = "Main menu";
+            this.bar2.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Top;
+            this.bar2.DockCol = 0;
+            this.bar2.DockRow = 0;
+            this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
+            this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ListDataBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NewBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.DeleteBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CountVariantAndImageBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            this.bar2.OptionsBar.MultiLine = true;
+            this.bar2.OptionsBar.UseWholeRow = true;
+            this.bar2.Text = "Main menu";
+            // 
+            // ListDataBarButtonItem
+            // 
+            this.ListDataBarButtonItem.Caption = "Danh sách";
+            this.ListDataBarButtonItem.Id = 1;
+            this.ListDataBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.list_16x16;
+            this.ListDataBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.list_32x32;
+            this.ListDataBarButtonItem.Name = "ListDataBarButtonItem";
+            // 
+            // NewBarButtonItem
+            // 
+            this.NewBarButtonItem.Caption = "Mới";
+            this.NewBarButtonItem.Id = 0;
+            this.NewBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.addnewdatasource_16x16;
+            this.NewBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.addnewdatasource_32x32;
+            this.NewBarButtonItem.Name = "NewBarButtonItem";
+            // 
+            // EditBarButtonItem
+            // 
+            this.EditBarButtonItem.Caption = "Điều chỉnh";
+            this.EditBarButtonItem.Id = 2;
+            this.EditBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.edittask_16x16;
+            this.EditBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.edittask_32x32;
+            this.EditBarButtonItem.Name = "EditBarButtonItem";
+            // 
+            // DeleteBarButtonItem
+            // 
+            this.DeleteBarButtonItem.Caption = "Xóa";
+            this.DeleteBarButtonItem.Id = 3;
+            this.DeleteBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.deletelist_16x16;
+            this.DeleteBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.deletelist_32x32;
+            this.DeleteBarButtonItem.Name = "DeleteBarButtonItem";
+            // 
+            // CountVariantAndImageBarButtonItem
+            // 
+            this.CountVariantAndImageBarButtonItem.Caption = "Đếm số lượng";
+            this.CountVariantAndImageBarButtonItem.Id = 5;
+            this.CountVariantAndImageBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.list_16x16;
+            this.CountVariantAndImageBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.list_32x32;
+            this.CountVariantAndImageBarButtonItem.Name = "CountVariantAndImageBarButtonItem";
+            // 
+            // ExportBarButtonItem
+            // 
+            this.ExportBarButtonItem.Caption = "Xuất";
+            this.ExportBarButtonItem.Id = 4;
+            this.ExportBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.exporttoxls_16x16;
+            this.ExportBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.exporttoxls_32x32;
+            this.ExportBarButtonItem.Name = "ExportBarButtonItem";
+            // 
+            // barDockControlTop
+            // 
+            this.barDockControlTop.CausesValidation = false;
+            this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
+            this.barDockControlTop.Manager = this.barManager1;
+            this.barDockControlTop.Size = new System.Drawing.Size(1077, 39);
+            // 
+            // barDockControlBottom
+            // 
+            this.barDockControlBottom.CausesValidation = false;
+            this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 626);
+            this.barDockControlBottom.Manager = this.barManager1;
+            this.barDockControlBottom.Size = new System.Drawing.Size(1077, 35);
+            // 
+            // barDockControlLeft
+            // 
+            this.barDockControlLeft.CausesValidation = false;
+            this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Manager = this.barManager1;
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 587);
+            // 
+            // barDockControlRight
+            // 
+            this.barDockControlRight.CausesValidation = false;
+            this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.barDockControlRight.Location = new System.Drawing.Point(1077, 39);
+            this.barDockControlRight.Manager = this.barManager1;
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 587);
+            // 
+            // layoutControl1
+            // 
+            this.layoutControl1.Controls.Add(this.ProductServiceListGridControl);
+            this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.layoutControl1.Name = "layoutControl1";
+            this.layoutControl1.Root = this.Root;
+            this.layoutControl1.Size = new System.Drawing.Size(1077, 587);
+            this.layoutControl1.TabIndex = 4;
+            this.layoutControl1.Text = "layoutControl1";
+            // 
+            // ProductServiceListGridControl
+            // 
+            this.ProductServiceListGridControl.DataSource = this.productServiceDtoBindingSource;
+            this.ProductServiceListGridControl.Location = new System.Drawing.Point(16, 16);
+            this.ProductServiceListGridControl.MainView = this.ProductServiceAdvBandedGridView;
+            this.ProductServiceListGridControl.MenuManager = this.barManager1;
+            this.ProductServiceListGridControl.Name = "ProductServiceListGridControl";
+            this.ProductServiceListGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemPictureEdit1});
+            this.ProductServiceListGridControl.Size = new System.Drawing.Size(1045, 555);
+            this.ProductServiceListGridControl.TabIndex = 5;
+            this.ProductServiceListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.ProductServiceAdvBandedGridView});
+            // 
+            // productServiceDtoBindingSource
+            // 
+            this.productServiceDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductServiceDto);
+            // 
+            // ProductServiceAdvBandedGridView
+            // 
+            this.ProductServiceAdvBandedGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.ProductServiceAdvBandedGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
+            this.ProductServiceAdvBandedGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.ProductServiceAdvBandedGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.ProductServiceAdvBandedGridView.Bands.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.GridBand[] {
+            this.gridBand1,
+            this.gridBand3,
+            this.gridBand2});
+            this.ProductServiceAdvBandedGridView.Columns.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn[] {
+            this.colId,
+            this.colThumbnail,
+            this.colCode,
+            this.colName,
+            this.colCategoryName,
+            this.colTypeDisplay,
+            this.colDescription,
+            this.colIsActive,
+            this.colStatusDisplay,
+            this.colVariantCount,
+            this.colImageCount});
+            this.ProductServiceAdvBandedGridView.GridControl = this.ProductServiceListGridControl;
+            this.ProductServiceAdvBandedGridView.IndicatorWidth = 40;
+            this.ProductServiceAdvBandedGridView.Name = "ProductServiceAdvBandedGridView";
+            this.ProductServiceAdvBandedGridView.OptionsPrint.EnableAppearanceEvenRow = true;
+            this.ProductServiceAdvBandedGridView.OptionsSelection.MultiSelect = true;
+            this.ProductServiceAdvBandedGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.ProductServiceAdvBandedGridView.OptionsView.EnableAppearanceEvenRow = true;
+            this.ProductServiceAdvBandedGridView.OptionsView.ShowAutoFilterRow = true;
+            this.ProductServiceAdvBandedGridView.OptionsView.ShowGroupPanel = false;
+            this.ProductServiceAdvBandedGridView.OptionsView.ShowViewCaption = true;
+            this.ProductServiceAdvBandedGridView.ViewCaption = "BẢNG DỮ LIỆU SẢN PHẨM DỊCH VỤ";
+            // 
+            // gridBand1
+            // 
+            this.gridBand1.Caption = "Thông tin cơ bản";
+            this.gridBand1.Columns.Add(this.colCode);
+            this.gridBand1.Columns.Add(this.colName);
+            this.gridBand1.Columns.Add(this.colTypeDisplay);
+            this.gridBand1.Columns.Add(this.colDescription);
+            this.gridBand1.Name = "gridBand1";
+            this.gridBand1.VisibleIndex = 0;
+            this.gridBand1.Width = 225;
+            // 
+            // colCode
+            // 
+            this.colCode.FieldName = "Code";
+            this.colCode.Name = "colCode";
+            this.colCode.Visible = true;
+            // 
+            // colName
+            // 
+            this.colName.FieldName = "Name";
+            this.colName.Name = "colName";
+            this.colName.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Count, "Name", "Có {0} dòng")});
+            this.colName.Visible = true;
+            // 
+            // colTypeDisplay
+            // 
+            this.colTypeDisplay.FieldName = "TypeDisplay";
+            this.colTypeDisplay.Name = "colTypeDisplay";
+            this.colTypeDisplay.Visible = true;
+            // 
+            // colDescription
+            // 
+            this.colDescription.FieldName = "Description";
+            this.colDescription.Name = "colDescription";
+            this.colDescription.RowCount = 2;
+            this.colDescription.RowIndex = 1;
+            this.colDescription.Visible = true;
+            // 
+            // gridBand3
+            // 
+            this.gridBand3.Caption = "Phân loại & Trạng thái";
+            this.gridBand3.Columns.Add(this.colCategoryName);
+            this.gridBand3.Columns.Add(this.colStatusDisplay);
+            this.gridBand3.Columns.Add(this.colVariantCount);
+            this.gridBand3.Columns.Add(this.colImageCount);
+            this.gridBand3.Columns.Add(this.colIsActive);
+            this.gridBand3.Name = "gridBand3";
+            this.gridBand3.VisibleIndex = 1;
+            this.gridBand3.Width = 150;
+            // 
+            // colCategoryName
+            // 
+            this.colCategoryName.FieldName = "CategoryName";
+            this.colCategoryName.Name = "colCategoryName";
+            this.colCategoryName.Visible = true;
+            // 
+            // colStatusDisplay
+            // 
+            this.colStatusDisplay.FieldName = "StatusDisplay";
+            this.colStatusDisplay.Name = "colStatusDisplay";
+            this.colStatusDisplay.Visible = true;
+            // 
+            // colVariantCount
+            // 
+            this.colVariantCount.FieldName = "VariantCount";
+            this.colVariantCount.Name = "colVariantCount";
+            this.colVariantCount.RowIndex = 1;
+            this.colVariantCount.Visible = true;
+            // 
+            // colImageCount
+            // 
+            this.colImageCount.FieldName = "ImageCount";
+            this.colImageCount.Name = "colImageCount";
+            this.colImageCount.RowIndex = 1;
+            this.colImageCount.Visible = true;
+            // 
+            // colIsActive
+            // 
+            this.colIsActive.FieldName = "IsActive";
+            this.colIsActive.Name = "colIsActive";
+            this.colIsActive.RowIndex = 2;
+            this.colIsActive.Visible = true;
+            // 
+            // gridBand2
+            // 
+            this.gridBand2.Caption = "Ảnh & Thời gian";
+            this.gridBand2.Columns.Add(this.colThumbnail);
+            this.gridBand2.Name = "gridBand2";
+            this.gridBand2.VisibleIndex = 2;
+            this.gridBand2.Width = 80;
+            // 
+            // colThumbnail
+            // 
+            this.colThumbnail.ColumnEdit = this.repositoryItemPictureEdit1;
+            this.colThumbnail.FieldName = "ThumbnailImage";
+            this.colThumbnail.Name = "colThumbnail";
+            this.colThumbnail.OptionsEditForm.RowSpan = 3;
+            this.colThumbnail.RowCount = 3;
+            this.colThumbnail.Visible = true;
+            this.colThumbnail.Width = 80;
+            // 
+            // repositoryItemPictureEdit1
+            // 
+            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
+            // 
+            // colId
+            // 
+            this.colId.FieldName = "Id";
+            this.colId.Name = "colId";
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(1077, 587);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.ProductServiceListGridControl;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 561);
+            this.layoutControlItem1.TextVisible = false;
+            // 
+            // bar1
+            // 
+            this.bar1.BarName = "Custom 3";
+            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
+            this.bar1.DockCol = 0;
+            this.bar1.DockRow = 0;
+            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
+            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem1),
+            new DevExpress.XtraBars.LinkPersistInfo(this.DataSummaryBarStaticItem),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem2),
+            new DevExpress.XtraBars.LinkPersistInfo(this.SelectedRowBarStaticItem)});
+            this.bar1.OptionsBar.AllowQuickCustomization = false;
+            this.bar1.OptionsBar.DrawDragBorder = false;
+            this.bar1.OptionsBar.UseWholeRow = true;
+            this.bar1.Text = "Custom 3";
+            // 
+            // barHeaderItem1
+            // 
+            this.barHeaderItem1.Caption = "Tổng kết:";
+            this.barHeaderItem1.Id = 6;
+            this.barHeaderItem1.Name = "barHeaderItem1";
+            // 
+            // DataSummaryBarStaticItem
+            // 
+            this.DataSummaryBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.DataSummaryBarStaticItem.Caption = "Chưa có dữ liệu";
+            this.DataSummaryBarStaticItem.Id = 7;
+            this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
+            // 
+            // barHeaderItem2
+            // 
+            this.barHeaderItem2.Caption = "Đang chọn:";
+            this.barHeaderItem2.Id = 8;
+            this.barHeaderItem2.Name = "barHeaderItem2";
+            // 
+            // SelectedRowBarStaticItem
+            // 
+            this.SelectedRowBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.SelectedRowBarStaticItem.Caption = "Chưa chọn dòng nào";
+            this.SelectedRowBarStaticItem.Id = 9;
+            this.SelectedRowBarStaticItem.Name = "SelectedRowBarStaticItem";
+            // 
+            // UcProductServiceList
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.layoutControl1);
+            this.Controls.Add(this.barDockControlLeft);
+            this.Controls.Add(this.barDockControlRight);
+            this.Controls.Add(this.barDockControlBottom);
+            this.Controls.Add(this.barDockControlTop);
+            this.Name = "UcProductServiceList";
+            this.Size = new System.Drawing.Size(1077, 661);
+            ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
+            this.layoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceListGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceAdvBandedGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
+
+        private DevExpress.XtraBars.BarManager barManager1;
+        private DevExpress.XtraBars.Bar bar2;
+        private DevExpress.XtraBars.BarDockControl barDockControlTop;
+        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
+        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
+        private DevExpress.XtraBars.BarDockControl barDockControlRight;
+        private DevExpress.XtraLayout.LayoutControl layoutControl1;
+        private DevExpress.XtraGrid.GridControl ProductServiceListGridControl;
+        private DevExpress.XtraLayout.LayoutControlGroup Root;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private DevExpress.XtraBars.BarButtonItem ListDataBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem NewBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem ExportBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem CountVariantAndImageBarButtonItem;
+        
+        private System.Windows.Forms.BindingSource productServiceDtoBindingSource;
+        private DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView ProductServiceAdvBandedGridView;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colId;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colThumbnail;
+        private DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit repositoryItemPictureEdit1;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colCode;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colName;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colCategoryName;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colTypeDisplay;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colDescription;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colIsActive;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colStatusDisplay;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colVariantCount;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colImageCount;
+        private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand1;
+        private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand3;
+        private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand2;
+        private DevExpress.XtraBars.BarButtonItem CountVariantAndImageBtn;
+        private DevExpress.XtraBars.Bar bar1;
+        private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
+        private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
+        private DevExpress.XtraBars.BarHeaderItem barHeaderItem2;
+        private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
     }
 }

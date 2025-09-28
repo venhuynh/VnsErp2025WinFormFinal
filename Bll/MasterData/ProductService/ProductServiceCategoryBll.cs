@@ -1,9 +1,9 @@
-using Dal.DataAccess.MasterData.ProductService;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DataAccess.MasterData.ProductServiceDataAccess;
 
 namespace Bll.MasterData.ProductService
 {

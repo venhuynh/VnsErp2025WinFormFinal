@@ -439,7 +439,7 @@ namespace Dal.BaseDataAccess
         /// Xóa record theo ID
         /// </summary>
         /// <param name="id">ID của record cần xóa</param>
-        public virtual void DeleteById(object id)
+        public virtual void c(object id)
         {
             try
             {

@@ -47,7 +47,7 @@ namespace VnsErp2025
 
             #region Dành cho debug
 
-            Application.Run(new FormMain());
+            Application.Run(new FluentProductService());
 
             #endregion
 
