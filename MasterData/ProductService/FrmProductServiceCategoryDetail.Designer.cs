@@ -39,26 +39,39 @@
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
+            this.ParentCategoryTreeListTreeListLookUpEdit = new DevExpress.XtraEditors.TreeListLookUpEdit();
+            this.productServiceCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.treeListLookUpEdit1TreeList = new DevExpress.XtraTreeList.TreeList();
             this.CategoryNameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.DescriptionMemoEdit = new DevExpress.XtraEditors.MemoEdit();
-            this.ParentCategoryTreeList = new DevExpress.XtraTreeList.TreeList();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForCategoryName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForDescription = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForParentId = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.colId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colParentId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colParentCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colLevel = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colHasChildren = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colFullPath = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colProductCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ParentCategoryTreeListTreeListLookUpEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceCategoryDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeListLookUpEdit1TreeList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CategoryNameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionMemoEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ParentCategoryTreeList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCategoryName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDescription)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForParentId)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -146,9 +159,9 @@
             // 
             // dataLayoutControl1
             // 
+            this.dataLayoutControl1.Controls.Add(this.ParentCategoryTreeListTreeListLookUpEdit);
             this.dataLayoutControl1.Controls.Add(this.CategoryNameTextEdit);
             this.dataLayoutControl1.Controls.Add(this.DescriptionMemoEdit);
-            this.dataLayoutControl1.Controls.Add(this.ParentCategoryTreeList);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
@@ -157,32 +170,61 @@
             this.dataLayoutControl1.TabIndex = 5;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
+            // ParentCategoryTreeListTreeListLookUpEdit
+            // 
+            this.ParentCategoryTreeListTreeListLookUpEdit.Location = new System.Drawing.Point(99, 50);
+            this.ParentCategoryTreeListTreeListLookUpEdit.MenuManager = this.barManager1;
+            this.ParentCategoryTreeListTreeListLookUpEdit.Name = "ParentCategoryTreeListTreeListLookUpEdit";
+            this.ParentCategoryTreeListTreeListLookUpEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.ParentCategoryTreeListTreeListLookUpEdit.Properties.DataSource = this.productServiceCategoryDtoBindingSource;
+            this.ParentCategoryTreeListTreeListLookUpEdit.Properties.DisplayMember = "CategoryName";
+            this.ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList = this.treeListLookUpEdit1TreeList;
+            this.ParentCategoryTreeListTreeListLookUpEdit.Properties.ValueMember = "Id";
+            this.ParentCategoryTreeListTreeListLookUpEdit.Size = new System.Drawing.Size(485, 28);
+            this.ParentCategoryTreeListTreeListLookUpEdit.StyleController = this.dataLayoutControl1;
+            this.ParentCategoryTreeListTreeListLookUpEdit.TabIndex = 2;
+            // 
+            // productServiceCategoryDtoBindingSource
+            // 
+            this.productServiceCategoryDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductServiceCategoryDto);
+            // 
+            // treeListLookUpEdit1TreeList
+            // 
+            this.treeListLookUpEdit1TreeList.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
+            this.colId,
+            this.colCategoryName,
+            this.colDescription,
+            this.colParentId,
+            this.colParentCategoryName,
+            this.colLevel,
+            this.colHasChildren,
+            this.colFullPath,
+            this.colProductCount});
+            this.treeListLookUpEdit1TreeList.Location = new System.Drawing.Point(0, 0);
+            this.treeListLookUpEdit1TreeList.Name = "treeListLookUpEdit1TreeList";
+            this.treeListLookUpEdit1TreeList.OptionsView.ShowIndentAsRowStyle = true;
+            this.treeListLookUpEdit1TreeList.Size = new System.Drawing.Size(400, 200);
+            this.treeListLookUpEdit1TreeList.TabIndex = 0;
+            // 
             // CategoryNameTextEdit
             // 
-            this.CategoryNameTextEdit.Location = new System.Drawing.Point(96, 16);
+            this.CategoryNameTextEdit.Location = new System.Drawing.Point(99, 16);
             this.CategoryNameTextEdit.MenuManager = this.barManager1;
             this.CategoryNameTextEdit.Name = "CategoryNameTextEdit";
             this.CategoryNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.CategoryNameTextEdit.Size = new System.Drawing.Size(488, 28);
+            this.CategoryNameTextEdit.Size = new System.Drawing.Size(485, 28);
             this.CategoryNameTextEdit.StyleController = this.dataLayoutControl1;
-            this.CategoryNameTextEdit.TabIndex = 4;
+            this.CategoryNameTextEdit.TabIndex = 0;
             // 
             // DescriptionMemoEdit
             // 
-            this.DescriptionMemoEdit.Location = new System.Drawing.Point(96, 84);
+            this.DescriptionMemoEdit.Location = new System.Drawing.Point(99, 84);
             this.DescriptionMemoEdit.MenuManager = this.barManager1;
             this.DescriptionMemoEdit.Name = "DescriptionMemoEdit";
-            this.DescriptionMemoEdit.Size = new System.Drawing.Size(488, 55);
+            this.DescriptionMemoEdit.Size = new System.Drawing.Size(485, 211);
             this.DescriptionMemoEdit.StyleController = this.dataLayoutControl1;
-            this.DescriptionMemoEdit.TabIndex = 5;
-            // 
-            // ParentCategoryTreeList
-            // 
-            this.ParentCategoryTreeList.Location = new System.Drawing.Point(96, 50);
-            this.ParentCategoryTreeList.MenuManager = this.barManager1;
-            this.ParentCategoryTreeList.Name = "ParentCategoryTreeList";
-            this.ParentCategoryTreeList.Size = new System.Drawing.Size(488, 150);
-            this.ParentCategoryTreeList.TabIndex = 6;
+            this.DescriptionMemoEdit.TabIndex = 3;
             // 
             // Root
             // 
@@ -200,8 +242,8 @@
             this.layoutControlGroup1.GroupBordersVisible = false;
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.ItemForCategoryName,
-            this.ItemForParentId,
-            this.ItemForDescription});
+            this.ItemForDescription,
+            this.layoutControlItem1});
             this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlGroup1.Name = "autoGeneratedGroup0";
             this.layoutControlGroup1.Size = new System.Drawing.Size(574, 285);
@@ -213,26 +255,89 @@
             this.ItemForCategoryName.Name = "ItemForCategoryName";
             this.ItemForCategoryName.Size = new System.Drawing.Size(574, 34);
             this.ItemForCategoryName.Text = "Tên danh mục";
-            this.ItemForCategoryName.TextSize = new System.Drawing.Size(64, 13);
+            this.ItemForCategoryName.TextSize = new System.Drawing.Size(67, 13);
             // 
             // ItemForDescription
             // 
             this.ItemForDescription.Control = this.DescriptionMemoEdit;
             this.ItemForDescription.Location = new System.Drawing.Point(0, 68);
             this.ItemForDescription.Name = "ItemForDescription";
-            this.ItemForDescription.Size = new System.Drawing.Size(574, 61);
+            this.ItemForDescription.Size = new System.Drawing.Size(574, 217);
             this.ItemForDescription.StartNewLine = true;
             this.ItemForDescription.Text = "Mô tả";
-            this.ItemForDescription.TextSize = new System.Drawing.Size(64, 13);
+            this.ItemForDescription.TextSize = new System.Drawing.Size(67, 13);
             // 
-            // ItemForParentId
+            // layoutControlItem1
             // 
-            this.ItemForParentId.Control = this.ParentCategoryTreeList;
-            this.ItemForParentId.Location = new System.Drawing.Point(0, 34);
-            this.ItemForParentId.Name = "ItemForParentId";
-            this.ItemForParentId.Size = new System.Drawing.Size(574, 154);
-            this.ItemForParentId.Text = "Danh mục cha";
-            this.ItemForParentId.TextSize = new System.Drawing.Size(64, 13);
+            this.layoutControlItem1.Control = this.ParentCategoryTreeListTreeListLookUpEdit;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 34);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(574, 34);
+            this.layoutControlItem1.Text = "Danh mục cha";
+            this.layoutControlItem1.TextSize = new System.Drawing.Size(67, 13);
+            // 
+            // colId
+            // 
+            this.colId.FieldName = "Id";
+            this.colId.Name = "colId";
+            this.colId.Visible = true;
+            this.colId.VisibleIndex = 0;
+            // 
+            // colCategoryName
+            // 
+            this.colCategoryName.FieldName = "CategoryName";
+            this.colCategoryName.Name = "colCategoryName";
+            this.colCategoryName.Visible = true;
+            this.colCategoryName.VisibleIndex = 1;
+            // 
+            // colDescription
+            // 
+            this.colDescription.FieldName = "Description";
+            this.colDescription.Name = "colDescription";
+            this.colDescription.Visible = true;
+            this.colDescription.VisibleIndex = 2;
+            // 
+            // colParentId
+            // 
+            this.colParentId.FieldName = "ParentId";
+            this.colParentId.Name = "colParentId";
+            this.colParentId.Visible = true;
+            this.colParentId.VisibleIndex = 3;
+            // 
+            // colParentCategoryName
+            // 
+            this.colParentCategoryName.FieldName = "ParentCategoryName";
+            this.colParentCategoryName.Name = "colParentCategoryName";
+            this.colParentCategoryName.Visible = true;
+            this.colParentCategoryName.VisibleIndex = 4;
+            // 
+            // colLevel
+            // 
+            this.colLevel.FieldName = "Level";
+            this.colLevel.Name = "colLevel";
+            this.colLevel.Visible = true;
+            this.colLevel.VisibleIndex = 5;
+            // 
+            // colHasChildren
+            // 
+            this.colHasChildren.FieldName = "HasChildren";
+            this.colHasChildren.Name = "colHasChildren";
+            this.colHasChildren.Visible = true;
+            this.colHasChildren.VisibleIndex = 6;
+            // 
+            // colFullPath
+            // 
+            this.colFullPath.FieldName = "FullPath";
+            this.colFullPath.Name = "colFullPath";
+            this.colFullPath.Visible = true;
+            this.colFullPath.VisibleIndex = 7;
+            // 
+            // colProductCount
+            // 
+            this.colProductCount.FieldName = "ProductCount";
+            this.colProductCount.Name = "colProductCount";
+            this.colProductCount.Visible = true;
+            this.colProductCount.VisibleIndex = 8;
             // 
             // FrmProductServiceCategoryDetail
             // 
@@ -251,14 +356,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ParentCategoryTreeListTreeListLookUpEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceCategoryDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeListLookUpEdit1TreeList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CategoryNameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionMemoEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ParentCategoryTreeList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCategoryName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDescription)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForParentId)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -289,14 +396,26 @@
         #region Controls
         private DevExpress.XtraEditors.TextEdit CategoryNameTextEdit;
         private DevExpress.XtraEditors.MemoEdit DescriptionMemoEdit;
-        private DevExpress.XtraTreeList.TreeList ParentCategoryTreeList;
         #endregion
 
         #region Layout Items
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
         private DevExpress.XtraLayout.LayoutControlItem ItemForCategoryName;
         private DevExpress.XtraLayout.LayoutControlItem ItemForDescription;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForParentId;
         #endregion
+
+        private DevExpress.XtraEditors.TreeListLookUpEdit ParentCategoryTreeListTreeListLookUpEdit;
+        private System.Windows.Forms.BindingSource productServiceCategoryDtoBindingSource;
+        private DevExpress.XtraTreeList.TreeList treeListLookUpEdit1TreeList;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colId;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryName;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentId;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentCategoryName;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colLevel;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colHasChildren;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colFullPath;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colProductCount;
     }
 }

@@ -632,7 +632,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                 context.ProductServiceCategories.DeleteAllOnSubmit(context.ProductServiceCategories);
                 
                 context.SubmitChanges();
-                
+
                 return countsBefore;
             }
             catch (Exception ex)

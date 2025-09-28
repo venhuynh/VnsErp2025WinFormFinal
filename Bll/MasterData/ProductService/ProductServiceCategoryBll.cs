@@ -2,6 +2,7 @@ using Dal.DataAccess.MasterData.ProductService;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Bll.MasterData.ProductService
@@ -52,63 +53,6 @@ namespace Bll.MasterData.ProductService
             return _productServiceCategoryDataAccess.GetByIdAsync(id);
         }
 
-        /// <summary>
-        /// Lấy danh mục sản phẩm/dịch vụ theo tên.
-        /// </summary>
-        /// <param name="categoryName">Tên danh mục</param>
-        /// <returns>ProductServiceCategory hoặc null</returns>
-        public ProductServiceCategory GetByName(string categoryName)
-        {
-            return _productServiceCategoryDataAccess.GetByName(categoryName);
-        }
-
-        /// <summary>
-        /// Lấy danh mục sản phẩm/dịch vụ theo tên (Async).
-        /// </summary>
-        /// <param name="categoryName">Tên danh mục</param>
-        /// <returns>Task chứa ProductServiceCategory hoặc null</returns>
-        public Task<ProductServiceCategory> GetByNameAsync(string categoryName)
-        {
-            return _productServiceCategoryDataAccess.GetByNameAsync(categoryName);
-        }
-
-        /// <summary>
-        /// Lấy danh sách danh mục con của một danh mục cha.
-        /// </summary>
-        /// <param name="parentId">ID danh mục cha</param>
-        /// <returns>Danh sách danh mục con</returns>
-        public List<ProductServiceCategory> GetChildren(Guid parentId)
-        {
-            return _productServiceCategoryDataAccess.GetChildren(parentId);
-        }
-
-        /// <summary>
-        /// Lấy danh sách danh mục con của một danh mục cha (Async).
-        /// </summary>
-        /// <param name="parentId">ID danh mục cha</param>
-        /// <returns>Task chứa danh sách danh mục con</returns>
-        public Task<List<ProductServiceCategory>> GetChildrenAsync(Guid parentId)
-        {
-            return _productServiceCategoryDataAccess.GetChildrenAsync(parentId);
-        }
-
-        /// <summary>
-        /// Lấy danh sách danh mục gốc (không có ParentId).
-        /// </summary>
-        /// <returns>Danh sách danh mục gốc</returns>
-        public List<ProductServiceCategory> GetRootCategories()
-        {
-            return _productServiceCategoryDataAccess.GetRootCategories();
-        }
-
-        /// <summary>
-        /// Lấy danh sách danh mục gốc (không có ParentId) (Async).
-        /// </summary>
-        /// <returns>Task chứa danh sách danh mục gốc</returns>
-        public Task<List<ProductServiceCategory>> GetRootCategoriesAsync()
-        {
-            return _productServiceCategoryDataAccess.GetRootCategoriesAsync();
-        }
 
         /// <summary>
         /// Đếm số lượng sản phẩm/dịch vụ theo từng danh mục.
@@ -150,45 +94,6 @@ namespace Bll.MasterData.ProductService
             return (categories, counts);
         }
 
-        /// <summary>
-        /// Kiểm tra xem danh mục có sản phẩm/dịch vụ nào không.
-        /// </summary>
-        /// <param name="categoryId">ID của danh mục</param>
-        /// <returns>True nếu có sản phẩm/dịch vụ, False nếu không</returns>
-        public bool HasProducts(Guid categoryId)
-        {
-            return _productServiceCategoryDataAccess.HasProducts(categoryId);
-        }
-
-        /// <summary>
-        /// Kiểm tra xem danh mục có sản phẩm/dịch vụ nào không (Async).
-        /// </summary>
-        /// <param name="categoryId">ID của danh mục</param>
-        /// <returns>Task chứa True nếu có sản phẩm/dịch vụ, False nếu không</returns>
-        public Task<bool> HasProductsAsync(Guid categoryId)
-        {
-            return _productServiceCategoryDataAccess.HasProductsAsync(categoryId);
-        }
-
-        /// <summary>
-        /// Lấy số lượng sản phẩm/dịch vụ của một danh mục cụ thể.
-        /// </summary>
-        /// <param name="categoryId">ID của danh mục</param>
-        /// <returns>Số lượng sản phẩm/dịch vụ</returns>
-        public int GetProductCount(Guid categoryId)
-        {
-            return _productServiceCategoryDataAccess.GetProductCount(categoryId);
-        }
-
-        /// <summary>
-        /// Lấy số lượng sản phẩm/dịch vụ của một danh mục cụ thể (Async).
-        /// </summary>
-        /// <param name="categoryId">ID của danh mục</param>
-        /// <returns>Task chứa số lượng sản phẩm/dịch vụ</returns>
-        public Task<int> GetProductCountAsync(Guid categoryId)
-        {
-            return _productServiceCategoryDataAccess.GetProductCountAsync(categoryId);
-        }
 
         /// <summary>
         /// Thêm mới danh mục sản phẩm/dịch vụ.
@@ -196,17 +101,7 @@ namespace Bll.MasterData.ProductService
         /// <param name="category">Danh mục cần thêm</param>
         public void Insert(ProductServiceCategory category)
         {
-            _productServiceCategoryDataAccess.Add(category);
-        }
-
-        /// <summary>
-        /// Thêm mới danh mục sản phẩm/dịch vụ (Async).
-        /// </summary>
-        /// <param name="category">Danh mục cần thêm</param>
-        /// <returns>Task</returns>
-        public Task InsertAsync(ProductServiceCategory category)
-        {
-            return _productServiceCategoryDataAccess.AddAsync(category);
+            _productServiceCategoryDataAccess.SaveOrUpdate(category);
         }
 
         /// <summary>
@@ -215,42 +110,18 @@ namespace Bll.MasterData.ProductService
         /// <param name="category">Danh mục cần cập nhật</param>
         public void Update(ProductServiceCategory category)
         {
-            _productServiceCategoryDataAccess.Update(category);
+            _productServiceCategoryDataAccess.SaveOrUpdate(category);
         }
 
         /// <summary>
-        /// Cập nhật danh mục sản phẩm/dịch vụ (Async).
+        /// Lưu hoặc cập nhật danh mục sản phẩm/dịch vụ.
         /// </summary>
-        /// <param name="category">Danh mục cần cập nhật</param>
-        /// <returns>Task</returns>
-        public Task UpdateAsync(ProductServiceCategory category)
+        /// <param name="category">Danh mục cần lưu hoặc cập nhật</param>
+        public void SaveOrUpdate(ProductServiceCategory category)
         {
-            return Task.Run(() => _productServiceCategoryDataAccess.Update(category));
+            _productServiceCategoryDataAccess.SaveOrUpdate(category);
         }
 
-        /// <summary>
-        /// Cập nhật tên và mô tả danh mục.
-        /// </summary>
-        /// <param name="id">ID danh mục</param>
-        /// <param name="categoryName">Tên mới</param>
-        /// <param name="description">Mô tả mới</param>
-        /// <returns>True nếu cập nhật thành công</returns>
-        public bool UpdateCategory(Guid id, string categoryName, string description = null)
-        {
-            return _productServiceCategoryDataAccess.UpdateCategory(id, categoryName, description);
-        }
-
-        /// <summary>
-        /// Cập nhật tên và mô tả danh mục (Async).
-        /// </summary>
-        /// <param name="id">ID danh mục</param>
-        /// <param name="categoryName">Tên mới</param>
-        /// <param name="description">Mô tả mới</param>
-        /// <returns>Task chứa True nếu cập nhật thành công</returns>
-        public Task<bool> UpdateCategoryAsync(Guid id, string categoryName, string description = null)
-        {
-            return _productServiceCategoryDataAccess.UpdateCategoryAsync(id, categoryName, description);
-        }
 
         /// <summary>
         /// Kiểm tra tên danh mục có tồn tại không.
@@ -284,37 +155,60 @@ namespace Bll.MasterData.ProductService
         }
 
         /// <summary>
-        /// Xóa danh mục sản phẩm/dịch vụ theo ID (Async).
+        /// Xóa nhiều danh mục với logic di chuyển sản phẩm/dịch vụ sang "Phân loại chưa đặt tên".
+        /// Xóa theo thứ tự từ level cao xuống level thấp để tránh lỗi foreign key constraint.
         /// </summary>
-        /// <param name="id">ID của danh mục cần xóa</param>
-        /// <returns>Task</returns>
-        public Task DeleteAsync(Guid id)
+        /// <param name="categoryIds">Danh sách ID danh mục cần xóa</param>
+        public async Task DeleteCategoriesWithProductMigration(List<Guid> categoryIds)
         {
-            return _productServiceCategoryDataAccess.DeleteCategoryAsync(id);
+            if (categoryIds == null || categoryIds.Count == 0) return;
+
+            // Lấy tất cả categories để xác định thứ tự xóa
+            var allCategories = await GetAllAsync();
+            var categoryDict = allCategories.ToDictionary(c => c.Id);
+
+            // Tạo danh sách categories cần xóa với thông tin level
+            var categoriesToDelete = categoryIds.Select(id => 
+            {
+                var category = categoryDict.TryGetValue(id, out var value) ? value : null;
+                if (category == null) return null;
+                
+                // Tính level để xác định thứ tự xóa (level cao hơn = xóa trước)
+                var level = CalculateCategoryLevel(category, categoryDict);
+                return new { Category = category, Level = level };
+            }).Where(x => x != null).OrderByDescending(x => x.Level).ToList();
+
+            // Xóa theo thứ tự từ level cao xuống level thấp
+            foreach (var item in categoriesToDelete)
+            {
+                try
+                {
+                    // Xóa danh mục (logic migration đã được xử lý trong DataAccess)
+                    Delete(item.Category.Id);
+                }
+                catch (Exception ex)
+                {
+                    // Log lỗi nhưng tiếp tục xóa các item khác
+                    throw new Exception($"Lỗi xóa category {item.Category.CategoryName}: {ex.Message}", ex);
+                }
+            }
         }
 
         /// <summary>
-        /// Thêm danh mục mới với validation.
+        /// Tính level của category trong cây phân cấp.
         /// </summary>
-        /// <param name="categoryName">Tên danh mục</param>
-        /// <param name="description">Mô tả</param>
-        /// <param name="parentId">ID danh mục cha (tùy chọn)</param>
-        /// <returns>Danh mục đã tạo</returns>
-        public ProductServiceCategory AddNewCategory(string categoryName, string description = null, Guid? parentId = null)
+        private int CalculateCategoryLevel(ProductServiceCategory category, 
+            Dictionary<Guid, ProductServiceCategory> categoryDict)
         {
-            return _productServiceCategoryDataAccess.AddNewCategory(categoryName, description, parentId);
-        }
-
-        /// <summary>
-        /// Thêm danh mục mới với validation (Async).
-        /// </summary>
-        /// <param name="categoryName">Tên danh mục</param>
-        /// <param name="description">Mô tả</param>
-        /// <param name="parentId">ID danh mục cha (tùy chọn)</param>
-        /// <returns>Task chứa danh mục đã tạo</returns>
-        public Task<ProductServiceCategory> AddNewCategoryAsync(string categoryName, string description = null, Guid? parentId = null)
-        {
-            return _productServiceCategoryDataAccess.AddNewCategoryAsync(categoryName, description, parentId);
+            int level = 0;
+            var current = category;
+            while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
+            {
+                level++;
+                current = categoryDict[current.ParentId.Value];
+                if (level > 10) break; // Tránh infinite loop
+            }
+            return level;
         }
 
     }

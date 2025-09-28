@@ -7,7 +7,7 @@ using Dal.DataContext;
 using Dal.Exceptions;
 using Dal.Logging;
 
-namespace Dal.DataAccess.MasterData
+namespace Dal.DataAccess.MasterData.Partner
 {
     /// <summary>
     /// Data Access cho thực thể BusinessPartnerCategory (LINQ to SQL trên VnsErp2025DataContext).

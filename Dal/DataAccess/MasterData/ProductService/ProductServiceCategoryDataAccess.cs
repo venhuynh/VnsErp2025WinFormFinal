@@ -38,73 +38,6 @@ namespace Dal.DataAccess.MasterData.ProductService
 
         #region Create
 
-        /// <summary>
-        /// Thêm danh mục sản phẩm/dịch vụ mới với validation cơ bản.
-        /// </summary>
-        /// <param name="categoryName">Tên danh mục</param>
-        /// <param name="description">Mô tả</param>
-        /// <param name="parentId">ID danh mục cha (tùy chọn)</param>
-        /// <returns>Danh mục đã tạo</returns>
-        public ProductServiceCategory AddNewCategory(string categoryName, string description = null, Guid? parentId = null)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(categoryName))
-                    throw new ArgumentException("Tên danh mục không được rỗng", nameof(categoryName));
-
-                if (IsCategoryNameExists(categoryName))
-                    throw new InvalidOperationException($"Danh mục '{categoryName}' đã tồn tại");
-
-                var category = new ProductServiceCategory
-                {
-                    Id = Guid.NewGuid(),
-                    CategoryName = categoryName.Trim(),
-                    Description = description?.Trim(),
-                    ParentId = parentId
-                };
-
-                Add(category);
-                return category;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi thêm danh mục mới '{categoryName}': {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Thêm danh mục sản phẩm/dịch vụ mới (Async).
-        /// </summary>
-        /// <param name="categoryName">Tên danh mục</param>
-        /// <param name="description">Mô tả</param>
-        /// <param name="parentId">ID danh mục cha (tùy chọn)</param>
-        /// <returns>Task chứa danh mục đã tạo</returns>
-        public async Task<ProductServiceCategory> AddNewCategoryAsync(string categoryName, string description = null, Guid? parentId = null)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(categoryName))
-                    throw new ArgumentException("Tên danh mục không được rỗng", nameof(categoryName));
-
-                if (await IsCategoryNameExistsAsync(categoryName))
-                    throw new InvalidOperationException($"Danh mục '{categoryName}' đã tồn tại");
-
-                var category = new ProductServiceCategory
-                {
-                    Id = Guid.NewGuid(),
-                    CategoryName = categoryName.Trim(),
-                    Description = description?.Trim(),
-                    ParentId = parentId
-                };
-
-                await AddAsync(category);
-                return category;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi thêm danh mục mới '{categoryName}': {ex.Message}", ex);
-            }
-        }
 
         #endregion
 
@@ -184,189 +117,11 @@ namespace Dal.DataAccess.MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Lấy danh mục theo tên.
-        /// </summary>
-        /// <param name="categoryName">Tên danh mục</param>
-        /// <returns>Danh mục hoặc null</returns>
-        public ProductServiceCategory GetByName(string categoryName)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(categoryName))
-                    return null;
-
-                using var context = CreateContext();
-                return context.ProductServiceCategories.FirstOrDefault(x => x.CategoryName == categoryName.Trim());
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy danh mục theo tên '{categoryName}': {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy danh mục theo tên (Async).
-        /// </summary>
-        /// <param name="categoryName">Tên danh mục</param>
-        /// <returns>Task chứa danh mục hoặc null</returns>
-        public async Task<ProductServiceCategory> GetByNameAsync(string categoryName)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(categoryName))
-                    return null;
-
-                using var context = CreateContext();
-                return await Task.Run(() => context.ProductServiceCategories.FirstOrDefault(x => x.CategoryName == categoryName.Trim()));
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy danh mục theo tên '{categoryName}': {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy danh sách danh mục con của một danh mục cha.
-        /// </summary>
-        /// <param name="parentId">ID danh mục cha</param>
-        /// <returns>Danh sách danh mục con</returns>
-        public List<ProductServiceCategory> GetChildren(Guid parentId)
-        {
-            try
-            {
-                using var context = CreateContext();
-                return context.ProductServiceCategories.Where(x => x.ParentId == parentId).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy danh mục con của {parentId}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy danh sách danh mục con của một danh mục cha (Async).
-        /// </summary>
-        /// <param name="parentId">ID danh mục cha</param>
-        /// <returns>Task chứa danh sách danh mục con</returns>
-        public async Task<List<ProductServiceCategory>> GetChildrenAsync(Guid parentId)
-        {
-            try
-            {
-                using var context = CreateContext();
-                return await Task.Run(() => context.ProductServiceCategories.Where(x => x.ParentId == parentId).ToList());
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy danh mục con của {parentId}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy danh sách danh mục gốc (không có ParentId).
-        /// </summary>
-        /// <returns>Danh sách danh mục gốc</returns>
-        public List<ProductServiceCategory> GetRootCategories()
-        {
-            try
-            {
-                using var context = CreateContext();
-                return context.ProductServiceCategories.Where(x => x.ParentId == null).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy danh mục gốc: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy danh sách danh mục gốc (không có ParentId) (Async).
-        /// </summary>
-        /// <returns>Task chứa danh sách danh mục gốc</returns>
-        public async Task<List<ProductServiceCategory>> GetRootCategoriesAsync()
-        {
-            try
-            {
-                using var context = CreateContext();
-                return await Task.Run(() => context.ProductServiceCategories.Where(x => x.ParentId == null).ToList());
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy danh mục gốc: {ex.Message}", ex);
-            }
-        }
 
         #endregion
 
         #region Update
 
-        /// <summary>
-        /// Cập nhật tên danh mục.
-        /// </summary>
-        /// <param name="id">ID danh mục</param>
-        /// <param name="newCategoryName">Tên mới</param>
-        /// <param name="newDescription">Mô tả mới (tùy chọn)</param>
-        /// <returns>True nếu cập nhật thành công</returns>
-        public bool UpdateCategory(Guid id, string newCategoryName, string newDescription = null)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(newCategoryName))
-                    throw new ArgumentException("Tên danh mục không được rỗng", nameof(newCategoryName));
-
-                if (IsCategoryNameExists(newCategoryName, id))
-                    throw new InvalidOperationException($"Danh mục '{newCategoryName}' đã tồn tại");
-
-                var category = GetById(id);
-                if (category == null)
-                    return false;
-
-                category.CategoryName = newCategoryName.Trim();
-                if (newDescription != null)
-                    category.Description = newDescription.Trim();
-
-                Update(category);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi cập nhật danh mục {id}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật tên danh mục (Async).
-        /// </summary>
-        /// <param name="id">ID danh mục</param>
-        /// <param name="newCategoryName">Tên mới</param>
-        /// <param name="newDescription">Mô tả mới (tùy chọn)</param>
-        /// <returns>Task chứa True nếu cập nhật thành công</returns>
-        public async Task<bool> UpdateCategoryAsync(Guid id, string newCategoryName, string newDescription = null)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(newCategoryName))
-                    throw new ArgumentException("Tên danh mục không được rỗng", nameof(newCategoryName));
-
-                if (await IsCategoryNameExistsAsync(newCategoryName, id))
-                    throw new InvalidOperationException($"Danh mục '{newCategoryName}' đã tồn tại");
-
-                var category = await GetByIdAsync(id);
-                if (category == null)
-                    return false;
-
-                category.CategoryName = newCategoryName.Trim();
-                if (newDescription != null)
-                    category.Description = newDescription.Trim();
-
-                await Task.Run(() => Update(category));
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi cập nhật danh mục {id}: {ex.Message}", ex);
-            }
-        }
 
         #endregion
 
@@ -416,49 +171,6 @@ namespace Dal.DataAccess.MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Xóa danh mục theo ID với logic di chuyển sản phẩm/dịch vụ sang danh mục mặc định (Async).
-        /// </summary>
-        /// <param name="id">ID danh mục cần xóa</param>
-        /// <returns>Task chứa True nếu xóa thành công</returns>
-        public async Task<bool> DeleteCategoryAsync(Guid id)
-        {
-            try
-            {
-                using var context = CreateContext();
-                var category = await Task.Run(() => context.ProductServiceCategories.FirstOrDefault(x => x.Id == id));
-                if (category == null)
-                    return false;
-
-                // Kiểm tra có danh mục con không
-                var hasChildren = await Task.Run(() => context.ProductServiceCategories.Any(x => x.ParentId == id));
-                if (hasChildren)
-                    throw new InvalidOperationException("Không thể xóa danh mục có danh mục con");
-
-                // Kiểm tra có sản phẩm/dịch vụ không
-                var hasProducts = await Task.Run(() => context.ProductServices.Any(x => x.CategoryId == id));
-                if (hasProducts)
-                {
-                    // Tìm hoặc tạo danh mục mặc định
-                    var defaultCategory = await GetOrCreateDefaultCategoryAsync(context);
-                    
-                    // Di chuyển sản phẩm/dịch vụ sang danh mục mặc định
-                    var productsToMove = await Task.Run(() => context.ProductServices.Where(x => x.CategoryId == id).ToList());
-                    foreach (var product in productsToMove)
-                    {
-                        product.CategoryId = defaultCategory.Id;
-                    }
-                }
-
-                context.ProductServiceCategories.DeleteOnSubmit(category);
-                await Task.Run(() => context.SubmitChanges());
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi xóa danh mục {id}: {ex.Message}", ex);
-            }
-        }
 
         #endregion
 
@@ -518,77 +230,6 @@ namespace Dal.DataAccess.MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Kiểm tra danh mục có sản phẩm/dịch vụ không.
-        /// </summary>
-        /// <param name="categoryId">ID danh mục</param>
-        /// <returns>True nếu có sản phẩm/dịch vụ</returns>
-        public bool HasProducts(Guid categoryId)
-        {
-            try
-            {
-                using var context = CreateContext();
-                return context.ProductServices.Any(x => x.CategoryId == categoryId);
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi kiểm tra sản phẩm/dịch vụ của danh mục {categoryId}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Kiểm tra danh mục có sản phẩm/dịch vụ không (Async).
-        /// </summary>
-        /// <param name="categoryId">ID danh mục</param>
-        /// <returns>Task chứa True nếu có sản phẩm/dịch vụ</returns>
-        public async Task<bool> HasProductsAsync(Guid categoryId)
-        {
-            try
-            {
-                using var context = CreateContext();
-                return await Task.Run(() => context.ProductServices.Any(x => x.CategoryId == categoryId));
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi kiểm tra sản phẩm/dịch vụ của danh mục {categoryId}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy số lượng sản phẩm/dịch vụ của một danh mục.
-        /// </summary>
-        /// <param name="categoryId">ID danh mục</param>
-        /// <returns>Số lượng sản phẩm/dịch vụ</returns>
-        public int GetProductCount(Guid categoryId)
-        {
-            try
-            {
-                using var context = CreateContext();
-                return context.ProductServices.Count(x => x.CategoryId == categoryId);
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi đếm sản phẩm/dịch vụ của danh mục {categoryId}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy số lượng sản phẩm/dịch vụ của một danh mục (Async).
-        /// </summary>
-        /// <param name="categoryId">ID danh mục</param>
-        /// <returns>Task chứa số lượng sản phẩm/dịch vụ</returns>
-        public async Task<int> GetProductCountAsync(Guid categoryId)
-        {
-            try
-            {
-                using var context = CreateContext();
-                return await Task.Run(() => context.ProductServices.Count(x => x.CategoryId == categoryId));
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi đếm sản phẩm/dịch vụ của danh mục {categoryId}: {ex.Message}", ex);
-            }
-        }
 
         /// <summary>
         /// Đếm số lượng sản phẩm/dịch vụ theo từng danh mục.
@@ -664,36 +305,36 @@ namespace Dal.DataAccess.MasterData.ProductService
             return defaultCategory;
         }
 
-        /// <summary>
-        /// Tìm hoặc tạo danh mục mặc định "Phân loại chưa đặt tên" (Async).
-        /// </summary>
-        /// <param name="context">DataContext</param>
-        /// <returns>Task chứa danh mục mặc định</returns>
-        private async Task<ProductServiceCategory> GetOrCreateDefaultCategoryAsync(VnsErp2025DataContext context)
-        {
-            const string defaultCategoryName = "Phân loại chưa đặt tên";
-            
-            // Tìm danh mục mặc định
-            var defaultCategory = await Task.Run(() => context.ProductServiceCategories.FirstOrDefault(x => x.CategoryName == defaultCategoryName));
-            
-            if (defaultCategory == null)
-            {
-                // Tạo danh mục mặc định mới
-                defaultCategory = new ProductServiceCategory
-                {
-                    Id = Guid.NewGuid(),
-                    CategoryName = defaultCategoryName,
-                    Description = "Danh mục mặc định cho các sản phẩm/dịch vụ chưa được phân loại",
-                    ParentId = null
-                };
-                
-                context.ProductServiceCategories.InsertOnSubmit(defaultCategory);
-                await Task.Run(() => context.SubmitChanges());
-            }
-            
-            return defaultCategory;
-        }
 
         #endregion
+
+        /// <summary>
+        /// Lưu hoặc cập nhật danh mục sản phẩm/dịch vụ.
+        /// </summary>
+        /// <param name="category">Danh mục cần lưu hoặc cập nhật</param>
+        public void SaveOrUpdate(ProductServiceCategory category)
+        {
+            if (category == null) throw new ArgumentNullException(nameof(category));
+            
+            using var context = CreateContext();
+            var existing = category.Id != Guid.Empty ? context.ProductServiceCategories.FirstOrDefault(x => x.Id == category.Id) : null;
+            
+            if (existing == null)
+            {
+                // Thêm mới
+                if (category.Id == Guid.Empty)
+                    category.Id = Guid.NewGuid();
+                context.ProductServiceCategories.InsertOnSubmit(category);
+            }
+            else
+            {
+                // Cập nhật
+                existing.CategoryName = category.CategoryName;
+                existing.Description = category.Description;
+                existing.ParentId = category.ParentId;
+            }
+            
+            context.SubmitChanges();
+        }
     }
 }

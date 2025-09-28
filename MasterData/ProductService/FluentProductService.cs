@@ -28,9 +28,9 @@ namespace MasterData.ProductService
 
             InitializeUserControls();
             
-            DeleteAllData();
+            //DeleteAllData();
             
-            SeedMasterData();
+            //SeedMasterData();
         }
 
         #endregion

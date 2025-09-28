@@ -106,6 +106,7 @@ namespace MasterData.ProductService
                         form.ShowDialog(this);
 
                         await LoadDataAsync();
+
                         UpdateButtonStates();
                     }
                 }
@@ -126,7 +127,7 @@ namespace MasterData.ProductService
             {
                 // Bỏ qua nếu đang xử lý checkbox để tránh conflict
                 if (_isProcessingCheckbox) return;
-                
+
                 // SelectionChanged chỉ xử lý việc chọn row, không xử lý checkbox
                 // Checkbox logic được xử lý riêng trong AfterCheckNode
                 UpdateButtonStates();
@@ -147,11 +148,10 @@ namespace MasterData.ProductService
             {
                 // Đánh dấu đang xử lý checkbox
                 _isProcessingCheckbox = true;
-                
+
                 // Cho phép checkbox thay đổi
                 e.CanCheck = true;
-                
-                System.Diagnostics.Debug.WriteLine($"BeforeCheckNode: {e.Node.GetDisplayText("CategoryName")}, Will be checked: {!e.Node.Checked}");
+
             }
             catch (Exception ex)
             {
@@ -167,14 +167,13 @@ namespace MasterData.ProductService
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"AfterCheckNode: {e.Node.GetDisplayText("CategoryName")}, Checked: {e.Node.Checked}");
-                
+
                 // Xử lý logic parent-child checkbox
                 HandleParentChildCheckboxLogic(e.Node);
-                
+
                 // Reset flag
                 _isProcessingCheckbox = false;
-                
+
                 // Cập nhật danh sách selected IDs khi checkbox thay đổi
                 UpdateSelectedCategoryIds();
                 UpdateButtonStates();
@@ -196,11 +195,10 @@ namespace MasterData.ProductService
             {
                 // Lấy thông tin về vị trí click
                 var hitInfo = treeList1.CalcHitInfo(e.Location);
-                
+
                 // Nếu click vào checkbox
                 if (hitInfo.HitInfoType == DevExpress.XtraTreeList.HitInfoType.NodeCheckBox)
                 {
-                    System.Diagnostics.Debug.WriteLine($"MouseDown on checkbox: {hitInfo.Node.GetDisplayText("CategoryName")}");
                     // Không cần can thiệp gì thêm, để DevExpress tự xử lý checkbox và selection
                 }
             }
@@ -221,33 +219,29 @@ namespace MasterData.ProductService
             try
             {
                 if (changedNode == null) return;
-                
+
                 bool isChecked = changedNode.Checked;
-                System.Diagnostics.Debug.WriteLine($"=== HandleParentChildCheckboxLogic ===");
-                System.Diagnostics.Debug.WriteLine($"Node: {changedNode.GetDisplayText("CategoryName")}, Checked: {isChecked}");
-                
+
                 // Tạm thời disable event để tránh recursive calls
                 treeList1.AfterCheckNode -= TreeList1_AfterCheckNode;
-                
+
                 if (isChecked)
                 {
                     // Khi chọn node cha -> chọn tất cả node con
                     CheckAllChildNodes(changedNode);
                 }
-                
+
                 // Luôn cập nhật trạng thái parent nodes (cho cả trường hợp check và uncheck)
                 UpdateParentNodeStates(changedNode);
-                
+
                 // Re-enable event
                 treeList1.AfterCheckNode += TreeList1_AfterCheckNode;
-                
-                System.Diagnostics.Debug.WriteLine("=== End HandleParentChildCheckboxLogic ===");
+
             }
             catch (Exception ex)
             {
                 // Re-enable event trong trường hợp lỗi
                 treeList1.AfterCheckNode += TreeList1_AfterCheckNode;
-                System.Diagnostics.Debug.WriteLine($"Error in HandleParentChildCheckboxLogic: {ex.Message}");
                 ShowError(ex);
             }
         }
@@ -265,21 +259,18 @@ namespace MasterData.ProductService
                 var currentNode = changedNode.ParentNode;
                 while (currentNode != null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"  Updating parent state: {currentNode.GetDisplayText("CategoryName")}");
-                    
+
                     // Kiểm tra trạng thái của tất cả children (chỉ direct children, không đệ quy)
                     bool allChildrenChecked = AreAllDirectChildrenChecked(currentNode);
                     bool hasAnyUncheckedChild = HasAnyDirectUncheckedChild(currentNode);
-                    
-                    System.Diagnostics.Debug.WriteLine($"    All direct children checked: {allChildrenChecked}, Has any unchecked child: {hasAnyUncheckedChild}");
-                    
+
+
                     if (hasAnyUncheckedChild)
                     {
                         // Có ít nhất 1 node con bị bỏ chọn -> bỏ chọn parent
                         if (currentNode.Checked)
                         {
                             currentNode.Checked = false;
-                            System.Diagnostics.Debug.WriteLine($"    Unchecked parent (has unchecked child): {currentNode.GetDisplayText("CategoryName")}");
                         }
                     }
                     else if (allChildrenChecked)
@@ -288,16 +279,14 @@ namespace MasterData.ProductService
                         if (!currentNode.Checked)
                         {
                             currentNode.Checked = true;
-                            System.Diagnostics.Debug.WriteLine($"    Checked parent (all children checked): {currentNode.GetDisplayText("CategoryName")}");
                         }
                     }
-                    
+
                     currentNode = currentNode.ParentNode;
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in UpdateParentNodeStates: {ex.Message}");
             }
         }
 
@@ -309,22 +298,19 @@ namespace MasterData.ProductService
             try
             {
                 if (parentNode == null || parentNode.Nodes.Count == 0) return true; // Không có con = true
-                
+
                 foreach (TreeListNode childNode in parentNode.Nodes)
                 {
                     if (!childNode.Checked)
                     {
-                        System.Diagnostics.Debug.WriteLine($"      Direct child not checked: {childNode.GetDisplayText("CategoryName")}");
                         return false;
                     }
                 }
-                
-                System.Diagnostics.Debug.WriteLine($"      All direct children checked for: {parentNode.GetDisplayText("CategoryName")}");
+
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in AreAllDirectChildrenChecked: {ex.Message}");
                 return false;
             }
         }
@@ -337,21 +323,19 @@ namespace MasterData.ProductService
             try
             {
                 if (parentNode == null || parentNode.Nodes.Count == 0) return false; // Không có con = false
-                
+
                 foreach (TreeListNode childNode in parentNode.Nodes)
                 {
                     if (!childNode.Checked)
                     {
-                        System.Diagnostics.Debug.WriteLine($"      Direct child unchecked: {childNode.GetDisplayText("CategoryName")}");
                         return true;
                     }
                 }
-                
+
                 return false;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in HasAnyDirectUncheckedChild: {ex.Message}");
                 return false;
             }
         }
@@ -364,29 +348,26 @@ namespace MasterData.ProductService
             try
             {
                 if (parentNode == null || parentNode.Nodes.Count == 0) return false;
-                
+
                 // Kiểm tra các node con trực tiếp
                 foreach (TreeListNode childNode in parentNode.Nodes)
                 {
                     if (!childNode.Checked)
                     {
-                        System.Diagnostics.Debug.WriteLine($"      Found unchecked direct child: {childNode.GetDisplayText("CategoryName")}");
                         return true;
                     }
-                    
+
                     // Đệ quy kiểm tra các node con ở level sâu hơn
                     if (HasAnyUncheckedChild(childNode))
                     {
-                        System.Diagnostics.Debug.WriteLine($"      Found unchecked descendant child: {childNode.GetDisplayText("CategoryName")}");
                         return true;
                     }
                 }
-                
+
                 return false;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in HasAnyUncheckedChild: {ex.Message}");
                 return false;
             }
         }
@@ -399,24 +380,21 @@ namespace MasterData.ProductService
             try
             {
                 if (parentNode == null || parentNode.Nodes.Count == 0) return;
-                
-                System.Diagnostics.Debug.WriteLine($"  Checking all children of: {parentNode.GetDisplayText("CategoryName")}");
-                
+
+
                 foreach (TreeListNode childNode in parentNode.Nodes)
                 {
                     if (!childNode.Checked)
                     {
                         childNode.Checked = true;
-                        System.Diagnostics.Debug.WriteLine($"    Checked child: {childNode.GetDisplayText("CategoryName")}");
                     }
-                    
+
                     // Đệ quy cho các node con sâu hơn
                     CheckAllChildNodes(childNode);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in CheckAllChildNodes: {ex.Message}");
             }
         }
 
@@ -438,29 +416,26 @@ namespace MasterData.ProductService
             try
             {
                 if (parentNode == null || parentNode.Nodes.Count == 0) return false;
-                
+
                 // Kiểm tra các node con trực tiếp
                 foreach (TreeListNode childNode in parentNode.Nodes)
                 {
                     if (childNode.Checked)
                     {
-                        System.Diagnostics.Debug.WriteLine($"      Found checked direct child: {childNode.GetDisplayText("CategoryName")}");
                         return true;
                     }
-                    
+
                     // Đệ quy kiểm tra các node con ở level sâu hơn
                     if (HasAnyCheckedChild(childNode))
                     {
-                        System.Diagnostics.Debug.WriteLine($"      Found checked descendant child: {childNode.GetDisplayText("CategoryName")}");
                         return true;
                     }
                 }
-                
+
                 return false;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in HasAnyCheckedChild: {ex.Message}");
                 return false;
             }
         }
@@ -472,18 +447,14 @@ namespace MasterData.ProductService
         private void UpdateSelectedCategoryIds()
         {
             _selectedCategoryIds.Clear();
-            
-            System.Diagnostics.Debug.WriteLine("=== UpdateSelectedCategoryIds (Checkbox-based) ===");
-            System.Diagnostics.Debug.WriteLine($"Total nodes in TreeList: {treeList1.Nodes.Count}");
-            
+
+
             // Chỉ lấy các nodes có checkbox được check (không dựa vào selection)
             foreach (TreeListNode node in treeList1.Nodes)
             {
-                System.Diagnostics.Debug.WriteLine($"Checking root node: {node.GetDisplayText("CategoryName")}, Checked: {node.Checked}");
                 CheckNodeRecursive(node);
             }
-            
-            System.Diagnostics.Debug.WriteLine($"Final selected IDs (from checkboxes): {string.Join(", ", _selectedCategoryIds)}");
+
         }
 
         /// <summary>
@@ -493,28 +464,25 @@ namespace MasterData.ProductService
         {
             string nodeName = node.GetDisplayText("CategoryName");
             bool isChecked = node.Checked;
-            
-            System.Diagnostics.Debug.WriteLine($"  Checking node: {nodeName}, Checked: {isChecked}");
-            
+
+
             // Chỉ thêm vào danh sách nếu checkbox được check (không dựa vào selection)
             if (isChecked)
             {
                 // Lấy dữ liệu trực tiếp từ node thay vì dựa vào index
                 var dto = GetDtoFromNode(node);
                 if (dto != null)
+                {
+                    if (!_selectedCategoryIds.Contains(dto.Id))
                     {
-                        if (!_selectedCategoryIds.Contains(dto.Id))
-                        {
-                            _selectedCategoryIds.Add(dto.Id);
-                            System.Diagnostics.Debug.WriteLine($"    Added ID: {dto.Id} for {dto.CategoryName}");
-                        }
+                        _selectedCategoryIds.Add(dto.Id);
                     }
+                }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine($"    Could not get DTO for node: {nodeName}");
                 }
             }
-            
+
             // Kiểm tra các child nodes
             foreach (TreeListNode childNode in node.Nodes)
             {
@@ -536,13 +504,13 @@ namespace MasterData.ProductService
                     var dataRecord = treeList1.GetDataRecordByNode(node);
                     if (dataRecord is ProductServiceCategoryDto dto)
                     {
-                        System.Diagnostics.Debug.WriteLine($"    Found DTO from GetDataRecordByNode: {dto.Id} - {dto.CategoryName}");
                         return dto;
                     }
                 }
-                
+
                 // Cách 2: Lấy từ BindingSource bằng cách tìm kiếm theo ID nếu có
-                if (productServiceCategoryDtoBindingSource.DataSource is List<ProductServiceCategoryDto> bindingDataSource)
+                if (productServiceCategoryDtoBindingSource.DataSource is List<ProductServiceCategoryDto>
+                    bindingDataSource)
                 {
                     // Thử lấy ID từ node nếu có
                     var nodeId = node.GetValue("Id");
@@ -551,39 +519,34 @@ namespace MasterData.ProductService
                         var dto = bindingDataSource.FirstOrDefault(d => d.Id == id);
                         if (dto != null)
                         {
-                            System.Diagnostics.Debug.WriteLine($"    Found DTO by ID from BindingSource: {dto.Id} - {dto.CategoryName}");
                             return dto;
                         }
                     }
-                    
+
                     // Fallback: Tìm theo tên và mô tả
                     var nodeName = node.GetDisplayText("CategoryName");
                     var nodeDescription = node.GetDisplayText("Description");
-                    
-                    var dtoByName = bindingDataSource.FirstOrDefault(d => 
-                        d.CategoryName == nodeName && 
+
+                    var dtoByName = bindingDataSource.FirstOrDefault(d =>
+                        d.CategoryName == nodeName &&
                         d.Description == nodeDescription);
-                    
+
                     if (dtoByName != null)
                     {
-                        System.Diagnostics.Debug.WriteLine($"    Found DTO by name match from BindingSource: {dtoByName.Id} - {dtoByName.CategoryName}");
                         return dtoByName;
                     }
                 }
-                
+
                 // Cách 3: Thử lấy từ node.Tag nếu có
                 if (node.Tag is ProductServiceCategoryDto tagDto)
                 {
-                    System.Diagnostics.Debug.WriteLine($"    Found DTO from node.Tag: {tagDto.Id} - {tagDto.CategoryName}");
                     return tagDto;
                 }
-                
-                System.Diagnostics.Debug.WriteLine($"    Could not find DTO for node: {node.GetDisplayText("CategoryName")}");
+
                 return null;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"    Error getting DTO from node: {ex.Message}");
                 return null;
             }
         }
@@ -600,8 +563,8 @@ namespace MasterData.ProductService
                 if (index >= 0)
                 {
                     // Vẽ số thứ tự vào indicator
-                    e.Cache.DrawString((index + 1).ToString(), e.Appearance.Font, 
-                        e.Appearance.GetForeBrush(e.Cache), e.Bounds, 
+                    e.Cache.DrawString((index + 1).ToString(), e.Appearance.Font,
+                        e.Appearance.GetForeBrush(e.Cache), e.Bounds,
                         System.Drawing.StringFormat.GenericDefault);
                     e.Handled = true;
                 }
@@ -614,41 +577,35 @@ namespace MasterData.ProductService
             {
                 var selectedCount = _selectedCategoryIds?.Count ?? 0;
                 var rowCount = treeList1.VisibleNodesCount;
-                
-                System.Diagnostics.Debug.WriteLine($"=== UpdateButtonStates ===");
-                System.Diagnostics.Debug.WriteLine($"SelectedCount: {selectedCount}, RowCount: {rowCount}");
-                
+
+
                 // Edit: chỉ khi chọn đúng 1 dòng
                 if (EditBarButtonItem != null)
                 {
                     EditBarButtonItem.Enabled = selectedCount == 1;
-                    System.Diagnostics.Debug.WriteLine($"EditBarButtonItem.Enabled: {EditBarButtonItem.Enabled}");
                 }
-                
+
                 // Delete: khi chọn >= 1 dòng
                 if (DeleteBarButtonItem != null)
                 {
                     DeleteBarButtonItem.Enabled = selectedCount >= 1;
-                    System.Diagnostics.Debug.WriteLine($"DeleteBarButtonItem.Enabled: {DeleteBarButtonItem.Enabled}");
                 }
-                
+
                 // Export: chỉ khi có dữ liệu hiển thị
                 if (ExportBarButtonItem != null)
                 {
                     ExportBarButtonItem.Enabled = rowCount > 0;
-                    System.Diagnostics.Debug.WriteLine($"ExportBarButtonItem.Enabled: {ExportBarButtonItem.Enabled}");
                 }
-                
-                System.Diagnostics.Debug.WriteLine("=== End UpdateButtonStates ===");
+
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in UpdateButtonStates: {ex.Message}");
             }
         }
 
         /// <summary>
         /// Cấu hình TreeList để hiển thị dữ liệu xuống dòng (word wrap) cho các cột văn bản dài.
+        /// Đảm bảo hiển thị tất cả categories bao gồm cả những category chưa có sản phẩm.
         /// </summary>
         private void ConfigureMultiLineGridView()
         {
@@ -665,17 +622,25 @@ namespace MasterData.ProductService
                 // Cấu hình không cho edit
                 treeList1.OptionsBehavior.Editable = false;
                 treeList1.OptionsSelection.EnableAppearanceFocusedCell = false;
-                
+
                 // Cấu hình selection behavior theo tài liệu DevExpress
                 treeList1.OptionsSelection.MultiSelect = true;
                 treeList1.OptionsSelection.MultiSelectMode = DevExpress.XtraTreeList.TreeListMultiSelectMode.RowSelect;
-                
+
                 // Cấu hình checkbox behavior
                 treeList1.OptionsBehavior.AllowIndeterminateCheckState = false;
-                
+
                 // Cho phép selection và checkbox hoạt động độc lập
                 treeList1.OptionsSelection.UseIndicatorForSelection = true;
                 treeList1.OptionsSelection.EnableAppearanceFocusedRow = true;
+
+                // Đảm bảo hiển thị tất cả dữ liệu (không ẩn dòng nào)
+                treeList1.OptionsView.ShowAutoFilterRow = false; // Tắt auto filter row
+                treeList1.OptionsFilter.AllowFilterEditor = false; // Tắt filter editor
+
+                // Đảm bảo không có filter nào được áp dụng
+                treeList1.ActiveFilterString = "";
+                treeList1.ActiveFilterEnabled = false;
 
                 // RepositoryItemMemoEdit cho wrap text
                 var memo = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit
@@ -705,7 +670,9 @@ namespace MasterData.ProductService
                 // Cấu hình màu header
                 treeList1.Appearance.HeaderPanel.BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
                 treeList1.Appearance.HeaderPanel.ForeColor = System.Drawing.Color.Black;
-                treeList1.Appearance.HeaderPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+                treeList1.Appearance.HeaderPanel.Font =
+                    new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+
             }
             catch (Exception ex)
             {
@@ -713,7 +680,8 @@ namespace MasterData.ProductService
             }
         }
 
-        private void ApplyMemoEditorToColumn(string fieldName, DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit memo)
+        private void ApplyMemoEditorToColumn(string fieldName,
+            DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit memo)
         {
             var col = treeList1.Columns[fieldName];
             if (col == null) return;
@@ -722,6 +690,7 @@ namespace MasterData.ProductService
             {
                 treeList1.RepositoryItems.Add(memo);
             }
+
             col.ColumnEdit = memo;
         }
 
@@ -735,14 +704,14 @@ namespace MasterData.ProductService
                 var treeList = sender as TreeList;
                 if (treeList == null) return;
                 if (e.Node == null) return;
-                
+
                 // Lấy index từ node
                 var index = treeList.GetVisibleIndexByNode(e.Node);
                 if (index < 0 || index >= productServiceCategoryDtoBindingSource.Count) return;
-                
+
                 var row = productServiceCategoryDtoBindingSource[index] as ProductServiceCategoryDto;
                 if (row == null) return;
-                
+
                 // Không ghi đè màu khi đang chọn để giữ màu chọn mặc định của DevExpress
                 if (treeList.Selection.Contains(e.Node)) return;
 
@@ -751,7 +720,7 @@ namespace MasterData.ProductService
                 {
                     System.Drawing.Color backColor;
                     System.Drawing.Color foreColor = System.Drawing.Color.Black;
-                    
+
                     // Màu sắc dựa trên số lượng sản phẩm/dịch vụ
                     if (row.ProductCount == 0)
                     {
@@ -802,6 +771,7 @@ namespace MasterData.ProductService
                 ShowInfo("Vui lòng chọn một dòng để chỉnh sửa.");
                 return;
             }
+
             if (_selectedCategoryIds.Count > 1)
             {
                 ShowInfo("Chỉ cho phép chỉnh sửa 1 dòng. Vui lòng bỏ chọn bớt.");
@@ -811,13 +781,13 @@ namespace MasterData.ProductService
             var id = _selectedCategoryIds[0];
             var focusedNode = treeList1.FocusedNode;
             ProductServiceCategoryDto dto = null;
-            
+
             if (focusedNode != null)
             {
                 // Lấy dữ liệu từ focused node
                 dto = productServiceCategoryDtoBindingSource.Current as ProductServiceCategoryDto;
             }
-            
+
             if (dto == null || dto.Id != id)
             {
                 // Tìm đúng DTO theo Id trong datasource nếu FocusedRow không khớp selection
@@ -848,7 +818,7 @@ namespace MasterData.ProductService
                     {
                         form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
                         form.ShowDialog(this);
-                        
+
                         await LoadDataAsync();
                         UpdateButtonStates();
                     }
@@ -871,8 +841,6 @@ namespace MasterData.ProductService
                 return;
             }
 
-            // Debug: Kiểm tra danh sách selected IDs
-            System.Diagnostics.Debug.WriteLine($"Selected Category IDs: {string.Join(", ", _selectedCategoryIds)}");
 
             var confirmMessage = _selectedCategoryIds.Count == 1
                 ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn? (Sản phẩm/dịch vụ sẽ được chuyển sang 'Phân loại chưa đặt tên')"
@@ -885,12 +853,12 @@ namespace MasterData.ProductService
                 await ExecuteWithWaitingFormAsync(async () =>
                 {
                     // Xóa theo thứ tự: con trước, cha sau để tránh lỗi foreign key constraint
-                    await DeleteCategoriesWithProductMigration(_selectedCategoryIds.ToList());
+                    await _productServiceCategoryBll.DeleteCategoriesWithProductMigration(_selectedCategoryIds.ToList());
                 });
-                
+
                 // Clear selection state trước khi reload
                 ClearSelectionState();
-                
+
                 // Reload dữ liệu
                 await LoadDataAsync();
                 UpdateButtonStates();
@@ -948,10 +916,7 @@ namespace MasterData.ProductService
             _isLoading = true;
             try
             {
-                await ExecuteWithWaitingFormAsync(async () =>
-                {
-                    await LoadDataAsyncWithoutSplash();
-                });
+                await ExecuteWithWaitingFormAsync(async () => { await LoadDataAsyncWithoutSplash(); });
             }
             catch (Exception ex)
             {
@@ -965,33 +930,22 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, không hiển thị WaitForm).
+        /// Hiển thị tất cả categories bao gồm cả những category chưa có sản phẩm.
         /// </summary>
         private async Task LoadDataAsyncWithoutSplash()
         {
             try
             {
                 var (categories, counts) = await _productServiceCategoryBll.GetCategoriesWithCountsAsync();
-                
-                // Debug: Kiểm tra dữ liệu counts
-                System.Diagnostics.Debug.WriteLine("=== LoadDataAsyncWithoutSplash Debug ===");
-                System.Diagnostics.Debug.WriteLine($"Total categories: {categories.Count}");
-                System.Diagnostics.Debug.WriteLine($"Total counts: {counts.Count}");
-                
-                foreach (var count in counts)
-                {
-                    var category = categories.FirstOrDefault(c => c.Id == count.Key);
-                    System.Diagnostics.Debug.WriteLine($"Category: {category?.CategoryName ?? "Unknown"}, Count: {count.Value}");
-                }
-                
-                // Tạo cấu trúc cây hierarchical
+
+
+
+
+                // Tạo cấu trúc cây hierarchical - hiển thị TẤT CẢ categories
                 var dtoList = categories.ToDtosWithHierarchy(counts).ToList();
-                
-                // Debug: Kiểm tra DTOs
-                foreach (var dto in dtoList)
-                {
-                    System.Diagnostics.Debug.WriteLine($"DTO: {dto.CategoryName}, Level: {dto.Level}, ProductCount: {dto.ProductCount}");
-                }
-                
+
+
+
                 BindGrid(dtoList);
                 // UpdateButtonStates() sẽ được gọi trong BindGrid -> ClearSelectionState()
             }
@@ -1003,111 +957,57 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Bind danh sách DTO vào Grid và cấu hình hiển thị.
+        /// Hiển thị tất cả categories bao gồm cả những category chưa có sản phẩm.
         /// </summary>
         private void BindGrid(List<ProductServiceCategoryDto> data)
         {
             // Clear selection trước khi bind data mới
             ClearSelectionState();
-            
-            // Bind dữ liệu vào BindingSource
+
+
+            // Đảm bảo không có filter nào được áp dụng
+            treeList1.ActiveFilterString = "";
+            treeList1.ActiveFilterEnabled = false;
+
+            // Bind dữ liệu vào BindingSource - đảm bảo tất cả dữ liệu được bind
             productServiceCategoryDtoBindingSource.DataSource = data;
-            
+
             // Đảm bảo TreeList được bind đúng cách
             if (treeList1.DataSource != productServiceCategoryDtoBindingSource)
             {
                 treeList1.DataSource = productServiceCategoryDtoBindingSource;
             }
-            
+
             // Cấu hình hiển thị
             treeList1.BestFitColumns();
             ConfigureMultiLineGridView();
-            
-            // Debug: Kiểm tra binding
-            System.Diagnostics.Debug.WriteLine($"=== BindGrid Debug ===");
-            System.Diagnostics.Debug.WriteLine($"DataSource count: {data.Count}");
-            System.Diagnostics.Debug.WriteLine($"BindingSource count: {productServiceCategoryDtoBindingSource.Count}");
-            System.Diagnostics.Debug.WriteLine($"TreeList nodes count: {treeList1.Nodes.Count}");
-            
+
+            // Đảm bảo tất cả nodes được hiển thị (expand all)
+            treeList1.ExpandAll();
+
+
+
             // Đảm bảo selection được clear sau khi bind và update button states
             ClearSelectionState();
         }
 
-        /// <summary>
-        /// Xóa các danh mục với logic di chuyển sản phẩm/dịch vụ sang "Phân loại chưa đặt tên".
-        /// </summary>
-        private async Task DeleteCategoriesWithProductMigration(List<Guid> categoryIds)
-        {
-            if (categoryIds == null || categoryIds.Count == 0) return;
-
-            // Lấy tất cả categories để xác định thứ tự xóa
-            var allCategories = await _productServiceCategoryBll.GetAllAsync();
-            var categoryDict = allCategories.ToDictionary(c => c.Id);
-
-            // Tạo danh sách categories cần xóa với thông tin level
-            var categoriesToDelete = categoryIds.Select(id => 
-            {
-                var category = categoryDict.TryGetValue(id, out var value) ? value : null;
-                if (category == null) return null;
-                
-                // Tính level để xác định thứ tự xóa (level cao hơn = xóa trước)
-                var level = CalculateCategoryLevel(category, categoryDict);
-                return new { Category = category, Level = level };
-            }).Where(x => x != null).OrderByDescending(x => x.Level).ToList();
-
-            // Xóa theo thứ tự từ level cao xuống level thấp
-            foreach (var item in categoriesToDelete)
-            {
-                try
-                {
-                    // Xóa danh mục (logic migration đã được xử lý trong DataAccess)
-                    _productServiceCategoryBll.Delete(item.Category.Id);
-                    System.Diagnostics.Debug.WriteLine($"Đã xóa danh mục: {item.Category.CategoryName}");
-                }
-                catch (Exception ex)
-                {
-                    // Log lỗi nhưng tiếp tục xóa các item khác
-                    System.Diagnostics.Debug.WriteLine($"Lỗi xóa category {item.Category.CategoryName}: {ex.Message}");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Tính level của category trong cây phân cấp.
-        /// </summary>
-        private int CalculateCategoryLevel(Dal.DataContext.ProductServiceCategory category, 
-            Dictionary<Guid, Dal.DataContext.ProductServiceCategory> categoryDict)
-        {
-            int level = 0;
-            var current = category;
-            while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
-            {
-                level++;
-                current = categoryDict[current.ParentId.Value];
-                if (level > 10) break; // Tránh infinite loop
-            }
-            return level;
-        }
 
         /// <summary>
         /// Xóa trạng thái chọn hiện tại trên TreeList.
         /// </summary>
         private void ClearSelectionState()
         {
-            System.Diagnostics.Debug.WriteLine("=== ClearSelectionState ===");
-            System.Diagnostics.Debug.WriteLine($"Before clear: _selectedCategoryIds.Count = {_selectedCategoryIds.Count}");
-            
+
             _selectedCategoryIds.Clear();
-            
+
             // Clear tất cả selection (cả checkbox và regular selection)
             treeList1.ClearSelection();
             treeList1.FocusedNode = null;
-            
+
             // Clear tất cả checkbox states
             ClearAllCheckBoxes();
-            
-            System.Diagnostics.Debug.WriteLine($"After clear: _selectedCategoryIds.Count = {_selectedCategoryIds.Count}");
-            System.Diagnostics.Debug.WriteLine("=== End ClearSelectionState ===");
-            
+
+
             UpdateButtonStates();
         }
 
@@ -1120,19 +1020,18 @@ namespace MasterData.ProductService
             {
                 // Disable events tạm thời để tránh trigger UpdateSelectedCategoryIds
                 treeList1.AfterCheckNode -= TreeList1_AfterCheckNode;
-                
+
                 // Clear tất cả checkbox states
                 foreach (TreeListNode node in treeList1.Nodes)
                 {
                     ClearNodeCheckBoxes(node);
                 }
-                
+
                 // Re-enable events
                 treeList1.AfterCheckNode += TreeList1_AfterCheckNode;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error clearing checkboxes: {ex.Message}");
             }
         }
 
@@ -1144,7 +1043,7 @@ namespace MasterData.ProductService
             if (node != null)
             {
                 node.Checked = false;
-                
+
                 // Clear child nodes recursively
                 foreach (TreeListNode childNode in node.Nodes)
                 {

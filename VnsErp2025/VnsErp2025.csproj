@@ -133,6 +133,12 @@
   <ItemGroup>
     <Content Include="Docs\Promt\Prompt chung – Refactor toàn bộ màn hình GUI.txt" />
     <Content Include="Docs\Promt\Tái cấu trúc source code.txt" />
+    <None Include="Resources\home_32x32.png" />
+    <None Include="Resources\home_16x16.png" />
+    <None Include="Resources\boproductgroup_32x32.png" />
+    <None Include="Resources\boproductgroup_16x16.png" />
+    <None Include="Resources\publicfix_32x32.png" />
+    <None Include="Resources\publicfix_16x16.png" />
     <None Include="Resources\publish_32x32.png" />
     <None Include="Resources\publish_16x16.png" />
   </ItemGroup>

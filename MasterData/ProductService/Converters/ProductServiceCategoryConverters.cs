@@ -91,7 +91,8 @@ namespace MasterData.ProductService.Converters
             if (dto == null) return null;
             var entity = destination ?? new ProductServiceCategory();
 
-            entity.Id = dto.Id == Guid.Empty ? entity.Id : dto.Id;
+            // Set ID: tạo mới nếu Guid.Empty (thêm mới), dùng ID hiện tại nếu edit
+            entity.Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id;
             entity.CategoryName = dto.CategoryName;
             entity.Description = dto.Description;
             entity.ParentId = dto.ParentId;

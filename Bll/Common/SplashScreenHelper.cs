@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using DevExpress.XtraSplashScreen;
 
 namespace Bll.Common;
@@ -27,6 +28,17 @@ public static class SplashScreenHelper
     {
         try
         {
+            // Đảm bảo thao tác UI được thực hiện trên UI thread
+            if (Application.OpenForms.Count > 0)
+            {
+                var mainForm = Application.OpenForms[0];
+                if (mainForm.InvokeRequired)
+                {
+                    mainForm.Invoke(new Action(CloseSplashScreen));
+                    return;
+                }
+            }
+
             if (SplashScreenManager.Default != null && SplashScreenManager.Default.IsSplashFormVisible)
             {
                 SplashScreenManager.CloseForm();
@@ -67,6 +79,17 @@ public static class SplashScreenHelper
     {
         try
         {
+            // Đảm bảo thao tác UI được thực hiện trên UI thread
+            if (Application.OpenForms.Count > 0)
+            {
+                var mainForm = Application.OpenForms[0];
+                if (mainForm.InvokeRequired)
+                {
+                    mainForm.Invoke(new Action(() => ShowVnsSplashScreen(title, subtitle)));
+                    return;
+                }
+            }
+
             // Đóng splash screen hiện tại trước
             CloseSplashScreen();
 

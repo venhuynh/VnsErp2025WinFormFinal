@@ -195,6 +195,7 @@
             this.treeList1.OptionsSelection.MultiSelect = true;
             this.treeList1.OptionsSelection.UseIndicatorForSelection = true;
             this.treeList1.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check;
+            this.treeList1.OptionsView.ShowAutoFilterRow = true;
             this.treeList1.OptionsView.ShowCaption = true;
             this.treeList1.ParentFieldName = "ParentId";
             this.treeList1.Size = new System.Drawing.Size(1045, 590);

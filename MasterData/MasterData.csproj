@@ -181,6 +181,9 @@
     <EmbeddedResource Include="ProductService\FluentProductService.resx">
       <DependentUpon>FluentProductService.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductServiceCategoryDetail.resx">
+      <DependentUpon>FrmProductServiceCategoryDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProductService\UcProductServiceCategory.resx">
       <DependentUpon>UcProductServiceCategory.cs</DependentUpon>
     </EmbeddedResource>
