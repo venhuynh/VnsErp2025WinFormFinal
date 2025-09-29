@@ -939,5 +939,159 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             }
         }
 
+        #region Search and Filter Methods
+
+        /// <summary>
+        /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database
+        /// </summary>
+        /// <param name="searchText">Text tìm kiếm</param>
+        /// <returns>Danh sách kết quả tìm kiếm</returns>
+        public async Task<List<ProductService>> SearchAsync(string searchText)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(searchText))
+                    return new List<ProductService>();
+
+                using var context = CreateContext();
+                
+                var searchTerm = $"%{searchText.Trim()}%";
+                
+                var query = context.ProductServices
+                    .Where(x => x.Code.Contains(searchText) ||
+                               x.Name.Contains(searchText) ||
+                               x.Description.Contains(searchText) ||
+                               context.ProductServiceCategories.Any(c => c.Id == x.CategoryId && c.CategoryName.Contains(searchText)))
+                    .OrderBy(x => x.Name);
+
+                return await Task.FromResult(query.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi tìm kiếm sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách mã code unique
+        /// </summary>
+        /// <returns>Danh sách mã code unique</returns>
+        public async Task<List<object>> GetUniqueCodesAsync()
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                var codes = context.ProductServices
+                    .Where(x => !string.IsNullOrEmpty(x.Code))
+                    .Select(x => x.Code)
+                    .Distinct()
+                    .OrderBy(x => x)
+                    .ToList();
+
+                return await Task.FromResult(codes.Cast<object>().ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy danh sách mã code unique: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách tên unique
+        /// </summary>
+        /// <returns>Danh sách tên unique</returns>
+        public async Task<List<object>> GetUniqueNamesAsync()
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                var names = context.ProductServices
+                    .Where(x => !string.IsNullOrEmpty(x.Name))
+                    .Select(x => x.Name)
+                    .Distinct()
+                    .OrderBy(x => x)
+                    .ToList();
+
+                return await Task.FromResult(names.Cast<object>().ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy danh sách tên unique: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách tên danh mục unique
+        /// </summary>
+        /// <returns>Danh sách tên danh mục unique</returns>
+        public async Task<List<object>> GetUniqueCategoryNamesAsync()
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                var categoryNames = context.ProductServiceCategories
+                    .Where(x => !string.IsNullOrEmpty(x.CategoryName))
+                    .Select(x => x.CategoryName)
+                    .Distinct()
+                    .OrderBy(x => x)
+                    .ToList();
+
+                return await Task.FromResult(categoryNames.Cast<object>().ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy danh sách tên danh mục unique: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách loại hiển thị unique
+        /// </summary>
+        /// <returns>Danh sách loại hiển thị unique</returns>
+        public async Task<List<object>> GetUniqueTypeDisplaysAsync()
+        {
+            try
+            {
+                var typeDisplays = new List<object>
+                {
+                    "Sản phẩm",
+                    "Dịch vụ"
+                };
+
+                return await Task.FromResult(typeDisplays);
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy danh sách loại hiển thị unique: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách trạng thái hiển thị unique
+        /// </summary>
+        /// <returns>Danh sách trạng thái hiển thị unique</returns>
+        public async Task<List<object>> GetUniqueStatusDisplaysAsync()
+        {
+            try
+            {
+                var statusDisplays = new List<object>
+                {
+                    "Hoạt động",
+                    "Không hoạt động"
+                };
+
+                return await Task.FromResult(statusDisplays);
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy danh sách trạng thái hiển thị unique: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
     }
 }

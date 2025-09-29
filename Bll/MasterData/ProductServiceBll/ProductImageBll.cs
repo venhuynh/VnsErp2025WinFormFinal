@@ -1,13 +1,13 @@
-using Dal.DataAccess.MasterData.ProductServiceDal;
-using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using Dal.DataAccess.MasterData.ProductServiceDal;
+using Dal.DataContext;
 
-namespace Bll.MasterData.ProductService
+namespace Bll.MasterData.ProductServiceBll
 {
     /// <summary>
     /// Business Logic Layer cho ProductImage

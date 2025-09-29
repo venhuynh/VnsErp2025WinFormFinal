@@ -1,5 +1,4 @@
 using Bll.Common;
-using Bll.MasterData.ProductService;
 using Bll.Utils;
 using DevExpress.XtraSplashScreen;
 using DevExpress.XtraTreeList;
@@ -9,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bll.MasterData.ProductServiceBll;
 using MasterData.ProductService.Dto;
 
 namespace MasterData.ProductService

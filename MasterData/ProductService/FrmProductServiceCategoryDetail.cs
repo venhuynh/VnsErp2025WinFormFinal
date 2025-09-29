@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using Bll.MasterData.ProductService;
+using Bll.MasterData.ProductServiceBll;
 using Bll.Utils;
 using DevExpress.Utils;
 using DevExpress.XtraBars;

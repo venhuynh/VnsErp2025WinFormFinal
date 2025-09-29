@@ -1,4 +1,3 @@
-using Bll.MasterData.ProductService;
 using Dal.DataAccess.MasterData.ProductServiceDal;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bll.MasterData.ProductServiceBll;
 
 namespace Bll.Common.ImageService
 {

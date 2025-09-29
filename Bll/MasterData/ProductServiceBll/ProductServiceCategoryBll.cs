@@ -1,11 +1,11 @@
-using Dal.DataAccess.MasterData.ProductServiceDal;
-using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DataAccess.MasterData.ProductServiceDal;
+using Dal.DataContext;
 
-namespace Bll.MasterData.ProductService
+namespace Bll.MasterData.ProductServiceBll
 {
     /// <summary>
     /// Business logic layer cho ProductServiceCategory. 

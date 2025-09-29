@@ -1,10 +1,10 @@
-using Dal.DataAccess.MasterData.ProductServiceDal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DataAccess.MasterData.ProductServiceDal;
 
-namespace Bll.MasterData.ProductService
+namespace Bll.MasterData.ProductServiceBll
 {
     /// <summary>
     /// Business Logic Layer cho ProductService.
@@ -394,6 +394,110 @@ namespace Bll.MasterData.ProductService
             catch (Exception ex)
             {
                 throw new BusinessLogicException($"Lỗi khi đếm số lượng cho nhiều sản phẩm: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Search and Filter Methods
+
+        /// <summary>
+        /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database
+        /// </summary>
+        /// <param name="searchText">Text tìm kiếm</param>
+        /// <returns>Danh sách kết quả tìm kiếm</returns>
+        public async Task<List<Dal.DataContext.ProductService>> SearchAsync(string searchText)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(searchText))
+                    return new List<Dal.DataContext.ProductService>();
+
+                return await _dataAccess.SearchAsync(searchText);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi tìm kiếm sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách mã code unique
+        /// </summary>
+        /// <returns>Danh sách mã code unique</returns>
+        public async Task<List<object>> GetUniqueCodesAsync()
+        {
+            try
+            {
+                return await _dataAccess.GetUniqueCodesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi lấy danh sách mã code unique: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách tên unique
+        /// </summary>
+        /// <returns>Danh sách tên unique</returns>
+        public async Task<List<object>> GetUniqueNamesAsync()
+        {
+            try
+            {
+                return await _dataAccess.GetUniqueNamesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi lấy danh sách tên unique: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách tên danh mục unique
+        /// </summary>
+        /// <returns>Danh sách tên danh mục unique</returns>
+        public async Task<List<object>> GetUniqueCategoryNamesAsync()
+        {
+            try
+            {
+                return await _dataAccess.GetUniqueCategoryNamesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi lấy danh sách tên danh mục unique: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách loại hiển thị unique
+        /// </summary>
+        /// <returns>Danh sách loại hiển thị unique</returns>
+        public async Task<List<object>> GetUniqueTypeDisplaysAsync()
+        {
+            try
+            {
+                return await _dataAccess.GetUniqueTypeDisplaysAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi lấy danh sách loại hiển thị unique: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách trạng thái hiển thị unique
+        /// </summary>
+        /// <returns>Danh sách trạng thái hiển thị unique</returns>
+        public async Task<List<object>> GetUniqueStatusDisplaysAsync()
+        {
+            try
+            {
+                return await _dataAccess.GetUniqueStatusDisplaysAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi lấy danh sách trạng thái hiển thị unique: {ex.Message}", ex);
             }
         }
 

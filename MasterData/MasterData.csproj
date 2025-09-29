@@ -269,6 +269,7 @@
   <ItemGroup>
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor DTOs với Notation tiếng Việt%29.txt" />
+    <None Include="Resources\crossdatasourcefiltering _16x16.png" />
     <None Include="Resources\functionsum_32x32.png" />
     <None Include="Resources\functionsum_16x16.png" />
     <None Include="Resources\cancel_32x32.png" />

@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using Bll.MasterData.ProductService;
+using Bll.MasterData.ProductServiceBll;
 
 namespace Bll.Common.ImageService
 {

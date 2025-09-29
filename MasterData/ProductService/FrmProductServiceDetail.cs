@@ -1,5 +1,4 @@
-﻿using Bll.MasterData.ProductService;
-using Bll.Utils;
+﻿using Bll.Utils;
 using Bll.Common.ImageService;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
@@ -16,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.ProductServiceBll;
 
 namespace MasterData.ProductService
 {
