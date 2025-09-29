@@ -1,4 +1,4 @@
-using Dal.DataAccess.MasterData.ProductServiceDataAccess;
+using Dal.DataAccess.MasterData.ProductServiceDal;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;

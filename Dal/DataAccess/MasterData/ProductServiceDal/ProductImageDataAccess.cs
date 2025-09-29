@@ -1,11 +1,11 @@
-using Dal.BaseDataAccess;
-using Dal.DataContext;
-using Dal.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dal.BaseDataAccess;
+using Dal.DataContext;
+using Dal.Exceptions;
 
-namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
+namespace Dal.DataAccess.MasterData.ProductServiceDal
 {
     /// <summary>
     /// Data Access Layer cho ProductImage

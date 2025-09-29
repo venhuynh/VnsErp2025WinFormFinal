@@ -7,7 +7,7 @@ using Dal.DataContext;
 using Dal.Exceptions;
 using Dal.Logging;
 
-namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
+namespace Dal.DataAccess.MasterData.ProductServiceDal
 {
     /// <summary>
     /// Data Access cho thực thể ProductServiceCategory (LINQ to SQL trên VnsErp2025DataContext).

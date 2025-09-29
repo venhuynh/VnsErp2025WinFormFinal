@@ -7,7 +7,7 @@ using Dal.DataContext;
 using Dal.Exceptions;
 using Dal.Logging;
 
-namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
+namespace Dal.DataAccess.MasterData.ProductServiceDal
 {
     /// <summary>
     /// Data Access cho thực thể ProductService (LINQ to SQL trên VnsErp2025DataContext).
@@ -566,6 +566,250 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
             catch (Exception ex)
             {
                 throw new DataAccessException($"Lỗi khi đếm số lượng cho nhiều sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Pagination & Optimization Methods
+
+        /// <summary>
+        /// Lấy số lượng tổng cộng với filter
+        /// </summary>
+        public async Task<int> GetCountAsync(
+            string searchText = null,
+            Guid? categoryId = null,
+            bool? isService = null,
+            bool? isActive = null)
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                var query = context.ProductServices.AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => 
+                        x.Code.Contains(searchText) || 
+                        x.Name.Contains(searchText) || 
+                        x.Description.Contains(searchText));
+                }
+
+                if (categoryId.HasValue)
+                {
+                    query = query.Where(x => x.CategoryId == categoryId.Value);
+                }
+
+                if (isService.HasValue)
+                {
+                    query = query.Where(x => x.IsService == isService.Value);
+                }
+
+                if (isActive.HasValue)
+                {
+                    query = query.Where(x => x.IsActive == isActive.Value);
+                }
+
+                return await Task.FromResult(query.Count());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi đếm số lượng sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu phân trang
+        /// </summary>
+        public async Task<List<ProductService>> GetPagedAsync(
+            int pageIndex,
+            int pageSize,
+            string searchText = null,
+            Guid? categoryId = null,
+            bool? isService = null,
+            bool? isActive = null)
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                var query = context.ProductServices.AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => 
+                        x.Code.Contains(searchText) || 
+                        x.Name.Contains(searchText) || 
+                        x.Description.Contains(searchText));
+                }
+
+                if (categoryId.HasValue)
+                {
+                    query = query.Where(x => x.CategoryId == categoryId.Value);
+                }
+
+                if (isService.HasValue)
+                {
+                    query = query.Where(x => x.IsService == isService.Value);
+                }
+
+                if (isActive.HasValue)
+                {
+                    query = query.Where(x => x.IsActive == isActive.Value);
+                }
+
+                // Apply pagination
+                var skip = pageIndex * pageSize;
+                var result = query
+                    .OrderBy(x => x.Name)
+                    .Skip(skip)
+                    .Take(pageSize)
+                    .ToList();
+
+                return await Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy dữ liệu phân trang: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu thumbnail image cho lazy loading
+        /// </summary>
+        public byte[] GetThumbnailImageData(Guid productId)
+        {
+            try
+            {
+                using var context = CreateContext();
+                return context.ProductServices
+                    .Where(x => x.Id == productId)
+                    .Select(x => x.ThumbnailImage.ToArray())
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy dữ liệu ảnh thumbnail: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách sản phẩm với search và filter (optimized)
+        /// </summary>
+        public async Task<List<ProductService>> GetFilteredAsync(
+            string searchText = null,
+            Guid? categoryId = null,
+            bool? isService = null,
+            bool? isActive = null,
+            string orderBy = "Name",
+            string orderDirection = "ASC")
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                var query = context.ProductServices.AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => 
+                        x.Code.Contains(searchText) || 
+                        x.Name.Contains(searchText) || 
+                        x.Description.Contains(searchText));
+                }
+
+                if (categoryId.HasValue)
+                {
+                    query = query.Where(x => x.CategoryId == categoryId.Value);
+                }
+
+                if (isService.HasValue)
+                {
+                    query = query.Where(x => x.IsService == isService.Value);
+                }
+
+                if (isActive.HasValue)
+                {
+                    query = query.Where(x => x.IsActive == isActive.Value);
+                }
+
+                // Apply ordering
+                switch (orderBy.ToLower())
+                {
+                    case "code":
+                        query = orderDirection.ToUpper() == "DESC" 
+                            ? query.OrderByDescending(x => x.Code)
+                            : query.OrderBy(x => x.Code);
+                        break;
+                    case "name":
+                        query = orderDirection.ToUpper() == "DESC" 
+                            ? query.OrderByDescending(x => x.Name)
+                            : query.OrderBy(x => x.Name);
+                        break;
+                    case "category":
+                        query = orderDirection.ToUpper() == "DESC" 
+                            ? query.OrderByDescending(x => x.CategoryId)
+                            : query.OrderBy(x => x.CategoryId);
+                        break;
+                    default:
+                        query = query.OrderBy(x => x.Name);
+                        break;
+                }
+
+                return await Task.FromResult(query.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy dữ liệu với filter: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy counts cho nhiều sản phẩm cùng lúc (optimized async version)
+        /// </summary>
+        public async Task<Dictionary<Guid, (int VariantCount, int ImageCount)>> GetCountsForProductsAsync(List<Guid> productIds)
+        {
+            try
+            {
+                if (productIds == null || !productIds.Any())
+                    return new Dictionary<Guid, (int, int)>();
+
+                using var context = CreateContext();
+                
+                // Get variant counts
+                var variantCounts = await Task.FromResult(
+                    context.ProductVariants
+                        .Where(x => productIds.Contains(x.ProductId))
+                        .GroupBy(x => x.ProductId)
+                        .ToDictionary(g => g.Key, g => g.Count())
+                );
+
+                // Get image counts
+                var imageCounts = await Task.FromResult(
+                    context.ProductImages
+                        .Where(x => productIds.Contains(x.ProductId.Value))
+                        .GroupBy(x => x.ProductId)
+                        .ToDictionary(g => g.Key, g => g.Count())
+                );
+
+                // Combine results
+                var result = new Dictionary<Guid, (int, int)>();
+                foreach (var productId in productIds)
+                {
+                    var variantCount = variantCounts.ContainsKey(productId) ? variantCounts[productId] : 0;
+                    var imageCount = imageCounts.ContainsKey(productId) ? imageCounts[productId] : 0;
+                    result[productId] = (variantCount, imageCount);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi đếm số lượng cho nhiều sản phẩm: {ex.Message}", ex);
             }
         }
 

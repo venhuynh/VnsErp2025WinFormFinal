@@ -1,10 +1,8 @@
+using Dal.DataAccess.MasterData.ProductServiceDal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataAccess.MasterData.ProductServiceDataAccess;
-using Dal.DataContext;
-using Dal.Exceptions;
 
 namespace Bll.MasterData.ProductService
 {
@@ -276,6 +274,127 @@ namespace Bll.MasterData.ProductService
         public bool IsNameExists(string name, Guid? excludeId = null)
         {
             return _dataAccess.IsNameExists(name, excludeId);
+        }
+
+        #endregion
+
+        #region Optimization Methods
+
+        /// <summary>
+        /// Lấy số lượng tổng cộng với filter
+        /// </summary>
+        /// <param name="searchText">Từ khóa tìm kiếm</param>
+        /// <param name="categoryId">Filter theo category</param>
+        /// <param name="isService">Filter theo loại</param>
+        /// <param name="isActive">Filter theo trạng thái</param>
+        /// <returns>Số lượng tổng cộng</returns>
+        public async Task<int> GetCountAsync(
+            string searchText = null,
+            Guid? categoryId = null,
+            bool? isService = null,
+            bool? isActive = null)
+        {
+            try
+            {
+                return await _dataAccess.GetCountAsync(searchText, categoryId, isService, isActive);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi đếm số lượng sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu phân trang
+        /// </summary>
+        /// <param name="pageIndex">Trang hiện tại (0-based)</param>
+        /// <param name="pageSize">Số dòng mỗi trang</param>
+        /// <param name="searchText">Từ khóa tìm kiếm</param>
+        /// <param name="categoryId">Filter theo category</param>
+        /// <param name="isService">Filter theo loại</param>
+        /// <param name="isActive">Filter theo trạng thái</param>
+        /// <returns>Danh sách entities</returns>
+        public async Task<List<Dal.DataContext.ProductService>> GetPagedAsync(
+            int pageIndex,
+            int pageSize,
+            string searchText = null,
+            Guid? categoryId = null,
+            bool? isService = null,
+            bool? isActive = null)
+        {
+            try
+            {
+                return await _dataAccess.GetPagedAsync(pageIndex, pageSize, searchText, categoryId, isService, isActive);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy dữ liệu phân trang: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu thumbnail image cho lazy loading
+        /// </summary>
+        /// <param name="productId">ID sản phẩm</param>
+        /// <returns>Dữ liệu ảnh thumbnail</returns>
+        public byte[] GetThumbnailImageData(Guid productId)
+        {
+            try
+            {
+                return _dataAccess.GetThumbnailImageData(productId);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy dữ liệu ảnh thumbnail: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách sản phẩm với search và filter (optimized)
+        /// </summary>
+        /// <param name="searchText">Từ khóa tìm kiếm</param>
+        /// <param name="categoryId">Filter theo category</param>
+        /// <param name="isService">Filter theo loại</param>
+        /// <param name="isActive">Filter theo trạng thái</param>
+        /// <param name="orderBy">Sắp xếp theo</param>
+        /// <param name="orderDirection">Hướng sắp xếp</param>
+        /// <returns>Danh sách entities</returns>
+        public async Task<List<Dal.DataContext.ProductService>> GetFilteredAsync(
+            string searchText = null,
+            Guid? categoryId = null,
+            bool? isService = null,
+            bool? isActive = null,
+            string orderBy = "Name",
+            string orderDirection = "ASC")
+        {
+            try
+            {
+                return await _dataAccess.GetFilteredAsync(searchText, categoryId, isService, isActive, orderBy, orderDirection);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy dữ liệu với filter: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy counts cho nhiều sản phẩm cùng lúc (optimized async version)
+        /// </summary>
+        /// <param name="productIds">Danh sách ID sản phẩm</param>
+        /// <returns>Dictionary chứa counts</returns>
+        public async Task<Dictionary<Guid, (int VariantCount, int ImageCount)>> GetCountsForProductsAsync(List<Guid> productIds)
+        {
+            try
+            {
+                if (productIds == null || !productIds.Any())
+                    return new Dictionary<Guid, (int, int)>();
+
+                return await _dataAccess.GetCountsForProductsAsync(productIds);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi đếm số lượng cho nhiều sản phẩm: {ex.Message}", ex);
+            }
         }
 
         #endregion
