@@ -1,6 +1,6 @@
 ﻿namespace MasterData.ProductService
 {
-    partial class UcAttribute
+    partial class FrmAttribute
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,8 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // UcAttribute
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Name = "UcAttribute";
+            this.Size = new System.Drawing.Size(950, 792);
+            this.ResumeLayout(false);
+
         }
 
         #endregion

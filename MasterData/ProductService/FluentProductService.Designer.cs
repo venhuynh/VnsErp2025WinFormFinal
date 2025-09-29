@@ -37,8 +37,6 @@
             this.ProductServiceImagesBtn = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.fluentDesignFormControl1 = new DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormControl();
             this.fluentFormDefaultManager1 = new DevExpress.XtraBars.FluentDesignSystem.FluentFormDefaultManager(this.components);
-            this.UnitOfMeasureBtn = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-            this.AttributeBtn = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             ((System.ComponentModel.ISupportInitialize)(this.accordionControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fluentDesignFormControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fluentFormDefaultManager1)).BeginInit();
@@ -59,9 +57,7 @@
             this.ProductServiceCategoryBtn,
             this.ProductServiceBtn,
             this.ProductServiceVariantBtn,
-            this.ProductServiceImagesBtn,
-            this.UnitOfMeasureBtn,
-            this.AttributeBtn});
+            this.ProductServiceImagesBtn});
             this.accordionControl1.Location = new System.Drawing.Point(0, 33);
             this.accordionControl1.Name = "accordionControl1";
             this.accordionControl1.ScrollBarMode = DevExpress.XtraBars.Navigation.ScrollBarMode.Touch;
@@ -109,20 +105,6 @@
             // 
             this.fluentFormDefaultManager1.Form = this;
             // 
-            // UnitOfMeasureBtn
-            // 
-            this.UnitOfMeasureBtn.Name = "UnitOfMeasureBtn";
-            this.UnitOfMeasureBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.UnitOfMeasureBtn.Text = "Đơn vị tính";
-            this.UnitOfMeasureBtn.Click += new System.EventHandler(this.UnitOfMeasureBtn_Click);
-            // 
-            // AttributeBtn
-            // 
-            this.AttributeBtn.Name = "AttributeBtn";
-            this.AttributeBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-            this.AttributeBtn.Text = "Thuộc tính SPDV";
-            this.AttributeBtn.Click += new System.EventHandler(this.AttributeBtn_Click);
-            // 
             // FluentProductService
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -152,7 +134,5 @@
         private DevExpress.XtraBars.Navigation.AccordionControlElement ProductServiceBtn;
         private DevExpress.XtraBars.Navigation.AccordionControlElement ProductServiceVariantBtn;
         private DevExpress.XtraBars.Navigation.AccordionControlElement ProductServiceImagesBtn;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement UnitOfMeasureBtn;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement AttributeBtn;
     }
 }

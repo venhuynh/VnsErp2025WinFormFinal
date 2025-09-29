@@ -510,8 +510,6 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                         ProductId = product.Id,
                         VariantCode = $"{product.Code}-V{i}",
                         UnitId = unit.Id,
-                        PurchasePrice = isService ? null : (decimal?)random.Next(100000, 10000000),
-                        SalePrice = isService ? (decimal?)random.Next(500000, 50000000) : (decimal?)random.Next(200000, 20000000),
                         IsActive = random.Next(0, 10) < 9, // 90% active
                     };
 

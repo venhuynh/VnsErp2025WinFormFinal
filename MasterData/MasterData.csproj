@@ -110,8 +110,15 @@
     <Compile Include="Customer\Dto\PartnerCategoryMappingDto.cs" />
     <Compile Include="ProductService\Converters\ProductServiceCategoryConverters.cs" />
     <Compile Include="ProductService\Converters\ProductServiceConverters.cs" />
+    <Compile Include="ProductService\Converters\ProductVariantConverters.cs" />
+    <Compile Include="ProductService\Dto\AttributeDto.cs" />
+    <Compile Include="ProductService\Dto\AttributeValueDto.cs" />
     <Compile Include="ProductService\Dto\ProductServiceCategoryDto.cs" />
     <Compile Include="ProductService\Dto\ProductServiceDto.cs" />
+    <Compile Include="ProductService\Dto\ProductVariantAttributeDto.cs" />
+    <Compile Include="ProductService\Dto\ProductVariantDto.cs" />
+    <Compile Include="ProductService\Dto\ProductVariantImageDto.cs" />
+    <Compile Include="ProductService\Dto\UnitOfMeasureDto.cs" />
     <Compile Include="ProductService\FluentProductService.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -130,11 +137,17 @@
     <Compile Include="ProductService\FrmProductServiceDetail.Designer.cs">
       <DependentUpon>FrmProductServiceDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\UcAttribute.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="ProductService\FrmAttribute.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProductService\UcAttribute.Designer.cs">
-      <DependentUpon>UcAttribute.cs</DependentUpon>
+    <Compile Include="ProductService\FrmAttribute.Designer.cs">
+      <DependentUpon>FrmAttribute.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductVariantDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductVariantDetail.Designer.cs">
+      <DependentUpon>FrmProductVariantDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="ProductService\UcProductServiceCategory.cs">
       <SubType>UserControl</SubType>
@@ -154,11 +167,11 @@
     <Compile Include="ProductService\UcProductVariant.Designer.cs">
       <DependentUpon>UcProductVariant.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\UcUnitOfMeasure.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="ProductService\FrmUnitOfMeasure.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProductService\UcUnitOfMeasure.Designer.cs">
-      <DependentUpon>UcUnitOfMeasure.cs</DependentUpon>
+    <Compile Include="ProductService\FrmUnitOfMeasure.Designer.cs">
+      <DependentUpon>FrmUnitOfMeasure.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -198,11 +211,23 @@
     <EmbeddedResource Include="ProductService\FrmProductServiceDetail.resx">
       <DependentUpon>FrmProductServiceDetail.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmAttribute.resx">
+      <DependentUpon>FrmAttribute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductVariantDetail.resx">
+      <DependentUpon>FrmProductVariantDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProductService\UcProductServiceCategory.resx">
       <DependentUpon>UcProductServiceCategory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProductService\UcProductServiceList.resx">
       <DependentUpon>UcProductServiceList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\UcProductVariant.resx">
+      <DependentUpon>UcProductVariant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmUnitOfMeasure.resx">
+      <DependentUpon>FrmUnitOfMeasure.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -226,6 +251,7 @@
   <ItemGroup>
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceCategoryDto.datasource" />
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceDto.datasource" />
+    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductVariantDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
   <ItemGroup>

@@ -1,21 +1,18 @@
-﻿using DevExpress.XtraEditors;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 namespace MasterData.ProductService
 {
+    /// <summary>
+    /// User Control cho quản lý ProductVariant với TreeList
+    /// Hiển thị hierarchical data: Product -> Variants
+    /// </summary>
     public partial class UcProductVariant : DevExpress.XtraEditors.XtraUserControl
     {
+        
+
+        #region Constructor
         public UcProductVariant()
         {
             InitializeComponent();
         }
+        #endregion
     }
 }

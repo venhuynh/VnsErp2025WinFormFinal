@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace MasterData.ProductService
 {
-    public partial class UcAttribute : DevExpress.XtraEditors.XtraUserControl
+    public partial class FrmProductVariantDetail : DevExpress.XtraEditors.XtraForm
     {
-        public UcAttribute()
+        public FrmProductVariantDetail()
         {
             InitializeComponent();
         }

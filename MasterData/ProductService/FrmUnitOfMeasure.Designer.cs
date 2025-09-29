@@ -1,6 +1,6 @@
 ﻿namespace MasterData.ProductService
 {
-    partial class UcUnitOfMeasure
+    partial class FrmUnitOfMeasure
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,8 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // UcUnitOfMeasure
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Name = "UcUnitOfMeasure";
+            this.Size = new System.Drawing.Size(553, 607);
+            this.ResumeLayout(false);
+
         }
 
         #endregion

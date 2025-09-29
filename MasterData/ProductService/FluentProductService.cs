@@ -13,8 +13,6 @@ namespace MasterData.ProductService
         private UcProductServiceList _productServiceListControl;
         private UcProductServiceCategory _productServiceCategoryControl;
         private UcProductVariant _productVariantControl;
-        private UcUnitOfMeasure _unitOfMeasureControl;
-        private UcAttribute _attributeControl;
 
         #endregion
 
@@ -55,7 +53,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khởi tạo form: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($@"Lỗi khởi tạo form: {ex.Message}", @"Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -63,24 +61,6 @@ namespace MasterData.ProductService
 
         #region Event Handlers
 
-        /// <summary>
-        /// Xử lý sự kiện Load form
-        /// </summary>
-        private void FluentProductService_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                // Gọi hàm SeedData_Master_ProductService để tạo dữ liệu mẫu
-                //SeedMasterData();
-
-                // Hiển thị màn hình mặc định (Danh sách sản phẩm/dịch vụ)
-                //ShowProductServiceList();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi load form: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
         public static void DeleteAllData()
         {
@@ -175,35 +155,6 @@ namespace MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Xử lý click nút Đơn vị đo
-        /// </summary>
-        private void UnitOfMeasureBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ShowUnitOfMeasure();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi hiển thị đơn vị đo: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// Xử lý click nút Thuộc tính sản phẩm
-        /// </summary>
-        private void AttributeBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ShowAttribute();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi hiển thị thuộc tính sản phẩm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
         #endregion
 
@@ -269,46 +220,6 @@ namespace MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Hiển thị màn hình đơn vị đo
-        /// </summary>
-        private void ShowUnitOfMeasure()
-        {
-            try
-            {
-                if (_unitOfMeasureControl == null)
-                {
-                    _unitOfMeasureControl = new UcUnitOfMeasure();
-                }
-
-                _userControlManager?.ShowControl(_unitOfMeasureControl, "Đơn vị đo");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi hiển thị đơn vị đo: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// Hiển thị màn hình thuộc tính sản phẩm
-        /// </summary>
-        private void ShowAttribute()
-        {
-            try
-            {
-                if (_attributeControl == null)
-                {
-                    _attributeControl = new UcAttribute();
-                }
-
-                _userControlManager?.ShowControl(_attributeControl, "Thuộc tính sản phẩm");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi hiển thị thuộc tính sản phẩm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         #endregion
 
         #region Form Management
@@ -324,15 +235,13 @@ namespace MasterData.ProductService
                 _productServiceListControl?.Dispose();
                 _productServiceCategoryControl?.Dispose();
                 _productVariantControl?.Dispose();
-                _unitOfMeasureControl?.Dispose();
-                _attributeControl?.Dispose();
                 _userControlManager = null;
 
                 base.OnFormClosing(e);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi đóng form: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($@"Lỗi khi đóng form: {ex.Message}", @"Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
