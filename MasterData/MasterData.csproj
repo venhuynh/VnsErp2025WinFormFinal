@@ -212,6 +212,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Customer\Dto\DTO_README.md" />
+    <None Include="ProductService\HowToTestImageService.md" />
+    <None Include="ProductService\ImageServiceIntegration_README.md" />
+    <None Include="ProductService\ThumbnailImageLogic_README.md" />
     <None Include="Properties\DataSources\Dal.DataContext.ProductService.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerContactDto.datasource" />

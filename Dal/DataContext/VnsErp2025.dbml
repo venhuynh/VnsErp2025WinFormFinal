@@ -125,10 +125,9 @@
       <Column Name="IsService" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="Description" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="ThumbnailPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="ThumbnailImage" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
       <Association Name="ProductService_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="ProductId" Type="ProductImage" />
       <Association Name="ProductService_ProductVariant" Member="ProductVariants" ThisKey="Id" OtherKey="ProductId" Type="ProductVariant" />
-      <Association Name="ProductServiceCategory_ProductService" Member="ProductServiceCategory" ThisKey="CategoryId" OtherKey="Id" Type="ProductServiceCategory" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.ProductServiceCategory" Member="ProductServiceCategories">
@@ -138,7 +137,6 @@
       <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="ParentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="CategoryCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Association Name="ProductServiceCategory_ProductService" Member="ProductServices" ThisKey="Id" OtherKey="CategoryId" Type="ProductService" />
       <Association Name="ProductServiceCategory_ProductServiceCategory" Member="ProductServiceCategories" ThisKey="Id" OtherKey="ParentId" Type="ProductServiceCategory" />
       <Association Name="ProductServiceCategory_ProductServiceCategory" Member="ProductServiceCategory1" ThisKey="ParentId" OtherKey="Id" Type="ProductServiceCategory" IsForeignKey="true" />
     </Type>
@@ -152,7 +150,7 @@
       <Column Name="PurchasePrice" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
       <Column Name="SalePrice" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="ThumbnailPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="ThumbnailImage" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
       <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
       <Association Name="ProductVariant_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="VariantId" Type="ProductImage" />
       <Association Name="ProductService_ProductVariant" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />

@@ -603,7 +603,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
                     existing.IsService = productService.IsService;
                     existing.Description = productService.Description;
                     existing.IsActive = productService.IsActive;
-                    existing.ThumbnailPath = productService.ThumbnailPath;
+                    existing.ThumbnailImage = productService.ThumbnailImage;
                 }
                 
                 context.SubmitChanges();

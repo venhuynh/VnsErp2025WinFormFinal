@@ -2686,13 +2686,11 @@ namespace Dal.DataContext
 		
 		private bool _IsActive;
 		
-		private string _ThumbnailPath;
+		private System.Data.Linq.Binary _ThumbnailImage;
 		
 		private EntitySet<ProductImage> _ProductImages;
 		
 		private EntitySet<ProductVariant> _ProductVariants;
-		
-		private EntityRef<ProductServiceCategory> _ProductServiceCategory;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -2712,15 +2710,14 @@ namespace Dal.DataContext
     partial void OnDescriptionChanged();
     partial void OnIsActiveChanging(bool value);
     partial void OnIsActiveChanged();
-    partial void OnThumbnailPathChanging(string value);
-    partial void OnThumbnailPathChanged();
+    partial void OnThumbnailImageChanging(System.Data.Linq.Binary value);
+    partial void OnThumbnailImageChanged();
     #endregion
 		
 		public ProductService()
 		{
 			this._ProductImages = new EntitySet<ProductImage>(new Action<ProductImage>(this.attach_ProductImages), new Action<ProductImage>(this.detach_ProductImages));
 			this._ProductVariants = new EntitySet<ProductVariant>(new Action<ProductVariant>(this.attach_ProductVariants), new Action<ProductVariant>(this.detach_ProductVariants));
-			this._ProductServiceCategory = default(EntityRef<ProductServiceCategory>);
 			OnCreated();
 		}
 		
@@ -2795,10 +2792,6 @@ namespace Dal.DataContext
 			{
 				if ((this._CategoryId != value))
 				{
-					if (this._ProductServiceCategory.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
 					this.OnCategoryIdChanging(value);
 					this.SendPropertyChanging();
 					this._CategoryId = value;
@@ -2868,22 +2861,22 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailPath", DbType="NVarChar(500)")]
-		public string ThumbnailPath
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailImage", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary ThumbnailImage
 		{
 			get
 			{
-				return this._ThumbnailPath;
+				return this._ThumbnailImage;
 			}
 			set
 			{
-				if ((this._ThumbnailPath != value))
+				if ((this._ThumbnailImage != value))
 				{
-					this.OnThumbnailPathChanging(value);
+					this.OnThumbnailImageChanging(value);
 					this.SendPropertyChanging();
-					this._ThumbnailPath = value;
-					this.SendPropertyChanged("ThumbnailPath");
-					this.OnThumbnailPathChanged();
+					this._ThumbnailImage = value;
+					this.SendPropertyChanged("ThumbnailImage");
+					this.OnThumbnailImageChanged();
 				}
 			}
 		}
@@ -2911,40 +2904,6 @@ namespace Dal.DataContext
 			set
 			{
 				this._ProductVariants.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductServiceCategory_ProductService", Storage="_ProductServiceCategory", ThisKey="CategoryId", OtherKey="Id", IsForeignKey=true)]
-		public ProductServiceCategory ProductServiceCategory
-		{
-			get
-			{
-				return this._ProductServiceCategory.Entity;
-			}
-			set
-			{
-				ProductServiceCategory previousValue = this._ProductServiceCategory.Entity;
-				if (((previousValue != value) 
-							|| (this._ProductServiceCategory.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ProductServiceCategory.Entity = null;
-						previousValue.ProductServices.Remove(this);
-					}
-					this._ProductServiceCategory.Entity = value;
-					if ((value != null))
-					{
-						value.ProductServices.Add(this);
-						this._CategoryId = value.Id;
-					}
-					else
-					{
-						this._CategoryId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("ProductServiceCategory");
-				}
 			}
 		}
 		
@@ -3009,8 +2968,6 @@ namespace Dal.DataContext
 		
 		private string _CategoryCode;
 		
-		private EntitySet<ProductService> _ProductServices;
-		
 		private EntitySet<ProductServiceCategory> _ProductServiceCategories;
 		
 		private EntityRef<ProductServiceCategory> _ProductServiceCategory1;
@@ -3033,7 +2990,6 @@ namespace Dal.DataContext
 		
 		public ProductServiceCategory()
 		{
-			this._ProductServices = new EntitySet<ProductService>(new Action<ProductService>(this.attach_ProductServices), new Action<ProductService>(this.detach_ProductServices));
 			this._ProductServiceCategories = new EntitySet<ProductServiceCategory>(new Action<ProductServiceCategory>(this.attach_ProductServiceCategories), new Action<ProductServiceCategory>(this.detach_ProductServiceCategories));
 			this._ProductServiceCategory1 = default(EntityRef<ProductServiceCategory>);
 			OnCreated();
@@ -3143,19 +3099,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductServiceCategory_ProductService", Storage="_ProductServices", ThisKey="Id", OtherKey="CategoryId")]
-		public EntitySet<ProductService> ProductServices
-		{
-			get
-			{
-				return this._ProductServices;
-			}
-			set
-			{
-				this._ProductServices.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductServiceCategory_ProductServiceCategory", Storage="_ProductServiceCategories", ThisKey="Id", OtherKey="ParentId")]
 		public EntitySet<ProductServiceCategory> ProductServiceCategories
 		{
@@ -3223,18 +3166,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		private void attach_ProductServices(ProductService entity)
-		{
-			this.SendPropertyChanging();
-			entity.ProductServiceCategory = this;
-		}
-		
-		private void detach_ProductServices(ProductService entity)
-		{
-			this.SendPropertyChanging();
-			entity.ProductServiceCategory = null;
-		}
-		
 		private void attach_ProductServiceCategories(ProductServiceCategory entity)
 		{
 			this.SendPropertyChanging();
@@ -3268,7 +3199,7 @@ namespace Dal.DataContext
 		
 		private bool _IsActive;
 		
-		private string _ThumbnailPath;
+		private System.Data.Linq.Binary _ThumbnailImage;
 		
 		private EntitySet<VariantAttribute> _VariantAttributes;
 		
@@ -3296,8 +3227,8 @@ namespace Dal.DataContext
     partial void OnSalePriceChanged();
     partial void OnIsActiveChanging(bool value);
     partial void OnIsActiveChanged();
-    partial void OnThumbnailPathChanging(string value);
-    partial void OnThumbnailPathChanged();
+    partial void OnThumbnailImageChanging(System.Data.Linq.Binary value);
+    partial void OnThumbnailImageChanged();
     #endregion
 		
 		public ProductVariant()
@@ -3457,22 +3388,22 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailPath", DbType="NVarChar(500)")]
-		public string ThumbnailPath
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailImage", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary ThumbnailImage
 		{
 			get
 			{
-				return this._ThumbnailPath;
+				return this._ThumbnailImage;
 			}
 			set
 			{
-				if ((this._ThumbnailPath != value))
+				if ((this._ThumbnailImage != value))
 				{
-					this.OnThumbnailPathChanging(value);
+					this.OnThumbnailImageChanging(value);
 					this.SendPropertyChanging();
-					this._ThumbnailPath = value;
-					this.SendPropertyChanged("ThumbnailPath");
-					this.OnThumbnailPathChanged();
+					this._ThumbnailImage = value;
+					this.SendPropertyChanged("ThumbnailImage");
+					this.OnThumbnailImageChanged();
 				}
 			}
 		}

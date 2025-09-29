@@ -26,12 +26,11 @@ namespace MasterData.ProductService.Converters
                 Code = entity.Code,
                 Name = entity.Name,
                 CategoryId = entity.CategoryId,
-                CategoryName = entity.ProductServiceCategory?.CategoryName,
+                CategoryName = null, // Sẽ được resolve riêng nếu cần
                 IsService = entity.IsService,
                 Description = entity.Description,
                 IsActive = entity.IsActive,
-                ThumbnailPath = entity.ThumbnailPath,
-                ThumbnailImage = null, // Sẽ được load riêng nếu cần
+                ThumbnailImage = entity.ThumbnailImage?.ToArray(),
                 VariantCount = 0, // Sẽ được tính toán riêng nếu cần
                 ImageCount = 0,   // Sẽ được tính toán riêng nếu cần
             };
@@ -62,8 +61,7 @@ namespace MasterData.ProductService.Converters
                 IsService = entity.IsService,
                 Description = entity.Description,
                 IsActive = entity.IsActive,
-                ThumbnailPath = entity.ThumbnailPath,
-                ThumbnailImage = null, // Sẽ được load riêng nếu cần
+                ThumbnailImage = entity.ThumbnailImage?.ToArray(),
                 VariantCount = variantCountResolver?.Invoke(entity.Id) ?? 0,
                 ImageCount = imageCountResolver?.Invoke(entity.Id) ?? 0,
             };
@@ -105,7 +103,7 @@ namespace MasterData.ProductService.Converters
                 IsService = dto.IsService,
                 Description = dto.Description,
                 IsActive = dto.IsActive,
-                ThumbnailPath = dto.ThumbnailPath,
+                ThumbnailImage = dto.ThumbnailImage != null ? new System.Data.Linq.Binary(dto.ThumbnailImage) : null,
             };
         }
     }

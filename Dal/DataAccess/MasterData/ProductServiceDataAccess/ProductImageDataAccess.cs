@@ -13,10 +13,10 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
     public class ProductImageDataAccess : BaseDataAccess<ProductImage>
     {
         /// <summary>
-        /// Lấy danh sách hình ảnh của sản phẩm/dịch vụ
+        /// Lấy danh sách hình ảnh của sản phẩm/dịch vụ (không bao gồm ImageData)
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
-        /// <returns>Danh sách hình ảnh</returns>
+        /// <returns>Danh sách hình ảnh metadata</returns>
         public List<ProductImage> GetByProductId(Guid productId)
         {
             try
@@ -26,6 +26,25 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
                     .Where(x => x.ProductId == productId && x.IsActive == true)
                     .OrderBy(x => x.SortOrder)
                     .ThenBy(x => x.CreatedDate)
+                    .Select(x => new ProductImage
+                    {
+                        Id = x.Id,
+                        ProductId = x.ProductId,
+                        VariantId = x.VariantId,
+                        ImagePath = x.ImagePath,
+                        SortOrder = x.SortOrder,
+                        IsPrimary = x.IsPrimary,
+                        ImageType = x.ImageType,
+                        ImageSize = x.ImageSize,
+                        ImageWidth = x.ImageWidth,
+                        ImageHeight = x.ImageHeight,
+                        Caption = x.Caption,
+                        AltText = x.AltText,
+                        IsActive = x.IsActive,
+                        CreatedDate = x.CreatedDate,
+                        ModifiedDate = x.ModifiedDate
+                        // Không load ImageData để tối ưu performance
+                    })
                     .ToList();
             }
             catch (Exception ex)
@@ -35,7 +54,28 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
         }
 
         /// <summary>
-        /// Lấy hình ảnh chính của sản phẩm/dịch vụ
+        /// Lấy ImageData của một hình ảnh cụ thể (lazy loading)
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        /// <returns>ImageData binary</returns>
+        public byte[] GetImageData(Guid imageId)
+        {
+            try
+            {
+                using var context = CreateContext();
+                return context.ProductImages
+                    .Where(x => x.Id == imageId)
+                    .Select(x => x.ImageData.ToArray())
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy ImageData cho hình ảnh '{imageId}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy hình ảnh chính của sản phẩm/dịch vụ (không bao gồm ImageData)
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
         /// <returns>Hình ảnh chính hoặc null</returns>
@@ -45,7 +85,27 @@ namespace Dal.DataAccess.MasterData.ProductServiceDataAccess
             {
                 using var context = CreateContext();
                 return context.ProductImages
-                    .FirstOrDefault(x => x.ProductId == productId && x.IsPrimary == true && x.IsActive == true);
+                    .Where(x => x.ProductId == productId && x.IsPrimary == true && x.IsActive == true)
+                    .Select(x => new ProductImage
+                    {
+                        Id = x.Id,
+                        ProductId = x.ProductId,
+                        VariantId = x.VariantId,
+                        ImagePath = x.ImagePath,
+                        SortOrder = x.SortOrder,
+                        IsPrimary = x.IsPrimary,
+                        ImageType = x.ImageType,
+                        ImageSize = x.ImageSize,
+                        ImageWidth = x.ImageWidth,
+                        ImageHeight = x.ImageHeight,
+                        Caption = x.Caption,
+                        AltText = x.AltText,
+                        IsActive = x.IsActive,
+                        CreatedDate = x.CreatedDate,
+                        ModifiedDate = x.ModifiedDate
+                        // Không load ImageData
+                    })
+                    .FirstOrDefault();
             }
             catch (Exception ex)
             {

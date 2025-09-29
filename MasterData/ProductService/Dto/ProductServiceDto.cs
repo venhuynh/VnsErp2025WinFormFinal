@@ -53,18 +53,13 @@ namespace MasterData.ProductService.Dto
         [Description("Trạng thái hoạt động (hiển thị dạng text)")]
         public string StatusDisplay => IsActive ? "Hoạt động" : "Không hoạt động";
 
-        [DisplayName("Đường dẫn ảnh")]
-        [Description("Đường dẫn ảnh thumbnail")]
-        [StringLength(500, ErrorMessage = "Đường dẫn ảnh không được vượt quá 500 ký tự")]
-        public string ThumbnailPath { get; set; }
-
         [DisplayName("Ảnh đại diện")]
         [Description("Ảnh đại diện của sản phẩm/dịch vụ")]
         public byte[] ThumbnailImage { get; set; }
 
         [DisplayName("Có ảnh đại diện")]
         [Description("Kiểm tra xem có ảnh đại diện không")]
-        public bool HasThumbnailImage => !string.IsNullOrEmpty(ThumbnailPath) || (ThumbnailImage != null && ThumbnailImage.Length > 0);
+        public bool HasThumbnailImage => ThumbnailImage != null && ThumbnailImage.Length > 0;
 
         [DisplayName("Số biến thể")]
         [Description("Số lượng biến thể sản phẩm")]

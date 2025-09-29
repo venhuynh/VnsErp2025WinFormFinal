@@ -439,7 +439,6 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                     IsService = isService,
                     Description = GenerateProductDescription(isService, random),
                     IsActive = random.Next(0, 10) < 9, // 90% active
-                    ThumbnailPath = isService ? null : $"/images/products/sp{i:D6}_thumb.jpg"
                 };
 
                 products.Add(product);
@@ -514,7 +513,6 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                         PurchasePrice = isService ? null : (decimal?)random.Next(100000, 10000000),
                         SalePrice = isService ? (decimal?)random.Next(500000, 50000000) : (decimal?)random.Next(200000, 20000000),
                         IsActive = random.Next(0, 10) < 9, // 90% active
-                        ThumbnailPath = isService ? null : $"/images/variants/{product.Code}-V{i}_thumb.jpg"
                     };
 
                     variants.Add(variant);

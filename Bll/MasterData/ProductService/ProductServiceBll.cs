@@ -109,43 +109,8 @@ namespace Bll.MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Lưu hoặc cập nhật sản phẩm/dịch vụ với xử lý hình ảnh
-        /// </summary>
-        /// <param name="productService">ProductService entity cần lưu hoặc cập nhật</param>
-        /// <param name="imageFilePath">Đường dẫn file ảnh (nếu có)</param>
-        /// <param name="hasImageChanged">Có thay đổi hình ảnh không</param>
-        public void SaveOrUpdateWithImage(Dal.DataContext.ProductService productService, string imageFilePath = null, bool hasImageChanged = false)
-        {
-            try
-            {
-                if (productService == null)
-                    throw new ArgumentNullException(nameof(productService));
-
-                // Lưu thông tin sản phẩm/dịch vụ
-                _dataAccess.SaveOrUpdate(productService);
-
-                // Xử lý hình ảnh nếu có thay đổi
-                if (hasImageChanged && !string.IsNullOrWhiteSpace(imageFilePath))
-                {
-                    // Cập nhật hình ảnh chính
-                    _productImageBll.UpdatePrimaryImage(productService.Id, imageFilePath);
-                }
-                else if (hasImageChanged && string.IsNullOrWhiteSpace(imageFilePath))
-                {
-                    // Xóa hình ảnh chính nếu user đã xóa
-                    var existingImages = _productImageBll.GetByProductId(productService.Id);
-                    foreach (var image in existingImages.Where(x => x.IsPrimary == true))
-                    {
-                        _productImageBll.DeleteImage(image.Id);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi lưu hoặc cập nhật sản phẩm/dịch vụ với hình ảnh: {ex.Message}", ex);
-            }
-        }
+        // Phương thức SaveOrUpdateWithImage đã được loại bỏ vì không còn cần thiết
+        // Thay vào đó sử dụng SaveOrUpdate thông thường với ThumbnailImage
 
         /// <summary>
         /// Xóa sản phẩm/dịch vụ theo ID

@@ -1,5 +1,6 @@
 ﻿using Bll.MasterData.ProductService;
 using Bll.Utils;
+using Bll.Common.ImageService;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
@@ -13,6 +14,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MasterData.ProductService
@@ -27,6 +29,9 @@ namespace MasterData.ProductService
         private readonly ProductServiceBll _productServiceBll = new ProductServiceBll();
         private readonly ProductServiceCategoryBll _productServiceCategoryBll = new ProductServiceCategoryBll();
         private readonly ProductImageBll _productImageBll = new ProductImageBll();
+        private readonly ImageService _imageService = new ImageService();
+        private readonly ImageValidationService _imageValidationService = new ImageValidationService();
+        private readonly ImageCompressionService _imageCompressionService = new ImageCompressionService();
         private readonly Guid _productServiceId;
         private bool IsEditMode => _productServiceId != Guid.Empty;
         private bool _hasImageChanged = false;
@@ -228,7 +233,7 @@ namespace MasterData.ProductService
             DescriptionTextEdit.Text = dto.Description;
             IsServiceToggleSwitch.IsOn = dto.IsService;
             IsActiveToggleSwitch.IsOn = dto.IsActive;
-            ThumbnailPathButtonEdit.Text = dto.ThumbnailPath;
+            // Không còn sử dụng ThumbnailPathButtonEdit
             
             // Chọn danh mục trong TreeListLookUpEdit
             if (dto.CategoryId.HasValue)
@@ -245,10 +250,10 @@ namespace MasterData.ProductService
             {
                 try
                 {
-                    using (var originalImage = Image.FromStream(new MemoryStream(dto.ThumbnailImage)))
+                    // Sử dụng ImageService để load và compress ảnh
+                    var compressedImage = LoadThumbnailImage(dto.ThumbnailImage);
+                    if (compressedImage != null)
                     {
-                        // Nén ảnh khi load để tránh lỗi Out of memory
-                        var compressedImage = _productImageBll.CompressImage(originalImage, 80, 2048);
                         ThumbnailImagePictureEdit.Image = compressedImage;
                     }
                 }
@@ -281,27 +286,8 @@ namespace MasterData.ProductService
             {
                 try
                 {
-                    // Tạo một bản sao của ảnh để tránh lỗi GDI+
-                    using (var imageCopy = new Bitmap(ThumbnailImagePictureEdit.Image))
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            // Lưu ảnh với định dạng JPEG và chất lượng cao
-                            var jpegCodec = GetJpegCodec();
-                            if (jpegCodec != null)
-                            {
-                                var encoderParams = new EncoderParameters(1);
-                                encoderParams.Param[0] = new EncoderParameter(Encoder.Quality, 90L);
-                                imageCopy.Save(ms, jpegCodec, encoderParams);
-                            }
-                            else
-                            {
-                                // Fallback nếu không có JPEG codec
-                                imageCopy.Save(ms, ImageFormat.Jpeg);
-                            }
-                            thumbnailImage = ms.ToArray();
-                        }
-                    }
+                    // Sử dụng ImageCompressionService để xử lý ảnh
+                    thumbnailImage = ProcessThumbnailImage(ThumbnailImagePictureEdit.Image);
                 }
                 catch (Exception ex)
                 {
@@ -319,7 +305,6 @@ namespace MasterData.ProductService
                 CategoryId = categoryId,
                 IsService = IsServiceToggleSwitch.IsOn,
                 IsActive = IsActiveToggleSwitch.IsOn,
-                ThumbnailPath = ThumbnailPathButtonEdit?.Text?.Trim(),
                 ThumbnailImage = thumbnailImage
             };
         }
@@ -353,6 +338,83 @@ namespace MasterData.ProductService
                 MsgBox.ShowException(ex);
             else
                 MsgBox.ShowException(new Exception(context + ": " + ex.Message, ex));
+        }
+
+        /// <summary>
+        /// Load và compress thumbnail image từ byte array
+        /// </summary>
+        /// <param name="imageData">Dữ liệu hình ảnh</param>
+        /// <returns>Hình ảnh đã được resize và compress cho thumbnail</returns>
+        private Image LoadThumbnailImage(byte[] imageData)
+        {
+            try
+            {
+                if (imageData == null || imageData.Length == 0)
+                    return null;
+
+                // Resize và compress cho thumbnail (max 512x512, max 100KB)
+                var compressedData = _imageCompressionService.CompressImage(imageData, 100000, 512);
+                return Image.FromStream(new MemoryStream(compressedData));
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi load thumbnail image");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Load và compress image từ file path cho thumbnail
+        /// </summary>
+        /// <param name="filePath">Đường dẫn file</param>
+        /// <returns>Hình ảnh đã được resize và compress cho thumbnail</returns>
+        private Image LoadAndCompressImage(string filePath)
+        {
+            try
+            {
+                if (!File.Exists(filePath))
+                    return null;
+
+                var imageData = File.ReadAllBytes(filePath);
+                
+                // Resize và compress cho thumbnail (max 512x512, max 100KB)
+                var compressedData = _imageCompressionService.CompressImage(imageData, 100000, 512);
+                return Image.FromStream(new MemoryStream(compressedData));
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi load và compress image");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Xử lý thumbnail image để lưu vào database
+        /// </summary>
+        /// <param name="image">Hình ảnh cần xử lý</param>
+        /// <returns>Dữ liệu byte đã được resize và compress cho thumbnail</returns>
+        private byte[] ProcessThumbnailImage(Image image)
+        {
+            try
+            {
+                if (image == null)
+                    return null;
+
+                // Convert Image to byte array
+                using (var ms = new MemoryStream())
+                {
+                    image.Save(ms, ImageFormat.Jpeg);
+                    var imageData = ms.ToArray();
+
+                    // Resize và compress cho thumbnail (max 512x512, max 100KB)
+                    return _imageCompressionService.CompressImage(imageData, 100000, 512);
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi xử lý thumbnail image");
+                return null;
+            }
         }
 
         /// <summary>
@@ -446,12 +508,7 @@ namespace MasterData.ProductService
             }
 
             // Kiểm tra độ dài ThumbnailPath
-            if (!string.IsNullOrWhiteSpace(ThumbnailPathButtonEdit?.Text) && ThumbnailPathButtonEdit.Text.Trim().Length > 500)
-            {
-                dxErrorProvider1.SetError(ThumbnailPathButtonEdit, "Đường dẫn ảnh không được vượt quá 500 ký tự", ErrorType.Critical);
-                ThumbnailPathButtonEdit?.Focus();
-                return false;
-            }
+            // Không còn validate ThumbnailPath vì đã chuyển sang ThumbnailImage
 
             return true;
         }
@@ -466,9 +523,23 @@ namespace MasterData.ProductService
                 var dto = GetDataFromControls();
                 var entity = dto.ToEntity();
 
-                // Sử dụng SaveOrUpdateWithImage để xử lý hình ảnh
-                var imagePath = ThumbnailPathButtonEdit.Text?.Trim();
-                _productServiceBll.SaveOrUpdateWithImage(entity, imagePath, _hasImageChanged);
+                // Lưu sản phẩm/dịch vụ với ảnh thumbnail
+                _productServiceBll.SaveOrUpdate(entity);
+
+                // Nếu có thay đổi ảnh và đã lưu thành công, cập nhật lại ảnh hiển thị
+                if (_hasImageChanged && ThumbnailImagePictureEdit.Image != null)
+                {
+                    // Cập nhật lại ảnh hiển thị với ảnh đã lưu từ database
+                    var savedProduct = _productServiceBll.GetById(entity.Id);
+                    if (savedProduct != null && savedProduct.ThumbnailImage != null)
+                    {
+                        var compressedImage = LoadThumbnailImage(savedProduct.ThumbnailImage.ToArray());
+                        if (compressedImage != null)
+                        {
+                            ThumbnailImagePictureEdit.Image = compressedImage;
+                        }
+                    }
+                }
 
                 var message = IsEditMode ? "Cập nhật sản phẩm/dịch vụ thành công!" : "Thêm mới sản phẩm/dịch vụ thành công!";
                 ShowInfo(message);
@@ -558,16 +629,25 @@ namespace MasterData.ProductService
                         return;
                     }
 
-                    // Kiểm tra kích thước file (giới hạn 5MB)
+                    // Kiểm tra file với ImageValidationService
                     var fileInfo = new System.IO.FileInfo(selectedFilePath);
-                    //if (fileInfo.Length > 5 * 1024 * 1024) // 5MB
-                    //{
-                    //    ShowError("File ảnh quá lớn. Vui lòng chọn file nhỏ hơn 5MB");
-                    //    return;
-                    //}
+                    var imageData = File.ReadAllBytes(selectedFilePath);
+                    
+                    // Validate hình ảnh cho thumbnail (chấp nhận mọi kích thước)
+                    var validationResult = _imageValidationService.ValidateImageForThumbnail(imageData, fileInfo.Name);
+                    if (!validationResult.IsValid)
+                    {
+                        var errorMessage = string.Join("\n", validationResult.Errors);
+                        ShowError($"File ảnh không hợp lệ:\n{errorMessage}");
+                        return;
+                    }
 
-                    // Cập nhật đường dẫn
-                    ThumbnailPathButtonEdit.Text = selectedFilePath;
+                    // Hiển thị warnings nếu có
+                    if (validationResult.Warnings.Any())
+                    {
+                        var warningMessage = string.Join("\n", validationResult.Warnings);
+                        ShowInfo($"Cảnh báo về file ảnh:\n{warningMessage}");
+                    }
 
                     // Load và hiển thị ảnh
                     try
@@ -579,19 +659,21 @@ namespace MasterData.ProductService
                             ThumbnailImagePictureEdit.Image = null;
                         }
 
-                        // Nén ảnh trước khi hiển thị để tránh lỗi Out of memory
-                        var compressedImage = _productImageBll.CompressImage(selectedFilePath, 80, 2048);
-                        ThumbnailImagePictureEdit.Image = compressedImage;
-                        
-                        // Đánh dấu đã thay đổi hình ảnh
-                        _hasImageChanged = true;
-                        
-                        ShowInfo($"Đã chọn và nén ảnh thành công: {fileInfo.Name} ({(fileInfo.Length / 1024.0):F1} KB)");
+                        // Sử dụng ImageCompressionService để nén ảnh
+                        var compressedImage = LoadAndCompressImage(selectedFilePath);
+                        if (compressedImage != null)
+                        {
+                            ThumbnailImagePictureEdit.Image = compressedImage;
+                            
+                            // Đánh dấu đã thay đổi hình ảnh
+                            _hasImageChanged = true;
+                            
+                            ShowInfo($"Đã chọn và resize ảnh thành công: {fileInfo.Name}\nKích thước gốc: {(fileInfo.Length / 1024.0):F1} KB\nĐã resize về thumbnail 512x512");
+                        }
                     }
                     catch (Exception ex)
                     {
                         ShowError(ex, "Không thể load ảnh từ file đã chọn. File có thể bị hỏng hoặc không phải định dạng ảnh hợp lệ");
-                        ThumbnailPathButtonEdit.Text = string.Empty;
                     }
                 }
             }
@@ -609,7 +691,7 @@ namespace MasterData.ProductService
             try
             {
                 // Xóa đường dẫn
-                ThumbnailPathButtonEdit.Text = string.Empty;
+                // Không còn cần xóa ThumbnailPathButtonEdit vì đã chuyển sang ThumbnailImage
                 
                 // Dispose và xóa ảnh
                 if (ThumbnailImagePictureEdit.Image != null)
@@ -645,6 +727,7 @@ namespace MasterData.ProductService
                 CancelBarButtonItem_ItemClick(null, null);
                 return true;
             }
+
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
