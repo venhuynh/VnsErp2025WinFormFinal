@@ -33,10 +33,10 @@
             this.components = new System.ComponentModel.Container();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
+            this.AddNewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.SaveBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.AddNewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.RefreshBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
@@ -129,6 +129,13 @@
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
             // 
+            // AddNewBarButtonItem
+            // 
+            this.AddNewBarButtonItem.Caption = "Thêm mới";
+            this.AddNewBarButtonItem.Id = 6;
+            this.AddNewBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.addnewdatasource_16x16;
+            this.AddNewBarButtonItem.Name = "AddNewBarButtonItem";
+            // 
             // SaveBarButtonItem
             // 
             this.SaveBarButtonItem.Caption = "Lưu";
@@ -151,13 +158,6 @@
             this.DeleteBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.cancel_16x16;
             this.DeleteBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.cancel_32x32;
             this.DeleteBarButtonItem.Name = "DeleteBarButtonItem";
-            // 
-            // AddNewBarButtonItem
-            // 
-            this.AddNewBarButtonItem.Caption = "Thêm mới";
-            this.AddNewBarButtonItem.Id = 6;
-            this.AddNewBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.addnewdatasource_16x16;
-            this.AddNewBarButtonItem.Name = "AddNewBarButtonItem";
             // 
             // RefreshBarButtonItem
             // 
@@ -319,6 +319,7 @@
             this.AttributeGridView.OptionsDetail.EnableMasterViewMode = false;
             this.AttributeGridView.OptionsSelection.MultiSelect = true;
             this.AttributeGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.AttributeGridView.OptionsView.RowAutoHeight = true;
             this.AttributeGridView.OptionsView.ShowAutoFilterRow = true;
             this.AttributeGridView.OptionsView.ShowGroupPanel = false;
             // 

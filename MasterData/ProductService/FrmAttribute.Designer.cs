@@ -32,6 +32,7 @@
             this.components = new System.ComponentModel.Container();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
+            this.AddNewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.SaveBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -59,7 +60,7 @@
             this.colName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colDataType = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colDescription1 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colFullInfo = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.NameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.DataTypeTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.DescriptionTextEdit = new DevExpress.XtraEditors.TextEdit();
@@ -76,6 +77,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.attributeDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataTypeTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).BeginInit();
@@ -100,9 +102,10 @@
             this.SaveBarButtonItem,
             this.DeleteBarButtonItem,
             this.EditBarButtonItem,
-            this.RefreshBarButtonItem});
+            this.RefreshBarButtonItem,
+            this.AddNewBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 6;
+            this.barManager1.MaxItemId = 7;
             // 
             // bar2
             // 
@@ -112,6 +115,7 @@
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AddNewBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SaveBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.DeleteBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
@@ -119,6 +123,13 @@
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
+            // 
+            // AddNewBarButtonItem
+            // 
+            this.AddNewBarButtonItem.Caption = "Thêm mới";
+            this.AddNewBarButtonItem.Id = 6;
+            this.AddNewBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.addnewdatasource_16x16;
+            this.AddNewBarButtonItem.Name = "AddNewBarButtonItem";
             // 
             // SaveBarButtonItem
             // 
@@ -278,6 +289,8 @@
             this.AttributeGridControl.MainView = this.AttributeGridView;
             this.AttributeGridControl.MenuManager = this.barManager1;
             this.AttributeGridControl.Name = "AttributeGridControl";
+            this.AttributeGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemMemoEdit1});
             this.AttributeGridControl.Size = new System.Drawing.Size(634, 487);
             this.AttributeGridControl.TabIndex = 4;
             this.AttributeGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -293,14 +306,14 @@
             this.colId1,
             this.colName,
             this.colDataType,
-            this.colDescription1,
-            this.colFullInfo});
+            this.colDescription1});
             this.AttributeGridView.GridControl = this.AttributeGridControl;
             this.AttributeGridView.IndicatorWidth = 50;
             this.AttributeGridView.Name = "AttributeGridView";
             this.AttributeGridView.OptionsDetail.EnableMasterViewMode = false;
             this.AttributeGridView.OptionsSelection.MultiSelect = true;
             this.AttributeGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.AttributeGridView.OptionsView.RowAutoHeight = true;
             this.AttributeGridView.OptionsView.ShowAutoFilterRow = true;
             this.AttributeGridView.OptionsView.ShowGroupPanel = false;
             // 
@@ -325,18 +338,17 @@
             // 
             // colDescription1
             // 
+            this.colDescription1.ColumnEdit = this.repositoryItemMemoEdit1;
             this.colDescription1.FieldName = "Description";
             this.colDescription1.Name = "colDescription1";
             this.colDescription1.Visible = true;
             this.colDescription1.VisibleIndex = 3;
             // 
-            // colFullInfo
+            // repositoryItemMemoEdit1
             // 
-            this.colFullInfo.FieldName = "FullInfo";
-            this.colFullInfo.Name = "colFullInfo";
-            this.colFullInfo.OptionsColumn.ReadOnly = true;
-            this.colFullInfo.Visible = true;
-            this.colFullInfo.VisibleIndex = 4;
+            this.repositoryItemMemoEdit1.Appearance.Options.UseTextOptions = true;
+            this.repositoryItemMemoEdit1.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
             // 
             // NameTextEdit
             // 
@@ -446,6 +458,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.attributeDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataTypeTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).EndInit();
@@ -465,6 +478,7 @@
         private DevExpress.XtraBars.Bar bar2;
         private DevExpress.XtraBars.BarButtonItem SaveBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem AddNewBarButtonItem;
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlLeft;
@@ -498,7 +512,7 @@
         private DevExpress.XtraGrid.Columns.GridColumn colName;
         private DevExpress.XtraGrid.Columns.GridColumn colDataType;
         private DevExpress.XtraGrid.Columns.GridColumn colDescription1;
-        private DevExpress.XtraGrid.Columns.GridColumn colFullInfo;
+        private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit repositoryItemMemoEdit1;
         private DevExpress.XtraBars.BarButtonItem RefreshBarButtonItem;
     }
 }

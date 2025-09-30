@@ -201,6 +201,15 @@ namespace MasterData.ProductService
                 AttributeGridView.IndicatorWidth = 50;
                 AttributeGridView.OptionsView.ShowAutoFilterRow = true;
                 AttributeGridView.OptionsView.ShowGroupPanel = false;
+                
+                // Cấu hình cột Mô tả để hiển thị đầy đủ nội dung với xuống dòng
+                if (AttributeGridView.Columns["colDescription1"] != null)
+                {
+                    AttributeGridView.Columns["colDescription1"].OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.True;
+                    AttributeGridView.Columns["colDescription1"].OptionsColumn.FixedWidth = false;
+                    AttributeGridView.Columns["colDescription1"].Width = 200; // Đặt chiều rộng phù hợp
+                }
+                
                 AttributeGridView.BestFitColumns();
             }
             catch
@@ -342,6 +351,13 @@ namespace MasterData.ProductService
             if (selectedDto == null)
             {
                 ShowInfo("Không thể xác định dòng được chọn để chỉnh sửa.");
+                return;
+            }
+
+            // Kiểm tra phụ thuộc dữ liệu trước khi cho phép edit
+            if (selectedDto.Id != Guid.Empty && _unitBll.HasDependencies(selectedDto.Id))
+            {
+                ShowWarning($"Không thể chỉnh sửa '{selectedDto.Name}' vì còn dữ liệu phụ thuộc. Việc sửa đổi có thể ảnh hưởng đến tính toàn vẹn dữ liệu.");
                 return;
             }
 
