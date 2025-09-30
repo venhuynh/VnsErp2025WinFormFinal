@@ -20,8 +20,7 @@ namespace MasterData.ProductService.Dto
         private string _unitCode;
         private string _unitName;
         private bool _isActive;
-        private string _attributesDisplay;
-        private string _imagesDisplay;
+
         #endregion
 
         #region Properties

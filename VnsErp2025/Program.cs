@@ -47,7 +47,7 @@ namespace VnsErp2025
 
             #region Dành cho debug
 
-            Application.Run(new FrmAttribute());
+            Application.Run(new FrmUnitOfMeasure());
 
             #endregion
 

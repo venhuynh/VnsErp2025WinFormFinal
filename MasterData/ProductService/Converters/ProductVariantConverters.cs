@@ -265,8 +265,9 @@ namespace MasterData.ProductService.Converters
             // Load unit information
             if (entity.UnitOfMeasure != null)
             {
-                dto.UnitCode = entity.UnitOfMeasure.Code;
-                dto.UnitName = entity.UnitOfMeasure.Name;
+                var unitDto = entity.UnitOfMeasure.ToDto();
+                dto.UnitCode = unitDto.Code;
+                dto.UnitName = unitDto.Name;
             }
 
             // Convert attributes

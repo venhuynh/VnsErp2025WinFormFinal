@@ -61,6 +61,7 @@
     <Compile Include="DataAccess\MasterData\ProductServiceDal\ProductImageDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\ProductServiceCategoryDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\ProductServiceDataAccess.cs" />
+    <Compile Include="DataAccess\MasterData\ProductServiceDal\UnitOfMeasureDataAccess.cs" />
     <Compile Include="DataContext\SeedData\MasterData\Customer\SeedData_Master_Customer.cs" />
     <Compile Include="DataContext\SeedData\MasterData\ProductService\SeedData_Master_ProductService.cs" />
     <Compile Include="DataContext\VnsErp2025.designer.cs">

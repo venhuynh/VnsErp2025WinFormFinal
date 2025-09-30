@@ -79,20 +79,6 @@ namespace MasterData.ProductService.Dto
             set => SetProperty(ref _isActive, value);
         }
 
-        /// <summary>
-        /// Số lượng biến thể sản phẩm sử dụng đơn vị này
-        /// </summary>
-        [DisplayName("Số biến thể")]
-        [Description("Số lượng biến thể sản phẩm sử dụng đơn vị này")]
-        public int ProductVariantCount { get; set; }
-
-        /// <summary>
-        /// Danh sách biến thể sản phẩm sử dụng đơn vị này
-        /// </summary>
-        [DisplayName("Biến thể sản phẩm")]
-        [Description("Danh sách biến thể sản phẩm sử dụng đơn vị này")]
-        public List<ProductVariantDto> ProductVariants { get; set; }
-
         #endregion
 
         #region Constructor
@@ -103,7 +89,6 @@ namespace MasterData.ProductService.Dto
         public UnitOfMeasureDto()
         {
             Id = Guid.NewGuid();
-            ProductVariants = new List<ProductVariantDto>();
             IsActive = true;
         }
 
@@ -169,22 +154,6 @@ namespace MasterData.ProductService.Dto
             }
         }
 
-        /// <summary>
-        /// Hiển thị số lượng biến thể sản phẩm
-        /// </summary>
-        [DisplayName("Số biến thể")]
-        [Description("Số lượng biến thể sản phẩm sử dụng đơn vị này")]
-        public string ProductVariantCountDisplay
-        {
-            get
-            {
-                if (ProductVariantCount == 0)
-                    return "Không có";
-                
-                return $"{ProductVariantCount} biến thể";
-            }
-        }
-
         #endregion
 
         #region Helper Methods
@@ -226,15 +195,6 @@ namespace MasterData.ProductService.Dto
         }
 
         /// <summary>
-        /// Kiểm tra xem đơn vị có đang được sử dụng không
-        /// </summary>
-        /// <returns>True nếu đang được sử dụng</returns>
-        public bool IsInUse()
-        {
-            return ProductVariantCount > 0;
-        }
-
-        /// <summary>
         /// Tạo bản sao của DTO
         /// </summary>
         /// <returns>Bản sao mới</returns>
@@ -246,9 +206,7 @@ namespace MasterData.ProductService.Dto
                 Code = this.Code,
                 Name = this.Name,
                 Description = this.Description,
-                IsActive = this.IsActive,
-                ProductVariantCount = this.ProductVariantCount,
-                ProductVariants = this.ProductVariants?.ConvertAll(pv => pv.Clone())
+                IsActive = this.IsActive
             };
         }
 
@@ -264,7 +222,6 @@ namespace MasterData.ProductService.Dto
             Name = other.Name;
             Description = other.Description;
             IsActive = other.IsActive;
-            ProductVariantCount = other.ProductVariantCount;
         }
 
         /// <summary>
@@ -276,8 +233,6 @@ namespace MasterData.ProductService.Dto
             Name = string.Empty;
             Description = string.Empty;
             IsActive = true;
-            ProductVariantCount = 0;
-            ProductVariants?.Clear();
         }
 
         /// <summary>

@@ -112,6 +112,7 @@
     <Compile Include="ProductService\Converters\ProductServiceCategoryConverters.cs" />
     <Compile Include="ProductService\Converters\ProductServiceConverters.cs" />
     <Compile Include="ProductService\Converters\ProductVariantConverters.cs" />
+    <Compile Include="ProductService\Converters\UnitOfMeasureConverters.cs" />
     <Compile Include="ProductService\Dto\AttributeDto.cs" />
     <Compile Include="ProductService\Dto\AttributeValueDto.cs" />
     <Compile Include="ProductService\Dto\ProductServiceCategoryDto.cs" />
@@ -249,6 +250,7 @@
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceCategoryDto.datasource" />
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceDto.datasource" />
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductVariantDto.datasource" />
+    <None Include="Properties\DataSources\MasterData.ProductService.Dto.UnitOfMeasureDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
   <ItemGroup>
