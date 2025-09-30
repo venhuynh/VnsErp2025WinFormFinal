@@ -8,6 +8,7 @@ using DevExpress.XtraEditors.DXErrorProvider;
 using MasterData.ProductService.Converters;
 using MasterData.ProductService.Dto;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -35,6 +36,7 @@ namespace MasterData.ProductService
         private readonly Guid _productServiceId;
         private bool IsEditMode => _productServiceId != Guid.Empty;
         private bool _hasImageChanged = false;
+        private List<Dal.DataContext.ProductService> _activeProductServicesCache;
 
         #endregion
 
@@ -88,6 +90,26 @@ namespace MasterData.ProductService
         #endregion
 
         #region Private Methods
+
+        /// <summary>
+        /// Load danh sách sản phẩm/dịch vụ đang hoạt động và lưu vào cache cục bộ.
+        /// </summary>
+        private async Task LoadActiveProductServices()
+        {
+            try
+            {
+                var activeProductServices = await _productServiceBll.GetFilteredAsync(
+                    isActive: true,
+                    orderBy: "Name",
+                    orderDirection: "ASC");
+
+                _activeProductServicesCache = activeProductServices ?? new List<Dal.DataContext.ProductService>();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi tải danh sách sản phẩm/dịch vụ đang hoạt động");
+            }
+        }
 
         /// <summary>
         /// Khởi tạo form và thiết lập các thuộc tính cơ bản.

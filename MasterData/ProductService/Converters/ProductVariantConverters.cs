@@ -57,7 +57,6 @@ namespace MasterData.ProductService.Converters
                     AttributeValueId = va.AttributeValueId,
                     AttributeValue = va.AttributeValue?.Value,
                     Description = va.Attribute?.Description,
-                    SortOrder = 0 // Default sort order
                 }).ToList();
             }
 
@@ -280,7 +279,6 @@ namespace MasterData.ProductService.Converters
                     AttributeValueId = va.AttributeValueId,
                     AttributeValue = va.AttributeValue?.Value,
                     Description = va.Attribute?.Description,
-                    SortOrder = 0
                 }).ToList();
                 dto.AttributeCount = dto.Attributes.Count;
             }

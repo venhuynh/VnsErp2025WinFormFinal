@@ -37,6 +37,22 @@ namespace Bll.MasterData.ProductServiceBll
         #region Public Methods
 
         /// <summary>
+        /// Lấy tất cả sản phẩm/dịch vụ (Sync)
+        /// </summary>
+        /// <returns>Danh sách ProductService entities</returns>
+        public List<Dal.DataContext.ProductService> GetAll()
+        {
+            try
+            {
+                return _dataAccess.GetAll();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy danh sách sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Lấy tất cả sản phẩm/dịch vụ (Async)
         /// </summary>
         /// <returns>Danh sách ProductService entities</returns>
