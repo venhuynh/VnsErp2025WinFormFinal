@@ -39,7 +39,6 @@
             DevExpress.XtraLayout.RowDefinition rowDefinition2 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition3 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition4 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition5 = new DevExpress.XtraLayout.RowDefinition();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.SaveBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -61,9 +60,6 @@
             this.colProductCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog(this.components);
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
-            this.hyperlinkLabelControl3 = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.hyperlinkLabelControl2 = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.hyperlinkLabelControl1 = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.AttributeValueGridControl = new DevExpress.XtraGrid.GridControl();
             this.attributeValueDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeValueGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -79,23 +75,20 @@
             this.colCategoryName1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.VariantCodeTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.IsActiveCheckEdit = new DevExpress.XtraEditors.ToggleSwitch();
+            this.IsActiveToggleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
             this.UnitNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.unitOfMeasureDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colFullInfo = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForProductName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForVariantCode = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForUnitName = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             this.simpleLabelItem1 = new DevExpress.XtraLayout.SimpleLabelItem();
             this.simpleLabelItem2 = new DevExpress.XtraLayout.SimpleLabelItem();
             this.simpleLabelItem3 = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -110,22 +103,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantCodeTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitNameSearchLookupEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.unitOfMeasureDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForProductName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForVariantCode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUnitName)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -287,13 +277,10 @@
             // 
             // dataLayoutControl1
             // 
-            this.dataLayoutControl1.Controls.Add(this.hyperlinkLabelControl3);
-            this.dataLayoutControl1.Controls.Add(this.hyperlinkLabelControl2);
-            this.dataLayoutControl1.Controls.Add(this.hyperlinkLabelControl1);
             this.dataLayoutControl1.Controls.Add(this.AttributeValueGridControl);
             this.dataLayoutControl1.Controls.Add(this.ProductNameSearchLookupEdit);
             this.dataLayoutControl1.Controls.Add(this.VariantCodeTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.IsActiveCheckEdit);
+            this.dataLayoutControl1.Controls.Add(this.IsActiveToggleSwitch);
             this.dataLayoutControl1.Controls.Add(this.UnitNameSearchLookupEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
@@ -303,46 +290,16 @@
             this.dataLayoutControl1.TabIndex = 15;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
-            // hyperlinkLabelControl3
-            // 
-            this.hyperlinkLabelControl3.Location = new System.Drawing.Point(348, 123);
-            this.hyperlinkLabelControl3.Name = "hyperlinkLabelControl3";
-            this.hyperlinkLabelControl3.Padding = new System.Windows.Forms.Padding(10);
-            this.hyperlinkLabelControl3.Size = new System.Drawing.Size(129, 33);
-            this.hyperlinkLabelControl3.StyleController = this.dataLayoutControl1;
-            this.hyperlinkLabelControl3.TabIndex = 8;
-            this.hyperlinkLabelControl3.Text = "hyperlinkLabelControl3";
-            // 
-            // hyperlinkLabelControl2
-            // 
-            this.hyperlinkLabelControl2.Location = new System.Drawing.Point(188, 123);
-            this.hyperlinkLabelControl2.Name = "hyperlinkLabelControl2";
-            this.hyperlinkLabelControl2.Padding = new System.Windows.Forms.Padding(10);
-            this.hyperlinkLabelControl2.Size = new System.Drawing.Size(129, 33);
-            this.hyperlinkLabelControl2.StyleController = this.dataLayoutControl1;
-            this.hyperlinkLabelControl2.TabIndex = 7;
-            this.hyperlinkLabelControl2.Text = "hyperlinkLabelControl2";
-            // 
-            // hyperlinkLabelControl1
-            // 
-            this.hyperlinkLabelControl1.Location = new System.Drawing.Point(508, 84);
-            this.hyperlinkLabelControl1.Name = "hyperlinkLabelControl1";
-            this.hyperlinkLabelControl1.Padding = new System.Windows.Forms.Padding(10);
-            this.hyperlinkLabelControl1.Size = new System.Drawing.Size(129, 33);
-            this.hyperlinkLabelControl1.StyleController = this.dataLayoutControl1;
-            this.hyperlinkLabelControl1.TabIndex = 6;
-            this.hyperlinkLabelControl1.Text = "hyperlinkLabelControl1";
-            // 
             // AttributeValueGridControl
             // 
             this.AttributeValueGridControl.DataSource = this.attributeValueDtoBindingSource;
-            this.AttributeValueGridControl.Location = new System.Drawing.Point(16, 162);
+            this.AttributeValueGridControl.Location = new System.Drawing.Point(16, 118);
             this.AttributeValueGridControl.MainView = this.AttributeValueGridView;
             this.AttributeValueGridControl.MenuManager = this.barManager1;
             this.AttributeValueGridControl.Name = "AttributeValueGridControl";
             this.AttributeValueGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.AttributeSearchLookUpEdit});
-            this.AttributeValueGridControl.Size = new System.Drawing.Size(634, 443);
+            this.AttributeValueGridControl.Size = new System.Drawing.Size(634, 487);
             this.AttributeValueGridControl.TabIndex = 5;
             this.AttributeValueGridControl.UseEmbeddedNavigator = true;
             this.AttributeValueGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -354,6 +311,10 @@
             // 
             // AttributeValueGridView
             // 
+            this.AttributeValueGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
+            this.AttributeValueGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
+            this.AttributeValueGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.AttributeValueGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.AttributeValueGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colValue,
             this.colAttributeName});
@@ -362,6 +323,8 @@
             this.AttributeValueGridView.OptionsNavigation.AutoFocusNewRow = true;
             this.AttributeValueGridView.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Top;
             this.AttributeValueGridView.OptionsView.ShowGroupPanel = false;
+            this.AttributeValueGridView.OptionsView.ShowViewCaption = true;
+            this.AttributeValueGridView.ViewCaption = "DANH SÁCH CÁC THUỘC TÍNH BIẾN THỂ";
             // 
             // colValue
             // 
@@ -412,7 +375,7 @@
             // 
             // ProductNameSearchLookupEdit
             // 
-            this.ProductNameSearchLookupEdit.Location = new System.Drawing.Point(299, 16);
+            this.ProductNameSearchLookupEdit.Location = new System.Drawing.Point(176, 16);
             this.ProductNameSearchLookupEdit.MenuManager = this.barManager1;
             this.ProductNameSearchLookupEdit.Name = "ProductNameSearchLookupEdit";
             this.ProductNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
@@ -422,7 +385,7 @@
             this.ProductNameSearchLookupEdit.Properties.NullText = "";
             this.ProductNameSearchLookupEdit.Properties.PopupView = this.searchLookUpEdit1View;
             this.ProductNameSearchLookupEdit.Properties.ValueMember = "Id";
-            this.ProductNameSearchLookupEdit.Size = new System.Drawing.Size(351, 28);
+            this.ProductNameSearchLookupEdit.Size = new System.Drawing.Size(474, 28);
             this.ProductNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
             this.ProductNameSearchLookupEdit.TabIndex = 0;
             // 
@@ -456,30 +419,31 @@
             // 
             // VariantCodeTextEdit
             // 
-            this.VariantCodeTextEdit.Location = new System.Drawing.Point(299, 50);
+            this.VariantCodeTextEdit.Location = new System.Drawing.Point(176, 50);
             this.VariantCodeTextEdit.MenuManager = this.barManager1;
             this.VariantCodeTextEdit.Name = "VariantCodeTextEdit";
             this.VariantCodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.VariantCodeTextEdit.Size = new System.Drawing.Size(191, 28);
+            this.VariantCodeTextEdit.Size = new System.Drawing.Size(314, 28);
             this.VariantCodeTextEdit.StyleController = this.dataLayoutControl1;
             this.VariantCodeTextEdit.TabIndex = 2;
             // 
-            // IsActiveCheckEdit
+            // IsActiveToggleSwitch
             // 
-            this.IsActiveCheckEdit.Location = new System.Drawing.Point(496, 50);
-            this.IsActiveCheckEdit.MenuManager = this.barManager1;
-            this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
-            this.IsActiveCheckEdit.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
-            this.IsActiveCheckEdit.Properties.OffText = "Off";
-            this.IsActiveCheckEdit.Properties.OnText = "On";
-            this.IsActiveCheckEdit.Size = new System.Drawing.Size(154, 24);
-            this.IsActiveCheckEdit.StyleController = this.dataLayoutControl1;
-            this.IsActiveCheckEdit.TabIndex = 3;
-            this.IsActiveCheckEdit.ToolTip = "Trạng thái hoạt động của biến thể";
+            this.IsActiveToggleSwitch.Location = new System.Drawing.Point(496, 52);
+            this.IsActiveToggleSwitch.MenuManager = this.barManager1;
+            this.IsActiveToggleSwitch.Name = "IsActiveToggleSwitch";
+            this.IsActiveToggleSwitch.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.IsActiveToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
+            this.IsActiveToggleSwitch.Properties.OffText = "<color=\'red\'>Không sử dụng</color>";
+            this.IsActiveToggleSwitch.Properties.OnText = "<color=\'blue\'>Đang sử dụng</color>";
+            this.IsActiveToggleSwitch.Size = new System.Drawing.Size(154, 24);
+            this.IsActiveToggleSwitch.StyleController = this.dataLayoutControl1;
+            this.IsActiveToggleSwitch.TabIndex = 3;
+            this.IsActiveToggleSwitch.ToolTip = "Trạng thái hoạt động của biến thể";
             // 
             // UnitNameSearchLookupEdit
             // 
-            this.UnitNameSearchLookupEdit.Location = new System.Drawing.Point(299, 84);
+            this.UnitNameSearchLookupEdit.Location = new System.Drawing.Point(176, 84);
             this.UnitNameSearchLookupEdit.MenuManager = this.barManager1;
             this.UnitNameSearchLookupEdit.Name = "UnitNameSearchLookupEdit";
             this.UnitNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
@@ -489,7 +453,7 @@
             this.UnitNameSearchLookupEdit.Properties.NullText = "";
             this.UnitNameSearchLookupEdit.Properties.PopupView = this.gridView1;
             this.UnitNameSearchLookupEdit.Properties.ValueMember = "Id";
-            this.UnitNameSearchLookupEdit.Size = new System.Drawing.Size(191, 28);
+            this.UnitNameSearchLookupEdit.Size = new System.Drawing.Size(474, 28);
             this.UnitNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
             this.UnitNameSearchLookupEdit.TabIndex = 4;
             // 
@@ -518,17 +482,14 @@
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
             this.ItemForProductName,
             this.ItemForVariantCode,
             this.ItemForIsActive,
             this.ItemForUnitName,
-            this.layoutControlItem2,
-            this.layoutControlItem3,
-            this.layoutControlItem4,
             this.simpleLabelItem1,
             this.simpleLabelItem2,
-            this.simpleLabelItem3});
+            this.simpleLabelItem3,
+            this.layoutControlItem1});
             this.Root.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             this.Root.Name = "Root";
             columnDefinition1.SizeType = System.Windows.Forms.SizeType.Percent;
@@ -548,30 +509,17 @@
             rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
             rowDefinition2.Height = 34D;
             rowDefinition2.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition3.Height = 39D;
+            rowDefinition3.Height = 34D;
             rowDefinition3.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition4.Height = 39D;
+            rowDefinition4.Height = 493D;
             rowDefinition4.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition5.Height = 449D;
-            rowDefinition5.SizeType = System.Windows.Forms.SizeType.AutoSize;
             this.Root.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
             rowDefinition1,
             rowDefinition2,
             rowDefinition3,
-            rowDefinition4,
-            rowDefinition5});
+            rowDefinition4});
             this.Root.Size = new System.Drawing.Size(666, 621);
             this.Root.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.AttributeValueGridControl;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 146);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.OptionsTableLayoutItem.ColumnSpan = 4;
-            this.layoutControlItem1.OptionsTableLayoutItem.RowIndex = 4;
-            this.layoutControlItem1.Size = new System.Drawing.Size(640, 449);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // ItemForProductName
             // 
@@ -582,7 +530,7 @@
             this.ItemForProductName.OptionsTableLayoutItem.ColumnSpan = 3;
             this.ItemForProductName.Size = new System.Drawing.Size(480, 34);
             this.ItemForProductName.Text = "Sản phẩm dịch vụ";
-            this.ItemForProductName.TextSize = new System.Drawing.Size(107, 13);
+            this.ItemForProductName.TextVisible = false;
             // 
             // ItemForVariantCode
             // 
@@ -594,11 +542,13 @@
             this.ItemForVariantCode.OptionsTableLayoutItem.RowIndex = 1;
             this.ItemForVariantCode.Size = new System.Drawing.Size(320, 34);
             this.ItemForVariantCode.Text = "Mã biến thể";
-            this.ItemForVariantCode.TextSize = new System.Drawing.Size(107, 13);
+            this.ItemForVariantCode.TextVisible = false;
             // 
             // ItemForIsActive
             // 
-            this.ItemForIsActive.Control = this.IsActiveCheckEdit;
+            this.ItemForIsActive.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.ItemForIsActive.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.ItemForIsActive.Control = this.IsActiveToggleSwitch;
             this.ItemForIsActive.Location = new System.Drawing.Point(480, 34);
             this.ItemForIsActive.Name = "ItemForIsActive";
             this.ItemForIsActive.OptionsTableLayoutItem.ColumnIndex = 3;
@@ -609,58 +559,25 @@
             // 
             // ItemForUnitName
             // 
+            this.ItemForUnitName.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.ItemForUnitName.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
             this.ItemForUnitName.Control = this.UnitNameSearchLookupEdit;
             this.ItemForUnitName.Location = new System.Drawing.Point(160, 68);
             this.ItemForUnitName.Name = "ItemForUnitName";
             this.ItemForUnitName.OptionsTableLayoutItem.ColumnIndex = 1;
-            this.ItemForUnitName.OptionsTableLayoutItem.ColumnSpan = 2;
+            this.ItemForUnitName.OptionsTableLayoutItem.ColumnSpan = 3;
             this.ItemForUnitName.OptionsTableLayoutItem.RowIndex = 2;
-            this.ItemForUnitName.Size = new System.Drawing.Size(320, 39);
+            this.ItemForUnitName.Size = new System.Drawing.Size(480, 34);
             this.ItemForUnitName.Text = "Đơn vị tính";
-            this.ItemForUnitName.TextSize = new System.Drawing.Size(107, 13);
-            // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlItem2.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem2.Control = this.hyperlinkLabelControl1;
-            this.layoutControlItem2.Location = new System.Drawing.Point(480, 68);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.OptionsTableLayoutItem.ColumnIndex = 3;
-            this.layoutControlItem2.OptionsTableLayoutItem.RowIndex = 2;
-            this.layoutControlItem2.Size = new System.Drawing.Size(160, 39);
-            this.layoutControlItem2.TextVisible = false;
-            // 
-            // layoutControlItem3
-            // 
-            this.layoutControlItem3.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlItem3.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem3.Control = this.hyperlinkLabelControl2;
-            this.layoutControlItem3.Location = new System.Drawing.Point(160, 107);
-            this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.OptionsTableLayoutItem.ColumnIndex = 1;
-            this.layoutControlItem3.OptionsTableLayoutItem.RowIndex = 3;
-            this.layoutControlItem3.Size = new System.Drawing.Size(160, 39);
-            this.layoutControlItem3.TextVisible = false;
-            // 
-            // layoutControlItem4
-            // 
-            this.layoutControlItem4.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlItem4.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem4.Control = this.hyperlinkLabelControl3;
-            this.layoutControlItem4.Location = new System.Drawing.Point(320, 107);
-            this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.OptionsTableLayoutItem.ColumnIndex = 2;
-            this.layoutControlItem4.OptionsTableLayoutItem.RowIndex = 3;
-            this.layoutControlItem4.Size = new System.Drawing.Size(160, 39);
-            this.layoutControlItem4.TextVisible = false;
+            this.ItemForUnitName.TextVisible = false;
             // 
             // simpleLabelItem1
             // 
             this.simpleLabelItem1.Location = new System.Drawing.Point(0, 0);
             this.simpleLabelItem1.Name = "simpleLabelItem1";
             this.simpleLabelItem1.Size = new System.Drawing.Size(160, 34);
-            this.simpleLabelItem1.TextSize = new System.Drawing.Size(107, 13);
+            this.simpleLabelItem1.Text = "Sản phẩm dịch vụ";
+            this.simpleLabelItem1.TextSize = new System.Drawing.Size(84, 13);
             // 
             // simpleLabelItem2
             // 
@@ -668,15 +585,27 @@
             this.simpleLabelItem2.Name = "simpleLabelItem2";
             this.simpleLabelItem2.OptionsTableLayoutItem.RowIndex = 1;
             this.simpleLabelItem2.Size = new System.Drawing.Size(160, 34);
-            this.simpleLabelItem2.TextSize = new System.Drawing.Size(107, 13);
+            this.simpleLabelItem2.Text = "Mã biến thể";
+            this.simpleLabelItem2.TextSize = new System.Drawing.Size(84, 13);
             // 
             // simpleLabelItem3
             // 
             this.simpleLabelItem3.Location = new System.Drawing.Point(0, 68);
             this.simpleLabelItem3.Name = "simpleLabelItem3";
             this.simpleLabelItem3.OptionsTableLayoutItem.RowIndex = 2;
-            this.simpleLabelItem3.Size = new System.Drawing.Size(160, 39);
-            this.simpleLabelItem3.TextSize = new System.Drawing.Size(107, 13);
+            this.simpleLabelItem3.Size = new System.Drawing.Size(160, 34);
+            this.simpleLabelItem3.Text = "Đơn vị tính";
+            this.simpleLabelItem3.TextSize = new System.Drawing.Size(84, 13);
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.AttributeValueGridControl;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 102);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.OptionsTableLayoutItem.ColumnSpan = 4;
+            this.layoutControlItem1.OptionsTableLayoutItem.RowIndex = 3;
+            this.layoutControlItem1.Size = new System.Drawing.Size(640, 493);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // FrmProductVariantDetail
             // 
@@ -705,22 +634,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantCodeTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitNameSearchLookupEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.unitOfMeasureDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForProductName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForVariantCode)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUnitName)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -755,24 +681,17 @@
         private DevExpress.XtraGrid.Columns.GridColumn colCategoryName1;
         private DevExpress.XtraGrid.Columns.GridColumn colName;
         private DevExpress.XtraEditors.TextEdit VariantCodeTextEdit;
-        private DevExpress.XtraEditors.ToggleSwitch IsActiveCheckEdit;
+        private DevExpress.XtraEditors.ToggleSwitch IsActiveToggleSwitch;
         private DevExpress.XtraEditors.SearchLookUpEdit UnitNameSearchLookupEdit;
         private System.Windows.Forms.BindingSource unitOfMeasureDtoBindingSource;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
         private DevExpress.XtraGrid.Columns.GridColumn colFullInfo;
         private DevExpress.XtraGrid.GridControl AttributeValueGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView AttributeValueGridView;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraEditors.HyperlinkLabelControl hyperlinkLabelControl3;
-        private DevExpress.XtraEditors.HyperlinkLabelControl hyperlinkLabelControl2;
-        private DevExpress.XtraEditors.HyperlinkLabelControl hyperlinkLabelControl1;
         private DevExpress.XtraLayout.LayoutControlItem ItemForProductName;
         private DevExpress.XtraLayout.LayoutControlItem ItemForVariantCode;
         private DevExpress.XtraLayout.LayoutControlItem ItemForIsActive;
         private DevExpress.XtraLayout.LayoutControlItem ItemForUnitName;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
         private System.Windows.Forms.BindingSource attributeValueDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colValue;
         private DevExpress.XtraGrid.Columns.GridColumn colAttributeName;
@@ -783,5 +702,6 @@
         private System.Windows.Forms.BindingSource attributeDtoBindingSource;
         private DevExpress.XtraGrid.Views.Grid.GridView AttributeSearchLookUpEdit1View;
         private DevExpress.XtraGrid.Columns.GridColumn colFullInfo1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

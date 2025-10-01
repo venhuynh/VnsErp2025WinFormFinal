@@ -375,7 +375,7 @@ namespace MasterData.ProductService
         /// Tải dữ liệu và bind vào Grid (Async, không hiển thị WaitForm).
         /// TODO: Triển khai sau khi có BLL cho ProductVariant
         /// </summary>
-        private async Task LoadDataAsyncWithoutSplash()
+        private Task LoadDataAsyncWithoutSplash()
         {
             try
             {
@@ -396,6 +396,8 @@ namespace MasterData.ProductService
             {
                 ShowError(ex, "Lỗi tải dữ liệu");
             }
+            
+            return Task.CompletedTask;
         }
 
         /// <summary>
