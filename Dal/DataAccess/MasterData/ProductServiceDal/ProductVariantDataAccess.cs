@@ -114,6 +114,13 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             try
             {
                 using var context = CreateContext();
+                
+                // Cấu hình DataLoadOptions để preload navigation properties
+                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
+                loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
+                context.LoadOptions = loadOptions;
+                
                 return await Task.Run(() => context.ProductVariants
                     .OrderBy(pv => pv.VariantCode)
                     .ToList());
@@ -724,6 +731,69 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                 throw new DataAccessException($"Lỗi lấy giá trị thuộc tính: {ex.Message}", ex);
             }
         }
+
+        #endregion
+
+        #region LinqInstantFeedbackSource Support
+
+        /// <summary>
+        /// Lấy queryable cho LinqInstantFeedbackSource (chỉ trả về Entity)
+        /// </summary>
+        /// <returns>IQueryable của ProductVariant entity</returns>
+        public IQueryable<ProductVariant> GetQueryableForInstantFeedback()
+        {
+            try
+            {
+                // Không sử dụng 'using' để tránh dispose context sớm
+                // LinqInstantFeedbackSource sẽ tự quản lý lifecycle của context
+                var context = CreateContext();
+                
+                // Trả về queryable của ProductVariant entity
+                return context.ProductVariants;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy queryable cho LinqInstantFeedbackSource: {ex.Message}", ex);
+            }
+        }
+
+
+        /// <summary>
+        /// Lấy queryable của ProductServices để join trong BLL
+        /// </summary>
+        /// <returns>IQueryable của ProductService entity</returns>
+        public IQueryable<ProductService> GetProductServicesQueryable()
+        {
+            try
+            {
+                // Không sử dụng 'using' để tránh dispose context sớm
+                var context = CreateContext();
+                return context.ProductServices;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy queryable ProductServices: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy queryable của UnitOfMeasures để join trong BLL
+        /// </summary>
+        /// <returns>IQueryable của UnitOfMeasure entity</returns>
+        public IQueryable<UnitOfMeasure> GetUnitOfMeasuresQueryable()
+        {
+            try
+            {
+                // Không sử dụng 'using' để tránh dispose context sớm
+                var context = CreateContext();
+                return context.UnitOfMeasures;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy queryable UnitOfMeasures: {ex.Message}", ex);
+            }
+        }
+
 
         #endregion
 

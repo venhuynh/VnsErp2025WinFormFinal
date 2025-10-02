@@ -20,6 +20,7 @@
             base.Dispose(disposing);
         }
 
+
         #region Component Designer generated code
 
         /// <summary> 
@@ -29,6 +30,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
+            this.VariantGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colVariantName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ProductServiceMasterDetailViewGridControl = new DevExpress.XtraGrid.GridControl();
+            this.ProductServiceMasterDetailViewGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colProductName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colProductIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colProductThumbnailImage = new DevExpress.XtraGrid.Columns.GridColumn();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.ListDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -41,62 +51,107 @@
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
-            this.PageBarEditItem = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryItemSpinEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
-            this.RecordNumberBarEditItem = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.barHeaderItem2 = new DevExpress.XtraBars.BarHeaderItem();
             this.SelectedRowBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.repositoryItemSpinEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
+            this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ProductVariantGridControl = new DevExpress.XtraGrid.GridControl();
-            this.ProductVariantAdvBandedGridView = new DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView();
-            this.gridBand1 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.colProductCode = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colProductName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colVariantCode = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.gridBand2 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.colUnitCode = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colUnitName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colIsActive = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.gridBand3 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.colThumbnailImage = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colAttributeCount = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colImageCount = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colStatusDisplay = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colFullName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colUnitDisplay = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colAttributesDisplay = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colImagesDisplay = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
-            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
-            this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.repositoryItemSpinEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
-            this.repositoryItemCheckEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
-            this.repositoryItemComboBox2 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.productVariantDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.productServiceMasterDetailViewDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.colUnitName = new DevExpress.XtraGrid.Columns.GridColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.VariantGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceMasterDetailViewGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceMasterDetailViewGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemSpinEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantAdvBandedGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemSpinEdit2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productVariantDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceMasterDetailViewDtoBindingSource)).BeginInit();
             this.SuspendLayout();
+            // 
+            // VariantGridView
+            // 
+            this.VariantGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colVariantCode,
+            this.colVariantName,
+            this.colUnitName});
+            this.VariantGridView.GridControl = this.ProductServiceMasterDetailViewGridControl;
+            this.VariantGridView.Name = "VariantGridView";
+            this.VariantGridView.OptionsSelection.MultiSelect = true;
+            this.VariantGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.VariantGridView.OptionsSelection.ShowCheckBoxSelectorInGroupRow = DevExpress.Utils.DefaultBoolean.True;
+            this.VariantGridView.OptionsView.ShowGroupPanel = false;
+            // 
+            // colVariantCode
+            // 
+            this.colVariantCode.FieldName = "VariantCode";
+            this.colVariantCode.Name = "colVariantCode";
+            this.colVariantCode.Visible = true;
+            this.colVariantCode.VisibleIndex = 1;
+            // 
+            // colVariantName
+            // 
+            this.colVariantName.FieldName = "VariantName";
+            this.colVariantName.Name = "colVariantName";
+            this.colVariantName.Visible = true;
+            this.colVariantName.VisibleIndex = 2;
+            // 
+            // ProductServiceMasterDetailViewGridControl
+            // 
+            this.ProductServiceMasterDetailViewGridControl.DataSource = this.productServiceMasterDetailViewDtoBindingSource;
+            gridLevelNode1.LevelTemplate = this.VariantGridView;
+            gridLevelNode1.RelationName = "Variants";
+            this.ProductServiceMasterDetailViewGridControl.LevelTree.Nodes.AddRange(new DevExpress.XtraGrid.GridLevelNode[] {
+            gridLevelNode1});
+            this.ProductServiceMasterDetailViewGridControl.Location = new System.Drawing.Point(16, 16);
+            this.ProductServiceMasterDetailViewGridControl.MainView = this.ProductServiceMasterDetailViewGridView;
+            this.ProductServiceMasterDetailViewGridControl.MenuManager = this.barManager1;
+            this.ProductServiceMasterDetailViewGridControl.Name = "ProductServiceMasterDetailViewGridControl";
+            this.ProductServiceMasterDetailViewGridControl.Size = new System.Drawing.Size(1045, 555);
+            this.ProductServiceMasterDetailViewGridControl.TabIndex = 4;
+            this.ProductServiceMasterDetailViewGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.ProductServiceMasterDetailViewGridView,
+            this.VariantGridView});
+            // 
+            // ProductServiceMasterDetailViewGridView
+            // 
+            this.ProductServiceMasterDetailViewGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colProductName,
+            this.colProductIsActive,
+            this.colProductThumbnailImage});
+            this.ProductServiceMasterDetailViewGridView.GridControl = this.ProductServiceMasterDetailViewGridControl;
+            this.ProductServiceMasterDetailViewGridView.IndicatorWidth = 50;
+            this.ProductServiceMasterDetailViewGridView.Name = "ProductServiceMasterDetailViewGridView";
+            this.ProductServiceMasterDetailViewGridView.OptionsView.ShowGroupPanel = false;
+            // 
+            // colProductName
+            // 
+            this.colProductName.FieldName = "ProductName";
+            this.colProductName.Name = "colProductName";
+            this.colProductName.Visible = true;
+            this.colProductName.VisibleIndex = 0;
+            // 
+            // colProductIsActive
+            // 
+            this.colProductIsActive.FieldName = "ProductIsActive";
+            this.colProductIsActive.Name = "colProductIsActive";
+            this.colProductIsActive.Visible = true;
+            this.colProductIsActive.VisibleIndex = 1;
+            // 
+            // colProductThumbnailImage
+            // 
+            this.colProductThumbnailImage.FieldName = "ProductThumbnailImage";
+            this.colProductThumbnailImage.Name = "colProductThumbnailImage";
+            this.colProductThumbnailImage.Visible = true;
+            this.colProductThumbnailImage.VisibleIndex = 2;
             // 
             // barManager1
             // 
@@ -118,8 +173,6 @@
             this.ExportBarButtonItem,
             this.barHeaderItem1,
             this.DataSummaryBarStaticItem,
-            this.PageBarEditItem,
-            this.RecordNumberBarEditItem,
             this.barHeaderItem2,
             this.SelectedRowBarStaticItem});
             this.barManager1.MainMenu = this.bar2;
@@ -210,8 +263,6 @@
             this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem1),
             new DevExpress.XtraBars.LinkPersistInfo(this.DataSummaryBarStaticItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.PageBarEditItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.RecordNumberBarEditItem),
             new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem2),
             new DevExpress.XtraBars.LinkPersistInfo(this.SelectedRowBarStaticItem)});
             this.bar1.OptionsBar.AllowQuickCustomization = false;
@@ -231,52 +282,6 @@
             this.DataSummaryBarStaticItem.Caption = "Chưa có dữ liệu";
             this.DataSummaryBarStaticItem.Id = 9;
             this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
-            // 
-            // PageBarEditItem
-            // 
-            this.PageBarEditItem.Caption = "Trang:";
-            this.PageBarEditItem.Edit = this.repositoryItemSpinEdit1;
-            this.PageBarEditItem.Id = 10;
-            this.PageBarEditItem.Name = "PageBarEditItem";
-            this.PageBarEditItem.Width = 100;
-            // 
-            // repositoryItemSpinEdit1
-            // 
-            this.repositoryItemSpinEdit1.AutoHeight = false;
-            this.repositoryItemSpinEdit1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemSpinEdit1.MaxValue = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.repositoryItemSpinEdit1.MinValue = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.repositoryItemSpinEdit1.Name = "repositoryItemSpinEdit1";
-            // 
-            // RecordNumberBarEditItem
-            // 
-            this.RecordNumberBarEditItem.Caption = "Số dòng:";
-            this.RecordNumberBarEditItem.Edit = this.repositoryItemComboBox1;
-            this.RecordNumberBarEditItem.Id = 11;
-            this.RecordNumberBarEditItem.Name = "RecordNumberBarEditItem";
-            this.RecordNumberBarEditItem.Width = 100;
-            // 
-            // repositoryItemComboBox1
-            // 
-            this.repositoryItemComboBox1.AutoHeight = false;
-            this.repositoryItemComboBox1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemComboBox1.Items.AddRange(new object[] {
-            "20",
-            "50",
-            "100",
-            "Tất cả"});
-            this.repositoryItemComboBox1.Name = "repositoryItemComboBox1";
-            this.repositoryItemComboBox1.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             // 
             // barHeaderItem2
             // 
@@ -323,9 +328,39 @@
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 587);
             // 
+            // repositoryItemSpinEdit1
+            // 
+            this.repositoryItemSpinEdit1.AutoHeight = false;
+            this.repositoryItemSpinEdit1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemSpinEdit1.MaxValue = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.repositoryItemSpinEdit1.MinValue = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.repositoryItemSpinEdit1.Name = "repositoryItemSpinEdit1";
+            // 
+            // repositoryItemComboBox1
+            // 
+            this.repositoryItemComboBox1.AutoHeight = false;
+            this.repositoryItemComboBox1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemComboBox1.Items.AddRange(new object[] {
+            "20",
+            "50",
+            "100",
+            "Tất cả"});
+            this.repositoryItemComboBox1.Name = "repositoryItemComboBox1";
+            this.repositoryItemComboBox1.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.ProductVariantGridControl);
+            this.layoutControl1.Controls.Add(this.ProductServiceMasterDetailViewGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
@@ -333,285 +368,6 @@
             this.layoutControl1.Size = new System.Drawing.Size(1077, 587);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
-            // 
-            // ProductVariantGridControl
-            // 
-            this.ProductVariantGridControl.DataSource = this.productVariantDtoBindingSource;
-            this.ProductVariantGridControl.EmbeddedNavigator.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
-            this.ProductVariantGridControl.Location = new System.Drawing.Point(16, 16);
-            this.ProductVariantGridControl.MainView = this.ProductVariantAdvBandedGridView;
-            this.ProductVariantGridControl.MenuManager = this.barManager1;
-            this.ProductVariantGridControl.Name = "ProductVariantGridControl";
-            this.ProductVariantGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemHypertextLabel1,
-            this.repositoryItemPictureEdit1,
-            this.repositoryItemTextEdit1,
-            this.repositoryItemSpinEdit2,
-            this.repositoryItemCheckEdit1,
-            this.repositoryItemComboBox2});
-            this.ProductVariantGridControl.Size = new System.Drawing.Size(1045, 555);
-            this.ProductVariantGridControl.TabIndex = 5;
-            this.ProductVariantGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.ProductVariantAdvBandedGridView});
-            // 
-            // ProductVariantAdvBandedGridView
-            // 
-            this.ProductVariantAdvBandedGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.ProductVariantAdvBandedGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
-            this.ProductVariantAdvBandedGridView.Appearance.ViewCaption.Options.UseFont = true;
-            this.ProductVariantAdvBandedGridView.Appearance.ViewCaption.Options.UseForeColor = true;
-            this.ProductVariantAdvBandedGridView.Bands.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.GridBand[] {
-            this.gridBand1,
-            this.gridBand2,
-            this.gridBand3});
-            this.ProductVariantAdvBandedGridView.Columns.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn[] {
-            this.colProductCode,
-            this.colProductName,
-            this.colVariantCode,
-            this.colUnitCode,
-            this.colUnitName,
-            this.colIsActive,
-            this.colThumbnailImage,
-            this.colAttributeCount,
-            this.colImageCount,
-            this.colStatusDisplay,
-            this.colFullName,
-            this.colUnitDisplay,
-            this.colAttributesDisplay,
-            this.colImagesDisplay});
-            this.ProductVariantAdvBandedGridView.GridControl = this.ProductVariantGridControl;
-            this.ProductVariantAdvBandedGridView.IndicatorWidth = 40;
-            this.ProductVariantAdvBandedGridView.Name = "ProductVariantAdvBandedGridView";
-            this.ProductVariantAdvBandedGridView.OptionsClipboard.AllowHtmlFormat = DevExpress.Utils.DefaultBoolean.True;
-            this.ProductVariantAdvBandedGridView.OptionsFind.AlwaysVisible = true;
-            this.ProductVariantAdvBandedGridView.OptionsPrint.EnableAppearanceEvenRow = true;
-            this.ProductVariantAdvBandedGridView.OptionsSelection.MultiSelect = true;
-            this.ProductVariantAdvBandedGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.ProductVariantAdvBandedGridView.OptionsView.AllowHtmlDrawDetailTabs = true;
-            this.ProductVariantAdvBandedGridView.OptionsView.AllowHtmlDrawHeaders = true;
-            this.ProductVariantAdvBandedGridView.OptionsView.EnableAppearanceEvenRow = true;
-            this.ProductVariantAdvBandedGridView.OptionsView.ShowAutoFilterRow = true;
-            this.ProductVariantAdvBandedGridView.OptionsView.ShowGroupPanel = false;
-            this.ProductVariantAdvBandedGridView.OptionsView.ShowViewCaption = true;
-            this.ProductVariantAdvBandedGridView.ViewCaption = "BẢNG DANH SÁCH BIẾN THỂ SẢN PHẨM";
-            // 
-            // gridBand1
-            // 
-            this.gridBand1.Caption = "Thông tin sản phẩm";
-            this.gridBand1.Columns.Add(this.colProductCode);
-            this.gridBand1.Columns.Add(this.colProductName);
-            this.gridBand1.Columns.Add(this.colVariantCode);
-            this.gridBand1.Name = "gridBand1";
-            this.gridBand1.VisibleIndex = 0;
-            this.gridBand1.Width = 300;
-            // 
-            // colProductCode
-            // 
-            this.colProductCode.Caption = "Mã sản phẩm";
-            this.colProductCode.FieldName = "ProductCode";
-            this.colProductCode.Name = "colProductCode";
-            this.colProductCode.OptionsColumn.AllowEdit = false;
-            this.colProductCode.OptionsColumn.ReadOnly = true;
-            this.colProductCode.Visible = true;
-            this.colProductCode.Width = 100;
-            // 
-            // colProductName
-            // 
-            this.colProductName.Caption = "Tên sản phẩm";
-            this.colProductName.FieldName = "ProductName";
-            this.colProductName.Name = "colProductName";
-            this.colProductName.OptionsColumn.AllowEdit = false;
-            this.colProductName.OptionsColumn.ReadOnly = true;
-            this.colProductName.Visible = true;
-            this.colProductName.Width = 150;
-            // 
-            // colVariantCode
-            // 
-            this.colVariantCode.Caption = "Mã biến thể";
-            this.colVariantCode.FieldName = "VariantCode";
-            this.colVariantCode.Name = "colVariantCode";
-            this.colVariantCode.OptionsColumn.AllowEdit = false;
-            this.colVariantCode.OptionsColumn.ReadOnly = true;
-            this.colVariantCode.Visible = true;
-            this.colVariantCode.Width = 100;
-            // 
-            // gridBand2
-            // 
-            this.gridBand2.Caption = "Đơn vị & Trạng thái";
-            this.gridBand2.Columns.Add(this.colUnitCode);
-            this.gridBand2.Columns.Add(this.colUnitName);
-            this.gridBand2.Columns.Add(this.colIsActive);
-            this.gridBand2.Name = "gridBand2";
-            this.gridBand2.VisibleIndex = 1;
-            this.gridBand2.Width = 200;
-            // 
-            // colUnitCode
-            // 
-            this.colUnitCode.Caption = "Mã đơn vị";
-            this.colUnitCode.FieldName = "UnitCode";
-            this.colUnitCode.Name = "colUnitCode";
-            this.colUnitCode.OptionsColumn.AllowEdit = false;
-            this.colUnitCode.OptionsColumn.ReadOnly = true;
-            this.colUnitCode.Visible = true;
-            this.colUnitCode.Width = 80;
-            // 
-            // colUnitName
-            // 
-            this.colUnitName.Caption = "Tên đơn vị";
-            this.colUnitName.FieldName = "UnitName";
-            this.colUnitName.Name = "colUnitName";
-            this.colUnitName.OptionsColumn.AllowEdit = false;
-            this.colUnitName.OptionsColumn.ReadOnly = true;
-            this.colUnitName.Visible = true;
-            this.colUnitName.Width = 100;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.Caption = "Trạng thái";
-            this.colIsActive.ColumnEdit = this.repositoryItemCheckEdit1;
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.OptionsColumn.AllowEdit = false;
-            this.colIsActive.OptionsColumn.ReadOnly = true;
-            this.colIsActive.Visible = true;
-            this.colIsActive.Width = 80;
-            // 
-            // gridBand3
-            // 
-            this.gridBand3.Caption = "Hình ảnh & Thống kê";
-            this.gridBand3.Columns.Add(this.colThumbnailImage);
-            this.gridBand3.Columns.Add(this.colAttributeCount);
-            this.gridBand3.Columns.Add(this.colImageCount);
-            this.gridBand3.Columns.Add(this.colStatusDisplay);
-            this.gridBand3.Columns.Add(this.colFullName);
-            this.gridBand3.Columns.Add(this.colUnitDisplay);
-            this.gridBand3.Columns.Add(this.colAttributesDisplay);
-            this.gridBand3.Columns.Add(this.colImagesDisplay);
-            this.gridBand3.Name = "gridBand3";
-            this.gridBand3.VisibleIndex = 2;
-            this.gridBand3.Width = 400;
-            // 
-            // colThumbnailImage
-            // 
-            this.colThumbnailImage.Caption = "Ảnh thumbnail";
-            this.colThumbnailImage.ColumnEdit = this.repositoryItemPictureEdit1;
-            this.colThumbnailImage.FieldName = "ThumbnailImage";
-            this.colThumbnailImage.Name = "colThumbnailImage";
-            this.colThumbnailImage.OptionsColumn.AllowEdit = false;
-            this.colThumbnailImage.OptionsColumn.ReadOnly = true;
-            this.colThumbnailImage.Visible = true;
-            this.colThumbnailImage.Width = 80;
-            // 
-            // colAttributeCount
-            // 
-            this.colAttributeCount.Caption = "Số thuộc tính";
-            this.colAttributeCount.ColumnEdit = this.repositoryItemSpinEdit2;
-            this.colAttributeCount.FieldName = "AttributeCount";
-            this.colAttributeCount.Name = "colAttributeCount";
-            this.colAttributeCount.OptionsColumn.AllowEdit = false;
-            this.colAttributeCount.OptionsColumn.ReadOnly = true;
-            this.colAttributeCount.Visible = true;
-            this.colAttributeCount.Width = 80;
-            // 
-            // colImageCount
-            // 
-            this.colImageCount.Caption = "Số hình ảnh";
-            this.colImageCount.ColumnEdit = this.repositoryItemSpinEdit2;
-            this.colImageCount.FieldName = "ImageCount";
-            this.colImageCount.Name = "colImageCount";
-            this.colImageCount.OptionsColumn.AllowEdit = false;
-            this.colImageCount.OptionsColumn.ReadOnly = true;
-            this.colImageCount.Visible = true;
-            this.colImageCount.Width = 80;
-            // 
-            // colStatusDisplay
-            // 
-            this.colStatusDisplay.Caption = "Trạng thái";
-            this.colStatusDisplay.ColumnEdit = this.repositoryItemHypertextLabel1;
-            this.colStatusDisplay.FieldName = "StatusDisplay";
-            this.colStatusDisplay.Name = "colStatusDisplay";
-            this.colStatusDisplay.OptionsColumn.AllowEdit = false;
-            this.colStatusDisplay.OptionsColumn.ReadOnly = true;
-            this.colStatusDisplay.Visible = true;
-            this.colStatusDisplay.Width = 100;
-            // 
-            // colFullName
-            // 
-            this.colFullName.Caption = "Tên đầy đủ";
-            this.colFullName.ColumnEdit = this.repositoryItemHypertextLabel1;
-            this.colFullName.FieldName = "FullName";
-            this.colFullName.Name = "colFullName";
-            this.colFullName.OptionsColumn.AllowEdit = false;
-            this.colFullName.OptionsColumn.ReadOnly = true;
-            this.colFullName.Visible = false;
-            this.colFullName.Width = 200;
-            // 
-            // colUnitDisplay
-            // 
-            this.colUnitDisplay.Caption = "Đơn vị";
-            this.colUnitDisplay.ColumnEdit = this.repositoryItemHypertextLabel1;
-            this.colUnitDisplay.FieldName = "UnitDisplay";
-            this.colUnitDisplay.Name = "colUnitDisplay";
-            this.colUnitDisplay.OptionsColumn.AllowEdit = false;
-            this.colUnitDisplay.OptionsColumn.ReadOnly = true;
-            this.colUnitDisplay.Visible = false;
-            this.colUnitDisplay.Width = 150;
-            // 
-            // colAttributesDisplay
-            // 
-            this.colAttributesDisplay.Caption = "Thuộc tính";
-            this.colAttributesDisplay.ColumnEdit = this.repositoryItemHypertextLabel1;
-            this.colAttributesDisplay.FieldName = "AttributesDisplay";
-            this.colAttributesDisplay.Name = "colAttributesDisplay";
-            this.colAttributesDisplay.OptionsColumn.AllowEdit = false;
-            this.colAttributesDisplay.OptionsColumn.ReadOnly = true;
-            this.colAttributesDisplay.Visible = true;
-            this.colAttributesDisplay.Width = 200;
-            // 
-            // colImagesDisplay
-            // 
-            this.colImagesDisplay.Caption = "Hình ảnh";
-            this.colImagesDisplay.ColumnEdit = this.repositoryItemHypertextLabel1;
-            this.colImagesDisplay.FieldName = "ImagesDisplay";
-            this.colImagesDisplay.Name = "colImagesDisplay";
-            this.colImagesDisplay.OptionsColumn.AllowEdit = false;
-            this.colImagesDisplay.OptionsColumn.ReadOnly = true;
-            this.colImagesDisplay.Visible = true;
-            this.colImagesDisplay.Width = 100;
-            // 
-            // repositoryItemHypertextLabel1
-            // 
-            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
-            // 
-            // repositoryItemPictureEdit1
-            // 
-            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
-            this.repositoryItemPictureEdit1.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
-            // 
-            // repositoryItemTextEdit1
-            // 
-            this.repositoryItemTextEdit1.AutoHeight = false;
-            this.repositoryItemTextEdit1.Name = "repositoryItemTextEdit1";
-            // 
-            // repositoryItemSpinEdit2
-            // 
-            this.repositoryItemSpinEdit2.AutoHeight = false;
-            this.repositoryItemSpinEdit2.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemSpinEdit2.Name = "repositoryItemSpinEdit2";
-            // 
-            // repositoryItemCheckEdit1
-            // 
-            this.repositoryItemCheckEdit1.AutoHeight = false;
-            this.repositoryItemCheckEdit1.Name = "repositoryItemCheckEdit1";
-            // 
-            // repositoryItemComboBox2
-            // 
-            this.repositoryItemComboBox2.AutoHeight = false;
-            this.repositoryItemComboBox2.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemComboBox2.Name = "repositoryItemComboBox2";
             // 
             // Root
             // 
@@ -625,15 +381,22 @@
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.ProductVariantGridControl;
+            this.layoutControlItem1.Control = this.ProductServiceMasterDetailViewGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1051, 561);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // productVariantDtoBindingSource
+            // productServiceMasterDetailViewDtoBindingSource
             // 
-            this.productVariantDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductVariantDto);
+            this.productServiceMasterDetailViewDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductServiceMasterDetailViewDto);
+            // 
+            // colUnitName
+            // 
+            this.colUnitName.FieldName = "UnitName";
+            this.colUnitName.Name = "colUnitName";
+            this.colUnitName.Visible = true;
+            this.colUnitName.VisibleIndex = 3;
             // 
             // UcProductVariant
             // 
@@ -646,22 +409,17 @@
             this.Controls.Add(this.barDockControlTop);
             this.Name = "UcProductVariant";
             this.Size = new System.Drawing.Size(1077, 661);
+            ((System.ComponentModel.ISupportInitialize)(this.VariantGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceMasterDetailViewGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceMasterDetailViewGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemSpinEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantAdvBandedGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemSpinEdit2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productVariantDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceMasterDetailViewDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -681,9 +439,7 @@
         private DevExpress.XtraBars.Bar bar1;
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
-        private DevExpress.XtraBars.BarEditItem PageBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit repositoryItemSpinEdit1;
-        private DevExpress.XtraBars.BarEditItem RecordNumberBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox1;
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem2;
         private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
@@ -692,33 +448,18 @@
         private DevExpress.XtraBars.BarDockControl barDockControlLeft;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraGrid.GridControl ProductVariantGridControl;
-        private DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView ProductVariantAdvBandedGridView;
-        private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand1;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colProductCode;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colProductName;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colVariantCode;
-        private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand2;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colUnitCode;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colUnitName;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colIsActive;
-        private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand3;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colThumbnailImage;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colAttributeCount;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colImageCount;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colStatusDisplay;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colFullName;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colUnitDisplay;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colAttributesDisplay;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colImagesDisplay;
-        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit repositoryItemPictureEdit1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit repositoryItemSpinEdit2;
-        private DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit repositoryItemCheckEdit1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox2;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
+        private DevExpress.XtraGrid.GridControl ProductServiceMasterDetailViewGridControl;
+        private DevExpress.XtraGrid.Views.Grid.GridView ProductServiceMasterDetailViewGridView;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private System.Windows.Forms.BindingSource productVariantDtoBindingSource;
+        private DevExpress.XtraGrid.Views.Grid.GridView VariantGridView;
+        private DevExpress.XtraGrid.Columns.GridColumn colVariantCode;
+        private DevExpress.XtraGrid.Columns.GridColumn colVariantName;
+        private DevExpress.XtraGrid.Columns.GridColumn colProductName;
+        private DevExpress.XtraGrid.Columns.GridColumn colProductIsActive;
+        private DevExpress.XtraGrid.Columns.GridColumn colProductThumbnailImage;
+        
+        private DevExpress.XtraGrid.Columns.GridColumn colUnitName;
+        private System.Windows.Forms.BindingSource productServiceMasterDetailViewDtoBindingSource;
     }
 }

@@ -2,6 +2,7 @@ using Dal.DataAccess.MasterData.ProductServiceDal;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Bll.MasterData.ProductServiceBll
@@ -15,6 +16,8 @@ namespace Bll.MasterData.ProductServiceBll
         #region Fields
 
         private readonly ProductVariantDataAccess _dataAccess;
+        private readonly ProductServiceDataAccess _productServiceDataAccess;
+        private readonly UnitOfMeasureDataAccess _unitOfMeasureDataAccess;
 
         #endregion
 
@@ -26,6 +29,8 @@ namespace Bll.MasterData.ProductServiceBll
         public ProductVariantBll()
         {
             _dataAccess = new ProductVariantDataAccess();
+            _productServiceDataAccess = new ProductServiceDataAccess();
+            _unitOfMeasureDataAccess = new UnitOfMeasureDataAccess();
         }
 
         #endregion
@@ -147,9 +152,98 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
+        /// <summary>
+        /// Lấy queryable cho LinqInstantFeedbackSource (trả về Entity)
+        /// </summary>
+        /// <returns>IQueryable của ProductVariant entity</returns>
+        public IQueryable<ProductVariant> GetQueryableForInstantFeedback()
+        {
+            try
+            {
+                // Lấy queryable entity từ DAL
+                return _dataAccess.GetQueryableForInstantFeedback();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy queryable cho LinqInstantFeedbackSource: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tổng số bản ghi
+        /// </summary>
+        /// <returns>Tổng số bản ghi</returns>
+        public int GetTotalCount()
+        {
+            try
+            {
+                return _dataAccess.GetTotalCount();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy tổng số bản ghi: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả biến thể sản phẩm
+        /// </summary>
+        /// <returns>Danh sách biến thể</returns>
+        public async Task<List<ProductVariant>> GetAllAsync()
+        {
+            try
+            {
+                return await _dataAccess.GetAllAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy danh sách biến thể: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả biến thể sản phẩm với thông tin đầy đủ
+        /// Bao gồm thông tin sản phẩm gốc, đơn vị tính
+        /// Tuân thủ quy tắc: Dal -> Bll (chỉ trả về Entity)
+        /// </summary>
+        /// <returns>Danh sách ProductVariant entity</returns>
+        public async Task<List<ProductVariant>> GetAllWithDetailsAsync()
+        {
+            try
+            {
+                // Lấy dữ liệu từ DAL (tuân thủ Dal -> Bll)
+                var variants = await _dataAccess.GetAllAsync();
+                
+                // Load thông tin liên quan cho mỗi variant
+                foreach (var variant in variants)
+                {
+                    // Load thông tin sản phẩm gốc
+                    var product = await _productServiceDataAccess.GetByIdAsync(variant.ProductId);
+                    if (product != null)
+                    {
+                        // Có thể set thông tin vào variant nếu cần, hoặc để navigation property tự load
+                    }
+                    
+                    // Load thông tin đơn vị tính
+                    var unit = _unitOfMeasureDataAccess.GetById(variant.UnitId);
+                    if (unit != null)
+                    {
+                        // Có thể set thông tin vào variant nếu cần, hoặc để navigation property tự load
+                    }
+                }
+                
+                return variants;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy danh sách biến thể: {ex.Message}", ex);
+            }
+        }
+
         #endregion
 
         #region Private Methods
+
 
         /// <summary>
         /// Validate dữ liệu biến thể

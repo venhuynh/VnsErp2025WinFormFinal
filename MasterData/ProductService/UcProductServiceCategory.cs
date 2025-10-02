@@ -285,7 +285,7 @@ namespace MasterData.ProductService
                     currentNode = currentNode.ParentNode;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -309,7 +309,7 @@ namespace MasterData.ProductService
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -334,7 +334,7 @@ namespace MasterData.ProductService
 
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -366,7 +366,7 @@ namespace MasterData.ProductService
 
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -393,7 +393,7 @@ namespace MasterData.ProductService
                     CheckAllChildNodes(childNode);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -434,7 +434,7 @@ namespace MasterData.ProductService
 
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -545,7 +545,7 @@ namespace MasterData.ProductService
 
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -598,7 +598,7 @@ namespace MasterData.ProductService
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -1030,7 +1030,7 @@ namespace MasterData.ProductService
                 // Re-enable events
                 treeList1.AfterCheckNode += TreeList1_AfterCheckNode;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }

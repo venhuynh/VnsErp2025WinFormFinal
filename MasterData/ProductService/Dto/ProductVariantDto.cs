@@ -78,6 +78,17 @@ namespace MasterData.ProductService.Dto
         }
 
         /// <summary>
+        /// Tên biến thể (từ danh sách thuộc tính + đơn vị tính)
+        /// </summary>
+        [DisplayName("Tên biến thể")]
+        [Display(Order = 4)]
+        [Description("Tên biến thể được tạo từ thuộc tính và đơn vị tính")]
+        public string VariantName 
+        { 
+            get => GetVariantName();
+        }
+
+        /// <summary>
         /// ID của đơn vị tính (từ ProductVariant.UnitId)
         /// </summary>
         [DisplayName("ID Đơn vị")]
@@ -89,7 +100,7 @@ namespace MasterData.ProductService.Dto
         /// Mã đơn vị tính (từ UnitOfMeasure.Code)
         /// </summary>
         [DisplayName("Mã đơn vị")]
-        [Display(Order = 4)]
+        [Display(Order = 5)]
         [StringLength(20, ErrorMessage = "Mã đơn vị không được vượt quá 20 ký tự")]
         public string UnitCode 
         { 
@@ -101,7 +112,7 @@ namespace MasterData.ProductService.Dto
         /// Tên đơn vị tính (từ UnitOfMeasure.Name)
         /// </summary>
         [DisplayName("Tên đơn vị")]
-        [Display(Order = 5)]
+        [Display(Order = 6)]
         [StringLength(100, ErrorMessage = "Tên đơn vị không được vượt quá 100 ký tự")]
         public string UnitName 
         { 
@@ -113,7 +124,7 @@ namespace MasterData.ProductService.Dto
         /// Trạng thái hoạt động (từ ProductVariant.IsActive)
         /// </summary>
         [DisplayName("Trạng thái")]
-        [Display(Order = 6)]
+        [Display(Order = 7)]
         [Description("Trạng thái hoạt động của biến thể")]
         public bool IsActive 
         { 
@@ -127,6 +138,13 @@ namespace MasterData.ProductService.Dto
         [DisplayName("Ảnh thumbnail")]
         [Description("Ảnh thumbnail của biến thể")]
         public byte[] ThumbnailImage { get; set; }
+
+        /// <summary>
+        /// Ảnh thumbnail của sản phẩm gốc (từ ProductService.ThumbnailImage)
+        /// </summary>
+        [DisplayName("Ảnh sản phẩm")]
+        [Description("Ảnh thumbnail của sản phẩm gốc")]
+        public byte[] ProductThumbnailImage { get; set; }
 
         /// <summary>
         /// Số lượng thuộc tính của biến thể
@@ -197,11 +215,11 @@ namespace MasterData.ProductService.Dto
         public string StatusDisplay => IsActive ? "Hoạt động" : "Không hoạt động";
 
         /// <summary>
-        /// Hiển thị tên đầy đủ của biến thể (ProductName - VariantCode)
+        /// Hiển thị tên đầy đủ của biến thể (ProductName - VariantName)
         /// </summary>
         [DisplayName("Tên đầy đủ")]
         [Description("Tên đầy đủ của biến thể")]
-        public string FullName => $"{ProductName} - {VariantCode}";
+        public string FullName => $"{ProductName} - {VariantName}";
 
         /// <summary>
         /// Hiển thị thông tin đơn vị (UnitCode - UnitName)
@@ -212,13 +230,19 @@ namespace MasterData.ProductService.Dto
 
         /// <summary>
         /// Hiển thị danh sách thuộc tính dạng text (tối ưu cho GridView)
+        /// Mỗi thuộc tính xuống dòng để dễ đọc
         /// </summary>
-        [DisplayName("Thuộc tính")]
+        [DisplayName("DS Thuộc tính")]
         [Description("Danh sách thuộc tính hiển thị")]
         public string AttributesDisplay
         {
             get
             {
+                // Nếu có _attributesDisplayText thì ưu tiên sử dụng
+                if (!string.IsNullOrEmpty(_attributesDisplayText))
+                    return _attributesDisplayText;
+
+                // Fallback: tạo từ Attributes list
                 if (Attributes == null || Attributes.Count == 0)
                     return "Không có";
 
@@ -228,9 +252,15 @@ namespace MasterData.ProductService.Dto
                     attributeTexts.Add($"{attr.AttributeName}: {attr.AttributeValue}");
                 }
 
-                return string.Join(", ", attributeTexts);
+                return string.Join("\n", attributeTexts);
+            }
+            set
+            {
+                _attributesDisplayText = value;
             }
         }
+
+        private string _attributesDisplayText;
 
         /// <summary>
         /// Hiển thị danh sách hình ảnh dạng text (tối ưu cho GridView)
@@ -248,9 +278,71 @@ namespace MasterData.ProductService.Dto
             }
         }
 
+        /// <summary>
+        /// Hiển thị ảnh thumbnail (ưu tiên ảnh biến thể, nếu không có thì lấy ảnh sản phẩm)
+        /// </summary>
+        [DisplayName("Ảnh hiển thị")]
+        [Description("Ảnh thumbnail để hiển thị")]
+        public byte[] DisplayThumbnailImage
+        {
+            get
+            {
+                // Ưu tiên ảnh của biến thể
+                if (ThumbnailImage != null && ThumbnailImage.Length > 0)
+                    return ThumbnailImage;
+
+                // Nếu không có thì lấy ảnh của sản phẩm gốc
+                if (ProductThumbnailImage != null && ProductThumbnailImage.Length > 0)
+                    return ProductThumbnailImage;
+
+                return null;
+            }
+        }
+
         #endregion
 
         #region Helper Methods
+
+        /// <summary>
+        /// Tạo tên biến thể từ danh sách thuộc tính và đơn vị tính
+        /// </summary>
+        /// <returns>Tên biến thể</returns>
+        private string GetVariantName()
+        {
+            var parts = new List<string>();
+
+            // Thêm thông tin đơn vị tính
+            if (!string.IsNullOrWhiteSpace(UnitName))
+            {
+                parts.Add(UnitName);
+            }
+
+            // Thêm thông tin thuộc tính
+            if (Attributes != null && Attributes.Count > 0)
+            {
+                var attributeParts = new List<string>();
+                foreach (var attr in Attributes)
+                {
+                    if (!string.IsNullOrWhiteSpace(attr.AttributeName) && !string.IsNullOrWhiteSpace(attr.AttributeValue))
+                    {
+                        attributeParts.Add($"{attr.AttributeName}: {attr.AttributeValue}");
+                    }
+                }
+
+                if (attributeParts.Count > 0)
+                {
+                    parts.Add(string.Join(", ", attributeParts));
+                }
+            }
+
+            // Nếu không có thông tin gì, trả về mã biến thể
+            if (parts.Count == 0)
+            {
+                return VariantCode ?? "Biến thể";
+            }
+
+            return string.Join(" - ", parts);
+        }
 
         /// <summary>
         /// Kiểm tra xem biến thể có hợp lệ không
@@ -301,6 +393,7 @@ namespace MasterData.ProductService.Dto
                 UnitName = this.UnitName,
                 IsActive = this.IsActive,
                 ThumbnailImage = this.ThumbnailImage?.Clone() as byte[],
+                ProductThumbnailImage = this.ProductThumbnailImage?.Clone() as byte[],
                 AttributeCount = this.AttributeCount,
                 ImageCount = this.ImageCount,
                 Attributes = this.Attributes?.ConvertAll(a => a.Clone()),
@@ -325,6 +418,7 @@ namespace MasterData.ProductService.Dto
             UnitName = other.UnitName;
             IsActive = other.IsActive;
             ThumbnailImage = other.ThumbnailImage?.Clone() as byte[];
+            ProductThumbnailImage = other.ProductThumbnailImage?.Clone() as byte[];
             AttributeCount = other.AttributeCount;
             ImageCount = other.ImageCount;
         }
@@ -399,7 +493,7 @@ namespace MasterData.ProductService.Dto
         /// <returns>String representation</returns>
         public override string ToString()
         {
-            return $"{ProductName} - {VariantCode} ({UnitName})";
+            return $"{ProductName} - {VariantName} ({UnitName})";
         }
 
         #endregion
