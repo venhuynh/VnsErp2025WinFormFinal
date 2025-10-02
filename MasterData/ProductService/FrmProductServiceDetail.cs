@@ -22,25 +22,65 @@ namespace MasterData.ProductService
 {
     /// <summary>
     /// Form chi tiết sản phẩm/dịch vụ - thêm mới và chỉnh sửa.
+    /// Cung cấp chức năng CRUD đầy đủ với validation nghiệp vụ và giao diện thân thiện.
     /// </summary>
     public partial class FrmProductServiceDetail : XtraForm
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// Business Logic Layer cho sản phẩm/dịch vụ
+        /// </summary>
         private readonly ProductServiceBll _productServiceBll = new ProductServiceBll();
+
+        /// <summary>
+        /// Business Logic Layer cho danh mục sản phẩm/dịch vụ
+        /// </summary>
         private readonly ProductServiceCategoryBll _productServiceCategoryBll = new ProductServiceCategoryBll();
+
+        /// <summary>
+        /// Business Logic Layer cho hình ảnh sản phẩm
+        /// </summary>
         private readonly ProductImageBll _productImageBll = new ProductImageBll();
+
+        /// <summary>
+        /// Service xử lý hình ảnh
+        /// </summary>
         private readonly ImageService _imageService = new ImageService();
+
+        /// <summary>
+        /// Service validation hình ảnh
+        /// </summary>
         private readonly ImageValidationService _imageValidationService = new ImageValidationService();
+
+        /// <summary>
+        /// Service nén hình ảnh
+        /// </summary>
         private readonly ImageCompressionService _imageCompressionService = new ImageCompressionService();
+
+        /// <summary>
+        /// ID của sản phẩm/dịch vụ đang chỉnh sửa (Guid.Empty nếu thêm mới)
+        /// </summary>
         private readonly Guid _productServiceId;
+
+        /// <summary>
+        /// Trạng thái đang trong chế độ chỉnh sửa (true) hay thêm mới (false)
+        /// </summary>
         private bool IsEditMode => _productServiceId != Guid.Empty;
+
+        /// <summary>
+        /// Trạng thái hình ảnh đã thay đổi
+        /// </summary>
         private bool _hasImageChanged = false;
+
+        /// <summary>
+        /// Cache danh sách sản phẩm/dịch vụ đang hoạt động
+        /// </summary>
         private List<Dal.DataContext.ProductService> _activeProductServicesCache;
 
         #endregion
 
-        #region Constructor
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
         /// <summary>
         /// Khởi tạo form cho thêm mới sản phẩm/dịch vụ.
@@ -62,7 +102,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Form Events
+        #region ========== KHỞI TẠO FORM ==========
 
         /// <summary>
         /// Form load event.
@@ -84,30 +124,6 @@ namespace MasterData.ProductService
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi khởi tạo form");
-            }
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Load danh sách sản phẩm/dịch vụ đang hoạt động và lưu vào cache cục bộ.
-        /// </summary>
-        private async Task LoadActiveProductServices()
-        {
-            try
-            {
-                var activeProductServices = await _productServiceBll.GetFilteredAsync(
-                    isActive: true,
-                    orderBy: "Name",
-                    orderDirection: "ASC");
-
-                _activeProductServicesCache = activeProductServices ?? new List<Dal.DataContext.ProductService>();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi khi tải danh sách sản phẩm/dịch vụ đang hoạt động");
             }
         }
 
@@ -144,6 +160,30 @@ namespace MasterData.ProductService
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi khởi tạo form");
+            }
+        }
+
+        #endregion
+
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
+
+        /// <summary>
+        /// Load danh sách sản phẩm/dịch vụ đang hoạt động và lưu vào cache cục bộ.
+        /// </summary>
+        private async Task LoadActiveProductServices()
+        {
+            try
+            {
+                var activeProductServices = await _productServiceBll.GetFilteredAsync(
+                    isActive: true,
+                    orderBy: "Name",
+                    orderDirection: "ASC");
+
+                _activeProductServicesCache = activeProductServices ?? new List<Dal.DataContext.ProductService>();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi tải danh sách sản phẩm/dịch vụ đang hoạt động");
             }
         }
 
@@ -244,6 +284,10 @@ namespace MasterData.ProductService
             }
         }
 
+        #endregion
+
+        #region ========== XỬ LÝ DỮ LIỆU FORM ==========
+
         /// <summary>
         /// Bind dữ liệu DTO vào các control.
         /// </summary>
@@ -331,36 +375,9 @@ namespace MasterData.ProductService
             };
         }
 
-        /// <summary>
-        /// Hiển thị thông tin.
-        /// </summary>
-        /// <param name="message">Thông báo</param>
-        private void ShowInfo(string message)
-        {
-            MsgBox.ShowInfo(message);
-        }
+        #endregion
 
-        /// <summary>
-        /// Hiển thị lỗi.
-        /// </summary>
-        /// <param name="message">Thông báo lỗi</param>
-        private void ShowError(string message)
-        {
-            MsgBox.ShowError(message);
-        }
-
-        /// <summary>
-        /// Hiển thị lỗi với thông tin ngữ cảnh.
-        /// </summary>
-        /// <param name="ex">Exception</param>
-        /// <param name="context">Ngữ cảnh lỗi</param>
-        private void ShowError(Exception ex, string context = null)
-        {
-            if (string.IsNullOrWhiteSpace(context))
-                MsgBox.ShowException(ex);
-            else
-                MsgBox.ShowException(new Exception(context + ": " + ex.Message, ex));
-        }
+        #region ========== XỬ LÝ HÌNH ẢNH ==========
 
         /// <summary>
         /// Load và compress thumbnail image từ byte array
@@ -463,6 +480,10 @@ namespace MasterData.ProductService
             }
         }
 
+        #endregion
+
+        #region ========== VALIDATION ==========
+
         /// <summary>
         /// Validate dữ liệu đầu vào.
         /// </summary>
@@ -535,6 +556,10 @@ namespace MasterData.ProductService
             return true;
         }
 
+        #endregion
+
+        #region ========== CHỨC NĂNG LƯU DỮ LIỆU ==========
+
         /// <summary>
         /// Lưu dữ liệu sản phẩm/dịch vụ.
         /// </summary>
@@ -575,6 +600,10 @@ namespace MasterData.ProductService
             }
         }
 
+        #endregion
+
+        #region ========== SỰ KIỆN FORM ==========
+
         /// <summary>
         /// Event handler khi user thay đổi danh mục -> tự động tạo mã sản phẩm.
         /// </summary>
@@ -610,7 +639,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Event Handlers
+        #region ========== SỰ KIỆN TOOLBAR ==========
 
         /// <summary>
         /// Người dùng bấm nút Lưu.
@@ -631,6 +660,10 @@ namespace MasterData.ProductService
             DialogResult = DialogResult.Cancel;
             Close();
         }
+
+        #endregion
+
+        #region ========== SỰ KIỆN HÌNH ẢNH ==========
 
         /// <summary>
         /// Người dùng bấm nút Browse để chọn ảnh thumbnail.
@@ -733,6 +766,10 @@ namespace MasterData.ProductService
             }
         }
 
+        #endregion
+
+        #region ========== PHÍM TẮT ==========
+
         /// <summary>
         /// Xử lý phím tắt.
         /// </summary>
@@ -750,8 +787,42 @@ namespace MasterData.ProductService
                 return true;
             }
 
-
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        #endregion
+
+        #region ========== TIỆN ÍCH HIỂN THỊ ==========
+
+        /// <summary>
+        /// Hiển thị thông báo thông tin
+        /// </summary>
+        /// <param name="message">Nội dung thông báo</param>
+        private void ShowInfo(string message)
+        {
+            MsgBox.ShowInfo(message);
+        }
+
+        /// <summary>
+        /// Hiển thị thông báo lỗi
+        /// </summary>
+        /// <param name="message">Nội dung thông báo lỗi</param>
+        private void ShowError(string message)
+        {
+            MsgBox.ShowError(message);
+        }
+
+        /// <summary>
+        /// Hiển thị thông báo lỗi với thông tin ngữ cảnh
+        /// </summary>
+        /// <param name="ex">Exception</param>
+        /// <param name="context">Ngữ cảnh lỗi</param>
+        private void ShowError(Exception ex, string context = null)
+        {
+            if (string.IsNullOrWhiteSpace(context))
+                MsgBox.ShowException(ex);
+            else
+                MsgBox.ShowException(new Exception(context + ": " + ex.Message, ex));
         }
 
         #endregion

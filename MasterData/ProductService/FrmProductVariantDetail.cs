@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Common;
+﻿using Bll.Common;
 using Bll.MasterData.ProductServiceBll;
 using Bll.Utils;
 using Dal.DataContext;
@@ -17,23 +10,81 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using MasterData.ProductService.Converters;
 using MasterData.ProductService.Dto;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MasterData.ProductService
 {
+    /// <summary>
+    /// Form chi tiết biến thể sản phẩm - thêm mới và chỉnh sửa.
+    /// Cung cấp chức năng CRUD đầy đủ với validation nghiệp vụ và giao diện thân thiện.
+    /// </summary>
     public partial class FrmProductVariantDetail : XtraForm
     {
-        private readonly Guid _productVariantId;
-        private readonly ProductServiceBll _productServiceBll = new ProductServiceBll();
-		private readonly UnitOfMeasureBll _unitOfMeasureBll = new UnitOfMeasureBll();
-		private readonly AttributeBll _attributeBll = new AttributeBll();
-		private readonly ProductVariantBll _productVariantBll = new ProductVariantBll();
-		private bool _isLoadingDataSources;
-		private readonly List<AttributeValueDto> _attributeValuesCache = new List<AttributeValueDto>();
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// ID của biến thể sản phẩm đang chỉnh sửa (Guid.Empty nếu thêm mới)
+        /// </summary>
+        private readonly Guid _productVariantId;
+
+        /// <summary>
+        /// Business Logic Layer cho sản phẩm/dịch vụ
+        /// </summary>
+        private readonly ProductServiceBll _productServiceBll = new ProductServiceBll();
+
+        /// <summary>
+        /// Business Logic Layer cho đơn vị tính
+        /// </summary>
+        private readonly UnitOfMeasureBll _unitOfMeasureBll = new UnitOfMeasureBll();
+
+        /// <summary>
+        /// Business Logic Layer cho thuộc tính
+        /// </summary>
+        private readonly AttributeBll _attributeBll = new AttributeBll();
+
+        /// <summary>
+        /// Business Logic Layer cho biến thể sản phẩm
+        /// </summary>
+        private readonly ProductVariantBll _productVariantBll = new ProductVariantBll();
+
+        /// <summary>
+        /// Trạng thái đang tải dữ liệu nguồn
+        /// </summary>
+        private bool _isLoadingDataSources;
+
+        /// <summary>
+        /// Cache danh sách giá trị thuộc tính để quản lý thêm/xóa dòng
+        /// </summary>
+        private readonly List<AttributeValueDto> _attributeValuesCache = new List<AttributeValueDto>();
+
+        #endregion
+
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
+
+        /// <summary>
+        /// Khởi tạo form cho thêm mới hoặc chỉnh sửa biến thể sản phẩm.
+        /// </summary>
+        /// <param name="productVariantId">ID của biến thể sản phẩm cần chỉnh sửa (Guid.Empty nếu thêm mới)</param>
         public FrmProductVariantDetail(Guid productVariantId)
         {
             _productVariantId = productVariantId;
             InitializeComponent();
+			
+			// Thiết lập tiêu đề form dựa trên chế độ (tạo mới hoặc edit)
+			if (_productVariantId == Guid.Empty)
+			{
+				this.Text = "Thêm mới biến thể sản phẩm";
+			}
+			else
+			{
+				this.Text = "Chỉnh sửa biến thể sản phẩm";
+			}
+
 			Load += FrmProductVariantDetail_Load;
 			ProductNameSearchLookupEdit.EditValueChanged += ProductNameSearchLookupEdit_EditValueChanged;
 			UnitNameSearchLookupEdit.EditValueChanged += UnitNameSearchLookupEdit_EditValueChanged;
@@ -45,6 +96,290 @@ namespace MasterData.ProductService
 			CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
         }
 
+        #endregion
+
+        #region ========== KHỞI TẠO FORM ==========
+
+        /// <summary>
+        /// Form load event.
+        /// </summary>
+        private async void FrmProductVariantDetail_Load(object sender, EventArgs e)
+		{
+			await LoadDataSourcesAsync();
+		}
+
+        #endregion
+
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
+
+		/// <summary>
+		/// Load tất cả các nguồn dữ liệu cần thiết cho form
+		/// </summary>
+		private async Task LoadDataSourcesAsync()
+		{
+			if (_isLoadingDataSources) return;
+			_isLoadingDataSources = true;
+			try
+			{
+				await ExecuteWithWaitingFormAsync(async () =>
+				{
+					await LoadProductServicesDataSourceAsync();
+					await LoadUnitOfMeasureDataSourceAsync();
+					await LoadAttributesDataSourceAsync();
+					await LoadAttributeValuesAsync();
+					await LoadExistingVariantDataAsync();
+				});
+			}
+			catch (Exception ex)
+			{
+				MsgBox.ShowError($"Lỗi tải dữ liệu: {ex.Message}");
+			}
+			finally
+			{
+				_isLoadingDataSources = false;
+			}
+		}
+
+		/// <summary>
+		/// Load danh sách sản phẩm/dịch vụ vào binding source
+		/// </summary>
+		private async Task LoadProductServicesDataSourceAsync()
+		{
+			var entities = await _productServiceBll.GetFilteredAsync(
+				isActive: true,
+				orderBy: "Name",
+				orderDirection: "ASC");
+
+			var dtos = entities.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId));
+			productServiceDtoBindingSource.DataSource = dtos;
+		}
+
+		/// <summary>
+		/// Load danh sách đơn vị tính vào binding source
+		/// </summary>
+		private async Task LoadUnitOfMeasureDataSourceAsync()
+		{
+			var units = await Task.Run(() => _unitOfMeasureBll.GetByStatus(true));
+			var unitDtos = units.ToDtoList()
+				.OrderBy(u => u.Name)
+				.ToList();
+			unitOfMeasureDtoBindingSource.DataSource = unitDtos;
+		}
+
+		/// <summary>
+		/// Load danh sách thuộc tính vào binding source
+		/// </summary>
+		private async Task LoadAttributesDataSourceAsync()
+		{
+			var attributes = await Task.Run(() => _attributeBll.GetAll());
+			var attributeDtos = attributes.ToDtoList()
+				.OrderBy(a => a.Name)
+				.ToList();
+			attributeDtoBindingSource.DataSource = attributeDtos;
+		}
+
+		/// <summary>
+		/// Load giá trị thuộc tính hiện có (nếu đang edit)
+		/// </summary>
+		private Task LoadAttributeValuesAsync()
+		{
+			try
+			{
+				// Initialize cache
+				_attributeValuesCache.Clear();
+
+				// If editing existing variant, load its attribute values
+				if (_productVariantId != Guid.Empty)
+				{
+					var existingValues = _productVariantBll.GetAttributeValues(_productVariantId);
+					
+					// Convert từ BLL result sang DTO
+					foreach (var (attributeId, attributeName, value) in existingValues)
+					{
+						var dto = new AttributeValueDto
+						{
+							Id = Guid.NewGuid(), // Generate new ID for DTO
+							AttributeId = attributeId,
+							AttributeName = attributeName,
+							Value = value
+						};
+						_attributeValuesCache.Add(dto);
+					}
+				}
+
+				// Bind to grid
+				attributeValueDtoBindingSource.DataSource = new List<AttributeValueDto>(_attributeValuesCache);
+				attributeValueDtoBindingSource.ResetBindings(false);
+			}
+			catch (Exception ex)
+			{
+				MsgBox.ShowError($"Lỗi tải giá trị thuộc tính: {ex.Message}");
+			}
+			
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Load dữ liệu biến thể hiện có khi edit
+		/// </summary>
+		private Task LoadExistingVariantDataAsync()
+        {
+            try
+            {
+				if (_productVariantId == Guid.Empty) return Task.CompletedTask;
+
+				var variant = _productVariantBll.GetById(_productVariantId);
+				if (variant == null) return Task.CompletedTask;
+
+				// Load dữ liệu vào form
+				ProductNameSearchLookupEdit.EditValue = variant.ProductId;
+				VariantCodeTextEdit.Text = variant.VariantCode;
+				UnitNameSearchLookupEdit.EditValue = variant.UnitId;
+				IsActiveToggleSwitch.IsOn = variant.IsActive;
+
+				// Disable các control quan trọng khi edit để tránh thay đổi dữ liệu cốt lõi
+				SetEditModeControls();
+            }
+            catch (Exception ex)
+            {
+				MsgBox.ShowError($"Lỗi tải dữ liệu biến thể: {ex.Message}");
+			}
+			
+			return Task.CompletedTask;
+		}
+
+        #endregion
+
+        #region ========== VALIDATION ==========
+
+		/// <summary>
+		/// Validate giá trị thuộc tính theo kiểu dữ liệu
+		/// </summary>
+		/// <param name="dataType">Kiểu dữ liệu</param>
+		/// <param name="value">Giá trị cần validate</param>
+		/// <param name="error">Thông báo lỗi nếu có</param>
+		/// <returns>True nếu hợp lệ</returns>
+		private bool ValidateValueAgainstDataType(string dataType, string value, out string error)
+		{
+			error = null;
+			var type = dataType?.Trim()?.ToLowerInvariant();
+			switch (type)
+			{
+				case "int":
+				case "integer":
+					{
+						if (!long.TryParse(value, NumberStyles.Integer, CultureInfo.CurrentCulture, out _))
+						{
+							error = "Giá trị phải là số nguyên";
+							return false;
+						}
+						return true;
+					}
+				case "number":
+				case "numeric":
+				case "decimal":
+				case "float":
+				case "double":
+				case "money":
+				case "currency":
+					{
+						if (!decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out _))
+						{
+							error = "Giá trị phải là số";
+							return false;
+						}
+						return true;
+					}
+				case "date":
+					{
+						if (!DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.None, out _))
+						{
+							error = "Giá trị phải là ngày hợp lệ";
+							return false;
+						}
+						return true;
+					}
+				case "datetime":
+					{
+						if (!DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.AllowWhiteSpaces, out _))
+						{
+							error = "Giá trị phải là ngày giờ hợp lệ";
+							return false;
+						}
+						return true;
+					}
+				case "bool":
+				case "boolean":
+					{
+						if (bool.TryParse(value, out _)) return true;
+						// Chấp nhận 0/1, có/không
+						var v = value.Trim().ToLowerInvariant();
+						if (v == "1" || v == "0" || v == "có" || v == "không" || v == "yes" || v == "no") return true;
+						error = "Giá trị phải là kiểu đúng/sai (true/false, 1/0, có/không)";
+						return false;
+					}
+				case "string":
+				case "text":
+				default:
+					return true; // đã kiểm tra rỗng và độ dài phía trên
+			}
+		}
+
+		/// <summary>
+		/// Validate dữ liệu form trước khi lưu
+		/// </summary>
+		/// <returns>True nếu hợp lệ</returns>
+		private bool ValidateFormData()
+		{
+			try
+			{
+				// Validate các field bắt buộc
+				if (string.IsNullOrWhiteSpace(ProductNameSearchLookupEdit.Text))
+				{
+					MsgBox.ShowWarning("Vui lòng chọn sản phẩm/dịch vụ.");
+					ProductNameSearchLookupEdit.Focus();
+					return false;
+				}
+
+				if (string.IsNullOrWhiteSpace(VariantCodeTextEdit.Text))
+				{
+					MsgBox.ShowWarning("Vui lòng nhập mã biến thể.");
+					VariantCodeTextEdit.Focus();
+					return false;
+				}
+
+				// Validate attribute values
+				var attributeValues = GetChangedAttributeValues();
+				foreach (var attrValue in attributeValues)
+				{
+					if (attrValue.AttributeId == Guid.Empty)
+					{
+						MsgBox.ShowWarning("Vui lòng chọn đầy đủ thuộc tính cho tất cả dòng.");
+						return false;
+					}
+
+					if (string.IsNullOrWhiteSpace(attrValue.Value))
+					{
+						MsgBox.ShowWarning("Vui lòng nhập đầy đủ giá trị cho tất cả thuộc tính.");
+						return false;
+					}
+				}
+
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+        #endregion
+
+        #region ========== SỰ KIỆN GRID ==========
+
+		/// <summary>
+		/// Xử lý khi validate editor trong grid
+		/// </summary>
 		private void AttributeValueGridView_ValidatingEditor(object sender, BaseContainerValidateEditorEventArgs e)
 		{
 			try
@@ -112,72 +447,9 @@ namespace MasterData.ProductService
 			}
 		}
 
-		private bool ValidateValueAgainstDataType(string dataType, string value, out string error)
-		{
-			error = null;
-			var type = dataType?.Trim()?.ToLowerInvariant();
-			switch (type)
-			{
-				case "int":
-				case "integer":
-					{
-						if (!long.TryParse(value, NumberStyles.Integer, CultureInfo.CurrentCulture, out _))
-						{
-							error = "Giá trị phải là số nguyên";
-							return false;
-						}
-						return true;
-					}
-				case "number":
-				case "numeric":
-				case "decimal":
-				case "float":
-				case "double":
-				case "money":
-				case "currency":
-					{
-						if (!decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out _))
-						{
-							error = "Giá trị phải là số";
-							return false;
-						}
-						return true;
-					}
-				case "date":
-					{
-						if (!DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.None, out _))
-						{
-							error = "Giá trị phải là ngày hợp lệ";
-							return false;
-						}
-						return true;
-					}
-				case "datetime":
-					{
-						if (!DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.AllowWhiteSpaces, out _))
-						{
-							error = "Giá trị phải là ngày giờ hợp lệ";
-							return false;
-						}
-						return true;
-					}
-				case "bool":
-				case "boolean":
-					{
-						if (bool.TryParse(value, out _)) return true;
-						// Chấp nhận 0/1, có/không
-						var v = value.Trim().ToLowerInvariant();
-						if (v == "1" || v == "0" || v == "có" || v == "không" || v == "yes" || v == "no") return true;
-						error = "Giá trị phải là kiểu đúng/sai (true/false, 1/0, có/không)";
-						return false;
-					}
-				case "string":
-				case "text":
-				default:
-					return true; // đã kiểm tra rỗng và độ dài phía trên
-			}
-		}
-
+		/// <summary>
+		/// Xử lý khi cập nhật dòng trong grid
+		/// </summary>
 		private void AttributeValueGridView_RowUpdated(object sender, RowObjectEventArgs e)
 		{
 			try
@@ -192,6 +464,9 @@ namespace MasterData.ProductService
 			}
 		}
 
+		/// <summary>
+		/// Xử lý khi thay đổi thuộc tính trong grid
+		/// </summary>
 		private void AttributeSearchLookUpEdit_EditValueChanged(object sender, EventArgs e)
 		{
 			try
@@ -241,102 +516,64 @@ namespace MasterData.ProductService
 			}
 		}
 
-        private async void FrmProductVariantDetail_Load(object sender, EventArgs e)
-		{
-			await LoadDataSourcesAsync();
-		}
-
-		private async Task LoadDataSourcesAsync()
-		{
-			if (_isLoadingDataSources) return;
-			_isLoadingDataSources = true;
-			try
-			{
-				await ExecuteWithWaitingFormAsync(async () =>
-				{
-					await LoadProductServicesDataSourceAsync();
-					await LoadUnitOfMeasureDataSourceAsync();
-					await LoadAttributesDataSourceAsync();
-					await LoadAttributeValuesAsync();
-					await LoadExistingVariantDataAsync();
-				});
-			}
-			catch (Exception ex)
-			{
-				MsgBox.ShowError($"Lỗi tải dữ liệu: {ex.Message}");
-			}
-			finally
-			{
-				_isLoadingDataSources = false;
-			}
-		}
-
-		private async Task LoadProductServicesDataSourceAsync()
-		{
-			var entities = await _productServiceBll.GetFilteredAsync(
-				isActive: true,
-				orderBy: "Name",
-				orderDirection: "ASC");
-
-			var dtos = entities.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId));
-			productServiceDtoBindingSource.DataSource = dtos;
-		}
-
-		private async Task LoadUnitOfMeasureDataSourceAsync()
-		{
-			var units = await Task.Run(() => _unitOfMeasureBll.GetByStatus(true));
-			var unitDtos = units.ToDtoList()
-				.OrderBy(u => u.Name)
-				.ToList();
-			unitOfMeasureDtoBindingSource.DataSource = unitDtos;
-		}
-
-		private async Task LoadAttributesDataSourceAsync()
-		{
-			var attributes = await Task.Run(() => _attributeBll.GetAll());
-			var attributeDtos = attributes.ToDtoList()
-				.OrderBy(a => a.Name)
-				.ToList();
-			attributeDtoBindingSource.DataSource = attributeDtos;
-		}
-
-		private Task LoadAttributeValuesAsync()
+		/// <summary>
+		/// Xử lý khi khởi tạo dòng mới trong grid
+		/// </summary>
+		private void AttributeValueGridView_InitNewRow(object sender, InitNewRowEventArgs e)
 		{
 			try
 			{
-				// Initialize cache
-				_attributeValuesCache.Clear();
-
-				// If editing existing variant, load its attribute values
-				if (_productVariantId != Guid.Empty)
+				// Kiểm tra xem còn thuộc tính nào chưa được sử dụng không
+				var availableAttributes = GetAvailableAttributes();
+				if (availableAttributes.Count == 0)
 				{
-					var existingValues = _productVariantBll.GetAttributeValues(_productVariantId);
-					
-					// Convert từ BLL result sang DTO
-					foreach (var (attributeId, attributeName, value) in existingValues)
-					{
-						var dto = new AttributeValueDto
-						{
-							Id = Guid.NewGuid(), // Generate new ID for DTO
-							AttributeId = attributeId,
-							AttributeName = attributeName,
-							Value = value
-						};
-						_attributeValuesCache.Add(dto);
-					}
+					MsgBox.ShowInfo("Tất cả thuộc tính đã được sử dụng. Không thể thêm dòng mới.");
+					return;
 				}
 
-				// Bind to grid
+				// Tạo dòng mới và thêm vào cache
+				var newRow = new AttributeValueDto
+				{
+					Id = Guid.NewGuid(),
+					AttributeId = Guid.Empty,
+					AttributeName = string.Empty,
+					Value = string.Empty
+				};
+
+				// Thêm dòng mới vào vị trí hiện tại thay vì cuối danh sách
+				var currentRowHandle = AttributeValueGridView.FocusedRowHandle;
+				if (currentRowHandle >= 0 && currentRowHandle < _attributeValuesCache.Count)
+				{
+					// Chèn vào vị trí hiện tại + 1
+					_attributeValuesCache.Insert(currentRowHandle + 1, newRow);
+				}
+				else
+				{
+					// Nếu không có vị trí hợp lệ, thêm vào đầu danh sách
+					_attributeValuesCache.Insert(0, newRow);
+				}
+
+				// Cập nhật binding source
 				attributeValueDtoBindingSource.DataSource = new List<AttributeValueDto>(_attributeValuesCache);
 				attributeValueDtoBindingSource.ResetBindings(false);
+
+				// Focus vào dòng mới và cột đầu tiên
+				var newRowHandle = currentRowHandle >= 0 ? currentRowHandle + 1 : 0;
+				AttributeValueGridView.FocusedRowHandle = newRowHandle;
+				AttributeValueGridView.FocusedColumn = AttributeValueGridView.Columns["AttributeName"];
+				
+				// Đảm bảo dòng mới hiển thị trong viewport
+				AttributeValueGridView.MakeRowVisible(newRowHandle);
 			}
 			catch (Exception ex)
 			{
-				MsgBox.ShowError($"Lỗi tải giá trị thuộc tính: {ex.Message}");
+				MsgBox.ShowError($"Lỗi khởi tạo dòng mới: {ex.Message}");
 			}
-			
-			return Task.CompletedTask;
 		}
+
+        #endregion
+
+        #region ========== QUẢN LÝ THUỘC TÍNH ==========
 
 		/// <summary>
 		/// Thêm dòng mới vào cache và grid
@@ -522,78 +759,14 @@ namespace MasterData.ProductService
 			}
 		}
 
-		private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
-		{
-			try
-			{
-				SplashScreenManager.ShowForm(typeof(WaitForm1));
-				await operation();
-			}
-			finally
-			{
-				SplashScreenManager.CloseForm();
-			}
-		}
+        #endregion
 
-		/// <summary>
-		/// Xử lý khi khởi tạo dòng mới trong grid
-		/// </summary>
-		private void AttributeValueGridView_InitNewRow(object sender, DevExpress.XtraGrid.Views.Grid.InitNewRowEventArgs e)
-		{
-			try
-			{
-				// Kiểm tra xem còn thuộc tính nào chưa được sử dụng không
-				var availableAttributes = GetAvailableAttributes();
-				if (availableAttributes.Count == 0)
-				{
-					MsgBox.ShowInfo("Tất cả thuộc tính đã được sử dụng. Không thể thêm dòng mới.");
-					return;
-				}
-
-				// Tạo dòng mới và thêm vào cache
-				var newRow = new AttributeValueDto
-				{
-					Id = Guid.NewGuid(),
-					AttributeId = Guid.Empty,
-					AttributeName = string.Empty,
-					Value = string.Empty
-				};
-
-				// Thêm dòng mới vào vị trí hiện tại thay vì cuối danh sách
-				var currentRowHandle = AttributeValueGridView.FocusedRowHandle;
-				if (currentRowHandle >= 0 && currentRowHandle < _attributeValuesCache.Count)
-				{
-					// Chèn vào vị trí hiện tại + 1
-					_attributeValuesCache.Insert(currentRowHandle + 1, newRow);
-				}
-				else
-				{
-					// Nếu không có vị trí hợp lệ, thêm vào đầu danh sách
-					_attributeValuesCache.Insert(0, newRow);
-				}
-
-				// Cập nhật binding source
-				attributeValueDtoBindingSource.DataSource = new List<AttributeValueDto>(_attributeValuesCache);
-				attributeValueDtoBindingSource.ResetBindings(false);
-
-				// Focus vào dòng mới và cột đầu tiên
-				var newRowHandle = currentRowHandle >= 0 ? currentRowHandle + 1 : 0;
-				AttributeValueGridView.FocusedRowHandle = newRowHandle;
-				AttributeValueGridView.FocusedColumn = AttributeValueGridView.Columns["AttributeName"];
-				
-				// Đảm bảo dòng mới hiển thị trong viewport
-				AttributeValueGridView.MakeRowVisible(newRowHandle);
-			}
-			catch (Exception ex)
-			{
-				MsgBox.ShowError($"Lỗi khởi tạo dòng mới: {ex.Message}");
-			}
-		}
+        #region ========== CHỨC NĂNG LƯU DỮ LIỆU ==========
 
 		/// <summary>
 		/// Xử lý khi click nút Lưu
 		/// </summary>
-		private async void SaveBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+		private async void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
 		{
 			try
 			{
@@ -623,7 +796,11 @@ namespace MasterData.ProductService
 					}
 
 					MsgBox.ShowInfo("Lưu dữ liệu thành công!");
-				});
+					
+					//Đóng màn hình này
+                    Close();
+
+                });
 			}
 			catch (Exception ex)
 			{
@@ -634,7 +811,7 @@ namespace MasterData.ProductService
 		/// <summary>
 		/// Xử lý khi click nút Đóng
 		/// </summary>
-		private void CloseBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+		private void CloseBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
@@ -644,102 +821,12 @@ namespace MasterData.ProductService
 					if (!MsgBox.GetConfirmFromYesNoDialog("Có thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng?", "Xác nhận")) return;
 				}
 
-				this.Close();
+				Close();
             }
             catch (Exception ex)
             {
 				MsgBox.ShowError($"Lỗi đóng form: {ex.Message}");
 			}
-		}
-
-		/// <summary>
-		/// Validate dữ liệu form trước khi lưu
-		/// </summary>
-		private bool ValidateFormData()
-		{
-			try
-			{
-				// Validate các field bắt buộc
-				if (string.IsNullOrWhiteSpace(ProductNameSearchLookupEdit.Text))
-				{
-					MsgBox.ShowWarning("Vui lòng chọn sản phẩm/dịch vụ.");
-					ProductNameSearchLookupEdit.Focus();
-					return false;
-				}
-
-				if (string.IsNullOrWhiteSpace(VariantCodeTextEdit.Text))
-				{
-					MsgBox.ShowWarning("Vui lòng nhập mã biến thể.");
-					VariantCodeTextEdit.Focus();
-					return false;
-				}
-
-				// Validate attribute values
-				var attributeValues = GetChangedAttributeValues();
-				foreach (var attrValue in attributeValues)
-				{
-					if (attrValue.AttributeId == Guid.Empty)
-					{
-						MsgBox.ShowWarning("Vui lòng chọn đầy đủ thuộc tính cho tất cả dòng.");
-						return false;
-					}
-
-					if (string.IsNullOrWhiteSpace(attrValue.Value))
-					{
-						MsgBox.ShowWarning("Vui lòng nhập đầy đủ giá trị cho tất cả thuộc tính.");
-						return false;
-					}
-				}
-
-				return true;
-			}
-			catch
-			{
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// Kiểm tra xem có thay đổi chưa lưu không
-		/// </summary>
-		private bool HasUnsavedChanges()
-		{
-			try
-			{
-				// TODO: Implement logic to check for unsaved changes
-				// For now, always return false
-				return false;
-			}
-			catch
-			{
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// Load dữ liệu biến thể hiện có khi edit
-		/// </summary>
-		private Task LoadExistingVariantDataAsync()
-		{
-			try
-			{
-				if (_productVariantId == Guid.Empty) return Task.CompletedTask;
-
-				var variant = _productVariantBll.GetById(_productVariantId);
-				if (variant == null) return Task.CompletedTask;
-
-				// Load dữ liệu vào form
-				ProductNameSearchLookupEdit.EditValue = variant.ProductId;
-				VariantCodeTextEdit.Text = variant.VariantCode;
-				UnitNameSearchLookupEdit.EditValue = variant.UnitId;
-				IsActiveToggleSwitch.IsOn = variant.IsActive;
-			}
-			catch (Exception ex)
-			{
-				MsgBox.ShowError($"Lỗi tải dữ liệu biến thể: {ex.Message}");
-			}
-			
-			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -803,6 +890,10 @@ namespace MasterData.ProductService
             }
         }
 
+        #endregion
+
+        #region ========== SỰ KIỆN FORM ==========
+
 		/// <summary>
 		/// Xử lý khi thay đổi sản phẩm/dịch vụ
 		/// </summary>
@@ -841,13 +932,17 @@ namespace MasterData.ProductService
 			}
 		}
 
+        #endregion
+
+        #region ========== TỰ ĐỘNG SINH MÃ ==========
+
 		/// <summary>
 		/// Tự động sinh mã biến thể theo format: [Mã sản phẩm] + [Đơn vị tính] + [Số thứ tự]
 		/// </summary>
 		private void GenerateVariantCode()
-		{
-			try
-			{
+        {
+            try
+            {
 				// Lấy thông tin sản phẩm/dịch vụ
 				var selectedProductId = ProductNameSearchLookupEdit.EditValue as Guid?;
 				if (selectedProductId == null || selectedProductId == Guid.Empty)
@@ -890,9 +985,9 @@ namespace MasterData.ProductService
 				var variantCode = $"{prefix}_{nextNumber:D4}";
 
 				VariantCodeTextEdit.Text = variantCode;
-			}
-			catch (Exception ex)
-			{
+            }
+            catch (Exception ex)
+            {
 				MsgBox.ShowError($"Lỗi sinh mã biến thể: {ex.Message}");
 			}
 		}
@@ -945,5 +1040,77 @@ namespace MasterData.ProductService
 			}
 		}
 
+        #endregion
+
+        #region ========== TIỆN ÍCH ==========
+
+		/// <summary>
+		/// Thực thi operation với splash screen
+		/// </summary>
+		private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
+		{
+			try
+			{
+				SplashScreenManager.ShowForm(typeof(WaitForm1));
+				await operation();
+			}
+			finally
+			{
+				SplashScreenManager.CloseForm();
+			}
+		}
+
+		/// <summary>
+		/// Kiểm tra xem có thay đổi chưa lưu không
+		/// </summary>
+		private bool HasUnsavedChanges()
+		{
+			try
+			{
+				// TODO: Implement logic to check for unsaved changes
+				// For now, always return false
+				return false;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Thiết lập các control ở chế độ edit (disable các field quan trọng)
+		/// </summary>
+		private void SetEditModeControls()
+		{
+			try
+			{
+				// Disable các control quan trọng khi edit để tránh thay đổi dữ liệu cốt lõi
+				ProductNameSearchLookupEdit.Enabled = false;
+				VariantCodeTextEdit.Enabled = false;
+				UnitNameSearchLookupEdit.Enabled = false;
+
+				// Thay đổi màu nền để người dùng biết các field này không thể chỉnh sửa
+				ProductNameSearchLookupEdit.BackColor = System.Drawing.SystemColors.Control;
+				VariantCodeTextEdit.BackColor = System.Drawing.SystemColors.Control;
+				UnitNameSearchLookupEdit.BackColor = System.Drawing.SystemColors.Control;
+
+				// Cập nhật tiêu đề form để hiển thị chế độ edit với mã biến thể
+				var variantCode = VariantCodeTextEdit.Text?.Trim();
+				if (!string.IsNullOrEmpty(variantCode))
+				{
+					this.Text = $"Chỉnh sửa biến thể sản phẩm - {variantCode}";
+				}
+				else
+				{
+					this.Text = "Chỉnh sửa biến thể sản phẩm";
+				}
+			}
+			catch (Exception ex)
+			{
+				MsgBox.ShowError($"Lỗi thiết lập chế độ edit: {ex.Message}");
+			}
+		}
+
+        #endregion
     }
 }

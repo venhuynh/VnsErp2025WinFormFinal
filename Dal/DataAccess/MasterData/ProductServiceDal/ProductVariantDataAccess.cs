@@ -406,6 +406,136 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             }
         }
 
+        /// <summary>
+        /// Lấy biến thể theo khoảng thời gian tạo
+        /// </summary>
+        /// <param name="fromDate">Từ ngày</param>
+        /// <param name="toDate">Đến ngày</param>
+        /// <returns>Danh sách biến thể</returns>
+        public List<ProductVariant> GetByCreatedDateRange(DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                using var context = CreateContext();
+                return context.ProductVariants
+                    .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
+                    .OrderByDescending(x => x.CreatedDate)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy biến thể theo khoảng thời gian tạo: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy biến thể theo khoảng thời gian tạo (Async)
+        /// </summary>
+        /// <param name="fromDate">Từ ngày</param>
+        /// <param name="toDate">Đến ngày</param>
+        /// <returns>Danh sách biến thể</returns>
+        public async Task<List<ProductVariant>> GetByCreatedDateRangeAsync(DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                using var context = CreateContext();
+                return await Task.Run(() => context.ProductVariants
+                    .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
+                    .OrderByDescending(x => x.CreatedDate)
+                    .ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy biến thể theo khoảng thời gian tạo: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy biến thể theo khoảng thời gian cập nhật
+        /// </summary>
+        /// <param name="fromDate">Từ ngày</param>
+        /// <param name="toDate">Đến ngày</param>
+        /// <returns>Danh sách biến thể</returns>
+        public List<ProductVariant> GetByModifiedDateRange(DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                using var context = CreateContext();
+                return context.ProductVariants
+                    .Where(x => x.ModifiedDate >= fromDate && x.ModifiedDate <= toDate)
+                    .OrderByDescending(x => x.ModifiedDate)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy biến thể theo khoảng thời gian cập nhật: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy biến thể theo khoảng thời gian cập nhật (Async)
+        /// </summary>
+        /// <param name="fromDate">Từ ngày</param>
+        /// <param name="toDate">Đến ngày</param>
+        /// <returns>Danh sách biến thể</returns>
+        public async Task<List<ProductVariant>> GetByModifiedDateRangeAsync(DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                using var context = CreateContext();
+                return await Task.Run(() => context.ProductVariants
+                    .Where(x => x.ModifiedDate >= fromDate && x.ModifiedDate <= toDate)
+                    .OrderByDescending(x => x.ModifiedDate)
+                    .ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy biến thể theo khoảng thời gian cập nhật: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy biến thể được tạo gần đây nhất
+        /// </summary>
+        /// <param name="count">Số lượng biến thể cần lấy</param>
+        /// <returns>Danh sách biến thể</returns>
+        public List<ProductVariant> GetRecentlyCreated(int count = 10)
+        {
+            try
+            {
+                using var context = CreateContext();
+                return context.ProductVariants
+                    .OrderByDescending(x => x.CreatedDate)
+                    .Take(count)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy biến thể được tạo gần đây: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy biến thể được cập nhật gần đây nhất
+        /// </summary>
+        /// <param name="count">Số lượng biến thể cần lấy</param>
+        /// <returns>Danh sách biến thể</returns>
+        public List<ProductVariant> GetRecentlyModified(int count = 10)
+        {
+            try
+            {
+                using var context = CreateContext();
+                return context.ProductVariants
+                    .OrderByDescending(x => x.ModifiedDate)
+                    .Take(count)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy biến thể được cập nhật gần đây: {ex.Message}", ex);
+            }
+        }
+
         #endregion
 
         #region Helper Methods
@@ -429,6 +559,11 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                     // Thêm mới
                     if (variant.Id == Guid.Empty)
                         variant.Id = Guid.NewGuid();
+                    
+                    // Thiết lập CreatedDate và ModifiedDate cho biến thể mới
+                    variant.CreatedDate = DateTime.Now;
+                    variant.ModifiedDate = DateTime.Now;
+                    
                     context.ProductVariants.InsertOnSubmit(variant);
                 }
                 else
@@ -439,6 +574,9 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                     existing.UnitId = variant.UnitId;
                     existing.IsActive = variant.IsActive;
                     existing.ThumbnailImage = variant.ThumbnailImage;
+                    
+                    // Cập nhật ModifiedDate
+                    existing.ModifiedDate = DateTime.Now;
                 }
                 
                 context.SubmitChanges();
@@ -460,6 +598,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             try
             {
                 using var context = CreateContext();
+                var currentTime = DateTime.Now;
                 
                 // Lưu hoặc cập nhật biến thể
                 var existingVariant = context.ProductVariants.FirstOrDefault(x => x.Id == variant.Id);
@@ -471,11 +610,19 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                     existingVariant.UnitId = variant.UnitId;
                     existingVariant.IsActive = variant.IsActive;
                     existingVariant.ThumbnailImage = variant.ThumbnailImage;
+                    
+                    // Cập nhật ModifiedDate
+                    existingVariant.ModifiedDate = currentTime;
                 }
                 else
                 {
                     // Tạo mới
                     variant.Id = Guid.NewGuid();
+                    
+                    // Thiết lập CreatedDate và ModifiedDate cho biến thể mới
+                    variant.CreatedDate = currentTime;
+                    variant.ModifiedDate = currentTime;
+                    
                     context.ProductVariants.InsertOnSubmit(variant);
                 }
 
