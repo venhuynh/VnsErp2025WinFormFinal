@@ -173,6 +173,12 @@
     <Compile Include="ProductService\FrmUnitOfMeasure.Designer.cs">
       <DependentUpon>FrmUnitOfMeasure.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProductService\UcProductServiceListCardView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProductService\UcProductServiceListCardView.Designer.cs">
+      <DependentUpon>UcProductServiceListCardView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProductService\UcProductVariant.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -231,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ProductService\FrmUnitOfMeasure.resx">
       <DependentUpon>FrmUnitOfMeasure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\UcProductServiceListCardView.resx">
+      <DependentUpon>UcProductServiceListCardView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProductService\UcProductVariant.resx">
       <DependentUpon>UcProductVariant.cs</DependentUpon>

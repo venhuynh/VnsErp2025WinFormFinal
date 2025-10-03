@@ -10,7 +10,7 @@ namespace MasterData.ProductService
         #region Fields
 
         private UserControlManager _userControlManager;
-        private UcProductServiceList _productServiceListControl;
+        private UcProductServiceListCardView _productServiceListControl;
         private UcProductServiceCategory _productServiceCategoryControl;
         private UcProductVariant _productVariantControl;
 
@@ -169,7 +169,7 @@ namespace MasterData.ProductService
             {
                 if (_productServiceListControl == null)
                 {
-                    _productServiceListControl = new UcProductServiceList();
+                    _productServiceListControl = new UcProductServiceListCardView();
                 }
 
                 _userControlManager?.ShowControl(_productServiceListControl, "Danh sách sản phẩm/dịch vụ");
