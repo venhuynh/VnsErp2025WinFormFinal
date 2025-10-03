@@ -122,6 +122,7 @@
     <Compile Include="ProductService\Dto\ProductVariantDetailDto.cs" />
     <Compile Include="ProductService\Dto\ProductVariantDto.cs" />
     <Compile Include="ProductService\Dto\ProductVariantImageDto.cs" />
+    <Compile Include="ProductService\Dto\ProductVariantListDto.cs" />
     <Compile Include="ProductService\Dto\UnitOfMeasureDto.cs" />
     <Compile Include="ProductService\Dto\VariantAttributeDto.cs" />
     <Compile Include="ProductService\FluentProductService.cs">
@@ -255,6 +256,7 @@
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceMasterDetailViewDto.datasource" />
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductVariantAttributeDto.datasource" />
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductVariantDto.datasource" />
+    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductVariantListDto.datasource" />
     <None Include="Properties\DataSources\MasterData.ProductService.Dto.UnitOfMeasureDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>

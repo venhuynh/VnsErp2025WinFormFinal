@@ -1,6 +1,7 @@
 ﻿using Authentication.Form;
 using Bll.Utils;
 using Dal.Connection;
+using Dal.DataContext.SeedData.MasterData.ProductService;
 using MasterData.Customer;
 using MasterData.ProductService;
 using System;
@@ -46,8 +47,10 @@ namespace VnsErp2025
             }
 
             #region Dành cho debug
-
-            Application.Run(new XtraForm1());
+            //SeedData_Master_ProductService.DeleteAllProductServiceData();
+            //SeedData_Master_ProductService.SeedAllData();
+            
+            Application.Run(new FluentProductService());
 
             #endregion
 

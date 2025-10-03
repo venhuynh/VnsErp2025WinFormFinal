@@ -153,6 +153,7 @@
       <Column Name="ThumbnailImage" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
       <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
+      <Column Name="VariantFullName" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
       <Association Name="ProductVariant_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="VariantId" Type="ProductImage" />
       <Association Name="ProductService_ProductVariant" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />

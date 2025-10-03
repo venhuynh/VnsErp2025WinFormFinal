@@ -55,6 +55,23 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
+        /// Lấy biến thể theo ID (Async)
+        /// </summary>
+        /// <param name="id">ID biến thể</param>
+        /// <returns>ProductVariant entity</returns>
+        public async Task<ProductVariant> GetByIdAsync(Guid id)
+        {
+            try
+            {
+                return await _dataAccess.GetByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy biến thể theo ID: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Lấy danh sách biến thể theo ProductId
         /// </summary>
         /// <param name="productId">ID sản phẩm</param>
@@ -203,40 +220,44 @@ namespace Bll.MasterData.ProductServiceBll
 
         /// <summary>
         /// Lấy tất cả biến thể sản phẩm với thông tin đầy đủ
-        /// Bao gồm thông tin sản phẩm gốc, đơn vị tính
+        /// Bao gồm thông tin sản phẩm gốc, đơn vị tính, thuộc tính và hình ảnh
         /// Tuân thủ quy tắc: Dal -> Bll (chỉ trả về Entity)
         /// </summary>
-        /// <returns>Danh sách ProductVariant entity</returns>
+        /// <returns>Danh sách ProductVariant entity với thông tin đầy đủ</returns>
         public async Task<List<ProductVariant>> GetAllWithDetailsAsync()
         {
             try
             {
-                // Lấy dữ liệu từ DAL (tuân thủ Dal -> Bll)
-                var variants = await _dataAccess.GetAllAsync();
+                // Lấy dữ liệu từ DAL với thông tin liên quan đã được preload
+                var variants = await _dataAccess.GetAllWithDetailsAsync();
                 
-                // Load thông tin liên quan cho mỗi variant
-                foreach (var variant in variants)
-                {
-                    // Load thông tin sản phẩm gốc
-                    var product = await _productServiceDataAccess.GetByIdAsync(variant.ProductId);
-                    if (product != null)
-                    {
-                        // Có thể set thông tin vào variant nếu cần, hoặc để navigation property tự load
-                    }
-                    
-                    // Load thông tin đơn vị tính
-                    var unit = _unitOfMeasureDataAccess.GetById(variant.UnitId);
-                    if (unit != null)
-                    {
-                        // Có thể set thông tin vào variant nếu cần, hoặc để navigation property tự load
-                    }
-                }
+                // DAL đã preload tất cả navigation properties thông qua DataLoadOptions
+                // Bao gồm: ProductService, UnitOfMeasure, ProductVariantAttributes, ProductVariantImages
+                // Và cả thông tin sản phẩm gốc: ProductServiceCategory, ProductServiceAttributes, ProductServiceImages
                 
                 return variants;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Lỗi lấy danh sách biến thể: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy DataContext để sử dụng với LinqServerModeSource
+        /// Tuân thủ quy tắc: Dal -> Bll -> GUI
+        /// </summary>
+        /// <returns>DataContext</returns>
+        public async Task<Dal.DataContext.VnsErp2025DataContext> GetDataContextAsync()
+        {
+            try
+            {
+                // Lấy DataContext từ DAL (tuân thủ Dal -> Bll)
+                return await _dataAccess.GetDataContextAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy DataContext: {ex.Message}", ex);
             }
         }
 
@@ -272,6 +293,21 @@ namespace Bll.MasterData.ProductServiceBll
                     if (string.IsNullOrWhiteSpace(value))
                         throw new ArgumentException("Vui lòng nhập đầy đủ giá trị thuộc tính");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật VariantFullName cho tất cả biến thể hiện có
+        /// </summary>
+        public async Task UpdateAllVariantFullNamesAsync()
+        {
+            try
+            {
+                await _dataAccess.UpdateAllVariantFullNamesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi cập nhật VariantFullName: {ex.Message}", ex);
             }
         }
 

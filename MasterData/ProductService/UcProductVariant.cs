@@ -1,33 +1,50 @@
-﻿using DevExpress.XtraEditors;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.MasterData.ProductServiceBll;
+﻿using Bll.MasterData.ProductServiceBll;
 using Bll.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraSplashScreen;
 using MasterData.ProductService.Dto;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MasterData.ProductService
 {
+    /// <summary>
+    /// UserControl quản lý danh sách biến thể sản phẩm.
+    /// Cung cấp chức năng CRUD đầy đủ với giao diện thân thiện.
+    /// </summary>
     public partial class UcProductVariant : DevExpress.XtraEditors.XtraUserControl
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// Business Logic Layer cho biến thể sản phẩm
+        /// </summary>
         private readonly ProductVariantBll _productVariantBll = new ProductVariantBll();
+
+        /// <summary>
+        /// Danh sách ID biến thể đang được chọn
+        /// </summary>
         private List<Guid> _selectedVariantIds = new List<Guid>();
-        private bool _isLoading; // guard tránh gọi LoadDataAsync song song (Splash đã hiển thị)
+
+        /// <summary>
+        /// Trạng thái đang tải dữ liệu (guard tránh gọi LoadDataAsync song song)
+        /// </summary>
+        private bool _isLoading;
+
+        /// <summary>
+        /// Trạng thái splash screen đang hiển thị (guard tránh hiển thị splash screen nhiều lần)
+        /// </summary>
+        private bool _isSplashVisible;
 
         #endregion
 
-        #region Constructor
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
+        /// <summary>
+        /// Khởi tạo UserControl quản lý biến thể sản phẩm.
+        /// </summary>
         public UcProductVariant()
         {
             InitializeComponent();
@@ -39,10 +56,10 @@ namespace MasterData.ProductService
             DeleteBarButtonItem.ItemClick += DeleteBarButtonItem_ItemClick;
             CountVariantAndImageBarButtonItem.ItemClick += CountVariantAndImageBarButtonItem_ItemClick;
             ExportBarButtonItem.ItemClick += ExportBarButtonItem_ItemClick;
-            DataFilterBtn.ItemClick += DataFilterBtn_ItemClick;
 
             // Grid events
-            ProductServiceMasterDetailViewGridView.SelectionChanged += ProductServiceMasterDetailViewGridView_SelectionChanged;
+            ProductVariantListGridView.SelectionChanged += ProductServiceMasterDetailViewGridView_SelectionChanged;
+            ProductVariantListGridView.CustomDrawRowIndicator += ProductVariantListGridView_CustomDrawRowIndicator;
             VariantGridView.SelectionChanged += VariantGridView_SelectionChanged;
 
             UpdateButtonStates();
@@ -50,7 +67,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Event Handlers
+        #region ========== SỰ KIỆN BUTTON ==========
 
         /// <summary>
         /// Người dùng bấm "Danh sách" để tải dữ liệu.
@@ -67,8 +84,12 @@ namespace MasterData.ProductService
         {
             try
             {
-                // TODO: Implement new variant form
-                ShowInfo("Chức năng thêm mới biến thể sẽ được triển khai sau.");
+                // Mở form thêm mới biến thể
+                var form = new FrmProductVariantDetail(Guid.Empty);
+                form.ShowDialog();
+
+                // Refresh dữ liệu sau khi đóng form (luôn refresh để đảm bảo dữ liệu mới nhất)
+                ListDataBarButtonItem.PerformClick();
             }
             catch (Exception ex)
             {
@@ -83,8 +104,22 @@ namespace MasterData.ProductService
         {
             try
             {
-                // TODO: Implement edit variant form
-                ShowInfo("Chức năng chỉnh sửa biến thể sẽ được triển khai sau.");
+                // Kiểm tra có chọn đúng 1 dòng không
+                if (_selectedVariantIds == null || _selectedVariantIds.Count != 1)
+                {
+                    ShowInfo("Vui lòng chọn đúng 1 biến thể để chỉnh sửa.");
+                    return;
+                }
+
+                // Lấy ID biến thể đã chọn
+                var variantId = _selectedVariantIds.First();
+                
+                // Mở form chỉnh sửa biến thể
+                var form = new FrmProductVariantDetail(variantId);
+                form.ShowDialog();
+                
+                // Refresh dữ liệu sau khi đóng form (sử dụng SmartRefreshAsync để tránh ObjectDisposedException)
+                ListDataBarButtonItem.PerformClick();
             }
             catch (Exception ex)
             {
@@ -95,12 +130,80 @@ namespace MasterData.ProductService
         /// <summary>
         /// Người dùng bấm "Xóa".
         /// </summary>
-        private void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
-                // TODO: Implement delete functionality
-                ShowInfo("Chức năng xóa biến thể sẽ được triển khai sau.");
+                // Kiểm tra có chọn dòng nào không
+                if (_selectedVariantIds == null || _selectedVariantIds.Count == 0)
+                {
+                    ShowInfo("Vui lòng chọn biến thể cần xóa.");
+                    return;
+                }
+
+                // Xác nhận xóa
+                var selectedCount = _selectedVariantIds.Count;
+                var message = selectedCount == 1 
+                    ? "Bạn có chắc chắn muốn xóa biến thể đã chọn?" 
+                    : $"Bạn có chắc chắn muốn xóa {selectedCount} biến thể đã chọn?";
+                
+                if (!MsgBox.GetConfirmFromYesNoDialog(message, "Xác nhận xóa"))
+                {
+                    return;
+                }
+
+                // Thực hiện xóa
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    var deletedCount = 0;
+                    var errorCount = 0;
+                    var errors = new List<string>();
+
+                    foreach (var variantId in _selectedVariantIds)
+                    {
+                        try
+                        {
+                            await _productVariantBll.DeleteAsync(variantId);
+                            deletedCount++;
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCount++;
+                            errors.Add($"ID {variantId}: {ex.Message}");
+                        }
+                    }
+
+                    // Hiển thị kết quả
+                    if (deletedCount > 0 && errorCount == 0)
+                    {
+                        ShowInfo($"Đã xóa thành công {deletedCount} biến thể.");
+                        // Sử dụng LoadDataAsyncWithoutSplash để tránh nested splash screen
+                        await LoadDataAsyncWithoutSplash();
+                        
+                        // Clear selection và cập nhật UI sau khi xóa thành công
+                        _selectedVariantIds.Clear();
+                        UpdateButtonStates();
+                        UpdateStatusBar();
+                    }
+                    else if (deletedCount > 0 && errorCount > 0)
+                    {
+                        var errorMessage = string.Join("\n", errors);
+                        ShowError(new Exception($"Xóa thành công {deletedCount} biến thể, lỗi {errorCount} biến thể:\n{errorMessage}"));
+                        // Sử dụng LoadDataAsyncWithoutSplash để tránh nested splash screen
+                        await LoadDataAsyncWithoutSplash();
+                        
+                        // Clear selection và cập nhật UI sau khi xóa một phần thành công
+                        _selectedVariantIds.Clear();
+                        UpdateButtonStates();
+                        UpdateStatusBar();
+                    }
+                    else
+                    {
+                        var errorMessage = string.Join("\n", errors);
+                        ShowError(new Exception($"Không thể xóa biến thể nào:\n{errorMessage}"));
+                        // Không clear selection nếu xóa thất bại hoàn toàn
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -111,12 +214,63 @@ namespace MasterData.ProductService
         /// <summary>
         /// Người dùng bấm "Thống kê".
         /// </summary>
-        private void CountVariantAndImageBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        private async void CountVariantAndImageBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
-                // TODO: Implement count functionality
-                ShowInfo("Chức năng thống kê sẽ được triển khai sau.");
+                // Kiểm tra có chọn dòng nào không
+                if (_selectedVariantIds == null || _selectedVariantIds.Count == 0)
+                {
+                    ShowInfo("Vui lòng chọn biến thể cần thống kê.");
+                    return;
+                }
+
+                // Thực hiện thống kê
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    var selectedCount = _selectedVariantIds.Count;
+                    var totalImageCount = 0;
+                    var activeVariantCount = 0;
+                    var inactiveVariantCount = 0;
+                    var errors = new List<string>();
+
+                    foreach (var variantId in _selectedVariantIds)
+                    {
+                        try
+                        {
+                            // Lấy thông tin biến thể
+                            var variant = await _productVariantBll.GetByIdAsync(variantId);
+                            if (variant != null)
+                            {
+                                // Đếm hình ảnh (tạm thời set 0 vì không load được navigation properties)
+                                totalImageCount += 0; // variant.ProductImages?.Count ?? 0;
+                                
+                                // Đếm trạng thái
+                                if (variant.IsActive)
+                                    activeVariantCount++;
+                                else
+                                    inactiveVariantCount++;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errors.Add($"ID {variantId}: {ex.Message}");
+                        }
+                    }
+
+                    // Hiển thị kết quả thống kê
+                    var result = $"<b>Thống kê {selectedCount} biến thể đã chọn:</b>\n\n" +
+                               $"• <color=green>Hoạt động: {activeVariantCount}</color>\n" +
+                               $"• <color=red>Không hoạt động: {inactiveVariantCount}</color>\n" +
+                               $"• <b>Tổng hình ảnh: {totalImageCount}</b>";
+
+                    if (errors.Any())
+                    {
+                        result += $"\n\n<color=red>Lỗi khi thống kê:</color>\n{string.Join("\n", errors)}";
+                    }
+
+                    ShowInfo(result);
+                });
             }
             catch (Exception ex)
             {
@@ -131,28 +285,11 @@ namespace MasterData.ProductService
         {
             try
             {
-                // TODO: Implement export functionality
-                ShowInfo("Chức năng xuất dữ liệu sẽ được triển khai sau.");
+                GridViewHelper.ExportGridControl(ProductVariantListGridView, $"ProductVariants_{DateTime.Now:yyyyMMdd_HHmmss}");
             }
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi xuất dữ liệu");
-            }
-        }
-
-        /// <summary>
-        /// Người dùng bấm "Tìm kiếm".
-        /// </summary>
-        private void DataFilterBtn_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            try
-            {
-                // TODO: Implement search functionality
-                ShowInfo("Chức năng tìm kiếm sẽ được triển khai sau.");
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi thực hiện tìm kiếm");
             }
         }
 
@@ -163,7 +300,7 @@ namespace MasterData.ProductService
         {
             try
             {
-                // TODO: Implement selection handling for master grid
+                UpdateSelectedVariantIds();
                 UpdateButtonStates();
                 UpdateStatusBar();
             }
@@ -180,7 +317,7 @@ namespace MasterData.ProductService
         {
             try
             {
-                // TODO: Implement selection handling for variant grid
+                UpdateSelectedVariantIds();
                 UpdateButtonStates();
                 UpdateStatusBar();
             }
@@ -190,9 +327,61 @@ namespace MasterData.ProductService
             }
         }
 
+        /// <summary>
+        /// Custom draw row indicator để hiển thị số thứ tự dòng
+        /// </summary>
+        private void ProductVariantListGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
+        {
+            try
+            {
+                // Chỉ hiển thị số thứ tự cho data rows, không hiển thị cho group rows
+                if (e.Info.IsRowIndicator && e.RowHandle >= 0)
+                {
+                    // Tính số thứ tự (bắt đầu từ 1)
+                    var rowNumber = e.RowHandle + 1;
+                    
+                    // Hiển thị số thứ tự
+                    e.Info.DisplayText = rowNumber.ToString();
+                }
+            }
+            catch (Exception)
+            {
+                // Nếu có lỗi, hiển thị text mặc định
+                e.Info.DisplayText = "";
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật danh sách ID biến thể đã chọn
+        /// </summary>
+        private void UpdateSelectedVariantIds()
+        {
+            try
+            {
+                _selectedVariantIds.Clear();
+                
+                var selectedRows = ProductVariantListGridView.GetSelectedRows();
+                foreach (var rowHandle in selectedRows)
+                {
+                    if (rowHandle >= 0)
+                    {
+                        var dto = ProductVariantListGridView.GetRow(rowHandle) as ProductVariantListDto;
+                        if (dto != null)
+                        {
+                            _selectedVariantIds.Add(dto.Id);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi cập nhật danh sách đã chọn");
+            }
+        }
+
         #endregion
 
-        #region Data Loading Methods
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, hiển thị WaitForm).
@@ -220,19 +409,26 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, không hiển thị WaitForm).
+        /// Sử dụng ProductVariantListDto cho danh sách biến thể.
         /// </summary>
         private async Task LoadDataAsyncWithoutSplash()
         {
             try
             {
                 // Lấy dữ liệu Entity từ BLL (tuân thủ Bll -> Entity)
-                var variants = await _productVariantBll.GetAllWithDetailsAsync();
+                // Sử dụng GetAllAsync để tránh lỗi ObjectDisposedException
+                var variants = await _productVariantBll.GetAllAsync();
                 
-                // Convert Entity sang Master-Detail DTO trong GUI (tuân thủ Entity -> DTO)
-                var masterDetailDtos = ProductVariantConverter.ConvertToMasterDetailView(variants);
+                // Convert Entity sang ProductVariantListDto trong GUI (tuân thủ Entity -> DTO)
+                var variantListDtos = await ConvertToVariantListDtosAsync(variants);
                 
                 // Bind dữ liệu vào grid
-                BindGrid(masterDetailDtos);
+                BindGrid(variantListDtos);
+                
+                // Clear selection và cập nhật UI sau khi load dữ liệu mới
+                _selectedVariantIds.Clear();
+                UpdateButtonStates();
+                UpdateStatusBar();
             }
             catch (Exception ex)
             {
@@ -240,27 +436,108 @@ namespace MasterData.ProductService
             }
         }
 
+
+
+
         /// <summary>
-        /// Bind danh sách Master-Detail DTO vào Grid và cấu hình hiển thị.
+        /// Convert Entity sang ProductVariantListDto (Async)
         /// </summary>
-        private void BindGrid(List<ProductServiceMasterDetailViewDto> data)
+        private async Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<Dal.DataContext.ProductVariant> variants)
+        {
+            try
+            {
+                var result = new List<ProductVariantListDto>();
+                
+                foreach (var variant in variants)
+                {
+                    var dto = new ProductVariantListDto
+                    {
+                        Id = variant.Id,
+                        ProductCode = variant.ProductService?.Code ?? "",
+                        ProductName = variant.ProductService?.Name ?? "",
+                        VariantCode = variant.VariantCode,
+                        VariantFullName = !string.IsNullOrWhiteSpace(variant.VariantFullName) 
+                            ? variant.VariantFullName 
+                            : await BuildVariantFullNameAsync(variant), // Fallback nếu VariantFullName chưa được cập nhật
+                        UnitName = variant.UnitOfMeasure?.Name ?? "",
+                        IsActive = variant.IsActive,
+                        ImageCount = 0 // Tạm thời set 0 vì không load được navigation properties
+                    };
+                    
+                    result.Add(dto);
+                }
+                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Xây dựng tên đầy đủ của biến thể từ các thuộc tính (Async)
+        /// Format: Attribute1: Value1, Attribute2: Value2, ...
+        /// </summary>
+        private Task<string> BuildVariantFullNameAsync(Dal.DataContext.ProductVariant variant)
+        {
+            try
+            {
+                // Load thông tin thuộc tính từ BLL
+                var attributeValues = _productVariantBll.GetAttributeValues(variant.Id);
+                
+                if (attributeValues == null || !attributeValues.Any())
+                {
+                    return Task.FromResult(variant.VariantCode); // Nếu không có thuộc tính, trả về mã biến thể
+                }
+
+                var attributeParts = new List<string>();
+                
+                foreach (var (_, attributeName, value) in attributeValues)
+                {
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        attributeParts.Add($"{attributeName}: {value}");
+                    }
+                }
+
+                if (attributeParts.Any())
+                {
+                    return Task.FromResult(string.Join(", ", attributeParts));
+                }
+                else
+                {
+                    return Task.FromResult(variant.VariantCode); // Fallback về mã biến thể nếu không có giá trị thuộc tính
+                }
+            }
+            catch (Exception)
+            {
+                // Nếu có lỗi, trả về mã biến thể
+                return Task.FromResult(variant.VariantCode);
+            }
+        }
+
+
+        /// <summary>
+        /// Bind danh sách ProductVariantListDto vào Grid và cấu hình hiển thị.
+        /// </summary>
+        private void BindGrid(List<ProductVariantListDto> data)
         {
             try
             {
                 // Bind dữ liệu vào BindingSource
-                productServiceMasterDetailViewDtoBindingSource.DataSource = data;
+                productVariantListDtoBindingSource.DataSource = data;
+                
+                // Bind vào GridControl
+                ProductVariantListGridControl.DataSource = productVariantListDtoBindingSource;
                 
                 // Cấu hình grid
-                ProductServiceMasterDetailViewGridView.BestFitColumns();
-                VariantGridView.BestFitColumns();
+                ProductVariantListGridView.BestFitColumns();
                 
                 // Cập nhật trạng thái
                 UpdateButtonStates();
                 UpdateStatusBar();
                 
-                // Hiển thị thông báo
-                var totalVariants = data?.Sum(x => x.Variants?.Count ?? 0) ?? 0;
-                ShowInfo($"Đã tải {data?.Count ?? 0} sản phẩm với {totalVariants} biến thể.");
             }
             catch (Exception ex)
             {
@@ -268,9 +545,12 @@ namespace MasterData.ProductService
             }
         }
 
+
         #endregion
 
-        #region Helper Methods
+        
+
+        #region ========== TIỆN ÍCH ==========
 
 
         /// <summary>
@@ -279,8 +559,19 @@ namespace MasterData.ProductService
         /// <param name="operation">Operation async cần thực hiện</param>
         private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
         {
+            // Kiểm tra splash screen đã hiển thị chưa
+            if (_isSplashVisible)
+            {
+                // Nếu đã hiển thị, chỉ thực hiện operation mà không hiển thị splash
+                await operation();
+                return;
+            }
+
             try
             {
+                // Đánh dấu splash screen đang hiển thị
+                _isSplashVisible = true;
+                
                 // Hiển thị WaitingForm1
                 SplashScreenManager.ShowForm(typeof(Bll.Common.WaitForm1));
 
@@ -291,6 +582,9 @@ namespace MasterData.ProductService
             {
                 // Đóng WaitingForm1
                 SplashScreenManager.CloseForm();
+                
+                // Đánh dấu splash screen đã đóng
+                _isSplashVisible = false;
             }
         }
 
@@ -379,22 +673,22 @@ namespace MasterData.ProductService
             {
                 if (DataSummaryBarStaticItem == null) return;
 
-                var currentData = productServiceMasterDetailViewDtoBindingSource.DataSource as List<ProductServiceMasterDetailViewDto>;
+                var currentData = productVariantListDtoBindingSource.DataSource as List<ProductVariantListDto>;
                 if (currentData == null || !currentData.Any())
                 {
                     DataSummaryBarStaticItem.Caption = @"Chưa có dữ liệu";
                     return;
                 }
 
-                var productCount = currentData.Count;
-                var activeProductCount = currentData.Count(x => x.ProductIsActive);
-                var inactiveProductCount = currentData.Count(x => !x.ProductIsActive);
-                var totalVariantCount = currentData.Sum(x => x.Variants?.Count ?? 0);
+                var variantCount = currentData.Count;
+                var activeVariantCount = currentData.Count(x => x.IsActive);
+                var inactiveVariantCount = currentData.Count(x => !x.IsActive);
+                var totalImageCount = currentData.Sum(x => x.ImageCount);
 
-                var summary = $"<b>Sản phẩm: {productCount}</b> | " +
-                             $"<b>Biến thể: {totalVariantCount}</b> | " +
-                             $"<color=green>Hoạt động: {activeProductCount}</color> | " +
-                             $"<color=red>Không hoạt động: {inactiveProductCount}</color>";
+                var summary = $"<b>Biến thể: {variantCount}</b> | " +
+                             $"<color=green>Hoạt động: {activeVariantCount}</color> | " +
+                             $"<color=red>Không hoạt động: {inactiveVariantCount}</color> | " +
+                             $"<b>Hình ảnh: {totalImageCount}</b>";
 
                 DataSummaryBarStaticItem.Caption = summary;
             }

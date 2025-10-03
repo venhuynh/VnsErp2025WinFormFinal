@@ -30,19 +30,20 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
             this.VariantGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colVariantName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.ProductServiceMasterDetailViewGridControl = new DevExpress.XtraGrid.GridControl();
-            this.ProductServiceMasterDetailViewGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colUnitName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ProductVariantListGridControl = new DevExpress.XtraGrid.GridControl();
+            this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ProductVariantListGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colVariantCode1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colProductName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colProductIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colProductThumbnailImage = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colUnitName1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.ListDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.DataFilterBtn = new DevExpress.XtraBars.BarButtonItem();
             this.NewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -62,11 +63,10 @@
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.productServiceMasterDetailViewDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.colUnitName = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.VariantGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceMasterDetailViewGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceMasterDetailViewGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemSpinEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
@@ -74,7 +74,6 @@
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productServiceMasterDetailViewDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // VariantGridView
@@ -83,7 +82,7 @@
             this.colVariantCode,
             this.colVariantName,
             this.colUnitName});
-            this.VariantGridView.GridControl = this.ProductServiceMasterDetailViewGridControl;
+            this.VariantGridView.GridControl = this.ProductVariantListGridControl;
             this.VariantGridView.Name = "VariantGridView";
             this.VariantGridView.OptionsSelection.MultiSelect = true;
             this.VariantGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
@@ -104,54 +103,77 @@
             this.colVariantName.Visible = true;
             this.colVariantName.VisibleIndex = 2;
             // 
-            // ProductServiceMasterDetailViewGridControl
+            // colUnitName
             // 
-            this.ProductServiceMasterDetailViewGridControl.DataSource = this.productServiceMasterDetailViewDtoBindingSource;
-            gridLevelNode1.LevelTemplate = this.VariantGridView;
-            gridLevelNode1.RelationName = "Variants";
-            this.ProductServiceMasterDetailViewGridControl.LevelTree.Nodes.AddRange(new DevExpress.XtraGrid.GridLevelNode[] {
-            gridLevelNode1});
-            this.ProductServiceMasterDetailViewGridControl.Location = new System.Drawing.Point(16, 16);
-            this.ProductServiceMasterDetailViewGridControl.MainView = this.ProductServiceMasterDetailViewGridView;
-            this.ProductServiceMasterDetailViewGridControl.MenuManager = this.barManager1;
-            this.ProductServiceMasterDetailViewGridControl.Name = "ProductServiceMasterDetailViewGridControl";
-            this.ProductServiceMasterDetailViewGridControl.Size = new System.Drawing.Size(1045, 555);
-            this.ProductServiceMasterDetailViewGridControl.TabIndex = 4;
-            this.ProductServiceMasterDetailViewGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.ProductServiceMasterDetailViewGridView,
+            this.colUnitName.FieldName = "UnitName";
+            this.colUnitName.Name = "colUnitName";
+            this.colUnitName.Visible = true;
+            this.colUnitName.VisibleIndex = 3;
+            // 
+            // ProductVariantListGridControl
+            // 
+            this.ProductVariantListGridControl.DataSource = this.productVariantListDtoBindingSource;
+            this.ProductVariantListGridControl.Location = new System.Drawing.Point(16, 16);
+            this.ProductVariantListGridControl.MainView = this.ProductVariantListGridView;
+            this.ProductVariantListGridControl.MenuManager = this.barManager1;
+            this.ProductVariantListGridControl.Name = "ProductVariantListGridControl";
+            this.ProductVariantListGridControl.Size = new System.Drawing.Size(1045, 555);
+            this.ProductVariantListGridControl.TabIndex = 4;
+            this.ProductVariantListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.ProductVariantListGridView,
             this.VariantGridView});
             // 
-            // ProductServiceMasterDetailViewGridView
+            // productVariantListDtoBindingSource
             // 
-            this.ProductServiceMasterDetailViewGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.productVariantListDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductVariantListDto);
+            // 
+            // ProductVariantListGridView
+            // 
+            this.ProductVariantListGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colVariantCode1,
             this.colProductName,
-            this.colProductIsActive,
-            this.colProductThumbnailImage});
-            this.ProductServiceMasterDetailViewGridView.GridControl = this.ProductServiceMasterDetailViewGridControl;
-            this.ProductServiceMasterDetailViewGridView.IndicatorWidth = 50;
-            this.ProductServiceMasterDetailViewGridView.Name = "ProductServiceMasterDetailViewGridView";
-            this.ProductServiceMasterDetailViewGridView.OptionsView.ShowGroupPanel = false;
+            this.colVariantFullName,
+            this.colUnitName1});
+            this.ProductVariantListGridView.GridControl = this.ProductVariantListGridControl;
+            this.ProductVariantListGridView.GroupCount = 1;
+            this.ProductVariantListGridView.GroupSummary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridGroupSummaryItem(DevExpress.Data.SummaryItemType.Count, "VariantCode", null, " [Có {0} biến thể]")});
+            this.ProductVariantListGridView.IndicatorWidth = 50;
+            this.ProductVariantListGridView.Name = "ProductVariantListGridView";
+            this.ProductVariantListGridView.OptionsScrollAnnotations.ShowSelectedRows = DevExpress.Utils.DefaultBoolean.True;
+            this.ProductVariantListGridView.OptionsSelection.MultiSelect = true;
+            this.ProductVariantListGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.ProductVariantListGridView.OptionsView.ShowGroupPanel = false;
+            this.ProductVariantListGridView.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
+            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.colProductName, DevExpress.Data.ColumnSortOrder.Ascending)});
+            // 
+            // colVariantCode1
+            // 
+            this.colVariantCode1.FieldName = "VariantCode";
+            this.colVariantCode1.Name = "colVariantCode1";
+            this.colVariantCode1.Visible = true;
+            this.colVariantCode1.VisibleIndex = 1;
             // 
             // colProductName
             // 
             this.colProductName.FieldName = "ProductName";
             this.colProductName.Name = "colProductName";
             this.colProductName.Visible = true;
-            this.colProductName.VisibleIndex = 0;
+            this.colProductName.VisibleIndex = 2;
             // 
-            // colProductIsActive
+            // colVariantFullName
             // 
-            this.colProductIsActive.FieldName = "ProductIsActive";
-            this.colProductIsActive.Name = "colProductIsActive";
-            this.colProductIsActive.Visible = true;
-            this.colProductIsActive.VisibleIndex = 1;
+            this.colVariantFullName.FieldName = "VariantFullName";
+            this.colVariantFullName.Name = "colVariantFullName";
+            this.colVariantFullName.Visible = true;
+            this.colVariantFullName.VisibleIndex = 2;
             // 
-            // colProductThumbnailImage
+            // colUnitName1
             // 
-            this.colProductThumbnailImage.FieldName = "ProductThumbnailImage";
-            this.colProductThumbnailImage.Name = "colProductThumbnailImage";
-            this.colProductThumbnailImage.Visible = true;
-            this.colProductThumbnailImage.VisibleIndex = 2;
+            this.colUnitName1.FieldName = "UnitName";
+            this.colUnitName1.Name = "colUnitName1";
+            this.colUnitName1.Visible = true;
+            this.colUnitName1.VisibleIndex = 3;
             // 
             // barManager1
             // 
@@ -165,7 +187,6 @@
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.ListDataBarButtonItem,
-            this.DataFilterBtn,
             this.NewBarButtonItem,
             this.EditBarButtonItem,
             this.DeleteBarButtonItem,
@@ -191,11 +212,9 @@
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ListDataBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.DataFilterBtn, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NewBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.DeleteBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CountVariantAndImageBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
@@ -208,12 +227,6 @@
             this.ListDataBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.list_16x16;
             this.ListDataBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.list_32x32;
             this.ListDataBarButtonItem.Name = "ListDataBarButtonItem";
-            // 
-            // DataFilterBtn
-            // 
-            this.DataFilterBtn.Caption = "Tìm kiếm";
-            this.DataFilterBtn.Id = 2;
-            this.DataFilterBtn.Name = "DataFilterBtn";
             // 
             // NewBarButtonItem
             // 
@@ -360,7 +373,7 @@
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.ProductServiceMasterDetailViewGridControl);
+            this.layoutControl1.Controls.Add(this.ProductVariantListGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
@@ -381,22 +394,11 @@
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.ProductServiceMasterDetailViewGridControl;
+            this.layoutControlItem1.Control = this.ProductVariantListGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1051, 561);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // productServiceMasterDetailViewDtoBindingSource
-            // 
-            this.productServiceMasterDetailViewDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductServiceMasterDetailViewDto);
-            // 
-            // colUnitName
-            // 
-            this.colUnitName.FieldName = "UnitName";
-            this.colUnitName.Name = "colUnitName";
-            this.colUnitName.Visible = true;
-            this.colUnitName.VisibleIndex = 3;
             // 
             // UcProductVariant
             // 
@@ -410,8 +412,9 @@
             this.Name = "UcProductVariant";
             this.Size = new System.Drawing.Size(1077, 661);
             ((System.ComponentModel.ISupportInitialize)(this.VariantGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceMasterDetailViewGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceMasterDetailViewGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemSpinEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
@@ -419,7 +422,6 @@
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productServiceMasterDetailViewDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -430,7 +432,6 @@
         private DevExpress.XtraBars.BarManager barManager1;
         private DevExpress.XtraBars.Bar bar2;
         private DevExpress.XtraBars.BarButtonItem ListDataBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem DataFilterBtn;
         private DevExpress.XtraBars.BarButtonItem NewBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
@@ -449,17 +450,18 @@
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraGrid.GridControl ProductServiceMasterDetailViewGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView ProductServiceMasterDetailViewGridView;
+        private DevExpress.XtraGrid.GridControl ProductVariantListGridControl;
+        private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantListGridView;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraGrid.Views.Grid.GridView VariantGridView;
         private DevExpress.XtraGrid.Columns.GridColumn colVariantCode;
         private DevExpress.XtraGrid.Columns.GridColumn colVariantName;
-        private DevExpress.XtraGrid.Columns.GridColumn colProductName;
-        private DevExpress.XtraGrid.Columns.GridColumn colProductIsActive;
-        private DevExpress.XtraGrid.Columns.GridColumn colProductThumbnailImage;
         
         private DevExpress.XtraGrid.Columns.GridColumn colUnitName;
-        private System.Windows.Forms.BindingSource productServiceMasterDetailViewDtoBindingSource;
+        private System.Windows.Forms.BindingSource productVariantListDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colVariantCode1;
+        private DevExpress.XtraGrid.Columns.GridColumn colProductName;
+        private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
+        private DevExpress.XtraGrid.Columns.GridColumn colUnitName1;
     }
 }

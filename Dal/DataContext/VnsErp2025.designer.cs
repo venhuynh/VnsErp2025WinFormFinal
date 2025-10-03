@@ -3270,6 +3270,8 @@ namespace Dal.DataContext
 		
 		private System.DateTime _ModifiedDate;
 		
+		private string _VariantFullName;
+		
 		private EntitySet<VariantAttribute> _VariantAttributes;
 		
 		private EntitySet<ProductImage> _ProductImages;
@@ -3298,6 +3300,8 @@ namespace Dal.DataContext
     partial void OnCreatedDateChanged();
     partial void OnModifiedDateChanging(System.DateTime value);
     partial void OnModifiedDateChanged();
+    partial void OnVariantFullNameChanging(string value);
+    partial void OnVariantFullNameChanged();
     #endregion
 		
 		public ProductVariant()
@@ -3473,6 +3477,26 @@ namespace Dal.DataContext
 					this._ModifiedDate = value;
 					this.SendPropertyChanged("ModifiedDate");
 					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VariantFullName", DbType="NVarChar(500)")]
+		public string VariantFullName
+		{
+			get
+			{
+				return this._VariantFullName;
+			}
+			set
+			{
+				if ((this._VariantFullName != value))
+				{
+					this.OnVariantFullNameChanging(value);
+					this.SendPropertyChanging();
+					this._VariantFullName = value;
+					this.SendPropertyChanged("VariantFullName");
+					this.OnVariantFullNameChanged();
 				}
 			}
 		}

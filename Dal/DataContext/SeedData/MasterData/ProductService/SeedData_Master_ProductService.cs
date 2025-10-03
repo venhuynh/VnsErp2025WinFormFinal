@@ -511,6 +511,9 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                         VariantCode = $"{product.Code}-V{i}",
                         UnitId = unit.Id,
                         IsActive = random.Next(0, 10) < 9, // 90% active
+                        VariantFullName = string.Empty, // Sẽ được cập nhật sau khi gắn thuộc tính
+                        CreatedDate = DateTime.Now,
+                        ModifiedDate = DateTime.Now
                     };
 
                     variants.Add(variant);
@@ -545,6 +548,7 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
             {
                 var attributeCount = random.Next(2, 6); // 2-5 attributes
                 var selectedAttributes = attributes.OrderBy(x => random.Next()).Take(attributeCount).ToList();
+                var variantFullNameParts = new List<string>();
 
                 foreach (var attribute in selectedAttributes)
                 {
@@ -562,8 +566,16 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                         };
 
                         variantAttributes.Add(variantAttribute);
+                        
+                        // Thêm vào danh sách để tạo VariantFullName
+                        variantFullNameParts.Add($"{attribute.Name} : {selectedValue.Value}");
                     }
                 }
+
+                // Cập nhật VariantFullName cho variant
+                variant.VariantFullName = variantFullNameParts.Any() 
+                    ? string.Join(", ", variantFullNameParts) 
+                    : variant.VariantCode; // Fallback nếu không có thuộc tính
             }
 
             // Thêm vào context
@@ -753,6 +765,61 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
         }
 
         /// <summary>
+        /// Cập nhật VariantFullName cho tất cả biến thể hiện có
+        /// </summary>
+        /// <param name="context">DataContext để cập nhật dữ liệu</param>
+        public static void UpdateAllVariantFullNames(VnsErp2025DataContext context)
+        {
+            try
+            {
+                // Lấy tất cả biến thể
+                var variants = context.ProductVariants.ToList();
+                
+                foreach (var variant in variants)
+                {
+                    // Lấy danh sách thuộc tính của biến thể
+                    var variantAttributes = context.VariantAttributes
+                        .Where(va => va.VariantId == variant.Id)
+                        .ToList();
+                    
+                    if (variantAttributes.Any())
+                    {
+                        var fullNameParts = new List<string>();
+                        
+                        foreach (var va in variantAttributes)
+                        {
+                            // Lấy thông tin thuộc tính và giá trị
+                            var attribute = context.Attributes.FirstOrDefault(a => a.Id == va.AttributeId);
+                            var attributeValue = context.AttributeValues.FirstOrDefault(av => av.Id == va.AttributeValueId);
+                            
+                            if (attribute != null && attributeValue != null)
+                            {
+                                fullNameParts.Add($"{attribute.Name} : {attributeValue.Value}");
+                            }
+                        }
+                        
+                        // Cập nhật VariantFullName
+                        variant.VariantFullName = fullNameParts.Any() 
+                            ? string.Join(", ", fullNameParts) 
+                            : variant.VariantCode;
+                    }
+                    else
+                    {
+                        // Nếu không có thuộc tính, sử dụng mã biến thể
+                        variant.VariantFullName = variant.VariantCode;
+                    }
+                }
+                
+                // Lưu thay đổi
+                context.SubmitChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi cập nhật VariantFullName: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Tạo tất cả dữ liệu mẫu sử dụng context có sẵn
         /// </summary>
         /// <param name="context">DataContext để lưu dữ liệu</param>
@@ -782,6 +849,29 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
 
             SeedProductImages(context);
             context.SubmitChanges();
+        }
+
+        /// <summary>
+        /// Cập nhật VariantFullName cho tất cả biến thể hiện có sử dụng connection string từ ConfigurationManager
+        /// </summary>
+        public static void UpdateAllVariantFullNames()
+        {
+            using (var context = CreateContext())
+            {
+                UpdateAllVariantFullNames(context);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật VariantFullName cho tất cả biến thể hiện có sử dụng connection string được truyền vào
+        /// </summary>
+        /// <param name="connectionString">Connection string để kết nối database</param>
+        public static void UpdateAllVariantFullNames(string connectionString)
+        {
+            using (var context = new VnsErp2025DataContext(connectionString))
+            {
+                UpdateAllVariantFullNames(context);
+            }
         }
     }
 }

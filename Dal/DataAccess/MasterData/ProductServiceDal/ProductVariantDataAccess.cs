@@ -132,6 +132,42 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         }
 
         /// <summary>
+        /// Lấy tất cả biến thể với thông tin đầy đủ (Async)
+        /// Bao gồm thông tin sản phẩm gốc, đơn vị tính và các thông tin liên quan
+        /// </summary>
+        /// <returns>Danh sách biến thể với thông tin đầy đủ</returns>
+        public async Task<List<ProductVariant>> GetAllWithDetailsAsync()
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                // Cấu hình DataLoadOptions để preload navigation properties
+                // Tránh vòng lặp bằng cách không load ProductVariants từ ProductService
+                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
+                loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
+                loadOptions.LoadWith<ProductVariant>(pv => pv.VariantAttributes);
+                loadOptions.LoadWith<ProductVariant>(pv => pv.ProductImages);
+                
+                // Preload thông tin sản phẩm gốc (không load ProductVariants để tránh vòng lặp)
+                loadOptions.LoadWith<ProductService>(ps => ps.ProductServiceCategory);
+                loadOptions.LoadWith<ProductService>(ps => ps.ProductImages);
+                
+                context.LoadOptions = loadOptions;
+                
+                return await Task.Run(() => context.ProductVariants
+                    .OrderBy(pv => pv.ProductService.Name)
+                    .ThenBy(pv => pv.VariantCode)
+                    .ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy tất cả biến thể với thông tin đầy đủ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Lấy danh sách biến thể theo ProductId
         /// </summary>
         /// <param name="productId">ID sản phẩm</param>
@@ -274,6 +310,10 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             try
             {
                 using var context = CreateContext();
+                
+                // Xóa ProductImages liên quan trước (để tránh foreign key constraint)
+                var productImages = context.ProductImages.Where(x => x.VariantId == id).ToList();
+                context.ProductImages.DeleteAllOnSubmit(productImages);
                 
                 // Xóa VariantAttributes trước
                 var variantAttributes = context.VariantAttributes.Where(x => x.VariantId == id).ToList();
@@ -581,6 +621,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                     existing.UnitId = variant.UnitId;
                     existing.IsActive = variant.IsActive;
                     existing.ThumbnailImage = variant.ThumbnailImage;
+                    existing.VariantFullName = variant.VariantFullName; // Cập nhật VariantFullName
                     
                     // Cập nhật ModifiedDate
                     existing.ModifiedDate = DateTime.Now;
@@ -620,6 +661,10 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                     
                     // Cập nhật ModifiedDate
                     existingVariant.ModifiedDate = currentTime;
+                    
+                    // Xóa các VariantAttribute cũ trước khi thêm mới
+                    var oldVariantAttributes = context.VariantAttributes.Where(x => x.VariantId == variant.Id).ToList();
+                    context.VariantAttributes.DeleteAllOnSubmit(oldVariantAttributes);
                 }
                 else
                 {
@@ -633,42 +678,54 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                     context.ProductVariants.InsertOnSubmit(variant);
                 }
 
-                // Xóa các VariantAttribute cũ nếu đang edit
-                if (existingVariant != null)
-                {
-                    var oldVariantAttributes = context.VariantAttributes.Where(x => x.VariantId == variant.Id).ToList();
-                    context.VariantAttributes.DeleteAllOnSubmit(oldVariantAttributes);
-                }
-
-                // Lưu giá trị thuộc tính mới
+                // Lưu giá trị thuộc tính mới và tính toán VariantFullName
+                var variantFullNameParts = new List<string>();
+                
                 if (attributeValues != null && attributeValues.Any())
                 {
                     foreach (var (attributeId, value) in attributeValues)
                     {
-                        // Tạo AttributeValue nếu chưa có
-                        var existingAttrValue = context.AttributeValues.FirstOrDefault(x => 
-                            x.AttributeId == attributeId && x.Value == value);
-                        
-                        if (existingAttrValue == null)
+                        // Tạo AttributeValue mới cho mỗi biến thể (không chia sẻ giữa các biến thể)
+                        var attributeValue = new AttributeValue
                         {
-                            existingAttrValue = new AttributeValue
-                            {
-                                Id = Guid.NewGuid(),
-                                AttributeId = attributeId,
-                                Value = value
-                            };
-                            context.AttributeValues.InsertOnSubmit(existingAttrValue);
-                        }
+                            Id = Guid.NewGuid(),
+                            AttributeId = attributeId,
+                            Value = value
+                        };
+                        context.AttributeValues.InsertOnSubmit(attributeValue);
 
                         // Tạo VariantAttribute
                         var variantAttribute = new VariantAttribute
                         {
                             VariantId = variant.Id,
                             AttributeId = attributeId,
-                            AttributeValueId = existingAttrValue.Id
+                            AttributeValueId = attributeValue.Id
                         };
                         context.VariantAttributes.InsertOnSubmit(variantAttribute);
+                        
+                        // Lấy tên thuộc tính để tạo VariantFullName
+                        var attribute = context.Attributes.FirstOrDefault(a => a.Id == attributeId);
+                        if (attribute != null)
+                        {
+                            variantFullNameParts.Add($"{attribute.Name} : {value}");
+                        }
                     }
+                }
+                
+                // Cập nhật VariantFullName cho biến thể
+                if (existingVariant != null)
+                {
+                    // Cập nhật cho biến thể hiện có
+                    existingVariant.VariantFullName = variantFullNameParts.Any() 
+                        ? string.Join(", ", variantFullNameParts) 
+                        : variant.VariantCode;
+                }
+                else
+                {
+                    // Cập nhật cho biến thể mới
+                    variant.VariantFullName = variantFullNameParts.Any() 
+                        ? string.Join(", ", variantFullNameParts) 
+                        : variant.VariantCode;
                 }
 
                 await Task.Run(() => context.SubmitChanges());
@@ -729,6 +786,22 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             catch (Exception ex)
             {
                 throw new DataAccessException($"Lỗi lấy giá trị thuộc tính: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy DataContext để sử dụng với LinqServerModeSource
+        /// </summary>
+        /// <returns>VnsErp2025DataContext</returns>
+        public async Task<Dal.DataContext.VnsErp2025DataContext> GetDataContextAsync()
+        {
+            try
+            {
+                return await Task.Run(() => CreateContext());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy DataContext: {ex.Message}", ex);
             }
         }
 
@@ -794,6 +867,60 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             }
         }
 
+
+        /// <summary>
+        /// Cập nhật VariantFullName cho tất cả biến thể hiện có
+        /// </summary>
+        public async Task UpdateAllVariantFullNamesAsync()
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                // Lấy tất cả biến thể
+                var variants = context.ProductVariants.ToList();
+                
+                foreach (var variant in variants)
+                {
+                    // Lấy danh sách thuộc tính của biến thể
+                    var variantAttributes = context.VariantAttributes
+                        .Where(va => va.VariantId == variant.Id)
+                        .ToList();
+                    
+                    if (variantAttributes.Any())
+                    {
+                        var fullNameParts = new List<string>();
+                        
+                        foreach (var va in variantAttributes)
+                        {
+                            // Lấy thông tin thuộc tính và giá trị
+                            var attribute = context.Attributes.FirstOrDefault(a => a.Id == va.AttributeId);
+                            var attributeValue = context.AttributeValues.FirstOrDefault(av => av.Id == va.AttributeValueId);
+                            
+                            if (attribute != null && attributeValue != null)
+                            {
+                                fullNameParts.Add($"{attribute.Name} : {attributeValue.Value}");
+                            }
+                        }
+                        
+                        // Cập nhật VariantFullName
+                        variant.VariantFullName = string.Join(", ", fullNameParts);
+                    }
+                    else
+                    {
+                        // Nếu không có thuộc tính, sử dụng mã biến thể
+                        variant.VariantFullName = variant.VariantCode;
+                    }
+                }
+                
+                // Lưu thay đổi
+                await Task.Run(() => context.SubmitChanges());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi cập nhật VariantFullName: {ex.Message}", ex);
+            }
+        }
 
         #endregion
 
