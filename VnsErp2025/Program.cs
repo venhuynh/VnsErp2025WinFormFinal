@@ -1,7 +1,9 @@
 ﻿using Authentication.Form;
 using Bll.Utils;
 using Dal.Connection;
+using Dal.DataContext.SeedData.MasterData.ProductService;
 using MasterData.Customer;
+using MasterData.ProductService;
 using System;
 using System.Windows.Forms;
 using VnsErp2025.Form;
@@ -45,8 +47,10 @@ namespace VnsErp2025
             }
 
             #region Dành cho debug
-
-            Application.Run(new FluentPartner());
+            //SeedData_Master_ProductService.DeleteAllProductServiceData();
+            //SeedData_Master_ProductService.SeedAllData();
+            
+            Application.Run(new FluentProductService());
 
             #endregion
 

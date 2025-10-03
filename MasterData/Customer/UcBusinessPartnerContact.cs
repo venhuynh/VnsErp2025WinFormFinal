@@ -1,16 +1,16 @@
 ﻿using Bll.Common;
+using Bll.MasterData.Customer;
 using Bll.Utils;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
-using MasterData.Dto;
-using MasterData.Converters;
+using MasterData.Customer.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Bll.MasterData.Customer;
+using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {

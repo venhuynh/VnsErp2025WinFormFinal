@@ -1,4 +1,4 @@
-using Dal.DataAccess.MasterData;
+using Dal.DataAccess.MasterData.Partner;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;

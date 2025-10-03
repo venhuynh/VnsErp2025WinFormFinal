@@ -8,9 +8,9 @@ using DevExpress.XtraLayout;
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using MasterData.Dto;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {

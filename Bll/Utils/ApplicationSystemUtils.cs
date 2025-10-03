@@ -121,7 +121,14 @@ namespace Bll.Utils
         {
             try
             {
-                SplashScreenHelper.ShowVnsSplashScreen();
+                // Đảm bảo thao tác UI được thực hiện trên UI thread
+                if (mdiParent.InvokeRequired)
+                {
+                    mdiParent.Invoke(new Action(() => ShowOrActivateForm<T>(mdiParent)));
+                    return;
+                }
+
+                
 
                 bool isActive = false;
                 foreach (Form form in Application.OpenForms.OfType<Form>().ToList())
@@ -130,22 +137,28 @@ namespace Bll.Utils
                     {
                         form.Activate();
                         isActive = true;
+                        break;
                     }
                 }
 
                 if (!isActive)
                 {
                     T frm = new T();
-                    frm.MdiParent = mdiParent;
+                    
+                    // Chỉ thiết lập MdiParent nếu form parent là MDI Container
+                    if (mdiParent.IsMdiContainer)
+                    {
+                        frm.MdiParent = mdiParent;
+                    }
+                    
                     frm.Show();
-
                 }
 
-                SplashScreenHelper.CloseSplashScreen();
+                
             }
             catch (Exception ex)
             {
-                SplashScreenHelper.CloseSplashScreen();
+                
                 MsgBox.ShowException(ex);
             }
         }

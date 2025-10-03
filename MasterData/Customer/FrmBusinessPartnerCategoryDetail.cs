@@ -1,9 +1,9 @@
 ﻿using Bll.MasterData.Customer;
 using Bll.Utils;
-using MasterData.Converters;
-using MasterData.Dto;
+using MasterData.Customer.Converters;
 using System;
 using System.Windows.Forms;
+using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {

@@ -305,8 +305,125 @@ namespace Dal.BaseDataAccess
                     throw new ArgumentNullException(nameof(entity));
 
                 using var context = new VnsErp2025DataContext(_connStr);
-                // LINQ to SQL tự động track changes khi entity đã được attach
+                
+                // Lấy primary key để kiểm tra
+                var primaryKeyProperty = GetPrimaryKeyProperty();
+                if (primaryKeyProperty == null)
+                    throw new DataAccessException($"Không tìm thấy primary key cho {typeof(T).Name}");
+
+                var primaryKeyValue = primaryKeyProperty.GetValue(entity);
+                if (primaryKeyValue == null)
+                    throw new DataAccessException($"Primary key của {typeof(T).Name} không được null");
+
+                // Attach entity vào context và đánh dấu là modified
+                context.GetTable<T>().Attach(entity);
+                
+                // Đánh dấu tất cả properties là modified (trừ Id)
+                var properties = typeof(T).GetProperties()
+                    .Where(p => p.CanRead && p.CanWrite && p.Name != "Id");
+                
+                foreach (var property in properties)
+                {
+                    // Đánh dấu property là modified để LINQ to SQL biết cần update
+                    var originalValue = property.GetValue(entity);
+                    property.SetValue(entity, originalValue);
+                }
+
+                // Submit changes
                 context.SubmitChanges();
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 2627) // Duplicate key
+            {
+                throw new DataAccessException($"Lỗi: {typeof(T).Name} đã tồn tại trong hệ thống", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 515) // Cannot insert null
+            {
+                throw new DataAccessException($"Lỗi: Không thể cập nhật {typeof(T).Name} - thiếu dữ liệu bắt buộc", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx)
+            {
+                throw new DataAccessException($"Lỗi SQL khi cập nhật {typeof(T).Name}: {sqlEx.Message}", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi cập nhật {typeof(T).Name}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật record (Async)
+        /// </summary>
+        /// <param name="entity">Entity cần cập nhật</param>
+        public virtual async Task UpdateAsync(T entity)
+        {
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                using var context = new VnsErp2025DataContext(_connStr);
+                
+                // Lấy primary key để kiểm tra
+                var primaryKeyProperty = GetPrimaryKeyProperty();
+                if (primaryKeyProperty == null)
+                    throw new DataAccessException($"Không tìm thấy primary key cho {typeof(T).Name}");
+
+                var primaryKeyValue = primaryKeyProperty.GetValue(entity);
+                if (primaryKeyValue == null)
+                    throw new DataAccessException($"Primary key của {typeof(T).Name} không được null");
+
+                // Attach entity vào context và đánh dấu là modified
+                context.GetTable<T>().Attach(entity);
+                
+                // Đánh dấu tất cả properties là modified (trừ Id)
+                var properties = typeof(T).GetProperties()
+                    .Where(p => p.CanRead && p.CanWrite && p.Name != "Id");
+                
+                foreach (var property in properties)
+                {
+                    // Đánh dấu property là modified để LINQ to SQL biết cần update
+                    var originalValue = property.GetValue(entity);
+                    property.SetValue(entity, originalValue);
+                }
+
+                // Submit changes
+                await Task.Run(() => context.SubmitChanges());
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 2627) // Duplicate key
+            {
+                throw new DataAccessException($"Lỗi: {typeof(T).Name} đã tồn tại trong hệ thống", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 515) // Cannot insert null
+            {
+                throw new DataAccessException($"Lỗi: Không thể cập nhật {typeof(T).Name} - thiếu dữ liệu bắt buộc", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx)
+            {
+                throw new DataAccessException($"Lỗi SQL khi cập nhật {typeof(T).Name}: {sqlEx.Message}", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
             }
             catch (Exception ex)
             {
@@ -322,7 +439,7 @@ namespace Dal.BaseDataAccess
         /// Xóa record theo ID
         /// </summary>
         /// <param name="id">ID của record cần xóa</param>
-        public virtual void DeleteById(object id)
+        public virtual void c(object id)
         {
             try
             {

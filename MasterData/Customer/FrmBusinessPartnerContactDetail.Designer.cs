@@ -1,4 +1,6 @@
-﻿namespace MasterData.Customer
+﻿using MasterData.Customer.Dto;
+
+namespace MasterData.Customer
 {
     partial class FrmBusinessPartnerContactDetail
     {
@@ -199,11 +201,11 @@
             // 
             // businessPartnerContactDtoBindingSource
             // 
-            this.businessPartnerContactDtoBindingSource.DataSource = typeof(MasterData.Dto.BusinessPartnerContactDto);
+            this.businessPartnerContactDtoBindingSource.DataSource = typeof(BusinessPartnerContactDto);
             // 
             // businessPartnerListDtoBindingSource
             // 
-            this.businessPartnerListDtoBindingSource.DataSource = typeof(MasterData.Dto.BusinessPartnerListDto);
+            this.businessPartnerListDtoBindingSource.DataSource = typeof(BusinessPartnerListDto);
             // 
             // searchLookUpEdit1View
             // 
