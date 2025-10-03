@@ -90,6 +90,7 @@
             this.ProductServiceImagesBtn.Name = "ProductServiceImagesBtn";
             this.ProductServiceImagesBtn.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
             this.ProductServiceImagesBtn.Text = "Hình ảnh";
+            this.ProductServiceImagesBtn.Click += new System.EventHandler(this.ProductServiceImagesBtn_Click);
             // 
             // fluentDesignFormControl1
             // 

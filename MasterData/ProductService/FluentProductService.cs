@@ -13,6 +13,7 @@ namespace MasterData.ProductService
         private UcProductServiceListCardView _productServiceListControl;
         private UcProductServiceCategory _productServiceCategoryControl;
         private UcProductVariant _productVariantControl;
+        private UcProductImage _productImageControl;
 
         #endregion
 
@@ -23,6 +24,7 @@ namespace MasterData.ProductService
             InitializeComponent();
             
             ProductServiceCategoryBtn.Click += ProductServiceCategoryBtn_Click;
+            ProductServiceImagesBtn.Click += ProductServiceImagesBtn_Click;
 
             InitializeUserControls();
             
@@ -66,20 +68,20 @@ namespace MasterData.ProductService
         {
             try
             {
-                Console.WriteLine("=== Ví dụ 1: Xóa tất cả dữ liệu ProductService ===");
+                Console.WriteLine(@"=== Ví dụ 1: Xóa tất cả dữ liệu ProductService ===");
 
                 // Xóa tất cả dữ liệu và lấy thông tin số lượng đã xóa
                 var deletedCounts = SeedData_Master_ProductService.DeleteAllProductServiceData();
 
-                Console.WriteLine("Đã xóa thành công các dữ liệu sau:");
+                Console.WriteLine(@"Đã xóa thành công các dữ liệu sau:");
                 foreach (var item in deletedCounts)
                 {
-                    Console.WriteLine($"  {item.Key}: {item.Value} records");
+                    Console.WriteLine($@"  {item.Key}: {item.Value} records");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi: {ex.Message}");
+                Console.WriteLine($@"Lỗi: {ex.Message}");
             }
         }
         
@@ -121,7 +123,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi hiển thị danh mục sản phẩm/dịch vụ: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($@"Lỗi khi hiển thị danh mục sản phẩm/dịch vụ: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -220,6 +222,26 @@ namespace MasterData.ProductService
             }
         }
 
+        /// <summary>
+        /// Hiển thị màn hình quản lý hình ảnh sản phẩm
+        /// </summary>
+        private void ShowProductImages()
+        {
+            try
+            {
+                if (_productImageControl == null)
+                {
+                    _productImageControl = new UcProductImage();
+                }
+
+                _userControlManager?.ShowControl(_productImageControl, "Quản lý hình ảnh sản phẩm");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi hiển thị quản lý hình ảnh sản phẩm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         #endregion
 
         #region Form Management
@@ -235,6 +257,7 @@ namespace MasterData.ProductService
                 _productServiceListControl?.Dispose();
                 _productServiceCategoryControl?.Dispose();
                 _productVariantControl?.Dispose();
+                _productImageControl?.Dispose();
                 _userControlManager = null;
 
                 base.OnFormClosing(e);
@@ -261,5 +284,20 @@ namespace MasterData.ProductService
         }
 
         #endregion
+
+        /// <summary>
+        /// Xử lý click nút Quản lý hình ảnh sản phẩm
+        /// </summary>
+        private void ProductServiceImagesBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ShowProductImages();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi hiển thị quản lý hình ảnh sản phẩm: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

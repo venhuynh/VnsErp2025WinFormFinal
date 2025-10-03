@@ -155,6 +155,12 @@
     <Compile Include="ProductService\FrmProductVariantDetail.Designer.cs">
       <DependentUpon>FrmProductVariantDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProductService\UcProductImage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProductService\UcProductImage.Designer.cs">
+      <DependentUpon>UcProductImage.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProductService\UcProductServiceCategory.cs">
       <SubType>UserControl</SubType>
     </Compile>
