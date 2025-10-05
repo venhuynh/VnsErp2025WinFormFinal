@@ -12,16 +12,23 @@ using System.Windows.Forms;
 
 namespace MasterData.ProductService
 {
+    /// <summary>
+    /// Form thêm hình ảnh sản phẩm.
+    /// Cung cấp chức năng chọn và upload nhiều hình ảnh cho sản phẩm với validation và giao diện thân thiện.
+    /// </summary>
     public partial class FrmProductImageAdd : XtraForm
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// Business Logic Layer cho hình ảnh sản phẩm
+        /// </summary>
         private ProductImageBll _productImageBll;
+
+        /// <summary>
+        /// Business Logic Layer cho sản phẩm/dịch vụ
+        /// </summary>
         private ProductServiceBll _productServiceBll;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         /// ID sản phẩm để thêm hình ảnh
@@ -30,8 +37,11 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Constructor
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
+        /// <summary>
+        /// Constructor mặc định
+        /// </summary>
         public FrmProductImageAdd()
         {
             InitializeComponent();
@@ -42,7 +52,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Private Methods
+        #region ========== KHỞI TẠO FORM ==========
 
         /// <summary>
         /// Khởi tạo BLL
@@ -64,6 +74,10 @@ namespace MasterData.ProductService
             // Event cho SearchLookupEdit chọn sản phẩm
             ProductServiceSearchLookupEdit.EditValueChanged += ProductServiceSearchLookupEdit_EditValueChanged;
         }
+
+        #endregion
+
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
         /// Thực hiện operation async với WaitingForm1 hiển thị
@@ -149,27 +163,9 @@ namespace MasterData.ProductService
             }
         }
 
-
-        /// <summary>
-        /// Hiển thị thông tin
-        /// </summary>
-        private void ShowInfo(string message)
-        {
-            MsgBox.ShowInfo(message);
-        }
-
-        /// <summary>
-        /// Hiển thị lỗi với thông tin ngữ cảnh
-        /// </summary>
-        private void ShowError(Exception ex, string context = null)
-        {
-            MsgBox.ShowException(
-                string.IsNullOrWhiteSpace(context) ? ex : new Exception($"{context}: {ex.Message}", ex));
-        }
-
         #endregion
 
-        #region Event Handlers
+        #region ========== SỰ KIỆN FORM ==========
 
         /// <summary>
         /// Xử lý sự kiện thay đổi giá trị SearchLookupEdit
@@ -234,7 +230,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Image Processing Methods
+        #region ========== XỬ LÝ HÌNH ẢNH ==========
 
         /// <summary>
         /// Xử lý các hình ảnh đã chọn
@@ -328,6 +324,27 @@ namespace MasterData.ProductService
             }
 
             ShowInfo(message);
+        }
+
+        #endregion
+
+        #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Hiển thị thông tin
+        /// </summary>
+        private void ShowInfo(string message)
+        {
+            MsgBox.ShowInfo(message);
+        }
+
+        /// <summary>
+        /// Hiển thị lỗi với thông tin ngữ cảnh
+        /// </summary>
+        private void ShowError(Exception ex, string context = null)
+        {
+            MsgBox.ShowException(
+                string.IsNullOrWhiteSpace(context) ? ex : new Exception($"{context}: {ex.Message}", ex));
         }
 
         #endregion
