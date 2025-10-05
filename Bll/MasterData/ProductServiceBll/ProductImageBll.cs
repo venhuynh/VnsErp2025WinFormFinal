@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Dal.DataAccess.MasterData.ProductServiceDal;
 using Dal.DataContext;
 
@@ -307,6 +309,15 @@ namespace Bll.MasterData.ProductServiceBll
             {
                 throw new BusinessLogicException($"Lỗi khi xóa tất cả hình ảnh của sản phẩm '{productId}': {ex.Message}", ex);
             }
+        }
+
+        /// <summary>
+        /// Xóa hình ảnh (alias cho DeleteImage)
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        public void Delete(Guid imageId)
+        {
+            DeleteImage(imageId);
         }
 
         /// <summary>
@@ -682,6 +693,85 @@ namespace Bll.MasterData.ProductServiceBll
             {
                 // Fallback: trả về 1 nếu có lỗi
                 return 1;
+            }
+        }
+
+        /// <summary>
+        /// Tìm kiếm hình ảnh theo danh sách ProductId
+        /// </summary>
+        /// <param name="productIds">Danh sách ID sản phẩm/dịch vụ</param>
+        /// <returns>Danh sách hình ảnh phù hợp</returns>
+        public List<ProductImage> SearchByProductIds(List<Guid> productIds)
+        {
+            try
+            {
+                if (productIds == null || !productIds.Any())
+                {
+                    return new List<ProductImage>();
+                }
+
+                return _dataAccess.SearchByProductIds(productIds);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tìm kiếm hình ảnh theo sản phẩm: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Tìm kiếm hình ảnh theo danh sách ProductId (Async)
+        /// </summary>
+        /// <param name="productIds">Danh sách ID sản phẩm/dịch vụ</param>
+        /// <returns>Danh sách hình ảnh phù hợp</returns>
+        public async Task<List<ProductImage>> SearchByProductIdsAsync(List<Guid> productIds)
+        {
+            try
+            {
+                if (productIds == null || !productIds.Any())
+                {
+                    return new List<ProductImage>();
+                }
+
+                return await Task.Run(() => _dataAccess.SearchByProductIds(productIds));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tìm kiếm hình ảnh theo sản phẩm: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Tìm kiếm hình ảnh theo từ khóa (tìm kiếm trong ProductService và Category trước)
+        /// </summary>
+        /// <param name="searchKeyword">Từ khóa tìm kiếm</param>
+        /// <returns>Danh sách hình ảnh phù hợp</returns>
+        public async Task<List<ProductImage>> SearchAsync(string searchKeyword)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(searchKeyword))
+                {
+                    return new List<ProductImage>();
+                }
+
+                // Tìm kiếm sản phẩm/dịch vụ trước
+                var productServiceBll = new ProductServiceBll();
+                var searchResults = await productServiceBll.SearchAsync(searchKeyword.Trim());
+                
+                if (!searchResults.Any())
+                {
+                    return new List<ProductImage>();
+                }
+
+                // Lấy danh sách ProductId từ kết quả tìm kiếm
+                var productIds = searchResults.Select(x => x.Id).ToList();
+                
+                // Tìm kiếm hình ảnh theo danh sách ProductId
+                return await SearchByProductIdsAsync(productIds);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tìm kiếm hình ảnh: {ex.Message}", ex);
             }
         }
 

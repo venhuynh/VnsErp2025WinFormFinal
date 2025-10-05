@@ -137,6 +137,12 @@
     <Compile Include="ProductService\FrmAddProductImage.Designer.cs">
       <DependentUpon>FrmAddProductImage.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProductService\FrmProductImageDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductImageDetail.Designer.cs">
+      <DependentUpon>FrmProductImageDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProductService\FrmProductServiceCategoryDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -231,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ProductService\FrmAddProductImage.resx">
       <DependentUpon>FrmAddProductImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductImageDetail.resx">
+      <DependentUpon>FrmProductImageDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProductService\FrmProductServiceCategoryDetail.resx">
       <DependentUpon>FrmProductServiceCategoryDetail.cs</DependentUpon>
@@ -328,6 +337,7 @@
   <ItemGroup>
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor DTOs với Notation tiếng Việt%29.txt" />
+    <None Include="Resources\download_16x16.png" />
     <None Include="Resources\loadfrom_16x16.png" />
     <None Include="Resources\apply_16x16.png" />
     <None Include="Resources\recurrence_32x32.png" />

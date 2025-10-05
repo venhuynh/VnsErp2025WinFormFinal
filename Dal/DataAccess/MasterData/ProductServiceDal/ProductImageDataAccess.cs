@@ -22,30 +22,34 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             try
             {
                 using var context = CreateContext();
-                return context.ProductImages
+                
+                // Load entities trực tiếp từ database
+                var entities = context.ProductImages
                     .Where(x => x.ProductId == productId && x.IsActive == true)
                     .OrderBy(x => x.SortOrder)
                     .ThenBy(x => x.CreatedDate)
-                    .Select(x => new ProductImage
-                    {
-                        Id = x.Id,
-                        ProductId = x.ProductId,
-                        VariantId = x.VariantId,
-                        ImagePath = x.ImagePath,
-                        SortOrder = x.SortOrder,
-                        IsPrimary = x.IsPrimary,
-                        ImageType = x.ImageType,
-                        ImageSize = x.ImageSize,
-                        ImageWidth = x.ImageWidth,
-                        ImageHeight = x.ImageHeight,
-                        Caption = x.Caption,
-                        AltText = x.AltText,
-                        IsActive = x.IsActive,
-                        CreatedDate = x.CreatedDate,
-                        ModifiedDate = x.ModifiedDate
-                        // Không load ImageData để tối ưu performance
-                    })
                     .ToList();
+
+                // Map sang ProductImage objects
+                return entities.Select(x => new ProductImage
+                {
+                    Id = x.Id,
+                    ProductId = x.ProductId,
+                    VariantId = x.VariantId,
+                    ImagePath = x.ImagePath,
+                    SortOrder = x.SortOrder,
+                    IsPrimary = x.IsPrimary,
+                    ImageData = x.ImageData, // Load ImageData để hiển thị hình ảnh
+                    ImageType = x.ImageType,
+                    ImageSize = x.ImageSize,
+                    ImageWidth = x.ImageWidth,
+                    ImageHeight = x.ImageHeight,
+                    Caption = x.Caption,
+                    AltText = x.AltText,
+                    IsActive = x.IsActive,
+                    CreatedDate = x.CreatedDate,
+                    ModifiedDate = x.ModifiedDate
+                }).ToList();
             }
             catch (Exception ex)
             {
@@ -84,28 +88,34 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             try
             {
                 using var context = CreateContext();
-                return context.ProductImages
-                    .Where(x => x.ProductId == productId && x.IsPrimary == true && x.IsActive == true)
-                    .Select(x => new ProductImage
-                    {
-                        Id = x.Id,
-                        ProductId = x.ProductId,
-                        VariantId = x.VariantId,
-                        ImagePath = x.ImagePath,
-                        SortOrder = x.SortOrder,
-                        IsPrimary = x.IsPrimary,
-                        ImageType = x.ImageType,
-                        ImageSize = x.ImageSize,
-                        ImageWidth = x.ImageWidth,
-                        ImageHeight = x.ImageHeight,
-                        Caption = x.Caption,
-                        AltText = x.AltText,
-                        IsActive = x.IsActive,
-                        CreatedDate = x.CreatedDate,
-                        ModifiedDate = x.ModifiedDate
-                        // Không load ImageData
-                    })
-                    .FirstOrDefault();
+                
+                // Load entity trực tiếp từ database
+                var entity = context.ProductImages
+                    .FirstOrDefault(x => x.ProductId == productId && (x.IsPrimary ?? false) == true && x.IsActive == true);
+
+                if (entity == null)
+                    return null;
+
+                // Map sang ProductImage object
+                return new ProductImage
+                {
+                    Id = entity.Id,
+                    ProductId = entity.ProductId,
+                    VariantId = entity.VariantId,
+                    ImagePath = entity.ImagePath,
+                    SortOrder = entity.SortOrder,
+                    IsPrimary = entity.IsPrimary,
+                    ImageType = entity.ImageType,
+                    ImageSize = entity.ImageSize,
+                    ImageWidth = entity.ImageWidth,
+                    ImageHeight = entity.ImageHeight,
+                    Caption = entity.Caption,
+                    AltText = entity.AltText,
+                    IsActive = entity.IsActive,
+                    CreatedDate = entity.CreatedDate,
+                    ModifiedDate = entity.ModifiedDate
+                    // Không load ImageData
+                };
             }
             catch (Exception ex)
             {
@@ -127,10 +137,10 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                 using var context = CreateContext();
                 
                 // Nếu là hình ảnh chính, bỏ IsPrimary của các hình ảnh khác
-                if (productImage.IsPrimary == true)
+                if ((productImage.IsPrimary ?? false) == true)
                 {
                     var existingPrimary = context.ProductImages
-                        .Where(x => x.ProductId == productImage.ProductId && x.IsPrimary == true && x.Id != productImage.Id)
+                        .Where(x => x.ProductId == productImage.ProductId && (x.IsPrimary ?? false) == true && x.Id != productImage.Id)
                         .ToList();
                     
                     foreach (var img in existingPrimary)
@@ -262,7 +272,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             {
                 using var context = CreateContext();
                 return context.ProductImages
-                    .Any(x => x.ProductId == productId && x.IsPrimary == true && x.IsActive == true);
+                    .Any(x => x.ProductId == productId && (x.IsPrimary ?? false) == true && x.IsActive == true);
             }
             catch (Exception ex)
             {
@@ -301,6 +311,52 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             catch (Exception ex)
             {
                 throw new DataAccessException($"Lỗi khi đặt hình ảnh làm chính '{imageId}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Tìm kiếm hình ảnh theo danh sách ProductId
+        /// </summary>
+        /// <param name="productIds">Danh sách ID sản phẩm/dịch vụ</param>
+        /// <returns>Danh sách hình ảnh phù hợp</returns>
+        public List<ProductImage> SearchByProductIds(List<Guid> productIds)
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                // Load entities trực tiếp từ database
+                var entities = context.ProductImages
+                    .Where(x => x.IsActive == true && productIds.Contains(x.ProductId.Value))
+                    .OrderBy(x => (x.IsPrimary ?? false) ? 0 : 1) // Ưu tiên ảnh chính
+                    .ThenBy(x => x.SortOrder)
+                    .ThenBy(x => x.CreatedDate)
+                    .ToList();
+
+                // Map sang ProductImage objects
+                return entities.Select(x => new ProductImage
+                {
+                    Id = x.Id,
+                    ProductId = x.ProductId,
+                    VariantId = x.VariantId,
+                    ImagePath = x.ImagePath,
+                    SortOrder = x.SortOrder,
+                    IsPrimary = x.IsPrimary,
+                    ImageData = x.ImageData, // Load ImageData để hiển thị hình ảnh
+                    ImageType = x.ImageType,
+                    ImageSize = x.ImageSize,
+                    ImageWidth = x.ImageWidth,
+                    ImageHeight = x.ImageHeight,
+                    Caption = x.Caption,
+                    AltText = x.AltText,
+                    IsActive = x.IsActive,
+                    CreatedDate = x.CreatedDate,
+                    ModifiedDate = x.ModifiedDate
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi tìm kiếm hình ảnh theo sản phẩm: {ex.Message}", ex);
             }
         }
     }
