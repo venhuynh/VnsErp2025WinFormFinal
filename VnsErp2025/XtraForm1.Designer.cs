@@ -30,7 +30,7 @@
         {
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.ucProductServiceList_CardView1 = new MasterData.ProductService.UcProductServiceListCardView();
+            this.ucProductImage1 = new MasterData.ProductService.UcProductImage();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -40,7 +40,7 @@
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.ucProductServiceList_CardView1);
+            this.layoutControl1.Controls.Add(this.ucProductImage1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
@@ -59,16 +59,16 @@
             this.Root.Size = new System.Drawing.Size(1158, 785);
             this.Root.TextVisible = false;
             // 
-            // ucProductServiceList_CardView1
+            // ucProductImage1
             // 
-            this.ucProductServiceList_CardView1.Location = new System.Drawing.Point(16, 16);
-            this.ucProductServiceList_CardView1.Name = "ucProductServiceList_CardView1";
-            this.ucProductServiceList_CardView1.Size = new System.Drawing.Size(1126, 753);
-            this.ucProductServiceList_CardView1.TabIndex = 4;
+            this.ucProductImage1.Location = new System.Drawing.Point(16, 16);
+            this.ucProductImage1.Name = "ucProductImage1";
+            this.ucProductImage1.Size = new System.Drawing.Size(1126, 753);
+            this.ucProductImage1.TabIndex = 4;
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.ucProductServiceList_CardView1;
+            this.layoutControlItem1.Control = this.ucProductImage1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1132, 759);
@@ -94,7 +94,7 @@
 
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private MasterData.ProductService.UcProductServiceListCardView ucProductServiceList_CardView1;
+        private MasterData.ProductService.UcProductImage ucProductImage1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

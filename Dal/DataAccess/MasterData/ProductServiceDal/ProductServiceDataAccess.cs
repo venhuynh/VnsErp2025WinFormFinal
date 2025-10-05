@@ -231,8 +231,9 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                 return context.ProductServices
                     .Where(ps => ps.Code.ToLower().Contains(searchTerm) ||
                                 ps.Name.ToLower().Contains(searchTerm) ||
-                                (ps.Description != null && ps.Description.ToLower().Contains(searchTerm)))
-                    .OrderBy(ps => ps.Code)
+                                (ps.Description != null && ps.Description.ToLower().Contains(searchTerm)) ||
+                                context.ProductServiceCategories.Any(c => c.Id == ps.CategoryId && c.CategoryName.ToLower().Contains(searchTerm)))
+                    .OrderBy(ps => ps.Name)
                     .ToList();
             }
             catch (Exception ex)
@@ -955,13 +956,13 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
 
                 using var context = CreateContext();
                 
-                var searchTerm = $"%{searchText.Trim()}%";
+                var searchTerm = searchText.Trim().ToLower();
                 
                 var query = context.ProductServices
-                    .Where(x => x.Code.Contains(searchText) ||
-                               x.Name.Contains(searchText) ||
-                               x.Description.Contains(searchText) ||
-                               context.ProductServiceCategories.Any(c => c.Id == x.CategoryId && c.CategoryName.Contains(searchText)))
+                    .Where(x => x.Code.ToLower().Contains(searchTerm) ||
+                               x.Name.ToLower().Contains(searchTerm) ||
+                               (x.Description != null && x.Description.ToLower().Contains(searchTerm)) ||
+                               context.ProductServiceCategories.Any(c => c.Id == x.CategoryId && c.CategoryName.ToLower().Contains(searchTerm)))
                     .OrderBy(x => x.Name);
 
                 return await Task.FromResult(query.ToList());

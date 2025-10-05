@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Dal.DataAccess.MasterData.ProductServiceDal;
 using Dal.DataContext;
 
@@ -14,6 +16,70 @@ namespace Bll.MasterData.ProductServiceBll
     /// </summary>
     public class ProductImageBll
     {
+        #region Constants
+
+        /// <summary>
+        /// Thư mục gốc chứa ảnh sản phẩm
+        /// </summary>
+        private const string PHOTO_ROOT_DIRECTORY = "PHOTO";
+
+        /// <summary>
+        /// Thư mục con chứa ảnh sản phẩm/dịch vụ
+        /// </summary>
+        private const string PRODUCTSERVICE_PHOTO_DIRECTORY = "PRODUCTSERVICE";
+
+        /// <summary>
+        /// Thư mục con chứa ảnh biến thể sản phẩm
+        /// </summary>
+        private const string PRODUCTVARIANT_PHOTO_DIRECTORY = "PRODUCTVARIANT";
+
+        /// <summary>
+        /// Thư mục con chứa ảnh thumbnail
+        /// </summary>
+        private const string THUMBNAIL_PHOTO_DIRECTORY = "THUMBNAIL";
+
+        /// <summary>
+        /// Thư mục con chứa ảnh đã nén
+        /// </summary>
+        private const string COMPRESSED_PHOTO_DIRECTORY = "COMPRESSED";
+
+        /// <summary>
+        /// Định dạng tên file cho ảnh sản phẩm
+        /// </summary>
+        private const string PRODUCT_IMAGE_FILENAME_FORMAT = "{0}_{1:yyyyMMdd_HHmmss}_{2}{3}";
+
+        /// <summary>
+        /// Định dạng tên file cho ảnh chính
+        /// </summary>
+        private const string PRIMARY_IMAGE_FILENAME_FORMAT = "{0}_primary_{1:yyyyMMdd_HHmmss}_{2}.jpg";
+
+        /// <summary>
+        /// Định dạng tên file cho thumbnail
+        /// </summary>
+        private const string THUMBNAIL_FILENAME_FORMAT = "{0}_thumb_{1:yyyyMMdd_HHmmss}_{2}.jpg";
+
+        /// <summary>
+        /// Chất lượng nén mặc định cho ảnh
+        /// </summary>
+        private const long DEFAULT_COMPRESSION_QUALITY = 85L;
+
+        /// <summary>
+        /// Kích thước tối đa mặc định cho mỗi chiều (pixel)
+        /// </summary>
+        private const int DEFAULT_MAX_DIMENSION = 2048;
+
+        /// <summary>
+        /// Kích thước tối đa cho thumbnail (pixel)
+        /// </summary>
+        private const int THUMBNAIL_MAX_DIMENSION = 300;
+
+        /// <summary>
+        /// Chất lượng nén cho thumbnail
+        /// </summary>
+        private const long THUMBNAIL_COMPRESSION_QUALITY = 75L;
+
+        #endregion
+
         #region Fields
 
         private readonly ProductImageDataAccess _dataAccess = new ProductImageDataAccess();
@@ -36,6 +102,23 @@ namespace Bll.MasterData.ProductServiceBll
             catch (Exception ex)
             {
                 throw new BusinessLogicException($"Lỗi khi lấy danh sách hình ảnh cho sản phẩm '{productId}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy hình ảnh theo ID
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        /// <returns>Hình ảnh hoặc null</returns>
+        public ProductImage GetById(Guid imageId)
+        {
+            try
+            {
+                return _dataAccess.GetById(imageId);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy hình ảnh '{imageId}': {ex.Message}", ex);
             }
         }
 
@@ -79,7 +162,11 @@ namespace Bll.MasterData.ProductServiceBll
 
                 // Tạo tên file mới để tránh trùng lặp
                 var fileExtension = Path.GetExtension(imageFilePath);
-                var fileName = $"{productId}_{DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid().ToString("N").Substring(0, 8)}{fileExtension}";
+                var fileName = string.Format(PRODUCT_IMAGE_FILENAME_FORMAT, 
+                    productId, 
+                    DateTime.Now, 
+                    Guid.NewGuid().ToString("N").Substring(0, 8), 
+                    fileExtension);
                 var targetFilePath = Path.Combine(targetDirectory, fileName);
 
                 // Copy file vào thư mục đích
@@ -88,13 +175,16 @@ namespace Bll.MasterData.ProductServiceBll
                 // Đọc thông tin ảnh
                 var imageInfo = GetImageInfo(imageFilePath);
 
+                // Lấy SortOrder tiếp theo
+                var nextSortOrder = GetNextSortOrder(productId);
+
                 // Tạo ProductImage entity
                 var productImage = new ProductImage
                 {
                     Id = Guid.NewGuid(),
                     ProductId = productId,
                     ImagePath = targetFilePath,
-                    SortOrder = isPrimary ? 0 : _dataAccess.GetByProductId(productId).Count + 1,
+                    SortOrder = isPrimary ? 0 : nextSortOrder,
                     IsPrimary = isPrimary,
                     ImageData = File.ReadAllBytes(imageFilePath),
                     ImageType = fileExtension.TrimStart('.').ToLower(),
@@ -137,11 +227,14 @@ namespace Bll.MasterData.ProductServiceBll
                     Directory.CreateDirectory(targetDirectory);
 
                 // Tạo tên file mới với extension .jpg để đảm bảo định dạng nhất quán
-                var fileName = $"{productId}_primary_{DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid().ToString("N").Substring(0, 8)}.jpg";
+                var fileName = string.Format(PRIMARY_IMAGE_FILENAME_FORMAT, 
+                    productId, 
+                    DateTime.Now, 
+                    Guid.NewGuid().ToString("N").Substring(0, 8));
                 var targetFilePath = Path.Combine(targetDirectory, fileName);
 
                 // Nén ảnh trước khi lưu để đảm bảo kích thước hợp lý
-                using (var compressedImage = CompressImage(imageFilePath, 85, 2048))
+                using (var compressedImage = CompressImage(imageFilePath, DEFAULT_COMPRESSION_QUALITY, DEFAULT_MAX_DIMENSION))
                 {
                     // Lưu ảnh đã nén vào thư mục đích với phương thức an toàn
                     SaveImageSafely(compressedImage, targetFilePath);
@@ -216,6 +309,117 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
+        /// Xóa hình ảnh hoàn chỉnh (database + file + cập nhật ProductService)
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        public void DeleteImageComplete(Guid imageId)
+        {
+            try
+            {
+                // 1. Lấy thông tin hình ảnh trước khi xóa
+                var imageInfo = _dataAccess.GetById(imageId);
+                if (imageInfo == null)
+                {
+                    throw new BusinessLogicException($"Không tìm thấy hình ảnh với ID '{imageId}'");
+                }
+
+                var productId = imageInfo.ProductId;
+                var imagePath = imageInfo.ImagePath;
+                var isPrimary = imageInfo.IsPrimary ?? false;
+
+                // 2. Xóa file vật lý nếu tồn tại
+                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+                {
+                    try
+                    {
+                        File.Delete(imagePath);
+                        System.Diagnostics.Debug.WriteLine($"Đã xóa file: {imagePath}");
+                    }
+                    catch (Exception fileEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Không thể xóa file '{imagePath}': {fileEx.Message}");
+                        // Không throw exception vì có thể file đã bị xóa hoặc không có quyền
+                    }
+                }
+
+                // 3. Xóa thumbnail nếu có
+                DeleteThumbnailIfExists(imageInfo);
+
+                // 4. Xóa trong database
+                _dataAccess.Delete(imageId);
+
+                // 5. Cập nhật ProductService nếu đây là ảnh chính
+                if (isPrimary && productId.HasValue)
+                {
+                    UpdateProductServiceAfterPrimaryImageDelete(productId.Value);
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Đã xóa hoàn chỉnh hình ảnh '{imageId}'");
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi xóa hoàn chỉnh hình ảnh '{imageId}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Xóa thumbnail nếu tồn tại
+        /// </summary>
+        /// <param name="imageInfo">Thông tin hình ảnh</param>
+        private void DeleteThumbnailIfExists(ProductImage imageInfo)
+        {
+            try
+            {
+                if (imageInfo?.ProductId == null) return;
+
+                var thumbnailDirectory = GetThumbnailDirectory();
+                var thumbnailPattern = $"{imageInfo.ProductId}_thumb_*";
+                var thumbnailFiles = Directory.GetFiles(thumbnailDirectory, thumbnailPattern);
+
+                foreach (var thumbnailFile in thumbnailFiles)
+                {
+                    try
+                    {
+                        File.Delete(thumbnailFile);
+                        System.Diagnostics.Debug.WriteLine($"Đã xóa thumbnail: {thumbnailFile}");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Không thể xóa thumbnail '{thumbnailFile}': {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi khi xóa thumbnail: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật ProductService sau khi xóa ảnh chính
+        /// </summary>
+        /// <param name="productId">ID sản phẩm</param>
+        private void UpdateProductServiceAfterPrimaryImageDelete(Guid productId)
+        {
+            try
+            {
+                // TODO: Implement logic để cập nhật ProductService
+                // Có thể cần:
+                // 1. Xóa đường dẫn ảnh chính trong ProductService
+                // 2. Đặt ảnh chính mới nếu có ảnh khác
+                // 3. Cập nhật trạng thái sản phẩm
+                
+                System.Diagnostics.Debug.WriteLine($"Cần cập nhật ProductService cho sản phẩm '{productId}' sau khi xóa ảnh chính");
+                
+                // Tạm thời chỉ log - cần implement logic cụ thể
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi khi cập nhật ProductService: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Xóa tất cả hình ảnh của sản phẩm/dịch vụ
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
@@ -236,6 +440,15 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
+        /// Xóa hình ảnh (alias cho DeleteImage)
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        public void Delete(Guid imageId)
+        {
+            DeleteImage(imageId);
+        }
+
+        /// <summary>
         /// Đặt hình ảnh làm hình ảnh chính
         /// </summary>
         /// <param name="imageId">ID hình ảnh</param>
@@ -252,22 +465,65 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
-        /// Nén hình ảnh mà không thay đổi kích thước (dimensions)
+        /// Tạo thumbnail cho hình ảnh
         /// </summary>
+        /// <param name="productId">ID sản phẩm</param>
         /// <param name="imageFilePath">Đường dẫn file ảnh gốc</param>
-        /// <param name="quality">Chất lượng nén (0-100). Mặc định là 80</param>
-        /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định là 4096</param>
-        /// <returns>Đối tượng Image đã được nén và resize nếu cần</returns>
-        public Image CompressImage(string imageFilePath, long quality = 80L, int maxDimension = 4096)
+        /// <returns>Đường dẫn file thumbnail</returns>
+        public string CreateThumbnail(Guid productId, string imageFilePath)
         {
             try
             {
                 if (!File.Exists(imageFilePath))
                     throw new BusinessLogicException($"File ảnh không tồn tại: {imageFilePath}");
 
+                // Tạo thư mục thumbnail nếu chưa có
+                var thumbnailDirectory = GetThumbnailDirectory();
+                if (!Directory.Exists(thumbnailDirectory))
+                    Directory.CreateDirectory(thumbnailDirectory);
+
+                // Tạo tên file thumbnail
+                var thumbnailFileName = string.Format(THUMBNAIL_FILENAME_FORMAT, 
+                    productId, 
+                    DateTime.Now, 
+                    Guid.NewGuid().ToString("N").Substring(0, 8));
+                var thumbnailFilePath = Path.Combine(thumbnailDirectory, thumbnailFileName);
+
+                // Tạo thumbnail với kích thước và chất lượng phù hợp
+                using (var thumbnailImage = CompressImage(imageFilePath, THUMBNAIL_COMPRESSION_QUALITY, THUMBNAIL_MAX_DIMENSION))
+                {
+                    SaveImageSafely(thumbnailImage, thumbnailFilePath);
+                }
+
+                return thumbnailFilePath;
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi tạo thumbnail cho hình ảnh '{imageFilePath}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Nén hình ảnh mà không thay đổi kích thước (dimensions)
+        /// </summary>
+        /// <param name="imageFilePath">Đường dẫn file ảnh gốc</param>
+        /// <param name="quality">Chất lượng nén (0-100). Mặc định sử dụng DEFAULT_COMPRESSION_QUALITY</param>
+        /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định sử dụng DEFAULT_MAX_DIMENSION</param>
+        /// <returns>Đối tượng Image đã được nén và resize nếu cần</returns>
+        public Image CompressImage(string imageFilePath, long quality = -1, int maxDimension = -1)
+        {
+            try
+            {
+                if (!File.Exists(imageFilePath))
+                    throw new BusinessLogicException($"File ảnh không tồn tại: {imageFilePath}");
+
+                // Sử dụng giá trị mặc định nếu không được chỉ định
+                var actualQuality = quality == -1 ? DEFAULT_COMPRESSION_QUALITY : quality;
+                var actualMaxDimension = maxDimension == -1 ? DEFAULT_MAX_DIMENSION : maxDimension;
+
                 using var originalImage = Image.FromFile(imageFilePath);
                 
-                return CompressImage(originalImage, quality, maxDimension);
+                return CompressImage(originalImage, actualQuality, actualMaxDimension);
             }
             catch (Exception ex)
             {
@@ -279,18 +535,22 @@ namespace Bll.MasterData.ProductServiceBll
         /// Nén hình ảnh mà không thay đổi kích thước (dimensions)
         /// </summary>
         /// <param name="originalImage">Đối tượng Image gốc</param>
-        /// <param name="quality">Chất lượng nén (0-100). Mặc định là 80</param>
-        /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định là 4096</param>
+        /// <param name="quality">Chất lượng nén (0-100). Mặc định sử dụng DEFAULT_COMPRESSION_QUALITY</param>
+        /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định sử dụng DEFAULT_MAX_DIMENSION</param>
         /// <returns>Đối tượng Image đã được nén và resize nếu cần</returns>
-        public Image CompressImage(Image originalImage, long quality = 80L, int maxDimension = 4096)
+        public Image CompressImage(Image originalImage, long quality = -1, int maxDimension = -1)
         {
             try
             {
                 if (originalImage == null)
                     throw new ArgumentNullException(nameof(originalImage));
 
+                // Sử dụng giá trị mặc định nếu không được chỉ định
+                var actualQuality = quality == -1 ? DEFAULT_COMPRESSION_QUALITY : quality;
+                var actualMaxDimension = maxDimension == -1 ? DEFAULT_MAX_DIMENSION : maxDimension;
+
                 // Tính toán kích thước mới nếu ảnh quá lớn
-                var newSize = CalculateNewSize(originalImage.Width, originalImage.Height, maxDimension);
+                var newSize = CalculateNewSize(originalImage.Width, originalImage.Height, actualMaxDimension);
                 
                 // Tạo ảnh mới với kích thước đã tính toán
                 using (var resizedImage = new Bitmap(newSize.Width, newSize.Height))
@@ -308,7 +568,7 @@ namespace Bll.MasterData.ProductServiceBll
                     }
 
                     // Nén ảnh với chất lượng JPEG và trả về ảnh mới
-                    return CompressToJpeg(resizedImage, quality);
+                    return CompressToJpeg(resizedImage, actualQuality);
                 }
             }
             catch (Exception ex)
@@ -418,7 +678,75 @@ namespace Bll.MasterData.ProductServiceBll
         private string GetPhotoDirectory()
         {
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(appDirectory, "PHOTO", "PRODUCTSERVICE");
+            return Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, PRODUCTSERVICE_PHOTO_DIRECTORY);
+        }
+
+        /// <summary>
+        /// Lấy đường dẫn thư mục cho ảnh biến thể sản phẩm
+        /// </summary>
+        /// <returns>Đường dẫn thư mục</returns>
+        private string GetProductVariantPhotoDirectory()
+        {
+            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            return Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, PRODUCTVARIANT_PHOTO_DIRECTORY);
+        }
+
+        /// <summary>
+        /// Lấy đường dẫn thư mục thumbnail
+        /// </summary>
+        /// <returns>Đường dẫn thư mục</returns>
+        private string GetThumbnailDirectory()
+        {
+            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            return Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, THUMBNAIL_PHOTO_DIRECTORY);
+        }
+
+        /// <summary>
+        /// Lấy đường dẫn thư mục ảnh đã nén
+        /// </summary>
+        /// <returns>Đường dẫn thư mục</returns>
+        private string GetCompressedPhotoDirectory()
+        {
+            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            return Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, COMPRESSED_PHOTO_DIRECTORY);
+        }
+
+        /// <summary>
+        /// Lấy đường dẫn thư mục dựa trên loại ảnh
+        /// </summary>
+        /// <param name="imageType">Loại ảnh (Product, Variant, Thumbnail, Compressed)</param>
+        /// <returns>Đường dẫn thư mục</returns>
+        private string GetPhotoDirectoryByType(string imageType)
+        {
+            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            
+            return imageType?.ToUpper() switch
+            {
+                "VARIANT" => Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, PRODUCTVARIANT_PHOTO_DIRECTORY),
+                "THUMBNAIL" => Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, THUMBNAIL_PHOTO_DIRECTORY),
+                "COMPRESSED" => Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, COMPRESSED_PHOTO_DIRECTORY),
+                _ => Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, PRODUCTSERVICE_PHOTO_DIRECTORY)
+            };
+        }
+
+        /// <summary>
+        /// Tạo tên file theo định dạng chuẩn
+        /// </summary>
+        /// <param name="productId">ID sản phẩm</param>
+        /// <param name="imageType">Loại ảnh (primary, thumb, normal)</param>
+        /// <param name="fileExtension">Extension file</param>
+        /// <returns>Tên file</returns>
+        private string GenerateFileName(Guid productId, string imageType, string fileExtension = ".jpg")
+        {
+            var timestamp = DateTime.Now;
+            var uniqueId = Guid.NewGuid().ToString("N").Substring(0, 8);
+            
+            return imageType?.ToLower() switch
+            {
+                "primary" => string.Format(PRIMARY_IMAGE_FILENAME_FORMAT, productId, timestamp, uniqueId),
+                "thumb" => string.Format(THUMBNAIL_FILENAME_FORMAT, productId, timestamp, uniqueId),
+                _ => string.Format(PRODUCT_IMAGE_FILENAME_FORMAT, productId, timestamp, uniqueId, fileExtension)
+            };
         }
 
         /// <summary>
@@ -473,6 +801,105 @@ namespace Bll.MasterData.ProductServiceBll
             catch
             {
                 return (0, 0);
+            }
+        }
+
+        /// <summary>
+        /// Lấy SortOrder tiếp theo cho sản phẩm
+        /// </summary>
+        /// <param name="productId">ID sản phẩm</param>
+        /// <returns>SortOrder tiếp theo</returns>
+        private int GetNextSortOrder(Guid productId)
+        {
+            try
+            {
+                // Tính toán SortOrder trực tiếp thay vì gọi GetByProductId
+                var existingImages = _dataAccess.GetByProductId(productId);
+                return existingImages.Count + 1;
+            }
+            catch (Exception ex)
+            {
+                // Fallback: trả về 1 nếu có lỗi
+                return 1;
+            }
+        }
+
+        /// <summary>
+        /// Tìm kiếm hình ảnh theo danh sách ProductId
+        /// </summary>
+        /// <param name="productIds">Danh sách ID sản phẩm/dịch vụ</param>
+        /// <returns>Danh sách hình ảnh phù hợp</returns>
+        public List<ProductImage> SearchByProductIds(List<Guid> productIds)
+        {
+            try
+            {
+                if (productIds == null || !productIds.Any())
+                {
+                    return new List<ProductImage>();
+                }
+
+                return _dataAccess.SearchByProductIds(productIds);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tìm kiếm hình ảnh theo sản phẩm: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Tìm kiếm hình ảnh theo danh sách ProductId (Async)
+        /// </summary>
+        /// <param name="productIds">Danh sách ID sản phẩm/dịch vụ</param>
+        /// <returns>Danh sách hình ảnh phù hợp</returns>
+        public async Task<List<ProductImage>> SearchByProductIdsAsync(List<Guid> productIds)
+        {
+            try
+            {
+                if (productIds == null || !productIds.Any())
+                {
+                    return new List<ProductImage>();
+                }
+
+                return await Task.Run(() => _dataAccess.SearchByProductIds(productIds));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tìm kiếm hình ảnh theo sản phẩm: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Tìm kiếm hình ảnh theo từ khóa (tìm kiếm trong ProductService và Category trước)
+        /// </summary>
+        /// <param name="searchKeyword">Từ khóa tìm kiếm</param>
+        /// <returns>Danh sách hình ảnh phù hợp</returns>
+        public async Task<List<ProductImage>> SearchAsync(string searchKeyword)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(searchKeyword))
+                {
+                    return new List<ProductImage>();
+                }
+
+                // Tìm kiếm sản phẩm/dịch vụ trước
+                var productServiceBll = new ProductServiceBll();
+                var searchResults = await productServiceBll.SearchAsync(searchKeyword.Trim());
+                
+                if (!searchResults.Any())
+                {
+                    return new List<ProductImage>();
+                }
+
+                // Lấy danh sách ProductId từ kết quả tìm kiếm
+                var productIds = searchResults.Select(x => x.Id).ToList();
+                
+                // Tìm kiếm hình ảnh theo danh sách ProductId
+                return await SearchByProductIdsAsync(productIds);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi tìm kiếm hình ảnh: {ex.Message}", ex);
             }
         }
 

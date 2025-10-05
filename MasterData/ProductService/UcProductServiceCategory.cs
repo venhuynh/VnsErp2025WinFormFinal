@@ -14,23 +14,39 @@ using MasterData.ProductService.Dto;
 namespace MasterData.ProductService
 {
     /// <summary>
-    /// Danh sách Danh mục Sản phẩm/Dịch vụ - chỉ giữ event handler, mọi xử lý tách thành phương thức riêng.
+    /// UserControl quản lý danh mục sản phẩm/dịch vụ.
+    /// Cung cấp chức năng CRUD đầy đủ với TreeList hierarchical, checkbox selection và giao diện thân thiện.
     /// </summary>
     public partial class UcProductServiceCategory : DevExpress.XtraEditors.XtraUserControl
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// Business Logic Layer cho danh mục sản phẩm/dịch vụ
+        /// </summary>
         private readonly ProductServiceCategoryBll _productServiceCategoryBll = new ProductServiceCategoryBll();
+
+        /// <summary>
+        /// Danh sách ID của các danh mục được chọn
+        /// </summary>
         private readonly List<Guid> _selectedCategoryIds = new List<Guid>();
-        private bool _isLoading; // guard tránh gọi LoadDataAsync song song
-        private bool _isProcessingCheckbox; // flag để ngăn chặn selection khi đang xử lý checkbox
+
+        /// <summary>
+        /// Guard tránh gọi LoadDataAsync song song
+        /// </summary>
+        private bool _isLoading;
+
+        /// <summary>
+        /// Flag để ngăn chặn selection khi đang xử lý checkbox
+        /// </summary>
+        private bool _isProcessingCheckbox;
 
         #endregion
 
-        #region Constructor
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
         /// <summary>
-        /// Khởi tạo control, đăng ký event UI.
+        /// Khởi tạo control, đăng ký event UI
         /// </summary>
         public UcProductServiceCategory()
         {
@@ -56,35 +72,12 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Private Helper Methods
+        #region ========== SỰ KIỆN FORM ==========
+
+        #region ========== SỰ KIỆN TOOLBAR ==========
 
         /// <summary>
-        /// Thực hiện operation async với WaitingForm1 hiển thị.
-        /// </summary>
-        /// <param name="operation">Operation async cần thực hiện</param>
-        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
-        {
-            try
-            {
-                // Hiển thị WaitingForm1
-                SplashScreenManager.ShowForm(typeof(WaitForm1));
-
-                // Thực hiện operation
-                await operation();
-            }
-            finally
-            {
-                // Đóng WaitingForm1
-                SplashScreenManager.CloseForm();
-            }
-        }
-
-        #endregion
-
-        #region Event Handlers
-
-        /// <summary>
-        /// Người dùng bấm "Danh sách" để tải dữ liệu.
+        /// Người dùng bấm "Danh sách" để tải dữ liệu
         /// </summary>
         private async void ListDataBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -92,7 +85,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Người dùng bấm "Mới".
+        /// Người dùng bấm "Mới"
         /// </summary>
         private async void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -118,7 +111,154 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// TreeList selection thay đổi -> cập nhật danh sách Id đã chọn và trạng thái nút.
+        /// Người dùng bấm "Điều chỉnh"
+        /// </summary>
+        private async void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            // Chỉ cho phép chỉnh sửa 1 dòng dữ liệu
+            if (_selectedCategoryIds == null || _selectedCategoryIds.Count == 0)
+            {
+                ShowInfo("Vui lòng chọn một dòng để chỉnh sửa.");
+                return;
+            }
+
+            if (_selectedCategoryIds.Count > 1)
+            {
+                ShowInfo("Chỉ cho phép chỉnh sửa 1 dòng. Vui lòng bỏ chọn bớt.");
+                return;
+            }
+
+            var id = _selectedCategoryIds[0];
+            var focusedNode = treeList1.FocusedNode;
+            ProductServiceCategoryDto dto = null;
+
+            if (focusedNode != null)
+            {
+                // Lấy dữ liệu từ focused node
+                dto = productServiceCategoryDtoBindingSource.Current as ProductServiceCategoryDto;
+            }
+
+            if (dto == null || dto.Id != id)
+            {
+                // Tìm đúng DTO theo Id trong datasource nếu FocusedRow không khớp selection
+                if (productServiceCategoryDtoBindingSource.DataSource is System.Collections.IEnumerable list)
+                {
+                    foreach (var item in list)
+                    {
+                        if (item is ProductServiceCategoryDto x && x.Id == id)
+                        {
+                            dto = x;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (dto == null)
+            {
+                ShowInfo("Không thể xác định dòng được chọn để chỉnh sửa.");
+                return;
+            }
+
+            try
+            {
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var form = new FrmProductServiceCategoryDetail(dto.Id))
+                    {
+                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.ShowDialog(this);
+
+                        await LoadDataAsync();
+                        UpdateButtonStates();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi hiển thị màn hình điều chỉnh");
+            }
+        }
+
+        /// <summary>
+        /// Người dùng bấm "Xóa"
+        /// </summary>
+        private async void DeleteBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            if (_selectedCategoryIds == null || _selectedCategoryIds.Count == 0)
+            {
+                ShowInfo("Vui lòng chọn ít nhất một dòng để xóa.");
+                return;
+            }
+
+
+            var confirmMessage = _selectedCategoryIds.Count == 1
+                ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn? (Sản phẩm/dịch vụ sẽ được chuyển sang 'Phân loại chưa đặt tên')"
+                : $"Bạn có chắc muốn xóa {_selectedCategoryIds.Count} dòng dữ liệu đã chọn? (Sản phẩm/dịch vụ sẽ được chuyển sang 'Phân loại chưa đặt tên')";
+
+            if (!MsgBox.GetConfirmFromYesNoDialog(confirmMessage)) return;
+
+            try
+            {
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    // Xóa theo thứ tự: con trước, cha sau để tránh lỗi foreign key constraint
+                    await _productServiceCategoryBll.DeleteCategoriesWithProductMigration(_selectedCategoryIds.ToList());
+                });
+
+                // Clear selection state trước khi reload
+                ClearSelectionState();
+
+                // Reload dữ liệu
+                await LoadDataAsync();
+                UpdateButtonStates();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi xóa dữ liệu");
+            }
+        }
+
+        /// <summary>
+        /// Người dùng bấm "Xuất"
+        /// </summary>
+        private void ExportBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            // Chỉ cho phép xuất khi có dữ liệu hiển thị
+            var rowCount = treeList1.VisibleNodesCount;
+            if (rowCount <= 0)
+            {
+                ShowInfo("Không có dữ liệu để xuất.");
+                return;
+            }
+
+            // Export TreeList data
+            try
+            {
+                var saveDialog = new System.Windows.Forms.SaveFileDialog
+                {
+                    Filter = "Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
+                    FileName = "ProductServiceCategories.xlsx"
+                };
+
+                if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    treeList1.ExportToXlsx(saveDialog.FileName);
+                    ShowInfo("Xuất dữ liệu thành công!");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi xuất dữ liệu");
+            }
+        }
+
+        #endregion
+
+        #region ========== SỰ KIỆN TREELIST ==========
+
+        /// <summary>
+        /// TreeList selection thay đổi -> cập nhật danh sách Id đã chọn và trạng thái nút
         /// Lưu ý: Selection khác với Checkbox - Selection dùng để chọn row, Checkbox dùng để chọn item
         /// </summary>
         private void TreeList1_SelectionChanged(object sender, EventArgs e)
@@ -139,7 +279,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Event handler trước khi checkbox của node thay đổi.
+        /// Event handler trước khi checkbox của node thay đổi
         /// Lưu ý: Chỉ xử lý checkbox, không can thiệp vào selection
         /// </summary>
         private void TreeList1_BeforeCheckNode(object sender, CheckNodeEventArgs e)
@@ -161,7 +301,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Event handler khi checkbox của node thay đổi.
+        /// Event handler khi checkbox của node thay đổi
         /// </summary>
         private void TreeList1_AfterCheckNode(object sender, NodeEventArgs e)
         {
@@ -186,7 +326,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Event handler khi click chuột - detect click vào checkbox.
+        /// Event handler khi click chuột - detect click vào checkbox
         /// Lưu ý: Không can thiệp vào selection, để DevExpress tự xử lý
         /// </summary>
         private void TreeList1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -207,6 +347,94 @@ namespace MasterData.ProductService
                 ShowError(ex);
             }
         }
+
+        /// <summary>
+        /// Vẽ STT dòng cho TreeList
+        /// </summary>
+        private void TreeList1_CustomDrawNodeIndicator(object sender, CustomDrawNodeIndicatorEventArgs e)
+        {
+            // Vẽ số thứ tự vào indicator
+            if (e.Node != null)
+            {
+                var index = treeList1.GetVisibleIndexByNode(e.Node);
+                if (index >= 0)
+                {
+                    // Vẽ số thứ tự vào indicator
+                    e.Cache.DrawString((index + 1).ToString(), e.Appearance.Font,
+                        e.Appearance.GetForeBrush(e.Cache), e.Bounds,
+                        System.Drawing.StringFormat.GenericDefault);
+                    e.Handled = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Tô màu/định dạng cell theo số lượng sản phẩm/dịch vụ
+        /// </summary>
+        private void TreeList1_CustomDrawNodeCell(object sender, CustomDrawNodeCellEventArgs e)
+        {
+            try
+            {
+                var treeList = sender as TreeList;
+                if (treeList == null) return;
+                if (e.Node == null) return;
+
+                // Lấy index từ node
+                var index = treeList.GetVisibleIndexByNode(e.Node);
+                if (index < 0 || index >= productServiceCategoryDtoBindingSource.Count) return;
+
+                var row = productServiceCategoryDtoBindingSource[index] as ProductServiceCategoryDto;
+                if (row == null) return;
+
+                // Không ghi đè màu khi đang chọn để giữ màu chọn mặc định của DevExpress
+                if (treeList.Selection.Contains(e.Node)) return;
+
+                // Chỉ tô màu cho cột ProductCount để hiển thị trạng thái
+                if (e.Column.FieldName == "ProductCount")
+                {
+                    System.Drawing.Color backColor;
+                    System.Drawing.Color foreColor = System.Drawing.Color.Black;
+
+                    // Màu sắc dựa trên số lượng sản phẩm/dịch vụ
+                    if (row.ProductCount == 0)
+                    {
+                        backColor = System.Drawing.Color.FromArgb(255, 240, 240); // Màu đỏ nhạt
+                        foreColor = System.Drawing.Color.FromArgb(150, 0, 0); // Màu đỏ đậm
+                    }
+                    else if (row.ProductCount <= 5)
+                    {
+                        backColor = System.Drawing.Color.FromArgb(255, 255, 200); // Màu vàng nhạt
+                        foreColor = System.Drawing.Color.FromArgb(150, 100, 0); // Màu cam đậm
+                    }
+                    else if (row.ProductCount <= 20)
+                    {
+                        backColor = System.Drawing.Color.FromArgb(240, 255, 240); // Màu xanh lá nhạt
+                        foreColor = System.Drawing.Color.FromArgb(0, 100, 0); // Màu xanh lá đậm
+                    }
+                    else
+                    {
+                        backColor = System.Drawing.Color.FromArgb(240, 248, 255); // Màu xanh dương nhạt
+                        foreColor = System.Drawing.Color.FromArgb(0, 0, 150); // Màu xanh dương đậm
+                    }
+
+                    e.Appearance.BackColor = backColor;
+                    e.Appearance.ForeColor = foreColor;
+                    e.Appearance.Options.UseBackColor = true;
+                    e.Appearance.Options.UseForeColor = true;
+                }
+                else
+                {
+                    // Cho các cột khác, sử dụng màu mặc định (trắng/xám xen kẽ)
+                    // Không cần set màu gì, để DevExpress tự động xử lý
+                }
+            }
+            catch (Exception)
+            {
+                // ignore style errors
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Xử lý logic parent-child checkbox: 
@@ -551,25 +779,6 @@ namespace MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Vẽ STT dòng cho TreeList.
-        /// </summary>
-        private void TreeList1_CustomDrawNodeIndicator(object sender, CustomDrawNodeIndicatorEventArgs e)
-        {
-            // Vẽ số thứ tự dòng cho TreeList
-            if (e.Node != null)
-            {
-                var index = treeList1.GetVisibleIndexByNode(e.Node);
-                if (index >= 0)
-                {
-                    // Vẽ số thứ tự vào indicator
-                    e.Cache.DrawString((index + 1).ToString(), e.Appearance.Font,
-                        e.Appearance.GetForeBrush(e.Cache), e.Bounds,
-                        System.Drawing.StringFormat.GenericDefault);
-                    e.Handled = true;
-                }
-            }
-        }
 
         private void UpdateButtonStates()
         {
@@ -694,221 +903,35 @@ namespace MasterData.ProductService
             col.ColumnEdit = memo;
         }
 
-        /// <summary>
-        /// Tô màu/định dạng cell theo số lượng sản phẩm/dịch vụ.
-        /// </summary>
-        private void TreeList1_CustomDrawNodeCell(object sender, CustomDrawNodeCellEventArgs e)
-        {
-            try
-            {
-                var treeList = sender as TreeList;
-                if (treeList == null) return;
-                if (e.Node == null) return;
 
-                // Lấy index từ node
-                var index = treeList.GetVisibleIndexByNode(e.Node);
-                if (index < 0 || index >= productServiceCategoryDtoBindingSource.Count) return;
-
-                var row = productServiceCategoryDtoBindingSource[index] as ProductServiceCategoryDto;
-                if (row == null) return;
-
-                // Không ghi đè màu khi đang chọn để giữ màu chọn mặc định của DevExpress
-                if (treeList.Selection.Contains(e.Node)) return;
-
-                // Chỉ tô màu cho cột ProductCount để hiển thị trạng thái
-                if (e.Column.FieldName == "ProductCount")
-                {
-                    System.Drawing.Color backColor;
-                    System.Drawing.Color foreColor = System.Drawing.Color.Black;
-
-                    // Màu sắc dựa trên số lượng sản phẩm/dịch vụ
-                    if (row.ProductCount == 0)
-                    {
-                        backColor = System.Drawing.Color.FromArgb(255, 240, 240); // Màu đỏ nhạt
-                        foreColor = System.Drawing.Color.FromArgb(150, 0, 0); // Màu đỏ đậm
-                    }
-                    else if (row.ProductCount <= 5)
-                    {
-                        backColor = System.Drawing.Color.FromArgb(255, 255, 200); // Màu vàng nhạt
-                        foreColor = System.Drawing.Color.FromArgb(150, 100, 0); // Màu cam đậm
-                    }
-                    else if (row.ProductCount <= 20)
-                    {
-                        backColor = System.Drawing.Color.FromArgb(240, 255, 240); // Màu xanh lá nhạt
-                        foreColor = System.Drawing.Color.FromArgb(0, 100, 0); // Màu xanh lá đậm
-                    }
-                    else
-                    {
-                        backColor = System.Drawing.Color.FromArgb(240, 248, 255); // Màu xanh dương nhạt
-                        foreColor = System.Drawing.Color.FromArgb(0, 0, 150); // Màu xanh dương đậm
-                    }
-
-                    e.Appearance.BackColor = backColor;
-                    e.Appearance.ForeColor = foreColor;
-                    e.Appearance.Options.UseBackColor = true;
-                    e.Appearance.Options.UseForeColor = true;
-                }
-                else
-                {
-                    // Cho các cột khác, sử dụng màu mặc định (trắng/xám xen kẽ)
-                    // Không cần set màu gì, để DevExpress tự động xử lý
-                }
-            }
-            catch (Exception)
-            {
-                // ignore style errors
-            }
-        }
-
-        /// <summary>
-        /// Người dùng bấm "Điều chỉnh".
-        /// </summary>
-        private async void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            // Chỉ cho phép chỉnh sửa 1 dòng dữ liệu
-            if (_selectedCategoryIds == null || _selectedCategoryIds.Count == 0)
-            {
-                ShowInfo("Vui lòng chọn một dòng để chỉnh sửa.");
-                return;
-            }
-
-            if (_selectedCategoryIds.Count > 1)
-            {
-                ShowInfo("Chỉ cho phép chỉnh sửa 1 dòng. Vui lòng bỏ chọn bớt.");
-                return;
-            }
-
-            var id = _selectedCategoryIds[0];
-            var focusedNode = treeList1.FocusedNode;
-            ProductServiceCategoryDto dto = null;
-
-            if (focusedNode != null)
-            {
-                // Lấy dữ liệu từ focused node
-                dto = productServiceCategoryDtoBindingSource.Current as ProductServiceCategoryDto;
-            }
-
-            if (dto == null || dto.Id != id)
-            {
-                // Tìm đúng DTO theo Id trong datasource nếu FocusedRow không khớp selection
-                if (productServiceCategoryDtoBindingSource.DataSource is System.Collections.IEnumerable list)
-                {
-                    foreach (var item in list)
-                    {
-                        if (item is ProductServiceCategoryDto x && x.Id == id)
-                        {
-                            dto = x;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (dto == null)
-            {
-                ShowInfo("Không thể xác định dòng được chọn để chỉnh sửa.");
-                return;
-            }
-
-            try
-            {
-                using (OverlayManager.ShowScope(this))
-                {
-                    using (var form = new FrmProductServiceCategoryDetail(dto.Id))
-                    {
-                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-                        form.ShowDialog(this);
-
-                        await LoadDataAsync();
-                        UpdateButtonStates();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi hiển thị màn hình điều chỉnh");
-            }
-        }
-
-        /// <summary>
-        /// Người dùng bấm "Xóa".
-        /// </summary>
-        private async void DeleteBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            if (_selectedCategoryIds == null || _selectedCategoryIds.Count == 0)
-            {
-                ShowInfo("Vui lòng chọn ít nhất một dòng để xóa.");
-                return;
-            }
-
-
-            var confirmMessage = _selectedCategoryIds.Count == 1
-                ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn? (Sản phẩm/dịch vụ sẽ được chuyển sang 'Phân loại chưa đặt tên')"
-                : $"Bạn có chắc muốn xóa {_selectedCategoryIds.Count} dòng dữ liệu đã chọn? (Sản phẩm/dịch vụ sẽ được chuyển sang 'Phân loại chưa đặt tên')";
-
-            if (!MsgBox.GetConfirmFromYesNoDialog(confirmMessage)) return;
-
-            try
-            {
-                await ExecuteWithWaitingFormAsync(async () =>
-                {
-                    // Xóa theo thứ tự: con trước, cha sau để tránh lỗi foreign key constraint
-                    await _productServiceCategoryBll.DeleteCategoriesWithProductMigration(_selectedCategoryIds.ToList());
-                });
-
-                // Clear selection state trước khi reload
-                ClearSelectionState();
-
-                // Reload dữ liệu
-                await LoadDataAsync();
-                UpdateButtonStates();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi xóa dữ liệu");
-            }
-        }
-
-        /// <summary>
-        /// Người dùng bấm "Xuất".
-        /// </summary>
-        private void ExportBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            // Chỉ cho phép xuất khi có dữ liệu hiển thị
-            var rowCount = treeList1.VisibleNodesCount;
-            if (rowCount <= 0)
-            {
-                ShowInfo("Không có dữ liệu để xuất.");
-                return;
-            }
-
-            // Export TreeList data
-            try
-            {
-                var saveDialog = new System.Windows.Forms.SaveFileDialog
-                {
-                    Filter = "Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
-                    FileName = "ProductServiceCategories.xlsx"
-                };
-
-                if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    treeList1.ExportToXlsx(saveDialog.FileName);
-                    ShowInfo("Xuất dữ liệu thành công!");
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi xuất dữ liệu");
-            }
-        }
 
         #endregion
 
-        #region Private Methods
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
-        /// Tải dữ liệu và bind vào Grid (Async, hiển thị WaitForm).
+        /// Thực hiện operation async với WaitingForm1 hiển thị
+        /// </summary>
+        /// <param name="operation">Operation async cần thực hiện</param>
+        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
+        {
+            try
+            {
+                // Hiển thị WaitingForm1
+                SplashScreenManager.ShowForm(typeof(WaitForm1));
+
+                // Thực hiện operation
+                await operation();
+            }
+            finally
+            {
+                // Đóng WaitingForm1
+                SplashScreenManager.CloseForm();
+            }
+        }
+
+        /// <summary>
+        /// Tải dữ liệu và bind vào Grid (Async, hiển thị WaitForm)
         /// </summary>
         private async Task LoadDataAsync()
         {
@@ -1052,8 +1075,12 @@ namespace MasterData.ProductService
             }
         }
 
+        #endregion
+
+        #region ========== TIỆN ÍCH ==========
+
         /// <summary>
-        /// Hiển thị thông tin.
+        /// Hiển thị thông tin
         /// </summary>
         private void ShowInfo(string message)
         {
@@ -1061,7 +1088,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Hiển thị lỗi với thông tin ngữ cảnh.
+        /// Hiển thị lỗi với thông tin ngữ cảnh
         /// </summary>
         private void ShowError(Exception ex, string context = null)
         {

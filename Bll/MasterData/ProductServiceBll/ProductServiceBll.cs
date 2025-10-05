@@ -418,7 +418,27 @@ namespace Bll.MasterData.ProductServiceBll
         #region Search and Filter Methods
 
         /// <summary>
-        /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database
+        /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database (Sync)
+        /// </summary>
+        /// <param name="searchText">Text tìm kiếm</param>
+        /// <returns>Danh sách kết quả tìm kiếm</returns>
+        public List<Dal.DataContext.ProductService> Search(string searchText)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(searchText))
+                    return new List<Dal.DataContext.ProductService>();
+
+                return _dataAccess.Search(searchText);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi tìm kiếm sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database (Async)
         /// </summary>
         /// <param name="searchText">Text tìm kiếm</param>
         /// <returns>Danh sách kết quả tìm kiếm</returns>

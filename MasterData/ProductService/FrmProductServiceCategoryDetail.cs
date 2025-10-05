@@ -14,32 +14,48 @@ using MasterData.ProductService.Dto;
 namespace MasterData.ProductService
 {
     /// <summary>
-    /// Form chi tiết danh mục sản phẩm/dịch vụ - thêm mới và chỉnh sửa.
+    /// Form chi tiết danh mục sản phẩm/dịch vụ.
+    /// Cung cấp chức năng thêm mới và chỉnh sửa danh mục với validation nghiệp vụ và giao diện thân thiện.
     /// </summary>
     public partial class FrmProductServiceCategoryDetail : XtraForm
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// Business Logic Layer cho danh mục sản phẩm/dịch vụ
+        /// </summary>
         private readonly ProductServiceCategoryBll _productServiceCategoryBll = new ProductServiceCategoryBll();
+
+        /// <summary>
+        /// ID danh mục (Guid.Empty cho thêm mới, ID thực cho chỉnh sửa)
+        /// </summary>
         private readonly Guid _categoryId;
+
+        /// <summary>
+        /// Trạng thái chỉnh sửa (true) hay thêm mới (false)
+        /// </summary>
         private bool IsEditMode => _categoryId != Guid.Empty;
+
+        /// <summary>
+        /// Track xem user có thực sự chọn parent category hay không
+        /// </summary>
 #pragma warning disable CS0414 // Field is assigned but its value is never used
-        private bool _hasUserSelectedParent; // Track xem user có thực sự chọn parent category hay không
+        private bool _hasUserSelectedParent;
 #pragma warning restore CS0414 // Field is assigned but its value is never used
 
         #endregion
 
-        #region Constructor
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
         /// <summary>
-        /// Khởi tạo form cho thêm mới danh mục.
+        /// Khởi tạo form cho thêm mới danh mục
         /// </summary>
         public FrmProductServiceCategoryDetail() : this(Guid.Empty)
         {
         }
 
         /// <summary>
-        /// Khởi tạo form cho chỉnh sửa danh mục.
+        /// Khởi tạo form cho chỉnh sửa danh mục
         /// </summary>
         /// <param name="categoryId">ID của danh mục cần chỉnh sửa</param>
         public FrmProductServiceCategoryDetail(Guid categoryId)
@@ -51,39 +67,10 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Private Methods
+        #region ========== KHỞI TẠO FORM ==========
 
         /// <summary>
-        /// Tạo mã danh mục từ tên danh mục.
-        /// </summary>
-        /// <param name="categoryName">Tên danh mục</param>
-        /// <returns>Mã danh mục</returns>
-        private string GenerateCategoryCode(string categoryName)
-        {
-            if (string.IsNullOrWhiteSpace(categoryName)) return "CAT";
-            
-            // Lấy chữ cái đầu của mỗi từ trong tên danh mục
-            var words = categoryName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            var code = string.Empty;
-            
-            foreach (var word in words)
-            {
-                if (!string.IsNullOrWhiteSpace(word))
-                {
-                    var firstChar = word.Trim().FirstOrDefault();
-                    if (char.IsLetter(firstChar))
-                    {
-                        code += char.ToUpper(firstChar);
-                    }
-                }
-            }
-            
-            // Đảm bảo mã có ít nhất 2 ký tự
-            return code.Length >= 2 ? code : "CAT";
-        }
-
-        /// <summary>
-        /// Khởi tạo form và load dữ liệu nếu cần.
+        /// Khởi tạo form và load dữ liệu nếu cần
         /// </summary>
         private void InitializeForm()
         {
@@ -112,6 +99,10 @@ namespace MasterData.ProductService
                 ShowError(ex, "Lỗi khởi tạo form");
             }
         }
+
+        #endregion
+
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
         /// Load danh sách danh mục cha vào TreeListLookUpEdit.
@@ -379,36 +370,6 @@ namespace MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Hiển thị thông tin.
-        /// </summary>
-        /// <param name="message">Thông báo</param>
-        private void ShowInfo(string message)
-        {
-            MsgBox.ShowInfo(message);
-        }
-
-        /// <summary>
-        /// Hiển thị lỗi.
-        /// </summary>
-        /// <param name="message">Thông báo lỗi</param>
-        private void ShowError(string message)
-        {
-            MsgBox.ShowError(message);
-        }
-
-        /// <summary>
-        /// Hiển thị lỗi với thông tin ngữ cảnh.
-        /// </summary>
-        /// <param name="ex">Exception</param>
-        /// <param name="context">Ngữ cảnh lỗi</param>
-        private void ShowError(Exception ex, string context = null)
-        {
-            if (string.IsNullOrWhiteSpace(context))
-                MsgBox.ShowException(ex);
-            else
-                MsgBox.ShowException(new Exception(context + ": " + ex.Message, ex));
-        }
 
         /// <summary>
         /// Event handler khi user thay đổi tên danh mục -> tự động tạo mã danh mục.
@@ -460,10 +421,10 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Event Handlers
+        #region ========== SỰ KIỆN FORM ==========
 
         /// <summary>
-        /// Người dùng bấm nút Lưu.
+        /// Người dùng bấm nút Lưu
         /// </summary>
         private void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -474,7 +435,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Người dùng bấm nút Hủy.
+        /// Người dùng bấm nút Hủy
         /// </summary>
         private void CancelBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -483,7 +444,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Xử lý phím tắt.
+        /// Xử lý phím tắt
         /// </summary>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -500,6 +461,70 @@ namespace MasterData.ProductService
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        #endregion
+
+        #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Tạo mã danh mục từ tên danh mục
+        /// </summary>
+        /// <param name="categoryName">Tên danh mục</param>
+        /// <returns>Mã danh mục</returns>
+        private string GenerateCategoryCode(string categoryName)
+        {
+            if (string.IsNullOrWhiteSpace(categoryName)) return "CAT";
+            
+            // Lấy chữ cái đầu của mỗi từ trong tên danh mục
+            var words = categoryName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var code = string.Empty;
+            
+            foreach (var word in words)
+            {
+                if (!string.IsNullOrWhiteSpace(word))
+                {
+                    var firstChar = word.Trim().FirstOrDefault();
+                    if (char.IsLetter(firstChar))
+                    {
+                        code += char.ToUpper(firstChar);
+                    }
+                }
+            }
+            
+            // Đảm bảo mã có ít nhất 2 ký tự
+            return code.Length >= 2 ? code : "CAT";
+        }
+
+        /// <summary>
+        /// Hiển thị thông tin
+        /// </summary>
+        /// <param name="message">Thông báo</param>
+        private void ShowInfo(string message)
+        {
+            MsgBox.ShowInfo(message);
+        }
+
+        /// <summary>
+        /// Hiển thị lỗi
+        /// </summary>
+        /// <param name="message">Thông báo lỗi</param>
+        private void ShowError(string message)
+        {
+            MsgBox.ShowError(message);
+        }
+
+        /// <summary>
+        /// Hiển thị lỗi với thông tin ngữ cảnh
+        /// </summary>
+        /// <param name="ex">Exception</param>
+        /// <param name="context">Ngữ cảnh lỗi</param>
+        private void ShowError(Exception ex, string context = null)
+        {
+            if (string.IsNullOrWhiteSpace(context))
+                MsgBox.ShowException(ex);
+            else
+                MsgBox.ShowException(new Exception(context + ": " + ex.Message, ex));
         }
 
         #endregion

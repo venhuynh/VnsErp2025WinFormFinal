@@ -26,28 +26,54 @@ using MasterData.ProductService.Dto;
 namespace MasterData.ProductService
 {
     /// <summary>
-    /// Danh sách Sản phẩm/Dịch vụ - chỉ giữ event handler, mọi xử lý tách thành phương thức riêng.
+    /// UserControl quản lý danh sách sản phẩm/dịch vụ.
+    /// Cung cấp chức năng CRUD đầy đủ với GridView, pagination, tìm kiếm toàn diện và giao diện thân thiện.
     /// </summary>
     public partial class UcProductServiceList : XtraUserControl
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// Business Logic Layer cho sản phẩm/dịch vụ
+        /// </summary>
         private readonly ProductServiceBll _productServiceBll = new ProductServiceBll();
+
+        /// <summary>
+        /// Danh sách ID của các sản phẩm/dịch vụ được chọn
+        /// </summary>
         private List<Guid> _selectedProductServiceIds = new List<Guid>();
-        private bool _isLoading; // guard tránh gọi LoadDataAsync song song (Splash đã hiển thị)
-        
-        // Pagination fields
+
+        /// <summary>
+        /// Guard tránh gọi LoadDataAsync song song
+        /// </summary>
+        private bool _isLoading;
+
+        /// <summary>
+        /// Index trang hiện tại (0-based)
+        /// </summary>
         private int _currentPageIndex;
+
+        /// <summary>
+        /// Số dòng trên mỗi trang
+        /// </summary>
         private int _pageSize = 50;
+
+        /// <summary>
+        /// Tổng số dòng dữ liệu
+        /// </summary>
         private int _totalCount;
+
+        /// <summary>
+        /// Tổng số trang
+        /// </summary>
         private int _totalPages;
 
         #endregion
 
-        #region Constructor
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
         /// <summary>
-        /// Khởi tạo control, đăng ký event UI.
+        /// Khởi tạo control, đăng ký event UI
         /// </summary>
         public UcProductServiceList()
         {
@@ -63,7 +89,8 @@ namespace MasterData.ProductService
 
             // Grid events
             ProductServiceAdvBandedGridView.SelectionChanged += ProductServiceAdvBandedGridView_SelectionChanged;
-            ProductServiceAdvBandedGridView.CustomDrawRowIndicator += ProductServiceAdvBandedGridView_CustomDrawRowIndicator;
+            ProductServiceAdvBandedGridView.CustomDrawRowIndicator +=
+                ProductServiceAdvBandedGridView_CustomDrawRowIndicator;
             ProductServiceAdvBandedGridView.RowCellStyle += ProductServiceAdvBandedGridView_RowCellStyle;
 
             // Pagination events
@@ -75,18 +102,14 @@ namespace MasterData.ProductService
 
             // Initialize pagination control
             InitializePaginationControl();
-            
+
             InitializeRecordNumberControl();
 
             UpdateButtonStates();
         }
 
-        #endregion
-
-        #region Private Helper Methods
-
         /// <summary>
-        /// Thực hiện operation async với WaitingForm1 hiển thị.
+        /// Thực hiện operation async với WaitingForm1 hiển thị
         /// </summary>
         /// <param name="operation">Operation async cần thực hiện</param>
         private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
@@ -108,10 +131,12 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Event Handlers
+        #region ========== SỰ KIỆN FORM ==========
+
+        #region ========== SỰ KIỆN TOOLBAR ==========
 
         /// <summary>
-        /// Người dùng bấm "Danh sách" để tải dữ liệu.
+        /// Người dùng bấm "Danh sách" để tải dữ liệu
         /// </summary>
         private async void ListDataBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -119,7 +144,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Người dùng bấm "Mới".
+        /// Người dùng bấm "Mới"
         /// </summary>
         private async void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -144,14 +169,19 @@ namespace MasterData.ProductService
             }
         }
 
+        #endregion
+
+        #region ========== SỰ KIỆN GRID ==========
+
         /// <summary>
-        /// Grid selection thay đổi -> cập nhật danh sách Id đã chọn và trạng thái nút.
+        /// Grid selection thay đổi -> cập nhật danh sách Id đã chọn và trạng thái nút
         /// </summary>
         private void ProductServiceAdvBandedGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                _selectedProductServiceIds = GridViewHelper.GetSelectedRowColumnValues<Guid>(sender, nameof(ProductServiceDto.Id));
+                _selectedProductServiceIds =
+                    GridViewHelper.GetSelectedRowColumnValues<Guid>(sender, nameof(ProductServiceDto.Id));
                 UpdateButtonStates();
                 UpdateStatusBar();
             }
@@ -162,14 +192,18 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Vẽ STT dòng.
+        /// Vẽ STT dòng cho GridView
         /// </summary>
-        private void ProductServiceAdvBandedGridView_CustomDrawRowIndicator(object sender, RowIndicatorCustomDrawEventArgs rowIndicatorCustomDrawEventArgs)
+        private void ProductServiceAdvBandedGridView_CustomDrawRowIndicator(object sender,
+            RowIndicatorCustomDrawEventArgs rowIndicatorCustomDrawEventArgs)
         {
             // Sử dụng helper chung để vẽ số thứ tự dòng
             GridViewHelper.CustomDrawRowIndicator(ProductServiceAdvBandedGridView, rowIndicatorCustomDrawEventArgs);
         }
 
+        /// <summary>
+        /// Cập nhật trạng thái các nút toolbar dựa trên selection
+        /// </summary>
         private void UpdateButtonStates()
         {
             try
@@ -196,7 +230,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Cập nhật status bar với thông tin selection và data summary.
+        /// Cập nhật status bar với thông tin selection và data summary
         /// </summary>
         private void UpdateStatusBar()
         {
@@ -212,7 +246,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Cập nhật thông tin số dòng đang được chọn.
+        /// Cập nhật thông tin số dòng đang được chọn
         /// </summary>
         private void UpdateSelectedRowStatus()
         {
@@ -241,7 +275,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Cập nhật thông tin tổng kết dữ liệu với HTML formatting và pagination info.
+        /// Cập nhật thông tin tổng kết dữ liệu với HTML formatting và pagination info
         /// </summary>
         private void UpdateDataSummaryStatus()
         {
@@ -268,21 +302,21 @@ namespace MasterData.ProductService
                 {
                     // Trường hợp "Tất cả" - không phân trang
                     summary = "<b>Tất cả dữ liệu</b> | " +
-                             $"<b>Hiển thị: {currentPageCount}/{_totalCount}</b> | " +
-                             $"<color=blue>Sản phẩm: {productCount}</color> | " +
-                             $"<color=green>Dịch vụ: {serviceCount}</color> | " +
-                             $"<color=green>Hoạt động: {activeCount}</color> | " +
-                             $"<color=red>Không hoạt động: {inactiveCount}</color>";
+                              $"<b>Hiển thị: {currentPageCount}/{_totalCount}</b> | " +
+                              $"<color=blue>Sản phẩm: {productCount}</color> | " +
+                              $"<color=green>Dịch vụ: {serviceCount}</color> | " +
+                              $"<color=green>Hoạt động: {activeCount}</color> | " +
+                              $"<color=red>Không hoạt động: {inactiveCount}</color>";
                 }
                 else
                 {
                     // Trường hợp có phân trang
                     summary = $"<b>Trang {_currentPageIndex + 1}/{_totalPages}</b> | " +
-                             $"<b>Hiển thị: {currentPageCount}/{_totalCount}</b> | " +
-                             $"<color=blue>Sản phẩm: {productCount}</color> | " +
-                             $"<color=green>Dịch vụ: {serviceCount}</color> | " +
-                             $"<color=green>Hoạt động: {activeCount}</color> | " +
-                             $"<color=red>Không hoạt động: {inactiveCount}</color>";
+                              $"<b>Hiển thị: {currentPageCount}/{_totalCount}</b> | " +
+                              $"<color=blue>Sản phẩm: {productCount}</color> | " +
+                              $"<color=green>Dịch vụ: {serviceCount}</color> | " +
+                              $"<color=green>Hoạt động: {activeCount}</color> | " +
+                              $"<color=red>Không hoạt động: {inactiveCount}</color>";
                 }
 
                 DataSummaryBarStaticItem.Caption = summary;
@@ -293,6 +327,10 @@ namespace MasterData.ProductService
             }
         }
 
+        #endregion
+
+        #region ========== SỰ KIỆN FILTER & SEARCH ==========
+
         /// <summary>
         /// Người dùng bấm "Lọc dữ liệu" để tìm kiếm toàn diện
         /// </summary>
@@ -302,14 +340,14 @@ namespace MasterData.ProductService
             {
                 // Hiển thị menu tùy chọn tìm kiếm
                 var searchOption = ShowSearchOptionsDialog();
-                
+
                 if (searchOption == SearchOption.Cancel)
                 {
                     return;
                 }
 
                 string searchKeyword = "";
-                
+
                 if (searchOption == SearchOption.SimpleSearch)
                 {
                     // Tìm kiếm đơn giản
@@ -369,7 +407,7 @@ namespace MasterData.ProductService
                 );
 
                 if (result == null) return SearchOption.Cancel;
-                
+
                 var selectedOption = result.ToString();
                 if (selectedOption == "Tìm kiếm đơn giản")
                     return SearchOption.SimpleSearch;
@@ -421,7 +459,8 @@ namespace MasterData.ProductService
         /// <param name="message">Nội dung message (có thể chứa HTML)</param>
         /// <param name="title">Tiêu đề dialog</param>
         /// <param name="icon">Icon của dialog</param>
-        private void ShowHtmlMessageBox(string message, string title = "Thông báo", MessageBoxIcon icon = MessageBoxIcon.Information)
+        private void ShowHtmlMessageBox(string message, string title = "Thông báo",
+            MessageBoxIcon icon = MessageBoxIcon.Information)
         {
             try
             {
@@ -442,7 +481,9 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Filter and Search Methods
+        #endregion
+
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
         /// Thực hiện tìm kiếm toàn diện trong tất cả các cột
@@ -460,14 +501,13 @@ namespace MasterData.ProductService
 
                 // Phân tích từ khóa tìm kiếm
                 var searchKeywords = ParseSearchKeywords(searchKeyword);
-                
+
                 // Tìm kiếm trong database với từ khóa đầu tiên (hoặc từ khóa chính)
                 var primaryKeyword = searchKeywords.FirstOrDefault() ?? searchKeyword.Trim();
                 var searchResults = await _productServiceBll.SearchAsync(primaryKeyword);
-                
+
                 // Convert to DTOs
-                var dtoList = searchResults.ToDtoList(
-                    categoryId => _productServiceBll.GetCategoryName(categoryId)
+                var dtoList = searchResults.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId)
                 ).ToList();
 
                 // Thực hiện tìm kiếm bổ sung với tất cả từ khóa
@@ -478,12 +518,13 @@ namespace MasterData.ProductService
 
                 // Bind kết quả tìm kiếm với highlight
                 BindGridWithHighlight(highlightedResults);
-                
+
                 // Cập nhật status bar
                 UpdateStatusBar();
-                
+
                 // Hiển thị thông báo chi tiết
-                ShowComprehensiveSearchResult(searchKeyword, filteredResults.Count, dtoList.Count, searchKeywords.Count);
+                ShowComprehensiveSearchResult(searchKeyword, filteredResults.Count, dtoList.Count,
+                    searchKeywords.Count);
             }
             catch (Exception ex)
             {
@@ -525,7 +566,8 @@ namespace MasterData.ProductService
         /// <param name="dataList">Danh sách dữ liệu</param>
         /// <param name="searchKeywords">Danh sách từ khóa</param>
         /// <returns>Danh sách đã lọc</returns>
-        private List<ProductServiceDto> PerformAdvancedClientSideFiltering(List<ProductServiceDto> dataList, List<string> searchKeywords)
+        private List<ProductServiceDto> PerformAdvancedClientSideFiltering(List<ProductServiceDto> dataList,
+            List<string> searchKeywords)
         {
             try
             {
@@ -539,8 +581,8 @@ namespace MasterData.ProductService
                 }
 
                 // Tìm kiếm với nhiều từ khóa (tất cả từ khóa phải match)
-                return dataList.Where(dto => 
-                    searchKeywords.All(keyword => 
+                return dataList.Where(dto =>
+                    searchKeywords.All(keyword =>
                         IsKeywordMatch(dto, keyword.ToLower().Trim())
                     )
                 ).ToList();
@@ -562,7 +604,7 @@ namespace MasterData.ProductService
         {
             try
             {
-                return 
+                return
                     // Tìm kiếm trong các trường text
                     (dto.Code?.ToLower().Contains(keyword) == true) ||
                     (dto.Name?.ToLower().Contains(keyword) == true) ||
@@ -570,15 +612,15 @@ namespace MasterData.ProductService
                     (dto.CategoryName?.ToLower().Contains(keyword) == true) ||
                     (dto.TypeDisplay?.ToLower().Contains(keyword) == true) ||
                     (dto.StatusDisplay?.ToLower().Contains(keyword) == true) ||
-                    
+
                     // Tìm kiếm trong các trường số
                     (dto.VariantCount.ToString().Contains(keyword)) ||
                     (dto.ImageCount.ToString().Contains(keyword)) ||
-                    
+
                     // Tìm kiếm trong các trường boolean
                     (dto.IsActive.ToString().ToLower().Contains(keyword)) ||
                     (dto.IsService.ToString().ToLower().Contains(keyword)) ||
-                    
+
                     // Tìm kiếm trong ID (nếu cần)
                     (dto.Id.ToString().ToLower().Contains(keyword));
             }
@@ -594,7 +636,8 @@ namespace MasterData.ProductService
         /// <param name="dtoList">Danh sách DTO</param>
         /// <param name="searchKeywords">Danh sách từ khóa tìm kiếm</param>
         /// <returns>Danh sách DTO với highlight</returns>
-        private List<ProductServiceDto> HighlightSearchKeywords(List<ProductServiceDto> dtoList, List<string> searchKeywords)
+        private List<ProductServiceDto> HighlightSearchKeywords(List<ProductServiceDto> dtoList,
+            List<string> searchKeywords)
         {
             try
             {
@@ -661,7 +704,7 @@ namespace MasterData.ProductService
 
                     // Thay thế với DevExpress HTML syntax
                     // Sử dụng <color> và <b> tags theo DevExpress documentation
-                    highlightedText = regex.Replace(highlightedText, 
+                    highlightedText = regex.Replace(highlightedText,
                         $"<color='red'><b>{keyword}</b></color>");
                 }
 
@@ -680,7 +723,8 @@ namespace MasterData.ProductService
         /// <param name="dataList">Danh sách dữ liệu</param>
         /// <param name="searchKeyword">Từ khóa tìm kiếm</param>
         /// <returns>Danh sách đã lọc</returns>
-        private List<ProductServiceDto> PerformClientSideFiltering(List<ProductServiceDto> dataList, string searchKeyword)
+        private List<ProductServiceDto> PerformClientSideFiltering(List<ProductServiceDto> dataList,
+            string searchKeyword)
         {
             try
             {
@@ -688,8 +732,8 @@ namespace MasterData.ProductService
                     return dataList;
 
                 var keyword = searchKeyword.ToLower().Trim();
-                
-                return dataList.Where(dto => 
+
+                return dataList.Where(dto =>
                     // Tìm kiếm trong các trường text
                     (dto.Code?.ToLower().Contains(keyword) == true) ||
                     (dto.Name?.ToLower().Contains(keyword) == true) ||
@@ -697,15 +741,15 @@ namespace MasterData.ProductService
                     (dto.CategoryName?.ToLower().Contains(keyword) == true) ||
                     (dto.TypeDisplay?.ToLower().Contains(keyword) == true) ||
                     (dto.StatusDisplay?.ToLower().Contains(keyword) == true) ||
-                    
+
                     // Tìm kiếm trong các trường số
                     (dto.VariantCount.ToString().Contains(keyword)) ||
                     (dto.ImageCount.ToString().Contains(keyword)) ||
-                    
+
                     // Tìm kiếm trong các trường boolean
                     (dto.IsActive.ToString().ToLower().Contains(keyword)) ||
                     (dto.IsService.ToString().ToLower().Contains(keyword)) ||
-                    
+
                     // Tìm kiếm trong ID (nếu cần)
                     (dto.Id.ToString().ToLower().Contains(keyword))
                 ).ToList();
@@ -724,55 +768,58 @@ namespace MasterData.ProductService
         /// <param name="filteredCount">Số kết quả sau khi lọc</param>
         /// <param name="totalCount">Tổng số kết quả từ database</param>
         /// <param name="keywordCount">Số lượng từ khóa</param>
-        private void ShowComprehensiveSearchResult(string searchKeyword, int filteredCount, int totalCount, int keywordCount = 1)
+        private void ShowComprehensiveSearchResult(string searchKeyword, int filteredCount, int totalCount,
+            int keywordCount = 1)
         {
             try
             {
                 var message = "🔍 <b>Kết quả tìm kiếm toàn diện</b><br/><br/>" +
-                            $"📝 <b>Từ khóa:</b> '{searchKeyword}'<br/>" +
-                            $"🔢 <b>Số từ khóa:</b> {keywordCount}<br/>" +
-                            $"📊 <b>Kết quả:</b> {filteredCount} dòng<br/>" +
-                            $"🗃️ <b>Từ database:</b> {totalCount} dòng<br/><br/>";
+                              $"📝 <b>Từ khóa:</b> '{searchKeyword}'<br/>" +
+                              $"🔢 <b>Số từ khóa:</b> {keywordCount}<br/>" +
+                              $"📊 <b>Kết quả:</b> {filteredCount} dòng<br/>" +
+                              $"🗃️ <b>Từ database:</b> {totalCount} dòng<br/><br/>";
 
                 if (filteredCount == 0)
                 {
                     message += "❌ <b>Không tìm thấy kết quả nào phù hợp</b><br/><br/>" +
-                              "💡 <b>Gợi ý:</b><br/>" +
-                              "• Kiểm tra lại từ khóa<br/>" +
-                              "• Thử từ khóa ngắn hơn<br/>" +
-                              "• Sử dụng từ khóa tiếng Việt không dấu";
-                    
+                               "💡 <b>Gợi ý:</b><br/>" +
+                               "• Kiểm tra lại từ khóa<br/>" +
+                               "• Thử từ khóa ngắn hơn<br/>" +
+                               "• Sử dụng từ khóa tiếng Việt không dấu";
+
                     if (keywordCount > 1)
                     {
                         message += "<br/>• Thử giảm số lượng từ khóa<br/>" +
-                                  "• Đảm bảo tất cả từ khóa đều có trong dữ liệu";
+                                   "• Đảm bảo tất cả từ khóa đều có trong dữ liệu";
                     }
                 }
                 else if (filteredCount < totalCount)
                 {
                     message += $"✅ <b>Tìm thấy {filteredCount} kết quả phù hợp</b><br/><br/>" +
-                              "🔍 <b>Tìm kiếm trong:</b><br/>" +
-                              "• Mã sản phẩm/dịch vụ<br/>" +
-                              "• Tên sản phẩm/dịch vụ<br/>" +
-                              "• Mô tả<br/>" +
-                              "• Tên danh mục<br/>" +
-                              "• Loại (Sản phẩm/Dịch vụ)<br/>" +
-                              "• Trạng thái<br/>" +
-                              "• Số lượng biến thể/hình ảnh";
-                    
+                               "🔍 <b>Tìm kiếm trong:</b><br/>" +
+                               "• Mã sản phẩm/dịch vụ<br/>" +
+                               "• Tên sản phẩm/dịch vụ<br/>" +
+                               "• Mô tả<br/>" +
+                               "• Tên danh mục<br/>" +
+                               "• Loại (Sản phẩm/Dịch vụ)<br/>" +
+                               "• Trạng thái<br/>" +
+                               "• Số lượng biến thể/hình ảnh";
+
                     if (keywordCount > 1)
                     {
-                        message += $"<br/><br/>🎯 <b>Tìm kiếm nâng cao:</b> Tất cả {keywordCount} từ khóa phải có trong cùng một dòng";
+                        message +=
+                            $"<br/><br/>🎯 <b>Tìm kiếm nâng cao:</b> Tất cả {keywordCount} từ khóa phải có trong cùng một dòng";
                     }
                 }
                 else
                 {
                     message += $"✅ <b>Tìm thấy {filteredCount} kết quả</b><br/><br/>" +
-                              "🎯 <b>Tất cả kết quả từ database đều phù hợp</b>";
-                    
+                               "🎯 <b>Tất cả kết quả từ database đều phù hợp</b>";
+
                     if (keywordCount > 1)
                     {
-                        message += $"<br/><br/>🔍 <b>Tìm kiếm nâng cao:</b> Tất cả {keywordCount} từ khóa đều có trong dữ liệu";
+                        message +=
+                            $"<br/><br/>🔍 <b>Tìm kiếm nâng cao:</b> Tất cả {keywordCount} từ khóa đều có trong dữ liệu";
                     }
                 }
 
@@ -788,7 +835,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Grid Configuration Methods
+        #region ========== CẤU HÌNH GRID ==========
 
         /// <summary>
         /// Cấu hình AdvBandedGridView để hiển thị dữ liệu xuống dòng (word wrap) cho các cột văn bản dài.
@@ -870,12 +917,12 @@ namespace MasterData.ProductService
             {
                 // Bật filter row
                 ProductServiceAdvBandedGridView.OptionsView.ShowAutoFilterRow = true;
-                
+
                 // Bật search
                 ProductServiceAdvBandedGridView.OptionsFind.AlwaysVisible = true;
                 ProductServiceAdvBandedGridView.OptionsFind.FindMode = FindMode.Always;
                 ProductServiceAdvBandedGridView.OptionsFind.FindNullPrompt = "Tìm kiếm trong tất cả dữ liệu...";
-                
+
                 // Cấu hình filter cho từng cột
                 ConfigureColumnFilters();
             }
@@ -949,13 +996,15 @@ namespace MasterData.ProductService
             {
                 ProductServiceListGridControl.RepositoryItems.Add(memo);
             }
+
             col.ColumnEdit = memo;
         }
 
         /// <summary>
-        /// Tô màu/định dạng dòng theo trạng thái/loại sản phẩm/dịch vụ.
+        /// Tô màu/định dạng dòng theo trạng thái/loại sản phẩm/dịch vụ
         /// </summary>
-        private void ProductServiceAdvBandedGridView_RowCellStyle(object sender, RowCellStyleEventArgs rowCellStyleEventArgs)
+        private void ProductServiceAdvBandedGridView_RowCellStyle(object sender,
+            RowCellStyleEventArgs rowCellStyleEventArgs)
         {
             try
             {
@@ -978,7 +1027,8 @@ namespace MasterData.ProductService
                 }
 
                 rowCellStyleEventArgs.Appearance.BackColor = backColor;
-                rowCellStyleEventArgs.Appearance.ForeColor = Color.Black; // chữ đen tương phản tốt trên các màu nền trên
+                rowCellStyleEventArgs.Appearance.ForeColor =
+                    Color.Black; // chữ đen tương phản tốt trên các màu nền trên
                 rowCellStyleEventArgs.Appearance.Options.UseBackColor = true;
                 rowCellStyleEventArgs.Appearance.Options.UseForeColor = true;
 
@@ -987,7 +1037,8 @@ namespace MasterData.ProductService
                 {
                     //rowCellStyleEventArgs.Appearance.BackColor = System.Drawing.Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
                     rowCellStyleEventArgs.Appearance.ForeColor = Color.DarkRed;
-                    rowCellStyleEventArgs.Appearance.Font = new Font(rowCellStyleEventArgs.Appearance.Font, FontStyle.Strikeout);
+                    rowCellStyleEventArgs.Appearance.Font =
+                        new Font(rowCellStyleEventArgs.Appearance.Font, FontStyle.Strikeout);
                 }
             }
             catch (Exception)
@@ -998,10 +1049,10 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region CRUD Event Handlers
+        #region ========== SỰ KIỆN CRUD ==========
 
         /// <summary>
-        /// Người dùng bấm "Điều chỉnh".
+        /// Người dùng bấm "Điều chỉnh"
         /// </summary>
         private async void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -1011,6 +1062,7 @@ namespace MasterData.ProductService
                 ShowInfo("Vui lòng chọn một dòng để chỉnh sửa.");
                 return;
             }
+
             if (_selectedProductServiceIds.Count > 1)
             {
                 ShowInfo("Chỉ cho phép chỉnh sửa 1 dòng. Vui lòng bỏ chọn bớt.");
@@ -1050,7 +1102,7 @@ namespace MasterData.ProductService
                     {
                         form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
-                        
+
                         await LoadDataAsyncWithoutSplash();
                         UpdateButtonStates();
                     }
@@ -1063,7 +1115,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Người dùng bấm "Xóa".
+        /// Người dùng bấm "Xóa"
         /// </summary>
         private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -1087,6 +1139,7 @@ namespace MasterData.ProductService
                     {
                         _productServiceBll.Delete(id);
                     }
+
                     ClearSelectionState();
                     // Gọi LoadDataAsyncWithoutSplash để tránh xung đột WaitingForm1
                     await LoadDataAsyncWithoutSplash();
@@ -1099,7 +1152,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Người dùng bấm "Xuất".
+        /// Người dùng bấm "Xuất"
         /// </summary>
         private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -1115,7 +1168,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Người dùng bấm "Đếm số lượng" - đếm VariantCount và ImageCount cho các sản phẩm/dịch vụ được chọn.
+        /// Người dùng bấm "Đếm số lượng" - đếm VariantCount và ImageCount cho các sản phẩm/dịch vụ được chọn
         /// </summary>
         private void CountVariantAndImageBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -1131,10 +1184,7 @@ namespace MasterData.ProductService
                 // Hiển thị thông báo cho user biết đang xử lý
 
                 // Thực hiện đếm với splash screen
-                _ = ExecuteWithWaitingFormAsync(async () =>
-                {
-                    await CountSelectedProductsAsync();
-                });
+                _ = ExecuteWithWaitingFormAsync(async () => { await CountSelectedProductsAsync(); });
             }
             catch (Exception ex)
             {
@@ -1144,10 +1194,10 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Data Loading Methods
+        #region ========== TẢI DỮ LIỆU ==========
 
         /// <summary>
-        /// Tải dữ liệu và bind vào Grid (Async, hiển thị WaitForm).
+        /// Tải dữ liệu và bind vào Grid (Async, hiển thị WaitForm)
         /// </summary>
         private async Task LoadDataAsync()
         {
@@ -1155,10 +1205,7 @@ namespace MasterData.ProductService
             _isLoading = true;
             try
             {
-                await ExecuteWithWaitingFormAsync(async () =>
-                {
-                    await LoadDataAsyncWithoutSplash();
-                });
+                await ExecuteWithWaitingFormAsync(async () => { await LoadDataAsyncWithoutSplash(); });
             }
             catch (Exception ex)
             {
@@ -1172,7 +1219,7 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, không hiển thị WaitForm).
-        /// Sử dụng pagination để tối ưu performance.
+        /// Sử dụng pagination để tối ưu performance
         /// </summary>
         private async Task LoadDataAsyncWithoutSplash()
         {
@@ -1180,10 +1227,10 @@ namespace MasterData.ProductService
             {
                 // Reset pagination
                 _currentPageIndex = 0;
-                
+
                 // Get total count
                 _totalCount = await _productServiceBll.GetCountAsync();
-                
+
                 // Xử lý trường hợp "Tất cả" (không phân trang)
                 if (_pageSize == int.MaxValue)
                 {
@@ -1193,10 +1240,10 @@ namespace MasterData.ProductService
                 else
                 {
                     _totalPages = (int)Math.Ceiling((double)_totalCount / _pageSize);
-                    
+
                     // Update pagination control first
                     UpdatePaginationControl();
-                    
+
                     // Load first page
                     await LoadPageAsync(_currentPageIndex);
                 }
@@ -1216,15 +1263,14 @@ namespace MasterData.ProductService
             {
                 // Get all data
                 var entities = await _productServiceBll.GetAllAsync();
-                
+
                 // Convert to DTOs (without counting to improve performance)
-                var dtoList = entities.ToDtoList(
-                    categoryId => _productServiceBll.GetCategoryName(categoryId)
+                var dtoList = entities.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId)
                 ).ToList();
-                
+
                 BindGrid(dtoList);
                 _currentPageIndex = 0;
-                
+
                 // Update pagination control (disable pagination)
                 UpdatePaginationControl();
             }
@@ -1246,15 +1292,14 @@ namespace MasterData.ProductService
                 // Get paged data using optimization methods
                 var entities = await _productServiceBll.GetPagedAsync(
                     pageIndex, _pageSize);
-                
+
                 // Convert to DTOs (without counting to improve performance)
-                var dtoList = entities.ToDtoList(
-                    categoryId => _productServiceBll.GetCategoryName(categoryId)
+                var dtoList = entities.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId)
                 ).ToList();
-                
+
                 BindGrid(dtoList);
                 _currentPageIndex = pageIndex;
-                
+
                 // Update pagination control
                 UpdatePaginationControl();
             }
@@ -1266,7 +1311,7 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Đếm số lượng biến thể và hình ảnh cho các sản phẩm/dịch vụ được chọn.
-        /// Sử dụng method optimization mới.
+        /// Sử dụng method optimization mới
         /// </summary>
         private async Task CountSelectedProductsAsync()
         {
@@ -1297,7 +1342,8 @@ namespace MasterData.ProductService
                 productServiceDtoBindingSource.ResetBindings(false);
 
                 // Hiển thị thông báo đã đếm xong số lượng cho các sản phẩm được chọn
-                MsgBox.ShowInfo($"Đã đếm xong số lượng biến thể và hình ảnh cho {_selectedProductServiceIds.Count} sản phẩm/dịch vụ được chọn.");
+                MsgBox.ShowInfo(
+                    $"Đã đếm xong số lượng biến thể và hình ảnh cho {_selectedProductServiceIds.Count} sản phẩm/dịch vụ được chọn.");
 
                 // Cập nhật status bar với thông tin mới
                 UpdateStatusBar();
@@ -1309,7 +1355,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Bind danh sách DTO vào Grid và cấu hình hiển thị.
+        /// Bind danh sách DTO vào Grid và cấu hình hiển thị
         /// </summary>
         private void BindGrid(List<ProductServiceDto> data)
         {
@@ -1328,7 +1374,7 @@ namespace MasterData.ProductService
         {
             try
             {
-                
+
                 // Bind dữ liệu
                 productServiceDtoBindingSource.DataSource = dtoList;
                 ProductServiceAdvBandedGridView.BestFitColumns();
@@ -1344,7 +1390,7 @@ namespace MasterData.ProductService
 
 
         /// <summary>
-        /// Xóa trạng thái chọn hiện tại trên Grid.
+        /// Xóa trạng thái chọn hiện tại trên Grid
         /// </summary>
         private void ClearSelectionState()
         {
@@ -1357,7 +1403,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Pagination Methods
+        #region ========== PHÂN TRANG ==========
 
         /// <summary>
         /// Khởi tạo pagination control
@@ -1369,7 +1415,7 @@ namespace MasterData.ProductService
                 // Cấu hình ComboBox cho pagination
                 repositoryItemComboBox1.Items.Clear();
                 repositoryItemComboBox1.TextEditStyle = TextEditStyles.DisableTextEditor;
-                
+
                 // Set initial value
                 PageBarEditItem.EditValue = "1";
             }
@@ -1389,10 +1435,10 @@ namespace MasterData.ProductService
                 // Cấu hình ComboBox cho record number
                 repositoryItemComboBox2.Items.Clear();
                 repositoryItemComboBox2.TextEditStyle = TextEditStyles.DisableTextEditor;
-                
+
                 // Thêm các options: "20", "50", "100", "Tất cả"
                 repositoryItemComboBox2.Items.AddRange(new object[] { "20", "50", "100", "Tất cả" });
-                
+
                 // Set initial value
                 RecordNumberBarEditItem.EditValue = "50";
             }
@@ -1456,7 +1502,7 @@ namespace MasterData.ProductService
                 if (int.TryParse(pageNumberText, out int pageNumber))
                 {
                     var pageIndex = pageNumber - 1; // Convert to 0-based index
-                    
+
                     if (pageIndex >= 0 && pageIndex < _totalPages && pageIndex != _currentPageIndex)
                     {
                         // Hiển thị WaitingForm1 giống như nút List
@@ -1485,12 +1531,12 @@ namespace MasterData.ProductService
 
                 var recordNumberText = RecordNumberBarEditItem.EditValue.ToString();
                 var newPageSize = ParseRecordNumber(recordNumberText);
-                
+
                 if (newPageSize > 0 && newPageSize != _pageSize)
                 {
                     _pageSize = newPageSize;
                     _currentPageIndex = 0; // Reset về trang đầu
-                    
+
                     // Hiển thị WaitingForm1 giống như nút List
                     await ExecuteWithWaitingFormAsync(async () =>
                     {
@@ -1504,7 +1550,7 @@ namespace MasterData.ProductService
                 ShowError(ex, "Lỗi thay đổi số dòng trên trang");
             }
         }
-        
+
         /// <summary>
         /// Parse record number text thành page size
         /// </summary>
@@ -1536,10 +1582,10 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Utility Methods
+        #region ========== TIỆN ÍCH ==========
 
         /// <summary>
-        /// Hiển thị thông tin.
+        /// Hiển thị thông tin
         /// </summary>
         private void ShowInfo(string message)
         {
@@ -1547,7 +1593,7 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Hiển thị lỗi với thông tin ngữ cảnh.
+        /// Hiển thị lỗi với thông tin ngữ cảnh
         /// </summary>
         private void ShowError(Exception ex, string context = null)
         {
