@@ -50,7 +50,7 @@ namespace VnsErp2025
             //SeedData_Master_ProductService.DeleteAllProductServiceData();
             //SeedData_Master_ProductService.SeedAllData();
             
-            Application.Run(new XtraForm1());
+            Application.Run(new FluentProductService());
 
             #endregion
 

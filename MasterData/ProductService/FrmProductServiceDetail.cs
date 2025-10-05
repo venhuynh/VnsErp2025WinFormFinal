@@ -277,10 +277,39 @@ namespace MasterData.ProductService
 
                 var dto = productService.ToDto(categoryId => _productServiceBll.GetCategoryName(categoryId));
                 BindDataToControls(dto);
+                
+                // Load hình ảnh từ bảng ProductImage nếu có
+                LoadProductImagesFromDatabase();
             }
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi tải dữ liệu sản phẩm/dịch vụ");
+            }
+        }
+
+        /// <summary>
+        /// Load hình ảnh từ bảng ProductImage
+        /// </summary>
+        private void LoadProductImagesFromDatabase()
+        {
+            try
+            {
+                // Tìm ảnh chính của sản phẩm
+                var primaryImage = _productImageBll.GetPrimaryByProductId(_productServiceId);
+                if (primaryImage != null && primaryImage.ImageData != null && primaryImage.ImageData.Length > 0)
+                {
+                    // Load ảnh chính vào ThumbnailImagePictureEdit
+                    var compressedImage = LoadThumbnailImage(primaryImage.ImageData.ToArray());
+                    if (compressedImage != null)
+                    {
+                        ThumbnailImagePictureEdit.Image = compressedImage;
+                        _hasImageChanged = false; // Reset flag vì đây là load từ database
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi load hình ảnh từ database");
             }
         }
 
@@ -570,7 +599,7 @@ namespace MasterData.ProductService
                 var dto = GetDataFromControls();
                 var entity = dto.ToEntity();
 
-                // Lưu sản phẩm/dịch vụ với ảnh thumbnail
+                // Bước 1: Lưu sản phẩm/dịch vụ với ảnh thumbnail vào bảng ProductService
                 _productServiceBll.SaveOrUpdate(entity);
 
                 // Nếu có thay đổi ảnh và đã lưu thành công, cập nhật lại ảnh hiển thị
@@ -588,6 +617,12 @@ namespace MasterData.ProductService
                     }
                 }
 
+                // Bước 2: Thêm hình ảnh vào bảng ProductImage nếu có thay đổi
+                if (_hasImageChanged)
+                {
+                    SaveProductImages(entity.Id);
+                }
+
                 var message = IsEditMode ? "Cập nhật sản phẩm/dịch vụ thành công!" : "Thêm mới sản phẩm/dịch vụ thành công!";
                 ShowInfo(message);
 
@@ -597,6 +632,91 @@ namespace MasterData.ProductService
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi lưu dữ liệu sản phẩm/dịch vụ");
+            }
+        }
+
+        /// <summary>
+        /// Thêm hình ảnh vào bảng ProductImage (sau khi đã cập nhật ProductService)
+        /// </summary>
+        /// <param name="productId">ID sản phẩm</param>
+        private void SaveProductImages(Guid productId)
+        {
+            try
+            {
+                if (ThumbnailImagePictureEdit.Image == null)
+                {
+                    // Nếu không có ảnh, không làm gì với ProductImage
+                    // (Ảnh thumbnail trong ProductService đã được xử lý ở SaveProductService)
+                    return;
+                }
+
+                // Lấy tên sản phẩm để tạo caption
+                var productName = NameTextEdit?.Text?.Trim() ?? "Sản phẩm";
+
+                // Lưu ảnh thumbnail vào file tạm thời để sử dụng SaveImageFromFile
+                var tempFilePath = SaveImageToTempFile(ThumbnailImagePictureEdit.Image);
+                if (!string.IsNullOrEmpty(tempFilePath))
+                {
+                    try
+                    {
+                        // Thêm ảnh mới vào ProductImage (không xóa ảnh cũ)
+                        var savedImage = _productImageBll.SaveImageFromFile(
+                            productId, 
+                            tempFilePath, 
+                            isPrimary: true, 
+                            caption: $"{productName} - Ảnh chính",
+                            altText: $"Ảnh chính của {productName}"
+                        );
+
+                        if (savedImage != null)
+                        {
+                            ShowInfo($"Đã cập nhật hình ảnh sản phẩm thành công!\n\n✅ Bước 1: Cập nhật thumbnail trong ProductService\n✅ Bước 2: Thêm ảnh chính vào ProductImage\n\nẢnh: {savedImage.Caption}");
+                        }
+                    }
+                    finally
+                    {
+                        // Xóa file tạm thời
+                        if (File.Exists(tempFilePath))
+                        {
+                            File.Delete(tempFilePath);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi lưu hình ảnh sản phẩm");
+            }
+        }
+
+        /// <summary>
+        /// Lưu ảnh vào file tạm thời để sử dụng SaveImageFromFile
+        /// </summary>
+        /// <param name="image">Ảnh cần lưu</param>
+        /// <returns>Đường dẫn file tạm thời</returns>
+        private string SaveImageToTempFile(Image image)
+        {
+            try
+            {
+                if (image == null) return null;
+
+                // Tạo file tạm thời
+                var tempFileName = $"temp_product_image_{Guid.NewGuid():N}.jpg";
+                var tempFilePath = Path.Combine(Path.GetTempPath(), tempFileName);
+
+                // Lưu ảnh dưới dạng JPEG
+                using (var ms = new MemoryStream())
+                {
+                    image.Save(ms, ImageFormat.Jpeg);
+                    File.WriteAllBytes(tempFilePath, ms.ToArray());
+                }
+
+                return tempFilePath;
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi lưu ảnh vào file tạm thời");
+                return null;
             }
         }
 
@@ -723,7 +843,7 @@ namespace MasterData.ProductService
                             // Đánh dấu đã thay đổi hình ảnh
                             _hasImageChanged = true;
                             
-                            ShowInfo($"Đã chọn và resize ảnh thành công: {fileInfo.Name}\nKích thước gốc: {(fileInfo.Length / 1024.0):F1} KB\nĐã resize về thumbnail 512x512");
+                            ShowInfo($"Đã chọn và resize ảnh thành công: {fileInfo.Name}\nKích thước gốc: {(fileInfo.Length / 1024.0):F1} KB\nĐã resize về thumbnail 512x512\n\nLưu ý: Khi lưu sản phẩm, ảnh này sẽ được:\n1️⃣ Cập nhật thumbnail trong ProductService\n2️⃣ Thêm vào ProductImage làm ảnh chính");
                         }
                     }
                     catch (Exception ex)
@@ -758,7 +878,7 @@ namespace MasterData.ProductService
                 // Đánh dấu đã thay đổi hình ảnh (xóa ảnh)
                 _hasImageChanged = true;
                 
-                ShowInfo("Đã xóa ảnh thumbnail thành công");
+                ShowInfo("Đã xóa ảnh thumbnail thành công\n\nLưu ý: Khi lưu sản phẩm:\n1️⃣ Thumbnail trong ProductService sẽ được xóa\n2️⃣ Không ảnh hưởng đến ảnh cũ trong ProductImage");
             }
             catch (Exception ex)
             {
