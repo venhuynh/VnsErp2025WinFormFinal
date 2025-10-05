@@ -137,9 +137,7 @@
     <Compile Include="ProductService\FrmProductImageAdd.Designer.cs">
       <DependentUpon>FrmProductImageAdd.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductImageDetail.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="ProductService\FrmProductImageDetail.cs" />
     <Compile Include="ProductService\FrmProductImageDetail.Designer.cs">
       <DependentUpon>FrmProductImageDetail.cs</DependentUpon>
     </Compile>
