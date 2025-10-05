@@ -10,17 +10,28 @@ using Bll.Common;
 
 namespace MasterData.ProductService
 {
+    /// <summary>
+    /// Form chi tiết hình ảnh sản phẩm.
+    /// Cung cấp chức năng xem, zoom, tải xuống, đặt làm ảnh chính và xóa hình ảnh với giao diện thân thiện.
+    /// </summary>
     public partial class FrmProductImageDetail : DevExpress.XtraEditors.XtraForm
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// ID hình ảnh sản phẩm
+        /// </summary>
         private Guid _productImageId;
+
+        /// <summary>
+        /// Business Logic Layer cho hình ảnh sản phẩm
+        /// </summary>
         private ProductImageBll _productImageBll;
+
+        /// <summary>
+        /// DTO hình ảnh hiện tại
+        /// </summary>
         private ProductImageDto _currentImageDto;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         /// Property để track việc xóa hình ảnh
@@ -29,8 +40,12 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Constructor
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
+        /// <summary>
+        /// Constructor với ID hình ảnh
+        /// </summary>
+        /// <param name="productImageId">ID hình ảnh sản phẩm</param>
         public FrmProductImageDetail(Guid productImageId)
         {
             _productImageId = productImageId;
@@ -42,7 +57,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Private Methods
+        #region ========== KHỞI TẠO FORM ==========
 
         /// <summary>
         /// Khởi tạo BLL
@@ -65,6 +80,10 @@ namespace MasterData.ProductService
             DownLoadImageSimpleButton.Click += DownLoadImageSimpleButton_Click;
             DeleteImageSimpleButton.Click += DeleteImageSimpleButton_Click;
         }
+
+        #endregion
+
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
         /// Load dữ liệu hình ảnh
@@ -259,7 +278,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Event Handlers
+        #region ========== SỰ KIỆN FORM ==========
 
         /// <summary>
         /// Xử lý sự kiện thay đổi zoom track bar
@@ -411,7 +430,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Helper Methods
+        #region ========== TIỆN ÍCH ==========
 
         /// <summary>
         /// Lấy tên sản phẩm theo ProductId
