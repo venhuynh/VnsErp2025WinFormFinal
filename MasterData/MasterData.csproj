@@ -58,6 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Company\Dto\CompanyBranchDto.cs" />
+    <Compile Include="Company\Dto\CompanyDto.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerConverters.cs" />
@@ -137,7 +139,9 @@
     <Compile Include="ProductService\FrmProductImageAdd.Designer.cs">
       <DependentUpon>FrmProductImageAdd.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductImageDetail.cs" />
+    <Compile Include="ProductService\FrmProductImageDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductImageDetail.Designer.cs">
       <DependentUpon>FrmProductImageDetail.cs</DependentUpon>
     </Compile>

@@ -97,6 +97,7 @@
     <None Include="DataContext\VnsErp2025.dbml.layout">
       <DependentUpon>VnsErp2025.dbml</DependentUpon>
     </None>
+    <None Include="Doc\CompanyEntities_Summary.md" />
     <None Include="Doc\DalFolderStructure.md" />
     <None Include="DataAccess\MasterData\ProductServiceDal\MasterData_ProductService_Entities.md" />
     <None Include="Properties\Settings.settings">
