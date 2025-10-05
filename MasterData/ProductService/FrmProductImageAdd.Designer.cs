@@ -1,6 +1,6 @@
 ﻿namespace MasterData.ProductService
 {
-    partial class FrmAddProductImage
+    partial class FrmProductImageAdd
     {
         /// <summary>
         /// Required designer variable.

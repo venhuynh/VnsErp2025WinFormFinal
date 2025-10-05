@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace MasterData.ProductService
 {
-    public partial class FrmAddProductImage : XtraForm
+    public partial class FrmProductImageAdd : XtraForm
     {
         #region Fields
 
@@ -32,7 +32,7 @@ namespace MasterData.ProductService
 
         #region Constructor
 
-        public FrmAddProductImage()
+        public FrmProductImageAdd()
         {
             InitializeComponent();
             InitializeBll();

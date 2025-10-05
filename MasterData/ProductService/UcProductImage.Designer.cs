@@ -84,7 +84,6 @@
             this.ProductImageServiceGWinExplorerView.OptionsImageLoad.CacheThumbnails = false;
             this.ProductImageServiceGWinExplorerView.OptionsImageLoad.LoadThumbnailImagesFromDataSource = false;
             this.ProductImageServiceGWinExplorerView.OptionsView.Style = DevExpress.XtraGrid.Views.WinExplorer.WinExplorerViewStyle.Large;
-            
             // 
             // sidePanel1
             // 
@@ -112,7 +111,7 @@
             // 
             // tabNavigationPage1
             // 
-            this.tabNavigationPage1.Caption = "Image Options";
+            this.tabNavigationPage1.Caption = "Hình ảnh ";
             this.tabNavigationPage1.Controls.Add(this.layoutControl1);
             this.tabNavigationPage1.Name = "tabNavigationPage1";
             this.tabNavigationPage1.Size = new System.Drawing.Size(299, 781);
@@ -181,7 +180,7 @@
             this.layoutControlGroup4.Name = "layoutControlGroup4";
             this.layoutControlGroup4.Size = new System.Drawing.Size(299, 92);
             this.layoutControlGroup4.Spacing = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-            this.layoutControlGroup4.Text = "Image Actions";
+            this.layoutControlGroup4.Text = "Hành động";
             // 
             // layoutControlItem8
             // 

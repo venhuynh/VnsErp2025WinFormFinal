@@ -106,6 +106,23 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
+        /// Lấy hình ảnh theo ID
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        /// <returns>Hình ảnh hoặc null</returns>
+        public ProductImage GetById(Guid imageId)
+        {
+            try
+            {
+                return _dataAccess.GetById(imageId);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy hình ảnh '{imageId}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Lấy hình ảnh chính của sản phẩm/dịch vụ
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
@@ -288,6 +305,117 @@ namespace Bll.MasterData.ProductServiceBll
             catch (Exception ex)
             {
                 throw new BusinessLogicException($"Lỗi khi xóa hình ảnh '{imageId}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Xóa hình ảnh hoàn chỉnh (database + file + cập nhật ProductService)
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        public void DeleteImageComplete(Guid imageId)
+        {
+            try
+            {
+                // 1. Lấy thông tin hình ảnh trước khi xóa
+                var imageInfo = _dataAccess.GetById(imageId);
+                if (imageInfo == null)
+                {
+                    throw new BusinessLogicException($"Không tìm thấy hình ảnh với ID '{imageId}'");
+                }
+
+                var productId = imageInfo.ProductId;
+                var imagePath = imageInfo.ImagePath;
+                var isPrimary = imageInfo.IsPrimary ?? false;
+
+                // 2. Xóa file vật lý nếu tồn tại
+                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+                {
+                    try
+                    {
+                        File.Delete(imagePath);
+                        System.Diagnostics.Debug.WriteLine($"Đã xóa file: {imagePath}");
+                    }
+                    catch (Exception fileEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Không thể xóa file '{imagePath}': {fileEx.Message}");
+                        // Không throw exception vì có thể file đã bị xóa hoặc không có quyền
+                    }
+                }
+
+                // 3. Xóa thumbnail nếu có
+                DeleteThumbnailIfExists(imageInfo);
+
+                // 4. Xóa trong database
+                _dataAccess.Delete(imageId);
+
+                // 5. Cập nhật ProductService nếu đây là ảnh chính
+                if (isPrimary && productId.HasValue)
+                {
+                    UpdateProductServiceAfterPrimaryImageDelete(productId.Value);
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Đã xóa hoàn chỉnh hình ảnh '{imageId}'");
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi xóa hoàn chỉnh hình ảnh '{imageId}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Xóa thumbnail nếu tồn tại
+        /// </summary>
+        /// <param name="imageInfo">Thông tin hình ảnh</param>
+        private void DeleteThumbnailIfExists(ProductImage imageInfo)
+        {
+            try
+            {
+                if (imageInfo?.ProductId == null) return;
+
+                var thumbnailDirectory = GetThumbnailDirectory();
+                var thumbnailPattern = $"{imageInfo.ProductId}_thumb_*";
+                var thumbnailFiles = Directory.GetFiles(thumbnailDirectory, thumbnailPattern);
+
+                foreach (var thumbnailFile in thumbnailFiles)
+                {
+                    try
+                    {
+                        File.Delete(thumbnailFile);
+                        System.Diagnostics.Debug.WriteLine($"Đã xóa thumbnail: {thumbnailFile}");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Không thể xóa thumbnail '{thumbnailFile}': {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi khi xóa thumbnail: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật ProductService sau khi xóa ảnh chính
+        /// </summary>
+        /// <param name="productId">ID sản phẩm</param>
+        private void UpdateProductServiceAfterPrimaryImageDelete(Guid productId)
+        {
+            try
+            {
+                // TODO: Implement logic để cập nhật ProductService
+                // Có thể cần:
+                // 1. Xóa đường dẫn ảnh chính trong ProductService
+                // 2. Đặt ảnh chính mới nếu có ảnh khác
+                // 3. Cập nhật trạng thái sản phẩm
+                
+                System.Diagnostics.Debug.WriteLine($"Cần cập nhật ProductService cho sản phẩm '{productId}' sau khi xóa ảnh chính");
+                
+                // Tạm thời chỉ log - cần implement logic cụ thể
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi khi cập nhật ProductService: {ex.Message}");
             }
         }
 

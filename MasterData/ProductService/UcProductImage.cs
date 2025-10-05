@@ -12,23 +12,40 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MasterData.ProductService
 {
+    /// <summary>
+    /// UserControl quản lý hình ảnh sản phẩm - hiển thị danh sách hình ảnh với WinExplorerView.
+    /// Cung cấp chức năng tìm kiếm, xem chi tiết, và quản lý hình ảnh sản phẩm.
+    /// </summary>
     public partial class UcProductImage : XtraUserControl
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// Business Logic Layer cho hình ảnh sản phẩm
+        /// </summary>
         private ProductImageBll _productImageBll;
+
+        /// <summary>
+        /// ID sản phẩm hiện tại đang xem hình ảnh
+        /// </summary>
         private Guid? _currentProductId;
+
+        /// <summary>
+        /// Danh sách hình ảnh hiện tại
+        /// </summary>
         private List<ProductImageDto> _imageList;
 
         #endregion
 
-        #region Constructor
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
+        /// <summary>
+        /// Khởi tạo UserControl quản lý hình ảnh sản phẩm.
+        /// </summary>
         public UcProductImage()
         {
             InitializeComponent();
@@ -43,10 +60,10 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Private Methods
+        #region ========== KHỞI TẠO FORM ==========
 
         /// <summary>
-        /// Khởi tạo BLL
+        /// Khởi tạo Business Logic Layer
         /// </summary>
         private void InitializeBll()
         {
@@ -167,75 +184,13 @@ namespace MasterData.ProductService
         {
             // Event cho nút Add Image
             btnAddImage.Click += BtnAddImage_Click;
-
+            
             // Event cho SearchByKeyworkButtonEdit
             SearchByKeyworkButtonEdit.ButtonClick += SearchByKeyworkButtonEdit_ButtonClick;
             SearchByKeyworkButtonEdit.KeyDown += SearchByKeyworkButtonEdit_KeyDown;
-
+            
             ProductImageServiceGWinExplorerView.DoubleClick += ProductImageServiceGWinExplorerView_DoubleClick;
             ProductImageServiceGWinExplorerView.SelectionChanged += ProductImageServiceGWinExplorerView_SelectionChanged;
-        }
-
-        /// <summary>
-        /// Load danh sách hình ảnh với Async Loading
-        /// </summary>
-        private async void LoadImagesAsync()
-        {
-            try
-            {
-                if (!_currentProductId.HasValue)
-                {
-                    _imageList.Clear();
-                    ProductImageServiceGridControl.DataSource = null;
-                    return;
-                }
-
-                // Hiển thị loading indicator
-                SplashScreenManager.ShowForm(typeof(WaitForm1));
-
-                // Load data async để không block UI
-                await Task.Run(() =>
-                {
-                    // Lấy danh sách hình ảnh từ BLL
-                    var images = _productImageBll.GetByProductId(_currentProductId.Value);
-
-                    // Convert sang DTO với lazy loading cho ImageData
-                    _imageList = images.Select(img => new ProductImageDto
-                    {
-                        Id = img.Id,
-                        ProductId = img.ProductId ?? Guid.Empty,
-                        VariantId = img.VariantId,
-                        ImagePath = img.ImagePath,
-                        SortOrder = img.SortOrder ?? 0,
-                        IsPrimary = img.IsPrimary ?? false,
-                        // Lazy loading: chỉ load ImageData khi cần thiết
-                        ImageData = null, // Sẽ load sau khi cần
-                        ImageType = img.ImageType,
-                        ImageSize = img.ImageSize ?? 0,
-                        ImageWidth = img.ImageWidth ?? 0,
-                        ImageHeight = img.ImageHeight ?? 0,
-                        Caption = img.Caption,
-                        AltText = img.AltText,
-                        IsActive = img.IsActive ?? false,
-                        CreatedDate = img.CreatedDate ?? DateTime.Now,
-                        ModifiedDate = img.ModifiedDate
-                    }).ToList();
-                });
-
-                // Sắp xếp theo sản phẩm để tạo separator tự nhiên
-                _imageList = _imageList.OrderBy(x => x.ProductName).ThenBy(x => x.SortOrder).ToList();
-
-                // Bind data và cấu hình grid
-                BindGrid(_imageList);
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowError($"Lỗi khi tải danh sách hình ảnh: {ex.Message}");
-            }
-            finally
-            {
-                SplashScreenManager.CloseForm();
-            }
         }
 
         /// <summary>
@@ -245,6 +200,9 @@ namespace MasterData.ProductService
         {
             try
             {
+                // Reset trước khi load dữ liệu mới
+                ResetImageSelection();
+                
                 if (!_currentProductId.HasValue)
                 {
                     _imageList.Clear();
@@ -254,7 +212,7 @@ namespace MasterData.ProductService
 
                 // Lấy danh sách hình ảnh từ BLL
                 var images = _productImageBll.GetByProductId(_currentProductId.Value);
-
+                
                 // Convert sang DTO - Tối ưu hóa bằng cách chỉ load ImageData khi cần thiết
                 _imageList = images.Select(img => new ProductImageDto
                 {
@@ -321,17 +279,17 @@ namespace MasterData.ProductService
                 // Sử dụng OverlayManager.ShowScope để auto-close overlay
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var addImageForm = new FrmAddProductImage())
+                    using (var addImageForm = new FrmProductImageAdd())
                     {
                         // Cấu hình form
                         addImageForm.Text = @"Thêm hình ảnh sản phẩm";
                         addImageForm.StartPosition = FormStartPosition.CenterParent;
-
+                        
                         // Hiển thị form dạng dialog
                         addImageForm.ShowDialog(this);
-
+                        
                         // Reload danh sách hình ảnh sau khi đóng form
-                        LoadImagesAsync(); // Sử dụng async loading
+                        ReloadDataSource(); // Sử dụng reload thông minh
                     }
                 }
             }
@@ -352,10 +310,10 @@ namespace MasterData.ProductService
 
                 // Bind data
                 ProductImageServiceGridControl.DataSource = imageList;
-
+                
                 // Cấu hình WinExplorerView
                 ConfigureWinExplorerView();
-
+                
                 // Refresh grid
                 ProductImageServiceGridControl.RefreshDataSource();
             }
@@ -440,8 +398,8 @@ namespace MasterData.ProductService
             try
             {
                 // Clear columns trước khi thêm mới
-                ProductImageServiceGWinExplorerView.Columns.Clear();
-
+                    ProductImageServiceGWinExplorerView.Columns.Clear();
+                
                 // Thêm các columns theo thứ tự ưu tiên
                 ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "Id", Visible = false });
                 ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "Caption", Caption = @"Tên hình ảnh" });
@@ -474,13 +432,13 @@ namespace MasterData.ProductService
                 ProductImageServiceGWinExplorerView.ColumnSet.LargeImageColumn = ProductImageServiceGWinExplorerView.Columns["ImageData"];
                 ProductImageServiceGWinExplorerView.ColumnSet.MediumImageColumn = ProductImageServiceGWinExplorerView.Columns["ImageData"];
                 ProductImageServiceGWinExplorerView.ColumnSet.SmallImageColumn = ProductImageServiceGWinExplorerView.Columns["ImageData"];
-
+                
                 // Cấu hình description column
                 ProductImageServiceGWinExplorerView.ColumnSet.DescriptionColumn = ProductImageServiceGWinExplorerView.Columns["AltText"];
-
+                
                 // Cấu hình checkbox column cho ảnh chính
                 ProductImageServiceGWinExplorerView.ColumnSet.CheckBoxColumn = ProductImageServiceGWinExplorerView.Columns["IsPrimary"];
-
+                
                 // Cấu hình group column để nhóm theo sản phẩm
                 ProductImageServiceGWinExplorerView.ColumnSet.GroupColumn = ProductImageServiceGWinExplorerView.Columns["ProductName"];
             }
@@ -492,7 +450,7 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Event Handlers
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
         /// Xử lý sự kiện click nút Add Image
@@ -541,22 +499,22 @@ namespace MasterData.ProductService
                     // Tìm kiếm sản phẩm/dịch vụ trước để lấy thông tin
                     var productServiceBll = new ProductServiceBll();
                     var productSearchResults = productServiceBll.Search(searchKeyword);
-
+                    
                     if (!productSearchResults.Any())
                     {
                         // Không tìm thấy sản phẩm nào
                         _imageList.Clear();
                         BindGrid(_imageList);
-
+                        
                         return;
                     }
 
                     // Tìm kiếm hình ảnh theo danh sách sản phẩm tìm được
                     var productIds = productSearchResults.Select(x => x.Id).ToList();
                     var searchResults = _productImageBll.SearchByProductIds(productIds);
-
+                    
                     // Convert sang DTO và thêm thông tin sản phẩm
-                    _imageList = searchResults.Select(img =>
+                    _imageList = searchResults.Select(img => 
                     {
                         var product = productSearchResults.FirstOrDefault(p => p.Id == img.ProductId);
                         if (product != null)
@@ -608,7 +566,7 @@ namespace MasterData.ProductService
 
                     // Bind data
                     BindGrid(_imageList);
-
+                    
                     // Hiển thị kết quả tìm kiếm với thông tin sản phẩm
                     ShowSearchResult(searchKeyword, _imageList.Count, productSearchResults.Count);
                 });
@@ -722,7 +680,69 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region Helper Methods
+        #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Reload datasource thông minh - kiểm tra trạng thái hiện tại để reload phù hợp
+        /// </summary>
+        private void ReloadDataSource()
+        {
+            try
+            {
+                // Reset các biến và thông tin hình ảnh đã chọn trước đó
+                ResetImageSelection();
+                
+                var searchKeyword = SearchByKeyworkButtonEdit.Text?.Trim();
+                
+                if (string.IsNullOrWhiteSpace(searchKeyword))
+                {
+                    // Nếu không có từ khóa tìm kiếm, load lại tất cả hình ảnh
+                    LoadImagesWithWaitingForm();
+                }
+                else
+                {
+                    // Nếu có từ khóa tìm kiếm, thực hiện lại tìm kiếm
+                    PerformSearch();
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowError($"Lỗi khi reload datasource: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Reset các biến và thông tin hình ảnh đã chọn trước đó
+        /// </summary>
+        private void ResetImageSelection()
+        {
+            try
+            {
+                // Clear selection trong WinExplorerView
+                ProductImageServiceGWinExplorerView.ClearSelection();
+                
+                // Reset image list
+                _imageList?.Clear();
+                
+                // Clear datasource
+                ProductImageServiceGridControl.DataSource = null;
+                
+                // Clear result memo edit
+                ResultMemoEdit.Text = string.Empty;
+                
+                // Clear search keyword (optional - có thể giữ lại để user tiếp tục tìm kiếm)
+                // SearchByKeyworkButtonEdit.Text = string.Empty;
+                
+                // Refresh grid để cập nhật UI
+                ProductImageServiceGridControl.RefreshDataSource();
+                
+                System.Diagnostics.Debug.WriteLine("Đã reset selection và clear datasource");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi khi reset image selection: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Thực hiện operation với WaitingForm1 hiển thị
@@ -774,8 +794,8 @@ namespace MasterData.ProductService
                     return;
                 }
 
-                // Mở form hiển thị hình ảnh với kích thước thật
-                ShowImageDetailForm(selectedImage);
+                // Mở form FrmProductImageDetail với topmost
+                ShowProductImageDetailForm(selectedImage);
             }
             catch (Exception ex)
             {
@@ -878,67 +898,39 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Mở form hiển thị chi tiết hình ảnh với kích thước thật
+        /// Mở form FrmProductImageDetail để hiển thị chi tiết hình ảnh với topmost
         /// </summary>
-        private void ShowImageDetailForm(ProductImageDto imageDto)
+        private void ShowProductImageDetailForm(ProductImageDto imageDto)
         {
             try
             {
                 if (imageDto == null) return;
 
-                // Tạo form hiển thị hình ảnh
-                using (var detailForm = new Form())
+                // Tạo form FrmProductImageDetail với ID hình ảnh
+                using (var detailForm = new FrmProductImageDetail(imageDto.Id))
                 {
-                    detailForm.Text = $"Chi tiết hình ảnh: {imageDto.Caption ?? "Không có tên"}";
+                    // Cấu hình form
+                    detailForm.Text = $@"Chi tiết hình ảnh: {imageDto.Caption ?? "Không có tên"}";
                     detailForm.StartPosition = FormStartPosition.CenterParent;
-                    detailForm.Size = new Size(800, 600);
-                    detailForm.MinimumSize = new Size(400, 300);
-
-                    // Tạo PictureBox để hiển thị hình ảnh
-                    var pictureBox = new PictureBox
-                    {
-                        Dock = DockStyle.Fill,
-                        SizeMode = PictureBoxSizeMode.Zoom,
-                        BackColor = Color.White
-                    };
-
-                    // Tạo Panel chứa thông tin
-                    var infoPanel = new Panel
-                    {
-                        Dock = DockStyle.Bottom,
-                        Height = 150,
-                        BackColor = Color.LightGray
-                    };
-
-                    // Tạo Label hiển thị thông tin
-                    var infoLabel = new Label
-                    {
-                        Dock = DockStyle.Fill,
-                        Text = GetImageInfoText(imageDto),
-                        Font = new Font("Arial", 9),
-                        ForeColor = Color.Black,
-                        Padding = new Padding(10)
-                    };
-
-                    // Tạo SplitContainer để chia màn hình
-                    var splitContainer = new SplitContainer
-                    {
-                        Dock = DockStyle.Fill,
-                        Orientation = Orientation.Horizontal,
-                        SplitterDistance = 450
-                    };
-
-                    // Thêm controls vào form
-                    splitContainer.Panel1.Controls.Add(pictureBox);
-                    splitContainer.Panel2.Controls.Add(infoLabel);
-
-                    detailForm.Controls.Add(splitContainer);
-
-                    // Load hình ảnh
-                    LoadImageToPictureBox(pictureBox, imageDto);
-
+                    detailForm.TopMost = true; // Đặt form ở topmost
+                    detailForm.WindowState = FormWindowState.Normal;
+                    
+                    // Lưu trạng thái trước khi mở form
+                    var originalImageCount = _imageList?.Count ?? 0;
+                    
                     // Hiển thị form
-                    detailForm.ShowDialog(this);
+                    var dialogResult = detailForm.ShowDialog(this);
+                    
+                    // Chỉ reload nếu có thay đổi dữ liệu (xóa hình ảnh)
+                    if (detailForm.WasImageDeleted || (_imageList?.Count ?? 0) != originalImageCount)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Phát hiện thay đổi dữ liệu, reloading datasource...");
+                        ReloadDataSource();
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("Không có thay đổi dữ liệu, không cần reload");
+                    }
                 }
             }
             catch (Exception ex)
@@ -947,92 +939,5 @@ namespace MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Load hình ảnh vào PictureBox
-        /// </summary>
-        private void LoadImageToPictureBox(PictureBox pictureBox, ProductImageDto imageDto)
-        {
-            try
-            {
-                if (imageDto?.ImageData != null && imageDto.ImageData.Length > 0)
-                {
-                    // Sử dụng ImageData từ database
-                    using (var ms = new MemoryStream(imageDto.ImageData))
-                    {
-                        pictureBox.Image = Image.FromStream(ms);
-                    }
-                }
-                else if (!string.IsNullOrEmpty(imageDto?.ImagePath) && File.Exists(imageDto.ImagePath))
-                {
-                    // Sử dụng ImagePath nếu có
-                    pictureBox.Image = Image.FromFile(imageDto.ImagePath);
-                }
-                else
-                {
-                    // Hiển thị placeholder nếu không có hình ảnh
-                    pictureBox.Image = CreatePlaceholderImage();
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi load hình ảnh: {ex.Message}");
-                pictureBox.Image = CreatePlaceholderImage();
-            }
-        }
-
-        /// <summary>
-        /// Tạo placeholder image khi không có hình ảnh
-        /// </summary>
-        private Image CreatePlaceholderImage()
-        {
-            try
-            {
-                var bitmap = new Bitmap(400, 300);
-                using (var g = Graphics.FromImage(bitmap))
-                {
-                    g.Clear(Color.LightGray);
-                    g.DrawString("Không có hình ảnh", 
-                                new Font("Arial", 16, FontStyle.Bold), 
-                                Brushes.DarkGray, 
-                                new PointF(150, 140));
-                }
-                return bitmap;
-            }
-            catch
-            {
-                return new Bitmap(400, 300);
-            }
-        }
-
-        /// <summary>
-        /// Lấy text thông tin hình ảnh
-        /// </summary>
-        private string GetImageInfoText(ProductImageDto imageDto)
-        {
-            try
-            {
-                var info = $"THÔNG TIN CHI TIẾT HÌNH ẢNH{Environment.NewLine}{Environment.NewLine}" +
-                          $"Tên: {imageDto.Caption ?? "Không có"}{Environment.NewLine}" +
-                          $"Mô tả: {imageDto.AltText ?? "Không có"}{Environment.NewLine}" +
-                          $"Sản phẩm: {imageDto.ProductName ?? "Không xác định"}{Environment.NewLine}" +
-                          $"Kích thước: {imageDto.ImageWidth}x{imageDto.ImageHeight} pixels{Environment.NewLine}" +
-                          $"Dung lượng: {(imageDto.ImageSize / 1024.0):F1} KB{Environment.NewLine}" +
-                          $"Loại file: {imageDto.ImageType ?? "Không xác định"}{Environment.NewLine}" +
-                          $"Ảnh chính: {(imageDto.IsPrimary ? "Có" : "Không")}{Environment.NewLine}" +
-                          $"Trạng thái: {(imageDto.IsActive ? "Hoạt động" : "Không hoạt động")}{Environment.NewLine}" +
-                          $"Ngày tạo: {imageDto.CreatedDate:dd/MM/yyyy HH:mm:ss}";
-
-                if (imageDto.ModifiedDate.HasValue)
-                {
-                    info += $"{Environment.NewLine}Ngày sửa: {imageDto.ModifiedDate.Value:dd/MM/yyyy HH:mm:ss}";
-                }
-
-                return info;
-            }
-            catch (Exception ex)
-            {
-                return $"Lỗi khi lấy thông tin: {ex.Message}";
-            }
-        }
     }
 }

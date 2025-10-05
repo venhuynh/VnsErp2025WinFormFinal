@@ -58,6 +58,51 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         }
 
         /// <summary>
+        /// Lấy hình ảnh theo ID
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        /// <returns>Hình ảnh hoặc null</returns>
+        public ProductImage GetById(Guid imageId)
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                // Load entity trực tiếp từ database
+                var entity = context.ProductImages
+                    .FirstOrDefault(x => x.Id == imageId);
+
+                if (entity == null)
+                    return null;
+
+                // Map sang ProductImage object
+                return new ProductImage
+                {
+                    Id = entity.Id,
+                    ProductId = entity.ProductId,
+                    VariantId = entity.VariantId,
+                    ImagePath = entity.ImagePath,
+                    SortOrder = entity.SortOrder,
+                    IsPrimary = entity.IsPrimary,
+                    ImageData = entity.ImageData, // Load ImageData để hiển thị hình ảnh
+                    ImageType = entity.ImageType,
+                    ImageSize = entity.ImageSize,
+                    ImageWidth = entity.ImageWidth,
+                    ImageHeight = entity.ImageHeight,
+                    Caption = entity.Caption,
+                    AltText = entity.AltText,
+                    IsActive = entity.IsActive,
+                    CreatedDate = entity.CreatedDate,
+                    ModifiedDate = entity.ModifiedDate
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy hình ảnh '{imageId}': {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Lấy ImageData của một hình ảnh cụ thể (lazy loading)
         /// </summary>
         /// <param name="imageId">ID hình ảnh</param>
