@@ -1,5 +1,14 @@
-﻿using Bll.Utils;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Bll.Common.ImageService;
+using Bll.MasterData.ProductServiceBll;
+using Bll.Utils;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
@@ -7,16 +16,6 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.DXErrorProvider;
 using MasterData.ProductService.Converters;
 using MasterData.ProductService.Dto;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.MasterData.ProductServiceBll;
 
 namespace MasterData.ProductService
 {
@@ -71,7 +70,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Trạng thái hình ảnh đã thay đổi
         /// </summary>
-        private bool _hasImageChanged = false;
+        private bool _hasImageChanged;
 
         /// <summary>
         /// Cache danh sách sản phẩm/dịch vụ đang hoạt động
@@ -798,14 +797,14 @@ namespace MasterData.ProductService
                     var selectedFilePath = xtraOpenFileDialog1.FileName;
                     
                     // Kiểm tra file có tồn tại không
-                    if (!System.IO.File.Exists(selectedFilePath))
+                    if (!File.Exists(selectedFilePath))
                     {
                         ShowError("File đã chọn không tồn tại trên hệ thống");
                         return;
                     }
 
                     // Kiểm tra file với ImageValidationService
-                    var fileInfo = new System.IO.FileInfo(selectedFilePath);
+                    var fileInfo = new FileInfo(selectedFilePath);
                     var imageData = File.ReadAllBytes(selectedFilePath);
                     
                     // Validate hình ảnh cho thumbnail (chấp nhận mọi kích thước)

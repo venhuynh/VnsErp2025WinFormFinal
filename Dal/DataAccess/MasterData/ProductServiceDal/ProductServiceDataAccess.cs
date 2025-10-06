@@ -865,9 +865,9 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// Xóa sản phẩm/dịch vụ theo ID.
         /// </summary>
         /// <param name="id">ID sản phẩm/dịch vụ cần xóa</param>
-        public void DeleteById(Guid id)
+        public override bool DeleteById(Guid id)
         {
-            DeleteProductService(id);
+            return DeleteProductService(id);
         }
 
         /// <summary>

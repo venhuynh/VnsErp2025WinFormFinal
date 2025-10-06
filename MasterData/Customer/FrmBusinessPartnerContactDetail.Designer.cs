@@ -1,4 +1,13 @@
-﻿using MasterData.Customer.Dto;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraDataLayout;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraLayout;
+using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {
@@ -7,7 +16,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -44,10 +53,11 @@ namespace MasterData.Customer
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
             this.PartnerNameSearchLookUpEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
-            this.businessPartnerContactDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.businessPartnerListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.businessPartnerSiteListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colPartnerName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colSiteName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colAddress = new DevExpress.XtraGrid.Columns.GridColumn();
             this.FullNameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.PositionTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.PhoneTextEdit = new DevExpress.XtraEditors.TextEdit();
@@ -61,13 +71,13 @@ namespace MasterData.Customer
             this.ItemForPhone = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForEmail = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForIsPrimary = new DevExpress.XtraLayout.LayoutControlItem();
+            this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PartnerNameSearchLookUpEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerContactDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FullNameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PositionTextEdit.Properties)).BeginInit();
@@ -82,6 +92,7 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPhone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForEmail)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsPrimary)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -173,7 +184,6 @@ namespace MasterData.Customer
             this.dataLayoutControl1.Controls.Add(this.PhoneTextEdit);
             this.dataLayoutControl1.Controls.Add(this.EmailTextEdit);
             this.dataLayoutControl1.Controls.Add(this.IsPrimaryCheckEdit);
-            this.dataLayoutControl1.DataSource = this.businessPartnerContactDtoBindingSource;
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
@@ -184,37 +194,43 @@ namespace MasterData.Customer
             // 
             // PartnerNameSearchLookUpEdit
             // 
-            this.PartnerNameSearchLookUpEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.businessPartnerContactDtoBindingSource, "PartnerName", true));
             this.PartnerNameSearchLookUpEdit.Location = new System.Drawing.Point(94, 16);
             this.PartnerNameSearchLookUpEdit.MenuManager = this.barManager1;
             this.PartnerNameSearchLookUpEdit.Name = "PartnerNameSearchLookUpEdit";
             this.PartnerNameSearchLookUpEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.PartnerNameSearchLookUpEdit.Properties.DataSource = this.businessPartnerListDtoBindingSource;
-            this.PartnerNameSearchLookUpEdit.Properties.DisplayMember = "PartnerName";
+            this.PartnerNameSearchLookUpEdit.Properties.DataSource = this.businessPartnerSiteListDtoBindingSource;
+            this.PartnerNameSearchLookUpEdit.Properties.DisplayMember = "SiteName";
             this.PartnerNameSearchLookUpEdit.Properties.NullText = "";
             this.PartnerNameSearchLookUpEdit.Properties.PopupView = this.searchLookUpEdit1View;
+            this.PartnerNameSearchLookUpEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemMemoEdit1});
             this.PartnerNameSearchLookUpEdit.Properties.ValueMember = "Id";
             this.PartnerNameSearchLookUpEdit.Size = new System.Drawing.Size(320, 28);
             this.PartnerNameSearchLookUpEdit.StyleController = this.dataLayoutControl1;
             this.PartnerNameSearchLookUpEdit.TabIndex = 4;
             // 
-            // businessPartnerContactDtoBindingSource
+            // businessPartnerSiteListDtoBindingSource
             // 
-            this.businessPartnerContactDtoBindingSource.DataSource = typeof(BusinessPartnerContactDto);
-            // 
-            // businessPartnerListDtoBindingSource
-            // 
-            this.businessPartnerListDtoBindingSource.DataSource = typeof(BusinessPartnerListDto);
+            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(MasterData.Customer.Dto.BusinessPartnerSiteListDto);
             // 
             // searchLookUpEdit1View
             // 
             this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colPartnerName});
+            this.colPartnerName,
+            this.colSiteName,
+            this.colAddress});
             this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.searchLookUpEdit1View.GroupCount = 1;
             this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
+            this.searchLookUpEdit1View.OptionsBehavior.AutoExpandAllGroups = true;
+            this.searchLookUpEdit1View.OptionsPrint.ExpandAllDetails = true;
             this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.searchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.searchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            this.searchLookUpEdit1View.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
+            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.colPartnerName, DevExpress.Data.ColumnSortOrder.Ascending)});
             // 
             // colPartnerName
             // 
@@ -223,9 +239,24 @@ namespace MasterData.Customer
             this.colPartnerName.Visible = true;
             this.colPartnerName.VisibleIndex = 0;
             // 
+            // colSiteName
+            // 
+            this.colSiteName.ColumnEdit = this.repositoryItemMemoEdit1;
+            this.colSiteName.FieldName = "SiteName";
+            this.colSiteName.Name = "colSiteName";
+            this.colSiteName.Visible = true;
+            this.colSiteName.VisibleIndex = 0;
+            // 
+            // colAddress
+            // 
+            this.colAddress.ColumnEdit = this.repositoryItemMemoEdit1;
+            this.colAddress.FieldName = "Address";
+            this.colAddress.Name = "colAddress";
+            this.colAddress.Visible = true;
+            this.colAddress.VisibleIndex = 1;
+            // 
             // FullNameTextEdit
             // 
-            this.FullNameTextEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.businessPartnerContactDtoBindingSource, "FullName", true));
             this.FullNameTextEdit.Location = new System.Drawing.Point(94, 50);
             this.FullNameTextEdit.MenuManager = this.barManager1;
             this.FullNameTextEdit.Name = "FullNameTextEdit";
@@ -236,7 +267,6 @@ namespace MasterData.Customer
             // 
             // PositionTextEdit
             // 
-            this.PositionTextEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.businessPartnerContactDtoBindingSource, "Position", true));
             this.PositionTextEdit.Location = new System.Drawing.Point(94, 84);
             this.PositionTextEdit.MenuManager = this.barManager1;
             this.PositionTextEdit.Name = "PositionTextEdit";
@@ -246,7 +276,6 @@ namespace MasterData.Customer
             // 
             // PhoneTextEdit
             // 
-            this.PhoneTextEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.businessPartnerContactDtoBindingSource, "Phone", true));
             this.PhoneTextEdit.Location = new System.Drawing.Point(94, 118);
             this.PhoneTextEdit.MenuManager = this.barManager1;
             this.PhoneTextEdit.Name = "PhoneTextEdit";
@@ -259,7 +288,6 @@ namespace MasterData.Customer
             // 
             // EmailTextEdit
             // 
-            this.EmailTextEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.businessPartnerContactDtoBindingSource, "Email", true));
             this.EmailTextEdit.Location = new System.Drawing.Point(94, 152);
             this.EmailTextEdit.MenuManager = this.barManager1;
             this.EmailTextEdit.Name = "EmailTextEdit";
@@ -269,7 +297,6 @@ namespace MasterData.Customer
             // 
             // IsPrimaryCheckEdit
             // 
-            this.IsPrimaryCheckEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.businessPartnerContactDtoBindingSource, "IsPrimary", true));
             this.IsPrimaryCheckEdit.Location = new System.Drawing.Point(16, 186);
             this.IsPrimaryCheckEdit.MenuManager = this.barManager1;
             this.IsPrimaryCheckEdit.Name = "IsPrimaryCheckEdit";
@@ -358,6 +385,10 @@ namespace MasterData.Customer
             this.ItemForIsPrimary.Text = "Liên hệ chính";
             this.ItemForIsPrimary.TextVisible = false;
             // 
+            // repositoryItemMemoEdit1
+            // 
+            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
+            // 
             // FrmBusinessPartnerContactDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -376,8 +407,7 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PartnerNameSearchLookUpEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerContactDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FullNameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PositionTextEdit.Properties)).EndInit();
@@ -392,39 +422,42 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPhone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForEmail)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsPrimary)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem SaveBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem CloseBarButtonItem;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
-        private DevExpress.XtraDataLayout.DataLayoutControl dataLayoutControl1;
-        private DevExpress.XtraEditors.SearchLookUpEdit PartnerNameSearchLookUpEdit;
-        private System.Windows.Forms.BindingSource businessPartnerContactDtoBindingSource;
-        private System.Windows.Forms.BindingSource businessPartnerListDtoBindingSource;
-        private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
-        private DevExpress.XtraGrid.Columns.GridColumn colPartnerName;
-        private DevExpress.XtraEditors.TextEdit FullNameTextEdit;
-        private DevExpress.XtraEditors.TextEdit PositionTextEdit;
-        private DevExpress.XtraEditors.TextEdit PhoneTextEdit;
-        private DevExpress.XtraEditors.TextEdit EmailTextEdit;
-        private DevExpress.XtraEditors.CheckEdit IsPrimaryCheckEdit;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPartnerName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForFullName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPosition;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPhone;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForEmail;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForIsPrimary;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarButtonItem SaveBarButtonItem;
+        private BarButtonItem CloseBarButtonItem;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private DXErrorProvider dxErrorProvider1;
+        private DataLayoutControl dataLayoutControl1;
+        private SearchLookUpEdit PartnerNameSearchLookUpEdit;
+        private GridView searchLookUpEdit1View;
+        private GridColumn colPartnerName;
+        private TextEdit FullNameTextEdit;
+        private TextEdit PositionTextEdit;
+        private TextEdit PhoneTextEdit;
+        private TextEdit EmailTextEdit;
+        private CheckEdit IsPrimaryCheckEdit;
+        private LayoutControlGroup Root;
+        private LayoutControlGroup layoutControlGroup1;
+        private LayoutControlItem ItemForPartnerName;
+        private LayoutControlItem ItemForFullName;
+        private LayoutControlItem ItemForPosition;
+        private LayoutControlItem ItemForPhone;
+        private LayoutControlItem ItemForEmail;
+        private LayoutControlItem ItemForIsPrimary;
+        private BindingSource businessPartnerSiteListDtoBindingSource;
+        private GridColumn colSiteName;
+        private GridColumn colAddress;
+        private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit repositoryItemMemoEdit1;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Bll.MasterData.ProductServiceBll;
 using Bll.Utils;
@@ -282,7 +283,7 @@ namespace MasterData.ProductService
             }
 
             // Kiểm tra format CategoryCode (chỉ chữ cái và số)
-            if (!System.Text.RegularExpressions.Regex.IsMatch(categoryCode, @"^[A-Z0-9]+$"))
+            if (!Regex.IsMatch(categoryCode, @"^[A-Z0-9]+$"))
             {
                 dxErrorProvider1.SetError(CategoryCodeTextEdit, "Mã danh mục chỉ được chứa chữ cái và số (không có khoảng trắng, ký tự đặc biệt)", ErrorType.Critical);
                 CategoryCodeTextEdit?.Focus();

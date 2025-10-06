@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace MasterData.ProductService.Dto
 {
@@ -179,7 +180,7 @@ namespace MasterData.ProductService.Dto
                 // Cập nhật tên file từ đường dẫn
                 if (!string.IsNullOrEmpty(ImagePath))
                 {
-                    FileName = System.IO.Path.GetFileName(ImagePath);
+                    FileName = Path.GetFileName(ImagePath);
                 }
 
                 // Cập nhật kích thước file

@@ -1,11 +1,24 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraDataLayout;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraLayout;
+using DevExpress.XtraTreeList.Columns;
+
+namespace MasterData.ProductService
 {
     partial class FrmProductVariantDetail
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -658,55 +671,55 @@
         }
 
         #endregion
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem SaveBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem CloseBarButtonItem;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryCode;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentCategoryName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colLevel;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colHasChildren;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colFullPath;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colProductCount;
-        private DevExpress.XtraEditors.XtraOpenFileDialog xtraOpenFileDialog1;
-        private DevExpress.XtraDataLayout.DataLayoutControl dataLayoutControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraEditors.SearchLookUpEdit ProductNameSearchLookupEdit;
-        private System.Windows.Forms.BindingSource productServiceDtoBindingSource;
-        private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
-        private DevExpress.XtraGrid.Columns.GridColumn colCategoryName1;
-        private DevExpress.XtraGrid.Columns.GridColumn colName;
-        private DevExpress.XtraEditors.TextEdit VariantCodeTextEdit;
-        private DevExpress.XtraEditors.ToggleSwitch IsActiveToggleSwitch;
-        private DevExpress.XtraEditors.SearchLookUpEdit UnitNameSearchLookupEdit;
-        private System.Windows.Forms.BindingSource unitOfMeasureDtoBindingSource;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
-        private DevExpress.XtraGrid.Columns.GridColumn colFullInfo;
-        private DevExpress.XtraGrid.GridControl AttributeValueGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView AttributeValueGridView;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForProductName;
-        private System.Windows.Forms.BindingSource attributeValueDtoBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colValue;
-        private DevExpress.XtraGrid.Columns.GridColumn colAttributeName;
-        private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit AttributeSearchLookUpEdit;
-        private System.Windows.Forms.BindingSource attributeDtoBindingSource;
-        private DevExpress.XtraGrid.Views.Grid.GridView AttributeSearchLookUpEdit1View;
-        private DevExpress.XtraGrid.Columns.GridColumn colFullInfo1;
-        private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem2;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForVariantCode;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForIsActive;
-        private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem3;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForUnitName;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarButtonItem SaveBarButtonItem;
+        private BarButtonItem CloseBarButtonItem;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private DXErrorProvider dxErrorProvider1;
+        private TreeListColumn colId;
+        private TreeListColumn colCategoryCode;
+        private TreeListColumn colCategoryName;
+        private TreeListColumn colDescription;
+        private TreeListColumn colParentId;
+        private TreeListColumn colParentCategoryName;
+        private TreeListColumn colLevel;
+        private TreeListColumn colHasChildren;
+        private TreeListColumn colFullPath;
+        private TreeListColumn colProductCount;
+        private XtraOpenFileDialog xtraOpenFileDialog1;
+        private DataLayoutControl dataLayoutControl1;
+        private LayoutControlGroup Root;
+        private SearchLookUpEdit ProductNameSearchLookupEdit;
+        private BindingSource productServiceDtoBindingSource;
+        private GridView searchLookUpEdit1View;
+        private GridColumn colCategoryName1;
+        private GridColumn colName;
+        private TextEdit VariantCodeTextEdit;
+        private ToggleSwitch IsActiveToggleSwitch;
+        private SearchLookUpEdit UnitNameSearchLookupEdit;
+        private BindingSource unitOfMeasureDtoBindingSource;
+        private GridView gridView1;
+        private GridColumn colFullInfo;
+        private GridControl AttributeValueGridControl;
+        private GridView AttributeValueGridView;
+        private LayoutControlItem ItemForProductName;
+        private BindingSource attributeValueDtoBindingSource;
+        private GridColumn colValue;
+        private GridColumn colAttributeName;
+        private SimpleLabelItem simpleLabelItem1;
+        private RepositoryItemSearchLookUpEdit AttributeSearchLookUpEdit;
+        private BindingSource attributeDtoBindingSource;
+        private GridView AttributeSearchLookUpEdit1View;
+        private GridColumn colFullInfo1;
+        private SimpleLabelItem simpleLabelItem2;
+        private LayoutControlItem ItemForVariantCode;
+        private LayoutControlItem ItemForIsActive;
+        private SimpleLabelItem simpleLabelItem3;
+        private LayoutControlItem ItemForUnitName;
+        private LayoutControlItem layoutControlItem1;
     }
 }

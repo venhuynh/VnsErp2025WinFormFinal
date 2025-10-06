@@ -1,18 +1,20 @@
-﻿using Bll.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using Bll.Common;
 using Bll.MasterData.ProductServiceBll;
 using Bll.Utils;
+using DevExpress.Data;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.WinExplorer;
 using DevExpress.XtraSplashScreen;
 using MasterData.ProductService.Dto;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace MasterData.ProductService
 {
@@ -32,7 +34,9 @@ namespace MasterData.ProductService
         /// <summary>
         /// ID sản phẩm hiện tại đang xem hình ảnh
         /// </summary>
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private Guid? _currentProductId;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
         /// <summary>
         /// Danh sách hình ảnh hiện tại
@@ -401,15 +405,15 @@ namespace MasterData.ProductService
                     ProductImageServiceGWinExplorerView.Columns.Clear();
                 
                 // Thêm các columns theo thứ tự ưu tiên
-                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "Id", Visible = false });
-                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "Caption", Caption = @"Tên hình ảnh" });
-                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "AltText", Caption = @"Mô tả" });
-                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "ImageData", Caption = @"Hình ảnh" });
-                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "IsPrimary", Caption = @"Ảnh chính" });
-                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "ProductName", Caption = @"Sản phẩm", Visible = false });
-                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "ImageType", Caption = @"Loại ảnh", Visible = false });
-                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "ImageSize", Caption = @"Kích thước", Visible = false });
-                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn() { FieldName = "SortOrder", Caption = @"Thứ tự", Visible = false });
+                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn { FieldName = "Id", Visible = false });
+                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn { FieldName = "Caption", Caption = @"Tên hình ảnh" });
+                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn { FieldName = "AltText", Caption = @"Mô tả" });
+                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn { FieldName = "ImageData", Caption = @"Hình ảnh" });
+                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn { FieldName = "IsPrimary", Caption = @"Ảnh chính" });
+                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn { FieldName = "ProductName", Caption = @"Sản phẩm", Visible = false });
+                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn { FieldName = "ImageType", Caption = @"Loại ảnh", Visible = false });
+                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn { FieldName = "ImageSize", Caption = @"Kích thước", Visible = false });
+                ProductImageServiceGWinExplorerView.Columns.Add(new GridColumn { FieldName = "SortOrder", Caption = @"Thứ tự", Visible = false });
 
                 // Cấu hình ColumnSet theo DevExpress demo pattern
                 ConfigureColumnSet();
@@ -463,7 +467,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Xử lý sự kiện click nút Search
         /// </summary>
-        private void SearchByKeyworkButtonEdit_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
+        private void SearchByKeyworkButtonEdit_ButtonClick(object sender, ButtonPressedEventArgs e)
         {
             PerformSearch();
         }
@@ -642,7 +646,7 @@ namespace MasterData.ProductService
                               $"• Kiểm tra lại từ khóa{Environment.NewLine}" +
                               $"• Thử từ khóa ngắn hơn{Environment.NewLine}" +
                               $"• Tìm kiếm theo tên sản phẩm, mã sản phẩm, danh mục{Environment.NewLine}" +
-                              $"• Sử dụng ký tự đại diện (*) để tìm kiếm mở rộng";
+                              "• Sử dụng ký tự đại diện (*) để tìm kiếm mở rộng";
                 }
                 else if (imageCount == 0)
                 {
@@ -651,7 +655,7 @@ namespace MasterData.ProductService
                               $"💡 Gợi ý:{Environment.NewLine}" +
                               $"• Các sản phẩm này có thể chưa có hình ảnh{Environment.NewLine}" +
                               $"• Thử tìm kiếm với sản phẩm khác{Environment.NewLine}" +
-                              $"• Kiểm tra xem sản phẩm đã được upload hình ảnh chưa";
+                              "• Kiểm tra xem sản phẩm đã được upload hình ảnh chưa";
                 }
                 else
                 {
@@ -736,11 +740,11 @@ namespace MasterData.ProductService
                 // Refresh grid để cập nhật UI
                 ProductImageServiceGridControl.RefreshDataSource();
                 
-                System.Diagnostics.Debug.WriteLine("Đã reset selection và clear datasource");
+                Debug.WriteLine("Đã reset selection và clear datasource");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi reset image selection: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi reset image selection: {ex.Message}");
             }
         }
 
@@ -806,7 +810,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Xử lý sự kiện Selection Changed để hiển thị thông tin chi tiết tại debug console
         /// </summary>
-        private void ProductImageServiceGWinExplorerView_SelectionChanged(object sender, DevExpress.Data.SelectionChangedEventArgs e)
+        private void ProductImageServiceGWinExplorerView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
@@ -820,7 +824,7 @@ namespace MasterData.ProductService
             catch (Exception ex)
             {
                 // Log lỗi vào debug console thay vì hiển thị message box
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi hiển thị thông tin hình ảnh: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi hiển thị thông tin hình ảnh: {ex.Message}");
             }
         }
 
@@ -841,7 +845,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi lấy hình ảnh được chọn: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi lấy hình ảnh được chọn: {ex.Message}");
                 return null;
             }
         }
@@ -855,7 +859,7 @@ namespace MasterData.ProductService
             {
                 if (imageDto == null) return;
 
-                var consoleMessage = $"=== THÔNG TIN CHI TIẾT HÌNH ẢNH ===" + Environment.NewLine +
+                var consoleMessage = "=== THÔNG TIN CHI TIẾT HÌNH ẢNH ===" + Environment.NewLine +
                                    $"Tên: {imageDto.Caption ?? "Không có"}" + Environment.NewLine +
                                    $"Mô tả: {imageDto.AltText ?? "Không có"}" + Environment.NewLine +
                                    $"Sản phẩm: {imageDto.ProductName ?? "Không xác định"}" + Environment.NewLine +
@@ -889,11 +893,11 @@ namespace MasterData.ProductService
                                  "=================================";
 
                 // Hiển thị tại debug console
-                System.Diagnostics.Debug.WriteLine(consoleMessage);
+                Debug.WriteLine(consoleMessage);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi hiển thị thông tin chi tiết: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi hiển thị thông tin chi tiết: {ex.Message}");
             }
         }
 
@@ -924,12 +928,12 @@ namespace MasterData.ProductService
                     // Chỉ reload nếu có thay đổi dữ liệu (xóa hình ảnh)
                     if (detailForm.WasImageDeleted || (_imageList?.Count ?? 0) != originalImageCount)
                     {
-                        System.Diagnostics.Debug.WriteLine("Phát hiện thay đổi dữ liệu, reloading datasource...");
+                        Debug.WriteLine("Phát hiện thay đổi dữ liệu, reloading datasource...");
                         ReloadDataSource();
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine("Không có thay đổi dữ liệu, không cần reload");
+                        Debug.WriteLine("Không có thay đổi dữ liệu, không cần reload");
                     }
                 }
             }

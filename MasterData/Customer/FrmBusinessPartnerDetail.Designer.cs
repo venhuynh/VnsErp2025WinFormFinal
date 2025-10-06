@@ -1,11 +1,18 @@
-﻿namespace MasterData.Customer
+﻿using System.ComponentModel;
+using DevExpress.XtraBars;
+using DevExpress.XtraDataLayout;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraLayout;
+
+namespace MasterData.Customer
 {
     partial class FrmBusinessPartnerDetail
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -649,51 +656,51 @@
 
         #endregion
 
-        private DevExpress.XtraDataLayout.DataLayoutControl dataLayoutControl1;
-        private DevExpress.XtraEditors.TextEdit PartnerCodeTextEdit;
-        private DevExpress.XtraEditors.TextEdit PartnerNameTextEdit;
-        private DevExpress.XtraEditors.ComboBoxEdit PartnerTypeNameComboBoxEdit;
-        private DevExpress.XtraEditors.TextEdit TaxCodeTextEdit;
-        private DevExpress.XtraEditors.TextEdit PhoneTextEdit;
-        private DevExpress.XtraEditors.TextEdit EmailTextEdit;
-        private DevExpress.XtraEditors.TextEdit WebsiteTextEdit;
-        private DevExpress.XtraEditors.TextEdit AddressTextEdit;
-        private DevExpress.XtraEditors.TextEdit CityTextEdit;
-        private DevExpress.XtraEditors.TextEdit CountryTextEdit;
-        private DevExpress.XtraEditors.TextEdit ContactPersonTextEdit;
-        private DevExpress.XtraEditors.TextEdit ContactPositionTextEdit;
-        private DevExpress.XtraEditors.TextEdit BankAccountTextEdit;
-        private DevExpress.XtraEditors.TextEdit BankNameTextEdit;
-        private DevExpress.XtraEditors.TextEdit CreditLimitTextEdit;
-        private DevExpress.XtraEditors.TextEdit PaymentTermTextEdit;
-        private DevExpress.XtraEditors.ToggleSwitch IsActiveToggleSwitch;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPartnerCode;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPartnerName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPartnerTypeName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForTaxCode;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPhone;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForEmail;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForWebsite;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForAddress;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForCity;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForCountry;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForContactPerson;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForContactPosition;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForBankAccount;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForBankName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForCreditLimit;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPaymentTerm;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForIsActive;
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem SaveBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem CloseBarButtonItem;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
+        private DataLayoutControl dataLayoutControl1;
+        private TextEdit PartnerCodeTextEdit;
+        private TextEdit PartnerNameTextEdit;
+        private ComboBoxEdit PartnerTypeNameComboBoxEdit;
+        private TextEdit TaxCodeTextEdit;
+        private TextEdit PhoneTextEdit;
+        private TextEdit EmailTextEdit;
+        private TextEdit WebsiteTextEdit;
+        private TextEdit AddressTextEdit;
+        private TextEdit CityTextEdit;
+        private TextEdit CountryTextEdit;
+        private TextEdit ContactPersonTextEdit;
+        private TextEdit ContactPositionTextEdit;
+        private TextEdit BankAccountTextEdit;
+        private TextEdit BankNameTextEdit;
+        private TextEdit CreditLimitTextEdit;
+        private TextEdit PaymentTermTextEdit;
+        private ToggleSwitch IsActiveToggleSwitch;
+        private LayoutControlGroup Root;
+        private LayoutControlGroup layoutControlGroup1;
+        private LayoutControlItem ItemForPartnerCode;
+        private LayoutControlItem ItemForPartnerName;
+        private LayoutControlItem ItemForPartnerTypeName;
+        private LayoutControlItem ItemForTaxCode;
+        private LayoutControlItem ItemForPhone;
+        private LayoutControlItem ItemForEmail;
+        private LayoutControlItem ItemForWebsite;
+        private LayoutControlItem ItemForAddress;
+        private LayoutControlItem ItemForCity;
+        private LayoutControlItem ItemForCountry;
+        private LayoutControlItem ItemForContactPerson;
+        private LayoutControlItem ItemForContactPosition;
+        private LayoutControlItem ItemForBankAccount;
+        private LayoutControlItem ItemForBankName;
+        private LayoutControlItem ItemForCreditLimit;
+        private LayoutControlItem ItemForPaymentTerm;
+        private LayoutControlItem ItemForIsActive;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarButtonItem SaveBarButtonItem;
+        private BarButtonItem CloseBarButtonItem;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private DXErrorProvider dxErrorProvider1;
     }
 }

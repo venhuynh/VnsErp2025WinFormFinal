@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Dal.DataContext;
 using MasterData.Customer.Dto;
@@ -68,7 +69,7 @@ namespace MasterData.Customer.Converters
             var partnerCount = mappingCounts?.ContainsKey(entity.Id) == true ? mappingCounts[entity.Id] : 0;
             
             // Debug logging
-            System.Diagnostics.Debug.WriteLine($"ToDtoWithMappingCount - Category: {entity.CategoryName}, ID: {entity.Id}, PartnerCount: {partnerCount}");
+            Debug.WriteLine($"ToDtoWithMappingCount - Category: {entity.CategoryName}, ID: {entity.Id}, PartnerCount: {partnerCount}");
             
             return entity.ToDtoWithCount(partnerCount);
         }

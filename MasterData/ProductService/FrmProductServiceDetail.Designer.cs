@@ -1,11 +1,21 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraDataLayout;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraLayout;
+using DevExpress.XtraTreeList;
+using DevExpress.XtraTreeList.Columns;
+
+namespace MasterData.ProductService
 {
     partial class FrmProductServiceDetail
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -543,47 +553,47 @@
         }
 
         #endregion
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem SaveBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem CloseBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem ClearThumbnailBarButtonItem;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
-        private DevExpress.XtraDataLayout.DataLayoutControl dataLayoutControl1;
-        private DevExpress.XtraEditors.TextEdit CodeTextEdit;
-        private DevExpress.XtraEditors.TextEdit NameTextEdit;
-        private DevExpress.XtraEditors.PictureEdit ThumbnailImagePictureEdit;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForCode;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForIsService;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForDescription;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForIsActive;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForThumbnailPath;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForThumbnailImage;
-        private DevExpress.XtraEditors.TreeListLookUpEdit CategoryIdTreeListLookUpEdit;
-        private System.Windows.Forms.BindingSource productServiceCategoryDtoBindingSource;
-        private DevExpress.XtraTreeList.TreeList treeListLookUpEdit1TreeList;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem;
-        private DevExpress.XtraEditors.ToggleSwitch IsServiceToggleSwitch;
-        private DevExpress.XtraEditors.ToggleSwitch IsActiveToggleSwitch;
-        private DevExpress.XtraEditors.ButtonEdit ThumbnailPathButtonEdit;
-        private DevExpress.XtraEditors.MemoEdit DescriptionTextEdit;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryCode;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentCategoryName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colLevel;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colHasChildren;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colFullPath;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colProductCount;
-        private DevExpress.XtraEditors.XtraOpenFileDialog xtraOpenFileDialog1;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarButtonItem SaveBarButtonItem;
+        private BarButtonItem CloseBarButtonItem;
+        private BarButtonItem ClearThumbnailBarButtonItem;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private DXErrorProvider dxErrorProvider1;
+        private DataLayoutControl dataLayoutControl1;
+        private TextEdit CodeTextEdit;
+        private TextEdit NameTextEdit;
+        private PictureEdit ThumbnailImagePictureEdit;
+        private LayoutControlGroup Root;
+        private LayoutControlGroup layoutControlGroup1;
+        private LayoutControlItem ItemForCode;
+        private LayoutControlItem ItemForName;
+        private LayoutControlItem ItemForIsService;
+        private LayoutControlItem ItemForDescription;
+        private LayoutControlItem ItemForIsActive;
+        private LayoutControlItem ItemForThumbnailPath;
+        private LayoutControlItem ItemForThumbnailImage;
+        private TreeListLookUpEdit CategoryIdTreeListLookUpEdit;
+        private BindingSource productServiceCategoryDtoBindingSource;
+        private TreeList treeListLookUpEdit1TreeList;
+        private LayoutControlItem layoutControlItem;
+        private ToggleSwitch IsServiceToggleSwitch;
+        private ToggleSwitch IsActiveToggleSwitch;
+        private ButtonEdit ThumbnailPathButtonEdit;
+        private MemoEdit DescriptionTextEdit;
+        private TreeListColumn colId;
+        private TreeListColumn colCategoryCode;
+        private TreeListColumn colCategoryName;
+        private TreeListColumn colDescription;
+        private TreeListColumn colParentId;
+        private TreeListColumn colParentCategoryName;
+        private TreeListColumn colLevel;
+        private TreeListColumn colHasChildren;
+        private TreeListColumn colFullPath;
+        private TreeListColumn colProductCount;
+        private XtraOpenFileDialog xtraOpenFileDialog1;
     }
 }

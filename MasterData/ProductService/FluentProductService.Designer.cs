@@ -1,11 +1,15 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using DevExpress.XtraBars.FluentDesignSystem;
+using DevExpress.XtraBars.Navigation;
+
+namespace MasterData.ProductService
 {
     partial class FluentProductService
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -127,13 +131,13 @@
         }
 
         #endregion
-        private DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormContainer fluentDesignFormContainer1;
-        private DevExpress.XtraBars.Navigation.AccordionControl accordionControl1;
-        private DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormControl fluentDesignFormControl1;
-        private DevExpress.XtraBars.FluentDesignSystem.FluentFormDefaultManager fluentFormDefaultManager1;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement ProductServiceCategoryBtn;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement ProductServiceListBtn;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement ProductVariantBtn;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement ProductServiceImagesBtn;
+        private FluentDesignFormContainer fluentDesignFormContainer1;
+        private AccordionControl accordionControl1;
+        private FluentDesignFormControl fluentDesignFormControl1;
+        private FluentFormDefaultManager fluentFormDefaultManager1;
+        private AccordionControlElement ProductServiceCategoryBtn;
+        private AccordionControlElement ProductServiceListBtn;
+        private AccordionControlElement ProductVariantBtn;
+        private AccordionControlElement ProductServiceImagesBtn;
     }
 }

@@ -1,11 +1,18 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using DevExpress.XtraBars.Navigation;
+using DevExpress.XtraEditors;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Views.WinExplorer;
+using DevExpress.XtraLayout;
+
+namespace MasterData.ProductService
 {
     partial class UcProductImage
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -237,19 +244,19 @@
 
         #endregion
 
-        private DevExpress.XtraGrid.GridControl ProductImageServiceGridControl;
-        private DevExpress.XtraGrid.Views.WinExplorer.WinExplorerView ProductImageServiceGWinExplorerView;
-        private DevExpress.XtraEditors.SidePanel sidePanel1;
-        private DevExpress.XtraBars.Navigation.TabPane tabPane1;
-        private DevExpress.XtraBars.Navigation.TabNavigationPage tabNavigationPage1;
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraEditors.SimpleButton btnAddImage;
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup4;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private DevExpress.XtraEditors.ButtonEdit SearchByKeyworkButtonEdit;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem8;
-        private DevExpress.XtraEditors.MemoEdit ResultMemoEdit;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private GridControl ProductImageServiceGridControl;
+        private WinExplorerView ProductImageServiceGWinExplorerView;
+        private SidePanel sidePanel1;
+        private TabPane tabPane1;
+        private TabNavigationPage tabNavigationPage1;
+        private LayoutControl layoutControl1;
+        private LayoutControlGroup layoutControlGroup1;
+        private SimpleButton btnAddImage;
+        private LayoutControlGroup layoutControlGroup4;
+        private LayoutControlItem layoutControlItem2;
+        private ButtonEdit SearchByKeyworkButtonEdit;
+        private LayoutControlItem layoutControlItem8;
+        private MemoEdit ResultMemoEdit;
+        private LayoutControlItem layoutControlItem1;
     }
 }

@@ -1,14 +1,21 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Bll.Common;
+using Bll.MasterData.ProductServiceBll;
 using Bll.Utils;
+using DevExpress.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraSplashScreen;
 using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Nodes;
 using MasterData.ProductService.Converters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Bll.MasterData.ProductServiceBll;
 using MasterData.ProductService.Dto;
 
 namespace MasterData.ProductService
@@ -17,7 +24,7 @@ namespace MasterData.ProductService
     /// UserControl quản lý danh mục sản phẩm/dịch vụ.
     /// Cung cấp chức năng CRUD đầy đủ với TreeList hierarchical, checkbox selection và giao diện thân thiện.
     /// </summary>
-    public partial class UcProductServiceCategory : DevExpress.XtraEditors.XtraUserControl
+    public partial class UcProductServiceCategory : XtraUserControl
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -79,7 +86,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Người dùng bấm "Danh sách" để tải dữ liệu
         /// </summary>
-        private async void ListDataBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void ListDataBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             await LoadDataAsync();
         }
@@ -87,7 +94,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Người dùng bấm "Mới"
         /// </summary>
-        private async void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
@@ -95,7 +102,7 @@ namespace MasterData.ProductService
                 {
                     using (var form = new FrmProductServiceCategoryDetail(Guid.Empty))
                     {
-                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
 
                         await LoadDataAsync();
@@ -113,7 +120,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Người dùng bấm "Điều chỉnh"
         /// </summary>
-        private async void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Chỉ cho phép chỉnh sửa 1 dòng dữ liệu
             if (_selectedCategoryIds == null || _selectedCategoryIds.Count == 0)
@@ -141,7 +148,7 @@ namespace MasterData.ProductService
             if (dto == null || dto.Id != id)
             {
                 // Tìm đúng DTO theo Id trong datasource nếu FocusedRow không khớp selection
-                if (productServiceCategoryDtoBindingSource.DataSource is System.Collections.IEnumerable list)
+                if (productServiceCategoryDtoBindingSource.DataSource is IEnumerable list)
                 {
                     foreach (var item in list)
                     {
@@ -166,7 +173,7 @@ namespace MasterData.ProductService
                 {
                     using (var form = new FrmProductServiceCategoryDetail(dto.Id))
                     {
-                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
 
                         await LoadDataAsync();
@@ -183,7 +190,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Người dùng bấm "Xóa"
         /// </summary>
-        private async void DeleteBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (_selectedCategoryIds == null || _selectedCategoryIds.Count == 0)
             {
@@ -222,7 +229,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Người dùng bấm "Xuất"
         /// </summary>
-        private void ExportBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Chỉ cho phép xuất khi có dữ liệu hiển thị
             var rowCount = treeList1.VisibleNodesCount;
@@ -235,13 +242,13 @@ namespace MasterData.ProductService
             // Export TreeList data
             try
             {
-                var saveDialog = new System.Windows.Forms.SaveFileDialog
+                var saveDialog = new SaveFileDialog
                 {
                     Filter = "Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
                     FileName = "ProductServiceCategories.xlsx"
                 };
 
-                if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (saveDialog.ShowDialog() == DialogResult.OK)
                 {
                     treeList1.ExportToXlsx(saveDialog.FileName);
                     ShowInfo("Xuất dữ liệu thành công!");
@@ -329,7 +336,7 @@ namespace MasterData.ProductService
         /// Event handler khi click chuột - detect click vào checkbox
         /// Lưu ý: Không can thiệp vào selection, để DevExpress tự xử lý
         /// </summary>
-        private void TreeList1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void TreeList1_MouseDown(object sender, MouseEventArgs e)
         {
             try
             {
@@ -337,7 +344,7 @@ namespace MasterData.ProductService
                 var hitInfo = treeList1.CalcHitInfo(e.Location);
 
                 // Nếu click vào checkbox
-                if (hitInfo.HitInfoType == DevExpress.XtraTreeList.HitInfoType.NodeCheckBox)
+                if (hitInfo.HitInfoType == HitInfoType.NodeCheckBox)
                 {
                     // Không cần can thiệp gì thêm, để DevExpress tự xử lý checkbox và selection
                 }
@@ -362,7 +369,7 @@ namespace MasterData.ProductService
                     // Vẽ số thứ tự vào indicator
                     e.Cache.DrawString((index + 1).ToString(), e.Appearance.Font,
                         e.Appearance.GetForeBrush(e.Cache), e.Bounds,
-                        System.Drawing.StringFormat.GenericDefault);
+                        StringFormat.GenericDefault);
                     e.Handled = true;
                 }
             }
@@ -392,29 +399,29 @@ namespace MasterData.ProductService
                 // Chỉ tô màu cho cột ProductCount để hiển thị trạng thái
                 if (e.Column.FieldName == "ProductCount")
                 {
-                    System.Drawing.Color backColor;
-                    System.Drawing.Color foreColor = System.Drawing.Color.Black;
+                    Color backColor;
+                    Color foreColor = Color.Black;
 
                     // Màu sắc dựa trên số lượng sản phẩm/dịch vụ
                     if (row.ProductCount == 0)
                     {
-                        backColor = System.Drawing.Color.FromArgb(255, 240, 240); // Màu đỏ nhạt
-                        foreColor = System.Drawing.Color.FromArgb(150, 0, 0); // Màu đỏ đậm
+                        backColor = Color.FromArgb(255, 240, 240); // Màu đỏ nhạt
+                        foreColor = Color.FromArgb(150, 0, 0); // Màu đỏ đậm
                     }
                     else if (row.ProductCount <= 5)
                     {
-                        backColor = System.Drawing.Color.FromArgb(255, 255, 200); // Màu vàng nhạt
-                        foreColor = System.Drawing.Color.FromArgb(150, 100, 0); // Màu cam đậm
+                        backColor = Color.FromArgb(255, 255, 200); // Màu vàng nhạt
+                        foreColor = Color.FromArgb(150, 100, 0); // Màu cam đậm
                     }
                     else if (row.ProductCount <= 20)
                     {
-                        backColor = System.Drawing.Color.FromArgb(240, 255, 240); // Màu xanh lá nhạt
-                        foreColor = System.Drawing.Color.FromArgb(0, 100, 0); // Màu xanh lá đậm
+                        backColor = Color.FromArgb(240, 255, 240); // Màu xanh lá nhạt
+                        foreColor = Color.FromArgb(0, 100, 0); // Màu xanh lá đậm
                     }
                     else
                     {
-                        backColor = System.Drawing.Color.FromArgb(240, 248, 255); // Màu xanh dương nhạt
-                        foreColor = System.Drawing.Color.FromArgb(0, 0, 150); // Màu xanh dương đậm
+                        backColor = Color.FromArgb(240, 248, 255); // Màu xanh dương nhạt
+                        foreColor = Color.FromArgb(0, 0, 150); // Màu xanh dương đậm
                     }
 
                     e.Appearance.BackColor = backColor;
@@ -422,11 +429,8 @@ namespace MasterData.ProductService
                     e.Appearance.Options.UseBackColor = true;
                     e.Appearance.Options.UseForeColor = true;
                 }
-                else
-                {
-                    // Cho các cột khác, sử dụng màu mặc định (trắng/xám xen kẽ)
-                    // Không cần set màu gì, để DevExpress tự động xử lý
-                }
+                // Cho các cột khác, sử dụng màu mặc định (trắng/xám xen kẽ)
+                // Không cần set màu gì, để DevExpress tự động xử lý
             }
             catch (Exception)
             {
@@ -706,9 +710,6 @@ namespace MasterData.ProductService
                         _selectedCategoryIds.Add(dto.Id);
                     }
                 }
-                else
-                {
-                }
             }
 
             // Kiểm tra các child nodes
@@ -834,7 +835,7 @@ namespace MasterData.ProductService
 
                 // Cấu hình selection behavior theo tài liệu DevExpress
                 treeList1.OptionsSelection.MultiSelect = true;
-                treeList1.OptionsSelection.MultiSelectMode = DevExpress.XtraTreeList.TreeListMultiSelectMode.RowSelect;
+                treeList1.OptionsSelection.MultiSelectMode = TreeListMultiSelectMode.RowSelect;
 
                 // Cấu hình checkbox behavior
                 treeList1.OptionsBehavior.AllowIndeterminateCheckState = false;
@@ -852,35 +853,35 @@ namespace MasterData.ProductService
                 treeList1.ActiveFilterEnabled = false;
 
                 // RepositoryItemMemoEdit cho wrap text
-                var memo = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit
+                var memo = new RepositoryItemMemoEdit
                 {
                     WordWrap = true,
                     AutoHeight = false,
                     ReadOnly = true // Không cho edit
                 };
-                memo.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+                memo.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
 
                 // Áp dụng cho các cột có khả năng dài
                 ApplyMemoEditorToColumn("CategoryName", memo);
                 ApplyMemoEditorToColumn("Description", memo);
 
                 // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
-                treeList1.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+                treeList1.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
                 treeList1.Appearance.HeaderPanel.Options.UseTextOptions = true;
 
                 // Cấu hình màu sắc cho dòng chẵn/lẻ
-                treeList1.Appearance.EvenRow.BackColor = System.Drawing.Color.FromArgb(248, 248, 248); // Màu xám nhạt
-                treeList1.Appearance.OddRow.BackColor = System.Drawing.Color.White; // Màu trắng
+                treeList1.Appearance.EvenRow.BackColor = Color.FromArgb(248, 248, 248); // Màu xám nhạt
+                treeList1.Appearance.OddRow.BackColor = Color.White; // Màu trắng
 
                 // Cấu hình màu đường kẻ
-                treeList1.Appearance.HorzLine.BackColor = System.Drawing.Color.FromArgb(200, 200, 200); // Màu xám nhạt
-                treeList1.Appearance.VertLine.BackColor = System.Drawing.Color.FromArgb(200, 200, 200); // Màu xám nhạt
+                treeList1.Appearance.HorzLine.BackColor = Color.FromArgb(200, 200, 200); // Màu xám nhạt
+                treeList1.Appearance.VertLine.BackColor = Color.FromArgb(200, 200, 200); // Màu xám nhạt
 
                 // Cấu hình màu header
-                treeList1.Appearance.HeaderPanel.BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
-                treeList1.Appearance.HeaderPanel.ForeColor = System.Drawing.Color.Black;
+                treeList1.Appearance.HeaderPanel.BackColor = Color.FromArgb(240, 240, 240);
+                treeList1.Appearance.HeaderPanel.ForeColor = Color.Black;
                 treeList1.Appearance.HeaderPanel.Font =
-                    new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+                    new Font("Segoe UI", 9F, FontStyle.Bold);
 
             }
             catch (Exception ex)
@@ -890,7 +891,7 @@ namespace MasterData.ProductService
         }
 
         private void ApplyMemoEditorToColumn(string fieldName,
-            DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit memo)
+            RepositoryItemMemoEdit memo)
         {
             var col = treeList1.Columns[fieldName];
             if (col == null) return;

@@ -1,16 +1,19 @@
-﻿using Bll.MasterData.Customer;
-using Bll.Utils;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.DXErrorProvider;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraLayout;
-using MasterData.Customer.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.Customer;
+using Bll.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraLayout;
+using MasterData.Customer.Converters;
 using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
@@ -116,8 +119,7 @@ namespace MasterData.Customer
             if (editor == null) return false;
             var name = editor.Name ?? string.Empty;
             // so khớp không phân biệt hoa thường, loại bỏ prefix/suffix phổ biến
-            string[] candidates = new[]
-            {
+            string[] candidates = {
                 name,
                 name.Replace("txt", string.Empty),
                 name.Replace("TextEdit", string.Empty)
@@ -177,7 +179,7 @@ namespace MasterData.Customer
                 "Nhà cung cấp",
                 "Khách hàng & Nhà cung cấp"
             });
-            combo.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            combo.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
         }
 
         private static Control FindControlByName(Control root, string name)
@@ -190,7 +192,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Nạp dữ liệu chi tiết đối tác theo Id vào các control (asynchronous).
         /// </summary>
-        private async System.Threading.Tasks.Task LoadDetailAsync(Guid id)
+        private async Task LoadDetailAsync(Guid id)
         {
             try
             {
@@ -246,7 +248,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Lưu dữ liệu (thêm mới/cập nhật) khi người dùng bấm Lưu.
         /// </summary>
-        private void SaveBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
@@ -262,7 +264,7 @@ namespace MasterData.Customer
                 _bll.SaveOrUpdate(entity);
 
                 MsgBox.ShowInfo("Lưu dữ liệu đối tác thành công");
-                this.DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
                 Close();
             }
             catch (Exception ex)
@@ -274,7 +276,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Đóng form khi người dùng bấm Đóng.
         /// </summary>
-        private void CloseBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void CloseBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             Close();
         }

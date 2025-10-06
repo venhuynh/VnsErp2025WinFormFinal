@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Dal.DataContext;
 using MasterData.ProductService.Dto;
@@ -70,7 +71,7 @@ namespace MasterData.ProductService.Converters
             var productCount = mappingCounts?.ContainsKey(entity.Id) == true ? mappingCounts[entity.Id] : 0;
             
             // Debug logging
-            System.Diagnostics.Debug.WriteLine($"ToDtoWithMappingCount - Category: {entity.CategoryName}, ID: {entity.Id}, ProductCount: {productCount}");
+            Debug.WriteLine($"ToDtoWithMappingCount - Category: {entity.CategoryName}, ID: {entity.Id}, ProductCount: {productCount}");
             
             return entity.ToDtoWithCount(productCount);
         }
@@ -238,7 +239,7 @@ namespace MasterData.ProductService.Converters
                 dto.ProductCount = totalCount;
                 
                 // Debug logging
-                System.Diagnostics.Debug.WriteLine($"CalculateTotalProductCounts - Category: {dto.CategoryName}, Direct: {directCounts[dto.Id]}, Total: {totalCount}");
+                Debug.WriteLine($"CalculateTotalProductCounts - Category: {dto.CategoryName}, Direct: {directCounts[dto.Id]}, Total: {totalCount}");
             }
         }
 
@@ -271,7 +272,7 @@ namespace MasterData.ProductService.Converters
             
             // Debug logging
             var dto = dtoDict[categoryId];
-            System.Diagnostics.Debug.WriteLine($"  CalculateTotalCountForCategory - {dto.CategoryName}: Direct={directCount}, Children={childCount}, Total={totalCount}");
+            Debug.WriteLine($"  CalculateTotalCountForCategory - {dto.CategoryName}: Direct={directCount}, Children={childCount}, Total={totalCount}");
             
             return totalCount;
         }

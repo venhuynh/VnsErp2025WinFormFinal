@@ -1,11 +1,20 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraLayout;
+
+namespace MasterData.ProductService
 {
     partial class UcProductVariant
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -429,39 +438,39 @@
 
         #endregion
 
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem ListDataBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem NewBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem CountVariantAndImageBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem ExportBarButtonItem;
-        private DevExpress.XtraBars.Bar bar1;
-        private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
-        private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
-        private DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit repositoryItemSpinEdit1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox1;
-        private DevExpress.XtraBars.BarHeaderItem barHeaderItem2;
-        private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraGrid.GridControl ProductVariantListGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantListGridView;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraGrid.Views.Grid.GridView VariantGridView;
-        private DevExpress.XtraGrid.Columns.GridColumn colVariantCode;
-        private DevExpress.XtraGrid.Columns.GridColumn colVariantName;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarButtonItem ListDataBarButtonItem;
+        private BarButtonItem NewBarButtonItem;
+        private BarButtonItem EditBarButtonItem;
+        private BarButtonItem DeleteBarButtonItem;
+        private BarButtonItem CountVariantAndImageBarButtonItem;
+        private BarButtonItem ExportBarButtonItem;
+        private Bar bar1;
+        private BarHeaderItem barHeaderItem1;
+        private BarStaticItem DataSummaryBarStaticItem;
+        private RepositoryItemSpinEdit repositoryItemSpinEdit1;
+        private RepositoryItemComboBox repositoryItemComboBox1;
+        private BarHeaderItem barHeaderItem2;
+        private BarStaticItem SelectedRowBarStaticItem;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private LayoutControl layoutControl1;
+        private LayoutControlGroup Root;
+        private GridControl ProductVariantListGridControl;
+        private GridView ProductVariantListGridView;
+        private LayoutControlItem layoutControlItem1;
+        private GridView VariantGridView;
+        private GridColumn colVariantCode;
+        private GridColumn colVariantName;
         
-        private DevExpress.XtraGrid.Columns.GridColumn colUnitName;
-        private System.Windows.Forms.BindingSource productVariantListDtoBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colVariantCode1;
-        private DevExpress.XtraGrid.Columns.GridColumn colProductName;
-        private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
-        private DevExpress.XtraGrid.Columns.GridColumn colUnitName1;
+        private GridColumn colUnitName;
+        private BindingSource productVariantListDtoBindingSource;
+        private GridColumn colVariantCode1;
+        private GridColumn colProductName;
+        private GridColumn colVariantFullName;
+        private GridColumn colUnitName1;
     }
 }

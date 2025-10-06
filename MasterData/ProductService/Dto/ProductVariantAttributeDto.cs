@@ -68,13 +68,13 @@ namespace MasterData.ProductService.Dto
         {
             return new ProductVariantAttributeDto
             {
-                VariantId = this.VariantId,
-                AttributeId = this.AttributeId,
-                AttributeValueId = this.AttributeValueId,
-                AttributeName = this.AttributeName,
-                AttributeDataType = this.AttributeDataType,
-                AttributeValue = this.AttributeValue,
-                Description = this.Description
+                VariantId = VariantId,
+                AttributeId = AttributeId,
+                AttributeValueId = AttributeValueId,
+                AttributeName = AttributeName,
+                AttributeDataType = AttributeDataType,
+                AttributeValue = AttributeValue,
+                Description = Description
             };
         }
 

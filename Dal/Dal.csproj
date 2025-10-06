@@ -53,10 +53,12 @@
     <Compile Include="Connection\ConnectionStringHelper.cs" />
     <Compile Include="Connection\DatabaseConfig.cs" />
     <Compile Include="Connection\IConnectionManager.cs" />
+    <Compile Include="DataAccess\MasterData\CompanyDal\CompanyDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerCategoryDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerContactDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerInfo.cs" />
+    <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerSiteDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\AttributeDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\ProductImageDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\ProductServiceCategoryDataAccess.cs" />
@@ -97,6 +99,7 @@
     <None Include="DataContext\VnsErp2025.dbml.layout">
       <DependentUpon>VnsErp2025.dbml</DependentUpon>
     </None>
+    <None Include="Doc\CompanyEntities_Summary.md" />
     <None Include="Doc\DalFolderStructure.md" />
     <None Include="DataAccess\MasterData\ProductServiceDal\MasterData_ProductService_Entities.md" />
     <None Include="Properties\Settings.settings">

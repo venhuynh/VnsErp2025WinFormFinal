@@ -1,7 +1,8 @@
-﻿using Bll.Common;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using Bll.Common;
 using Dal.DataContext.SeedData.MasterData.ProductService;
+using DevExpress.XtraBars.FluentDesignSystem;
 
 namespace MasterData.ProductService
 {
@@ -9,7 +10,7 @@ namespace MasterData.ProductService
     /// Form chính quản lý sản phẩm/dịch vụ sử dụng Fluent Design System.
     /// Cung cấp giao diện hiện đại với navigation menu và quản lý các UserControl con.
     /// </summary>
-    public partial class FluentProductService : DevExpress.XtraBars.FluentDesignSystem.FluentDesignForm
+    public partial class FluentProductService : FluentDesignForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -75,11 +76,11 @@ namespace MasterData.ProductService
             try
             {
                 // Khởi tạo UserControlManager với container
-                _userControlManager = new UserControlManager(this.fluentDesignFormContainer1);
+                _userControlManager = new UserControlManager(fluentDesignFormContainer1);
 
                 // Thiết lập form properties
-                this.Text = @"VnsErp2025 - Quản lý Sản phẩm/Dịch vụ";
-                this.WindowState = FormWindowState.Maximized;
+                Text = @"VnsErp2025 - Quản lý Sản phẩm/Dịch vụ";
+                WindowState = FormWindowState.Maximized;
             }
             catch (Exception ex)
             {

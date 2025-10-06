@@ -1,11 +1,16 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using DevExpress.XtraBars.Docking;
+using DevExpress.XtraEditors;
+using DevExpress.XtraLayout;
+
+namespace MasterData.ProductService
 {
     partial class FrmProductImageDetail
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -342,24 +347,24 @@
 
         #endregion
 
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        public DevExpress.XtraEditors.PictureEdit ProductImagePictureEdit;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraBars.Docking.DockManager dockManager1;
-        private DevExpress.XtraBars.Docking.DockPanel dockPanel1;
-        private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
-        private DevExpress.XtraLayout.LayoutControl layoutControl2;
-        public DevExpress.XtraEditors.MemoEdit ImageDetailMemoEdit;
-        private DevExpress.XtraEditors.SimpleButton DeleteImageSimpleButton;
-        private DevExpress.XtraEditors.SimpleButton DownLoadImageSimpleButton;
-        private DevExpress.XtraEditors.SimpleButton SetPrimaryImageSimpleButton;
-        public DevExpress.XtraEditors.ZoomTrackBarControl zoomTrackBarControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem6;
+        private LayoutControl layoutControl1;
+        private LayoutControlGroup Root;
+        public PictureEdit ProductImagePictureEdit;
+        private LayoutControlItem layoutControlItem1;
+        private DockManager dockManager1;
+        private DockPanel dockPanel1;
+        private ControlContainer dockPanel1_Container;
+        private LayoutControl layoutControl2;
+        public MemoEdit ImageDetailMemoEdit;
+        private SimpleButton DeleteImageSimpleButton;
+        private SimpleButton DownLoadImageSimpleButton;
+        private SimpleButton SetPrimaryImageSimpleButton;
+        public ZoomTrackBarControl zoomTrackBarControl1;
+        private LayoutControlGroup layoutControlGroup1;
+        private LayoutControlItem layoutControlItem3;
+        private LayoutControlItem layoutControlItem4;
+        private LayoutControlItem layoutControlItem2;
+        private LayoutControlItem layoutControlItem5;
+        private LayoutControlItem layoutControlItem6;
     }
 }

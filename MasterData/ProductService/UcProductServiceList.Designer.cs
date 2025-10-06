@@ -1,4 +1,10 @@
-﻿using MasterData.ProductService.Dto;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Views.BandedGrid;
+using DevExpress.XtraLayout;
 
 namespace MasterData.ProductService
 {
@@ -7,7 +13,7 @@ namespace MasterData.ProductService
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -537,50 +543,50 @@ namespace MasterData.ProductService
 
         #endregion
 
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraGrid.GridControl ProductServiceListGridControl;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraBars.BarButtonItem ListDataBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem NewBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem ExportBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem CountVariantAndImageBarButtonItem;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private LayoutControl layoutControl1;
+        private GridControl ProductServiceListGridControl;
+        private LayoutControlGroup Root;
+        private LayoutControlItem layoutControlItem1;
+        private BarButtonItem ListDataBarButtonItem;
+        private BarButtonItem NewBarButtonItem;
+        private BarButtonItem EditBarButtonItem;
+        private BarButtonItem DeleteBarButtonItem;
+        private BarButtonItem ExportBarButtonItem;
+        private BarButtonItem CountVariantAndImageBarButtonItem;
         
-        private System.Windows.Forms.BindingSource productServiceDtoBindingSource;
-        private DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView ProductServiceAdvBandedGridView;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colId;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colThumbnail;
-        private DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit repositoryItemPictureEdit1;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colCode;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colName;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colCategoryName;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colTypeDisplay;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colDescription;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colIsActive;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colStatusDisplay;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colVariantCount;
-        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colImageCount;
-        private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand1;
-        private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand3;
-        private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand2;
-        private DevExpress.XtraBars.Bar bar1;
-        private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
-        private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
-        private DevExpress.XtraBars.BarHeaderItem barHeaderItem2;
-        private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
-        private DevExpress.XtraBars.BarEditItem PageBarEditItem;
-        private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox1;
-        private DevExpress.XtraBars.BarEditItem RecordNumberBarEditItem;
-        private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox2;
-        private DevExpress.XtraBars.BarButtonItem DataFilterBtn;
-        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
+        private BindingSource productServiceDtoBindingSource;
+        private AdvBandedGridView ProductServiceAdvBandedGridView;
+        private BandedGridColumn colId;
+        private BandedGridColumn colThumbnail;
+        private RepositoryItemPictureEdit repositoryItemPictureEdit1;
+        private BandedGridColumn colCode;
+        private BandedGridColumn colName;
+        private BandedGridColumn colCategoryName;
+        private BandedGridColumn colTypeDisplay;
+        private BandedGridColumn colDescription;
+        private BandedGridColumn colIsActive;
+        private BandedGridColumn colStatusDisplay;
+        private BandedGridColumn colVariantCount;
+        private BandedGridColumn colImageCount;
+        private GridBand gridBand1;
+        private GridBand gridBand3;
+        private GridBand gridBand2;
+        private Bar bar1;
+        private BarHeaderItem barHeaderItem1;
+        private BarStaticItem DataSummaryBarStaticItem;
+        private BarHeaderItem barHeaderItem2;
+        private BarStaticItem SelectedRowBarStaticItem;
+        private BarEditItem PageBarEditItem;
+        private RepositoryItemComboBox repositoryItemComboBox1;
+        private BarEditItem RecordNumberBarEditItem;
+        private RepositoryItemComboBox repositoryItemComboBox2;
+        private BarButtonItem DataFilterBtn;
+        private RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
     }
 }

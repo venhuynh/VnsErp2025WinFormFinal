@@ -202,11 +202,11 @@ namespace MasterData.ProductService.Dto
         {
             return new UnitOfMeasureDto
             {
-                Id = this.Id,
-                Code = this.Code,
-                Name = this.Name,
-                Description = this.Description,
-                IsActive = this.IsActive
+                Id = Id,
+                Code = Code,
+                Name = Name,
+                Description = Description,
+                IsActive = IsActive
             };
         }
 
@@ -241,7 +241,7 @@ namespace MasterData.ProductService.Dto
         /// <returns>Đơn vị mặc định</returns>
         public static UnitOfMeasureDto CreateDefault()
         {
-            return new UnitOfMeasureDto("PCS", "Cái", "Đơn vị tính mặc định", true);
+            return new UnitOfMeasureDto("PCS", "Cái", "Đơn vị tính mặc định");
         }
 
         #endregion

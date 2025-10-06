@@ -79,9 +79,11 @@
     <Compile Include="Common\WaitForm1.Designer.cs">
       <DependentUpon>WaitForm1.cs</DependentUpon>
     </Compile>
+    <Compile Include="MasterData\Company\CompanyBll.cs" />
     <Compile Include="MasterData\Customer\BusinessPartnerBll.cs" />
     <Compile Include="MasterData\Customer\BusinessPartnerCategoryBll.cs" />
     <Compile Include="MasterData\Customer\BusinessPartnerContactBll.cs" />
+    <Compile Include="MasterData\Customer\BusinessPartnerSiteBll.cs" />
     <Compile Include="MasterData\ProductServiceBll\AttributeBll.cs" />
     <Compile Include="MasterData\ProductServiceBll\ProductImageBll.cs" />
     <Compile Include="MasterData\ProductServiceBll\ProductServiceBll.cs" />

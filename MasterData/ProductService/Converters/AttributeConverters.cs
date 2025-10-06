@@ -1,7 +1,7 @@
-using MasterData.ProductService.Dto;
 using System.Collections.Generic;
 using System.Linq;
 using Dal.DataContext;
+using MasterData.ProductService.Dto;
 using AttributeEntity = Dal.DataContext.Attribute;
 using AttributeValueEntity = Dal.DataContext.AttributeValue;
 
