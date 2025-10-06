@@ -87,9 +87,15 @@ namespace Dal.DataAccess.MasterData
             context.SubmitChanges();
         }
 
-        public bool IsPhoneExists(string phone, Guid excludeId)
+        public bool IsPhoneExists(string phone, Guid? excludeId)
         {
             if (string.IsNullOrWhiteSpace(phone)) return false;
+
+            //Nếu excludeId null thì báo lỗi
+            if(!excludeId.HasValue)
+                throw new ArgumentNullException(nameof(excludeId), "excludeId không được null");
+
+
             using var context = CreateContext();
             var normalized = phone.Trim();
             return context.BusinessPartnerContacts.Any(c => c.Phone == normalized && c.Id != excludeId);

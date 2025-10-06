@@ -54,7 +54,6 @@ namespace MasterData.Customer
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
             this.PartnerNameSearchLookUpEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.businessPartnerContactDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.businessPartnerListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colPartnerName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.FullNameTextEdit = new DevExpress.XtraEditors.TextEdit();
@@ -76,7 +75,6 @@ namespace MasterData.Customer
             this.dataLayoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PartnerNameSearchLookUpEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerContactDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FullNameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PositionTextEdit.Properties)).BeginInit();
@@ -199,7 +197,6 @@ namespace MasterData.Customer
             this.PartnerNameSearchLookUpEdit.Name = "PartnerNameSearchLookUpEdit";
             this.PartnerNameSearchLookUpEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.PartnerNameSearchLookUpEdit.Properties.DataSource = this.businessPartnerListDtoBindingSource;
             this.PartnerNameSearchLookUpEdit.Properties.DisplayMember = "PartnerName";
             this.PartnerNameSearchLookUpEdit.Properties.NullText = "";
             this.PartnerNameSearchLookUpEdit.Properties.PopupView = this.searchLookUpEdit1View;
@@ -210,11 +207,7 @@ namespace MasterData.Customer
             // 
             // businessPartnerContactDtoBindingSource
             // 
-            this.businessPartnerContactDtoBindingSource.DataSource = typeof(BusinessPartnerContactDto);
-            // 
-            // businessPartnerListDtoBindingSource
-            // 
-            this.businessPartnerListDtoBindingSource.DataSource = typeof(BusinessPartnerListDto);
+            this.businessPartnerContactDtoBindingSource.DataSource = typeof(MasterData.Customer.Dto.BusinessPartnerContactDto);
             // 
             // searchLookUpEdit1View
             // 
@@ -386,7 +379,6 @@ namespace MasterData.Customer
             this.dataLayoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PartnerNameSearchLookUpEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerContactDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FullNameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PositionTextEdit.Properties)).EndInit();

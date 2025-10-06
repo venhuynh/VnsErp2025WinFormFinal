@@ -304,6 +304,7 @@ namespace MasterData.Customer
             return null;
         }
 
+
         /// <summary>
         /// Hiển thị thông tin.
         /// </summary>

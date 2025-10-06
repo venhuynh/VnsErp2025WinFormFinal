@@ -7,6 +7,7 @@ using MasterData.ProductService;
 using System;
 using System.Windows.Forms;
 using Dal.DataContext.SeedData.MasterData.Customer;
+using DevExpress.XtraEditors;
 using VnsErp2025.Form;
 
 namespace VnsErp2025
@@ -49,8 +50,8 @@ namespace VnsErp2025
 
             #region Dành cho debug
             
-            SeedData_Master_Customer.DeleteAllPartnerData();
-            SeedData_Master_Customer.SeedAllData();
+            //SeedData_Master_Customer.DeleteAllPartnerData();
+            //SeedData_Master_Customer.SeedAllData();
             
             //SeedData_Master_ProductService.DeleteAllProductServiceData();
             //SeedData_Master_ProductService.SeedAllData();
