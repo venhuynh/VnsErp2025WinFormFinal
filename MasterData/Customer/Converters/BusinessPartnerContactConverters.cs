@@ -9,11 +9,15 @@ namespace MasterData.Customer.Converters
         public static BusinessPartnerContactDto ToDto(this BusinessPartnerContact entity, string siteName = null)
         {
             if (entity == null) return null;
+            
+            // Sử dụng siteName từ parameter hoặc từ navigation property (đã được include)
+            var finalSiteName = siteName ?? entity.BusinessPartnerSite?.SiteName;
+            
             return new BusinessPartnerContactDto
             {
                 Id = entity.Id,
                 SiteId = entity.SiteId,
-                SiteName = siteName,
+                SiteName = finalSiteName,
                 FullName = entity.FullName,
                 Position = entity.Position,
                 Phone = entity.Phone,

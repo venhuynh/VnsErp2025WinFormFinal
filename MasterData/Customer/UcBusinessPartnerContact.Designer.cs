@@ -47,6 +47,11 @@ namespace MasterData.Customer
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.bar1 = new DevExpress.XtraBars.Bar();
+            this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
+            this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
+            this.barHeaderItem2 = new DevExpress.XtraBars.BarHeaderItem();
+            this.CurrentSelectBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -63,7 +68,7 @@ namespace MasterData.Customer
             this.colSiteName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colAvatar = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
+            this.ContactAvatarPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
@@ -72,7 +77,7 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerContactGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerContactDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerContactGridCardView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ContactAvatarPictureEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -80,7 +85,8 @@ namespace MasterData.Customer
             // barManager1
             // 
             this.barManager1.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
-            this.bar2});
+            this.bar2,
+            this.bar1});
             this.barManager1.DockControls.Add(this.barDockControlTop);
             this.barManager1.DockControls.Add(this.barDockControlBottom);
             this.barManager1.DockControls.Add(this.barDockControlLeft);
@@ -91,9 +97,14 @@ namespace MasterData.Customer
             this.ListDataBarButtonItem,
             this.EditBarButtonItem,
             this.DeleteBarButtonItem,
-            this.ExportBarButtonItem});
+            this.ExportBarButtonItem,
+            this.barHeaderItem1,
+            this.DataSummaryBarStaticItem,
+            this.barHeaderItem2,
+            this.CurrentSelectBarStaticItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 5;
+            this.barManager1.MaxItemId = 9;
+            this.barManager1.StatusBar = this.bar1;
             // 
             // bar2
             // 
@@ -152,6 +163,49 @@ namespace MasterData.Customer
             this.ExportBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.exporttoxls_32x32;
             this.ExportBarButtonItem.Name = "ExportBarButtonItem";
             // 
+            // bar1
+            // 
+            this.bar1.BarName = "Custom 3";
+            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
+            this.bar1.DockCol = 0;
+            this.bar1.DockRow = 0;
+            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
+            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem1),
+            new DevExpress.XtraBars.LinkPersistInfo(this.DataSummaryBarStaticItem),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem2),
+            new DevExpress.XtraBars.LinkPersistInfo(this.CurrentSelectBarStaticItem)});
+            this.bar1.OptionsBar.AllowQuickCustomization = false;
+            this.bar1.OptionsBar.DrawDragBorder = false;
+            this.bar1.OptionsBar.UseWholeRow = true;
+            this.bar1.Text = "Custom 3";
+            // 
+            // barHeaderItem1
+            // 
+            this.barHeaderItem1.Caption = "Tổng kết:";
+            this.barHeaderItem1.Id = 5;
+            this.barHeaderItem1.Name = "barHeaderItem1";
+            // 
+            // DataSummaryBarStaticItem
+            // 
+            this.DataSummaryBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.DataSummaryBarStaticItem.Caption = "Chưa có dữ liệu";
+            this.DataSummaryBarStaticItem.Id = 6;
+            this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
+            // 
+            // barHeaderItem2
+            // 
+            this.barHeaderItem2.Caption = "Đang chọn:";
+            this.barHeaderItem2.Id = 7;
+            this.barHeaderItem2.Name = "barHeaderItem2";
+            // 
+            // CurrentSelectBarStaticItem
+            // 
+            this.CurrentSelectBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.CurrentSelectBarStaticItem.Caption = "Chưa chọn dòng nào";
+            this.CurrentSelectBarStaticItem.Id = 8;
+            this.CurrentSelectBarStaticItem.Name = "CurrentSelectBarStaticItem";
+            // 
             // barDockControlTop
             // 
             this.barDockControlTop.CausesValidation = false;
@@ -164,9 +218,9 @@ namespace MasterData.Customer
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 661);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 626);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1077, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1077, 35);
             // 
             // barDockControlLeft
             // 
@@ -174,7 +228,7 @@ namespace MasterData.Customer
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 622);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 587);
             // 
             // barDockControlRight
             // 
@@ -182,7 +236,7 @@ namespace MasterData.Customer
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(1077, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 622);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 587);
             // 
             // layoutControl1
             // 
@@ -191,7 +245,7 @@ namespace MasterData.Customer
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1077, 622);
+            this.layoutControl1.Size = new System.Drawing.Size(1077, 587);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -203,8 +257,8 @@ namespace MasterData.Customer
             this.BusinessPartnerContactGridControl.MenuManager = this.barManager1;
             this.BusinessPartnerContactGridControl.Name = "BusinessPartnerContactGridControl";
             this.BusinessPartnerContactGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemPictureEdit1});
-            this.BusinessPartnerContactGridControl.Size = new System.Drawing.Size(1045, 590);
+            this.ContactAvatarPictureEdit});
+            this.BusinessPartnerContactGridControl.Size = new System.Drawing.Size(1045, 555);
             this.BusinessPartnerContactGridControl.TabIndex = 5;
             this.BusinessPartnerContactGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.BusinessPartnerContactGridCardView});
@@ -239,6 +293,8 @@ namespace MasterData.Customer
             this.BusinessPartnerContactGridCardView.OptionsView.ShowViewCaption = true;
             this.BusinessPartnerContactGridCardView.VertScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Auto;
             this.BusinessPartnerContactGridCardView.ViewCaption = "DANH SÁCH LIÊN HỆ ĐỐI TÁC";
+            this.BusinessPartnerContactGridCardView.ValidateRow += new DevExpress.XtraGrid.Views.Base.ValidateRowEventHandler(this.BusinessPartnerContactGridCardView_ValidateRow);
+            this.BusinessPartnerContactGridCardView.ValidatingEditor += new DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventHandler(this.BusinessPartnerContactGridCardView_ValidatingEditor);
             // 
             // colFullName
             // 
@@ -340,7 +396,7 @@ namespace MasterData.Customer
             this.colAvatar.AppearanceHeader.Options.UseTextOptions = true;
             this.colAvatar.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.colAvatar.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colAvatar.ColumnEdit = this.repositoryItemPictureEdit1;
+            this.colAvatar.ColumnEdit = this.ContactAvatarPictureEdit;
             this.colAvatar.FieldName = "Avatar";
             this.colAvatar.Name = "colAvatar";
             this.colAvatar.OptionsEditForm.RowSpan = 4;
@@ -348,12 +404,13 @@ namespace MasterData.Customer
             this.colAvatar.VisibleIndex = 2;
             this.colAvatar.Width = 120;
             // 
-            // repositoryItemPictureEdit1
+            // ContactAvatarPictureEdit
             // 
-            this.repositoryItemPictureEdit1.CustomHeight = 120;
-            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
-            this.repositoryItemPictureEdit1.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.repositoryItemPictureEdit1.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.ContactAvatarPictureEdit.CustomHeight = 120;
+            this.ContactAvatarPictureEdit.Name = "ContactAvatarPictureEdit";
+            this.ContactAvatarPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.ContactAvatarPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.ContactAvatarPictureEdit.ImageChanged += new System.EventHandler(this.ContactAvatarPictureEdit_ImageChanged);
             // 
             // Root
             // 
@@ -362,7 +419,7 @@ namespace MasterData.Customer
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1077, 622);
+            this.Root.Size = new System.Drawing.Size(1077, 587);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -370,7 +427,7 @@ namespace MasterData.Customer
             this.layoutControlItem1.Control = this.BusinessPartnerContactGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 596);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 561);
             this.layoutControlItem1.TextVisible = false;
             // 
             // UcBusinessPartnerContact
@@ -390,7 +447,7 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerContactGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerContactDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerContactGridCardView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ContactAvatarPictureEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
@@ -425,6 +482,11 @@ namespace MasterData.Customer
         private GridColumn colSiteName;
         private GridColumn colIsActive;
         private GridColumn colAvatar;
-        private RepositoryItemPictureEdit repositoryItemPictureEdit1;
+        private RepositoryItemPictureEdit ContactAvatarPictureEdit;
+        private Bar bar1;
+        private BarHeaderItem barHeaderItem1;
+        private BarStaticItem DataSummaryBarStaticItem;
+        private BarHeaderItem barHeaderItem2;
+        private BarStaticItem CurrentSelectBarStaticItem;
     }
 }

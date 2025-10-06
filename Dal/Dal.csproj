@@ -58,6 +58,7 @@
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerContactDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerInfo.cs" />
+    <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerSiteDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\AttributeDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\ProductImageDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\ProductServiceCategoryDataAccess.cs" />

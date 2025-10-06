@@ -1,11 +1,11 @@
+using Dal.BaseDataAccess;
+using Dal.DataContext;
+using Dal.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dal.DataAccess.Base;
-using Dal.DataContext;
-using Dal.Exceptions;
 
-namespace Dal.DataAccess.MasterData.CustomerDal
+namespace Dal.DataAccess.MasterData.Partner
 {
     /// <summary>
     /// Data Access Layer cho BusinessPartnerSite
@@ -24,7 +24,7 @@ namespace Dal.DataAccess.MasterData.CustomerDal
         /// Lấy tất cả BusinessPartnerSite
         /// </summary>
         /// <returns>Danh sách BusinessPartnerSite</returns>
-        public List<BusinessPartnerSite> GetAll()
+        public override List<BusinessPartnerSite> GetAll()
         {
             try
             {

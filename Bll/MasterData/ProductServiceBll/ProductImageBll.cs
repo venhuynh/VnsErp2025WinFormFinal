@@ -817,7 +817,7 @@ namespace Bll.MasterData.ProductServiceBll
                 var existingImages = _dataAccess.GetByProductId(productId);
                 return existingImages.Count + 1;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Fallback: trả về 1 nếu có lỗi
                 return 1;

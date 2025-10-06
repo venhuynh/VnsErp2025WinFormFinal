@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Common;
+﻿using Bll.Common;
 using Bll.MasterData.Customer;
 using Bll.Utils;
 using DevExpress.Data;
-using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraSplashScreen;
 using MasterData.Customer.Converters;
 using MasterData.Customer.Dto;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
@@ -68,11 +64,19 @@ namespace MasterData.Customer
             BusinessPartnerContactGridCardView.SelectionChanged += BusinessPartnerContactGridCardView_SelectionChanged;
             BusinessPartnerContactGridCardView.CustomDrawCardCaption += BusinessPartnerContactGridCardView_CustomDrawCardCaption;
             BusinessPartnerContactGridCardView.KeyDown += BusinessPartnerContactGridCardView_KeyDown;
+            BusinessPartnerContactGridCardView.CellValueChanged += BusinessPartnerContactGridCardView_CellValueChanged;
+            BusinessPartnerContactGridCardView.ValidatingEditor += BusinessPartnerContactGridCardView_ValidatingEditor;
+            BusinessPartnerContactGridCardView.ValidateRow += BusinessPartnerContactGridCardView_ValidateRow;
+
 
             // Set custom caption format
             BusinessPartnerContactGridCardView.CardCaptionFormat = @"Liên hệ thứ {0}";
 
+            // Cấu hình RepositoryItemPictureEdit cho colAvatar
+            ConfigureAvatarPictureEdit();
+
             UpdateButtonStates();
+            UpdateStatusBar();
         }
 
         /// <summary>
@@ -81,18 +85,40 @@ namespace MasterData.Customer
         /// <param name="operation">Operation async cần thực hiện</param>
         private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
         {
+            bool splashShown = false;
             try
             {
+                // Kiểm tra xem đã có splash screen chưa bằng cách thử đóng trước
+                try
+                {
+                    SplashScreenManager.CloseForm();
+                }
+                catch
+                {
+                    // Nếu không có splash screen thì sẽ có exception, bỏ qua
+                }
+
                 // Hiển thị WaitingForm1
                 SplashScreenManager.ShowForm(typeof(WaitForm1));
+                splashShown = true;
 
                 // Thực hiện operation
                 await operation();
             }
             finally
             {
-                // Đóng WaitingForm1
-                SplashScreenManager.CloseForm();
+                // Đóng splash screen
+                if (splashShown)
+                {
+                    try
+                    {
+                        SplashScreenManager.CloseForm();
+                    }
+                    catch
+                    {
+                        // Bỏ qua nếu có lỗi khi đóng
+                    }
+                }
             }
         }
 
@@ -133,6 +159,7 @@ namespace MasterData.Customer
 
                         await LoadDataAsyncWithoutSplash();
                         UpdateButtonStates();
+            UpdateStatusBar();
                     }
                 }
             }
@@ -172,6 +199,8 @@ namespace MasterData.Customer
                 }
 
                 UpdateButtonStates();
+            UpdateStatusBar();
+                UpdateStatusBar();
             }
             catch (Exception ex)
             {
@@ -285,6 +314,86 @@ namespace MasterData.Customer
         }
 
         /// <summary>
+        /// Cập nhật status bar với thông tin selection và data summary
+        /// </summary>
+        private void UpdateStatusBar()
+        {
+            try
+            {
+                UpdateSelectedRowStatus();
+                UpdateDataSummaryStatus();
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật thông tin số dòng đang được chọn
+        /// </summary>
+        private void UpdateSelectedRowStatus()
+        {
+            try
+            {
+                if (CurrentSelectBarStaticItem == null) return;
+
+                var selectedCount = _selectedContactIds?.Count ?? 0;
+                if (selectedCount == 0)
+                {
+                    CurrentSelectBarStaticItem.Caption = @"Chưa chọn dòng nào";
+                }
+                else if (selectedCount == 1)
+                {
+                    CurrentSelectBarStaticItem.Caption = @"Đang chọn 1 dòng";
+                }
+                else
+                {
+                    CurrentSelectBarStaticItem.Caption = $@"Đang chọn {selectedCount} dòng";
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật thông tin tổng kết dữ liệu với HTML formatting
+        /// </summary>
+        private void UpdateDataSummaryStatus()
+        {
+            try
+            {
+                if (DataSummaryBarStaticItem == null) return;
+
+                var currentData = businessPartnerContactDtoBindingSource.DataSource as List<BusinessPartnerContactDto>;
+                if (currentData == null || !currentData.Any())
+                {
+                    DataSummaryBarStaticItem.Caption = @"Chưa có dữ liệu";
+                    return;
+                }
+
+                var currentPageCount = currentData.Count;
+                var primaryCount = currentData.Count(x => x.IsPrimary);
+                var activeCount = currentData.Count(x => x.IsActive);
+                var inactiveCount = currentData.Count(x => !x.IsActive);
+
+                // Tạo HTML content với màu sắc
+                var summary = $"<b>Hiển thị: {currentPageCount}</b> | " +
+                              $"<color=blue>Liên hệ chính: {primaryCount}</color> | " +
+                              $"<color=green>Hoạt động: {activeCount}</color> | " +
+                              $"<color=red>Không hoạt động: {inactiveCount}</color>";
+
+                DataSummaryBarStaticItem.Caption = summary;
+            }
+            catch
+            {
+                // ignore
+            }
+        }
+
+        /// <summary>
         /// Cấu hình CardView cho hiển thị tối ưu
         /// </summary>
         private void ConfigureCardView()
@@ -354,6 +463,7 @@ namespace MasterData.Customer
 
                         await LoadDataAsyncWithoutSplash();
                         UpdateButtonStates();
+            UpdateStatusBar();
                     }
                 }
             }
@@ -464,10 +574,8 @@ namespace MasterData.Customer
             try
             {
                 var entities = _contactBll.GetAll();
-                var partnerBll = new BusinessPartnerBll();
-                var partners = partnerBll.GetAll();
-                var partnerNameById = partners.ToDictionary(p => p.Id, p => p.PartnerName);
-                var dtoList = entities.Select(e => e.ToDto(partnerNameById.TryGetValue(e.SiteId, out var value) ? value : null)).ToList();
+                // BusinessPartnerSite đã được include trong DAL, không cần truyền siteName
+                var dtoList = entities.Select(e => e.ToDto()).ToList();
 
                 BindGrid(dtoList);
             }
@@ -488,6 +596,7 @@ namespace MasterData.Customer
             // CardView doesn't have BestFitColumns method
             ConfigureCardView();
             UpdateButtonStates();
+            UpdateStatusBar();
         }
 
         /// <summary>
@@ -499,6 +608,7 @@ namespace MasterData.Customer
             BusinessPartnerContactGridCardView.ClearSelection();
             BusinessPartnerContactGridCardView.FocusedRowHandle = GridControl.InvalidRowHandle;
             UpdateButtonStates();
+            UpdateStatusBar();
         }
 
         /// <summary>
@@ -557,6 +667,321 @@ namespace MasterData.Customer
 
         #endregion
 
-        
+        #region ========== XỬ LÝ HÌNH ẢNH ==========
+
+        /// <summary>
+        /// Cấu hình RepositoryItemPictureEdit cho colAvatar trong CardView
+        /// Sử dụng PictureChanged event để xử lý thay đổi ảnh
+        /// </summary>
+        private void ConfigureAvatarPictureEdit()
+        {
+            try
+            {
+                // Lấy RepositoryItemPictureEdit từ colAvatar
+                if (colAvatar?.ColumnEdit is DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit pictureEdit)
+                {
+                    // Giữ nguyên context menu mặc định (không thay đổi)
+                    // pictureEdit.ShowMenu = true; // Mặc định
+                    
+                    // Cấu hình kích thước
+                    pictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
+                    pictureEdit.ZoomPercent = 100;
+                    
+                    
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Kiểm tra định dạng hình ảnh có hợp lệ không
+        /// </summary>
+        /// <param name="imageBytes">Byte array của hình ảnh</param>
+        /// <returns>True nếu định dạng hợp lệ</returns>
+        private bool IsValidImageFormat(byte[] imageBytes)
+        {
+            try
+            {
+                if (imageBytes == null || imageBytes.Length < 4) return false;
+
+                // Kiểm tra magic bytes của các format phổ biến
+                // JPEG: FF D8 FF
+                if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8 && imageBytes[2] == 0xFF)
+                    return true;
+
+                // PNG: 89 50 4E 47
+                if (imageBytes[0] == 0x89 && imageBytes[1] == 0x50 && imageBytes[2] == 0x4E && imageBytes[3] == 0x47)
+                    return true;
+
+                // GIF: 47 49 46 38
+                if (imageBytes[0] == 0x47 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46 && imageBytes[3] == 0x38)
+                    return true;
+
+                // BMP: 42 4D
+                if (imageBytes[0] == 0x42 && imageBytes[1] == 0x4D)
+                    return true;
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+        #endregion
+
+
+        /// <summary>
+        /// Convert Image to byte array
+        /// </summary>
+        private byte[] ImageToByteArray(Image image)
+        {
+            using var ms = new MemoryStream();
+            image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện CellValueChanged của CardView
+        /// Được kích hoạt khi giá trị cell thay đổi
+        /// </summary>
+        private void BusinessPartnerContactGridCardView_CellValueChanged(
+            object sender,
+            DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+        {
+            try
+            {
+                if (e.Column.FieldName == "Avatar")
+                {
+                    if (BusinessPartnerContactGridCardView.GetRow(e.RowHandle) is BusinessPartnerContactDto dto && dto.Avatar != null)
+                    {
+                        // Lưu avatar xuống DB
+                        _contactBll.UpdateAvatarOnly(dto.Id, dto.Avatar);
+                        MsgBox.ShowInfo("Đã cập nhật avatar thành công!");
+                    }
+                }
+                else if (e.Column.FieldName != "SiteName")
+                {
+                    // Cập nhật các trường khác (không phải SiteName và Avatar)
+                    if (BusinessPartnerContactGridCardView.GetRow(e.RowHandle) is BusinessPartnerContactDto dto)
+                    {
+                        _ = ExecuteWithWaitingFormAsync(async () =>
+                        {
+                            // Convert DTO to Entity và cập nhật
+                            var entity = dto.ToEntity();
+                            _contactBll.UpdateEntityWithoutAvatar(entity);
+                            
+                            // Refresh data để đảm bảo đồng bộ
+                            await LoadDataAsync();
+                            UpdateButtonStates();
+                            UpdateStatusBar();
+                        });
+                    }
+
+                    //Hiển thị cập nhật thành công
+                    MsgBox.ShowInfo("Đã cập nhật thông tin thành công!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(new Exception("Lỗi khi cập nhật dữ liệu: " + ex.Message, ex));
+            }
+        }
+         
+
+        private void ContactAvatarPictureEdit_ImageChanged(object sender, EventArgs e)
+        {
+            if (_isLoading) return;
+
+            var pictureEdit = sender as PictureEdit;
+            if (pictureEdit == null) return;
+
+            var selectedContactDtos = GetSelectedContactDtos();
+            if (selectedContactDtos == null || selectedContactDtos.Count == 0) return;
+
+            _ = ExecuteWithWaitingFormAsync(async () =>
+            {
+                foreach (var contactDto in selectedContactDtos)
+                {
+                    if (pictureEdit.Image != null)
+                    {
+                        // Trường hợp có hình ảnh mới - UPDATE
+                        var imageBytes = ImageToByteArray(pictureEdit.Image);
+                        
+                        // Kiểm tra kích thước hình ảnh (tối đa 5MB)
+                        const int maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+                        if (imageBytes.Length > maxSizeInBytes)
+                        {
+                            MsgBox.ShowWarning("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 5MB.");
+                            return;
+                        }
+
+                        // Kiểm tra format hình ảnh
+                        if (!IsValidImageFormat(imageBytes))
+                        {
+                            MsgBox.ShowWarning("Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
+                            return;
+                        }
+
+                        // Cập nhật avatar
+                        _contactBll.UpdateAvatarOnly(contactDto.Id, imageBytes);
+                        contactDto.Avatar = imageBytes; // Cập nhật DTO
+                    }
+                    else
+                    {
+                        // Trường hợp hình ảnh bị xóa - DELETE
+                        // Chỉ xóa nếu DTO hiện tại có avatar
+                        if (contactDto.Avatar != null)
+                        {
+                            _contactBll.DeleteAvatarOnly(contactDto.Id);
+                            contactDto.Avatar = null; // Cập nhật DTO
+                        }
+                    }
+                }
+
+                await LoadDataAsync();
+                UpdateButtonStates();
+                MsgBox.ShowInfo("Đã cập nhật avatar thành công!");
+            });
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện ValidatingEditor của CardView
+        /// Validate dữ liệu trước khi commit
+        /// </summary>
+        private void BusinessPartnerContactGridCardView_ValidatingEditor(object sender,
+            DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        {
+            try
+            {
+                // Lấy thông tin column và row
+                var view = sender as CardView;
+                if (view == null) return;
+
+                var column = view.FocusedColumn;
+                if (column == null) return;
+
+                // Bỏ qua SiteName và Avatar
+                if (column.FieldName == "SiteName" || column.FieldName == "Avatar")
+                {
+                    e.Valid = true;
+                    return;
+                }
+
+                // Validate các trường bắt buộc
+                if (column.FieldName == "FullName")
+                {
+                    if (e.Value == null || string.IsNullOrWhiteSpace(e.Value.ToString()))
+                    {
+                        e.Valid = false;
+                        e.ErrorText = "Họ tên không được để trống.";
+                        return;
+                    }
+                }
+                else if (column.FieldName == "Email")
+                {
+                    var email = e.Value?.ToString();
+                    if (!string.IsNullOrWhiteSpace(email))
+                    {
+                        // Kiểm tra format email
+                        var emailRegex = new System.Text.RegularExpressions.Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                        if (!emailRegex.IsMatch(email))
+                        {
+                            e.Valid = false;
+                            e.ErrorText = "Định dạng email không hợp lệ.";
+                            return;
+                        }
+                    }
+                }
+                else if (column.FieldName == "Phone")
+                {
+                    var phone = e.Value?.ToString();
+                    if (!string.IsNullOrWhiteSpace(phone))
+                    {
+                        // Kiểm tra format số điện thoại (chỉ cho phép số, dấu +, dấu -, dấu cách, dấu ngoặc)
+                        var phoneRegex = new System.Text.RegularExpressions.Regex(@"^[\d\s\+\-\(\)]+$");
+                        if (!phoneRegex.IsMatch(phone))
+                        {
+                            e.Valid = false;
+                            e.ErrorText = "Định dạng số điện thoại không hợp lệ.";
+                            return;
+                        }
+                    }
+                }
+
+                e.Valid = true;
+            }
+            catch (Exception ex)
+            {
+                e.Valid = false;
+                e.ErrorText = $"Lỗi validate: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện ValidateRow của CardView
+        /// Validate toàn bộ row trước khi commit
+        /// </summary>
+        private void BusinessPartnerContactGridCardView_ValidateRow(object sender,
+            DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+        {
+            try
+            {
+                if (e.Row is not BusinessPartnerContactDto dto)
+                {
+                    e.Valid = false;
+                    e.ErrorText = "Dữ liệu không hợp lệ.";
+                    return;
+                }
+
+                // Validate FullName (bắt buộc)
+                if (string.IsNullOrWhiteSpace(dto.FullName))
+                {
+                    e.Valid = false;
+                    e.ErrorText = "Họ tên không được để trống.";
+                    return;
+                }
+
+                // Validate Email format (nếu có)
+                if (!string.IsNullOrWhiteSpace(dto.Email))
+                {
+                    var emailRegex = new System.Text.RegularExpressions.Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                    if (!emailRegex.IsMatch(dto.Email))
+                    {
+                        e.Valid = false;
+                        e.ErrorText = "Định dạng email không hợp lệ.";
+                        return;
+                    }
+                }
+
+                // Validate Phone format (nếu có)
+                if (!string.IsNullOrWhiteSpace(dto.Phone))
+                {
+                    var phoneRegex = new System.Text.RegularExpressions.Regex(@"^[\d\s\+\-\(\)]+$");
+                    if (!phoneRegex.IsMatch(dto.Phone))
+                    {
+                        e.Valid = false;
+                        e.ErrorText = "Định dạng số điện thoại không hợp lệ.";
+                        return;
+                    }
+                }
+
+                e.Valid = true;
+            }
+            catch (Exception ex)
+            {
+                e.Valid = false;
+                e.ErrorText = $"Lỗi validate row: {ex.Message}";
+            }
+        }
+
     }
 }

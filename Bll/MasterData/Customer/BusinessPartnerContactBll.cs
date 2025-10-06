@@ -3,6 +3,7 @@ using Dal.DataContext;
 using Dal.Logging;
 using System;
 using System.Collections.Generic;
+using Dal.DataAccess.MasterData.Partner;
 
 namespace Bll.MasterData.Customer
 {
@@ -17,13 +18,13 @@ namespace Bll.MasterData.Customer
         public BusinessPartnerContactBll()
         {
             _logger = new ConsoleLogger();
-            _dataAccess = new BusinessPartnerContactDataAccess();
+            _dataAccess = new BusinessPartnerContactDataAccess(_logger);
         }
 
         public BusinessPartnerContactBll(string connectionString, ILogger logger = null)
         {
             _logger = logger ?? new ConsoleLogger();
-            _dataAccess = new BusinessPartnerContactDataAccess(connectionString);
+            _dataAccess = new BusinessPartnerContactDataAccess(connectionString, _logger);
         }
 
         /// <summary>
@@ -144,6 +145,72 @@ namespace Bll.MasterData.Customer
             }
         }
 
+        /// <summary>
+        /// Cập nhật chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
+        /// </summary>
+        /// <param name="contactId">ID của liên hệ</param>
+        /// <param name="avatarBytes">Dữ liệu hình ảnh</param>
+        public void UpdateAvatarOnly(Guid contactId, byte[] avatarBytes)
+        {
+            try
+            {
+                _logger?.LogInfo($"Bắt đầu cập nhật avatar cho BusinessPartnerContact với ID: {contactId}");
+                _dataAccess.UpdateAvatarOnly(contactId, avatarBytes);
+                _logger?.LogInfo($"Hoàn thành cập nhật avatar cho BusinessPartnerContact với ID: {contactId}");
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError($"Lỗi khi cập nhật avatar cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
+                throw;
+            }
+        }
 
+        /// <summary>
+        /// Xóa chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
+        /// </summary>
+        /// <param name="contactId">ID của liên hệ</param>
+        public void DeleteAvatarOnly(Guid contactId)
+        {
+            try
+            {
+                _logger?.LogInfo($"Bắt đầu xóa avatar cho BusinessPartnerContact với ID: {contactId}");
+                _dataAccess.DeleteAvatarOnly(contactId);
+                _logger?.LogInfo($"Hoàn thành xóa avatar cho BusinessPartnerContact với ID: {contactId}");
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError($"Lỗi khi xóa avatar cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        public void UpdateEntityWithoutAvatar(BusinessPartnerContact entity)
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            try
+            {
+                // Retrieve the existing entity from the database
+                var existingEntity = _dataAccess.GetById(entity.Id);
+                if (existingEntity == null) throw new InvalidOperationException($"Entity with ID {entity.Id} does not exist.");
+
+                // Update fields except for the Avatar
+                existingEntity.SiteId = entity.SiteId;
+                existingEntity.FullName = entity.FullName;
+                existingEntity.Position = entity.Position;
+                existingEntity.Phone = entity.Phone;
+                existingEntity.Email = entity.Email;
+                existingEntity.IsPrimary = entity.IsPrimary;
+                existingEntity.IsActive = entity.IsActive;
+
+                // Save changes to the database
+                _dataAccess.SaveOrUpdate(existingEntity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error updating entity without avatar: {ex.Message}", ex);
+                throw;
+            }
+        }
     }
 }
