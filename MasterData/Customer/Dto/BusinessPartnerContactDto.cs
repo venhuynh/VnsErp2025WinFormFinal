@@ -14,6 +14,7 @@ namespace MasterData.Customer.Dto
         public Guid SiteId { get; set; }
 
         [DisplayName("Tên chi nhánh")]
+        [Required(ErrorMessage = "Tên chi nhánh không được để trống")]
         [Description("Tên chi nhánh mà contact này thuộc về (chỉ để hiển thị)")]
         public string SiteName { get; set; }
 

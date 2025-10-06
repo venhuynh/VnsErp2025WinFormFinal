@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Dal.DataAccess.MasterData.CustomerDal;
+using Dal.DataAccess.MasterData.Partner;
 using Dal.DataContext;
 using Dal.Logging;
+using System;
+using System.Collections.Generic;
 
 namespace Bll.MasterData.Customer
 {

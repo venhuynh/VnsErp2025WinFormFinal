@@ -78,6 +78,8 @@
     <Compile Include="Customer\Converters\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerConverters.cs" />
+    <Compile Include="Customer\Converters\BusinessPartnerSiteConverters.cs" />
+    <Compile Include="Customer\Dto\BusinessPartnerSiteListDto.cs" />
     <Compile Include="Customer\FluentPartner.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -304,6 +306,7 @@
     <None Include="Customer\Dto\DTO_README.md" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyDto.datasource" />
+    <None Include="Properties\DataSources\MasterData.Customer.Dto.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerContactDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerDetailDto.datasource" />

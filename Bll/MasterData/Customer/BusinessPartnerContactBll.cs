@@ -69,6 +69,27 @@ namespace Bll.MasterData.Customer
         }
 
         /// <summary>
+        /// Thêm mới BusinessPartnerContact
+        /// </summary>
+        /// <param name="entity">BusinessPartnerContact entity</param>
+        /// <returns>ID của entity đã thêm</returns>
+        public Guid Add(BusinessPartnerContact entity)
+        {
+            try
+            {
+                _logger?.LogInfo($"Bắt đầu thêm mới BusinessPartnerContact: {entity.FullName}");
+                _dataAccess.Add(entity);
+                _logger?.LogInfo($"Hoàn thành thêm mới BusinessPartnerContact với ID: {entity.Id}");
+                return entity.Id;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError($"Lỗi khi thêm mới BusinessPartnerContact: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Lưu hoặc cập nhật BusinessPartnerContact
         /// </summary>
         /// <param name="entity">BusinessPartnerContact entity</param>

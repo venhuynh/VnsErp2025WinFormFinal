@@ -218,9 +218,9 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             DeleteAttribute(id);
         }
 
-        public void DeleteById(Guid id)
+        public override bool DeleteById(Guid id)
         {
-            DeleteAttribute(id);
+            return DeleteAttribute(id);
         }
 
         #endregion

@@ -89,7 +89,6 @@ namespace MasterData.Customer
             // Bar button events
             ListDataBarButtonItem.ItemClick += ListDataBarButtonItem_ItemClick;
             NewBarButtonItem.ItemClick += NewBarButtonItem_ItemClick;
-            EditBarButtonItem.ItemClick += EditBarButtonItem_ItemClick;
             DeleteBarButtonItem.ItemClick += DeleteBarButtonItem_ItemClick;
             ExportBarButtonItem.ItemClick += ExportBarButtonItem_ItemClick;
 
@@ -139,8 +138,8 @@ namespace MasterData.Customer
                 if (splashShown)
                 {
                     try
-                    {
-                        SplashScreenManager.CloseForm();
+            {
+                SplashScreenManager.CloseForm();
                     }
                     catch
                     {
@@ -225,7 +224,6 @@ namespace MasterData.Customer
                 var hasSelection = _selectedContactIds.Count > 0;
 
                 // Cập nhật trạng thái button
-                EditBarButtonItem.Enabled = hasSelection;
                 DeleteBarButtonItem.Enabled = hasSelection;
                 ExportBarButtonItem.Enabled = rowCount > 0;
             }
@@ -310,9 +308,16 @@ namespace MasterData.Customer
         {
             try
             {
-                // TODO: Implement thêm mới liên hệ
-                MsgBox.ShowInfo("Chức năng thêm mới liên hệ sẽ được triển khai sau.");
-                UpdateStatusBar();
+                using var form = new FrmBusinessPartnerContactDetail();
+                var result = form.ShowDialog();
+                
+                if (result == DialogResult.OK)
+                {
+                    ListDataBarButtonItem.PerformClick();
+                    
+                    UpdateStatusBar();
+                    MsgBox.ShowInfo("Đã thêm mới liên hệ thành công!");
+                }
             }
             catch (Exception ex)
             {
@@ -320,28 +325,6 @@ namespace MasterData.Customer
             }
         }
 
-        /// <summary>
-        /// Xử lý sự kiện click button Chỉnh sửa
-        /// </summary>
-        private void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            try
-            {
-                var selectedContacts = GetSelectedContactDtos();
-                if (selectedContacts == null || selectedContacts.Count == 0)
-                {
-                    MsgBox.ShowWarning("Vui lòng chọn liên hệ cần chỉnh sửa.");
-                    return;
-                }
-
-                // TODO: Implement chỉnh sửa liên hệ
-                MsgBox.ShowInfo($"Chỉnh sửa {selectedContacts.Count} liên hệ được chọn.");
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(new Exception("Lỗi chỉnh sửa liên hệ: " + ex.Message, ex));
-            }
-        }
 
         /// <summary>
         /// Xử lý sự kiện click button Xóa
@@ -459,12 +442,8 @@ namespace MasterData.Customer
                         }
                         break;
                     case Keys.F2:
-                        // F2: Chỉnh sửa item được chọn
-                        if (_selectedContactIds.Count > 0)
-                        {
-                            EditBarButtonItem_ItemClick(null, null);
-                            e.Handled = true;
-                        }
+                        // F2: Không còn chức năng edit riêng biệt, đã tích hợp vào CardView
+                        e.Handled = true;
                         break;
                 }
             }
@@ -845,8 +824,8 @@ namespace MasterData.Customer
                     if (!IsValidImageFormat(imageBytes))
                     {
                         MsgBox.ShowWarning("Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
-                        return;
-                    }
+                return;
+            }
 
                     await ExecuteWithWaitingFormAsync(() =>
                     {
@@ -966,11 +945,11 @@ namespace MasterData.Customer
         private void ClearSelectionState()
         {
             try
-            {
-                _selectedContactIds.Clear();
+        {
+            _selectedContactIds.Clear();
                 BusinessPartnerContactGridCardView.ClearSelection();
                 BusinessPartnerContactGridCardView.FocusedRowHandle = GridControl.InvalidRowHandle;
-                UpdateButtonStates();
+            UpdateButtonStates();
                 UpdateSelectedRowStatus();
             }
             catch (Exception ex)

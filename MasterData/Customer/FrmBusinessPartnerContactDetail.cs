@@ -1,65 +1,85 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using System.Windows.Forms;
+﻿using Bll.Common;
 using Bll.MasterData.Customer;
 using Bll.Utils;
 using Dal.DataContext;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
+using DevExpress.XtraSplashScreen;
+using MasterData.Customer.Converters;
 using MasterData.Customer.Dto;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net.Mail;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
+    /// <summary>
+    /// Form thêm mới liên hệ đối tác.
+    /// Cung cấp giao diện nhập liệu đầy đủ với validation và lookup chi nhánh đối tác.
+    /// </summary>
     public partial class FrmBusinessPartnerContactDetail : XtraForm
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
-        private readonly Guid _contactId;
-        private readonly BusinessPartnerContactBll _bll = new BusinessPartnerContactBll();
-        private bool _isEditMode => _contactId != Guid.Empty;
+        /// <summary>
+        /// Business Logic Layer cho liên hệ đối tác
+        /// </summary>
+        private readonly BusinessPartnerContactBll _bll = new();
+
+        /// <summary>
+        /// ID chi nhánh đối tác được chọn
+        /// </summary>
+        private Guid? _selectedSiteId;
+        
+        /// <summary>
+        /// Trạng thái đang tải dữ liệu nguồn
+        /// </summary>
+        private bool _isLoadingDataSources;
 
         #endregion
 
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
+
+        /// <summary>
+        /// Khởi tạo form cho chế độ thêm mới liên hệ đối tác.
+        /// </summary>
         public FrmBusinessPartnerContactDetail()
         {
             InitializeComponent();
-        }
-
-        /// <summary>
-        /// Khởi tạo form theo chế độ thêm mới/chỉnh sửa dựa vào contactId.
-        /// </summary>
-        /// <param name="contactId">ID liên hệ; Guid.Empty nếu thêm mới</param>
-        public FrmBusinessPartnerContactDetail(Guid contactId)
-        {
-            InitializeComponent();
-            _contactId = contactId;
             InitializeForm();
 
             SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
             CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
+
+            PartnerNameSearchLookUpEdit.EditValueChanged += PartnerNameSearchLookUpEdit_EditValueChanged;
         }
 
+        #endregion
+
+        #region ========== KHỞI TẠO FORM ==========
+
         /// <summary>
-        /// Khởi tạo form, thiết lập tiêu đề, nạp lookup, và tải dữ liệu nếu đang chỉnh sửa.
+        /// Khởi tạo form cho chế độ thêm mới.
         /// </summary>
-        private void InitializeForm()
+        private async void InitializeForm()
         {
             try
             {
-                Text = _isEditMode ? "Điều chỉnh liên hệ đối tác" : "Thêm mới liên hệ đối tác";
-                LoadPartnerLookup();
+                Text = @"Thêm mới liên hệ đối tác";
+                
                 // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
                 MarkRequiredFields(typeof(BusinessPartnerContactDto));
-                if (_isEditMode)
-                {
-                    LoadContactData();
-                }
+                
+                // Load datasources cho chế độ thêm mới
+                await LoadDataSourcesAsync();
+                
                 var first = FindControlByName(this, "FullNameTextEdit") as BaseEdit;
                 first?.Focus();
             }
@@ -69,145 +89,97 @@ namespace MasterData.Customer
             }
         }
 
+        #endregion
+
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
+
         /// <summary>
-        /// Nạp dữ liệu cho PartnerNameSearchLookUpEdit (businessPartnerListDtoBindingSource)
+        /// Load tất cả các nguồn dữ liệu cần thiết cho form
         /// </summary>
-        private void LoadPartnerLookup()
+        private async Task LoadDataSourcesAsync()
         {
+            if (_isLoadingDataSources) return;
+            _isLoadingDataSources = true;
             try
             {
-                var partnerBll = new BusinessPartnerBll();
-                var partners = partnerBll.GetAll();
-                var list = partners
-                    .Select(p => new BusinessPartnerListDto { Id = p.Id, PartnerName = p.PartnerName })
-                    .ToList();
-
-                if (businessPartnerListDtoBindingSource != null)
+                await ExecuteWithWaitingFormAsync(async () =>
                 {
-                    businessPartnerListDtoBindingSource.DataSource = list;
-                }
-
-                if (FindControlByName(this, "PartnerNameSearchLookUpEdit") is SearchLookUpEdit lookup)
-                {
-                    lookup.Properties.DataSource = businessPartnerListDtoBindingSource;
-                    lookup.Properties.DisplayMember = "PartnerName";
-                    lookup.Properties.ValueMember = "Id";
-                    lookup.Properties.NullText = "Chọn đối tác";
-
-                    // Cấu hình searchLookUpEdit1View (GridView)
-                    if (lookup.Properties.View is GridView view)
-                    {
-                        view.OptionsView.ShowIndicator = true;
-                        view.OptionsView.ShowGroupPanel = false;
-                        view.FocusRectStyle = DrawFocusRectStyle.RowFocus;
-                        view.OptionsSelection.EnableAppearanceFocusedCell = false;
-
-                        // Tạo cột nếu designer chưa thêm
-                        if (view.Columns["PartnerName"] == null)
-                        {
-                            var colName = view.Columns.AddVisible("PartnerName", "Tên đối tác");
-                            colName.VisibleIndex = 0;
-                        }
-                        if (view.Columns["Id"] == null)
-                        {
-                            var colId = view.Columns.AddVisible("Id", "ID");
-                            colId.Visible = false;
-                        }
-
-                        view.BestFitColumns();
-                    }
-                }
+                    // Chỉ load datasource cho chế độ thêm mới
+                    await LoadBusinessPartnerSitesDataSourceAsync();
+                });
             }
             catch (Exception ex)
             {
-                // Không chặn form nếu lookup lỗi, chỉ ghi log UI
-                ShowError(ex, "Lỗi nạp danh sách đối tác");
+                MsgBox.ShowError($"Lỗi tải dữ liệu: {ex.Message}");
+            }
+            finally
+            {
+                _isLoadingDataSources = false;
             }
         }
 
         /// <summary>
-        /// Tải dữ liệu chi tiết liên hệ khi ở chế độ chỉnh sửa.
+        /// Load danh sách chi nhánh vào binding source
         /// </summary>
-        private void LoadContactData()
+        private async Task LoadBusinessPartnerSitesDataSourceAsync()
         {
-            try
-            {
-                var entity = _bll.GetById(_contactId);
-                if (entity == null)
-                {
-                    ShowError("Không tìm thấy liên hệ đối tác");
-                    DialogResult = DialogResult.Cancel;
-                    return;
-                }
+            var siteBll = new BusinessPartnerSiteBll();
+            var sites = await Task.Run(() => siteBll.GetAll());
+            var list = sites.ToSiteListDtos()
+                .OrderBy(s => s.SiteName)
+                .ToList();
 
-                BindDataToControls(entity);
-            }
-            catch (Exception ex)
+            if (businessPartnerSiteListDtoBindingSource != null)
             {
-                ShowError(ex, "Lỗi tải dữ liệu liên hệ");
+                businessPartnerSiteListDtoBindingSource.DataSource = list;
+            }
+
+            // Cấu hình SiteNameSearchLookUpEdit
+            if (FindControlByName(this, "SiteNameSearchLookUpEdit") is SearchLookUpEdit lookup)
+            {
+                lookup.Properties.DataSource = businessPartnerSiteListDtoBindingSource;
+                lookup.Properties.DisplayMember = "SiteName";
+                lookup.Properties.ValueMember = "Id";
+                lookup.Properties.NullText = @"Chọn chi nhánh";
             }
         }
+
+        #endregion
+
+        #region ========== SỰ KIỆN FORM ==========
 
         /// <summary>
-        /// Bind entity vào các control trên form.
-        /// </summary>
-        private void BindDataToControls(BusinessPartnerContact entity)
-        {
-            SetTextIfExist("FullNameTextEdit", entity.FullName);
-            SetTextIfExist("PositionTextEdit", entity.Position);
-            SetTextIfExist("PhoneTextEdit", entity.Phone);
-            SetTextIfExist("EmailTextEdit", entity.Email);
-
-            if (FindControlByName(this, "IsPrimaryCheckEdit") is CheckEdit chk)
-            {
-                chk.Checked = entity.IsPrimary;
-            }
-
-            if (FindControlByName(this, "PartnerNameSearchLookUpEdit") is SearchLookUpEdit partnerLookup)
-            {
-                partnerLookup.EditValue = entity.SiteId;
-            }
-        }
-
-        private static Control FindControlByName(Control root, string name)
-        {
-            if (root == null || string.IsNullOrWhiteSpace(name)) return null;
-            var found = root.Controls.Find(name, true).FirstOrDefault();
-            return found;
-        }
-
-        private void SetTextIfExist(string controlName, string value)
-        {
-            if (FindControlByName(this, controlName) is BaseEdit edit)
-            {
-                edit.EditValue = value;
-            }
-        }
-
-        #region Toolbar Events
-
-        /// <summary>
-        /// Người dùng bấm Lưu.
+        /// Xử lý sự kiện click button Lưu
         /// </summary>
         private void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (!ValidateInput()) return;
+            
             try
             {
                 var entity = GetDataFromControls();
-                _bll.SaveOrUpdate(entity);
-                ShowInfo(_isEditMode ? "Cập nhật liên hệ đối tác thành công!" : "Thêm mới liên hệ đối tác thành công!");
+                
+                // Kiểm tra SiteId trước khi lưu
+                if (_selectedSiteId == null || _selectedSiteId == Guid.Empty)
+                {
+                    ShowError("Vui lòng chọn chi nhánh đối tác");
+                    return;
+                }
+                
+                // Chỉ thêm mới, không update
+                _bll.Add(entity);
+                ShowInfo("Thêm mới liên hệ đối tác thành công!");
                 DialogResult = DialogResult.OK;
                 Close();
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi lưu dữ liệu liên hệ");
+                ShowError(ex, "Lỗi thêm mới liên hệ");
             }
         }
 
         /// <summary>
-        /// Người dùng bấm Đóng.
+        /// Xử lý sự kiện click button Đóng
         /// </summary>
         private void CloseBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -217,91 +189,205 @@ namespace MasterData.Customer
 
         #endregion
 
+        #region ========== XỬ LÝ DỮ LIỆU ==========
+
         /// <summary>
         /// Thu thập dữ liệu từ các control để tạo entity lưu xuống DB.
         /// </summary>
         private BusinessPartnerContact GetDataFromControls()
         {
+            // Lấy IsActive từ control nếu có, nếu không thì dùng default
+            bool isActive = true; // Default value
+            if (FindControlByName(this, "IsActiveCheckEdit") is CheckEdit isActiveCheck)
+            {
+                isActive = isActiveCheck.Checked;
+            }
+            
             var entity = new BusinessPartnerContact
             {
-                Id = _contactId,
-                SiteId = GetGuidFromEditor("PartnerNameSearchLookUpEdit") ?? Guid.Empty,
-                FullName = GetStringFromEditor("FullNameTextEdit"),
-                Position = GetStringFromEditor("PositionTextEdit"),
-                Phone = GetStringFromEditor("PhoneTextEdit"),
-                Email = GetStringFromEditor("EmailTextEdit"),
-                IsPrimary = GetBoolFromEditor("IsPrimaryCheckEdit") ?? false
+                Id = Guid.NewGuid(),
+                SiteId = _selectedSiteId ?? Guid.Empty,
+                FullName = FullNameTextEdit?.EditValue?.ToString(),
+                Position = PositionTextEdit?.EditValue?.ToString(),
+                Phone = PhoneTextEdit?.EditValue?.ToString(),
+                Email = EmailTextEdit?.EditValue?.ToString(),
+                IsPrimary = IsPrimaryCheckEdit?.Checked ?? false,
+                IsActive = isActive
             };
             return entity;
         }
 
         /// <summary>
-        /// Kiểm tra hợp lệ dữ liệu bắt buộc.
+        /// Kiểm tra hợp lệ dữ liệu bắt buộc sử dụng dxErrorProvider1
         /// </summary>
         private bool ValidateInput()
         {
-            if (FindControlByName(this, "FullNameTextEdit") is BaseEdit fullName && string.IsNullOrWhiteSpace(fullName.EditValue?.ToString()))
+            bool isValid = true;
+            
+            // Clear tất cả errors trước khi validate
+            dxErrorProvider1.ClearErrors();
+
+            // Validate Họ và tên (bắt buộc)
+            if (string.IsNullOrWhiteSpace(FullNameTextEdit?.EditValue?.ToString()))
             {
-                ShowError("Họ và tên không được để trống");
-                fullName.Focus();
-                return false;
+                dxErrorProvider1.SetError(FullNameTextEdit, "Họ và tên không được để trống");
+                isValid = false;
             }
 
-            // Kiểm tra trùng số điện thoại (cho phép rỗng)
-            var phone = GetStringFromEditor("PhoneTextEdit")?.Trim();
-            if (!string.IsNullOrWhiteSpace(phone))
+            // Validate Chi nhánh (bắt buộc)
+            if (_selectedSiteId == null || _selectedSiteId == Guid.Empty)
             {
-                if (_bll.IsPhoneExists(phone, _contactId))
+                if (PartnerNameSearchLookUpEdit != null)
                 {
-                    var phoneEdit = FindControlByName(this, "PhoneTextEdit") as BaseEdit;
-                    phoneEdit?.Focus();
-                    ShowError("Số điện thoại đã tồn tại trong hệ thống");
-                    return false;
+                    dxErrorProvider1.SetError(PartnerNameSearchLookUpEdit, "Vui lòng chọn chi nhánh đối tác");
+                }
+                isValid = false;
+            }
+
+            // Validate Email format (nếu có)
+            var email = EmailTextEdit?.EditValue?.ToString().Trim();
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                if (!IsValidEmail(email))
+                {
+                    dxErrorProvider1.SetError(EmailTextEdit, "Email không đúng định dạng");
+                    isValid = false;
                 }
             }
-            return true;
+
+            // Validate Phone format (nếu có)
+            var phone = PhoneTextEdit?.EditValue?.ToString().Trim();
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                if (!IsValidPhone(phone))
+                {
+                    dxErrorProvider1.SetError(PhoneTextEdit, "Số điện thoại không đúng định dạng");
+                    isValid = false;
+                }
+                else if (_bll.IsPhoneExists(phone, Guid.Empty))
+                {
+                    dxErrorProvider1.SetError(PhoneTextEdit, "Số điện thoại đã tồn tại trong hệ thống");
+                    isValid = false;
+                }
+            }
+
+            return isValid;
         }
 
         /// <summary>
-        /// Lấy Guid từ editor theo tên control.
+        /// Kiểm tra email có hợp lệ không
         /// </summary>
-        private Guid? GetGuidFromEditor(string name)
+        private bool IsValidEmail(string email)
         {
-            if (FindControlByName(this, name) is BaseEdit edit)
+            try
             {
-                Guid parsed;
-                if (Guid.TryParse(edit.EditValue?.ToString(), out parsed))
-                    return parsed;
+                var addr = new MailAddress(email);
+                return addr.Address == email;
             }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra số điện thoại có hợp lệ không (chỉ cho phép số, dấu +, dấu - và khoảng trắng)
+        /// </summary>
+        private bool IsValidPhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone)) return true;
+            
+            // Loại bỏ khoảng trắng và kiểm tra
+            var cleanPhone = phone.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
+            
+            // Kiểm tra có ít nhất 10 ký tự và chỉ chứa số hoặc dấu +
+            return cleanPhone.Length >= 10 && 
+                   (cleanPhone.All(c => char.IsDigit(c)) || 
+                    (cleanPhone.StartsWith("+") && cleanPhone.Substring(1).All(c => char.IsDigit(c))));
+        }
+
+        #endregion
+
+        #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Tìm control theo tên trong cây control
+        /// </summary>
+        /// <param name="root">Control gốc để tìm kiếm</param>
+        /// <param name="name">Tên control cần tìm</param>
+        /// <returns>Control tìm thấy hoặc null</returns>
+        private static Control FindControlByName(Control root, string name)
+        {
+            if (root == null || string.IsNullOrWhiteSpace(name)) return null;
+            
+            // Tìm kiếm đệ quy trong tất cả controls
+            return FindControlRecursive(root, name);
+        }
+
+        /// <summary>
+        /// Tìm kiếm đệ quy control theo tên
+        /// </summary>
+        /// <param name="parent">Control cha</param>
+        /// <param name="name">Tên control cần tìm</param>
+        /// <returns>Control tìm thấy hoặc null</returns>
+        private static Control FindControlRecursive(Control parent, string name)
+        {
+            if (parent == null) return null;
+            
+            // Kiểm tra control hiện tại
+            if (parent.Name == name) return parent;
+            
+            // Tìm kiếm trong tất cả controls con
+            foreach (Control child in parent.Controls)
+            {
+                var found = FindControlRecursive(child, name);
+                if (found != null) return found;
+            }
+            
             return null;
         }
 
         /// <summary>
-        /// Lấy string từ editor theo tên control.
+        /// Clear error cho control khi user thay đổi dữ liệu
         /// </summary>
-        private string GetStringFromEditor(string name)
+        private void ClearErrorForControl(string controlName)
         {
-            if (FindControlByName(this, name) is BaseEdit edit)
+            switch (controlName)
             {
-                return edit.EditValue?.ToString();
+                case "FullNameTextEdit":
+                    dxErrorProvider1.SetError(FullNameTextEdit, "");
+                    break;
+                case "PartnerNameSearchLookUpEdit":
+                    dxErrorProvider1.SetError(PartnerNameSearchLookUpEdit, "");
+                    break;
+                case "EmailTextEdit":
+                    dxErrorProvider1.SetError(EmailTextEdit, "");
+                    break;
+                case "PhoneTextEdit":
+                    dxErrorProvider1.SetError(PhoneTextEdit, "");
+                    break;
             }
-            return null;
         }
 
         /// <summary>
-        /// Lấy bool từ editor theo tên control.
+        /// Event handler cho PartnerNameSearchLookUpEdit - Lưu SiteId khi user chọn
         /// </summary>
-        private bool? GetBoolFromEditor(string name)
+        private void PartnerNameSearchLookUpEdit_EditValueChanged(object sender, EventArgs e)
         {
-            if (FindControlByName(this, name) is CheckEdit chk)
+            if (sender is SearchLookUpEdit lookup)
             {
-                return chk.Checked;
+                if (lookup.EditValue != null && Guid.TryParse(lookup.EditValue.ToString(), out var siteId))
+                {
+                    _selectedSiteId = siteId;
+                }
+                else
+                {
+                    _selectedSiteId = null;
+                }
+                
+                // Clear error khi user chọn
+                ClearErrorForControl("PartnerNameSearchLookUpEdit");
             }
-            if (FindControlByName(this, name) is BaseEdit edit)
-            {
-                if (edit.EditValue is bool b) return b;
-            }
-            return null;
         }
 
 
@@ -331,6 +417,10 @@ namespace MasterData.Customer
             else
                 MsgBox.ShowException(new Exception(context + ": " + ex.Message, ex));
         }
+
+        #endregion
+
+        #region ========== TIỆN ÍCH HỖ TRỢ ==========
 
         /// <summary>
         /// Phím tắt lưu (Ctrl+S) và đóng (Esc).
@@ -381,12 +471,12 @@ namespace MasterData.Customer
                     if (!(item.Text?.Contains("*") ?? false))
                     {
                         var baseCaption = string.IsNullOrWhiteSpace(item.Text) ? propName : item.Text;
-                        item.Text = baseCaption + " <color=red>*</color>";
+                        item.Text = baseCaption + @" <color=red>*</color>";
                     }
 
                     if (item.Control is BaseEdit be && be.Properties is RepositoryItemTextEdit txtProps)
                     {
-                        txtProps.NullValuePrompt = "Bắt buộc nhập";
+                        txtProps.NullValuePrompt = @"Bắt buộc nhập";
                         txtProps.NullValuePromptShowForEmptyValue = true;
                     }
                 }
@@ -441,5 +531,23 @@ namespace MasterData.Customer
                 }
             }
         }
+
+        /// <summary>
+        /// Thực thi operation với splash screen
+        /// </summary>
+        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
+        {
+            try
+            {
+                SplashScreenManager.ShowForm(typeof(WaitForm1));
+                await operation();
+            }
+            finally
+            {
+                SplashScreenManager.CloseForm();
+            }
+        }
+
+        #endregion
     }
 }

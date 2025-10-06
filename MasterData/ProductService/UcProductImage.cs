@@ -34,7 +34,9 @@ namespace MasterData.ProductService
         /// <summary>
         /// ID sản phẩm hiện tại đang xem hình ảnh
         /// </summary>
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private Guid? _currentProductId;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
         /// <summary>
         /// Danh sách hình ảnh hiện tại

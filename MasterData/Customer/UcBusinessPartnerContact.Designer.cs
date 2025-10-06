@@ -44,7 +44,6 @@ namespace MasterData.Customer
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.ListDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.NewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
@@ -95,7 +94,6 @@ namespace MasterData.Customer
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.NewBarButtonItem,
             this.ListDataBarButtonItem,
-            this.EditBarButtonItem,
             this.DeleteBarButtonItem,
             this.ExportBarButtonItem,
             this.barHeaderItem1,
@@ -116,7 +114,6 @@ namespace MasterData.Customer
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ListDataBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NewBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.DeleteBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
@@ -138,14 +135,6 @@ namespace MasterData.Customer
             this.NewBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.addnewdatasource_16x16;
             this.NewBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.addnewdatasource_32x32;
             this.NewBarButtonItem.Name = "NewBarButtonItem";
-            // 
-            // EditBarButtonItem
-            // 
-            this.EditBarButtonItem.Caption = "Điều chỉnh";
-            this.EditBarButtonItem.Id = 2;
-            this.EditBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.edittask_16x16;
-            this.EditBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.edittask_32x32;
-            this.EditBarButtonItem.Name = "EditBarButtonItem";
             // 
             // DeleteBarButtonItem
             // 
@@ -469,7 +458,6 @@ namespace MasterData.Customer
         private LayoutControlItem layoutControlItem1;
         private BarButtonItem ListDataBarButtonItem;
         private BarButtonItem NewBarButtonItem;
-        private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
         private BindingSource businessPartnerContactDtoBindingSource;

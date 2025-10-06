@@ -4,6 +4,7 @@ using Dal.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Dal.DataAccess.MasterData.Partner
 {
@@ -21,7 +22,7 @@ namespace Dal.DataAccess.MasterData.Partner
         }
 
         /// <summary>
-        /// Lấy tất cả BusinessPartnerSite
+        /// Lấy tất cả BusinessPartnerSite với thông tin đầy đủ bao gồm PartnerName
         /// </summary>
         /// <returns>Danh sách BusinessPartnerSite</returns>
         public override List<BusinessPartnerSite> GetAll()
@@ -29,7 +30,51 @@ namespace Dal.DataAccess.MasterData.Partner
             try
             {
                 using var context = CreateContext();
-                return context.BusinessPartnerSites.ToList();
+
+                // Sử dụng DataLoadOptions để include BusinessPartner
+                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
+                context.LoadOptions = loadOptions;
+
+                // Load tất cả BusinessPartnerSite với BusinessPartner đã được include
+                var sites = context.BusinessPartnerSites
+                    .OrderBy(s => s.SiteName)
+                    .ToList();
+
+                return sites;
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx)
+            {
+                throw new DataAccessException($"Lỗi SQL khi lấy danh sách BusinessPartnerSite: {sqlEx.Message}", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy danh sách BusinessPartnerSite: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả BusinessPartnerSite với thông tin đầy đủ bao gồm PartnerName (Async)
+        /// </summary>
+        /// <returns>Danh sách BusinessPartnerSite</returns>
+        public override async Task<List<BusinessPartnerSite>> GetAllAsync()
+        {
+            try
+            {
+                using var context = CreateContext();
+
+                // Cấu hình DataLoadOptions để preload navigation properties
+                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
+                context.LoadOptions = loadOptions;
+
+                return await Task.Run(() => context.BusinessPartnerSites
+                    .OrderBy(s => s.SiteName)
+                    .ToList());
             }
             catch (System.Data.SqlClient.SqlException sqlEx)
             {
