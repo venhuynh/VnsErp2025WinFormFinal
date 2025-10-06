@@ -68,7 +68,7 @@ namespace Dal.DataAccess.MasterData
             }
             else
             {
-                existing.PartnerId = entity.PartnerId;
+                existing.SiteId = entity.SiteId;
                 existing.FullName = entity.FullName;
                 existing.Position = entity.Position;
                 existing.Phone = entity.Phone;

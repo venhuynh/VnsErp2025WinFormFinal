@@ -12,7 +12,7 @@ namespace MasterData.Customer.Converters
             return new BusinessPartnerContactDto
             {
                 Id = entity.Id,
-                PartnerId = entity.PartnerId,
+                PartnerId = entity.SiteId,
                 FullName = entity.FullName,
                 Position = entity.Position,
                 Phone = entity.Phone,
@@ -27,7 +27,7 @@ namespace MasterData.Customer.Converters
             if (dto == null) return null;
             var entity = destination ?? new BusinessPartnerContact();
             if (dto.Id != Guid.Empty) entity.Id = dto.Id;
-            entity.PartnerId = dto.PartnerId;
+            entity.SiteId = dto.PartnerId;
             entity.FullName = dto.FullName;
             entity.Position = dto.Position;
             entity.Phone = dto.Phone;

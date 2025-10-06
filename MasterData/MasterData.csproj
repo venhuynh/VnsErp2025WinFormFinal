@@ -67,6 +67,12 @@
     <Compile Include="Company\UcCompany.Designer.cs">
       <DependentUpon>UcCompany.cs</DependentUpon>
     </Compile>
+    <Compile Include="Company\UcCompanyBranch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Company\UcCompanyBranch.Designer.cs">
+      <DependentUpon>UcCompanyBranch.cs</DependentUpon>
+    </Compile>
     <Compile Include="Customer\Converters\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerConverters.cs" />
@@ -223,6 +229,9 @@
     <EmbeddedResource Include="Company\UcCompany.resx">
       <DependentUpon>UcCompany.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Company\UcCompanyBranch.resx">
+      <DependentUpon>UcCompanyBranch.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Customer\FluentPartner.resx">
       <DependentUpon>FluentPartner.cs</DependentUpon>
     </EmbeddedResource>
@@ -291,6 +300,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Customer\Dto\DTO_README.md" />
+    <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerContactDto.datasource" />

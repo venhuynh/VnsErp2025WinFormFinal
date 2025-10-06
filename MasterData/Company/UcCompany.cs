@@ -15,11 +15,31 @@ using DevExpress.Utils;
 
 namespace MasterData.Company
 {
+    /// <summary>
+    /// User Control quản lý thông tin công ty.
+    /// Cung cấp chức năng hiển thị, cập nhật thông tin công ty và quản lý logo với validation và giao diện thân thiện.
+    /// </summary>
     public partial class UcCompany : XtraUserControl
     {
+        #region ========== KHAI BÁO BIẾN ==========
+
+        /// <summary>
+        /// Business Logic Layer cho công ty
+        /// </summary>
         private readonly CompanyBll _companyBll;
+
+        /// <summary>
+        /// Logger để ghi log
+        /// </summary>
         private readonly ILogger _logger;
 
+        #endregion
+
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
+
+        /// <summary>
+        /// Constructor mặc định
+        /// </summary>
         public UcCompany()
         {
             InitializeComponent();
@@ -30,12 +50,43 @@ namespace MasterData.Company
             Load += UcCompany_Load;
         }
 
+        /// <summary>
+        /// Constructor với connection string
+        /// </summary>
+        /// <param name="connectionString">Chuỗi kết nối database</param>
         public UcCompany(string connectionString) : this()
         {
             _companyBll?.Dispose();
             _companyBll = new CompanyBll(connectionString, _logger);
         }
 
+        #endregion
+
+        #region ========== KHỞI TẠO FORM ==========
+
+        /// <summary>
+        /// Khởi tạo BLL (đã được thực hiện trong constructor)
+        /// </summary>
+        private void InitializeBll()
+        {
+            // BLL đã được khởi tạo trong constructor
+        }
+
+        /// <summary>
+        /// Khởi tạo events (đã được thực hiện trong constructor)
+        /// </summary>
+        private void InitializeEvents()
+        {
+            // Events đã được khởi tạo trong constructor
+        }
+
+        #endregion
+
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
+
+        /// <summary>
+        /// Load thông tin công ty khi form khởi tạo
+        /// </summary>
         private void UcCompany_Load(object sender, EventArgs e)
         {
             try
@@ -62,6 +113,9 @@ namespace MasterData.Company
             }
         }
 
+        /// <summary>
+        /// Hiển thị thông tin công ty lên các control
+        /// </summary>
         private void DisplayCompanyInfo()
         {
             try
@@ -114,6 +168,10 @@ namespace MasterData.Company
             }
         }
 
+        #endregion
+
+        #region ========== CẤU HÌNH GIAO DIỆN ==========
+
         /// <summary>
         /// Cấu hình LogoPictureEdit để chỉ hiển thị nút Delete và Load
         /// Sử dụng ContextMenuStrip tùy chỉnh để đảm bảo tính ổn định
@@ -160,6 +218,56 @@ namespace MasterData.Company
                 _logger?.LogError($"Lỗi khi cấu hình LogoPictureEdit: {ex.Message}", ex);
             }
         }
+
+        /// <summary>
+        /// Đánh dấu các layout item tương ứng với thuộc tính có [Required] bằng dấu * đỏ.
+        /// Quy ước mapping control theo tên thuộc tính (từ editor được gán vào LayoutControlItem.Control):
+        /// - Editor: "txt" + PropertyName, PropertyName + "TextEdit", hoặc chính PropertyName (BaseEdit)
+        /// </summary>
+        private void MarkRequiredFields(Type dtoType)
+        {
+            try
+            {
+                var requiredProps = dtoType
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => p.GetCustomAttributes(typeof(RequiredAttribute), true).Any())
+                    .ToList();
+
+                var allLayoutItems = GetAllLayoutControlItems(this);
+
+                foreach (var it in allLayoutItems)
+                {
+                    it.AllowHtmlStringInCaption = true;
+                }
+
+                foreach (var prop in requiredProps)
+                {
+                    var propName = prop.Name;
+                    var item = allLayoutItems.FirstOrDefault(it => IsEditorMatchProperty(it.Control, propName));
+                    if (item == null) continue;
+
+                    if (!(item.Text?.Contains("*") ?? false))
+                    {
+                        var baseCaption = string.IsNullOrWhiteSpace(item.Text) ? propName : item.Text;
+                        item.Text = baseCaption + @" <color=red>*</color>";
+                    }
+
+                    if (item.Control is BaseEdit be && be.Properties is RepositoryItemTextEdit txtProps)
+                    {
+                        txtProps.NullValuePrompt = @"Bắt buộc nhập";
+                        txtProps.NullValuePromptShowForEmptyValue = true;
+                    }
+                }
+            }
+            catch
+            {
+                // ignore marking errors
+            }
+        }
+
+        #endregion
+
+        #region ========== XỬ LÝ LOGO ==========
 
         /// <summary>
         /// Lưu logo vào database
@@ -356,52 +464,13 @@ namespace MasterData.Company
             }
         }
 
+        #endregion
+
+        #region ========== TIỆN ÍCH ==========
+
         /// <summary>
-        /// Đánh dấu các layout item tương ứng với thuộc tính có [Required] bằng dấu * đỏ.
-        /// Quy ước mapping control theo tên thuộc tính (từ editor được gán vào LayoutControlItem.Control):
-        /// - Editor: "txt" + PropertyName, PropertyName + "TextEdit", hoặc chính PropertyName (BaseEdit)
+        /// Kiểm tra editor có match với property name không
         /// </summary>
-        private void MarkRequiredFields(Type dtoType)
-        {
-            try
-            {
-                var requiredProps = dtoType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => p.GetCustomAttributes(typeof(RequiredAttribute), true).Any())
-                    .ToList();
-
-                var allLayoutItems = GetAllLayoutControlItems(this);
-
-                foreach (var it in allLayoutItems)
-                {
-                    it.AllowHtmlStringInCaption = true;
-                }
-
-                foreach (var prop in requiredProps)
-                {
-                    var propName = prop.Name;
-                    var item = allLayoutItems.FirstOrDefault(it => IsEditorMatchProperty(it.Control, propName));
-                    if (item == null) continue;
-
-                    if (!(item.Text?.Contains("*") ?? false))
-                    {
-                        var baseCaption = string.IsNullOrWhiteSpace(item.Text) ? propName : item.Text;
-                        item.Text = baseCaption + @" <color=red>*</color>";
-                    }
-
-                    if (item.Control is BaseEdit be && be.Properties is RepositoryItemTextEdit txtProps)
-                    {
-                        txtProps.NullValuePrompt = @"Bắt buộc nhập";
-                        txtProps.NullValuePromptShowForEmptyValue = true;
-                    }
-                }
-            }
-            catch
-            {
-                // ignore marking errors
-            }
-        }
-
         private static bool IsEditorMatchProperty(Control editor, string propName)
         {
             if (editor == null) return false;
@@ -415,6 +484,9 @@ namespace MasterData.Company
             return candidates.Any(c => string.Equals(c, propName, StringComparison.OrdinalIgnoreCase));
         }
 
+        /// <summary>
+        /// Lấy tất cả LayoutControlItem trong control
+        /// </summary>
         private static System.Collections.Generic.List<LayoutControlItem> GetAllLayoutControlItems(Control root)
         {
             var result = new System.Collections.Generic.List<LayoutControlItem>();
@@ -432,6 +504,9 @@ namespace MasterData.Company
             return result;
         }
 
+        /// <summary>
+        /// Thu thập LayoutControlItem từ BaseLayoutItem
+        /// </summary>
         private static void CollectLayoutItems(BaseLayoutItem baseItem, System.Collections.Generic.List<LayoutControlItem> collector)
         {
             if (baseItem == null) return;
@@ -448,5 +523,6 @@ namespace MasterData.Company
             }
         }
 
+        #endregion
     }
 }

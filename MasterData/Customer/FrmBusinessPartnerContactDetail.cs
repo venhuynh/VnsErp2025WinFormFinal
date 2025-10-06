@@ -165,7 +165,7 @@ namespace MasterData.Customer
 
             if (FindControlByName(this, "PartnerNameSearchLookUpEdit") is SearchLookUpEdit partnerLookup)
             {
-                partnerLookup.EditValue = entity.PartnerId;
+                partnerLookup.EditValue = entity.SiteId;
             }
         }
 
@@ -225,7 +225,7 @@ namespace MasterData.Customer
             var entity = new BusinessPartnerContact
             {
                 Id = _contactId,
-                PartnerId = GetGuidFromEditor("PartnerNameSearchLookUpEdit") ?? Guid.Empty,
+                SiteId = GetGuidFromEditor("PartnerNameSearchLookUpEdit") ?? Guid.Empty,
                 FullName = GetStringFromEditor("FullNameTextEdit"),
                 Position = GetStringFromEditor("PositionTextEdit"),
                 Phone = GetStringFromEditor("PhoneTextEdit"),

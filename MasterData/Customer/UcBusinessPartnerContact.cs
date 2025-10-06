@@ -334,7 +334,7 @@ namespace MasterData.Customer
                 var partnerBll = new BusinessPartnerBll();
                 var partners = await partnerBll.GetAllAsync();
                 var partnerNameById = partners.ToDictionary(p => p.Id, p => p.PartnerName);
-                var dtoList = entities.Select(e => e.ToDto(partnerNameById.TryGetValue(e.PartnerId, out var value) ? value : null)).ToList();
+                var dtoList = entities.Select(e => e.ToDto(partnerNameById.TryGetValue(e.SiteId, out var value) ? value : null)).ToList();
 
                 BindGrid(dtoList);
             }

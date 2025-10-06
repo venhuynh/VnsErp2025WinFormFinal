@@ -537,13 +537,13 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
         }
 
         /// <summary>
-        /// Tạo 500 dữ liệu mẫu cho BusinessPartnerContact
-        /// Mối quan hệ 1-nhiều: Một BusinessPartner có thể có nhiều contacts
+        /// Tạo 200 dữ liệu mẫu cho BusinessPartnerSite
+        /// Mối quan hệ 1-nhiều: Một BusinessPartner có thể có nhiều sites
         /// </summary>
         /// <param name="context">DataContext để lưu dữ liệu</param>
-        public static void SeedBusinessPartnerContacts(VnsErp2025DataContext context)
+        public static void SeedBusinessPartnerSites(VnsErp2025DataContext context)
         {
-            var contacts = new List<BusinessPartnerContact>();
+            var sites = new List<BusinessPartnerSite>();
             var random = new Random();
 
             // Lấy danh sách partners
@@ -551,30 +551,102 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
             
             if (!partners.Any())
             {
-                return; // Không có partners nào để tạo contacts
+                return; // Không có partners nào để tạo sites
+            }
+
+            var provinces = new[]
+            {
+                "Hà Nội", "TP. Hồ Chí Minh", "Đà Nẵng", "Hải Phòng", "Cần Thơ",
+                "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bạc Liêu",
+                "Bắc Ninh", "Bến Tre", "Bình Định", "Bình Dương", "Bình Phước",
+                "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk", "Đắk Nông"
+            };
+
+            var countries = new[]
+            {
+                "Việt Nam", "Trung Quốc", "Hàn Quốc", "Nhật Bản", "Thái Lan",
+                "Singapore", "Malaysia", "Philippines", "Indonesia", "Mỹ"
+            };
+
+            // Tạo 200 sites
+            for (int i = 1; i <= 200; i++)
+            {
+                // Chọn partner ngẫu nhiên
+                var selectedPartner = partners[random.Next(partners.Count)];
+                
+                // Kiểm tra xem partner này đã có bao nhiêu sites
+                var existingSitesCount = context.BusinessPartnerSites.Count(s => s.PartnerId == selectedPartner.Id);
+                
+                // Tạo site mới
+                var isDefault = existingSitesCount == 0; // Nếu là site đầu tiên của partner thì là default
+                
+                var site = new BusinessPartnerSite
+                {
+                    Id = Guid.NewGuid(),
+                    PartnerId = selectedPartner.Id,
+                    SiteCode = $"{selectedPartner.PartnerCode}S{i:D2}", // BP000001S01, BP000001S02, ...
+                    SiteName = $"{selectedPartner.PartnerName} - Chi nhánh {i}",
+                    Address = GenerateAddress(random),
+                    City = provinces[random.Next(provinces.Length)],
+                    Province = provinces[random.Next(provinces.Length)],
+                    Country = countries[random.Next(countries.Length)],
+                    ContactPerson = GenerateContactPerson(random),
+                    Phone = GeneratePhoneNumber(random),
+                    Email = GenerateContactEmail(selectedPartner.PartnerCode, i, random),
+                    IsDefault = isDefault,
+                    IsActive = random.Next(0, 10) < 9, // 90% active
+                    CreatedDate = DateTime.Now.AddDays(-random.Next(0, 365)),
+                    UpdatedDate = random.Next(0, 2) == 1 ? DateTime.Now.AddDays(-random.Next(0, 30)) : (DateTime?)null
+                };
+                
+                sites.Add(site);
+            }
+
+            // Thêm vào context
+            context.BusinessPartnerSites.InsertAllOnSubmit(sites);
+        }
+
+        /// <summary>
+        /// Tạo 500 dữ liệu mẫu cho BusinessPartnerContact
+        /// Mối quan hệ 1-nhiều: Một BusinessPartnerSite có thể có nhiều contacts
+        /// </summary>
+        /// <param name="context">DataContext để lưu dữ liệu</param>
+        public static void SeedBusinessPartnerContacts(VnsErp2025DataContext context)
+        {
+            var contacts = new List<BusinessPartnerContact>();
+            var random = new Random();
+
+            // Lấy danh sách sites
+            var sites = context.BusinessPartnerSites.ToList();
+            
+            if (!sites.Any())
+            {
+                return; // Không có sites nào để tạo contacts
             }
 
             // Tạo 500 contacts
             for (int i = 1; i <= 500; i++)
             {
-                // Chọn partner ngẫu nhiên
-                var selectedPartner = partners[random.Next(partners.Count)];
+                // Chọn site ngẫu nhiên
+                var selectedSite = sites[random.Next(sites.Count)];
                 
-                // Kiểm tra xem partner này đã có bao nhiêu contacts
-                var existingContactsCount = context.BusinessPartnerContacts.Count(c => c.PartnerId == selectedPartner.Id);
+                // Kiểm tra xem site này đã có bao nhiêu contacts
+                var existingContactsCount = context.BusinessPartnerContacts.Count(c => c.SiteId == selectedSite.Id);
                 
                 // Tạo contact mới
-                var isPrimary = existingContactsCount == 0; // Nếu là contact đầu tiên của partner thì là primary
+                var isPrimary = existingContactsCount == 0; // Nếu là contact đầu tiên của site thì là primary
                 
                 var contact = new BusinessPartnerContact
                 {
                     Id = Guid.NewGuid(),
-                    PartnerId = selectedPartner.Id,
+                    SiteId = selectedSite.Id,
                     FullName = GenerateContactPerson(random),
                     Position = GenerateContactPosition(random),
                     Phone = GeneratePhoneNumber(random),
-                    Email = GenerateContactEmail(selectedPartner.PartnerCode, existingContactsCount + 1, random),
-                    IsPrimary = isPrimary
+                    Email = GenerateContactEmail(selectedSite.SiteCode, existingContactsCount + 1, random),
+                    IsPrimary = isPrimary,
+                    Avatar = null, // Không có avatar mặc định
+                    IsActive = random.Next(0, 10) < 9 // 90% active
                 };
                 
                 contacts.Add(contact);
@@ -592,7 +664,7 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
         }
 
         /// <summary>
-        /// Tạo tất cả dữ liệu mẫu (BusinessPartner, BusinessPartnerCategory, Mappings, Contacts)
+        /// Tạo tất cả dữ liệu mẫu (BusinessPartner, BusinessPartnerCategory, Mappings, Sites, Contacts)
         /// Sử dụng connection string từ ConfigurationManager (recommended)
         /// </summary>
         public static void SeedAllData()
@@ -601,6 +673,7 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
             {
                 // Xóa dữ liệu cũ (nếu có) theo thứ tự ngược lại để tránh foreign key constraint
                 context.BusinessPartnerContacts.DeleteAllOnSubmit(context.BusinessPartnerContacts);
+                context.BusinessPartnerSites.DeleteAllOnSubmit(context.BusinessPartnerSites);
                 context.BusinessPartner_BusinessPartnerCategories.DeleteAllOnSubmit(context.BusinessPartner_BusinessPartnerCategories);
                 context.BusinessPartners.DeleteAllOnSubmit(context.BusinessPartners);
                 context.BusinessPartnerCategories.DeleteAllOnSubmit(context.BusinessPartnerCategories);
@@ -616,13 +689,16 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
                 SeedBusinessPartnerMappings(context);
                 context.SubmitChanges(); // Submit mappings
 
+                SeedBusinessPartnerSites(context);
+                context.SubmitChanges(); // Submit sites
+
                 SeedBusinessPartnerContacts(context);
                 context.SubmitChanges(); // Submit contacts cuối cùng
             }
         }
 
         /// <summary>
-        /// Tạo tất cả dữ liệu mẫu (BusinessPartner, BusinessPartnerCategory, Mappings, Contacts)
+        /// Tạo tất cả dữ liệu mẫu (BusinessPartner, BusinessPartnerCategory, Mappings, Sites, Contacts)
         /// Sử dụng connection string được truyền vào (cho trường hợp đặc biệt)
         /// </summary>
         /// <param name="connectionString">Connection string để kết nối database</param>
@@ -632,6 +708,7 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
             {
                 // Xóa dữ liệu cũ (nếu có) theo thứ tự ngược lại để tránh foreign key constraint
                 context.BusinessPartnerContacts.DeleteAllOnSubmit(context.BusinessPartnerContacts);
+                context.BusinessPartnerSites.DeleteAllOnSubmit(context.BusinessPartnerSites);
                 context.BusinessPartner_BusinessPartnerCategories.DeleteAllOnSubmit(context.BusinessPartner_BusinessPartnerCategories);
                 context.BusinessPartners.DeleteAllOnSubmit(context.BusinessPartners);
                 context.BusinessPartnerCategories.DeleteAllOnSubmit(context.BusinessPartnerCategories);
@@ -647,13 +724,16 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
                 SeedBusinessPartnerMappings(context);
                 context.SubmitChanges(); // Submit mappings
 
+                SeedBusinessPartnerSites(context);
+                context.SubmitChanges(); // Submit sites
+
                 SeedBusinessPartnerContacts(context);
                 context.SubmitChanges(); // Submit contacts cuối cùng
             }
         }
 
         /// <summary>
-        /// Tạo tất cả dữ liệu mẫu (BusinessPartner, BusinessPartnerCategory, Mappings, Contacts)
+        /// Tạo tất cả dữ liệu mẫu (BusinessPartner, BusinessPartnerCategory, Mappings, Sites, Contacts)
         /// Sử dụng context có sẵn (cho backward compatibility)
         /// </summary>
         /// <param name="context">DataContext để lưu dữ liệu</param>
@@ -661,6 +741,7 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
         {
             // Xóa dữ liệu cũ (nếu có) theo thứ tự ngược lại để tránh foreign key constraint
             context.BusinessPartnerContacts.DeleteAllOnSubmit(context.BusinessPartnerContacts);
+            context.BusinessPartnerSites.DeleteAllOnSubmit(context.BusinessPartnerSites);
             context.BusinessPartner_BusinessPartnerCategories.DeleteAllOnSubmit(context.BusinessPartner_BusinessPartnerCategories);
             context.BusinessPartners.DeleteAllOnSubmit(context.BusinessPartners);
             context.BusinessPartnerCategories.DeleteAllOnSubmit(context.BusinessPartnerCategories);
@@ -676,8 +757,107 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
             SeedBusinessPartnerMappings(context);
             context.SubmitChanges(); // Submit mappings
 
+            SeedBusinessPartnerSites(context);
+            context.SubmitChanges(); // Submit sites
+
             SeedBusinessPartnerContacts(context);
             context.SubmitChanges(); // Submit contacts cuối cùng
         }
+
+        #region ========== XÓA DỮ LIỆU ==========
+
+        /// <summary>
+        /// Xóa tất cả dữ liệu Partner (BusinessPartner, BusinessPartnerCategory, Mappings, Sites, Contacts)
+        /// Sử dụng connection string từ ConfigurationManager (recommended)
+        /// </summary>
+        public static void DeleteAllPartnerData()
+        {
+            using (var context = CreateContext())
+            {
+                DeleteAllPartnerData(context);
+            }
+        }
+
+        /// <summary>
+        /// Xóa tất cả dữ liệu Partner (BusinessPartner, BusinessPartnerCategory, Mappings, Sites, Contacts)
+        /// Sử dụng connection string được truyền vào (cho trường hợp đặc biệt)
+        /// </summary>
+        /// <param name="connectionString">Connection string để kết nối database</param>
+        public static void DeleteAllPartnerData(string connectionString)
+        {
+            using (var context = new VnsErp2025DataContext(connectionString))
+            {
+                DeleteAllPartnerData(context);
+            }
+        }
+
+        /// <summary>
+        /// Xóa tất cả dữ liệu Partner (BusinessPartner, BusinessPartnerCategory, Mappings, Sites, Contacts)
+        /// Sử dụng context có sẵn (cho backward compatibility)
+        /// </summary>
+        /// <param name="context">DataContext để xóa dữ liệu</param>
+        public static void DeleteAllPartnerData(VnsErp2025DataContext context)
+        {
+            try
+            {
+                Console.WriteLine("🔄 Bắt đầu xóa tất cả dữ liệu Partner...");
+
+                // Xóa dữ liệu theo thứ tự ngược lại để tránh foreign key constraint
+                // 1. Xóa BusinessPartnerContacts (có FK đến BusinessPartnerSite)
+                var contactCount = context.BusinessPartnerContacts.Count();
+                if (contactCount > 0)
+                {
+                    context.BusinessPartnerContacts.DeleteAllOnSubmit(context.BusinessPartnerContacts);
+                    context.SubmitChanges();
+                    Console.WriteLine($"✅ Đã xóa {contactCount} BusinessPartnerContacts");
+                }
+
+                // 2. Xóa BusinessPartnerSites (có FK đến BusinessPartner)
+                var siteCount = context.BusinessPartnerSites.Count();
+                if (siteCount > 0)
+                {
+                    context.BusinessPartnerSites.DeleteAllOnSubmit(context.BusinessPartnerSites);
+                    context.SubmitChanges();
+                    Console.WriteLine($"✅ Đã xóa {siteCount} BusinessPartnerSites");
+                }
+
+                // 3. Xóa BusinessPartner_BusinessPartnerCategories (mapping table)
+                var mappingCount = context.BusinessPartner_BusinessPartnerCategories.Count();
+                if (mappingCount > 0)
+                {
+                    context.BusinessPartner_BusinessPartnerCategories.DeleteAllOnSubmit(context.BusinessPartner_BusinessPartnerCategories);
+                    context.SubmitChanges();
+                    Console.WriteLine($"✅ Đã xóa {mappingCount} BusinessPartner_BusinessPartnerCategories");
+                }
+
+                // 4. Xóa BusinessPartners (parent table)
+                var partnerCount = context.BusinessPartners.Count();
+                if (partnerCount > 0)
+                {
+                    context.BusinessPartners.DeleteAllOnSubmit(context.BusinessPartners);
+                    context.SubmitChanges();
+                    Console.WriteLine($"✅ Đã xóa {partnerCount} BusinessPartners");
+                }
+
+                // 5. Xóa BusinessPartnerCategories (parent table)
+                var categoryCount = context.BusinessPartnerCategories.Count();
+                if (categoryCount > 0)
+                {
+                    context.BusinessPartnerCategories.DeleteAllOnSubmit(context.BusinessPartnerCategories);
+                    context.SubmitChanges();
+                    Console.WriteLine($"✅ Đã xóa {categoryCount} BusinessPartnerCategories");
+                }
+
+                Console.WriteLine("🎉 Hoàn thành xóa tất cả dữ liệu Partner!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi khi xóa dữ liệu Partner: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        #endregion
     }
 }
