@@ -1,12 +1,15 @@
-﻿using Bll.Utils;
-using Bll.MasterData.ProductServiceBll;
-using MasterData.ProductService.Dto;
-using DevExpress.XtraSplashScreen;
-using System;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Bll.Common;
+using Bll.MasterData.ProductServiceBll;
+using Bll.Utils;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraSplashScreen;
+using MasterData.ProductService.Dto;
 
 namespace MasterData.ProductService
 {
@@ -14,7 +17,7 @@ namespace MasterData.ProductService
     /// Form chi tiết hình ảnh sản phẩm.
     /// Cung cấp chức năng xem, zoom, tải xuống, đặt làm ảnh chính và xóa hình ảnh với giao diện thân thiện.
     /// </summary>
-    public partial class FrmProductImageDetail : DevExpress.XtraEditors.XtraForm
+    public partial class FrmProductImageDetail : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -36,7 +39,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Property để track việc xóa hình ảnh
         /// </summary>
-        public bool WasImageDeleted { get; private set; } = false;
+        public bool WasImageDeleted { get; private set; }
 
         #endregion
 
@@ -97,7 +100,7 @@ namespace MasterData.ProductService
                 if (imageEntity == null)
                 {
                     MsgBox.ShowError("Không tìm thấy hình ảnh với ID đã cho.");
-                    this.Close();
+                    Close();
                     return;
                 }
 
@@ -165,7 +168,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi load hình ảnh: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi load hình ảnh: {ex.Message}");
                 ProductImagePictureEdit.Image = CreatePlaceholderImage();
             }
         }
@@ -265,14 +268,14 @@ namespace MasterData.ProductService
                 zoomTrackBarControl1.Properties.ShowLabels = true;
                 
                 // Cấu hình PictureEdit để zoom hoạt động đúng
-                ProductImagePictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Clip;
+                ProductImagePictureEdit.Properties.SizeMode = PictureSizeMode.Clip;
                 ProductImagePictureEdit.Properties.ZoomPercent = 100;
                 
-                System.Diagnostics.Debug.WriteLine("Đã cấu hình zoom track bar: 10%-500%");
+                Debug.WriteLine("Đã cấu hình zoom track bar: 10%-500%");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi cấu hình zoom track bar: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi cấu hình zoom track bar: {ex.Message}");
             }
         }
 
@@ -293,7 +296,7 @@ namespace MasterData.ProductService
                 if (ProductImagePictureEdit.Image != null)
                 {
                     // Set SizeMode to Clip để zoom hoạt động đúng
-                    ProductImagePictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Clip;
+                    ProductImagePictureEdit.Properties.SizeMode = PictureSizeMode.Clip;
                     
                     // Cập nhật ZoomPercent - đây là cách chính để zoom
                     ProductImagePictureEdit.Properties.ZoomPercent = zoomValue;
@@ -301,12 +304,12 @@ namespace MasterData.ProductService
                     // Refresh để hiển thị thay đổi
                     ProductImagePictureEdit.Refresh();
                     
-                    System.Diagnostics.Debug.WriteLine($"Zoom: {zoomValue}%");
+                    Debug.WriteLine($"Zoom: {zoomValue}%");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi thay đổi zoom: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi thay đổi zoom: {ex.Message}");
             }
         }
 
@@ -410,7 +413,7 @@ namespace MasterData.ProductService
                         WasImageDeleted = true;
                         
                         // Đóng form sau khi xóa thành công
-                        this.Close();
+                        Close();
                     }
                     catch (Exception ex)
                     {
@@ -445,7 +448,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi lấy tên sản phẩm: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi lấy tên sản phẩm: {ex.Message}");
                 return "Product";
             }
         }
@@ -488,7 +491,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi format kích thước hình ảnh: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi format kích thước hình ảnh: {ex.Message}");
                 return $"{width} × {height} pixels";
             }
         }
@@ -519,7 +522,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi format dung lượng file: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi format dung lượng file: {ex.Message}");
                 return $"{bytes:N0} bytes";
             }
         }
@@ -548,7 +551,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi làm sạch tên file: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi làm sạch tên file: {ex.Message}");
                 return "image";
             }
         }

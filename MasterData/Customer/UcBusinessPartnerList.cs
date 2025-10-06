@@ -1,15 +1,22 @@
-﻿using Bll.Common;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Bll.Common;
 using Bll.MasterData.Customer;
 using Bll.Utils;
+using DevExpress.Data;
 using DevExpress.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using MasterData.Customer.Converters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
@@ -17,7 +24,7 @@ namespace MasterData.Customer
     /// <summary>
     /// Danh sách Đối tác - chỉ giữ event handler, mọi xử lý tách thành phương thức riêng.
     /// </summary>
-    public partial class UcBusinessPartnerList : DevExpress.XtraEditors.XtraUserControl
+    public partial class UcBusinessPartnerList : XtraUserControl
     {
         #region Fields
 
@@ -82,7 +89,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Người dùng bấm "Danh sách" để tải dữ liệu.
         /// </summary>
-        private async void ListDataBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void ListDataBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             await LoadDataAsync();
         }
@@ -90,7 +97,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Người dùng bấm "Mới".
         /// </summary>
-        private async void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Tham khảo mẫu ConfigSqlServerInfoBarButtonItem_ItemClick: dùng ShowScope để auto-close overlay
             try
@@ -99,7 +106,7 @@ namespace MasterData.Customer
                 {
                     using (var form = new FrmBusinessPartnerDetail(Guid.Empty))
                     {
-                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
 
                         await LoadDataAsync();
@@ -116,7 +123,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Grid selection thay đổi -> cập nhật danh sách Id đã chọn và trạng thái nút.
         /// </summary>
-        private void BusinessPartnerListGridView_SelectionChanged(object sender, DevExpress.Data.SelectionChangedEventArgs e)
+        private void BusinessPartnerListGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
@@ -223,34 +230,34 @@ namespace MasterData.Customer
                 if (view.IsRowSelected(e.RowHandle)) return;
                 // Nền theo phân loại (PartnerType) với màu tương phản rõ
                 // 1: Khách hàng (xanh), 2: Nhà cung cấp (vàng), 3: Cả hai (xanh lá)
-                System.Drawing.Color backColor;
+                Color backColor;
                 switch (row.PartnerType)
                 {
                     case 1:
-                        backColor = System.Drawing.Color.LightSkyBlue; // xanh nổi bật
+                        backColor = Color.LightSkyBlue; // xanh nổi bật
                         break;
                     case 2:
-                        backColor = System.Drawing.Color.Moccasin; // vàng nổi bật
+                        backColor = Color.Moccasin; // vàng nổi bật
                         break;
                     case 3:
-                        backColor = System.Drawing.Color.MediumAquamarine; // xanh lá nổi bật
+                        backColor = Color.MediumAquamarine; // xanh lá nổi bật
                         break;
                     default:
-                        backColor = System.Drawing.Color.White;
+                        backColor = Color.White;
                         break;
                 }
 
                 e.Appearance.BackColor = backColor;
-                e.Appearance.ForeColor = System.Drawing.Color.Black; // chữ đen tương phản tốt trên các màu nền trên
+                e.Appearance.ForeColor = Color.Black; // chữ đen tương phản tốt trên các màu nền trên
                 e.Appearance.Options.UseBackColor = true;
                 e.Appearance.Options.UseForeColor = true;
 
                 // Nếu đối tác không hoạt động: làm nổi bật rõ ràng hơn
-                if (row.IsActive == false)
+                if (!row.IsActive)
                 {
-                    e.Appearance.BackColor = System.Drawing.Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
-                    e.Appearance.ForeColor = System.Drawing.Color.DarkRed;
-                    e.Appearance.Font = new System.Drawing.Font(e.Appearance.Font, System.Drawing.FontStyle.Strikeout);
+                    e.Appearance.BackColor = Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
+                    e.Appearance.ForeColor = Color.DarkRed;
+                    e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Strikeout);
                 }
             }
             catch (Exception)
@@ -262,7 +269,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Người dùng bấm "Điều chỉnh".
         /// </summary>
-        private async void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Chỉ cho phép chỉnh sửa 1 dòng dữ liệu
             if (_selectedPartnerIds == null || _selectedPartnerIds.Count == 0)
@@ -281,7 +288,7 @@ namespace MasterData.Customer
             if (dto == null || dto.Id != id)
             {
                 // Tìm đúng DTO theo Id trong datasource nếu FocusedRow không khớp selection
-                if (businessPartnerListDtoBindingSource.DataSource is System.Collections.IEnumerable list)
+                if (businessPartnerListDtoBindingSource.DataSource is IEnumerable list)
                 {
                     foreach (var item in list)
                     {
@@ -307,7 +314,7 @@ namespace MasterData.Customer
                 {
                     using (var form = new FrmBusinessPartnerDetail(dto.Id))
                     {
-                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
                         
                         await LoadDataAsync();
@@ -324,7 +331,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Người dùng bấm "Xóa".
         /// </summary>
-        private async void DeleteBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (_selectedPartnerIds == null || _selectedPartnerIds.Count == 0)
             {
@@ -360,7 +367,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Người dùng bấm "Xuất".
         /// </summary>
-        private void ExportBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Chỉ cho phép xuất khi có dữ liệu hiển thị
             var rowCount = GridViewHelper.GetDisplayRowCount(BusinessPartnerListGridView) ?? 0;
@@ -380,7 +387,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, hiển thị WaitForm).
         /// </summary>
-        private async System.Threading.Tasks.Task LoadDataAsync()
+        private async Task LoadDataAsync()
         {
             if (_isLoading) return; // tránh re-entrancy
             _isLoading = true;
@@ -404,7 +411,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, không hiển thị WaitForm).
         /// </summary>
-        private async System.Threading.Tasks.Task LoadDataAsyncWithoutSplash()
+        private async Task LoadDataAsyncWithoutSplash()
         {
             try
             {
@@ -436,7 +443,7 @@ namespace MasterData.Customer
         {
             _selectedPartnerIds.Clear();
             BusinessPartnerListGridView.ClearSelection();
-            BusinessPartnerListGridView.FocusedRowHandle = DevExpress.XtraGrid.GridControl.InvalidRowHandle;
+            BusinessPartnerListGridView.FocusedRowHandle = GridControl.InvalidRowHandle;
             UpdateButtonStates();
         }
 

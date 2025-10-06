@@ -1,11 +1,24 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraDataLayout;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraLayout;
+using DevExpress.XtraTreeList.Columns;
+
+namespace MasterData.ProductService
 {
     partial class FrmUnitOfMeasure
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -504,47 +517,47 @@
         }
 
         #endregion
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem SaveBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem AddNewBarButtonItem;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryCode;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentCategoryName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colLevel;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colHasChildren;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colFullPath;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colProductCount;
-        private DevExpress.XtraDataLayout.DataLayoutControl dataLayoutControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
-        private DevExpress.XtraGrid.GridControl AttributeGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView AttributeGridView;
-        private DevExpress.XtraEditors.TextEdit CodeTextEdit;
-        private DevExpress.XtraEditors.TextEdit NameTextEdit;
-        private DevExpress.XtraEditors.TextEdit DescriptionTextEdit;
-        private DevExpress.XtraEditors.CheckEdit IsActiveCheckEdit;
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForCode;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForDescription;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForIsActive;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraBars.BarButtonItem RefreshBarButtonItem;
-        private System.Windows.Forms.BindingSource unitOfMeasureDtoBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colCode;
-        private DevExpress.XtraGrid.Columns.GridColumn colName;
-        private DevExpress.XtraGrid.Columns.GridColumn colDescription1;
-        private DevExpress.XtraGrid.Columns.GridColumn colIsActive;
-        private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit repositoryItemMemoEdit1;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarButtonItem SaveBarButtonItem;
+        private BarButtonItem DeleteBarButtonItem;
+        private BarButtonItem AddNewBarButtonItem;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private DXErrorProvider dxErrorProvider1;
+        private TreeListColumn colId;
+        private TreeListColumn colCategoryCode;
+        private TreeListColumn colCategoryName;
+        private TreeListColumn colDescription;
+        private TreeListColumn colParentId;
+        private TreeListColumn colParentCategoryName;
+        private TreeListColumn colLevel;
+        private TreeListColumn colHasChildren;
+        private TreeListColumn colFullPath;
+        private TreeListColumn colProductCount;
+        private DataLayoutControl dataLayoutControl1;
+        private LayoutControlGroup Root;
+        private BarButtonItem EditBarButtonItem;
+        private GridControl AttributeGridControl;
+        private GridView AttributeGridView;
+        private TextEdit CodeTextEdit;
+        private TextEdit NameTextEdit;
+        private TextEdit DescriptionTextEdit;
+        private CheckEdit IsActiveCheckEdit;
+        private LayoutControlGroup layoutControlGroup1;
+        private LayoutControlItem ItemForCode;
+        private LayoutControlItem ItemForName;
+        private LayoutControlItem ItemForDescription;
+        private LayoutControlItem ItemForIsActive;
+        private LayoutControlItem layoutControlItem1;
+        private BarButtonItem RefreshBarButtonItem;
+        private BindingSource unitOfMeasureDtoBindingSource;
+        private GridColumn colCode;
+        private GridColumn colName;
+        private GridColumn colDescription1;
+        private GridColumn colIsActive;
+        private RepositoryItemMemoEdit repositoryItemMemoEdit1;
     }
 }

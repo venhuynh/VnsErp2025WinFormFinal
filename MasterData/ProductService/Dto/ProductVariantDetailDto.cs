@@ -215,35 +215,35 @@ namespace MasterData.ProductService.Dto
             var clone = new ProductVariantDetailDto
             {
                 // ProductVariant Information
-                Id = this.Id,
-                ProductId = this.ProductId,
-                VariantCode = this.VariantCode,
-                UnitId = this.UnitId,
-                IsActive = this.IsActive,
-                ThumbnailImage = this.ThumbnailImage,
+                Id = Id,
+                ProductId = ProductId,
+                VariantCode = VariantCode,
+                UnitId = UnitId,
+                IsActive = IsActive,
+                ThumbnailImage = ThumbnailImage,
 
                 // ProductService Information
-                ProductCode = this.ProductCode,
-                ProductName = this.ProductName,
-                CategoryId = this.CategoryId,
-                CategoryName = this.CategoryName,
-                IsService = this.IsService,
-                ProductDescription = this.ProductDescription,
-                ProductIsActive = this.ProductIsActive,
-                ProductThumbnailImage = this.ProductThumbnailImage,
+                ProductCode = ProductCode,
+                ProductName = ProductName,
+                CategoryId = CategoryId,
+                CategoryName = CategoryName,
+                IsService = IsService,
+                ProductDescription = ProductDescription,
+                ProductIsActive = ProductIsActive,
+                ProductThumbnailImage = ProductThumbnailImage,
 
                 // UnitOfMeasure Information
-                UnitCode = this.UnitCode,
-                UnitName = this.UnitName,
-                UnitDescription = this.UnitDescription,
-                UnitIsActive = this.UnitIsActive
+                UnitCode = UnitCode,
+                UnitName = UnitName,
+                UnitDescription = UnitDescription,
+                UnitIsActive = UnitIsActive
             };
 
             // Clone VariantAttributes
-            if (this.VariantAttributes != null)
+            if (VariantAttributes != null)
             {
                 clone.VariantAttributes = new List<ProductVariantAttributeDto>();
-                foreach (var attr in this.VariantAttributes)
+                foreach (var attr in VariantAttributes)
                 {
                     clone.VariantAttributes.Add(attr.Clone());
                 }

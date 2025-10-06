@@ -1,11 +1,15 @@
-﻿namespace MasterData.Customer
+﻿using System.ComponentModel;
+using DevExpress.XtraBars.FluentDesignSystem;
+using DevExpress.XtraBars.Navigation;
+
+namespace MasterData.Customer
 {
     partial class FluentPartner
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -120,12 +124,12 @@
         }
 
         #endregion
-        private DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormContainer fluentDesignFormContainer1;
-        private DevExpress.XtraBars.Navigation.AccordionControl accordionControl1;
-        private DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormControl fluentDesignFormControl1;
-        private DevExpress.XtraBars.FluentDesignSystem.FluentFormDefaultManager fluentFormDefaultManager1;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement BusinessPartnerCategoryBtn;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement BusinessPartnerListBtn;
-        private DevExpress.XtraBars.Navigation.AccordionControlElement BusinessPartnerContactBtn;
+        private FluentDesignFormContainer fluentDesignFormContainer1;
+        private AccordionControl accordionControl1;
+        private FluentDesignFormControl fluentDesignFormControl1;
+        private FluentFormDefaultManager fluentFormDefaultManager1;
+        private AccordionControlElement BusinessPartnerCategoryBtn;
+        private AccordionControlElement BusinessPartnerListBtn;
+        private AccordionControlElement BusinessPartnerContactBtn;
     }
 }

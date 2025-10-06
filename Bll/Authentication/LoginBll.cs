@@ -27,15 +27,6 @@ namespace Bll.Authentication
         }
 
         /// <summary>
-        /// Constructor với connection string
-        /// </summary>
-        /// <param name="connectionString">Connection string</param>
-        public LoginBll(string connectionString)
-        {
-            _userDataAccess = new ApplicationUserDataAccess(connectionString);
-        }
-
-        /// <summary>
         /// Xác thực đăng nhập user
         /// </summary>
         /// <param name="userName">Tên đăng nhập</param>

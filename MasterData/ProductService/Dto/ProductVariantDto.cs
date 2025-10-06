@@ -383,21 +383,21 @@ namespace MasterData.ProductService.Dto
         {
             return new ProductVariantDto
             {
-                Id = this.Id,
-                ProductId = this.ProductId,
-                ProductCode = this.ProductCode,
-                ProductName = this.ProductName,
-                VariantCode = this.VariantCode,
-                UnitId = this.UnitId,
-                UnitCode = this.UnitCode,
-                UnitName = this.UnitName,
-                IsActive = this.IsActive,
-                ThumbnailImage = this.ThumbnailImage?.Clone() as byte[],
-                ProductThumbnailImage = this.ProductThumbnailImage?.Clone() as byte[],
-                AttributeCount = this.AttributeCount,
-                ImageCount = this.ImageCount,
-                Attributes = this.Attributes?.ConvertAll(a => a.Clone()),
-                Images = this.Images?.ConvertAll(i => i.Clone())
+                Id = Id,
+                ProductId = ProductId,
+                ProductCode = ProductCode,
+                ProductName = ProductName,
+                VariantCode = VariantCode,
+                UnitId = UnitId,
+                UnitCode = UnitCode,
+                UnitName = UnitName,
+                IsActive = IsActive,
+                ThumbnailImage = ThumbnailImage?.Clone() as byte[],
+                ProductThumbnailImage = ProductThumbnailImage?.Clone() as byte[],
+                AttributeCount = AttributeCount,
+                ImageCount = ImageCount,
+                Attributes = Attributes?.ConvertAll(a => a.Clone()),
+                Images = Images?.ConvertAll(i => i.Clone())
             };
         }
 

@@ -1,20 +1,27 @@
-﻿using Bll.Common;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Bll.Common;
 using Bll.MasterData.Customer;
 using Bll.Utils;
+using DevExpress.Data;
 using DevExpress.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using MasterData.Customer.Converters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {
-    public partial class UcBusinessPartnerContact : DevExpress.XtraEditors.XtraUserControl
+    public partial class UcBusinessPartnerContact : XtraUserControl
     {
         #region Fields
 
@@ -66,12 +73,12 @@ namespace MasterData.Customer
 
         #region Event Handlers
 
-        private async void ListDataBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void ListDataBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             await LoadDataAsync();
         }
 
-        private async void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
@@ -79,7 +86,7 @@ namespace MasterData.Customer
                 {
                     using (var form = new FrmBusinessPartnerContactDetail(Guid.Empty))
                     {
-                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
 
                         await LoadDataAsync();
@@ -95,7 +102,7 @@ namespace MasterData.Customer
             }
         }
 
-        private void BusinessPartnerContactGridView_SelectionChanged(object sender, DevExpress.Data.SelectionChangedEventArgs e)
+        private void BusinessPartnerContactGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
@@ -181,7 +188,7 @@ namespace MasterData.Customer
                 // Tô màu nhẹ cho liên hệ chính
                 if (row.IsPrimary)
                 {
-                    e.Appearance.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+                    e.Appearance.BackColor = Color.LightGoldenrodYellow;
                     e.Appearance.Options.UseBackColor = true;
                 }
             }
@@ -191,7 +198,7 @@ namespace MasterData.Customer
             }
         }
 
-        private async void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (_selectedContactIds == null || _selectedContactIds.Count == 0)
             {
@@ -208,7 +215,7 @@ namespace MasterData.Customer
             var dto = BusinessPartnerContactGridView.GetFocusedRow() as BusinessPartnerContactDto;
             if (dto == null || dto.Id != id)
             {
-                if (businessPartnerContactDtoBindingSource.DataSource is System.Collections.IEnumerable list)
+                if (businessPartnerContactDtoBindingSource.DataSource is IEnumerable list)
                 {
                     foreach (var item in list)
                     {
@@ -233,7 +240,7 @@ namespace MasterData.Customer
                 {
                     using (var form = new FrmBusinessPartnerContactDetail(dto.Id))
                     {
-                        form.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+                        form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
 
                         await LoadDataAsync();
@@ -247,7 +254,7 @@ namespace MasterData.Customer
             }
         }
 
-        private async void DeleteBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (_selectedContactIds == null || _selectedContactIds.Count == 0)
             {
@@ -282,7 +289,7 @@ namespace MasterData.Customer
             }
         }
 
-        private void ExportBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             var rowCount = GridViewHelper.GetDisplayRowCount(BusinessPartnerContactGridView) ?? 0;
             if (rowCount <= 0)
@@ -298,7 +305,7 @@ namespace MasterData.Customer
 
         #region Load/Bind helpers
 
-        private async System.Threading.Tasks.Task LoadDataAsync()
+        private async Task LoadDataAsync()
         {
             if (_isLoading) return;
             _isLoading = true;
@@ -319,7 +326,7 @@ namespace MasterData.Customer
             }
         }
 
-        private async System.Threading.Tasks.Task LoadDataAsyncWithoutSplash()
+        private async Task LoadDataAsyncWithoutSplash()
         {
             try
             {
@@ -349,7 +356,7 @@ namespace MasterData.Customer
         {
             _selectedContactIds.Clear();
             BusinessPartnerContactGridView.ClearSelection();
-            BusinessPartnerContactGridView.FocusedRowHandle = DevExpress.XtraGrid.GridControl.InvalidRowHandle;
+            BusinessPartnerContactGridView.FocusedRowHandle = GridControl.InvalidRowHandle;
             UpdateButtonStates();
         }
 

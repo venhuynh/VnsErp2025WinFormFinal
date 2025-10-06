@@ -1,8 +1,11 @@
-﻿using Bll.MasterData.Customer;
-using Bll.Utils;
-using MasterData.Customer.Converters;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using Bll.MasterData.Customer;
+using Bll.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.DXErrorProvider;
+using MasterData.Customer.Converters;
 using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
@@ -10,7 +13,7 @@ namespace MasterData.Customer
     /// <summary>
     /// Form chi tiết danh mục đối tác - thêm mới và chỉnh sửa.
     /// </summary>
-    public partial class FrmBusinessPartnerCategoryDetail : DevExpress.XtraEditors.XtraForm
+    public partial class FrmBusinessPartnerCategoryDetail : XtraForm
     {
         #region Fields
 
@@ -52,7 +55,7 @@ namespace MasterData.Customer
             try
             {
                 // Thiết lập tiêu đề form
-                this.Text = _isEditMode ? "Điều chỉnh danh mục đối tác" : "Thêm mới danh mục đối tác";
+                Text = _isEditMode ? "Điều chỉnh danh mục đối tác" : "Thêm mới danh mục đối tác";
 
                 // Load dữ liệu nếu đang chỉnh sửa
                 if (_isEditMode)
@@ -80,7 +83,7 @@ namespace MasterData.Customer
                 if (category == null)
                 {
                     ShowError("Không tìm thấy danh mục đối tác");
-                    this.DialogResult = DialogResult.Cancel;
+                    DialogResult = DialogResult.Cancel;
                     return;
                 }
 
@@ -128,7 +131,7 @@ namespace MasterData.Customer
             // CategoryName bắt buộc
             if (string.IsNullOrWhiteSpace(CategoryNameTextEdit?.Text))
             {
-                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại không được để trống", DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical);
+                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại không được để trống", ErrorType.Critical);
                 CategoryNameTextEdit?.Focus();
                 return false;
             }
@@ -136,7 +139,7 @@ namespace MasterData.Customer
             // Kiểm tra độ dài CategoryName
             if (CategoryNameTextEdit.Text.Trim().Length > 100)
             {
-                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại không được vượt quá 100 ký tự", DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical);
+                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại không được vượt quá 100 ký tự", ErrorType.Critical);
                 CategoryNameTextEdit?.Focus();
                 return false;
             }
@@ -145,7 +148,7 @@ namespace MasterData.Customer
             var categoryName = CategoryNameTextEdit.Text.Trim();
             if (_businessPartnerCategoryBll.IsCategoryNameExists(categoryName, _categoryId))
             {
-                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại đã tồn tại trong hệ thống", DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical);
+                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại đã tồn tại trong hệ thống", ErrorType.Critical);
                 CategoryNameTextEdit?.Focus();
                 return false;
             }
@@ -153,7 +156,7 @@ namespace MasterData.Customer
             // Kiểm tra độ dài Description
             if (!string.IsNullOrWhiteSpace(DescriptionMemoEdit?.Text) && DescriptionMemoEdit.Text.Trim().Length > 255)
             {
-                dxErrorProvider1.SetError(DescriptionMemoEdit, "Mô tả không được vượt quá 255 ký tự", DevExpress.XtraEditors.DXErrorProvider.ErrorType.Critical);
+                dxErrorProvider1.SetError(DescriptionMemoEdit, "Mô tả không được vượt quá 255 ký tự", ErrorType.Critical);
                 DescriptionMemoEdit?.Focus();
                 return false;
             }
@@ -184,8 +187,8 @@ namespace MasterData.Customer
                     ShowInfo("Thêm mới danh mục đối tác thành công!");
                 }
 
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
             catch (Exception ex)
             {
@@ -231,7 +234,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Người dùng bấm nút Lưu.
         /// </summary>
-        private void SaveBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (ValidateInput())
             {
@@ -242,10 +245,10 @@ namespace MasterData.Customer
         /// <summary>
         /// Người dùng bấm nút Hủy.
         /// </summary>
-        private void CancelBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void CancelBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         /// <summary>
@@ -258,7 +261,8 @@ namespace MasterData.Customer
                 SaveBarButtonItem_ItemClick(null, null);
                 return true;
             }
-            else if (keyData == Keys.Escape)
+
+            if (keyData == Keys.Escape)
             {
                 CancelBarButtonItem_ItemClick(null, null);
                 return true;

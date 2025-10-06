@@ -1,12 +1,17 @@
-﻿using Bll.MasterData.ProductServiceBll;
-using Bll.Utils;
-using DevExpress.XtraBars;
-using DevExpress.XtraSplashScreen;
-using MasterData.ProductService.Dto;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bll.Common;
+using Bll.MasterData.ProductServiceBll;
+using Bll.Utils;
+using Dal.DataContext;
+using DevExpress.Data;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraSplashScreen;
+using MasterData.ProductService.Dto;
 
 namespace MasterData.ProductService
 {
@@ -14,7 +19,7 @@ namespace MasterData.ProductService
     /// UserControl quản lý danh sách biến thể sản phẩm.
     /// Cung cấp chức năng CRUD đầy đủ với giao diện thân thiện.
     /// </summary>
-    public partial class UcProductVariant : DevExpress.XtraEditors.XtraUserControl
+    public partial class UcProductVariant : XtraUserControl
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -296,7 +301,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Grid selection thay đổi -> cập nhật danh sách Id đã chọn và trạng thái nút.
         /// </summary>
-        private void ProductServiceMasterDetailViewGridView_SelectionChanged(object sender, DevExpress.Data.SelectionChangedEventArgs e)
+        private void ProductServiceMasterDetailViewGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
@@ -313,7 +318,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Variant grid selection thay đổi -> cập nhật danh sách Id đã chọn và trạng thái nút.
         /// </summary>
-        private void VariantGridView_SelectionChanged(object sender, DevExpress.Data.SelectionChangedEventArgs e)
+        private void VariantGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
@@ -330,7 +335,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Custom draw row indicator để hiển thị số thứ tự dòng
         /// </summary>
-        private void ProductVariantListGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
+        private void ProductVariantListGridView_CustomDrawRowIndicator(object sender, RowIndicatorCustomDrawEventArgs e)
         {
             try
             {
@@ -442,7 +447,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Convert Entity sang ProductVariantListDto (Async)
         /// </summary>
-        private async Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<Dal.DataContext.ProductVariant> variants)
+        private async Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
         {
             try
             {
@@ -479,7 +484,7 @@ namespace MasterData.ProductService
         /// Xây dựng tên đầy đủ của biến thể từ các thuộc tính (Async)
         /// Format: Attribute1: Value1, Attribute2: Value2, ...
         /// </summary>
-        private Task<string> BuildVariantFullNameAsync(Dal.DataContext.ProductVariant variant)
+        private Task<string> BuildVariantFullNameAsync(ProductVariant variant)
         {
             try
             {
@@ -505,10 +510,8 @@ namespace MasterData.ProductService
                 {
                     return Task.FromResult(string.Join(", ", attributeParts));
                 }
-                else
-                {
-                    return Task.FromResult(variant.VariantCode); // Fallback về mã biến thể nếu không có giá trị thuộc tính
-                }
+
+                return Task.FromResult(variant.VariantCode); // Fallback về mã biến thể nếu không có giá trị thuộc tính
             }
             catch (Exception)
             {
@@ -571,7 +574,7 @@ namespace MasterData.ProductService
                 _isSplashVisible = true;
                 
                 // Hiển thị WaitingForm1
-                SplashScreenManager.ShowForm(typeof(Bll.Common.WaitForm1));
+                SplashScreenManager.ShowForm(typeof(WaitForm1));
 
                 // Thực hiện operation
                 await operation();

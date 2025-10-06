@@ -1,4 +1,11 @@
-﻿using MasterData.Customer.Dto;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraLayout;
+using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {
@@ -7,7 +14,7 @@ namespace MasterData.Customer
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -340,31 +347,31 @@ namespace MasterData.Customer
 
         #endregion
 
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraGrid.GridControl BusinessPartnerListGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView BusinessPartnerListGridView;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private System.Windows.Forms.BindingSource businessPartnerListDtoBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colPartnerCode;
-        private DevExpress.XtraGrid.Columns.GridColumn colPartnerName;
-        private DevExpress.XtraGrid.Columns.GridColumn colPartnerTypeName;
-        private DevExpress.XtraGrid.Columns.GridColumn colTaxCode;
-        private DevExpress.XtraGrid.Columns.GridColumn colPhone;
-        private DevExpress.XtraGrid.Columns.GridColumn colEmail;
-        private DevExpress.XtraGrid.Columns.GridColumn colCity;
-        private DevExpress.XtraGrid.Columns.GridColumn colIsActive;
-        private DevExpress.XtraGrid.Columns.GridColumn colCreatedDate;
-        private DevExpress.XtraBars.BarButtonItem ListDataBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem NewBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem ExportBarButtonItem;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private LayoutControl layoutControl1;
+        private GridControl BusinessPartnerListGridControl;
+        private GridView BusinessPartnerListGridView;
+        private LayoutControlGroup Root;
+        private LayoutControlItem layoutControlItem1;
+        private BindingSource businessPartnerListDtoBindingSource;
+        private GridColumn colPartnerCode;
+        private GridColumn colPartnerName;
+        private GridColumn colPartnerTypeName;
+        private GridColumn colTaxCode;
+        private GridColumn colPhone;
+        private GridColumn colEmail;
+        private GridColumn colCity;
+        private GridColumn colIsActive;
+        private GridColumn colCreatedDate;
+        private BarButtonItem ListDataBarButtonItem;
+        private BarButtonItem NewBarButtonItem;
+        private BarButtonItem EditBarButtonItem;
+        private BarButtonItem DeleteBarButtonItem;
+        private BarButtonItem ExportBarButtonItem;
     }
 }

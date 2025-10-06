@@ -2,11 +2,12 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MasterData.Company.Dto.Company
+namespace MasterData.Company.Dto
 {
     public class CompanyBranchDto
     {
         [DisplayName("ID")]
+        [Required(ErrorMessage = "ID chi nhánh không được để trống")]
         public Guid Id { get; set; }
 
         [DisplayName("ID công ty")]

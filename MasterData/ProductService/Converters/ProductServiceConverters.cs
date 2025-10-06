@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
-using Dal.DataContext;
 using MasterData.ProductService.Dto;
 
 namespace MasterData.ProductService.Converters
@@ -103,7 +103,7 @@ namespace MasterData.ProductService.Converters
                 IsService = dto.IsService,
                 Description = dto.Description,
                 IsActive = dto.IsActive,
-                ThumbnailImage = dto.ThumbnailImage != null ? new System.Data.Linq.Binary(dto.ThumbnailImage) : null,
+                ThumbnailImage = dto.ThumbnailImage != null ? new Binary(dto.ThumbnailImage) : null,
             };
         }
     }

@@ -132,8 +132,7 @@ namespace MasterData.ProductService.Converters
             return units.Select(unit => new UnitOfMeasureDto(
                 unit.code,
                 unit.name,
-                unit.description,
-                true
+                unit.description
             )).ToList();
         }
 

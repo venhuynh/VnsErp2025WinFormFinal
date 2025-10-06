@@ -58,8 +58,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Company\Converters\CompanyConverter.cs" />
     <Compile Include="Company\Dto\CompanyBranchDto.cs" />
     <Compile Include="Company\Dto\CompanyDto.cs" />
+    <Compile Include="Company\UcCompany.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Company\UcCompany.Designer.cs">
+      <DependentUpon>UcCompany.cs</DependentUpon>
+    </Compile>
     <Compile Include="Customer\Converters\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerConverters.cs" />
@@ -213,6 +220,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Company\UcCompany.resx">
+      <DependentUpon>UcCompany.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Customer\FluentPartner.resx">
       <DependentUpon>FluentPartner.cs</DependentUpon>
     </EmbeddedResource>
@@ -281,6 +291,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Customer\Dto\DTO_README.md" />
+    <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerContactDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerDetailDto.datasource" />

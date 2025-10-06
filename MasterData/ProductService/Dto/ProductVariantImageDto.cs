@@ -105,18 +105,18 @@ namespace MasterData.ProductService.Dto
         {
             return new ProductVariantImageDto
             {
-                ImageId = this.ImageId,
-                ImagePath = this.ImagePath,
-                ImageData = this.ImageData?.Clone() as byte[],
-                SortOrder = this.SortOrder,
-                IsPrimary = this.IsPrimary,
-                ImageType = this.ImageType,
-                ImageSize = this.ImageSize,
-                ImageWidth = this.ImageWidth,
-                ImageHeight = this.ImageHeight,
-                Caption = this.Caption,
-                AltText = this.AltText,
-                IsActive = this.IsActive
+                ImageId = ImageId,
+                ImagePath = ImagePath,
+                ImageData = ImageData?.Clone() as byte[],
+                SortOrder = SortOrder,
+                IsPrimary = IsPrimary,
+                ImageType = ImageType,
+                ImageSize = ImageSize,
+                ImageWidth = ImageWidth,
+                ImageHeight = ImageHeight,
+                Caption = Caption,
+                AltText = AltText,
+                IsActive = IsActive
             };
         }
     }

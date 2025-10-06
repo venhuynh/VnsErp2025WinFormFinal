@@ -1,11 +1,18 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraLayout;
+using DevExpress.XtraTreeList;
+using DevExpress.XtraTreeList.Columns;
+
+namespace MasterData.ProductService
 {
     partial class UcProductServiceCategory
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -280,26 +287,26 @@
 
         #endregion
 
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraBars.BarButtonItem ListDataBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem NewBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem ExportBarButtonItem;
-        private DevExpress.XtraTreeList.TreeList treeList1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colPartnerCount;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private LayoutControl layoutControl1;
+        private LayoutControlGroup Root;
+        private BarButtonItem ListDataBarButtonItem;
+        private BarButtonItem NewBarButtonItem;
+        private BarButtonItem EditBarButtonItem;
+        private BarButtonItem DeleteBarButtonItem;
+        private BarButtonItem ExportBarButtonItem;
+        private TreeList treeList1;
+        private LayoutControlItem layoutControlItem1;
+        private TreeListColumn colCategoryName;
+        private TreeListColumn colDescription;
+        private TreeListColumn colPartnerCount;
         
-        private System.Windows.Forms.BindingSource productServiceCategoryDtoBindingSource;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCategoryCode;
+        private BindingSource productServiceCategoryDtoBindingSource;
+        private TreeListColumn colCategoryCode;
     }
 }

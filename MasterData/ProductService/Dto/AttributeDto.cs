@@ -110,11 +110,11 @@ namespace MasterData.ProductService.Dto
         {
             return new AttributeDto
             {
-                Id = this.Id,
-                Name = this.Name,
-                DataType = this.DataType,
-                Description = this.Description,
-                AttributeValues = this.AttributeValues?.ConvertAll(v => v.Clone())
+                Id = Id,
+                Name = Name,
+                DataType = DataType,
+                Description = Description,
+                AttributeValues = AttributeValues?.ConvertAll(v => v.Clone())
             };
         }
 

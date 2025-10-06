@@ -1,14 +1,17 @@
-using Bll.MasterData.ProductServiceBll;
-using Bll.Utils;
-using DevExpress.XtraBars;
-using DevExpress.XtraGrid.Views.Grid;
-using MasterData.ProductService.Converters;
-using MasterData.ProductService.Dto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using Bll.MasterData.ProductServiceBll;
+using Bll.Utils;
+using DevExpress.Data;
+using DevExpress.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Views.Grid;
+using MasterData.ProductService.Converters;
+using MasterData.ProductService.Dto;
 
 namespace MasterData.ProductService
 {
@@ -16,7 +19,7 @@ namespace MasterData.ProductService
     /// Form quản lý Đơn Vị Tính (UnitOfMeasure) dạng popup.
     /// Cung cấp chức năng CRUD đầy đủ với validation nghiệp vụ và giao diện thân thiện.
     /// </summary>
-    public partial class FrmUnitOfMeasure : DevExpress.XtraEditors.XtraForm
+    public partial class FrmUnitOfMeasure : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -205,7 +208,7 @@ namespace MasterData.ProductService
                 // Cấu hình cột Mô tả để hiển thị đầy đủ nội dung với xuống dòng
                 if (AttributeGridView.Columns["colDescription1"] != null)
                 {
-                    AttributeGridView.Columns["colDescription1"].OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.True;
+                    AttributeGridView.Columns["colDescription1"].OptionsColumn.AllowSort = DefaultBoolean.True;
                     AttributeGridView.Columns["colDescription1"].OptionsColumn.FixedWidth = false;
                     AttributeGridView.Columns["colDescription1"].Width = 200; // Đặt chiều rộng phù hợp
                 }
@@ -225,7 +228,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Xử lý khi thay đổi lựa chọn trên grid
         /// </summary>
-        private void UnitGridView_SelectionChanged(object sender, DevExpress.Data.SelectionChangedEventArgs e)
+        private void UnitGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {

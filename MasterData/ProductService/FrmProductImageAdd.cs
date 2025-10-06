@@ -1,14 +1,14 @@
-﻿using Bll.MasterData.ProductServiceBll;
-using Bll.Utils;
-using DevExpress.XtraEditors;
-using MasterData.ProductService.Converters;
-using MasterData.ProductService.Dto;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.ProductServiceBll;
+using Bll.Utils;
+using DevExpress.XtraEditors;
+using MasterData.ProductService.Converters;
+using MasterData.ProductService.Dto;
 
 namespace MasterData.ProductService
 {
@@ -301,7 +301,7 @@ namespace MasterData.ProductService
         /// <param name="errorMessages">Danh sách lỗi</param>
         private void ShowImageProcessingResult(int successCount, int errorCount, List<string> errorMessages)
         {
-            var message = $"Kết quả xử lý hình ảnh:\n\n";
+            var message = "Kết quả xử lý hình ảnh:\n\n";
             message += $"✅ Thành công: {successCount} hình ảnh\n";
             message += $"❌ Lỗi: {errorCount} hình ảnh\n\n";
 

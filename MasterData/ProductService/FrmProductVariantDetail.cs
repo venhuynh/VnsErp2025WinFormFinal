@@ -1,4 +1,14 @@
-﻿using Bll.Common;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Bll.Common;
 using Bll.MasterData.ProductServiceBll;
 using Bll.Utils;
 using Dal.DataContext;
@@ -10,13 +20,6 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using MasterData.ProductService.Converters;
 using MasterData.ProductService.Dto;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MasterData.ProductService
 {
@@ -518,13 +521,11 @@ namespace MasterData.ProductService
 							e.Handled = true;
 							return;
 						}
-						else
-						{
-							// User không muốn xóa, hủy thao tác
-							e.Handled = true;
-							return;
-						}
-					}
+
+                        // User không muốn xóa, hủy thao tác
+                        e.Handled = true;
+                        return;
+                    }
 					
 					RemoveCurrentAttributeValueRow();
 					e.Handled = true; // Đánh dấu đã xử lý để tránh xử lý mặc định
@@ -1007,7 +1008,7 @@ namespace MasterData.ProductService
 					{
 						// Update the private field using reflection or create a property
 						var field = typeof(FrmProductVariantDetail).GetField("_productVariantId", 
-							System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+							BindingFlags.NonPublic | BindingFlags.Instance);
 						field?.SetValue(this, savedId);
 					}
 
@@ -1226,7 +1227,7 @@ namespace MasterData.ProductService
 			catch (Exception ex)
 			{
 				// Log error but don't throw to avoid breaking the save process
-				System.Diagnostics.Debug.WriteLine($"Lỗi tính toán VariantFullName: {ex.Message}");
+				Debug.WriteLine($"Lỗi tính toán VariantFullName: {ex.Message}");
 				return string.Empty;
 			}
 		}
@@ -1389,9 +1390,9 @@ namespace MasterData.ProductService
 				UnitNameSearchLookupEdit.Enabled = false;
 
 				// Thay đổi màu nền để người dùng biết các field này không thể chỉnh sửa
-				ProductNameSearchLookupEdit.BackColor = System.Drawing.SystemColors.Control;
-				VariantCodeTextEdit.BackColor = System.Drawing.SystemColors.Control;
-				UnitNameSearchLookupEdit.BackColor = System.Drawing.SystemColors.Control;
+				ProductNameSearchLookupEdit.BackColor = SystemColors.Control;
+				VariantCodeTextEdit.BackColor = SystemColors.Control;
+				UnitNameSearchLookupEdit.BackColor = SystemColors.Control;
 
 				// Cập nhật tiêu đề form để hiển thị chế độ edit với mã biến thể
 				var variantCode = VariantCodeTextEdit.Text?.Trim();

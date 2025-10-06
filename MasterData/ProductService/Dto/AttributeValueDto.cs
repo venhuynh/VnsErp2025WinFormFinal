@@ -68,10 +68,10 @@ namespace MasterData.ProductService.Dto
         {
             return new AttributeValueDto
             {
-                Id = this.Id,
-                AttributeId = this.AttributeId,
-                Value = this.Value,
-                AttributeName = this.AttributeName
+                Id = Id,
+                AttributeId = AttributeId,
+                Value = Value,
+                AttributeName = AttributeName
             };
         }
 

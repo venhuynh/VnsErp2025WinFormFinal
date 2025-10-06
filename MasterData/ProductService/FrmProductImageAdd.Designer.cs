@@ -1,11 +1,18 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraLayout;
+
+namespace MasterData.ProductService
 {
     partial class FrmProductImageAdd
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -177,16 +184,16 @@
 
         #endregion
 
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraEditors.SearchLookUpEdit ProductServiceSearchLookupEdit;
-        private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraEditors.HyperlinkLabelControl OpenSelectImageHyperlinkLabelControl;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private System.Windows.Forms.BindingSource productServiceDtoBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colCategoryName;
-        private DevExpress.XtraGrid.Columns.GridColumn colName;
-        private DevExpress.XtraEditors.XtraOpenFileDialog xtraOpenFileDialog1;
+        private LayoutControl layoutControl1;
+        private LayoutControlGroup Root;
+        private SearchLookUpEdit ProductServiceSearchLookupEdit;
+        private GridView searchLookUpEdit1View;
+        private LayoutControlItem layoutControlItem1;
+        private HyperlinkLabelControl OpenSelectImageHyperlinkLabelControl;
+        private LayoutControlItem layoutControlItem2;
+        private BindingSource productServiceDtoBindingSource;
+        private GridColumn colCategoryName;
+        private GridColumn colName;
+        private XtraOpenFileDialog xtraOpenFileDialog1;
     }
 }

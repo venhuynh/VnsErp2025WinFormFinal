@@ -1,4 +1,13 @@
-﻿using MasterData.Customer.Dto;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraDataLayout;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraLayout;
+using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {
@@ -7,7 +16,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -398,33 +407,33 @@ namespace MasterData.Customer
         }
 
         #endregion
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem SaveBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem CloseBarButtonItem;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
-        private DevExpress.XtraDataLayout.DataLayoutControl dataLayoutControl1;
-        private DevExpress.XtraEditors.SearchLookUpEdit PartnerNameSearchLookUpEdit;
-        private System.Windows.Forms.BindingSource businessPartnerContactDtoBindingSource;
-        private System.Windows.Forms.BindingSource businessPartnerListDtoBindingSource;
-        private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
-        private DevExpress.XtraGrid.Columns.GridColumn colPartnerName;
-        private DevExpress.XtraEditors.TextEdit FullNameTextEdit;
-        private DevExpress.XtraEditors.TextEdit PositionTextEdit;
-        private DevExpress.XtraEditors.TextEdit PhoneTextEdit;
-        private DevExpress.XtraEditors.TextEdit EmailTextEdit;
-        private DevExpress.XtraEditors.CheckEdit IsPrimaryCheckEdit;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPartnerName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForFullName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPosition;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForPhone;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForEmail;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForIsPrimary;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarButtonItem SaveBarButtonItem;
+        private BarButtonItem CloseBarButtonItem;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private DXErrorProvider dxErrorProvider1;
+        private DataLayoutControl dataLayoutControl1;
+        private SearchLookUpEdit PartnerNameSearchLookUpEdit;
+        private BindingSource businessPartnerContactDtoBindingSource;
+        private BindingSource businessPartnerListDtoBindingSource;
+        private GridView searchLookUpEdit1View;
+        private GridColumn colPartnerName;
+        private TextEdit FullNameTextEdit;
+        private TextEdit PositionTextEdit;
+        private TextEdit PhoneTextEdit;
+        private TextEdit EmailTextEdit;
+        private CheckEdit IsPrimaryCheckEdit;
+        private LayoutControlGroup Root;
+        private LayoutControlGroup layoutControlGroup1;
+        private LayoutControlItem ItemForPartnerName;
+        private LayoutControlItem ItemForFullName;
+        private LayoutControlItem ItemForPosition;
+        private LayoutControlItem ItemForPhone;
+        private LayoutControlItem ItemForEmail;
+        private LayoutControlItem ItemForIsPrimary;
     }
 }

@@ -105,10 +105,9 @@
       <Column Name="Website" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Address" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="Country" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="LogoPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
-      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Logo" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
       <Association Name="Company_CompanyBranch" Member="CompanyBranches" ThisKey="Id" OtherKey="CompanyId" Type="CompanyBranch" />
       <Association Name="Company_Department" Member="Departments" ThisKey="Id" OtherKey="CompanyId" Type="Department" />
       <Association Name="Company_Employee" Member="Employees" ThisKey="Id" OtherKey="CompanyId" Type="Employee" />

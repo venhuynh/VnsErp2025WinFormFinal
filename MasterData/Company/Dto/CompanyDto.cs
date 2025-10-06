@@ -7,6 +7,7 @@ namespace MasterData.Company.Dto
     public class CompanyDto
     {
         [DisplayName("ID")]
+        [Required(ErrorMessage = "ID công ty không được để trống")]
         public Guid Id { get; set; }
 
         [DisplayName("Mã công ty")]
@@ -44,8 +45,14 @@ namespace MasterData.Company.Dto
         [StringLength(100, ErrorMessage = "Quốc gia không được vượt quá 100 ký tự")]
         public string Country { get; set; }
 
-        [DisplayName("Đường dẫn logo")]
-        [StringLength(500, ErrorMessage = "Đường dẫn logo không được vượt quá 500 ký tự")]
-        public string LogoPath { get; set; }
+        [DisplayName("Ngày tạo")]
+        [Required(ErrorMessage = "Ngày tạo không được để trống")]
+        public DateTime CreatedDate { get; set; }
+
+        [DisplayName("Ngày cập nhật")]
+        public DateTime? UpdatedDate { get; set; }
+
+        [DisplayName("Logo")]
+        public byte[] Logo { get; set; }
     }
 }

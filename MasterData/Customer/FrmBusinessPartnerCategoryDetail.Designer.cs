@@ -1,11 +1,18 @@
-﻿namespace MasterData.Customer
+﻿using System.ComponentModel;
+using DevExpress.XtraBars;
+using DevExpress.XtraDataLayout;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraLayout;
+
+namespace MasterData.Customer
 {
     partial class FrmBusinessPartnerCategoryDetail
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -243,34 +250,34 @@
         #endregion
 
         #region Bars
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem SaveBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem CloseBarButtonItem;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarButtonItem SaveBarButtonItem;
+        private BarButtonItem CloseBarButtonItem;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
         #endregion
 
         #region Validation
-        private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
+        private DXErrorProvider dxErrorProvider1;
         #endregion
 
         #region Layout Root
-        private DevExpress.XtraDataLayout.DataLayoutControl dataLayoutControl1;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
+        private DataLayoutControl dataLayoutControl1;
+        private LayoutControlGroup Root;
         #endregion
 
         #region Controls
-        private DevExpress.XtraEditors.TextEdit CategoryNameTextEdit;
-        private DevExpress.XtraEditors.MemoEdit DescriptionMemoEdit;
+        private TextEdit CategoryNameTextEdit;
+        private MemoEdit DescriptionMemoEdit;
         #endregion
 
         #region Layout Items
-        private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForCategoryName;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForDescription;
+        private LayoutControlGroup layoutControlGroup1;
+        private LayoutControlItem ItemForCategoryName;
+        private LayoutControlItem ItemForDescription;
         #endregion
     }
 }

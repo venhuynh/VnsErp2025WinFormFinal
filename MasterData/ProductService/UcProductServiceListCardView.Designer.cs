@@ -1,11 +1,20 @@
-﻿namespace MasterData.ProductService
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Card;
+using DevExpress.XtraLayout;
+
+namespace MasterData.ProductService
 {
     partial class UcProductServiceListCardView
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -481,41 +490,41 @@
 
         #endregion
 
-        private DevExpress.XtraBars.BarManager barManager1;
-        private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarDockControl barDockControlTop;
-        private DevExpress.XtraBars.BarDockControl barDockControlBottom;
-        private DevExpress.XtraBars.BarDockControl barDockControlLeft;
-        private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private DevExpress.XtraGrid.GridControl ProductServiceListGridControl;
-        private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private DevExpress.XtraBars.BarButtonItem ListDataBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem NewBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem DeleteBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem CountVariantAndImageBarButtonItem;
+        private BarManager barManager1;
+        private Bar bar2;
+        private BarDockControl barDockControlTop;
+        private BarDockControl barDockControlBottom;
+        private BarDockControl barDockControlLeft;
+        private BarDockControl barDockControlRight;
+        private LayoutControl layoutControl1;
+        private GridControl ProductServiceListGridControl;
+        private LayoutControlGroup Root;
+        private LayoutControlItem layoutControlItem1;
+        private BarButtonItem ListDataBarButtonItem;
+        private BarButtonItem NewBarButtonItem;
+        private BarButtonItem EditBarButtonItem;
+        private BarButtonItem DeleteBarButtonItem;
+        private BarButtonItem CountVariantAndImageBarButtonItem;
 
-        private System.Windows.Forms.BindingSource productServiceDtoBindingSource;
-        private DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit repositoryItemPictureEdit1;
-        private DevExpress.XtraBars.Bar bar1;
-        private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
-        private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
-        private DevExpress.XtraBars.BarHeaderItem barHeaderItem2;
-        private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
-        private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox2;
-        private DevExpress.XtraBars.BarButtonItem DataFilterBtn;
-        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemMemoExEdit repositoryItemMemoExEdit1;
-        private DevExpress.XtraGrid.Views.Card.CardView ProductServiceListCardView;
-        private DevExpress.XtraGrid.Columns.GridColumn colThumbnail;
-        private DevExpress.XtraGrid.Columns.GridColumn colCode;
-        private DevExpress.XtraGrid.Columns.GridColumn colName;
-        private DevExpress.XtraGrid.Columns.GridColumn colCategoryName;
-        private DevExpress.XtraGrid.Columns.GridColumn colDescription;
-        private DevExpress.XtraGrid.Columns.GridColumn colIsActive;
-        private DevExpress.XtraGrid.Columns.GridColumn colVariantCount;
+        private BindingSource productServiceDtoBindingSource;
+        private RepositoryItemPictureEdit repositoryItemPictureEdit1;
+        private Bar bar1;
+        private BarHeaderItem barHeaderItem1;
+        private BarStaticItem DataSummaryBarStaticItem;
+        private BarHeaderItem barHeaderItem2;
+        private BarStaticItem SelectedRowBarStaticItem;
+        private RepositoryItemComboBox repositoryItemComboBox1;
+        private RepositoryItemComboBox repositoryItemComboBox2;
+        private BarButtonItem DataFilterBtn;
+        private RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
+        private RepositoryItemMemoExEdit repositoryItemMemoExEdit1;
+        private CardView ProductServiceListCardView;
+        private GridColumn colThumbnail;
+        private GridColumn colCode;
+        private GridColumn colName;
+        private GridColumn colCategoryName;
+        private GridColumn colDescription;
+        private GridColumn colIsActive;
+        private GridColumn colVariantCount;
     }
 }

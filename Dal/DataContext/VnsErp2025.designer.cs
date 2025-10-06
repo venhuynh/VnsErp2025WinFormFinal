@@ -2241,13 +2241,11 @@ namespace Dal.DataContext
 		
 		private string _Country;
 		
-		private string _LogoPath;
-		
-		private bool _IsActive;
-		
 		private System.DateTime _CreatedDate;
 		
 		private System.Nullable<System.DateTime> _UpdatedDate;
+		
+		private System.Data.Linq.Binary _Logo;
 		
 		private EntitySet<CompanyBranch> _CompanyBranches;
 		
@@ -2279,14 +2277,12 @@ namespace Dal.DataContext
     partial void OnAddressChanged();
     partial void OnCountryChanging(string value);
     partial void OnCountryChanged();
-    partial void OnLogoPathChanging(string value);
-    partial void OnLogoPathChanged();
-    partial void OnIsActiveChanging(bool value);
-    partial void OnIsActiveChanged();
     partial void OnCreatedDateChanging(System.DateTime value);
     partial void OnCreatedDateChanged();
     partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
     partial void OnUpdatedDateChanged();
+    partial void OnLogoChanging(System.Data.Linq.Binary value);
+    partial void OnLogoChanged();
     #endregion
 		
 		public Company()
@@ -2478,46 +2474,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoPath", DbType="NVarChar(500)")]
-		public string LogoPath
-		{
-			get
-			{
-				return this._LogoPath;
-			}
-			set
-			{
-				if ((this._LogoPath != value))
-				{
-					this.OnLogoPathChanging(value);
-					this.SendPropertyChanging();
-					this._LogoPath = value;
-					this.SendPropertyChanged("LogoPath");
-					this.OnLogoPathChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
-		public bool IsActive
-		{
-			get
-			{
-				return this._IsActive;
-			}
-			set
-			{
-				if ((this._IsActive != value))
-				{
-					this.OnIsActiveChanging(value);
-					this.SendPropertyChanging();
-					this._IsActive = value;
-					this.SendPropertyChanged("IsActive");
-					this.OnIsActiveChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
 		public System.DateTime CreatedDate
 		{
@@ -2554,6 +2510,26 @@ namespace Dal.DataContext
 					this._UpdatedDate = value;
 					this.SendPropertyChanged("UpdatedDate");
 					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Logo", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary Logo
+		{
+			get
+			{
+				return this._Logo;
+			}
+			set
+			{
+				if ((this._Logo != value))
+				{
+					this.OnLogoChanging(value);
+					this.SendPropertyChanging();
+					this._Logo = value;
+					this.SendPropertyChanged("Logo");
+					this.OnLogoChanged();
 				}
 			}
 		}

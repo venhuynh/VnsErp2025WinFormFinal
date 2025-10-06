@@ -1,11 +1,12 @@
-﻿using Bll.Common;
-using Dal.DataContext.SeedData.MasterData.Customer;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using Bll.Common;
+using Dal.DataContext.SeedData.MasterData.Customer;
+using DevExpress.XtraBars.FluentDesignSystem;
 
 namespace MasterData.Customer
 {
-    public partial class FluentPartner : DevExpress.XtraBars.FluentDesignSystem.FluentDesignForm
+    public partial class FluentPartner : FluentDesignForm
     {
         #region Fields
 
@@ -35,15 +36,15 @@ namespace MasterData.Customer
             try
             {
                 // Khởi tạo UserControlManager với container
-                _userControlManager = new UserControlManager(this.fluentDesignFormContainer1);
+                _userControlManager = new UserControlManager(fluentDesignFormContainer1);
 
                 //// Khởi tạo các UserControl
                 //_businessPartnerListControl = new UcBusinessPartnerList();
                 //_businessPartnerCategoryControl = new UcBusinessPartnerCategory();
 
                 // Thiết lập form properties
-                this.Text = "VnsErp2025 - Quản lý Đối tác";
-                this.WindowState = FormWindowState.Maximized;
+                Text = "VnsErp2025 - Quản lý Đối tác";
+                WindowState = FormWindowState.Maximized;
             }
             catch (Exception ex)
             {
