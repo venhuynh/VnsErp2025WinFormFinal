@@ -476,6 +476,43 @@ namespace Dal.BaseDataAccess
             }
         }
 
+        /// <summary>
+        /// Xóa entity theo ID
+        /// </summary>
+        /// <param name="id">ID của entity cần xóa</param>
+        /// <returns>True nếu xóa thành công</returns>
+        public virtual bool DeleteById(Guid id)
+        {
+            try
+            {
+                using var context = new VnsErp2025DataContext(_connStr);
+                var table = context.GetTable<T>();
+                
+                // Sử dụng reflection để tìm entity theo ID
+                var idProperty = typeof(T).GetProperty("Id");
+                if (idProperty == null)
+                    throw new InvalidOperationException($"Entity {typeof(T).Name} không có property Id");
+                
+                var entity = table.ToList().FirstOrDefault(e => 
+                {
+                    var entityId = (Guid)idProperty.GetValue(e);
+                    return entityId == id;
+                });
+                
+                if (entity != null)
+                {
+                    table.DeleteOnSubmit(entity);
+                    context.SubmitChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi xóa {typeof(T).Name} theo ID: {ex.Message}", ex);
+            }
+        }
+
         #endregion
 
         #region Validation & Utilities

@@ -106,10 +106,10 @@ namespace Bll.MasterData.Customer
             try
             {
                 _logger?.LogInfo($"Bắt đầu xóa BusinessPartnerContact với ID: {id}");
-                var entity = _dataAccess.GetById(id);
-                if (entity != null)
+                // Sử dụng DeleteById thay vì GetById + Delete để tránh DataContext conflict
+                var result = _dataAccess.DeleteById(id);
+                if (result)
                 {
-                    _dataAccess.Delete(entity);
                     _logger?.LogInfo("Xóa BusinessPartnerContact thành công");
                     return true;
                 }
