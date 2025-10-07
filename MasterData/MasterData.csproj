@@ -60,9 +60,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Company\Converters\CompanyBranchConverters.cs" />
     <Compile Include="Company\Converters\CompanyConverter.cs" />
     <Compile Include="Company\Dto\CompanyBranchDto.cs" />
     <Compile Include="Company\Dto\CompanyDto.cs" />
+    <Compile Include="Company\FrmCompanyBranchDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmCompanyBranchDetail.Designer.cs">
+      <DependentUpon>FrmCompanyBranchDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Company\UcCompany.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -243,6 +250,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Company\FrmCompanyBranchDetail.resx">
+      <DependentUpon>FrmCompanyBranchDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Company\UcCompany.resx">
       <DependentUpon>UcCompany.cs</DependentUpon>
     </EmbeddedResource>

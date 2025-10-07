@@ -53,6 +53,7 @@
     <Compile Include="Connection\ConnectionStringHelper.cs" />
     <Compile Include="Connection\DatabaseConfig.cs" />
     <Compile Include="Connection\IConnectionManager.cs" />
+    <Compile Include="DataAccess\MasterData\CompanyDal\CompanyBranchDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\CompanyDal\CompanyDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerCategoryDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerContactDataAccess.cs" />
