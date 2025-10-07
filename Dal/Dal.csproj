@@ -66,6 +66,7 @@
     <Compile Include="DataAccess\MasterData\ProductServiceDal\ProductServiceDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\ProductVariantDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\ProductServiceDal\UnitOfMeasureDataAccess.cs" />
+    <Compile Include="DataContext\SeedData\MasterData\Company\SeedData_Master_Company.cs" />
     <Compile Include="DataContext\SeedData\MasterData\Customer\SeedData_Master_Customer.cs" />
     <Compile Include="DataContext\SeedData\MasterData\ProductService\SeedData_Master_ProductService.cs" />
     <Compile Include="DataContext\VnsErp2025.designer.cs">
@@ -90,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="DataContext\SeedData\MasterData\Company\README_SeedData.md" />
     <None Include="DataContext\SeedData\MasterData\Customer\README_SeedData.md" />
     <None Include="DataContext\VnsErp2025.md" />
     <None Include="DataContext\VnsErp2025.dbml">
@@ -112,6 +114,13 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataContext\SeedData\MasterData\Company\00.Seed_Company_DeleteData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Company\01.Seed_Company_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Company\02.Seed_CompanyBranch_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Company\03.Seed_Position_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Company\04.Seed_Department_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Company\05.Seed_Employee_TestData.sql" />
+    <Content Include="DataContext\SeedData\MasterData\Company\99.Check_Company_Data.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\01.Seed_BusinessPartnerCategory_TestData.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\02.Seed_All_BusinessPartner_TestData.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\00.Seed_BusinessPartner_DeleteData.sql" />

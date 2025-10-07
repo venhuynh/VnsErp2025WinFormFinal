@@ -346,6 +346,7 @@
     <None Include="Customer\Dto\DTO_README.md" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyDto.datasource" />
+    <None Include="Properties\DataSources\MasterData.Company.Dto.DepartmentDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Customer.Dto.BusinessPartnerListDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Customer.Dto.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />

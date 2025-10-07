@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Dal.DataContext;
+using Dal.DataContext.SeedData.MasterData.Company;
 
 namespace Dal.DataContext.SeedData
 {
@@ -224,6 +225,57 @@ namespace Dal.DataContext.SeedData
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Lỗi khi xóa dữ liệu: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tạo tất cả seed data cho tất cả các module
+        /// </summary>
+        public static void CreateAllData()
+        {
+            using (var context = CreateContext())
+            {
+                CreateAllData(context);
+            }
+        }
+
+        /// <summary>
+        /// Tạo tất cả seed data cho tất cả các module với connection string
+        /// </summary>
+        /// <param name="connectionString">Connection string để kết nối database</param>
+        public static void CreateAllData(string connectionString)
+        {
+            using (var context = new VnsErp2025DataContext(connectionString))
+            {
+                CreateAllData(context);
+            }
+        }
+
+        /// <summary>
+        /// Tạo tất cả seed data cho tất cả các module với context
+        /// </summary>
+        /// <param name="context">DataContext để tạo dữ liệu</param>
+        public static void CreateAllData(VnsErp2025DataContext context)
+        {
+            try
+            {
+                Console.WriteLine("🌱 Bắt đầu tạo tất cả seed data...");
+
+                // 1. Tạo Company entities
+                SeedData_Master_Company.CreateAllCompanyData(context);
+
+                // 2. Tạo Customer entities (nếu có)
+                // SeedData_Master_Customer.CreateAllCustomerData(context);
+
+                // 3. Tạo ProductService entities (nếu có)
+                // SeedData_Master_ProductService.CreateAllProductServiceData(context);
+
+                Console.WriteLine("🎉 Hoàn thành tạo tất cả seed data!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi khi tạo seed data: {ex.Message}");
                 throw;
             }
         }
