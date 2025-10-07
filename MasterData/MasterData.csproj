@@ -62,8 +62,10 @@
   <ItemGroup>
     <Compile Include="Company\Converters\CompanyBranchConverters.cs" />
     <Compile Include="Company\Converters\CompanyConverter.cs" />
+    <Compile Include="Company\Converters\DepartmentConverters.cs" />
     <Compile Include="Company\Dto\CompanyBranchDto.cs" />
     <Compile Include="Company\Dto\CompanyDto.cs" />
+    <Compile Include="Company\Dto\DepartmentDto.cs" />
     <Compile Include="Company\FrmCompanyBranchDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +83,12 @@
     </Compile>
     <Compile Include="Company\UcCompanyBranch.Designer.cs">
       <DependentUpon>UcCompanyBranch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\UcDepartment.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Company\UcDepartment.Designer.cs">
+      <DependentUpon>UcDepartment.cs</DependentUpon>
     </Compile>
     <Compile Include="Customer\Converters\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
@@ -258,6 +266,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Company\UcCompanyBranch.resx">
       <DependentUpon>UcCompanyBranch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\UcDepartment.resx">
+      <DependentUpon>UcDepartment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Customer\FluentPartner.resx">
       <DependentUpon>FluentPartner.cs</DependentUpon>
