@@ -7,7 +7,7 @@ using Dal.DataContext;
 using Dal.Exceptions;
 using Dal.Logging;
 
-namespace Dal.DataAccess
+namespace Dal.DataAccess.MasterData.Partner
 {
 	/// <summary>
 	/// Data Access cho thực thể BusinessPartner (LINQ to SQL trên VnsErp2025DataContext).
@@ -423,6 +423,28 @@ namespace Dal.DataAccess
                     if (source.Id == Guid.Empty) source.Id = Guid.NewGuid();
                     source.CreatedDate = DateTime.Now;
                     context.BusinessPartners.InsertOnSubmit(source);
+                    
+                    // Tạo BusinessPartnerSite là trụ sở chính
+                    var mainSite = new BusinessPartnerSite
+                    {
+                        Id = Guid.NewGuid(),
+                        PartnerId = source.Id,
+                        SiteCode = $"{source.PartnerCode}-MAIN",
+                        SiteName = $"Trụ sở chính - {source.PartnerName}",
+                        Address = source.Address,
+                        City = source.City,
+                        Province = source.City, // Sử dụng City làm Province cho trụ sở chính
+                        Country = source.Country,
+                        ContactPerson = source.ContactPerson,
+                        Phone = source.Phone,
+                        Email = source.Email,
+                        IsDefault = true, // Đánh dấu là trụ sở chính
+                        IsActive = source.IsActive,
+                        CreatedDate = DateTime.Now,
+                        UpdatedDate = null
+                    };
+                    
+                    context.BusinessPartnerSites.InsertOnSubmit(mainSite);
                 }
                 else
                 {

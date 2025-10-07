@@ -119,14 +119,18 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Load danh sách chi nhánh vào binding source
+        /// Load danh sách chi nhánh vào binding source - chỉ hiển thị các chi nhánh đang hoạt động
         /// </summary>
         private async Task LoadBusinessPartnerSitesDataSourceAsync()
         {
             var siteBll = new BusinessPartnerSiteBll();
             var sites = await Task.Run(() => siteBll.GetAll());
+            
+            // Lọc chỉ các chi nhánh đang hoạt động và có thông tin đầy đủ
             var list = sites.ToSiteListDtos()
-                .OrderBy(s => s.SiteName)
+                .Where(s => s.IsActive && !string.IsNullOrWhiteSpace(s.SiteName))
+                .OrderBy(s => s.PartnerName)
+                .ThenBy(s => s.SiteName)
                 .ToList();
 
             if (businessPartnerSiteListDtoBindingSource != null)
@@ -134,14 +138,6 @@ namespace MasterData.Customer
                 businessPartnerSiteListDtoBindingSource.DataSource = list;
             }
 
-            // Cấu hình SiteNameSearchLookUpEdit
-            if (FindControlByName(this, "SiteNameSearchLookUpEdit") is SearchLookUpEdit lookup)
-            {
-                lookup.Properties.DataSource = businessPartnerSiteListDtoBindingSource;
-                lookup.Properties.DisplayMember = "SiteName";
-                lookup.Properties.ValueMember = "Id";
-                lookup.Properties.NullText = @"Chọn chi nhánh";
-            }
         }
 
         #endregion

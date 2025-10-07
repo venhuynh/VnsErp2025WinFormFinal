@@ -104,6 +104,12 @@
     <Compile Include="Customer\FrmBusinessPartnerDetail.Designer.cs">
       <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerSiteDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerSiteDetail.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerSiteDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Customer\UcBusinessPartnerCategory.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -127,6 +133,12 @@
     <Compile Include="Customer\Dto\BusinessPartnerDetailDto.cs" />
     <Compile Include="Customer\Dto\BusinessPartnerListDto.cs" />
     <Compile Include="Customer\Dto\PartnerCategoryMappingDto.cs" />
+    <Compile Include="Customer\UcBusinessPartnerSite.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Customer\UcBusinessPartnerSite.Designer.cs">
+      <DependentUpon>UcBusinessPartnerSite.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProductService\Converters\AttributeConverters.cs" />
     <Compile Include="ProductService\Converters\ProductServiceCategoryConverters.cs" />
     <Compile Include="ProductService\Converters\ProductServiceConverters.cs" />
@@ -256,6 +268,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Customer\UcBusinessPartnerList.resx">
       <DependentUpon>UcBusinessPartnerList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\UcBusinessPartnerSite.resx">
+      <DependentUpon>UcBusinessPartnerSite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProductService\FluentProductService.resx">
       <DependentUpon>FluentProductService.cs</DependentUpon>

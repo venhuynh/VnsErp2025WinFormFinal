@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,6 +12,9 @@ namespace MasterData.Customer.Dto
     {
         [DisplayName("ID")]
         public Guid Id { get; set; }
+
+        [DisplayName("ID Đối tác")]
+        public Guid PartnerId { get; set; }
 
         [DisplayName("Mã chi nhánh")]
         [Required(ErrorMessage = "Mã chi nhánh không được để trống")]
@@ -66,5 +70,26 @@ namespace MasterData.Customer.Dto
 
         [DisplayName("Ngày cập nhật")]
         public DateTime? UpdatedDate { get; set; }
+
+        [DisplayName("Địa chỉ đầy đủ")]
+        public string SiteFullAddress 
+        { 
+            get 
+            {
+                // Gộp các thuộc tính địa chỉ thành địa chỉ đầy đủ
+                var addressParts = new List<string>();
+                
+                if (!string.IsNullOrEmpty(Address))
+                    addressParts.Add(Address);
+                if (!string.IsNullOrEmpty(City))
+                    addressParts.Add(City);
+                if (!string.IsNullOrEmpty(Province))
+                    addressParts.Add(Province);
+                if (!string.IsNullOrEmpty(Country))
+                    addressParts.Add(Country);
+                
+                return string.Join(", ", addressParts);
+            }
+        }
     }
 }

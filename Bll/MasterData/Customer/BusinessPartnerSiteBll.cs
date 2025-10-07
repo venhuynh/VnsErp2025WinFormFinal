@@ -47,6 +47,15 @@ namespace Bll.MasterData.Customer
         }
 
         /// <summary>
+        /// Lấy tất cả BusinessPartnerSite (alias cho GetAll)
+        /// </summary>
+        /// <returns>Danh sách BusinessPartnerSite</returns>
+        public List<BusinessPartnerSite> GetAllSites()
+        {
+            return GetAll();
+        }
+
+        /// <summary>
         /// Lấy BusinessPartnerSite theo ID
         /// </summary>
         /// <param name="id">ID của BusinessPartnerSite</param>
@@ -107,6 +116,16 @@ namespace Bll.MasterData.Customer
                 _logger?.LogError($"Lỗi khi xóa BusinessPartnerSite: {ex.Message}", ex);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Xóa BusinessPartnerSite theo ID (alias cho Delete)
+        /// </summary>
+        /// <param name="id">ID của BusinessPartnerSite</param>
+        /// <returns>True nếu xóa thành công</returns>
+        public bool DeleteSite(Guid id)
+        {
+            return Delete(id);
         }
 
         /// <summary>

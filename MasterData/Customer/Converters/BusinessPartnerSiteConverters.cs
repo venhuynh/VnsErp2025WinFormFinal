@@ -23,6 +23,7 @@ namespace MasterData.Customer.Converters
                return new BusinessPartnerSiteListDto
                {
                    Id = entity.Id,
+                   PartnerId = entity.PartnerId,
                    SiteCode = entity.SiteCode,
                    PartnerName = entity.BusinessPartner?.PartnerName,
                    SiteName = entity.SiteName,
@@ -52,6 +53,7 @@ namespace MasterData.Customer.Converters
                return new BusinessPartnerSite
                {
                    Id = dto.Id,
+                   PartnerId = dto.PartnerId,
                    SiteCode = dto.SiteCode,
                    SiteName = dto.SiteName,
                    Address = dto.Address,

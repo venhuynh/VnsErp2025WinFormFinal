@@ -262,15 +262,9 @@ namespace MasterData.Customer
         {
             try
             {
-                // Cấu hình TreeList để hiển thị hierarchical
-                //treeList1.OptionsView.ShowIndicator = true;
-                //treeList1.OptionsView.AutoWidth = false;
-                //treeList1.OptionsView.ShowHorzLines = true;
-                //treeList1.OptionsView.ShowVertLines = true;
-                //treeList1.OptionsView.EnableAppearanceEvenRow = true;
                 
                 // Cấu hình TreeList để hiển thị dạng cây
-                //treeList1.OptionsView.ShowTreeLines = DefaultBoolean.True;
+                
                 treeList1.OptionsView.ShowButtons = true;
                 treeList1.OptionsView.ShowRoot = true;
 
