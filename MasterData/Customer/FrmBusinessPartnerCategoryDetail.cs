@@ -21,7 +21,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Business Logic Layer cho danh mục đối tác
         /// </summary>
-        private readonly BusinessPartnerCategoryBll _businessPartnerCategoryBll = new BusinessPartnerCategoryBll();
+        private readonly BusinessPartnerCategoryBll _businessPartnerCategoryBll = new();
 
         /// <summary>
         /// ID của danh mục đang chỉnh sửa (Guid.Empty nếu thêm mới)

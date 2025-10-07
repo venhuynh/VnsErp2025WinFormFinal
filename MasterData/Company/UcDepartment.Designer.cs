@@ -45,11 +45,6 @@ namespace MasterData.Company
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.bar1 = new DevExpress.XtraBars.Bar();
-            this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
-            this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
-            this.barHeaderItem2 = new DevExpress.XtraBars.BarHeaderItem();
-            this.SelectedRowBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -58,41 +53,38 @@ namespace MasterData.Company
             this.repositoryItemComboBox2 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.DepartmentTreeList = new DevExpress.XtraTreeList.TreeList();
-            this.colDepartmentCode = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.treeListBand1 = new DevExpress.XtraTreeList.Columns.TreeListBand();
             this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colCompanyName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.treeListBand2 = new DevExpress.XtraTreeList.Columns.TreeListBand();
             this.colBranchName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colParentDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colEmployeeCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colSubDepartmentCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.treeListBand3 = new DevExpress.XtraTreeList.Columns.TreeListBand();
             this.colIsActive = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colCreatedDate = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.repositoryItemCheckEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
+            this.departmentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
-            this.repositoryItemCheckEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.departmentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DepartmentTreeList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
             // 
             this.barManager1.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
-            this.bar2,
-            this.bar1});
+            this.bar2});
             this.barManager1.DockControls.Add(this.barDockControlTop);
             this.barManager1.DockControls.Add(this.barDockControlBottom);
             this.barManager1.DockControls.Add(this.barDockControlLeft);
@@ -103,17 +95,12 @@ namespace MasterData.Company
             this.ListDataBarButtonItem,
             this.EditBarButtonItem,
             this.DeleteBarButtonItem,
-            this.ExportBarButtonItem,
-            this.barHeaderItem1,
-            this.DataSummaryBarStaticItem,
-            this.barHeaderItem2,
-            this.SelectedRowBarStaticItem});
+            this.ExportBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 13;
+            this.barManager1.MaxItemId = 6;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemComboBox2});
-            this.barManager1.StatusBar = this.bar1;
             // 
             // bar2
             // 
@@ -172,49 +159,6 @@ namespace MasterData.Company
             this.ExportBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.exporttoxls_32x32;
             this.ExportBarButtonItem.Name = "ExportBarButtonItem";
             // 
-            // bar1
-            // 
-            this.bar1.BarName = "Custom 3";
-            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
-            this.bar1.DockCol = 0;
-            this.bar1.DockRow = 0;
-            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
-            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem1),
-            new DevExpress.XtraBars.LinkPersistInfo(this.DataSummaryBarStaticItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem2),
-            new DevExpress.XtraBars.LinkPersistInfo(this.SelectedRowBarStaticItem)});
-            this.bar1.OptionsBar.AllowQuickCustomization = false;
-            this.bar1.OptionsBar.DrawDragBorder = false;
-            this.bar1.OptionsBar.UseWholeRow = true;
-            this.bar1.Text = "Custom 3";
-            // 
-            // barHeaderItem1
-            // 
-            this.barHeaderItem1.Caption = "Tổng kết:";
-            this.barHeaderItem1.Id = 6;
-            this.barHeaderItem1.Name = "barHeaderItem1";
-            // 
-            // DataSummaryBarStaticItem
-            // 
-            this.DataSummaryBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.DataSummaryBarStaticItem.Caption = "Chưa có dữ liệu";
-            this.DataSummaryBarStaticItem.Id = 7;
-            this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
-            // 
-            // barHeaderItem2
-            // 
-            this.barHeaderItem2.Caption = "Đang chọn:";
-            this.barHeaderItem2.Id = 8;
-            this.barHeaderItem2.Name = "barHeaderItem2";
-            // 
-            // SelectedRowBarStaticItem
-            // 
-            this.SelectedRowBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.SelectedRowBarStaticItem.Caption = "Chưa chọn dòng nào";
-            this.SelectedRowBarStaticItem.Id = 9;
-            this.SelectedRowBarStaticItem.Name = "SelectedRowBarStaticItem";
-            // 
             // barDockControlTop
             // 
             this.barDockControlTop.CausesValidation = false;
@@ -227,9 +171,9 @@ namespace MasterData.Company
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 626);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 661);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1077, 35);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1077, 0);
             // 
             // barDockControlLeft
             // 
@@ -237,7 +181,7 @@ namespace MasterData.Company
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 587);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 622);
             // 
             // barDockControlRight
             // 
@@ -245,7 +189,7 @@ namespace MasterData.Company
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(1077, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 587);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 622);
             // 
             // repositoryItemComboBox1
             // 
@@ -268,84 +212,101 @@ namespace MasterData.Company
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1077, 587);
+            this.layoutControl1.Size = new System.Drawing.Size(1077, 622);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
             // DepartmentTreeList
             // 
+            this.DepartmentTreeList.Appearance.Caption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.DepartmentTreeList.Appearance.Caption.ForeColor = System.Drawing.Color.Blue;
+            this.DepartmentTreeList.Appearance.Caption.Options.UseFont = true;
+            this.DepartmentTreeList.Appearance.Caption.Options.UseForeColor = true;
+            this.DepartmentTreeList.Bands.AddRange(new DevExpress.XtraTreeList.Columns.TreeListBand[] {
+            this.treeListBand1,
+            this.treeListBand2,
+            this.treeListBand3});
+            this.DepartmentTreeList.Caption = "BẢNG QUẢN LÝ PHÒNG BAN";
             this.DepartmentTreeList.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
-            this.colDepartmentCode,
             this.colDepartmentName,
             this.colDescription,
-            this.colCompanyName,
             this.colBranchName,
             this.colParentDepartmentName,
-            this.colEmployeeCount,
-            this.colSubDepartmentCount,
-            this.colIsActive,
-            this.colCreatedDate});
+            this.colIsActive});
             this.DepartmentTreeList.DataSource = this.departmentDtoBindingSource;
-            this.DepartmentTreeList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DepartmentTreeList.HierarchyFieldName = "ParentId";
             this.DepartmentTreeList.KeyFieldName = "Id";
             this.DepartmentTreeList.Location = new System.Drawing.Point(16, 16);
             this.DepartmentTreeList.MenuManager = this.barManager1;
             this.DepartmentTreeList.Name = "DepartmentTreeList";
+            this.DepartmentTreeList.OptionsBehavior.AllowRecursiveNodeChecking = true;
             this.DepartmentTreeList.OptionsBehavior.Editable = false;
+            this.DepartmentTreeList.OptionsBehavior.PopulateServiceColumns = true;
+            this.DepartmentTreeList.OptionsClipboard.ClipboardMode = DevExpress.Export.ClipboardMode.Formatted;
+            this.DepartmentTreeList.OptionsCustomization.CustomizationFormSnapMode = DevExpress.Utils.Controls.SnapMode.OwnerControl;
+            this.DepartmentTreeList.OptionsFilter.FilterEditorAllowCustomExpressions = DevExpress.Utils.DefaultBoolean.True;
             this.DepartmentTreeList.OptionsFind.AlwaysVisible = true;
+            this.DepartmentTreeList.OptionsMenu.ShowConditionalFormatFiltersItem = true;
             this.DepartmentTreeList.OptionsSelection.MultiSelect = true;
+            this.DepartmentTreeList.OptionsView.AllowHtmlDrawHeaders = true;
+            this.DepartmentTreeList.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check;
+            this.DepartmentTreeList.OptionsView.FilterCriteriaDisplayStyle = DevExpress.XtraEditors.FilterCriteriaDisplayStyle.Visual;
+            this.DepartmentTreeList.OptionsView.ShowCaption = true;
             this.DepartmentTreeList.OptionsView.ShowIndentAsRowStyle = true;
+            this.DepartmentTreeList.ParentFieldName = "ParentId";
             this.DepartmentTreeList.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemPictureEdit1,
             this.repositoryItemHypertextLabel1,
             this.repositoryItemCheckEdit1});
-            this.DepartmentTreeList.Size = new System.Drawing.Size(1045, 555);
+            this.DepartmentTreeList.Size = new System.Drawing.Size(1045, 590);
             this.DepartmentTreeList.TabIndex = 5;
             // 
-            // colDepartmentCode
+            // treeListBand1
             // 
-            this.colDepartmentCode.Caption = "Mã phòng ban";
-            this.colDepartmentCode.FieldName = "DepartmentCode";
-            this.colDepartmentCode.Name = "colDepartmentCode";
-            this.colDepartmentCode.Visible = true;
-            this.colDepartmentCode.VisibleIndex = 0;
-            this.colDepartmentCode.Width = 120;
+            this.treeListBand1.Caption = "Thông tin Phòng ban";
+            this.treeListBand1.Columns.Add(this.colDepartmentName);
+            this.treeListBand1.Columns.Add(this.colDescription);
+            this.treeListBand1.Fixed = DevExpress.XtraTreeList.Columns.FixedStyle.Left;
+            this.treeListBand1.Name = "treeListBand1";
+            this.treeListBand1.Width = 300;
             // 
             // colDepartmentName
             // 
-            this.colDepartmentName.Caption = "Tên phòng ban";
             this.colDepartmentName.FieldName = "DepartmentName";
+            this.colDepartmentName.FieldNameSort = "DepartmentCode";
             this.colDepartmentName.Name = "colDepartmentName";
+            this.colDepartmentName.OptionsColumn.AllowEdit = false;
+            this.colDepartmentName.OptionsColumn.AllowMove = false;
+            this.colDepartmentName.OptionsFilter.FilterBySortField = DevExpress.Utils.DefaultBoolean.True;
             this.colDepartmentName.Visible = true;
-            this.colDepartmentName.VisibleIndex = 1;
-            this.colDepartmentName.Width = 200;
+            this.colDepartmentName.VisibleIndex = 0;
+            this.colDepartmentName.Width = 120;
             // 
             // colDescription
             // 
-            this.colDescription.Caption = "Mô tả";
             this.colDescription.FieldName = "Description";
             this.colDescription.Name = "colDescription";
+            this.colDescription.OptionsColumn.ShowInCustomizationForm = false;
             this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 2;
-            this.colDescription.Width = 150;
+            this.colDescription.VisibleIndex = 1;
+            this.colDescription.Width = 80;
             // 
-            // colCompanyName
+            // treeListBand2
             // 
-            this.colCompanyName.Caption = "Công ty";
-            this.colCompanyName.FieldName = "CompanyName";
-            this.colCompanyName.Name = "colCompanyName";
-            this.colCompanyName.Visible = true;
-            this.colCompanyName.VisibleIndex = 3;
-            this.colCompanyName.Width = 120;
+            this.treeListBand2.Caption = "Thông tin Công ty";
+            this.treeListBand2.Columns.Add(this.colBranchName);
+            this.treeListBand2.Columns.Add(this.colParentDepartmentName);
+            this.treeListBand2.Name = "treeListBand2";
+            this.treeListBand2.Width = 400;
             // 
             // colBranchName
             // 
             this.colBranchName.Caption = "Chi nhánh";
             this.colBranchName.FieldName = "BranchName";
             this.colBranchName.Name = "colBranchName";
+            this.colBranchName.OptionsColumn.AllowMove = false;
+            this.colBranchName.OptionsColumn.ShowInCustomizationForm = false;
             this.colBranchName.Visible = true;
-            this.colBranchName.VisibleIndex = 4;
+            this.colBranchName.VisibleIndex = 2;
             this.colBranchName.Width = 120;
             // 
             // colParentDepartmentName
@@ -353,27 +314,18 @@ namespace MasterData.Company
             this.colParentDepartmentName.Caption = "Phòng ban cha";
             this.colParentDepartmentName.FieldName = "ParentDepartmentName";
             this.colParentDepartmentName.Name = "colParentDepartmentName";
+            this.colParentDepartmentName.OptionsColumn.AllowMove = false;
+            this.colParentDepartmentName.OptionsColumn.ShowInCustomizationForm = false;
             this.colParentDepartmentName.Visible = true;
-            this.colParentDepartmentName.VisibleIndex = 5;
+            this.colParentDepartmentName.VisibleIndex = 3;
             this.colParentDepartmentName.Width = 150;
             // 
-            // colEmployeeCount
+            // treeListBand3
             // 
-            this.colEmployeeCount.Caption = "Số nhân viên";
-            this.colEmployeeCount.FieldName = "EmployeeCount";
-            this.colEmployeeCount.Name = "colEmployeeCount";
-            this.colEmployeeCount.Visible = true;
-            this.colEmployeeCount.VisibleIndex = 6;
-            this.colEmployeeCount.Width = 80;
-            // 
-            // colSubDepartmentCount
-            // 
-            this.colSubDepartmentCount.Caption = "Số phòng ban con";
-            this.colSubDepartmentCount.FieldName = "SubDepartmentCount";
-            this.colSubDepartmentCount.Name = "colSubDepartmentCount";
-            this.colSubDepartmentCount.Visible = true;
-            this.colSubDepartmentCount.VisibleIndex = 7;
-            this.colSubDepartmentCount.Width = 100;
+            this.treeListBand3.Caption = "Thống kê";
+            this.treeListBand3.Columns.Add(this.colIsActive);
+            this.treeListBand3.Name = "treeListBand3";
+            this.treeListBand3.Width = 300;
             // 
             // colIsActive
             // 
@@ -382,22 +334,17 @@ namespace MasterData.Company
             this.colIsActive.FieldName = "IsActive";
             this.colIsActive.Name = "colIsActive";
             this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 8;
+            this.colIsActive.VisibleIndex = 4;
             this.colIsActive.Width = 80;
-            // 
-            // colCreatedDate
-            // 
-            this.colCreatedDate.Caption = "Ngày tạo";
-            this.colCreatedDate.FieldName = "CreatedDate";
-            this.colCreatedDate.Name = "colCreatedDate";
-            this.colCreatedDate.Visible = true;
-            this.colCreatedDate.VisibleIndex = 9;
-            this.colCreatedDate.Width = 100;
             // 
             // repositoryItemCheckEdit1
             // 
             this.repositoryItemCheckEdit1.AutoHeight = false;
             this.repositoryItemCheckEdit1.Name = "repositoryItemCheckEdit1";
+            // 
+            // departmentDtoBindingSource
+            // 
+            this.departmentDtoBindingSource.DataSource = typeof(MasterData.Company.Dto.DepartmentDto);
             // 
             // repositoryItemPictureEdit1
             // 
@@ -415,7 +362,7 @@ namespace MasterData.Company
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1077, 587);
+            this.Root.Size = new System.Drawing.Size(1077, 622);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -423,12 +370,8 @@ namespace MasterData.Company
             this.layoutControlItem1.Control = this.DepartmentTreeList;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 561);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 596);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // departmentDtoBindingSource
-            // 
-            this.departmentDtoBindingSource.DataSource = typeof(MasterData.Company.Dto.DepartmentDto);
             // 
             // UcDepartment
             // 
@@ -447,12 +390,12 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DepartmentTreeList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -476,25 +419,18 @@ namespace MasterData.Company
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
         private RepositoryItemPictureEdit repositoryItemPictureEdit1;
-        private Bar bar1;
-        private BarHeaderItem barHeaderItem1;
-        private BarStaticItem DataSummaryBarStaticItem;
-        private BarHeaderItem barHeaderItem2;
-        private BarStaticItem SelectedRowBarStaticItem;
         private RepositoryItemComboBox repositoryItemComboBox1;
         private RepositoryItemComboBox repositoryItemComboBox2;
         private RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
         private RepositoryItemCheckEdit repositoryItemCheckEdit1;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentCode;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentName;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCompanyName;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colBranchName;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colParentDepartmentName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colEmployeeCount;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colSubDepartmentCount;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colIsActive;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCreatedDate;
+        private DevExpress.XtraTreeList.Columns.TreeListBand treeListBand1;
+        private DevExpress.XtraTreeList.Columns.TreeListBand treeListBand2;
+        private DevExpress.XtraTreeList.Columns.TreeListBand treeListBand3;
         private BindingSource departmentDtoBindingSource;
     }
 }

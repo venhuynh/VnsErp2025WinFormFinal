@@ -657,9 +657,7 @@ namespace MasterData.Customer
                     var focusedRowHandle = BusinessPartnerContactGridCardView.FocusedRowHandle;
                     if (focusedRowHandle < 0) return;
 
-                    var contactDto =
-                        BusinessPartnerContactGridCardView.GetRow(focusedRowHandle) as BusinessPartnerContactDto;
-                    if (contactDto == null) return;
+                    if (BusinessPartnerContactGridCardView.GetRow(focusedRowHandle) is not BusinessPartnerContactDto contactDto) return;
 
                     switch (e.Item.Name)
                     {
@@ -926,7 +924,7 @@ namespace MasterData.Customer
             catch (Exception ex)
             {
                 MsgBox.ShowException(new Exception("Lỗi lấy selected contact DTOs: " + ex.Message, ex));
-                return new List<BusinessPartnerContactDto>();
+                return [];
             }
         }
 

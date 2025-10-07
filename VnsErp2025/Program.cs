@@ -6,6 +6,7 @@ using MasterData.Customer;
 using MasterData.ProductService;
 using System;
 using System.Windows.Forms;
+using Dal.DataContext.SeedData.MasterData.Company;
 using Dal.DataContext.SeedData.MasterData.Customer;
 using DevExpress.XtraEditors;
 using VnsErp2025.Form;
@@ -49,18 +50,24 @@ namespace VnsErp2025
             }
 
             #region Dành cho debug
-            
+
             //SeedData_Master_Customer.DeleteAllPartnerData();
             //SeedData_Master_Customer.SeedAllData();
-            
+
             //SeedData_Master_ProductService.DeleteAllProductServiceData();
             //SeedData_Master_ProductService.SeedAllData();
+
+            //SeedData_Master_Company.DeleteAllCompanyData();
+            //SeedData_Master_Company.CreateAllCompanyData();
             
+
+
             Application.Run(new XtraForm1());
 
             #endregion
 
             #region Dành cho Release - bỏ comment
+
             // 3) Kết nối OK -> hiển thị màn hình đăng nhập
             //using (var loginForm = new FrmLogin())
             //{

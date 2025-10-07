@@ -72,6 +72,12 @@
     <Compile Include="Company\FrmCompanyBranchDetail.Designer.cs">
       <DependentUpon>FrmCompanyBranchDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Company\FrmDepartmentDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmDepartmentDetail.Designer.cs">
+      <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Company\UcCompany.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -260,6 +266,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Company\FrmCompanyBranchDetail.resx">
       <DependentUpon>FrmCompanyBranchDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmDepartmentDetail.resx">
+      <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Company\UcCompany.resx">
       <DependentUpon>UcCompany.cs</DependentUpon>

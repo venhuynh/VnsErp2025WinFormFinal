@@ -81,6 +81,7 @@
     </Compile>
     <Compile Include="MasterData\Company\CompanyBll.cs" />
     <Compile Include="MasterData\Company\CompanyBranchBll.cs" />
+    <Compile Include="MasterData\Company\DepartmentBll.cs" />
     <Compile Include="MasterData\Customer\BusinessPartnerBll.cs" />
     <Compile Include="MasterData\Customer\BusinessPartnerCategoryBll.cs" />
     <Compile Include="MasterData\Customer\BusinessPartnerContactBll.cs" />
