@@ -79,6 +79,7 @@
     <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerSiteConverters.cs" />
+    <Compile Include="Customer\Dto\BusinessPartnerSiteDto.cs" />
     <Compile Include="Customer\Dto\BusinessPartnerSiteListDto.cs" />
     <Compile Include="Customer\FluentPartner.cs">
       <SubType>Form</SubType>
@@ -260,6 +261,9 @@
     <EmbeddedResource Include="Customer\FrmBusinessPartnerDetail.resx">
       <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerSiteDetail.resx">
+      <DependentUpon>FrmBusinessPartnerSiteDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Customer\UcBusinessPartnerCategory.resx">
       <DependentUpon>UcBusinessPartnerCategory.cs</DependentUpon>
     </EmbeddedResource>
@@ -321,6 +325,7 @@
     <None Include="Customer\Dto\DTO_README.md" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyDto.datasource" />
+    <None Include="Properties\DataSources\MasterData.Customer.Dto.BusinessPartnerListDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Customer.Dto.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerContactDto.datasource" />

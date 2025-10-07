@@ -1,21 +1,28 @@
-﻿using Bll.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Bll.Common;
 using Bll.MasterData.Customer;
 using Bll.Utils;
 using DevExpress.Data;
+using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraSplashScreen;
 using MasterData.Customer.Converters;
 using MasterData.Customer.Dto;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
@@ -102,7 +109,7 @@ namespace MasterData.Customer
             BusinessPartnerContactGridCardView.ValidateRow += BusinessPartnerContactGridCardView_ValidateRow;
 
             // PictureEdit events - đăng ký ContextButtonClick cho RepositoryItemPictureEdit
-            if (colAvatar?.ColumnEdit is DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit pictureEdit)
+            if (colAvatar?.ColumnEdit is RepositoryItemPictureEdit pictureEdit)
             {
                 pictureEdit.ContextButtonClick += ContactAvatarPictureEdit_ContextButtonClick;
             }
@@ -386,7 +393,7 @@ namespace MasterData.Customer
                 BusinessPartnerContactGridControl.ExportToXlsx(path);
 
                 // Mở file
-                System.Diagnostics.Process.Start(path);
+                Process.Start(path);
 
                 MsgBox.ShowInfo($"Đã xuất {rowCount} liên hệ ra file: {fileName}");
             }
@@ -463,7 +470,7 @@ namespace MasterData.Customer
         /// </summary>
         private void BusinessPartnerContactGridCardView_CellValueChanged(
             object sender,
-            DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+            CellValueChangedEventArgs e)
         {
             try
             {
@@ -507,7 +514,7 @@ namespace MasterData.Customer
         /// Validate dữ liệu trước khi commit
         /// </summary>
         private void BusinessPartnerContactGridCardView_ValidatingEditor(object sender,
-            DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+            BaseContainerValidateEditorEventArgs e)
         {
             try
             {
@@ -540,7 +547,7 @@ namespace MasterData.Customer
                     if (!string.IsNullOrWhiteSpace(email))
                     {
                         // Kiểm tra format email
-                        var emailRegex = new System.Text.RegularExpressions.Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
                         if (!emailRegex.IsMatch(email))
                         {
                             e.Valid = false;
@@ -555,7 +562,7 @@ namespace MasterData.Customer
                     if (!string.IsNullOrWhiteSpace(phone))
                     {
                         // Kiểm tra format số điện thoại (chỉ cho phép số, dấu +, dấu -, dấu cách, dấu ngoặc)
-                        var phoneRegex = new System.Text.RegularExpressions.Regex(@"^[\d\s\+\-\(\)]+$");
+                        var phoneRegex = new Regex(@"^[\d\s\+\-\(\)]+$");
                         if (!phoneRegex.IsMatch(phone))
                         {
                             e.Valid = false;
@@ -579,7 +586,7 @@ namespace MasterData.Customer
         /// Validate toàn bộ row trước khi commit
         /// </summary>
         private void BusinessPartnerContactGridCardView_ValidateRow(object sender,
-            DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+            ValidateRowEventArgs e)
         {
             try
             {
@@ -601,7 +608,7 @@ namespace MasterData.Customer
                 // Validate Email format (nếu có)
                 if (!string.IsNullOrWhiteSpace(dto.Email))
                 {
-                    var emailRegex = new System.Text.RegularExpressions.Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                    var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
                     if (!emailRegex.IsMatch(dto.Email))
                     {
                         e.Valid = false;
@@ -613,7 +620,7 @@ namespace MasterData.Customer
                 // Validate Phone format (nếu có)
                 if (!string.IsNullOrWhiteSpace(dto.Phone))
                 {
-                    var phoneRegex = new System.Text.RegularExpressions.Regex(@"^[\d\s\+\-\(\)]+$");
+                    var phoneRegex = new Regex(@"^[\d\s\+\-\(\)]+$");
                     if (!phoneRegex.IsMatch(dto.Phone))
                     {
                         e.Valid = false;
@@ -639,7 +646,7 @@ namespace MasterData.Customer
         /// Xử lý sự kiện ContextButtonClick của RepositoryItemPictureEdit
         /// </summary>
         private async void ContactAvatarPictureEdit_ContextButtonClick(object sender,
-            DevExpress.Utils.ContextItemClickEventArgs e)
+            ContextItemClickEventArgs e)
         {
             try
             {
@@ -986,7 +993,7 @@ namespace MasterData.Customer
             try
             {
                 using var ms = new MemoryStream();
-                image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                image.Save(ms, ImageFormat.Png);
                 return ms.ToArray();
             }
             catch (Exception ex)

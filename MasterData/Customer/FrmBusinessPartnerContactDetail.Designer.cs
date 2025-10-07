@@ -4,10 +4,10 @@ using DevExpress.XtraBars;
 using DevExpress.XtraDataLayout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
-using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {
@@ -458,6 +458,6 @@ namespace MasterData.Customer
         private BindingSource businessPartnerSiteListDtoBindingSource;
         private GridColumn colSiteName;
         private GridColumn colAddress;
-        private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit repositoryItemMemoEdit1;
+        private RepositoryItemMemoEdit repositoryItemMemoEdit1;
     }
 }

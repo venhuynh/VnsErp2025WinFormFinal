@@ -1,9 +1,10 @@
-﻿using DevExpress.XtraBars;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraBars;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.BandedGrid;
 using DevExpress.XtraLayout;
-using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
@@ -12,7 +13,7 @@ namespace MasterData.Customer
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.

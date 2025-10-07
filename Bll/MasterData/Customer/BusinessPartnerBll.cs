@@ -24,6 +24,14 @@ namespace Bll.MasterData.Customer
         }
 
         /// <summary>
+        /// Lấy toàn bộ đối tác (entities) - Sync.
+        /// </summary>
+        public List<BusinessPartner> GetAll()
+        {
+            return _businessPartnerDataAccess.GetAll();
+        }
+
+        /// <summary>
         /// Tồn tại mã?
         /// </summary>
         public bool IsCodeExists(string code)

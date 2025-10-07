@@ -1,25 +1,58 @@
-﻿using Bll.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Bll.Common;
 using Bll.MasterData.Customer;
 using Bll.Utils;
+using DevExpress.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.BandedGrid;
 using DevExpress.XtraSplashScreen;
 using MasterData.Customer.Converters;
 using MasterData.Customer.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
-    public partial class UcBusinessPartnerSite : DevExpress.XtraEditors.XtraUserControl
+    /// <summary>
+    /// User Control quản lý danh sách chi nhánh đối tác.
+    /// Cung cấp giao diện hiển thị, tìm kiếm, thêm mới, sửa, xóa và xuất dữ liệu chi nhánh.
+    /// </summary>
+    public partial class UcBusinessPartnerSite : XtraUserControl
     {
-        private readonly BusinessPartnerSiteBll _businessPartnerSiteBll;
-        private List<BusinessPartnerSiteListDto> _dataList;
-        private BusinessPartnerSiteListDto _selectedItem;
-        private bool _isLoading; // guard tránh gọi LoadDataAsync song song
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// Business Logic Layer cho chi nhánh đối tác
+        /// </summary>
+        private readonly BusinessPartnerSiteBll _businessPartnerSiteBll;
+
+        /// <summary>
+        /// Danh sách dữ liệu chi nhánh hiện tại
+        /// </summary>
+        private List<BusinessPartnerSiteListDto> _dataList;
+
+        /// <summary>
+        /// Chi nhánh được chọn hiện tại
+        /// </summary>
+        private BusinessPartnerSiteListDto _selectedItem;
+
+        /// <summary>
+        /// Trạng thái đang tải dữ liệu (guard tránh gọi LoadDataAsync song song)
+        /// </summary>
+        private bool _isLoading;
+
+        #endregion
+
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
+
+        /// <summary>
+        /// Khởi tạo User Control quản lý chi nhánh đối tác.
+        /// </summary>
         public UcBusinessPartnerSite()
         {
             InitializeComponent();
@@ -30,8 +63,13 @@ namespace MasterData.Customer
             UpdateButtonStates();
         }
 
-        #region Initialize Events
+        #endregion
 
+        #region ========== KHỞI TẠO FORM ==========
+
+        /// <summary>
+        /// Khởi tạo các sự kiện cho User Control
+        /// </summary>
         private void InitializeEvents()
         {
             // Bar button events
@@ -48,7 +86,7 @@ namespace MasterData.Customer
 
         #endregion
 
-        #region Data Loading
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, hiển thị WaitForm).
@@ -111,6 +149,9 @@ namespace MasterData.Customer
             ClearSelectionState();
         }
 
+        /// <summary>
+        /// Load dữ liệu đồng bộ (fallback method)
+        /// </summary>
         private void LoadData()
         {
             try
@@ -139,6 +180,9 @@ namespace MasterData.Customer
             }
         }
 
+        /// <summary>
+        /// Cập nhật thông tin tổng hợp dữ liệu
+        /// </summary>
         private void UpdateDataSummary()
         {
             var totalCount = _dataList?.Count ?? 0;
@@ -149,28 +193,41 @@ namespace MasterData.Customer
 
         #endregion
 
-        #region Event Handlers
+        #region ========== SỰ KIỆN FORM ==========
 
-        private async void ListDataBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        /// <summary>
+        /// Xử lý sự kiện click button Tải dữ liệu
+        /// </summary>
+        private async void ListDataBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
-            await LoadDataAsync();
+            try
+            {
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex);
+            }
         }
 
-        private async void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        /// <summary>
+        /// Xử lý sự kiện click button Thêm mới
+        /// </summary>
+        private async void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
                 using (OverlayManager.ShowScope(this))
                 {
-                    // TODO: Implement new site form
-                    // using (var form = new FrmBusinessPartnerSiteDetail(Guid.Empty))
-                    // {
-                    //     form.StartPosition = FormStartPosition.CenterParent;
-                    //     form.ShowDialog(this);
-                    //     await LoadDataAsyncWithoutSplash();
-                    //     UpdateButtonStates();
-                    // }
-                    MsgBox.ShowInfo("Chức năng thêm mới chi nhánh đang được phát triển");
+                    using (var form = new FrmBusinessPartnerSiteDetail(Guid.Empty))
+                    {
+                        form.StartPosition = FormStartPosition.CenterParent;
+                        if (form.ShowDialog(this) == DialogResult.OK)
+                        {
+                            await LoadDataAsyncWithoutSplash();
+                            UpdateButtonStates();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -179,7 +236,10 @@ namespace MasterData.Customer
             }
         }
 
-        private async void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        /// <summary>
+        /// Xử lý sự kiện click button Sửa
+        /// </summary>
+        private async void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (_selectedItem == null)
             {
@@ -191,15 +251,15 @@ namespace MasterData.Customer
             {
                 using (OverlayManager.ShowScope(this))
                 {
-                    // TODO: Implement edit site form
-                    // using (var form = new FrmBusinessPartnerSiteDetail(_selectedItem.Id))
-                    // {
-                    //     form.StartPosition = FormStartPosition.CenterParent;
-                    //     form.ShowDialog(this);
-                    //     await LoadDataAsyncWithoutSplash();
-                    //     UpdateButtonStates();
-                    // }
-                    ShowInfo($"Chỉnh sửa chi nhánh: {_selectedItem.SiteName}");
+                    using (var form = new FrmBusinessPartnerSiteDetail(_selectedItem.Id))
+                    {
+                        form.StartPosition = FormStartPosition.CenterParent;
+                        if (form.ShowDialog(this) == DialogResult.OK)
+                        {
+                            await LoadDataAsyncWithoutSplash();
+                            UpdateButtonStates();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -208,7 +268,10 @@ namespace MasterData.Customer
             }
         }
 
-        private async void DeleteBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        /// <summary>
+        /// Xử lý sự kiện click button Xóa
+        /// </summary>
+        private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (_selectedItem == null)
             {
@@ -241,7 +304,10 @@ namespace MasterData.Customer
             }
         }
 
-        private void ExportBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        /// <summary>
+        /// Xử lý sự kiện click button Xuất dữ liệu
+        /// </summary>
+        private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Chỉ cho phép xuất khi có dữ liệu hiển thị
             var rowCount = BusinessPartnerSiteListDtoAdvBandedGridView.RowCount;
@@ -272,6 +338,9 @@ namespace MasterData.Customer
             }
         }
 
+        /// <summary>
+        /// Xử lý sự kiện thay đổi selection trên GridView
+        /// </summary>
         private void AdvBandedGridView1_SelectionChanged(object sender, EventArgs e)
         {
             try
@@ -295,24 +364,27 @@ namespace MasterData.Customer
             }
         }
 
+        /// <summary>
+        /// Xử lý sự kiện double click trên GridView
+        /// </summary>
         private async void AdvBandedGridView1_DoubleClick(object sender, EventArgs e)
         {
             try
             {
                 if (_selectedItem != null)
                 {
-                    // TODO: Implement view/edit details
-                    // using (OverlayManager.ShowScope(this))
-                    // {
-                    //     using (var form = new FrmBusinessPartnerSiteDetail(_selectedItem.Id))
-                    //     {
-                    //         form.StartPosition = FormStartPosition.CenterParent;
-                    //         form.ShowDialog(this);
-                    //         await LoadDataAsyncWithoutSplash();
-                    //         UpdateButtonStates();
-                    //     }
-                    // }
-                    ShowInfo($"Xem chi tiết chi nhánh: {_selectedItem.SiteName}");
+                    using (OverlayManager.ShowScope(this))
+                    {
+                        using (var form = new FrmBusinessPartnerSiteDetail(_selectedItem.Id))
+                        {
+                            form.StartPosition = FormStartPosition.CenterParent;
+                            if (form.ShowDialog(this) == DialogResult.OK)
+                            {
+                                await LoadDataAsyncWithoutSplash();
+                                UpdateButtonStates();
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -323,7 +395,7 @@ namespace MasterData.Customer
 
         #endregion
 
-        #region Grid Configuration
+        #region ========== XỬ LÝ DỮ LIỆU ==========
 
         /// <summary>
         /// Cấu hình GridView để hiển thị multi-line và wrap text
@@ -333,12 +405,12 @@ namespace MasterData.Customer
             try
             {
                 // Cấu hình RepositoryItemMemoEdit cho wrap text
-                var memo = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit
+                var memo = new RepositoryItemMemoEdit
                 {
                     WordWrap = true,
                     AutoHeight = true
                 };
-                memo.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+                memo.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
 
                 // Áp dụng cho các cột có khả năng dài
                 ApplyMemoEditorToColumn("SiteName", memo);
@@ -346,11 +418,11 @@ namespace MasterData.Customer
                 ApplyMemoEditorToColumn("ContactPerson", memo);
 
                 // Cấu hình hiển thị: căn giữa tiêu đề cho đẹp
-                BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+                BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
                 BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
 
                 // Cấu hình màu sắc cho các dòng
-                BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.EvenRow.BackColor = System.Drawing.Color.FromArgb(248, 248, 248);
+                BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.EvenRow.BackColor = Color.FromArgb(248, 248, 248);
                 BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.EnableAppearanceEvenRow = true;
 
                 // Cấu hình auto height cho các dòng
@@ -367,7 +439,7 @@ namespace MasterData.Customer
         /// </summary>
         /// <param name="fieldName">Tên field của cột</param>
         /// <param name="memo">RepositoryItemMemoEdit</param>
-        private void ApplyMemoEditorToColumn(string fieldName, DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit memo)
+        private void ApplyMemoEditorToColumn(string fieldName, RepositoryItemMemoEdit memo)
         {
             var col = BusinessPartnerSiteListDtoAdvBandedGridView.Columns[fieldName];
             if (col == null) return;
@@ -382,7 +454,7 @@ namespace MasterData.Customer
 
         #endregion
 
-        #region Helper Methods
+        #region ========== TIỆN ÍCH ==========
 
         /// <summary>
         /// Thực hiện operation async với WaitingForm1 hiển thị.
@@ -445,6 +517,9 @@ namespace MasterData.Customer
             UpdateButtonStates();
         }
 
+        /// <summary>
+        /// Cập nhật thông tin dòng được chọn
+        /// </summary>
         private void UpdateSelectedRowInfo()
         {
             if (_selectedItem != null)
@@ -456,6 +531,10 @@ namespace MasterData.Customer
                 SelectedRowBarStaticItem.Caption = "Chưa chọn dòng nào";
             }
         }
+
+        #endregion
+
+        #region ========== TIỆN ÍCH HỖ TRỢ ==========
 
         /// <summary>
         /// Hiển thị thông tin.

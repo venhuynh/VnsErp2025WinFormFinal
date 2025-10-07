@@ -1,4 +1,5 @@
 using System;
+using System.Data.Linq;
 using Dal.DataContext;
 using MasterData.Customer.Dto;
 
@@ -39,7 +40,7 @@ namespace MasterData.Customer.Converters
             entity.Phone = dto.Phone;
             entity.Email = dto.Email;
             entity.IsPrimary = dto.IsPrimary;
-            entity.Avatar = dto.Avatar != null ? new System.Data.Linq.Binary(dto.Avatar) : null;
+            entity.Avatar = dto.Avatar != null ? new Binary(dto.Avatar) : null;
             entity.IsActive = dto.IsActive;
             return entity;
         }

@@ -116,7 +116,6 @@ namespace MasterData.Customer
             this.ListDataBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.list_16x16;
             this.ListDataBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.list_32x32;
             this.ListDataBarButtonItem.Name = "ListDataBarButtonItem";
-            this.ListDataBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.ListDataBarButtonItem_ItemClick);
             // 
             // NewBarButtonItem
             // 

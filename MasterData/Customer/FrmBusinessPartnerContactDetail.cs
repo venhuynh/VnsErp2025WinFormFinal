@@ -1,4 +1,12 @@
-﻿using Bll.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net.Mail;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Bll.Common;
 using Bll.MasterData.Customer;
 using Bll.Utils;
 using Dal.DataContext;
@@ -9,14 +17,6 @@ using DevExpress.XtraLayout;
 using DevExpress.XtraSplashScreen;
 using MasterData.Customer.Converters;
 using MasterData.Customer.Dto;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net.Mail;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
