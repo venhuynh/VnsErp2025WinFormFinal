@@ -1,28 +1,25 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace MasterData.Customer.Dto
 {
     /// <summary>
-    /// DTO cho danh sách chi nhánh đối tác
+    /// DTO cho chi tiết chi nhánh đối tác
     /// </summary>
-    public class BusinessPartnerSiteListDto
+    public class BusinessPartnerSiteDto
     {
         [DisplayName("ID")]
         public Guid Id { get; set; }
 
         [DisplayName("ID Đối tác")]
+        [Required(ErrorMessage = "Vui lòng chọn đối tác")]
         public Guid PartnerId { get; set; }
 
         [DisplayName("Mã chi nhánh")]
         [Required(ErrorMessage = "Mã chi nhánh không được để trống")]
         [StringLength(50, ErrorMessage = "Mã chi nhánh không được vượt quá 50 ký tự")]
         public string SiteCode { get; set; }
-
-        [DisplayName("Tên đối tác")]
-        public string PartnerName { get; set; }
 
         [DisplayName("Tên chi nhánh")]
         [Required(ErrorMessage = "Tên chi nhánh không được để trống")]
@@ -51,7 +48,6 @@ namespace MasterData.Customer.Dto
 
         [DisplayName("Số điện thoại")]
         [StringLength(50, ErrorMessage = "Số điện thoại không được vượt quá 50 ký tự")]
-        [Phone(ErrorMessage = "Số điện thoại không đúng định dạng")]
         public string Phone { get; set; }
 
         [DisplayName("Email")]
@@ -70,26 +66,5 @@ namespace MasterData.Customer.Dto
 
         [DisplayName("Ngày cập nhật")]
         public DateTime? UpdatedDate { get; set; }
-
-        [DisplayName("Địa chỉ đầy đủ")]
-        public string SiteFullAddress 
-        { 
-            get 
-            {
-                // Gộp các thuộc tính địa chỉ thành địa chỉ đầy đủ
-                var addressParts = new List<string>();
-                
-                if (!string.IsNullOrEmpty(Address))
-                    addressParts.Add(Address);
-                if (!string.IsNullOrEmpty(City))
-                    addressParts.Add(City);
-                if (!string.IsNullOrEmpty(Province))
-                    addressParts.Add(Province);
-                if (!string.IsNullOrEmpty(Country))
-                    addressParts.Add(Country);
-                
-                return string.Join(", ", addressParts);
-            }
-        }
     }
 }

@@ -1,21 +1,28 @@
-﻿using Bll.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Bll.Common;
 using Bll.MasterData.Customer;
 using Bll.Utils;
 using DevExpress.Data;
+using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraSplashScreen;
 using MasterData.Customer.Converters;
 using MasterData.Customer.Dto;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
@@ -30,12 +37,12 @@ namespace MasterData.Customer
         /// <summary>
         /// Business Logic Layer cho liên hệ đối tác
         /// </summary>
-        private readonly BusinessPartnerContactBll _contactBll = new BusinessPartnerContactBll();
+        private readonly BusinessPartnerContactBll _contactBll = new();
 
         /// <summary>
         /// Danh sách ID của các liên hệ được chọn
         /// </summary>
-        private List<Guid> _selectedContactIds = new List<Guid>();
+        private readonly List<Guid> _selectedContactIds = [];
 
         /// <summary>
         /// Guard tránh gọi LoadDataAsync song song
@@ -53,12 +60,14 @@ namespace MasterData.Customer
         {
             InitializeComponent();
             RegisterEvents();
+
+            UpdateButtonStates();
         }
 
         /// <summary>
         /// Tải dữ liệu liên hệ đối tác
         /// </summary>
-        public async Task LoadDataAsync()
+        private async Task LoadDataAsync()
         {
             if (_isLoading) return;
 
@@ -100,7 +109,7 @@ namespace MasterData.Customer
             BusinessPartnerContactGridCardView.ValidateRow += BusinessPartnerContactGridCardView_ValidateRow;
 
             // PictureEdit events - đăng ký ContextButtonClick cho RepositoryItemPictureEdit
-            if (colAvatar?.ColumnEdit is DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit pictureEdit)
+            if (colAvatar?.ColumnEdit is RepositoryItemPictureEdit pictureEdit)
             {
                 pictureEdit.ContextButtonClick += ContactAvatarPictureEdit_ContextButtonClick;
             }
@@ -110,9 +119,9 @@ namespace MasterData.Customer
         /// Thực hiện operation async với WaitingForm1 hiển thị
         /// </summary>
         /// <param name="operation">Operation async cần thực hiện</param>
-        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
+        private static async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
         {
-            bool splashShown = false;
+            var splashShown = false;
             try
             {
                 // Kiểm tra xem đã có splash screen chưa bằng cách thử đóng trước
@@ -138,8 +147,8 @@ namespace MasterData.Customer
                 if (splashShown)
                 {
                     try
-            {
-                SplashScreenManager.CloseForm();
+                    {
+                        SplashScreenManager.CloseForm();
                     }
                     catch
                     {
@@ -310,11 +319,11 @@ namespace MasterData.Customer
             {
                 using var form = new FrmBusinessPartnerContactDetail();
                 var result = form.ShowDialog();
-                
+
                 if (result == DialogResult.OK)
                 {
                     ListDataBarButtonItem.PerformClick();
-                    
+
                     UpdateStatusBar();
                     MsgBox.ShowInfo("Đã thêm mới liên hệ thành công!");
                 }
@@ -339,7 +348,9 @@ namespace MasterData.Customer
                     return;
                 }
 
-                var result = MsgBox.GetConfirmFromYesNoCancelDialog($"Bạn có chắc chắn muốn xóa {_selectedContactIds.Count} liên hệ đã chọn?");
+                var result =
+                    MsgBox.GetConfirmFromYesNoCancelDialog(
+                        $"Bạn có chắc chắn muốn xóa {_selectedContactIds.Count} liên hệ đã chọn?");
                 if (result != DialogResult.Yes) return;
 
                 await ExecuteWithWaitingFormAsync(async () =>
@@ -382,7 +393,7 @@ namespace MasterData.Customer
                 BusinessPartnerContactGridControl.ExportToXlsx(path);
 
                 // Mở file
-                System.Diagnostics.Process.Start(path);
+                Process.Start(path);
 
                 MsgBox.ShowInfo($"Đã xuất {rowCount} liên hệ ra file: {fileName}");
             }
@@ -412,7 +423,7 @@ namespace MasterData.Customer
                 MsgBox.ShowException(new Exception("Lỗi cập nhật selection: " + ex.Message, ex));
             }
         }
-         
+
 
         /// <summary>
         /// Xử lý sự kiện phím tắt trong CardView
@@ -440,6 +451,7 @@ namespace MasterData.Customer
                             DeleteBarButtonItem_ItemClick(null, null);
                             e.Handled = true;
                         }
+
                         break;
                     case Keys.F2:
                         // F2: Không còn chức năng edit riêng biệt, đã tích hợp vào CardView
@@ -458,18 +470,19 @@ namespace MasterData.Customer
         /// </summary>
         private void BusinessPartnerContactGridCardView_CellValueChanged(
             object sender,
-            DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+            CellValueChangedEventArgs e)
         {
             try
             {
                 if (e.Column.FieldName == "Avatar")
                 {
-                    if (BusinessPartnerContactGridCardView.GetRow(e.RowHandle) is BusinessPartnerContactDto dto && dto.Avatar != null)
-                    {
-                        // Lưu avatar xuống DB
-                        _contactBll.UpdateAvatarOnly(dto.Id, dto.Avatar);
-                        MsgBox.ShowInfo("Đã cập nhật avatar thành công!");
-                    }
+                    if (BusinessPartnerContactGridCardView.GetRow(e.RowHandle) is not BusinessPartnerContactDto dto ||
+                        dto.Avatar == null) return;
+
+                    // Lưu avatar xuống DB
+                    _contactBll.UpdateAvatarOnly(dto.Id, dto.Avatar);
+
+                    MsgBox.ShowInfo("Đã cập nhật avatar thành công!");
                 }
                 else if (e.Column.FieldName != "SiteName")
                 {
@@ -481,7 +494,7 @@ namespace MasterData.Customer
                             // Convert DTO to Entity và cập nhật
                             var entity = dto.ToEntity();
                             _contactBll.SaveOrUpdate(entity);
-                            
+
                             // Refresh data để đảm bảo đồng bộ
                             await LoadDataAsync();
                             UpdateButtonStates();
@@ -501,7 +514,7 @@ namespace MasterData.Customer
         /// Validate dữ liệu trước khi commit
         /// </summary>
         private void BusinessPartnerContactGridCardView_ValidatingEditor(object sender,
-            DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+            BaseContainerValidateEditorEventArgs e)
         {
             try
             {
@@ -534,7 +547,7 @@ namespace MasterData.Customer
                     if (!string.IsNullOrWhiteSpace(email))
                     {
                         // Kiểm tra format email
-                        var emailRegex = new System.Text.RegularExpressions.Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
                         if (!emailRegex.IsMatch(email))
                         {
                             e.Valid = false;
@@ -549,7 +562,7 @@ namespace MasterData.Customer
                     if (!string.IsNullOrWhiteSpace(phone))
                     {
                         // Kiểm tra format số điện thoại (chỉ cho phép số, dấu +, dấu -, dấu cách, dấu ngoặc)
-                        var phoneRegex = new System.Text.RegularExpressions.Regex(@"^[\d\s\+\-\(\)]+$");
+                        var phoneRegex = new Regex(@"^[\d\s\+\-\(\)]+$");
                         if (!phoneRegex.IsMatch(phone))
                         {
                             e.Valid = false;
@@ -573,7 +586,7 @@ namespace MasterData.Customer
         /// Validate toàn bộ row trước khi commit
         /// </summary>
         private void BusinessPartnerContactGridCardView_ValidateRow(object sender,
-            DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+            ValidateRowEventArgs e)
         {
             try
             {
@@ -595,7 +608,7 @@ namespace MasterData.Customer
                 // Validate Email format (nếu có)
                 if (!string.IsNullOrWhiteSpace(dto.Email))
                 {
-                    var emailRegex = new System.Text.RegularExpressions.Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                    var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
                     if (!emailRegex.IsMatch(dto.Email))
                     {
                         e.Valid = false;
@@ -607,7 +620,7 @@ namespace MasterData.Customer
                 // Validate Phone format (nếu có)
                 if (!string.IsNullOrWhiteSpace(dto.Phone))
                 {
-                    var phoneRegex = new System.Text.RegularExpressions.Regex(@"^[\d\s\+\-\(\)]+$");
+                    var phoneRegex = new Regex(@"^[\d\s\+\-\(\)]+$");
                     if (!phoneRegex.IsMatch(dto.Phone))
                     {
                         e.Valid = false;
@@ -632,38 +645,47 @@ namespace MasterData.Customer
         /// <summary>
         /// Xử lý sự kiện ContextButtonClick của RepositoryItemPictureEdit
         /// </summary>
-        private async void ContactAvatarPictureEdit_ContextButtonClick(object sender, DevExpress.Utils.ContextItemClickEventArgs e)
+        private async void ContactAvatarPictureEdit_ContextButtonClick(object sender,
+            ContextItemClickEventArgs e)
         {
-            if (_isLoading) return;
-
             try
             {
-                var focusedRowHandle = BusinessPartnerContactGridCardView.FocusedRowHandle;
-                if (focusedRowHandle < 0) return;
+                if (_isLoading) return;
 
-                var contactDto = BusinessPartnerContactGridCardView.GetRow(focusedRowHandle) as BusinessPartnerContactDto;
-                if (contactDto == null) return;
-
-                switch (e.Item.Name)
+                try
                 {
-                    case "Load":
-                        await HandleLoadAvatar(contactDto);
-                        break;
-                    case "Delete":
-                        await HandleDeleteAvatar(contactDto);
-                        break;
-                    case "Copy":
-                        // TODO: Implement copy avatar
-                        MsgBox.ShowInfo("Chức năng copy avatar sẽ được triển khai sau.");
-                        break;
-                    case "Paste":
-                        await HandlePasteAvatar(contactDto);
-                        break;
+                    var focusedRowHandle = BusinessPartnerContactGridCardView.FocusedRowHandle;
+                    if (focusedRowHandle < 0) return;
+
+                    var contactDto =
+                        BusinessPartnerContactGridCardView.GetRow(focusedRowHandle) as BusinessPartnerContactDto;
+                    if (contactDto == null) return;
+
+                    switch (e.Item.Name)
+                    {
+                        case "Load":
+                            await HandleLoadAvatar(contactDto);
+                            break;
+                        case "Delete":
+                            await HandleDeleteAvatar(contactDto);
+                            break;
+                        case "Copy":
+                            // TODO: Implement copy avatar
+                            MsgBox.ShowInfo("Chức năng copy avatar sẽ được triển khai sau.");
+                            break;
+                        case "Paste":
+                            await HandlePasteAvatar(contactDto);
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MsgBox.ShowException(new Exception("Lỗi xử lý context button: " + ex.Message, ex));
                 }
             }
             catch (Exception ex)
             {
-                MsgBox.ShowException(new Exception("Lỗi xử lý context button: " + ex.Message, ex));
+                MsgBox.ShowException(ex);
             }
         }
 
@@ -687,7 +709,7 @@ namespace MasterData.Customer
                     {
                         // Trường hợp có hình ảnh mới - UPDATE
                         var imageBytes = ImageToByteArray(pictureEdit.Image);
-                        
+
                         // Kiểm tra kích thước hình ảnh (tối đa 5MB)
                         const int maxSizeInBytes = 5 * 1024 * 1024; // 5MB
                         if (imageBytes.Length > maxSizeInBytes)
@@ -699,7 +721,8 @@ namespace MasterData.Customer
                         // Kiểm tra format hình ảnh
                         if (!IsValidImageFormat(imageBytes))
                         {
-                            MsgBox.ShowWarning("Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
+                            MsgBox.ShowWarning(
+                                "Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
                             return;
                         }
 
@@ -739,7 +762,7 @@ namespace MasterData.Customer
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     var imageBytes = File.ReadAllBytes(openFileDialog.FileName);
-                        
+
                     // Kiểm tra kích thước hình ảnh (tối đa 5MB)
                     const int maxSizeInBytes = 5 * 1024 * 1024; // 5MB
                     if (imageBytes.Length > maxSizeInBytes)
@@ -751,7 +774,8 @@ namespace MasterData.Customer
                     // Kiểm tra format hình ảnh
                     if (!IsValidImageFormat(imageBytes))
                     {
-                        MsgBox.ShowWarning("Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
+                        MsgBox.ShowWarning(
+                            "Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
                         return;
                     }
 
@@ -811,7 +835,7 @@ namespace MasterData.Customer
                 {
                     var image = Clipboard.GetImage();
                     var imageBytes = ImageToByteArray(image);
-                    
+
                     // Kiểm tra kích thước hình ảnh (tối đa 5MB)
                     const int maxSizeInBytes = 5 * 1024 * 1024; // 5MB
                     if (imageBytes.Length > maxSizeInBytes)
@@ -823,9 +847,10 @@ namespace MasterData.Customer
                     // Kiểm tra format hình ảnh
                     if (!IsValidImageFormat(imageBytes))
                     {
-                        MsgBox.ShowWarning("Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
-                return;
-            }
+                        MsgBox.ShowWarning(
+                            "Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
+                        return;
+                    }
 
                     await ExecuteWithWaitingFormAsync(() =>
                     {
@@ -862,7 +887,7 @@ namespace MasterData.Customer
             {
                 _selectedContactIds.Clear();
                 var selectedRowHandles = BusinessPartnerContactGridCardView.GetSelectedRows();
-                
+
                 foreach (var rowHandle in selectedRowHandles)
                 {
                     if (BusinessPartnerContactGridCardView.GetRow(rowHandle) is BusinessPartnerContactDto dto)
@@ -887,7 +912,7 @@ namespace MasterData.Customer
             {
                 var selectedDtos = new List<BusinessPartnerContactDto>();
                 var selectedRowHandles = BusinessPartnerContactGridCardView.GetSelectedRows();
-                
+
                 foreach (var rowHandle in selectedRowHandles)
                 {
                     if (BusinessPartnerContactGridCardView.GetRow(rowHandle) is BusinessPartnerContactDto dto)
@@ -895,7 +920,7 @@ namespace MasterData.Customer
                         selectedDtos.Add(dto);
                     }
                 }
-                
+
                 return selectedDtos;
             }
             catch (Exception ex)
@@ -945,11 +970,11 @@ namespace MasterData.Customer
         private void ClearSelectionState()
         {
             try
-        {
-            _selectedContactIds.Clear();
+            {
+                _selectedContactIds.Clear();
                 BusinessPartnerContactGridCardView.ClearSelection();
                 BusinessPartnerContactGridCardView.FocusedRowHandle = GridControl.InvalidRowHandle;
-            UpdateButtonStates();
+                UpdateButtonStates();
                 UpdateSelectedRowStatus();
             }
             catch (Exception ex)
@@ -967,16 +992,14 @@ namespace MasterData.Customer
         {
             try
             {
-                using (var ms = new MemoryStream())
-                {
-                    image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    return ms.ToArray();
-                }
+                using var ms = new MemoryStream();
+                image.Save(ms, ImageFormat.Png);
+                return ms.ToArray();
             }
             catch (Exception ex)
             {
                 MsgBox.ShowException(new Exception("Lỗi convert image to byte array: " + ex.Message, ex));
-                return new byte[0];
+                return [];
             }
         }
 

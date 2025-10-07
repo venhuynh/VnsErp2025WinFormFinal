@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dal.DataAccess;
+using Dal.DataAccess.MasterData.Partner;
 using Dal.DataContext;
 
 namespace Bll.MasterData.Customer
@@ -15,14 +16,6 @@ namespace Bll.MasterData.Customer
         private readonly BusinessPartnerDataAccess _businessPartnerDataAccess = new();
 
         /// <summary>
-        /// Lấy toàn bộ đối tác (entities).
-        /// </summary>
-        public List<BusinessPartner> GetAll()
-        {
-            return _businessPartnerDataAccess.GetAll();
-        }
-
-        /// <summary>
         /// Lấy toàn bộ đối tác (entities) - Async.
         /// </summary>
         public Task<List<BusinessPartner>> GetAllAsync()
@@ -31,19 +24,11 @@ namespace Bll.MasterData.Customer
         }
 
         /// <summary>
-        /// Lấy danh sách đối tác đang hoạt động (entities).
+        /// Lấy toàn bộ đối tác (entities) - Sync.
         /// </summary>
-        public List<BusinessPartner> GetActivePartners()
+        public List<BusinessPartner> GetAll()
         {
-            return _businessPartnerDataAccess.GetActivePartners();
-        }
-
-        /// <summary>
-        /// Tìm theo mã.
-        /// </summary>
-        public BusinessPartner GetByCode(string code)
-        {
-            return _businessPartnerDataAccess.GetByCode(code);
+            return _businessPartnerDataAccess.GetAll();
         }
 
         /// <summary>
@@ -76,30 +61,6 @@ namespace Bll.MasterData.Customer
         public Task<BusinessPartner> GetByIdAsync(Guid id)
         {
             return _businessPartnerDataAccess.GetByIdAsync(id);
-        }
-
-        /// <summary>
-        /// Tạo mới đối tác cơ bản.
-        /// </summary>
-        public BusinessPartner AddNew(string code, string name, int partnerType, bool isActive)
-        {
-            return _businessPartnerDataAccess.AddNewPartner(code, name, partnerType, isActive);
-        }
-
-        /// <summary>
-        /// Cập nhật thông tin liên hệ cơ bản.
-        /// </summary>
-        public void UpdateContact(Guid id, string phone, string email)
-        {
-            _businessPartnerDataAccess.UpdateContactInfo(id, phone, email);
-        }
-
-        /// <summary>
-        /// Cập nhật trạng thái kích hoạt.
-        /// </summary>
-        public void SetActive(Guid id, bool isActive)
-        {
-            _businessPartnerDataAccess.SetActive(id, isActive);
         }
 
         /// <summary>

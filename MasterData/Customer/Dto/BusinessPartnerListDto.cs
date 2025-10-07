@@ -43,6 +43,10 @@ namespace MasterData.Customer.Dto
         [StringLength(100, ErrorMessage = "Thành phố không được vượt quá 100 ký tự")]
         public string City { get; set; }
 
+        [DisplayName("Địa chỉ đầy đủ")]
+        [StringLength(500, ErrorMessage = "Địa chỉ đầy đủ không được vượt quá 500 ký tự")]
+        public string FullAddressName { get; set; }
+
         [DisplayName("Trạng thái")]
         public bool IsActive { get; set; }
 

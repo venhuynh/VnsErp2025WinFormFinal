@@ -30,7 +30,7 @@
         {
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.ucBusinessPartnerContact1 = new MasterData.Customer.UcBusinessPartnerContact();
+            this.ucBusinessPartnerSite1 = new MasterData.Customer.UcBusinessPartnerSite();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -40,7 +40,7 @@
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.ucBusinessPartnerContact1);
+            this.layoutControl1.Controls.Add(this.ucBusinessPartnerSite1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
@@ -59,16 +59,16 @@
             this.Root.Size = new System.Drawing.Size(1158, 785);
             this.Root.TextVisible = false;
             // 
-            // ucBusinessPartnerContact1
+            // ucBusinessPartnerSite1
             // 
-            this.ucBusinessPartnerContact1.Location = new System.Drawing.Point(16, 16);
-            this.ucBusinessPartnerContact1.Name = "ucBusinessPartnerContact1";
-            this.ucBusinessPartnerContact1.Size = new System.Drawing.Size(1126, 753);
-            this.ucBusinessPartnerContact1.TabIndex = 4;
+            this.ucBusinessPartnerSite1.Location = new System.Drawing.Point(16, 16);
+            this.ucBusinessPartnerSite1.Name = "ucBusinessPartnerSite1";
+            this.ucBusinessPartnerSite1.Size = new System.Drawing.Size(1126, 753);
+            this.ucBusinessPartnerSite1.TabIndex = 4;
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.ucBusinessPartnerContact1;
+            this.layoutControlItem1.Control = this.ucBusinessPartnerSite1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1132, 759);
@@ -94,7 +94,7 @@
 
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private MasterData.Customer.UcBusinessPartnerContact ucBusinessPartnerContact1;
+        private MasterData.Customer.UcBusinessPartnerSite ucBusinessPartnerSite1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

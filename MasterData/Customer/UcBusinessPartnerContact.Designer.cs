@@ -4,9 +4,8 @@ using DevExpress.XtraBars;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
-using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraLayout;
-using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {
@@ -461,7 +460,7 @@ namespace MasterData.Customer
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
         private BindingSource businessPartnerContactDtoBindingSource;
-        private DevExpress.XtraGrid.Views.Card.CardView BusinessPartnerContactGridCardView;
+        private CardView BusinessPartnerContactGridCardView;
         private GridColumn colFullName;
         private GridColumn colIsPrimary;
         private GridColumn colPosition;

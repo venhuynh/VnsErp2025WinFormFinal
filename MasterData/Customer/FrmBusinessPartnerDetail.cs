@@ -370,7 +370,7 @@ namespace MasterData.Customer
                 ContactPosition = ContactPositionTextEdit?.EditValue?.ToString(),
                 BankAccount = BankAccountTextEdit?.EditValue?.ToString(),
                 BankName = BankNameTextEdit?.EditValue?.ToString(),
-                CreditLimit = decimal.TryParse(CreditLimitTextEdit?.EditValue?.ToString(), out var cl) ? cl : (decimal?)null,
+                CreditLimit = decimal.TryParse(CreditLimitTextEdit?.EditValue?.ToString(), out var cl) ? cl : null,
                 PaymentTerm = PaymentTermTextEdit?.EditValue?.ToString(),
                 IsActive = (IsActiveToggleSwitch?.EditValue as bool?) ?? true,
                 CreatedDate = DateTime.Now,

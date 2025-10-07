@@ -6,9 +6,17 @@ using MasterData.Customer.Dto;
 
 namespace MasterData.Customer.Converters
 {
+    /// <summary>
+    /// Converter cho BusinessPartner Entity và DTO
+    /// </summary>
     public static class BusinessPartnerConverters
     {
-        public static BusinessPartnerListDto ToListDto(this BusinessPartner entity, Func<int, string> partnerTypeNameResolver = null)
+        /// <summary>
+        /// Chuyển đổi BusinessPartner Entity sang BusinessPartnerListDto
+        /// </summary>
+        /// <param name="entity">BusinessPartner Entity</param>
+        /// <returns>BusinessPartnerListDto</returns>
+        public static BusinessPartnerListDto ToListDto(this BusinessPartner entity)
         {
             if (entity == null) return null;
 
@@ -18,7 +26,7 @@ namespace MasterData.Customer.Converters
                 PartnerCode = entity.PartnerCode,
                 PartnerName = entity.PartnerName,
                 PartnerType = entity.PartnerType,
-                PartnerTypeName = ResolvePartnerTypeName(entity.PartnerType, partnerTypeNameResolver),
+                PartnerTypeName = ResolvePartnerTypeName(entity.PartnerType),
                 TaxCode = entity.TaxCode,
                 Phone = entity.Phone,
                 Email = entity.Email,
@@ -28,13 +36,63 @@ namespace MasterData.Customer.Converters
             };
         }
 
-        public static IEnumerable<BusinessPartnerListDto> ToListDtos(this IEnumerable<BusinessPartner> entities, Func<int, string> partnerTypeNameResolver = null)
+        /// <summary>
+        /// Chuyển đổi BusinessPartner Entity sang BusinessPartnerListDto với tên loại đối tác
+        /// </summary>
+        /// <param name="entity">BusinessPartner Entity</param>
+        /// <param name="partnerTypeNameResolver">Function để resolve tên loại đối tác</param>
+        /// <returns>BusinessPartnerListDto</returns>
+        public static BusinessPartnerListDto ToListDto(this BusinessPartner entity, Func<int, string> partnerTypeNameResolver)
         {
-            if (entities == null) return Enumerable.Empty<BusinessPartnerListDto>();
-            return entities.Select(e => e.ToListDto(partnerTypeNameResolver));
+            if (entity == null) return null;
+
+            return new BusinessPartnerListDto
+            {
+                Id = entity.Id,
+                PartnerCode = entity.PartnerCode,
+                PartnerName = entity.PartnerName,
+                PartnerType = entity.PartnerType,
+                PartnerTypeName = partnerTypeNameResolver?.Invoke(entity.PartnerType) ?? ResolvePartnerTypeName(entity.PartnerType),
+                TaxCode = entity.TaxCode,
+                Phone = entity.Phone,
+                Email = entity.Email,
+                City = entity.City,
+                IsActive = entity.IsActive,
+                CreatedDate = entity.CreatedDate
+            };
         }
 
-        public static BusinessPartnerDetailDto ToDetailDto(this BusinessPartner entity, Func<int, string> partnerTypeNameResolver = null)
+        /// <summary>
+        /// Chuyển đổi danh sách BusinessPartner Entity sang danh sách BusinessPartnerListDto
+        /// </summary>
+        /// <param name="entities">Danh sách BusinessPartner Entity</param>
+        /// <returns>Danh sách BusinessPartnerListDto</returns>
+        public static IEnumerable<BusinessPartnerListDto> ToBusinessPartnerListDtos(this IEnumerable<BusinessPartner> entities)
+        {
+            if (entities == null) return Enumerable.Empty<BusinessPartnerListDto>();
+
+            return entities.Select(entity => entity.ToListDto());
+        }
+
+        /// <summary>
+        /// Chuyển đổi danh sách BusinessPartner Entity sang danh sách BusinessPartnerListDto với resolver
+        /// </summary>
+        /// <param name="entities">Danh sách BusinessPartner Entity</param>
+        /// <param name="partnerTypeNameResolver">Function để resolve tên loại đối tác</param>
+        /// <returns>Danh sách BusinessPartnerListDto</returns>
+        public static IEnumerable<BusinessPartnerListDto> ToBusinessPartnerListDtos(this IEnumerable<BusinessPartner> entities, Func<int, string> partnerTypeNameResolver)
+        {
+            if (entities == null) return Enumerable.Empty<BusinessPartnerListDto>();
+
+            return entities.Select(entity => entity.ToListDto(partnerTypeNameResolver));
+        }
+
+        /// <summary>
+        /// Chuyển đổi BusinessPartner Entity sang BusinessPartnerDetailDto
+        /// </summary>
+        /// <param name="entity">BusinessPartner Entity</param>
+        /// <returns>BusinessPartnerDetailDto</returns>
+        public static BusinessPartnerDetailDto ToDetailDto(this BusinessPartner entity)
         {
             if (entity == null) return null;
 
@@ -44,7 +102,6 @@ namespace MasterData.Customer.Converters
                 PartnerCode = entity.PartnerCode,
                 PartnerName = entity.PartnerName,
                 PartnerType = entity.PartnerType,
-                PartnerTypeName = ResolvePartnerTypeName(entity.PartnerType, partnerTypeNameResolver),
                 TaxCode = entity.TaxCode,
                 Phone = entity.Phone,
                 Email = entity.Email,
@@ -64,12 +121,24 @@ namespace MasterData.Customer.Converters
             };
         }
 
-        public static BusinessPartner ToEntity(this BusinessPartnerDetailDto dto, BusinessPartner destination = null)
+        /// <summary>
+        /// Chuyển đổi BusinessPartnerDetailDto sang BusinessPartner Entity
+        /// </summary>
+        /// <param name="dto">BusinessPartnerDetailDto</param>
+        /// <param name="existingEntity">Entity hiện tại (cho update)</param>
+        /// <returns>BusinessPartner Entity</returns>
+        public static BusinessPartner ToEntity(this BusinessPartnerDetailDto dto, BusinessPartner existingEntity = null)
         {
             if (dto == null) return null;
-            var entity = destination ?? new BusinessPartner();
 
-            entity.Id = dto.Id == Guid.Empty ? entity.Id : dto.Id;
+            var entity = existingEntity ?? new BusinessPartner();
+            
+            // Chỉ set ID nếu là entity mới
+            if (existingEntity == null && dto.Id != Guid.Empty)
+            {
+                entity.Id = dto.Id;
+            }
+            
             entity.PartnerCode = dto.PartnerCode;
             entity.PartnerName = dto.PartnerName;
             entity.PartnerType = dto.PartnerType;
@@ -87,25 +156,26 @@ namespace MasterData.Customer.Converters
             entity.CreditLimit = dto.CreditLimit;
             entity.PaymentTerm = dto.PaymentTerm;
             entity.IsActive = dto.IsActive;
-            entity.CreatedDate = dto.CreatedDate == default(DateTime) ? entity.CreatedDate : dto.CreatedDate;
+            entity.CreatedDate = dto.CreatedDate;
             entity.UpdatedDate = dto.UpdatedDate;
 
             return entity;
         }
 
-        private static string ResolvePartnerTypeName(int partnerType, Func<int, string> resolver)
+        /// <summary>
+        /// Resolve tên loại đối tác từ PartnerType
+        /// </summary>
+        /// <param name="partnerType">PartnerType (int)</param>
+        /// <returns>Tên loại đối tác</returns>
+        private static string ResolvePartnerTypeName(int partnerType)
         {
-            if (resolver != null) return resolver(partnerType);
-
-            switch (partnerType)
+            return partnerType switch
             {
-                case 1: return "Khách hàng";
-                case 2: return "Nhà cung cấp";
-                case 3: return "Khách hàng & Nhà cung cấp";
-                default: return "Không xác định";
-            }
+                1 => "Khách hàng",
+                2 => "Nhà cung cấp", 
+                3 => "Cả hai",
+                _ => "Không xác định"
+            };
         }
     }
 }
-
-

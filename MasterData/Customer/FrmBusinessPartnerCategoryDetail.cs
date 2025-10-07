@@ -12,18 +12,30 @@ namespace MasterData.Customer
 {
     /// <summary>
     /// Form chi tiết danh mục đối tác - thêm mới và chỉnh sửa.
+    /// Cung cấp giao diện nhập liệu cho thông tin danh mục đối tác với validation và xử lý lỗi.
     /// </summary>
     public partial class FrmBusinessPartnerCategoryDetail : XtraForm
     {
-        #region Fields
+        #region ========== KHAI BÁO BIẾN ==========
 
+        /// <summary>
+        /// Business Logic Layer cho danh mục đối tác
+        /// </summary>
         private readonly BusinessPartnerCategoryBll _businessPartnerCategoryBll = new BusinessPartnerCategoryBll();
+
+        /// <summary>
+        /// ID của danh mục đang chỉnh sửa (Guid.Empty nếu thêm mới)
+        /// </summary>
         private readonly Guid _categoryId;
-        private bool _isEditMode => _categoryId != Guid.Empty;
+
+        /// <summary>
+        /// Trạng thái chỉnh sửa (true nếu đang chỉnh sửa, false nếu thêm mới)
+        /// </summary>
+        private bool IsEditMode => _categoryId != Guid.Empty;
 
         #endregion
 
-        #region Constructor
+        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
         /// <summary>
         /// Khởi tạo form cho thêm mới danh mục.
@@ -45,7 +57,7 @@ namespace MasterData.Customer
 
         #endregion
 
-        #region Private Methods
+        #region ========== KHỞI TẠO FORM ==========
 
         /// <summary>
         /// Khởi tạo form và load dữ liệu nếu cần.
@@ -55,10 +67,10 @@ namespace MasterData.Customer
             try
             {
                 // Thiết lập tiêu đề form
-                Text = _isEditMode ? "Điều chỉnh danh mục đối tác" : "Thêm mới danh mục đối tác";
+                Text = IsEditMode ? "Điều chỉnh danh mục đối tác" : "Thêm mới danh mục đối tác";
 
                 // Load dữ liệu nếu đang chỉnh sửa
-                if (_isEditMode)
+                if (IsEditMode)
                 {
                     LoadCategoryData();
                 }
@@ -71,6 +83,10 @@ namespace MasterData.Customer
                 ShowError(ex, "Lỗi khởi tạo form");
             }
         }
+
+        #endregion
+
+        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
         /// Load dữ liệu danh mục để chỉnh sửa.
@@ -121,50 +137,6 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Validate dữ liệu đầu vào.
-        /// </summary>
-        /// <returns>True nếu hợp lệ, False nếu không</returns>
-        private bool ValidateInput()
-        {
-            dxErrorProvider1.ClearErrors();
-
-            // CategoryName bắt buộc
-            if (string.IsNullOrWhiteSpace(CategoryNameTextEdit?.Text))
-            {
-                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại không được để trống", ErrorType.Critical);
-                CategoryNameTextEdit?.Focus();
-                return false;
-            }
-
-            // Kiểm tra độ dài CategoryName
-            if (CategoryNameTextEdit.Text.Trim().Length > 100)
-            {
-                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại không được vượt quá 100 ký tự", ErrorType.Critical);
-                CategoryNameTextEdit?.Focus();
-                return false;
-            }
-
-            // Kiểm tra trùng lặp tên phân loại (không tính bản ghi đang chỉnh sửa)
-            var categoryName = CategoryNameTextEdit.Text.Trim();
-            if (_businessPartnerCategoryBll.IsCategoryNameExists(categoryName, _categoryId))
-            {
-                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại đã tồn tại trong hệ thống", ErrorType.Critical);
-                CategoryNameTextEdit?.Focus();
-                return false;
-            }
-
-            // Kiểm tra độ dài Description
-            if (!string.IsNullOrWhiteSpace(DescriptionMemoEdit?.Text) && DescriptionMemoEdit.Text.Trim().Length > 255)
-            {
-                dxErrorProvider1.SetError(DescriptionMemoEdit, "Mô tả không được vượt quá 255 ký tự", ErrorType.Critical);
-                DescriptionMemoEdit?.Focus();
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// Lưu dữ liệu danh mục.
         /// </summary>
         private void SaveCategory()
@@ -174,7 +146,7 @@ namespace MasterData.Customer
                 var dto = GetDataFromControls();
                 var entity = dto.ToEntity();
 
-                if (_isEditMode)
+                if (IsEditMode)
                 {
                     // Cập nhật danh mục hiện có
                     _businessPartnerCategoryBll.Update(entity);
@@ -195,6 +167,106 @@ namespace MasterData.Customer
                 ShowError(ex, "Lỗi lưu dữ liệu danh mục");
             }
         }
+
+        #endregion
+
+        #region ========== SỰ KIỆN FORM ==========
+
+        /// <summary>
+        /// Xử lý sự kiện click button Lưu
+        /// </summary>
+        private void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if (ValidateInput())
+            {
+                SaveCategory();
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click button Hủy
+        /// </summary>
+        private void CancelBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        /// <summary>
+        /// Xử lý phím tắt cho form
+        /// </summary>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.S))
+            {
+                SaveBarButtonItem_ItemClick(null, null);
+                return true;
+            }
+
+            if (keyData == Keys.Escape)
+            {
+                CancelBarButtonItem_ItemClick(null, null);
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        #endregion
+
+        #region ========== XỬ LÝ DỮ LIỆU ==========
+
+        /// <summary>
+        /// Validate dữ liệu đầu vào.
+        /// </summary>
+        /// <returns>True nếu hợp lệ, False nếu không</returns>
+        private bool ValidateInput()
+        {
+            dxErrorProvider1.ClearErrors();
+
+            // CategoryName bắt buộc
+            if (string.IsNullOrWhiteSpace(CategoryNameTextEdit?.Text))
+            {
+                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại không được để trống",
+                    ErrorType.Critical);
+                CategoryNameTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra độ dài CategoryName
+            if (CategoryNameTextEdit.Text.Trim().Length > 100)
+            {
+                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại không được vượt quá 100 ký tự",
+                    ErrorType.Critical);
+                CategoryNameTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra trùng lặp tên phân loại (không tính bản ghi đang chỉnh sửa)
+            var categoryName = CategoryNameTextEdit.Text.Trim();
+            if (_businessPartnerCategoryBll.IsCategoryNameExists(categoryName, _categoryId))
+            {
+                dxErrorProvider1.SetError(CategoryNameTextEdit, "Tên phân loại đã tồn tại trong hệ thống",
+                    ErrorType.Critical);
+                CategoryNameTextEdit?.Focus();
+                return false;
+            }
+
+            // Kiểm tra độ dài Description
+            if (!string.IsNullOrWhiteSpace(DescriptionMemoEdit?.Text) && DescriptionMemoEdit.Text.Trim().Length > 255)
+            {
+                dxErrorProvider1.SetError(DescriptionMemoEdit, "Mô tả không được vượt quá 255 ký tự",
+                    ErrorType.Critical);
+                DescriptionMemoEdit?.Focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region ========== TIỆN ÍCH ==========
 
         /// <summary>
         /// Hiển thị thông tin.
@@ -221,54 +293,9 @@ namespace MasterData.Customer
         /// <param name="context">Ngữ cảnh lỗi</param>
         private void ShowError(Exception ex, string context = null)
         {
-            if (string.IsNullOrWhiteSpace(context))
-                MsgBox.ShowException(ex);
-            else
-                MsgBox.ShowException(new Exception(context + ": " + ex.Message, ex));
-        }
-
-        #endregion
-
-        #region Event Handlers
-
-        /// <summary>
-        /// Người dùng bấm nút Lưu.
-        /// </summary>
-        private void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            if (ValidateInput())
-            {
-                SaveCategory();
-            }
-        }
-
-        /// <summary>
-        /// Người dùng bấm nút Hủy.
-        /// </summary>
-        private void CancelBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
-
-        /// <summary>
-        /// Xử lý phím tắt.
-        /// </summary>
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == (Keys.Control | Keys.S))
-            {
-                SaveBarButtonItem_ItemClick(null, null);
-                return true;
-            }
-
-            if (keyData == Keys.Escape)
-            {
-                CancelBarButtonItem_ItemClick(null, null);
-                return true;
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
+            MsgBox.ShowException(string.IsNullOrWhiteSpace(context)
+                ? ex
+                : new Exception(context + ": " + ex.Message, ex));
         }
 
         #endregion

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dal.DataContext;
@@ -23,6 +22,7 @@ namespace MasterData.Customer.Converters
                return new BusinessPartnerSiteListDto
                {
                    Id = entity.Id,
+                   PartnerId = entity.PartnerId,
                    SiteCode = entity.SiteCode,
                    PartnerName = entity.BusinessPartner?.PartnerName,
                    SiteName = entity.SiteName,
@@ -52,6 +52,7 @@ namespace MasterData.Customer.Converters
                return new BusinessPartnerSite
                {
                    Id = dto.Id,
+                   PartnerId = dto.PartnerId,
                    SiteCode = dto.SiteCode,
                    SiteName = dto.SiteName,
                    Address = dto.Address,
@@ -91,6 +92,64 @@ namespace MasterData.Customer.Converters
             if (dtos == null) return Enumerable.Empty<BusinessPartnerSite>();
 
             return dtos.Select(dto => dto.ToEntity());
+        }
+
+        /// <summary>
+        /// Chuyển đổi BusinessPartnerSite Entity sang BusinessPartnerSiteDto
+        /// </summary>
+        /// <param name="entity">BusinessPartnerSite Entity</param>
+        /// <returns>BusinessPartnerSiteDto</returns>
+        public static BusinessPartnerSiteDto ToSiteDto(this BusinessPartnerSite entity)
+        {
+            if (entity == null) return null;
+
+            return new BusinessPartnerSiteDto
+            {
+                Id = entity.Id,
+                PartnerId = entity.PartnerId,
+                SiteCode = entity.SiteCode,
+                SiteName = entity.SiteName,
+                Address = entity.Address,
+                City = entity.City,
+                Province = entity.Province,
+                Country = entity.Country,
+                ContactPerson = entity.ContactPerson,
+                Phone = entity.Phone,
+                Email = entity.Email,
+                IsDefault = entity.IsDefault,
+                IsActive = entity.IsActive,
+                CreatedDate = entity.CreatedDate,
+                UpdatedDate = entity.UpdatedDate
+            };
+        }
+
+        /// <summary>
+        /// Chuyển đổi BusinessPartnerSiteDto sang BusinessPartnerSite Entity
+        /// </summary>
+        /// <param name="dto">BusinessPartnerSiteDto</param>
+        /// <returns>BusinessPartnerSite Entity</returns>
+        public static BusinessPartnerSite ToEntity(this BusinessPartnerSiteDto dto)
+        {
+            if (dto == null) return null;
+
+            return new BusinessPartnerSite
+            {
+                Id = dto.Id,
+                PartnerId = dto.PartnerId,
+                SiteCode = dto.SiteCode,
+                SiteName = dto.SiteName,
+                Address = dto.Address,
+                City = dto.City,
+                Province = dto.Province,
+                Country = dto.Country,
+                ContactPerson = dto.ContactPerson,
+                Phone = dto.Phone,
+                Email = dto.Email,
+                IsDefault = dto.IsDefault,
+                IsActive = dto.IsActive,
+                CreatedDate = dto.CreatedDate,
+                UpdatedDate = dto.UpdatedDate
+            };
         }
     }
 }

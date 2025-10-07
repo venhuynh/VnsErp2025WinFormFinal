@@ -47,6 +47,15 @@ namespace Bll.MasterData.Customer
         }
 
         /// <summary>
+        /// Lấy tất cả BusinessPartnerSite (alias cho GetAll)
+        /// </summary>
+        /// <returns>Danh sách BusinessPartnerSite</returns>
+        public List<BusinessPartnerSite> GetAllSites()
+        {
+            return GetAll();
+        }
+
+        /// <summary>
         /// Lấy BusinessPartnerSite theo ID
         /// </summary>
         /// <param name="id">ID của BusinessPartnerSite</param>
@@ -110,6 +119,16 @@ namespace Bll.MasterData.Customer
         }
 
         /// <summary>
+        /// Xóa BusinessPartnerSite theo ID (alias cho Delete)
+        /// </summary>
+        /// <param name="id">ID của BusinessPartnerSite</param>
+        /// <returns>True nếu xóa thành công</returns>
+        public bool DeleteSite(Guid id)
+        {
+            return Delete(id);
+        }
+
+        /// <summary>
         /// Kiểm tra SiteCode có tồn tại không
         /// </summary>
         /// <param name="siteCode">SiteCode cần kiểm tra</param>
@@ -127,6 +146,94 @@ namespace Bll.MasterData.Customer
             catch (Exception ex)
             {
                 _logger?.LogError($"Lỗi khi kiểm tra SiteCode: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tạo mới BusinessPartnerSite từ Entity
+        /// </summary>
+        /// <param name="entity">BusinessPartnerSite entity</param>
+        /// <returns>True nếu tạo thành công</returns>
+        public bool CreateSite(BusinessPartnerSite entity)
+        {
+            try
+            {
+                _logger?.LogInfo($"Bắt đầu tạo mới BusinessPartnerSite: {entity.SiteName}");
+                
+                // Kiểm tra SiteCode đã tồn tại chưa
+                if (IsSiteCodeExists(entity.SiteCode))
+                {
+                    _logger?.LogWarning($"SiteCode đã tồn tại: {entity.SiteCode}");
+                    return false;
+                }
+
+                // Set thông tin cần thiết cho entity mới
+                entity.Id = Guid.Empty; // Để DAL biết đây là tạo mới
+                entity.CreatedDate = DateTime.Now;
+                entity.UpdatedDate = null;
+
+                // Lưu vào database
+                var result = SaveOrUpdate(entity);
+                _logger?.LogInfo($"Tạo mới BusinessPartnerSite thành công với ID: {result}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError($"Lỗi khi tạo mới BusinessPartnerSite: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật BusinessPartnerSite từ Entity
+        /// </summary>
+        /// <param name="entity">BusinessPartnerSite entity</param>
+        /// <returns>True nếu cập nhật thành công</returns>
+        public bool UpdateSite(BusinessPartnerSite entity)
+        {
+            try
+            {
+                _logger?.LogInfo($"Bắt đầu cập nhật BusinessPartnerSite: {entity.SiteName}");
+                
+                // Kiểm tra SiteCode đã tồn tại chưa (loại trừ chính nó)
+                if (IsSiteCodeExists(entity.SiteCode, entity.Id))
+                {
+                    _logger?.LogWarning($"SiteCode đã tồn tại: {entity.SiteCode}");
+                    return false;
+                }
+
+                // Lấy entity hiện tại
+                var existingEntity = GetById(entity.Id);
+                if (existingEntity == null)
+                {
+                    _logger?.LogWarning($"Không tìm thấy BusinessPartnerSite với ID: {entity.Id}");
+                    return false;
+                }
+
+                // Cập nhật thông tin
+                existingEntity.PartnerId = entity.PartnerId;
+                existingEntity.SiteCode = entity.SiteCode;
+                existingEntity.SiteName = entity.SiteName;
+                existingEntity.Address = entity.Address;
+                existingEntity.City = entity.City;
+                existingEntity.Province = entity.Province;
+                existingEntity.Country = entity.Country;
+                existingEntity.ContactPerson = entity.ContactPerson;
+                existingEntity.Phone = entity.Phone;
+                existingEntity.Email = entity.Email;
+                existingEntity.IsDefault = entity.IsDefault;
+                existingEntity.IsActive = entity.IsActive;
+                existingEntity.UpdatedDate = DateTime.Now;
+
+                // Lưu vào database
+                var result = SaveOrUpdate(existingEntity);
+                _logger?.LogInfo($"Cập nhật BusinessPartnerSite thành công với ID: {result}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError($"Lỗi khi cập nhật BusinessPartnerSite: {ex.Message}", ex);
                 throw;
             }
         }
