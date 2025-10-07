@@ -48,22 +48,17 @@ namespace MasterData.Company
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
-            this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
-            this.repositoryItemComboBox2 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.barHeaderItem2 = new DevExpress.XtraBars.BarHeaderItem();
             this.SelectedRowBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
+            this.repositoryItemComboBox2 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.CompanyBranchGridControl = new DevExpress.XtraGrid.GridControl();
-            this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
-            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.CompanyBranchGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.colBranchCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colBranchName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colAddress = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -71,17 +66,22 @@ namespace MasterData.Company
             this.colEmail = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colManagerName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
+            this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -199,20 +199,6 @@ namespace MasterData.Company
             this.DataSummaryBarStaticItem.Id = 7;
             this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
             // 
-            // repositoryItemComboBox1
-            // 
-            this.repositoryItemComboBox1.AutoHeight = false;
-            this.repositoryItemComboBox1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemComboBox1.Name = "repositoryItemComboBox1";
-            // 
-            // repositoryItemComboBox2
-            // 
-            this.repositoryItemComboBox2.AutoHeight = false;
-            this.repositoryItemComboBox2.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemComboBox2.Name = "repositoryItemComboBox2";
-            // 
             // barHeaderItem2
             // 
             this.barHeaderItem2.Caption = "Đang chọn:";
@@ -258,6 +244,20 @@ namespace MasterData.Company
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 587);
             // 
+            // repositoryItemComboBox1
+            // 
+            this.repositoryItemComboBox1.AutoHeight = false;
+            this.repositoryItemComboBox1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemComboBox1.Name = "repositoryItemComboBox1";
+            // 
+            // repositoryItemComboBox2
+            // 
+            this.repositoryItemComboBox2.AutoHeight = false;
+            this.repositoryItemComboBox2.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemComboBox2.Name = "repositoryItemComboBox2";
+            // 
             // layoutControl1
             // 
             this.layoutControl1.Controls.Add(this.CompanyBranchGridControl);
@@ -284,33 +284,6 @@ namespace MasterData.Company
             this.CompanyBranchGridControl.TabIndex = 5;
             this.CompanyBranchGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.CompanyBranchGridView});
-            // 
-            // repositoryItemHypertextLabel1
-            // 
-            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
-            // 
-            // repositoryItemPictureEdit1
-            // 
-            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
-            // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1077, 587);
-            this.Root.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.CompanyBranchGridControl;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 561);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // CompanyBranchGridView
             // 
@@ -342,58 +315,85 @@ namespace MasterData.Company
             this.CompanyBranchGridView.OptionsView.ShowViewCaption = true;
             this.CompanyBranchGridView.ViewCaption = "BẢNG DANH SÁCH CÁC CHI NHÁNH";
             // 
-            // companyBranchDtoBindingSource
-            // 
-            this.companyBranchDtoBindingSource.DataSource = typeof(MasterData.Company.Dto.CompanyBranchDto);
-            // 
             // colBranchCode
             // 
             this.colBranchCode.FieldName = "BranchCode";
             this.colBranchCode.Name = "colBranchCode";
             this.colBranchCode.Visible = true;
-            this.colBranchCode.VisibleIndex = 2;
+            this.colBranchCode.VisibleIndex = 1;
             // 
             // colBranchName
             // 
             this.colBranchName.FieldName = "BranchName";
             this.colBranchName.Name = "colBranchName";
             this.colBranchName.Visible = true;
-            this.colBranchName.VisibleIndex = 3;
+            this.colBranchName.VisibleIndex = 2;
             // 
             // colAddress
             // 
             this.colAddress.FieldName = "Address";
             this.colAddress.Name = "colAddress";
             this.colAddress.Visible = true;
-            this.colAddress.VisibleIndex = 4;
+            this.colAddress.VisibleIndex = 3;
             // 
             // colPhone
             // 
             this.colPhone.FieldName = "Phone";
             this.colPhone.Name = "colPhone";
             this.colPhone.Visible = true;
-            this.colPhone.VisibleIndex = 5;
+            this.colPhone.VisibleIndex = 4;
             // 
             // colEmail
             // 
             this.colEmail.FieldName = "Email";
             this.colEmail.Name = "colEmail";
             this.colEmail.Visible = true;
-            this.colEmail.VisibleIndex = 6;
+            this.colEmail.VisibleIndex = 5;
             // 
             // colManagerName
             // 
             this.colManagerName.FieldName = "ManagerName";
             this.colManagerName.Name = "colManagerName";
             this.colManagerName.Visible = true;
-            this.colManagerName.VisibleIndex = 7;
+            this.colManagerName.VisibleIndex = 6;
             // 
             // colIsActive
             // 
             this.colIsActive.FieldName = "IsActive";
             this.colIsActive.Name = "colIsActive";
             this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 8;
+            this.colIsActive.VisibleIndex = 7;
+            // 
+            // repositoryItemPictureEdit1
+            // 
+            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
+            // 
+            // repositoryItemHypertextLabel1
+            // 
+            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(1077, 587);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.CompanyBranchGridControl;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 561);
+            this.layoutControlItem1.TextVisible = false;
+            // 
+            // companyBranchDtoBindingSource
+            // 
+            this.companyBranchDtoBindingSource.DataSource = typeof(MasterData.Company.Dto.CompanyBranchDto);
             // 
             // UcCompanyBranch
             // 
@@ -412,11 +412,11 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -450,7 +450,6 @@ namespace MasterData.Company
         private RepositoryItemComboBox repositoryItemComboBox2;
         private RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
         private DevExpress.XtraGrid.Views.Grid.GridView CompanyBranchGridView;
-        private BindingSource companyBranchDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colBranchCode;
         private DevExpress.XtraGrid.Columns.GridColumn colBranchName;
         private DevExpress.XtraGrid.Columns.GridColumn colAddress;
@@ -458,5 +457,6 @@ namespace MasterData.Company
         private DevExpress.XtraGrid.Columns.GridColumn colEmail;
         private DevExpress.XtraGrid.Columns.GridColumn colManagerName;
         private DevExpress.XtraGrid.Columns.GridColumn colIsActive;
+        private BindingSource companyBranchDtoBindingSource;
     }
 }
