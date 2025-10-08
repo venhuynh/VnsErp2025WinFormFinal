@@ -30,7 +30,7 @@
         {
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.ucDepartment1 = new MasterData.Company.UcDepartment();
+            this.ucPosition1 = new MasterData.Company.UcPosition();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -40,7 +40,7 @@
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.ucDepartment1);
+            this.layoutControl1.Controls.Add(this.ucPosition1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
@@ -59,16 +59,16 @@
             this.Root.Size = new System.Drawing.Size(1158, 785);
             this.Root.TextVisible = false;
             // 
-            // ucDepartment1
+            // ucPosition1
             // 
-            this.ucDepartment1.Location = new System.Drawing.Point(16, 16);
-            this.ucDepartment1.Name = "ucDepartment1";
-            this.ucDepartment1.Size = new System.Drawing.Size(1126, 753);
-            this.ucDepartment1.TabIndex = 4;
+            this.ucPosition1.Location = new System.Drawing.Point(16, 16);
+            this.ucPosition1.Name = "ucPosition1";
+            this.ucPosition1.Size = new System.Drawing.Size(1126, 753);
+            this.ucPosition1.TabIndex = 4;
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.ucDepartment1;
+            this.layoutControlItem1.Control = this.ucPosition1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1132, 759);
@@ -94,7 +94,7 @@
 
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private MasterData.Company.UcDepartment ucDepartment1;
+        private MasterData.Company.UcPosition ucPosition1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

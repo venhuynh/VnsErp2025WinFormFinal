@@ -56,6 +56,7 @@
     <Compile Include="DataAccess\MasterData\CompanyDal\CompanyBranchDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\CompanyDal\CompanyDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\CompanyDal\DepartmentDataAccess.cs" />
+    <Compile Include="DataAccess\MasterData\CompanyDal\PositionDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerCategoryDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerContactDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\Partner\BusinessPartnerDataAccess.cs" />
