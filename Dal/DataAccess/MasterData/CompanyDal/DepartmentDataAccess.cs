@@ -53,8 +53,9 @@ namespace Dal.DataAccess.MasterData.CompanyDal
                 // Sử dụng DataLoadOptions để include relationships (tránh circular reference)
                 var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<Department>(d => d.CompanyBranch);
-                
-                
+                loadOptions.LoadWith<Department>(d => d.Company);
+
+
                 context.LoadOptions = loadOptions;
 
                 // Load tất cả departments với relationships đã được include
@@ -85,7 +86,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         /// <returns>Danh sách tất cả departments</returns>
         public override async Task<List<Department>> GetAllAsync()
         {
-            return await Task.Run(() => GetAll());
+            return await Task.Run(GetAll);
         }
 
         /// <summary>
@@ -99,7 +100,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
             {
                 using var context = CreateContext();
                 // Sử dụng DataLoadOptions để include relationships (tránh circular reference)
-                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<Department>(d => d.CompanyBranch);
                 loadOptions.LoadWith<Department>(d => d.Company);
                 // Không load Department1 để tránh circular reference
@@ -110,7 +111,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
                 
                 return department;
             }
-            catch (System.Data.SqlClient.SqlException sqlEx)
+            catch (SqlException sqlEx)
             {
                 throw new DataAccessException($"Lỗi SQL khi lấy department theo ID {id}: {sqlEx.Message}", sqlEx)
                 {
@@ -168,7 +169,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
                 base.Update(department);
                 return department;
             }
-            catch (System.Data.SqlClient.SqlException sqlEx)
+            catch (SqlException sqlEx)
             {
                 throw new DataAccessException($"Lỗi SQL khi cập nhật department: {sqlEx.Message}", sqlEx)
                 {
@@ -183,7 +184,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         }
 
         /// <summary>
-        /// Cập nhật department (async)
+        /// Cập nhật department (async) - Sử dụng logic update riêng
         /// </summary>
         /// <param name="department">Department cần cập nhật</param>
         /// <returns>Department đã được cập nhật</returns>
@@ -191,11 +192,76 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         {
             try
             {
-                await base.UpdateAsync(department);
-                return department;
+                System.Diagnostics.Debug.WriteLine($"DepartmentDataAccess.UpdateDepartmentAsync - Department.BranchId: {department.BranchId}");
+                System.Diagnostics.Debug.WriteLine($"DepartmentDataAccess.UpdateDepartmentAsync - Department.ParentId: {department.ParentId}");
+                System.Diagnostics.Debug.WriteLine($"DepartmentDataAccess.UpdateDepartmentAsync - Department.Id: {department.Id}");
+
+                using var context = CreateContext();
+                
+                // Debug: Kiểm tra tất cả departments với cùng CompanyId và DepartmentCode
+                var duplicateDepartments = context.Departments
+                    .Where(d => d.CompanyId == department.CompanyId && d.DepartmentCode == department.DepartmentCode)
+                    .ToList();
+                
+                System.Diagnostics.Debug.WriteLine($"Found {duplicateDepartments.Count} departments with CompanyId={department.CompanyId} and DepartmentCode={department.DepartmentCode}");
+                foreach (var dup in duplicateDepartments)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  - Department ID: {dup.Id}, Code: {dup.DepartmentCode}, Name: {dup.DepartmentName}");
+                }
+                
+                // Tìm department hiện tại từ database
+                var existingDepartment = context.Departments.FirstOrDefault(d => d.Id == department.Id);
+                
+                if (existingDepartment != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("DepartmentDataAccess.UpdateDepartmentAsync - Found existing department, updating properties");
+                    
+                    // Kiểm tra xem có cần cập nhật DepartmentCode không
+                    // Nếu DepartmentCode thay đổi, cần kiểm tra duplicate
+                    if (existingDepartment.DepartmentCode != department.DepartmentCode)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"DepartmentCode changed from '{existingDepartment.DepartmentCode}' to '{department.DepartmentCode}'");
+                        
+                        // Kiểm tra xem DepartmentCode mới có bị trùng không
+                        var duplicateCheck = context.Departments
+                            .FirstOrDefault(d => d.CompanyId == department.CompanyId && 
+                                                 d.DepartmentCode == department.DepartmentCode && 
+                                                 d.Id != department.Id);
+                        
+                        if (duplicateCheck != null)
+                        {
+                            throw new DataAccessException($"Mã phòng ban '{department.DepartmentCode}' đã tồn tại trong công ty");
+                        }
+                    }
+                    
+                    // Sử dụng approach khác - tạo DataContext mới và attach entity
+                    using var updateContext = CreateContext();
+                    
+                    // Attach entity vào context mới
+                    updateContext.Departments.Attach(department);
+                    
+                    // Đánh dấu entity là modified
+                    updateContext.Refresh(RefreshMode.KeepCurrentValues, department);
+                    
+                    System.Diagnostics.Debug.WriteLine($"DepartmentDataAccess.UpdateDepartmentAsync - Attached department with BranchId: {department.BranchId}");
+                    System.Diagnostics.Debug.WriteLine($"DepartmentDataAccess.UpdateDepartmentAsync - Attached department with ParentId: {department.ParentId}");
+                    
+                    // Submit changes
+                    await Task.Run(() => updateContext.SubmitChanges());
+                    
+                    System.Diagnostics.Debug.WriteLine("DepartmentDataAccess.UpdateDepartmentAsync - LINQ to SQL UPDATE completed successfully");
+                    
+                    // Trả về department đã được cập nhật
+                    return department;
+                }
+                else
+                {
+                    throw new DataAccessException($"Không tìm thấy department với ID {department.Id} để cập nhật");
+                }
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"DepartmentDataAccess.UpdateDepartmentAsync - Error: {ex.Message}");
                 throw new DataAccessException($"Lỗi khi cập nhật department: {ex.Message}", ex);
             }
         }
@@ -234,7 +300,63 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         }
 
         /// <summary>
-        /// Xóa nhiều departments
+        /// Xóa nhiều departments (Synchronous)
+        /// </summary>
+        /// <param name="ids">Danh sách ID của departments cần xóa</param>
+        /// <returns>True nếu xóa thành công</returns>
+        public bool DeleteMultiple(List<Guid> ids)
+        {
+            try
+            {
+                using var context = CreateContext();
+                
+                var departments = context.Departments.Where(d => ids.Contains(d.Id)).ToList();
+                if (!departments.Any())
+                {
+                    throw new DataAccessException("Không tìm thấy departments cần xóa");
+                }
+
+                // Kiểm tra constraints trước khi xóa
+                foreach (var department in departments)
+                {
+                    // Kiểm tra có phòng ban con không
+                    var hasChildren = context.Departments.Any(d => d.ParentId == department.Id);
+                    if (hasChildren)
+                    {
+                        throw new DataAccessException($"Không thể xóa phòng ban '{department.DepartmentName}' vì còn có phòng ban con");
+                    }
+
+                    // Kiểm tra có nhân viên không
+                    var hasEmployees = context.Employees.Any(e => e.DepartmentId == department.Id);
+                    if (hasEmployees)
+                    {
+                        throw new DataAccessException($"Không thể xóa phòng ban '{department.DepartmentName}' vì còn có nhân viên");
+                    }
+                }
+
+                // Xóa departments
+                context.Departments.DeleteAllOnSubmit(departments);
+                context.SubmitChanges();
+                
+                return true;
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new DataAccessException($"Lỗi SQL khi xóa departments: {sqlEx.Message}", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogError($"Lỗi khi xóa departments: {ex.Message}", ex);
+                throw new DataAccessException($"Lỗi khi xóa departments: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Xóa nhiều departments (Async)
         /// </summary>
         /// <param name="ids">Danh sách ID của departments cần xóa</param>
         /// <returns>True nếu xóa thành công</returns>
@@ -296,7 +418,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
                 using var context = CreateContext();
 
                 // Sử dụng DataLoadOptions để include relationships
-                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<Department>(d => d.CompanyBranch);
                 loadOptions.LoadWith<Department>(d => d.Company);
                 // Không load Department1 để tránh circular reference
@@ -309,7 +431,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
 
                 return departments;
             }
-            catch (System.Data.SqlClient.SqlException sqlEx)
+            catch (SqlException sqlEx)
             {
                 throw new DataAccessException($"Lỗi SQL khi lấy departments theo company ID {companyId}: {sqlEx.Message}", sqlEx)
                 {
@@ -345,7 +467,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
                 using var context = CreateContext();
 
                 // Sử dụng DataLoadOptions để include relationships
-                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<Department>(d => d.CompanyBranch);
                 loadOptions.LoadWith<Department>(d => d.Company);
                 // Không load Department1 để tránh circular reference
@@ -358,7 +480,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
 
                 return departments;
             }
-            catch (System.Data.SqlClient.SqlException sqlEx)
+            catch (SqlException sqlEx)
             {
                 throw new DataAccessException($"Lỗi SQL khi lấy departments theo branch ID {branchId}: {sqlEx.Message}", sqlEx)
                 {
@@ -394,7 +516,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
                 using var context = CreateContext();
 
                 // Sử dụng DataLoadOptions để include relationships
-                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<Department>(d => d.CompanyBranch);
                 loadOptions.LoadWith<Department>(d => d.Company);
                 // Không load Department1 để tránh circular reference
@@ -407,7 +529,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
 
                 return departments;
             }
-            catch (System.Data.SqlClient.SqlException sqlEx)
+            catch (SqlException sqlEx)
             {
                 throw new DataAccessException($"Lỗi SQL khi lấy departments theo parent ID {parentId}: {sqlEx.Message}", sqlEx)
                 {
@@ -442,7 +564,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
                 using var context = CreateContext();
 
                 // Sử dụng DataLoadOptions để include relationships
-                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<Department>(d => d.CompanyBranch);
                 loadOptions.LoadWith<Department>(d => d.Company);
                 // Không load Department1 để tránh circular reference
@@ -455,7 +577,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
 
                 return departments;
             }
-            catch (System.Data.SqlClient.SqlException sqlEx)
+            catch (SqlException sqlEx)
             {
                 throw new DataAccessException($"Lỗi SQL khi lấy root departments: {sqlEx.Message}", sqlEx)
                 {
@@ -489,14 +611,29 @@ namespace Dal.DataAccess.MasterData.CompanyDal
             try
             {
                 using var context = CreateContext();
+                
+                // Debug: Kiểm tra tất cả departments trong database
+                var allDepartments = context.Departments.ToList();
+                Logger?.LogInfo($"All departments in DB: {string.Join(", ", allDepartments.Select(d => $"Id={d.Id}, Code='{d.DepartmentCode}'"))}");
+                
                 var query = context.Departments.Where(d => d.DepartmentCode == departmentCode);
                 if (excludeId.HasValue)
                 {
                     query = query.Where(d => d.Id != excludeId.Value);
                 }
-                return query.Any();
+                
+                // Debug: Lấy tất cả departments có cùng code để kiểm tra
+                var allMatchingDepartments = query.ToList();
+                Logger?.LogInfo($"All matching departments: {string.Join(", ", allMatchingDepartments.Select(d => $"Id={d.Id}, Code='{d.DepartmentCode}'"))}");
+                
+                var result = query.Any();
+                
+                // Debug logging
+                Logger?.LogInfo($"IsDepartmentCodeExists: Code='{departmentCode}', ExcludeId={excludeId}, Result={result}");
+                
+                return result;
             }
-            catch (System.Data.SqlClient.SqlException sqlEx)
+            catch (SqlException sqlEx)
             {
                 throw new DataAccessException($"Lỗi SQL khi kiểm tra department code: {sqlEx.Message}", sqlEx)
                 {

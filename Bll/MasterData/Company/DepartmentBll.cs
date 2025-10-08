@@ -148,13 +148,20 @@ namespace Bll.MasterData.Company
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"DepartmentBll.UpdateAsync - Department.BranchId: {department.BranchId}");
+                System.Diagnostics.Debug.WriteLine($"DepartmentBll.UpdateAsync - Department.ParentId: {department.ParentId}");
+                System.Diagnostics.Debug.WriteLine($"DepartmentBll.UpdateAsync - Department.Id: {department.Id}");
+
                 // Validation
                 await ValidateDepartmentAsync(department, department.Id);
+
+                System.Diagnostics.Debug.WriteLine("DepartmentBll.UpdateAsync - Validation passed, calling UpdateDepartmentAsync");
 
                 return await _departmentDataAccess.UpdateDepartmentAsync(department);
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"DepartmentBll.UpdateAsync - Error: {ex.Message}");
                 throw new Exception($"Lỗi khi cập nhật department: {ex.Message}", ex);
             }
         }
@@ -177,7 +184,24 @@ namespace Bll.MasterData.Company
         }
 
         /// <summary>
-        /// Xóa nhiều departments
+        /// Xóa nhiều departments (Synchronous)
+        /// </summary>
+        /// <param name="ids">Danh sách ID của departments cần xóa</param>
+        /// <returns>True nếu xóa thành công</returns>
+        public bool DeleteMultiple(List<Guid> ids)
+        {
+            try
+            {
+                return _departmentDataAccess.DeleteMultiple(ids);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi xóa departments: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Xóa nhiều departments (Async)
         /// </summary>
         /// <param name="ids">Danh sách ID của departments cần xóa</param>
         /// <returns>True nếu xóa thành công</returns>
@@ -216,10 +240,15 @@ namespace Bll.MasterData.Company
             if (department.CompanyId == Guid.Empty)
                 throw new ArgumentException("Company ID không được để trống");
 
-            // Kiểm tra department code trùng lặp
-            var isCodeExists = await _departmentDataAccess.IsDepartmentCodeExistsAsync(department.DepartmentCode, excludeId);
-            if (isCodeExists)
-                throw new ArgumentException($"Mã phòng ban '{department.DepartmentCode}' đã tồn tại");
+            // Kiểm tra department code trùng lặp - chỉ khi tạo mới
+            if (!excludeId.HasValue) // Chỉ kiểm tra khi tạo mới (excludeId = null)
+            {
+                var isCodeExists = await _departmentDataAccess.IsDepartmentCodeExistsAsync(department.DepartmentCode, excludeId);
+                if (isCodeExists)
+                {
+                    throw new ArgumentException($"Mã phòng ban '{department.DepartmentCode}' đã tồn tại");
+                }
+            }
 
             // Kiểm tra parent department có tồn tại không (nếu có)
             if (department.ParentId.HasValue)

@@ -58,6 +58,8 @@ namespace MasterData.Company
             this.ParentDepartmentNameTextEdit = new DevExpress.XtraEditors.TreeListLookUpEdit();
             this.departmentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.treeListLookUpEdit1TreeList = new DevExpress.XtraTreeList.TreeList();
+            this.colParentDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.IsActiveToogleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -67,18 +69,6 @@ namespace MasterData.Company
             this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForBranchName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForParentDepartmentName = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colCompanyId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colBranchId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colDepartmentCode = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colParentId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colIsActive = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colBranchName1 = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colParentDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colEmployeeCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colSubDepartmentCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -281,7 +271,7 @@ namespace MasterData.Company
             this.ParentDepartmentNameTextEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ParentDepartmentNameTextEdit.Properties.DataSource = this.departmentDtoBindingSource;
-            this.ParentDepartmentNameTextEdit.Properties.DisplayMember = "BranchName";
+            this.ParentDepartmentNameTextEdit.Properties.DisplayMember = "DepartmentName";
             this.ParentDepartmentNameTextEdit.Properties.NullText = "";
             this.ParentDepartmentNameTextEdit.Properties.TreeList = this.treeListLookUpEdit1TreeList;
             this.ParentDepartmentNameTextEdit.Properties.ValueMember = "Id";
@@ -296,23 +286,31 @@ namespace MasterData.Company
             // treeListLookUpEdit1TreeList
             // 
             this.treeListLookUpEdit1TreeList.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
-            this.colId,
-            this.colCompanyId,
-            this.colBranchId,
-            this.colDepartmentCode,
-            this.colDepartmentName,
-            this.colParentId,
-            this.colDescription,
-            this.colIsActive,
-            this.colBranchName1,
             this.colParentDepartmentName,
-            this.colEmployeeCount,
-            this.colSubDepartmentCount});
+            this.colDepartmentName});
+            this.treeListLookUpEdit1TreeList.KeyFieldName = "Id";
             this.treeListLookUpEdit1TreeList.Location = new System.Drawing.Point(0, 0);
             this.treeListLookUpEdit1TreeList.Name = "treeListLookUpEdit1TreeList";
             this.treeListLookUpEdit1TreeList.OptionsView.ShowIndentAsRowStyle = true;
+            this.treeListLookUpEdit1TreeList.ParentFieldName = "ParentId";
             this.treeListLookUpEdit1TreeList.Size = new System.Drawing.Size(400, 200);
             this.treeListLookUpEdit1TreeList.TabIndex = 0;
+            // 
+            // colParentDepartmentName
+            // 
+            this.colParentDepartmentName.Caption = "Phòng ban cấp trên";
+            this.colParentDepartmentName.FieldName = "ParentDepartmentName";
+            this.colParentDepartmentName.Name = "colParentDepartmentName";
+            this.colParentDepartmentName.Visible = true;
+            this.colParentDepartmentName.VisibleIndex = 0;
+            // 
+            // colDepartmentName
+            // 
+            this.colDepartmentName.Caption = "Tên phòng ban";
+            this.colDepartmentName.FieldName = "DepartmentName";
+            this.colDepartmentName.Name = "colDepartmentName";
+            this.colDepartmentName.Visible = true;
+            this.colDepartmentName.VisibleIndex = 1;
             // 
             // IsActiveToogleSwitch
             // 
@@ -409,90 +407,6 @@ namespace MasterData.Company
             this.ItemForParentDepartmentName.Text = "Phòng ban cha";
             this.ItemForParentDepartmentName.TextSize = new System.Drawing.Size(72, 13);
             // 
-            // colId
-            // 
-            this.colId.FieldName = "Id";
-            this.colId.Name = "colId";
-            this.colId.Visible = true;
-            this.colId.VisibleIndex = 0;
-            // 
-            // colCompanyId
-            // 
-            this.colCompanyId.FieldName = "CompanyId";
-            this.colCompanyId.Name = "colCompanyId";
-            this.colCompanyId.Visible = true;
-            this.colCompanyId.VisibleIndex = 1;
-            // 
-            // colBranchId
-            // 
-            this.colBranchId.FieldName = "BranchId";
-            this.colBranchId.Name = "colBranchId";
-            this.colBranchId.Visible = true;
-            this.colBranchId.VisibleIndex = 2;
-            // 
-            // colDepartmentCode
-            // 
-            this.colDepartmentCode.FieldName = "DepartmentCode";
-            this.colDepartmentCode.Name = "colDepartmentCode";
-            this.colDepartmentCode.Visible = true;
-            this.colDepartmentCode.VisibleIndex = 3;
-            // 
-            // colDepartmentName
-            // 
-            this.colDepartmentName.FieldName = "DepartmentName";
-            this.colDepartmentName.Name = "colDepartmentName";
-            this.colDepartmentName.Visible = true;
-            this.colDepartmentName.VisibleIndex = 4;
-            // 
-            // colParentId
-            // 
-            this.colParentId.FieldName = "ParentId";
-            this.colParentId.Name = "colParentId";
-            this.colParentId.Visible = true;
-            this.colParentId.VisibleIndex = 5;
-            // 
-            // colDescription
-            // 
-            this.colDescription.FieldName = "Description";
-            this.colDescription.Name = "colDescription";
-            this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 6;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 7;
-            // 
-            // colBranchName1
-            // 
-            this.colBranchName1.FieldName = "BranchName";
-            this.colBranchName1.Name = "colBranchName1";
-            this.colBranchName1.Visible = true;
-            this.colBranchName1.VisibleIndex = 8;
-            // 
-            // colParentDepartmentName
-            // 
-            this.colParentDepartmentName.FieldName = "ParentDepartmentName";
-            this.colParentDepartmentName.Name = "colParentDepartmentName";
-            this.colParentDepartmentName.Visible = true;
-            this.colParentDepartmentName.VisibleIndex = 9;
-            // 
-            // colEmployeeCount
-            // 
-            this.colEmployeeCount.FieldName = "EmployeeCount";
-            this.colEmployeeCount.Name = "colEmployeeCount";
-            this.colEmployeeCount.Visible = true;
-            this.colEmployeeCount.VisibleIndex = 10;
-            // 
-            // colSubDepartmentCount
-            // 
-            this.colSubDepartmentCount.FieldName = "SubDepartmentCount";
-            this.colSubDepartmentCount.Name = "colSubDepartmentCount";
-            this.colSubDepartmentCount.Visible = true;
-            this.colSubDepartmentCount.VisibleIndex = 11;
-            // 
             // FrmDepartmentDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -564,17 +478,7 @@ namespace MasterData.Company
         private System.Windows.Forms.BindingSource departmentDtoBindingSource;
         private DevExpress.XtraTreeList.TreeList treeListLookUpEdit1TreeList;
         private ToggleSwitch IsActiveToogleSwitch;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colCompanyId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colBranchId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentCode;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentId;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colIsActive;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colBranchName1;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colParentDepartmentName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colEmployeeCount;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colSubDepartmentCount;
+        private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentName;
     }
 }

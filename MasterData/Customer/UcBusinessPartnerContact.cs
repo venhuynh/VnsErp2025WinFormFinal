@@ -668,8 +668,7 @@ namespace MasterData.Customer
                             await HandleDeleteAvatar(contactDto);
                             break;
                         case "Copy":
-                            // TODO: Implement copy avatar
-                            MsgBox.ShowInfo("Chức năng copy avatar sẽ được triển khai sau.");
+                            
                             break;
                         case "Paste":
                             await HandlePasteAvatar(contactDto);

@@ -280,54 +280,69 @@ namespace MasterData.Company
         /// <summary>
         /// Xử lý sự kiện click button Thêm mới
         /// </summary>
-        private void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
-                // TODO: Mở FrmDepartmentDetail để thêm mới phòng ban
-                // using var form = new FrmDepartmentDetail();
-                // var result = form.ShowDialog();
-                // if (result == DialogResult.OK)
-                // {
-                //     LoadDataAsync();
-                //     UpdateButtonStates();
-                // }
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var form = new FrmDepartmentDetail(Guid.Empty))
+                    {
+                        form.StartPosition = FormStartPosition.CenterParent;
+                        if (form.ShowDialog(this) == DialogResult.OK)
+                        {
+                            await LoadDataAsyncWithoutSplash();
+                            UpdateButtonStates();
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi thêm mới phòng ban");
+                ShowError(ex, "Lỗi hiển thị màn hình thêm mới");
             }
         }
 
         /// <summary>
         /// Xử lý sự kiện click button Sửa
         /// </summary>
-        private void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            // Chỉ cho phép chỉnh sửa 1 dòng dữ liệu
-            if (_selectedDepartmentIds == null || _selectedDepartmentIds.Count == 0)
-            {
-                ShowInfo("Vui lòng chọn một dòng để chỉnh sửa.");
-                return;
-            }
-
-            if (_selectedDepartmentIds.Count > 1)
-            {
-                ShowInfo("Chỉ cho phép chỉnh sửa 1 dòng. Vui lòng bỏ chọn bớt.");
-                return;
-            }
-
             try
             {
-                // TODO: Mở FrmDepartmentDetail để chỉnh sửa phòng ban
-                // var id = _selectedDepartmentIds[0];
-                // using var form = new FrmDepartmentDetail(id);
-                // var result = form.ShowDialog();
-                // if (result == DialogResult.OK)
-                // {
-                //     LoadDataAsync();
-                //     UpdateButtonStates();
-                // }
+                // Chỉ cho phép chỉnh sửa 1 dòng dữ liệu
+                if (_selectedDepartmentIds == null || _selectedDepartmentIds.Count == 0)
+                {
+                    ShowInfo("Vui lòng chọn một dòng để chỉnh sửa.");
+                    return;
+                }
+
+                if (_selectedDepartmentIds.Count > 1)
+                {
+                    ShowInfo("Chỉ cho phép chỉnh sửa 1 dòng. Vui lòng bỏ chọn bớt.");
+                    return;
+                }
+
+                try
+                {
+                    using (OverlayManager.ShowScope(this))
+                    {
+                        var id = _selectedDepartmentIds[0];
+                        using (var form = new FrmDepartmentDetail(id))
+                        {
+                            form.StartPosition = FormStartPosition.CenterParent;
+                            if (form.ShowDialog(this) == DialogResult.OK)
+                            {
+                                await LoadDataAsyncWithoutSplash();
+                                UpdateButtonStates();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ShowError(ex, "Lỗi hiển thị màn hình điều chỉnh");
+                }
             }
             catch (Exception ex)
             {
@@ -338,7 +353,7 @@ namespace MasterData.Company
         /// <summary>
         /// Xử lý sự kiện click button Xóa
         /// </summary>
-        private void DeleteBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void DeleteBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             if (_selectedDepartmentIds == null || _selectedDepartmentIds.Count == 0)
             {
@@ -355,22 +370,25 @@ namespace MasterData.Company
 
             try
             {
-                // TODO: Thực hiện xóa phòng ban
-                // await ExecuteWithWaitingFormAsync(async () =>
-                // {
-                //     var success = await _departmentBll.DeleteMultipleAsync(_selectedDepartmentIds.ToList());
-                //     if (success)
-                //     {
-                //         ShowInfo($"Đã xóa {_selectedDepartmentIds.Count} phòng ban");
-                //     }
-                // });
-                //
-                // // Clear selection state trước khi reload
-                // ClearSelectionState();
-                //
-                // // Reload dữ liệu
-                // await LoadDataAsync();
-                // UpdateButtonStates();
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    var success = await Task.Run(() => _departmentBll.DeleteMultiple(_selectedDepartmentIds.ToList()));
+                    if (success)
+                    {
+                        ShowInfo($"Đã xóa {_selectedDepartmentIds.Count} phòng ban");
+                    }
+                    else
+                    {
+                        ShowError("Không thể xóa phòng ban. Vui lòng thử lại.");
+                    }
+                });
+
+                // Clear selection state trước khi reload
+                ClearSelectionState();
+
+                // Reload dữ liệu
+                await LoadDataAsyncWithoutSplash();
+                UpdateButtonStates();
             }
             catch (Exception ex)
             {
@@ -789,6 +807,14 @@ namespace MasterData.Company
                 var message = $"{context}: {ex.Message}";
                 MsgBox.ShowError(message);
             }
+        }
+
+        /// <summary>
+        /// Hiển thị lỗi với thông báo.
+        /// </summary>
+        private void ShowError(string message)
+        {
+            MsgBox.ShowError(message);
         }
 
         #endregion

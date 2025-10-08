@@ -366,10 +366,12 @@ namespace Dal.BaseDataAccess
         /// Cập nhật record (Async)
         /// </summary>
         /// <param name="entity">Entity cần cập nhật</param>
-        public virtual async Task UpdateAsync(T entity)
+        protected virtual async Task UpdateAsync(T entity)
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"BaseDataAccess.UpdateAsync - Method called for {typeof(T).Name}");
+                
                 if (entity is null)
                     throw new ArgumentNullException(nameof(entity));
 
@@ -384,6 +386,14 @@ namespace Dal.BaseDataAccess
                 if (primaryKeyValue is null)
                     throw new DataAccessException($"Primary key của {typeof(T).Name} không được null");
 
+                // Debug: Kiểm tra entity trước khi attach
+                if (entity is Department dept)
+                {
+                    Logger?.LogInfo($"BaseDataAccess.UpdateAsync - Department.BranchId: {dept.BranchId}");
+                    Logger?.LogInfo($"BaseDataAccess.UpdateAsync - Department.ParentId: {dept.ParentId}");
+                    Logger?.LogInfo($"BaseDataAccess.UpdateAsync - Department.Id: {dept.Id}");
+                }
+
                 // Attach entity vào context và đánh dấu là modified
                 context.GetTable<T>().Attach(entity);
                 
@@ -396,6 +406,12 @@ namespace Dal.BaseDataAccess
                     // Đánh dấu property là modified để LINQ to SQL biết cần update
                     var originalValue = property.GetValue(entity);
                     property.SetValue(entity, originalValue);
+                    
+                    // Debug: Log property changes
+                    if (entity is Department dept2 && (property.Name == "BranchId" || property.Name == "ParentId"))
+                    {
+                        Logger?.LogInfo($"Property {property.Name} set to: {originalValue}");
+                    }
                 }
 
                 // Submit changes
