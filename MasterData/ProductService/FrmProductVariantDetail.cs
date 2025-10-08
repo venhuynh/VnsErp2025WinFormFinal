@@ -1367,7 +1367,7 @@ namespace MasterData.ProductService
 		{
 			try
 			{
-				// TODO: Implement logic to check for unsaved changes
+				
 				// For now, always return false
 				return false;
 			}

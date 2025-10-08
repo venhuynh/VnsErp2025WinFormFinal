@@ -657,9 +657,7 @@ namespace MasterData.Customer
                     var focusedRowHandle = BusinessPartnerContactGridCardView.FocusedRowHandle;
                     if (focusedRowHandle < 0) return;
 
-                    var contactDto =
-                        BusinessPartnerContactGridCardView.GetRow(focusedRowHandle) as BusinessPartnerContactDto;
-                    if (contactDto == null) return;
+                    if (BusinessPartnerContactGridCardView.GetRow(focusedRowHandle) is not BusinessPartnerContactDto contactDto) return;
 
                     switch (e.Item.Name)
                     {
@@ -670,8 +668,7 @@ namespace MasterData.Customer
                             await HandleDeleteAvatar(contactDto);
                             break;
                         case "Copy":
-                            // TODO: Implement copy avatar
-                            MsgBox.ShowInfo("Chức năng copy avatar sẽ được triển khai sau.");
+                            
                             break;
                         case "Paste":
                             await HandlePasteAvatar(contactDto);
@@ -926,7 +923,7 @@ namespace MasterData.Customer
             catch (Exception ex)
             {
                 MsgBox.ShowException(new Exception("Lỗi lấy selected contact DTOs: " + ex.Message, ex));
-                return new List<BusinessPartnerContactDto>();
+                return [];
             }
         }
 

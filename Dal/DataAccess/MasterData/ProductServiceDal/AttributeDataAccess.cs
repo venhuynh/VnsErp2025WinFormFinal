@@ -50,7 +50,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             }
         }
 
-        public override Attribute GetById(object id)
+        protected override Attribute GetById(object id)
         {
             if (id is Guid guid) return GetById(guid);
             return null;

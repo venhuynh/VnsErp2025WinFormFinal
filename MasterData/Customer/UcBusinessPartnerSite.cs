@@ -150,37 +150,6 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Load dữ liệu đồng bộ (fallback method)
-        /// </summary>
-        private void LoadData()
-        {
-            try
-            {
-                Cursor = Cursors.WaitCursor;
-                
-                // Load data from BLL
-                var entities = _businessPartnerSiteBll.GetAll();
-                _dataList = entities.ToSiteListDtos().ToList();
-                
-                // Bind to grid
-                businessPartnerSiteListDtoBindingSource.DataSource = _dataList;
-
-                BusinessPartnerSiteListDtoAdvBandedGridView.BestFitColumns();
-
-                // Update summary
-                UpdateDataSummary();
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowError($"Lỗi khi tải dữ liệu: {ex.Message}");
-            }
-            finally
-            {
-                Cursor = Cursors.Default;
-            }
-        }
-
-        /// <summary>
         /// Cập nhật thông tin tổng hợp dữ liệu
         /// </summary>
         private void UpdateDataSummary()
@@ -188,7 +157,7 @@ namespace MasterData.Customer
             var totalCount = _dataList?.Count ?? 0;
             var activeCount = _dataList?.Count(x => x.IsActive) ?? 0;
             
-            DataSummaryBarStaticItem.Caption = $"Tổng: {totalCount} | Hoạt động: {activeCount}";
+            DataSummaryBarStaticItem.Caption = @$"Tổng: {totalCount} | Hoạt động: {activeCount}";
         }
 
         #endregion
@@ -241,30 +210,37 @@ namespace MasterData.Customer
         /// </summary>
         private async void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (_selectedItem == null)
-            {
-                ShowInfo("Vui lòng chọn chi nhánh cần chỉnh sửa.");
-                return;
-            }
-
             try
             {
-                using (OverlayManager.ShowScope(this))
+                if (_selectedItem == null)
                 {
-                    using (var form = new FrmBusinessPartnerSiteDetail(_selectedItem.Id))
+                    ShowInfo("Vui lòng chọn chi nhánh cần chỉnh sửa.");
+                    return;
+                }
+
+                try
+                {
+                    using (OverlayManager.ShowScope(this))
                     {
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        if (form.ShowDialog(this) == DialogResult.OK)
+                        using (var form = new FrmBusinessPartnerSiteDetail(_selectedItem.Id))
                         {
-                            await LoadDataAsyncWithoutSplash();
-                            UpdateButtonStates();
+                            form.StartPosition = FormStartPosition.CenterParent;
+                            if (form.ShowDialog(this) == DialogResult.OK)
+                            {
+                                await LoadDataAsyncWithoutSplash();
+                                UpdateButtonStates();
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    ShowError(ex, "Lỗi hiển thị màn hình điều chỉnh");
                 }
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi hiển thị màn hình điều chỉnh");
+                MsgBox.ShowException(ex);
             }
         }
 
@@ -273,34 +249,41 @@ namespace MasterData.Customer
         /// </summary>
         private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (_selectedItem == null)
-            {
-                ShowInfo("Vui lòng chọn chi nhánh cần xóa.");
-                return;
-            }
-
-            var confirmMessage = $"Bạn có chắc muốn xóa chi nhánh '{_selectedItem.SiteName}'?";
-            if (!MsgBox.GetConfirmFromYesNoDialog(confirmMessage)) return;
-
             try
             {
-                await ExecuteWithWaitingFormAsync(async () =>
+                if (_selectedItem == null)
                 {
-                    var success = await Task.Run(() => _businessPartnerSiteBll.DeleteSite(_selectedItem.Id));
-                    if (success)
+                    ShowInfo("Vui lòng chọn chi nhánh cần xóa.");
+                    return;
+                }
+
+                var confirmMessage = $"Bạn có chắc muốn xóa chi nhánh '{_selectedItem.SiteName}'?";
+                if (!MsgBox.GetConfirmFromYesNoDialog(confirmMessage)) return;
+
+                try
+                {
+                    await ExecuteWithWaitingFormAsync(async () =>
                     {
-                        ShowInfo("Xóa chi nhánh thành công!");
-                        await LoadDataAsyncWithoutSplash();
-                    }
-                    else
-                    {
-                        ShowError("Không thể xóa chi nhánh. Vui lòng thử lại.");
-                    }
-                });
+                        var success = await Task.Run(() => _businessPartnerSiteBll.DeleteSite(_selectedItem.Id));
+                        if (success)
+                        {
+                            ShowInfo("Xóa chi nhánh thành công!");
+                            await LoadDataAsyncWithoutSplash();
+                        }
+                        else
+                        {
+                            ShowError("Không thể xóa chi nhánh. Vui lòng thử lại.");
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    ShowError(ex, "Lỗi xóa chi nhánh");
+                }
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi xóa chi nhánh");
+                MsgBox.ShowException(ex);
             }
         }
 
@@ -322,7 +305,7 @@ namespace MasterData.Customer
             {
                 var saveDialog = new SaveFileDialog
                 {
-                    Filter = "Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
+                    Filter = @"Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
                     FileName = "BusinessPartnerSites.xlsx"
                 };
 
@@ -354,7 +337,7 @@ namespace MasterData.Customer
                 else
                 {
                     _selectedItem = null;
-                    SelectedRowBarStaticItem.Caption = "Chưa chọn dòng nào";
+                    SelectedRowBarStaticItem.Caption = @"Chưa chọn dòng nào";
                 }
                 UpdateButtonStates();
             }
@@ -524,11 +507,11 @@ namespace MasterData.Customer
         {
             if (_selectedItem != null)
             {
-                SelectedRowBarStaticItem.Caption = $"Đang chọn: {_selectedItem.SiteName}";
+                SelectedRowBarStaticItem.Caption = @$"Đang chọn: {_selectedItem.SiteName}";
             }
             else
             {
-                SelectedRowBarStaticItem.Caption = "Chưa chọn dòng nào";
+                SelectedRowBarStaticItem.Caption = @"Chưa chọn dòng nào";
             }
         }
 

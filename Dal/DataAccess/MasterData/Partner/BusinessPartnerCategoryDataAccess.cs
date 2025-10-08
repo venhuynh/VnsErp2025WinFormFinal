@@ -142,27 +142,11 @@ namespace Dal.DataAccess.MasterData.Partner
         /// <summary>
         /// Override GetById từ BaseDataAccess để sử dụng Guid thay vì object.
         /// </summary>
-        public override BusinessPartnerCategory GetById(object id)
+        protected override BusinessPartnerCategory GetById(object id)
         {
             if (id is Guid guidId)
                 return GetById(guidId);
             return null;
-        }
-
-        /// <summary>
-        /// Lấy danh mục theo Id (Async).
-        /// </summary>
-        public async Task<BusinessPartnerCategory> GetByIdAsync(Guid id)
-        {
-            try
-            {
-                using var context = CreateContext();
-                return await Task.Run(() => context.BusinessPartnerCategories.FirstOrDefault(x => x.Id == id));
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy danh mục theo Id {id}: {ex.Message}", ex);
-            }
         }
 
         /// <summary>

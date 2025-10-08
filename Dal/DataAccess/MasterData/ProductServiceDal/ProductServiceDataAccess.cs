@@ -61,7 +61,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// <summary>
         /// Override GetById từ BaseDataAccess để sử dụng Guid thay vì object.
         /// </summary>
-        public override ProductService GetById(object id)
+        protected override ProductService GetById(object id)
         {
             if (id is Guid guidId)
                 return GetById(guidId);

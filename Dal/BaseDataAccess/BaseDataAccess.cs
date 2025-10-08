@@ -23,17 +23,17 @@ namespace Dal.BaseDataAccess
         /// <summary>
         /// Database settings
         /// </summary>
-        protected readonly DatabaseSettings _settings;
+        private readonly DatabaseSettings _settings;
 
         /// <summary>
         /// Logger instance
         /// </summary>
-        protected readonly ILogger _logger;
+        protected readonly ILogger Logger;
 
         /// <summary>
         /// Connection string (backward compatibility)
         /// </summary>
-        protected readonly string _connStr;
+        private readonly string _connStr;
 
         #endregion
 
@@ -45,7 +45,7 @@ namespace Dal.BaseDataAccess
         protected BaseDataAccess(ILogger logger = null)
         {
             _settings = ConfigurationManager.DatabaseSettings;
-            _logger = logger ?? new NullLogger();
+            Logger = logger ?? new NullLogger();
             _connStr = _settings.ConnectionString;
         }
 
@@ -57,7 +57,7 @@ namespace Dal.BaseDataAccess
         protected BaseDataAccess(string connectionString, ILogger logger = null)
         {
             _connStr = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-            _logger = logger ?? new NullLogger();
+            Logger = logger ?? new NullLogger();
             _settings = ConfigurationManager.DatabaseSettings;
         }
 
@@ -73,7 +73,7 @@ namespace Dal.BaseDataAccess
         {
             try
             {
-                if (entity == null)
+                if (entity is null)
                     throw new ArgumentNullException(nameof(entity));
 
                 using var context = new VnsErp2025DataContext(_connStr);
@@ -114,11 +114,11 @@ namespace Dal.BaseDataAccess
         /// Thêm record mới (Async)
         /// </summary>
         /// <param name="entity">Entity cần thêm</param>
-        public virtual async Task AddAsync(T entity)
+        protected virtual async Task AddAsync(T entity)
         {
             try
             {
-                if (entity == null)
+                if (entity is null)
                     throw new ArgumentNullException(nameof(entity));
 
                 using var context = new VnsErp2025DataContext(_connStr);
@@ -166,7 +166,7 @@ namespace Dal.BaseDataAccess
         public virtual List<T> GetAll()
         {
             var operationName = $"GetAll_{typeof(T).Name}";
-            _logger.LogDebug("Starting {0}", operationName);
+            Logger.LogDebug("Starting {0}", operationName);
 
             if (_settings.EnableRetryOnFailure)
             {
@@ -175,13 +175,13 @@ namespace Dal.BaseDataAccess
                     {
                         using var context = CreateContext();
                         var result = context.GetTable<T>().ToList();
-                        _logger.LogDebug("{0} completed successfully", operationName);
+                        Logger.LogDebug("{0} completed successfully", operationName);
                         return result;
                     },
                     _settings.MaxRetryCount,
                     _settings.RetryDelayMs,
                     RetryHelper.ShouldRetrySqlException,
-                    _logger
+                    Logger
                 );
             }
             return ExecuteWithErrorHandling(
@@ -225,18 +225,18 @@ namespace Dal.BaseDataAccess
         /// </summary>
         /// <param name="id">ID của record</param>
         /// <returns>Record tìm được hoặc null</returns>
-        public virtual T GetById(object id)
+        protected virtual T GetById(object id)
         {
             try
             {
-                if (id == null)
+                if (id is null)
                     return null;
 
                 using var context = new VnsErp2025DataContext(_connStr);
                 var table = context.GetTable<T>();
                 var primaryKeyProperty = GetPrimaryKeyProperty();
                 
-                if (primaryKeyProperty == null)
+                if (primaryKeyProperty is null)
                     throw new DataAccessException($"Không tìm thấy primary key cho {typeof(T).Name}");
 
                 // Sử dụng reflection để tìm theo primary key
@@ -264,7 +264,7 @@ namespace Dal.BaseDataAccess
         {
             try
             {
-                return GetById(id) != null;
+                return GetById(id) is not null;
             }
             catch (Exception ex)
             {
@@ -301,18 +301,18 @@ namespace Dal.BaseDataAccess
         {
             try
             {
-                if (entity == null)
+                if (entity is null)
                     throw new ArgumentNullException(nameof(entity));
 
                 using var context = new VnsErp2025DataContext(_connStr);
                 
                 // Lấy primary key để kiểm tra
                 var primaryKeyProperty = GetPrimaryKeyProperty();
-                if (primaryKeyProperty == null)
+                if (primaryKeyProperty is null)
                     throw new DataAccessException($"Không tìm thấy primary key cho {typeof(T).Name}");
 
                 var primaryKeyValue = primaryKeyProperty.GetValue(entity);
-                if (primaryKeyValue == null)
+                if (primaryKeyValue is null)
                     throw new DataAccessException($"Primary key của {typeof(T).Name} không được null");
 
                 // Attach entity vào context và đánh dấu là modified
@@ -366,23 +366,33 @@ namespace Dal.BaseDataAccess
         /// Cập nhật record (Async)
         /// </summary>
         /// <param name="entity">Entity cần cập nhật</param>
-        public virtual async Task UpdateAsync(T entity)
+        protected virtual async Task UpdateAsync(T entity)
         {
             try
             {
-                if (entity == null)
+                System.Diagnostics.Debug.WriteLine($"BaseDataAccess.UpdateAsync - Method called for {typeof(T).Name}");
+                
+                if (entity is null)
                     throw new ArgumentNullException(nameof(entity));
 
                 using var context = new VnsErp2025DataContext(_connStr);
                 
                 // Lấy primary key để kiểm tra
                 var primaryKeyProperty = GetPrimaryKeyProperty();
-                if (primaryKeyProperty == null)
+                if (primaryKeyProperty is null)
                     throw new DataAccessException($"Không tìm thấy primary key cho {typeof(T).Name}");
 
                 var primaryKeyValue = primaryKeyProperty.GetValue(entity);
-                if (primaryKeyValue == null)
+                if (primaryKeyValue is null)
                     throw new DataAccessException($"Primary key của {typeof(T).Name} không được null");
+
+                // Debug: Kiểm tra entity trước khi attach
+                if (entity is Department dept)
+                {
+                    Logger?.LogInfo($"BaseDataAccess.UpdateAsync - Department.BranchId: {dept.BranchId}");
+                    Logger?.LogInfo($"BaseDataAccess.UpdateAsync - Department.ParentId: {dept.ParentId}");
+                    Logger?.LogInfo($"BaseDataAccess.UpdateAsync - Department.Id: {dept.Id}");
+                }
 
                 // Attach entity vào context và đánh dấu là modified
                 context.GetTable<T>().Attach(entity);
@@ -396,6 +406,12 @@ namespace Dal.BaseDataAccess
                     // Đánh dấu property là modified để LINQ to SQL biết cần update
                     var originalValue = property.GetValue(entity);
                     property.SetValue(entity, originalValue);
+                    
+                    // Debug: Log property changes
+                    if (entity is Department dept2 && (property.Name == "BranchId" || property.Name == "ParentId"))
+                    {
+                        Logger?.LogInfo($"Property {property.Name} set to: {originalValue}");
+                    }
                 }
 
                 // Submit changes
@@ -439,12 +455,12 @@ namespace Dal.BaseDataAccess
         /// Xóa record theo ID
         /// </summary>
         /// <param name="id">ID của record cần xóa</param>
-        public virtual void c(object id)
+        public virtual void DeleteById(object id)
         {
             try
             {
                 var entity = GetById(id);
-                if (entity != null)
+                if (entity is not null)
                 {
                     Delete(entity);
                 }
@@ -463,7 +479,7 @@ namespace Dal.BaseDataAccess
         {
             try
             {
-                if (entity == null)
+                if (entity is null)
                     throw new ArgumentNullException(nameof(entity));
 
                 using var context = new VnsErp2025DataContext(_connStr);
@@ -490,7 +506,7 @@ namespace Dal.BaseDataAccess
                 
                 // Sử dụng reflection để tìm entity theo ID
                 var idProperty = typeof(T).GetProperty("Id");
-                if (idProperty == null)
+                if (idProperty is null)
                     throw new InvalidOperationException($"Entity {typeof(T).Name} không có property Id");
                 
                 var entity = table.ToList().FirstOrDefault(e => 
@@ -499,7 +515,7 @@ namespace Dal.BaseDataAccess
                     return entityId == id;
                 });
                 
-                if (entity != null)
+                if (entity is not null)
                 {
                     table.DeleteOnSubmit(entity);
                     context.SubmitChanges();
@@ -540,9 +556,10 @@ namespace Dal.BaseDataAccess
         /// </summary>
         protected virtual VnsErp2025DataContext CreateContext()
         {
-            var context = new VnsErp2025DataContext(_connStr);
-            context.CommandTimeout = _settings.CommandTimeout;
-            return context;
+            return new VnsErp2025DataContext(_connStr)
+            {
+                CommandTimeout = _settings.CommandTimeout
+            };
         }
 
         #endregion
@@ -560,7 +577,7 @@ namespace Dal.BaseDataAccess
             }
             catch (System.Data.SqlClient.SqlException sqlEx)
             {
-                _logger.LogError("SQL error in {0}: {1} (Error: {2})", sqlEx, operationName, sqlEx.Message, sqlEx.Number);
+                Logger.LogError("SQL error in {0}: {1} (Error: {2})", sqlEx, operationName, sqlEx.Message, sqlEx.Number);
                 throw new DataAccessException($"Lỗi SQL khi thực hiện {operationName}: {sqlEx.Message}", sqlEx)
                 {
                     SqlErrorNumber = sqlEx.Number,
@@ -569,7 +586,7 @@ namespace Dal.BaseDataAccess
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error in {0}: {1}", ex, operationName, ex.Message);
+                Logger.LogError("Error in {0}: {1}", ex, operationName, ex.Message);
                 throw new DataAccessException($"Lỗi khi thực hiện {operationName}: {ex.Message}", ex);
             }
         }

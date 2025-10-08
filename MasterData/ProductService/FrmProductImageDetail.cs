@@ -442,7 +442,7 @@ namespace MasterData.ProductService
         {
             try
             {
-                // TODO: Implement proper product name lookup
+                
                 // Có thể sử dụng ProductServiceBll để lấy tên sản phẩm
                 return "Product"; // Tạm thời return giá trị mặc định
             }

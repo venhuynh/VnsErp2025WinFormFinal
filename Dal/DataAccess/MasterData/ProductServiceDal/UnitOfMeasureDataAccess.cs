@@ -46,7 +46,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             }
         }
 
-        public override UnitOfMeasure GetById(object id)
+        protected override UnitOfMeasure GetById(object id)
         {
             if (id is Guid guid) return GetById(guid);
             return null;
@@ -60,9 +60,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             try
             {
                 using var context = CreateContext();
-                return context.UnitOfMeasures
-                    .OrderBy(x => x.Code)
-                    .ToList();
+                return context.UnitOfMeasures.OrderBy(x => x.Code).ToList();
             }
             catch (Exception ex)
             {
@@ -138,8 +136,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                     .Where(x => x.Code.ToLower().Contains(lowerKeyword) ||
                                x.Name.ToLower().Contains(lowerKeyword) ||
                                (x.Description != null && x.Description.ToLower().Contains(lowerKeyword)))
-                    .OrderBy(x => x.Code)
-                    .ToList();
+                    .OrderBy(x => x.Code).ToList();
             }
             catch (Exception ex)
             {
@@ -157,8 +154,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                 using var context = CreateContext();
                 return context.UnitOfMeasures
                     .Where(x => x.IsActive == isActive)
-                    .OrderBy(x => x.Code)
-                    .ToList();
+                    .OrderBy(x => x.Code).ToList();
             }
             catch (Exception ex)
             {
