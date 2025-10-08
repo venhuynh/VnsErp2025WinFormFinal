@@ -63,9 +63,11 @@
     <Compile Include="Company\Converters\CompanyBranchConverters.cs" />
     <Compile Include="Company\Converters\CompanyConverter.cs" />
     <Compile Include="Company\Converters\DepartmentConverters.cs" />
+    <Compile Include="Company\Converters\PositionConverter.cs" />
     <Compile Include="Company\Dto\CompanyBranchDto.cs" />
     <Compile Include="Company\Dto\CompanyDto.cs" />
     <Compile Include="Company\Dto\DepartmentDto.cs" />
+    <Compile Include="Company\Dto\PositionDto.cs" />
     <Compile Include="Company\FrmCompanyBranchDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +79,12 @@
     </Compile>
     <Compile Include="Company\FrmDepartmentDetail.Designer.cs">
       <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmPositionDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmPositionDetail.Designer.cs">
+      <DependentUpon>FrmPositionDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="Company\UcCompany.cs">
       <SubType>UserControl</SubType>
@@ -95,6 +103,12 @@
     </Compile>
     <Compile Include="Company\UcDepartment.Designer.cs">
       <DependentUpon>UcDepartment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\UcPosition.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Company\UcPosition.Designer.cs">
+      <DependentUpon>UcPosition.cs</DependentUpon>
     </Compile>
     <Compile Include="Customer\Converters\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
@@ -270,6 +284,9 @@
     <EmbeddedResource Include="Company\FrmDepartmentDetail.resx">
       <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmPositionDetail.resx">
+      <DependentUpon>FrmPositionDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Company\UcCompany.resx">
       <DependentUpon>UcCompany.cs</DependentUpon>
     </EmbeddedResource>
@@ -278,6 +295,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Company\UcDepartment.resx">
       <DependentUpon>UcDepartment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\UcPosition.resx">
+      <DependentUpon>UcPosition.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Customer\FluentPartner.resx">
       <DependentUpon>FluentPartner.cs</DependentUpon>
@@ -356,6 +376,7 @@
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.DepartmentDto.datasource" />
+    <None Include="Properties\DataSources\MasterData.Company.Dto.PositionDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Customer.Dto.BusinessPartnerListDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Customer.Dto.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />
