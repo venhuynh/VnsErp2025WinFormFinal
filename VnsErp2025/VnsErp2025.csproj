@@ -125,6 +125,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Docs\Promt\Tạo file Md dựa vào source code.txt" />
     <Content Include="Docs\Promt\Prompt chung – Refactor toàn bộ màn hình GUI.txt" />
     <Content Include="Docs\Promt\Tái cấu trúc source code.txt" />
     <None Include="Resources\home_32x32.png" />

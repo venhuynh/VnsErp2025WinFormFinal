@@ -91,6 +91,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Form\FrmLogin_Developer_Guide.md" />
+    <None Include="Form\FrmLogin_User_Guide.md" />
     <None Include="Properties\DataSources\Dal.Connection.DatabaseConfig.datasource" />
     <None Include="Resources\apply_16x16.png" />
   </ItemGroup>
