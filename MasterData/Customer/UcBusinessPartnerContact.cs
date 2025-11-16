@@ -62,6 +62,9 @@ namespace MasterData.Customer
             RegisterEvents();
 
             UpdateButtonStates();
+
+            // Setup SuperToolTips
+            SetupSuperToolTips();
         }
 
         /// <summary>
@@ -871,6 +874,56 @@ namespace MasterData.Customer
         #endregion
 
         #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong UserControl
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (ListDataBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ListDataBarButtonItem,
+                        title: "<b><color=Blue>🔄 Tải dữ liệu</color></b>",
+                        content: "Tải lại danh sách liên hệ đối tác từ hệ thống."
+                    );
+                }
+
+                if (NewBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NewBarButtonItem,
+                        title: "<b><color=Green>➕ Thêm mới</color></b>",
+                        content: "Thêm mới liên hệ đối tác vào hệ thống."
+                    );
+                }
+
+                if (DeleteBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        DeleteBarButtonItem,
+                        title: "<b><color=Red>🗑️ Xóa</color></b>",
+                        content: "Xóa các liên hệ đối tác đã chọn khỏi hệ thống."
+                    );
+                }
+
+                if (ExportBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ExportBarButtonItem,
+                        title: "<b><color=Purple>📊 Xuất Excel</color></b>",
+                        content: "Xuất danh sách liên hệ đối tác ra file Excel."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn UserControl
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Cập nhật danh sách ID liên hệ được chọn

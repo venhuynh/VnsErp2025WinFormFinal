@@ -69,6 +69,12 @@ namespace MasterData.Customer
                 // Thiết lập tiêu đề form
                 Text = IsEditMode ? "Điều chỉnh danh mục đối tác" : "Thêm mới danh mục đối tác";
 
+                // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
+                RequiredFieldHelper.MarkRequiredFields(this, typeof(BusinessPartnerCategoryDto));
+
+                // Thiết lập SuperToolTip cho các controls
+                SetupSuperToolTips();
+
                 // Load dữ liệu nếu đang chỉnh sửa
                 if (IsEditMode)
                 {
@@ -267,6 +273,56 @@ namespace MasterData.Customer
         #endregion
 
         #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong form
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (CategoryNameTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        CategoryNameTextEdit,
+                        title: "<b><color=DarkBlue>📋 Tên phân loại</color></b>",
+                        content: "Nhập tên phân loại đối tác. Trường này là bắt buộc."
+                    );
+                }
+
+                if (DescriptionMemoEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        DescriptionMemoEdit,
+                        title: "<b><color=DarkBlue>📝 Mô tả</color></b>",
+                        content: "Nhập mô tả chi tiết về phân loại đối tác (tối đa 255 ký tự)."
+                    );
+                }
+
+                if (SaveBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        SaveBarButtonItem,
+                        title: "<b><color=Blue>💾 Lưu</color></b>",
+                        content: "Lưu thông tin danh mục đối tác vào hệ thống."
+                    );
+                }
+
+                if (CloseBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        CloseBarButtonItem,
+                        title: "<b><color=Red>❌ Đóng</color></b>",
+                        content: "Đóng form mà không lưu thay đổi."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn form
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Hiển thị thông tin.

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,8 +11,6 @@ using Bll.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraLayout;
 using MasterData.Customer.Converters;
 using MasterData.Customer.Dto;
 
@@ -104,6 +100,9 @@ namespace MasterData.Customer
 
             // Setup validation
             SetupValidation();
+            
+            // Thiết lập SuperToolTip cho các controls
+            SetupSuperToolTips();
         }
 
         #endregion
@@ -437,7 +436,7 @@ namespace MasterData.Customer
         private void SetupValidation()
         {
             // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
-            MarkRequiredFields(typeof(BusinessPartnerSiteDto));
+            RequiredFieldHelper.MarkRequiredFields(this, typeof(BusinessPartnerSiteDto));
         }
 
         #endregion
@@ -445,103 +444,88 @@ namespace MasterData.Customer
         #region ========== TIỆN ÍCH HỖ TRỢ ==========
 
         /// <summary>
-        /// Đánh dấu các layout item tương ứng với thuộc tính có [Required] bằng dấu * đỏ.
-        /// Quy ước mapping control theo tên thuộc tính (từ editor được gán vào LayoutControlItem.Control):
-        /// - Editor: "txt" + PropertyName, PropertyName + "TextEdit", hoặc chính PropertyName (BaseEdit)
+        /// Thiết lập SuperToolTip cho các controls trong form
         /// </summary>
-        private void MarkRequiredFields(Type dtoType)
+        private void SetupSuperToolTips()
         {
             try
             {
-                var requiredProps = dtoType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => p.GetCustomAttributes(typeof(RequiredAttribute),
-                        true).Any())
-                    .ToList();
-
-                var allLayoutItems = GetAllLayoutControlItems(this);
-
-                foreach (var it in allLayoutItems)
+                if (PartnerNameTextEdit != null)
                 {
-                    it.AllowHtmlStringInCaption = true;
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        PartnerNameTextEdit,
+                        title: "<b><color=DarkBlue>🏢 Đối tác</color></b>",
+                        content: "Chọn đối tác mà chi nhánh này thuộc về. Trường này là bắt buộc."
+                    );
                 }
 
-                foreach (var prop in requiredProps)
+                if (SiteCodeTextEdit != null)
                 {
-                    var propName = prop.Name;
-                    var item = allLayoutItems.FirstOrDefault(it => IsEditorMatchProperty(it.Control, propName));
-                    if (item == null) continue;
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        SiteCodeTextEdit,
+                        title: "<b><color=DarkBlue>🔖 Mã chi nhánh</color></b>",
+                        content: "Nhập mã chi nhánh duy nhất. Trường này là bắt buộc. Mã sẽ được tự động tạo khi chọn đối tác (chế độ thêm mới)."
+                    );
+                }
 
-                    if (!(item.Text?.Contains("*") ?? false))
-                    {
-                        var baseCaption = string.IsNullOrWhiteSpace(item.Text) ? propName : item.Text;
-                        item.Text = baseCaption + @" <color=red>*</color>";
-                    }
+                if (SiteNameTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        SiteNameTextEdit,
+                        title: "<b><color=DarkBlue>📍 Tên chi nhánh</color></b>",
+                        content: "Nhập tên chi nhánh. Trường này là bắt buộc."
+                    );
+                }
 
-                    if (item.Control is BaseEdit be &&
-                        be.Properties is RepositoryItemTextEdit txtProps)
-                    {
-                        txtProps.NullValuePrompt = @"Bắt buộc nhập";
-                        txtProps.NullValuePromptShowForEmptyValue = true;
-                    }
+                if (AddressTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        AddressTextEdit,
+                        title: "<b><color=DarkBlue>🏠 Địa chỉ</color></b>",
+                        content: "Nhập địa chỉ chi tiết của chi nhánh."
+                    );
+                }
+
+                if (PhoneTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        PhoneTextEdit,
+                        title: "<b><color=DarkBlue>📞 Số điện thoại</color></b>",
+                        content: "Nhập số điện thoại liên hệ của chi nhánh."
+                    );
+                }
+
+                if (EmailTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        EmailTextEdit,
+                        title: "<b><color=DarkBlue>📧 Email</color></b>",
+                        content: "Nhập địa chỉ email liên hệ của chi nhánh."
+                    );
+                }
+
+                if (SaveBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        SaveBarButtonItem,
+                        title: "<b><color=Blue>💾 Lưu</color></b>",
+                        content: "Lưu thông tin chi nhánh đối tác vào hệ thống."
+                    );
+                }
+
+                if (CloseBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        CloseBarButtonItem,
+                        title: "<b><color=Red>❌ Đóng</color></b>",
+                        content: "Đóng form mà không lưu thay đổi."
+                    );
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // ignore marking errors
-            }
-        }
-
-        private static bool IsEditorMatchProperty(Control editor, string propName)
-        {
-            if (editor == null) return false;
-            var name = editor.Name ?? string.Empty;
-            string[] candidates =
-            {
-                name,
-                name.Replace("txt", string.Empty),
-                name.Replace("TextEdit", string.Empty)
-            };
-            return candidates.Any(c => string.Equals(c, propName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private static List<LayoutControlItem> GetAllLayoutControlItems(Control root)
-        {
-            var result = new List<LayoutControlItem>();
-            if (root == null) return result;
-            var layoutControls = root.Controls.OfType<LayoutControl>().ToList();
-            var nested = root.Controls.Cast<Control>().SelectMany(GetAllLayoutControlItems).ToList();
-            foreach (var lc in layoutControls)
-            {
-                if (lc.Root != null)
-                {
-                    CollectLayoutItems(lc.Root, result);
-                }
-            }
-
-            result.AddRange(nested);
-            return result;
-        }
-
-        private static void CollectLayoutItems(BaseLayoutItem baseItem,
-            List<LayoutControlItem> collector)
-        {
-            switch (baseItem)
-            {
-                case null:
-                    return;
-                case LayoutControlItem lci:
-                    collector.Add(lci);
-                    break;
-                case LayoutControlGroup group:
-                {
-                    foreach (BaseLayoutItem child in group.Items)
-                    {
-                        CollectLayoutItems(child, collector);
-                    }
-
-                    break;
-                }
+                // Ignore lỗi setup SuperToolTip để không chặn form
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
             }
         }
 
