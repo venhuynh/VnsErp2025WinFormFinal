@@ -8,7 +8,7 @@ using DevExpress.XtraLayout;
 
 namespace MasterData.Customer
 {
-    partial class UcBusinessPartnerSite
+    partial class FrmBusinessPartnerSite
     {
         /// <summary> 
         /// Required designer variable.
@@ -220,15 +220,15 @@ namespace MasterData.Customer
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1077, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 626);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 592);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1077, 35);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 35);
             // 
             // barDockControlLeft
             // 
@@ -236,15 +236,15 @@ namespace MasterData.Customer
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 587);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 553);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1077, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 587);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 553);
             // 
             // repositoryItemComboBox1
             // 
@@ -267,7 +267,7 @@ namespace MasterData.Customer
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1077, 587);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 553);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -282,7 +282,7 @@ namespace MasterData.Customer
             this.BusinessPartnerSiteListDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemPictureEdit1,
             this.repositoryItemHypertextLabel1});
-            this.BusinessPartnerSiteListDtoGridControl.Size = new System.Drawing.Size(1045, 555);
+            this.BusinessPartnerSiteListDtoGridControl.Size = new System.Drawing.Size(1043, 521);
             this.BusinessPartnerSiteListDtoGridControl.TabIndex = 5;
             this.BusinessPartnerSiteListDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.BusinessPartnerSiteListDtoAdvBandedGridView});
@@ -414,7 +414,7 @@ namespace MasterData.Customer
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1077, 587);
+            this.Root.Size = new System.Drawing.Size(1075, 553);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -422,20 +422,21 @@ namespace MasterData.Customer
             this.layoutControlItem1.Control = this.BusinessPartnerSiteListDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 561);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // UcBusinessPartnerSite
+            // FrmBusinessPartnerSite
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1075, 627);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.Name = "UcBusinessPartnerSite";
-            this.Size = new System.Drawing.Size(1077, 661);
+            this.Name = "FrmBusinessPartnerSite";
+            this.Text = "ĐỊA CHỈ KHÁCH HÀNG - ĐỐI TÁC";
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).EndInit();

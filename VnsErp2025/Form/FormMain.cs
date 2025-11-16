@@ -9,6 +9,7 @@ using Dal.DataContext;
 using DevExpress.XtraBars;
 using MasterData.Customer;
 using MasterData.ProductService;
+// ReSharper disable InconsistentNaming
 
 namespace VnsErp2025.Form
 {
@@ -37,7 +38,7 @@ namespace VnsErp2025.Form
         /// <summary>
         /// Timer tự động refresh thông tin database định kỳ
         /// </summary>
-        private System.Windows.Forms.Timer _dbRefreshTimer;
+        private Timer _dbRefreshTimer;
 
         #endregion
 
@@ -64,12 +65,16 @@ namespace VnsErp2025.Form
         {
             try
             {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                
                 LoadCurrentUserInfo();
                 SetupFormProperties();
                 SetupRibbon();
                 SetupStatusBar();
                 SetupDatabaseRefreshTimer();
-                ShowWelcomeMessage();
+                //ShowWelcomeMessage();
+
+                SplashScreenHelper.CloseSplashScreen();
             }
             catch (Exception ex)
             {
@@ -118,7 +123,7 @@ namespace VnsErp2025.Form
         /// </summary>
         private void SetupFormProperties()
         {
-            this.Text = $"VNS ERP 2025 - Chào mừng {_currentUser?.UserName ?? "User"}";
+            this.Text = $@"VNS ERP 2025 - Chào mừng {_currentUser?.UserName ?? "User"}";
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             
@@ -131,8 +136,8 @@ namespace VnsErp2025.Form
         /// </summary>
         private void SetupRibbon()
         {
-            ribbonPage1.Text = "Trang chủ";
-            ribbonPageGroup1.Text = "Hệ thống";
+            ribbonPage1.Text = @"Trang chủ";
+            PartnerRibbonPageGroup.Text = @"Hệ thống";
         }
 
         /// <summary>
@@ -150,7 +155,7 @@ namespace VnsErp2025.Form
         private void SetupUserInfoInStatusBar()
         {
             var userInfo = new BarStaticItem();
-            userInfo.Caption = $"User: {_currentUser?.UserName ?? "Unknown"} | Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}";
+            userInfo.Caption = $@"User: {_currentUser?.UserName ?? "Unknown"} | Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}";
             ribbonStatusBar.ItemLinks.Add(userInfo);
         }
 
@@ -178,7 +183,7 @@ namespace VnsErp2025.Form
             }
             catch (Exception ex)
             {
-                MsgBox.ShowException(ex, "Lỗi thiết lập timer refresh database");
+                MsgBox.ShowException(ex, @"Lỗi thiết lập timer refresh database");
             }
         }
 
@@ -189,7 +194,7 @@ namespace VnsErp2025.Form
         {
             if (_currentUser != null)
             {
-                MsgBox.ShowSuccess($"Chào mừng {_currentUser.UserName} đến với VNS ERP 2025!", "Chào mừng");
+                MsgBox.ShowSuccess($@"Chào mừng {_currentUser.UserName} đến với VNS ERP 2025!", "Chào mừng");
             }
         }
 
@@ -250,17 +255,17 @@ namespace VnsErp2025.Form
                     
                     if (string.IsNullOrEmpty(connectionString))
                     {
-                        MsgBox.ShowWarning("Không có thông tin kết nối database.", "Thông tin Database");
+                        MsgBox.ShowWarning(@"Không có thông tin kết nối database.", "Thông tin Database");
                         return;
                     }
 
                     var details = BuildDatabaseDetailsMessage(connectionManager, connectionString);
-                    MsgBox.ShowSuccess(details, "Thông tin Database");
+                    MsgBox.ShowSuccess(details, @"Thông tin Database");
                 }
             }
             catch (Exception ex)
             {
-                MsgBox.ShowException(ex, "Lỗi lấy thông tin database");
+                MsgBox.ShowException(ex, @"Lỗi lấy thông tin database");
             }
         }
 
@@ -288,7 +293,7 @@ namespace VnsErp2025.Form
         /// <summary>
         /// Refresh thông tin database trên status bar (public để có thể gọi từ bên ngoài)
         /// </summary>
-        public void RefreshDatabaseInfo()
+        private void RefreshDatabaseInfo()
         {
             try
             {
@@ -297,7 +302,7 @@ namespace VnsErp2025.Form
             }
             catch (Exception ex)
             {
-                DBInfoBarStaticItem.Caption = $"DB: Lỗi - {ex.Message}";
+                DBInfoBarStaticItem.Caption = $@"DB: Lỗi - {ex.Message}";
             }
         }
 
@@ -373,64 +378,6 @@ namespace VnsErp2025.Form
         #region Event Handlers
 
         /// <summary>
-        /// Xử lý sự kiện click nút đăng xuất
-        /// </summary>
-        /// <param name="sender">Đối tượng gửi sự kiện</param>
-        /// <param name="e">Thông tin sự kiện</param>
-        private void BtnDangXuat_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            try
-            {
-                
-                if (MsgBox.ShowYesNo("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận đăng xuất"))
-                {
-                    PerformLogout();
-                }
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(ex, "Lỗi đăng xuất");
-            }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện click nút thoát ứng dụng
-        /// </summary>
-        /// <param name="sender">Đối tượng gửi sự kiện</param>
-        /// <param name="e">Thông tin sự kiện</param>
-        private void BtnThoat_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            try
-            {
-                if (MsgBox.ShowYesNo("Bạn có chắc chắn muốn thoát ứng dụng?", "Xác nhận thoát"))
-                {
-                    Application.Exit();
-                }
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(ex, "Lỗi thoát ứng dụng");
-            }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện click nút thông tin user
-        /// </summary>
-        /// <param name="sender">Đối tượng gửi sự kiện</param>
-        /// <param name="e">Thông tin sự kiện</param>
-        private void BtnThongTinUser_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            try
-            {
-                ShowUserInfo();
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(ex, "Lỗi hiển thị thông tin user");
-            }
-        }
-
-        /// <summary>
         /// Xử lý sự kiện click vào database info item trên status bar
         /// </summary>
         /// <param name="sender">Đối tượng gửi sự kiện</param>
@@ -501,6 +448,8 @@ namespace VnsErp2025.Form
             }
         }
 
+        #region Khách hàng - Đối tác
+
         /// <summary>
         /// Xử lý sự kiện click nút Partner - hiển thị form quản lý đối tác
         /// </summary>
@@ -510,21 +459,67 @@ namespace VnsErp2025.Form
         {
             try
             {
-                // Đảm bảo thao tác UI được thực hiện trên UI thread
-                if (this.InvokeRequired)
-                {
-                    this.Invoke(new Action(() => PartnerButton_ItemClick(sender, e)));
-                    return;
-                }
-
-                // Sử dụng ApplicationSystemUtils để hiển thị hoặc kích hoạt form FluentPartner
-                ApplicationSystemUtils.ShowOrActivateForm<FluentPartner>(this);
+                SplashScreenHelper.ShowVnsSplashScreen();
+                
+                ApplicationSystemUtils.ShowOrActivateForm<FrmBusinessPartnerList>(this);
+                
+                SplashScreenHelper.CloseSplashScreen();
             }
             catch (Exception ex)
             {
                 MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
             }
         }
+        private void PhanLoaiKhachHangBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmBusinessPartnerCategory>(this);
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+
+
+        private void SiteKhachHangBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmBusinessPartnerSite>(this);
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+
+
+        private void LienHeKhachHangDoiTacBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmBusinessPartnerContact>(this);
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Xử lý sự kiện click nút Product Service - hiển thị form quản lý sản phẩm/dịch vụ
@@ -551,6 +546,8 @@ namespace VnsErp2025.Form
             }
         }
 
+
         #endregion
+
     }
 }

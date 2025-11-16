@@ -22,7 +22,7 @@ namespace MasterData.Customer
     /// User Control quản lý danh sách chi nhánh đối tác.
     /// Cung cấp giao diện hiển thị, tìm kiếm, thêm mới, sửa, xóa và xuất dữ liệu chi nhánh.
     /// </summary>
-    public partial class UcBusinessPartnerSite : XtraUserControl
+    public partial class FrmBusinessPartnerSite : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -53,7 +53,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Khởi tạo User Control quản lý chi nhánh đối tác.
         /// </summary>
-        public UcBusinessPartnerSite()
+        public FrmBusinessPartnerSite()
         {
             InitializeComponent();
             _businessPartnerSiteBll = new BusinessPartnerSiteBll();

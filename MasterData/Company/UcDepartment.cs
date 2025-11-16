@@ -16,22 +16,36 @@ using System.Windows.Forms;
 
 namespace MasterData.Company
 {
+    /// <summary>
+    /// User Control quản lý danh sách phòng ban theo cấu trúc cây phân cấp.
+    /// Cung cấp giao diện hiển thị dạng TreeList, tìm kiếm, thêm mới, sửa, xóa và xuất dữ liệu phòng ban.
+    /// </summary>
     public partial class UcDepartment : XtraUserControl
     {
-        #region ========== FIELDS ==========
-        
-        private List<DepartmentDto> _departments;
-        // ReSharper disable once CollectionNeverUpdated.Local
-        private readonly HashSet<Guid> _bookmarks = [];
-        private readonly DepartmentBll _departmentBll = new();
-        
+        #region ========== FIELDS & PROPERTIES ==========
+
         /// <summary>
-        /// Danh sách ID của các department được chọn
+        /// Danh sách phòng ban hiện tại trong TreeList
+        /// </summary>
+        private List<DepartmentDto> _departments;
+
+        /// <summary>
+        /// Danh sách ID các phòng ban được đánh dấu (bookmark) - hiện tại chưa sử dụng
+        /// </summary>
+        private readonly HashSet<Guid> _bookmarks = [];
+
+        /// <summary>
+        /// Business Logic Layer xử lý nghiệp vụ phòng ban
+        /// </summary>
+        private readonly DepartmentBll _departmentBll = new();
+
+        /// <summary>
+        /// Danh sách ID của các phòng ban được chọn (qua checkbox)
         /// </summary>
         private readonly List<Guid> _selectedDepartmentIds = [];
-        
+
         /// <summary>
-        /// Flag để ngăn chặn selection khi đang xử lý checkbox
+        /// Cờ ngăn chặn xử lý selection khi đang thao tác với checkbox để tránh conflict
         /// </summary>
         private bool _isProcessingCheckbox;
 
@@ -39,51 +53,70 @@ namespace MasterData.Company
 
         #region ========== CONSTRUCTOR ==========
 
+        /// <summary>
+        /// Khởi tạo User Control quản lý danh sách phòng ban.
+        /// </summary>
         public UcDepartment()
         {
             InitializeComponent();
             InitializeTreeList();
-            
-            // Toolbar events
+            SetupToolbarEvents();
+            UpdateButtonStates();
+            SetupSuperTips();
+        }
+
+        #endregion
+
+        #region ========== FORM INITIALIZATION ==========
+
+        /// <summary>
+        /// Khởi tạo và cấu hình TreeList để hiển thị danh sách phòng ban dạng cây phân cấp.
+        /// </summary>
+        private void InitializeTreeList()
+        {
+            try
+            {
+                // Cấu hình TreeList cơ bản
+                DepartmentTreeList.OptionsBehavior.Editable = false;
+                DepartmentTreeList.OptionsFind.AlwaysVisible = true;
+                DepartmentTreeList.OptionsSelection.MultiSelect = true;
+                DepartmentTreeList.OptionsView.ShowIndentAsRowStyle = true;
+
+                // Cấu hình hierarchy fields
+                DepartmentTreeList.KeyFieldName = "Id";
+                DepartmentTreeList.ParentFieldName = "ParentId";
+
+                // Đăng ký event handlers
+                DepartmentTreeList.CustomDrawNodeIndicator += OnCustomDrawRowIndicator;
+                DepartmentTreeList.SelectionChanged += DepartmentTreeList_SelectionChanged;
+                DepartmentTreeList.BeforeCheckNode += DepartmentTreeList_BeforeCheckNode;
+                DepartmentTreeList.AfterCheckNode += DepartmentTreeList_AfterCheckNode;
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, "Lỗi khởi tạo TreeList");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập sự kiện cho các nút trên thanh công cụ.
+        /// </summary>
+        private void SetupToolbarEvents()
+        {
             ListDataBarButtonItem.ItemClick += ListDataBarButtonItem_ItemClick;
             NewBarButtonItem.ItemClick += NewBarButtonItem_ItemClick;
             EditBarButtonItem.ItemClick += EditBarButtonItem_ItemClick;
             DeleteBarButtonItem.ItemClick += DeleteBarButtonItem_ItemClick;
             ExportBarButtonItem.ItemClick += ExportBarButtonItem_ItemClick;
-            
-            UpdateButtonStates();
-
-            // Setup SuperToolTips
-            SetupSuperTips();
         }
-        
-        #endregion
 
-        #region ========== INITIALIZATION ==========
-        
-        private void InitializeTreeList()
-        {
-            // Cấu hình TreeList
-            DepartmentTreeList.OptionsBehavior.Editable = false;
-            DepartmentTreeList.OptionsFind.AlwaysVisible = true;
-            DepartmentTreeList.OptionsSelection.MultiSelect = true;
-            DepartmentTreeList.OptionsView.ShowIndentAsRowStyle = true;
-            
-            // Thêm event handlers
-            DepartmentTreeList.CustomDrawNodeIndicator += OnCustomDrawRowIndicator;
-            DepartmentTreeList.SelectionChanged += DepartmentTreeList_SelectionChanged;
-            DepartmentTreeList.BeforeCheckNode += DepartmentTreeList_BeforeCheckNode;
-            DepartmentTreeList.AfterCheckNode += DepartmentTreeList_AfterCheckNode;
-            
-            // Cấu hình hierarchy
-            DepartmentTreeList.KeyFieldName = "Id";
-            DepartmentTreeList.ParentFieldName = "ParentId";
-        }
-        
         #endregion
 
         #region ========== DATA LOADING ==========
-        
+
+        /// <summary>
+        /// Tải dữ liệu phòng ban từ database và hiển thị lên TreeList với WaitForm.
+        /// </summary>
         private async Task LoadDataAsync()
         {
             try
@@ -92,12 +125,12 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi tải dữ liệu");
+                HandleException(ex, "Lỗi tải dữ liệu");
             }
         }
 
         /// <summary>
-        /// Tải dữ liệu và bind vào TreeList (không hiển thị WaitForm).
+        /// Tải dữ liệu phòng ban từ database và bind vào TreeList (không hiển thị WaitForm).
         /// </summary>
         private Task LoadDataAsyncWithoutSplash()
         {
@@ -105,168 +138,35 @@ namespace MasterData.Company
             {
                 // Lấy entities từ BLL (synchronous method)
                 var departmentEntities = _departmentBll.GetAll();
-                
+
                 // Convert entities to DTOs sử dụng DepartmentConverters
                 _departments = [.. departmentEntities.Select(e => e.ToDto())];
-                
-                // Cập nhật dữ liệu
+
+                // Bind dữ liệu vào TreeList
                 departmentDtoBindingSource.DataSource = _departments;
                 DepartmentTreeList.ExpandAll();
-                
-                // Cấu hình TreeList
-                ConfigureMultiLineGridView();
-                
-                // Clear selection state trước khi update button states
+
+                // Cấu hình hiển thị multi-line cho các cột dài
+                ConfigureMultiLineDisplay();
+
+                // Xóa selection và checkbox trước khi cập nhật button states
                 ClearSelectionState();
-                
+
                 return Task.CompletedTask;
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi tải dữ liệu");
+                HandleException(ex, "Lỗi tải dữ liệu");
                 return Task.CompletedTask;
             }
         }
-        
+
         #endregion
 
         #region ========== EVENT HANDLERS ==========
-        
-        private void OnCustomDrawRowIndicator(object sender, CustomDrawNodeIndicatorEventArgs e)
-        {
-            if (e.Node == null) return;
-            
-            if (DepartmentTreeList.GetRow(e.Node.Id) is not DepartmentDto department) return;
-            
-            // Hiển thị bookmark
-            if (_bookmarks.Contains(department.Id))
-            {
-                e.DefaultDraw();
-               
-                e.Handled = true;
-            }
-        }
-         
-        
-        #endregion
-
-        #region ========== HELPER METHODS ==========
-        
-        private void DepartmentTreeList_SelectionChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                // Bỏ qua nếu đang xử lý checkbox để tránh conflict
-                if (_isProcessingCheckbox) return;
-
-                // SelectionChanged chỉ xử lý việc chọn row, không xử lý checkbox
-                // Checkbox logic được xử lý riêng trong AfterCheckNode
-                UpdateButtonStates();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex);
-            }
-        }
-        
-        /// <summary>
-        /// Event handler trước khi checkbox của node thay đổi
-        /// </summary>
-        private void DepartmentTreeList_BeforeCheckNode(object sender, CheckNodeEventArgs e)
-        {
-            try
-            {
-                // Đánh dấu đang xử lý checkbox
-                _isProcessingCheckbox = true;
-
-                // Cho phép checkbox thay đổi
-                e.CanCheck = true;
-            }
-            catch (Exception ex)
-            {
-                _isProcessingCheckbox = false;
-                ShowError(ex);
-            }
-        }
 
         /// <summary>
-        /// Event handler khi checkbox của node thay đổi
-        /// </summary>
-        private void DepartmentTreeList_AfterCheckNode(object sender, NodeEventArgs e)
-        {
-            try
-            {
-                // Xử lý logic parent-child checkbox
-                HandleParentChildCheckboxLogic(e.Node);
-
-                // Reset flag
-                _isProcessingCheckbox = false;
-
-                // Cập nhật danh sách selected IDs khi checkbox thay đổi
-                UpdateSelectedDepartmentIds();
-                UpdateButtonStates();
-            }
-            catch (Exception ex)
-            {
-                _isProcessingCheckbox = false;
-                ShowError(ex);
-            }
-        }
-
-        private void ConfigureMultiLineGridView()
-        {
-            try
-            {
-                // Cấu hình TreeList để hiển thị dạng cây
-                DepartmentTreeList.OptionsView.ShowButtons = true;
-                DepartmentTreeList.OptionsView.ShowRoot = true;
-
-                // RepositoryItemMemoEdit cho wrap text
-                var memo = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit
-                {
-                    WordWrap = true,
-                    AutoHeight = true
-                };
-                memo.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
-
-                // Áp dụng cho các cột có khả năng dài
-                ApplyMemoEditorToColumn("DepartmentName", memo);
-                ApplyMemoEditorToColumn("Description", memo);
-
-                // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
-                DepartmentTreeList.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
-                DepartmentTreeList.Appearance.HeaderPanel.Options.UseTextOptions = true;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error in ConfigureMultiLineGridView: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Áp dụng RepositoryItemMemoEdit cho cột cụ thể
-        /// </summary>
-        /// <param name="fieldName">Tên field của cột</param>
-        /// <param name="memo">RepositoryItemMemoEdit</param>
-        private void ApplyMemoEditorToColumn(string fieldName, DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit memo)
-        {
-            var col = DepartmentTreeList.Columns[fieldName];
-            if (col == null) return;
-            // Thêm repository vào TreeList nếu chưa có
-            if (!DepartmentTreeList.RepositoryItems.Contains(memo))
-            {
-                DepartmentTreeList.RepositoryItems.Add(memo);
-            }
-
-            col.ColumnEdit = memo;
-        }
-        
-        #endregion
-
-        #region ========== TOOLBAR EVENTS ==========
-
-        /// <summary>
-        /// Xử lý sự kiện click button Tải dữ liệu
+        /// Xử lý sự kiện click nút Tải dữ liệu trên thanh công cụ.
         /// </summary>
         private async void ListDataBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -276,12 +176,12 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi tải dữ liệu");
+                HandleException(ex, "Lỗi tải dữ liệu");
             }
         }
 
         /// <summary>
-        /// Xử lý sự kiện click button Thêm mới
+        /// Xử lý sự kiện click nút Thêm mới trên thanh công cụ.
         /// </summary>
         private async void NewBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -302,77 +202,67 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi hiển thị màn hình thêm mới");
+                HandleException(ex, "Lỗi hiển thị màn hình thêm mới");
             }
         }
 
         /// <summary>
-        /// Xử lý sự kiện click button Sửa
+        /// Xử lý sự kiện click nút Điều chỉnh trên thanh công cụ.
         /// </summary>
         private async void EditBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
-                // Chỉ cho phép chỉnh sửa 1 dòng dữ liệu
-                if (_selectedDepartmentIds == null || _selectedDepartmentIds.Count == 0)
+                // Validate: Phải chọn đúng 1 phòng ban
+                if (!ValidateSingleSelection())
                 {
-                    ShowInfo("Vui lòng chọn một dòng để chỉnh sửa.");
                     return;
                 }
 
-                if (_selectedDepartmentIds.Count > 1)
+                var departmentId = _selectedDepartmentIds[0];
+                using (OverlayManager.ShowScope(this))
                 {
-                    ShowInfo("Chỉ cho phép chỉnh sửa 1 dòng. Vui lòng bỏ chọn bớt.");
-                    return;
-                }
-
-                try
-                {
-                    using (OverlayManager.ShowScope(this))
+                    using (var form = new FrmDepartmentDetail(departmentId))
                     {
-                        var id = _selectedDepartmentIds[0];
-                        using (var form = new FrmDepartmentDetail(id))
+                        form.StartPosition = FormStartPosition.CenterParent;
+                        if (form.ShowDialog(this) == DialogResult.OK)
                         {
-                            form.StartPosition = FormStartPosition.CenterParent;
-                            if (form.ShowDialog(this) == DialogResult.OK)
-                            {
-                                await LoadDataAsyncWithoutSplash();
-                                UpdateButtonStates();
-                            }
+                            await LoadDataAsyncWithoutSplash();
+                            UpdateButtonStates();
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    ShowError(ex, "Lỗi hiển thị màn hình điều chỉnh");
                 }
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi chỉnh sửa phòng ban");
+                HandleException(ex, "Lỗi hiển thị màn hình điều chỉnh");
             }
         }
 
         /// <summary>
-        /// Xử lý sự kiện click button Xóa
+        /// Xử lý sự kiện click nút Xóa trên thanh công cụ.
         /// </summary>
         private async void DeleteBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (_selectedDepartmentIds == null || _selectedDepartmentIds.Count == 0)
-            {
-                ShowInfo("Vui lòng chọn ít nhất một dòng để xóa.");
-                return;
-            }
-
-            var confirmMessage = _selectedDepartmentIds.Count == 1
-                ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn?"
-                : $"Bạn có chắc muốn xóa {_selectedDepartmentIds.Count} dòng dữ liệu đã chọn?";
-
-            var confirmed = MsgBox.ShowYesNo(confirmMessage, "Xác nhận xóa");
-            if (!confirmed) return;
-
             try
             {
+                // Validate: Phải chọn ít nhất 1 phòng ban
+                if (!ValidateMultipleSelection())
+                {
+                    return;
+                }
+
+                // Hiển thị dialog xác nhận
+                var confirmMessage = _selectedDepartmentIds.Count == 1
+                    ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn?"
+                    : $"Bạn có chắc muốn xóa {_selectedDepartmentIds.Count} dòng dữ liệu đã chọn?";
+
+                if (!MsgBox.ShowYesNo(confirmMessage, "Xác nhận xóa"))
+                {
+                    return;
+                }
+
+                // Thực hiện xóa với WaitForm
                 await ExecuteWithWaitingFormAsync(async () =>
                 {
                     var success = await Task.Run(() => _departmentBll.DeleteMultiple(_selectedDepartmentIds.ToList()));
@@ -386,27 +276,25 @@ namespace MasterData.Company
                     }
                 });
 
-                // Clear selection state trước khi reload
+                // Xóa selection và reload dữ liệu
                 ClearSelectionState();
-
-                // Reload dữ liệu
                 await LoadDataAsyncWithoutSplash();
                 UpdateButtonStates();
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi xóa dữ liệu");
+                HandleException(ex, "Lỗi xóa dữ liệu");
             }
         }
 
         /// <summary>
-        /// Xử lý sự kiện click button Xuất dữ liệu
+        /// Xử lý sự kiện click nút Xuất dữ liệu trên thanh công cụ.
         /// </summary>
         private void ExportBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
-                // Chỉ cho phép xuất khi có dữ liệu hiển thị
+                // Validate: Phải có dữ liệu để xuất
                 var rowCount = DepartmentTreeList.VisibleNodesCount;
                 if (rowCount <= 0)
                 {
@@ -414,98 +302,143 @@ namespace MasterData.Company
                     return;
                 }
 
-                // Export TreeList data
-                var saveDialog = new SaveFileDialog
+                // Hiển thị SaveFileDialog
+                using (var saveDialog = new SaveFileDialog
                 {
                     Filter = @"Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
                     FileName = "Departments.xlsx"
-                };
-
-                if (saveDialog.ShowDialog() == DialogResult.OK)
+                })
                 {
-                    DepartmentTreeList.ExportToXlsx(saveDialog.FileName);
-                    ShowInfo("Xuất dữ liệu thành công!");
+                    if (saveDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        DepartmentTreeList.ExportToXlsx(saveDialog.FileName);
+                        ShowInfo("Xuất dữ liệu thành công!");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi xuất dữ liệu");
+                HandleException(ex, "Lỗi xuất dữ liệu");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện thay đổi selection trên TreeList.
+        /// </summary>
+        private void DepartmentTreeList_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Bỏ qua nếu đang xử lý checkbox để tránh conflict
+                if (_isProcessingCheckbox)
+                {
+                    return;
+                }
+
+                // SelectionChanged chỉ xử lý việc chọn row, không xử lý checkbox
+                // Checkbox logic được xử lý riêng trong AfterCheckNode
+                UpdateButtonStates();
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện trước khi checkbox của node thay đổi.
+        /// </summary>
+        private void DepartmentTreeList_BeforeCheckNode(object sender, CheckNodeEventArgs e)
+        {
+            try
+            {
+                // Đánh dấu đang xử lý checkbox để tránh conflict với SelectionChanged
+                _isProcessingCheckbox = true;
+
+                // Cho phép checkbox thay đổi
+                e.CanCheck = true;
+            }
+            catch (Exception ex)
+            {
+                _isProcessingCheckbox = false;
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi checkbox của node thay đổi.
+        /// </summary>
+        private void DepartmentTreeList_AfterCheckNode(object sender, NodeEventArgs e)
+        {
+            try
+            {
+                // Xử lý logic parent-child checkbox
+                HandleParentChildCheckboxLogic(e.Node);
+
+                // Reset flag
+                _isProcessingCheckbox = false;
+
+                // Cập nhật danh sách selected IDs và button states
+                UpdateSelectedDepartmentIds();
+                UpdateButtonStates();
+            }
+            catch (Exception ex)
+            {
+                _isProcessingCheckbox = false;
+                HandleException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện vẽ row indicator (số thứ tự hoặc bookmark icon).
+        /// </summary>
+        private void OnCustomDrawRowIndicator(object sender, CustomDrawNodeIndicatorEventArgs e)
+        {
+            try
+            {
+                if (e.Node == null)
+                {
+                    return;
+                }
+
+                if (DepartmentTreeList.GetRow(e.Node.Id) is not DepartmentDto department)
+                {
+                    return;
+                }
+
+                // Hiển thị bookmark nếu có
+                if (_bookmarks.Contains(department.Id))
+                {
+                    e.DefaultDraw();
+                    e.Handled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore drawing errors để không làm gián đoạn hiển thị
+                System.Diagnostics.Debug.WriteLine($"Error in OnCustomDrawRowIndicator: {ex.Message}");
             }
         }
 
         #endregion
 
-        #region ========== UTILITY METHODS ==========
+        #region ========== BUSINESS LOGIC - TREELIST OPERATIONS ==========
 
         /// <summary>
-        /// Thực hiện operation async với WaitingForm hiển thị.
-        /// </summary>
-        /// <param name="operation">Operation async cần thực hiện</param>
-        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
-        {
-            try
-            {
-                // Hiển thị WaitForm1 từ BLL
-                SplashScreenManager.ShowForm(typeof(WaitForm1));
-                
-                // Thực hiện operation
-                await operation();
-            }
-            finally
-            {
-                // Đóng WaitForm1
-                if (SplashScreenManager.Default != null && SplashScreenManager.Default.IsSplashFormVisible)
-                {
-                    SplashScreenManager.CloseForm();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật trạng thái các nút toolbar dựa trên selection và checkbox
-        /// </summary>
-        private void UpdateButtonStates()
-        {
-            try
-            {
-                var selectedCount = _selectedDepartmentIds?.Count ?? 0;
-                var rowCount = DepartmentTreeList.VisibleNodesCount;
-
-                // Edit: chỉ khi chọn đúng 1 dòng
-                if (EditBarButtonItem != null)
-                {
-                    EditBarButtonItem.Enabled = selectedCount == 1;
-                }
-
-                // Delete: khi chọn >= 1 dòng
-                if (DeleteBarButtonItem != null)
-                {
-                    DeleteBarButtonItem.Enabled = selectedCount >= 1;
-                }
-
-                // Export: chỉ khi có dữ liệu hiển thị
-                if (ExportBarButtonItem != null)
-                {
-                    ExportBarButtonItem.Enabled = rowCount > 0;
-                }
-            }
-            catch (Exception)
-            {
-                // ignore
-            }
-        }
-
-        /// <summary>
-        /// Xử lý logic parent-child checkbox: 
+        /// Xử lý logic parent-child checkbox:
         /// - Khi chọn node cha thì tự động chọn tất cả node con
         /// - Khi bỏ chọn node con thì tự động bỏ chọn node cha
         /// - Cập nhật trạng thái parent dựa trên trạng thái của tất cả children
         /// </summary>
+        /// <param name="changedNode">Node có checkbox vừa thay đổi</param>
         private void HandleParentChildCheckboxLogic(TreeListNode changedNode)
         {
             try
             {
-                if (changedNode == null) return;
+                if (changedNode == null)
+                {
+                    return;
+                }
 
                 bool isChecked = changedNode.Checked;
 
@@ -528,13 +461,14 @@ namespace MasterData.Company
             {
                 // Re-enable event trong trường hợp lỗi
                 DepartmentTreeList.AfterCheckNode += DepartmentTreeList_AfterCheckNode;
-                ShowError(ex);
+                HandleException(ex);
             }
         }
 
         /// <summary>
         /// Cập nhật trạng thái của tất cả parent nodes dựa trên trạng thái của children.
         /// </summary>
+        /// <param name="changedNode">Node có checkbox vừa thay đổi</param>
         private void UpdateParentNodeStates(TreeListNode changedNode)
         {
             try
@@ -542,7 +476,7 @@ namespace MasterData.Company
                 var currentNode = changedNode.ParentNode;
                 while (currentNode != null)
                 {
-                    // Kiểm tra trạng thái của tất cả children (chỉ direct children, không đệ quy)
+                    // Kiểm tra trạng thái của tất cả direct children
                     bool allChildrenChecked = AreAllDirectChildrenChecked(currentNode);
                     bool hasAnyUncheckedChild = HasAnyDirectUncheckedChild(currentNode);
 
@@ -566,20 +500,26 @@ namespace MasterData.Company
                     currentNode = currentNode.ParentNode;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignore
+                // Ignore để không làm gián đoạn quá trình cập nhật
+                System.Diagnostics.Debug.WriteLine($"Error in UpdateParentNodeStates: {ex.Message}");
             }
         }
 
         /// <summary>
         /// Kiểm tra xem tất cả direct children của node có được chọn không.
         /// </summary>
+        /// <param name="parentNode">Node cha cần kiểm tra</param>
+        /// <returns>True nếu tất cả children đều được chọn, False nếu có ít nhất 1 child chưa được chọn</returns>
         private bool AreAllDirectChildrenChecked(TreeListNode parentNode)
         {
             try
             {
-                if (parentNode == null || parentNode.Nodes.Count == 0) return true; // Không có con = true
+                if (parentNode == null || parentNode.Nodes.Count == 0)
+                {
+                    return true; // Không có con = true
+                }
 
                 foreach (TreeListNode childNode in parentNode.Nodes)
                 {
@@ -600,11 +540,16 @@ namespace MasterData.Company
         /// <summary>
         /// Kiểm tra xem có direct child nào không được chọn không.
         /// </summary>
+        /// <param name="parentNode">Node cha cần kiểm tra</param>
+        /// <returns>True nếu có ít nhất 1 child chưa được chọn, False nếu tất cả children đều được chọn</returns>
         private bool HasAnyDirectUncheckedChild(TreeListNode parentNode)
         {
             try
             {
-                if (parentNode == null || parentNode.Nodes.Count == 0) return false; // Không có con = false
+                if (parentNode == null || parentNode.Nodes.Count == 0)
+                {
+                    return false; // Không có con = false
+                }
 
                 foreach (TreeListNode childNode in parentNode.Nodes)
                 {
@@ -623,13 +568,17 @@ namespace MasterData.Company
         }
 
         /// <summary>
-        /// Chọn tất cả node con của node cha.
+        /// Chọn tất cả node con của node cha một cách đệ quy.
         /// </summary>
+        /// <param name="parentNode">Node cha cần chọn tất cả children</param>
         private void CheckAllChildNodes(TreeListNode parentNode)
         {
             try
             {
-                if (parentNode == null || parentNode.Nodes.Count == 0) return;
+                if (parentNode == null || parentNode.Nodes.Count == 0)
+                {
+                    return;
+                }
 
                 foreach (TreeListNode childNode in parentNode.Nodes)
                 {
@@ -642,9 +591,10 @@ namespace MasterData.Company
                     CheckAllChildNodes(childNode);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignore
+                // Ignore để không làm gián đoạn quá trình chọn
+                System.Diagnostics.Debug.WriteLine($"Error in CheckAllChildNodes: {ex.Message}");
             }
         }
 
@@ -653,46 +603,60 @@ namespace MasterData.Company
         /// </summary>
         private void UpdateSelectedDepartmentIds()
         {
-            _selectedDepartmentIds.Clear();
-
-            // Chỉ lấy các nodes có checkbox được check (không dựa vào selection)
-            foreach (TreeListNode node in DepartmentTreeList.Nodes)
+            try
             {
-                CheckNodeRecursive(node);
+                _selectedDepartmentIds.Clear();
+
+                // Chỉ lấy các nodes có checkbox được check (không dựa vào selection)
+                foreach (TreeListNode node in DepartmentTreeList.Nodes)
+                {
+                    CheckNodeRecursive(node);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, "Lỗi cập nhật danh sách phòng ban đã chọn");
             }
         }
 
         /// <summary>
-        /// Kiểm tra node và các child nodes một cách đệ quy.
+        /// Kiểm tra node và các child nodes một cách đệ quy để cập nhật selected IDs.
         /// </summary>
+        /// <param name="node">Node cần kiểm tra</param>
         private void CheckNodeRecursive(TreeListNode node)
         {
-            bool isChecked = node.Checked;
-
-            // Chỉ thêm vào danh sách nếu checkbox được check (không dựa vào selection)
-            if (isChecked)
+            try
             {
-                // Lấy dữ liệu trực tiếp từ node thay vì dựa vào index
-                var department = GetDepartmentFromNode(node);
-                if (department != null)
+                bool isChecked = node.Checked;
+
+                // Chỉ thêm vào danh sách nếu checkbox được check
+                if (isChecked)
                 {
-                    if (!_selectedDepartmentIds.Contains(department.Id))
+                    var department = GetDepartmentFromNode(node);
+                    if (department != null && !_selectedDepartmentIds.Contains(department.Id))
                     {
                         _selectedDepartmentIds.Add(department.Id);
                     }
                 }
-            }
 
-            // Kiểm tra các child nodes
-            foreach (TreeListNode childNode in node.Nodes)
+                // Kiểm tra các child nodes
+                foreach (TreeListNode childNode in node.Nodes)
+                {
+                    CheckNodeRecursive(childNode);
+                }
+            }
+            catch (Exception ex)
             {
-                CheckNodeRecursive(childNode);
+                // Ignore để không làm gián đoạn quá trình cập nhật
+                System.Diagnostics.Debug.WriteLine($"Error in CheckNodeRecursive: {ex.Message}");
             }
         }
 
         /// <summary>
         /// Lấy DepartmentDto từ TreeListNode một cách chính xác.
         /// </summary>
+        /// <param name="node">TreeListNode cần lấy dữ liệu</param>
+        /// <returns>DepartmentDto tương ứng hoặc null nếu không tìm thấy</returns>
         private DepartmentDto GetDepartmentFromNode(TreeListNode node)
         {
             try
@@ -723,27 +687,101 @@ namespace MasterData.Company
 
                 return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error in GetDepartmentFromNode: {ex.Message}");
                 return null;
             }
         }
 
+        #endregion
+
+        #region ========== HELPER METHODS ==========
+
         /// <summary>
-        /// Xóa trạng thái chọn hiện tại trên TreeList.
+        /// Cấu hình TreeList để hiển thị multi-line cho các cột có nội dung dài.
+        /// </summary>
+        private void ConfigureMultiLineDisplay()
+        {
+            try
+            {
+                // Cấu hình TreeList để hiển thị dạng cây
+                DepartmentTreeList.OptionsView.ShowButtons = true;
+                DepartmentTreeList.OptionsView.ShowRoot = true;
+
+                // RepositoryItemMemoEdit cho wrap text
+                var memo = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit
+                {
+                    WordWrap = true,
+                    AutoHeight = true
+                };
+                memo.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
+
+                // Áp dụng cho các cột có khả năng dài
+                ApplyMemoEditorToColumn("DepartmentName", memo);
+                ApplyMemoEditorToColumn("Description", memo);
+
+                // Căn giữa tiêu đề cho đẹp
+                DepartmentTreeList.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
+                DepartmentTreeList.Appearance.HeaderPanel.Options.UseTextOptions = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in ConfigureMultiLineDisplay: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Áp dụng RepositoryItemMemoEdit cho cột cụ thể để hỗ trợ wrap text.
+        /// </summary>
+        /// <param name="fieldName">Tên field của cột</param>
+        /// <param name="memo">RepositoryItemMemoEdit đã cấu hình</param>
+        private void ApplyMemoEditorToColumn(string fieldName, DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit memo)
+        {
+            try
+            {
+                var col = DepartmentTreeList.Columns[fieldName];
+                if (col == null)
+                {
+                    return;
+                }
+
+                // Thêm repository vào TreeList nếu chưa có
+                if (!DepartmentTreeList.RepositoryItems.Contains(memo))
+                {
+                    DepartmentTreeList.RepositoryItems.Add(memo);
+                }
+
+                col.ColumnEdit = memo;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in ApplyMemoEditorToColumn: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xóa trạng thái chọn hiện tại trên TreeList (cả selection và checkbox).
         /// </summary>
         private void ClearSelectionState()
         {
-            _selectedDepartmentIds.Clear();
+            try
+            {
+                _selectedDepartmentIds.Clear();
 
-            // Clear tất cả selection (cả checkbox và regular selection)
-            DepartmentTreeList.ClearSelection();
-            DepartmentTreeList.FocusedNode = null;
+                // Clear tất cả selection (cả checkbox và regular selection)
+                DepartmentTreeList.ClearSelection();
+                DepartmentTreeList.FocusedNode = null;
 
-            // Clear tất cả checkbox states
-            ClearAllCheckBoxes();
+                // Clear tất cả checkbox states
+                ClearAllCheckBoxes();
 
-            UpdateButtonStates();
+                UpdateButtonStates();
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, "Lỗi xóa trạng thái chọn");
+            }
         }
 
         /// <summary>
@@ -765,67 +803,183 @@ namespace MasterData.Company
                 // Re-enable events
                 DepartmentTreeList.AfterCheckNode += DepartmentTreeList_AfterCheckNode;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignore
+                // Re-enable events trong trường hợp lỗi
+                DepartmentTreeList.AfterCheckNode += DepartmentTreeList_AfterCheckNode;
+                System.Diagnostics.Debug.WriteLine($"Error in ClearAllCheckBoxes: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Clear checkbox của node và tất cả child nodes.
+        /// Clear checkbox của node và tất cả child nodes một cách đệ quy.
         /// </summary>
+        /// <param name="node">Node cần clear checkbox</param>
         private void ClearNodeCheckBoxes(TreeListNode node)
         {
-            if (node != null)
+            try
             {
-                node.Checked = false;
-
-                // Clear child nodes recursively
-                foreach (TreeListNode childNode in node.Nodes)
+                if (node != null)
                 {
-                    ClearNodeCheckBoxes(childNode);
+                    node.Checked = false;
+
+                    // Clear child nodes recursively
+                    foreach (TreeListNode childNode in node.Nodes)
+                    {
+                        ClearNodeCheckBoxes(childNode);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in ClearNodeCheckBoxes: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật trạng thái các nút toolbar dựa trên selection và checkbox.
+        /// </summary>
+        private void UpdateButtonStates()
+        {
+            try
+            {
+                var selectedCount = _selectedDepartmentIds?.Count ?? 0;
+                var rowCount = DepartmentTreeList.VisibleNodesCount;
+
+                // Edit: chỉ khi chọn đúng 1 dòng
+                if (EditBarButtonItem != null)
+                {
+                    EditBarButtonItem.Enabled = selectedCount == 1;
+                }
+
+                // Delete: khi chọn >= 1 dòng
+                if (DeleteBarButtonItem != null)
+                {
+                    DeleteBarButtonItem.Enabled = selectedCount >= 1;
+                }
+
+                // Export: chỉ khi có dữ liệu hiển thị
+                if (ExportBarButtonItem != null)
+                {
+                    ExportBarButtonItem.Enabled = rowCount > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore để không làm gián đoạn UI
+                System.Diagnostics.Debug.WriteLine($"Error in UpdateButtonStates: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Thực hiện operation async với WaitingForm hiển thị.
+        /// </summary>
+        /// <param name="operation">Operation async cần thực hiện</param>
+        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
+        {
+            try
+            {
+                // Hiển thị WaitForm1
+                SplashScreenManager.ShowForm(typeof(WaitForm1));
+
+                // Thực hiện operation
+                await operation();
+            }
+            finally
+            {
+                // Đóng WaitForm1
+                if (SplashScreenManager.Default != null && SplashScreenManager.Default.IsSplashFormVisible)
+                {
+                    SplashScreenManager.CloseForm();
                 }
             }
         }
 
         /// <summary>
-        /// Hiển thị thông tin.
+        /// Validate selection: Phải chọn đúng 1 phòng ban.
         /// </summary>
+        /// <returns>True nếu hợp lệ, False nếu không hợp lệ (đã hiển thị thông báo)</returns>
+        private bool ValidateSingleSelection()
+        {
+            if (_selectedDepartmentIds == null || _selectedDepartmentIds.Count == 0)
+            {
+                ShowInfo("Vui lòng chọn một dòng để chỉnh sửa.");
+                return false;
+            }
+
+            if (_selectedDepartmentIds.Count > 1)
+            {
+                ShowInfo("Chỉ cho phép chỉnh sửa 1 dòng. Vui lòng bỏ chọn bớt.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Validate selection: Phải chọn ít nhất 1 phòng ban.
+        /// </summary>
+        /// <returns>True nếu hợp lệ, False nếu không hợp lệ (đã hiển thị thông báo)</returns>
+        private bool ValidateMultipleSelection()
+        {
+            if (_selectedDepartmentIds == null || _selectedDepartmentIds.Count == 0)
+            {
+                ShowInfo("Vui lòng chọn ít nhất một dòng để xóa.");
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region ========== MESSAGE DISPLAY ==========
+
+        /// <summary>
+        /// Hiển thị thông báo thông tin cho người dùng.
+        /// </summary>
+        /// <param name="message">Nội dung thông báo</param>
         private void ShowInfo(string message)
         {
             MsgBox.ShowSuccess(message, "Thông tin");
         }
 
         /// <summary>
-        /// Hiển thị lỗi với thông tin ngữ cảnh.
+        /// Hiển thị thông báo lỗi cho người dùng.
         /// </summary>
-        private void ShowError(Exception ex, string context = null)
-        {
-            if (string.IsNullOrWhiteSpace(context))
-            {
-                MsgBox.ShowException(ex);
-            }
-            else
-            {
-                var message = $"{context}: {ex.Message}";
-                MsgBox.ShowError(message);
-            }
-        }
-
-        /// <summary>
-        /// Hiển thị lỗi với thông báo.
-        /// </summary>
+        /// <param name="message">Nội dung thông báo lỗi</param>
         private void ShowError(string message)
         {
             MsgBox.ShowError(message);
         }
 
+        /// <summary>
+        /// Xử lý exception và hiển thị thông báo lỗi cho người dùng.
+        /// </summary>
+        /// <param name="ex">Exception cần xử lý</param>
+        /// <param name="contextMessage">Thông điệp ngữ cảnh (tùy chọn)</param>
+        private void HandleException(Exception ex, string contextMessage = null)
+        {
+            if (string.IsNullOrWhiteSpace(contextMessage))
+            {
+                MsgBox.ShowException(ex);
+            }
+            else
+            {
+                var message = $"{contextMessage}: {ex.Message}";
+                MsgBox.ShowError(message);
+            }
+
+            // Log exception để debug (nếu cần)
+            System.Diagnostics.Debug.WriteLine($"Exception in UcDepartment: {contextMessage ?? "Unknown"}", ex);
+        }
+
         #endregion
 
-        #region ========== SUPERTOOLTIP ==========
+        #region ========== SUPERTOOLTIP SETUP ==========
 
         /// <summary>
-        /// Thiết lập SuperToolTip cho tất cả các controls trong UserControl
+        /// Thiết lập SuperToolTip cho tất cả các controls trong UserControl.
         /// </summary>
         private void SetupSuperTips()
         {
@@ -835,12 +989,12 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi khi setup SuperToolTip");
+                HandleException(ex, "Lỗi khi setup SuperToolTip");
             }
         }
 
         /// <summary>
-        /// Thiết lập SuperToolTip cho các BarButtonItem
+        /// Thiết lập SuperToolTip cho các BarButtonItem trên thanh công cụ.
         /// </summary>
         private void SetupBarButtonSuperTips()
         {

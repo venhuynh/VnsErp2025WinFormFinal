@@ -25,7 +25,7 @@ namespace MasterData.Customer
     /// User Control quản lý danh sách đối tác.
     /// Cung cấp giao diện hiển thị, tìm kiếm, thêm mới, sửa, xóa và xuất dữ liệu đối tác.
     /// </summary>
-    public partial class UcBusinessPartnerList : XtraUserControl
+    public partial class FrmBusinessPartnerList : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -51,7 +51,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Khởi tạo User Control quản lý danh sách đối tác.
         /// </summary>
-        public UcBusinessPartnerList()
+        public FrmBusinessPartnerList()
         {
             InitializeComponent();
 

@@ -16,6 +16,7 @@ using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.Designer.Utils;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Base;
@@ -30,7 +31,7 @@ namespace MasterData.Customer
     /// UserControl quản lý danh sách liên hệ đối tác dạng CardView.
     /// Cung cấp chức năng CRUD đầy đủ với CardView, tìm kiếm toàn diện và giao diện thân thiện.
     /// </summary>
-    public partial class UcBusinessPartnerContact : XtraUserControl
+    public partial class FrmBusinessPartnerContact : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -56,7 +57,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Khởi tạo control, đăng ký event UI
         /// </summary>
-        public UcBusinessPartnerContact()
+        public FrmBusinessPartnerContact()
         {
             InitializeComponent();
             RegisterEvents();

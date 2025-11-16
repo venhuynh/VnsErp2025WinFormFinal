@@ -116,12 +116,6 @@
     <Compile Include="Customer\Converters\BusinessPartnerSiteConverters.cs" />
     <Compile Include="Customer\Dto\BusinessPartnerSiteDto.cs" />
     <Compile Include="Customer\Dto\BusinessPartnerSiteListDto.cs" />
-    <Compile Include="Customer\FluentPartner.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Customer\FluentPartner.Designer.cs">
-      <DependentUpon>FluentPartner.cs</DependentUpon>
-    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,34 +140,34 @@
     <Compile Include="Customer\FrmBusinessPartnerSiteDetail.Designer.cs">
       <DependentUpon>FrmBusinessPartnerSiteDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\UcBusinessPartnerCategory.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Customer\FrmBusinessPartnerCategory.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Customer\UcBusinessPartnerCategory.Designer.cs">
-      <DependentUpon>UcBusinessPartnerCategory.cs</DependentUpon>
+    <Compile Include="Customer\FrmBusinessPartnerCategory.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerCategory.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\UcBusinessPartnerContact.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Customer\FrmBusinessPartnerContact.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Customer\UcBusinessPartnerContact.Designer.cs">
-      <DependentUpon>UcBusinessPartnerContact.cs</DependentUpon>
+    <Compile Include="Customer\FrmBusinessPartnerContact.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerContact.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\UcBusinessPartnerList.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Customer\FrmBusinessPartnerList.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Customer\UcBusinessPartnerList.Designer.cs">
-      <DependentUpon>UcBusinessPartnerList.cs</DependentUpon>
+    <Compile Include="Customer\FrmBusinessPartnerList.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerList.cs</DependentUpon>
     </Compile>
     <Compile Include="Customer\Dto\BusinessPartnerCategoryDto.cs" />
     <Compile Include="Customer\Dto\BusinessPartnerContactDto.cs" />
     <Compile Include="Customer\Dto\BusinessPartnerDetailDto.cs" />
     <Compile Include="Customer\Dto\BusinessPartnerListDto.cs" />
     <Compile Include="Customer\Dto\PartnerCategoryMappingDto.cs" />
-    <Compile Include="Customer\UcBusinessPartnerSite.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Customer\FrmBusinessPartnerSite.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Customer\UcBusinessPartnerSite.Designer.cs">
-      <DependentUpon>UcBusinessPartnerSite.cs</DependentUpon>
+    <Compile Include="Customer\FrmBusinessPartnerSite.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerSite.cs</DependentUpon>
     </Compile>
     <Compile Include="ProductService\Converters\AttributeConverters.cs" />
     <Compile Include="ProductService\Converters\ProductServiceCategoryConverters.cs" />
@@ -299,9 +293,6 @@
     <EmbeddedResource Include="Company\UcPosition.resx">
       <DependentUpon>UcPosition.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Customer\FluentPartner.resx">
-      <DependentUpon>FluentPartner.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Customer\FrmBusinessPartnerCategoryDetail.resx">
       <DependentUpon>FrmBusinessPartnerCategoryDetail.cs</DependentUpon>
     </EmbeddedResource>
@@ -314,17 +305,17 @@
     <EmbeddedResource Include="Customer\FrmBusinessPartnerSiteDetail.resx">
       <DependentUpon>FrmBusinessPartnerSiteDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Customer\UcBusinessPartnerCategory.resx">
-      <DependentUpon>UcBusinessPartnerCategory.cs</DependentUpon>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerCategory.resx">
+      <DependentUpon>FrmBusinessPartnerCategory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Customer\UcBusinessPartnerContact.resx">
-      <DependentUpon>UcBusinessPartnerContact.cs</DependentUpon>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerContact.resx">
+      <DependentUpon>FrmBusinessPartnerContact.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Customer\UcBusinessPartnerList.resx">
-      <DependentUpon>UcBusinessPartnerList.cs</DependentUpon>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerList.resx">
+      <DependentUpon>FrmBusinessPartnerList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Customer\UcBusinessPartnerSite.resx">
-      <DependentUpon>UcBusinessPartnerSite.cs</DependentUpon>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerSite.resx">
+      <DependentUpon>FrmBusinessPartnerSite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProductService\FluentProductService.resx">
       <DependentUpon>FluentProductService.cs</DependentUpon>

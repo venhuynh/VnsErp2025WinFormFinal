@@ -1,15 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 using DevExpress.XtraBars;
-using DevExpress.XtraGrid;
-using DevExpress.XtraGrid.Columns;
-using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
+using DevExpress.XtraTreeList;
+using DevExpress.XtraTreeList.Columns;
 using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
 {
-    partial class UcBusinessPartnerList
+    partial class FrmBusinessPartnerCategory
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,6 +27,7 @@ namespace MasterData.Customer
             }
             base.Dispose(disposing);
         }
+
 
         #region Component Designer generated code
 
@@ -49,27 +49,19 @@ namespace MasterData.Customer
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.businessPartnerCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.BusinessPartnerListGridControl = new DevExpress.XtraGrid.GridControl();
-            this.businessPartnerListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.BusinessPartnerListGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colPartnerCode = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPartnerName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPartnerTypeName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colTaxCode = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPhone = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colEmail = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colCity = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colCreatedDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.treeList1 = new DevExpress.XtraTreeList.TreeList();
+            this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colPartnerCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeList1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -90,7 +82,7 @@ namespace MasterData.Customer
             this.DeleteBarButtonItem,
             this.ExportBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 5;
+            this.barManager1.MaxItemId = 6;
             // 
             // bar2
             // 
@@ -155,15 +147,15 @@ namespace MasterData.Customer
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1077, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 661);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 627);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1077, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 0);
             // 
             // barDockControlLeft
             // 
@@ -171,136 +163,76 @@ namespace MasterData.Customer
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 622);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 588);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1077, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 622);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 588);
+            // 
+            // businessPartnerCategoryDtoBindingSource
+            // 
+            this.businessPartnerCategoryDtoBindingSource.DataSource = typeof(MasterData.Customer.Dto.BusinessPartnerCategoryDto);
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.BusinessPartnerListGridControl);
+            this.layoutControl1.Controls.Add(this.treeList1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1077, 622);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 588);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // BusinessPartnerListGridControl
+            // treeList1
             // 
-            this.BusinessPartnerListGridControl.DataSource = this.businessPartnerListDtoBindingSource;
-            this.BusinessPartnerListGridControl.Location = new System.Drawing.Point(16, 16);
-            this.BusinessPartnerListGridControl.MainView = this.BusinessPartnerListGridView;
-            this.BusinessPartnerListGridControl.MenuManager = this.barManager1;
-            this.BusinessPartnerListGridControl.Name = "BusinessPartnerListGridControl";
-            this.BusinessPartnerListGridControl.Size = new System.Drawing.Size(1045, 590);
-            this.BusinessPartnerListGridControl.TabIndex = 5;
-            this.BusinessPartnerListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.BusinessPartnerListGridView});
+            this.treeList1.Appearance.Caption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.treeList1.Appearance.Caption.ForeColor = System.Drawing.Color.Blue;
+            this.treeList1.Appearance.Caption.Options.UseFont = true;
+            this.treeList1.Appearance.Caption.Options.UseForeColor = true;
+            this.treeList1.Caption = "BẢNG QUẢN LÝ PHÂN LOẠI ĐỔI TÁC";
+            this.treeList1.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
+            this.colCategoryName,
+            this.colDescription,
+            this.colPartnerCount});
+            this.treeList1.DataSource = this.businessPartnerCategoryDtoBindingSource;
+            this.treeList1.KeyFieldName = "Id";
+            this.treeList1.Location = new System.Drawing.Point(16, 16);
+            this.treeList1.MenuManager = this.barManager1;
+            this.treeList1.Name = "treeList1";
+            this.treeList1.OptionsBehavior.AllowRecursiveNodeChecking = true;
+            this.treeList1.OptionsSelection.MultiSelect = true;
+            this.treeList1.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check;
+            this.treeList1.OptionsView.ShowCaption = true;
+            this.treeList1.ParentFieldName = "ParentId";
+            this.treeList1.Size = new System.Drawing.Size(1043, 556);
+            this.treeList1.TabIndex = 4;
             // 
-            // businessPartnerListDtoBindingSource
+            // colCategoryName
             // 
-            this.businessPartnerListDtoBindingSource.DataSource = typeof(BusinessPartnerListDto);
+            this.colCategoryName.FieldName = "CategoryName";
+            this.colCategoryName.Name = "colCategoryName";
+            this.colCategoryName.Visible = true;
+            this.colCategoryName.VisibleIndex = 0;
             // 
-            // BusinessPartnerListGridView
+            // colDescription
             // 
-            this.BusinessPartnerListGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.BusinessPartnerListGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
-            this.BusinessPartnerListGridView.Appearance.ViewCaption.Options.UseFont = true;
-            this.BusinessPartnerListGridView.Appearance.ViewCaption.Options.UseForeColor = true;
-            this.BusinessPartnerListGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colPartnerCode,
-            this.colPartnerName,
-            this.colPartnerTypeName,
-            this.colTaxCode,
-            this.colPhone,
-            this.colEmail,
-            this.colCity,
-            this.colIsActive,
-            this.colCreatedDate});
-            this.BusinessPartnerListGridView.GridControl = this.BusinessPartnerListGridControl;
-            this.BusinessPartnerListGridView.IndicatorWidth = 40;
-            this.BusinessPartnerListGridView.Name = "BusinessPartnerListGridView";
-            this.BusinessPartnerListGridView.OptionsSelection.MultiSelect = true;
-            this.BusinessPartnerListGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.BusinessPartnerListGridView.OptionsView.ColumnAutoWidth = false;
-            this.BusinessPartnerListGridView.OptionsView.RowAutoHeight = true;
-            this.BusinessPartnerListGridView.OptionsView.ShowAutoFilterRow = true;
-            this.BusinessPartnerListGridView.OptionsView.ShowFooter = true;
-            this.BusinessPartnerListGridView.OptionsView.ShowGroupPanel = false;
-            this.BusinessPartnerListGridView.OptionsView.ShowViewCaption = true;
-            this.BusinessPartnerListGridView.ViewCaption = "BẢNG DỮ LIỆU ĐỐI TÁC";
+            this.colDescription.FieldName = "Description";
+            this.colDescription.Name = "colDescription";
+            this.colDescription.Visible = true;
+            this.colDescription.VisibleIndex = 1;
             // 
-            // colPartnerCode
+            // colPartnerCount
             // 
-            this.colPartnerCode.FieldName = "PartnerCode";
-            this.colPartnerCode.Name = "colPartnerCode";
-            this.colPartnerCode.Visible = true;
-            this.colPartnerCode.VisibleIndex = 1;
-            // 
-            // colPartnerName
-            // 
-            this.colPartnerName.FieldName = "PartnerName";
-            this.colPartnerName.Name = "colPartnerName";
-            this.colPartnerName.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
-            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Count, "PartnerName", "Có {0} dòng")});
-            this.colPartnerName.Visible = true;
-            this.colPartnerName.VisibleIndex = 2;
-            // 
-            // colPartnerTypeName
-            // 
-            this.colPartnerTypeName.FieldName = "PartnerTypeName";
-            this.colPartnerTypeName.Name = "colPartnerTypeName";
-            this.colPartnerTypeName.Visible = true;
-            this.colPartnerTypeName.VisibleIndex = 3;
-            // 
-            // colTaxCode
-            // 
-            this.colTaxCode.FieldName = "TaxCode";
-            this.colTaxCode.Name = "colTaxCode";
-            this.colTaxCode.Visible = true;
-            this.colTaxCode.VisibleIndex = 4;
-            // 
-            // colPhone
-            // 
-            this.colPhone.FieldName = "Phone";
-            this.colPhone.Name = "colPhone";
-            this.colPhone.Visible = true;
-            this.colPhone.VisibleIndex = 5;
-            // 
-            // colEmail
-            // 
-            this.colEmail.FieldName = "Email";
-            this.colEmail.Name = "colEmail";
-            this.colEmail.Visible = true;
-            this.colEmail.VisibleIndex = 6;
-            // 
-            // colCity
-            // 
-            this.colCity.FieldName = "City";
-            this.colCity.Name = "colCity";
-            this.colCity.Visible = true;
-            this.colCity.VisibleIndex = 7;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 8;
-            // 
-            // colCreatedDate
-            // 
-            this.colCreatedDate.FieldName = "CreatedDate";
-            this.colCreatedDate.Name = "colCreatedDate";
-            this.colCreatedDate.Visible = true;
-            this.colCreatedDate.VisibleIndex = 9;
+            this.colPartnerCount.Caption = "Số lượng";
+            this.colPartnerCount.FieldName = "PartnerCount";
+            this.colPartnerCount.Name = "colPartnerCount";
+            this.colPartnerCount.Visible = true;
+            this.colPartnerCount.VisibleIndex = 2;
             // 
             // Root
             // 
@@ -309,34 +241,34 @@ namespace MasterData.Customer
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1077, 622);
+            this.Root.Size = new System.Drawing.Size(1075, 588);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.BusinessPartnerListGridControl;
+            this.layoutControlItem1.Control = this.treeList1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 596);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 562);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // UcBusinessPartnerList
+            // FrmBusinessPartnerCategory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1075, 627);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.Name = "UcBusinessPartnerList";
-            this.Size = new System.Drawing.Size(1077, 661);
+            this.Name = "FrmBusinessPartnerCategory";
+            this.Text = "PHÂN LOẠI KHÁCH HÀNG - ĐỐI TÁC";
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeList1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
@@ -353,24 +285,17 @@ namespace MasterData.Customer
         private BarDockControl barDockControlLeft;
         private BarDockControl barDockControlRight;
         private LayoutControl layoutControl1;
-        private GridControl BusinessPartnerListGridControl;
-        private GridView BusinessPartnerListGridView;
         private LayoutControlGroup Root;
-        private LayoutControlItem layoutControlItem1;
-        private BindingSource businessPartnerListDtoBindingSource;
-        private GridColumn colPartnerCode;
-        private GridColumn colPartnerName;
-        private GridColumn colPartnerTypeName;
-        private GridColumn colTaxCode;
-        private GridColumn colPhone;
-        private GridColumn colEmail;
-        private GridColumn colCity;
-        private GridColumn colIsActive;
-        private GridColumn colCreatedDate;
         private BarButtonItem ListDataBarButtonItem;
         private BarButtonItem NewBarButtonItem;
         private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
+        private BindingSource businessPartnerCategoryDtoBindingSource;
+        private TreeList treeList1;
+        private LayoutControlItem layoutControlItem1;
+        private TreeListColumn colCategoryName;
+        private TreeListColumn colDescription;
+        private TreeListColumn colPartnerCount;
     }
 }
