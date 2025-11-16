@@ -55,6 +55,10 @@ namespace MasterData.ProductService
             InitializeComponent();
             InitializeBll();
             InitializeEvents();
+            
+            // Thiết lập SuperToolTip cho các controls
+            SetupSuperToolTips();
+            
             LoadImageData();
         }
 
@@ -434,6 +438,56 @@ namespace MasterData.ProductService
         #endregion
 
         #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong form
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (SetPrimaryImageSimpleButton != null)
+                {
+                    var superTip = SuperToolTipHelper.CreateSuperToolTip(
+                        title: "<b><color=Blue>⭐ Đặt làm ảnh chính</color></b>",
+                        content: "Đặt hình ảnh này làm ảnh chính của sản phẩm/dịch vụ."
+                    );
+                    SetPrimaryImageSimpleButton.SuperTip = superTip;
+                }
+
+                if (DownLoadImageSimpleButton != null)
+                {
+                    var superTip = SuperToolTipHelper.CreateSuperToolTip(
+                        title: "<b><color=Green>💾 Tải ảnh</color></b>",
+                        content: "Tải hình ảnh xuống máy tính."
+                    );
+                    DownLoadImageSimpleButton.SuperTip = superTip;
+                }
+
+                if (DeleteImageSimpleButton != null)
+                {
+                    var superTip = SuperToolTipHelper.CreateSuperToolTip(
+                        title: "<b><color=Red>🗑️ Xóa Ảnh</color></b>",
+                        content: "Xóa hình ảnh khỏi hệ thống."
+                    );
+                    DeleteImageSimpleButton.SuperTip = superTip;
+                }
+
+                if (zoomTrackBarControl1 != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        zoomTrackBarControl1,
+                        title: "<b><color=Purple>🔍 Zoom</color></b>",
+                        content: "Điều chỉnh mức độ phóng to/thu nhỏ hình ảnh (10% - 500%)."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn form
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Lấy tên sản phẩm theo ProductId

@@ -92,6 +92,12 @@ namespace MasterData.ProductService
                 // Đăng ký event để tự động tạo mã danh mục khi thay đổi tên danh mục
                 CategoryNameTextEdit.TextChanged += CategoryNameTextEdit_TextChanged;
 
+                // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
+                RequiredFieldHelper.MarkRequiredFields(this, typeof(ProductServiceCategoryDto));
+
+                // Thiết lập SuperToolTip cho các controls
+                SetupSuperToolTips();
+
                 // Thiết lập focus cho control đầu tiên
                 CategoryNameTextEdit.Focus();
             }
@@ -467,6 +473,74 @@ namespace MasterData.ProductService
         #endregion
 
         #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong form
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (CategoryCodeTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        CategoryCodeTextEdit,
+                        title: "<b><color=DarkBlue>🔖 Mã danh mục</color></b>",
+                        content: "Nhập mã danh mục duy nhất (chỉ chữ cái và số, không có khoảng trắng). Trường này là bắt buộc. Mã sẽ được tự động tạo khi nhập tên danh mục."
+                    );
+                }
+
+                if (CategoryNameTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        CategoryNameTextEdit,
+                        title: "<b><color=DarkBlue>📋 Tên danh mục</color></b>",
+                        content: "Nhập tên danh mục sản phẩm/dịch vụ. Trường này là bắt buộc."
+                    );
+                }
+
+                if (DescriptionMemoEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        DescriptionMemoEdit,
+                        title: "<b><color=DarkBlue>📝 Mô tả</color></b>",
+                        content: "Nhập mô tả chi tiết về danh mục (tối đa 255 ký tự)."
+                    );
+                }
+
+                if (ParentCategoryTreeListTreeListLookUpEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        ParentCategoryTreeListTreeListLookUpEdit,
+                        title: "<b><color=DarkBlue>🌳 Danh mục cha</color></b>",
+                        content: "Chọn danh mục cha (tùy chọn). Để trống nếu đây là danh mục gốc."
+                    );
+                }
+
+                if (SaveBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        SaveBarButtonItem,
+                        title: "<b><color=Blue>💾 Lưu</color></b>",
+                        content: "Lưu thông tin danh mục sản phẩm/dịch vụ vào hệ thống."
+                    );
+                }
+
+                if (CancelBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        CancelBarButtonItem,
+                        title: "<b><color=Red>❌ Hủy</color></b>",
+                        content: "Đóng form mà không lưu thay đổi."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn form
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Tạo mã danh mục từ tên danh mục

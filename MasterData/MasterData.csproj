@@ -372,6 +372,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Company\UcBusinessPartnerCategory_Developer_Guide.md" />
+    <None Include="Company\UcBusinessPartnerCategory_User_Guide.md" />
+    <None Include="Company\UcCompanyBranch_Developer_Guide.md" />
+    <None Include="Company\UcCompanyBranch_User_Guide.md" />
+    <None Include="Company\UcCompany_Developer_Guide.md" />
+    <None Include="Company\UcCompany_User_Guide.md" />
     <None Include="Customer\Dto\DTO_README.md" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyDto.datasource" />

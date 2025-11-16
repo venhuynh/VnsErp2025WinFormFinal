@@ -74,6 +74,9 @@ namespace MasterData.ProductService
             treeList1.CustomDrawNodeIndicator += TreeList1_CustomDrawNodeIndicator;
             treeList1.CustomDrawNodeCell += TreeList1_CustomDrawNodeCell;
 
+            // Thiết lập SuperToolTip cho các controls
+            SetupSuperToolTips();
+
             UpdateButtonStates();
         }
 
@@ -1079,6 +1082,65 @@ namespace MasterData.ProductService
         #endregion
 
         #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong UserControl
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (ListDataBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ListDataBarButtonItem,
+                        title: "<b><color=Blue>📋 Danh sách</color></b>",
+                        content: "Tải lại danh sách danh mục sản phẩm/dịch vụ từ hệ thống."
+                    );
+                }
+
+                if (NewBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NewBarButtonItem,
+                        title: "<b><color=Green>➕ Mới</color></b>",
+                        content: "Thêm mới danh mục sản phẩm/dịch vụ vào hệ thống."
+                    );
+                }
+
+                if (EditBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        EditBarButtonItem,
+                        title: "<b><color=Orange>✏️ Điều chỉnh</color></b>",
+                        content: "Chỉnh sửa thông tin danh mục đã chọn."
+                    );
+                }
+
+                if (DeleteBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        DeleteBarButtonItem,
+                        title: "<b><color=Red>🗑️ Xóa</color></b>",
+                        content: "Xóa các danh mục đã chọn. Sản phẩm/dịch vụ sẽ được chuyển sang 'Phân loại chưa đặt tên'."
+                    );
+                }
+
+                if (ExportBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ExportBarButtonItem,
+                        title: "<b><color=Purple>📤 Xuất</color></b>",
+                        content: "Xuất danh sách danh mục ra file Excel."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn UserControl
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Hiển thị thông tin

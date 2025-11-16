@@ -145,6 +145,12 @@ namespace MasterData.ProductService
             ConfigureGrid();
             UpdateButtonStates();
 
+            // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
+            RequiredFieldHelper.MarkRequiredFields(this, typeof(AttributeDto));
+
+            // Thiết lập SuperToolTip cho các controls
+            SetupSuperToolTips();
+
             // Làm mới dữ liệu khi form hiển thị
             RefreshData();
         }
@@ -935,6 +941,92 @@ namespace MasterData.ProductService
         #endregion
 
         #region ========== TIỆN ÍCH HIỂN THỊ ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong form
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (NameTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        NameTextEdit,
+                        title: "<b><color=DarkBlue>📝 Tên thuộc tính</color></b>",
+                        content: "Nhập tên thuộc tính. Trường này là bắt buộc."
+                    );
+                }
+
+                if (DataTypeTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        DataTypeTextEdit,
+                        title: "<b><color=DarkBlue>🔢 Kiểu dữ liệu</color></b>",
+                        content: "Nhập kiểu dữ liệu (ví dụ: string, int, decimal, date, bool). Trường này là bắt buộc."
+                    );
+                }
+
+                if (DescriptionTextEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        DescriptionTextEdit,
+                        title: "<b><color=DarkBlue>📄 Mô tả</color></b>",
+                        content: "Nhập mô tả chi tiết về thuộc tính (tối đa 255 ký tự)."
+                    );
+                }
+
+                if (SaveBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        SaveBarButtonItem,
+                        title: "<b><color=Blue>💾 Lưu</color></b>",
+                        content: "Lưu thông tin thuộc tính vào hệ thống."
+                    );
+                }
+
+                if (EditBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        EditBarButtonItem,
+                        title: "<b><color=Orange>✏️ Điều chỉnh</color></b>",
+                        content: "Chỉnh sửa thông tin thuộc tính đã chọn."
+                    );
+                }
+
+                if (DeleteBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        DeleteBarButtonItem,
+                        title: "<b><color=Red>🗑️ Xóa</color></b>",
+                        content: "Xóa các thuộc tính đã chọn khỏi hệ thống."
+                    );
+                }
+
+                if (AddNewBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        AddNewBarButtonItem,
+                        title: "<b><color=Green>➕ Thêm mới</color></b>",
+                        content: "Thêm mới thuộc tính vào hệ thống."
+                    );
+                }
+
+                if (RefreshBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        RefreshBarButtonItem,
+                        title: "<b><color=Blue>🔄 Làm mới</color></b>",
+                        content: "Tải lại danh sách thuộc tính từ hệ thống."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn form
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Hiển thị thông báo thông tin

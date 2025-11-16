@@ -60,6 +60,9 @@ namespace MasterData.ProductService
             InitializeBll();
             InitializeEvents();
             InitializePerformanceOptimizations();
+            
+            // Thiết lập SuperToolTip cho các controls
+            SetupSuperToolTips();
         }
 
         #endregion
@@ -898,6 +901,38 @@ namespace MasterData.ProductService
             catch (Exception ex)
             {
                 Debug.WriteLine($"Lỗi khi hiển thị thông tin chi tiết: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong UserControl
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (btnAddImage != null)
+                {
+                    var superTip = SuperToolTipHelper.CreateSuperToolTip(
+                        title: "<b><color=Green>➕ Thêm hình ảnh</color></b>",
+                        content: "Thêm hình ảnh mới cho sản phẩm/dịch vụ."
+                    );
+                    btnAddImage.SuperTip = superTip;
+                }
+
+                if (SearchByKeyworkButtonEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        SearchByKeyworkButtonEdit,
+                        title: "<b><color=Blue>🔍 Tìm kiếm</color></b>",
+                        content: "Tìm kiếm hình ảnh theo tên sản phẩm/dịch vụ. Nhấn Enter hoặc click nút tìm kiếm để thực hiện."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn UserControl
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
             }
         }
 

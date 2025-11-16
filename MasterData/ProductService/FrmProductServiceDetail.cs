@@ -155,6 +155,12 @@ namespace MasterData.ProductService
                 SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
                 CloseBarButtonItem.ItemClick += CancelBarButtonItem_ItemClick;
                 ClearThumbnailBarButtonItem.ItemClick += ClearThumbnailBarButtonItem_ItemClick;
+
+                // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
+                RequiredFieldHelper.MarkRequiredFields(this, typeof(ProductServiceDto));
+
+                // Thiết lập SuperToolTip cho các controls
+                SetupSuperToolTips();
             }
             catch (Exception ex)
             {
@@ -912,6 +918,110 @@ namespace MasterData.ProductService
         #endregion
 
         #region ========== TIỆN ÍCH HIỂN THỊ ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong form
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (CodeTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        CodeTextEdit,
+                        title: "<b><color=DarkBlue>🔖 Mã sản phẩm/dịch vụ</color></b>",
+                        content: "Nhập mã sản phẩm/dịch vụ duy nhất. Trường này là bắt buộc. Mã sẽ được tự động tạo khi chọn danh mục (chế độ thêm mới)."
+                    );
+                }
+
+                if (NameTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        NameTextEdit,
+                        title: "<b><color=DarkBlue>📦 Tên sản phẩm/dịch vụ</color></b>",
+                        content: "Nhập tên đầy đủ của sản phẩm hoặc dịch vụ. Trường này là bắt buộc."
+                    );
+                }
+
+                if (CategoryIdTreeListLookUpEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        CategoryIdTreeListLookUpEdit,
+                        title: "<b><color=DarkBlue>📂 Danh mục</color></b>",
+                        content: "Chọn danh mục sản phẩm/dịch vụ (tùy chọn)."
+                    );
+                }
+
+                if (DescriptionTextEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        DescriptionTextEdit,
+                        title: "<b><color=DarkBlue>📝 Mô tả</color></b>",
+                        content: "Nhập mô tả chi tiết về sản phẩm/dịch vụ (tối đa 1000 ký tự)."
+                    );
+                }
+
+                if (ThumbnailImagePictureEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        ThumbnailImagePictureEdit,
+                        title: "<b><color=DarkBlue>🖼️ Ảnh đại diện</color></b>",
+                        content: "Chọn ảnh đại diện cho sản phẩm/dịch vụ. Ảnh sẽ được tự động resize và nén."
+                    );
+                }
+
+                if (IsServiceToggleSwitch != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        IsServiceToggleSwitch,
+                        title: "<b><color=DarkBlue>🏷️ Loại</color></b>",
+                        content: "Bật nếu đây là dịch vụ, tắt nếu là sản phẩm."
+                    );
+                }
+
+                if (IsActiveToggleSwitch != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        IsActiveToggleSwitch,
+                        title: "<b><color=DarkBlue>✅ Trạng thái</color></b>",
+                        content: "Bật nếu sản phẩm/dịch vụ đang hoạt động."
+                    );
+                }
+
+                if (SaveBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        SaveBarButtonItem,
+                        title: "<b><color=Blue>💾 Lưu</color></b>",
+                        content: "Lưu thông tin sản phẩm/dịch vụ vào hệ thống."
+                    );
+                }
+
+                if (CloseBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        CloseBarButtonItem,
+                        title: "<b><color=Red>❌ Đóng</color></b>",
+                        content: "Đóng form mà không lưu thay đổi."
+                    );
+                }
+
+                if (ClearThumbnailBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ClearThumbnailBarButtonItem,
+                        title: "<b><color=Orange>🗑️ Xóa ảnh</color></b>",
+                        content: "Xóa ảnh đại diện khỏi sản phẩm/dịch vụ."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn form
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Hiển thị thông báo thông tin

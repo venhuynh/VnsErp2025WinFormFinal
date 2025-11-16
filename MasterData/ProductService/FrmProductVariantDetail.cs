@@ -104,6 +104,12 @@ namespace MasterData.ProductService
 			
 			SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
 			CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
+
+			// Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
+			RequiredFieldHelper.MarkRequiredFields(this, typeof(ProductVariantDto));
+
+			// Thiết lập SuperToolTip cho các controls
+			SetupSuperToolTips();
         }
 
         [Localizable(false)]
@@ -1343,6 +1349,74 @@ namespace MasterData.ProductService
         #endregion
 
         #region ========== TIỆN ÍCH ==========
+
+		/// <summary>
+		/// Thiết lập SuperToolTip cho các controls trong form
+		/// </summary>
+		private void SetupSuperToolTips()
+		{
+			try
+			{
+				if (ProductNameSearchLookupEdit != null)
+				{
+					SuperToolTipHelper.SetBaseEditSuperTip(
+						ProductNameSearchLookupEdit,
+						title: "<b><color=DarkBlue>📦 Sản phẩm/Dịch vụ</color></b>",
+						content: "Chọn sản phẩm hoặc dịch vụ gốc. Trường này là bắt buộc."
+					);
+				}
+
+				if (VariantCodeTextEdit != null)
+				{
+					SuperToolTipHelper.SetTextEditSuperTip(
+						VariantCodeTextEdit,
+						title: "<b><color=DarkBlue>🔖 Mã biến thể</color></b>",
+						content: "Nhập mã biến thể duy nhất. Trường này là bắt buộc. Mã sẽ được tự động tạo khi chọn sản phẩm và đơn vị tính (chế độ thêm mới)."
+					);
+				}
+
+				if (UnitNameSearchLookupEdit != null)
+				{
+					SuperToolTipHelper.SetBaseEditSuperTip(
+						UnitNameSearchLookupEdit,
+						title: "<b><color=DarkBlue>📏 Đơn vị tính</color></b>",
+						content: "Chọn đơn vị tính cho biến thể. Trường này là bắt buộc."
+					);
+				}
+
+				if (IsActiveToggleSwitch != null)
+				{
+					SuperToolTipHelper.SetBaseEditSuperTip(
+						IsActiveToggleSwitch,
+						title: "<b><color=DarkBlue>✅ Trạng thái</color></b>",
+						content: "Bật nếu biến thể đang hoạt động."
+					);
+				}
+
+				if (SaveBarButtonItem != null)
+				{
+					SuperToolTipHelper.SetBarButtonSuperTip(
+						SaveBarButtonItem,
+						title: "<b><color=Blue>💾 Lưu</color></b>",
+						content: "Lưu thông tin biến thể sản phẩm vào hệ thống."
+					);
+				}
+
+				if (CloseBarButtonItem != null)
+				{
+					SuperToolTipHelper.SetBarButtonSuperTip(
+						CloseBarButtonItem,
+						title: "<b><color=Red>❌ Đóng</color></b>",
+						content: "Đóng form mà không lưu thay đổi."
+					);
+				}
+			}
+			catch (Exception ex)
+			{
+				// Ignore lỗi setup SuperToolTip để không chặn form
+				System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+			}
+		}
 
 		/// <summary>
 		/// Thực thi operation với splash screen

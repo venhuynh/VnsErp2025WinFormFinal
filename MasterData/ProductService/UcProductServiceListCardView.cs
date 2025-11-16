@@ -93,6 +93,8 @@ namespace MasterData.ProductService
             // Filter events
             DataFilterBtn.ItemClick += DataFilterBtn_ItemClick;
 
+            // Thiết lập SuperToolTip cho các controls
+            SetupSuperToolTips();
 
             UpdateButtonStates();
         }
@@ -1207,6 +1209,74 @@ namespace MasterData.ProductService
         #endregion
 
         #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong UserControl
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (ListDataBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ListDataBarButtonItem,
+                        title: "<b><color=Blue>📋 Danh sách</color></b>",
+                        content: "Tải lại danh sách sản phẩm/dịch vụ từ hệ thống."
+                    );
+                }
+
+                if (NewBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NewBarButtonItem,
+                        title: "<b><color=Green>➕ Mới</color></b>",
+                        content: "Thêm mới sản phẩm/dịch vụ vào hệ thống."
+                    );
+                }
+
+                if (EditBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        EditBarButtonItem,
+                        title: "<b><color=Orange>✏️ Điều chỉnh</color></b>",
+                        content: "Chỉnh sửa thông tin sản phẩm/dịch vụ đã chọn."
+                    );
+                }
+
+                if (DeleteBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        DeleteBarButtonItem,
+                        title: "<b><color=Red>🗑️ Xóa</color></b>",
+                        content: "Xóa các sản phẩm/dịch vụ đã chọn khỏi hệ thống."
+                    );
+                }
+
+                if (CountVariantAndImageBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        CountVariantAndImageBarButtonItem,
+                        title: "<b><color=Purple>📊 Đếm số lượng</color></b>",
+                        content: "Đếm số lượng biến thể và hình ảnh cho các sản phẩm/dịch vụ được chọn."
+                    );
+                }
+
+                if (DataFilterBtn != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        DataFilterBtn,
+                        title: "<b><color=Blue>🔍 Lọc dữ liệu</color></b>",
+                        content: "Tìm kiếm toàn diện trong tất cả các cột. Hỗ trợ tìm kiếm đơn giản và nâng cao."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn UserControl
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Đếm số lượng biến thể và hình ảnh cho các sản phẩm/dịch vụ được chọn.

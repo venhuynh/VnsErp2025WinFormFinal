@@ -47,6 +47,10 @@ namespace MasterData.ProductService
             InitializeComponent();
             InitializeBll();
             InitializeEvents();
+            
+            // Thiết lập SuperToolTip cho các controls
+            SetupSuperToolTips();
+            
             LoadProductList();
         }
 
@@ -329,6 +333,38 @@ namespace MasterData.ProductService
         #endregion
 
         #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các controls trong form
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                if (ProductServiceSearchLookupEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        ProductServiceSearchLookupEdit,
+                        title: "<b><color=DarkBlue>📦 Sản phẩm/Dịch vụ</color></b>",
+                        content: "Chọn sản phẩm hoặc dịch vụ để thêm hình ảnh. Trường này là bắt buộc."
+                    );
+                }
+
+                if (OpenSelectImageHyperlinkLabelControl != null)
+                {
+                    var superTip = SuperToolTipHelper.CreateSuperToolTip(
+                        title: "<b><color=Green>🖼️ Chọn hình ảnh</color></b>",
+                        content: "Chọn một hoặc nhiều hình ảnh để thêm vào sản phẩm/dịch vụ."
+                    );
+                    OpenSelectImageHyperlinkLabelControl.SuperTip = superTip;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn form
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Hiển thị thông tin

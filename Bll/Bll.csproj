@@ -100,6 +100,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utils\AlertHelper.cs" />
     <Compile Include="Utils\ApplicationSystemUtils.cs" />
     <Compile Include="Utils\GridViewHelper.cs" />
     <Compile Include="Utils\InputBoxHelper.cs" />
@@ -136,6 +137,38 @@
   <ItemGroup>
     <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
+    <None Include="Resources\User1.svg" />
+    <None Include="Resources\security_warningcircled21.svg" />
+    <None Include="Resources\Search1.svg" />
+    <None Include="Resources\Logo1.svg" />
+    <None Include="Resources\Info1.svg" />
+    <None Include="Resources\Forward1.svg" />
+    <None Include="Resources\DisconnectDrive1.svg" />
+    <None Include="Resources\Close1.svg" />
+    <None Include="Resources\check1.svg" />
+    <None Include="Resources\caution1.svg" />
+    <None Include="Resources\Back1.svg" />
+    <None Include="Resources\AttendanceMachine %286%291.svg" />
+    <None Include="Resources\AttendanceMachine %283%291.svg" />
+    <None Include="Resources\AttendanceMachine %281%291.svg" />
+    <None Include="Resources\Add1.svg" />
+    <None Include="Resources\about1.svg" />
+    <None Include="Resources\User.svg" />
+    <None Include="Resources\security_warningcircled2.svg" />
+    <None Include="Resources\Search.svg" />
+    <None Include="Resources\Logo.svg" />
+    <None Include="Resources\Info.svg" />
+    <None Include="Resources\Forward.svg" />
+    <None Include="Resources\DisconnectDrive.svg" />
+    <None Include="Resources\Close.svg" />
+    <None Include="Resources\check.svg" />
+    <None Include="Resources\caution.svg" />
+    <None Include="Resources\Back.svg" />
+    <None Include="Resources\AttendanceMachine %286%29.svg" />
+    <None Include="Resources\AttendanceMachine %283%29.svg" />
+    <None Include="Resources\AttendanceMachine %281%29.svg" />
+    <None Include="Resources\Add.svg" />
+    <None Include="Resources\about.svg" />
     <None Include="Resources\Ven - Solutions logo_GoogleBZ_H480.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
