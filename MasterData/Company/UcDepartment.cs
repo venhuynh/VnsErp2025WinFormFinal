@@ -52,6 +52,9 @@ namespace MasterData.Company
             ExportBarButtonItem.ItemClick += ExportBarButtonItem_ItemClick;
             
             UpdateButtonStates();
+
+            // Setup SuperToolTips
+            SetupSuperTips();
         }
         
         #endregion
@@ -815,6 +818,66 @@ namespace MasterData.Company
         private void ShowError(string message)
         {
             MsgBox.ShowError(message);
+        }
+
+        #endregion
+
+        #region ========== SUPERTOOLTIP ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho tất cả các controls trong UserControl
+        /// </summary>
+        private void SetupSuperTips()
+        {
+            try
+            {
+                SetupBarButtonSuperTips();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi setup SuperToolTip");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các BarButtonItem
+        /// </summary>
+        private void SetupBarButtonSuperTips()
+        {
+            // SuperTip cho nút Tải dữ liệu
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                ListDataBarButtonItem,
+                title: @"<b><color=Blue>🔄 Tải dữ liệu</color></b>",
+                content: @"Tải lại <b>danh sách phòng ban</b> từ database.<br/><br/><b>Chức năng:</b><br/>• Tải lại toàn bộ danh sách phòng ban từ database<br/>• Hiển thị WaitForm trong quá trình tải<br/>• Cập nhật TreeList với dữ liệu mới nhất<br/>• Tự động expand tất cả các node trong TreeList<br/>• Xóa selection và checkbox hiện tại sau khi tải<br/>• Cấu hình TreeList để hiển thị dạng cây phân cấp<br/><br/><b>Quy trình:</b><br/>• Hiển thị WaitForm1<br/>• Gọi DepartmentBll.GetAll() để lấy dữ liệu<br/>• Convert Entity → DTO<br/>• Bind dữ liệu vào TreeList<br/>• Tự động expand tất cả nodes<br/>• Cấu hình hiển thị multi-line cho các cột dài<br/>• Clear selection và checkbox states<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng WaitForm1<br/><br/><b>Kết quả:</b><br/>• TreeList hiển thị danh sách phòng ban mới nhất dạng cây phân cấp<br/>• Tất cả nodes được expand<br/>• Selection và checkbox được xóa<br/>• Thống kê được cập nhật<br/><br/><color=Gray>Lưu ý:</color> Nút này sẽ tải lại toàn bộ dữ liệu từ database. TreeList sẽ hiển thị dạng cây phân cấp với parent-child relationship. Nếu đang có selection hoặc checkbox được chọn, chúng sẽ bị xóa sau khi tải xong."
+            );
+
+            // SuperTip cho nút Thêm mới
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                NewBarButtonItem,
+                title: @"<b><color=Green>➕ Thêm mới</color></b>",
+                content: @"Mở form <b>thêm mới phòng ban</b>.<br/><br/><b>Chức năng:</b><br/>• Mở form FrmDepartmentDetail ở chế độ thêm mới<br/>• Hiển thị overlay trên UserControl<br/>• Tự động tải lại dữ liệu sau khi đóng form (nếu lưu thành công)<br/>• Cập nhật trạng thái các nút toolbar<br/><br/><b>Quy trình:</b><br/>• Hiển thị OverlayManager trên UserControl<br/>• Tạo form FrmDepartmentDetail với Guid.Empty (thêm mới)<br/>• Hiển thị form dạng modal dialog<br/>• Sau khi đóng form: Kiểm tra DialogResult<br/>• Nếu OK: Tải lại dữ liệu (không hiển thị WaitForm)<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng OverlayManager<br/><br/><b>Yêu cầu:</b><br/>• Form sẽ tự động lấy CompanyId từ database<br/>• Người dùng cần nhập đầy đủ thông tin bắt buộc (Mã phòng ban, Tên phòng ban, Chi nhánh)<br/>• Có thể chọn phòng ban cha để tạo cấu trúc phân cấp<br/><br/><b>Kết quả:</b><br/>• Nếu lưu thành công: Danh sách được tải lại với phòng ban mới<br/>• Nếu hủy: Không có thay đổi<br/><br/><color=Gray>Lưu ý:</color> Form sẽ được hiển thị ở chế độ modal, bạn phải đóng form trước khi có thể thao tác với UserControl này. Phòng ban mới có thể được tạo với phòng ban cha để tạo cấu trúc phân cấp."
+            );
+
+            // SuperTip cho nút Sửa
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                EditBarButtonItem,
+                title: @"<b><color=Orange>✏️ Sửa</color></b>",
+                content: @"Mở form <b>chỉnh sửa phòng ban</b>.<br/><br/><b>Chức năng:</b><br/>• Mở form FrmDepartmentDetail ở chế độ chỉnh sửa<br/>• Hiển thị overlay trên UserControl<br/>• Tự động tải lại dữ liệu sau khi đóng form (nếu lưu thành công)<br/>• Cập nhật trạng thái các nút toolbar<br/><br/><b>Quy trình:</b><br/>• Kiểm tra selection: Phải chọn đúng 1 dòng (dựa trên checkbox)<br/>• Hiển thị OverlayManager trên UserControl<br/>• Tạo form FrmDepartmentDetail với ID phòng ban đã chọn<br/>• Hiển thị form dạng modal dialog<br/>• Sau khi đóng form: Kiểm tra DialogResult<br/>• Nếu OK: Tải lại dữ liệu (không hiển thị WaitForm)<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng OverlayManager<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn đúng 1 dòng trong TreeList (qua checkbox)<br/>• Nếu chọn nhiều hơn 1 dòng: Hiển thị thông báo yêu cầu bỏ chọn bớt<br/>• Nếu không chọn dòng nào: Hiển thị thông báo yêu cầu chọn dòng<br/><br/><b>Kết quả:</b><br/>• Nếu lưu thành công: Danh sách được tải lại với dữ liệu đã cập nhật<br/>• Nếu hủy: Không có thay đổi<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi chọn đúng 1 dòng (checkbox được check). Form sẽ được hiển thị ở chế độ modal. Mã phòng ban sẽ bị khóa và không thể chỉnh sửa."
+            );
+
+            // SuperTip cho nút Xóa
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                DeleteBarButtonItem,
+                title: @"<b><color=Red>🗑️ Xóa</color></b>",
+                content: @"Xóa <b>phòng ban</b> đã chọn.<br/><br/><b>Chức năng:</b><br/>• Xóa một hoặc nhiều phòng ban đã chọn (qua checkbox)<br/>• Hiển thị dialog xác nhận<br/>• Tự động tải lại dữ liệu sau khi xóa<br/>• Xóa selection và checkbox sau khi xóa<br/><br/><b>Quy trình:</b><br/>• Kiểm tra selection: Phải chọn ít nhất 1 dòng (qua checkbox)<br/>• Hiển thị dialog xác nhận (Yes/No) với số lượng phòng ban sẽ xóa<br/>• Nếu xác nhận: Hiển thị WaitForm1<br/>• Gọi DepartmentBll.DeleteMultiple() để xóa nhiều phòng ban cùng lúc<br/>• Hiển thị thông báo thành công/thất bại<br/>• Clear selection và checkbox states<br/>• Tải lại dữ liệu (không hiển thị WaitForm)<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng WaitForm1<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn ít nhất 1 dòng trong TreeList (qua checkbox)<br/>• Phải xác nhận qua dialog Yes/No<br/><br/><b>Kết quả:</b><br/>• Nếu thành công: Danh sách được tải lại, các phòng ban đã chọn bị xóa<br/>• Nếu lỗi: Hiển thị thông báo lỗi, dữ liệu không thay đổi<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi chọn ít nhất 1 dòng (checkbox được check). Bạn có thể chọn nhiều phòng ban để xóa cùng lúc. Hệ thống sẽ xóa tất cả các phòng ban đã chọn trong một lần thao tác."
+            );
+
+            // SuperTip cho nút Xuất dữ liệu
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                ExportBarButtonItem,
+                title: @"<b><color=Purple>📊 Xuất dữ liệu</color></b>",
+                content: @"Xuất <b>danh sách phòng ban</b> ra file Excel.<br/><br/><b>Chức năng:</b><br/>• Xuất toàn bộ dữ liệu trong TreeList ra file Excel<br/>• Hiển thị SaveFileDialog để chọn vị trí lưu file<br/>• Tự động đặt tên file mặc định: Departments.xlsx<br/>• Hiển thị thông báo thành công sau khi xuất<br/><br/><b>Quy trình:</b><br/>• Kiểm tra có dữ liệu trong TreeList không (VisibleNodesCount)<br/>• Hiển thị SaveFileDialog với filter Excel Files (*.xlsx)<br/>• Nếu người dùng chọn vị trí lưu: Gọi TreeList.ExportToXlsx()<br/>• Hiển thị thông báo thành công<br/><br/><b>Yêu cầu:</b><br/>• Phải có ít nhất 1 node hiển thị trong TreeList<br/>• Người dùng phải chọn vị trí lưu file<br/><br/><b>Kết quả:</b><br/>• File Excel được tạo tại vị trí đã chọn<br/>• File chứa toàn bộ dữ liệu hiển thị trong TreeList (bao gồm cấu trúc phân cấp)<br/>• Hiển thị thông báo thành công<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi có dữ liệu trong TreeList. File Excel sẽ chứa toàn bộ dữ liệu đang hiển thị, bao gồm cả cấu trúc phân cấp parent-child của phòng ban."
+            );
         }
 
         #endregion

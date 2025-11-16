@@ -104,6 +104,9 @@ namespace MasterData.Company
 
                 // Thiết lập sự kiện
                 SetupEvents();
+
+                // Setup SuperToolTips
+                SetupSuperTips();
             }
             catch (Exception ex)
             {
@@ -183,115 +186,15 @@ namespace MasterData.Company
             try
             {
                 // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
-                MarkRequiredFields(typeof(PositionDto));
+                RequiredFieldHelper.MarkRequiredFields(
+                    this, 
+                    typeof(PositionDto),
+                    logger: (msg, ex) => Debug.WriteLine($"{msg}: {ex?.Message}")
+                );
             }
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi đánh dấu trường bắt buộc");
-            }
-        }
-
-        /// <summary>
-        /// Đánh dấu các layout item tương ứng với thuộc tính có [Required] bằng dấu * đỏ
-        /// </summary>
-        private void MarkRequiredFields(Type dtoType)
-        {
-            try
-            {
-                var requiredProps = dtoType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => p.GetCustomAttributes(typeof(RequiredAttribute), true).Any())
-                    .ToList();
-
-                var allLayoutItems = GetAllLayoutControlItems(this);
-
-                foreach (var it in allLayoutItems)
-                {
-                    it.AllowHtmlStringInCaption = true;
-                }
-
-                foreach (var prop in requiredProps)
-                {
-                    var propName = prop.Name;
-                    var item = allLayoutItems.FirstOrDefault(it => IsEditorMatchProperty(it.Control, propName));
-                    if (item == null) continue;
-
-                    if (!(item.Text?.Contains("*") ?? false))
-                    {
-                        var baseCaption = string.IsNullOrWhiteSpace(item.Text) ? propName : item.Text;
-                        item.Text = baseCaption + @" <color=red>*</color>";
-                    }
-
-                    if (item.Control is BaseEdit be && be.Properties is RepositoryItemTextEdit txtProps)
-                    {
-                        txtProps.NullValuePrompt = @"Bắt buộc nhập";
-                        txtProps.NullValuePromptShowForEmptyValue = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi đánh dấu trường bắt buộc");
-            }
-        }
-
-        /// <summary>
-        /// Kiểm tra editor có match với property không
-        /// </summary>
-        private static bool IsEditorMatchProperty(Control editor, string propName)
-        {
-            if (editor == null) return false;
-            var name = editor.Name ?? string.Empty;
-            string[] candidates =
-            {
-                name,
-                name.Replace("txt", string.Empty),
-                name.Replace("TextEdit", string.Empty)
-            };
-            return candidates.Any(c => string.Equals(c, propName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>
-        /// Lấy tất cả LayoutControlItem trong form
-        /// </summary>
-        private static List<LayoutControlItem> GetAllLayoutControlItems(Control root)
-        {
-            var result = new List<LayoutControlItem>();
-            if (root == null) return result;
-            var layoutControls = root.Controls.OfType<LayoutControl>().ToList();
-            var nested = root.Controls.Cast<Control>().SelectMany(GetAllLayoutControlItems).ToList();
-            foreach (var lc in layoutControls)
-            {
-                if (lc.Root != null)
-                {
-                    CollectLayoutItems(lc.Root, result);
-                }
-            }
-
-            result.AddRange(nested);
-            return result;
-        }
-
-        /// <summary>
-        /// Thu thập LayoutControlItem từ BaseLayoutItem
-        /// </summary>
-        private static void CollectLayoutItems(BaseLayoutItem baseItem, List<LayoutControlItem> collector)
-        {
-            switch (baseItem)
-            {
-                case null:
-                    return;
-                case LayoutControlItem lci:
-                    collector.Add(lci);
-                    break;
-                case LayoutControlGroup group:
-                {
-                    foreach (BaseLayoutItem child in group.Items)
-                    {
-                        CollectLayoutItems(child, collector);
-                    }
-                    break;
-                }
             }
         }
 
@@ -630,6 +533,73 @@ namespace MasterData.Company
                 ShowError(ex, "Lỗi lấy CompanyId từ database");
                 return Guid.Empty;
             }
+        }
+
+        #endregion
+
+        #region ========== SUPERTOOLTIP ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho tất cả các controls trong form
+        /// </summary>
+        private void SetupSuperTips()
+        {
+            try
+            {
+                SetupTextEditSuperTips();
+                SetupBarButtonSuperTips();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Lỗi khi setup SuperToolTip: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các TextEdit controls
+        /// </summary>
+        private void SetupTextEditSuperTips()
+        {
+            // SuperTip cho Mã chức vụ
+            SuperToolTipHelper.SetTextEditSuperTip(
+                PositionCodeTextEdit,
+                title: @"<b><color=DarkBlue>🏷️ Mã chức vụ</color></b>",
+                content: @"Nhập <b>mã chức vụ</b> trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Nhập mã chức vụ (ví dụ: CV01, CV02, v.v.)<br/>• Hiển thị mã chức vụ khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> khi thêm mới (có dấu * đỏ)<br/>• Không được để trống khi tạo mới<br/>• Tối đa 50 ký tự<br/>• Không được trùng mã trong hệ thống<br/>• Tự động trim khoảng trắng đầu/cuối<br/>• Không thể chỉnh sửa khi đang ở chế độ edit<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi tạo mới<br/>• Kiểm tra độ dài tối đa (50 ký tự)<br/>• Kiểm tra trùng mã chức vụ trong hệ thống<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• Có attribute [Required] trong DTO<br/>• Có attribute [StringLength(50)]<br/>• Tự động đánh dấu * đỏ trong layout<br/>• Hiển thị prompt 'Bắt buộc nhập' khi rỗng<br/><br/><color=Gray>Lưu ý:</color> Mã chức vụ sẽ được lưu vào database khi click nút Lưu. Khi đang ở chế độ chỉnh sửa, mã chức vụ sẽ bị khóa và không thể thay đổi. Mã chức vụ phải là duy nhất trong hệ thống."
+            );
+
+            // SuperTip cho Tên chức vụ
+            SuperToolTipHelper.SetTextEditSuperTip(
+                PositionNameTextEdit,
+                title: @"<b><color=DarkBlue>🏢 Tên chức vụ</color></b>",
+                content: @"Nhập <b>tên chức vụ</b> trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Nhập tên chức vụ (ví dụ: Giám đốc, Trưởng phòng, Nhân viên, v.v.)<br/>• Hiển thị tên chức vụ khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 255 ký tự<br/>• Không được chứa chỉ khoảng trắng<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra độ dài tối đa (255 ký tự)<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• Có attribute [Required] trong DTO<br/>• Có attribute [StringLength(255)]<br/>• Tự động đánh dấu * đỏ trong layout<br/>• Hiển thị prompt 'Bắt buộc nhập' khi rỗng<br/><br/><color=Gray>Lưu ý:</color> Tên chức vụ sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, tên hiện tại sẽ được hiển thị sẵn."
+            );
+
+            // SuperTip cho Mô tả
+            SuperToolTipHelper.SetTextEditSuperTip(
+                DescriptionTextEdit,
+                title: @"<b><color=DarkBlue>📝 Mô tả</color></b>",
+                content: @"Nhập <b>mô tả</b> của chức vụ (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập mô tả chi tiết về chức vụ<br/>• Hiển thị mô tả khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 255 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (255 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(255)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Mô tả sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, mô tả hiện tại sẽ được hiển thị sẵn. Có thể để trống nếu không cần thiết."
+            );
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các BarButtonItem
+        /// </summary>
+        private void SetupBarButtonSuperTips()
+        {
+            // SuperTip cho nút Lưu
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                SaveBarButtonItem,
+                title: @"<b><color=Blue>💾 Lưu</color></b>",
+                content: @"Lưu <b>thông tin chức vụ</b> vào database.<br/><br/><b>Chức năng:</b><br/>• Validate tất cả dữ liệu đầu vào<br/>• Tạo hoặc cập nhật chức vụ trong database<br/>• Hiển thị thông báo thành công/thất bại<br/>• Đóng form sau khi lưu thành công<br/><br/><b>Quy trình:</b><br/>• Validate toàn bộ form (Mã chức vụ, Tên chức vụ, v.v.)<br/>• Kiểm tra trùng mã chức vụ (chỉ khi tạo mới)<br/>• Lấy dữ liệu từ form và tạo PositionDto<br/>• Lấy CompanyId từ database (vì chỉ có 1 Company duy nhất)<br/>• Convert DTO → Entity<br/>• Nếu chỉnh sửa: Cập nhật entity với ID hiện tại<br/>• Nếu thêm mới: Tạo entity mới<br/>• Lưu vào database qua PositionBll<br/>• Hiển thị thông báo thành công<br/>• Đóng form<br/><br/><b>Yêu cầu:</b><br/>• Mã chức vụ phải không được để trống (khi tạo mới)<br/>• Tên chức vụ phải không được để trống<br/>• Mã chức vụ không được trùng trong hệ thống<br/>• Tất cả validation phải pass<br/><br/><b>Kết quả:</b><br/>• Nếu thành công: Hiển thị thông báo và đóng form<br/>• Nếu lỗi: Hiển thị thông báo lỗi, form vẫn mở để chỉnh sửa<br/><br/><color=Gray>Lưu ý:</color> Nếu có lỗi validation, form sẽ không đóng và bạn có thể sửa lại. Dữ liệu sẽ được lưu vào database sau khi tất cả validation pass."
+            );
+
+            // SuperTip cho nút Đóng
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                CloseBarButtonItem,
+                title: @"<b><color=DarkRed>❌ Đóng</color></b>",
+                content: @"Đóng form <b>chi tiết chức vụ</b> mà không lưu thay đổi.<br/><br/><b>Chức năng:</b><br/>• Kiểm tra xem có thay đổi dữ liệu không<br/>• Nếu có thay đổi: Hiển thị dialog xác nhận<br/>• Đóng form ngay lập tức nếu không có thay đổi<br/>• Không lưu dữ liệu đã nhập<br/>• Không ảnh hưởng đến database<br/>• Set DialogResult = Cancel<br/><br/><b>Phím tắt:</b><br/>• Escape: Đóng form<br/><br/><color=Gray>Lưu ý:</color> Nếu có thay đổi dữ liệu, hệ thống sẽ hỏi bạn có muốn lưu không. Tất cả dữ liệu đã nhập (Mã chức vụ, Tên chức vụ, Mô tả, v.v.) sẽ bị mất khi đóng form. Nếu muốn lưu, hãy click nút Lưu trước khi đóng."
+            );
         }
 
         #endregion

@@ -44,6 +44,7 @@
     <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security.Cryptography.Algorithms" />
@@ -102,6 +103,8 @@
     <Compile Include="Utils\ApplicationSystemUtils.cs" />
     <Compile Include="Utils\GridViewHelper.cs" />
     <Compile Include="Utils\InputBoxHelper.cs" />
+    <Compile Include="Utils\RequiredFieldHelper.cs" />
+    <Compile Include="Utils\SuperToolTipHelper.cs" />
     <Compile Include="Utils\MsgBox.cs" />
     <Compile Include="Utils\SecurityHelper.cs" />
     <Compile Include="Utils\SkinHelper.cs" />

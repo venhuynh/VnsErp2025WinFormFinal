@@ -62,7 +62,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new XtraForm1());
+            Application.Run(new FormMain());
 
             #endregion
 

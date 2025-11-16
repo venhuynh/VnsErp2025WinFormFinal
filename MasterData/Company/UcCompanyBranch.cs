@@ -65,6 +65,9 @@ namespace MasterData.Company
             CompanyBranchGridView.RowCellStyle += CompanyBranchGridView_RowCellStyle;
 
             UpdateButtonStates();
+
+            // Setup SuperToolTips
+            SetupSuperTips();
         }
 
         #endregion
@@ -539,6 +542,66 @@ namespace MasterData.Company
             MsgBox.ShowException(string.IsNullOrWhiteSpace(context)
                 ? ex
                 : new Exception(context + ": " + ex.Message, ex));
+        }
+
+        #endregion
+
+        #region ========== SUPERTOOLTIP ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho tất cả các controls trong UserControl
+        /// </summary>
+        private void SetupSuperTips()
+        {
+            try
+            {
+                SetupBarButtonSuperTips();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi setup SuperToolTip");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các BarButtonItem
+        /// </summary>
+        private void SetupBarButtonSuperTips()
+        {
+            // SuperTip cho nút Tải dữ liệu
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                ListDataBarButtonItem,
+                title: @"<b><color=Blue>🔄 Tải dữ liệu</color></b>",
+                content: @"Tải lại <b>danh sách chi nhánh công ty</b> từ database.<br/><br/><b>Chức năng:</b><br/>• Tải lại toàn bộ danh sách chi nhánh từ database<br/>• Hiển thị WaitForm trong quá trình tải<br/>• Cập nhật GridView với dữ liệu mới nhất<br/>• Tự động cập nhật thống kê (tổng số chi nhánh, số dòng đã chọn)<br/>• Xóa selection hiện tại sau khi tải<br/><br/><b>Quy trình:</b><br/>• Kiểm tra guard tránh re-entrancy (_isLoading)<br/>• Hiển thị WaitForm1<br/>• Gọi CompanyBranchBll.GetAllAsync() để lấy dữ liệu<br/>• Convert Entity → DTO<br/>• Bind dữ liệu vào GridView<br/>• Tự động fit columns<br/>• Cập nhật thống kê<br/>• Đóng WaitForm1<br/><br/><b>Kết quả:</b><br/>• GridView hiển thị danh sách chi nhánh mới nhất<br/>• Selection được xóa<br/>• Thống kê được cập nhật<br/><br/><color=Gray>Lưu ý:</color> Nút này sẽ tải lại toàn bộ dữ liệu từ database. Nếu đang có selection, selection sẽ bị xóa sau khi tải xong."
+            );
+
+            // SuperTip cho nút Thêm mới
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                NewBarButtonItem,
+                title: @"<b><color=Green>➕ Thêm mới</color></b>",
+                content: @"Mở form <b>thêm mới chi nhánh công ty</b>.<br/><br/><b>Chức năng:</b><br/>• Mở form FrmCompanyBranchDetail ở chế độ thêm mới<br/>• Hiển thị overlay trên UserControl<br/>• Tự động tải lại dữ liệu sau khi đóng form<br/>• Cập nhật trạng thái các nút toolbar<br/><br/><b>Quy trình:</b><br/>• Hiển thị OverlayManager trên UserControl<br/>• Tạo form FrmCompanyBranchDetail với Guid.Empty (thêm mới)<br/>• Hiển thị form dạng modal dialog<br/>• Sau khi đóng form: Tải lại dữ liệu<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng OverlayManager<br/><br/><b>Yêu cầu:</b><br/>• Form sẽ tự động lấy CompanyId từ database<br/>• Người dùng cần nhập đầy đủ thông tin bắt buộc<br/><br/><b>Kết quả:</b><br/>• Nếu lưu thành công: Danh sách được tải lại với chi nhánh mới<br/>• Nếu hủy: Không có thay đổi<br/><br/><color=Gray>Lưu ý:</color> Form sẽ được hiển thị ở chế độ modal, bạn phải đóng form trước khi có thể thao tác với UserControl này."
+            );
+
+            // SuperTip cho nút Sửa
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                EditBarButtonItem,
+                title: @"<b><color=Orange>✏️ Sửa</color></b>",
+                content: @"Mở form <b>chỉnh sửa chi nhánh công ty</b>.<br/><br/><b>Chức năng:</b><br/>• Mở form FrmCompanyBranchDetail ở chế độ chỉnh sửa<br/>• Hiển thị overlay trên UserControl<br/>• Tự động tải lại dữ liệu sau khi đóng form<br/>• Cập nhật trạng thái các nút toolbar<br/><br/><b>Quy trình:</b><br/>• Kiểm tra selection: Phải chọn đúng 1 dòng<br/>• Hiển thị OverlayManager trên UserControl<br/>• Tạo form FrmCompanyBranchDetail với ID chi nhánh đã chọn<br/>• Hiển thị form dạng modal dialog<br/>• Sau khi đóng form: Tải lại dữ liệu<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng OverlayManager<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn đúng 1 dòng trong GridView<br/>• Nếu chọn nhiều hơn 1 dòng: Hiển thị thông báo yêu cầu bỏ chọn bớt<br/>• Nếu không chọn dòng nào: Hiển thị thông báo yêu cầu chọn dòng<br/><br/><b>Kết quả:</b><br/>• Nếu lưu thành công: Danh sách được tải lại với dữ liệu đã cập nhật<br/>• Nếu hủy: Không có thay đổi<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi chọn đúng 1 dòng. Form sẽ được hiển thị ở chế độ modal."
+            );
+
+            // SuperTip cho nút Xóa
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                DeleteBarButtonItem,
+                title: @"<b><color=Red>🗑️ Xóa</color></b>",
+                content: @"Xóa <b>chi nhánh công ty</b> đã chọn.<br/><br/><b>Chức năng:</b><br/>• Xóa một hoặc nhiều chi nhánh đã chọn<br/>• Validate business rules trước khi xóa<br/>• Hiển thị dialog xác nhận<br/>• Tự động tải lại dữ liệu sau khi xóa<br/><br/><b>Quy trình:</b><br/>• Kiểm tra selection: Phải chọn ít nhất 1 dòng<br/>• Validate business rules: Không cho phép xóa tất cả chi nhánh<br/>• Hiển thị dialog xác nhận (Yes/No)<br/>• Nếu xác nhận: Hiển thị WaitForm1<br/>• Xóa từng chi nhánh đã chọn qua CompanyBranchBll.Delete()<br/>• Tải lại dữ liệu<br/>• Đóng WaitForm1<br/><br/><b>Business Rules:</b><br/>• Không cho phép xóa nếu sẽ không còn chi nhánh nào<br/>• Công ty phải có ít nhất một chi nhánh<br/>• Không cho phép xóa chi nhánh cuối cùng<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn ít nhất 1 dòng trong GridView<br/>• Phải xác nhận qua dialog Yes/No<br/>• Phải pass business rules validation<br/><br/><b>Kết quả:</b><br/>• Nếu thành công: Danh sách được tải lại, các chi nhánh đã chọn bị xóa<br/>• Nếu lỗi: Hiển thị thông báo lỗi, dữ liệu không thay đổi<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi chọn ít nhất 1 dòng. Hệ thống sẽ không cho phép xóa tất cả chi nhánh để đảm bảo công ty luôn có ít nhất một chi nhánh."
+            );
+
+            // SuperTip cho nút Xuất dữ liệu
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                ExportBarButtonItem,
+                title: @"<b><color=Purple>📊 Xuất dữ liệu</color></b>",
+                content: @"Xuất <b>danh sách chi nhánh công ty</b> ra file Excel.<br/><br/><b>Chức năng:</b><br/>• Xuất toàn bộ dữ liệu trong GridView ra file Excel<br/>• Hiển thị SaveFileDialog để chọn vị trí lưu file<br/>• Tự động đặt tên file mặc định: CompanyBranches.xlsx<br/>• Hiển thị thông báo thành công sau khi xuất<br/><br/><b>Quy trình:</b><br/>• Kiểm tra có dữ liệu trong GridView không<br/>• Hiển thị SaveFileDialog với filter Excel Files (*.xlsx)<br/>• Nếu người dùng chọn vị trí lưu: Gọi GridView.ExportToXlsx()<br/>• Hiển thị thông báo thành công<br/><br/><b>Yêu cầu:</b><br/>• Phải có ít nhất 1 dòng dữ liệu trong GridView<br/>• Người dùng phải chọn vị trí lưu file<br/><br/><b>Kết quả:</b><br/>• File Excel được tạo tại vị trí đã chọn<br/>• File chứa toàn bộ dữ liệu hiển thị trong GridView<br/>• Hiển thị thông báo thành công<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi có dữ liệu trong GridView. File Excel sẽ chứa toàn bộ dữ liệu đang hiển thị, bao gồm cả các cột đã được cấu hình trong GridView."
+            );
         }
 
         #endregion

@@ -106,6 +106,9 @@ namespace MasterData.Company
 
                 // Setup advanced validation with DataAnnotations
                 SetupAdvancedValidation();
+
+                // Setup SuperToolTips
+                SetupSuperTips();
             }
             catch (Exception ex)
             {
@@ -430,115 +433,15 @@ namespace MasterData.Company
             try
             {
                 // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
-                MarkRequiredFields(typeof(CompanyBranchDto));
+                RequiredFieldHelper.MarkRequiredFields(
+                    this, 
+                    typeof(CompanyBranchDto),
+                    logger: (msg, ex) => Debug.WriteLine($"{msg}: {ex?.Message}")
+                );
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Lỗi setup advanced validation: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Đánh dấu các layout item tương ứng với thuộc tính có [Required] bằng dấu * đỏ
-        /// </summary>
-        private void MarkRequiredFields(Type dtoType)
-        {
-            try
-            {
-                var requiredProps = dtoType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => p.GetCustomAttributes(typeof(RequiredAttribute), true).Any())
-                    .ToList();
-
-                var allLayoutItems = GetAllLayoutControlItems(this);
-
-                foreach (var it in allLayoutItems)
-                {
-                    it.AllowHtmlStringInCaption = true;
-                }
-
-                foreach (var prop in requiredProps)
-                {
-                    var propName = prop.Name;
-                    var item = allLayoutItems.FirstOrDefault(it => IsEditorMatchProperty(it.Control, propName));
-                    if (item == null) continue;
-
-                    if (!(item.Text?.Contains("*") ?? false))
-                    {
-                        var baseCaption = string.IsNullOrWhiteSpace(item.Text) ? propName : item.Text;
-                        item.Text = baseCaption + @" <color=red>*</color>";
-                    }
-
-                    if (item.Control is BaseEdit be && be.Properties is RepositoryItemTextEdit txtProps)
-                    {
-                        txtProps.NullValuePrompt = @"Bắt buộc nhập";
-                        txtProps.NullValuePromptShowForEmptyValue = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Lỗi đánh dấu trường bắt buộc: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Kiểm tra editor có match với property không
-        /// </summary>
-        private static bool IsEditorMatchProperty(Control editor, string propName)
-        {
-            if (editor == null) return false;
-            var name = editor.Name ?? string.Empty;
-            string[] candidates =
-            {
-                name,
-                name.Replace("txt", string.Empty),
-                name.Replace("TextEdit", string.Empty)
-            };
-            return candidates.Any(c => string.Equals(c, propName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>
-        /// Lấy tất cả LayoutControlItem trong form
-        /// </summary>
-        private static List<LayoutControlItem> GetAllLayoutControlItems(Control root)
-        {
-            var result = new List<LayoutControlItem>();
-            if (root == null) return result;
-            var layoutControls = root.Controls.OfType<LayoutControl>().ToList();
-            var nested = root.Controls.Cast<Control>().SelectMany(GetAllLayoutControlItems).ToList();
-            foreach (var lc in layoutControls)
-            {
-                if (lc.Root != null)
-                {
-                    CollectLayoutItems(lc.Root, result);
-                }
-            }
-
-            result.AddRange(nested);
-            return result;
-        }
-
-        /// <summary>
-        /// Thu thập LayoutControlItem từ BaseLayoutItem
-        /// </summary>
-        private static void CollectLayoutItems(BaseLayoutItem baseItem, List<LayoutControlItem> collector)
-        {
-            switch (baseItem)
-            {
-                case null:
-                    return;
-                case LayoutControlItem lci:
-                    collector.Add(lci);
-                    break;
-                case LayoutControlGroup group:
-                {
-                    foreach (BaseLayoutItem child in group.Items)
-                    {
-                        CollectLayoutItems(child, collector);
-                    }
-                    break;
-                }
             }
         }
 
@@ -558,6 +461,94 @@ namespace MasterData.Company
             {
                 return false;
             }
+        }
+
+        #endregion
+
+        #region ========== SUPERTOOLTIP ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho tất cả các controls trong form
+        /// </summary>
+        private void SetupSuperTips()
+        {
+            try
+            {
+                SetupTextEditSuperTips();
+                SetupBarButtonSuperTips();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Lỗi khi setup SuperToolTip: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các TextEdit controls
+        /// </summary>
+        private void SetupTextEditSuperTips()
+        {
+            // SuperTip cho Mã chi nhánh
+            SuperToolTipHelper.SetTextEditSuperTip(
+                BranchCodeTextEdit,
+                title: @"<b><color=DarkBlue>🏷️ Mã chi nhánh</color></b>",
+                content: @"Nhập <b>mã chi nhánh</b> trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Nhập mã chi nhánh (ví dụ: CN01, CN02, v.v.)<br/>• Hiển thị mã chi nhánh khi chỉnh sửa<br/>• Tự động tạo mã từ tên chi nhánh khi thêm mới<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/>• Không được trùng mã trong cùng công ty<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra độ dài tối đa (50 ký tự)<br/>• Kiểm tra trùng mã trong cùng công ty<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• Có attribute [Required] trong DTO<br/>• Có attribute [StringLength(50)]<br/>• Tự động đánh dấu * đỏ trong layout<br/>• Hiển thị prompt 'Bắt buộc nhập' khi rỗng<br/><br/><color=Gray>Lưu ý:</color> Mã chi nhánh sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, mã hiện tại sẽ được hiển thị sẵn. Mã chi nhánh phải là duy nhất trong cùng một công ty."
+            );
+
+            // SuperTip cho Tên chi nhánh
+            SuperToolTipHelper.SetTextEditSuperTip(
+                BranchNameTextEdit,
+                title: @"<b><color=DarkBlue>🏢 Tên chi nhánh</color></b>",
+                content: @"Nhập <b>tên chi nhánh</b> trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Nhập tên chi nhánh (ví dụ: Chi nhánh Hà Nội, Chi nhánh TP.HCM, v.v.)<br/>• Hiển thị tên chi nhánh khi chỉnh sửa<br/>• Tự động tạo mã chi nhánh từ tên khi thêm mới<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 255 ký tự<br/>• Không được chứa chỉ khoảng trắng<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra độ dài tối đa (255 ký tự)<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• Có attribute [Required] trong DTO<br/>• Có attribute [StringLength(255)]<br/>• Tự động đánh dấu * đỏ trong layout<br/>• Hiển thị prompt 'Bắt buộc nhập' khi rỗng<br/><br/><color=Gray>Lưu ý:</color> Tên chi nhánh sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, tên hiện tại sẽ được hiển thị sẵn. Khi thêm mới, mã chi nhánh sẽ được tự động tạo từ tên này."
+            );
+
+            // SuperTip cho Địa chỉ
+            SuperToolTipHelper.SetTextEditSuperTip(
+                AddressTextEdit,
+                title: @"<b><color=DarkBlue>📍 Địa chỉ</color></b>",
+                content: @"Nhập <b>địa chỉ</b> của chi nhánh (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập địa chỉ chi nhánh (ví dụ: 123 Đường ABC, Quận XYZ, TP.HCM)<br/>• Hiển thị địa chỉ khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 255 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (255 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(255)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Địa chỉ sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, địa chỉ hiện tại sẽ được hiển thị sẵn. Có thể để trống nếu không cần thiết."
+            );
+
+            // SuperTip cho Số điện thoại
+            SuperToolTipHelper.SetTextEditSuperTip(
+                PhoneTextEdit,
+                title: @"<b><color=DarkBlue>📞 Số điện thoại</color></b>",
+                content: @"Nhập <b>số điện thoại</b> của chi nhánh (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập số điện thoại chi nhánh (ví dụ: 02812345678, 0912345678)<br/>• Hiển thị số điện thoại khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 50 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (50 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(50)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Số điện thoại sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, số điện thoại hiện tại sẽ được hiển thị sẵn. Có thể để trống nếu không cần thiết."
+            );
+
+            // SuperTip cho Email
+            SuperToolTipHelper.SetTextEditSuperTip(
+                EmailTextEdit,
+                title: @"<b><color=DarkBlue>📧 Email</color></b>",
+                content: @"Nhập <b>địa chỉ email</b> của chi nhánh (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập địa chỉ email chi nhánh (ví dụ: cn.hn@company.com)<br/>• Hiển thị email khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 100 ký tự nếu có nhập<br/>• Phải đúng định dạng email nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Kiểm tra định dạng email bằng regex nếu có nhập<br/>• Kiểm tra độ dài tối đa (100 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(100)]<br/>• Có attribute [EmailAddress]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Email sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, email hiện tại sẽ được hiển thị sẵn. Nếu có nhập, email phải đúng định dạng (ví dụ: user@domain.com)."
+            );
+
+            // SuperTip cho Tên người quản lý
+            SuperToolTipHelper.SetTextEditSuperTip(
+                ManagerNameTextEdit,
+                title: @"<b><color=DarkBlue>👤 Tên người quản lý</color></b>",
+                content: @"Nhập <b>tên người quản lý</b> của chi nhánh (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập tên người quản lý chi nhánh (ví dụ: Nguyễn Văn A)<br/>• Hiển thị tên người quản lý khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 100 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (100 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(100)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Tên người quản lý sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, tên hiện tại sẽ được hiển thị sẵn. Có thể để trống nếu không cần thiết."
+            );
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các BarButtonItem
+        /// </summary>
+        private void SetupBarButtonSuperTips()
+        {
+            // SuperTip cho nút Lưu
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                SaveBarButtonItem,
+                title: @"<b><color=Blue>💾 Lưu</color></b>",
+                content: @"Lưu <b>thông tin chi nhánh công ty</b> vào database.<br/><br/><b>Chức năng:</b><br/>• Validate tất cả dữ liệu đầu vào<br/>• Tạo hoặc cập nhật chi nhánh công ty trong database<br/>• Hiển thị thông báo thành công/thất bại<br/>• Đóng form sau khi lưu thành công<br/><br/><b>Quy trình:</b><br/>• Validate toàn bộ form (Mã chi nhánh, Tên chi nhánh, Email, v.v.)<br/>• Kiểm tra business rules (trùng mã chi nhánh trong cùng công ty)<br/>• Lấy dữ liệu từ form và tạo CompanyBranchDto<br/>• Convert DTO → Entity<br/>• Nếu chỉnh sửa: Cập nhật entity với ID hiện tại<br/>• Nếu thêm mới: Tạo entity mới<br/>• Lưu vào database qua CompanyBranchBll<br/>• Hiển thị thông báo thành công<br/>• Đóng form<br/><br/><b>Yêu cầu:</b><br/>• Mã chi nhánh phải không được để trống<br/>• Tên chi nhánh phải không được để trống<br/>• Email phải đúng định dạng nếu có nhập<br/>• Mã chi nhánh không được trùng trong cùng công ty<br/>• Tất cả validation phải pass<br/><br/><b>Kết quả:</b><br/>• Nếu thành công: Hiển thị thông báo và đóng form<br/>• Nếu lỗi: Hiển thị thông báo lỗi, form vẫn mở để chỉnh sửa<br/><br/><color=Gray>Lưu ý:</color> Nếu có lỗi validation, form sẽ không đóng và bạn có thể sửa lại. Dữ liệu sẽ được lưu vào database sau khi tất cả validation pass."
+            );
+
+            // SuperTip cho nút Đóng
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                CloseBarButtonItem,
+                title: @"<b><color=DarkRed>❌ Đóng</color></b>",
+                content: @"Đóng form <b>chi tiết chi nhánh công ty</b> mà không lưu thay đổi.<br/><br/><b>Chức năng:</b><br/>• Kiểm tra xem có thay đổi dữ liệu không<br/>• Nếu có thay đổi: Hiển thị dialog xác nhận<br/>• Đóng form ngay lập tức nếu không có thay đổi<br/>• Không lưu dữ liệu đã nhập<br/>• Không ảnh hưởng đến database<br/>• Set DialogResult = Cancel<br/><br/><b>Phím tắt:</b><br/>• Escape: Đóng form<br/><br/><color=Gray>Lưu ý:</color> Nếu có thay đổi dữ liệu, hệ thống sẽ hỏi bạn có muốn lưu không. Tất cả dữ liệu đã nhập (Mã chi nhánh, Tên chi nhánh, Địa chỉ, v.v.) sẽ bị mất khi đóng form. Nếu muốn lưu, hãy click nút Lưu trước khi đóng."
+            );
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using Bll.MasterData.Company;
+using Bll.Utils;
 using Dal.Logging;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
@@ -7,6 +8,7 @@ using MasterData.Company.Converters;
 using MasterData.Company.Dto;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -102,6 +104,9 @@ namespace MasterData.Company
                 
                 // Hiển thị thông tin công ty lên các control có sẵn
                 DisplayCompanyInfo();
+
+                // Setup SuperToolTips
+                SetupSuperTips();
                 
                 _logger?.LogInfo("UcCompany load hoàn thành - đã đảm bảo chỉ có 1 công ty");
             }
@@ -228,40 +233,15 @@ namespace MasterData.Company
         {
             try
             {
-                var requiredProps = dtoType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => p.GetCustomAttributes(typeof(RequiredAttribute), true).Any())
-                    .ToList();
-
-                var allLayoutItems = GetAllLayoutControlItems(this);
-
-                foreach (var it in allLayoutItems)
-                {
-                    it.AllowHtmlStringInCaption = true;
-                }
-
-                foreach (var prop in requiredProps)
-                {
-                    var propName = prop.Name;
-                    var item = allLayoutItems.FirstOrDefault(it => IsEditorMatchProperty(it.Control, propName));
-                    if (item == null) continue;
-
-                    if (!(item.Text?.Contains("*") ?? false))
-                    {
-                        var baseCaption = string.IsNullOrWhiteSpace(item.Text) ? propName : item.Text;
-                        item.Text = baseCaption + @" <color=red>*</color>";
-                    }
-
-                    if (item.Control is BaseEdit be && be.Properties is RepositoryItemTextEdit txtProps)
-                    {
-                        txtProps.NullValuePrompt = @"Bắt buộc nhập";
-                        txtProps.NullValuePromptShowForEmptyValue = true;
-                    }
-                }
+                RequiredFieldHelper.MarkRequiredFields(
+                    this, 
+                    dtoType,
+                    logger: (msg, ex) => _logger?.LogError(msg, ex)
+                );
             }
-            catch
+            catch (Exception ex)
             {
-                // ignore marking errors
+                _logger?.LogError($"Lỗi đánh dấu trường bắt buộc: {ex.Message}", ex);
             }
         }
 
@@ -466,61 +446,111 @@ namespace MasterData.Company
 
         #endregion
 
-        #region ========== TIỆN ÍCH ==========
+        #region ========== SUPERTOOLTIP ==========
 
         /// <summary>
-        /// Kiểm tra editor có match với property name không
+        /// Thiết lập SuperToolTip cho tất cả các controls trong UserControl
         /// </summary>
-        private static bool IsEditorMatchProperty(Control editor, string propName)
+        private void SetupSuperTips()
         {
-            if (editor == null) return false;
-            var name = editor.Name ?? string.Empty;
-            string[] candidates = new[]
+            try
             {
-                name,
-                name.Replace("txt", string.Empty),
-                name.Replace("TextEdit", string.Empty)
-            };
-            return candidates.Any(c => string.Equals(c, propName, StringComparison.OrdinalIgnoreCase));
+                SetupTextEditSuperTips();
+                SetupDateEditSuperTips();
+                SetupPictureEditSuperTips();
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError($"Lỗi khi setup SuperToolTip: {ex.Message}", ex);
+            }
         }
 
         /// <summary>
-        /// Lấy tất cả LayoutControlItem trong control
+        /// Thiết lập SuperToolTip cho các TextEdit controls
         /// </summary>
-        private static System.Collections.Generic.List<LayoutControlItem> GetAllLayoutControlItems(Control root)
+        private void SetupTextEditSuperTips()
         {
-            var result = new System.Collections.Generic.List<LayoutControlItem>();
-            if (root == null) return result;
-            var layoutControls = root.Controls.OfType<LayoutControl>().ToList();
-            var nested = root.Controls.Cast<Control>().SelectMany(c => GetAllLayoutControlItems(c)).ToList();
-            foreach (var lc in layoutControls)
-            {
-                if (lc.Root != null)
-                {
-                    CollectLayoutItems(lc.Root, result);
-                }
-            }
-            result.AddRange(nested);
-            return result;
+            // SuperTip cho Mã công ty
+            SuperToolTipHelper.SetTextEditSuperTip(
+                CompanyCodeTextEdit,
+                title: @"<b><color=DarkBlue>🏷️ Mã công ty</color></b>",
+                content: @"Nhập <b>mã công ty</b> trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Nhập mã công ty (ví dụ: CT01, CT02, v.v.)<br/>• Hiển thị mã công ty khi load dữ liệu<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra độ dài tối đa (50 ký tự)<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• Có attribute [Required] trong DTO<br/>• Có attribute [StringLength(50)]<br/>• Tự động đánh dấu * đỏ trong layout<br/>• Hiển thị prompt 'Bắt buộc nhập' khi rỗng<br/><br/><color=Gray>Lưu ý:</color> Mã công ty sẽ được lưu vào database khi cập nhật thông tin công ty. Hệ thống chỉ cho phép có một công ty duy nhất."
+            );
+
+            // SuperTip cho Tên công ty
+            SuperToolTipHelper.SetTextEditSuperTip(
+                CompanyNameTextEdit,
+                title: @"<b><color=DarkBlue>🏢 Tên công ty</color></b>",
+                content: @"Nhập <b>tên công ty</b> trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Nhập tên công ty đầy đủ<br/>• Hiển thị tên công ty khi load dữ liệu<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 255 ký tự<br/>• Không được chứa chỉ khoảng trắng<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra độ dài tối đa (255 ký tự)<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• Có attribute [Required] trong DTO<br/>• Có attribute [StringLength(255)]<br/>• Tự động đánh dấu * đỏ trong layout<br/>• Hiển thị prompt 'Bắt buộc nhập' khi rỗng<br/><br/><color=Gray>Lưu ý:</color> Tên công ty sẽ được lưu vào database khi cập nhật thông tin công ty."
+            );
+
+            // SuperTip cho Mã số thuế
+            SuperToolTipHelper.SetTextEditSuperTip(
+                TaxCodeTextEdit,
+                title: @"<b><color=DarkBlue>📋 Mã số thuế</color></b>",
+                content: @"Nhập <b>mã số thuế</b> của công ty (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập mã số thuế của công ty<br/>• Hiển thị mã số thuế khi load dữ liệu<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 50 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (50 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(50)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Mã số thuế sẽ được lưu vào database khi cập nhật thông tin công ty. Có thể để trống nếu không cần thiết."
+            );
+
+            // SuperTip cho Số điện thoại
+            SuperToolTipHelper.SetTextEditSuperTip(
+                PhoneTextEdit,
+                title: @"<b><color=DarkBlue>📞 Số điện thoại</color></b>",
+                content: @"Nhập <b>số điện thoại</b> của công ty (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập số điện thoại công ty (ví dụ: 02812345678, 0912345678)<br/>• Hiển thị số điện thoại khi load dữ liệu<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 50 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (50 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(50)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Số điện thoại sẽ được lưu vào database khi cập nhật thông tin công ty. Có thể để trống nếu không cần thiết."
+            );
+
+            // SuperTip cho Email
+            SuperToolTipHelper.SetTextEditSuperTip(
+                EmailTextEdit,
+                title: @"<b><color=DarkBlue>📧 Email</color></b>",
+                content: @"Nhập <b>địa chỉ email</b> của công ty (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập địa chỉ email công ty (ví dụ: info@company.com)<br/>• Hiển thị email khi load dữ liệu<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 100 ký tự nếu có nhập<br/>• Phải đúng định dạng email nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Kiểm tra định dạng email bằng EmailAddress attribute nếu có nhập<br/>• Kiểm tra độ dài tối đa (100 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(100)]<br/>• Có attribute [EmailAddress]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Email sẽ được lưu vào database khi cập nhật thông tin công ty. Nếu có nhập, email phải đúng định dạng (ví dụ: user@domain.com)."
+            );
+
+            // SuperTip cho Website
+            SuperToolTipHelper.SetTextEditSuperTip(
+                WebsiteTextEdit,
+                title: @"<b><color=DarkBlue>🌐 Website</color></b>",
+                content: @"Nhập <b>địa chỉ website</b> của công ty (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập địa chỉ website công ty (ví dụ: www.company.com)<br/>• Hiển thị website khi load dữ liệu<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 100 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (100 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(100)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Website sẽ được lưu vào database khi cập nhật thông tin công ty. Có thể để trống nếu không cần thiết."
+            );
+
+            // SuperTip cho Địa chỉ
+            SuperToolTipHelper.SetTextEditSuperTip(
+                AddressTextEdit,
+                title: @"<b><color=DarkBlue>📍 Địa chỉ</color></b>",
+                content: @"Nhập <b>địa chỉ</b> của công ty (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập địa chỉ công ty (ví dụ: 123 Đường ABC, Quận XYZ, TP.HCM)<br/>• Hiển thị địa chỉ khi load dữ liệu<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 255 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (255 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(255)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Địa chỉ sẽ được lưu vào database khi cập nhật thông tin công ty. Có thể để trống nếu không cần thiết."
+            );
+
+            // SuperTip cho Quốc gia
+            SuperToolTipHelper.SetTextEditSuperTip(
+                CountryTextEdit,
+                title: @"<b><color=DarkBlue>🌍 Quốc gia</color></b>",
+                content: @"Nhập <b>quốc gia</b> của công ty (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập quốc gia của công ty (ví dụ: Việt Nam, USA, v.v.)<br/>• Hiển thị quốc gia khi load dữ liệu<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 100 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (100 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(100)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Quốc gia sẽ được lưu vào database khi cập nhật thông tin công ty. Có thể để trống nếu không cần thiết."
+            );
         }
 
         /// <summary>
-        /// Thu thập LayoutControlItem từ BaseLayoutItem
+        /// Thiết lập SuperToolTip cho DateEdit controls
         /// </summary>
-        private static void CollectLayoutItems(BaseLayoutItem baseItem, System.Collections.Generic.List<LayoutControlItem> collector)
+        private void SetupDateEditSuperTips()
         {
-            if (baseItem == null) return;
-            if (baseItem is LayoutControlItem lci)
-            {
-                collector.Add(lci);
-            }
-            if (baseItem is LayoutControlGroup group)
-            {
-                foreach (BaseLayoutItem child in group.Items)
-                {
-                    CollectLayoutItems(child, collector);
-                }
-            }
+            // SuperTip cho Ngày tạo
+            SuperToolTipHelper.SetBaseEditSuperTip(
+                CreatedDateDateEdit,
+                title: @"<b><color=DarkBlue>📅 Ngày tạo</color></b>",
+                content: @"Hiển thị <b>ngày tạo</b> của công ty.<br/><br/><b>Chức năng:</b><br/>• Hiển thị ngày tạo công ty trong hệ thống<br/>• Tự động được set khi tạo mới công ty<br/>• Chỉ đọc (read-only)<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tự động được set bởi hệ thống<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• Có attribute [Required] trong DTO<br/>• Tự động đánh dấu * đỏ trong layout<br/><br/><color=Gray>Lưu ý:</color> Ngày tạo được tự động set bởi hệ thống khi tạo mới công ty. Người dùng không thể chỉnh sửa trường này."
+            );
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho PictureEdit controls
+        /// </summary>
+        private void SetupPictureEditSuperTips()
+        {
+            // SuperTip cho Logo
+            SuperToolTipHelper.SetBaseEditSuperTip(
+                LogoPictureEdit,
+                title: @"<b><color=DarkBlue>🖼️ Logo công ty</color></b>",
+                content: @"Quản lý <b>logo công ty</b>.<br/><br/><b>Chức năng:</b><br/>• Hiển thị logo công ty<br/>• Load logo từ file (click chuột phải → Load...)<br/>• Xóa logo (click chuột phải → Delete)<br/>• Drag & drop file hình ảnh vào control<br/>• Tự động lưu vào database khi thay đổi<br/><br/><b>Định dạng hỗ trợ:</b><br/>• JPG, JPEG<br/>• PNG<br/>• BMP<br/>• GIF<br/><br/><b>Cách sử dụng:</b><br/>• <b>Load logo:</b> Click chuột phải → Load... → Chọn file hình ảnh<br/>• <b>Xóa logo:</b> Click chuột phải → Delete → Xác nhận<br/>• <b>Drag & Drop:</b> Kéo thả file hình ảnh vào control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc</b> (có thể để trống)<br/>• Chỉ chấp nhận file hình ảnh<br/>• Tự động lưu vào database khi thay đổi<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Logo sẽ được lưu vào database ngay khi load hoặc xóa. Logo được hiển thị với chế độ Zoom để phù hợp với kích thước control."
+            );
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using Bll.MasterData.Company;
+using Bll.Utils;
 using Dal.DataContext;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
@@ -85,6 +86,9 @@ namespace MasterData.Company
 
                 // Setup advanced validation with DataAnnotations
                 SetupAdvancedValidation();
+
+                // Setup SuperToolTips
+                SetupSuperTips();
             }
             catch (Exception ex)
             {
@@ -530,7 +534,11 @@ namespace MasterData.Company
             try
             {
                 // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
-                MarkRequiredFields(typeof(DepartmentDto));
+                RequiredFieldHelper.MarkRequiredFields(
+                    this, 
+                    typeof(DepartmentDto),
+                    logger: (msg, ex) => Debug.WriteLine($"{msg}: {ex?.Message}")
+                );
             }
             catch (Exception ex)
             {
@@ -538,108 +546,92 @@ namespace MasterData.Company
             }
         }
 
+        #endregion
+
+        #region ========== SUPERTOOLTIP ==========
+
         /// <summary>
-        /// Đánh dấu các layout item tương ứng với thuộc tính có [Required] bằng dấu * đỏ
+        /// Thiết lập SuperToolTip cho tất cả các controls trong form
         /// </summary>
-        private void MarkRequiredFields(Type dtoType)
+        private void SetupSuperTips()
         {
             try
             {
-                var requiredProps = dtoType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(p => p.GetCustomAttributes(typeof(RequiredAttribute), true).Any())
-                    .ToList();
-
-                var allLayoutItems = GetAllLayoutControlItems(this);
-
-                foreach (var it in allLayoutItems)
-                {
-                    it.AllowHtmlStringInCaption = true;
-                }
-
-                foreach (var prop in requiredProps)
-                {
-                    var propName = prop.Name;
-                    var item = allLayoutItems.FirstOrDefault(it => IsEditorMatchProperty(it.Control, propName));
-                    if (item == null) continue;
-
-                    if (!(item.Text?.Contains("*") ?? false))
-                    {
-                        var baseCaption = string.IsNullOrWhiteSpace(item.Text) ? propName : item.Text;
-                        item.Text = baseCaption + @" <color=red>*</color>";
-                    }
-
-                    if (item.Control is BaseEdit be && be.Properties is RepositoryItemTextEdit txtProps)
-                    {
-                        txtProps.NullValuePrompt = @"Bắt buộc nhập";
-                        txtProps.NullValuePromptShowForEmptyValue = true;
-                    }
-                }
+                SetupTextEditSuperTips();
+                SetupSearchLookupSuperTips();
+                SetupBarButtonSuperTips();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Lỗi đánh dấu trường bắt buộc: {ex.Message}");
+                Debug.WriteLine($"Lỗi khi setup SuperToolTip: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Kiểm tra editor có match với property không
+        /// Thiết lập SuperToolTip cho các TextEdit controls
         /// </summary>
-        private static bool IsEditorMatchProperty(Control editor, string propName)
+        private void SetupTextEditSuperTips()
         {
-            if (editor == null) return false;
-            var name = editor.Name ?? string.Empty;
-            string[] candidates =
-            {
-                name,
-                name.Replace("txt", string.Empty),
-                name.Replace("TextEdit", string.Empty)
-            };
-            return candidates.Any(c => string.Equals(c, propName, StringComparison.OrdinalIgnoreCase));
+            // SuperTip cho Mã phòng ban
+            SuperToolTipHelper.SetTextEditSuperTip(
+                DepartmentCodeTextEdit,
+                title: @"<b><color=DarkBlue>🏷️ Mã phòng ban</color></b>",
+                content: @"Nhập <b>mã phòng ban</b> trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Nhập mã phòng ban (ví dụ: PB01, PB02, v.v.)<br/>• Hiển thị mã phòng ban khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> khi thêm mới (có dấu * đỏ)<br/>• Không được để trống khi tạo mới<br/>• Tối đa 50 ký tự<br/>• Tự động trim khoảng trắng đầu/cuối<br/>• Không thể chỉnh sửa khi đang ở chế độ edit<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi tạo mới<br/>• Kiểm tra độ dài tối đa (50 ký tự)<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• Có attribute [Required] trong DTO<br/>• Có attribute [StringLength(50)]<br/>• Tự động đánh dấu * đỏ trong layout<br/>• Hiển thị prompt 'Bắt buộc nhập' khi rỗng<br/><br/><color=Gray>Lưu ý:</color> Mã phòng ban sẽ được lưu vào database khi click nút Lưu. Khi đang ở chế độ chỉnh sửa, mã phòng ban sẽ bị khóa và không thể thay đổi."
+            );
+
+            // SuperTip cho Tên phòng ban
+            SuperToolTipHelper.SetTextEditSuperTip(
+                DepartmentNameTextEdit,
+                title: @"<b><color=DarkBlue>🏢 Tên phòng ban</color></b>",
+                content: @"Nhập <b>tên phòng ban</b> trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Nhập tên phòng ban (ví dụ: Phòng Kinh doanh, Phòng Kỹ thuật, v.v.)<br/>• Hiển thị tên phòng ban khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 255 ký tự<br/>• Không được chứa chỉ khoảng trắng<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra độ dài tối đa (255 ký tự)<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• Có attribute [Required] trong DTO<br/>• Có attribute [StringLength(255)]<br/>• Tự động đánh dấu * đỏ trong layout<br/>• Hiển thị prompt 'Bắt buộc nhập' khi rỗng<br/><br/><color=Gray>Lưu ý:</color> Tên phòng ban sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, tên hiện tại sẽ được hiển thị sẵn."
+            );
+
+            // SuperTip cho Mô tả
+            SuperToolTipHelper.SetTextEditSuperTip(
+                DescriptionTextEdit,
+                title: @"<b><color=DarkBlue>📝 Mô tả</color></b>",
+                content: @"Nhập <b>mô tả</b> của phòng ban (tùy chọn).<br/><br/><b>Chức năng:</b><br/>• Nhập mô tả chi tiết về phòng ban<br/>• Hiển thị mô tả khi chỉnh sửa<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc nhập</b> (có thể để trống)<br/>• Tối đa 255 ký tự nếu có nhập<br/>• Tự động trim khoảng trắng đầu/cuối<br/><br/><b>Validation:</b><br/>• Chỉ kiểm tra độ dài tối đa (255 ký tự) nếu có nhập<br/>• Hiển thị lỗi qua ErrorProvider nếu vượt quá độ dài<br/>• Không bắt buộc nhập<br/><br/><b>DataAnnotations:</b><br/>• Không có attribute [Required] trong DTO<br/>• Có attribute [StringLength(255)]<br/>• Có thể để trống<br/><br/><color=Gray>Lưu ý:</color> Mô tả sẽ được lưu vào database khi click nút Lưu. Nếu đang ở chế độ chỉnh sửa, mô tả hiện tại sẽ được hiển thị sẵn. Có thể để trống nếu không cần thiết."
+            );
         }
 
         /// <summary>
-        /// Lấy tất cả LayoutControlItem trong form
+        /// Thiết lập SuperToolTip cho các SearchLookupEdit controls
         /// </summary>
-        private static List<LayoutControlItem> GetAllLayoutControlItems(Control root)
+        private void SetupSearchLookupSuperTips()
         {
-            var result = new List<LayoutControlItem>();
-            if (root == null) return result;
-            var layoutControls = root.Controls.OfType<LayoutControl>().ToList();
-            var nested = root.Controls.Cast<Control>().SelectMany(GetAllLayoutControlItems).ToList();
-            foreach (var lc in layoutControls)
-            {
-                if (lc.Root != null)
-                {
-                    CollectLayoutItems(lc.Root, result);
-                }
-            }
+            // SuperTip cho Chi nhánh
+            SuperToolTipHelper.SetBaseEditSuperTip(
+                BranchNameSearchLookupedit,
+                title: @"<b><color=DarkBlue>🏢 Chi nhánh</color></b>",
+                content: @"Chọn <b>chi nhánh</b> mà phòng ban thuộc về.<br/><br/><b>Chức năng:</b><br/>• Chọn chi nhánh từ danh sách dropdown<br/>• Hiển thị tên chi nhánh đã chọn<br/>• Validation tự động khi rời khỏi control<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Phải chọn một chi nhánh hợp lệ<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra chi nhánh có tồn tại không<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• BranchId không có attribute [Required] trong DTO nhưng được validate trong form<br/>• Có thể để trống về mặt DTO nhưng form yêu cầu bắt buộc<br/><br/><color=Gray>Lưu ý:</color> Chi nhánh sẽ được lưu vào database khi click nút Lưu. Danh sách chi nhánh được load từ database và chỉ hiển thị các chi nhánh đang hoạt động."
+            );
 
-            result.AddRange(nested);
-            return result;
+            // SuperTip cho Phòng ban cha
+            SuperToolTipHelper.SetBaseEditSuperTip(
+                ParentDepartmentNameTextEdit,
+                title: @"<b><color=DarkBlue>👥 Phòng ban cha</color></b>",
+                content: @"Chọn <b>phòng ban cha</b> (tùy chọn) để tạo cấu trúc phân cấp.<br/><br/><b>Chức năng:</b><br/>• Chọn phòng ban cha từ danh sách dropdown<br/>• Hiển thị tên phòng ban cha đã chọn<br/>• Tạo cấu trúc phân cấp phòng ban<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc chọn</b> (có thể để trống)<br/>• Có thể để trống nếu phòng ban không có phòng ban cha<br/>• Phải chọn một phòng ban hợp lệ nếu có chọn<br/><br/><b>Validation:</b><br/>• Không bắt buộc nhập<br/>• Kiểm tra phòng ban có tồn tại không nếu có chọn<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• ParentId không có attribute [Required] trong DTO<br/>• Có thể để trống (NULL)<br/><br/><color=Gray>Lưu ý:</color> Phòng ban cha sẽ được lưu vào database khi click nút Lưu. Nếu để trống, phòng ban này sẽ là phòng ban cấp cao nhất. Danh sách phòng ban được load từ database."
+            );
         }
 
         /// <summary>
-        /// Thu thập LayoutControlItem từ BaseLayoutItem
+        /// Thiết lập SuperToolTip cho các BarButtonItem
         /// </summary>
-        private static void CollectLayoutItems(BaseLayoutItem baseItem, List<LayoutControlItem> collector)
+        private void SetupBarButtonSuperTips()
         {
-            switch (baseItem)
-            {
-                case null:
-                    return;
-                case LayoutControlItem lci:
-                    collector.Add(lci);
-                    break;
-                case LayoutControlGroup group:
-                {
-                    foreach (BaseLayoutItem child in group.Items)
-                    {
-                        CollectLayoutItems(child, collector);
-                    }
-                    break;
-                }
-            }
+            // SuperTip cho nút Lưu
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                SaveBarButtonItem,
+                title: @"<b><color=Blue>💾 Lưu</color></b>",
+                content: @"Lưu <b>thông tin phòng ban</b> vào database.<br/><br/><b>Chức năng:</b><br/>• Validate tất cả dữ liệu đầu vào<br/>• Tạo hoặc cập nhật phòng ban trong database<br/>• Hiển thị thông báo thành công/thất bại<br/>• Đóng form sau khi lưu thành công<br/><br/><b>Quy trình:</b><br/>• Validate toàn bộ form (Mã phòng ban, Tên phòng ban, Chi nhánh, v.v.)<br/>• Lấy dữ liệu từ form và tạo Department Entity<br/>• Lấy CompanyId từ database (vì chỉ có 1 Company duy nhất)<br/>• Nếu chỉnh sửa: Cập nhật entity với ID hiện tại<br/>• Nếu thêm mới: Tạo entity mới với ID mới<br/>• Lưu vào database qua DepartmentBll<br/>• Hiển thị thông báo thành công<br/>• Đóng form<br/><br/><b>Yêu cầu:</b><br/>• Mã phòng ban phải không được để trống (khi tạo mới)<br/>• Tên phòng ban phải không được để trống<br/>• Chi nhánh phải được chọn<br/>• Tất cả validation phải pass<br/><br/><b>Kết quả:</b><br/>• Nếu thành công: Hiển thị thông báo và đóng form<br/>• Nếu lỗi: Hiển thị thông báo lỗi, form vẫn mở để chỉnh sửa<br/><br/><color=Gray>Lưu ý:</color> Nếu có lỗi validation, form sẽ không đóng và bạn có thể sửa lại. Dữ liệu sẽ được lưu vào database sau khi tất cả validation pass."
+            );
+
+            // SuperTip cho nút Đóng
+            SuperToolTipHelper.SetBarButtonSuperTip(
+                CloseBarButtonItem,
+                title: @"<b><color=DarkRed>❌ Đóng</color></b>",
+                content: @"Đóng form <b>chi tiết phòng ban</b> mà không lưu thay đổi.<br/><br/><b>Chức năng:</b><br/>• Đóng form ngay lập tức<br/>• Không lưu dữ liệu đã nhập<br/>• Không ảnh hưởng đến database<br/>• Set DialogResult = Cancel<br/><br/><b>Phím tắt:</b><br/>• Escape: Đóng form<br/><br/><color=Gray>Lưu ý:</color> Tất cả dữ liệu đã nhập (Mã phòng ban, Tên phòng ban, Chi nhánh, v.v.) sẽ bị mất khi đóng form. Nếu muốn lưu, hãy click nút Lưu trước khi đóng."
+            );
         }
 
         #endregion
