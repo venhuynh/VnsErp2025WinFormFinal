@@ -19,7 +19,7 @@ namespace MasterData.ProductService
     /// UserControl quản lý danh sách biến thể sản phẩm.
     /// Cung cấp chức năng CRUD đầy đủ với giao diện thân thiện.
     /// </summary>
-    public partial class UcProductVariant : XtraUserControl
+    public partial class FrmProductVariant : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -50,7 +50,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Khởi tạo UserControl quản lý biến thể sản phẩm.
         /// </summary>
-        public UcProductVariant()
+        public FrmProductVariant()
         {
             InitializeComponent();
             

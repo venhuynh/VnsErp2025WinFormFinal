@@ -7,7 +7,7 @@ using DevExpress.XtraLayout;
 
 namespace MasterData.ProductService
 {
-    partial class UcProductImage
+    partial class FrmProductImage
     {
         /// <summary> 
         /// Required designer variable.
@@ -73,7 +73,7 @@ namespace MasterData.ProductService
             this.ProductImageServiceGridControl.Location = new System.Drawing.Point(0, 0);
             this.ProductImageServiceGridControl.MainView = this.ProductImageServiceGWinExplorerView;
             this.ProductImageServiceGridControl.Name = "ProductImageServiceGridControl";
-            this.ProductImageServiceGridControl.Size = new System.Drawing.Size(1085, 822);
+            this.ProductImageServiceGridControl.Size = new System.Drawing.Size(1083, 788);
             this.ProductImageServiceGridControl.TabIndex = 0;
             this.ProductImageServiceGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.ProductImageServiceGWinExplorerView});
@@ -96,9 +96,9 @@ namespace MasterData.ProductService
             // 
             this.sidePanel1.Controls.Add(this.tabPane1);
             this.sidePanel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.sidePanel1.Location = new System.Drawing.Point(1085, 0);
+            this.sidePanel1.Location = new System.Drawing.Point(1083, 0);
             this.sidePanel1.Name = "sidePanel1";
-            this.sidePanel1.Size = new System.Drawing.Size(300, 822);
+            this.sidePanel1.Size = new System.Drawing.Size(300, 788);
             this.sidePanel1.TabIndex = 10;
             this.sidePanel1.Text = "sidePanel1";
             // 
@@ -110,9 +110,9 @@ namespace MasterData.ProductService
             this.tabPane1.Name = "tabPane1";
             this.tabPane1.Pages.AddRange(new DevExpress.XtraBars.Navigation.NavigationPageBase[] {
             this.tabNavigationPage1});
-            this.tabPane1.RegularSize = new System.Drawing.Size(299, 822);
+            this.tabPane1.RegularSize = new System.Drawing.Size(299, 788);
             this.tabPane1.SelectedPage = this.tabNavigationPage1;
-            this.tabPane1.Size = new System.Drawing.Size(299, 822);
+            this.tabPane1.Size = new System.Drawing.Size(299, 788);
             this.tabPane1.TabIndex = 0;
             this.tabPane1.Text = "tabPane1";
             // 
@@ -121,7 +121,7 @@ namespace MasterData.ProductService
             this.tabNavigationPage1.Caption = "Hình ảnh ";
             this.tabNavigationPage1.Controls.Add(this.layoutControl1);
             this.tabNavigationPage1.Name = "tabNavigationPage1";
-            this.tabNavigationPage1.Size = new System.Drawing.Size(299, 781);
+            this.tabNavigationPage1.Size = new System.Drawing.Size(299, 747);
             // 
             // layoutControl1
             // 
@@ -134,7 +134,7 @@ namespace MasterData.ProductService
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(749, 172, 650, 400);
             this.layoutControl1.Root = this.layoutControlGroup1;
-            this.layoutControl1.Size = new System.Drawing.Size(299, 781);
+            this.layoutControl1.Size = new System.Drawing.Size(299, 747);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -142,7 +142,7 @@ namespace MasterData.ProductService
             // 
             this.ResultMemoEdit.Location = new System.Drawing.Point(3, 95);
             this.ResultMemoEdit.Name = "ResultMemoEdit";
-            this.ResultMemoEdit.Size = new System.Drawing.Size(293, 683);
+            this.ResultMemoEdit.Size = new System.Drawing.Size(293, 649);
             this.ResultMemoEdit.StyleController = this.layoutControl1;
             this.ResultMemoEdit.TabIndex = 13;
             // 
@@ -174,7 +174,7 @@ namespace MasterData.ProductService
             this.layoutControlGroup4,
             this.layoutControlItem1});
             this.layoutControlGroup1.Name = "Root";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(299, 781);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(299, 747);
             this.layoutControlGroup1.TextVisible = false;
             // 
             // layoutControlGroup4
@@ -211,18 +211,19 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Control = this.ResultMemoEdit;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 92);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(299, 689);
+            this.layoutControlItem1.Size = new System.Drawing.Size(299, 655);
             this.layoutControlItem1.TextLocation = DevExpress.Utils.Locations.Top;
             this.layoutControlItem1.TextVisible = false;
             // 
-            // UcProductImage
+            // FrmProductImage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1383, 788);
             this.Controls.Add(this.ProductImageServiceGridControl);
             this.Controls.Add(this.sidePanel1);
-            this.Name = "UcProductImage";
-            this.Size = new System.Drawing.Size(1385, 822);
+            this.Name = "FrmProductImage";
+            this.Text = "HÌNH ẢNH SPDV";
             ((System.ComponentModel.ISupportInitialize)(this.ProductImageServiceGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductImageServiceGWinExplorerView)).EndInit();
             this.sidePanel1.ResumeLayout(false);

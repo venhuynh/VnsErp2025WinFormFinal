@@ -9,7 +9,7 @@ using DevExpress.XtraLayout;
 
 namespace MasterData.ProductService
 {
-    partial class UcProductVariant
+    partial class FrmProductVariant
     {
         /// <summary> 
         /// Required designer variable.
@@ -56,7 +56,6 @@ namespace MasterData.ProductService
             this.NewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.CountVariantAndImageBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
@@ -67,6 +66,7 @@ namespace MasterData.ProductService
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.CountVariantAndImageBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.repositoryItemSpinEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
@@ -126,7 +126,7 @@ namespace MasterData.ProductService
             this.ProductVariantListGridControl.MainView = this.ProductVariantListGridView;
             this.ProductVariantListGridControl.MenuManager = this.barManager1;
             this.ProductVariantListGridControl.Name = "ProductVariantListGridControl";
-            this.ProductVariantListGridControl.Size = new System.Drawing.Size(1045, 555);
+            this.ProductVariantListGridControl.Size = new System.Drawing.Size(1043, 521);
             this.ProductVariantListGridControl.TabIndex = 4;
             this.ProductVariantListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.ProductVariantListGridView,
@@ -261,12 +261,6 @@ namespace MasterData.ProductService
             this.DeleteBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.deletelist_32x32;
             this.DeleteBarButtonItem.Name = "DeleteBarButtonItem";
             // 
-            // CountVariantAndImageBarButtonItem
-            // 
-            this.CountVariantAndImageBarButtonItem.Caption = "Thống kê";
-            this.CountVariantAndImageBarButtonItem.Id = 6;
-            this.CountVariantAndImageBarButtonItem.Name = "CountVariantAndImageBarButtonItem";
-            // 
             // ExportBarButtonItem
             // 
             this.ExportBarButtonItem.Caption = "Xuất";
@@ -324,15 +318,15 @@ namespace MasterData.ProductService
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1077, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 626);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 592);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1077, 35);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 35);
             // 
             // barDockControlLeft
             // 
@@ -340,15 +334,21 @@ namespace MasterData.ProductService
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 587);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 553);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1077, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 587);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 553);
+            // 
+            // CountVariantAndImageBarButtonItem
+            // 
+            this.CountVariantAndImageBarButtonItem.Caption = "Thống kê";
+            this.CountVariantAndImageBarButtonItem.Id = 6;
+            this.CountVariantAndImageBarButtonItem.Name = "CountVariantAndImageBarButtonItem";
             // 
             // repositoryItemSpinEdit1
             // 
@@ -387,7 +387,7 @@ namespace MasterData.ProductService
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1077, 587);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 553);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -398,7 +398,7 @@ namespace MasterData.ProductService
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1077, 587);
+            this.Root.Size = new System.Drawing.Size(1075, 553);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -406,20 +406,21 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Control = this.ProductVariantListGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1051, 561);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // UcProductVariant
+            // FrmProductVariant
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1075, 627);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.Name = "UcProductVariant";
-            this.Size = new System.Drawing.Size(1077, 661);
+            this.Name = "FrmProductVariant";
+            this.Text = "BIẾN THỂ SPDV";
             ((System.ComponentModel.ISupportInitialize)(this.VariantGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();

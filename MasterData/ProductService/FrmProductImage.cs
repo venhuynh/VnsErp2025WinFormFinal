@@ -22,7 +22,7 @@ namespace MasterData.ProductService
     /// UserControl quản lý hình ảnh sản phẩm - hiển thị danh sách hình ảnh với WinExplorerView.
     /// Cung cấp chức năng tìm kiếm, xem chi tiết, và quản lý hình ảnh sản phẩm.
     /// </summary>
-    public partial class UcProductImage : XtraUserControl
+    public partial class FrmProductImage : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -50,7 +50,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Khởi tạo UserControl quản lý hình ảnh sản phẩm.
         /// </summary>
-        public UcProductImage()
+        public FrmProductImage()
         {
             InitializeComponent();
 

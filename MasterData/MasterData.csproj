@@ -192,12 +192,6 @@
     <Compile Include="ProductService\Dto\ProductVariantListDto.cs" />
     <Compile Include="ProductService\Dto\UnitOfMeasureDto.cs" />
     <Compile Include="ProductService\Dto\VariantAttributeDto.cs" />
-    <Compile Include="ProductService\FluentProductService.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProductService\FluentProductService.Designer.cs">
-      <DependentUpon>FluentProductService.cs</DependentUpon>
-    </Compile>
     <Compile Include="ProductService\FrmProductImageAdd.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -234,23 +228,23 @@
     <Compile Include="ProductService\FrmProductVariantDetail.Designer.cs">
       <DependentUpon>FrmProductVariantDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\UcProductImage.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="ProductService\FrmProductImage.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProductService\UcProductImage.Designer.cs">
-      <DependentUpon>UcProductImage.cs</DependentUpon>
+    <Compile Include="ProductService\FrmProductImage.Designer.cs">
+      <DependentUpon>FrmProductImage.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\UcProductServiceCategory.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="ProductService\FrmProductServiceCategory.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProductService\UcProductServiceCategory.Designer.cs">
-      <DependentUpon>UcProductServiceCategory.cs</DependentUpon>
+    <Compile Include="ProductService\FrmProductServiceCategory.Designer.cs">
+      <DependentUpon>FrmProductServiceCategory.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\UcProductServiceList.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="ProductService\FrmProductServiceList.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProductService\UcProductServiceList.Designer.cs">
-      <DependentUpon>UcProductServiceList.cs</DependentUpon>
+    <Compile Include="ProductService\FrmProductServiceList.Designer.cs">
+      <DependentUpon>FrmProductServiceList.cs</DependentUpon>
     </Compile>
     <Compile Include="ProductService\FrmUnitOfMeasure.cs">
       <SubType>Form</SubType>
@@ -264,11 +258,11 @@
     <Compile Include="ProductService\UcProductServiceListCardView.Designer.cs">
       <DependentUpon>UcProductServiceListCardView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\UcProductVariant.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="ProductService\FrmProductVariant.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProductService\UcProductVariant.Designer.cs">
-      <DependentUpon>UcProductVariant.cs</DependentUpon>
+    <Compile Include="ProductService\FrmProductVariant.Designer.cs">
+      <DependentUpon>FrmProductVariant.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -323,9 +317,6 @@
     <EmbeddedResource Include="Customer\FrmBusinessPartnerSite.resx">
       <DependentUpon>FrmBusinessPartnerSite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProductService\FluentProductService.resx">
-      <DependentUpon>FluentProductService.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ProductService\FrmProductImageAdd.resx">
       <DependentUpon>FrmProductImageAdd.cs</DependentUpon>
     </EmbeddedResource>
@@ -344,14 +335,14 @@
     <EmbeddedResource Include="ProductService\FrmProductVariantDetail.resx">
       <DependentUpon>FrmProductVariantDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProductService\UcProductImage.resx">
-      <DependentUpon>UcProductImage.cs</DependentUpon>
+    <EmbeddedResource Include="ProductService\FrmProductImage.resx">
+      <DependentUpon>FrmProductImage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProductService\UcProductServiceCategory.resx">
-      <DependentUpon>UcProductServiceCategory.cs</DependentUpon>
+    <EmbeddedResource Include="ProductService\FrmProductServiceCategory.resx">
+      <DependentUpon>FrmProductServiceCategory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProductService\UcProductServiceList.resx">
-      <DependentUpon>UcProductServiceList.cs</DependentUpon>
+    <EmbeddedResource Include="ProductService\FrmProductServiceList.resx">
+      <DependentUpon>FrmProductServiceList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProductService\FrmUnitOfMeasure.resx">
       <DependentUpon>FrmUnitOfMeasure.cs</DependentUpon>
@@ -359,8 +350,8 @@
     <EmbeddedResource Include="ProductService\UcProductServiceListCardView.resx">
       <DependentUpon>UcProductServiceListCardView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProductService\UcProductVariant.resx">
-      <DependentUpon>UcProductVariant.cs</DependentUpon>
+    <EmbeddedResource Include="ProductService\FrmProductVariant.resx">
+      <DependentUpon>FrmProductVariant.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

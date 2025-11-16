@@ -24,7 +24,7 @@ namespace MasterData.ProductService
     /// UserControl quản lý danh mục sản phẩm/dịch vụ.
     /// Cung cấp chức năng CRUD đầy đủ với TreeList hierarchical, checkbox selection và giao diện thân thiện.
     /// </summary>
-    public partial class UcProductServiceCategory : XtraUserControl
+    public partial class FrmProductServiceCategory : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -55,7 +55,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Khởi tạo control, đăng ký event UI
         /// </summary>
-        public UcProductServiceCategory()
+        public FrmProductServiceCategory()
         {
             InitializeComponent();
 

@@ -621,7 +621,7 @@ namespace VnsErp2025.Form
             {
                 SplashScreenHelper.ShowVnsSplashScreen();
 
-                ApplicationSystemUtils.ShowOrActivateForm<FluentProductService>(this);
+                ApplicationSystemUtils.ShowOrActivateForm<FrmProductServiceList>(this);
 
 
                 SplashScreenHelper.CloseSplashScreen();
@@ -633,11 +633,81 @@ namespace VnsErp2025.Form
         }
 
 
+        private void HinhAnhSPDVBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmProductImage>(this);
+
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+        
+        private void PhanLoaiSPDVBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmProductServiceCategory>(this);
+
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+
+
+        private void DonViTinhBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmUnitOfMeasure>(this);
+
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+
+        private void BienTheSPDVBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmProductVariant>(this);
+
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+        #endregion
 
         #endregion
-        #endregion
 
         #endregion
+
 
     }
 }

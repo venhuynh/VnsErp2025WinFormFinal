@@ -194,6 +194,7 @@
             this.PhanLoaiSPDVBarButtonItem.Id = 13;
             this.PhanLoaiSPDVBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.brand_image;
             this.PhanLoaiSPDVBarButtonItem.Name = "PhanLoaiSPDVBarButtonItem";
+            this.PhanLoaiSPDVBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PhanLoaiSPDVBarButtonItem_ItemClick);
             // 
             // DonViTinhBarButtonItem
             // 
@@ -201,6 +202,7 @@
             this.DonViTinhBarButtonItem.Id = 14;
             this.DonViTinhBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.cost;
             this.DonViTinhBarButtonItem.Name = "DonViTinhBarButtonItem";
+            this.DonViTinhBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.DonViTinhBarButtonItem_ItemClick);
             // 
             // NhanVienBarButtonItem
             // 
@@ -218,6 +220,7 @@
             this.BienTheSPDVBarButtonItem.Name = "BienTheSPDVBarButtonItem";
             this.BienTheSPDVBarButtonItem.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.BienTheSPDVBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BienTheSPDVBarButtonItem_ItemClick);
             // 
             // HinhAnhSPDVBarButtonItem
             // 
@@ -225,6 +228,7 @@
             this.HinhAnhSPDVBarButtonItem.Id = 17;
             this.HinhAnhSPDVBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.product_image;
             this.HinhAnhSPDVBarButtonItem.Name = "HinhAnhSPDVBarButtonItem";
+            this.HinhAnhSPDVBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.HinhAnhSPDVBarButtonItem_ItemClick);
             // 
             // ribbonPage1
             // 

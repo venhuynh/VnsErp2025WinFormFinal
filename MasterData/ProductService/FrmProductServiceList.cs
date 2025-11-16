@@ -29,7 +29,7 @@ namespace MasterData.ProductService
     /// UserControl quản lý danh sách sản phẩm/dịch vụ.
     /// Cung cấp chức năng CRUD đầy đủ với GridView, pagination, tìm kiếm toàn diện và giao diện thân thiện.
     /// </summary>
-    public partial class UcProductServiceList : XtraUserControl
+    public partial class FrmProductServiceList : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -75,7 +75,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Khởi tạo control, đăng ký event UI
         /// </summary>
-        public UcProductServiceList()
+        public FrmProductServiceList()
         {
             InitializeComponent();
 
