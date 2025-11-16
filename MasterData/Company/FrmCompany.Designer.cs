@@ -8,7 +8,7 @@ using DevExpress.XtraTreeList.Columns;
 
 namespace MasterData.Company
 {
-    partial class UcCompany
+    partial class FrmCompany
     {
         /// <summary> 
         /// Required designer variable.

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Data.SqlClient;
-using System.Windows.Forms;
-using Authentication.Form;
+﻿using Authentication.Form;
 using Bll.Common;
 using Bll.Utils;
 using Dal.Connection;
 using Dal.DataContext;
 using DevExpress.XtraBars;
+using MasterData.Company;
 using MasterData.Customer;
 using MasterData.ProductService;
+using System;
+using System.Data.SqlClient;
+using System.Windows.Forms;
 // ReSharper disable InconsistentNaming
 
 namespace VnsErp2025.Form
@@ -448,6 +449,8 @@ namespace VnsErp2025.Form
             }
         }
 
+        #region MasterData
+
         #region Khách hàng - Đối tác
 
         /// <summary>
@@ -521,6 +524,92 @@ namespace VnsErp2025.Form
         }
         #endregion
 
+        #region Công ty
+        private void CongTyBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmCompany>(this);
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+
+
+        private void ChiNhanhBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmCompanyBranch>(this);
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+
+        private void PhongBanBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmDepartment>(this);
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
+            }
+        }
+
+        private void ChucVuBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmPosition>(this);
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý chức vụ");
+            }
+        }
+
+
+        private void NhanVienBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmEmployee>(this);
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý chức vụ");
+            }
+        }
+        #endregion
+
+        #region Sản phẩm dịch vụ
+
         /// <summary>
         /// Xử lý sự kiện click nút Product Service - hiển thị form quản lý sản phẩm/dịch vụ
         /// </summary>
@@ -530,22 +619,23 @@ namespace VnsErp2025.Form
         {
             try
             {
-                // Đảm bảo thao tác UI được thực hiện trên UI thread
-                if (this.InvokeRequired)
-                {
-                    this.Invoke(new Action(() => ProductServiceBtn_ItemClick(sender, e)));
-                    return;
-                }
+                SplashScreenHelper.ShowVnsSplashScreen();
 
-                // Sử dụng ApplicationSystemUtils để hiển thị hoặc kích hoạt form FluentProductService
                 ApplicationSystemUtils.ShowOrActivateForm<FluentProductService>(this);
+
+
+                SplashScreenHelper.CloseSplashScreen();
             }
             catch (Exception ex)
             {
-                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý sản phẩm/dịch vụ");
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
             }
         }
 
+
+
+        #endregion
+        #endregion
 
         #endregion
 

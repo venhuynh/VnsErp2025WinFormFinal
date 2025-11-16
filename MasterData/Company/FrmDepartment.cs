@@ -20,7 +20,7 @@ namespace MasterData.Company
     /// User Control quản lý danh sách phòng ban theo cấu trúc cây phân cấp.
     /// Cung cấp giao diện hiển thị dạng TreeList, tìm kiếm, thêm mới, sửa, xóa và xuất dữ liệu phòng ban.
     /// </summary>
-    public partial class UcDepartment : XtraUserControl
+    public partial class FrmDepartment : XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -56,7 +56,7 @@ namespace MasterData.Company
         /// <summary>
         /// Khởi tạo User Control quản lý danh sách phòng ban.
         /// </summary>
-        public UcDepartment()
+        public FrmDepartment()
         {
             InitializeComponent();
             InitializeTreeList();

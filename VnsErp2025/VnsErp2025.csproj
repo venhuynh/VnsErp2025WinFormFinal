@@ -128,6 +128,7 @@
     <Content Include="Docs\Promt\Tạo file Md dựa vào source code.txt" />
     <Content Include="Docs\Promt\Prompt chung – Refactor toàn bộ màn hình GUI.txt" />
     <Content Include="Docs\Promt\Tái cấu trúc source code.txt" />
+    <None Include="Resources\team.svg" />
     <None Include="Resources\variant.svg" />
     <None Include="Resources\cost.svg" />
     <None Include="Resources\brand-image.svg" />

@@ -18,22 +18,22 @@ using MasterData.Company.Dto;
 namespace MasterData.Company
 {
     /// <summary>
-    /// User Control quản lý danh sách chi nhánh công ty.
-    /// Cung cấp giao diện hiển thị, tìm kiếm, thêm mới, sửa, xóa và xuất dữ liệu chi nhánh.
+    /// User Control quản lý danh sách chức vụ.
+    /// Cung cấp giao diện hiển thị, tìm kiếm, thêm mới, sửa, xóa và xuất dữ liệu chức vụ.
     /// </summary>
-    public partial class UcCompanyBranch : XtraUserControl
+    public partial class FrmPosition : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
         /// <summary>
-        /// Business Logic Layer cho chi nhánh công ty
+        /// Business Logic Layer cho chức vụ
         /// </summary>
-        private readonly CompanyBranchBll _companyBranchBll = new CompanyBranchBll();
+        private readonly PositionBll _positionBll = new PositionBll();
 
         /// <summary>
-        /// Danh sách ID chi nhánh được chọn
+        /// Danh sách ID chức vụ được chọn
         /// </summary>
-        private List<Guid> _selectedBranchIds = new List<Guid>();
+        private List<Guid> _selectedPositionIds = new List<Guid>();
 
         /// <summary>
         /// Trạng thái đang tải dữ liệu (guard tránh gọi LoadDataAsync song song)
@@ -45,9 +45,9 @@ namespace MasterData.Company
         #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
         /// <summary>
-        /// Khởi tạo User Control quản lý danh sách chi nhánh công ty.
+        /// Khởi tạo User Control quản lý danh sách chức vụ.
         /// </summary>
-        public UcCompanyBranch()
+        public FrmPosition()
         {
             InitializeComponent();
 
@@ -59,10 +59,10 @@ namespace MasterData.Company
             ExportBarButtonItem.ItemClick += ExportBarButtonItem_ItemClick;
 
             // Grid events
-            CompanyBranchGridView.SelectionChanged += CompanyBranchGridView_SelectionChanged;
-            CompanyBranchGridView.DoubleClick += CompanyBranchGridView_DoubleClick;
-            CompanyBranchGridView.CustomDrawRowIndicator += CompanyBranchGridView_CustomDrawRowIndicator;
-            CompanyBranchGridView.RowCellStyle += CompanyBranchGridView_RowCellStyle;
+            PositionGridView.SelectionChanged += PositionGridView_SelectionChanged;
+            PositionGridView.DoubleClick += PositionGridView_DoubleClick;
+            PositionGridView.CustomDrawRowIndicator += PositionGridView_CustomDrawRowIndicator;
+            PositionGridView.RowCellStyle += PositionGridView_RowCellStyle;
 
             UpdateButtonStates();
 
@@ -105,8 +105,8 @@ namespace MasterData.Company
         {
             try
             {
-                var branches = await _companyBranchBll.GetAllAsync();
-                var dtoList = branches.Select(b => b.ToDto()).ToList();
+                var positions = await _positionBll.GetAllAsync();
+                var dtoList = positions.Select(p => p.ToDto()).ToList();
                 
                 BindGrid(dtoList);
                 UpdateDataSummary();
@@ -120,13 +120,15 @@ namespace MasterData.Company
         /// <summary>
         /// Bind danh sách DTO vào Grid và cấu hình hiển thị.
         /// </summary>
-        private void BindGrid(List<CompanyBranchDto> data)
+        private void BindGrid(List<PositionDto> data)
         {
             // Clear selection trước khi bind data mới
             ClearSelectionState();
             
-            companyBranchDtoBindingSource.DataSource = data;
-            CompanyBranchGridView.BestFitColumns();
+            positionDtoBindingSource.DataSource = data;
+            PositionGridView.BestFitColumns();
+            
+            PositionGridView.ExpandAllGroups();
             
             // Đảm bảo selection được clear sau khi bind
             ClearSelectionState();
@@ -160,7 +162,7 @@ namespace MasterData.Company
             {
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new FrmCompanyBranchDetail(Guid.Empty))
+                    using (var form = new FrmPositionDetail(Guid.Empty))
                     {
                         form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
@@ -181,23 +183,23 @@ namespace MasterData.Company
         /// </summary>
         private async void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (_selectedBranchIds == null || _selectedBranchIds.Count == 0)
+            if (_selectedPositionIds == null || _selectedPositionIds.Count == 0)
             {
                 ShowInfo("Vui lòng chọn một dòng để chỉnh sửa.");
                 return;
             }
-            if (_selectedBranchIds.Count > 1)
+            if (_selectedPositionIds.Count > 1)
             {
                 ShowInfo("Chỉ cho phép chỉnh sửa 1 dòng. Vui lòng bỏ chọn bớt.");
                 return;
             }
 
-            var id = _selectedBranchIds[0];
+            var id = _selectedPositionIds[0];
             try
             {
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new FrmCompanyBranchDetail(id))
+                    using (var form = new FrmPositionDetail(id))
                     {
                         form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
@@ -218,21 +220,21 @@ namespace MasterData.Company
         /// </summary>
         private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (_selectedBranchIds == null || _selectedBranchIds.Count == 0)
+            if (_selectedPositionIds == null || _selectedPositionIds.Count == 0)
             {
                 ShowInfo("Vui lòng chọn ít nhất một dòng để xóa.");
                 return;
             }
 
-            // Kiểm tra logic business: không cho phép xóa nếu Company không còn chi nhánh nào
+            // Kiểm tra logic business: không cho phép xóa nếu Company không còn chức vụ nào
             if (!await ValidateDeleteBusinessRules())
             {
                 return;
             }
 
-            var confirmMessage = _selectedBranchIds.Count == 1
+            var confirmMessage = _selectedPositionIds.Count == 1
                 ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn?"
-                : $"Bạn có chắc muốn xóa {_selectedBranchIds.Count} dòng dữ liệu đã chọn?";
+                : $"Bạn có chắc muốn xóa {_selectedPositionIds.Count} dòng dữ liệu đã chọn?";
 
             if (!MsgBox.ShowYesNo(confirmMessage)) return;
 
@@ -240,9 +242,9 @@ namespace MasterData.Company
             {
                 await ExecuteWithWaitingFormAsync(() =>
                 {
-                    foreach (var id in _selectedBranchIds)
+                    foreach (var id in _selectedPositionIds)
                     {
-                        _companyBranchBll.Delete(id);
+                        _positionBll.Delete(id);
                     }
 
                     return Task.CompletedTask;
@@ -261,7 +263,7 @@ namespace MasterData.Company
         /// </summary>
         private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var rowCount = CompanyBranchGridView.RowCount;
+            var rowCount = PositionGridView.RowCount;
             if (rowCount <= 0)
             {
                 ShowInfo("Không có dữ liệu để xuất.");
@@ -273,12 +275,12 @@ namespace MasterData.Company
                 var saveDialog = new SaveFileDialog
                 {
                     Filter = "Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
-                    FileName = "CompanyBranches.xlsx"
+                    FileName = "Positions.xlsx"
                 };
 
                 if (saveDialog.ShowDialog() == DialogResult.OK)
                 {
-                    CompanyBranchGridView.ExportToXlsx(saveDialog.FileName);
+                    PositionGridView.ExportToXlsx(saveDialog.FileName);
                     ShowInfo("Xuất dữ liệu thành công!");
                 }
             }
@@ -291,11 +293,11 @@ namespace MasterData.Company
         /// <summary>
         /// Xử lý sự kiện thay đổi selection trên Grid
         /// </summary>
-        private void CompanyBranchGridView_SelectionChanged(object sender, EventArgs e)
+        private void PositionGridView_SelectionChanged(object sender, EventArgs e)
         {
             try
             {
-                UpdateSelectedBranchIds();
+                UpdateSelectedPositionIds();
                 UpdateButtonStates();
                 UpdateDataSummary();
             }
@@ -308,25 +310,25 @@ namespace MasterData.Company
         /// <summary>
         /// Xử lý sự kiện double click trên Grid
         /// </summary>
-        private async void CompanyBranchGridView_DoubleClick(object sender, EventArgs e)
+        private async void PositionGridView_DoubleClick(object sender, EventArgs e)
         {
-            if (_selectedBranchIds == null || _selectedBranchIds.Count == 0)
+            if (_selectedPositionIds == null || _selectedPositionIds.Count == 0)
             {
                 ShowInfo("Vui lòng chọn một dòng để xem chi tiết.");
                 return;
             }
-            if (_selectedBranchIds.Count > 1)
+            if (_selectedPositionIds.Count > 1)
             {
                 ShowInfo("Chỉ cho phép xem chi tiết 1 dòng. Vui lòng bỏ chọn bớt.");
                 return;
             }
 
-            var id = _selectedBranchIds[0];
+            var id = _selectedPositionIds[0];
             try
             {
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new FrmCompanyBranchDetail(id))
+                    using (var form = new FrmPositionDetail(id))
                     {
                         form.StartPosition = FormStartPosition.CenterParent;
                         form.ShowDialog(this);
@@ -345,7 +347,7 @@ namespace MasterData.Company
         /// <summary>
         /// Xử lý sự kiện vẽ số thứ tự dòng cho Grid
         /// </summary>
-        private void CompanyBranchGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
+        private void PositionGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
         {
             if (e.Info.IsRowIndicator && e.RowHandle >= 0)
             {
@@ -356,14 +358,14 @@ namespace MasterData.Company
         /// <summary>
         /// Xử lý sự kiện tô màu cell theo trạng thái
         /// </summary>
-        private void CompanyBranchGridView_RowCellStyle(object sender, DevExpress.XtraGrid.Views.Grid.RowCellStyleEventArgs e)
+        private void PositionGridView_RowCellStyle(object sender, DevExpress.XtraGrid.Views.Grid.RowCellStyleEventArgs e)
         {
             try
             {
                 var gridView = sender as GridView;
                 if (gridView == null) return;
                 
-                var row = gridView.GetRow(e.RowHandle) as CompanyBranchDto;
+                var row = gridView.GetRow(e.RowHandle) as PositionDto;
                 if (row == null) return;
                 
                 // Format các dòng dữ liệu không hoạt động với màu chữ đỏ
@@ -383,20 +385,20 @@ namespace MasterData.Company
         #region ========== XỬ LÝ DỮ LIỆU ==========
 
         /// <summary>
-        /// Cập nhật danh sách selected branch IDs.
+        /// Cập nhật danh sách selected position IDs.
         /// </summary>
-        private void UpdateSelectedBranchIds()
+        private void UpdateSelectedPositionIds()
         {
-            _selectedBranchIds.Clear();
+            _selectedPositionIds.Clear();
             
-            var selectedRows = CompanyBranchGridView.GetSelectedRows();
+            var selectedRows = PositionGridView.GetSelectedRows();
             foreach (var rowHandle in selectedRows)
             {
                 if (rowHandle >= 0)
                 {
-                    if (CompanyBranchGridView.GetRow(rowHandle) is CompanyBranchDto dto && !_selectedBranchIds.Contains(dto.Id))
+                    if (PositionGridView.GetRow(rowHandle) is PositionDto dto && !_selectedPositionIds.Contains(dto.Id))
                     {
-                        _selectedBranchIds.Add(dto.Id);
+                        _selectedPositionIds.Add(dto.Id);
                     }
                 }
             }
@@ -407,9 +409,9 @@ namespace MasterData.Company
         /// </summary>
         private void ClearSelectionState()
         {
-            _selectedBranchIds.Clear();
-            CompanyBranchGridView.ClearSelection();
-            CompanyBranchGridView.FocusedRowHandle = GridControl.InvalidRowHandle;
+            _selectedPositionIds.Clear();
+            PositionGridView.ClearSelection();
+            PositionGridView.FocusedRowHandle = GridControl.InvalidRowHandle;
             UpdateButtonStates();
         }
 
@@ -418,29 +420,29 @@ namespace MasterData.Company
         #region ========== BUSINESS RULES VALIDATION ==========
 
         /// <summary>
-        /// Validate business rules cho việc xóa chi nhánh
+        /// Validate business rules cho việc xóa chức vụ
         /// </summary>
         /// <returns>True nếu được phép xóa, False nếu không</returns>
         private async Task<bool> ValidateDeleteBusinessRules()
         {
             try
             {
-                // Lấy tất cả chi nhánh hiện có
-                var allBranches = await _companyBranchBll.GetAllAsync();
-                var totalBranches = allBranches.Count;
-                var selectedBranches = _selectedBranchIds.Count;
+                // Lấy tất cả chức vụ hiện có
+                var allPositions = await _positionBll.GetAllAsync();
+                var totalPositions = allPositions.Count;
+                var selectedPositions = _selectedPositionIds.Count;
 
-                // Kiểm tra: không cho phép xóa nếu sẽ không còn chi nhánh nào
-                if (totalBranches - selectedBranches <= 0)
+                // Kiểm tra: không cho phép xóa nếu sẽ không còn chức vụ nào
+                if (totalPositions - selectedPositions <= 0)
                 {
-                    ShowInfo("Không thể xóa tất cả chi nhánh. Công ty phải có ít nhất một chi nhánh.");
+                    ShowInfo("Không thể xóa tất cả chức vụ. Công ty phải có ít nhất một chức vụ.");
                     return false;
                 }
 
-                // Kiểm tra: không cho phép xóa nếu chỉ còn 1 chi nhánh và đang chọn xóa chi nhánh đó
-                if (totalBranches == 1 && selectedBranches == 1)
+                // Kiểm tra: không cho phép xóa nếu chỉ còn 1 chức vụ và đang chọn xóa chức vụ đó
+                if (totalPositions == 1 && selectedPositions == 1)
                 {
-                    ShowInfo("Không thể xóa chi nhánh cuối cùng. Công ty phải có ít nhất một chi nhánh.");
+                    ShowInfo("Không thể xóa chức vụ cuối cùng. Công ty phải có ít nhất một chức vụ.");
                     return false;
                 }
 
@@ -485,7 +487,7 @@ namespace MasterData.Company
         {
             try
             {
-                var selectedCount = _selectedBranchIds?.Count ?? 0;
+                var selectedCount = _selectedPositionIds?.Count ?? 0;
                 // Edit: chỉ khi chọn đúng 1 dòng
                 if (EditBarButtonItem != null)
                     EditBarButtonItem.Enabled = selectedCount == 1;
@@ -493,7 +495,7 @@ namespace MasterData.Company
                 if (DeleteBarButtonItem != null)
                     DeleteBarButtonItem.Enabled = selectedCount >= 1;
                 // Export: chỉ khi có dữ liệu hiển thị
-                var rowCount = CompanyBranchGridView.RowCount;
+                var rowCount = PositionGridView.RowCount;
                 if (ExportBarButtonItem != null)
                     ExportBarButtonItem.Enabled = rowCount > 0;
             }
@@ -510,10 +512,10 @@ namespace MasterData.Company
         {
             try
             {
-                var totalRows = CompanyBranchGridView.RowCount;
-                var selectedRows = _selectedBranchIds?.Count ?? 0;
+                var totalRows = PositionGridView.RowCount;
+                var selectedRows = _selectedPositionIds?.Count ?? 0;
                 
-                DataSummaryBarStaticItem.Caption = $"Tổng: {totalRows} chi nhánh";
+                DataSummaryBarStaticItem.Caption = $"Tổng: {totalRows} chức vụ";
                 SelectedRowBarStaticItem.Caption = selectedRows > 0 ? $"Đã chọn: {selectedRows} dòng" : "Chưa chọn dòng nào";
             }
             catch
@@ -572,35 +574,35 @@ namespace MasterData.Company
             SuperToolTipHelper.SetBarButtonSuperTip(
                 ListDataBarButtonItem,
                 title: @"<b><color=Blue>🔄 Tải dữ liệu</color></b>",
-                content: @"Tải lại <b>danh sách chi nhánh công ty</b> từ database.<br/><br/><b>Chức năng:</b><br/>• Tải lại toàn bộ danh sách chi nhánh từ database<br/>• Hiển thị WaitForm trong quá trình tải<br/>• Cập nhật GridView với dữ liệu mới nhất<br/>• Tự động cập nhật thống kê (tổng số chi nhánh, số dòng đã chọn)<br/>• Xóa selection hiện tại sau khi tải<br/><br/><b>Quy trình:</b><br/>• Kiểm tra guard tránh re-entrancy (_isLoading)<br/>• Hiển thị WaitForm1<br/>• Gọi CompanyBranchBll.GetAllAsync() để lấy dữ liệu<br/>• Convert Entity → DTO<br/>• Bind dữ liệu vào GridView<br/>• Tự động fit columns<br/>• Cập nhật thống kê<br/>• Đóng WaitForm1<br/><br/><b>Kết quả:</b><br/>• GridView hiển thị danh sách chi nhánh mới nhất<br/>• Selection được xóa<br/>• Thống kê được cập nhật<br/><br/><color=Gray>Lưu ý:</color> Nút này sẽ tải lại toàn bộ dữ liệu từ database. Nếu đang có selection, selection sẽ bị xóa sau khi tải xong."
+                content: @"Tải lại <b>danh sách chức vụ</b> từ database.<br/><br/><b>Chức năng:</b><br/>• Tải lại toàn bộ danh sách chức vụ từ database<br/>• Hiển thị WaitForm trong quá trình tải<br/>• Cập nhật GridView với dữ liệu mới nhất<br/>• Tự động cập nhật thống kê (tổng số chức vụ, số dòng đã chọn)<br/>• Xóa selection hiện tại sau khi tải<br/>• Tự động expand tất cả groups trong GridView<br/><br/><b>Quy trình:</b><br/>• Kiểm tra guard tránh re-entrancy (_isLoading)<br/>• Hiển thị WaitForm1<br/>• Gọi PositionBll.GetAllAsync() để lấy dữ liệu<br/>• Convert Entity → DTO<br/>• Bind dữ liệu vào GridView<br/>• Tự động fit columns<br/>• Tự động expand tất cả groups<br/>• Cập nhật thống kê<br/>• Đóng WaitForm1<br/><br/><b>Kết quả:</b><br/>• GridView hiển thị danh sách chức vụ mới nhất<br/>• Selection được xóa<br/>• Thống kê được cập nhật<br/><br/><color=Gray>Lưu ý:</color> Nút này sẽ tải lại toàn bộ dữ liệu từ database. Nếu đang có selection, selection sẽ bị xóa sau khi tải xong."
             );
 
             // SuperTip cho nút Thêm mới
             SuperToolTipHelper.SetBarButtonSuperTip(
                 NewBarButtonItem,
                 title: @"<b><color=Green>➕ Thêm mới</color></b>",
-                content: @"Mở form <b>thêm mới chi nhánh công ty</b>.<br/><br/><b>Chức năng:</b><br/>• Mở form FrmCompanyBranchDetail ở chế độ thêm mới<br/>• Hiển thị overlay trên UserControl<br/>• Tự động tải lại dữ liệu sau khi đóng form<br/>• Cập nhật trạng thái các nút toolbar<br/><br/><b>Quy trình:</b><br/>• Hiển thị OverlayManager trên UserControl<br/>• Tạo form FrmCompanyBranchDetail với Guid.Empty (thêm mới)<br/>• Hiển thị form dạng modal dialog<br/>• Sau khi đóng form: Tải lại dữ liệu<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng OverlayManager<br/><br/><b>Yêu cầu:</b><br/>• Form sẽ tự động lấy CompanyId từ database<br/>• Người dùng cần nhập đầy đủ thông tin bắt buộc<br/><br/><b>Kết quả:</b><br/>• Nếu lưu thành công: Danh sách được tải lại với chi nhánh mới<br/>• Nếu hủy: Không có thay đổi<br/><br/><color=Gray>Lưu ý:</color> Form sẽ được hiển thị ở chế độ modal, bạn phải đóng form trước khi có thể thao tác với UserControl này."
+                content: @"Mở form <b>thêm mới chức vụ</b>.<br/><br/><b>Chức năng:</b><br/>• Mở form FrmPositionDetail ở chế độ thêm mới<br/>• Hiển thị overlay trên UserControl<br/>• Tự động tải lại dữ liệu sau khi đóng form<br/>• Cập nhật trạng thái các nút toolbar<br/><br/><b>Quy trình:</b><br/>• Hiển thị OverlayManager trên UserControl<br/>• Tạo form FrmPositionDetail với Guid.Empty (thêm mới)<br/>• Hiển thị form dạng modal dialog<br/>• Sau khi đóng form: Tải lại dữ liệu<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng OverlayManager<br/><br/><b>Yêu cầu:</b><br/>• Form sẽ tự động lấy CompanyId từ database<br/>• Người dùng cần nhập đầy đủ thông tin bắt buộc (Mã chức vụ, Tên chức vụ)<br/><br/><b>Kết quả:</b><br/>• Nếu lưu thành công: Danh sách được tải lại với chức vụ mới<br/>• Nếu hủy: Không có thay đổi<br/><br/><color=Gray>Lưu ý:</color> Form sẽ được hiển thị ở chế độ modal, bạn phải đóng form trước khi có thể thao tác với UserControl này."
             );
 
             // SuperTip cho nút Sửa
             SuperToolTipHelper.SetBarButtonSuperTip(
                 EditBarButtonItem,
                 title: @"<b><color=Orange>✏️ Sửa</color></b>",
-                content: @"Mở form <b>chỉnh sửa chi nhánh công ty</b>.<br/><br/><b>Chức năng:</b><br/>• Mở form FrmCompanyBranchDetail ở chế độ chỉnh sửa<br/>• Hiển thị overlay trên UserControl<br/>• Tự động tải lại dữ liệu sau khi đóng form<br/>• Cập nhật trạng thái các nút toolbar<br/><br/><b>Quy trình:</b><br/>• Kiểm tra selection: Phải chọn đúng 1 dòng<br/>• Hiển thị OverlayManager trên UserControl<br/>• Tạo form FrmCompanyBranchDetail với ID chi nhánh đã chọn<br/>• Hiển thị form dạng modal dialog<br/>• Sau khi đóng form: Tải lại dữ liệu<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng OverlayManager<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn đúng 1 dòng trong GridView<br/>• Nếu chọn nhiều hơn 1 dòng: Hiển thị thông báo yêu cầu bỏ chọn bớt<br/>• Nếu không chọn dòng nào: Hiển thị thông báo yêu cầu chọn dòng<br/><br/><b>Kết quả:</b><br/>• Nếu lưu thành công: Danh sách được tải lại với dữ liệu đã cập nhật<br/>• Nếu hủy: Không có thay đổi<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi chọn đúng 1 dòng. Form sẽ được hiển thị ở chế độ modal."
+                content: @"Mở form <b>chỉnh sửa chức vụ</b>.<br/><br/><b>Chức năng:</b><br/>• Mở form FrmPositionDetail ở chế độ chỉnh sửa<br/>• Hiển thị overlay trên UserControl<br/>• Tự động tải lại dữ liệu sau khi đóng form<br/>• Cập nhật trạng thái các nút toolbar<br/><br/><b>Quy trình:</b><br/>• Kiểm tra selection: Phải chọn đúng 1 dòng<br/>• Hiển thị OverlayManager trên UserControl<br/>• Tạo form FrmPositionDetail với ID chức vụ đã chọn<br/>• Hiển thị form dạng modal dialog<br/>• Sau khi đóng form: Tải lại dữ liệu<br/>• Cập nhật trạng thái các nút toolbar<br/>• Đóng OverlayManager<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn đúng 1 dòng trong GridView<br/>• Nếu chọn nhiều hơn 1 dòng: Hiển thị thông báo yêu cầu bỏ chọn bớt<br/>• Nếu không chọn dòng nào: Hiển thị thông báo yêu cầu chọn dòng<br/><br/><b>Kết quả:</b><br/>• Nếu lưu thành công: Danh sách được tải lại với dữ liệu đã cập nhật<br/>• Nếu hủy: Không có thay đổi<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi chọn đúng 1 dòng. Form sẽ được hiển thị ở chế độ modal. Mã chức vụ sẽ bị khóa và không thể chỉnh sửa."
             );
 
             // SuperTip cho nút Xóa
             SuperToolTipHelper.SetBarButtonSuperTip(
                 DeleteBarButtonItem,
                 title: @"<b><color=Red>🗑️ Xóa</color></b>",
-                content: @"Xóa <b>chi nhánh công ty</b> đã chọn.<br/><br/><b>Chức năng:</b><br/>• Xóa một hoặc nhiều chi nhánh đã chọn<br/>• Validate business rules trước khi xóa<br/>• Hiển thị dialog xác nhận<br/>• Tự động tải lại dữ liệu sau khi xóa<br/><br/><b>Quy trình:</b><br/>• Kiểm tra selection: Phải chọn ít nhất 1 dòng<br/>• Validate business rules: Không cho phép xóa tất cả chi nhánh<br/>• Hiển thị dialog xác nhận (Yes/No)<br/>• Nếu xác nhận: Hiển thị WaitForm1<br/>• Xóa từng chi nhánh đã chọn qua CompanyBranchBll.Delete()<br/>• Tải lại dữ liệu<br/>• Đóng WaitForm1<br/><br/><b>Business Rules:</b><br/>• Không cho phép xóa nếu sẽ không còn chi nhánh nào<br/>• Công ty phải có ít nhất một chi nhánh<br/>• Không cho phép xóa chi nhánh cuối cùng<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn ít nhất 1 dòng trong GridView<br/>• Phải xác nhận qua dialog Yes/No<br/>• Phải pass business rules validation<br/><br/><b>Kết quả:</b><br/>• Nếu thành công: Danh sách được tải lại, các chi nhánh đã chọn bị xóa<br/>• Nếu lỗi: Hiển thị thông báo lỗi, dữ liệu không thay đổi<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi chọn ít nhất 1 dòng. Hệ thống sẽ không cho phép xóa tất cả chi nhánh để đảm bảo công ty luôn có ít nhất một chi nhánh."
+                content: @"Xóa <b>chức vụ</b> đã chọn.<br/><br/><b>Chức năng:</b><br/>• Xóa một hoặc nhiều chức vụ đã chọn<br/>• Validate business rules trước khi xóa<br/>• Hiển thị dialog xác nhận<br/>• Tự động tải lại dữ liệu sau khi xóa<br/><br/><b>Quy trình:</b><br/>• Kiểm tra selection: Phải chọn ít nhất 1 dòng<br/>• Validate business rules: Không cho phép xóa tất cả chức vụ<br/>• Hiển thị dialog xác nhận (Yes/No)<br/>• Nếu xác nhận: Hiển thị WaitForm1<br/>• Xóa từng chức vụ đã chọn qua PositionBll.Delete()<br/>• Tải lại dữ liệu<br/>• Đóng WaitForm1<br/><br/><b>Business Rules:</b><br/>• Không cho phép xóa nếu sẽ không còn chức vụ nào<br/>• Công ty phải có ít nhất một chức vụ<br/>• Không cho phép xóa chức vụ cuối cùng<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn ít nhất 1 dòng trong GridView<br/>• Phải xác nhận qua dialog Yes/No<br/>• Phải pass business rules validation<br/><br/><b>Kết quả:</b><br/>• Nếu thành công: Danh sách được tải lại, các chức vụ đã chọn bị xóa<br/>• Nếu lỗi: Hiển thị thông báo lỗi, dữ liệu không thay đổi<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi chọn ít nhất 1 dòng. Hệ thống sẽ không cho phép xóa tất cả chức vụ để đảm bảo công ty luôn có ít nhất một chức vụ."
             );
 
             // SuperTip cho nút Xuất dữ liệu
             SuperToolTipHelper.SetBarButtonSuperTip(
                 ExportBarButtonItem,
                 title: @"<b><color=Purple>📊 Xuất dữ liệu</color></b>",
-                content: @"Xuất <b>danh sách chi nhánh công ty</b> ra file Excel.<br/><br/><b>Chức năng:</b><br/>• Xuất toàn bộ dữ liệu trong GridView ra file Excel<br/>• Hiển thị SaveFileDialog để chọn vị trí lưu file<br/>• Tự động đặt tên file mặc định: CompanyBranches.xlsx<br/>• Hiển thị thông báo thành công sau khi xuất<br/><br/><b>Quy trình:</b><br/>• Kiểm tra có dữ liệu trong GridView không<br/>• Hiển thị SaveFileDialog với filter Excel Files (*.xlsx)<br/>• Nếu người dùng chọn vị trí lưu: Gọi GridView.ExportToXlsx()<br/>• Hiển thị thông báo thành công<br/><br/><b>Yêu cầu:</b><br/>• Phải có ít nhất 1 dòng dữ liệu trong GridView<br/>• Người dùng phải chọn vị trí lưu file<br/><br/><b>Kết quả:</b><br/>• File Excel được tạo tại vị trí đã chọn<br/>• File chứa toàn bộ dữ liệu hiển thị trong GridView<br/>• Hiển thị thông báo thành công<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi có dữ liệu trong GridView. File Excel sẽ chứa toàn bộ dữ liệu đang hiển thị, bao gồm cả các cột đã được cấu hình trong GridView."
+                content: @"Xuất <b>danh sách chức vụ</b> ra file Excel.<br/><br/><b>Chức năng:</b><br/>• Xuất toàn bộ dữ liệu trong GridView ra file Excel<br/>• Hiển thị SaveFileDialog để chọn vị trí lưu file<br/>• Tự động đặt tên file mặc định: Positions.xlsx<br/>• Hiển thị thông báo thành công sau khi xuất<br/><br/><b>Quy trình:</b><br/>• Kiểm tra có dữ liệu trong GridView không<br/>• Hiển thị SaveFileDialog với filter Excel Files (*.xlsx)<br/>• Nếu người dùng chọn vị trí lưu: Gọi GridView.ExportToXlsx()<br/>• Hiển thị thông báo thành công<br/><br/><b>Yêu cầu:</b><br/>• Phải có ít nhất 1 dòng dữ liệu trong GridView<br/>• Người dùng phải chọn vị trí lưu file<br/><br/><b>Kết quả:</b><br/>• File Excel được tạo tại vị trí đã chọn<br/>• File chứa toàn bộ dữ liệu hiển thị trong GridView<br/>• Hiển thị thông báo thành công<br/><br/><color=Gray>Lưu ý:</color> Nút này chỉ được kích hoạt khi có dữ liệu trong GridView. File Excel sẽ chứa toàn bộ dữ liệu đang hiển thị, bao gồm cả các cột đã được cấu hình trong GridView."
             );
         }
 

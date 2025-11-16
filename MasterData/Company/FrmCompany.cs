@@ -2,18 +2,12 @@
 using Bll.Utils;
 using Dal.Logging;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraLayout;
 using MasterData.Company.Converters;
 using MasterData.Company.Dto;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using DevExpress.Utils;
 
 namespace MasterData.Company
 {
@@ -21,7 +15,7 @@ namespace MasterData.Company
     /// User Control quản lý thông tin công ty.
     /// Cung cấp chức năng hiển thị, cập nhật thông tin công ty và quản lý logo với validation và giao diện thân thiện.
     /// </summary>
-    public partial class UcCompany : XtraUserControl
+    public partial class FrmCompany : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -42,7 +36,7 @@ namespace MasterData.Company
         /// <summary>
         /// Constructor mặc định
         /// </summary>
-        public UcCompany()
+        public FrmCompany()
         {
             InitializeComponent();
             _logger = new ConsoleLogger();
@@ -56,7 +50,7 @@ namespace MasterData.Company
         /// Constructor với connection string
         /// </summary>
         /// <param name="connectionString">Chuỗi kết nối database</param>
-        public UcCompany(string connectionString) : this()
+        public FrmCompany(string connectionString) : this()
         {
             _companyBll?.Dispose();
             _companyBll = new CompanyBll(connectionString, _logger);

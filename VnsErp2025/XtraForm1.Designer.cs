@@ -30,7 +30,7 @@
         {
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.ucPosition1 = new MasterData.Company.UcPosition();
+            this.ucPosition1 = new MasterData.Company.FrmPosition();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -94,7 +94,7 @@
 
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private MasterData.Company.UcPosition ucPosition1;
+        private MasterData.Company.FrmPosition ucPosition1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

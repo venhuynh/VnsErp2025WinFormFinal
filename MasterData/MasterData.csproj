@@ -80,35 +80,41 @@
     <Compile Include="Company\FrmDepartmentDetail.Designer.cs">
       <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Company\FrmEmployee.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmEmployee.Designer.cs">
+      <DependentUpon>FrmEmployee.cs</DependentUpon>
+    </Compile>
     <Compile Include="Company\FrmPositionDetail.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Company\FrmPositionDetail.Designer.cs">
       <DependentUpon>FrmPositionDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\UcCompany.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Company\FrmCompany.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Company\UcCompany.Designer.cs">
-      <DependentUpon>UcCompany.cs</DependentUpon>
+    <Compile Include="Company\FrmCompany.Designer.cs">
+      <DependentUpon>FrmCompany.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\UcCompanyBranch.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Company\FrmCompanyBranch.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Company\UcCompanyBranch.Designer.cs">
-      <DependentUpon>UcCompanyBranch.cs</DependentUpon>
+    <Compile Include="Company\FrmCompanyBranch.Designer.cs">
+      <DependentUpon>FrmCompanyBranch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\UcDepartment.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Company\FrmDepartment.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Company\UcDepartment.Designer.cs">
-      <DependentUpon>UcDepartment.cs</DependentUpon>
+    <Compile Include="Company\FrmDepartment.Designer.cs">
+      <DependentUpon>FrmDepartment.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\UcPosition.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Company\FrmPosition.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Company\UcPosition.Designer.cs">
-      <DependentUpon>UcPosition.cs</DependentUpon>
+    <Compile Include="Company\FrmPosition.Designer.cs">
+      <DependentUpon>FrmPosition.cs</DependentUpon>
     </Compile>
     <Compile Include="Customer\Converters\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
@@ -281,17 +287,17 @@
     <EmbeddedResource Include="Company\FrmPositionDetail.resx">
       <DependentUpon>FrmPositionDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Company\UcCompany.resx">
-      <DependentUpon>UcCompany.cs</DependentUpon>
+    <EmbeddedResource Include="Company\FrmCompany.resx">
+      <DependentUpon>FrmCompany.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Company\UcCompanyBranch.resx">
-      <DependentUpon>UcCompanyBranch.cs</DependentUpon>
+    <EmbeddedResource Include="Company\FrmCompanyBranch.resx">
+      <DependentUpon>FrmCompanyBranch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Company\UcDepartment.resx">
-      <DependentUpon>UcDepartment.cs</DependentUpon>
+    <EmbeddedResource Include="Company\FrmDepartment.resx">
+      <DependentUpon>FrmDepartment.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Company\UcPosition.resx">
-      <DependentUpon>UcPosition.cs</DependentUpon>
+    <EmbeddedResource Include="Company\FrmPosition.resx">
+      <DependentUpon>FrmPosition.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Customer\FrmBusinessPartnerCategoryDetail.resx">
       <DependentUpon>FrmBusinessPartnerCategoryDetail.cs</DependentUpon>
@@ -363,12 +369,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Company\UcBusinessPartnerCategory_Developer_Guide.md" />
-    <None Include="Company\UcBusinessPartnerCategory_User_Guide.md" />
-    <None Include="Company\UcCompanyBranch_Developer_Guide.md" />
-    <None Include="Company\UcCompanyBranch_User_Guide.md" />
-    <None Include="Company\UcCompany_Developer_Guide.md" />
-    <None Include="Company\UcCompany_User_Guide.md" />
+    <None Include="Company\FrmBusinessPartnerCategory_Developer_Guide.md" />
+    <None Include="Company\FrmBusinessPartnerCategory_User_Guide.md" />
+    <None Include="Company\FrmCompanyBranch_Developer_Guide.md" />
+    <None Include="Company\FrmCompanyBranch_User_Guide.md" />
+    <None Include="Company\FrmCompany_Developer_Guide.md" />
+    <None Include="Company\FrmCompany_User_Guide.md" />
     <None Include="Customer\Dto\DTO_README.md" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyDto.datasource" />

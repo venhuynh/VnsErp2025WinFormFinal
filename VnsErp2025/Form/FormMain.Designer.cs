@@ -132,6 +132,7 @@
             this.CongTyBarButtonItem.Id = 6;
             this.CongTyBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.home__1_;
             this.CongTyBarButtonItem.Name = "CongTyBarButtonItem";
+            this.CongTyBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.CongTyBarButtonItem_ItemClick);
             // 
             // PhanLoaiKhachHangBarButtonItem
             // 
@@ -167,6 +168,7 @@
             this.ChiNhanhBarButtonItem.Id = 10;
             this.ChiNhanhBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.branch__1_;
             this.ChiNhanhBarButtonItem.Name = "ChiNhanhBarButtonItem";
+            this.ChiNhanhBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.ChiNhanhBarButtonItem_ItemClick);
             // 
             // PhongBanBarButtonItem
             // 
@@ -176,6 +178,7 @@
             this.PhongBanBarButtonItem.Name = "PhongBanBarButtonItem";
             this.PhongBanBarButtonItem.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            this.PhongBanBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PhongBanBarButtonItem_ItemClick);
             // 
             // ChucVuBarButtonItem
             // 
@@ -183,6 +186,7 @@
             this.ChucVuBarButtonItem.Id = 12;
             this.ChucVuBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.job_position;
             this.ChucVuBarButtonItem.Name = "ChucVuBarButtonItem";
+            this.ChucVuBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.ChucVuBarButtonItem_ItemClick);
             // 
             // PhanLoaiSPDVBarButtonItem
             // 
@@ -202,8 +206,9 @@
             // 
             this.NhanVienBarButtonItem.Caption = "Nhân viên";
             this.NhanVienBarButtonItem.Id = 15;
-            this.NhanVienBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.bo_employee;
+            this.NhanVienBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.team;
             this.NhanVienBarButtonItem.Name = "NhanVienBarButtonItem";
+            this.NhanVienBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhanVienBarButtonItem_ItemClick);
             // 
             // BienTheSPDVBarButtonItem
             // 
