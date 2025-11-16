@@ -679,7 +679,7 @@ namespace MasterData.ProductService
                     ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn?"
                     : $"Bạn có chắc muốn xóa {_selectedProductServiceIds.Count} dòng dữ liệu đã chọn?";
 
-                if (!MsgBox.GetConfirmFromYesNoDialog(confirmMessage)) return;
+                if (!MsgBox.ShowYesNo(confirmMessage)) return;
 
                 try
                 {
@@ -1174,7 +1174,7 @@ namespace MasterData.ProductService
             catch (Exception)
             {
                 // Fallback message nếu có lỗi
-                MsgBox.ShowInfo($"Tìm thấy {filteredCount} kết quả cho từ khóa: '{searchKeyword}'");
+                MsgBox.ShowSuccess($"Tìm thấy {filteredCount} kết quả cho từ khóa: '{searchKeyword}'");
             }
         }
 
@@ -1200,7 +1200,7 @@ namespace MasterData.ProductService
             catch (Exception)
             {
                 // Fallback về MsgBox thông thường nếu có lỗi
-                MsgBox.ShowInfo(message.Replace("<br/>", "\n").Replace("<b>", "").Replace("</b>", ""));
+                MsgBox.ShowSuccess(message.Replace("<br/>", "\n").Replace("<b>", "").Replace("</b>", ""));
             }
         }
 
@@ -1241,7 +1241,7 @@ namespace MasterData.ProductService
                 productServiceDtoBindingSource.ResetBindings(false);
 
                 // Hiển thị thông báo đã đếm xong số lượng cho các sản phẩm được chọn
-                MsgBox.ShowInfo(
+                MsgBox.ShowSuccess(
                     $"Đã đếm xong số lượng biến thể và hình ảnh cho {_selectedProductServiceIds.Count} sản phẩm/dịch vụ được chọn.");
 
                 // Cập nhật status bar với thông tin mới
@@ -1324,7 +1324,7 @@ namespace MasterData.ProductService
         /// </summary>
         private void ShowInfo(string message)
         {
-            MsgBox.ShowInfo(message);
+            MsgBox.ShowSuccess(message);
         }
 
         /// <summary>

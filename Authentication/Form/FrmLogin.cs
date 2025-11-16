@@ -391,7 +391,7 @@ namespace Authentication.Form
         /// </summary>
         private void ShowSuccessMessage()
         {
-            MsgBox.ShowInfo("Đăng nhập thành công.", "Thành công");
+            MsgBox.ShowSuccess("Đăng nhập thành công.", "Thành công");
         }
 
         /// <summary>
@@ -441,7 +441,7 @@ namespace Authentication.Form
                 var existingUser = _loginBll.XacThucDangNhap("admin", "admin");
                 if (existingUser.MaLoi != LoginErrorCode.UserKhongTonTai)
                 {
-                    MsgBox.ShowInfo("Tài khoản admin đã tồn tại trong hệ thống.", "Thông báo");
+                    MsgBox.ShowSuccess("Tài khoản admin đã tồn tại trong hệ thống.", "Thông báo");
                     return;
                 }
 
@@ -450,7 +450,7 @@ namespace Authentication.Form
                 
                 if (adminUser != null)
                 {
-                    MsgBox.ShowInfo($"Đã tạo tài khoản admin thành công!\nUsername: admin\nPassword: admin\nID: {adminUser.Id}", "Tạo tài khoản thành công");
+                    MsgBox.ShowSuccess($"Đã tạo tài khoản admin thành công!\nUsername: admin\nPassword: admin\nID: {adminUser.Id}", "Tạo tài khoản thành công");
                 }
                 else
                 {
@@ -484,7 +484,7 @@ namespace Authentication.Form
                 
                 if (newUser != null)
                 {
-                    MsgBox.ShowInfo($"Đã tạo tài khoản thành công!\nUsername: {userName}\nPassword: {password}\nID: {newUser.Id}", "Tạo tài khoản thành công");
+                    MsgBox.ShowSuccess($"Đã tạo tài khoản thành công!\nUsername: {userName}\nPassword: {password}\nID: {newUser.Id}", "Tạo tài khoản thành công");
                 }
                 else
                 {

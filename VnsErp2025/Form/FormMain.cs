@@ -189,7 +189,7 @@ namespace VnsErp2025.Form
         {
             if (_currentUser != null)
             {
-                MsgBox.ShowInfo($"Chào mừng {_currentUser.UserName} đến với VNS ERP 2025!", "Chào mừng");
+                MsgBox.ShowSuccess($"Chào mừng {_currentUser.UserName} đến với VNS ERP 2025!", "Chào mừng");
             }
         }
 
@@ -255,7 +255,7 @@ namespace VnsErp2025.Form
                     }
 
                     var details = BuildDatabaseDetailsMessage(connectionManager, connectionString);
-                    MsgBox.ShowInfo(details, "Thông tin Database");
+                    MsgBox.ShowSuccess(details, "Thông tin Database");
                 }
             }
             catch (Exception ex)
@@ -313,7 +313,7 @@ namespace VnsErp2025.Form
             if (_currentUser != null)
             {
                 var userInfo = BuildUserInfoMessage();
-                MsgBox.ShowInfo(userInfo, "Thông tin tài khoản");
+                MsgBox.ShowSuccess(userInfo, "Thông tin tài khoản");
             }
             else
             {
@@ -381,8 +381,8 @@ namespace VnsErp2025.Form
         {
             try
             {
-                var result = MsgBox.GetConfirmFromYesNoCancelDialog("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận đăng xuất");
-                if (result == DialogResult.Yes)
+                
+                if (MsgBox.ShowYesNo("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận đăng xuất"))
                 {
                     PerformLogout();
                 }
@@ -402,8 +402,7 @@ namespace VnsErp2025.Form
         {
             try
             {
-                var result = MsgBox.GetConfirmFromYesNoCancelDialog("Bạn có chắc chắn muốn thoát ứng dụng?", "Xác nhận thoát");
-                if (result == DialogResult.Yes)
+                if (MsgBox.ShowYesNo("Bạn có chắc chắn muốn thoát ứng dụng?", "Xác nhận thoát"))
                 {
                     Application.Exit();
                 }
@@ -478,7 +477,7 @@ namespace VnsErp2025.Form
                     if (result == DialogResult.OK)
                     {
                         RefreshDatabaseInfo();
-                        MsgBox.ShowInfo("Cấu hình kết nối đã được cập nhật.", "Thông báo");
+                        MsgBox.ShowSuccess("Cấu hình kết nối đã được cập nhật.", "Thông báo");
                     }
                 }
             }

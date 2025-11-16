@@ -274,7 +274,7 @@ namespace MasterData.Customer
         /// <param name="message">Thông báo</param>
         private void ShowInfo(string message)
         {
-            MsgBox.ShowInfo(message);
+            MsgBox.ShowSuccess(message);
         }
 
         /// <summary>

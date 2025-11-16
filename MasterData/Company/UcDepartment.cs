@@ -368,7 +368,7 @@ namespace MasterData.Company
                 ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn?"
                 : $"Bạn có chắc muốn xóa {_selectedDepartmentIds.Count} dòng dữ liệu đã chọn?";
 
-            var confirmed = MsgBox.GetConfirmFromYesNoDialog(confirmMessage, "Xác nhận xóa");
+            var confirmed = MsgBox.ShowYesNo(confirmMessage, "Xác nhận xóa");
             if (!confirmed) return;
 
             try
@@ -793,7 +793,7 @@ namespace MasterData.Company
         /// </summary>
         private void ShowInfo(string message)
         {
-            MsgBox.ShowInfo(message, "Thông tin");
+            MsgBox.ShowSuccess(message, "Thông tin");
         }
 
         /// <summary>

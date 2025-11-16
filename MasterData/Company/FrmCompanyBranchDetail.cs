@@ -224,7 +224,7 @@ namespace MasterData.Company
 
                 if (success)
                 {
-                    MsgBox.ShowInfo(_isEditMode ? "Cập nhật chi nhánh công ty thành công!" : "Thêm mới chi nhánh công ty thành công!");
+                    MsgBox.ShowSuccess(_isEditMode ? "Cập nhật chi nhánh công ty thành công!" : "Thêm mới chi nhánh công ty thành công!");
                     DialogResult = DialogResult.OK;
                     Close();
                 }
@@ -579,15 +579,11 @@ namespace MasterData.Company
             try
             {
                 // Kiểm tra có thay đổi dữ liệu không
-                if (HasDataChanged())
-                {
-                    var result = MsgBox.GetConfirmFromYesNoCancelDialog("Dữ liệu đã thay đổi. Bạn có muốn lưu không?", "Xác nhận");
-                    if (result == DialogResult.Yes)
-                    {
-                        SaveData();
-                        e.Cancel = true;
-                    }
-                }
+                if (!HasDataChanged()) return;
+                if (!MsgBox.ShowYesNo("Dữ liệu đã thay đổi. Bạn có muốn lưu không?", "Xác nhận")) return;
+                
+                SaveData();
+                e.Cancel = true;
             }
             catch (Exception ex)
             {

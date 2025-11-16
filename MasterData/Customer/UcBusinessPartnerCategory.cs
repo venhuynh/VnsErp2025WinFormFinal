@@ -292,7 +292,7 @@ namespace MasterData.Customer
                     ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn?"
                     : $"Bạn có chắc muốn xóa {_selectedCategoryIds.Count} dòng dữ liệu đã chọn?";
 
-                if (!MsgBox.GetConfirmFromYesNoDialog(confirmMessage)) return;
+                if (!MsgBox.ShowYesNo(confirmMessage)) return;
 
                 try
                 {
@@ -749,7 +749,7 @@ namespace MasterData.Customer
         /// </summary>
         private void ShowInfo(string message)
         {
-            MsgBox.ShowInfo(message);
+            MsgBox.ShowSuccess(message);
         }
 
         /// <summary>

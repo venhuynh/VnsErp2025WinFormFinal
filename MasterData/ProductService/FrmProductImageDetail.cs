@@ -322,12 +322,12 @@ namespace MasterData.ProductService
             {
                 if (_currentImageDto == null) return;
 
-                if (MsgBox.GetConfirmFromYesNoDialog("Bạn có chắc chắn muốn đặt hình ảnh này làm ảnh chính?"))
+                if (MsgBox.ShowYesNo("Bạn có chắc chắn muốn đặt hình ảnh này làm ảnh chính?"))
                 {
                     // Set primary image trong database
                     _productImageBll.SetAsPrimary(_currentImageDto.Id);
                     
-                    MsgBox.ShowInfo($"Đã đặt hình ảnh '{_currentImageDto.Caption}' làm ảnh chính");
+                    MsgBox.ShowSuccess($"Đã đặt hình ảnh '{_currentImageDto.Caption}' làm ảnh chính");
                     
                     // Cập nhật trạng thái local
                     _currentImageDto.IsPrimary = true;
@@ -369,7 +369,7 @@ namespace MasterData.ProductService
                         if (_currentImageDto.ImageData != null && _currentImageDto.ImageData.Length > 0)
                         {
                             File.WriteAllBytes(saveDialog.FileName, _currentImageDto.ImageData);
-                            MsgBox.ShowInfo($"Đã tải hình ảnh thành công: {saveDialog.FileName}");
+                            MsgBox.ShowSuccess($"Đã tải hình ảnh thành công: {saveDialog.FileName}");
                         }
                         else
                         {
@@ -399,7 +399,7 @@ namespace MasterData.ProductService
                     ? "Bạn có chắc chắn muốn xóa hình ảnh chính này? Hành động này sẽ:\n• Xóa ảnh khỏi database\n• Xóa file ảnh khỏi thư mục lưu trữ\n• Cập nhật thông tin sản phẩm"
                     : "Bạn có chắc chắn muốn xóa hình ảnh này? Hành động này sẽ:\n• Xóa ảnh khỏi database\n• Xóa file ảnh khỏi thư mục lưu trữ";
 
-                if (MsgBox.GetConfirmFromYesNoDialog(warningMessage))
+                if (MsgBox.ShowYesNo(warningMessage))
                 {
                     // Hiển thị WaitingForm thay vì message box
                     try

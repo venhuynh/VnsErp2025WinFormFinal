@@ -258,7 +258,7 @@ namespace MasterData.Customer
                 }
 
                 var confirmMessage = $"Bạn có chắc muốn xóa chi nhánh '{_selectedItem.SiteName}'?";
-                if (!MsgBox.GetConfirmFromYesNoDialog(confirmMessage)) return;
+                if (!MsgBox.ShowYesNo(confirmMessage)) return;
 
                 try
                 {
@@ -524,7 +524,7 @@ namespace MasterData.Customer
         /// </summary>
         private void ShowInfo(string message)
         {
-            MsgBox.ShowInfo(message);
+            MsgBox.ShowSuccess(message);
         }
 
         /// <summary>

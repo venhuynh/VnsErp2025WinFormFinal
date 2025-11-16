@@ -309,7 +309,7 @@ namespace MasterData.Company
                 // Kiểm tra nếu có thay đổi dữ liệu
                 if (HasDataChanged() && DialogResult != DialogResult.OK)
                 {
-                    var result = MsgBox.GetConfirmFromYesNoDialog("Dữ liệu đã thay đổi. Bạn có muốn lưu không?");
+                    var result = MsgBox.ShowYesNo("Dữ liệu đã thay đổi. Bạn có muốn lưu không?");
                     if (result)
                     {
                         if (!SaveData())
@@ -484,7 +484,7 @@ namespace MasterData.Company
         /// </summary>
         private void ShowInfo(string message)
         {
-            MsgBox.ShowInfo(message);
+            MsgBox.ShowSuccess(message);
         }
 
         /// <summary>

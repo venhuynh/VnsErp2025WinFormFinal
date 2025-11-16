@@ -919,7 +919,7 @@ namespace MasterData.ProductService
         /// <param name="message">Nội dung thông báo</param>
         private void ShowInfo(string message)
         {
-            MsgBox.ShowInfo(message);
+            MsgBox.ShowSuccess(message);
         }
 
         /// <summary>

@@ -152,7 +152,7 @@ namespace MasterData.ProductService
                     ? "Bạn có chắc chắn muốn xóa biến thể đã chọn?" 
                     : $"Bạn có chắc chắn muốn xóa {selectedCount} biến thể đã chọn?";
                 
-                if (!MsgBox.GetConfirmFromYesNoDialog(message, "Xác nhận xóa"))
+                if (!MsgBox.ShowYesNo(message, "Xác nhận xóa"))
                 {
                     return;
                 }
@@ -704,7 +704,7 @@ namespace MasterData.ProductService
         /// </summary>
         private void ShowInfo(string message)
         {
-            MsgBox.ShowInfo(message);
+            MsgBox.ShowSuccess(message);
         }
 
         /// <summary>

@@ -325,7 +325,7 @@ namespace MasterData.Customer
                     ListDataBarButtonItem.PerformClick();
 
                     UpdateStatusBar();
-                    MsgBox.ShowInfo("Đã thêm mới liên hệ thành công!");
+                    MsgBox.ShowSuccess("Đã thêm mới liên hệ thành công!");
                 }
             }
             catch (Exception ex)
@@ -348,10 +348,8 @@ namespace MasterData.Customer
                     return;
                 }
 
-                var result =
-                    MsgBox.GetConfirmFromYesNoCancelDialog(
-                        $"Bạn có chắc chắn muốn xóa {_selectedContactIds.Count} liên hệ đã chọn?");
-                if (result != DialogResult.Yes) return;
+                
+                if (MsgBox.ShowYesNo($"Bạn có chắc chắn muốn xóa {_selectedContactIds.Count} liên hệ đã chọn?")) return;
 
                 await ExecuteWithWaitingFormAsync(async () =>
                 {
@@ -395,7 +393,7 @@ namespace MasterData.Customer
                 // Mở file
                 Process.Start(path);
 
-                MsgBox.ShowInfo($"Đã xuất {rowCount} liên hệ ra file: {fileName}");
+                MsgBox.ShowSuccess($"Đã xuất {rowCount} liên hệ ra file: {fileName}");
             }
             catch (Exception ex)
             {
@@ -482,7 +480,7 @@ namespace MasterData.Customer
                     // Lưu avatar xuống DB
                     _contactBll.UpdateAvatarOnly(dto.Id, dto.Avatar);
 
-                    MsgBox.ShowInfo("Đã cập nhật avatar thành công!");
+                    MsgBox.ShowSuccess("Đã cập nhật avatar thành công!");
                 }
                 else if (e.Column.FieldName != "SiteName")
                 {
@@ -741,7 +739,7 @@ namespace MasterData.Customer
 
                 await LoadDataAsync();
                 UpdateButtonStates();
-                MsgBox.ShowInfo("Đã cập nhật avatar thành công!");
+                MsgBox.ShowSuccess("Đã cập nhật avatar thành công!");
             });
         }
 
@@ -785,7 +783,7 @@ namespace MasterData.Customer
                     // Cập nhật DTO
                     contactDto.Avatar = imageBytes;
 
-                    MsgBox.ShowInfo("Đã cập nhật avatar thành công!");
+                    MsgBox.ShowSuccess("Đã cập nhật avatar thành công!");
                 }
             }
             catch (Exception ex)
@@ -801,8 +799,7 @@ namespace MasterData.Customer
         {
             try
             {
-                var result = MsgBox.GetConfirmFromYesNoCancelDialog("Bạn có chắc chắn muốn xóa avatar này?");
-                if (result != DialogResult.Yes) return;
+                if (!MsgBox.ShowYesNo("Bạn có chắc chắn muốn xóa avatar này?")) return;
 
                 await ExecuteWithWaitingFormAsync(() =>
                 {
@@ -813,7 +810,7 @@ namespace MasterData.Customer
                 // Cập nhật DTO
                 contactDto.Avatar = null;
 
-                MsgBox.ShowInfo("Đã xóa avatar thành công!");
+                MsgBox.ShowSuccess("Đã xóa avatar thành công!");
             }
             catch (Exception ex)
             {
@@ -858,7 +855,7 @@ namespace MasterData.Customer
                     // Cập nhật DTO
                     contactDto.Avatar = imageBytes;
 
-                    MsgBox.ShowInfo("Đã paste avatar thành công!");
+                    MsgBox.ShowSuccess("Đã paste avatar thành công!");
                 }
                 else
                 {

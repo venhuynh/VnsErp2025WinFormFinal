@@ -263,7 +263,7 @@ namespace MasterData.Customer
                 var entity = detailDto.ToEntity(existing);
                 _bll.SaveOrUpdate(entity);
 
-                MsgBox.ShowInfo("Lưu dữ liệu đối tác thành công");
+                MsgBox.ShowSuccess("Lưu dữ liệu đối tác thành công");
                 DialogResult = DialogResult.OK;
                 Close();
             }

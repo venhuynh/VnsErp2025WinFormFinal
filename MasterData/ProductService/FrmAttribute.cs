@@ -656,7 +656,7 @@ namespace MasterData.ProductService
             var confirmMsg = count == 1
                 ? "Bạn có chắc muốn xóa thuộc tính đã chọn?"
                 : $"Bạn có chắc muốn xóa {count} thuộc tính đã chọn?";
-            if (!MsgBox.GetConfirmFromYesNoDialog(confirmMsg)) return;
+            if (!MsgBox.ShowYesNo(confirmMsg)) return;
 
             try
             {
@@ -942,7 +942,7 @@ namespace MasterData.ProductService
         /// <param name="message">Nội dung thông báo</param>
         private void ShowInfo(string message)
         {
-            MsgBox.ShowInfo(message);
+            MsgBox.ShowSuccess(message);
         }
 
         /// <summary>

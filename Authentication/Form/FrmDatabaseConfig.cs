@@ -116,7 +116,7 @@ namespace Authentication.Form
                     LuuCauHinh();
                     
                     // Thông báo thành công và đóng form
-                    MsgBox.ShowInfo("Kết nối cơ sở dữ liệu thành công!\nCấu hình đã được lưu.", "Thành công");
+                    MsgBox.ShowSuccess("Kết nối cơ sở dữ liệu thành công!\nCấu hình đã được lưu.", "Thành công");
                     DialogResult = DialogResult.OK;
                     Close();
                 }

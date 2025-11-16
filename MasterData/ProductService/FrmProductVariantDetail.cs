@@ -514,7 +514,7 @@ namespace MasterData.ProductService
 							? "Đây là thuộc tính cuối cùng của biến thể sản phẩm. Bạn có muốn xóa toàn bộ biến thể sản phẩm này không?"
 							: $"Đây là thuộc tính cuối cùng của biến thể sản phẩm '{variantCode}'. Bạn có muốn xóa toàn bộ biến thể sản phẩm này không?";
 						
-						if (MsgBox.GetConfirmFromYesNoDialog(message, "Xác nhận xóa biến thể sản phẩm"))
+						if (MsgBox.ShowYesNo(message, "Xác nhận xóa biến thể sản phẩm"))
 						{
 							// Xóa toàn bộ biến thể sản phẩm
 							DeleteProductVariant();
@@ -695,7 +695,7 @@ namespace MasterData.ProductService
 				var availableAttributes = GetAvailableAttributes();
 				if (availableAttributes.Count == 0)
 				{
-					MsgBox.ShowInfo("Tất cả thuộc tính đã được sử dụng. Không thể thêm dòng mới.");
+					MsgBox.ShowSuccess("Tất cả thuộc tính đã được sử dụng. Không thể thêm dòng mới.");
 					return;
 				}
 
@@ -754,7 +754,7 @@ namespace MasterData.ProductService
 				var availableAttributes = GetAvailableAttributes();
 				if (availableAttributes.Count == 0)
 				{
-					MsgBox.ShowInfo("Tất cả thuộc tính đã được sử dụng. Không thể thêm dòng mới.");
+					MsgBox.ShowSuccess("Tất cả thuộc tính đã được sử dụng. Không thể thêm dòng mới.");
 					return;
 				}
 
@@ -808,7 +808,7 @@ namespace MasterData.ProductService
 				if (focusedRow == null) return;
 
 				// Confirm deletion
-				if (!MsgBox.GetConfirmFromYesNoDialog("Bạn có chắc chắn muốn xóa dòng này?", "Xác nhận xóa")) return;
+				if (!MsgBox.ShowYesNo("Bạn có chắc chắn muốn xóa dòng này?", "Xác nhận xóa")) return;
 
 				// Lưu vị trí hiện tại để điều chỉnh focus sau khi xóa
 				var currentRowHandle = AttributeValueGridView.FocusedRowHandle;
@@ -832,7 +832,7 @@ namespace MasterData.ProductService
 						? "Biến thể sản phẩm này không còn thuộc tính nào. Bạn có muốn xóa toàn bộ biến thể sản phẩm này không?"
 						: $"Biến thể sản phẩm '{variantCode}' không còn thuộc tính nào. Bạn có muốn xóa toàn bộ biến thể sản phẩm này không?";
 					
-					if (MsgBox.GetConfirmFromYesNoDialog(message, "Xác nhận xóa biến thể sản phẩm"))
+					if (MsgBox.ShowYesNo(message, "Xác nhận xóa biến thể sản phẩm"))
 					{
 						// Xóa toàn bộ biến thể sản phẩm
 						DeleteProductVariant();
@@ -964,7 +964,7 @@ namespace MasterData.ProductService
 					// Xóa biến thể sản phẩm
 					await _productVariantBll.DeleteAsync(_productVariantId);
 					
-					MsgBox.ShowInfo("Đã xóa biến thể sản phẩm thành công!");
+					MsgBox.ShowSuccess("Đã xóa biến thể sản phẩm thành công!");
 					
 					// Đóng form
 					Close();
@@ -1012,7 +1012,7 @@ namespace MasterData.ProductService
 						field?.SetValue(this, savedId);
 					}
 
-					MsgBox.ShowInfo("Lưu dữ liệu thành công!");
+					MsgBox.ShowSuccess("Lưu dữ liệu thành công!");
 					
 					//Đóng màn hình này
                     Close();
@@ -1035,7 +1035,7 @@ namespace MasterData.ProductService
 				// Kiểm tra xem có thay đổi chưa lưu không
 				if (HasUnsavedChanges())
 				{
-					if (!MsgBox.GetConfirmFromYesNoDialog("Có thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng?")) return;
+					if (!MsgBox.ShowYesNo("Có thay đổi chưa được lưu. Bạn có chắc chắn muốn đóng?")) return;
 				}
 
 				Close();

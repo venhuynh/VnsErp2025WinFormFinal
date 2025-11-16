@@ -86,7 +86,7 @@ namespace Bll.Utils
 
                 gridView.ExportToXlsx(saveFileDialog.FileName, options);
 
-                if (MsgBox.GetConfirmFromYesNoDialog("Xuất file thành công. Bạn có muốn mở file này không?"))
+                if (MsgBox.ShowYesNo("Xuất file thành công. Bạn có muốn mở file này không?"))
                 {
                     Process.Start(saveFileDialog.FileName);
                 }

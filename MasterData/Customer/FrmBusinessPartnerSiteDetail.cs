@@ -197,7 +197,7 @@ namespace MasterData.Customer
 
                 if (success)
                 {
-                    MsgBox.ShowInfo(_isEditMode
+                    MsgBox.ShowSuccess(_isEditMode
                         ? "Cập nhật chi nhánh thành công!"
                         : "Thêm mới chi nhánh thành công!");
                     DialogResult = DialogResult.OK;
