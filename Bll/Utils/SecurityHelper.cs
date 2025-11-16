@@ -24,7 +24,7 @@ namespace Bll.Utils
         public static string HashPassword(string password, string salt = null)
         {
             if (string.IsNullOrEmpty(password))
-                throw new ArgumentException("Password không được rỗng", nameof(password));
+                throw new ArgumentException(@"Password không được rỗng", nameof(password));
 
             // Tạo salt nếu chưa có
             if (string.IsNullOrEmpty(salt))
@@ -34,8 +34,8 @@ namespace Bll.Utils
 
             // Kết hợp password với salt và hash
             string saltedPassword = password + salt;
-            string hash = ComputeSHA256Hash(saltedPassword);
-            
+            string hash = ComputeSha256Hash(saltedPassword);
+
             // Trả về format: salt$hash
             return $"{salt}${hash}";
         }
@@ -62,7 +62,7 @@ namespace Bll.Utils
                 string storedHash = parts[1];
 
                 // Hash password với salt và so sánh
-                string computedHash = ComputeSHA256Hash(password + salt);
+                string computedHash = ComputeSha256Hash(password + salt);
                 return string.Equals(computedHash, storedHash, StringComparison.OrdinalIgnoreCase);
             }
             catch
@@ -90,14 +90,12 @@ namespace Bll.Utils
         /// </summary>
         /// <param name="input">Input string</param>
         /// <returns>Hash string</returns>
-        private static string ComputeSHA256Hash(string input)
+        private static string ComputeSha256Hash(string input)
         {
-            using (var sha256 = SHA256.Create())
-            {
-                byte[] inputBytes = Encoding.UTF8.GetBytes(input);
-                byte[] hashBytes = sha256.ComputeHash(inputBytes);
-                return Convert.ToBase64String(hashBytes);
-            }
+            using var sha256 = SHA256.Create();
+            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+            byte[] hashBytes = sha256.ComputeHash(inputBytes);
+            return Convert.ToBase64String(hashBytes);
         }
 
         #endregion

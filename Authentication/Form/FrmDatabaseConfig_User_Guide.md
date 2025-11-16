@@ -6,10 +6,10 @@
 
 Form **Cài đặt máy chủ cơ sở dữ liệu** cho phép bạn cấu hình thông tin kết nối đến cơ sở dữ liệu SQL Server của hệ thống VNS ERP 2025. Form này giúp bạn:
 
-- ✅ Thiết lập thông tin kết nối cơ sở dữ liệu
-- ✅ Kiểm tra kết nối trước khi lưu
+- ✅ Nhập thông tin kết nối cơ sở dữ liệu (server, database, username, password)
+- ✅ Kiểm tra kết nối trước khi lưu cấu hình
 - ✅ Lưu cấu hình để sử dụng cho các lần sau
-- ✅ Bảo mật mật khẩu bằng mã hóa
+- ✅ Tự động tải lại cấu hình đã lưu khi mở form
 
 ### Mục đích sử dụng
 
@@ -22,11 +22,15 @@ Form này thường được sử dụng khi:
 ### Tóm tắt workflow
 
 ```
-1. Mở form → Hệ thống tự động tải cấu hình hiện tại
-2. Nhập/Chỉnh sửa thông tin kết nối
+1. Mở form → Tự động tải cấu hình hiện tại (nếu có)
+2. Nhập thông tin kết nối:
+   - IP/Tên máy chủ
+   - Tên cơ sở dữ liệu
+   - Tên đăng nhập
+   - Mật khẩu
 3. Nhấn "Cập nhật" → Hệ thống kiểm tra kết nối
-4. Nếu kết nối thành công → Lưu cấu hình và đóng form
-5. Nếu kết nối thất bại → Hiển thị lỗi, bạn có thể sửa lại
+4. Nếu thành công → Lưu cấu hình và đóng form
+5. Nếu thất bại → Hiển thị lỗi, giữ form mở để sửa
 ```
 
 ---
@@ -37,324 +41,482 @@ Form này thường được sử dụng khi:
 
 Form sẽ tự động hiển thị khi:
 - Lần đầu khởi động ứng dụng (nếu chưa có cấu hình)
-- Được gọi từ menu cài đặt hệ thống
+- Người dùng chọn chức năng "Cài đặt cơ sở dữ liệu" từ menu
 
-### Bước 2: Xem thông tin hiện tại
+**Giao diện form:**
+- Tiêu đề: **"CÀI ĐẶT MÁY CHỦ CƠ SỞ DỮ LIỆU"**
+- Form hiển thị ở giữa màn hình
+- Form luôn ở trên cùng (TopMost)
 
-Khi form mở, các trường sẽ tự động hiển thị thông tin cấu hình hiện tại (nếu có):
-- **IP/Tên máy chủ**: Tên hoặc địa chỉ IP của SQL Server
-- **Tên CSDL**: Tên database cần kết nối
-- **Tên đăng nhập**: Username để đăng nhập SQL Server
-- **Mật khẩu**: Password (sẽ hiển thị dưới dạng dấu sao `*`)
+### Bước 2: Nhập thông tin kết nối
 
-### Bước 3: Nhập/Chỉnh sửa thông tin
+Form có 4 trường thông tin cần nhập:
 
-#### 📍 **IP/Tên máy chủ** (ServerNameTextEdit)
+#### 2.1. IP/Tên máy chủ (Server Name)
 
-- **Mô tả**: Địa chỉ hoặc tên của máy chủ SQL Server
-- **Ví dụ hợp lệ**:
-  - `localhost` - Máy chủ trên cùng máy tính
-  - `192.168.1.100` - Địa chỉ IP
-  - `SERVER01` - Tên máy chủ trong mạng
-  - `SERVER01\SQLEXPRESS` - Named instance
-- **Yêu cầu**: Không được để trống
-- **Tab Index**: 0 (trường đầu tiên)
+**Vị trí:** Ô nhập đầu tiên  
+**Mô tả:** Nhập địa chỉ IP hoặc tên máy chủ SQL Server
 
-#### 📍 **Tên CSDL** (DatabaseNameTextEdit)
+**Ví dụ:**
+- `localhost` - Nếu SQL Server trên cùng máy
+- `192.168.1.100` - Địa chỉ IP máy chủ
+- `SQLSERVER01` - Tên máy chủ trong mạng
+- `SQLSERVER01\SQLEXPRESS` - Tên instance SQL Server Express
 
-- **Mô tả**: Tên của database cần kết nối
-- **Ví dụ hợp lệ**:
-  - `VnsErp2025`
-  - `VnsErp2025Final`
-  - `MyDatabase`
-- **Yêu cầu**: Không được để trống
-- **Tab Index**: 2
+**Lưu ý:**
+- ⚠️ Không được để trống
+- ✅ Có thể nhập IP hoặc tên máy chủ
+- ✅ Nếu dùng named instance, nhập theo định dạng: `TênMáyChủ\TênInstance`
 
-#### 📍 **Tên đăng nhập** (UserIdTextEdit)
+#### 2.2. Tên CSDL (Database Name)
 
-- **Mô tả**: Username để đăng nhập vào SQL Server
-- **Ví dụ hợp lệ**:
-  - `sa` - System Administrator
-  - `dbuser` - User tùy chỉnh
-- **Yêu cầu**: Không được để trống
-- **Lưu ý**: Hệ thống luôn sử dụng SQL Authentication (không dùng Windows Authentication)
-- **Tab Index**: 3
+**Vị trí:** Ô nhập thứ hai  
+**Mô tả:** Nhập tên cơ sở dữ liệu cần kết nối
 
-#### 📍 **Mật khẩu** (PasswordTextEdit)
+**Ví dụ:**
+- `VnsErp2025`
+- `VnsErp2025Final`
+- `VNS_ERP_DB`
 
-- **Mô tả**: Password để đăng nhập vào SQL Server
-- **Yêu cầu**: Không được để trống
-- **Bảo mật**: 
-  - Mật khẩu được ẩn khi nhập (hiển thị dấu `*`)
-  - Mật khẩu được mã hóa trước khi lưu vào cấu hình
-- **Tab Index**: 4
+**Lưu ý:**
+- ⚠️ Không được để trống
+- ✅ Tên database phải tồn tại trên SQL Server
+- ✅ Phân biệt chữ hoa/thường (tùy cấu hình SQL Server)
 
-### Bước 4: Kiểm tra và lưu cấu hình
+#### 2.3. Tên đăng nhập (User Id)
 
-1. **Nhấn nút "Cập nhật"** (OKSmpleButton)
-   - Hệ thống sẽ:
-     - ✅ Kiểm tra tất cả trường không được để trống
-     - ✅ Thử kết nối đến database với thông tin bạn nhập
-     - ✅ Nếu kết nối thành công → Lưu cấu hình và đóng form
-     - ❌ Nếu kết nối thất bại → Hiển thị thông báo lỗi
+**Vị trí:** Ô nhập thứ ba  
+**Mô tả:** Nhập tên đăng nhập SQL Server (SQL Authentication)
 
-2. **Nhấn nút "Hủy"** (CancelSimpleButton)
-   - Đóng form mà không lưu thay đổi
-   - Cấu hình cũ vẫn được giữ nguyên
+**Ví dụ:**
+- `sa` - Tài khoản quản trị mặc định
+- `vns_user` - Tài khoản người dùng tùy chỉnh
+
+**Lưu ý:**
+- ⚠️ Không được để trống
+- ✅ Hệ thống sử dụng SQL Authentication (không dùng Windows Authentication)
+- ✅ Tài khoản phải có quyền truy cập database đã chọn
+
+#### 2.4. Mật khẩu (Password)
+
+**Vị trí:** Ô nhập thứ tư  
+**Mô tả:** Nhập mật khẩu của tài khoản SQL Server
+
+**Lưu ý:**
+- ⚠️ Không được để trống
+- 🔒 Mật khẩu được ẩn khi nhập (hiển thị dấu `*`)
+- ✅ Phân biệt chữ hoa/thường
+- ⚠️ Kiểm tra Caps Lock khi nhập
+
+### Bước 3: Kiểm tra và lưu cấu hình
+
+#### 3.1. Nhấn nút "Cập nhật"
+
+Sau khi nhập đầy đủ thông tin:
+
+1. **Nhấn nút "Cập nhật"** (hoặc phím Enter)
+2. Hệ thống sẽ:
+   - ✅ Kiểm tra các trường không được để trống
+   - ✅ Kiểm tra kết nối đến cơ sở dữ liệu
+   - ✅ Nếu thành công: Lưu cấu hình và đóng form
+   - ❌ Nếu thất bại: Hiển thị lỗi, giữ form mở
+
+#### 3.2. Thông báo kết quả
+
+**Thành công:**
+```
+"Kết nối cơ sở dữ liệu thành công!
+Cấu hình đã được lưu."
+```
+
+**Thất bại:**
+```
+"Không thể kết nối đến cơ sở dữ liệu.
+Vui lòng kiểm tra lại thông tin kết nối."
+```
+
+### Bước 4: Hủy thao tác (nếu cần)
+
+- Nhấn nút **"Hủy"** để đóng form mà không lưu thay đổi
+- Cấu hình cũ sẽ được giữ nguyên
 
 ---
 
-## 3. Bảng phím tắt
+## 3. Giải thích các control trên form
+
+### 3.1. TextBox - IP/Tên máy chủ
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Tên control** | `ServerNameTextEdit` |
+| **Loại** | DevExpress TextEdit |
+| **Binding** | `DatabaseConfig.ServerName` |
+| **TabIndex** | 0 |
+| **Validation** | Không được để trống |
+
+**Cách sử dụng:**
+- Click vào ô và nhập tên máy chủ hoặc IP
+- Hệ thống tự động trim khoảng trắng đầu/cuối
+
+### 3.2. TextBox - Tên CSDL
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Tên control** | `DatabaseNameTextEdit` |
+| **Loại** | DevExpress TextEdit |
+| **Binding** | `DatabaseConfig.DatabaseName` |
+| **TabIndex** | 2 |
+| **Validation** | Không được để trống |
+
+**Cách sử dụng:**
+- Nhập tên database chính xác như trên SQL Server
+- Kiểm tra tên database có tồn tại trước khi nhập
+
+### 3.3. TextBox - Tên đăng nhập
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Tên control** | `UserIdTextEdit` |
+| **Loại** | DevExpress TextEdit |
+| **Binding** | `DatabaseConfig.UserId` |
+| **TabIndex** | 3 |
+| **Validation** | Không được để trống |
+
+**Cách sử dụng:**
+- Nhập tên đăng nhập SQL Server
+- Đảm bảo tài khoản có quyền truy cập database
+
+### 3.4. TextBox - Mật khẩu
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Tên control** | `PasswordTextEdit` |
+| **Loại** | DevExpress TextEdit (Password) |
+| **Binding** | `DatabaseConfig.Password` |
+| **TabIndex** | 4 |
+| **PasswordChar** | `*` |
+| **UseSystemPasswordChar** | `true` |
+| **Validation** | Không được để trống |
+
+**Cách sử dụng:**
+- Nhập mật khẩu (sẽ hiển thị dấu `*`)
+- Kiểm tra Caps Lock trước khi nhập
+
+### 3.5. Nút "Cập nhật"
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Tên control** | `OKSmpleButton` |
+| **Text** | "Cập nhật" |
+| **Icon** | `apply_16x16` |
+| **TabIndex** | 5 |
+| **Chức năng** | Validate → Test Connection → Save Config |
+
+**Cách sử dụng:**
+- Click để lưu cấu hình
+- Hoặc nhấn Enter khi đang ở ô mật khẩu
+
+### 3.6. Nút "Hủy"
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Tên control** | `CancelSimpleButton` |
+| **Text** | "Hủy" |
+| **Icon** | `cancel_16x16` |
+| **TabIndex** | 6 |
+| **Chức năng** | Đóng form, không lưu |
+
+**Cách sử dụng:**
+- Click để hủy và đóng form
+- Hoặc nhấn ESC (nếu được hỗ trợ)
+
+---
+
+## 4. Phím tắt
+
+Form hỗ trợ các phím tắt sau:
 
 | Phím | Chức năng |
 |------|-----------|
-| **Tab** | Chuyển sang trường tiếp theo |
-| **Shift + Tab** | Quay lại trường trước |
-| **Enter** | Không có chức năng đặc biệt (chỉ chuyển focus) |
+| **Tab** | Chuyển sang ô nhập tiếp theo |
+| **Shift + Tab** | Chuyển về ô nhập trước |
+| **Enter** (ở ô Mật khẩu) | Thực hiện "Cập nhật" (tương đương click nút) |
+| **ESC** | Đóng form (nếu được hỗ trợ) |
 
-**Lưu ý**: Form không hỗ trợ phím tắt để lưu nhanh. Bạn cần click nút "Cập nhật" để lưu.
-
----
-
-## 4. Validation - Xử lý lỗi thường gặp
-
-### ❌ Lỗi: "Tên máy chủ không được để trống"
-
-**Nguyên nhân**: Bạn chưa nhập thông tin vào trường "IP/Tên máy chủ"
-
-**Cách khắc phục**:
-1. Click vào trường "IP/Tên máy chủ"
-2. Nhập tên hoặc địa chỉ IP của máy chủ SQL Server
-3. Ví dụ: `localhost`, `192.168.1.100`, hoặc `SERVER01`
+**Thứ tự Tab:**
+1. IP/Tên máy chủ
+2. Tên CSDL
+3. Tên đăng nhập
+4. Mật khẩu
+5. Nút "Cập nhật"
+6. Nút "Hủy"
 
 ---
 
-### ❌ Lỗi: "Tên cơ sở dữ liệu không được để trống"
+## 5. Validation - Xử lý lỗi thường gặp
 
-**Nguyên nhân**: Bạn chưa nhập tên database
+### 5.1. Lỗi: "Tên máy chủ không được để trống"
 
-**Cách khắc phục**:
-1. Click vào trường "Tên CSDL"
-2. Nhập tên database cần kết nối
-3. Ví dụ: `VnsErp2025`, `VnsErp2025Final`
+**Nguyên nhân:**
+- Ô "IP/Tên máy chủ" đang để trống
 
-**Lưu ý**: Tên database phải tồn tại trên SQL Server. Nếu chưa có, bạn cần tạo database trước.
-
----
-
-### ❌ Lỗi: "Tên đăng nhập không được để trống"
-
-**Nguyên nhân**: Bạn chưa nhập username
-
-**Cách khắc phục**:
-1. Click vào trường "Tên đăng nhập"
-2. Nhập username có quyền truy cập database
-3. Ví dụ: `sa` (System Administrator) hoặc username khác
+**Cách khắc phục:**
+1. Click vào ô "IP/Tên máy chủ"
+2. Nhập tên máy chủ hoặc địa chỉ IP
+3. Ví dụ: `localhost`, `192.168.1.100`, `SQLSERVER01`
 
 ---
 
-### ❌ Lỗi: "Mật khẩu không được để trống"
+### 5.2. Lỗi: "Tên cơ sở dữ liệu không được để trống"
 
-**Nguyên nhân**: Bạn chưa nhập mật khẩu
+**Nguyên nhân:**
+- Ô "Tên CSDL" đang để trống
 
-**Cách khắc phục**:
-1. Click vào trường "Mật khẩu"
-2. Nhập mật khẩu tương ứng với username đã nhập
-
----
-
-### ❌ Lỗi: "Không thể kết nối đến cơ sở dữ liệu. Vui lòng kiểm tra lại thông tin kết nối."
-
-**Nguyên nhân**: Có nhiều nguyên nhân có thể gây ra lỗi này:
-
-1. **Máy chủ SQL Server không chạy**
-   - Kiểm tra SQL Server Service có đang chạy không
-   - Khởi động SQL Server Service nếu cần
-
-2. **Tên máy chủ hoặc IP không đúng**
-   - Kiểm tra lại tên máy chủ hoặc địa chỉ IP
-   - Thử ping đến máy chủ để kiểm tra kết nối mạng
-
-3. **Tên database không tồn tại**
-   - Kiểm tra database đã được tạo chưa
-   - Tạo database mới nếu cần
-
-4. **Username hoặc Password sai**
-   - Kiểm tra lại username và password
-   - Đảm bảo Caps Lock không được bật
-   - Thử đăng nhập bằng SQL Server Management Studio với thông tin tương tự
-
-5. **SQL Server không cho phép kết nối từ xa**
-   - Kiểm tra SQL Server có cho phép Remote Connections không
-   - Kiểm tra Firewall có chặn port 1433 không
-
-6. **Named Instance không đúng**
-   - Nếu dùng named instance, đảm bảo format đúng: `SERVERNAME\INSTANCENAME`
-   - Ví dụ: `SERVER01\SQLEXPRESS`
-
-**Cách khắc phục từng bước**:
-1. ✅ Kiểm tra SQL Server Service đang chạy
-2. ✅ Kiểm tra tên máy chủ/IP đúng
-3. ✅ Kiểm tra database đã tồn tại
-4. ✅ Kiểm tra username/password đúng
-5. ✅ Kiểm tra kết nối mạng và firewall
-6. ✅ Thử kết nối bằng SQL Server Management Studio
+**Cách khắc phục:**
+1. Click vào ô "Tên CSDL"
+2. Nhập tên database chính xác
+3. Kiểm tra tên database có tồn tại trên SQL Server
 
 ---
 
-### ❌ Lỗi: "Lỗi khởi tạo form"
+### 5.3. Lỗi: "Tên đăng nhập không được để trống"
 
-**Nguyên nhân**: Có lỗi khi tải cấu hình hiện tại
+**Nguyên nhân:**
+- Ô "Tên đăng nhập" đang để trống
 
-**Cách khắc phục**:
-1. Đóng và mở lại form
-2. Nếu vẫn lỗi, liên hệ bộ phận IT
-
----
-
-### ❌ Lỗi: "Lỗi tải dữ liệu từ Settings"
-
-**Nguyên nhân**: Không thể đọc cấu hình đã lưu
-
-**Cách khắc phục**:
-1. Nhập lại thông tin từ đầu
-2. Nếu vẫn lỗi, liên hệ bộ phận IT
+**Cách khắc phục:**
+1. Click vào ô "Tên đăng nhập"
+2. Nhập tên đăng nhập SQL Server
+3. Đảm bảo tài khoản có quyền truy cập
 
 ---
 
-### ❌ Lỗi: "Lỗi lưu cấu hình"
+### 5.4. Lỗi: "Mật khẩu không được để trống"
 
-**Nguyên nhân**: Không thể ghi cấu hình vào file
+**Nguyên nhân:**
+- Ô "Mật khẩu" đang để trống
 
-**Cách khắc phục**:
-1. Kiểm tra quyền ghi file của ứng dụng
-2. Chạy ứng dụng với quyền Administrator
-3. Liên hệ bộ phận IT nếu vẫn lỗi
+**Cách khắc phục:**
+1. Click vào ô "Mật khẩu"
+2. Nhập mật khẩu của tài khoản SQL Server
+3. Kiểm tra Caps Lock
 
 ---
 
-## 5. Câu hỏi thường gặp (FAQ)
+### 5.5. Lỗi: "Không thể kết nối đến cơ sở dữ liệu"
+
+**Nguyên nhân có thể:**
+1. ❌ Tên máy chủ hoặc IP không đúng
+2. ❌ SQL Server không chạy hoặc không khả dụng
+3. ❌ Tên database không tồn tại
+4. ❌ Tên đăng nhập hoặc mật khẩu sai
+5. ❌ Tài khoản không có quyền truy cập database
+6. ❌ Firewall chặn kết nối
+7. ❌ SQL Server không cho phép kết nối từ xa
+8. ❌ Port SQL Server bị chặn (mặc định 1433)
+
+**Cách khắc phục:**
+
+**Bước 1: Kiểm tra SQL Server**
+- ✅ SQL Server đang chạy
+- ✅ SQL Server Browser đang chạy (nếu dùng named instance)
+- ✅ SQL Server cho phép kết nối từ xa
+
+**Bước 2: Kiểm tra thông tin kết nối**
+- ✅ Tên máy chủ/IP chính xác
+- ✅ Tên database tồn tại
+- ✅ Tên đăng nhập và mật khẩu đúng
+
+**Bước 3: Kiểm tra quyền truy cập**
+- ✅ Tài khoản có quyền `db_datareader` và `db_datawriter` trên database
+- ✅ Hoặc có quyền `db_owner` trên database
+
+**Bước 4: Kiểm tra Firewall và Network**
+- ✅ Port 1433 (hoặc port SQL Server) mở
+- ✅ Windows Firewall cho phép SQL Server
+- ✅ Network có thể truy cập máy chủ
+
+**Bước 5: Kiểm tra SQL Server Configuration**
+- ✅ SQL Server cho phép SQL Authentication
+- ✅ Mixed Mode Authentication được bật
+
+**Công cụ kiểm tra:**
+- Sử dụng SQL Server Management Studio (SSMS) để test kết nối
+- Sử dụng `sqlcmd` để test từ command line:
+  ```
+  sqlcmd -S TênMáyChủ -U TênĐăngNhập -P MậtKhẩu -d TênDatabase
+  ```
+
+---
+
+### 5.6. Lỗi: "Lỗi khởi tạo form"
+
+**Nguyên nhân:**
+- Lỗi khi tải cấu hình từ Settings
+- Lỗi khi giải mã mật khẩu đã lưu
+
+**Cách khắc phục:**
+1. Đóng form và mở lại
+2. Nếu vẫn lỗi, liên hệ quản trị viên
+3. Có thể cần xóa cấu hình cũ và nhập lại
+
+---
+
+### 5.7. Lỗi: "Lỗi lưu cấu hình"
+
+**Nguyên nhân:**
+- Không có quyền ghi vào file Settings
+- File Settings bị khóa
+- Ổ đĩa đầy
+
+**Cách khắc phục:**
+1. Chạy ứng dụng với quyền Administrator
+2. Kiểm tra dung lượng ổ đĩa
+3. Đóng các ứng dụng khác có thể đang sử dụng Settings
+4. Thử lại
+
+---
+
+## 6. Câu hỏi thường gặp (FAQ)
 
 ### Q1: Tôi có thể dùng Windows Authentication không?
 
-**A:** Không. Hiện tại form chỉ hỗ trợ SQL Authentication (username/password). Hệ thống sẽ tự động đặt `UseIntegratedSecurity = false`.
+**A:** Không. Hiện tại hệ thống chỉ hỗ trợ **SQL Authentication** (tên đăng nhập và mật khẩu). Windows Authentication không được hỗ trợ trong form này.
 
 ---
 
-### Q2: Mật khẩu của tôi có an toàn không?
+### Q2: Mật khẩu có được lưu an toàn không?
 
-**A:** Có. Mật khẩu được mã hóa bằng Base64 trước khi lưu vào cấu hình. Tuy nhiên, bạn vẫn nên:
-- ✅ Sử dụng mật khẩu mạnh
-- ✅ Không chia sẻ thông tin đăng nhập
-- ✅ Thay đổi mật khẩu định kỳ
+**A:** Có. Mật khẩu được **mã hóa bằng Base64** trước khi lưu vào Settings. Tuy nhiên, đây không phải mã hóa mạnh, nên:
+- ✅ An toàn cho môi trường development
+- ⚠️ Nên cẩn thận trong môi trường production
+- 🔒 Không chia sẻ file Settings với người khác
 
 ---
 
 ### Q3: Tôi có thể kết nối đến SQL Server trên máy khác không?
 
-**A:** Có, miễn là:
-- ✅ Máy chủ SQL Server cho phép kết nối từ xa
-- ✅ Firewall không chặn port 1433 (hoặc port SQL Server đang dùng)
-- ✅ Bạn có thông tin đăng nhập hợp lệ
-- ✅ Máy tính của bạn có thể kết nối mạng đến máy chủ
+**A:** Có, nếu:
+- ✅ SQL Server cho phép kết nối từ xa
+- ✅ Firewall cho phép kết nối
+- ✅ Network có thể truy cập máy chủ
+- ✅ Bạn có tên đăng nhập và mật khẩu hợp lệ
+
+**Cách nhập:**
+- Nhập IP hoặc tên máy chủ vào ô "IP/Tên máy chủ"
+- Ví dụ: `192.168.1.100` hoặc `SQLSERVER01`
 
 ---
 
-### Q4: Tôi nhập đúng thông tin nhưng vẫn báo lỗi kết nối?
+### Q4: Tôi có thể kết nối đến SQL Server Express không?
 
-**A:** Hãy kiểm tra:
-1. SQL Server Service có đang chạy không
-2. Tên máy chủ/IP có đúng không (thử ping)
-3. Database có tồn tại không
-4. Username/password có đúng không (thử đăng nhập bằng SQL Server Management Studio)
-5. Firewall có chặn không
-6. SQL Server có cho phép Remote Connections không
+**A:** Có. Nhập tên máy chủ kèm instance:
+- Ví dụ: `localhost\SQLEXPRESS`
+- Hoặc: `TênMáyChủ\SQLEXPRESS`
 
 ---
 
-### Q5: Tôi có thể dùng tên instance không?
+### Q5: Form có tự động kiểm tra kết nối không?
 
-**A:** Có. Bạn có thể nhập tên instance trong trường "IP/Tên máy chủ" với format:
-- `SERVERNAME\INSTANCENAME`
-- Ví dụ: `SERVER01\SQLEXPRESS`
-
----
-
-### Q6: Form có tự động lưu không?
-
-**A:** Không. Bạn phải nhấn nút "Cập nhật" để lưu cấu hình. Nếu nhấn "Hủy", tất cả thay đổi sẽ bị hủy.
+**A:** Có. Khi bạn nhấn "Cập nhật", hệ thống sẽ:
+1. Kiểm tra các trường không được để trống
+2. Tạo connection string
+3. Thử kết nối đến database
+4. Thực hiện truy vấn test (`SELECT GETDATE()`)
+5. Chỉ lưu cấu hình nếu kết nối thành công
 
 ---
 
-### Q7: Tôi có thể xem lại mật khẩu đã lưu không?
+### Q6: Tôi có thể thay đổi port SQL Server không?
 
-**A:** Không. Mật khẩu được ẩn và mã hóa. Nếu quên mật khẩu, bạn cần:
-- Liên hệ quản trị viên database
-- Hoặc nhập lại mật khẩu mới trong form này
+**A:** Hiện tại form không hỗ trợ nhập port riêng. Hệ thống sử dụng port mặc định (1433) hoặc port của named instance.
+
+Nếu SQL Server dùng port khác, bạn có thể:
+- Nhập theo định dạng: `TênMáyChủ,Port`
+- Ví dụ: `192.168.1.100,1434`
 
 ---
 
-### Q8: Cấu hình được lưu ở đâu?
+### Q7: Cấu hình được lưu ở đâu?
 
-**A:** Cấu hình được lưu trong:
-- **User Settings** của ứng dụng (Properties.Settings)
-- File cấu hình: `%LocalAppData%\YourApp\user.config`
-- Các thông tin được lưu:
+**A:** Cấu hình được lưu trong **User Settings** của ứng dụng:
+- **Vị trí:** `%LocalAppData%\YourApp\user.config`
+- **Các giá trị được lưu:**
   - `DatabaseServer` - Tên máy chủ
   - `DatabaseName` - Tên database
-  - `DatabaseUserId` - Username
-  - `DatabasePassword` - Password (đã mã hóa)
+  - `DatabaseUserId` - Tên đăng nhập
+  - `DatabasePassword` - Mật khẩu (đã mã hóa)
   - `UseIntegratedSecurity` - Luôn là `false`
 
 ---
 
-### Q9: Tôi có thể dùng nhiều database khác nhau không?
+### Q8: Tôi có thể xem lại mật khẩu đã lưu không?
 
-**A:** Form chỉ cho phép cấu hình một database tại một thời điểm. Nếu cần đổi database, bạn mở lại form và nhập thông tin mới.
-
----
-
-### Q10: Form có kiểm tra kết nối trước khi lưu không?
-
-**A:** Có. Khi bạn nhấn "Cập nhật", hệ thống sẽ:
-1. Kiểm tra tất cả trường không rỗng
-2. Thử kết nối đến database với thông tin bạn nhập
-3. Chỉ lưu nếu kết nối thành công
-4. Hiển thị lỗi nếu kết nối thất bại
+**A:** Không. Mật khẩu được ẩn trong form và không thể xem lại. Nếu quên, bạn cần:
+- Nhập lại mật khẩu mới
+- Hoặc liên hệ quản trị viên SQL Server
 
 ---
 
-## 6. Lưu ý bảo mật
+### Q9: Form có hỗ trợ nhiều cấu hình database không?
 
-### 🔒 Bảo mật mật khẩu
-
-- ✅ Mật khẩu được mã hóa (Base64) trước khi lưu
-- ✅ Mật khẩu không hiển thị dạng văn bản thô
-- ⚠️ Tuy nhiên, Base64 không phải mã hóa mạnh, chỉ là encoding
-- 💡 **Khuyến nghị**: Sử dụng mật khẩu mạnh và không chia sẻ thông tin đăng nhập
-
-### 🔒 Bảo mật cấu hình
-
-- ✅ Cấu hình được lưu trong User Settings (an toàn hơn Registry)
-- ✅ Chỉ user hiện tại có thể truy cập cấu hình của mình
-- ⚠️ Không lưu cấu hình trên máy tính dùng chung
-
-### 🔒 Best Practices
-
-1. ✅ **Sử dụng mật khẩu mạnh**: Tối thiểu 8 ký tự, có chữ hoa, chữ thường, số
-2. ✅ **Không chia sẻ thông tin đăng nhập**: Mỗi user nên có tài khoản riêng
-3. ✅ **Thay đổi mật khẩu định kỳ**: Đặc biệt cho tài khoản `sa`
-4. ✅ **Kiểm tra quyền truy cập**: Chỉ cấp quyền cần thiết cho user
-5. ✅ **Sử dụng tài khoản riêng**: Không dùng `sa` cho production
+**A:** Không. Form chỉ hỗ trợ một cấu hình database duy nhất. Nếu cần thay đổi, bạn phải:
+1. Mở form
+2. Nhập thông tin mới
+3. Nhấn "Cập nhật"
+4. Cấu hình cũ sẽ bị thay thế
 
 ---
 
-## 7. Thông tin phiên bản
+### Q10: Tôi gặp lỗi "Timeout" khi kết nối, làm thế nào?
 
-- **Phiên bản**: 1.0
-- **Cập nhật lần cuối**: 2025
-- **Hệ thống**: VNS ERP 2025
-- **Form**: FrmDatabaseConfig
+**A:** Lỗi timeout có thể do:
+- ⏱️ SQL Server phản hồi chậm
+- 🌐 Network chậm hoặc không ổn định
+- 🔥 Firewall chặn kết nối
+
+**Cách khắc phục:**
+1. Kiểm tra SQL Server có đang chạy không
+2. Kiểm tra network connection
+3. Kiểm tra firewall
+4. Thử ping đến máy chủ SQL Server
+5. Liên hệ quản trị viên nếu vẫn không được
+
+**Lưu ý:** Form sử dụng timeout mặc định 15 giây cho connection và 30 giây cho command.
+
+---
+
+## 7. Lưu ý bảo mật
+
+### 7.1. Bảo vệ thông tin đăng nhập
+
+⚠️ **Quan trọng:**
+- ✅ Chỉ nhập thông tin trên máy tính an toàn
+- ❌ Không chia sẻ file Settings với người khác
+- 🔒 Mật khẩu được mã hóa nhưng không phải mã hóa mạnh
+- 🚫 Không lưu mật khẩu trên máy tính công cộng
+
+### 7.2. Quyền truy cập database
+
+- ✅ Chỉ cấp quyền cần thiết cho tài khoản
+- ✅ Không dùng tài khoản `sa` trong production
+- ✅ Tạo tài khoản riêng với quyền hạn chế
+- ✅ Đổi mật khẩu định kỳ
+
+### 7.3. Kết nối mạng
+
+- ✅ Sử dụng kết nối an toàn (VPN) nếu kết nối từ xa
+- ✅ Bật firewall và chỉ mở port cần thiết
+- ✅ Sử dụng SSL/TLS nếu có thể
+
+---
+
+## 8. Thông tin phiên bản
+
+- **Phiên bản:** 1.0
+- **Cập nhật lần cuối:** 2025
+- **Hệ thống:** VNS ERP 2025
+- **Form:** FrmDatabaseConfig
 
 ---
 
@@ -363,10 +525,7 @@ Khi form mở, các trường sẽ tự động hiển thị thông tin cấu h�
 Nếu bạn gặp vấn đề khi sử dụng form này:
 
 1. ✅ Kiểm tra lại các bước trong hướng dẫn
-2. ✅ Xem phần "Validation - Xử lý lỗi thường gặp"
-3. ✅ Liên hệ **bộ phận IT** hoặc **quản trị viên hệ thống**
+2. ✅ Xem phần "Xử lý lỗi thường gặp"
+3. ✅ Liên hệ quản trị viên hệ thống hoặc bộ phận IT
 
----
-
-**Chúc bạn cấu hình thành công!** 🎉
-
+**Chúc bạn sử dụng hệ thống hiệu quả!** 🎉
