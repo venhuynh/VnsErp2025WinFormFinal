@@ -4,6 +4,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
 using DTO.MasterData;
+using DTO.MasterData.Company;
 
 namespace MasterData.Company
 {

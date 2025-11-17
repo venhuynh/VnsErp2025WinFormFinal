@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTO.MasterData;
+using DTO.MasterData.Company;
 
 namespace MasterData.Company
 {

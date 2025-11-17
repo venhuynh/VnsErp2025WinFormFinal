@@ -7,6 +7,7 @@ using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
+using DTO.MasterData.CustomerPartner;
 
 namespace MasterData.Customer
 {
@@ -457,7 +458,7 @@ namespace MasterData.Customer
             // 
             // businessPartnerListDtoBindingSource
             // 
-            this.businessPartnerListDtoBindingSource.DataSource = typeof(MasterData.Customer.Dto.BusinessPartnerListDto);
+            this.businessPartnerListDtoBindingSource.DataSource = typeof(BusinessPartnerListDto);
             // 
             // colPartnerName
             // 

@@ -4,6 +4,7 @@ using DevExpress.XtraBars;
 using DevExpress.XtraLayout;
 using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Columns;
+using DTO.MasterData.CustomerPartner;
 using MasterData.Customer.Dto;
 
 namespace MasterData.Customer
@@ -175,7 +176,7 @@ namespace MasterData.Customer
             // 
             // businessPartnerCategoryDtoBindingSource
             // 
-            this.businessPartnerCategoryDtoBindingSource.DataSource = typeof(MasterData.Customer.Dto.BusinessPartnerCategoryDto);
+            this.businessPartnerCategoryDtoBindingSource.DataSource = typeof(BusinessPartnerCategoryDto);
             // 
             // layoutControl1
             // 

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Dal.DataContext;
 
-namespace DTO.MasterData;
+namespace DTO.MasterData.Company;
 
 /// <summary>
 /// Data Transfer Object cho chi nhánh công ty.

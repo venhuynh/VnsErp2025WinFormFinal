@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraGrid.Columns;
+using DTO.MasterData.Company;
 
 namespace Inventory.StockIn
 {
@@ -169,6 +170,15 @@ namespace Inventory.StockIn
                     typeof(StockInMasterDto),
                     logger: (msg, ex) => System.Diagnostics.Debug.WriteLine($"{msg}: {ex?.Message}")
                 );
+
+                // Xử lý đặc biệt cho WarehouseId (control là WarehouseNameSearchLookupEdit)
+                // Vì RequiredFieldHelper không thể tự động match WarehouseId với WarehouseNameSearchLookupEdit
+                if (ItemForWarehouseName != null && !ItemForWarehouseName.Text.Contains("*"))
+                {
+                    ItemForWarehouseName.AllowHtmlStringInCaption = true;
+                    var baseCaption = string.IsNullOrWhiteSpace(ItemForWarehouseName.Text) ? "Kho nhập" : ItemForWarehouseName.Text;
+                    ItemForWarehouseName.Text = baseCaption + @" <color=red>*</color>";
+                }
             }
             catch (Exception ex)
             {

@@ -5,6 +5,7 @@ using DevExpress.XtraGrid.Views.BandedGrid;
 using DevExpress.XtraLayout;
 using System.Windows.Forms;
 using DTO.MasterData;
+using DTO.MasterData.Company;
 
 namespace MasterData.Company
 {

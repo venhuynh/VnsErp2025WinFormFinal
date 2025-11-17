@@ -1,18 +1,17 @@
-﻿using System;
+﻿using Bll.Common;
+using Bll.MasterData.Customer;
+using Bll.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.DXErrorProvider;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Common;
-using Bll.MasterData.Customer;
-using Bll.Utils;
-using DevExpress.XtraBars;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.DXErrorProvider;
-using MasterData.Customer.Converters;
-using MasterData.Customer.Dto;
+using DTO.MasterData.CustomerPartner;
 
 namespace MasterData.Customer
 {

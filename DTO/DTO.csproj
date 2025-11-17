@@ -36,6 +36,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,7 +48,13 @@
     <Compile Include="Inventory\StockIn\StockInDetailDto.cs" />
     <Compile Include="Inventory\StockIn\StockInEnums.cs" />
     <Compile Include="Inventory\StockIn\StockInMasterDto.cs" />
-    <Compile Include="MasterData\CompanyBranchDto.cs" />
+    <Compile Include="MasterData\Company\CompanyBranchDto.cs" />
+    <Compile Include="MasterData\CustomerPartner\BusinessPartnerCategoryDto.cs" />
+    <Compile Include="MasterData\CustomerPartner\BusinessPartnerContactDto.cs" />
+    <Compile Include="MasterData\CustomerPartner\BusinessPartnerDetailDto.cs" />
+    <Compile Include="MasterData\CustomerPartner\BusinessPartnerListDto.cs" />
+    <Compile Include="MasterData\CustomerPartner\BusinessPartnerSiteDto.cs" />
+    <Compile Include="MasterData\CustomerPartner\BusinessPartnerSiteListDto.cs" />
     <Compile Include="MasterData\ProductVariantListDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -57,5 +64,6 @@
       <Name>Dal</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -116,12 +116,7 @@
     <Compile Include="Company\FrmPosition.Designer.cs">
       <DependentUpon>FrmPosition.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\Converters\BusinessPartnerCategoryConverters.cs" />
-    <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
-    <Compile Include="Customer\Converters\BusinessPartnerConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerSiteConverters.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerSiteDto.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerSiteListDto.cs" />
     <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,10 +159,6 @@
     <Compile Include="Customer\FrmBusinessPartnerList.Designer.cs">
       <DependentUpon>FrmBusinessPartnerList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\Dto\BusinessPartnerCategoryDto.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerContactDto.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerDetailDto.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerListDto.cs" />
     <Compile Include="Customer\Dto\PartnerCategoryMappingDto.cs" />
     <Compile Include="Customer\FrmBusinessPartnerSite.cs">
       <SubType>Form</SubType>

@@ -1,4 +1,6 @@
-﻿namespace Inventory.StockIn
+﻿using DTO.MasterData.Company;
+
+namespace Inventory.StockIn
 {
     partial class UcStockInMaster
     {
@@ -439,7 +441,7 @@
             // 
             // companyBranchDtoBindingSource
             // 
-            this.companyBranchDtoBindingSource.DataSource = typeof(DTO.MasterData.CompanyBranchDto);
+            this.companyBranchDtoBindingSource.DataSource = typeof(CompanyBranchDto);
             // 
             // UcStockInMaster
             // 

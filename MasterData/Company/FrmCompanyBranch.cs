@@ -13,6 +13,7 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData;
+using DTO.MasterData.Company;
 using MasterData.Company.Converters;
 using MasterData.Company.Dto;
 
