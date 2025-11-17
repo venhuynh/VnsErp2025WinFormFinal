@@ -96,6 +96,7 @@ public class StockInMasterDto
     /// Mã kho nhập hàng
     /// </summary>
     [DisplayName("Mã kho")]
+    [Required(ErrorMessage = "Kho nhập không được để trống")]
     [Display(Order = 11)]
     public string WarehouseCode { get; set; }
 
@@ -103,6 +104,7 @@ public class StockInMasterDto
     /// Tên kho nhập hàng
     /// </summary>
     [DisplayName("Tên kho")]
+    [Required(ErrorMessage = "Kho nhập không được để trống")]
     [Display(Order = 12)]
     public string WarehouseName { get; set; }
 
@@ -152,6 +154,7 @@ public class StockInMasterDto
     /// Tên nhà cung cấp
     /// </summary>
     [DisplayName("Tên NCC")]
+    [Required(ErrorMessage = "Tên NCC không được để trống")]
     [Display(Order = 19)]
     public string SupplierName { get; set; }
 

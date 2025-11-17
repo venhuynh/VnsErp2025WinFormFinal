@@ -115,24 +115,69 @@ public class CompanyBranchDto
     }
 
     /// <summary>
-    /// Thông tin chi nhánh đầy đủ (computed property)
+    /// Thông tin chi nhánh dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
-    public string HtmlContent
+    [DisplayName("Thông tin HTML")]
+    public string ThongTinHtml
     {
         get
         {
-            var infoParts = new List<string>();
+            var branchName = BranchName ?? string.Empty;
+            var branchCode = BranchCode ?? string.Empty;
+            var address = Address ?? string.Empty;
+            var phone = Phone ?? string.Empty;
+            var email = Email ?? string.Empty;
+            var managerName = ManagerName ?? string.Empty;
+            var statusText = IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
+            var statusColor = IsActive ? "#4CAF50" : "#F44336";
 
-            if (!string.IsNullOrWhiteSpace(BranchName))
-                infoParts.Add(BranchName.Trim());
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - Tên chi nhánh: font lớn, bold, màu xanh đậm (primary)
+            // - Mã chi nhánh: font nhỏ hơn, màu xám
+            // - Thông tin chi tiết: font nhỏ hơn, màu xám cho label, đen cho value
+            // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
 
-            if (!string.IsNullOrWhiteSpace(ManagerName))
-                infoParts.Add($"QL: {ManagerName.Trim()}");
+            var html = $"<size=12><b><color='blue'>{branchName}</color></b></size>";
 
-            if (!string.IsNullOrWhiteSpace(FullAddress))
-                infoParts.Add(FullAddress);
+            if (!string.IsNullOrWhiteSpace(branchCode))
+            {
+                html += $" <size=9><color='#757575'>({branchCode})</color></size>";
+            }
 
-            return string.Join(" - ", infoParts);
+            html += "<br>";
+
+            if (!string.IsNullOrWhiteSpace(address))
+            {
+                html += $"<size=9><color='#757575'>Địa chỉ:</color></size> <size=10><color='#212121'><b>{address}</b></color></size><br>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                html += $"<size=9><color='#757575'>Điện thoại:</color></size> <size=10><color='#212121'><b>{phone}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                if (!string.IsNullOrWhiteSpace(phone))
+                    html += " | ";
+                html += $"<size=9><color='#757575'>Email:</color></size> <size=10><color='#212121'><b>{email}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(phone) || !string.IsNullOrWhiteSpace(email))
+            {
+                html += "<br>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(managerName))
+            {
+                html += $"<size=9><color='#757575'>Quản lý:</color></size> <size=10><color='#212121'><b>{managerName}</b></color></size><br>";
+            }
+
+            html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+
+            return html;
         }
     }
 
