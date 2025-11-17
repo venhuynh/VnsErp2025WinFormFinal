@@ -1,14 +1,14 @@
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraLayout;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraLayout;
 
-namespace Bll.Utils
+namespace Common.Utils
 {
     /// <summary>
     /// Helper class để đánh dấu các trường bắt buộc nhập trong DevExpress LayoutControl

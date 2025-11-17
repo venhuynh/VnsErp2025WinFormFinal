@@ -5,7 +5,6 @@ using System.Linq;
 using DevExpress.Utils;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
-using VNTA_NET_2025._02_Common.Helpers;
 
 namespace Common.Helpers;
 
@@ -563,11 +562,11 @@ public static class GridViewColumnHelper
             gridView.Appearance.HeaderPanel.TextOptions.WordWrap = WordWrap.Wrap;
             gridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
 
-            // Cấu hình cột theo entity type với utilities helper
-            var textColumns = GridViewUtilities.GetDefaultTextColumns(dtoType);
+            // Cấu hình cột theo entity type với helper
+            var textColumns = GridViewHelper.GetDefaultTextColumns(dtoType);
             foreach (var columnName in textColumns)
             {
-                GridViewUtilities.ApplyMemoEditorToColumn(gridView, columnName);
+                GridViewHelper.ApplyMemoEditorToColumn(gridView, columnName);
             }
 
             // Cấu hình cột theo entity type
@@ -576,8 +575,8 @@ public static class GridViewColumnHelper
             // Đặt height tối thiểu cho row
             gridView.RowHeight = 25;
 
-            // Cấu hình filter row với utilities
-            GridViewUtilities.ConfigureGridViewFilter(gridView, true);
+            // Cấu hình filter row với helper
+            GridViewHelper.ConfigureGridViewFilter(gridView, true);
 
 
         }
@@ -976,13 +975,13 @@ public static class GridViewColumnHelper
     #region ========== EXPORT UTILITIES ==========
 
     /// <summary>
-    /// Xuất GridView ra file Excel (Wrapper cho GridViewUtilities)
+    /// Xuất GridView ra file Excel (Wrapper cho GridViewHelper)
     /// </summary>
     /// <param name="gridView">GridView cần xuất</param>
     /// <param name="fileName">Tên file mặc định</param>
     public static void ExportToExcel(GridView gridView, string fileName = "Export")
     {
-        GridViewUtilities.ExportGridToExcel(gridView, fileName, true, true);
+        GridViewHelper.ExportGridToExcel(gridView, fileName, true, true);
     }
 
     #endregion

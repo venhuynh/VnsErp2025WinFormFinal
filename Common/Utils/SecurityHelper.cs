@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Bll.Utils
+namespace Common.Utils
 {
     /// <summary>
     /// Utility class cho các thao tác bảo mật như hash password, verify password

@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace VNTA_NET_2025._02_Common.Utils;
+namespace Common.Helpers;
 
 /// <summary>
 /// Helper class để quản lý việc append text thread-safe cho LogTextBox

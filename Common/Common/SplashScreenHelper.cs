@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraSplashScreen;
 
-namespace Bll.Common;
+namespace Common.Common;
 
 /// <summary>
 /// Helper class để quản lý splash screen với async/await support và progress tracking
@@ -94,7 +94,7 @@ public static class SplashScreenHelper
             CloseSplashScreen();
 
             // Hiển thị VNS splash screen
-            SplashScreenManager.ShowForm(typeof(Bll.Common.VnsSplashScreen));
+            SplashScreenManager.ShowForm(typeof(VnsSplashScreen));
         }
         catch (Exception)
         {
@@ -116,7 +116,7 @@ public static class SplashScreenHelper
             CloseSplashScreen();
 
             // Hiển thị VNS splash screen
-            SplashScreenManager.ShowForm(typeof(Bll.Common.VnsSplashScreen));
+            SplashScreenManager.ShowForm(typeof(VnsSplashScreen));
         }
         catch (Exception)
         {
@@ -210,7 +210,7 @@ public static class SplashScreenHelper
         {
             // Đóng trước khi mở cái mới
             CloseSplashScreen();
-            SplashScreenManager.ShowForm(typeof(Bll.Common.WaitForm1));
+            SplashScreenManager.ShowForm(typeof(WaitForm1));
         }
         catch (Exception)
         {

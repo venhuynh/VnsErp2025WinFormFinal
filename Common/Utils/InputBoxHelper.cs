@@ -1,10 +1,10 @@
+using System;
+using System.Drawing;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
-using System;
-using System.Drawing;
 
-namespace Bll.Utils
+namespace Common.Utils
 {
     /// <summary>
     /// Helper class để hiển thị DevExpress Input Box với các tùy chọn khác nhau

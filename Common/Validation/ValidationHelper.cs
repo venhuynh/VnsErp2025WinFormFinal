@@ -1,8 +1,7 @@
-using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Bll.Validation
+namespace Common.Validation
 {
     /// <summary>
     /// Helper class chứa các phương thức validation có thể tái sử dụng

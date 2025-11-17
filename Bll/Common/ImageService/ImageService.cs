@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Bll.MasterData.ProductServiceBll;
-using Common.Common.ImageService;
 
 namespace Bll.Common.ImageService
 {

@@ -1,12 +1,10 @@
+using System;
+using System.Collections.Generic;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 
-namespace Bll.Utils
+namespace Common.Utils
 {
     /// <summary>
     /// Helper class để tạo và thiết lập SuperToolTip cho các controls trong DevExpress

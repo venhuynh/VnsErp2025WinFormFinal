@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using DevExpress.XtraEditors.DXErrorProvider;
 
-namespace VNTA_NET_2025._02_Common.Helpers;
+namespace Common.Helpers;
 
 /// <summary>
 /// Helper class đơn giản để validation với DXErrorProvider và Data Annotations

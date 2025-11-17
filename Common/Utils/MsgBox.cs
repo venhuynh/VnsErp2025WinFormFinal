@@ -7,7 +7,7 @@ using DevExpress.Utils.Html;
 using DevExpress.Utils.Svg;
 using DevExpress.XtraEditors;
 
-namespace Bll.Utils
+namespace Common.Utils
 {
     /// <summary>
     /// Enhanced Message Box utility với HTML/CSS templates cải tiến

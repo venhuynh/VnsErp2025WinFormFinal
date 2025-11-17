@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Bll.MasterData.ProductServiceBll;
 using Dal.DataAccess.MasterData.ProductServiceDal;
 
-namespace Bll.Common;
+namespace Bll.Common.ImageService;
 
 /// <summary>
 /// Service xử lý cleanup orphaned files và optimization

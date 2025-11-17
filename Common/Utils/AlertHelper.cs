@@ -6,7 +6,7 @@ using DevExpress.Utils.Html;
 using DevExpress.Utils.Svg;
 using DevExpress.XtraBars.Alerter;
 
-namespace Bll.Utils
+namespace Common.Utils
 {
     /// <summary>
     /// Utility class để hiển thị toast notifications (Alert) với HTML templates

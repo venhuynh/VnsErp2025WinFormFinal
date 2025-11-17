@@ -1,4 +1,4 @@
-﻿namespace Bll.Common
+﻿namespace Common.Common
 {
     partial class WaitForm1
     {

@@ -1,20 +1,14 @@
-﻿using DevExpress.XtraSplashScreen;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+﻿using System;
+using DevExpress.XtraSplashScreen;
 
-namespace Bll.Common
+namespace Common.Common
 {
     public partial class VnsSplashScreen : SplashScreen
     {
         public VnsSplashScreen()
         {
             InitializeComponent();
-            this.labelCopyright.Text = "Copyright © 1998-" + DateTime.Now.Year.ToString();
+            this.labelCopyright.Text = @"Copyright © 2020-" + DateTime.Now.Year.ToString();
         }
 
         #region Overrides

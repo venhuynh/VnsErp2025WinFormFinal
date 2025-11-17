@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Dal.DataContext;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Bll.Common;
-using Bll.Authentication;
-using Dal.DataAccess;
-using Dal.DataContext;
+using Common.Utils;
 
-namespace Bll.Utils
+namespace Bll.Common
 {
     public class ApplicationSystemUtils
     {

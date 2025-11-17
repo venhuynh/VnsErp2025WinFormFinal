@@ -1,9 +1,9 @@
+using System;
 using DevExpress.LookAndFeel;
 using DevExpress.Skins;
 using DevExpress.UserSkins;
-using System;
 
-namespace Bll.Utils
+namespace Common.Utils
 {
     /// <summary>
     /// Helper class để quản lý DevExpress Skin cho toàn bộ ứng dụng

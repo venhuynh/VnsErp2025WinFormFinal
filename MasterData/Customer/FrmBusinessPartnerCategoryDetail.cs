@@ -1,5 +1,4 @@
 ﻿using Bll.MasterData.Customer;
-using Bll.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;

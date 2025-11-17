@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 
-namespace Common.Common.ImageService;
+namespace Bll.Common.ImageService;
 
 /// <summary>
 /// Interface cho Image Service với CDN và Cache support

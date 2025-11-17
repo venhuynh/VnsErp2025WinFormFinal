@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace VNTA_NET_2025._02_Common.Helpers;
+namespace Common.Helpers;
 
 /// <summary>
 /// Helper class chuyên xử lý các thao tác với file XML

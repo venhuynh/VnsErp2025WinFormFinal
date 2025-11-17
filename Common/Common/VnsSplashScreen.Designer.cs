@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-
-namespace Bll.Common
+﻿namespace Common.Common
 {
     partial class VnsSplashScreen
     {
@@ -34,21 +31,21 @@ namespace Bll.Common
             this.labelCopyright = new DevExpress.XtraEditors.LabelControl();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.labelStatus = new DevExpress.XtraEditors.LabelControl();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             this.progressBarControl = new DevExpress.XtraEditors.MarqueeProgressBarControl();
             this.peImage = new DevExpress.XtraEditors.PictureEdit();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.peImage.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,7 +53,7 @@ namespace Bll.Common
             // 
             this.labelCopyright.AllowHtmlString = true;
             this.labelCopyright.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.labelCopyright.Location = new System.Drawing.Point(16, 240);
+            this.labelCopyright.Location = new System.Drawing.Point(12, 244);
             this.labelCopyright.Name = "labelCopyright";
             this.labelCopyright.Size = new System.Drawing.Size(529, 13);
             this.labelCopyright.StyleController = this.layoutControl1;
@@ -81,13 +78,41 @@ namespace Bll.Common
             // 
             // labelStatus
             // 
-            this.labelStatus.Location = new System.Drawing.Point(16, 199);
+            this.labelStatus.Location = new System.Drawing.Point(12, 205);
             this.labelStatus.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.Size = new System.Drawing.Size(190, 13);
             this.labelStatus.StyleController = this.layoutControl1;
             this.labelStatus.TabIndex = 7;
             this.labelStatus.Text = "Xin vui lòng chờ tiến trình đang xử lý....";
+            // 
+            // progressBarControl
+            // 
+            this.progressBarControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBarControl.EditValue = 0;
+            this.progressBarControl.Location = new System.Drawing.Point(12, 222);
+            this.progressBarControl.Name = "progressBarControl";
+            this.progressBarControl.Size = new System.Drawing.Size(554, 18);
+            this.progressBarControl.StyleController = this.layoutControl1;
+            this.progressBarControl.TabIndex = 5;
+            // 
+            // peImage
+            // 
+            this.peImage.EditValue = global::Common.Properties.Resources.Ven___Solutions_logo_1438x617_background_transfer;
+            this.peImage.Location = new System.Drawing.Point(12, 12);
+            this.peImage.Margin = new System.Windows.Forms.Padding(10);
+            this.peImage.Name = "peImage";
+            this.peImage.Properties.AllowFocused = false;
+            this.peImage.Properties.Appearance.BackColor = System.Drawing.Color.White;
+            this.peImage.Properties.Appearance.Options.UseBackColor = true;
+            this.peImage.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.peImage.Properties.Padding = new System.Windows.Forms.Padding(10);
+            this.peImage.Properties.ShowMenu = false;
+            this.peImage.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.peImage.Size = new System.Drawing.Size(554, 189);
+            this.peImage.StyleController = this.layoutControl1;
+            this.peImage.TabIndex = 9;
             // 
             // Root
             // 
@@ -102,64 +127,36 @@ namespace Bll.Common
             this.Root.Size = new System.Drawing.Size(578, 269);
             this.Root.TextVisible = false;
             // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Control = this.labelStatus;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 183);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(552, 19);
-            this.layoutControlItem2.TextVisible = false;
-            // 
-            // layoutControlItem4
-            // 
-            this.layoutControlItem4.Control = this.labelCopyright;
-            this.layoutControlItem4.Location = new System.Drawing.Point(0, 224);
-            this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.Size = new System.Drawing.Size(552, 19);
-            this.layoutControlItem4.TextVisible = false;
-            // 
-            // progressBarControl
-            // 
-            this.progressBarControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarControl.EditValue = 0;
-            this.progressBarControl.Location = new System.Drawing.Point(16, 218);
-            this.progressBarControl.Name = "progressBarControl";
-            this.progressBarControl.Size = new System.Drawing.Size(546, 16);
-            this.progressBarControl.StyleController = this.layoutControl1;
-            this.progressBarControl.TabIndex = 5;
-            // 
-            // peImage
-            // 
-            this.peImage.EditValue = global::Bll.Properties.Resources.Ven___Solutions_logo_GoogleBZ_H480;
-            this.peImage.Location = new System.Drawing.Point(16, 16);
-            this.peImage.Margin = new System.Windows.Forms.Padding(10);
-            this.peImage.Name = "peImage";
-            this.peImage.Properties.AllowFocused = false;
-            this.peImage.Properties.Appearance.BackColor = System.Drawing.Color.White;
-            this.peImage.Properties.Appearance.Options.UseBackColor = true;
-            this.peImage.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.peImage.Properties.Padding = new System.Windows.Forms.Padding(10);
-            this.peImage.Properties.ShowMenu = false;
-            this.peImage.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
-            this.peImage.Size = new System.Drawing.Size(546, 177);
-            this.peImage.StyleController = this.layoutControl1;
-            this.peImage.TabIndex = 9;
-            // 
             // layoutControlItem1
             // 
             this.layoutControlItem1.Control = this.peImage;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(552, 183);
+            this.layoutControlItem1.Size = new System.Drawing.Size(558, 193);
             this.layoutControlItem1.TextVisible = false;
+            // 
+            // layoutControlItem2
+            // 
+            this.layoutControlItem2.Control = this.labelStatus;
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 193);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.Size = new System.Drawing.Size(558, 17);
+            this.layoutControlItem2.TextVisible = false;
+            // 
+            // layoutControlItem4
+            // 
+            this.layoutControlItem4.Control = this.labelCopyright;
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 232);
+            this.layoutControlItem4.Name = "layoutControlItem4";
+            this.layoutControlItem4.Size = new System.Drawing.Size(558, 17);
+            this.layoutControlItem4.TextVisible = false;
             // 
             // layoutControlItem3
             // 
             this.layoutControlItem3.Control = this.progressBarControl;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 202);
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 210);
             this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(552, 22);
+            this.layoutControlItem3.Size = new System.Drawing.Size(558, 22);
             this.layoutControlItem3.TextVisible = false;
             // 
             // VnsSplashScreen
@@ -174,12 +171,12 @@ namespace Bll.Common
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             this.layoutControl1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.peImage.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
             this.ResumeLayout(false);
 
