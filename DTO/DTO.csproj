@@ -47,9 +47,15 @@
     <Compile Include="Inventory\StockIn\StockInDetailDto.cs" />
     <Compile Include="Inventory\StockIn\StockInEnums.cs" />
     <Compile Include="Inventory\StockIn\StockInMasterDto.cs" />
+    <Compile Include="MasterData\CompanyBranchDto.cs" />
     <Compile Include="MasterData\ProductVariantListDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Dal\Dal.csproj">
+      <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
+      <Name>Dal</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

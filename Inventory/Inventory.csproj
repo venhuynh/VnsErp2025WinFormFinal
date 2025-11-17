@@ -67,6 +67,12 @@
     <Compile Include="StockIn\FrmNhapKhoThuongMai02.Designer.cs">
       <DependentUpon>FrmNhapKhoThuongMai02.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockIn\UcStockInDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockIn\UcStockInDetail.Designer.cs">
+      <DependentUpon>UcStockInDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockIn\UcStockInMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>

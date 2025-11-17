@@ -30,10 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.StockInDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.StockInDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
@@ -54,11 +51,7 @@
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-            this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
@@ -71,7 +64,6 @@
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.StockInDetailDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(483, 39);
             this.layoutControl1.Name = "layoutControl1";
@@ -80,38 +72,13 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // StockInDetailDtoGridControl
-            // 
-            this.StockInDetailDtoGridControl.Location = new System.Drawing.Point(16, 16);
-            this.StockInDetailDtoGridControl.MainView = this.StockInDetailDtoGridView;
-            this.StockInDetailDtoGridControl.Name = "StockInDetailDtoGridControl";
-            this.StockInDetailDtoGridControl.Size = new System.Drawing.Size(524, 496);
-            this.StockInDetailDtoGridControl.TabIndex = 4;
-            this.StockInDetailDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.StockInDetailDtoGridView});
-            // 
-            // StockInDetailDtoGridView
-            // 
-            this.StockInDetailDtoGridView.GridControl = this.StockInDetailDtoGridControl;
-            this.StockInDetailDtoGridView.Name = "StockInDetailDtoGridView";
-            // 
             // Root
             // 
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(556, 528);
             this.Root.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.StockInDetailDtoGridControl;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(530, 502);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // dockManager1
             // 
@@ -285,7 +252,7 @@
             // 
             this.ucStockInMaster1.Location = new System.Drawing.Point(16, 16);
             this.ucStockInMaster1.Name = "ucStockInMaster1";
-            this.ucStockInMaster1.Size = new System.Drawing.Size(427, 525);
+            this.ucStockInMaster1.Size = new System.Drawing.Size(427, 609);
             this.ucStockInMaster1.TabIndex = 4;
             // 
             // layoutControlGroup1
@@ -295,7 +262,7 @@
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem2});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(459, 557);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(459, 641);
             this.layoutControlGroup1.TextVisible = false;
             // 
             // layoutControlItem2
@@ -303,7 +270,7 @@
             this.layoutControlItem2.Control = this.ucStockInMaster1;
             this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(433, 531);
+            this.layoutControlItem2.Size = new System.Drawing.Size(433, 615);
             this.layoutControlItem2.TextVisible = false;
             // 
             // FrmNhapKhoThuongMai02
@@ -320,11 +287,7 @@
             this.Name = "FrmNhapKhoThuongMai02";
             this.Text = "PHIẾU NHẬP KHO THƯƠNG MẠI";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-            this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.dockPanel2.ResumeLayout(false);
@@ -347,9 +310,6 @@
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel2_Container;
         private DevExpress.XtraLayout.LayoutControl layoutControl2;
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraGrid.GridControl StockInDetailDtoGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView StockInDetailDtoGridView;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private UcStockInMaster ucStockInMaster1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private DevExpress.XtraBars.BarDockControl barDockControlLeft;

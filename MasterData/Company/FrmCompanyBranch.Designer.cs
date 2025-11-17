@@ -4,6 +4,7 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.BandedGrid;
 using DevExpress.XtraLayout;
 using System.Windows.Forms;
+using DTO.MasterData;
 
 namespace MasterData.Company
 {
@@ -287,7 +288,7 @@ namespace MasterData.Company
             // 
             // companyBranchDtoBindingSource
             // 
-            this.companyBranchDtoBindingSource.DataSource = typeof(MasterData.Company.Dto.CompanyBranchDto);
+            this.companyBranchDtoBindingSource.DataSource = typeof(CompanyBranchDto);
             // 
             // CompanyBranchGridView
             // 

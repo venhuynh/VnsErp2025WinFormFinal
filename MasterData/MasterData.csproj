@@ -426,6 +426,10 @@
       <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
       <Name>Dal</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>
+      <Name>DTO</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
