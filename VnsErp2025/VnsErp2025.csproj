@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PreBuildEvent>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$processes = Get-Process -Name 'VnsErp2025' -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500 }; $objPath = '$(ProjectDir)obj\$(Configuration)\$(TargetFileName)'; $binPath = '$(TargetPath)'; if ($objPath -and (Test-Path $objPath)) { $retry = 0; while ($retry -lt 5) { try { $file = Get-Item $objPath -Force -ErrorAction Stop; $file.IsReadOnly = $false; if (Test-Path ($objPath + '.locked')) { Remove-Item ($objPath + '.locked') -Force }; Move-Item $objPath ($objPath + '.locked') -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt 5) { Start-Sleep -Milliseconds 200 } } } }; if ($binPath -and $binPath.Trim() -ne '' -and (Test-Path $binPath)) { $retry = 0; while ($retry -lt 5) { try { $file = Get-Item $binPath -Force -ErrorAction Stop; $file.IsReadOnly = $false; if (Test-Path ($binPath + '.locked')) { Remove-Item ($binPath + '.locked') -Force }; Move-Item $binPath ($binPath + '.locked') -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt 5) { Start-Sleep -Milliseconds 200 } } } }"</PreBuildEvent>
+    <PreBuildEvent Condition="'$(DesignTimeBuild)' != 'true'">powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(SolutionDir)KillVnsErpProcess.ps1"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PreBuildEvent>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$processes = Get-Process -Name 'VnsErp2025' -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500 }; $objPath = '$(ProjectDir)obj\$(Configuration)\$(TargetFileName)'; $binPath = '$(TargetPath)'; if ($objPath -and (Test-Path $objPath)) { $retry = 0; while ($retry -lt 5) { try { $file = Get-Item $objPath -Force -ErrorAction Stop; $file.IsReadOnly = $false; if (Test-Path ($objPath + '.locked')) { Remove-Item ($objPath + '.locked') -Force }; Move-Item $objPath ($objPath + '.locked') -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt 5) { Start-Sleep -Milliseconds 200 } } } }; if ($binPath -and $binPath.Trim() -ne '' -and (Test-Path $binPath)) { $retry = 0; while ($retry -lt 5) { try { $file = Get-Item $binPath -Force -ErrorAction Stop; $file.IsReadOnly = $false; if (Test-Path ($binPath + '.locked')) { Remove-Item ($binPath + '.locked') -Force }; Move-Item $binPath ($binPath + '.locked') -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt 5) { Start-Sleep -Milliseconds 200 } } } }"</PreBuildEvent>
+    <PreBuildEvent Condition="'$(DesignTimeBuild)' != 'true'">powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(SolutionDir)KillVnsErpProcess.ps1"</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.BonusSkins.v25.1" />
@@ -160,17 +160,16 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Pre-build: Kill running VnsErp2025.exe and delete .exe files to prevent MSB3021 error -->
-  <Target Name="BeforeBuild">
-    <!-- Kill running processes and wait for them to fully terminate -->
-    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$processes = Get-Process -Name 'VnsErp2025' -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 1000; $retry = 0; while ($retry -lt 10 -and (Get-Process -Name 'VnsErp2025' -ErrorAction SilentlyContinue)) { Start-Sleep -Milliseconds 200; $retry++ } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
-    <!-- Delete .exe files in obj\Debug (must delete first before bin) with retry logic -->
-    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$exePath = '$(ProjectDir)obj\Debug\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; $file.IsReadOnly = $false; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
-    <!-- Delete .exe files in bin\Debug with retry logic -->
-    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$exePath = '$(ProjectDir)bin\Debug\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; $file.IsReadOnly = $false; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
-    <!-- Delete .exe files in obj\Release (if exists) with retry logic -->
-    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$exePath = '$(ProjectDir)obj\Release\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; $file.IsReadOnly = $false; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
-    <!-- Delete .exe files in bin\Release (if exists) with retry logic -->
-    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$exePath = '$(ProjectDir)bin\Release\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; $file.IsReadOnly = $false; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
+  <!-- Only run during actual build, not during project load/evaluation -->
+  <Target Name="BeforeBuild" Condition="'$(DesignTimeBuild)' != 'true'">
+    <!-- Kill running processes -->
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $processes = Get-Process -Name 'VnsErp2025' -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 1000 }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
+    
+    <!-- Delete .exe files in obj\$(Configuration) -->
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $exePath = '$(ProjectDir)obj\$(Configuration)\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; if ($file.IsReadOnly) { $file.IsReadOnly = $false }; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
+    
+    <!-- Delete .exe files in bin\$(Configuration) -->
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $exePath = '$(ProjectDir)bin\$(Configuration)\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; if ($file.IsReadOnly) { $file.IsReadOnly = $false }; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

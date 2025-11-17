@@ -25,24 +25,9 @@ namespace Inventory.StockIn
         private StockInMasterDto _stockInMasterDto;
 
         /// <summary>
-        /// Binding source cho Warehouse lookup
-        /// </summary>
-        private BindingSource _warehouseBindingSource;
-
-        /// <summary>
-        /// Binding source cho Supplier lookup
-        /// </summary>
-        private BindingSource _supplierBindingSource;
-
-        /// <summary>
         /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
         /// </summary>
         private readonly CompanyBranchBll _companyBranchBll = new CompanyBranchBll();
-
-        /// <summary>
-        /// Business Logic Layer cho BusinessPartner (dùng cho Supplier lookup)
-        /// </summary>
-        private readonly BusinessPartnerBll _businessPartnerBll = new BusinessPartnerBll();
 
         #endregion
 
@@ -74,7 +59,7 @@ namespace Inventory.StockIn
                 // Thiết lập data binding
                 SetupDataBinding();
 
-                // Setup SearchLookUpEdit cho Warehouse và Supplier
+                // Setup SearchLookUpEdit cho Warehouse
                 SetupLookupEdits();
 
                 // Đánh dấu các trường bắt buộc
@@ -112,8 +97,7 @@ namespace Inventory.StockIn
         /// </summary>
         private void InitializeBindingSources()
         {
-            _warehouseBindingSource = new BindingSource();
-            _supplierBindingSource = new BindingSource();
+            
         }
 
         /// <summary>
@@ -146,7 +130,7 @@ namespace Inventory.StockIn
         }
 
         /// <summary>
-        /// Setup SearchLookUpEdit cho Warehouse và Supplier
+        /// Setup SearchLookUpEdit cho Warehouse
         /// </summary>
         private void SetupLookupEdits()
         {
@@ -160,39 +144,12 @@ namespace Inventory.StockIn
                 WarehouseNameSearchLookupEdit.Properties.PopupView = searchLookUpEdit1View;
                 
                 // Đảm bảo column ThongTinHtml được cấu hình đúng (đã có sẵn trong Designer)
-                // Column này sử dụng RepositoryItemHypertextLabel để hiển thị HTML
                 if (colThongTinHtml != null)
                 {
                     colThongTinHtml.FieldName = "ThongTinHtml";
                     colThongTinHtml.Visible = true;
                     colThongTinHtml.VisibleIndex = 0;
                 }
-
-                // Setup Supplier SearchLookUpEdit
-                SupplierNameTextEdit.Properties.DataSource = _supplierBindingSource;
-                SupplierNameTextEdit.Properties.ValueMember = "Id";
-                SupplierNameTextEdit.Properties.DisplayMember = "SupplierName";
-                SupplierNameTextEdit.Properties.PopupView = gridView1;
-
-                // Setup columns cho Supplier GridView
-                gridView1.Columns.Clear();
-                var colSupplierCode = new GridColumn();
-                colSupplierCode.FieldName = "SupplierCode";
-                colSupplierCode.Caption = "Mã NCC";
-                colSupplierCode.Visible = true;
-                colSupplierCode.VisibleIndex = 0;
-                gridView1.Columns.Add(colSupplierCode);
-
-                var colSupplierName = new GridColumn();
-                colSupplierName.FieldName = "SupplierName";
-                colSupplierName.Caption = "Tên NCC";
-                colSupplierName.Visible = true;
-                colSupplierName.VisibleIndex = 1;
-                gridView1.Columns.Add(colSupplierName);
-
-                // Setup events cho SearchLookUpEdit
-                //WarehouseNameSearchLookupEdit.EditValueChanged += WarehouseNameTextEdit_EditValueChanged;
-                SupplierNameTextEdit.EditValueChanged += SupplierNameTextEdit_EditValueChanged;
             }
             catch (Exception ex)
             {
@@ -227,6 +184,7 @@ namespace Inventory.StockIn
             try
             {
                 Load += UcStockInMaster_Load;
+                StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
             }
             catch (Exception ex)
             {
@@ -338,6 +296,26 @@ namespace Inventory.StockIn
         private void UcStockInMaster_Load(object sender, EventArgs e)
         {
             // Control đã được load
+            StockInDateDateEdit.EditValue = DateTime.Now;
+        }
+
+        private void StockInDateDateEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (StockInDateDateEdit.EditValue is DateTime selectedDate)
+                {
+                    // Cập nhật ngày vào DTO
+                    _stockInMasterDto.StockInDate = selectedDate;
+                    
+                    // Tạo số phiếu nhập tự động
+                    GenerateStockInNumber(selectedDate);
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tạo số phiếu nhập");
+            }
         }
 
         private void WarehouseNameTextEdit_EditValueChanged(object sender, EventArgs e)
@@ -497,6 +475,83 @@ namespace Inventory.StockIn
         #endregion
 
         #region ========== HELPER METHODS ==========
+
+        /// <summary>
+        /// Tạo số phiếu nhập kho theo format: PNK-MMYY-NNXXX
+        /// PNK: Phiếu nhập kho
+        /// MM: Tháng (2 ký tự)
+        /// YY: Năm (2 ký tự)
+        /// NN: Index của LoaiNhapKhoEnum (2 ký tự)
+        /// XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)
+        /// </summary>
+        /// <param name="stockInDate">Ngày nhập kho</param>
+        private void GenerateStockInNumber(DateTime stockInDate)
+        {
+            try
+            {
+                // Chỉ tạo số phiếu nếu chưa có hoặc đang ở trạng thái tạo mới
+                if (!string.IsNullOrWhiteSpace(_stockInMasterDto.StockInNumber) && 
+                    _stockInMasterDto.TrangThai != TrangThaiPhieuNhapEnum.TaoMoi)
+                {
+                    return;
+                }
+
+                // Lấy thông tin từ DTO
+                var month = stockInDate.Month.ToString("D2"); // MM
+                var year = stockInDate.Year.ToString().Substring(2); // YY (2 ký tự cuối)
+                var loaiNhapKhoIndex = ((int)_stockInMasterDto.LoaiNhapKho).ToString("D2"); // NN (2 ký tự)
+
+                // Lấy số thứ tự tiếp theo
+                var nextSequence = GetNextSequenceNumber(stockInDate, _stockInMasterDto.LoaiNhapKho);
+
+                // Tạo số phiếu: PNK-MMYY-NNXXX
+                var stockInNumber = $"PNK-{month}{year}-{loaiNhapKhoIndex}{nextSequence:D3}";
+
+                // Cập nhật vào DTO và control
+                _stockInMasterDto.StockInNumber = stockInNumber;
+                if (StockInNumberTextEdit != null)
+                {
+                    StockInNumberTextEdit.Text = stockInNumber;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tạo số phiếu nhập");
+            }
+        }
+
+        /// <summary>
+        /// Lấy số thứ tự tiếp theo cho phiếu nhập kho
+        /// </summary>
+        /// <param name="stockInDate">Ngày nhập kho</param>
+        /// <param name="loaiNhapKho">Loại nhập kho</param>
+        /// <returns>Số thứ tự tiếp theo (1-999)</returns>
+        private int GetNextSequenceNumber(DateTime stockInDate, LoaiNhapKhoEnum loaiNhapKho)
+        {
+            try
+            {
+                // TODO: Query database để lấy số thứ tự tiếp theo
+                // Tạm thời trả về 1, sau này sẽ implement query database
+                // Format cần tìm: PNK-MMYY-NNXXX
+                // Trong đó MM, YY, NN đã biết, cần tìm XXX lớn nhất + 1
+
+                // Ví dụ query:
+                // SELECT MAX(CAST(SUBSTRING(StockInNumber, LEN(StockInNumber) - 2, 3) AS INT))
+                // FROM StockInMaster
+                // WHERE StockInNumber LIKE 'PNK-MMYY-NN%'
+                //   AND YEAR(StockInDate) = YYYY
+                //   AND MONTH(StockInDate) = MM
+                //   AND LoaiNhapKho = loaiNhapKho
+
+                // Tạm thời return 1
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi lấy số thứ tự phiếu nhập");
+                return 1; // Fallback
+            }
+        }
 
         /// <summary>
         /// Hiển thị lỗi

@@ -10,7 +10,15 @@ $processes = Get-Process -Name "VnsErp2025" -ErrorAction SilentlyContinue
 if ($processes) {
     Write-Host "🛑 Stopping VnsErp2025 processes..." -ForegroundColor Red
     $processes | Stop-Process -Force -ErrorAction SilentlyContinue
-    Start-Sleep -Seconds 1
+    Start-Sleep -Seconds 2
+    
+    # Verify processes are really gone
+    $remainingProcesses = Get-Process -Name "VnsErp2025" -ErrorAction SilentlyContinue
+    if ($remainingProcesses) {
+        Write-Host "⚠️ Some processes still running, force killing..." -ForegroundColor Yellow
+        $remainingProcesses | Stop-Process -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 1
+    }
 }
 
 # Kill any hung Visual Studio processes related to VnsErp
@@ -25,34 +33,50 @@ if ($vsProcesses) {
     Write-Host "   Consider restarting Visual Studio if build continues to fail" -ForegroundColor Yellow
 }
 
+# Function to unlock file with multiple attempts
+function Unlock-File {
+    param([string]$FilePath)
+    
+    if (-not (Test-Path $FilePath)) { return }
+    
+    Write-Host "🔓 Unlocking file: $FilePath" -ForegroundColor Green
+    
+    try {
+        # Remove readonly attribute
+        $item = Get-Item $FilePath -Force
+        $item.IsReadOnly = $false
+        
+        # Try to delete and recreate if it's an exe file that's locked
+        if ($FilePath -like "*.exe" -or $FilePath -like "*.pdb") {
+            $tempName = "$FilePath.bak"
+            Move-Item $FilePath $tempName -Force -ErrorAction SilentlyContinue
+            Remove-Item $tempName -Force -ErrorAction SilentlyContinue
+        }
+    }
+    catch {
+        Write-Host "⚠️ Could not fully unlock: $FilePath" -ForegroundColor Yellow
+    }
+}
+
 # Clear readonly attributes and unlock exe files
 $exeFiles = @(
     "VnsErp2025\bin\Debug\VnsErp2025.exe",
     "VnsErp2025\obj\Debug\VnsErp2025.exe",
     "VnsErp2025\bin\Debug\VnsErp2025.pdb",
-    "VnsErp2025\obj\Debug\VnsErp2025.pdb"
+    "VnsErp2025\obj\Debug\VnsErp2025.pdb",
+    "VnsErp2025\bin\Debug\VnsErp2025.exe.config",
+    "VnsErp2025\obj\Debug\VnsErp2025.exe.config"
 )
 
 foreach ($file in $exeFiles) {
-    if (Test-Path $file) {
-        Write-Host "🔓 Unlocking file: $file" -ForegroundColor Green
-        $item = Get-Item $file -Force -ErrorAction SilentlyContinue
-        if ($item) {
-            $item.IsReadOnly = $false
-            # Try to take ownership if needed
-            try {
-                $item.SetAccessControl((Get-Acl $item.FullName))
-            } catch {
-                # Ignore ownership errors
-            }
-        }
-    }
+    Unlock-File $file
 }
 
 # Optional: Clean temp files that might cause issues
 $tempFiles = @(
     "VnsErp2025\obj\Debug\*.cache",
-    "VnsErp2025\bin\Debug\*.vshost.*"
+    "VnsErp2025\bin\Debug\*.vshost.*",
+    "VnsErp2025\obj\Debug\*.tmp"
 )
 
 foreach ($pattern in $tempFiles) {

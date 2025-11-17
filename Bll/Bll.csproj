@@ -80,6 +80,7 @@
     <Compile Include="Common\WaitForm1.Designer.cs">
       <DependentUpon>WaitForm1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Inventory\StockInBll.cs" />
     <Compile Include="MasterData\Company\CompanyBll.cs" />
     <Compile Include="MasterData\Company\CompanyBranchBll.cs" />
     <Compile Include="MasterData\Company\DepartmentBll.cs" />
