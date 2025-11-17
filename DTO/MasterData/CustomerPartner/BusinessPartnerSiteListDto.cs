@@ -86,6 +86,94 @@ public class BusinessPartnerSiteListDto
             return string.Join(", ", addressParts);
         }
     }
+
+    /// <summary>
+    /// Thông tin chi nhánh đối tác dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Thông tin HTML")]
+    public string ThongTinHtml
+    {
+        get
+        {
+            var siteName = SiteName ?? string.Empty;
+            var siteCode = SiteCode ?? string.Empty;
+            var partnerName = PartnerName ?? string.Empty;
+            var address = Address ?? string.Empty;
+            var city = City ?? string.Empty;
+            var province = Province ?? string.Empty;
+            var country = Country ?? string.Empty;
+            var contactPerson = ContactPerson ?? string.Empty;
+            var phone = Phone ?? string.Empty;
+            var email = Email ?? string.Empty;
+            var statusText = IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
+            var statusColor = IsActive ? "#4CAF50" : "#F44336";
+            var defaultText = IsDefault == true ? "Mặc định" : string.Empty;
+            var defaultColor = "#FF9800"; // Màu cam cho mặc định
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - Tên chi nhánh: font lớn, bold, màu xanh đậm (primary)
+            // - Mã chi nhánh: font nhỏ hơn, màu xám
+            // - Tên đối tác: hiển thị nếu có
+            // - Thông tin chi tiết: font nhỏ hơn, màu xám cho label, đen cho value
+            // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
+            // - Mặc định: highlight với màu cam nếu là chi nhánh mặc định
+
+            var html = $"<size=12><b><color='blue'>{siteName}</color></b></size>";
+
+            if (!string.IsNullOrWhiteSpace(siteCode))
+            {
+                html += $" <size=9><color='#757575'>({siteCode})</color></size>";
+            }
+
+            html += "<br>";
+
+            if (!string.IsNullOrWhiteSpace(partnerName))
+            {
+                html += $"<size=9><color='#757575'>Đối tác:</color></size> <size=10><color='#212121'><b>{partnerName}</b></color></size><br>";
+            }
+
+            // Hiển thị địa chỉ đầy đủ hoặc từng phần
+            var fullAddress = SiteFullAddress;
+            if (!string.IsNullOrWhiteSpace(fullAddress))
+            {
+                html += $"<size=9><color='#757575'>Địa chỉ:</color></size> <size=10><color='#212121'><b>{fullAddress}</b></color></size><br>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                html += $"<size=9><color='#757575'>Điện thoại:</color></size> <size=10><color='#212121'><b>{phone}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                if (!string.IsNullOrWhiteSpace(phone))
+                    html += " | ";
+                html += $"<size=9><color='#757575'>Email:</color></size> <size=10><color='#212121'><b>{email}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(phone) || !string.IsNullOrWhiteSpace(email))
+            {
+                html += "<br>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(contactPerson))
+            {
+                html += $"<size=9><color='#757575'>Người liên hệ:</color></size> <size=10><color='#212121'><b>{contactPerson}</b></color></size><br>";
+            }
+
+            // Hiển thị trạng thái mặc định nếu có
+            if (!string.IsNullOrWhiteSpace(defaultText))
+            {
+                html += $"<size=9><color='#757575'>Loại:</color></size> <size=10><color='{defaultColor}'><b>{defaultText}</b></color></size> ";
+            }
+
+            html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+
+            return html;
+        }
+    }
 }
 
 public static class BusinessPartnerSiteListDtoConveter
@@ -95,7 +183,7 @@ public static class BusinessPartnerSiteListDtoConveter
     /// </summary>
     /// <param name="entity">BusinessPartnerSite Entity</param>
     /// <returns>BusinessPartnerSiteListDto</returns>
-    public static BusinessPartnerSiteListDto ToListDto(this BusinessPartnerSite entity)
+    private static BusinessPartnerSiteListDto ToListDto(this BusinessPartnerSite entity)
     {
         if (entity == null) return null;
 

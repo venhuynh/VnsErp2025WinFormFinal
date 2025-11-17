@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraGrid.Columns;
 using DTO.MasterData.Company;
+using DTO.MasterData.CustomerPartner;
 
 namespace Inventory.StockIn
 {
@@ -29,6 +30,11 @@ namespace Inventory.StockIn
         /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
         /// </summary>
         private readonly CompanyBranchBll _companyBranchBll = new CompanyBranchBll();
+
+        /// <summary>
+        /// Business Logic Layer cho BusinessPartnerSite (dùng cho Supplier lookup)
+        /// </summary>
+        private readonly BusinessPartnerSiteBll _businessPartnerSiteBll = new BusinessPartnerSiteBll();
 
         #endregion
 
@@ -54,11 +60,6 @@ namespace Inventory.StockIn
                 // Khởi tạo DTO
                 InitializeDto();
 
-                // Khởi tạo binding sources
-                InitializeBindingSources();
-
-                // Thiết lập data binding
-                SetupDataBinding();
 
                 // Setup SearchLookUpEdit cho Warehouse
                 SetupLookupEdits();
@@ -92,43 +93,7 @@ namespace Inventory.StockIn
                 PhuongThucNhapKho = PhuongThucNhapKhoEnum.NhapTrucTiep
             };
         }
-
-        /// <summary>
-        /// Khởi tạo binding sources
-        /// </summary>
-        private void InitializeBindingSources()
-        {
-            
-        }
-
-        /// <summary>
-        /// Thiết lập data binding
-        /// </summary>
-        private void SetupDataBinding()
-        {
-            try
-            {
-                //// Bind các control với DTO
-                //StockInNumberTextEdit.DataBindings.Add("Text", _stockInMasterDto, nameof(StockInMasterDto.StockInNumber), false, DataSourceUpdateMode.OnPropertyChanged);
-                //StockInDateDateEdit.DataBindings.Add("EditValue", _stockInMasterDto, nameof(StockInMasterDto.StockInDate), false, DataSourceUpdateMode.OnPropertyChanged);
-                //PurchaseOrderSearchLookupEdit.DataBindings.Add("Text", _stockInMasterDto, nameof(StockInMasterDto.PurchaseOrderNumber), false, DataSourceUpdateMode.OnPropertyChanged);
-                //NotesTextEdit.DataBindings.Add("Text", _stockInMasterDto, nameof(StockInMasterDto.Notes), false, DataSourceUpdateMode.OnPropertyChanged);
-                //TotalQuantityTextEdit.DataBindings.Add("EditValue", _stockInMasterDto, nameof(StockInMasterDto.TotalQuantity), false, DataSourceUpdateMode.OnPropertyChanged);
-                //ThanTienChuaVatTextEdit.DataBindings.Add("EditValue", _stockInMasterDto, nameof(StockInMasterDto.TotalAmount), false, DataSourceUpdateMode.OnPropertyChanged);
-                //VatTextEdit.DataBindings.Add("EditValue", _stockInMasterDto, nameof(StockInMasterDto.TotalVat), false, DataSourceUpdateMode.OnPropertyChanged);
-                //TongTienBaoGomVatTextEdit.DataBindings.Add("EditValue", _stockInMasterDto, nameof(StockInMasterDto.TotalAmountIncludedVat), false, DataSourceUpdateMode.OnPropertyChanged);
-
-                //// Bind Warehouse SearchLookUpEdit
-                //WarehouseNameTextEdit.DataBindings.Add("EditValue", _stockInMasterDto, nameof(StockInMasterDto.WarehouseId), false, DataSourceUpdateMode.OnPropertyChanged);
-
-                //// Bind Supplier SearchLookUpEdit
-                //SupplierNameTextEdit.DataBindings.Add("EditValue", _stockInMasterDto, nameof(StockInMasterDto.SupplierId), false, DataSourceUpdateMode.OnPropertyChanged);
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi thiết lập data binding");
-            }
-        }
+         
 
         /// <summary>
         /// Setup SearchLookUpEdit cho Warehouse
@@ -223,21 +188,15 @@ namespace Inventory.StockIn
 
                 companyBranchDtoBindingSource.DataSource = warehouseDtos;
 
-                // Load danh sách Supplier từ BusinessPartner (lọc theo PartnerType = Supplier)
-                //var partners = await Task.Run(() => _businessPartnerBll.GetAll());
-                //var suppliers = partners
-                //    .ToBusinessPartnerListDtos()
-                //    .Where(p => p.PartnerType == 2 || p.PartnerType == 3) // Supplier hoặc Both
-                //    .OrderBy(p => p.PartnerName)
-                //    .Select(p => new
-                //    {
-                //        Id = p.Id,
-                //        SupplierCode = p.PartnerCode,
-                //        SupplierName = p.PartnerName
-                //    })
-                //    .ToList();
+                // Load danh sách BusinessPartnerSite từ BusinessPartnerSiteBll (dùng cho Supplier lookup)
+                var sites = await Task.Run(() => _businessPartnerSiteBll.GetAll());
+                var siteDtos = sites
+                    .Where(s => s.IsActive) // Chỉ lấy các chi nhánh đang hoạt động
+                    .ToSiteListDtos()
+                    .OrderBy(s => s.SiteName)
+                    .ToList();
 
-                //_supplierBindingSource.DataSource = suppliers;
+                businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
             }
             catch (Exception ex)
             {
