@@ -4,13 +4,14 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7FB672C4-B1B5-4ACB-A5C2-64D5701EA61F}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{055C0170-A359-48B9-95D9-7260B17E8E20}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VnsErp2025</RootNamespace>
-    <AssemblyName>VnsErp2025</AssemblyName>
+    <RootNamespace>Inventory</RootNamespace>
+    <AssemblyName>Inventory</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.BonusSkins.v25.1" />
@@ -44,11 +47,11 @@
     <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -56,23 +59,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form\FormMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\FormMain.Designer.cs">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="StockIn\Dto\StockInListDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XtraForm1.cs">
+    <Compile Include="StockIn\FrmNhapKhoThuongMai02.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="XtraForm1.Designer.cs">
-      <DependentUpon>XtraForm1.cs</DependentUpon>
+    <Compile Include="StockIn\FrmNhapKhoThuongMai02.Designer.cs">
+      <DependentUpon>FrmNhapKhoThuongMai02.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Form\FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="StockIn\UcStockInMaster.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockIn\UcStockInMaster.Designer.cs">
+      <DependentUpon>UcStockInMaster.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -83,12 +83,18 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="XtraForm1.resx">
-      <DependentUpon>XtraForm1.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\FrmNhapKhoThuongMai02.resx">
+      <DependentUpon>FrmNhapKhoThuongMai02.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\UcStockInMaster.resx">
+      <DependentUpon>UcStockInMaster.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
-    <None Include="Docs\ProjectProgress_20250115.md" />
-    <None Include="Docs\SolutionDescription.md" />
+    <None Include="Doc\NhapHang\NhapHangThuongMai_03_NhapKhoTheoPOCustomer.md" />
+    <None Include="Doc\NhapHang\NhapHangThuongMai_02_NhapKhoTheoPONCC.md" />
+    <None Include="Doc\NhapHang\NhapHangThuongMai_01_NhapKhoDoiBan.md" />
+    <None Include="Doc\NhapHang\NhapHangThuongMai_00_TongQuan.md" />
+    <None Include="Properties\DataSources\Inventory.StockIn.Dto.StockInMasterDto.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -100,10 +106,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Authentication\Authentication.csproj">
-      <Project>{9cc30df9-45dd-4d4e-9b65-a68dac21ba42}</Project>
-      <Name>Authentication</Name>
-    </ProjectReference>
+    <Folder Include="InventoryManagement\" />
+    <Folder Include="StockOut\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
       <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
       <Name>Bll</Name>
@@ -112,65 +118,52 @@
       <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
       <Name>Dal</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Inventory\Inventory.csproj">
-      <Project>{055c0170-a359-48b9-95d9-7260b17e8e20}</Project>
-      <Name>Inventory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MasterData\MasterData.csproj">
-      <Project>{A15B1F9F-65D1-4723-A1E2-675F5BDC8641}</Project>
-      <Name>MasterData</Name>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>
+      <Name>DTO</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\database_16x16.png" />
+    <None Include="Resources\reset2_16x16.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\database_32x32.png" />
+    <None Include="Resources\reset2_32x32.png" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="Docs\Promt\Tạo file Md dựa vào source code.txt" />
-    <Content Include="Docs\Promt\Prompt chung – Refactor toàn bộ màn hình GUI.txt" />
-    <Content Include="Docs\Promt\Tái cấu trúc source code.txt" />
-    <None Include="Resources\team.svg" />
-    <None Include="Resources\variant.svg" />
-    <None Include="Resources\cost.svg" />
-    <None Include="Resources\brand-image.svg" />
-    <None Include="Resources\product-image.svg" />
-    <None Include="Resources\product-management.svg" />
-    <None Include="Resources\bo_employee.svg" />
-    <None Include="Resources\job-position.svg" />
-    <None Include="Resources\hierarchical-structure.svg" />
-    <None Include="Resources\branch %281%29.svg" />
-    <None Include="Resources\home %281%29.svg" />
-    <None Include="Resources\address-book.svg" />
-    <None Include="Resources\location.svg" />
-    <None Include="Resources\remote.svg" />
-    <None Include="Resources\cooperation.svg" />
-    <None Include="Resources\home_32x32.png" />
-    <None Include="Resources\home_16x16.png" />
-    <None Include="Resources\boproductgroup_32x32.png" />
-    <None Include="Resources\boproductgroup_16x16.png" />
-    <None Include="Resources\publicfix_32x32.png" />
-    <None Include="Resources\publicfix_16x16.png" />
-    <None Include="Resources\publish_32x32.png" />
-    <None Include="Resources\publish_16x16.png" />
+    <None Include="Resources\save_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cancel_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cancel_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\print_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\print_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\barcode_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\barcode_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\insertimage_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\insertimage_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- Pre-build: Kill running VnsErp2025.exe to prevent MSB3021 error -->
-  <Target Name="BeforeBuild">
-    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$processes = Get-Process -Name 'VnsErp2025' -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 300 }&quot;" 
-          ContinueOnError="true" 
-          IgnoreExitCode="true" />
-    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;if (Test-Path '$(ProjectDir)bin\Debug\VnsErp2025.exe') { $file = Get-Item '$(ProjectDir)bin\Debug\VnsErp2025.exe' -Force -ErrorAction SilentlyContinue; if ($file) { $file.IsReadOnly = $false } }&quot;" 
-          ContinueOnError="true" 
-          IgnoreExitCode="true" />
-    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;if (Test-Path '$(ProjectDir)obj\Debug\VnsErp2025.exe') { $file = Get-Item '$(ProjectDir)obj\Debug\VnsErp2025.exe' -Force -ErrorAction SilentlyContinue; if ($file) { $file.IsReadOnly = $false } }&quot;" 
-          ContinueOnError="true" 
-          IgnoreExitCode="true" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
   <Target Name="AfterBuild">
   </Target>
   -->
