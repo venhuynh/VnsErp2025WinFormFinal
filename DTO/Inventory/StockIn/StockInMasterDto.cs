@@ -51,21 +51,6 @@ public class StockInMasterDto
     public string LoaiNhapKhoName { get; set; }
 
     /// <summary>
-    /// Phương thức nhập kho
-    /// </summary>
-    [DisplayName("Phương thức nhập")]
-    [Display(Order = 5)]
-    [Required(ErrorMessage = "Phương thức nhập không được để trống")]
-    public PhuongThucNhapKhoEnum PhuongThucNhapKho { get; set; }
-
-    /// <summary>
-    /// Tên phương thức nhập kho (hiển thị)
-    /// </summary>
-    [DisplayName("Phương thức nhập")]
-    [Display(Order = 6)]
-    public string PhuongThucNhapKhoName { get; set; }
-
-    /// <summary>
     /// Trạng thái phiếu nhập
     /// </summary>
     [DisplayName("Trạng thái")]
@@ -122,33 +107,14 @@ public class StockInMasterDto
     [Display(Order = 14)]
     public string PurchaseOrderNumber { get; set; }
 
-    /// <summary>
-    /// ID đơn đặt hàng khách (Sales Order) - Tùy chọn
-    /// </summary>
-    [DisplayName("Đơn đặt hàng khách")]
-    [Display(Order = 15)]
-    public Guid? SalesOrderId { get; set; }
 
     /// <summary>
-    /// Số đơn đặt hàng khách
-    /// </summary>
-    [DisplayName("Số đơn khách")]
-    [Display(Order = 16)]
-    public string SalesOrderNumber { get; set; }
-
-    /// <summary>
-    /// ID nhà cung cấp
+    /// ID nhà cung cấp (PartnerSiteId trong database)
     /// </summary>
     [DisplayName("Nhà cung cấp")]
     [Display(Order = 17)]
-    public Guid? SupplierId { get; set; }
-
-    /// <summary>
-    /// Mã nhà cung cấp
-    /// </summary>
-    [DisplayName("Mã NCC")]
-    [Display(Order = 18)]
-    public string SupplierCode { get; set; }
+    [Required(ErrorMessage = "Nhà cung cấp không được để trống")]
+    public Guid SupplierId { get; set; }
 
     /// <summary>
     /// Tên nhà cung cấp

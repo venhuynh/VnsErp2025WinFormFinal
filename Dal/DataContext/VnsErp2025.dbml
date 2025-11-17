@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="VnsErp2025Final" Class="VnsErp2025DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=192.168.1.199;Initial Catalog=VnsErp2025Final;Persist Security Info=True;User ID=sa;Trust Server Certificate=True" SettingsObjectName="Dal.Properties.Settings" SettingsPropertyName="VnsErp2025FinalConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.ApplicationUser" Member="ApplicationUsers">
     <Type Name="ApplicationUser">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -114,6 +113,7 @@
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="BusinessPartnerSite_BusinessPartnerContact" Member="BusinessPartnerContacts" ThisKey="Id" OtherKey="SiteId" Type="BusinessPartnerContact" />
+      <Association Name="BusinessPartnerSite_StockInOutMaster" Member="StockInOutMasters" ThisKey="Id" OtherKey="PartnerSiteId" Type="StockInOutMaster" />
       <Association Name="BusinessPartner_BusinessPartnerSite" Member="BusinessPartner" ThisKey="PartnerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
@@ -150,6 +150,7 @@
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="CompanyBranch_Department" Member="Departments" ThisKey="Id" OtherKey="BranchId" Type="Department" />
       <Association Name="CompanyBranch_Employee" Member="Employees" ThisKey="Id" OtherKey="BranchId" Type="Employee" />
+      <Association Name="CompanyBranch_StockInOutMaster" Member="StockInOutMasters" ThisKey="Id" OtherKey="WarehouseId" Type="StockInOutMaster" />
       <Association Name="Company_CompanyBranch" Member="Company" ThisKey="CompanyId" OtherKey="Id" Type="Company" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
@@ -268,8 +269,49 @@
       <Column Name="VariantFullName" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
       <Association Name="ProductVariant_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="VariantId" Type="ProductImage" />
+      <Association Name="ProductVariant_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="ProductVariantId" Type="StockInOutDetail" />
       <Association Name="ProductService_ProductVariant" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />
       <Association Name="UnitOfMeasure_ProductVariant" Member="UnitOfMeasure" ThisKey="UnitId" OtherKey="Id" Type="UnitOfMeasure" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.StockInOutDetail" Member="StockInOutDetails">
+    <Type Name="StockInOutDetail">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StockInOutMasterId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ProductVariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="StockInQty" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="StockOutQty" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="UnitPrice" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Vat" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="VatAmount" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="TotalAmountIncludedVat" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Association Name="ProductVariant_StockInOutDetail" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+      <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutMaster" ThisKey="StockInOutMasterId" OtherKey="Id" Type="StockInOutMaster" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.StockInOutMaster" Member="StockInOutMasters">
+    <Type Name="StockInOutMaster">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StockInOutDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="VocherNumber" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="StockInOutType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TrangThaiPhieuNhap" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="WarehouseId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="PurchaseOrderId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="PartnerSiteId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="TotalQuantity" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="TotalVat" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="TotalAmountIncludedVat" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDetail" />
+      <Association Name="BusinessPartnerSite_StockInOutMaster" Member="BusinessPartnerSite" ThisKey="PartnerSiteId" OtherKey="Id" Type="BusinessPartnerSite" IsForeignKey="true" />
+      <Association Name="CompanyBranch_StockInOutMaster" Member="CompanyBranch" ThisKey="WarehouseId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.UnitOfMeasure" Member="UnitOfMeasures">

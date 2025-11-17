@@ -1,9 +1,10 @@
 ﻿using Bll.MasterData.Company;
 using Bll.MasterData.Customer;
 using Bll.Utils;
-using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
-using DTO.MasterData;
+using DTO.MasterData.Company;
+using DTO.MasterData.CustomerPartner;
+using DevExpress.XtraEditors.DXErrorProvider;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,9 +12,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DevExpress.XtraGrid.Columns;
-using DTO.MasterData.Company;
-using DTO.MasterData.CustomerPartner;
 
 namespace Inventory.StockIn
 {
@@ -90,7 +88,6 @@ namespace Inventory.StockIn
                 StockInDate = DateTime.Now,
                 TrangThai = TrangThaiPhieuNhapEnum.TaoMoi,
                 LoaiNhapKho = LoaiNhapKhoEnum.ThuongMai,
-                PhuongThucNhapKho = PhuongThucNhapKhoEnum.NhapTrucTiep
             };
         }
          
@@ -160,6 +157,9 @@ namespace Inventory.StockIn
             {
                 Load += UcStockInMaster_Load;
                 StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
+                WarehouseNameSearchLookupEdit.EditValueChanged += WarehouseNameSearchLookupEdit_EditValueChanged;
+                SupplierNameTextEdit.EditValueChanged += SupplierNameTextEdit_EditValueChanged;
+                StockInNumberTextEdit.EditValueChanged += StockInNumberTextEdit_EditValueChanged;
             }
             catch (Exception ex)
             {
@@ -279,6 +279,9 @@ namespace Inventory.StockIn
                     
                     // Tạo số phiếu nhập tự động
                     GenerateStockInNumber(selectedDate);
+                    
+                    // Xóa lỗi validation nếu có
+                    dxErrorProvider1.SetError(StockInDateDateEdit, string.Empty);
                 }
             }
             catch (Exception ex)
@@ -287,22 +290,33 @@ namespace Inventory.StockIn
             }
         }
 
-        private void WarehouseNameTextEdit_EditValueChanged(object sender, EventArgs e)
+        private void WarehouseNameSearchLookupEdit_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
-                //if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
-                //{
-                //    var selectedWarehouse = _warehouseBindingSource.Cast<CompanyBranchDto>()
-                //        .FirstOrDefault(w => w.Id == warehouseId);
+                if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
+                {
+                    _stockInMasterDto.WarehouseId = warehouseId;
                     
-                //    if (selectedWarehouse != null)
-                //    {
-                //        _stockInMasterDto.WarehouseId = warehouseId;
-                //        _stockInMasterDto.WarehouseCode = selectedWarehouse.BranchCode;
-                //        _stockInMasterDto.WarehouseName = selectedWarehouse.BranchName;
-                //    }
-                //}
+                    // Lấy thông tin chi nhánh từ binding source
+                    var selectedWarehouse = companyBranchDtoBindingSource.Cast<CompanyBranchDto>()
+                        .FirstOrDefault(w => w.Id == warehouseId);
+                    
+                    if (selectedWarehouse != null)
+                    {
+                        _stockInMasterDto.WarehouseCode = selectedWarehouse.BranchCode;
+                        _stockInMasterDto.WarehouseName = selectedWarehouse.BranchName;
+                    }
+                    
+                    // Xóa lỗi validation nếu có
+                    dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, string.Empty);
+                }
+                else
+                {
+                    _stockInMasterDto.WarehouseId = Guid.Empty;
+                    _stockInMasterDto.WarehouseCode = null;
+                    _stockInMasterDto.WarehouseName = null;
+                }
             }
             catch (Exception ex)
             {
@@ -312,31 +326,52 @@ namespace Inventory.StockIn
 
         private void SupplierNameTextEdit_EditValueChanged(object sender, EventArgs e)
         {
-            //try
-            //{
-            //    if (SupplierNameTextEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
-            //    {
-            //        var selectedSupplier = _supplierBindingSource.Cast<dynamic>()
-            //            .FirstOrDefault(s => s.Id == supplierId);
+            try
+            {
+                if (SupplierNameTextEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
+                {
+                    _stockInMasterDto.SupplierId = supplierId;
                     
-            //        if (selectedSupplier != null)
-            //        {
-            //            _stockInMasterDto.SupplierId = supplierId;
-            //            _stockInMasterDto.SupplierCode = selectedSupplier.SupplierCode;
-            //            _stockInMasterDto.SupplierName = selectedSupplier.SupplierName;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        _stockInMasterDto.SupplierId = null;
-            //        _stockInMasterDto.SupplierCode = null;
-            //        _stockInMasterDto.SupplierName = null;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    ShowError(ex, "Lỗi xử lý thay đổi nhà cung cấp");
-            //}
+                    // Lấy thông tin chi nhánh đối tác từ binding source
+                    var selectedSite = businessPartnerSiteListDtoBindingSource.Cast<BusinessPartnerSiteListDto>()
+                        .FirstOrDefault(s => s.Id == supplierId);
+                    
+                    if (selectedSite != null)
+                    {
+                        _stockInMasterDto.SupplierName = selectedSite.SiteName;
+                    }
+                    
+                    // Xóa lỗi validation nếu có
+                    dxErrorProvider1.SetError(SupplierNameTextEdit, string.Empty);
+                }
+                else
+                {
+                    _stockInMasterDto.SupplierId = Guid.Empty;
+                    _stockInMasterDto.SupplierName = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi xử lý thay đổi nhà cung cấp");
+            }
+        }
+
+        private void StockInNumberTextEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (StockInNumberTextEdit != null)
+                {
+                    _stockInMasterDto.StockInNumber = StockInNumberTextEdit.Text?.Trim();
+                    
+                    // Xóa lỗi validation nếu có
+                    dxErrorProvider1.SetError(StockInNumberTextEdit, string.Empty);
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi xử lý thay đổi số phiếu nhập");
+            }
         }
 
         #endregion
@@ -344,7 +379,83 @@ namespace Inventory.StockIn
         #region ========== VALIDATION ==========
 
         /// <summary>
-        /// Validate dữ liệu input
+        /// Cập nhật DTO từ controls
+        /// </summary>
+        private void UpdateDtoFromControls()
+        {
+            try
+            {
+                // Cập nhật từ TextEdit
+                if (StockInNumberTextEdit != null)
+                {
+                    _stockInMasterDto.StockInNumber = StockInNumberTextEdit.Text?.Trim();
+                }
+
+                // Cập nhật từ DateEdit
+                if (StockInDateDateEdit != null && StockInDateDateEdit.EditValue is DateTime date)
+                {
+                    _stockInMasterDto.StockInDate = date;
+                }
+
+                // Cập nhật từ Warehouse SearchLookUpEdit
+                if (WarehouseNameSearchLookupEdit != null)
+                {
+                    if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
+                    {
+                        _stockInMasterDto.WarehouseId = warehouseId;
+                        
+                        // Lấy thông tin chi nhánh từ binding source
+                        var selectedWarehouse = companyBranchDtoBindingSource.Cast<CompanyBranchDto>()
+                            .FirstOrDefault(w => w.Id == warehouseId);
+                        
+                        if (selectedWarehouse != null)
+                        {
+                            _stockInMasterDto.WarehouseCode = selectedWarehouse.BranchCode;
+                            _stockInMasterDto.WarehouseName = selectedWarehouse.BranchName;
+                        }
+                    }
+                    else
+                    {
+                        _stockInMasterDto.WarehouseId = Guid.Empty;
+                        _stockInMasterDto.WarehouseCode = null;
+                        _stockInMasterDto.WarehouseName = null;
+                    }
+                }
+
+                // Cập nhật từ Supplier SearchLookUpEdit
+                if (SupplierNameTextEdit != null)
+                {
+                    if (SupplierNameTextEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
+                    {
+                        _stockInMasterDto.SupplierId = supplierId;
+                        
+                        // Lấy thông tin chi nhánh đối tác từ binding source
+                        var selectedSite = businessPartnerSiteListDtoBindingSource.Cast<BusinessPartnerSiteListDto>()
+                            .FirstOrDefault(s => s.Id == supplierId);
+                        
+                        if (selectedSite != null)
+                        {
+                            _stockInMasterDto.SupplierName = selectedSite.SiteName;
+                        }
+                    }
+                    else
+                    {
+                        _stockInMasterDto.SupplierId = Guid.Empty;
+                        _stockInMasterDto.SupplierName = null;
+                    }
+                }
+
+                // Cập nhật các trường khác nếu có
+                // TODO: Thêm các control khác nếu cần
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi cập nhật dữ liệu từ controls");
+            }
+        }
+
+        /// <summary>
+        /// Validate dữ liệu input và hiển thị lỗi bằng dxErrorProvider
         /// </summary>
         public bool ValidateInput()
         {
@@ -359,29 +470,29 @@ namespace Inventory.StockIn
 
                 if (!isValid)
                 {
-                    //// Hiển thị lỗi cho từng field
-                    //foreach (var result in results)
-                    //{
-                    //    foreach (var memberName in result.MemberNames)
-                    //    {
-                    //        var control = FindControlByPropertyName(memberName);
-                    //        if (control != null)
-                    //        {
-                    //            dxErrorProvider1.SetError(control, result.ErrorMessage, ErrorType.Critical);
-                    //        }
-                    //    }
-                    //}
+                    // Hiển thị lỗi cho từng field
+                    foreach (var result in results)
+                    {
+                        foreach (var memberName in result.MemberNames)
+                        {
+                            var control = FindControlByPropertyName(memberName);
+                            if (control != null)
+                            {
+                                dxErrorProvider1.SetError(control, result.ErrorMessage, ErrorType.Critical);
+                            }
+                        }
+                    }
 
-                    //// Focus vào control đầu tiên có lỗi
-                    //var firstErrorControl = results
-                    //    .SelectMany(r => r.MemberNames)
-                    //    .Select(FindControlByPropertyName)
-                    //    .FirstOrDefault(c => c != null);
+                    // Focus vào control đầu tiên có lỗi
+                    var firstErrorControl = results
+                        .SelectMany(r => r.MemberNames)
+                        .Select(FindControlByPropertyName)
+                        .FirstOrDefault(c => c != null);
                     
-                    //if (firstErrorControl != null)
-                    //{
-                    //    firstErrorControl.Focus();
-                    //}
+                    if (firstErrorControl != null)
+                    {
+                        firstErrorControl.Focus();
+                    }
 
                     return false;
                 }
@@ -395,33 +506,54 @@ namespace Inventory.StockIn
             }
         }
 
-        ///// <summary>
-        ///// Tìm control theo tên property
-        ///// </summary>
-        //private Control FindControlByPropertyName(string propertyName)
-        //{
-        //    return propertyName switch
-        //    {
-        //        nameof(StockInMasterDto.StockInNumber) => StockInNumberTextEdit,
-        //        nameof(StockInMasterDto.StockInDate) => StockInDateDateEdit,
-        //        nameof(StockInMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
-        //        nameof(StockInMasterDto.PurchaseOrderNumber) => PurchaseOrderSearchLookupEdit,
-        //        nameof(StockInMasterDto.SupplierId) => SupplierNameTextEdit,
-        //        nameof(StockInMasterDto.Notes) => NotesTextEdit,
-        //        _ => null
-        //    };
-        //}
+        /// <summary>
+        /// Tìm control theo tên property trong DTO
+        /// </summary>
+        private Control FindControlByPropertyName(string propertyName)
+        {
+            return propertyName switch
+            {
+                nameof(StockInMasterDto.StockInNumber) => StockInNumberTextEdit,
+                nameof(StockInMasterDto.StockInDate) => StockInDateDateEdit,
+                nameof(StockInMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
+                nameof(StockInMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
+                nameof(StockInMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
+                nameof(StockInMasterDto.SupplierId) => SupplierNameTextEdit,
+                nameof(StockInMasterDto.SupplierName) => SupplierNameTextEdit,
+                nameof(StockInMasterDto.PurchaseOrderNumber) => PurchaseOrderSearchLookupEdit,
+                nameof(StockInMasterDto.Notes) => NotesTextEdit,
+                _ => null
+            };
+        }
 
         #endregion
 
         #region ========== PUBLIC METHODS ==========
 
         /// <summary>
-        /// Lấy DTO từ controls
+        /// Lấy DTO từ controls sau khi validate các trường bắt buộc
         /// </summary>
+        /// <returns>StockInMasterDto nếu validation thành công, null nếu có lỗi</returns>
         public StockInMasterDto GetDto()
         {
-            return _stockInMasterDto;
+            try
+            {
+                // Cập nhật DTO từ controls trước khi validate
+                UpdateDtoFromControls();
+
+                // Validate các trường bắt buộc
+                if (!ValidateInput())
+                {
+                    return null; // Validation thất bại
+                }
+
+                return _stockInMasterDto;
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi lấy dữ liệu");
+                return null;
+            }
         }
 
         /// <summary>
