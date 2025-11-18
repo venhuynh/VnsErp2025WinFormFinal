@@ -1,6 +1,8 @@
 ﻿using Dal.Configuration;
 using Dal.DataAccess.Interfaces;
 using System;
+using Common.Appconfig;
+using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -84,7 +86,7 @@ public class DataContextFactory : IDataContextFactory
     /// Tạo VntaDataContext với connection string mặc định
     /// </summary>
     /// <returns>VntaDataContext instance</returns>
-    public Vnta2025DataContext CreateContext()
+    public VnsErp2025DataContext CreateContext()
     {
         try
         {
@@ -95,7 +97,7 @@ public class DataContextFactory : IDataContextFactory
 
             _logger.Debug("Tạo VntaDataContext với connection string mặc định");
 
-            return new Vnta2025DataContext(_defaultConnectionString)
+            return new VnsErp2025DataContext(_defaultConnectionString)
             {
                 CommandTimeout = _settings.CommandTimeout
             };
@@ -112,23 +114,23 @@ public class DataContextFactory : IDataContextFactory
     /// </summary>
     /// <param name="connectionString">Connection string</param>
     /// <returns>VntaDataContext instance</returns>
-    public Vnta2025DataContext CreateContext(string connectionString)
+    public VnsErp2025DataContext CreateContext(string connectionString)
     {
         try
         {
             if (string.IsNullOrEmpty(connectionString))
             {
-                throw new ArgumentException("Connection string cannot be null or empty", nameof(connectionString));
+                throw new ArgumentException(@"Connection string cannot be null or empty", nameof(connectionString));
             }
 
             if (!IsValidConnectionString(connectionString))
             {
-                throw new ArgumentException("Invalid connection string format", nameof(connectionString));
+                throw new ArgumentException(@"Invalid connection string format", nameof(connectionString));
             }
 
             _logger.Debug("Tạo VntaDataContext với connection string tùy chỉnh");
 
-            return new Vnta2025DataContext(connectionString)
+            return new VnsErp2025DataContext(connectionString)
             {
                 CommandTimeout = _settings.CommandTimeout
             };

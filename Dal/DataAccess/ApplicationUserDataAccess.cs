@@ -1,12 +1,11 @@
+using Dal.BaseDataAccess;
+using Dal.DataContext;
+using Dal.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.BaseDataAccess;
-using Dal.DataContext;
-using Dal.Exceptions;
-using Dal.Logging;
-using Dal.Helpers;
+using Logger.Interfaces;
 
 namespace Dal.DataAccess
 {
@@ -48,10 +47,10 @@ namespace Dal.DataAccess
             try
             {
                 if (string.IsNullOrWhiteSpace(userName))
-                    throw new ArgumentException("UserName không được rỗng", nameof(userName));
+                    throw new ArgumentException(@"UserName không được rỗng", nameof(userName));
 
                 if (string.IsNullOrWhiteSpace(password))
-                    throw new ArgumentException("Mật khẩu không được rỗng", nameof(password));
+                    throw new ArgumentException(@"Mật khẩu không được rỗng", nameof(password));
 
                 if (IsUserNameExists(userName))
                     throw new DataAccessException($"UserName '{userName}' đã tồn tại");

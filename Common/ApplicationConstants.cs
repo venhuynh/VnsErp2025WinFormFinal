@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+// ReSharper disable InconsistentNaming
 
 namespace Common
 {

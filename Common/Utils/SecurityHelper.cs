@@ -9,10 +9,6 @@ namespace Common.Utils
     /// </summary>
     public static class SecurityHelper
     {
-        #region thuocTinhDonGian
-
-        #endregion
-
         #region phuongThuc
 
         /// <summary>
