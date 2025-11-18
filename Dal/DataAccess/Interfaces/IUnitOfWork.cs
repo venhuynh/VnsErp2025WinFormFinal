@@ -2,7 +2,7 @@
 using System;
 using Dal.DataAccess.Interfaces.MasterData.Company;
 using Dal.DataAccess.Interfaces.MasterData.Partner;
-using Dal.DataAccess.Interfaces.MasterData.ProductService;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 
 namespace Dal.DataAccess.Interfaces;
 

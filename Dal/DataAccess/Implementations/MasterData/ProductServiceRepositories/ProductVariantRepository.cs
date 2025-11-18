@@ -1,37 +1,69 @@
-using Dal.BaseDataAccess;
-using Dal.DataContext;
-using Dal.Exceptions;
-using Dal.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
+using Dal.DataContext;
+using Dal.Exceptions;
+using Logger;
+using Logger.Configuration;
+using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess.MasterData.ProductServiceDal
+namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
 {
     /// <summary>
     /// Data Access cho thực thể ProductVariant (LINQ to SQL trên VnsErp2025DataContext).
     /// Cung cấp CRUD đầy đủ, phương thức đặc thù và phiên bản đồng bộ/bất đồng bộ.
     /// </summary>
-    public class IProductVariantRepository : BaseDataAccess<ProductVariant>
+    public class ProductVariantRepository : IProductVariantRepository
     {
-        #region Constructors
+        #region Private Fields
 
         /// <summary>
-        /// Khởi tạo mặc định.
+        /// Chuỗi kết nối cơ sở dữ liệu để tạo DataContext mới cho mỗi operation.
         /// </summary>
-        /// <param name="logger">Logger (tùy chọn)</param>
-        public IProductVariantRepository(ILogger logger = null) : base(logger)
+        private readonly string _connectionString;
+
+        /// <summary>
+        /// Instance logger để theo dõi các thao tác và lỗi
+        /// </summary>
+        private readonly CustomLogger _logger;
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Khởi tạo một instance mới của class AttributeRepository.
+        /// </summary>
+        /// <param name="connectionString">Chuỗi kết nối cơ sở dữ liệu</param>
+        /// <exception cref="ArgumentNullException">Ném ra khi connectionString là null</exception>
+        public ProductVariantRepository(string connectionString)
         {
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            _logger = LoggerFactory.CreateLogger(LogCategory.DAL);
+            _logger.Info("AttributeRepository được khởi tạo với connection string");
         }
 
+        #endregion
+
+        #region Helper Methods
+
         /// <summary>
-        /// Khởi tạo với connection string.
+        /// Tạo DataContext mới cho mỗi operation để tránh cache issue
         /// </summary>
-        /// <param name="connectionString">Chuỗi kết nối</param>
-        /// <param name="logger">Logger (tùy chọn)</param>
-        public IProductVariantRepository(string connectionString, ILogger logger = null) : base(connectionString, logger)
+        /// <returns>DataContext mới</returns>
+        private VnsErp2025DataContext CreateNewContext()
         {
+            var context = new VnsErp2025DataContext(_connectionString);
+
+            // Configure eager loading cho navigation properties
+            var loadOptions = new DataLoadOptions();
+            
+            context.LoadOptions = loadOptions;
+
+            return context;
         }
 
         #endregion
@@ -51,7 +83,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants.FirstOrDefault(x => x.Id == id);
             }
             catch (Exception ex)
@@ -63,7 +95,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// <summary>
         /// Override GetById từ BaseDataAccess để sử dụng Guid thay vì object.
         /// </summary>
-        protected override ProductVariant GetById(object id)
+        protected ProductVariant GetById(object id)
         {
             if (id is Guid guidId)
                 return GetById(guidId);
@@ -79,7 +111,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return await Task.Run(() => context.ProductVariants.FirstOrDefault(x => x.Id == id));
             }
             catch (Exception ex)
@@ -91,11 +123,11 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// <summary>
         /// Lấy tất cả biến thể
         /// </summary>
-        public override List<ProductVariant> GetAll()
+        public List<ProductVariant> GetAll()
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants
                     .OrderBy(pv => pv.VariantCode)
                     .ToList();
@@ -109,18 +141,18 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// <summary>
         /// Lấy tất cả biến thể (Async)
         /// </summary>
-        public override async Task<List<ProductVariant>> GetAllAsync()
+        public async Task<List<ProductVariant>> GetAllAsync()
         {
             try
             {
-                using var context = CreateContext();
-                
+                using var context = CreateNewContext();
+
                 // Cấu hình DataLoadOptions để preload navigation properties
-                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
                 loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
                 context.LoadOptions = loadOptions;
-                
+
                 return await Task.Run(() => context.ProductVariants
                     .OrderBy(pv => pv.VariantCode)
                     .ToList());
@@ -140,22 +172,22 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
-                
+                using var context = CreateNewContext();
+
                 // Cấu hình DataLoadOptions để preload navigation properties
                 // Tránh vòng lặp bằng cách không load ProductVariants từ ProductService
-                var loadOptions = new System.Data.Linq.DataLoadOptions();
+                var loadOptions = new DataLoadOptions();
                 loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
                 loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
                 loadOptions.LoadWith<ProductVariant>(pv => pv.VariantAttributes);
                 loadOptions.LoadWith<ProductVariant>(pv => pv.ProductImages);
-                
+
                 // Preload thông tin sản phẩm gốc (không load ProductVariants để tránh vòng lặp)
                 loadOptions.LoadWith<ProductService>(ps => ps.ProductServiceCategory);
                 loadOptions.LoadWith<ProductService>(ps => ps.ProductImages);
-                
+
                 context.LoadOptions = loadOptions;
-                
+
                 return await Task.Run(() => context.ProductVariants
                     .OrderBy(pv => pv.ProductService.Name)
                     .ThenBy(pv => pv.VariantCode)
@@ -176,7 +208,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants
                     .Where(x => x.ProductId == productId)
                     .OrderBy(x => x.VariantCode)
@@ -197,7 +229,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return await Task.Run(() => context.ProductVariants
                     .Where(x => x.ProductId == productId)
                     .OrderBy(x => x.VariantCode)
@@ -221,7 +253,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                 if (string.IsNullOrWhiteSpace(variantCode))
                     return null;
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants.FirstOrDefault(x => x.VariantCode == variantCode.Trim());
             }
             catch (Exception ex)
@@ -242,7 +274,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                 if (string.IsNullOrWhiteSpace(variantCode))
                     return null;
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return await Task.Run(() => context.ProductVariants.FirstOrDefault(x => x.VariantCode == variantCode.Trim()));
             }
             catch (Exception ex)
@@ -260,7 +292,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants
                     .Where(x => x.IsActive == isActive)
                     .OrderBy(x => x.VariantCode)
@@ -281,7 +313,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return await Task.Run(() => context.ProductVariants
                     .Where(x => x.IsActive == isActive)
                     .OrderBy(x => x.VariantCode)
@@ -309,12 +341,12 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
-                
+                using var context = CreateNewContext();
+
                 // Xóa ProductImages liên quan trước (để tránh foreign key constraint)
                 var productImages = context.ProductImages.Where(x => x.VariantId == id).ToList();
                 context.ProductImages.DeleteAllOnSubmit(productImages);
-                
+
                 // Xóa VariantAttributes trước
                 var variantAttributes = context.VariantAttributes.Where(x => x.VariantId == id).ToList();
                 context.VariantAttributes.DeleteAllOnSubmit(variantAttributes);
@@ -351,9 +383,9 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                 if (string.IsNullOrWhiteSpace(variantCode))
                     return false;
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 var query = context.ProductVariants.Where(x => x.VariantCode == variantCode.Trim());
-                
+
                 if (excludeId.HasValue)
                 {
                     query = query.Where(x => x.Id != excludeId.Value);
@@ -380,9 +412,9 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                 if (string.IsNullOrWhiteSpace(variantCode))
                     return false;
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 var query = context.ProductVariants.Where(x => x.VariantCode == variantCode.Trim());
-                
+
                 if (excludeId.HasValue)
                 {
                     query = query.Where(x => x.Id != excludeId.Value);
@@ -408,7 +440,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants.Count();
             }
             catch (Exception ex)
@@ -426,7 +458,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants.Count(x => x.ProductId == productId);
             }
             catch (Exception ex)
@@ -444,7 +476,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants.Count(x => x.IsActive == isActive);
             }
             catch (Exception ex)
@@ -463,7 +495,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants
                     .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
                     .OrderByDescending(x => x.CreatedDate)
@@ -485,7 +517,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return await Task.Run(() => context.ProductVariants
                     .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
                     .OrderByDescending(x => x.CreatedDate)
@@ -507,7 +539,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants
                     .Where(x => x.ModifiedDate >= fromDate && x.ModifiedDate <= toDate)
                     .OrderByDescending(x => x.ModifiedDate)
@@ -529,7 +561,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return await Task.Run(() => context.ProductVariants
                     .Where(x => x.ModifiedDate >= fromDate && x.ModifiedDate <= toDate)
                     .OrderByDescending(x => x.ModifiedDate)
@@ -550,7 +582,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants
                     .OrderByDescending(x => x.CreatedDate)
                     .Take(count)
@@ -571,7 +603,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ProductVariants
                     .OrderByDescending(x => x.ModifiedDate)
                     .Take(count)
@@ -595,22 +627,22 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                if (variant == null) 
+                if (variant == null)
                     throw new ArgumentNullException(nameof(variant));
-                
-                using var context = CreateContext();
+
+                using var context = CreateNewContext();
                 var existing = variant.Id != Guid.Empty ? context.ProductVariants.FirstOrDefault(x => x.Id == variant.Id) : null;
-                
+
                 if (existing == null)
                 {
                     // Thêm mới
                     if (variant.Id == Guid.Empty)
                         variant.Id = Guid.NewGuid();
-                    
+
                     // Thiết lập CreatedDate và ModifiedDate cho biến thể mới
                     variant.CreatedDate = DateTime.Now;
                     variant.ModifiedDate = DateTime.Now;
-                    
+
                     context.ProductVariants.InsertOnSubmit(variant);
                 }
                 else
@@ -622,11 +654,11 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                     existing.IsActive = variant.IsActive;
                     existing.ThumbnailImage = variant.ThumbnailImage;
                     existing.VariantFullName = variant.VariantFullName; // Cập nhật VariantFullName
-                    
+
                     // Cập nhật ModifiedDate
                     existing.ModifiedDate = DateTime.Now;
                 }
-                
+
                 context.SubmitChanges();
             }
             catch (Exception ex)
@@ -645,9 +677,9 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 var currentTime = DateTime.Now;
-                
+
                 // Lưu hoặc cập nhật biến thể
                 var existingVariant = context.ProductVariants.FirstOrDefault(x => x.Id == variant.Id);
                 if (existingVariant != null)
@@ -658,10 +690,10 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                     existingVariant.UnitId = variant.UnitId;
                     existingVariant.IsActive = variant.IsActive;
                     existingVariant.ThumbnailImage = variant.ThumbnailImage;
-                    
+
                     // Cập nhật ModifiedDate
                     existingVariant.ModifiedDate = currentTime;
-                    
+
                     // Xóa các VariantAttribute cũ trước khi thêm mới
                     var oldVariantAttributes = context.VariantAttributes.Where(x => x.VariantId == variant.Id).ToList();
                     context.VariantAttributes.DeleteAllOnSubmit(oldVariantAttributes);
@@ -670,17 +702,17 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                 {
                     // Tạo mới
                     variant.Id = Guid.NewGuid();
-                    
+
                     // Thiết lập CreatedDate và ModifiedDate cho biến thể mới
                     variant.CreatedDate = currentTime;
                     variant.ModifiedDate = currentTime;
-                    
+
                     context.ProductVariants.InsertOnSubmit(variant);
                 }
 
                 // Lưu giá trị thuộc tính mới và tính toán VariantFullName
                 var variantFullNameParts = new List<string>();
-                
+
                 if (attributeValues != null && attributeValues.Any())
                 {
                     foreach (var (attributeId, value) in attributeValues)
@@ -702,7 +734,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                             AttributeValueId = attributeValue.Id
                         };
                         context.VariantAttributes.InsertOnSubmit(variantAttribute);
-                        
+
                         // Lấy tên thuộc tính để tạo VariantFullName
                         var attribute = context.Attributes.FirstOrDefault(a => a.Id == attributeId);
                         if (attribute != null)
@@ -711,20 +743,20 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                         }
                     }
                 }
-                
+
                 // Cập nhật VariantFullName cho biến thể
                 if (existingVariant != null)
                 {
                     // Cập nhật cho biến thể hiện có
-                    existingVariant.VariantFullName = variantFullNameParts.Any() 
-                        ? string.Join(", ", variantFullNameParts) 
+                    existingVariant.VariantFullName = variantFullNameParts.Any()
+                        ? string.Join(", ", variantFullNameParts)
                         : variant.VariantCode;
                 }
                 else
                 {
                     // Cập nhật cho biến thể mới
-                    variant.VariantFullName = variantFullNameParts.Any() 
-                        ? string.Join(", ", variantFullNameParts) 
+                    variant.VariantFullName = variantFullNameParts.Any()
+                        ? string.Join(", ", variantFullNameParts)
                         : variant.VariantCode;
                 }
 
@@ -746,13 +778,13 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
-                
+                using var context = CreateNewContext();
+
                 var query = from va in context.VariantAttributes
-                           join av in context.AttributeValues on va.AttributeValueId equals av.Id
-                           join a in context.Attributes on va.AttributeId equals a.Id
-                           where va.VariantId == variantId
-                           select new { a.Id, a.Name, av.Value };
+                            join av in context.AttributeValues on va.AttributeValueId equals av.Id
+                            join a in context.Attributes on va.AttributeId equals a.Id
+                            where va.VariantId == variantId
+                            select new { a.Id, a.Name, av.Value };
 
                 var results = query.ToList();
                 return results.Select(x => (x.Id, x.Name, x.Value)).ToList();
@@ -772,13 +804,13 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
-                
+                using var context = CreateNewContext();
+
                 var query = from va in context.VariantAttributes
-                           join av in context.AttributeValues on va.AttributeValueId equals av.Id
-                           join a in context.Attributes on va.AttributeId equals a.Id
-                           where va.VariantId == variantId
-                           select new { a.Id, a.Name, av.Value };
+                            join av in context.AttributeValues on va.AttributeValueId equals av.Id
+                            join a in context.Attributes on va.AttributeId equals a.Id
+                            where va.VariantId == variantId
+                            select new { a.Id, a.Name, av.Value };
 
                 var results = await Task.Run(() => query.ToList());
                 return results.Select(x => (x.Id, x.Name, x.Value)).ToList();
@@ -793,11 +825,11 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// Lấy DataContext để sử dụng với LinqServerModeSource
         /// </summary>
         /// <returns>VnsErp2025DataContext</returns>
-        public async Task<Dal.DataContext.VnsErp2025DataContext> GetDataContextAsync()
+        public async Task<VnsErp2025DataContext> GetDataContextAsync()
         {
             try
             {
-                return await Task.Run(() => CreateContext());
+                return await Task.Run(() => CreateNewContext());
             }
             catch (Exception ex)
             {
@@ -819,8 +851,8 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             {
                 // Không sử dụng 'using' để tránh dispose context sớm
                 // LinqInstantFeedbackSource sẽ tự quản lý lifecycle của context
-                var context = CreateContext();
-                
+                var context = CreateNewContext();
+
                 // Trả về queryable của ProductVariant entity
                 return context.ProductVariants;
             }
@@ -840,7 +872,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             try
             {
                 // Không sử dụng 'using' để tránh dispose context sớm
-                var context = CreateContext();
+                var context = CreateNewContext();
                 return context.ProductServices;
             }
             catch (Exception ex)
@@ -858,7 +890,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
             try
             {
                 // Không sử dụng 'using' để tránh dispose context sớm
-                var context = CreateContext();
+                var context = CreateNewContext();
                 return context.UnitOfMeasures;
             }
             catch (Exception ex)
@@ -875,34 +907,34 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         {
             try
             {
-                using var context = CreateContext();
-                
+                using var context = CreateNewContext();
+
                 // Lấy tất cả biến thể
                 var variants = context.ProductVariants.ToList();
-                
+
                 foreach (var variant in variants)
                 {
                     // Lấy danh sách thuộc tính của biến thể
                     var variantAttributes = context.VariantAttributes
                         .Where(va => va.VariantId == variant.Id)
                         .ToList();
-                    
+
                     if (variantAttributes.Any())
                     {
                         var fullNameParts = new List<string>();
-                        
+
                         foreach (var va in variantAttributes)
                         {
                             // Lấy thông tin thuộc tính và giá trị
                             var attribute = context.Attributes.FirstOrDefault(a => a.Id == va.AttributeId);
                             var attributeValue = context.AttributeValues.FirstOrDefault(av => av.Id == va.AttributeValueId);
-                            
+
                             if (attribute != null && attributeValue != null)
                             {
                                 fullNameParts.Add($"{attribute.Name} : {attributeValue.Value}");
                             }
                         }
-                        
+
                         // Cập nhật VariantFullName
                         variant.VariantFullName = string.Join(", ", fullNameParts);
                     }
@@ -912,7 +944,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
                         variant.VariantFullName = variant.VariantCode;
                     }
                 }
-                
+
                 // Lưu thay đổi
                 await Task.Run(() => context.SubmitChanges());
             }

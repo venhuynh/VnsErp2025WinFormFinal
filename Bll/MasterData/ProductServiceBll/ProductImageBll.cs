@@ -6,7 +6,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataAccess.MasterData.ProductServiceDal;
 using Dal.DataContext;
 
 namespace Bll.MasterData.ProductServiceBll

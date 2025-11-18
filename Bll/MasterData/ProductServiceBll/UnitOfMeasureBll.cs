@@ -1,7 +1,7 @@
-using Dal.DataAccess.MasterData.ProductServiceDal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 using UnitOfMeasure = Dal.DataContext.UnitOfMeasure;
 
 namespace Bll.MasterData.ProductServiceBll
@@ -14,7 +14,7 @@ namespace Bll.MasterData.ProductServiceBll
     {
         #region Private Fields
 
-        private readonly UnitOfMeasureDataAccess _dataAccess = new UnitOfMeasureDataAccess();
+        private readonly UnitOfMeasureRepository _dataAccess = new UnitOfMeasureDataAccess();
 
         #endregion
 

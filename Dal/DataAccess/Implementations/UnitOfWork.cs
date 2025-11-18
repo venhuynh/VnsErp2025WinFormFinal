@@ -9,9 +9,8 @@ using Logger;
 using Logger.Configuration;
 using System;
 using System.Data;
-using Dal.DataAccess.Implementations.MasterData.ProductService;
-using Dal.DataAccess.Interfaces.MasterData.ProductService;
-using Dal.DataAccess.MasterData.ProductServiceDal;
+using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations
@@ -353,7 +352,7 @@ namespace Dal.DataAccess.Implementations
                 : new ProductServiceRepository(globalConnectionString);
         }
 
-        public Interfaces.MasterData.ProductService.IProductVariantRepository GetProductVariantRepository()
+        public IProductVariantRepository GetProductVariantRepository()
         {
             // Sử dụng global connection string từ ApplicationStartupManager
             var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
@@ -368,7 +367,7 @@ namespace Dal.DataAccess.Implementations
             var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
             return string.IsNullOrEmpty(globalConnectionString)
                 ? throw new InvalidOperationException("Global connection string is not configured.")
-                : new BusinessPartnerSiteRepository(globalConnectionString);
+                : new UnitOfMeasureRepository(globalConnectionString);
         }
 
 

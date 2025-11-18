@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Bll.MasterData.ProductServiceBll;
-using Dal.DataAccess.MasterData.ProductServiceDal;
 
 namespace Bll.Common.ImageService;
 

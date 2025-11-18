@@ -1,9 +1,9 @@
-using Dal.DataAccess.MasterData.ProductServiceDal;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 
 namespace Bll.MasterData.ProductServiceBll
 {
@@ -17,7 +17,7 @@ namespace Bll.MasterData.ProductServiceBll
 
         private readonly IProductVariantRepository _dataAccess;
         private readonly ProductServiceDataAccess _productServiceDataAccess;
-        private readonly UnitOfMeasureDataAccess _unitOfMeasureDataAccess;
+        private readonly UnitOfMeasureRepository _unitOfMeasureDataAccess;
 
         #endregion
 

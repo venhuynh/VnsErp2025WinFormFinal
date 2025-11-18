@@ -1,18 +1,17 @@
-﻿using Dal.DataAccess.Interfaces.MasterData.ProductService;
-using Dal.DataContext;
-using Dal.Exceptions;
-using Logger;
-using Logger.Configuration;
-using Logger.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
+using Dal.DataContext;
+using Dal.Exceptions;
+using Logger;
+using Logger.Configuration;
 using Attribute = Dal.DataContext.Attribute;
 using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess.Implementations.MasterData.ProductService;
+namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 
 /// <summary>
 /// Data Access cho thực thể Attribute (LINQ to SQL trên VnsErp2025DataContext).
