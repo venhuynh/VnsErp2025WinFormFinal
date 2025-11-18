@@ -62,32 +62,30 @@
     <Compile Include="DataAccess\Implementations\MasterData\Company\CompanyRepository.cs" />
     <Compile Include="DataAccess\Implementations\MasterData\Company\DepartmentRepository.cs" />
     <Compile Include="DataAccess\Implementations\MasterData\Company\PositionRepository.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\Partner\BusinessPartnerCategoryDataAccess.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\Partner\BusinessPartnerContactDataAccess.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\Partner\BusinessPartnerDataAccess.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\Partner\BusinessPartnerInfo.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\Partner\BusinessPartnerSiteDataAccess.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\ProductServiceDal\AttributeDataAccess.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\ProductServiceDal\ProductImageDataAccess.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\ProductServiceDal\ProductServiceCategoryDataAccess.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\ProductServiceDal\ProductServiceDataAccess.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\ProductServiceDal\ProductVariantDataAccess.cs" />
-    <Compile Include="DataAccess\Implementations\MasterData\ProductServiceDal\UnitOfMeasureDataAccess.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\Partner\BusinessPartnerCategoryRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\Partner\BusinessPartnerContactRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\Partner\BusinessPartnerRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\Partner\BusinessPartnerSiteRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\ProductService\AttributeRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\ProductService\ProductImageRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\ProductService\ProductServiceCategoryRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\ProductService\ProductServiceRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\ProductService\ProductVariantRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\ProductService\UnitOfMeasureDataAccess.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\Company\ICompanyBranchRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\Company\ICompanyRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\Company\IDepartmentRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\Company\IPositionRepository.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\Partner\BusinessPartnerCategoryDataAccess.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\Partner\BusinessPartnerContactDataAccess.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\Partner\BusinessPartnerDataAccess.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\Partner\BusinessPartnerInfo.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\Partner\BusinessPartnerSiteDataAccess.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\ProductServiceDal\AttributeDataAccess.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\ProductServiceDal\ProductImageDataAccess.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\ProductServiceDal\ProductServiceCategoryDataAccess.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\ProductServiceDal\ProductServiceDataAccess.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\ProductServiceDal\ProductVariantDataAccess.cs" />
-    <Compile Include="DataAccess\Interfaces\MasterData\ProductServiceDal\UnitOfMeasureDataAccess.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\Partner\IBusinessPartnerCategoryRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\Partner\IBusinessPartnerContactRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\Partner\IBusinessPartnerRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\Partner\IBusinessPartnerSiteRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\ProductService\IAttributeRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\ProductService\IProductImageRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\ProductService\IProductServiceCategoryRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\ProductService\IProductServiceRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\ProductService\IProductVariantRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\ProductService\IUnitOfMeasureRepository.cs" />
     <Compile Include="DataContext\SeedData\MasterData\Company\SeedData_Master_Company.cs" />
     <Compile Include="DataContext\SeedData\MasterData\Customer\SeedData_Master_Customer.cs" />
     <Compile Include="DataContext\SeedData\MasterData\ProductService\SeedData_Master_ProductService.cs" />
@@ -110,7 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="DataAccess\Interfaces\MasterData\ProductServiceDal\MasterData_ProductService_Entities.md" />
     <None Include="DataContext\SeedData\MasterData\Company\README_SeedData.md" />
     <None Include="DataContext\SeedData\MasterData\Customer\README_SeedData.md" />
     <None Include="DataContext\VnsErp2025.md" />
@@ -124,7 +121,6 @@
     </None>
     <None Include="Doc\CompanyEntities_Summary.md" />
     <None Include="Doc\DalFolderStructure.md" />
-    <None Include="DataAccess\Implementations\MasterData\ProductServiceDal\MasterData_ProductService_Entities.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

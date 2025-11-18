@@ -15,7 +15,7 @@ namespace Bll.MasterData.ProductServiceBll
     {
         #region Fields
 
-        private readonly ProductVariantDataAccess _dataAccess;
+        private readonly IProductVariantRepository _dataAccess;
         private readonly ProductServiceDataAccess _productServiceDataAccess;
         private readonly UnitOfMeasureDataAccess _unitOfMeasureDataAccess;
 

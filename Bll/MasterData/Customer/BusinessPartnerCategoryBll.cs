@@ -3,6 +3,7 @@ using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dal.DataAccess.Implementations.MasterData.Partner;
 
 namespace Bll.MasterData.Customer
 {
@@ -12,7 +13,7 @@ namespace Bll.MasterData.Customer
     /// </summary>
     public class BusinessPartnerCategoryBll
     {
-        private readonly BusinessPartnerCategoryDataAccess _businessPartnerCategoryDataAccess = new();
+        private readonly BusinessPartnerRepository _businessPartnerCategoryDataAccess = new();
 
         /// <summary>
         /// Lấy tất cả danh mục đối tác.

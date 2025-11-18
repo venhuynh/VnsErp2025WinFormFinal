@@ -1,12 +1,17 @@
-﻿using System;
-using System.Data;
-using Common.Appconfig;
+﻿using Common.Appconfig;
 using Dal.DataAccess.Implementations.MasterData.Company;
+using Dal.DataAccess.Implementations.MasterData.Partner;
 using Dal.DataAccess.Interfaces;
 using Dal.DataAccess.Interfaces.MasterData.Company;
+using Dal.DataAccess.Interfaces.MasterData.Partner;
 using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
+using System;
+using System.Data;
+using Dal.DataAccess.Implementations.MasterData.ProductService;
+using Dal.DataAccess.Interfaces.MasterData.ProductService;
+using Dal.DataAccess.MasterData.ProductServiceDal;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations
@@ -266,6 +271,106 @@ namespace Dal.DataAccess.Implementations
                 ? throw new InvalidOperationException("Global connection string is not configured.")
                 : new DepartmentRepository(globalConnectionString);
         }
+
+        #endregion
+
+        #region Partner
+
+        public IBusinessPartnerRepository GetBusinessPartnerRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new BusinessPartnerRepository(globalConnectionString);
+        }
+
+        public IBusinessPartnerCategoryRepository GetBusinessPartnerCategoryRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new BusinessPartnerCategoryRepository(globalConnectionString);
+        }
+
+        public IBusinessPartnerContactRepository GetBusinessPartnerContactRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new BusinessPartnerContactRepository(globalConnectionString);
+        }
+
+        public IBusinessPartnerSiteRepository GetBusinessPartnerSiteRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new BusinessPartnerSiteRepository(globalConnectionString);
+        }
+
+        #endregion
+
+        #region ProductService
+
+
+        public IAttributeRepository GetAttributeRepository()
+        {
+            // Sử dụng global connection string từ AttributeRepository
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new AttributeRepository(globalConnectionString);
+        }
+
+        public IProductImageRepository GetProductImageRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new ProductImageRepository(globalConnectionString);
+        }
+
+        public IProductServiceCategoryRepository GetProductServiceCategoryRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new ProductServiceCategoryRepository(globalConnectionString);
+        }
+
+        public IProductServiceRepository GetProductServiceRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new ProductServiceRepository(globalConnectionString);
+        }
+
+        public Interfaces.MasterData.ProductService.IProductVariantRepository GetProductVariantRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new ProductVariantRepository(globalConnectionString);
+        }
+
+        public IUnitOfMeasureRepository GetUnitOfMeasureRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new BusinessPartnerSiteRepository(globalConnectionString);
+        }
+
 
         #endregion
 

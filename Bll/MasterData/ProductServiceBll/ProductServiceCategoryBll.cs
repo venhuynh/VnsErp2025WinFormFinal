@@ -13,7 +13,7 @@ namespace Bll.MasterData.ProductServiceBll
     /// </summary>
     public class ProductServiceCategoryBll
     {
-        private readonly ProductServiceCategoryDataAccess _productServiceCategoryDataAccess = new();
+        private readonly ProductServiceCategoryRepository _productServiceCategoryDataAccess = new();
 
         /// <summary>
         /// Lấy tất cả danh mục sản phẩm/dịch vụ.

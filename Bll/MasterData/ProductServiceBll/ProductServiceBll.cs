@@ -15,7 +15,7 @@ namespace Bll.MasterData.ProductServiceBll
         #region Fields
 
         private readonly ProductServiceDataAccess _dataAccess;
-        private readonly ProductServiceCategoryDataAccess _categoryDataAccess;
+        private readonly ProductServiceCategoryRepository _categoryDataAccess;
         private readonly ProductImageBll _productImageBll;
 
         #endregion

@@ -1,6 +1,8 @@
 ﻿using Dal.DataContext;
 using System;
 using Dal.DataAccess.Interfaces.MasterData.Company;
+using Dal.DataAccess.Interfaces.MasterData.Partner;
+using Dal.DataAccess.Interfaces.MasterData.ProductService;
 
 namespace Dal.DataAccess.Interfaces;
 
@@ -71,13 +73,71 @@ public interface IUnitOfWork : IDisposable
     IPositionRepository GetPositionReposiroty();
 
     /// <summary>
+    /// Lấy đối tượng truy cập dữ liệu cho thực thể công ty.
+    /// </summary>
+    /// <returns>
+    /// Một thể hiện của <see cref="Dal.DataAccess.Interfaces.MasterData.Company.ICompanyRepository"/> 
+    /// cung cấp các phương thức truy cập dữ liệu cho thực thể công ty.
+    /// </returns>
+    ICompanyRepository GetCompanyRepository();
+
+    /// <summary>
+    /// Lấy đối tượng truy cập dữ liệu để quản lý dữ liệu phòng ban.
+    /// </summary>
+    /// <returns>
+    /// Một thể hiện của <see cref="Dal.DataAccess.Interfaces.MasterData.Company.IDepartmentRepository"/> 
+    /// cung cấp các phương thức để truy cập dữ liệu phòng ban.
+    /// </returns>
+    IDepartmentRepository GetDepartmentRepository();
+
+    #endregion
+
+    #region Partner
+    /// <summary>
+    /// Lấy đối tượng truy cập dữ liệu để quản lý thực thể đối tác kinh doanh.
+    /// </summary>
+    /// <returns>
+    /// Một thể hiện của <see cref="IBusinessPartnerRepository"/> 
+    /// cung cấp các phương thức để truy cập và quản lý dữ liệu đối tác kinh doanh.
+    /// </returns>
+    IBusinessPartnerRepository GetBusinessPartnerRepository();
+
+    /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    ICompanyRepository GetCompanyRepository();
+    IBusinessPartnerCategoryRepository GetBusinessPartnerCategoryRepository();
 
-    
-    IDepartmentRepository GetDepartmentRepository();
+    /// <summary>
+    /// Lấy đối tượng truy cập dữ liệu để quản lý dữ liệu liên hệ của đối tác kinh doanh.
+    /// </summary>
+    /// <returns>
+    /// Một thể hiện của <see cref="IBusinessPartnerContactRepository"/> 
+    /// cung cấp các phương thức để truy cập và quản lý dữ liệu liên hệ của đối tác kinh doanh.
+    /// </returns>
+    IBusinessPartnerContactRepository GetBusinessPartnerContactRepository();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    IBusinessPartnerSiteRepository GetBusinessPartnerSiteRepository();
+
+    #endregion
+
+    #region ProductService
+
+    IAttributeRepository GetAttributeRepository();
+
+    IProductImageRepository GetProductImageRepository();
+
+    IProductServiceCategoryRepository GetProductServiceCategoryRepository();
+
+    IProductServiceRepository GetProductServiceRepository();
+
+    IProductVariantRepository GetProductVariantRepository();
+
+    IUnitOfMeasureRepository GetUnitOfMeasureRepository();
 
     #endregion
 

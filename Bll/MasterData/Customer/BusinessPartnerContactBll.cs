@@ -12,7 +12,7 @@ namespace Bll.MasterData.Customer
     /// </summary>
     public class BusinessPartnerContactBll
     {
-        private readonly BusinessPartnerContactDataAccess _dataAccess;
+        private readonly BusinessPartnerCategoryRepository _dataAccess;
         private readonly ILogger _logger;
 
         public BusinessPartnerContactBll()

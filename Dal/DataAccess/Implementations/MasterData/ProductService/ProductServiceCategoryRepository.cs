@@ -13,7 +13,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
     /// Data Access cho thực thể ProductServiceCategory (LINQ to SQL trên VnsErp2025DataContext).
     /// Cung cấp CRUD đầy đủ, phương thức đặc thù và phiên bản đồng bộ/bất đồng bộ.
     /// </summary>
-    public class ProductServiceCategoryDataAccess : BaseDataAccess<ProductServiceCategory>
+    public class ProductServiceCategoryRepository : BaseDataAccess<ProductServiceCategory>
     {
         #region Constructors
 
@@ -21,7 +21,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// Khởi tạo mặc định.
         /// </summary>
         /// <param name="logger">Logger (tùy chọn)</param>
-        public ProductServiceCategoryDataAccess(ILogger logger = null) : base(logger)
+        public ProductServiceCategoryRepository(ILogger logger = null) : base(logger)
         {
         }
 
@@ -30,7 +30,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// </summary>
         /// <param name="connectionString">Chuỗi kết nối</param>
         /// <param name="logger">Logger (tùy chọn)</param>
-        public ProductServiceCategoryDataAccess(string connectionString, ILogger logger = null) : base(connectionString, logger)
+        public ProductServiceCategoryRepository(string connectionString, ILogger logger = null) : base(connectionString, logger)
         {
         }
 

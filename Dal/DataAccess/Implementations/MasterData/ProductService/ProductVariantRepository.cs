@@ -13,7 +13,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
     /// Data Access cho thực thể ProductVariant (LINQ to SQL trên VnsErp2025DataContext).
     /// Cung cấp CRUD đầy đủ, phương thức đặc thù và phiên bản đồng bộ/bất đồng bộ.
     /// </summary>
-    public class ProductVariantDataAccess : BaseDataAccess<ProductVariant>
+    public class IProductVariantRepository : BaseDataAccess<ProductVariant>
     {
         #region Constructors
 
@@ -21,7 +21,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// Khởi tạo mặc định.
         /// </summary>
         /// <param name="logger">Logger (tùy chọn)</param>
-        public ProductVariantDataAccess(ILogger logger = null) : base(logger)
+        public IProductVariantRepository(ILogger logger = null) : base(logger)
         {
         }
 
@@ -30,7 +30,7 @@ namespace Dal.DataAccess.MasterData.ProductServiceDal
         /// </summary>
         /// <param name="connectionString">Chuỗi kết nối</param>
         /// <param name="logger">Logger (tùy chọn)</param>
-        public ProductVariantDataAccess(string connectionString, ILogger logger = null) : base(connectionString, logger)
+        public IProductVariantRepository(string connectionString, ILogger logger = null) : base(connectionString, logger)
         {
         }
 
