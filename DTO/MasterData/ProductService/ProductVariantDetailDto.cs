@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MasterData.ProductService.Dto
-{
-    /// <summary>
-    /// DTO chi tiết cho biến thể sản phẩm.
-    /// Bao gồm đầy đủ thông tin ProductService, UnitOfMeasure, các thuộc tính và thông tin khác của ProductVariant.
-    /// </summary>
-    public class ProductVariantDetailDto
+namespace DTO.MasterData.ProductService;
+
+/// <summary>
+/// DTO chi tiết cho biến thể sản phẩm.
+/// Bao gồm đầy đủ thông tin ProductService, UnitOfMeasure, các thuộc tính và thông tin khác của ProductVariant.
+/// </summary>
+public class ProductVariantDetailDto
     {
         #region ProductVariant Information
 
@@ -395,4 +395,3 @@ namespace MasterData.ProductService.Dto
 
         #endregion
     }
-}

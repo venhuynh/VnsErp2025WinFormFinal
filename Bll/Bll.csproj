@@ -70,6 +70,7 @@
     <Compile Include="MasterData\CompanyBll\CompanyBll.cs" />
     <Compile Include="MasterData\CompanyBll\CompanyBranchBll.cs" />
     <Compile Include="MasterData\CompanyBll\DepartmentBll.cs" />
+    <Compile Include="MasterData\CompanyBll\EmployeeBll.cs" />
     <Compile Include="MasterData\CompanyBll\PositionBll.cs" />
     <Compile Include="MasterData\CustomerBll\BusinessPartnerBll.cs" />
     <Compile Include="MasterData\CustomerBll\BusinessPartnerCategoryBll.cs" />

@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DTO.MasterData
+namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+
+public interface IEmployeeRepository
 {
-    internal class ProductVariantListDto
-    {
-    }
 }

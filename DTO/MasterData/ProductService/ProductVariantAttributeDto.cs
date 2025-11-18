@@ -2,13 +2,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MasterData.ProductService.Dto
-{
-    /// <summary>
-    /// DTO cho thuộc tính biến thể sản phẩm.
-    /// Thể hiện đầy đủ các thuộc tính của Entity VariantAttribute.
-    /// </summary>
-    public class ProductVariantAttributeDto
+namespace DTO.MasterData.ProductService;
+
+/// <summary>
+/// DTO cho thuộc tính biến thể sản phẩm.
+/// Thể hiện đầy đủ các thuộc tính của Entity VariantAttribute.
+/// </summary>
+public class ProductVariantAttributeDto
     {
         /// <summary>
         /// ID của biến thể sản phẩm
@@ -132,4 +132,3 @@ namespace MasterData.ProductService.Dto
 
         #endregion
     }
-}

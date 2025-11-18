@@ -4,12 +4,12 @@ using Common.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraSplashScreen;
-using MasterData.ProductService.Dto;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {

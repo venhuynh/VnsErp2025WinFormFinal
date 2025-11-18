@@ -108,7 +108,6 @@
     <Compile Include="Company\FrmPosition.Designer.cs">
       <DependentUpon>FrmPosition.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\Converters\BusinessPartnerSiteConverters.cs" />
     <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -158,23 +157,6 @@
     <Compile Include="Customer\FrmBusinessPartnerSite.Designer.cs">
       <DependentUpon>FrmBusinessPartnerSite.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\Converters\AttributeConverters.cs" />
-    <Compile Include="ProductService\Converters\ProductServiceCategoryConverters.cs" />
-    <Compile Include="ProductService\Converters\ProductServiceConverters.cs" />
-    <Compile Include="ProductService\Converters\ProductVariantConverters.cs" />
-    <Compile Include="ProductService\Converters\UnitOfMeasureConverters.cs" />
-    <Compile Include="ProductService\Dto\AttributeDto.cs" />
-    <Compile Include="ProductService\Dto\AttributeValueDto.cs" />
-    <Compile Include="ProductService\Dto\ProductImageDto.cs" />
-    <Compile Include="ProductService\Dto\ProductServiceCategoryDto.cs" />
-    <Compile Include="ProductService\Dto\ProductServiceDto.cs" />
-    <Compile Include="ProductService\Dto\ProductVariantAttributeDto.cs" />
-    <Compile Include="ProductService\Dto\ProductVariantDetailDto.cs" />
-    <Compile Include="ProductService\Dto\ProductVariantDto.cs" />
-    <Compile Include="ProductService\Dto\ProductVariantImageDto.cs" />
-    <Compile Include="ProductService\Dto\ProductVariantListDto.cs" />
-    <Compile Include="ProductService\Dto\UnitOfMeasureDto.cs" />
-    <Compile Include="ProductService\Dto\VariantAttributeDto.cs" />
     <Compile Include="ProductService\FrmProductImageAdd.cs">
       <SubType>Form</SubType>
     </Compile>

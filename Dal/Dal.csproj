@@ -54,6 +54,7 @@
     <Compile Include="Connection\IConnectionManager.cs" />
     <Compile Include="DataAccess\Factories\DataContextFactory.cs" />
     <Compile Include="DataAccess\Implementations\ApplicationUserRepository.cs" />
+    <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\EmployeeRepository.cs" />
     <Compile Include="DataAccess\Implementations\UnitOfWork.cs" />
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
     <Compile Include="DataAccess\Interfaces\IUnitOfWork.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="DataAccess\Interfaces\MasterData\CompanyRepository\ICompanyBranchRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\CompanyRepository\ICompanyRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\CompanyRepository\IDepartmentRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\MasterData\CompanyRepository\IEmployeeRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\CompanyRepository\IPositionRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\PartnerRepository\IBusinessPartnerCategoryRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\PartnerRepository\IBusinessPartnerContactRepository.cs" />

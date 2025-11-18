@@ -6,6 +6,7 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {
@@ -134,7 +135,7 @@ namespace MasterData.ProductService
             // 
             // productVariantListDtoBindingSource
             // 
-            this.productVariantListDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductVariantListDto);
+            this.productVariantListDtoBindingSource.DataSource = typeof(ProductVariantListDto);
             // 
             // ProductVariantListGridView
             // 

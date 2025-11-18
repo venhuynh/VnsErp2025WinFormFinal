@@ -4,6 +4,7 @@ using DevExpress.XtraBars;
 using DevExpress.XtraLayout;
 using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Columns;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {
@@ -242,7 +243,7 @@ namespace MasterData.ProductService
             // 
             // productServiceCategoryDtoBindingSource
             // 
-            this.productServiceCategoryDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductServiceCategoryDto);
+            this.productServiceCategoryDtoBindingSource.DataSource = typeof(ProductServiceCategoryDto);
             // 
             // Root
             // 

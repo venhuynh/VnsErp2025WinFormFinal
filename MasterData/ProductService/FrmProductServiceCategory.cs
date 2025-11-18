@@ -6,8 +6,6 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraSplashScreen;
 using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Nodes;
-using MasterData.ProductService.Converters;
-using MasterData.ProductService.Dto;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Common;
 using Common.Utils;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {

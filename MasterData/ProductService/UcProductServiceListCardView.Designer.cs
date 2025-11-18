@@ -6,6 +6,7 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraLayout;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {
@@ -302,7 +303,7 @@ namespace MasterData.ProductService
             // 
             // productServiceDtoBindingSource
             // 
-            this.productServiceDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductServiceDto);
+            this.productServiceDtoBindingSource.DataSource = typeof(ProductServiceDto);
             // 
             // ProductServiceListCardView
             // 

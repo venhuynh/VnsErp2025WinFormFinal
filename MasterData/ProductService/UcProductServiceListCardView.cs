@@ -16,8 +16,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraSplashScreen;
-using MasterData.ProductService.Converters;
-using MasterData.ProductService.Dto;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {

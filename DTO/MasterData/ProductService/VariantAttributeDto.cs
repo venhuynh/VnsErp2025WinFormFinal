@@ -2,13 +2,13 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MasterData.ProductService.Dto
-{
-    /// <summary>
-    /// DTO đại diện cho bản ghi mapping giữa ProductVariant - Attribute - AttributeValue
-    /// Tương ứng bảng dbo.VariantAttribute (khóa chính tổng hợp VariantId + AttributeId + AttributeValueId)
-    /// </summary>
-    public class VariantAttributeDto
+namespace DTO.MasterData.ProductService;
+
+/// <summary>
+/// DTO đại diện cho bản ghi mapping giữa ProductVariant - Attribute - AttributeValue
+/// Tương ứng bảng dbo.VariantAttribute (khóa chính tổng hợp VariantId + AttributeId + AttributeValueId)
+/// </summary>
+public class VariantAttributeDto
     {
         [DisplayName("ID Biến thể")]
         [Display(Order = -1)]
@@ -73,5 +73,3 @@ namespace MasterData.ProductService.Dto
             }
         }
     }
-}
-

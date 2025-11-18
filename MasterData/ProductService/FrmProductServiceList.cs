@@ -22,8 +22,7 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.BandedGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
-using MasterData.ProductService.Converters;
-using MasterData.ProductService.Dto;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {

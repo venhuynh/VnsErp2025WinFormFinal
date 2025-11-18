@@ -58,7 +58,18 @@
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerListDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerSiteDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerSiteListDto.cs" />
-    <Compile Include="MasterData\ProductVariantListDto.cs" />
+    <Compile Include="MasterData\ProductService\AttributeDto.cs" />
+    <Compile Include="MasterData\ProductService\AttributeValueDto.cs" />
+    <Compile Include="MasterData\ProductService\ProductImageDto.cs" />
+    <Compile Include="MasterData\ProductService\ProductServiceCategoryDto.cs" />
+    <Compile Include="MasterData\ProductService\ProductServiceDto.cs" />
+    <Compile Include="MasterData\ProductService\ProductVariantAttributeDto.cs" />
+    <Compile Include="MasterData\ProductService\ProductVariantDetailDto.cs" />
+    <Compile Include="MasterData\ProductService\ProductVariantDto.cs" />
+    <Compile Include="MasterData\ProductService\ProductVariantImageDto.cs" />
+    <Compile Include="MasterData\ProductService\ProductVariantListDto.cs" />
+    <Compile Include="MasterData\ProductService\UnitOfMeasureDto.cs" />
+    <Compile Include="MasterData\ProductService\VariantAttributeDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

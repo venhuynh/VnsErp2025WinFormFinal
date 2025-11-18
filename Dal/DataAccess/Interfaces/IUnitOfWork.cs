@@ -92,6 +92,14 @@ public interface IUnitOfWork : IDisposable
     /// </returns>
     IDepartmentRepository GetDepartmentRepository();
 
+    /// <summary>
+    /// Lấy đối tượng truy cập dữ liệu cho nhân viên.
+    /// </summary>
+    /// <returns>
+    /// Một thể hiện của <see cref="Dal.DataAccess.Interfaces.MasterData.CompanyRepository.IEmployeeRepository"/> 
+    /// cung cấp các phương thức truy cập dữ liệu cho nhân viên.
+    /// </returns>
+    IEmployeeRepository GetEmployeeRepository();
     #endregion
 
     #region Partner

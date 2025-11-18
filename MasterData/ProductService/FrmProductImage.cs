@@ -15,7 +15,7 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.WinExplorer;
 using DevExpress.XtraSplashScreen;
-using MasterData.ProductService.Dto;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {

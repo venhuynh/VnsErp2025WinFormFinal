@@ -13,7 +13,7 @@ using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
-using MasterData.ProductService.Dto;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {

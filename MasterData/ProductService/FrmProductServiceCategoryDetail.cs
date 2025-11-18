@@ -9,8 +9,7 @@ using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.DXErrorProvider;
-using MasterData.ProductService.Converters;
-using MasterData.ProductService.Dto;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {

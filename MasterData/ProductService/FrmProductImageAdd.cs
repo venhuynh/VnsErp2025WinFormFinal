@@ -7,8 +7,7 @@ using System.Windows.Forms;
 using Bll.MasterData.ProductServiceBll;
 using Common.Utils;
 using DevExpress.XtraEditors;
-using MasterData.ProductService.Converters;
-using MasterData.ProductService.Dto;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {

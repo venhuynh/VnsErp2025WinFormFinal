@@ -5,6 +5,7 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.BandedGrid;
 using DevExpress.XtraLayout;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {
@@ -335,7 +336,7 @@ namespace MasterData.ProductService
             // 
             // productServiceDtoBindingSource
             // 
-            this.productServiceDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductServiceDto);
+            this.productServiceDtoBindingSource.DataSource = typeof(ProductServiceDto);
             // 
             // ProductServiceAdvBandedGridView
             // 

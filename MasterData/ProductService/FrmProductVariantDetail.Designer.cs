@@ -10,6 +10,7 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
 using DevExpress.XtraTreeList.Columns;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {
@@ -321,7 +322,7 @@ namespace MasterData.ProductService
             // 
             // attributeValueDtoBindingSource
             // 
-            this.attributeValueDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.AttributeValueDto);
+            this.attributeValueDtoBindingSource.DataSource = typeof(AttributeValueDto);
             // 
             // AttributeValueGridView
             // 
@@ -362,7 +363,7 @@ namespace MasterData.ProductService
             // 
             // attributeDtoBindingSource
             // 
-            this.attributeDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.AttributeDto);
+            this.attributeDtoBindingSource.DataSource = typeof(AttributeDto);
             // 
             // AttributeSearchLookUpEdit1View
             // 
@@ -405,7 +406,7 @@ namespace MasterData.ProductService
             // 
             // productServiceDtoBindingSource
             // 
-            this.productServiceDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.ProductServiceDto);
+            this.productServiceDtoBindingSource.DataSource = typeof(ProductServiceDto);
             // 
             // searchLookUpEdit1View
             // 
@@ -474,7 +475,7 @@ namespace MasterData.ProductService
             // 
             // unitOfMeasureDtoBindingSource
             // 
-            this.unitOfMeasureDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.UnitOfMeasureDto);
+            this.unitOfMeasureDtoBindingSource.DataSource = typeof(UnitOfMeasureDto);
             // 
             // gridView1
             // 

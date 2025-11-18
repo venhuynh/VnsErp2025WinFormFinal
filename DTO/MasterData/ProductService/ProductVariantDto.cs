@@ -4,16 +4,16 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 
-namespace MasterData.ProductService.Dto
+namespace DTO.MasterData.ProductService;
+
+/// <summary>
+/// Data Transfer Object cho ProductVariant entity
+/// Chứa thông tin biến thể sản phẩm/dịch vụ
+/// Tối ưu cho hiển thị trong AdvBandedGridView
+/// </summary>
+public class ProductVariantDto : INotifyPropertyChanged
 {
-    /// <summary>
-    /// Data Transfer Object cho ProductVariant entity
-    /// Chứa thông tin biến thể sản phẩm/dịch vụ
-    /// Tối ưu cho hiển thị trong AdvBandedGridView
-    /// </summary>
-    public class ProductVariantDto : INotifyPropertyChanged
-    {
-        #region Private Fields
+    #region Private Fields
         private string _productCode;
         private string _productName;
         private string _variantCode;
@@ -498,5 +498,3 @@ namespace MasterData.ProductService.Dto
 
         #endregion
     }
-
-}

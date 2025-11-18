@@ -10,6 +10,7 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
 using DevExpress.XtraTreeList.Columns;
+using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {
@@ -317,7 +318,7 @@ namespace MasterData.ProductService
             // 
             // unitOfMeasureDtoBindingSource
             // 
-            this.unitOfMeasureDtoBindingSource.DataSource = typeof(MasterData.ProductService.Dto.UnitOfMeasureDto);
+            this.unitOfMeasureDtoBindingSource.DataSource = typeof(UnitOfMeasureDto);
             // 
             // AttributeGridView
             // 
