@@ -42,6 +42,75 @@ public class ProductVariantListDto
 
     [Display(Name = "Hiển thị")]
     public string DisplayText => $"{ProductCode}-{VariantCode} - {ProductName} ({UnitName})";
+
+    /// <summary>
+    /// Thông tin biến thể sản phẩm dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [Display(Name = "Thông tin HTML")]
+    public string FullNameHtml
+    {
+        get
+        {
+            var productName = ProductName ?? string.Empty;
+            var productCode = ProductCode ?? string.Empty;
+            var variantCode = VariantCode ?? string.Empty;
+            var variantFullName = VariantFullName ?? string.Empty;
+            var unitName = UnitName ?? string.Empty;
+            var statusText = IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
+            var statusColor = IsActive ? "#4CAF50" : "#F44336";
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
+            // - Mã sản phẩm: font nhỏ hơn, màu xám
+            // - Mã biến thể: font nhỏ hơn, màu cam
+            // - Tên biến thể đầy đủ: font nhỏ hơn, màu xám cho label, đen cho value
+            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
+            // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
+
+            var html = $"<size=12><b><color='blue'>{productName}</color></b></size>";
+
+            if (!string.IsNullOrWhiteSpace(productCode))
+            {
+                html += $" <size=9><color='#757575'>({productCode})</color></size>";
+            }
+
+            html += "<br>";
+
+            if (!string.IsNullOrWhiteSpace(variantCode))
+            {
+                html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(variantFullName))
+            {
+                if (!string.IsNullOrWhiteSpace(variantCode))
+                    html += " | ";
+                html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantFullName}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(variantCode) || !string.IsNullOrWhiteSpace(variantFullName))
+            {
+                html += "<br>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(unitName))
+            {
+                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitName}</b></color></size><br>";
+            }
+
+            // Hiển thị số lượng hình ảnh nếu có
+            if (ImageCount > 0)
+            {
+                html += $"<size=9><color='#757575'>Hình ảnh:</color></size> <size=10><color='#212121'><b>{ImageCount} hình</b></color></size><br>";
+            }
+
+            html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+
+            return html;
+        }
+    }
 }
 
 /// <summary>

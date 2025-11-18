@@ -1,4 +1,6 @@
 ﻿using Bll.MasterData.CompanyBll;
+using Bll.MasterData.CustomerBll;
+using Common.Utils;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
 using DTO.MasterData.Company;
@@ -6,13 +8,9 @@ using DTO.MasterData.CustomerPartner;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.MasterData.CustomerBll;
-using Common.Utils;
-using Dal.DataContext;
 
 namespace Inventory.StockIn
 {
@@ -23,7 +21,7 @@ namespace Inventory.StockIn
         /// <summary>
         /// DTO chứa dữ liệu phiếu nhập kho
         /// </summary>
-        private StockInOutMaster _stockInMasterEntity;
+        private StockInMasterDto _stockInMasterDto;
 
         /// <summary>
         /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
@@ -83,28 +81,25 @@ namespace Inventory.StockIn
         /// </summary>
         private void InitializeDto()
         {
-            _stockInMasterEntity = new StockInOutMaster
+            _stockInMasterDto = new StockInMasterDto
             {
-                Id = default,
-                StockInOutDate = default,
-                VocherNumber = null,
-                StockInOutType = 0,
-                TrangThaiPhieuNhap = 0,
-                WarehouseId = default,
+                Id = Guid.Empty,
+                StockInNumber = null,
+                StockInDate = DateTime.Now,
+                LoaiNhapKho = LoaiNhapKhoEnum.ThuongMai,
+                TrangThai = TrangThaiPhieuNhapEnum.TaoMoi,
+                WarehouseId = Guid.Empty,
+                WarehouseCode = null,
+                WarehouseName = null,
                 PurchaseOrderId = null,
-                PartnerSiteId = default,
+                PurchaseOrderNumber = null,
+                SupplierId = Guid.Empty,
+                SupplierName = null,
                 Notes = null,
                 TotalQuantity = 0,
                 TotalAmount = 0,
                 TotalVat = 0,
-                TotalAmountIncludedVat = 0,
-                CreatedBy = null,
-                CreatedDate = null,
-                UpdatedBy = null,
-                UpdatedDate = null,
-                StockInOutDetails = null,
-                BusinessPartnerSite = null,
-                CompanyBranch = null
+                TotalAmountIncludedVat = 0
             };
         }
          
@@ -234,7 +229,7 @@ namespace Inventory.StockIn
                     return;
                 }
 
-                _stockInMasterEntity = dto;
+                _stockInMasterDto = dto;
 
                 // Refresh tất cả bindings
                 RefreshAllBindings();
@@ -292,7 +287,7 @@ namespace Inventory.StockIn
                 if (StockInDateDateEdit.EditValue is DateTime selectedDate)
                 {
                     // Cập nhật ngày vào DTO
-                    _stockInMasterEntity.StockInDate = selectedDate;
+                    _stockInMasterDto.StockInDate = selectedDate;
                     
                     // Tạo số phiếu nhập tự động
                     GenerateStockInNumber(selectedDate);
@@ -313,7 +308,7 @@ namespace Inventory.StockIn
             {
                 if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
                 {
-                    _stockInMasterEntity.WarehouseId = warehouseId;
+                    _stockInMasterDto.WarehouseId = warehouseId;
                     
                     // Lấy thông tin chi nhánh từ binding source
                     var selectedWarehouse = companyBranchDtoBindingSource.Cast<CompanyBranchDto>()
@@ -321,8 +316,8 @@ namespace Inventory.StockIn
                     
                     if (selectedWarehouse != null)
                     {
-                        _stockInMasterEntity.WarehouseCode = selectedWarehouse.BranchCode;
-                        _stockInMasterEntity.WarehouseName = selectedWarehouse.BranchName;
+                        _stockInMasterDto.WarehouseCode = selectedWarehouse.BranchCode;
+                        _stockInMasterDto.WarehouseName = selectedWarehouse.BranchName;
                     }
                     
                     // Xóa lỗi validation nếu có
@@ -330,9 +325,9 @@ namespace Inventory.StockIn
                 }
                 else
                 {
-                    _stockInMasterEntity.WarehouseId = Guid.Empty;
-                    _stockInMasterEntity.WarehouseCode = null;
-                    _stockInMasterEntity.WarehouseName = null;
+                    _stockInMasterDto.WarehouseId = Guid.Empty;
+                    _stockInMasterDto.WarehouseCode = null;
+                    _stockInMasterDto.WarehouseName = null;
                 }
             }
             catch (Exception ex)
@@ -347,7 +342,7 @@ namespace Inventory.StockIn
             {
                 if (SupplierNameTextEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
                 {
-                    _stockInMasterEntity.SupplierId = supplierId;
+                    _stockInMasterDto.SupplierId = supplierId;
                     
                     // Lấy thông tin chi nhánh đối tác từ binding source
                     var selectedSite = businessPartnerSiteListDtoBindingSource.Cast<BusinessPartnerSiteListDto>()
@@ -355,7 +350,7 @@ namespace Inventory.StockIn
                     
                     if (selectedSite != null)
                     {
-                        _stockInMasterEntity.SupplierName = selectedSite.SiteName;
+                        _stockInMasterDto.SupplierName = selectedSite.SiteName;
                     }
                     
                     // Xóa lỗi validation nếu có
@@ -363,8 +358,8 @@ namespace Inventory.StockIn
                 }
                 else
                 {
-                    _stockInMasterEntity.SupplierId = Guid.Empty;
-                    _stockInMasterEntity.SupplierName = null;
+                    _stockInMasterDto.SupplierId = Guid.Empty;
+                    _stockInMasterDto.SupplierName = null;
                 }
             }
             catch (Exception ex)
@@ -379,7 +374,7 @@ namespace Inventory.StockIn
             {
                 if (StockInNumberTextEdit != null)
                 {
-                    _stockInMasterEntity.StockInNumber = StockInNumberTextEdit.Text?.Trim();
+                    _stockInMasterDto.StockInNumber = StockInNumberTextEdit.Text?.Trim();
                     
                     // Xóa lỗi validation nếu có
                     dxErrorProvider1.SetError(StockInNumberTextEdit, string.Empty);
@@ -405,13 +400,13 @@ namespace Inventory.StockIn
                 // Cập nhật từ TextEdit
                 if (StockInNumberTextEdit != null)
                 {
-                    _stockInMasterEntity.StockInNumber = StockInNumberTextEdit.Text?.Trim();
+                    _stockInMasterDto.StockInNumber = StockInNumberTextEdit.Text?.Trim();
                 }
 
                 // Cập nhật từ DateEdit
                 if (StockInDateDateEdit != null && StockInDateDateEdit.EditValue is DateTime date)
                 {
-                    _stockInMasterEntity.StockInDate = date;
+                    _stockInMasterDto.StockInDate = date;
                 }
 
                 // Cập nhật từ Warehouse SearchLookUpEdit
@@ -419,7 +414,7 @@ namespace Inventory.StockIn
                 {
                     if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
                     {
-                        _stockInMasterEntity.WarehouseId = warehouseId;
+                        _stockInMasterDto.WarehouseId = warehouseId;
                         
                         // Lấy thông tin chi nhánh từ binding source
                         var selectedWarehouse = companyBranchDtoBindingSource.Cast<CompanyBranchDto>()
@@ -427,15 +422,15 @@ namespace Inventory.StockIn
                         
                         if (selectedWarehouse != null)
                         {
-                            _stockInMasterEntity.WarehouseCode = selectedWarehouse.BranchCode;
-                            _stockInMasterEntity.WarehouseName = selectedWarehouse.BranchName;
+                            _stockInMasterDto.WarehouseCode = selectedWarehouse.BranchCode;
+                            _stockInMasterDto.WarehouseName = selectedWarehouse.BranchName;
                         }
                     }
                     else
                     {
-                        _stockInMasterEntity.WarehouseId = Guid.Empty;
-                        _stockInMasterEntity.WarehouseCode = null;
-                        _stockInMasterEntity.WarehouseName = null;
+                        _stockInMasterDto.WarehouseId = Guid.Empty;
+                        _stockInMasterDto.WarehouseCode = null;
+                        _stockInMasterDto.WarehouseName = null;
                     }
                 }
 
@@ -444,7 +439,7 @@ namespace Inventory.StockIn
                 {
                     if (SupplierNameTextEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
                     {
-                        _stockInMasterEntity.SupplierId = supplierId;
+                        _stockInMasterDto.SupplierId = supplierId;
                         
                         // Lấy thông tin chi nhánh đối tác từ binding source
                         var selectedSite = businessPartnerSiteListDtoBindingSource.Cast<BusinessPartnerSiteListDto>()
@@ -452,13 +447,13 @@ namespace Inventory.StockIn
                         
                         if (selectedSite != null)
                         {
-                            _stockInMasterEntity.SupplierName = selectedSite.SiteName;
+                            _stockInMasterDto.SupplierName = selectedSite.SiteName;
                         }
                     }
                     else
                     {
-                        _stockInMasterEntity.SupplierId = Guid.Empty;
-                        _stockInMasterEntity.SupplierName = null;
+                        _stockInMasterDto.SupplierId = Guid.Empty;
+                        _stockInMasterDto.SupplierName = null;
                     }
                 }
 
@@ -481,9 +476,9 @@ namespace Inventory.StockIn
                 dxErrorProvider1.ClearErrors();
 
                 // Validate bằng DataAnnotations
-                var context = new ValidationContext(_stockInMasterEntity, serviceProvider: null, items: null);
+                var context = new ValidationContext(_stockInMasterDto, serviceProvider: null, items: null);
                 var results = new List<ValidationResult>();
-                bool isValid = Validator.TryValidateObject(_stockInMasterEntity, context, results, validateAllProperties: true);
+                bool isValid = Validator.TryValidateObject(_stockInMasterDto, context, results, validateAllProperties: true);
 
                 if (!isValid)
                 {
@@ -564,7 +559,7 @@ namespace Inventory.StockIn
                     return null; // Validation thất bại
                 }
 
-                return _stockInMasterEntity;
+                return _stockInMasterDto;
             }
             catch (Exception ex)
             {
@@ -608,8 +603,8 @@ namespace Inventory.StockIn
             try
             {
                 // Chỉ tạo số phiếu nếu chưa có hoặc đang ở trạng thái tạo mới
-                if (!string.IsNullOrWhiteSpace(_stockInMasterEntity.StockInNumber) && 
-                    _stockInMasterEntity.TrangThai != TrangThaiPhieuNhapEnum.TaoMoi)
+                if (!string.IsNullOrWhiteSpace(_stockInMasterDto.StockInNumber) && 
+                    _stockInMasterDto.TrangThai != TrangThaiPhieuNhapEnum.TaoMoi)
                 {
                     return;
                 }
@@ -617,16 +612,16 @@ namespace Inventory.StockIn
                 // Lấy thông tin từ DTO
                 var month = stockInDate.Month.ToString("D2"); // MM
                 var year = stockInDate.Year.ToString().Substring(2); // YY (2 ký tự cuối)
-                var loaiNhapKhoIndex = ((int)_stockInMasterEntity.LoaiNhapKho).ToString("D2"); // NN (2 ký tự)
+                var loaiNhapKhoIndex = ((int)_stockInMasterDto.LoaiNhapKho).ToString("D2"); // NN (2 ký tự)
 
                 // Lấy số thứ tự tiếp theo
-                var nextSequence = GetNextSequenceNumber(stockInDate, _stockInMasterEntity.LoaiNhapKho);
+                var nextSequence = GetNextSequenceNumber(stockInDate, _stockInMasterDto.LoaiNhapKho);
 
                 // Tạo số phiếu: PNK-MMYY-NNXXX
                 var stockInNumber = $"PNK-{month}{year}-{loaiNhapKhoIndex}{nextSequence:D3}";
 
                 // Cập nhật vào DTO và control
-                _stockInMasterEntity.StockInNumber = stockInNumber;
+                _stockInMasterDto.StockInNumber = stockInNumber;
                 if (StockInNumberTextEdit != null)
                 {
                     StockInNumberTextEdit.Text = stockInNumber;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace DTO.MasterData.ProductService;
@@ -220,6 +221,106 @@ public class ProductVariantDto : INotifyPropertyChanged
         [DisplayName("Tên đầy đủ")]
         [Description("Tên đầy đủ của biến thể")]
         public string FullName => $"{ProductName} - {VariantName}";
+
+        /// <summary>
+        /// Thông tin biến thể sản phẩm dưới dạng HTML theo format DevExpress
+        /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+        /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+        /// </summary>
+        [DisplayName("Thông tin HTML")]
+        [Description("Thông tin biến thể sản phẩm dưới dạng HTML")]
+        public string FullNameHtml
+        {
+            get
+            {
+                var productName = ProductName ?? string.Empty;
+                var productCode = ProductCode ?? string.Empty;
+                var variantCode = VariantCode ?? string.Empty;
+                var variantName = VariantName ?? string.Empty;
+                var unitCode = UnitCode ?? string.Empty;
+                var unitName = UnitName ?? string.Empty;
+                var statusText = IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
+                var statusColor = IsActive ? "#4CAF50" : "#F44336";
+
+                // Format chuyên nghiệp với visual hierarchy rõ ràng
+                // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
+                // - Mã sản phẩm: font nhỏ hơn, màu xám
+                // - Mã biến thể: font nhỏ hơn, màu cam
+                // - Tên biến thể: font nhỏ hơn, màu xám cho label, đen cho value
+                // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
+                // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
+
+                var html = $"<size=12><b><color='blue'>{productName}</color></b></size>";
+
+                if (!string.IsNullOrWhiteSpace(productCode))
+                {
+                    html += $" <size=9><color='#757575'>({productCode})</color></size>";
+                }
+
+                html += "<br>";
+
+                if (!string.IsNullOrWhiteSpace(variantCode))
+                {
+                    html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size>";
+                }
+
+                if (!string.IsNullOrWhiteSpace(variantName))
+                {
+                    if (!string.IsNullOrWhiteSpace(variantCode))
+                        html += " | ";
+                    html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantName}</b></color></size>";
+                }
+
+                if (!string.IsNullOrWhiteSpace(variantCode) || !string.IsNullOrWhiteSpace(variantName))
+                {
+                    html += "<br>";
+                }
+
+                if (!string.IsNullOrWhiteSpace(unitCode) || !string.IsNullOrWhiteSpace(unitName))
+                {
+                    var unitDisplay = string.IsNullOrWhiteSpace(unitCode) 
+                        ? unitName 
+                        : string.IsNullOrWhiteSpace(unitName) 
+                            ? unitCode 
+                            : $"{unitCode} - {unitName}";
+                    
+                    html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitDisplay}</b></color></size><br>";
+                }
+
+                // Hiển thị thuộc tính nếu có
+                if (Attributes != null && Attributes.Count > 0)
+                {
+                    var attributeParts = new List<string>();
+                    foreach (var attr in Attributes.Take(3)) // Chỉ hiển thị 3 thuộc tính đầu tiên
+                    {
+                        if (!string.IsNullOrWhiteSpace(attr.AttributeName) && !string.IsNullOrWhiteSpace(attr.AttributeValue))
+                        {
+                            attributeParts.Add($"<b>{attr.AttributeName}</b>: {attr.AttributeValue}");
+                        }
+                    }
+
+                    if (attributeParts.Count > 0)
+                    {
+                        html += $"<size=9><color='#757575'>Thuộc tính:</color></size> <size=10><color='#212121'>{string.Join(", ", attributeParts)}</color></size>";
+                        if (Attributes.Count > 3)
+                        {
+                            html += $" <size=9><color='#757575'>(+{Attributes.Count - 3} thuộc tính khác)</color></size>";
+                        }
+                        html += "<br>";
+                    }
+                }
+
+                // Hiển thị số lượng hình ảnh nếu có
+                if (ImageCount > 0)
+                {
+                    html += $"<size=9><color='#757575'>Hình ảnh:</color></size> <size=10><color='#212121'><b>{ImageCount} hình</b></color></size><br>";
+                }
+
+                html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+
+                return html;
+            }
+        }
 
         /// <summary>
         /// Hiển thị thông tin đơn vị (UnitCode - UnitName)

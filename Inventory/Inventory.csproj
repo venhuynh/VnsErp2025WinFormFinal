@@ -91,6 +91,9 @@
     <EmbeddedResource Include="StockIn\FrmNhapKhoThuongMai02.resx">
       <DependentUpon>FrmNhapKhoThuongMai02.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\UcStockInDetail.resx">
+      <DependentUpon>UcStockInDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockIn\UcStockInMaster.resx">
       <DependentUpon>UcStockInMaster.cs</DependentUpon>
     </EmbeddedResource>
@@ -99,8 +102,11 @@
     <None Include="Doc\NhapHang\NhapHangThuongMai_02_NhapKhoTheoPONCC.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_01_NhapKhoDoiBan.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_00_TongQuan.md" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantListDto.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
