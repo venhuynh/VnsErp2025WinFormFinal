@@ -1,5 +1,4 @@
-﻿using Bll.MasterData.Company;
-using Bll.MasterData.Customer;
+﻿using Bll.MasterData.Customer;
 using DTO.Inventory.StockIn;
 using DTO.MasterData.Company;
 using DTO.MasterData.CustomerPartner;
@@ -11,6 +10,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.CompanyBll;
 
 namespace Inventory.StockIn
 {

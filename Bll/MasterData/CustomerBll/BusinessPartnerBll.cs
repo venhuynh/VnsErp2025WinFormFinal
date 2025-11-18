@@ -1,23 +1,25 @@
 ﻿using Common.Appconfig;
-using Dal.DataAccess.Implementations.MasterData.Company;
-using System;
-using Dal.DataAccess.Interfaces.MasterData.Company;
+using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
+using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
-using Logger.Interfaces;
-using Dal.DataContext;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 
-namespace Bll.MasterData.Company
+namespace Bll.MasterData.CustomerBll
 {
     /// <summary>
-    /// Business Logic Layer cho Company
+    /// Business logic layer cho BusinessPartner. Trả về entity để UI tự chuyển đổi sang DTO.
+    /// Tránh phụ thuộc ngược sang project MasterData (DTO) để không tạo vòng tham chiếu.
     /// </summary>
-    public class CompanyBll
+    public class BusinessPartnerBll
     {
         #region Fields
 
-        private ICompanyRepository _dataAccess;
-        private readonly ILogger _logger;
+        private IBusinessPartnerRepository _dataAccess;
         private readonly object _lockObject = new object();
 
         #endregion
@@ -75,71 +77,62 @@ namespace Bll.MasterData.Company
         }
 
         #endregion
+
+
         /// <summary>
-        /// Đảm bảo chỉ có 1 công ty trong database
+        /// Lấy toàn bộ đối tác (entities) - Async.
         /// </summary>
-        public void EnsureSingleCompany()
+        public Task<List<BusinessPartner>> GetAllAsync()
         {
-            try
-            {
-                _logger?.Info("Bắt đầu đảm bảo chỉ có 1 công ty trong database");
-                GetDataAccess().EnsureDefaultCompany();
-                _logger?.Info("Hoàn thành đảm bảo chỉ có 1 công ty trong database");
-            }
-            catch (Exception ex)
-            {
-                _logger?.Error($"Lỗi khi đảm bảo chỉ có 1 công ty: {ex.Message}", ex);
-                throw;
-            }
+            return _businessPartnerDataAccess.GetAllAsync();
         }
 
         /// <summary>
-        /// Lấy thông tin công ty từ database
+        /// Lấy toàn bộ đối tác (entities) - Sync.
         /// </summary>
-        /// <returns>Company entity</returns>
-        public Company GetCompany()
+        public List<BusinessPartner> GetAll()
         {
-            try
-            {
-                _logger?.Info("Bắt đầu lấy thông tin công ty từ database");
-                var dataAccess = GetDataAccess();
-                dataAccess.EnsureDefaultCompany();
-                var company = dataAccess.GetCompany();
-                _logger?.Info("Hoàn thành lấy thông tin công ty từ database");
-                return company;
-            }
-            catch (Exception ex)
-            {
-                _logger?.Error($"Lỗi khi lấy thông tin công ty: {ex.Message}", ex);
-                throw;
-            }
+            return _businessPartnerDataAccess.GetAll();
         }
 
         /// <summary>
-        /// Cập nhật thông tin công ty
+        /// Tồn tại mã?
         /// </summary>
-        /// <param name="company">Company entity cần cập nhật</param>
-        public void UpdateCompany(Company company)
+        public bool IsCodeExists(string code)
         {
-            try
-            {
-                _logger?.Info("Bắt đầu cập nhật thông tin công ty");
-                GetDataAccess().UpdateCompany(company);
-                _logger?.Info("Hoàn thành cập nhật thông tin công ty");
-            }
-            catch (Exception ex)
-            {
-                _logger?.Error($"Lỗi khi cập nhật thông tin công ty: {ex.Message}", ex);
-                throw;
-            }
+            return _businessPartnerDataAccess.IsPartnerCodeExists(code);
         }
 
         /// <summary>
-        /// Dispose resources
+        /// Xóa đối tác theo Id.
         /// </summary>
-        public void Dispose()
+        public void Delete(Guid id)
         {
-            _dataAccess?.Dispose();
+            _businessPartnerDataAccess.DeletePartner(id);
+        }
+
+        /// <summary>
+        /// Lấy đối tác theo Id (entity).
+        /// </summary>
+        public BusinessPartner GetById(Guid id)
+        {
+            return _businessPartnerDataAccess.GetById(id);
+        }
+
+        /// <summary>
+        /// Lấy đối tác theo Id (Async, entity).
+        /// </summary>
+        public Task<BusinessPartner> GetByIdAsync(Guid id)
+        {
+            return _businessPartnerDataAccess.GetByIdAsync(id);
+        }
+
+        /// <summary>
+        /// Lưu/cập nhật đầy đủ thông tin đối tác.
+        /// </summary>
+        public void SaveOrUpdate(BusinessPartner entity)
+        {
+            _businessPartnerDataAccess.SaveOrUpdate(entity);
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿using Dal.DataContext;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Common.Appconfig;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
+using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using Dal.DataContext;
 
-namespace Bll.MasterData.Company
+namespace Bll.MasterData.CompanyBll
 {
     /// <summary>
     /// Business Logic Layer cho Department
@@ -13,23 +14,60 @@ namespace Bll.MasterData.Company
     /// </summary>
     public class DepartmentBll
     {
-        #region ========== FIELDS ==========
+        #region Fields
 
-        private readonly DepartmentRepository _departmentDataAccess;
+        private IDepartmentRepository _dataAccess;
+        private readonly object _lockObject = new object();
 
         #endregion
 
-        #region ========== CONSTRUCTOR ==========
+        #region Constructors
 
         /// <summary>
-        /// Khởi tạo DepartmentBll
+        /// Constructor mặc định
         /// </summary>
         public DepartmentBll()
         {
-            _departmentDataAccess = new DepartmentDataAccess();
+            
         }
 
         #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IDepartmentRepository GetDataAccess()
+        {
+            if (_dataAccess != null) return _dataAccess;
+            lock (_lockObject)
+            {
+                if (_dataAccess != null) return _dataAccess;
+                try
+                {
+                    // Sử dụng global connection string từ ApplicationStartupManager
+                    var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                    if (string.IsNullOrEmpty(globalConnectionString))
+                    {
+                        throw new InvalidOperationException(
+                            "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                    }
+
+                    _dataAccess = new DepartmentRepository(globalConnectionString);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(
+                        "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                }
+            }
+
+            return _dataAccess;
+        }
+
+        #endregion
+
 
         #region ========== CRUD OPERATIONS ==========
 
@@ -41,7 +79,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return _departmentDataAccess.GetAll();
+                return GetDataAccess().GetAll();
             }
             catch (Exception ex)
             {
@@ -58,7 +96,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return await _departmentDataAccess.GetAllAsync();
+                return await GetDataAccess().GetAllAsync();
             }
             catch (Exception ex)
             {
@@ -76,7 +114,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return _departmentDataAccess.GetById(id);
+                return GetDataAccess().GetById(id);
             }
             catch (Exception ex)
             {
@@ -93,7 +131,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return await _departmentDataAccess.GetByIdAsync(id);
+                return await GetDataAccess().GetByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -113,7 +151,7 @@ namespace Bll.MasterData.Company
                 // Validation
                 await ValidateDepartmentAsync(department);
 
-                return await _departmentDataAccess.CreateAsync(department);
+                return await GetDataAccess().CreateAsync(department);
             }
             catch (Exception ex)
             {
@@ -130,8 +168,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                
-                return _departmentDataAccess.UpdateDepartment(department);
+                return GetDataAccess().UpdateDepartment(department);
             }
             catch (Exception ex)
             {
@@ -157,7 +194,7 @@ namespace Bll.MasterData.Company
 
                 System.Diagnostics.Debug.WriteLine("DepartmentBll.UpdateAsync - Validation passed, calling UpdateDepartmentAsync");
 
-                return await _departmentDataAccess.UpdateDepartmentAsync(department);
+                return await GetDataAccess().UpdateDepartmentAsync(department);
             }
             catch (Exception ex)
             {
@@ -175,7 +212,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return await _departmentDataAccess.DeleteAsync(id);
+                return await GetDataAccess().DeleteAsync(id);
             }
             catch (Exception ex)
             {
@@ -192,7 +229,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return _departmentDataAccess.DeleteMultiple(ids);
+                return GetDataAccess().DeleteMultiple(ids);
             }
             catch (Exception ex)
             {
@@ -209,7 +246,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return await _departmentDataAccess.DeleteMultipleAsync(ids);
+                return await GetDataAccess().DeleteMultipleAsync(ids);
             }
             catch (Exception ex)
             {
@@ -243,7 +280,7 @@ namespace Bll.MasterData.Company
             // Kiểm tra department code trùng lặp - chỉ khi tạo mới
             if (!excludeId.HasValue) // Chỉ kiểm tra khi tạo mới (excludeId = null)
             {
-                var isCodeExists = await _departmentDataAccess.IsDepartmentCodeExistsAsync(department.DepartmentCode, excludeId);
+                var isCodeExists = await GetDataAccess().IsDepartmentCodeExistsAsync(department.DepartmentCode, null);
                 if (isCodeExists)
                 {
                     throw new ArgumentException($"Mã phòng ban '{department.DepartmentCode}' đã tồn tại");
@@ -253,7 +290,7 @@ namespace Bll.MasterData.Company
             // Kiểm tra parent department có tồn tại không (nếu có)
             if (department.ParentId.HasValue)
             {
-                var parentDepartment = await _departmentDataAccess.GetByIdAsync(department.ParentId.Value);
+                var parentDepartment = await GetDataAccess().GetByIdAsync(department.ParentId.Value);
                 if (parentDepartment == null)
                     throw new ArgumentException($"Parent department với ID {department.ParentId.Value} không tồn tại");
             }

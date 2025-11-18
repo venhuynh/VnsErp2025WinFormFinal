@@ -1,5 +1,4 @@
-﻿using Bll.MasterData.Company;
-using Dal.Logging;
+﻿using Dal.Logging;
 using DevExpress.XtraEditors;
 using MasterData.Company.Converters;
 using MasterData.Company.Dto;
@@ -7,6 +6,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Bll.MasterData.CompanyBll;
 
 namespace MasterData.Company
 {

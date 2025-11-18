@@ -1,11 +1,12 @@
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
+using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using Dal.DataContext;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataContext;
-using Dal.Exceptions;
 
-namespace Bll.MasterData.Company
+namespace Bll.MasterData.CompanyBll
 {
     /// <summary>
     /// Business Logic Layer cho quản lý chi nhánh công ty.
@@ -13,22 +14,57 @@ namespace Bll.MasterData.Company
     /// </summary>
     public class CompanyBranchBll
     {
-        #region ========== KHAI BÁO BIẾN ==========
+        #region Fields
 
-        /// <summary>
-        /// Data Access Layer cho chi nhánh công ty
-        /// </summary>
-        private readonly CompanyBranchDataAccess _companyBranchDataAccess = new CompanyBranchDataAccess();
+        private ICompanyBranchRepository _companyBranchDataAccess;
+        private readonly object _lockObject = new object();
 
         #endregion
 
-        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
+        #region Constructors
 
         /// <summary>
-        /// Khởi tạo Business Logic Layer cho chi nhánh công ty.
+        /// Constructor mặc định
         /// </summary>
         public CompanyBranchBll()
         {
+            
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private ICompanyBranchRepository GetDataAccess()
+        {
+            if (_companyBranchDataAccess != null) return _companyBranchDataAccess;
+            lock (_lockObject)
+            {
+                if (_companyBranchDataAccess != null) return _companyBranchDataAccess;
+                try
+                {
+                    // Sử dụng global connection string từ ApplicationStartupManager
+                    var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                    if (string.IsNullOrEmpty(globalConnectionString))
+                    {
+                        throw new InvalidOperationException(
+                            "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                    }
+
+                    // ReSharper disable once PossibleMultipleWriteAccessInDoubleCheckLocking
+                    _companyBranchDataAccess = new CompanyBranchRepository(globalConnectionString);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(
+                        "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                }
+            }
+
+            return _companyBranchDataAccess;
         }
 
         #endregion
@@ -43,7 +79,8 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return await _companyBranchDataAccess.GetAllAsync();
+                // Lấy tất cả chi nhánh từ công ty duy nhất (Guid.Empty)
+                return await Task.Run(() => GetDataAccess().GetByCompanyId(Guid.Empty));
             }
             catch (Exception ex)
             {
@@ -59,7 +96,8 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return _companyBranchDataAccess.GetAll();
+                // Lấy tất cả chi nhánh từ công ty duy nhất (Guid.Empty)
+                return GetDataAccess().GetByCompanyId(Guid.Empty);
             }
             catch (Exception ex)
             {
@@ -76,7 +114,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return _companyBranchDataAccess.GetById(id);
+                return GetDataAccess().GetById(id);
             }
             catch (Exception ex)
             {
@@ -97,7 +135,7 @@ namespace Bll.MasterData.Company
                     return null;
 
                 // Sử dụng GetByBranchCodeAndCompany với Guid.Empty để lấy từ Company duy nhất
-                return _companyBranchDataAccess.GetByBranchCodeAndCompany(branchCode.Trim(), Guid.Empty);
+                return GetDataAccess().GetByBranchCodeAndCompany(branchCode.Trim(), Guid.Empty);
             }
             catch (Exception ex)
             {
@@ -113,7 +151,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return await _companyBranchDataAccess.GetActiveBranchesAsync();
+                return await GetDataAccess().GetActiveBranchesAsync();
             }
             catch (Exception ex)
             {
@@ -129,7 +167,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return _companyBranchDataAccess.GetActiveBranches();
+                return GetDataAccess().GetActiveBranches();
             }
             catch (Exception ex)
             {
@@ -146,7 +184,7 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                return _companyBranchDataAccess.GetByCompanyId(companyId);
+                return GetDataAccess().GetByCompanyId(companyId);
             }
             catch (Exception ex)
             {
@@ -179,7 +217,7 @@ namespace Bll.MasterData.Company
                 // Thiết lập thông tin mặc định
                 companyBranch.Id = Guid.NewGuid();
 
-                return _companyBranchDataAccess.Insert(companyBranch);
+                return GetDataAccess().Insert(companyBranch);
             }
             catch (Exception ex)
             {
@@ -211,8 +249,9 @@ namespace Bll.MasterData.Company
                     throw new Exception($"Mã chi nhánh '{companyBranch.BranchCode}' đã tồn tại trong hệ thống");
                 }
 
-
-                _companyBranchDataAccess.Update(companyBranch);
+                // TODO: Update method chưa được implement trong repository
+                // Cần thêm Update method vào ICompanyBranchRepository và CompanyBranchRepository
+                throw new NotImplementedException("Phương thức Update chưa được triển khai trong repository");
             }
             catch (Exception ex)
             {
@@ -236,12 +275,14 @@ namespace Bll.MasterData.Company
                 }
 
                 // Kiểm tra ràng buộc dữ liệu (nếu có)
-                if (HasDataConstraints(id))
+                if (HasDataConstraints())
                 {
                     throw new Exception("Không thể xóa chi nhánh công ty do có dữ liệu liên quan");
                 }
 
-                _companyBranchDataAccess.Delete(existingBranch);
+                // TODO: Delete method chưa được implement trong repository
+                // Cần thêm Delete method vào ICompanyBranchRepository và CompanyBranchRepository
+                throw new NotImplementedException("Phương thức Delete chưa được triển khai trong repository");
             }
             catch (Exception ex)
             {
@@ -261,7 +302,7 @@ namespace Bll.MasterData.Company
                 if (string.IsNullOrWhiteSpace(branchCode))
                     return false;
 
-                return _companyBranchDataAccess.IsBranchCodeExists(branchCode.Trim());
+                return GetDataAccess().IsBranchCodeExists(branchCode.Trim());
             }
             catch (Exception ex)
             {
@@ -282,7 +323,7 @@ namespace Bll.MasterData.Company
                 if (string.IsNullOrWhiteSpace(branchCode))
                     return false;
 
-                return _companyBranchDataAccess.IsBranchCodeExists(branchCode.Trim(), excludeId);
+                return GetDataAccess().IsBranchCodeExists(branchCode.Trim(), excludeId);
             }
             catch (Exception ex)
             {
@@ -302,7 +343,7 @@ namespace Bll.MasterData.Company
                 if (string.IsNullOrWhiteSpace(branchName))
                     return false;
 
-                return _companyBranchDataAccess.IsBranchNameExists(branchName.Trim());
+                return GetDataAccess().IsBranchNameExists(branchName.Trim());
             }
             catch (Exception ex)
             {
@@ -323,7 +364,7 @@ namespace Bll.MasterData.Company
                 if (string.IsNullOrWhiteSpace(branchName))
                     return false;
 
-                return _companyBranchDataAccess.IsBranchNameExists(branchName.Trim(), excludeId);
+                return GetDataAccess().IsBranchNameExists(branchName.Trim(), excludeId);
             }
             catch (Exception ex)
             {
@@ -393,9 +434,8 @@ namespace Bll.MasterData.Company
         /// <summary>
         /// Kiểm tra chi nhánh có ràng buộc dữ liệu không.
         /// </summary>
-        /// <param name="id">ID của chi nhánh</param>
         /// <returns>True nếu có ràng buộc, False nếu không</returns>
-        private bool HasDataConstraints(Guid id)
+        private bool HasDataConstraints()
         {
             try
             {

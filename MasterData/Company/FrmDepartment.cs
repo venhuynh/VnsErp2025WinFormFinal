@@ -1,5 +1,4 @@
 ﻿using Bll.Common;
-using Bll.MasterData.Company;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraSplashScreen;
@@ -12,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.CompanyBll;
 
 namespace MasterData.Company
 {

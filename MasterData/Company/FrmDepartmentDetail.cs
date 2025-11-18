@@ -1,5 +1,4 @@
-﻿using Bll.MasterData.Company;
-using Dal.DataContext;
+﻿using Dal.DataContext;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraLayout;
@@ -13,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.CompanyBll;
 using DTO.MasterData;
 using DTO.MasterData.Company;
 

@@ -1,5 +1,4 @@
 ﻿using Bll.Common;
-using Bll.MasterData.Company;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraEditors.Repository;
@@ -15,6 +14,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.CompanyBll;
 using DTO.MasterData;
 using DTO.MasterData.Company;
 
