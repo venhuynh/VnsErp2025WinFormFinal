@@ -3,13 +3,11 @@ using Dal.DataContext;
 using Dal.Exceptions;
 using Logger;
 using Logger.Configuration;
-using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
-using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations
 {
@@ -26,11 +24,6 @@ namespace Dal.DataAccess.Implementations
         /// </summary>
         private readonly string _connectionString;
 
-        /// <summary>
-        /// Instance logger để theo dõi các thao tác và lỗi
-        /// </summary>
-        private readonly CustomLogger _logger;
-
         #endregion
 
         #region Constructor
@@ -43,8 +36,8 @@ namespace Dal.DataAccess.Implementations
         public ApplicationUserRepository(string connectionString)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-            _logger = LoggerFactory.CreateLogger(LogCategory.DAL);
-            _logger.Info("ApplicationUserRepository được khởi tạo với connection string");
+            var logger = LoggerFactory.CreateLogger(LogCategory.DAL);
+            logger.Info("ApplicationUserRepository được khởi tạo với connection string");
         }
 
         #endregion
