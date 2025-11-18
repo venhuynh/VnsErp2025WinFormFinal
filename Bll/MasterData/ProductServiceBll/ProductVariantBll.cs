@@ -1,9 +1,11 @@
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 
 namespace Bll.MasterData.ProductServiceBll
 {
@@ -15,9 +17,8 @@ namespace Bll.MasterData.ProductServiceBll
     {
         #region Fields
 
-        private readonly IProductVariantRepository _dataAccess;
-        private readonly ProductServiceDataAccess _productServiceDataAccess;
-        private readonly UnitOfMeasureRepository _unitOfMeasureDataAccess;
+        private IProductVariantRepository _dataAccess;
+        private readonly object _lockObject = new object();
 
         #endregion
 
@@ -28,9 +29,44 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         public ProductVariantBll()
         {
-            _dataAccess = new ProductVariantDataAccess();
-            _productServiceDataAccess = new ProductServiceDataAccess();
-            _unitOfMeasureDataAccess = new UnitOfMeasureDataAccess();
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IProductVariantRepository GetDataAccess()
+        {
+            if (_dataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_dataAccess == null)
+                    {
+                        try
+                        {
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _dataAccess = new ProductVariantRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _dataAccess;
         }
 
         #endregion
@@ -46,7 +82,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetById(id);
+                return GetDataAccess().GetById(id);
             }
             catch (Exception ex)
             {
@@ -63,7 +99,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetByIdAsync(id);
+                return await GetDataAccess().GetByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -80,7 +116,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetByProductId(productId);
+                return GetDataAccess().GetByProductId(productId);
             }
             catch (Exception ex)
             {
@@ -94,11 +130,11 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="variantCode">Mã biến thể</param>
         /// <param name="excludeId">ID biến thể cần loại trừ (khi edit)</param>
         /// <returns>True nếu trùng</returns>
-        public bool IsVariantCodeExists(string variantCode, Guid? excludeId = null)
+        private bool IsVariantCodeExists(string variantCode, Guid? excludeId = null)
         {
             try
             {
-                return _dataAccess.IsVariantCodeExists(variantCode, excludeId);
+                return GetDataAccess().IsVariantCodeExists(variantCode, excludeId);
             }
             catch (Exception ex)
             {
@@ -117,7 +153,7 @@ namespace Bll.MasterData.ProductServiceBll
             try
             {
                 // Validate dữ liệu
-                ValidateVariantData(variant, attributeValues);
+                ValidateVariantData(attributeValues);
 
                 // Kiểm tra trùng mã biến thể
                 if (IsVariantCodeExists(variant.VariantCode, variant.Id == Guid.Empty ? null : variant.Id))
@@ -126,7 +162,7 @@ namespace Bll.MasterData.ProductServiceBll
                 }
 
                 // Lưu biến thể
-                var savedVariantId = await _dataAccess.SaveAsync(variant, attributeValues);
+                var savedVariantId = await GetDataAccess().SaveAsync(variant, attributeValues);
 
                 return savedVariantId;
             }
@@ -144,7 +180,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                await _dataAccess.DeleteAsync(id);
+                await GetDataAccess().DeleteAsync(id);
             }
             catch (Exception ex)
             {
@@ -161,7 +197,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetAttributeValues(variantId);
+                return GetDataAccess().GetAttributeValues(variantId);
             }
             catch (Exception ex)
             {
@@ -178,7 +214,7 @@ namespace Bll.MasterData.ProductServiceBll
             try
             {
                 // Lấy queryable entity từ DAL
-                return _dataAccess.GetQueryableForInstantFeedback();
+                return GetDataAccess().GetQueryableForInstantFeedback();
             }
             catch (Exception ex)
             {
@@ -194,7 +230,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetTotalCount();
+                return GetDataAccess().GetTotalCount();
             }
             catch (Exception ex)
             {
@@ -210,7 +246,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetAllAsync();
+                return await GetDataAccess().GetAllAsync();
             }
             catch (Exception ex)
             {
@@ -229,7 +265,7 @@ namespace Bll.MasterData.ProductServiceBll
             try
             {
                 // Lấy dữ liệu từ DAL với thông tin liên quan đã được preload
-                var variants = await _dataAccess.GetAllWithDetailsAsync();
+                var variants = await GetDataAccess().GetAllWithDetailsAsync();
                 
                 // DAL đã preload tất cả navigation properties thông qua DataLoadOptions
                 // Bao gồm: ProductService, UnitOfMeasure, ProductVariantAttributes, ProductVariantImages
@@ -248,12 +284,12 @@ namespace Bll.MasterData.ProductServiceBll
         /// Tuân thủ quy tắc: Dal -> Bll -> GUI
         /// </summary>
         /// <returns>DataContext</returns>
-        public async Task<Dal.DataContext.VnsErp2025DataContext> GetDataContextAsync()
+        public async Task<VnsErp2025DataContext> GetDataContextAsync()
         {
             try
             {
                 // Lấy DataContext từ DAL (tuân thủ Dal -> Bll)
-                return await _dataAccess.GetDataContextAsync();
+                return await GetDataAccess().GetDataContextAsync();
             }
             catch (Exception ex)
             {
@@ -269,30 +305,17 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Validate dữ liệu biến thể
         /// </summary>
-        private void ValidateVariantData(ProductVariant variant, List<(Guid AttributeId, string Value)> attributeValues)
+        private void ValidateVariantData(List<(Guid AttributeId, string Value)> attributeValues)
         {
-            if (variant == null)
-                throw new ArgumentNullException(nameof(variant), "Dữ liệu biến thể không được để trống");
-
-            if (variant.ProductId == Guid.Empty)
-                throw new ArgumentException("Vui lòng chọn sản phẩm/dịch vụ");
-
-            if (string.IsNullOrWhiteSpace(variant.VariantCode))
-                throw new ArgumentException("Mã biến thể không được để trống");
-
-            if (variant.UnitId == Guid.Empty)
-                throw new ArgumentException("Vui lòng chọn đơn vị tính");
-
-            if (attributeValues != null)
+            if (attributeValues == null) return;
+            
+            foreach (var (attributeId, value) in attributeValues)
             {
-                foreach (var (attributeId, value) in attributeValues)
-                {
-                    if (attributeId == Guid.Empty)
-                        throw new ArgumentException("Vui lòng chọn đầy đủ thuộc tính");
+                if (attributeId == Guid.Empty)
+                    throw new ArgumentException("Vui lòng chọn đầy đủ thuộc tính");
 
-                    if (string.IsNullOrWhiteSpace(value))
-                        throw new ArgumentException("Vui lòng nhập đầy đủ giá trị thuộc tính");
-                }
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException("Vui lòng nhập đầy đủ giá trị thuộc tính");
             }
         }
 
@@ -303,7 +326,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                await _dataAccess.UpdateAllVariantFullNamesAsync();
+                await GetDataAccess().UpdateAllVariantFullNamesAsync();
             }
             catch (Exception ex)
             {

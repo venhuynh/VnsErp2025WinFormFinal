@@ -1,3 +1,8 @@
+using Common;
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
+using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,7 +11,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataContext;
 
 namespace Bll.MasterData.ProductServiceBll
 {
@@ -15,73 +19,49 @@ namespace Bll.MasterData.ProductServiceBll
     /// </summary>
     public class ProductImageBll
     {
-        #region Constants
-
-        /// <summary>
-        /// Thư mục gốc chứa ảnh sản phẩm
-        /// </summary>
-        private const string PHOTO_ROOT_DIRECTORY = "PHOTO";
-
-        /// <summary>
-        /// Thư mục con chứa ảnh sản phẩm/dịch vụ
-        /// </summary>
-        private const string PRODUCTSERVICE_PHOTO_DIRECTORY = "PRODUCTSERVICE";
-
-        /// <summary>
-        /// Thư mục con chứa ảnh biến thể sản phẩm
-        /// </summary>
-        private const string PRODUCTVARIANT_PHOTO_DIRECTORY = "PRODUCTVARIANT";
-
-        /// <summary>
-        /// Thư mục con chứa ảnh thumbnail
-        /// </summary>
-        private const string THUMBNAIL_PHOTO_DIRECTORY = "THUMBNAIL";
-
-        /// <summary>
-        /// Thư mục con chứa ảnh đã nén
-        /// </summary>
-        private const string COMPRESSED_PHOTO_DIRECTORY = "COMPRESSED";
-
-        /// <summary>
-        /// Định dạng tên file cho ảnh sản phẩm
-        /// </summary>
-        private const string PRODUCT_IMAGE_FILENAME_FORMAT = "{0}_{1:yyyyMMdd_HHmmss}_{2}{3}";
-
-        /// <summary>
-        /// Định dạng tên file cho ảnh chính
-        /// </summary>
-        private const string PRIMARY_IMAGE_FILENAME_FORMAT = "{0}_primary_{1:yyyyMMdd_HHmmss}_{2}.jpg";
-
-        /// <summary>
-        /// Định dạng tên file cho thumbnail
-        /// </summary>
-        private const string THUMBNAIL_FILENAME_FORMAT = "{0}_thumb_{1:yyyyMMdd_HHmmss}_{2}.jpg";
-
-        /// <summary>
-        /// Chất lượng nén mặc định cho ảnh
-        /// </summary>
-        private const long DEFAULT_COMPRESSION_QUALITY = 85L;
-
-        /// <summary>
-        /// Kích thước tối đa mặc định cho mỗi chiều (pixel)
-        /// </summary>
-        private const int DEFAULT_MAX_DIMENSION = 2048;
-
-        /// <summary>
-        /// Kích thước tối đa cho thumbnail (pixel)
-        /// </summary>
-        private const int THUMBNAIL_MAX_DIMENSION = 300;
-
-        /// <summary>
-        /// Chất lượng nén cho thumbnail
-        /// </summary>
-        private const long THUMBNAIL_COMPRESSION_QUALITY = 75L;
-
-        #endregion
 
         #region Fields
 
-        private readonly ProductImageDataAccess _dataAccess = new ProductImageDataAccess();
+        private IProductImageRepository _dataAccess;
+        private readonly object _lockObject = new object();
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IProductImageRepository GetDataAccess()
+        {
+            if (_dataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_dataAccess == null)
+                    {
+                        try
+                        {
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _dataAccess = new ProductImageRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _dataAccess;
+        }
 
         #endregion
 
@@ -96,7 +76,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetByProductId(productId);
+                return GetDataAccess().GetByProductId(productId);
             }
             catch (Exception ex)
             {
@@ -113,7 +93,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetById(imageId);
+                return GetDataAccess().GetById(imageId);
             }
             catch (Exception ex)
             {
@@ -130,7 +110,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetPrimaryByProductId(productId);
+                return GetDataAccess().GetPrimaryByProductId(productId);
             }
             catch (Exception ex)
             {
@@ -161,7 +141,7 @@ namespace Bll.MasterData.ProductServiceBll
 
                 // Tạo tên file mới để tránh trùng lặp
                 var fileExtension = Path.GetExtension(imageFilePath);
-                var fileName = string.Format(PRODUCT_IMAGE_FILENAME_FORMAT, 
+                var fileName = string.Format(ApplicationConstants.PRODUCT_IMAGE_FILENAME_FORMAT, 
                     productId, 
                     DateTime.Now, 
                     Guid.NewGuid().ToString("N").Substring(0, 8), 
@@ -197,7 +177,7 @@ namespace Bll.MasterData.ProductServiceBll
                 };
 
                 // Lưu vào database
-                _dataAccess.SaveOrUpdate(productImage);
+                GetDataAccess().SaveOrUpdate(productImage);
 
                 return productImage;
             }
@@ -226,14 +206,14 @@ namespace Bll.MasterData.ProductServiceBll
                     Directory.CreateDirectory(targetDirectory);
 
                 // Tạo tên file mới với extension .jpg để đảm bảo định dạng nhất quán
-                var fileName = string.Format(PRIMARY_IMAGE_FILENAME_FORMAT, 
+                var fileName = string.Format(ApplicationConstants.PRIMARY_IMAGE_FILENAME_FORMAT, 
                     productId, 
                     DateTime.Now, 
                     Guid.NewGuid().ToString("N").Substring(0, 8));
                 var targetFilePath = Path.Combine(targetDirectory, fileName);
 
                 // Nén ảnh trước khi lưu để đảm bảo kích thước hợp lý
-                using (var compressedImage = CompressImage(imageFilePath, DEFAULT_COMPRESSION_QUALITY, DEFAULT_MAX_DIMENSION))
+                using (var compressedImage = CompressImage(imageFilePath, ApplicationConstants.DEFAULT_COMPRESSION_QUALITY, ApplicationConstants.DEFAULT_MAX_DIMENSION))
                 {
                     // Lưu ảnh đã nén vào thư mục đích với phương thức an toàn
                     SaveImageSafely(compressedImage, targetFilePath);
@@ -243,7 +223,7 @@ namespace Bll.MasterData.ProductServiceBll
                 var imageInfo = GetImageInfo(targetFilePath);
 
                 // Kiểm tra xem đã có hình ảnh chính chưa
-                var existingPrimary = _dataAccess.GetPrimaryByProductId(productId);
+                var existingPrimary = GetDataAccess().GetPrimaryByProductId(productId);
                 
                 ProductImage productImage;
                 if (existingPrimary != null)
@@ -281,7 +261,7 @@ namespace Bll.MasterData.ProductServiceBll
                 }
 
                 // Lưu vào database
-                _dataAccess.SaveOrUpdate(productImage);
+                GetDataAccess().SaveOrUpdate(productImage);
 
                 return productImage;
             }
@@ -299,7 +279,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                _dataAccess.Delete(imageId);
+                GetDataAccess().Delete(imageId);
             }
             catch (Exception ex)
             {
@@ -316,7 +296,7 @@ namespace Bll.MasterData.ProductServiceBll
             try
             {
                 // 1. Lấy thông tin hình ảnh trước khi xóa
-                var imageInfo = _dataAccess.GetById(imageId);
+                var imageInfo = GetDataAccess().GetById(imageId);
                 if (imageInfo == null)
                 {
                     throw new BusinessLogicException($"Không tìm thấy hình ảnh với ID '{imageId}'");
@@ -345,7 +325,7 @@ namespace Bll.MasterData.ProductServiceBll
                 DeleteThumbnailIfExists(imageInfo);
 
                 // 4. Xóa trong database
-                _dataAccess.Delete(imageId);
+                GetDataAccess().Delete(imageId);
 
                 // 5. Cập nhật ProductService nếu đây là ảnh chính
                 if (isPrimary && productId.HasValue)
@@ -426,10 +406,10 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                var images = _dataAccess.GetByProductId(productId);
+                var images = GetDataAccess().GetByProductId(productId);
                 foreach (var image in images)
                 {
-                    _dataAccess.Delete(image.Id);
+                    GetDataAccess().Delete(image.Id);
                 }
             }
             catch (Exception ex)
@@ -455,7 +435,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                _dataAccess.SetAsPrimary(imageId);
+                GetDataAccess().SetAsPrimary(imageId);
             }
             catch (Exception ex)
             {
@@ -482,14 +462,14 @@ namespace Bll.MasterData.ProductServiceBll
                     Directory.CreateDirectory(thumbnailDirectory);
 
                 // Tạo tên file thumbnail
-                var thumbnailFileName = string.Format(THUMBNAIL_FILENAME_FORMAT, 
+                var thumbnailFileName = string.Format(ApplicationConstants.THUMBNAIL_FILENAME_FORMAT, 
                     productId, 
                     DateTime.Now, 
                     Guid.NewGuid().ToString("N").Substring(0, 8));
                 var thumbnailFilePath = Path.Combine(thumbnailDirectory, thumbnailFileName);
 
                 // Tạo thumbnail với kích thước và chất lượng phù hợp
-                using (var thumbnailImage = CompressImage(imageFilePath, THUMBNAIL_COMPRESSION_QUALITY, THUMBNAIL_MAX_DIMENSION))
+                using (var thumbnailImage = CompressImage(imageFilePath, ApplicationConstants.THUMBNAIL_COMPRESSION_QUALITY, ApplicationConstants.THUMBNAIL_MAX_DIMENSION))
                 {
                     SaveImageSafely(thumbnailImage, thumbnailFilePath);
                 }
@@ -506,8 +486,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Nén hình ảnh mà không thay đổi kích thước (dimensions)
         /// </summary>
         /// <param name="imageFilePath">Đường dẫn file ảnh gốc</param>
-        /// <param name="quality">Chất lượng nén (0-100). Mặc định sử dụng DEFAULT_COMPRESSION_QUALITY</param>
-        /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định sử dụng DEFAULT_MAX_DIMENSION</param>
+        /// <param name="quality">Chất lượng nén (0-100). Mặc định sử dụng ApplicationConstants.DEFAULT_COMPRESSION_QUALITY</param>
+        /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định sử dụng ApplicationConstants.DEFAULT_MAX_DIMENSION</param>
         /// <returns>Đối tượng Image đã được nén và resize nếu cần</returns>
         public Image CompressImage(string imageFilePath, long quality = -1, int maxDimension = -1)
         {
@@ -517,8 +497,8 @@ namespace Bll.MasterData.ProductServiceBll
                     throw new BusinessLogicException($"File ảnh không tồn tại: {imageFilePath}");
 
                 // Sử dụng giá trị mặc định nếu không được chỉ định
-                var actualQuality = quality == -1 ? DEFAULT_COMPRESSION_QUALITY : quality;
-                var actualMaxDimension = maxDimension == -1 ? DEFAULT_MAX_DIMENSION : maxDimension;
+                var actualQuality = quality == -1 ? ApplicationConstants.DEFAULT_COMPRESSION_QUALITY : quality;
+                var actualMaxDimension = maxDimension == -1 ? ApplicationConstants.DEFAULT_MAX_DIMENSION : maxDimension;
 
                 using var originalImage = Image.FromFile(imageFilePath);
                 
@@ -534,8 +514,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Nén hình ảnh mà không thay đổi kích thước (dimensions)
         /// </summary>
         /// <param name="originalImage">Đối tượng Image gốc</param>
-        /// <param name="quality">Chất lượng nén (0-100). Mặc định sử dụng DEFAULT_COMPRESSION_QUALITY</param>
-        /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định sử dụng DEFAULT_MAX_DIMENSION</param>
+        /// <param name="quality">Chất lượng nén (0-100). Mặc định sử dụng ApplicationConstants.DEFAULT_COMPRESSION_QUALITY</param>
+        /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định sử dụng ApplicationConstants.DEFAULT_MAX_DIMENSION</param>
         /// <returns>Đối tượng Image đã được nén và resize nếu cần</returns>
         public Image CompressImage(Image originalImage, long quality = -1, int maxDimension = -1)
         {
@@ -545,8 +525,8 @@ namespace Bll.MasterData.ProductServiceBll
                     throw new ArgumentNullException(nameof(originalImage));
 
                 // Sử dụng giá trị mặc định nếu không được chỉ định
-                var actualQuality = quality == -1 ? DEFAULT_COMPRESSION_QUALITY : quality;
-                var actualMaxDimension = maxDimension == -1 ? DEFAULT_MAX_DIMENSION : maxDimension;
+                var actualQuality = quality == -1 ? ApplicationConstants.DEFAULT_COMPRESSION_QUALITY : quality;
+                var actualMaxDimension = maxDimension == -1 ? ApplicationConstants.DEFAULT_MAX_DIMENSION : maxDimension;
 
                 // Tính toán kích thước mới nếu ảnh quá lớn
                 var newSize = CalculateNewSize(originalImage.Width, originalImage.Height, actualMaxDimension);
@@ -677,7 +657,7 @@ namespace Bll.MasterData.ProductServiceBll
         private string GetPhotoDirectory()
         {
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, PRODUCTSERVICE_PHOTO_DIRECTORY);
+            return Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.PRODUCTSERVICE_PHOTO_DIRECTORY);
         }
 
         /// <summary>
@@ -687,7 +667,7 @@ namespace Bll.MasterData.ProductServiceBll
         private string GetProductVariantPhotoDirectory()
         {
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, PRODUCTVARIANT_PHOTO_DIRECTORY);
+            return Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.PRODUCTVARIANT_PHOTO_DIRECTORY);
         }
 
         /// <summary>
@@ -697,7 +677,7 @@ namespace Bll.MasterData.ProductServiceBll
         private string GetThumbnailDirectory()
         {
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, THUMBNAIL_PHOTO_DIRECTORY);
+            return Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.THUMBNAIL_PHOTO_DIRECTORY);
         }
 
         /// <summary>
@@ -707,7 +687,7 @@ namespace Bll.MasterData.ProductServiceBll
         private string GetCompressedPhotoDirectory()
         {
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, COMPRESSED_PHOTO_DIRECTORY);
+            return Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.COMPRESSED_PHOTO_DIRECTORY);
         }
 
         /// <summary>
@@ -721,10 +701,10 @@ namespace Bll.MasterData.ProductServiceBll
             
             return imageType?.ToUpper() switch
             {
-                "VARIANT" => Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, PRODUCTVARIANT_PHOTO_DIRECTORY),
-                "THUMBNAIL" => Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, THUMBNAIL_PHOTO_DIRECTORY),
-                "COMPRESSED" => Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, COMPRESSED_PHOTO_DIRECTORY),
-                _ => Path.Combine(appDirectory, PHOTO_ROOT_DIRECTORY, PRODUCTSERVICE_PHOTO_DIRECTORY)
+                "VARIANT" => Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.PRODUCTVARIANT_PHOTO_DIRECTORY),
+                "THUMBNAIL" => Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.THUMBNAIL_PHOTO_DIRECTORY),
+                "COMPRESSED" => Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.COMPRESSED_PHOTO_DIRECTORY),
+                _ => Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.PRODUCTSERVICE_PHOTO_DIRECTORY)
             };
         }
 
@@ -742,9 +722,9 @@ namespace Bll.MasterData.ProductServiceBll
             
             return imageType?.ToLower() switch
             {
-                "primary" => string.Format(PRIMARY_IMAGE_FILENAME_FORMAT, productId, timestamp, uniqueId),
-                "thumb" => string.Format(THUMBNAIL_FILENAME_FORMAT, productId, timestamp, uniqueId),
-                _ => string.Format(PRODUCT_IMAGE_FILENAME_FORMAT, productId, timestamp, uniqueId, fileExtension)
+                "primary" => string.Format(ApplicationConstants.PRIMARY_IMAGE_FILENAME_FORMAT, productId, timestamp, uniqueId),
+                "thumb" => string.Format(ApplicationConstants.THUMBNAIL_FILENAME_FORMAT, productId, timestamp, uniqueId),
+                _ => string.Format(ApplicationConstants.PRODUCT_IMAGE_FILENAME_FORMAT, productId, timestamp, uniqueId, fileExtension)
             };
         }
 
@@ -813,7 +793,7 @@ namespace Bll.MasterData.ProductServiceBll
             try
             {
                 // Tính toán SortOrder trực tiếp thay vì gọi GetByProductId
-                var existingImages = _dataAccess.GetByProductId(productId);
+                var existingImages = GetDataAccess().GetByProductId(productId);
                 return existingImages.Count + 1;
             }
             catch (Exception)
@@ -837,7 +817,7 @@ namespace Bll.MasterData.ProductServiceBll
                     return new List<ProductImage>();
                 }
 
-                return _dataAccess.SearchByProductIds(productIds);
+                return GetDataAccess().SearchByProductIds(productIds);
             }
             catch (Exception ex)
             {
@@ -859,7 +839,7 @@ namespace Bll.MasterData.ProductServiceBll
                     return new List<ProductImage>();
                 }
 
-                return await Task.Run(() => _dataAccess.SearchByProductIds(productIds));
+                return await Task.Run(() => GetDataAccess().SearchByProductIds(productIds));
             }
             catch (Exception ex)
             {

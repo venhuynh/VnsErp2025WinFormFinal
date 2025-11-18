@@ -771,5 +771,69 @@ namespace Common
         }
 
         #endregion
+
+        #region ========== PHOTO/IMAGE CONSTANTS ==========
+
+        /// <summary>
+        /// Thư mục gốc chứa ảnh sản phẩm
+        /// </summary>
+        public const string PHOTO_ROOT_DIRECTORY = "PHOTO";
+
+        /// <summary>
+        /// Thư mục con chứa ảnh sản phẩm/dịch vụ
+        /// </summary>
+        public const string PRODUCTSERVICE_PHOTO_DIRECTORY = "PRODUCTSERVICE";
+
+        /// <summary>
+        /// Thư mục con chứa ảnh biến thể sản phẩm
+        /// </summary>
+        public const string PRODUCTVARIANT_PHOTO_DIRECTORY = "PRODUCTVARIANT";
+
+        /// <summary>
+        /// Thư mục con chứa ảnh thumbnail
+        /// </summary>
+        public const string THUMBNAIL_PHOTO_DIRECTORY = "THUMBNAIL";
+
+        /// <summary>
+        /// Thư mục con chứa ảnh đã nén
+        /// </summary>
+        public const string COMPRESSED_PHOTO_DIRECTORY = "COMPRESSED";
+
+        /// <summary>
+        /// Định dạng tên file cho ảnh sản phẩm
+        /// </summary>
+        public const string PRODUCT_IMAGE_FILENAME_FORMAT = "{0}_{1:yyyyMMdd_HHmmss}_{2}{3}";
+
+        /// <summary>
+        /// Định dạng tên file cho ảnh chính
+        /// </summary>
+        public const string PRIMARY_IMAGE_FILENAME_FORMAT = "{0}_primary_{1:yyyyMMdd_HHmmss}_{2}.jpg";
+
+        /// <summary>
+        /// Định dạng tên file cho thumbnail
+        /// </summary>
+        public const string THUMBNAIL_FILENAME_FORMAT = "{0}_thumb_{1:yyyyMMdd_HHmmss}_{2}.jpg";
+
+        /// <summary>
+        /// Chất lượng nén mặc định cho ảnh
+        /// </summary>
+        public const long DEFAULT_COMPRESSION_QUALITY = 85L;
+
+        /// <summary>
+        /// Kích thước tối đa mặc định cho mỗi chiều (pixel)
+        /// </summary>
+        public const int DEFAULT_MAX_DIMENSION = 2048;
+
+        /// <summary>
+        /// Kích thước tối đa cho thumbnail (pixel)
+        /// </summary>
+        public const int THUMBNAIL_MAX_DIMENSION = 300;
+
+        /// <summary>
+        /// Chất lượng nén cho thumbnail
+        /// </summary>
+        public const long THUMBNAIL_COMPRESSION_QUALITY = 75L;
+
+        #endregion
     }
 }

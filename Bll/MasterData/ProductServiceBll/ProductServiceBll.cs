@@ -1,3 +1,7 @@
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
+using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +17,10 @@ namespace Bll.MasterData.ProductServiceBll
     {
         #region Fields
 
-        private readonly ProductServiceDataAccess _dataAccess;
-        private readonly ProductServiceCategoryRepository _categoryDataAccess;
-        private readonly ProductImageBll _productImageBll;
+        private IProductServiceRepository _dataAccess;
+        private IProductServiceCategoryRepository _categoryDataAccess;
+        private readonly object _lockObject = new object();
+        private readonly object _categoryLockObject = new object();
 
         #endregion
 
@@ -26,9 +31,79 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         public ProductServiceBll()
         {
-            _dataAccess = new ProductServiceDataAccess();
-            _categoryDataAccess = new ProductServiceCategoryDataAccess();
-            _productImageBll = new ProductImageBll();
+            new ProductImageBll();
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IProductServiceRepository GetDataAccess()
+        {
+            if (_dataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_dataAccess == null)
+                    {
+                        try
+                        {
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _dataAccess = new ProductServiceRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _dataAccess;
+        }
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Category Repository (lazy initialization)
+        /// </summary>
+        private IProductServiceCategoryRepository GetCategoryDataAccess()
+        {
+            if (_categoryDataAccess == null)
+            {
+                lock (_categoryLockObject)
+                {
+                    if (_categoryDataAccess == null)
+                    {
+                        try
+                        {
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _categoryDataAccess = new ProductServiceCategoryRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _categoryDataAccess;
         }
 
         #endregion
@@ -39,11 +114,11 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy tất cả sản phẩm/dịch vụ (Sync)
         /// </summary>
         /// <returns>Danh sách ProductService entities</returns>
-        public List<Dal.DataContext.ProductService> GetAll()
+        public List<ProductService> GetAll()
         {
             try
             {
-                return _dataAccess.GetAll();
+                return GetDataAccess().GetAll();
             }
             catch (Exception ex)
             {
@@ -55,11 +130,11 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy tất cả sản phẩm/dịch vụ (Async)
         /// </summary>
         /// <returns>Danh sách ProductService entities</returns>
-        public async Task<List<Dal.DataContext.ProductService>> GetAllAsync()
+        public async Task<List<ProductService>> GetAllAsync()
         {
             try
             {
-                return await Task.Run(() => _dataAccess.GetAll());
+                return await GetDataAccess().GetAllAsync();
             }
             catch (Exception ex)
             {
@@ -72,11 +147,11 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="id">ID sản phẩm/dịch vụ</param>
         /// <returns>ProductService entity</returns>
-        public Dal.DataContext.ProductService GetById(Guid id)
+        public ProductService GetById(Guid id)
         {
             try
             {
-                return _dataAccess.GetById(id);
+                return GetDataAccess().GetById(id);
             }
             catch (Exception ex)
             {
@@ -88,14 +163,14 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lưu sản phẩm/dịch vụ (thêm mới hoặc cập nhật)
         /// </summary>
         /// <param name="productService">ProductService entity cần lưu</param>
-        public void Save(Dal.DataContext.ProductService productService)
+        public void Save(ProductService productService)
         {
             try
             {
                 if (productService == null)
                     throw new ArgumentNullException(nameof(productService));
 
-                _dataAccess.SaveOrUpdate(productService);
+                GetDataAccess().SaveOrUpdate(productService);
             }
             catch (Exception ex)
             {
@@ -107,14 +182,14 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lưu hoặc cập nhật sản phẩm/dịch vụ
         /// </summary>
         /// <param name="productService">ProductService entity cần lưu hoặc cập nhật</param>
-        public void SaveOrUpdate(Dal.DataContext.ProductService productService)
+        public void SaveOrUpdate(ProductService productService)
         {
             try
             {
                 if (productService == null)
                     throw new ArgumentNullException(nameof(productService));
 
-                _dataAccess.SaveOrUpdate(productService);
+                GetDataAccess().SaveOrUpdate(productService);
             }
             catch (Exception ex)
             {
@@ -133,7 +208,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                var result = _dataAccess.DeleteProductService(id);
+                var result = GetDataAccess().DeleteProductService(id);
                 if (!result)
                 {
                     throw new BusinessLogicException($"Không thể xóa sản phẩm/dịch vụ với ID {id}");
@@ -157,12 +232,12 @@ namespace Bll.MasterData.ProductServiceBll
                 if (categoryId == null || categoryId == Guid.Empty)
                     return null;
 
-                var category = _categoryDataAccess.GetById(categoryId.Value);
+                var category = GetCategoryDataAccess().GetById(categoryId.Value);
                 return category?.CategoryName;
             }
             catch (Exception)
             {
-                // Log lỗi nhưng không throw để không ảnh hưởng đến việc hiển thị danh sách
+                // Log lỗi nhưng không throw để không ảnh hưởng đến việc hiển thị
                 // Có thể sử dụng logger ở đây nếu cần
                 return null;
             }
@@ -177,7 +252,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetVariantCount(productServiceId);
+                return GetDataAccess().GetVariantCount(productServiceId);
             }
             catch (Exception)
             {
@@ -195,7 +270,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetImageCount(productServiceId);
+                return GetDataAccess().GetImageCount(productServiceId);
             }
             catch (Exception)
             {
@@ -213,7 +288,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetCountsForProducts(productServiceIds);
+                return GetDataAccess().GetCountsForProducts(productServiceIds);
             }
             catch (Exception)
             {
@@ -240,7 +315,7 @@ namespace Bll.MasterData.ProductServiceBll
                 }
 
                 // Tìm số tiếp theo trong danh mục này
-                var nextNumber = _dataAccess.GetNextProductNumber(categoryId, categoryCode);
+                var nextNumber = GetDataAccess().GetNextProductNumber(categoryId, categoryCode);
 
                 // Tạo mã hoàn chỉnh
                 return $"{categoryCode}{nextNumber:D4}";
@@ -261,7 +336,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetCategoryCode(categoryId);
+                return GetDataAccess().GetCategoryCode(categoryId);
             }
             catch (Exception)
             {
@@ -277,7 +352,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>True nếu tồn tại, False nếu không</returns>
         public bool IsCodeExists(string code, Guid? excludeId = null)
         {
-            return _dataAccess.IsCodeExists(code, excludeId);
+            return GetDataAccess().IsCodeExists(code, excludeId);
         }
 
         /// <summary>
@@ -288,7 +363,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>True nếu tồn tại, False nếu không</returns>
         public bool IsNameExists(string name, Guid? excludeId = null)
         {
-            return _dataAccess.IsNameExists(name, excludeId);
+            return GetDataAccess().IsNameExists(name, excludeId);
         }
 
         #endregion
@@ -311,7 +386,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetCountAsync(searchText, categoryId, isService, isActive);
+                return await GetDataAccess().GetCountAsync(searchText, categoryId, isService, isActive);
             }
             catch (Exception ex)
             {
@@ -329,7 +404,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="isService">Filter theo loại</param>
         /// <param name="isActive">Filter theo trạng thái</param>
         /// <returns>Danh sách entities</returns>
-        public async Task<List<Dal.DataContext.ProductService>> GetPagedAsync(
+        public async Task<List<ProductService>> GetPagedAsync(
             int pageIndex,
             int pageSize,
             string searchText = null,
@@ -339,7 +414,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetPagedAsync(pageIndex, pageSize, searchText, categoryId, isService, isActive);
+                return await GetDataAccess().GetPagedAsync(pageIndex, pageSize, searchText, categoryId, isService, isActive);
             }
             catch (Exception ex)
             {
@@ -356,7 +431,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetThumbnailImageData(productId);
+                return GetDataAccess().GetThumbnailImageData(productId);
             }
             catch (Exception ex)
             {
@@ -374,7 +449,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="orderBy">Sắp xếp theo</param>
         /// <param name="orderDirection">Hướng sắp xếp</param>
         /// <returns>Danh sách entities</returns>
-        public async Task<List<Dal.DataContext.ProductService>> GetFilteredAsync(
+        public async Task<List<ProductService>> GetFilteredAsync(
             string searchText = null,
             Guid? categoryId = null,
             bool? isService = null,
@@ -384,7 +459,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetFilteredAsync(searchText, categoryId, isService, isActive, orderBy, orderDirection);
+                return await GetDataAccess().GetFilteredAsync(searchText, categoryId, isService, isActive, orderBy, orderDirection);
             }
             catch (Exception ex)
             {
@@ -404,7 +479,7 @@ namespace Bll.MasterData.ProductServiceBll
                 if (productIds == null || !productIds.Any())
                     return new Dictionary<Guid, (int, int)>();
 
-                return await _dataAccess.GetCountsForProductsAsync(productIds);
+                return await GetDataAccess().GetCountsForProductsAsync(productIds);
             }
             catch (Exception ex)
             {
@@ -421,14 +496,14 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="searchText">Text tìm kiếm</param>
         /// <returns>Danh sách kết quả tìm kiếm</returns>
-        public List<Dal.DataContext.ProductService> Search(string searchText)
+        public List<ProductService> Search(string searchText)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(searchText))
-                    return new List<Dal.DataContext.ProductService>();
+                    return new List<ProductService>();
 
-                return _dataAccess.Search(searchText);
+                return GetDataAccess().Search(searchText);
             }
             catch (Exception ex)
             {
@@ -441,14 +516,14 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="searchText">Text tìm kiếm</param>
         /// <returns>Danh sách kết quả tìm kiếm</returns>
-        public async Task<List<Dal.DataContext.ProductService>> SearchAsync(string searchText)
+        public async Task<List<ProductService>> SearchAsync(string searchText)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(searchText))
-                    return new List<Dal.DataContext.ProductService>();
+                    return new List<ProductService>();
 
-                return await _dataAccess.SearchAsync(searchText);
+                return await GetDataAccess().SearchAsync(searchText);
             }
             catch (Exception ex)
             {
@@ -464,7 +539,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetUniqueCodesAsync();
+                return await GetDataAccess().GetUniqueCodesAsync();
             }
             catch (Exception ex)
             {
@@ -480,7 +555,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetUniqueNamesAsync();
+                return await GetDataAccess().GetUniqueNamesAsync();
             }
             catch (Exception ex)
             {
@@ -496,7 +571,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetUniqueCategoryNamesAsync();
+                return await GetDataAccess().GetUniqueCategoryNamesAsync();
             }
             catch (Exception ex)
             {
@@ -512,7 +587,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetUniqueTypeDisplaysAsync();
+                return await GetDataAccess().GetUniqueTypeDisplaysAsync();
             }
             catch (Exception ex)
             {
@@ -528,7 +603,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return await _dataAccess.GetUniqueStatusDisplaysAsync();
+                return await GetDataAccess().GetUniqueStatusDisplaysAsync();
             }
             catch (Exception ex)
             {

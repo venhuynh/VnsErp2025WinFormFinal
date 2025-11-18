@@ -1,8 +1,11 @@
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
+using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataContext;
 
 namespace Bll.MasterData.ProductServiceBll
 {
@@ -12,15 +15,70 @@ namespace Bll.MasterData.ProductServiceBll
     /// </summary>
     public class ProductServiceCategoryBll
     {
-        private readonly ProductServiceCategoryRepository _productServiceCategoryDataAccess = new();
+        #region Fields
+
+        private IProductServiceCategoryRepository _dataAccess;
+        private readonly object _lockObject = new object();
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor mặc định
+        /// </summary>
+        public ProductServiceCategoryBll()
+        {
+            
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IProductServiceCategoryRepository GetDataAccess()
+        {
+            if (_dataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_dataAccess == null)
+                    {
+                        try
+                        {
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _dataAccess = new ProductServiceCategoryRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _dataAccess;
+        }
+
+        #endregion
 
         /// <summary>
         /// Lấy tất cả danh mục sản phẩm/dịch vụ.
         /// </summary>
         /// <returns>Danh sách ProductServiceCategory</returns>
-        public List<ProductServiceCategory> GetAll()
+        private List<ProductServiceCategory> GetAll()
         {
-            return _productServiceCategoryDataAccess.GetAll();
+            return GetDataAccess().GetAll();
         }
 
         /// <summary>
@@ -29,7 +87,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>Task chứa danh sách ProductServiceCategory</returns>
         public Task<List<ProductServiceCategory>> GetAllAsync()
         {
-            return _productServiceCategoryDataAccess.GetAllAsync();
+            return GetDataAccess().GetAllAsync();
         }
 
         /// <summary>
@@ -39,7 +97,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>ProductServiceCategory hoặc null</returns>
         public ProductServiceCategory GetById(Guid id)
         {
-            return _productServiceCategoryDataAccess.GetById(id);
+            return GetDataAccess().GetById(id);
         }
 
         /// <summary>
@@ -49,7 +107,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>Task chứa ProductServiceCategory hoặc null</returns>
         public Task<ProductServiceCategory> GetByIdAsync(Guid id)
         {
-            return _productServiceCategoryDataAccess.GetByIdAsync(id);
+            return GetDataAccess().GetByIdAsync(id);
         }
 
 
@@ -59,7 +117,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>Dictionary với Key là CategoryId, Value là số lượng sản phẩm/dịch vụ</returns>
         public Dictionary<Guid, int> GetProductCountByCategory()
         {
-            return _productServiceCategoryDataAccess.GetProductCountByCategory();
+            return GetDataAccess().GetProductCountByCategory();
         }
 
         /// <summary>
@@ -68,7 +126,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>Task chứa Dictionary với Key là CategoryId, Value là số lượng sản phẩm/dịch vụ</returns>
         public Task<Dictionary<Guid, int>> GetProductCountByCategoryAsync()
         {
-            return _productServiceCategoryDataAccess.GetProductCountByCategoryAsync();
+            return GetDataAccess().GetProductCountByCategoryAsync();
         }
 
         /// <summary>
@@ -100,7 +158,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="category">Danh mục cần thêm</param>
         public void Insert(ProductServiceCategory category)
         {
-            _productServiceCategoryDataAccess.SaveOrUpdate(category);
+            GetDataAccess().SaveOrUpdate(category);
         }
 
         /// <summary>
@@ -109,7 +167,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="category">Danh mục cần cập nhật</param>
         public void Update(ProductServiceCategory category)
         {
-            _productServiceCategoryDataAccess.SaveOrUpdate(category);
+            GetDataAccess().SaveOrUpdate(category);
         }
 
         /// <summary>
@@ -118,7 +176,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="category">Danh mục cần lưu hoặc cập nhật</param>
         public void SaveOrUpdate(ProductServiceCategory category)
         {
-            _productServiceCategoryDataAccess.SaveOrUpdate(category);
+            GetDataAccess().SaveOrUpdate(category);
         }
 
 
@@ -130,7 +188,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>True nếu tồn tại, False nếu không</returns>
         public bool IsCategoryNameExists(string categoryName, Guid? excludeId = null)
         {
-            return _productServiceCategoryDataAccess.IsCategoryNameExists(categoryName, excludeId);
+            return GetDataAccess().IsCategoryNameExists(categoryName, excludeId);
         }
 
         /// <summary>
@@ -141,7 +199,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>Task chứa True nếu tồn tại, False nếu không</returns>
         public Task<bool> IsCategoryNameExistsAsync(string categoryName, Guid? excludeId = null)
         {
-            return _productServiceCategoryDataAccess.IsCategoryNameExistsAsync(categoryName, excludeId);
+            return GetDataAccess().IsCategoryNameExistsAsync(categoryName, excludeId);
         }
 
         /// <summary>
@@ -152,7 +210,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>True nếu tồn tại, False nếu không</returns>
         public bool IsCategoryCodeExists(string categoryCode, Guid? excludeId = null)
         {
-            return _productServiceCategoryDataAccess.IsCategoryCodeExists(categoryCode, excludeId);
+            return GetDataAccess().IsCategoryCodeExists(categoryCode, excludeId);
         }
 
         /// <summary>
@@ -163,7 +221,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <returns>Task chứa True nếu tồn tại, False nếu không</returns>
         public Task<bool> IsCategoryCodeExistsAsync(string categoryCode, Guid? excludeId = null)
         {
-            return _productServiceCategoryDataAccess.IsCategoryCodeExistsAsync(categoryCode, excludeId);
+            return GetDataAccess().IsCategoryCodeExistsAsync(categoryCode, excludeId);
         }
 
         /// <summary>
@@ -172,7 +230,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="id">ID của danh mục cần xóa</param>
         public void Delete(Guid id)
         {
-            _productServiceCategoryDataAccess.DeleteCategory(id);
+            GetDataAccess().DeleteCategory(id);
         }
 
         /// <summary>
@@ -185,7 +243,7 @@ namespace Bll.MasterData.ProductServiceBll
             if (categoryIds == null || categoryIds.Count == 0) return;
 
             // Lấy tất cả categories để xác định thứ tự xóa
-            var allCategories = await GetAllAsync();
+            var allCategories = await GetDataAccess().GetAllAsync();
             var categoryDict = allCategories.ToDictionary(c => c.Id);
 
             // Tạo danh sách categories cần xóa với thông tin level

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Appconfig;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using UnitOfMeasure = Dal.DataContext.UnitOfMeasure;
 
 namespace Bll.MasterData.ProductServiceBll
@@ -14,19 +16,45 @@ namespace Bll.MasterData.ProductServiceBll
     {
         #region Private Fields
 
-        private readonly UnitOfMeasureRepository _dataAccess = new UnitOfMeasureDataAccess();
+        private IUnitOfMeasureRepository _dataAccess;
+        private readonly object _lockObject = new object();
 
         #endregion
 
-        #region Constructor
+        #region Helper Methods
 
-        public UnitOfMeasureBll()
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IUnitOfMeasureRepository GetDataAccess()
         {
-        }
+            if (_dataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_dataAccess == null)
+                    {
+                        try
+                        {
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
 
-        public UnitOfMeasureBll(string connectionString)
-        {
-            _dataAccess = new UnitOfMeasureDataAccess(connectionString);
+                            _dataAccess = new UnitOfMeasureRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _dataAccess;
         }
 
         #endregion
@@ -41,7 +69,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetAll();
+                return GetDataAccess().GetAll();
             }
             catch (Exception ex)
             {
@@ -58,7 +86,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetById(id);
+                return GetDataAccess().GetById(id);
             }
             catch (Exception ex)
             {
@@ -75,7 +103,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetByCode(code);
+                return GetDataAccess().GetByCode(code);
             }
             catch (Exception ex)
             {
@@ -92,7 +120,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetByName(name);
+                return GetDataAccess().GetByName(name);
             }
             catch (Exception ex)
             {
@@ -109,7 +137,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.Search(keyword);
+                return GetDataAccess().Search(keyword);
             }
             catch (Exception ex)
             {
@@ -126,7 +154,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetByStatus(isActive);
+                return GetDataAccess().GetByStatus(isActive);
             }
             catch (Exception ex)
             {
@@ -145,7 +173,7 @@ namespace Bll.MasterData.ProductServiceBll
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity));
 
-                _dataAccess.SaveOrUpdate(entity);
+                GetDataAccess().SaveOrUpdate(entity);
             }
             catch (Exception ex)
             {
@@ -162,7 +190,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.DeleteUnitOfMeasure(id);
+                return GetDataAccess().DeleteUnitOfMeasure(id);
             }
             catch (Exception ex)
             {
@@ -179,11 +207,11 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                var entity = _dataAccess.GetByCode(code);
+                var entity = GetDataAccess().GetByCode(code);
                 if (entity == null)
                     return false;
 
-                return _dataAccess.DeleteUnitOfMeasure(entity.Id);
+                return GetDataAccess().DeleteUnitOfMeasure(entity.Id);
             }
             catch (Exception ex)
             {
@@ -201,7 +229,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.IsCodeExists(code, excludeId);
+                return GetDataAccess().IsCodeExists(code, excludeId);
             }
             catch (Exception ex)
             {
@@ -219,7 +247,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.IsNameExists(name, excludeId);
+                return GetDataAccess().IsNameExists(name, excludeId);
             }
             catch (Exception ex)
             {
@@ -236,7 +264,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.HasDependencies(id);
+                return GetDataAccess().HasDependencies(id);
             }
             catch (Exception ex)
             {
@@ -252,7 +280,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetCount();
+                return GetDataAccess().GetCount();
             }
             catch (Exception ex)
             {
@@ -269,7 +297,7 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                return _dataAccess.GetCountByStatus(isActive);
+                return GetDataAccess().GetCountByStatus(isActive);
             }
             catch (Exception ex)
             {
