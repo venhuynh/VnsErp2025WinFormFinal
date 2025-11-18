@@ -106,6 +106,18 @@
       <Project>{9cc30df9-45dd-4d4e-9b65-a68dac21ba42}</Project>
       <Name>Authentication</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Bll\Bll.csproj">
+      <Project>{50F0876E-DB49-4C11-9158-E3146AB3AD93}</Project>
+      <Name>Bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{68E56AB6-1ADA-40DE-9EDD-0BE2B8F35C3A}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dal\Dal.csproj">
+      <Project>{2A5A6A1E-6435-45E2-8F3D-62D70CB8FA76}</Project>
+      <Name>Dal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Inventory\Inventory.csproj">
       <Project>{055c0170-a359-48b9-95d9-7260b17e8e20}</Project>
       <Name>Inventory</Name>

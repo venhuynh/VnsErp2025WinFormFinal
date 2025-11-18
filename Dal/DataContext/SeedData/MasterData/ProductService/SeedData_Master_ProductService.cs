@@ -1,9 +1,7 @@
+using Dal.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dal.DataContext;
-using Dal.Configuration;
-using Dal.Logging;
 
 namespace Dal.DataContext.SeedData.MasterData.ProductService
 {

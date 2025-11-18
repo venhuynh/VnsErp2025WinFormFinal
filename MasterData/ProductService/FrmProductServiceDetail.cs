@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Bll.Common;
 using Bll.Common.ImageService;
 using Bll.MasterData.ProductServiceBll;
+using Common.Utils;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;

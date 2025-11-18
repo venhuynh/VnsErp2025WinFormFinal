@@ -1,6 +1,4 @@
-﻿using Bll.Common;
-using Bll.MasterData.Customer;
-using Dal.DataContext;
+﻿using Dal.DataContext;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraSplashScreen;
@@ -10,6 +8,9 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.CustomerBll;
+using Common.Common;
+using Common.Utils;
 
 namespace MasterData.Customer
 {

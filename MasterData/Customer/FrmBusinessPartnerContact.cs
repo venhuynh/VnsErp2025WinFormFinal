@@ -1,6 +1,4 @@
-﻿using Bll.Common;
-using Bll.MasterData.Customer;
-using DevExpress.Data;
+﻿using DevExpress.Data;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
@@ -21,6 +19,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.CustomerBll;
+using Common.Common;
+using Common.Utils;
 
 namespace MasterData.Customer
 {

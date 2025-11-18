@@ -44,7 +44,16 @@ public class CompanyRepository : ICompanyRepository
         _logger.Info("CompanyRepository được khởi tạo với connection string");
         
         // Đảm bảo có công ty mặc định khi khởi tạo
-        EnsureDefaultCompany();
+        // Bọc trong try-catch để tránh exception trong constructor làm fail việc khởi tạo object
+        try
+        {
+            EnsureDefaultCompany();
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning($"Không thể đảm bảo công ty mặc định khi khởi tạo repository: {ex.Message}");
+            // Không throw exception để cho phép repository được tạo, nhưng log warning
+        }
     }
 
     #endregion
@@ -176,8 +185,17 @@ public class CompanyRepository : ICompanyRepository
 
             using var context = CreateNewContext();
             
-            // Tìm công ty hiện tại
-            var existingCompany = context.Companies.FirstOrDefault();
+            // Tìm công ty theo ID để đảm bảo cập nhật đúng công ty
+            Company existingCompany;
+            if (company.Id != Guid.Empty)
+            {
+                existingCompany = context.Companies.FirstOrDefault(c => c.Id == company.Id);
+            }
+            else
+            {
+                // Nếu ID rỗng, lấy công ty đầu tiên (fallback cho trường hợp cũ)
+                existingCompany = context.Companies.FirstOrDefault();
+            }
             
             if (existingCompany != null)
             {
@@ -211,11 +229,24 @@ public class CompanyRepository : ICompanyRepository
                 ThoiGianLoi = DateTime.Now
             };
         }
+        catch (ArgumentNullException)
+        {
+            throw;
+        }
+        catch (DataAccessException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             _logger.Error($"Lỗi khi cập nhật thông tin công ty: {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi cập nhật thông tin công ty: {ex.Message}", ex);
         }
+    }
+
+    public void Dispose()
+    {
+        
     }
 
     #endregion

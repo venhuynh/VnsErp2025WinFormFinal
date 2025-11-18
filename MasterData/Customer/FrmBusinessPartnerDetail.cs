@@ -1,4 +1,4 @@
-﻿using Bll.MasterData.Customer;
+﻿using Bll.MasterData.CustomerBll;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
@@ -8,7 +8,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.MasterData.CustomerBll;
+using Common.Utils;
 
 namespace MasterData.Customer
 {

@@ -1,6 +1,4 @@
-﻿using Bll.Common;
-using Bll.MasterData.Customer;
-using DevExpress.Utils;
+﻿using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
@@ -13,6 +11,9 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.MasterData.CustomerBll;
+using Common.Common;
+using Common.Utils;
 
 namespace MasterData.Customer
 {

@@ -12,17 +12,7 @@ namespace Dal.DataContext.SeedData.MasterData.Company
     public static class SeedData_Master_Company
     {
         #region ========== PUBLIC METHODS ==========
-
-        /// <summary>
-        /// Tạo tất cả seed data cho Company entities
-        /// </summary>
-        public static void CreateAllCompanyData()
-        {
-            using (var context = CreateContext())
-            {
-                CreateAllCompanyData(context);
-            }
-        }
+         
 
         /// <summary>
         /// Tạo tất cả seed data cho Company entities với connection string
@@ -69,17 +59,7 @@ namespace Dal.DataContext.SeedData.MasterData.Company
                 throw;
             }
         }
-
-        /// <summary>
-        /// Xóa tất cả seed data cho Company entities
-        /// </summary>
-        public static void DeleteAllCompanyData()
-        {
-            using (var context = CreateContext())
-            {
-                DeleteAllCompanyData(context);
-            }
-        }
+         
 
         /// <summary>
         /// Xóa tất cả seed data cho Company entities với connection string
@@ -578,14 +558,6 @@ namespace Dal.DataContext.SeedData.MasterData.Company
             Console.WriteLine($"✅ Đã tạo {employees.Count} Employees");
         }
 
-        /// <summary>
-        /// Tạo context mới từ connection string
-        /// </summary>
-        /// <returns>VnsErp2025DataContext</returns>
-        private static VnsErp2025DataContext CreateContext()
-        {
-            return new VnsErp2025DataContext();
-        }
 
         #endregion
     }

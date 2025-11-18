@@ -6,6 +6,8 @@ using System.Linq;
 using System.Windows.Forms;
 using Bll.Common;
 using Bll.MasterData.ProductServiceBll;
+using Common.Common;
+using Common.Utils;
 using DevExpress.Data;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
@@ -931,7 +933,7 @@ namespace MasterData.ProductService
             catch (Exception ex)
             {
                 // Ignore lỗi setup SuperToolTip để không chặn UserControl
-                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+                Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
             }
         }
 
@@ -945,30 +947,28 @@ namespace MasterData.ProductService
                 if (imageDto == null) return;
 
                 // Tạo form FrmProductImageDetail với ID hình ảnh
-                using (var detailForm = new FrmProductImageDetail(imageDto.Id))
+                using var detailForm = new FrmProductImageDetail(imageDto.Id);
+                // Cấu hình form
+                detailForm.Text = $@"Chi tiết hình ảnh: {imageDto.Caption ?? "Không có tên"}";
+                detailForm.StartPosition = FormStartPosition.CenterParent;
+                detailForm.TopMost = true; // Đặt form ở topmost
+                detailForm.WindowState = FormWindowState.Normal;
+                    
+                // Lưu trạng thái trước khi mở form
+                var originalImageCount = _imageList?.Count ?? 0;
+                    
+                // Hiển thị form
+                var dialogResult = detailForm.ShowDialog(this);
+                    
+                // Chỉ reload nếu có thay đổi dữ liệu (xóa hình ảnh)
+                if (detailForm.WasImageDeleted || (_imageList?.Count ?? 0) != originalImageCount)
                 {
-                    // Cấu hình form
-                    detailForm.Text = $@"Chi tiết hình ảnh: {imageDto.Caption ?? "Không có tên"}";
-                    detailForm.StartPosition = FormStartPosition.CenterParent;
-                    detailForm.TopMost = true; // Đặt form ở topmost
-                    detailForm.WindowState = FormWindowState.Normal;
-                    
-                    // Lưu trạng thái trước khi mở form
-                    var originalImageCount = _imageList?.Count ?? 0;
-                    
-                    // Hiển thị form
-                    var dialogResult = detailForm.ShowDialog(this);
-                    
-                    // Chỉ reload nếu có thay đổi dữ liệu (xóa hình ảnh)
-                    if (detailForm.WasImageDeleted || (_imageList?.Count ?? 0) != originalImageCount)
-                    {
-                        Debug.WriteLine("Phát hiện thay đổi dữ liệu, reloading datasource...");
-                        ReloadDataSource();
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Không có thay đổi dữ liệu, không cần reload");
-                    }
+                    Debug.WriteLine("Phát hiện thay đổi dữ liệu, reloading datasource...");
+                    ReloadDataSource();
+                }
+                else
+                {
+                    Debug.WriteLine("Không có thay đổi dữ liệu, không cần reload");
                 }
             }
             catch (Exception ex)

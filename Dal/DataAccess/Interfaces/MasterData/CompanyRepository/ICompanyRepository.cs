@@ -25,5 +25,4 @@ public interface ICompanyRepository
     /// <param name="company">Company entity cần cập nhật</param>
     void UpdateCompany(Company company);
 
-    void Dispose();
 }

@@ -1,7 +1,9 @@
 using Common;
 using Logger.Interfaces;
 using System;
+using System.Configuration;
 using System.IO;
+using Common.Helpers;
 
 namespace Logger.Configuration;
 

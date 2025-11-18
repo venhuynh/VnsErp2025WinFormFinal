@@ -1,5 +1,4 @@
-﻿using Bll.Common;
-using Bll.MasterData.Customer;
+﻿using Bll.MasterData.CustomerBll;
 using Common.Helpers;
 using DevExpress.Data;
 using DevExpress.Utils;
@@ -9,6 +8,7 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
+using DTO.MasterData.CustomerPartner;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,8 +16,8 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.MasterData.CustomerBll;
-using DTO.MasterData.CustomerPartner;
+using Common.Common;
+using Common.Utils;
 
 namespace MasterData.Customer
 {

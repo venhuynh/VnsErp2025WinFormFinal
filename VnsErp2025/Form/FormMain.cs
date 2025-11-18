@@ -1,7 +1,4 @@
 ﻿using Authentication.Form;
-using Bll.Common;
-using Dal.Connection;
-using Dal.DataContext;
 using DevExpress.XtraBars;
 using MasterData.Company;
 using MasterData.Customer;
@@ -9,6 +6,12 @@ using MasterData.ProductService;
 using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using Bll.Common;
+using Common.Common;
+using Common.Utils;
+using Dal.Connection;
+using Dal.DataContext;
+
 // ReSharper disable InconsistentNaming
 
 namespace VnsErp2025.Form

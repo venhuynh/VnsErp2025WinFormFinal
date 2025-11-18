@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Bll.MasterData.ProductServiceBll;
 using Common.Helpers;
+using Common.Utils;
 using DevExpress.Data;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
@@ -46,7 +47,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Business Logic Layer cho thuộc tính
         /// </summary>
-        private readonly AttributeBll _AttributeBll = new AttributeBll();
+        private readonly AttributeBll _attributeBll = new AttributeBll();
 
         /// <summary>
         /// Kết quả trả về cho form gọi (danh sách thuộc tính)
@@ -361,7 +362,7 @@ namespace MasterData.ProductService
             }
 
             // Kiểm tra phụ thuộc dữ liệu trước khi cho phép edit
-            if (selectedDto.Id != Guid.Empty && _AttributeBll.HasDependencies(selectedDto.Id))
+            if (selectedDto.Id != Guid.Empty && _attributeBll.HasDependencies(selectedDto.Id))
             {
                 ShowWarning($"Không thể chỉnh sửa '{selectedDto.Name}' vì còn dữ liệu phụ thuộc. Việc sửa đổi có thể ảnh hưởng đến tính toàn vẹn dữ liệu.");
                 return;
@@ -510,7 +511,7 @@ namespace MasterData.ProductService
             var nameToCheck = NameTextEdit.EditValue?.ToString().Trim() ?? string.Empty;
 
             // Kiểm tra trùng tên
-            if (_AttributeBll.IsNameExists(nameToCheck, _current.Id == Guid.Empty ? null : (Guid?)_current.Id))
+            if (_attributeBll.IsNameExists(nameToCheck, _current.Id == Guid.Empty ? null : _current.Id))
             {
                 dxErrorProvider1.SetError(NameTextEdit, "Tên thuộc tính đã tồn tại");
                 ShowWarning("Tên thuộc tính đã tồn tại. Vui lòng chọn tên khác.");
@@ -519,7 +520,7 @@ namespace MasterData.ProductService
 
             // Lưu xuống database qua BLL
             var entity = _current.ToEntity();
-            _AttributeBll.SaveOrUpdate(entity);
+            _attributeBll.SaveOrUpdate(entity);
             _current.Id = entity.Id; // Cập nhật ID nếu là bản ghi mới
 
             AttributeGridView.RefreshData();
@@ -674,7 +675,7 @@ namespace MasterData.ProductService
                 {
                     if (ValidateAndDeleteAttribute(dto))
                     {
-                        _AttributeBll.Delete(dto.Id);
+                        _attributeBll.Delete(dto.Id);
                         _attributes.Remove(dto);
                     }
                 }
@@ -719,7 +720,7 @@ namespace MasterData.ProductService
         private bool ValidateAndDeleteAttribute(AttributeDto dto)
         {
             // Chặn xóa khi còn dữ liệu phụ thuộc
-            if (_AttributeBll.HasDependencies(dto.Id))
+            if (_attributeBll.HasDependencies(dto.Id))
             {
                 ShowWarning($"Không thể xóa '{dto.Name}' vì còn dữ liệu phụ thuộc.");
                 return false;
@@ -853,7 +854,7 @@ namespace MasterData.ProductService
         {
             try
             {
-                var entities = _AttributeBll.GetAll();
+                var entities = _attributeBll.GetAll();
                 var dtos = entities.ToDtoList();
                 SetData(dtos);
             }

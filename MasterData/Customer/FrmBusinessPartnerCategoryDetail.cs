@@ -1,10 +1,11 @@
-﻿using Bll.MasterData.Customer;
-using DevExpress.XtraBars;
+﻿using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.MasterData.CustomerPartner;
 using System;
 using System.Windows.Forms;
+using Bll.MasterData.CustomerBll;
+using Common.Utils;
 
 namespace MasterData.Customer
 {

@@ -1,8 +1,8 @@
-﻿using Bll.Common;
-using Bll.MasterData.Customer;
+﻿using Bll.MasterData.CustomerBll;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
+using DTO.MasterData.CustomerPartner;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,8 +10,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.MasterData.CustomerBll;
-using DTO.MasterData.CustomerPartner;
+using Common.Common;
+using Common.Utils;
 
 namespace MasterData.Customer
 {

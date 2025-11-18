@@ -1,11 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Common;
 using Bll.MasterData.ProductServiceBll;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
@@ -16,6 +8,15 @@ using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Nodes;
 using MasterData.ProductService.Converters;
 using MasterData.ProductService.Dto;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Common.Common;
+using Common.Utils;
 
 namespace MasterData.ProductService
 {
@@ -246,7 +247,7 @@ namespace MasterData.ProductService
             {
                 var saveDialog = new SaveFileDialog
                 {
-                    Filter = "Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
+                    Filter = @"Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
                     FileName = "ProductServiceCategories.xlsx"
                 };
 
@@ -402,7 +403,7 @@ namespace MasterData.ProductService
                 if (e.Column.FieldName == "ProductCount")
                 {
                     Color backColor;
-                    Color foreColor = Color.Black;
+                    Color foreColor;
 
                     // Màu sắc dựa trên số lượng sản phẩm/dịch vụ
                     if (row.ProductCount == 0)
@@ -519,8 +520,9 @@ namespace MasterData.ProductService
                     currentNode = currentNode.ParentNode;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                MsgBox.ShowException(ex);
             }
         }
 

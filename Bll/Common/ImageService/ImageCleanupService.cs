@@ -393,14 +393,6 @@ public class ImageCleanupService
     #endregion
 }
 
-/// <summary>
-/// Exception cho Business Logic Layer
-/// </summary>
-public class BusinessLogicException : Exception
-{
-    public BusinessLogicException(string message) : base(message) { }
-    public BusinessLogicException(string message, Exception innerException) : base(message, innerException) { }
-}
 
 /// <summary>
 /// Thông tin disk usage
