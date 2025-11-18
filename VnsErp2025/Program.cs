@@ -10,6 +10,7 @@ using MasterData.ProductService;
 using System;
 using System.Windows.Forms;
 using Common.Utils;
+using Dal.Connection;
 using VnsErp2025.Form;
 
 namespace VnsErp2025
@@ -50,6 +51,32 @@ namespace VnsErp2025
                 }
             }
 
+            // 3) Sau khi test connection thành công, khởi tạo ApplicationStartupManager
+            // Đảm bảo connection string được load vào ứng dụng để các BLL có thể sử dụng
+            try
+            {
+                // Khởi tạo ApplicationStartupManager để load connection string vào ứng dụng
+                // DatabaseConnectionManager sẽ tự động load từ file XML hoặc Registry
+                if (!ApplicationStartupManager.Instance.InitializeApplication())
+                {
+                    // Nếu không thể khởi tạo, thử với connection string từ ConnectionManager
+                    var connectionString = connectionManager.ConnectionString;
+                    if (!string.IsNullOrEmpty(connectionString))
+                    {
+                        // Parse connection string thành DatabaseConfigDto (nếu cần)
+                        // Hoặc đơn giản là đảm bảo DatabaseConnectionManager đã được khởi tạo
+                        // DatabaseConnectionManager sẽ tự động khởi tạo khi GetGlobalConnectionString() được gọi
+                        System.Diagnostics.Debug.WriteLine($"Connection string từ ConnectionManager: {connectionString.Substring(0, Math.Min(50, connectionString.Length))}...");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nhưng không dừng ứng dụng
+                System.Diagnostics.Debug.WriteLine($"Lỗi khi khởi tạo ApplicationStartupManager: {ex.Message}");
+                // Vẫn tiếp tục chạy ứng dụng vì DatabaseConnectionManager có thể tự động khởi tạo
+            }
+
             #region Dành cho debug
 
             //SeedData_Master_Customer.DeleteAllPartnerData();
@@ -63,7 +90,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FormMain());
+            Application.Run(new FrmBusinessPartnerCategory());
 
             #endregion
 

@@ -106,7 +106,8 @@ namespace MasterData.Customer
         {
             try
             {
-                var (categories, counts) = await _businessPartnerCategoryBll.GetCategoriesWithCountsAsync();
+                var (categories, counts) = 
+                    await _businessPartnerCategoryBll.GetCategoriesWithCountsAsync();
 
                 // Debug: Kiểm tra dữ liệu counts
                 Debug.WriteLine("=== LoadDataAsyncWithoutSplash Debug ===");
@@ -426,35 +427,6 @@ namespace MasterData.Customer
                 // Không ghi đè màu khi đang chọn để giữ màu chọn mặc định của DevExpress
                 if (treeList.Selection.Contains(e.Node)) return;
 
-                // Nền theo số lượng đối tác và level
-                Color backColor;
-
-                // Màu sắc dựa trên level trong cây
-                if (row.Level == 0) // Root categories
-                {
-                    backColor = row.PartnerCount == 0 ? Color.LightGray : Color.LightBlue;
-                }
-                else // Sub-categories
-                {
-                    if (row.PartnerCount == 0)
-                    {
-                        backColor = Color.FromArgb(245, 245, 245); // Very light gray
-                    }
-                    else if (row.PartnerCount <= 5)
-                    {
-                        backColor = Color.LightYellow; // Ít đối tác
-                    }
-                    else if (row.PartnerCount <= 20)
-                    {
-                        backColor = Color.LightGreen; // Trung bình
-                    }
-                    else
-                    {
-                        backColor = Color.LightCyan; // Nhiều đối tác
-                    }
-                }
-
-                e.Appearance.BackColor = backColor;
                 e.Appearance.ForeColor = Color.Black;
                 e.Appearance.Options.UseBackColor = true;
                 e.Appearance.Options.UseForeColor = true;

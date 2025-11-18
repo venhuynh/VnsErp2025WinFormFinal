@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Common.Appconfig;
+using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataContext;

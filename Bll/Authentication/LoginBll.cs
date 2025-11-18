@@ -1,4 +1,4 @@
-﻿using Common.Appconfig;
+﻿using Dal.Connection;
 using Common.Utils;
 using Dal.DataAccess.Implementations;
 using Dal.DataAccess.Interfaces;

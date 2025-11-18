@@ -352,6 +352,7 @@
     <None Include="Customer\Dto\DTO_README.md" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -399,9 +400,7 @@
       <Name>DTO</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\DataSources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor DTOs với Notation tiếng Việt%29.txt" />

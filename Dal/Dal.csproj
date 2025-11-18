@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Configuration\DatabaseSettings.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
+    <Compile Include="Connection\ApplicationStartupManager.cs" />
     <Compile Include="Connection\ConnectionManager.cs" />
     <Compile Include="Connection\ConnectionStringHelper.cs" />
     <Compile Include="Connection\DatabaseConfig.cs" />

@@ -50,7 +50,6 @@ namespace MasterData.Customer
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.businessPartnerCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.treeList1 = new DevExpress.XtraTreeList.TreeList();
             this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
@@ -58,13 +57,14 @@ namespace MasterData.Customer
             this.colPartnerCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.businessPartnerCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.treeList1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -148,7 +148,7 @@ namespace MasterData.Customer
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 24);
             // 
             // barDockControlBottom
             // 
@@ -162,30 +162,26 @@ namespace MasterData.Customer
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 588);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 603);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 588);
-            // 
-            // businessPartnerCategoryDtoBindingSource
-            // 
-            this.businessPartnerCategoryDtoBindingSource.DataSource = typeof(BusinessPartnerCategoryDto);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 603);
             // 
             // layoutControl1
             // 
             this.layoutControl1.Controls.Add(this.treeList1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 588);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 603);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -202,7 +198,7 @@ namespace MasterData.Customer
             this.colPartnerCount});
             this.treeList1.DataSource = this.businessPartnerCategoryDtoBindingSource;
             this.treeList1.KeyFieldName = "Id";
-            this.treeList1.Location = new System.Drawing.Point(16, 16);
+            this.treeList1.Location = new System.Drawing.Point(12, 12);
             this.treeList1.MenuManager = this.barManager1;
             this.treeList1.Name = "treeList1";
             this.treeList1.OptionsBehavior.AllowRecursiveNodeChecking = true;
@@ -210,7 +206,7 @@ namespace MasterData.Customer
             this.treeList1.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check;
             this.treeList1.OptionsView.ShowCaption = true;
             this.treeList1.ParentFieldName = "ParentId";
-            this.treeList1.Size = new System.Drawing.Size(1043, 556);
+            this.treeList1.Size = new System.Drawing.Size(1051, 579);
             this.treeList1.TabIndex = 4;
             // 
             // colCategoryName
@@ -242,7 +238,7 @@ namespace MasterData.Customer
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 588);
+            this.Root.Size = new System.Drawing.Size(1075, 603);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -250,8 +246,12 @@ namespace MasterData.Customer
             this.layoutControlItem1.Control = this.treeList1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 562);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1055, 583);
             this.layoutControlItem1.TextVisible = false;
+            // 
+            // businessPartnerCategoryDtoBindingSource
+            // 
+            this.businessPartnerCategoryDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto);
             // 
             // FrmBusinessPartnerCategory
             // 
@@ -266,12 +266,12 @@ namespace MasterData.Customer
             this.Name = "FrmBusinessPartnerCategory";
             this.Text = "PHÂN LOẠI KHÁCH HÀNG - ĐỐI TÁC";
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.treeList1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -292,11 +292,12 @@ namespace MasterData.Customer
         private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
-        private BindingSource businessPartnerCategoryDtoBindingSource;
         private TreeList treeList1;
         private LayoutControlItem layoutControlItem1;
         private TreeListColumn colCategoryName;
         private TreeListColumn colDescription;
         private TreeListColumn colPartnerCount;
+        
+        private BindingSource businessPartnerCategoryDtoBindingSource;
     }
 }

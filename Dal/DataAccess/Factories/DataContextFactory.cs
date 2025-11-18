@@ -2,6 +2,7 @@
 using Dal.DataAccess.Interfaces;
 using System;
 using Common.Appconfig;
+using Dal.Connection;
 using Dal.DataContext;
 using Logger;
 using Logger.Configuration;

@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlClient;
 using Common.Utils;
 
 namespace Common.Appconfig
@@ -157,13 +158,53 @@ namespace Common.Appconfig
                 {
                     LogMessage("Bắt đầu khởi tạo DatabaseConnectionManager");
 
-                    // Load database configuration từ file XML
+                    // Bước 1: Thử load database configuration từ file XML
                     var dbHelper = DatabaseConnectionHelper.Instance;
-                    var dbConfig = dbHelper.LoadDatabaseConfig();
+                    DatabaseConfigDto dbConfig = null;
                     
+                    try
+                    {
+                        if (dbHelper.HasDatabaseConfig())
+                        {
+                            dbConfig = dbHelper.LoadDatabaseConfig();
+                            if (dbConfig != null && dbConfig.IsValid())
+                            {
+                                LogMessage("Đã load database configuration từ file XML");
+                            }
+                        }
+                    }
+                    catch (Exception xmlEx)
+                    {
+                        LogMessage($"Không thể load từ file XML: {xmlEx.Message}. Sẽ thử fallback từ ConnectionStringHelper.");
+                    }
+
+                    // Bước 2: Nếu không có file XML, thử fallback từ ConnectionStringHelper (Registry/User Settings)
                     if (dbConfig == null || !dbConfig.IsValid())
                     {
-                        LogError("Không thể load database configuration hoặc config không hợp lệ");
+                        try
+                        {
+                            // Thử lấy connection string từ ConnectionStringHelper (Registry/User Settings)
+                            var fallbackConnectionString = GetConnectionStringFromFallback();
+                            if (!string.IsNullOrEmpty(fallbackConnectionString))
+                            {
+                                // Parse connection string thành DatabaseConfigDto
+                                dbConfig = ParseConnectionStringToConfig(fallbackConnectionString);
+                                if (dbConfig != null && dbConfig.IsValid())
+                                {
+                                    LogMessage("Đã load database configuration từ fallback source (Registry/User Settings)");
+                                }
+                            }
+                        }
+                        catch (Exception fallbackEx)
+                        {
+                            LogMessage($"Không thể load từ fallback source: {fallbackEx.Message}");
+                        }
+                    }
+
+                    // Bước 3: Kiểm tra xem có config hợp lệ không
+                    if (dbConfig == null || !dbConfig.IsValid())
+                    {
+                        LogError("Không thể load database configuration từ bất kỳ nguồn nào (XML hoặc Registry/User Settings)");
                         return false;
                     }
 
@@ -448,6 +489,82 @@ namespace Common.Appconfig
             if (showToUser)
             {
                 MsgBox.ShowError(message, "Lỗi Database Connection Manager");
+            }
+        }
+
+        /// <summary>
+        /// Lấy connection string từ fallback source (Registry/User Settings) thông qua ConnectionStringHelper
+        /// </summary>
+        /// <returns>Connection string hoặc null nếu không lấy được</returns>
+        private string GetConnectionStringFromFallback()
+        {
+            try
+            {
+                // Sử dụng reflection để tránh circular dependency với Dal.Connection
+                var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var asm in assemblies)
+                {
+                    var connectionStringHelperType = asm.GetType("Dal.Connection.ConnectionStringHelper");
+                    if (connectionStringHelperType != null)
+                    {
+                        var getDefaultMethod = connectionStringHelperType.GetMethod("GetDefaultConnectionString", 
+                            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                        if (getDefaultMethod != null)
+                        {
+                            var result = getDefaultMethod.Invoke(null, null);
+                            return result as string;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"Không thể lấy connection string từ fallback: {ex.Message}");
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Parse connection string thành DatabaseConfigDto
+        /// </summary>
+        /// <param name="connectionString">Connection string cần parse</param>
+        /// <returns>DatabaseConfigDto hoặc null nếu không parse được</returns>
+        private DatabaseConfigDto ParseConnectionStringToConfig(string connectionString)
+        {
+            if (string.IsNullOrEmpty(connectionString))
+                return null;
+
+            try
+            {
+                var builder = new SqlConnectionStringBuilder(connectionString);
+                var config = new DatabaseConfigDto
+                {
+                    ServerName = builder.DataSource,
+                    DatabaseName = builder.InitialCatalog,
+                    UserId = builder.UserID,
+                    Password = builder.Password,
+                    ConnectionTimeout = builder.ConnectTimeout,
+                    TrustServerCertificate = false // Default value, có thể được set từ connection string nếu cần
+                };
+
+                // Thử lấy TrustServerCertificate từ connection string nếu có
+                if (builder.ContainsKey("TrustServerCertificate"))
+                {
+                    bool.TryParse(builder["TrustServerCertificate"]?.ToString(), out bool trustServer);
+                    config.TrustServerCertificate = trustServer;
+                }
+
+                // Set authentication method dựa trên IntegratedSecurity
+                config.AuthenticationMethod = builder.IntegratedSecurity 
+                    ? AuthenticationMethod.WindowsAuthentication 
+                    : AuthenticationMethod.SqlServerAuthentication;
+
+                return config;
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"Không thể parse connection string: {ex.Message}");
+                return null;
             }
         }
 

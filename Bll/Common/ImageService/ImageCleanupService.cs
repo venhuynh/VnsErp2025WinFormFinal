@@ -1,5 +1,5 @@
 ﻿using Common;
-using Common.Appconfig;
+using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using System;
