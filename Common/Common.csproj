@@ -59,6 +59,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Appconfig\ApplicationStartupManager.cs" />
+    <Compile Include="Appconfig\AuthenticationMethod.cs" />
+    <Compile Include="Appconfig\DatabaseConfigDto.cs" />
+    <Compile Include="Appconfig\DatabaseConnectionHelper.cs" />
+    <Compile Include="Appconfig\DatabaseConnectionManager.cs" />
+    <Compile Include="Appconfig\VntaCrypto.cs" />
     <Compile Include="ApplicationConstants.cs" />
     <Compile Include="Common\OverlayManager.cs" />
     <Compile Include="Common\SplashScreenHelper.cs" />
@@ -88,8 +94,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-      <Compile Include="Utils\AlertHelper.cs" />
-      <Compile Include="Utils\InputBoxHelper.cs" />
+    <Compile Include="Utils\AlertHelper.cs" />
+    <Compile Include="Utils\InputBoxHelper.cs" />
     <Compile Include="Utils\MsgBox.cs" />
     <Compile Include="Utils\RequiredFieldHelper.cs" />
     <Compile Include="Utils\SecurityHelper.cs" />

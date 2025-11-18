@@ -19,14 +19,6 @@ namespace Common.Helpers;
 /// </summary>
 public static class GridViewHelper
 {
-    #region ========== KHAI BÁO BIẾN ==========
-
-    /// <summary>
-    /// Logger để ghi log các hoạt động
-    /// </summary>
-    private static readonly ILogger _logger = LoggerFactory.CreateLogger(LogCategory.UI);
-
-    #endregion
 
     #region ========== ROW INDICATOR & DISPLAY ==========
 
@@ -87,7 +79,6 @@ public static class GridViewHelper
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi lấy giá trị cột {columnName} từ các dòng được chọn", ex);
             throw;
         }
 
@@ -129,16 +120,12 @@ public static class GridViewHelper
             if (column != null)
             {
                 column.ColumnEdit = memoEditor;
-                _logger.Debug($"Đã áp dụng memo editor cho cột {fieldName} trong GridView");
             }
-            else
-            {
-                _logger.Warning($"Không tìm thấy cột {fieldName} trong GridView");
-            }
+           
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi áp dụng memo editor cho cột {fieldName} trong GridView", ex);
+            throw;
         }
     }
 
@@ -158,16 +145,11 @@ public static class GridViewHelper
             if (column != null)
             {
                 column.ColumnEdit = memoEditor;
-                _logger.Debug($"Đã áp dụng memo editor cho cột {fieldName} trong BandedGridView");
-            }
-            else
-            {
-                _logger.Warning($"Không tìm thấy cột {fieldName} trong BandedGridView");
             }
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi áp dụng memo editor cho cột {fieldName} trong BandedGridView", ex);
+            throw;
         }
     }
 
@@ -205,12 +187,10 @@ public static class GridViewHelper
 
             // Cấu hình filter cho các cột
             ConfigureColumnFilters(gridView);
-
-            _logger.Debug($"Đã cấu hình filter cho GridView '{gridView.Name}'");
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi cấu hình filter cho GridView '{gridView?.Name}'", ex);
+            throw;
         }
     }
 
@@ -230,12 +210,10 @@ public static class GridViewHelper
 
             // Cấu hình filter cho các cột
             ConfigureBandedColumnFilters(gridView);
-
-            _logger.Debug($"Đã cấu hình filter cho BandedGridView '{gridView.Name}'");
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi cấu hình filter cho BandedGridView '{gridView?.Name}'", ex);
+            throw;
         }
     }
 
@@ -251,12 +229,10 @@ public static class GridViewHelper
             {
                 ConfigureColumnFilter(column);
             }
-
-            _logger.Debug($"Đã cấu hình filter cho {gridView.Columns.Count} cột trong GridView");
         }
         catch (Exception ex)
         {
-            _logger.Error("Lỗi khi cấu hình filter cho các cột GridView", ex);
+            throw;
         }
     }
 
@@ -272,12 +248,10 @@ public static class GridViewHelper
             {
                 ConfigureColumnFilter(column);
             }
-
-            _logger.Debug($"Đã cấu hình filter cho {gridView.Columns.Count} cột trong BandedGridView");
         }
         catch (Exception ex)
         {
-            _logger.Error("Lỗi khi cấu hình filter cho các cột BandedGridView", ex);
+            throw;
         }
     }
 
@@ -319,12 +293,10 @@ public static class GridViewHelper
                 // Default - sử dụng Contains
                 column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
             }
-
-            _logger.Debug($"Đã cấu hình filter cho cột {column.FieldName} (Type: {fieldType?.Name})");
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi cấu hình filter cho cột {column?.FieldName}", ex);
+            throw;
         }
     }
 
@@ -395,7 +367,6 @@ public static class GridViewHelper
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi cấu hình GridView '{gridView?.Name}'", ex);
             throw;
         }
     }
@@ -414,7 +385,6 @@ public static class GridViewHelper
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi cấu hình GridView '{gridView?.Name}' với entity type '{entityType}'", ex);
             throw;
         }
     }
@@ -476,7 +446,6 @@ public static class GridViewHelper
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi cấu hình BandedGridView '{gridView?.Name}'", ex);
             throw;
         }
     }
@@ -495,7 +464,6 @@ public static class GridViewHelper
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi cấu hình BandedGridView '{gridView?.Name}' với entity type '{entityType}'", ex);
             throw;
         }
     }
@@ -557,8 +525,6 @@ public static class GridViewHelper
 
             gridView.ExportToXlsx(filePath, options);
 
-            _logger.Info($"Đã xuất GridView '{gridView.Name}' ra file {filePath}");
-
             // Tự động mở file nếu yêu cầu
             if (autoOpen && showDialog)
             {
@@ -582,7 +548,6 @@ public static class GridViewHelper
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi xuất GridView '{gridView?.Name}' ra file Excel", ex);
             MessageBox.Show($"Lỗi khi xuất file: {ex.Message}", "Lỗi", 
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             return null;
@@ -610,7 +575,6 @@ public static class GridViewHelper
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi xuất GridView '{gridView?.Name}' ra file Excel", ex);
             MsgBox.ShowException(ex);
         }
     }

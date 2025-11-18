@@ -1,7 +1,9 @@
 ﻿using Dal.Configuration;
 using Dal.DataAccess.Interfaces;
 using System;
-
+using Logger;
+using Logger.Configuration;
+using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Factories;
 
