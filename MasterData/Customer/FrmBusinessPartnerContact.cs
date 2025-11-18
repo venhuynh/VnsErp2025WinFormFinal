@@ -378,7 +378,7 @@ namespace MasterData.Customer
                         {
                             failedCount++;
                             failedIds.Add(id);
-                            System.Diagnostics.Debug.WriteLine($"Lỗi khi xóa contact {id}: {deleteEx.Message}");
+                            Debug.WriteLine($"Lỗi khi xóa contact {id}: {deleteEx.Message}");
                         }
                     }
 
