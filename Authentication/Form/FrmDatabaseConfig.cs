@@ -1,6 +1,7 @@
 ﻿using Dal.Connection;
 using System;
 using System.Windows.Forms;
+using Common.Utils;
 
 namespace Authentication.Form
 {

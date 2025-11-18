@@ -1,9 +1,12 @@
-﻿using System;
-using System.Windows.Forms;
-using DevExpress.XtraEditors.DXErrorProvider;
-using BllValidation = Bll.Validation;
-using Bll.Authentication;
+﻿using Bll.Authentication;
 using Bll.Common;
+using Common.Utils;
+using Common.Validation;
+using BllValidation = Common.Validation;
+using DevExpress.XtraEditors.DXErrorProvider;
+using System;
+using System.Windows.Forms;
+
 
 namespace Authentication.Form
 {
