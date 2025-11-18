@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Common;
+﻿using Bll.Common;
 using Bll.MasterData.Customer;
-using Bll.Utils;
+using Common.Helpers;
 using DevExpress.Data;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
@@ -16,8 +9,14 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
-using MasterData.Customer.Converters;
-using MasterData.Customer.Dto;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using DTO.MasterData.CustomerPartner;
 
 namespace MasterData.Customer
 {

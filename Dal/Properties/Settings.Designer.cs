@@ -33,5 +33,16 @@ namespace Dal.Properties {
                 return ((string)(this["VnsErp2025FinalConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=115.75.187.3,3306;Initial Catalog=VnsErp2025Final;Persist Security In" +
+            "fo=True;User ID=vns;TrustServerCertificate=True")]
+        public string VnsErp2025FinalConnectionString1 {
+            get {
+                return ((string)(this["VnsErp2025FinalConnectionString1"]));
+            }
+        }
     }
 }

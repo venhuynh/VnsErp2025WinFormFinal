@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PreBuildEvent Condition="'$(DesignTimeBuild)' != 'true'">powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(SolutionDir)KillVnsErpProcess.ps1"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PreBuildEvent Condition="'$(DesignTimeBuild)' != 'true'">powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(SolutionDir)KillVnsErpProcess.ps1"</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.BonusSkins.v25.1" />
@@ -112,6 +114,10 @@
       <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
       <Name>Dal</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Inventory\Inventory.csproj">
+      <Project>{055c0170-a359-48b9-95d9-7260b17e8e20}</Project>
+      <Name>Inventory</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MasterData\MasterData.csproj">
       <Project>{A15B1F9F-65D1-4723-A1E2-675F5BDC8641}</Project>
       <Name>MasterData</Name>
@@ -153,10 +159,20 @@
     <None Include="Resources\publish_16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- Pre-build: Kill running VnsErp2025.exe and delete .exe files to prevent MSB3021 error -->
+  <!-- Only run during actual build, not during project load/evaluation -->
+  <Target Name="BeforeBuild" Condition="'$(DesignTimeBuild)' != 'true'">
+    <!-- Kill running processes -->
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $processes = Get-Process -Name 'VnsErp2025' -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 1000 }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
+    
+    <!-- Delete .exe files in obj\$(Configuration) -->
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $exePath = '$(ProjectDir)obj\$(Configuration)\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; if ($file.IsReadOnly) { $file.IsReadOnly = $false }; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
+    
+    <!-- Delete .exe files in bin\$(Configuration) -->
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $exePath = '$(ProjectDir)bin\$(Configuration)\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; if ($file.IsReadOnly) { $file.IsReadOnly = $false }; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
   </Target>
   -->

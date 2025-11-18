@@ -1,14 +1,14 @@
 ﻿using Authentication.Form;
-using Bll.Utils;
 using Dal.Connection;
+using Dal.DataContext.SeedData.MasterData.Company;
+using Dal.DataContext.SeedData.MasterData.Customer;
 using Dal.DataContext.SeedData.MasterData.ProductService;
+using DevExpress.XtraEditors;
+using Inventory.StockIn;
 using MasterData.Customer;
 using MasterData.ProductService;
 using System;
 using System.Windows.Forms;
-using Dal.DataContext.SeedData.MasterData.Company;
-using Dal.DataContext.SeedData.MasterData.Customer;
-using DevExpress.XtraEditors;
 using VnsErp2025.Form;
 
 namespace VnsErp2025
@@ -62,7 +62,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FormMain());
+            Application.Run(new FrmNhapKhoThuongMai02());
 
             #endregion
 

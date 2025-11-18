@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Dal.DataAccess;
 using Dal.DataContext;
-using Bll.Utils;
 
 namespace Bll.Authentication
 {

@@ -53,6 +53,9 @@
     <Compile Include="Connection\ConnectionStringHelper.cs" />
     <Compile Include="Connection\DatabaseConfig.cs" />
     <Compile Include="Connection\IConnectionManager.cs" />
+    <Compile Include="DataAccess\Factories\DataContextFactory.cs" />
+    <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
+    <Compile Include="DataAccess\Inventory\IStockInRepository.cs" />
     <Compile Include="DataAccess\MasterData\CompanyDal\CompanyBranchDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\CompanyDal\CompanyDataAccess.cs" />
     <Compile Include="DataAccess\MasterData\CompanyDal\DepartmentDataAccess.cs" />
@@ -79,9 +82,6 @@
     <Compile Include="Exceptions\ConnectionException.cs" />
     <Compile Include="Exceptions\DataAccessException.cs" />
     <Compile Include="Helpers\RetryHelper.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="Logging\NullLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -139,6 +139,16 @@
   <ItemGroup>
     <Folder Include="Examples\" />
     <Folder Include="LinqExtensions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{68e56ab6-1ada-40de-9edd-0be2b8f35c3a}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{12f9fb39-92bf-45d5-bbb2-5353e33700f0}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

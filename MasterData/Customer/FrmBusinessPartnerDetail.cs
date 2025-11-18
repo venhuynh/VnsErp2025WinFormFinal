@@ -1,15 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.MasterData.Customer;
-using Bll.Utils;
+﻿using Bll.MasterData.Customer;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.DXErrorProvider;
-using MasterData.Customer.Converters;
-using MasterData.Customer.Dto;
+using DTO.MasterData.CustomerPartner;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MasterData.Customer
 {

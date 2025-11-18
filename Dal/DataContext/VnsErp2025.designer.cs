@@ -84,16 +84,16 @@ namespace Dal.DataContext
     partial void InsertProductVariant(ProductVariant instance);
     partial void UpdateProductVariant(ProductVariant instance);
     partial void DeleteProductVariant(ProductVariant instance);
+    partial void InsertStockInOutDetail(StockInOutDetail instance);
+    partial void UpdateStockInOutDetail(StockInOutDetail instance);
+    partial void DeleteStockInOutDetail(StockInOutDetail instance);
+    partial void InsertStockInOutMaster(StockInOutMaster instance);
+    partial void UpdateStockInOutMaster(StockInOutMaster instance);
+    partial void DeleteStockInOutMaster(StockInOutMaster instance);
     partial void InsertUnitOfMeasure(UnitOfMeasure instance);
     partial void UpdateUnitOfMeasure(UnitOfMeasure instance);
     partial void DeleteUnitOfMeasure(UnitOfMeasure instance);
     #endregion
-		
-		public VnsErp2025DataContext() : 
-				base(global::Dal.Properties.Settings.Default.VnsErp2025FinalConnectionString, mappingSource)
-		{
-			OnCreated();
-		}
 		
 		public VnsErp2025DataContext(string connection) : 
 				base(connection, mappingSource)
@@ -260,6 +260,22 @@ namespace Dal.DataContext
 			get
 			{
 				return this.GetTable<ProductVariant>();
+			}
+		}
+		
+		public System.Data.Linq.Table<StockInOutDetail> StockInOutDetails
+		{
+			get
+			{
+				return this.GetTable<StockInOutDetail>();
+			}
+		}
+		
+		public System.Data.Linq.Table<StockInOutMaster> StockInOutMasters
+		{
+			get
+			{
+				return this.GetTable<StockInOutMaster>();
 			}
 		}
 		
@@ -2314,6 +2330,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<BusinessPartnerContact> _BusinessPartnerContacts;
 		
+		private EntitySet<StockInOutMaster> _StockInOutMasters;
+		
 		private EntityRef<BusinessPartner> _BusinessPartner;
 		
     #region Extensibility Method Definitions
@@ -2355,6 +2373,7 @@ namespace Dal.DataContext
 		public BusinessPartnerSite()
 		{
 			this._BusinessPartnerContacts = new EntitySet<BusinessPartnerContact>(new Action<BusinessPartnerContact>(this.attach_BusinessPartnerContacts), new Action<BusinessPartnerContact>(this.detach_BusinessPartnerContacts));
+			this._StockInOutMasters = new EntitySet<StockInOutMaster>(new Action<StockInOutMaster>(this.attach_StockInOutMasters), new Action<StockInOutMaster>(this.detach_StockInOutMasters));
 			this._BusinessPartner = default(EntityRef<BusinessPartner>);
 			OnCreated();
 		}
@@ -2676,6 +2695,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartnerSite_StockInOutMaster", Storage="_StockInOutMasters", ThisKey="Id", OtherKey="PartnerSiteId")]
+		public EntitySet<StockInOutMaster> StockInOutMasters
+		{
+			get
+			{
+				return this._StockInOutMasters;
+			}
+			set
+			{
+				this._StockInOutMasters.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartner_BusinessPartnerSite", Storage="_BusinessPartner", ThisKey="PartnerId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public BusinessPartner BusinessPartner
 		{
@@ -2737,6 +2769,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_BusinessPartnerContacts(BusinessPartnerContact entity)
+		{
+			this.SendPropertyChanging();
+			entity.BusinessPartnerSite = null;
+		}
+		
+		private void attach_StockInOutMasters(StockInOutMaster entity)
+		{
+			this.SendPropertyChanging();
+			entity.BusinessPartnerSite = this;
+		}
+		
+		private void detach_StockInOutMasters(StockInOutMaster entity)
 		{
 			this.SendPropertyChanging();
 			entity.BusinessPartnerSite = null;
@@ -3209,6 +3253,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<Employee> _Employees;
 		
+		private EntitySet<StockInOutMaster> _StockInOutMasters;
+		
 		private EntityRef<Company> _Company;
 		
     #region Extensibility Method Definitions
@@ -3239,6 +3285,7 @@ namespace Dal.DataContext
 		{
 			this._Departments = new EntitySet<Department>(new Action<Department>(this.attach_Departments), new Action<Department>(this.detach_Departments));
 			this._Employees = new EntitySet<Employee>(new Action<Employee>(this.attach_Employees), new Action<Employee>(this.detach_Employees));
+			this._StockInOutMasters = new EntitySet<StockInOutMaster>(new Action<StockInOutMaster>(this.attach_StockInOutMasters), new Action<StockInOutMaster>(this.detach_StockInOutMasters));
 			this._Company = default(EntityRef<Company>);
 			OnCreated();
 		}
@@ -3453,6 +3500,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_StockInOutMaster", Storage="_StockInOutMasters", ThisKey="Id", OtherKey="WarehouseId")]
+		public EntitySet<StockInOutMaster> StockInOutMasters
+		{
+			get
+			{
+				return this._StockInOutMasters;
+			}
+			set
+			{
+				this._StockInOutMasters.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Company_CompanyBranch", Storage="_Company", ThisKey="CompanyId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public Company Company
 		{
@@ -3526,6 +3586,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_Employees(Employee entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch = null;
+		}
+		
+		private void attach_StockInOutMasters(StockInOutMaster entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch = this;
+		}
+		
+		private void detach_StockInOutMasters(StockInOutMaster entity)
 		{
 			this.SendPropertyChanging();
 			entity.CompanyBranch = null;
@@ -5892,6 +5964,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<ProductImage> _ProductImages;
 		
+		private EntitySet<StockInOutDetail> _StockInOutDetails;
+		
 		private EntityRef<ProductService> _ProductService;
 		
 		private EntityRef<UnitOfMeasure> _UnitOfMeasure;
@@ -5924,6 +5998,7 @@ namespace Dal.DataContext
 		{
 			this._VariantAttributes = new EntitySet<VariantAttribute>(new Action<VariantAttribute>(this.attach_VariantAttributes), new Action<VariantAttribute>(this.detach_VariantAttributes));
 			this._ProductImages = new EntitySet<ProductImage>(new Action<ProductImage>(this.attach_ProductImages), new Action<ProductImage>(this.detach_ProductImages));
+			this._StockInOutDetails = new EntitySet<StockInOutDetail>(new Action<StockInOutDetail>(this.attach_StockInOutDetails), new Action<StockInOutDetail>(this.detach_StockInOutDetails));
 			this._ProductService = default(EntityRef<ProductService>);
 			this._UnitOfMeasure = default(EntityRef<UnitOfMeasure>);
 			OnCreated();
@@ -6143,6 +6218,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_StockInOutDetail", Storage="_StockInOutDetails", ThisKey="Id", OtherKey="ProductVariantId")]
+		public EntitySet<StockInOutDetail> StockInOutDetails
+		{
+			get
+			{
+				return this._StockInOutDetails;
+			}
+			set
+			{
+				this._StockInOutDetails.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductService_ProductVariant", Storage="_ProductService", ThisKey="ProductId", OtherKey="Id", IsForeignKey=true)]
 		public ProductService ProductService
 		{
@@ -6253,6 +6341,934 @@ namespace Dal.DataContext
 		{
 			this.SendPropertyChanging();
 			entity.ProductVariant = null;
+		}
+		
+		private void attach_StockInOutDetails(StockInOutDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = this;
+		}
+		
+		private void detach_StockInOutDetails(StockInOutDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.StockInOutDetail")]
+	public partial class StockInOutDetail : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _StockInOutMasterId;
+		
+		private System.Guid _ProductVariantId;
+		
+		private decimal _StockInQty;
+		
+		private decimal _StockOutQty;
+		
+		private decimal _UnitPrice;
+		
+		private decimal _Vat;
+		
+		private decimal _VatAmount;
+		
+		private decimal _TotalAmount;
+		
+		private decimal _TotalAmountIncludedVat;
+		
+		private EntityRef<ProductVariant> _ProductVariant;
+		
+		private EntityRef<StockInOutMaster> _StockInOutMaster;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnStockInOutMasterIdChanging(System.Guid value);
+    partial void OnStockInOutMasterIdChanged();
+    partial void OnProductVariantIdChanging(System.Guid value);
+    partial void OnProductVariantIdChanged();
+    partial void OnStockInQtyChanging(decimal value);
+    partial void OnStockInQtyChanged();
+    partial void OnStockOutQtyChanging(decimal value);
+    partial void OnStockOutQtyChanged();
+    partial void OnUnitPriceChanging(decimal value);
+    partial void OnUnitPriceChanged();
+    partial void OnVatChanging(decimal value);
+    partial void OnVatChanged();
+    partial void OnVatAmountChanging(decimal value);
+    partial void OnVatAmountChanged();
+    partial void OnTotalAmountChanging(decimal value);
+    partial void OnTotalAmountChanged();
+    partial void OnTotalAmountIncludedVatChanging(decimal value);
+    partial void OnTotalAmountIncludedVatChanged();
+    #endregion
+		
+		public StockInOutDetail()
+		{
+			this._ProductVariant = default(EntityRef<ProductVariant>);
+			this._StockInOutMaster = default(EntityRef<StockInOutMaster>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutMasterId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid StockInOutMasterId
+		{
+			get
+			{
+				return this._StockInOutMasterId;
+			}
+			set
+			{
+				if ((this._StockInOutMasterId != value))
+				{
+					if (this._StockInOutMaster.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnStockInOutMasterIdChanging(value);
+					this.SendPropertyChanging();
+					this._StockInOutMasterId = value;
+					this.SendPropertyChanged("StockInOutMasterId");
+					this.OnStockInOutMasterIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductVariantId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ProductVariantId
+		{
+			get
+			{
+				return this._ProductVariantId;
+			}
+			set
+			{
+				if ((this._ProductVariantId != value))
+				{
+					if (this._ProductVariant.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductVariantIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductVariantId = value;
+					this.SendPropertyChanged("ProductVariantId");
+					this.OnProductVariantIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInQty", DbType="Decimal(18,2) NOT NULL")]
+		public decimal StockInQty
+		{
+			get
+			{
+				return this._StockInQty;
+			}
+			set
+			{
+				if ((this._StockInQty != value))
+				{
+					this.OnStockInQtyChanging(value);
+					this.SendPropertyChanging();
+					this._StockInQty = value;
+					this.SendPropertyChanged("StockInQty");
+					this.OnStockInQtyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockOutQty", DbType="Decimal(18,2) NOT NULL")]
+		public decimal StockOutQty
+		{
+			get
+			{
+				return this._StockOutQty;
+			}
+			set
+			{
+				if ((this._StockOutQty != value))
+				{
+					this.OnStockOutQtyChanging(value);
+					this.SendPropertyChanging();
+					this._StockOutQty = value;
+					this.SendPropertyChanged("StockOutQty");
+					this.OnStockOutQtyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UnitPrice", DbType="Decimal(18,2) NOT NULL")]
+		public decimal UnitPrice
+		{
+			get
+			{
+				return this._UnitPrice;
+			}
+			set
+			{
+				if ((this._UnitPrice != value))
+				{
+					this.OnUnitPriceChanging(value);
+					this.SendPropertyChanging();
+					this._UnitPrice = value;
+					this.SendPropertyChanged("UnitPrice");
+					this.OnUnitPriceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Vat", DbType="Decimal(18,2) NOT NULL")]
+		public decimal Vat
+		{
+			get
+			{
+				return this._Vat;
+			}
+			set
+			{
+				if ((this._Vat != value))
+				{
+					this.OnVatChanging(value);
+					this.SendPropertyChanging();
+					this._Vat = value;
+					this.SendPropertyChanged("Vat");
+					this.OnVatChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VatAmount", DbType="Decimal(18,2) NOT NULL")]
+		public decimal VatAmount
+		{
+			get
+			{
+				return this._VatAmount;
+			}
+			set
+			{
+				if ((this._VatAmount != value))
+				{
+					this.OnVatAmountChanging(value);
+					this.SendPropertyChanging();
+					this._VatAmount = value;
+					this.SendPropertyChanged("VatAmount");
+					this.OnVatAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalAmount", DbType="Decimal(18,2) NOT NULL")]
+		public decimal TotalAmount
+		{
+			get
+			{
+				return this._TotalAmount;
+			}
+			set
+			{
+				if ((this._TotalAmount != value))
+				{
+					this.OnTotalAmountChanging(value);
+					this.SendPropertyChanging();
+					this._TotalAmount = value;
+					this.SendPropertyChanged("TotalAmount");
+					this.OnTotalAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalAmountIncludedVat", DbType="Decimal(18,2) NOT NULL")]
+		public decimal TotalAmountIncludedVat
+		{
+			get
+			{
+				return this._TotalAmountIncludedVat;
+			}
+			set
+			{
+				if ((this._TotalAmountIncludedVat != value))
+				{
+					this.OnTotalAmountIncludedVatChanging(value);
+					this.SendPropertyChanging();
+					this._TotalAmountIncludedVat = value;
+					this.SendPropertyChanged("TotalAmountIncludedVat");
+					this.OnTotalAmountIncludedVatChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_StockInOutDetail", Storage="_ProductVariant", ThisKey="ProductVariantId", OtherKey="Id", IsForeignKey=true)]
+		public ProductVariant ProductVariant
+		{
+			get
+			{
+				return this._ProductVariant.Entity;
+			}
+			set
+			{
+				ProductVariant previousValue = this._ProductVariant.Entity;
+				if (((previousValue != value) 
+							|| (this._ProductVariant.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ProductVariant.Entity = null;
+						previousValue.StockInOutDetails.Remove(this);
+					}
+					this._ProductVariant.Entity = value;
+					if ((value != null))
+					{
+						value.StockInOutDetails.Add(this);
+						this._ProductVariantId = value.Id;
+					}
+					else
+					{
+						this._ProductVariantId = default(System.Guid);
+					}
+					this.SendPropertyChanged("ProductVariant");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutMaster_StockInOutDetail", Storage="_StockInOutMaster", ThisKey="StockInOutMasterId", OtherKey="Id", IsForeignKey=true)]
+		public StockInOutMaster StockInOutMaster
+		{
+			get
+			{
+				return this._StockInOutMaster.Entity;
+			}
+			set
+			{
+				StockInOutMaster previousValue = this._StockInOutMaster.Entity;
+				if (((previousValue != value) 
+							|| (this._StockInOutMaster.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._StockInOutMaster.Entity = null;
+						previousValue.StockInOutDetails.Remove(this);
+					}
+					this._StockInOutMaster.Entity = value;
+					if ((value != null))
+					{
+						value.StockInOutDetails.Add(this);
+						this._StockInOutMasterId = value.Id;
+					}
+					else
+					{
+						this._StockInOutMasterId = default(System.Guid);
+					}
+					this.SendPropertyChanged("StockInOutMaster");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.StockInOutMaster")]
+	public partial class StockInOutMaster : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.DateTime _StockInOutDate;
+		
+		private string _VocherNumber;
+		
+		private int _StockInOutType;
+		
+		private int _TrangThaiPhieuNhap;
+		
+		private System.Guid _WarehouseId;
+		
+		private System.Nullable<System.Guid> _PurchaseOrderId;
+		
+		private System.Guid _PartnerSiteId;
+		
+		private string _Notes;
+		
+		private decimal _TotalQuantity;
+		
+		private decimal _TotalAmount;
+		
+		private decimal _TotalVat;
+		
+		private decimal _TotalAmountIncludedVat;
+		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
+		private System.Nullable<System.DateTime> _CreatedDate;
+		
+		private System.Nullable<System.Guid> _UpdatedBy;
+		
+		private System.Nullable<System.DateTime> _UpdatedDate;
+		
+		private EntitySet<StockInOutDetail> _StockInOutDetails;
+		
+		private EntityRef<BusinessPartnerSite> _BusinessPartnerSite;
+		
+		private EntityRef<CompanyBranch> _CompanyBranch;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnStockInOutDateChanging(System.DateTime value);
+    partial void OnStockInOutDateChanged();
+    partial void OnVocherNumberChanging(string value);
+    partial void OnVocherNumberChanged();
+    partial void OnStockInOutTypeChanging(int value);
+    partial void OnStockInOutTypeChanged();
+    partial void OnTrangThaiPhieuNhapChanging(int value);
+    partial void OnTrangThaiPhieuNhapChanged();
+    partial void OnWarehouseIdChanging(System.Guid value);
+    partial void OnWarehouseIdChanged();
+    partial void OnPurchaseOrderIdChanging(System.Nullable<System.Guid> value);
+    partial void OnPurchaseOrderIdChanged();
+    partial void OnPartnerSiteIdChanging(System.Guid value);
+    partial void OnPartnerSiteIdChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    partial void OnTotalQuantityChanging(decimal value);
+    partial void OnTotalQuantityChanged();
+    partial void OnTotalAmountChanging(decimal value);
+    partial void OnTotalAmountChanged();
+    partial void OnTotalVatChanging(decimal value);
+    partial void OnTotalVatChanged();
+    partial void OnTotalAmountIncludedVatChanging(decimal value);
+    partial void OnTotalAmountIncludedVatChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
+    partial void OnCreatedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnCreatedDateChanged();
+    partial void OnUpdatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnUpdatedByChanged();
+    partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnUpdatedDateChanged();
+    #endregion
+		
+		public StockInOutMaster()
+		{
+			this._StockInOutDetails = new EntitySet<StockInOutDetail>(new Action<StockInOutDetail>(this.attach_StockInOutDetails), new Action<StockInOutDetail>(this.detach_StockInOutDetails));
+			this._BusinessPartnerSite = default(EntityRef<BusinessPartnerSite>);
+			this._CompanyBranch = default(EntityRef<CompanyBranch>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutDate", DbType="DateTime NOT NULL")]
+		public System.DateTime StockInOutDate
+		{
+			get
+			{
+				return this._StockInOutDate;
+			}
+			set
+			{
+				if ((this._StockInOutDate != value))
+				{
+					this.OnStockInOutDateChanging(value);
+					this.SendPropertyChanging();
+					this._StockInOutDate = value;
+					this.SendPropertyChanged("StockInOutDate");
+					this.OnStockInOutDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VocherNumber", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string VocherNumber
+		{
+			get
+			{
+				return this._VocherNumber;
+			}
+			set
+			{
+				if ((this._VocherNumber != value))
+				{
+					this.OnVocherNumberChanging(value);
+					this.SendPropertyChanging();
+					this._VocherNumber = value;
+					this.SendPropertyChanged("VocherNumber");
+					this.OnVocherNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutType", DbType="Int NOT NULL")]
+		public int StockInOutType
+		{
+			get
+			{
+				return this._StockInOutType;
+			}
+			set
+			{
+				if ((this._StockInOutType != value))
+				{
+					this.OnStockInOutTypeChanging(value);
+					this.SendPropertyChanging();
+					this._StockInOutType = value;
+					this.SendPropertyChanged("StockInOutType");
+					this.OnStockInOutTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TrangThaiPhieuNhap", DbType="Int NOT NULL")]
+		public int TrangThaiPhieuNhap
+		{
+			get
+			{
+				return this._TrangThaiPhieuNhap;
+			}
+			set
+			{
+				if ((this._TrangThaiPhieuNhap != value))
+				{
+					this.OnTrangThaiPhieuNhapChanging(value);
+					this.SendPropertyChanging();
+					this._TrangThaiPhieuNhap = value;
+					this.SendPropertyChanged("TrangThaiPhieuNhap");
+					this.OnTrangThaiPhieuNhapChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarehouseId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid WarehouseId
+		{
+			get
+			{
+				return this._WarehouseId;
+			}
+			set
+			{
+				if ((this._WarehouseId != value))
+				{
+					if (this._CompanyBranch.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnWarehouseIdChanging(value);
+					this.SendPropertyChanging();
+					this._WarehouseId = value;
+					this.SendPropertyChanged("WarehouseId");
+					this.OnWarehouseIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PurchaseOrderId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> PurchaseOrderId
+		{
+			get
+			{
+				return this._PurchaseOrderId;
+			}
+			set
+			{
+				if ((this._PurchaseOrderId != value))
+				{
+					this.OnPurchaseOrderIdChanging(value);
+					this.SendPropertyChanging();
+					this._PurchaseOrderId = value;
+					this.SendPropertyChanged("PurchaseOrderId");
+					this.OnPurchaseOrderIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PartnerSiteId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid PartnerSiteId
+		{
+			get
+			{
+				return this._PartnerSiteId;
+			}
+			set
+			{
+				if ((this._PartnerSiteId != value))
+				{
+					if (this._BusinessPartnerSite.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPartnerSiteIdChanging(value);
+					this.SendPropertyChanging();
+					this._PartnerSiteId = value;
+					this.SendPropertyChanged("PartnerSiteId");
+					this.OnPartnerSiteIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalQuantity", DbType="Decimal(18,2) NOT NULL")]
+		public decimal TotalQuantity
+		{
+			get
+			{
+				return this._TotalQuantity;
+			}
+			set
+			{
+				if ((this._TotalQuantity != value))
+				{
+					this.OnTotalQuantityChanging(value);
+					this.SendPropertyChanging();
+					this._TotalQuantity = value;
+					this.SendPropertyChanged("TotalQuantity");
+					this.OnTotalQuantityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalAmount", DbType="Decimal(18,2) NOT NULL")]
+		public decimal TotalAmount
+		{
+			get
+			{
+				return this._TotalAmount;
+			}
+			set
+			{
+				if ((this._TotalAmount != value))
+				{
+					this.OnTotalAmountChanging(value);
+					this.SendPropertyChanging();
+					this._TotalAmount = value;
+					this.SendPropertyChanged("TotalAmount");
+					this.OnTotalAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalVat", DbType="Decimal(18,2) NOT NULL")]
+		public decimal TotalVat
+		{
+			get
+			{
+				return this._TotalVat;
+			}
+			set
+			{
+				if ((this._TotalVat != value))
+				{
+					this.OnTotalVatChanging(value);
+					this.SendPropertyChanging();
+					this._TotalVat = value;
+					this.SendPropertyChanged("TotalVat");
+					this.OnTotalVatChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalAmountIncludedVat", DbType="Decimal(18,2) NOT NULL")]
+		public decimal TotalAmountIncludedVat
+		{
+			get
+			{
+				return this._TotalAmountIncludedVat;
+			}
+			set
+			{
+				if ((this._TotalAmountIncludedVat != value))
+				{
+					this.OnTotalAmountIncludedVatChanging(value);
+					this.SendPropertyChanging();
+					this._TotalAmountIncludedVat = value;
+					this.SendPropertyChanged("TotalAmountIncludedVat");
+					this.OnTotalAmountIncludedVatChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> UpdatedBy
+		{
+			get
+			{
+				return this._UpdatedBy;
+			}
+			set
+			{
+				if ((this._UpdatedBy != value))
+				{
+					this.OnUpdatedByChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedBy = value;
+					this.SendPropertyChanged("UpdatedBy");
+					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> UpdatedDate
+		{
+			get
+			{
+				return this._UpdatedDate;
+			}
+			set
+			{
+				if ((this._UpdatedDate != value))
+				{
+					this.OnUpdatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedDate = value;
+					this.SendPropertyChanged("UpdatedDate");
+					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutMaster_StockInOutDetail", Storage="_StockInOutDetails", ThisKey="Id", OtherKey="StockInOutMasterId")]
+		public EntitySet<StockInOutDetail> StockInOutDetails
+		{
+			get
+			{
+				return this._StockInOutDetails;
+			}
+			set
+			{
+				this._StockInOutDetails.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartnerSite_StockInOutMaster", Storage="_BusinessPartnerSite", ThisKey="PartnerSiteId", OtherKey="Id", IsForeignKey=true)]
+		public BusinessPartnerSite BusinessPartnerSite
+		{
+			get
+			{
+				return this._BusinessPartnerSite.Entity;
+			}
+			set
+			{
+				BusinessPartnerSite previousValue = this._BusinessPartnerSite.Entity;
+				if (((previousValue != value) 
+							|| (this._BusinessPartnerSite.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._BusinessPartnerSite.Entity = null;
+						previousValue.StockInOutMasters.Remove(this);
+					}
+					this._BusinessPartnerSite.Entity = value;
+					if ((value != null))
+					{
+						value.StockInOutMasters.Add(this);
+						this._PartnerSiteId = value.Id;
+					}
+					else
+					{
+						this._PartnerSiteId = default(System.Guid);
+					}
+					this.SendPropertyChanged("BusinessPartnerSite");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_StockInOutMaster", Storage="_CompanyBranch", ThisKey="WarehouseId", OtherKey="Id", IsForeignKey=true)]
+		public CompanyBranch CompanyBranch
+		{
+			get
+			{
+				return this._CompanyBranch.Entity;
+			}
+			set
+			{
+				CompanyBranch previousValue = this._CompanyBranch.Entity;
+				if (((previousValue != value) 
+							|| (this._CompanyBranch.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CompanyBranch.Entity = null;
+						previousValue.StockInOutMasters.Remove(this);
+					}
+					this._CompanyBranch.Entity = value;
+					if ((value != null))
+					{
+						value.StockInOutMasters.Add(this);
+						this._WarehouseId = value.Id;
+					}
+					else
+					{
+						this._WarehouseId = default(System.Guid);
+					}
+					this.SendPropertyChanged("CompanyBranch");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_StockInOutDetails(StockInOutDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutMaster = this;
+		}
+		
+		private void detach_StockInOutDetails(StockInOutDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutMaster = null;
 		}
 	}
 	

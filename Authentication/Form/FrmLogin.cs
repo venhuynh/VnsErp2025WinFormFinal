@@ -2,8 +2,8 @@
 using System.Windows.Forms;
 using DevExpress.XtraEditors.DXErrorProvider;
 using BllValidation = Bll.Validation;
-using Bll.Utils;
 using Bll.Authentication;
+using Bll.Common;
 
 namespace Authentication.Form
 {

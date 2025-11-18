@@ -5,6 +5,7 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.BandedGrid;
 using DevExpress.XtraLayout;
+using DTO.MasterData.CustomerPartner;
 
 namespace MasterData.Customer
 {
@@ -289,7 +290,7 @@ namespace MasterData.Customer
             // 
             // businessPartnerSiteListDtoBindingSource
             // 
-            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(MasterData.Customer.Dto.BusinessPartnerSiteListDto);
+            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(BusinessPartnerSiteListDto);
             // 
             // BusinessPartnerSiteListDtoAdvBandedGridView
             // 

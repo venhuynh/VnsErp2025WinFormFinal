@@ -3,6 +3,8 @@ using DevExpress.XtraDataLayout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
+using DTO.MasterData;
+using DTO.MasterData.Company;
 
 namespace MasterData.Company
 {
@@ -237,7 +239,7 @@ namespace MasterData.Company
             // 
             // companyBranchDtoBindingSource
             // 
-            this.companyBranchDtoBindingSource.DataSource = typeof(MasterData.Company.Dto.CompanyBranchDto);
+            this.companyBranchDtoBindingSource.DataSource = typeof(CompanyBranchDto);
             // 
             // searchLookUpEdit1View
             // 

@@ -116,12 +116,7 @@
     <Compile Include="Company\FrmPosition.Designer.cs">
       <DependentUpon>FrmPosition.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\Converters\BusinessPartnerCategoryConverters.cs" />
-    <Compile Include="Customer\Converters\BusinessPartnerContactConverters.cs" />
-    <Compile Include="Customer\Converters\BusinessPartnerConverters.cs" />
     <Compile Include="Customer\Converters\BusinessPartnerSiteConverters.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerSiteDto.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerSiteListDto.cs" />
     <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,10 +159,6 @@
     <Compile Include="Customer\FrmBusinessPartnerList.Designer.cs">
       <DependentUpon>FrmBusinessPartnerList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\Dto\BusinessPartnerCategoryDto.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerContactDto.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerDetailDto.cs" />
-    <Compile Include="Customer\Dto\BusinessPartnerListDto.cs" />
     <Compile Include="Customer\Dto\PartnerCategoryMappingDto.cs" />
     <Compile Include="Customer\FrmBusinessPartnerSite.cs">
       <SubType>Form</SubType>
@@ -425,6 +416,10 @@
     <ProjectReference Include="..\Dal\Dal.csproj">
       <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
       <Name>Dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>
+      <Name>DTO</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

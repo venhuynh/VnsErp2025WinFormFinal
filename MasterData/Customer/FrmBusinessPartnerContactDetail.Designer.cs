@@ -8,6 +8,7 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
+using DTO.MasterData.CustomerPartner;
 
 namespace MasterData.Customer
 {
@@ -212,7 +213,7 @@ namespace MasterData.Customer
             // 
             // businessPartnerSiteListDtoBindingSource
             // 
-            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(MasterData.Customer.Dto.BusinessPartnerSiteListDto);
+            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(BusinessPartnerSiteListDto);
             // 
             // searchLookUpEdit1View
             // 
