@@ -60,14 +60,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Company\Converters\CompanyBranchConverters.cs" />
-    <Compile Include="Company\Converters\CompanyConverter.cs" />
-    <Compile Include="Company\Converters\DepartmentConverters.cs" />
-    <Compile Include="Company\Converters\PositionConverter.cs" />
-    <Compile Include="Company\Dto\CompanyBranchDto.cs" />
-    <Compile Include="Company\Dto\CompanyDto.cs" />
-    <Compile Include="Company\Dto\DepartmentDto.cs" />
-    <Compile Include="Company\Dto\PositionDto.cs" />
     <Compile Include="Company\FrmCompanyBranchDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -358,27 +350,8 @@
     <None Include="Company\FrmCompany_Developer_Guide.md" />
     <None Include="Company\FrmCompany_User_Guide.md" />
     <None Include="Customer\Dto\DTO_README.md" />
-    <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyBranchDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.Company.Dto.CompanyDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.Company.Dto.DepartmentDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.Company.Dto.PositionDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.Customer.Dto.BusinessPartnerListDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.Customer.Dto.BusinessPartnerSiteListDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerCategoryDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerContactDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerDetailDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.Dto.BusinessPartnerListDto.datasource" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\DataSources\MasterData.ProductService.Dto.AttributeDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.ProductService.Dto.AttributeValueDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceCategoryDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductServiceMasterDetailViewDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductVariantAttributeDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductVariantDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.ProductService.Dto.ProductVariantListDto.datasource" />
-    <None Include="Properties\DataSources\MasterData.ProductService.Dto.UnitOfMeasureDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -413,6 +386,10 @@
       <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
       <Name>Bll</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{68E56AB6-1ADA-40DE-9EDD-0BE2B8F35C3A}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dal\Dal.csproj">
       <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
       <Name>Dal</Name>
@@ -422,7 +399,9 @@
       <Name>DTO</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\DataSources\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor DTOs với Notation tiếng Việt%29.txt" />

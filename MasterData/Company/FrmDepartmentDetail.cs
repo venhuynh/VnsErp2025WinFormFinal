@@ -1,20 +1,13 @@
-﻿using Dal.DataContext;
+﻿using Bll.MasterData.CompanyBll;
+using Dal.DataContext;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraLayout;
-using MasterData.Company.Converters;
-using MasterData.Company.Dto;
+using DTO.MasterData.Company;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.MasterData.CompanyBll;
-using DTO.MasterData;
-using DTO.MasterData.Company;
+using Common.Utils;
 
 namespace MasterData.Company
 {

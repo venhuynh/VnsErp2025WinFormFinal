@@ -1,12 +1,12 @@
-﻿using Dal.Logging;
+﻿using Bll.MasterData.CompanyBll;
+using Common.Utils;
 using DevExpress.XtraEditors;
-using MasterData.Company.Converters;
-using MasterData.Company.Dto;
+using DTO.MasterData.Company;
 using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Bll.MasterData.CompanyBll;
+using MasterData.Company.Converters;
 
 namespace MasterData.Company
 {
@@ -23,11 +23,7 @@ namespace MasterData.Company
         /// </summary>
         private readonly CompanyBll _companyBll;
 
-        /// <summary>
-        /// Logger để ghi log
-        /// </summary>
-        private readonly ILogger _logger;
-
+        
         #endregion
 
         #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
@@ -38,41 +34,10 @@ namespace MasterData.Company
         public FrmCompany()
         {
             InitializeComponent();
-            _logger = new ConsoleLogger();
-            _companyBll = new CompanyBll(_logger);
+            _companyBll = new CompanyBll();
             
             // Đảm bảo chỉ có 1 công ty khi màn hình load lên
             Load += UcCompany_Load;
-        }
-
-        /// <summary>
-        /// Constructor với connection string
-        /// </summary>
-        /// <param name="connectionString">Chuỗi kết nối database</param>
-        public FrmCompany(string connectionString) : this()
-        {
-            _companyBll?.Dispose();
-            _companyBll = new CompanyBll(connectionString, _logger);
-        }
-
-        #endregion
-
-        #region ========== KHỞI TẠO FORM ==========
-
-        /// <summary>
-        /// Khởi tạo BLL (đã được thực hiện trong constructor)
-        /// </summary>
-        private void InitializeBll()
-        {
-            // BLL đã được khởi tạo trong constructor
-        }
-
-        /// <summary>
-        /// Khởi tạo events (đã được thực hiện trong constructor)
-        /// </summary>
-        private void InitializeEvents()
-        {
-            // Events đã được khởi tạo trong constructor
         }
 
         #endregion
@@ -86,7 +51,6 @@ namespace MasterData.Company
         {
             try
             {
-                _logger?.LogInfo("UcCompany đang load - đảm bảo chỉ có 1 công ty trong database");
                 _companyBll.EnsureSingleCompany();
                 
                 // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
@@ -101,13 +65,10 @@ namespace MasterData.Company
                 // Setup SuperToolTips
                 SetupSuperTips();
                 
-                _logger?.LogInfo("UcCompany load hoàn thành - đã đảm bảo chỉ có 1 công ty");
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi load UcCompany: {ex.Message}", ex);
-                XtraMessageBox.Show($"Lỗi khi khởi tạo dữ liệu công ty: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MsgBox.ShowException(ex, "Lỗi khởi tạo dữ liệu công ty");
             }
         }
 
@@ -120,7 +81,7 @@ namespace MasterData.Company
             {
                 // Lấy thông tin công ty Entity từ database thông qua BLL
 
-                if (_companyBll.GetCompany() is Dal.DataContext.Company company)
+                if (_companyBll.GetCompany() is { } company)
                 {
                     // Convert Entity sang DTO trong UI layer
                     var companyDto = company.ToDto();
@@ -149,20 +110,15 @@ namespace MasterData.Company
                         LogoPictureEdit.Image = null;
                     }
                     
-                    _logger?.LogInfo("Đã hiển thị thông tin công ty DTO từ database lên giao diện");
                 }
                 else
                 {
-                    _logger?.LogWarning("Không tìm thấy thông tin công ty trong database");
-                    XtraMessageBox.Show("Không tìm thấy thông tin công ty trong database", "Cảnh báo", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MsgBox.ShowWarning("Không tìm thấy thông tin công ty trong database");
                 }
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi hiển thị thông tin công ty: {ex.Message}", ex);
-                XtraMessageBox.Show($"Lỗi khi hiển thị thông tin công ty: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MsgBox.ShowException(ex, "Lỗi hiển thị thông tin công ty");
             }
         }
 
@@ -208,12 +164,10 @@ namespace MasterData.Company
                     LogoPictureEdit.DragEnter += LogoPictureEdit_DragEnter;
                     LogoPictureEdit.DragDrop += LogoPictureEdit_DragDrop;
                     
-                    _logger?.LogInfo("Đã cấu hình LogoPictureEdit - chỉ hiển thị nút Delete và Load");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger?.LogError($"Lỗi khi cấu hình LogoPictureEdit: {ex.Message}", ex);
             }
         }
 
@@ -228,13 +182,12 @@ namespace MasterData.Company
             {
                 RequiredFieldHelper.MarkRequiredFields(
                     this, 
-                    dtoType,
-                    logger: (msg, ex) => _logger?.LogError(msg, ex)
+                    dtoType
                 );
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi đánh dấu trường bắt buộc: {ex.Message}", ex);
+                // ignored
             }
         }
 
@@ -249,7 +202,6 @@ namespace MasterData.Company
         {
             try
             {
-                _logger?.LogInfo("Bắt đầu lưu logo vào database");
                 
                 // Lấy thông tin công ty hiện tại
                 if (_companyBll.GetCompany() is Dal.DataContext.Company company)
@@ -261,19 +213,15 @@ namespace MasterData.Company
                     // Lưu vào database thông qua BLL
                     _companyBll.UpdateCompany(company);
                     
-                    _logger?.LogInfo("Đã lưu logo vào database thành công");
                 }
                 else
                 {
-                    _logger?.LogWarning("Không tìm thấy thông tin công ty để cập nhật logo");
-                    XtraMessageBox.Show("Không tìm thấy thông tin công ty để cập nhật logo", "Cảnh báo", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MsgBox.ShowWarning("Không tìm thấy thông tin công ty để cập nhật logo");
                 }
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi lưu logo vào database: {ex.Message}", ex);
-                throw;
+                MsgBox.ShowException(ex, "Lỗi lưu logo");
             }
         }
 
@@ -284,7 +232,6 @@ namespace MasterData.Company
         {
             try
             {
-                _logger?.LogInfo("Bắt đầu xóa logo khỏi database");
                 
                 // Lấy thông tin công ty hiện tại
                 if (_companyBll.GetCompany() is Dal.DataContext.Company company)
@@ -296,19 +243,15 @@ namespace MasterData.Company
                     // Lưu vào database thông qua BLL
                     _companyBll.UpdateCompany(company);
                     
-                    _logger?.LogInfo("Đã xóa logo khỏi database thành công");
                 }
                 else
                 {
-                    _logger?.LogWarning("Không tìm thấy thông tin công ty để xóa logo");
-                    XtraMessageBox.Show("Không tìm thấy thông tin công ty để xóa logo", "Cảnh báo", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MsgBox.ShowWarning("Không tìm thấy thông tin công ty để xóa logo");
                 }
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi xóa logo khỏi database: {ex.Message}", ex);
-                throw;
+                MsgBox.ShowException(ex, "Lỗi xóa logo");
             }
         }
 
@@ -335,17 +278,13 @@ namespace MasterData.Company
                         // Lưu vào database
                         SaveLogoToDatabase(imageBytes);
                         
-                        _logger?.LogInfo($"Đã load logo từ file: {imagePath}");
-                        XtraMessageBox.Show("Đã load logo thành công!", "Thông báo", 
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MsgBox.ShowSuccess("Đã load logo thành công!");
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi load logo: {ex.Message}", ex);
-                XtraMessageBox.Show($"Lỗi khi load logo: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MsgBox.ShowException(ex, "Lỗi load logo");
             }
         }
 
@@ -356,8 +295,7 @@ namespace MasterData.Company
         {
             try
             {
-                if (XtraMessageBox.Show("Bạn có chắc chắn muốn xóa logo?", "Xác nhận", 
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MsgBox.ShowYesNo("Bạn có chắc chắn muốn xóa logo?"))
                 {
                     // Xóa hình ảnh khỏi control
                     LogoPictureEdit.Image = null;
@@ -365,16 +303,12 @@ namespace MasterData.Company
                     // Xóa khỏi database
                     DeleteLogoFromDatabase();
                     
-                    _logger?.LogInfo("Đã xóa logo");
-                    XtraMessageBox.Show("Đã xóa logo thành công!", "Thông báo", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MsgBox.ShowSuccess("Đã xóa logo thành công!");
                 }
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi xóa logo: {ex.Message}", ex);
-                XtraMessageBox.Show($"Lỗi khi xóa logo: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MsgBox.ShowException(ex, "Lỗi xóa logo");
             }
         }
 
@@ -417,23 +351,18 @@ namespace MasterData.Company
                             var imageBytes = File.ReadAllBytes(filePath);
                             SaveLogoToDatabase(imageBytes);
                             
-                            _logger?.LogInfo($"Đã load logo từ drag & drop: {filePath}");
-                            XtraMessageBox.Show("Đã load logo thành công!", "Thông báo", 
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MsgBox.ShowSuccess("Đã load logo thành công!");
                         }
                         else
                         {
-                            XtraMessageBox.Show("Vui lòng chọn file hình ảnh hợp lệ!", "Cảnh báo", 
-                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MsgBox.ShowWarning("Vui lòng chọn file hình ảnh hợp lệ!");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi drag & drop logo: {ex.Message}", ex);
-                XtraMessageBox.Show($"Lỗi khi load logo: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MsgBox.ShowException(ex, "Lỗi load logo");
             }
         }
 
@@ -454,7 +383,7 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi setup SuperToolTip: {ex.Message}", ex);
+                // ignored
             }
         }
 

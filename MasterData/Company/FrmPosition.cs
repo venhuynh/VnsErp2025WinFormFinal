@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Common;
-using Bll.MasterData.CompanyBll;
+﻿using Bll.MasterData.CompanyBll;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
-using MasterData.Company.Converters;
-using MasterData.Company.Dto;
+using DTO.MasterData.Company;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Common.Common;
+using Common.Utils;
 
 namespace MasterData.Company
 {

@@ -106,14 +106,6 @@
       <Project>{9cc30df9-45dd-4d4e-9b65-a68dac21ba42}</Project>
       <Name>Authentication</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Bll\Bll.csproj">
-      <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
-      <Name>Bll</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dal\Dal.csproj">
-      <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
-      <Name>Dal</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Inventory\Inventory.csproj">
       <Project>{055c0170-a359-48b9-95d9-7260b17e8e20}</Project>
       <Name>Inventory</Name>
@@ -164,10 +156,8 @@
   <Target Name="BeforeBuild" Condition="'$(DesignTimeBuild)' != 'true'">
     <!-- Kill running processes -->
     <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $processes = Get-Process -Name 'VnsErp2025' -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 1000 }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
-    
     <!-- Delete .exe files in obj\$(Configuration) -->
     <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $exePath = '$(ProjectDir)obj\$(Configuration)\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; if ($file.IsReadOnly) { $file.IsReadOnly = $false }; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
-    
     <!-- Delete .exe files in bin\$(Configuration) -->
     <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $exePath = '$(ProjectDir)bin\$(Configuration)\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; if ($file.IsReadOnly) { $file.IsReadOnly = $false }; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
   </Target>

@@ -1,22 +1,16 @@
-﻿using Bll.Common;
+﻿using Bll.MasterData.CompanyBll;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraLayout;
-using MasterData.Company.Converters;
-using MasterData.Company.Dto;
+using DTO.MasterData.Company;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.MasterData.CompanyBll;
-using DTO.MasterData;
-using DTO.MasterData.Company;
+using Common.Common;
+using Common.Utils;
 
 namespace MasterData.Company
 {
@@ -317,14 +311,6 @@ namespace MasterData.Company
             EmailTextEdit.EditValue = _companyBranchDto.Email;
             ManagerNameTextEdit.EditValue = _companyBranchDto.ManagerName;
             IsActiveToggleSwitch.EditValue = _companyBranchDto.IsActive;
-        }
-
-        /// <summary>
-        /// Cập nhật DTO từ form (legacy method - giữ lại để tương thích)
-        /// </summary>
-        private void UpdateDtoFromForm()
-        {
-            _companyBranchDto = GetDataFromControls();
         }
 
         #endregion

@@ -49,6 +49,9 @@
     <Compile Include="Inventory\StockIn\StockInEnums.cs" />
     <Compile Include="Inventory\StockIn\StockInMasterDto.cs" />
     <Compile Include="MasterData\Company\CompanyBranchDto.cs" />
+    <Compile Include="MasterData\Company\CompanyDto.cs" />
+    <Compile Include="MasterData\Company\DepartmentDto.cs" />
+    <Compile Include="MasterData\Company\PositionDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerCategoryDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerContactDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerDetailDto.cs" />

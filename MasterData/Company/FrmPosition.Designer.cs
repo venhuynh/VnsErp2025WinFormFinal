@@ -3,6 +3,7 @@ using DevExpress.XtraBars;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraLayout;
+using DTO.MasterData.Company;
 
 namespace MasterData.Company
 {
@@ -283,7 +284,7 @@ namespace MasterData.Company
             // 
             // positionDtoBindingSource
             // 
-            this.positionDtoBindingSource.DataSource = typeof(MasterData.Company.Dto.PositionDto);
+            this.positionDtoBindingSource.DataSource = typeof(PositionDto);
             // 
             // PositionGridView
             // 

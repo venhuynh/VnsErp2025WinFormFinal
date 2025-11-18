@@ -1,17 +1,17 @@
-﻿using Bll.Common;
+﻿using Bll.MasterData.CompanyBll;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraSplashScreen;
 using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Nodes;
-using MasterData.Company.Converters;
-using MasterData.Company.Dto;
+using DTO.MasterData.Company;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.MasterData.CompanyBll;
+using Common.Common;
+using Common.Utils;
 
 namespace MasterData.Company
 {

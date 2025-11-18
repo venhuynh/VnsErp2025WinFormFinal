@@ -1,21 +1,10 @@
-﻿using Bll.Common;
+﻿using Bll.MasterData.CompanyBll;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.DXErrorProvider;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraLayout;
-using MasterData.Company.Converters;
-using MasterData.Company.Dto;
+using DTO.MasterData.Company;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.MasterData.CompanyBll;
+using Common.Utils;
 
 namespace MasterData.Company
 {

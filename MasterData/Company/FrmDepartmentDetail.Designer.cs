@@ -283,7 +283,7 @@ namespace MasterData.Company
             // 
             // departmentDtoBindingSource
             // 
-            this.departmentDtoBindingSource.DataSource = typeof(MasterData.Company.Dto.DepartmentDto);
+            this.departmentDtoBindingSource.DataSource = typeof(DepartmentDto);
             // 
             // treeListLookUpEdit1TreeList
             // 

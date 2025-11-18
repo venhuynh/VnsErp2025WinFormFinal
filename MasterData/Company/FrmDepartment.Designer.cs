@@ -4,6 +4,7 @@ using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Columns;
 using DevExpress.XtraLayout;
 using System.Windows.Forms;
+using DTO.MasterData.Company;
 
 namespace MasterData.Company
 {
@@ -344,7 +345,7 @@ namespace MasterData.Company
             // 
             // departmentDtoBindingSource
             // 
-            this.departmentDtoBindingSource.DataSource = typeof(MasterData.Company.Dto.DepartmentDto);
+            this.departmentDtoBindingSource.DataSource = typeof(DepartmentDto);
             // 
             // repositoryItemPictureEdit1
             // 

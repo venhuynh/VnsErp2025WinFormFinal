@@ -23,23 +23,15 @@ public static class GridViewColumnHelper
     /// </summary>
     /// <param name="gridView">GridView cần cấu hình</param>
     /// <param name="columnNames">Danh sách tên cột cần cấu hình</param>
-    public static void ConfigureBasicInfoColumns(GridView gridView, string[] columnNames)
+    private static void ConfigureBasicInfoColumns(GridView gridView, string[] columnNames)
     {
-        try
+        foreach (var columnName in columnNames)
         {
-            foreach (var columnName in columnNames)
+            var column = gridView.Columns[columnName];
+            if (column != null)
             {
-                var column = gridView.Columns[columnName];
-                if (column != null)
-                {
-                    ConfigureSingleBasicColumn(column, columnName);
-                }
+                ConfigureSingleBasicColumn(column, columnName);
             }
-
-        }
-        catch (Exception)
-        {
-            throw;
         }
     }
 
@@ -50,32 +42,25 @@ public static class GridViewColumnHelper
     /// <param name="columnName">Tên cột</param>
     private static void ConfigureSingleBasicColumn(GridColumn column, string columnName)
     {
-        try
-        {
-            // Cấu hình hiển thị cell
-            column.AppearanceCell.Options.UseTextOptions = true;
-            column.AppearanceCell.TextOptions.WordWrap = WordWrap.Wrap;
-            column.AppearanceCell.TextOptions.VAlignment = VertAlignment.Center;
+        // Cấu hình hiển thị cell
+        column.AppearanceCell.Options.UseTextOptions = true;
+        column.AppearanceCell.TextOptions.WordWrap = WordWrap.Wrap;
+        column.AppearanceCell.TextOptions.VAlignment = VertAlignment.Center;
 
-            // Cấu hình header
-            column.AppearanceHeader.Options.UseTextOptions = true;
-            column.AppearanceHeader.TextOptions.WordWrap = WordWrap.Wrap;
-            column.AppearanceHeader.TextOptions.VAlignment = VertAlignment.Center;
-            column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
+        // Cấu hình header
+        column.AppearanceHeader.Options.UseTextOptions = true;
+        column.AppearanceHeader.TextOptions.WordWrap = WordWrap.Wrap;
+        column.AppearanceHeader.TextOptions.VAlignment = VertAlignment.Center;
+        column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
 
-            // Thiết lập màu sắc và font cho header
-            column.AppearanceHeader.BackColor = Color.LightSteelBlue;
-            column.AppearanceHeader.Options.UseBackColor = true;
-            column.AppearanceHeader.ForeColor = Color.DarkBlue;
-            column.AppearanceHeader.Font = new Font(column.AppearanceHeader.Font, FontStyle.Bold);
+        // Thiết lập màu sắc và font cho header
+        column.AppearanceHeader.BackColor = Color.LightSteelBlue;
+        column.AppearanceHeader.Options.UseBackColor = true;
+        column.AppearanceHeader.ForeColor = Color.DarkBlue;
+        column.AppearanceHeader.Font = new Font(column.AppearanceHeader.Font, FontStyle.Bold);
 
-            // Thiết lập chiều rộng cột theo loại
-            SetBasicColumnWidth(column, columnName);
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        // Thiết lập chiều rộng cột theo loại
+        SetBasicColumnWidth(column, columnName);
     }
 
     /// <summary>
@@ -201,23 +186,13 @@ public static class GridViewColumnHelper
     public static void ConfigureDynamicColumns(GridView gridView, string columnPrefix,
         Color headerBackColor, Color headerForeColor, int columnWidth = 80)
     {
-        try
+        var dynamicColumns = gridView.Columns
+            .Where(c => c.FieldName.StartsWith(columnPrefix))
+            .ToList();
+
+        foreach (var column in dynamicColumns)
         {
-            var dynamicColumns = gridView.Columns
-                .Cast<GridColumn>()
-                .Where(c => c.FieldName.StartsWith(columnPrefix))
-                .ToList();
-
-            foreach (var column in dynamicColumns)
-            {
-                ConfigureSingleDynamicColumn(column, headerBackColor, headerForeColor, columnWidth);
-            }
-
-
-        }
-        catch (Exception)
-        {
-            throw;
+            ConfigureSingleDynamicColumn(column, headerBackColor, headerForeColor, columnWidth);
         }
     }
 
@@ -231,33 +206,26 @@ public static class GridViewColumnHelper
     private static void ConfigureSingleDynamicColumn(GridColumn column, Color headerBackColor,
         Color headerForeColor, int columnWidth)
     {
-        try
-        {
-            // Cấu hình hiển thị cell
-            column.AppearanceCell.Options.UseTextOptions = true;
-            column.AppearanceCell.TextOptions.WordWrap = WordWrap.Wrap;
-            column.AppearanceCell.TextOptions.VAlignment = VertAlignment.Center;
-            column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+        // Cấu hình hiển thị cell
+        column.AppearanceCell.Options.UseTextOptions = true;
+        column.AppearanceCell.TextOptions.WordWrap = WordWrap.Wrap;
+        column.AppearanceCell.TextOptions.VAlignment = VertAlignment.Center;
+        column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
 
-            // Cấu hình header
-            column.AppearanceHeader.Options.UseTextOptions = true;
-            column.AppearanceHeader.TextOptions.WordWrap = WordWrap.Wrap;
-            column.AppearanceHeader.TextOptions.VAlignment = VertAlignment.Center;
-            column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
+        // Cấu hình header
+        column.AppearanceHeader.Options.UseTextOptions = true;
+        column.AppearanceHeader.TextOptions.WordWrap = WordWrap.Wrap;
+        column.AppearanceHeader.TextOptions.VAlignment = VertAlignment.Center;
+        column.AppearanceHeader.TextOptions.HAlignment = HorzAlignment.Center;
 
-            // Thiết lập màu sắc và font cho header
-            column.AppearanceHeader.BackColor = headerBackColor;
-            column.AppearanceHeader.Options.UseBackColor = true;
-            column.AppearanceHeader.ForeColor = headerForeColor;
-            column.AppearanceHeader.Font = new Font(column.AppearanceHeader.Font, FontStyle.Bold);
+        // Thiết lập màu sắc và font cho header
+        column.AppearanceHeader.BackColor = headerBackColor;
+        column.AppearanceHeader.Options.UseBackColor = true;
+        column.AppearanceHeader.ForeColor = headerForeColor;
+        column.AppearanceHeader.Font = new Font(column.AppearanceHeader.Font, FontStyle.Bold);
 
-            // Thiết lập chiều rộng cột
-            column.Width = columnWidth;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        // Thiết lập chiều rộng cột
+        column.Width = columnWidth;
     }
 
     #endregion
@@ -271,74 +239,67 @@ public static class GridViewColumnHelper
     /// <param name="columnName">Tên cột</param>
     public static void ApplyBasicInfoStyling(RowCellStyleEventArgs e, string columnName)
     {
-        try
+        var lowerColumnName = columnName?.ToLower();
+
+        switch (lowerColumnName)
         {
-            var lowerColumnName = columnName?.ToLower();
+            case "id":
+            case "deviceid":
+            case "devsn":
+                // Cột ID và Serial - màu xanh lá và đậm
+                e.Appearance.ForeColor = Color.DarkGreen;
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
+                break;
 
-            switch (lowerColumnName)
-            {
-                case "id":
-                case "deviceid":
-                case "devsn":
-                    // Cột ID và Serial - màu xanh lá và đậm
-                    e.Appearance.ForeColor = Color.DarkGreen;
-                    e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
-                    break;
+            case "devname":
+            case "name":
+            case "devicename":
+                // Cột tên - màu xanh đậm
+                e.Appearance.ForeColor = Color.DarkBlue;
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
+                break;
 
-                case "devname":
-                case "name":
-                case "devicename":
-                    // Cột tên - màu xanh đậm
-                    e.Appearance.ForeColor = Color.DarkBlue;
-                    e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
-                    break;
+            case "devlocation":
+            case "location":
+                // Cột vị trí - màu tím
+                e.Appearance.ForeColor = Color.Purple;
+                break;
 
-                case "devlocation":
-                case "location":
-                    // Cột vị trí - màu tím
-                    e.Appearance.ForeColor = Color.Purple;
-                    break;
+            case "isinuse":
+            case "isactive":
+            case "isactivated":
+            case "trangthai":
+            case "trangthaisudungtext":
+            case "trangthaikichhoattext":
+                // Cột trạng thái - màu theo trạng thái
+                ApplyStatusStyling(e);
+                break;
 
-                case "isinuse":
-                case "isactive":
-                case "isactivated":
-                case "trangthai":
-                case "trangthaisudungtext":
-                case "trangthaikichhoattext":
-                    // Cột trạng thái - màu theo trạng thái
-                    ApplyStatusStyling(e);
-                    break;
+            case "devip":
+            case "ipaddress":
+                // Cột IP - màu cam
+                e.Appearance.ForeColor = Color.DarkOrange;
+                break;
 
-                case "devip":
-                case "ipaddress":
-                    // Cột IP - màu cam
-                    e.Appearance.ForeColor = Color.DarkOrange;
-                    break;
+            case "devmac":
+            case "macaddress":
+                // Cột MAC - màu nâu
+                e.Appearance.ForeColor = Color.Brown;
+                break;
 
-                case "devmac":
-                case "macaddress":
-                    // Cột MAC - màu nâu
-                    e.Appearance.ForeColor = Color.Brown;
-                    break;
+            case "_devicemodel":
+            case "devicemodel":
+            case "modelmay":
+            case "vendorname":
+                // Cột model và vendor - màu xanh navy
+                e.Appearance.ForeColor = Color.Navy;
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
+                break;
 
-                case "_devicemodel":
-                case "devicemodel":
-                case "modelmay":
-                case "vendorname":
-                    // Cột model và vendor - màu xanh navy
-                    e.Appearance.ForeColor = Color.Navy;
-                    e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
-                    break;
-
-                default:
-                    // Các cột khác - màu đen bình thường
-                    e.Appearance.ForeColor = Color.Black;
-                    break;
-            }
-        }
-        catch (Exception)
-        {
-            throw;
+            default:
+                // Các cột khác - màu đen bình thường
+                e.Appearance.ForeColor = Color.Black;
+                break;
         }
     }
 
@@ -348,44 +309,37 @@ public static class GridViewColumnHelper
     /// <param name="e">RowCellStyleEventArgs</param>
     private static void ApplyStatusStyling(RowCellStyleEventArgs e)
     {
-        try
+        var cellValue = e.CellValue?.ToString().ToLower();
+
+        switch (cellValue)
         {
-            var cellValue = e.CellValue?.ToString()?.ToLower();
+            case "true":
+            case "1":
+            case "active":
+            case "hoạt động":
+            case "đang sử dụng":
+            case "đang hoạt động":
+            case "đã kích hoạt":
+            case "kích hoạt":
+                e.Appearance.ForeColor = Color.Green;
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
+                break;
 
-            switch (cellValue)
-            {
-                case "true":
-                case "1":
-                case "active":
-                case "hoạt động":
-                case "đang sử dụng":
-                case "đang hoạt động":
-                case "đã kích hoạt":
-                case "kích hoạt":
-                    e.Appearance.ForeColor = Color.Green;
-                    e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
-                    break;
+            case "false":
+            case "0":
+            case "inactive":
+            case "không hoạt động":
+            case "không sử dụng":
+            case "chưa kích hoạt":
+            case "không kích hoạt":
+            case "tạm dừng":
+                e.Appearance.ForeColor = Color.Red;
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
+                break;
 
-                case "false":
-                case "0":
-                case "inactive":
-                case "không hoạt động":
-                case "không sử dụng":
-                case "chưa kích hoạt":
-                case "không kích hoạt":
-                case "tạm dừng":
-                    e.Appearance.ForeColor = Color.Red;
-                    e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
-                    break;
-
-                default:
-                    e.Appearance.ForeColor = Color.Gray;
-                    break;
-            }
-        }
-        catch (Exception)
-        {
-            throw;
+            default:
+                e.Appearance.ForeColor = Color.Gray;
+                break;
         }
     }
 
@@ -399,17 +353,10 @@ public static class GridViewColumnHelper
     public static void ApplyDynamicColumnStyling(RowCellStyleEventArgs e, string columnName,
         string columnPrefix, Color foreColor)
     {
-        try
+        if (columnName?.StartsWith(columnPrefix) == true)
         {
-            if (columnName?.StartsWith(columnPrefix) == true)
-            {
-                e.Appearance.ForeColor = foreColor;
-                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
-            }
-        }
-        catch (Exception)
-        {
-            throw;
+            e.Appearance.ForeColor = foreColor;
+            e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
         }
     }
 
@@ -423,36 +370,27 @@ public static class GridViewColumnHelper
     /// <param name="gridView">GridView cần cấu hình</param>
     public static void ConfigureRowHeight(GridView gridView)
     {
-        try
-        {
-            // Cấu hình chiều cao dòng cơ bản
-            gridView.OptionsView.RowAutoHeight = true;
+        // Cấu hình chiều cao dòng cơ bản
+        gridView.OptionsView.RowAutoHeight = true;
 
-            // Cấu hình hiển thị header
-            gridView.OptionsView.ColumnHeaderAutoHeight = DefaultBoolean.True;
+        // Cấu hình hiển thị header
+        gridView.OptionsView.ColumnHeaderAutoHeight = DefaultBoolean.True;
 
-            // Cấu hình word wrap cho header
-            gridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
-            gridView.Appearance.HeaderPanel.TextOptions.WordWrap = WordWrap.Wrap;
+        // Cấu hình word wrap cho header
+        gridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
+        gridView.Appearance.HeaderPanel.TextOptions.WordWrap = WordWrap.Wrap;
 
-            // Cấu hình hiển thị cell với word wrap
-            gridView.Appearance.Row.Options.UseTextOptions = true;
-            gridView.Appearance.Row.TextOptions.WordWrap = WordWrap.Wrap;
+        // Cấu hình hiển thị cell với word wrap
+        gridView.Appearance.Row.Options.UseTextOptions = true;
+        gridView.Appearance.Row.TextOptions.WordWrap = WordWrap.Wrap;
 
-            // Cấu hình hiển thị cell được chọn
-            gridView.Appearance.FocusedRow.Options.UseTextOptions = true;
-            gridView.Appearance.FocusedRow.TextOptions.WordWrap = WordWrap.Wrap;
+        // Cấu hình hiển thị cell được chọn
+        gridView.Appearance.FocusedRow.Options.UseTextOptions = true;
+        gridView.Appearance.FocusedRow.TextOptions.WordWrap = WordWrap.Wrap;
 
-            // Cấu hình hiển thị cell được highlight
-            gridView.Appearance.SelectedRow.Options.UseTextOptions = true;
-            gridView.Appearance.SelectedRow.TextOptions.WordWrap = WordWrap.Wrap;
-
-
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        // Cấu hình hiển thị cell được highlight
+        gridView.Appearance.SelectedRow.Options.UseTextOptions = true;
+        gridView.Appearance.SelectedRow.TextOptions.WordWrap = WordWrap.Wrap;
     }
 
     #endregion
@@ -463,17 +401,9 @@ public static class GridViewColumnHelper
     /// Tự động resize tất cả các cột theo nội dung
     /// </summary>
     /// <param name="gridView">GridView cần resize</param>
-    public static void AutoResizeColumns(GridView gridView)
+    private static void AutoResizeColumns(GridView gridView)
     {
-        try
-        {
-            gridView.BestFitColumns();
-
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        gridView.BestFitColumns();
     }
 
     /// <summary>
@@ -481,24 +411,15 @@ public static class GridViewColumnHelper
     /// </summary>
     /// <param name="gridView">GridView</param>
     /// <param name="columnNames">Danh sách tên cột cần ẩn</param>
-    public static void HideColumns(GridView gridView, params string[] columnNames)
+    private static void HideColumns(GridView gridView, params string[] columnNames)
     {
-        try
+        foreach (var columnName in columnNames)
         {
-            foreach (var columnName in columnNames)
+            var column = gridView.Columns[columnName];
+            if (column != null)
             {
-                var column = gridView.Columns[columnName];
-                if (column != null)
-                {
-                    column.Visible = false;
-                }
+                column.Visible = false;
             }
-
-
-        }
-        catch (Exception)
-        {
-            throw;
         }
     }
 
@@ -509,22 +430,13 @@ public static class GridViewColumnHelper
     /// <param name="columnNames">Danh sách tên cột cần hiển thị</param>
     public static void ShowColumns(GridView gridView, params string[] columnNames)
     {
-        try
+        foreach (var columnName in columnNames)
         {
-            foreach (var columnName in columnNames)
+            var column = gridView.Columns[columnName];
+            if (column != null)
             {
-                var column = gridView.Columns[columnName];
-                if (column != null)
-                {
-                    column.Visible = true;
-                }
+                column.Visible = true;
             }
-
-
-        }
-        catch (Exception)
-        {
-            throw;
         }
     }
 
@@ -540,50 +452,41 @@ public static class GridViewColumnHelper
     /// <param name="dtoType">Loại entity để áp dụng cấu hình phù hợp</param>
     public static void ConfigureMultiLineGridView(GridView gridView, string dtoType = "Default")
     {
-        try
+        if (gridView == null)
         {
-            if (gridView == null)
-            {
 
-                return;
-            }
-
-            // Cấu hình cơ bản cho word wrap
-            gridView.OptionsView.RowAutoHeight = true;
-            gridView.OptionsView.ColumnAutoWidth = false;
-            gridView.OptionsView.AllowCellMerge = false;
-            gridView.OptionsView.AllowHtmlDrawHeaders = true;
-
-            // Cấu hình appearance cho text wrapping
-            gridView.Appearance.Row.TextOptions.WordWrap = WordWrap.Wrap;
-            gridView.Appearance.Row.Options.UseTextOptions = true;
-
-            // Cấu hình header appearance
-            gridView.Appearance.HeaderPanel.TextOptions.WordWrap = WordWrap.Wrap;
-            gridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
-
-            // Cấu hình cột theo entity type với helper
-            var textColumns = GridViewHelper.GetDefaultTextColumns(dtoType);
-            foreach (var columnName in textColumns)
-            {
-                GridViewHelper.ApplyMemoEditorToColumn(gridView, columnName);
-            }
-
-            // Cấu hình cột theo entity type
-            ConfigureColumnWordWrap(gridView, dtoType);
-
-            // Đặt height tối thiểu cho row
-            gridView.RowHeight = 25;
-
-            // Cấu hình filter row với helper
-            GridViewHelper.ConfigureGridViewFilter(gridView, true);
-
-
+            return;
         }
-        catch (Exception)
+
+        // Cấu hình cơ bản cho word wrap
+        gridView.OptionsView.RowAutoHeight = true;
+        gridView.OptionsView.ColumnAutoWidth = false;
+        gridView.OptionsView.AllowCellMerge = false;
+        gridView.OptionsView.AllowHtmlDrawHeaders = true;
+
+        // Cấu hình appearance cho text wrapping
+        gridView.Appearance.Row.TextOptions.WordWrap = WordWrap.Wrap;
+        gridView.Appearance.Row.Options.UseTextOptions = true;
+
+        // Cấu hình header appearance
+        gridView.Appearance.HeaderPanel.TextOptions.WordWrap = WordWrap.Wrap;
+        gridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
+
+        // Cấu hình cột theo entity type với helper
+        var textColumns = GridViewHelper.GetDefaultTextColumns(dtoType);
+        foreach (var columnName in textColumns)
         {
-            throw;
+            GridViewHelper.ApplyMemoEditorToColumn(gridView, columnName);
         }
+
+        // Cấu hình cột theo entity type
+        ConfigureColumnWordWrap(gridView, dtoType);
+
+        // Đặt height tối thiểu cho row
+        gridView.RowHeight = 25;
+
+        // Cấu hình filter row với helper
+        GridViewHelper.ConfigureGridViewFilter(gridView);
     }
 
     /// <summary>
@@ -593,46 +496,37 @@ public static class GridViewColumnHelper
     /// <param name="dto">Loại entity</param>
     private static void ConfigureColumnWordWrap(GridView gridView, string dto)
     {
-        try
-        {
-            // Lấy danh sách cột text từ DTO type hoặc sử dụng danh sách mặc định
-            string[] textColumns = GetTextColumnsForDto(dto);
+        // Lấy danh sách cột text từ DTO type hoặc sử dụng danh sách mặc định
+        string[] textColumns = GetTextColumnsForDto(dto);
 
-            foreach (GridColumn column in gridView.Columns)
+        foreach (GridColumn column in gridView.Columns)
+        {
+            if (textColumns.Any(tc => column.FieldName.IndexOf(tc, StringComparison.OrdinalIgnoreCase) >= 0))
             {
-                if (textColumns.Any(tc => column.FieldName.IndexOf(tc, StringComparison.OrdinalIgnoreCase) >= 0))
-                {
-                    // Cấu hình word wrap cho cột text
-                    column.AppearanceCell.TextOptions.WordWrap = WordWrap.Wrap;
-                    column.AppearanceCell.Options.UseTextOptions = true;
+                // Cấu hình word wrap cho cột text
+                column.AppearanceCell.TextOptions.WordWrap = WordWrap.Wrap;
+                column.AppearanceCell.Options.UseTextOptions = true;
 
-                    // Đặt width phù hợp cho cột text
-                    if (column.Width < 100)
-                        column.Width = 150;
-                    else if (column.Width > 300)
-                        column.Width = 250;
-                }
-                else if (IsNumericColumn(column))
-                {
-                    // Cấu hình cho cột số
-                    column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Far;
-                    column.AppearanceCell.Options.UseTextOptions = true;
-                    column.Width = Math.Max(column.Width, 80);
-                }
-                else if (IsDateColumn(column))
-                {
-                    // Cấu hình cho cột ngày
-                    column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
-                    column.AppearanceCell.Options.UseTextOptions = true;
-                    column.Width = Math.Max(column.Width, 120);
-                }
+                // Đặt width phù hợp cho cột text
+                if (column.Width < 100)
+                    column.Width = 150;
+                else if (column.Width > 300)
+                    column.Width = 250;
             }
-
-
-        }
-        catch (Exception)
-        {
-            throw;
+            else if (IsNumericColumn(column))
+            {
+                // Cấu hình cho cột số
+                column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Far;
+                column.AppearanceCell.Options.UseTextOptions = true;
+                column.Width = Math.Max(column.Width, 80);
+            }
+            else if (IsDateColumn(column))
+            {
+                // Cấu hình cho cột ngày
+                column.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+                column.AppearanceCell.Options.UseTextOptions = true;
+                column.Width = Math.Max(column.Width, 120);
+            }
         }
     }
 
@@ -678,7 +572,7 @@ public static class GridViewColumnHelper
                     new[] { "Name", "Description", "Note", "Remarks", "Comment", "MoTa", "GhiChu" }
             };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
 
             return new[] { "Name", "Description", "Note", "Remarks", "Comment" };
@@ -695,7 +589,7 @@ public static class GridViewColumnHelper
         try
         {
             // Tìm DTO type trong các assembly đã load
-            var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             Type dtoType = null;
 
             foreach (var assembly in assemblies)
@@ -709,7 +603,7 @@ public static class GridViewColumnHelper
             if (dtoType == null)
             {
 
-                return new string[0];
+                return [];
             }
 
             // Lấy các property có kiểu string và tên chứa các từ khóa text
@@ -720,9 +614,9 @@ public static class GridViewColumnHelper
 
             return textProperties;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new string[0];
+            return [];
         }
     }
 
@@ -780,7 +674,7 @@ public static class GridViewColumnHelper
     /// <param name="gridView">GridView</param>
     /// <param name="e">RowIndicatorCustomDrawEventArgs</param>
     public static void CustomDrawRowIndicator(GridView gridView,
-        DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
+        RowIndicatorCustomDrawEventArgs e)
     {
         if (e.RowHandle >= 0)
             e.Info.DisplayText = (e.RowHandle + 1).ToString();
@@ -807,30 +701,21 @@ public static class GridViewColumnHelper
     {
         var selectedValues = new List<T>();
 
-        try
+        if (gridView == null || string.IsNullOrEmpty(columnName))
+            return selectedValues;
+
+        var selectedIndex = gridView.GetSelectedRows();
+
+        foreach (var rowHandle in selectedIndex)
         {
-            if (gridView == null || string.IsNullOrEmpty(columnName))
-                return selectedValues;
+            var selectedValue = gridView.GetRowCellValue(rowHandle, columnName);
 
-            var selectedIndex = gridView.GetSelectedRows();
+            if (selectedValue == null || selectedValue == DBNull.Value) continue;
 
-            foreach (var rowHandle in selectedIndex)
+            if (selectedValue is T typedValue)
             {
-                var selectedValue = gridView.GetRowCellValue(rowHandle, columnName);
-
-                if (selectedValue == null || selectedValue == DBNull.Value) continue;
-
-                if (selectedValue is T typedValue)
-                {
-                    selectedValues.Add(typedValue);
-                }
+                selectedValues.Add(typedValue);
             }
-
-
-        }
-        catch (Exception)
-        {
-            throw;
         }
 
         return selectedValues;
@@ -846,44 +731,35 @@ public static class GridViewColumnHelper
     /// <param name="gridView">GridView cần cấu hình</param>
     public static void ConfigureDanhSachMayChamCongColumns(GridView gridView)
     {
-        try
+        if (gridView == null)
         {
-            if (gridView == null)
-            {
 
-                return;
-            }
-
-            // Cấu hình cột thông tin cơ bản cho DanhSachMayChamCongDto - dựa trên properties thực tế
-            var basicColumns = new[]
-            {
-                "Id", "DevSn", "DevName", "DevLocation",
-                "DevIp", "DevMac", "_DeviceModel", "IsInUse", "IsActivated",
-                "Port", "ConnectionTimeout", "TrangThaiSuDungText", "TrangThaiKichHoatText"
-            };
-
-            ConfigureBasicInfoColumns(gridView, basicColumns);
-
-            // Cấu hình multi-line cho DanhSachMayChamCong
-            ConfigureMultiLineGridView(gridView, "DanhSachMayChamCongDto");
-
-            // Cấu hình row height
-            ConfigureRowHeight(gridView);
-
-            // Ẩn các cột không cần thiết trong danh sách
-            HideColumns(gridView, "NgayTao", "NgayCapNhat", "NguoiTao", "NguoiCapNhat",
-                "GhiChu", "ConnectionTimeout", "ModelMay", "TrangThaiSuDung", "TrangThaiKichHoat");
-
-            // Hiển thị các cột quan trọng cho danh sách
-            ShowColumns(gridView, "Id", "DevSn", "DevName", "DevLocation", "DevIp",
-                "IsInUse", "IsActivated", "_DeviceModel", "TrangThaiSuDungText");
-
-
+            return;
         }
-        catch (Exception)
+
+        // Cấu hình cột thông tin cơ bản cho DanhSachMayChamCongDto - dựa trên properties thực tế
+        var basicColumns = new[]
         {
-            throw;
-        }
+            "Id", "DevSn", "DevName", "DevLocation",
+            "DevIp", "DevMac", "_DeviceModel", "IsInUse", "IsActivated",
+            "Port", "ConnectionTimeout", "TrangThaiSuDungText", "TrangThaiKichHoatText"
+        };
+
+        ConfigureBasicInfoColumns(gridView, basicColumns);
+
+        // Cấu hình multi-line cho DanhSachMayChamCong
+        ConfigureMultiLineGridView(gridView, "DanhSachMayChamCongDto");
+
+        // Cấu hình row height
+        ConfigureRowHeight(gridView);
+
+        // Ẩn các cột không cần thiết trong danh sách
+        HideColumns(gridView, "NgayTao", "NgayCapNhat", "NguoiTao", "NguoiCapNhat",
+            "GhiChu", "ConnectionTimeout", "ModelMay", "TrangThaiSuDung", "TrangThaiKichHoat");
+
+        // Hiển thị các cột quan trọng cho danh sách
+        ShowColumns(gridView, "Id", "DevSn", "DevName", "DevLocation", "DevIp",
+            "IsInUse", "IsActivated", "_DeviceModel", "TrangThaiSuDungText");
     }
 
     /// <summary>
@@ -892,38 +768,29 @@ public static class GridViewColumnHelper
     /// <param name="gridView">GridView cần cấu hình</param>
     public static void ConfigureDeviceColumns(GridView gridView)
     {
-        try
+        if (gridView == null)
         {
-            if (gridView == null)
-            {
 
-                return;
-            }
-
-            // Cấu hình cột thông tin cơ bản cho Device
-            var basicColumns = new[]
-            {
-                "ID", "DeviceID", "DevSN", "DevName", "DevLocation",
-                "DevIP", "DevMAC", "VendorName", "IsInUse"
-            };
-
-            ConfigureBasicInfoColumns(gridView, basicColumns);
-
-            // Cấu hình multi-line cho Device
-            ConfigureMultiLineGridView(gridView, "Device");
-
-            // Cấu hình row height
-            ConfigureRowHeight(gridView);
-
-            // Ẩn các cột không cần thiết
-            HideColumns(gridView, "CreateDate", "UpdateDate", "CreatedBy", "UpdatedBy");
-
-
+            return;
         }
-        catch (Exception)
+
+        // Cấu hình cột thông tin cơ bản cho Device
+        var basicColumns = new[]
         {
-            throw;
-        }
+            "ID", "DeviceID", "DevSN", "DevName", "DevLocation",
+            "DevIP", "DevMAC", "VendorName", "IsInUse"
+        };
+
+        ConfigureBasicInfoColumns(gridView, basicColumns);
+
+        // Cấu hình multi-line cho Device
+        ConfigureMultiLineGridView(gridView, "Device");
+
+        // Cấu hình row height
+        ConfigureRowHeight(gridView);
+
+        // Ẩn các cột không cần thiết
+        HideColumns(gridView, "CreateDate", "UpdateDate", "CreatedBy", "UpdatedBy");
     }
 
     /// <summary>
@@ -933,40 +800,31 @@ public static class GridViewColumnHelper
     /// <param name="dtoType">Loại DTO</param>
     public static void ConfigureColumnsByDtoType(GridView gridView, string dtoType)
     {
-        try
+        if (gridView == null || string.IsNullOrEmpty(dtoType))
         {
-            if (gridView == null || string.IsNullOrEmpty(dtoType))
-            {
 
-                return;
-            }
-
-            switch (dtoType.ToLower())
-            {
-                case "danhsachmaychamcongdto":
-                case "danhsachmaychamcong":
-                    ConfigureDanhSachMayChamCongColumns(gridView);
-                    break;
-
-                case "device":
-                case "maychamcongaddedtdto":
-                case "maychamcong":
-                    ConfigureDeviceColumns(gridView);
-                    break;
-
-                default:
-                    // Cấu hình mặc định
-                    ConfigureMultiLineGridView(gridView, dtoType);
-                    ConfigureRowHeight(gridView);
-                    AutoResizeColumns(gridView);
-                    break;
-            }
-
-
+            return;
         }
-        catch (Exception)
+
+        switch (dtoType.ToLower())
         {
-            throw;
+            case "danhsachmaychamcongdto":
+            case "danhsachmaychamcong":
+                ConfigureDanhSachMayChamCongColumns(gridView);
+                break;
+
+            case "device":
+            case "maychamcongaddedtdto":
+            case "maychamcong":
+                ConfigureDeviceColumns(gridView);
+                break;
+
+            default:
+                // Cấu hình mặc định
+                ConfigureMultiLineGridView(gridView, dtoType);
+                ConfigureRowHeight(gridView);
+                AutoResizeColumns(gridView);
+                break;
         }
     }
 
@@ -981,7 +839,7 @@ public static class GridViewColumnHelper
     /// <param name="fileName">Tên file mặc định</param>
     public static void ExportToExcel(GridView gridView, string fileName = "Export")
     {
-        GridViewHelper.ExportGridToExcel(gridView, fileName, true, true);
+        GridViewHelper.ExportGridToExcel(gridView, fileName);
     }
 
     #endregion
