@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Dal.DataAccess;
+using Dal.DataAccess.Implementations;
 using Dal.DataContext;
 
 namespace Bll.Authentication
@@ -12,7 +13,7 @@ namespace Bll.Authentication
     public class LoginBll
     {
         #region thuocTinhDonGian
-        private readonly ApplicationUserDataAccess _userDataAccess;
+        private readonly ApplicationUserRepository _userDataAccess;
         #endregion
 
         #region phuongThuc

@@ -13,7 +13,7 @@ namespace Dal.Configuration
         #region Fields & Properties
 
         private static DatabaseSettings _databaseSettings;
-        private static readonly object _lockObject = new object();
+        private static readonly object LockObject = new object();
 
         /// <summary>
         /// Cấu hình database (singleton, thread-safe).
@@ -22,15 +22,10 @@ namespace Dal.Configuration
         {
             get
             {
-                if (_databaseSettings == null)
+                if (_databaseSettings != null) return _databaseSettings;
+                lock (LockObject)
                 {
-                    lock (_lockObject)
-                    {
-                        if (_databaseSettings == null)
-                        {
-                            _databaseSettings = LoadDatabaseSettings();
-                        }
-                    }
+                    _databaseSettings ??= LoadDatabaseSettings();
                 }
                 return _databaseSettings;
             }
@@ -119,40 +114,6 @@ namespace Dal.Configuration
             catch
             {
                 return defaultValue;
-            }
-        }
-
-        #endregion
-
-        #region Management
-
-        /// <summary>
-        /// Reload toàn bộ cấu hình (hữu ích cho test hoặc cập nhật động).
-        /// Lần truy cập tiếp theo vào <see cref="DatabaseSettings"/> sẽ tự động nạp lại.
-        /// </summary>
-        public static void ReloadConfiguration()
-        {
-            lock (_lockObject)
-            {
-                _databaseSettings = null;
-            }
-        }
-
-        /// <summary>
-        /// Ghi đè cấu hình hiện tại (hữu ích cho test).
-        /// </summary>
-        /// <param name="settings">Đối tượng cấu hình hợp lệ</param>
-        /// <exception cref="ArgumentNullException">Khi <paramref name="settings"/> null</exception>
-        public static void OverrideSettings(DatabaseSettings settings)
-        {
-            if (settings == null)
-                throw new ArgumentNullException(nameof(settings));
-
-            settings.Validate();
-
-            lock (_lockObject)
-            {
-                _databaseSettings = settings;
             }
         }
 

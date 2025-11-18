@@ -1,38 +1,69 @@
-using Dal.BaseDataAccess;
+using Dal.DataAccess.Interfaces;
 using Dal.DataContext;
 using Dal.Exceptions;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
-using Logger.Interfaces;
+using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess
+namespace Dal.DataAccess.Implementations
 {
     /// <summary>
     /// Data Access cho thực thể ApplicationUser (LINQ to SQL trên DataContext).
     /// Cung cấp các truy vấn/biến đổi phổ biến: lấy theo UserName, active/inactive, tìm kiếm, đổi mật khẩu, kích hoạt/vô hiệu.
     /// </summary>
-    public class ApplicationUserDataAccess : BaseDataAccess<ApplicationUser>
+    public class ApplicationUserRepository : IApplicationUserRepository
     {
-        #region Constructors
+        #region Private Fields
 
         /// <summary>
-        /// Khởi tạo mặc định.
+        /// Chuỗi kết nối cơ sở dữ liệu để tạo DataContext mới cho mỗi operation.
         /// </summary>
-        /// <param name="logger">Logger (tùy chọn)</param>
-        public ApplicationUserDataAccess(ILogger logger = null) : base(logger)
+        private readonly string _connectionString;
+
+        /// <summary>
+        /// Instance logger để theo dõi các thao tác và lỗi
+        /// </summary>
+        private readonly CustomLogger _logger;
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Khởi tạo một instance mới của class ApplicationUserRepository.
+        /// </summary>
+        /// <param name="connectionString">Chuỗi kết nối cơ sở dữ liệu</param>
+        /// <exception cref="ArgumentNullException">Ném ra khi connectionString là null</exception>
+        public ApplicationUserRepository(string connectionString)
         {
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            _logger = LoggerFactory.CreateLogger(LogCategory.DAL);
+            _logger.Info("ApplicationUserRepository được khởi tạo với connection string");
         }
 
+        #endregion
+
+        #region Helper Methods
+
         /// <summary>
-        /// Khởi tạo với connection string.
+        /// Tạo DataContext mới cho mỗi operation để tránh cache issue
         /// </summary>
-        /// <param name="connectionString">Chuỗi kết nối</param>
-        /// <param name="logger">Logger (tùy chọn)</param>
-        public ApplicationUserDataAccess(string connectionString, ILogger logger = null) : base(connectionString,
-            logger)
+        /// <returns>DataContext mới</returns>
+        private VnsErp2025DataContext CreateNewContext()
         {
+            var context = new VnsErp2025DataContext(_connectionString);
+
+            // Configure eager loading cho navigation properties
+            var loadOptions = new DataLoadOptions();
+            context.LoadOptions = loadOptions;
+
+            return context;
         }
 
         #endregion
@@ -55,7 +86,7 @@ namespace Dal.DataAccess
                 if (IsUserNameExists(userName))
                     throw new DataAccessException($"UserName '{userName}' đã tồn tại");
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 var user = new ApplicationUser
                 {
                     Id = Guid.NewGuid(),
@@ -107,7 +138,7 @@ namespace Dal.DataAccess
                 if (await IsUserNameExistsAsync(userName))
                     throw new DataAccessException($"UserName '{userName}' đã tồn tại");
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 var user = new ApplicationUser
                 {
                     Id = Guid.NewGuid(),
@@ -159,13 +190,13 @@ namespace Dal.DataAccess
                 if (string.IsNullOrWhiteSpace(userName))
                     return null;
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ApplicationUsers.FirstOrDefault(u => u.UserName == userName);
             }
             catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 1205) // Deadlock
             {
                 System.Threading.Thread.Sleep(100);
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ApplicationUsers.FirstOrDefault(u => u.UserName == userName);
             }
             catch (System.Data.SqlClient.SqlException sqlEx)
@@ -195,13 +226,13 @@ namespace Dal.DataAccess
                 if (string.IsNullOrWhiteSpace(userName))
                     return null;
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return await Task.Run(() => context.ApplicationUsers.FirstOrDefault(u => u.UserName == userName));
             }
             catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 1205) // Deadlock
             {
                 await Task.Delay(100);
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return await Task.Run(() => context.ApplicationUsers.FirstOrDefault(u => u.UserName == userName));
             }
             catch (System.Data.SqlClient.SqlException sqlEx)
@@ -226,7 +257,7 @@ namespace Dal.DataAccess
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ApplicationUsers.Where(u => u.Active == true).ToList();
             }
             catch (Exception ex)
@@ -242,7 +273,7 @@ namespace Dal.DataAccess
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ApplicationUsers.Where(u => u.Active == false).ToList();
             }
             catch (Exception ex)
@@ -261,7 +292,7 @@ namespace Dal.DataAccess
                 if (string.IsNullOrWhiteSpace(userName))
                     return false;
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return context.ApplicationUsers.Any(u => u.UserName == userName);
             }
             catch (Exception ex)
@@ -280,7 +311,7 @@ namespace Dal.DataAccess
                 if (string.IsNullOrWhiteSpace(userName))
                     return false;
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 return await Task.Run(() => context.ApplicationUsers.Any(u => u.UserName == userName));
             }
             catch (System.Data.SqlClient.SqlException sqlEx)
@@ -297,25 +328,6 @@ namespace Dal.DataAccess
             }
         }
 
-        /// <summary>
-        /// Tìm kiếm user theo từ khóa (trên trường UserName).
-        /// </summary>
-        public List<ApplicationUser> SearchUsers(string keyword)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(keyword))
-                    return GetAll();
-
-                using var context = CreateContext();
-                var lower = keyword.ToLower();
-                return context.ApplicationUsers.Where(u => u.UserName.ToLower().Contains(lower)).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi tìm kiếm user với từ khóa '{keyword}': {ex.Message}", ex);
-            }
-        }
 
         #endregion
 
@@ -328,7 +340,7 @@ namespace Dal.DataAccess
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
 
                 if (user == null)
@@ -350,7 +362,7 @@ namespace Dal.DataAccess
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
 
                 if (user == null)
@@ -375,7 +387,7 @@ namespace Dal.DataAccess
                 if (string.IsNullOrWhiteSpace(newPassword))
                     throw new ArgumentException("Mật khẩu mới không được rỗng", nameof(newPassword));
 
-                using var context = CreateContext();
+                using var context = CreateNewContext();
                 var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
 
                 if (user == null)
@@ -399,7 +411,7 @@ namespace Dal.DataAccess
         /// </summary>
         public void TransferUserData(Guid fromUserId, Guid toUserId, string newUserName)
         {
-            using var context = CreateContext();
+            using var context = CreateNewContext();
             using var transaction = context.Connection.BeginTransaction();
             try
             {

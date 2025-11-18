@@ -123,25 +123,6 @@ namespace Dal.Connection
     /// </summary>
     public class ConnectionEventArgs : EventArgs
     {
-        #region Fields & Properties
-
-        /// <summary>
-        /// Thời gian xảy ra sự kiện
-        /// </summary>
-        public DateTime ThoiGian { get; set; }
-
-        /// <summary>
-        /// Connection string được sử dụng
-        /// </summary>
-        public string ConnectionString { get; set; }
-
-        /// <summary>
-        /// Thông tin bổ sung
-        /// </summary>
-        public string ThongTinBoSung { get; set; }
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
@@ -149,19 +130,6 @@ namespace Dal.Connection
         /// </summary>
         public ConnectionEventArgs()
         {
-            ThoiGian = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Constructor với tham số
-        /// </summary>
-        /// <param name="connectionString">Connection string</param>
-        /// <param name="thongTinBoSung">Thông tin bổ sung</param>
-        public ConnectionEventArgs(string connectionString, string thongTinBoSung = null)
-        {
-            ThoiGian = DateTime.Now;
-            ConnectionString = connectionString;
-            ThongTinBoSung = thongTinBoSung;
         }
 
         #endregion
@@ -172,46 +140,13 @@ namespace Dal.Connection
     /// </summary>
     public class ConnectionErrorEventArgs : ConnectionEventArgs
     {
-        #region Fields & Properties
-
-        /// <summary>
-        /// Exception xảy ra
-        /// </summary>
-        public Exception Exception { get; set; }
-
-        /// <summary>
-        /// Mô tả lỗi
-        /// </summary>
-        public string MoTaLoi { get; set; }
-
-        /// <summary>
-        /// Mức độ nghiêm trọng của lỗi
-        /// </summary>
-        public ErrorSeverity MucDoNghiemTrong { get; set; }
-
-        #endregion
-
         #region Constructors
-
-        /// <summary>
-        /// Constructor mặc định
-        /// </summary>
-        public ConnectionErrorEventArgs()
-        {
-        }
 
         /// <summary>
         /// Constructor với tham số
         /// </summary>
-        /// <param name="exception">Exception xảy ra</param>
-        /// <param name="connectionString">Connection string</param>
-        /// <param name="mucDoNghiemTrong">Mức độ nghiêm trọng</param>
-        public ConnectionErrorEventArgs(Exception exception, string connectionString, ErrorSeverity mucDoNghiemTrong = ErrorSeverity.TrungBinh)
-            : base(connectionString)
+        public ConnectionErrorEventArgs()
         {
-            Exception = exception;
-            MoTaLoi = exception?.Message;
-            MucDoNghiemTrong = mucDoNghiemTrong;
         }
 
         #endregion

@@ -8,7 +8,7 @@ namespace Logger.Configuration;
 /// <summary>
 /// Class cấu hình logging
 /// </summary>
-public class LogConfiguration : ILogConfiguration, ILogConfiguration
+public class LogConfiguration : ILogConfiguration
 {
     #region Properties
 

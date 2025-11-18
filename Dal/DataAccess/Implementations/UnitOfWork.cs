@@ -234,6 +234,14 @@ namespace Dal.DataAccess.Implementations
 
         #region Company
 
+        public IApplicationUserRepository GetApplicationUserDataAccess()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new ApplicationUserRepository(globalConnectionString);
+        }
 
         public ICompanyBranchRepository GetCompanyBranchRepository()
         {

@@ -349,8 +349,8 @@ namespace Dal.Connection
         /// </summary>
         private void OnConnectionOpened()
         {
-            ConnectionOpened?.Invoke(this, new ConnectionEventArgs(ConnectionString, "Kết nối database đã được mở"));
-            KetNoiMo?.Invoke(this, new ConnectionEventArgs(ConnectionString, "Kết nối database đã được mở"));
+            ConnectionOpened?.Invoke(this, new ConnectionEventArgs());
+            KetNoiMo?.Invoke(this, new ConnectionEventArgs());
         }
 
         /// <summary>
@@ -358,8 +358,8 @@ namespace Dal.Connection
         /// </summary>
         private void OnConnectionClosed()
         {
-            ConnectionClosed?.Invoke(this, new ConnectionEventArgs(ConnectionString, "Kết nối database đã được đóng"));
-            KetNoiDong?.Invoke(this, new ConnectionEventArgs(ConnectionString, "Kết nối database đã được đóng"));
+            ConnectionClosed?.Invoke(this, new ConnectionEventArgs());
+            KetNoiDong?.Invoke(this, new ConnectionEventArgs());
         }
 
         /// <summary>
@@ -369,8 +369,8 @@ namespace Dal.Connection
         private void OnConnectionError(Exception exception)
         {
             var severity = DetermineErrorSeverity(exception);
-            ConnectionError?.Invoke(this, new ConnectionErrorEventArgs(exception, ConnectionString, severity));
-            LoiKetNoi?.Invoke(this, new ConnectionErrorEventArgs(exception, ConnectionString, severity));
+            ConnectionError?.Invoke(this, new ConnectionErrorEventArgs());
+            LoiKetNoi?.Invoke(this, new ConnectionErrorEventArgs());
         }
 
         /// <summary>

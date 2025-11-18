@@ -52,6 +52,8 @@ public interface IUnitOfWork : IDisposable
 
     #region MasterData
 
+    IApplicationUserRepository GetApplicationUserDataAccess();
+
     #region Company
 
     /// <summary>

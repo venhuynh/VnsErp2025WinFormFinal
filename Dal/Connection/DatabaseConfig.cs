@@ -14,7 +14,7 @@ namespace Dal.Connection
         #region Fields & Properties
 
         private static DatabaseConfig _instance;
-        private static readonly object _lockObject = new object();
+        private static readonly object LockObject = new object();
 
         /// <summary>
         /// Tên server database
@@ -69,7 +69,7 @@ namespace Dal.Connection
         /// <summary>
         /// Connection lifetime (giây)
         /// </summary>
-        public int ConnectionLifetime { get; set; } = 0;
+        public int ConnectionLifetime { get; set; }
 
         /// <summary>
         /// Enable enlist in distributed transaction
@@ -151,7 +151,7 @@ namespace Dal.Connection
             {
                 if (_instance == null)
                 {
-                    lock (_lockObject)
+                    lock (LockObject)
                     {
                         if (_instance == null)
                         {
@@ -466,9 +466,6 @@ namespace Dal.Connection
 
         [Obsolete("Use LoadFromConfig() instead")]
         public void TaiCauHinhTuConfig() => LoadFromConfig();
-
-        [Obsolete("Use GetConfigValue(string,string) instead")]
-        private string LayGiaTriConfig(string key, string defaultValue) => GetConfigValue(key, defaultValue);
 
         [Obsolete("Use GetConnectionString() instead")]
         public string LayConnectionString() => GetConnectionString();
