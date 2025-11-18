@@ -1,17 +1,16 @@
 ﻿using Dal.BaseDataAccess;
-using Dal.DataContext;
+using Dal.DataAccess.Interfaces.MasterData.Company;
 using Dal.Exceptions;
-using Dal.Logging;
 using System;
 using System.Linq;
 
-namespace Dal.DataAccess.MasterData.CompanyDal
+namespace Dal.DataAccess.Implementations.MasterData.Company
 {
     /// <summary>
     /// Data Access cho thực thể Company (LINQ to SQL trên DataContext).
     /// Cung cấp các truy vấn/biến đổi phổ biến: lấy thông tin công ty, đảm bảo có công ty mặc định, cập nhật thông tin.
     /// </summary>
-    public class CompanyDataAccess : BaseDataAccess<Company>
+    public class CompanyRepository : ICompanyRepository
     {
         #region Constructors
 
@@ -19,7 +18,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         /// Khởi tạo mặc định.
         /// </summary>
         /// <param name="logger">Logger (tùy chọn)</param>
-        public CompanyDataAccess(ILogger logger = null) : base(logger)
+        public ICompanyRepository(ILogger logger = null) : base(logger)
         {
             EnsureDefaultCompany();
         }
@@ -29,7 +28,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         /// </summary>
         /// <param name="connectionString">Chuỗi kết nối</param>
         /// <param name="logger">Logger (tùy chọn)</param>
-        public CompanyDataAccess(string connectionString, ILogger logger = null) : base(connectionString, logger)
+        public ICompanyRepository(string connectionString, ILogger logger = null) : base(connectionString, logger)
         {
             EnsureDefaultCompany();
         }
@@ -51,7 +50,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
                 if (existingCompany == null)
                 {
                     // Tạo công ty mặc định
-                    var defaultCompany = new Company
+                    var defaultCompany = new DataContext.Company
                     {
                         Id = Guid.NewGuid(),
                         CompanyCode = "VNS001",
@@ -89,7 +88,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         /// Lấy thông tin công ty từ database
         /// </summary>
         /// <returns>Company entity</returns>
-        public Company GetCompany()
+        public DataContext.Company GetCompany()
         {
             try
             {
@@ -120,7 +119,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
             {
                 using var context = CreateContext();
                 
-                if (company is Company companyEntity)
+                if (company is DataContext.Company companyEntity)
                 {
                     // Tìm công ty hiện tại
                     var existingCompany = context.Companies.FirstOrDefault();

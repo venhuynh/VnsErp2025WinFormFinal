@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataAccess.MasterData.CompanyDal;
+using Dal.DataAccess.Implementations.MasterData.Company;
 using Dal.DataContext;
 using Dal.Exceptions;
 
@@ -19,7 +19,7 @@ namespace Bll.MasterData.Company
         /// <summary>
         /// Data Access Layer cho chức vụ
         /// </summary>
-        private readonly PositionDataAccess _positionDataAccess = new PositionDataAccess();
+        private readonly PositionRepository _positionDataAccess = new PositionDataAccess();
 
         #endregion
 

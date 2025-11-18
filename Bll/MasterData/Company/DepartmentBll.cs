@@ -1,9 +1,9 @@
-﻿using Dal.DataAccess.MasterData.CompanyDal;
-using Dal.DataContext;
+﻿using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DataAccess.Implementations.MasterData.Company;
 
 namespace Bll.MasterData.Company
 {
@@ -15,7 +15,7 @@ namespace Bll.MasterData.Company
     {
         #region ========== FIELDS ==========
 
-        private readonly DepartmentDataAccess _departmentDataAccess;
+        private readonly DepartmentRepository _departmentDataAccess;
 
         #endregion
 

@@ -1,38 +1,71 @@
 using Dal.BaseDataAccess;
+using Dal.DataAccess.Interfaces.MasterData.Company;
 using Dal.DataContext;
 using Dal.Exceptions;
-using Dal.Logging;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
+using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess.MasterData.CompanyDal
+namespace Dal.DataAccess.Implementations.MasterData.Company
 {
     /// <summary>
     /// Data Access Layer cho quản lý chức vụ.
     /// Cung cấp các phương thức truy cập dữ liệu cho chức vụ.
     /// </summary>
-    public class PositionDataAccess : BaseDataAccess<Position>
+    public class PositionRepository : IPositionRepository
     {
-        #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
+        #region Private Fields
 
         /// <summary>
-        /// Khởi tạo Data Access Layer cho chức vụ.
+        /// Chuỗi kết nối cơ sở dữ liệu để tạo DataContext mới cho mỗi operation.
         /// </summary>
-        /// <param name="logger">Logger (tùy chọn)</param>
-        public PositionDataAccess(ILogger logger = null) : base(logger)
+        private readonly string _connectionString;
+
+        /// <summary>
+        /// Instance logger để theo dõi các thao tác và lỗi
+        /// </summary>
+        private readonly CustomLogger _logger;
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Khởi tạo một instance mới của class UserInfoRepository.
+        /// </summary>
+        /// <param name="connectionString">Chuỗi kết nối cơ sở dữ liệu</param>
+        /// <exception cref="ArgumentNullException">Ném ra khi connectionString là null</exception>
+        public PositionRepository(string connectionString)
         {
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            _logger = LoggerFactory.CreateLogger(LogCategory.DAL);
+            _logger.Info("UserInfoRepository được khởi tạo với connection string");
         }
 
+        #endregion
+
+        #region Helper Methods
+
         /// <summary>
-        /// Khởi tạo với connection string.
+        /// Tạo DataContext mới cho mỗi operation để tránh cache issue
         /// </summary>
-        /// <param name="connectionString">Chuỗi kết nối</param>
-        /// <param name="logger">Logger (tùy chọn)</param>
-        public PositionDataAccess(string connectionString, ILogger logger = null) : base(connectionString, logger)
+        /// <returns>DataContext mới</returns>
+        private VnsErp2025DataContext CreateNewContext()
         {
+            var context = new VnsErp2025DataContext(_connectionString);
+
+            // Configure eager loading cho navigation properties
+            var loadOptions = new DataLoadOptions();
+            loadOptions.LoadWith<Position>(u => u.Company);
+            context.LoadOptions = loadOptions;
+
+            return context;
         }
 
         #endregion
@@ -48,7 +81,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         {
             try
             {
-                using var context = CreateContext();
+                using var context = CreateNewContext();
 
                 // Sử dụng DataLoadOptions để include relationships (tránh circular reference)
                 var loadOptions = new DataLoadOptions();

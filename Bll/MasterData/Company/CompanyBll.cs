@@ -1,6 +1,6 @@
-﻿using Dal.DataAccess.MasterData.CompanyDal;
-using Dal.Logging;
+﻿using Dal.Logging;
 using System;
+using Dal.DataAccess.Implementations.MasterData.Company;
 
 namespace Bll.MasterData.Company
 {
@@ -9,7 +9,7 @@ namespace Bll.MasterData.Company
     /// </summary>
     public class CompanyBll
     {
-        private readonly CompanyDataAccess _companyDataAccess;
+        private readonly ICompanyRepository _companyDataAccess;
         private readonly ILogger _logger;
 
         public CompanyBll(ILogger logger = null)

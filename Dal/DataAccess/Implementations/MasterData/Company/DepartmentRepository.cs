@@ -1,7 +1,7 @@
 using Dal.BaseDataAccess;
+using Dal.DataAccess.Interfaces.MasterData.Company;
 using Dal.DataContext;
 using Dal.Exceptions;
-using Dal.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
@@ -9,13 +9,13 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Dal.DataAccess.MasterData.CompanyDal
+namespace Dal.DataAccess.Implementations.MasterData.Company
 {
     /// <summary>
     /// Data Access Layer cho Department
     /// Cung cấp các phương thức truy cập dữ liệu cho Department
     /// </summary>
-    public class DepartmentDataAccess : BaseDataAccess<Department>
+    public class DepartmentRepository : IDepartmentRepository
     {
         #region ========== CONSTRUCTOR ==========
 
@@ -23,7 +23,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         /// Khởi tạo DepartmentDataAccess
         /// </summary>
         /// <param name="logger">Logger (tùy chọn)</param>
-        public DepartmentDataAccess(ILogger logger = null) : base(logger)
+        public DepartmentRepository(ILogger logger = null) : base(logger)
         {
         }
 
@@ -32,7 +32,7 @@ namespace Dal.DataAccess.MasterData.CompanyDal
         /// </summary>
         /// <param name="connectionString">Chuỗi kết nối</param>
         /// <param name="logger">Logger (tùy chọn)</param>
-        public DepartmentDataAccess(string connectionString, ILogger logger = null) : base(connectionString, logger)
+        public DepartmentRepository(string connectionString, ILogger logger = null) : base(connectionString, logger)
         {
         }
 
