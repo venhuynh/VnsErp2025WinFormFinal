@@ -1,31 +1,74 @@
-using Dal.DataAccess.MasterData;
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
+using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
-using Dal.Logging;
 using System;
 using System.Collections.Generic;
-using Dal.DataAccess.MasterData.Partner;
 
-namespace Bll.MasterData.Customer
+namespace Bll.MasterData.CustomerBll
 {
     /// <summary>
     /// Business Logic Layer cho BusinessPartnerContact
     /// </summary>
     public class BusinessPartnerContactBll
     {
-        private readonly BusinessPartnerCategoryRepository _dataAccess;
-        private readonly ILogger _logger;
+        #region Fields
 
+        private IBusinessPartnerContactRepository _dataAccess;
+        private readonly object _lockObject = new object();
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor mặc định
+        /// </summary>
         public BusinessPartnerContactBll()
         {
-            _logger = new ConsoleLogger();
-            _dataAccess = new BusinessPartnerContactDataAccess(_logger);
+            
         }
 
-        public BusinessPartnerContactBll(string connectionString, ILogger logger = null)
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IBusinessPartnerContactRepository GetDataAccess()
         {
-            _logger = logger ?? new ConsoleLogger();
-            _dataAccess = new BusinessPartnerContactDataAccess(connectionString, _logger);
+            if (_dataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_dataAccess == null)
+                    {
+                        try
+                        {
+                            // Sử dụng global connection string từ ApplicationStartupManager
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _dataAccess = new BusinessPartnerContactRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _dataAccess;
         }
+
+        #endregion
 
         /// <summary>
         /// Lấy tất cả BusinessPartnerContact
@@ -35,15 +78,11 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo("Bắt đầu lấy danh sách BusinessPartnerContact");
-                var result = _dataAccess.GetAll();
-                _logger?.LogInfo($"Hoàn thành lấy danh sách BusinessPartnerContact: {result.Count} records");
-                return result;
+                return GetDataAccess().GetAll();
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi lấy danh sách BusinessPartnerContact: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi lấy danh sách BusinessPartnerContact: {ex.Message}", ex);
             }
         }
 
@@ -56,15 +95,11 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu lấy BusinessPartnerContact với ID: {id}");
-                var result = _dataAccess.GetById(id);
-                _logger?.LogInfo(result != null ? "Tìm thấy BusinessPartnerContact" : "Không tìm thấy BusinessPartnerContact");
-                return result;
+                return GetDataAccess().GetById(id);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi lấy BusinessPartnerContact theo ID: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi lấy BusinessPartnerContact theo ID: {ex.Message}", ex);
             }
         }
 
@@ -77,15 +112,15 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu thêm mới BusinessPartnerContact: {entity.FullName}");
-                _dataAccess.Add(entity);
-                _logger?.LogInfo($"Hoàn thành thêm mới BusinessPartnerContact với ID: {entity.Id}");
-                return entity.Id;
+                if (entity.Id == Guid.Empty)
+                {
+                    entity.Id = Guid.NewGuid();
+                }
+                return GetDataAccess().SaveOrUpdate(entity);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi thêm mới BusinessPartnerContact: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi thêm mới BusinessPartnerContact: {ex.Message}", ex);
             }
         }
 
@@ -98,22 +133,15 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu lưu BusinessPartnerContact: {entity.FullName}");
                 if (entity.Id == Guid.Empty)
                 {
-                    _dataAccess.Add(entity);
+                    entity.Id = Guid.NewGuid();
                 }
-                else
-                {
-                    _dataAccess.Update(entity);
-                }
-                _logger?.LogInfo($"Hoàn thành lưu BusinessPartnerContact với ID: {entity.Id}");
-                return entity.Id;
+                return GetDataAccess().SaveOrUpdate(entity);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi lưu BusinessPartnerContact: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi lưu BusinessPartnerContact: {ex.Message}", ex);
             }
         }
 
@@ -126,21 +154,11 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu xóa BusinessPartnerContact với ID: {id}");
-                // Sử dụng DeleteById thay vì GetById + Delete để tránh DataContext conflict
-                var result = _dataAccess.DeleteById(id);
-                if (result)
-                {
-                    _logger?.LogInfo("Xóa BusinessPartnerContact thành công");
-                    return true;
-                }
-                _logger?.LogInfo("Không tìm thấy BusinessPartnerContact để xóa");
-                return false;
+                return GetDataAccess().Delete(id);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi xóa BusinessPartnerContact: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi xóa BusinessPartnerContact: {ex.Message}", ex);
             }
         }
 
@@ -154,15 +172,11 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Kiểm tra Phone: {phone}");
-                var result = _dataAccess.IsPhoneExists(phone, excludeId);
-                _logger?.LogInfo(result ? "Phone đã tồn tại" : "Phone chưa tồn tại");
-                return result;
+                return GetDataAccess().IsPhoneExists(phone, excludeId);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi kiểm tra Phone: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi kiểm tra Phone: {ex.Message}", ex);
             }
         }
 
@@ -175,14 +189,11 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu cập nhật avatar cho BusinessPartnerContact với ID: {contactId}");
-                _dataAccess.UpdateAvatarOnly(contactId, avatarBytes);
-                _logger?.LogInfo($"Hoàn thành cập nhật avatar cho BusinessPartnerContact với ID: {contactId}");
+                GetDataAccess().UpdateAvatarOnly(contactId, avatarBytes);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi cập nhật avatar cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi cập nhật avatar cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
             }
         }
 
@@ -194,17 +205,18 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu xóa avatar cho BusinessPartnerContact với ID: {contactId}");
-                _dataAccess.DeleteAvatarOnly(contactId);
-                _logger?.LogInfo($"Hoàn thành xóa avatar cho BusinessPartnerContact với ID: {contactId}");
+                GetDataAccess().DeleteAvatarOnly(contactId);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi xóa avatar cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi xóa avatar cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
             }
         }
 
+        /// <summary>
+        /// Cập nhật entity mà không thay đổi avatar
+        /// </summary>
+        /// <param name="entity">BusinessPartnerContact entity</param>
         public void UpdateEntityWithoutAvatar(BusinessPartnerContact entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
@@ -212,7 +224,7 @@ namespace Bll.MasterData.Customer
             try
             {
                 // Retrieve the existing entity from the database
-                var existingEntity = _dataAccess.GetById(entity.Id);
+                var existingEntity = GetDataAccess().GetById(entity.Id);
                 if (existingEntity == null) throw new InvalidOperationException($"Entity with ID {entity.Id} does not exist.");
 
                 // Update fields except for the Avatar
@@ -225,12 +237,11 @@ namespace Bll.MasterData.Customer
                 existingEntity.IsActive = entity.IsActive;
 
                 // Save changes to the database
-                _dataAccess.SaveOrUpdate(existingEntity);
+                GetDataAccess().SaveOrUpdate(existingEntity);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error updating entity without avatar: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi cập nhật entity không có avatar: {ex.Message}", ex);
             }
         }
     }

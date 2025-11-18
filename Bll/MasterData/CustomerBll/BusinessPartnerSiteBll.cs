@@ -1,30 +1,74 @@
-using Dal.DataAccess.MasterData.Partner;
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
+using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
-using Dal.Logging;
 using System;
 using System.Collections.Generic;
 
-namespace Bll.MasterData.Customer
+namespace Bll.MasterData.CustomerBll
 {
     /// <summary>
     /// Business Logic Layer cho BusinessPartnerSite
     /// </summary>
     public class BusinessPartnerSiteBll
     {
-        private readonly BusinessPartnerSiteDataAccess _dataAccess;
-        private readonly ILogger _logger;
+        #region Fields
 
+        private IBusinessPartnerSiteRepository _dataAccess;
+        private readonly object _lockObject = new object();
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor mặc định
+        /// </summary>
         public BusinessPartnerSiteBll()
         {
-            _logger = new ConsoleLogger();
-            _dataAccess = new BusinessPartnerSiteDataAccess();
+            
         }
 
-        public BusinessPartnerSiteBll(string connectionString, ILogger logger = null)
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IBusinessPartnerSiteRepository GetDataAccess()
         {
-            _logger = logger ?? new ConsoleLogger();
-            _dataAccess = new BusinessPartnerSiteDataAccess(connectionString);
+            if (_dataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_dataAccess == null)
+                    {
+                        try
+                        {
+                            // Sử dụng global connection string từ ApplicationStartupManager
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _dataAccess = new BusinessPartnerSiteRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _dataAccess;
         }
+
+        #endregion
 
         /// <summary>
         /// Lấy tất cả BusinessPartnerSite
@@ -34,15 +78,11 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo("Bắt đầu lấy danh sách BusinessPartnerSite");
-                var result = _dataAccess.GetAll();
-                _logger?.LogInfo($"Hoàn thành lấy danh sách BusinessPartnerSite: {result.Count} records");
-                return result;
+                return GetDataAccess().GetAll();
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi lấy danh sách BusinessPartnerSite: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi lấy danh sách BusinessPartnerSite: {ex.Message}", ex);
             }
         }
 
@@ -64,15 +104,11 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu lấy BusinessPartnerSite với ID: {id}");
-                var result = _dataAccess.GetById(id);
-                _logger?.LogInfo(result != null ? "Tìm thấy BusinessPartnerSite" : "Không tìm thấy BusinessPartnerSite");
-                return result;
+                return GetDataAccess().GetById(id);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi lấy BusinessPartnerSite theo ID: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi lấy BusinessPartnerSite theo ID: {ex.Message}", ex);
             }
         }
 
@@ -85,15 +121,15 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu lưu BusinessPartnerSite: {entity.SiteName}");
-                var result = _dataAccess.SaveOrUpdate(entity);
-                _logger?.LogInfo($"Hoàn thành lưu BusinessPartnerSite với ID: {result}");
-                return result;
+                if (entity.Id == Guid.Empty)
+                {
+                    entity.Id = Guid.NewGuid();
+                }
+                return GetDataAccess().SaveOrUpdate(entity);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi lưu BusinessPartnerSite: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi lưu BusinessPartnerSite: {ex.Message}", ex);
             }
         }
 
@@ -106,15 +142,11 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu xóa BusinessPartnerSite với ID: {id}");
-                var result = _dataAccess.Delete(id);
-                _logger?.LogInfo(result ? "Xóa BusinessPartnerSite thành công" : "Không thể xóa BusinessPartnerSite");
-                return result;
+                return GetDataAccess().Delete(id);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi xóa BusinessPartnerSite: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi xóa BusinessPartnerSite: {ex.Message}", ex);
             }
         }
 
@@ -138,15 +170,11 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Kiểm tra SiteCode: {siteCode}");
-                var result = _dataAccess.IsSiteCodeExists(siteCode, excludeId);
-                _logger?.LogInfo(result ? "SiteCode đã tồn tại" : "SiteCode chưa tồn tại");
-                return result;
+                return GetDataAccess().IsSiteCodeExists(siteCode, excludeId);
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi kiểm tra SiteCode: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi kiểm tra SiteCode: {ex.Message}", ex);
             }
         }
 
@@ -159,12 +187,9 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu tạo mới BusinessPartnerSite: {entity.SiteName}");
-                
                 // Kiểm tra SiteCode đã tồn tại chưa
                 if (IsSiteCodeExists(entity.SiteCode))
                 {
-                    _logger?.LogWarning($"SiteCode đã tồn tại: {entity.SiteCode}");
                     return false;
                 }
 
@@ -175,13 +200,11 @@ namespace Bll.MasterData.Customer
 
                 // Lưu vào database
                 var result = SaveOrUpdate(entity);
-                _logger?.LogInfo($"Tạo mới BusinessPartnerSite thành công với ID: {result}");
-                return true;
+                return result != Guid.Empty;
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi tạo mới BusinessPartnerSite: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi tạo mới BusinessPartnerSite: {ex.Message}", ex);
             }
         }
 
@@ -194,12 +217,9 @@ namespace Bll.MasterData.Customer
         {
             try
             {
-                _logger?.LogInfo($"Bắt đầu cập nhật BusinessPartnerSite: {entity.SiteName}");
-                
                 // Kiểm tra SiteCode đã tồn tại chưa (loại trừ chính nó)
                 if (IsSiteCodeExists(entity.SiteCode, entity.Id))
                 {
-                    _logger?.LogWarning($"SiteCode đã tồn tại: {entity.SiteCode}");
                     return false;
                 }
 
@@ -207,7 +227,6 @@ namespace Bll.MasterData.Customer
                 var existingEntity = GetById(entity.Id);
                 if (existingEntity == null)
                 {
-                    _logger?.LogWarning($"Không tìm thấy BusinessPartnerSite với ID: {entity.Id}");
                     return false;
                 }
 
@@ -228,22 +247,12 @@ namespace Bll.MasterData.Customer
 
                 // Lưu vào database
                 var result = SaveOrUpdate(existingEntity);
-                _logger?.LogInfo($"Cập nhật BusinessPartnerSite thành công với ID: {result}");
-                return true;
+                return result != Guid.Empty;
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi cập nhật BusinessPartnerSite: {ex.Message}", ex);
-                throw;
+                throw new Exception($"Lỗi khi cập nhật BusinessPartnerSite: {ex.Message}", ex);
             }
-        }
-
-        /// <summary>
-        /// Dispose resources
-        /// </summary>
-        public void Dispose()
-        {
-            _dataAccess?.Dispose();
         }
     }
 }

@@ -1,11 +1,12 @@
-using Dal.DataAccess.MasterData.Partner;
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
+using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 
-namespace Bll.MasterData.Customer
+namespace Bll.MasterData.CustomerBll
 {
     /// <summary>
     /// Business logic layer cho BusinessPartnerCategory. 
@@ -13,7 +14,63 @@ namespace Bll.MasterData.Customer
     /// </summary>
     public class BusinessPartnerCategoryBll
     {
-        private readonly BusinessPartnerRepository _businessPartnerCategoryDataAccess = new();
+        #region Fields
+
+        private IBusinessPartnerCategoryRepository _dataAccess;
+        private readonly object _lockObject = new object();
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor mặc định
+        /// </summary>
+        public BusinessPartnerCategoryBll()
+        {
+            
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IBusinessPartnerCategoryRepository GetDataAccess()
+        {
+            if (_dataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_dataAccess == null)
+                    {
+                        try
+                        {
+                            // Sử dụng global connection string từ ApplicationStartupManager
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _dataAccess = new BusinessPartnerCategoryRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _dataAccess;
+        }
+
+        #endregion
 
         /// <summary>
         /// Lấy tất cả danh mục đối tác.
@@ -21,7 +78,7 @@ namespace Bll.MasterData.Customer
         /// <returns>Danh sách BusinessPartnerCategory</returns>
         public List<BusinessPartnerCategory> GetAll()
         {
-            return _businessPartnerCategoryDataAccess.GetAll();
+            return GetDataAccess().GetAll();
         }
 
         /// <summary>
@@ -30,7 +87,7 @@ namespace Bll.MasterData.Customer
         /// <returns>Task chứa danh sách BusinessPartnerCategory</returns>
         public Task<List<BusinessPartnerCategory>> GetAllAsync()
         {
-            return _businessPartnerCategoryDataAccess.GetAllAsync();
+            return GetDataAccess().GetAllAsync();
         }
 
         /// <summary>
@@ -40,7 +97,7 @@ namespace Bll.MasterData.Customer
         /// <returns>BusinessPartnerCategory hoặc null</returns>
         public BusinessPartnerCategory GetById(Guid id)
         {
-            return _businessPartnerCategoryDataAccess.GetById(id);
+            return GetDataAccess().GetById(id);
         }
 
         /// <summary>
@@ -49,7 +106,7 @@ namespace Bll.MasterData.Customer
         /// <returns>Dictionary với Key là CategoryId, Value là số lượng đối tác</returns>
         public Dictionary<Guid, int> GetPartnerCountByCategory()
         {
-            return _businessPartnerCategoryDataAccess.GetPartnerCountByCategory();
+            return GetDataAccess().GetPartnerCountByCategory();
         }
 
         /// <summary>
@@ -58,7 +115,7 @@ namespace Bll.MasterData.Customer
         /// <returns>Task chứa Dictionary với Key là CategoryId, Value là số lượng đối tác</returns>
         public Task<Dictionary<Guid, int>> GetPartnerCountByCategoryAsync()
         {
-            return _businessPartnerCategoryDataAccess.GetPartnerCountByCategoryAsync();
+            return GetDataAccess().GetPartnerCountByCategoryAsync();
         }
 
         /// <summary>
@@ -91,7 +148,7 @@ namespace Bll.MasterData.Customer
         /// <returns>True nếu có đối tác, False nếu không</returns>
         public bool HasPartners(Guid categoryId)
         {
-            return _businessPartnerCategoryDataAccess.HasPartners(categoryId);
+            return GetDataAccess().HasPartners(categoryId);
         }
 
         /// <summary>
@@ -101,7 +158,7 @@ namespace Bll.MasterData.Customer
         /// <returns>Số lượng đối tác</returns>
         public int GetPartnerCount(Guid categoryId)
         {
-            return _businessPartnerCategoryDataAccess.GetPartnerCount(categoryId);
+            return GetDataAccess().GetPartnerCount(categoryId);
         }
 
         /// <summary>
@@ -110,7 +167,7 @@ namespace Bll.MasterData.Customer
         /// <param name="category">Danh mục cần thêm</param>
         public void Insert(BusinessPartnerCategory category)
         {
-            _businessPartnerCategoryDataAccess.SaveOrUpdate(category);
+            GetDataAccess().SaveOrUpdate(category);
         }
 
         /// <summary>
@@ -119,7 +176,7 @@ namespace Bll.MasterData.Customer
         /// <param name="category">Danh mục cần cập nhật</param>
         public void Update(BusinessPartnerCategory category)
         {
-            _businessPartnerCategoryDataAccess.SaveOrUpdate(category);
+            GetDataAccess().SaveOrUpdate(category);
         }
 
         /// <summary>
@@ -130,7 +187,7 @@ namespace Bll.MasterData.Customer
         /// <returns>True nếu tồn tại, False nếu không</returns>
         public bool IsCategoryNameExists(string categoryName, Guid excludeId)
         {
-            return _businessPartnerCategoryDataAccess.IsCategoryNameExists(categoryName, excludeId);
+            return GetDataAccess().IsCategoryNameExists(categoryName, excludeId);
         }
 
         /// <summary>
@@ -139,7 +196,7 @@ namespace Bll.MasterData.Customer
         /// <param name="id">ID của danh mục cần xóa</param>
         public void Delete(Guid id)
         {
-            _businessPartnerCategoryDataAccess.DeleteCategory(id);
+            GetDataAccess().DeleteCategory(id);
         }
     }
 }

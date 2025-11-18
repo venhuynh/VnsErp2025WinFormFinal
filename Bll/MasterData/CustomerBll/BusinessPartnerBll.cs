@@ -1,13 +1,10 @@
 ﻿using Common.Appconfig;
-using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
-using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
+using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
-using Logger;
-using Logger.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 
 namespace Bll.MasterData.CustomerBll
 {
@@ -29,11 +26,9 @@ namespace Bll.MasterData.CustomerBll
         /// <summary>
         /// Constructor mặc định
         /// </summary>
-        public CompanyBll()
+        public BusinessPartnerBll()
         {
-            // Khởi tạo logger trước để đảm bảo không null trong khối catch
-            _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
-            // Repository sẽ được khởi tạo lazy khi cần sử dụng
+            
         }
 
         #endregion
@@ -43,7 +38,7 @@ namespace Bll.MasterData.CustomerBll
         /// <summary>
         /// Lấy hoặc khởi tạo Repository (lazy initialization)
         /// </summary>
-        private ICompanyRepository GetDataAccess()
+        private IBusinessPartnerRepository GetDataAccess()
         {
             if (_dataAccess == null)
             {
@@ -61,11 +56,10 @@ namespace Bll.MasterData.CustomerBll
                                     "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
                             }
 
-                            _dataAccess = new CompanyRepository(globalConnectionString);
+                            _dataAccess = new BusinessPartnerRepository(globalConnectionString);
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error("Lỗi khi khởi tạo CompanyRepository: {0}", ex, ex.Message);
                             throw new InvalidOperationException(
                                 "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
                         }
@@ -82,9 +76,10 @@ namespace Bll.MasterData.CustomerBll
         /// <summary>
         /// Lấy toàn bộ đối tác (entities) - Async.
         /// </summary>
-        public Task<List<BusinessPartner>> GetAllAsync()
+        public async Task<List<BusinessPartner>> GetAllAsync()
         {
-            return _businessPartnerDataAccess.GetAllAsync();
+            // TODO: IBusinessPartnerRepository không có GetAllAsync(), sử dụng GetActivePartners() tạm thời
+            return await Task.Run(() => GetDataAccess().GetActivePartners());
         }
 
         /// <summary>
@@ -92,7 +87,8 @@ namespace Bll.MasterData.CustomerBll
         /// </summary>
         public List<BusinessPartner> GetAll()
         {
-            return _businessPartnerDataAccess.GetAll();
+            // TODO: IBusinessPartnerRepository không có GetAll(), sử dụng GetActivePartners() tạm thời
+            return GetDataAccess().GetActivePartners();
         }
 
         /// <summary>
@@ -100,7 +96,7 @@ namespace Bll.MasterData.CustomerBll
         /// </summary>
         public bool IsCodeExists(string code)
         {
-            return _businessPartnerDataAccess.IsPartnerCodeExists(code);
+            return GetDataAccess().IsPartnerCodeExists(code);
         }
 
         /// <summary>
@@ -108,7 +104,7 @@ namespace Bll.MasterData.CustomerBll
         /// </summary>
         public void Delete(Guid id)
         {
-            _businessPartnerDataAccess.DeletePartner(id);
+            GetDataAccess().DeletePartner(id);
         }
 
         /// <summary>
@@ -116,7 +112,7 @@ namespace Bll.MasterData.CustomerBll
         /// </summary>
         public BusinessPartner GetById(Guid id)
         {
-            return _businessPartnerDataAccess.GetById(id);
+            return GetDataAccess().GetById(id);
         }
 
         /// <summary>
@@ -124,7 +120,7 @@ namespace Bll.MasterData.CustomerBll
         /// </summary>
         public Task<BusinessPartner> GetByIdAsync(Guid id)
         {
-            return _businessPartnerDataAccess.GetByIdAsync(id);
+            return GetDataAccess().GetByIdAsync(id);
         }
 
         /// <summary>
@@ -132,7 +128,7 @@ namespace Bll.MasterData.CustomerBll
         /// </summary>
         public void SaveOrUpdate(BusinessPartner entity)
         {
-            _businessPartnerDataAccess.SaveOrUpdate(entity);
+            GetDataAccess().SaveOrUpdate(entity);
         }
     }
 }
