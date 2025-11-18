@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Common;
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Bll.MasterData.ProductServiceBll;
 
 namespace Bll.Common.ImageService;
 
@@ -14,8 +17,9 @@ public class ImageCleanupService
 {
     #region Fields
 
-    private readonly ProductImageDataAccess _imageDataAccess;
+    private IProductImageRepository _imageDataAccess;
     private readonly string _photoDirectory;
+    private readonly object _lockObject = new object();
 
     #endregion
 
@@ -23,8 +27,47 @@ public class ImageCleanupService
 
     public ImageCleanupService()
     {
-        _imageDataAccess = new ProductImageDataAccess();
-        _photoDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PHOTO", "PRODUCTSERVICE");
+        _photoDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, 
+            ApplicationConstants.PHOTO_ROOT_DIRECTORY, 
+            ApplicationConstants.PRODUCTSERVICE_PHOTO_DIRECTORY);
+    }
+
+    #endregion
+
+    #region Helper Methods
+
+    /// <summary>
+    /// Lấy hoặc khởi tạo Repository (lazy initialization)
+    /// </summary>
+    private IProductImageRepository GetDataAccess()
+    {
+        if (_imageDataAccess == null)
+        {
+            lock (_lockObject)
+            {
+                if (_imageDataAccess == null)
+                {
+                    try
+                    {
+                        var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                        if (string.IsNullOrEmpty(globalConnectionString))
+                        {
+                            throw new InvalidOperationException(
+                                "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                        }
+
+                        _imageDataAccess = new ProductImageRepository(globalConnectionString);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException(
+                            "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                    }
+                }
+            }
+        }
+
+        return _imageDataAccess;
     }
 
     #endregion
@@ -283,9 +326,15 @@ public class ImageCleanupService
         try
         {
             // TODO: Implement method to get all image paths from database
-            // Đây là placeholder implementation
+            // Cần thêm method GetAll() hoặc GetAllImagePaths() vào IProductImageRepository
             await Task.CompletedTask;
-            return new List<string>();
+            throw new NotImplementedException(
+                "GetAllImagePathsFromDatabaseAsync chưa được implement. " +
+                "Cần thêm method GetAll() hoặc GetAllImagePaths() vào IProductImageRepository.");
+        }
+        catch (NotImplementedException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -301,9 +350,15 @@ public class ImageCleanupService
         try
         {
             // TODO: Implement method to check if file is referenced in database
-            // Đây là placeholder implementation
+            // Cần thêm method để check file reference trong IProductImageRepository
             await Task.CompletedTask;
-            return false;
+            throw new NotImplementedException(
+                "IsFileReferencedInDatabaseAsync chưa được implement. " +
+                "Cần thêm method để check file reference trong IProductImageRepository.");
+        }
+        catch (NotImplementedException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -319,8 +374,15 @@ public class ImageCleanupService
         try
         {
             // TODO: Implement method to update image path in database
-            // Đây là placeholder implementation
+            // Có thể sử dụng SaveOrUpdate() sau khi tìm ProductImage theo ImagePath
             await Task.CompletedTask;
+            throw new NotImplementedException(
+                "UpdateImagePathInDatabaseAsync chưa được implement. " +
+                "Cần implement logic để tìm ProductImage theo ImagePath và cập nhật.");
+        }
+        catch (NotImplementedException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -329,6 +391,15 @@ public class ImageCleanupService
     }
 
     #endregion
+}
+
+/// <summary>
+/// Exception cho Business Logic Layer
+/// </summary>
+public class BusinessLogicException : Exception
+{
+    public BusinessLogicException(string message) : base(message) { }
+    public BusinessLogicException(string message, Exception innerException) : base(message, innerException) { }
 }
 
 /// <summary>

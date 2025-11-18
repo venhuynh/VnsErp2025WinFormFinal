@@ -5,11 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Common.Utils;
+using DevExpress.Export;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.BandedGrid;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraPrinting;
 
 namespace Common.Helpers;
 
@@ -58,28 +60,21 @@ public static class GridViewHelper
     {
         List<T> selectedValues = [];
 
-        try
+        if (sender is not GridView view || string.IsNullOrEmpty(columnName))
+            return selectedValues;
+
+        var selectedIndex = view.GetSelectedRows();
+
+        foreach (var t in selectedIndex)
         {
-            if (sender is not GridView view || string.IsNullOrEmpty(columnName))
-                return selectedValues;
+            var selectedValue = view.GetRowCellValue(t, columnName);
 
-            var selectedIndex = view.GetSelectedRows();
+            if (selectedValue == null || selectedValue == DBNull.Value) continue;
 
-            foreach (var t in selectedIndex)
+            if (selectedValue is T typedValue)
             {
-                var selectedValue = view.GetRowCellValue(t, columnName);
-
-                if (selectedValue == null || selectedValue == DBNull.Value) continue;
-
-                if (selectedValue is T typedValue)
-                {
-                    selectedValues.Add(typedValue);
-                }
+                selectedValues.Add(typedValue);
             }
-        }
-        catch (Exception ex)
-        {
-            throw;
         }
 
         return selectedValues;
@@ -112,20 +107,12 @@ public static class GridViewHelper
     /// <param name="memoEditor">RepositoryItemMemoEdit (optional, sẽ tạo mới nếu null)</param>
     public static void ApplyMemoEditorToColumn(GridView gridView, string fieldName, RepositoryItemMemoEdit memoEditor = null)
     {
-        try
-        {
-            memoEditor ??= CreateMemoEditor();
+        memoEditor ??= CreateMemoEditor();
             
-            var column = gridView.Columns[fieldName];
-            if (column != null)
-            {
-                column.ColumnEdit = memoEditor;
-            }
-           
-        }
-        catch (Exception ex)
+        var column = gridView.Columns[fieldName];
+        if (column != null)
         {
-            throw;
+            column.ColumnEdit = memoEditor;
         }
     }
 
@@ -135,21 +122,14 @@ public static class GridViewHelper
     /// <param name="gridView">BandedGridView</param>
     /// <param name="fieldName">Tên field của cột</param>
     /// <param name="memoEditor">RepositoryItemMemoEdit (optional, sẽ tạo mới nếu null)</param>
-    public static void ApplyMemoEditorToBandedColumn(BandedGridView gridView, string fieldName, RepositoryItemMemoEdit memoEditor = null)
+    private static void ApplyMemoEditorToBandedColumn(BandedGridView gridView, string fieldName, RepositoryItemMemoEdit memoEditor = null)
     {
-        try
-        {
-            memoEditor ??= CreateMemoEditor();
+        memoEditor ??= CreateMemoEditor();
             
-            var column = gridView.Columns[fieldName];
-            if (column != null)
-            {
-                column.ColumnEdit = memoEditor;
-            }
-        }
-        catch (Exception ex)
+        var column = gridView.Columns[fieldName];
+        if (column != null)
         {
-            throw;
+            column.ColumnEdit = memoEditor;
         }
     }
 
@@ -178,20 +158,13 @@ public static class GridViewHelper
     /// <param name="enableAutoFilter">Có bật auto filter row không</param>
     public static void ConfigureGridViewFilter(GridView gridView, bool enableAutoFilter = true)
     {
-        try
+        if (enableAutoFilter)
         {
-            if (enableAutoFilter)
-            {
-                gridView.OptionsView.ShowAutoFilterRow = true;
-            }
+            gridView.OptionsView.ShowAutoFilterRow = true;
+        }
 
-            // Cấu hình filter cho các cột
-            ConfigureColumnFilters(gridView);
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        // Cấu hình filter cho các cột
+        ConfigureColumnFilters(gridView);
     }
 
     /// <summary>
@@ -199,22 +172,15 @@ public static class GridViewHelper
     /// </summary>
     /// <param name="gridView">BandedGridView</param>
     /// <param name="enableAutoFilter">Có bật auto filter row không</param>
-    public static void ConfigureBandedGridViewFilter(BandedGridView gridView, bool enableAutoFilter = true)
+    private static void ConfigureBandedGridViewFilter(BandedGridView gridView, bool enableAutoFilter = true)
     {
-        try
+        if (enableAutoFilter)
         {
-            if (enableAutoFilter)
-            {
-                gridView.OptionsView.ShowAutoFilterRow = true;
-            }
+            gridView.OptionsView.ShowAutoFilterRow = true;
+        }
 
-            // Cấu hình filter cho các cột
-            ConfigureBandedColumnFilters(gridView);
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        // Cấu hình filter cho các cột
+        ConfigureBandedColumnFilters(gridView);
     }
 
     /// <summary>
@@ -223,16 +189,9 @@ public static class GridViewHelper
     /// <param name="gridView">GridView</param>
     private static void ConfigureColumnFilters(GridView gridView)
     {
-        try
+        foreach (GridColumn column in gridView.Columns)
         {
-            foreach (GridColumn column in gridView.Columns)
-            {
-                ConfigureColumnFilter(column);
-            }
-        }
-        catch (Exception ex)
-        {
-            throw;
+            ConfigureColumnFilter(column);
         }
     }
 
@@ -242,16 +201,9 @@ public static class GridViewHelper
     /// <param name="gridView">BandedGridView</param>
     private static void ConfigureBandedColumnFilters(BandedGridView gridView)
     {
-        try
+        foreach (BandedGridColumn column in gridView.Columns)
         {
-            foreach (BandedGridColumn column in gridView.Columns)
-            {
-                ConfigureColumnFilter(column);
-            }
-        }
-        catch (Exception ex)
-        {
-            throw;
+            ConfigureColumnFilter(column);
         }
     }
 
@@ -261,42 +213,35 @@ public static class GridViewHelper
     /// <param name="column">Cột cần cấu hình</param>
     private static void ConfigureColumnFilter(GridColumn column)
     {
-        try
+        if (column == null) return;
+
+        var fieldType = column.ColumnType;
+
+        // Cấu hình filter dựa trên kiểu dữ liệu
+        if (fieldType == typeof(string))
         {
-            if (column == null) return;
-
-            var fieldType = column.ColumnType;
-
-            // Cấu hình filter dựa trên kiểu dữ liệu
-            if (fieldType == typeof(string))
-            {
-                // Text columns - sử dụng Contains
-                column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
-            }
-            else if (fieldType == typeof(bool))
-            {
-                // Boolean columns - sử dụng Equals
-                column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Equals;
-            }
-            else if (IsNumericType(fieldType))
-            {
-                // Numeric columns - sử dụng GreaterOrEqual
-                column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.GreaterOrEqual;
-            }
-            else if (fieldType == typeof(DateTime))
-            {
-                // DateTime columns - sử dụng Equals
-                column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Equals;
-            }
-            else
-            {
-                // Default - sử dụng Contains
-                column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
-            }
+            // Text columns - sử dụng Contains
+            column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
         }
-        catch (Exception ex)
+        else if (fieldType == typeof(bool))
         {
-            throw;
+            // Boolean columns - sử dụng Equals
+            column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Equals;
+        }
+        else if (IsNumericType(fieldType))
+        {
+            // Numeric columns - sử dụng GreaterOrEqual
+            column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.GreaterOrEqual;
+        }
+        else if (fieldType == typeof(DateTime))
+        {
+            // DateTime columns - sử dụng Equals
+            column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Equals;
+        }
+        else
+        {
+            // Default - sử dụng Contains
+            column.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
         }
     }
 
@@ -330,44 +275,37 @@ public static class GridViewHelper
         bool enableAutoFilter = true,
         bool centerHeaders = true)
     {
-        try
+        if (gridView == null)
         {
-            if (gridView == null)
+            return;
+        }
+
+        // Bật tự động điều chỉnh chiều cao dòng để wrap nội dung
+        gridView.OptionsView.RowAutoHeight = true;
+
+        // RepositoryItemMemoEdit cho wrap text
+        var memo = CreateMemoEditor();
+
+        // Áp dụng cho các cột văn bản
+        if (textColumns != null && textColumns.Any())
+        {
+            foreach (var columnName in textColumns)
             {
-                return;
-            }
-
-            // Bật tự động điều chỉnh chiều cao dòng để wrap nội dung
-            gridView.OptionsView.RowAutoHeight = true;
-
-            // RepositoryItemMemoEdit cho wrap text
-            var memo = CreateMemoEditor();
-
-            // Áp dụng cho các cột văn bản
-            if (textColumns != null && textColumns.Any())
-            {
-                foreach (var columnName in textColumns)
-                {
-                    ApplyMemoEditorToColumn(gridView, columnName, memo);
-                }
-            }
-
-            // Cấu hình filter và search
-            if (enableAutoFilter)
-            {
-                ConfigureGridViewFilter(gridView);
-            }
-
-            // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
-            if (centerHeaders)
-            {
-                gridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
-                gridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
+                ApplyMemoEditorToColumn(gridView, columnName, memo);
             }
         }
-        catch (Exception ex)
+
+        // Cấu hình filter và search
+        if (enableAutoFilter)
         {
-            throw;
+            ConfigureGridViewFilter(gridView);
+        }
+
+        // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
+        if (centerHeaders)
+        {
+            gridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
+            gridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
         }
     }
 
@@ -378,15 +316,8 @@ public static class GridViewHelper
     /// <param name="entityType">Loại entity để áp dụng cấu hình mặc định</param>
     public static void ConfigureMultiLineGridView(GridView gridView, string entityType)
     {
-        try
-        {
-            var textColumns = GetDefaultTextColumns(entityType);
-            ConfigureMultiLineGridView(gridView, textColumns, true, true);
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        var textColumns = GetDefaultTextColumns(entityType);
+        ConfigureMultiLineGridView(gridView, textColumns);
     }
 
     #endregion
@@ -406,48 +337,41 @@ public static class GridViewHelper
         bool enableAutoFilter = true,
         bool centerHeaders = true)
     {
-        try
+        if (gridView == null)
         {
-            if (gridView == null)
-            {
-                return;
-            }
-
-            // Bật tự động điều chỉnh chiều cao dòng để wrap nội dung
-            gridView.OptionsView.RowAutoHeight = true;
-
-            // RepositoryItemMemoEdit cho wrap text
-            var memo = CreateMemoEditor();
-
-            // Áp dụng cho các cột văn bản
-            if (textColumns != null && textColumns.Any())
-            {
-                foreach (var columnName in textColumns)
-                {
-                    ApplyMemoEditorToBandedColumn(gridView, columnName, memo);
-                }
-            }
-
-            // Cấu hình filter và search
-            if (enableAutoFilter)
-            {
-                ConfigureBandedGridViewFilter(gridView);
-            }
-
-            // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
-            if (centerHeaders)
-            {
-                gridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
-                gridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
-            }
-
-            // Tắt ColumnAutoWidth để hiển thị đầy đủ cột
-            gridView.OptionsView.ColumnAutoWidth = false;
+            return;
         }
-        catch (Exception ex)
+
+        // Bật tự động điều chỉnh chiều cao dòng để wrap nội dung
+        gridView.OptionsView.RowAutoHeight = true;
+
+        // RepositoryItemMemoEdit cho wrap text
+        var memo = CreateMemoEditor();
+
+        // Áp dụng cho các cột văn bản
+        if (textColumns != null && textColumns.Any())
         {
-            throw;
+            foreach (var columnName in textColumns)
+            {
+                ApplyMemoEditorToBandedColumn(gridView, columnName, memo);
+            }
         }
+
+        // Cấu hình filter và search
+        if (enableAutoFilter)
+        {
+            ConfigureBandedGridViewFilter(gridView);
+        }
+
+        // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
+        if (centerHeaders)
+        {
+            gridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
+            gridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
+        }
+
+        // Tắt ColumnAutoWidth để hiển thị đầy đủ cột
+        gridView.OptionsView.ColumnAutoWidth = false;
     }
 
     /// <summary>
@@ -457,15 +381,8 @@ public static class GridViewHelper
     /// <param name="entityType">Loại entity để áp dụng cấu hình mặc định</param>
     public static void ConfigureMultiLineBandedGridView(BandedGridView gridView, string entityType)
     {
-        try
-        {
-            var textColumns = GetDefaultTextColumns(entityType);
-            ConfigureMultiLineBandedGridView(gridView, textColumns, true, true);
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        var textColumns = GetDefaultTextColumns(entityType);
+        ConfigureMultiLineBandedGridView(gridView, textColumns);
     }
 
     #endregion
@@ -517,9 +434,9 @@ public static class GridViewHelper
             }
 
             // Export với màu sắc và định dạng
-            var options = new DevExpress.XtraPrinting.XlsxExportOptionsEx
+            var options = new XlsxExportOptionsEx
             {
-                ExportType = DevExpress.Export.ExportType.WYSIWYG,
+                ExportType = ExportType.WYSIWYG,
                 ShowGridLines = true
             };
 
@@ -529,8 +446,8 @@ public static class GridViewHelper
             if (autoOpen && showDialog)
             {
                 var result = MessageBox.Show(
-                    "Xuất file thành công. Bạn có muốn mở file này không?",
-                    "Thông báo",
+                    @"Xuất file thành công. Bạn có muốn mở file này không?",
+                    @"Thông báo",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -539,7 +456,7 @@ public static class GridViewHelper
                     Process.Start(filePath);
                 }
             }
-            else if (autoOpen && !showDialog)
+            else if (autoOpen)
             {
                 Process.Start(filePath);
             }
@@ -548,7 +465,7 @@ public static class GridViewHelper
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Lỗi khi xuất file: {ex.Message}", "Lỗi", 
+            MessageBox.Show($@"Lỗi khi xuất file: {ex.Message}", @"Lỗi", 
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             return null;
         }
@@ -567,7 +484,7 @@ public static class GridViewHelper
             
             if (!string.IsNullOrEmpty(filePath))
             {
-                if (MsgBox.ShowYesNo("Xuất file thành công. Bạn có muốn mở file này không?", "Xác nhận", null))
+                if (MsgBox.ShowYesNo("Xuất file thành công. Bạn có muốn mở file này không?"))
                 {
                     Process.Start(filePath);
                 }

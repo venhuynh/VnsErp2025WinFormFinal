@@ -1,8 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Dal.DataAccess;
+﻿using Common.Appconfig;
+using Common.Utils;
 using Dal.DataAccess.Implementations;
+using Dal.DataAccess.Interfaces;
 using Dal.DataContext;
+using System;
+using System.Threading.Tasks;
 
 namespace Bll.Authentication
 {
@@ -12,19 +14,63 @@ namespace Bll.Authentication
     /// </summary>
     public class LoginBll
     {
-        #region thuocTinhDonGian
-        private readonly ApplicationUserRepository _userDataAccess;
+        #region Fields
+
+        private IApplicationUserRepository _userDataAccess;
+        private readonly object _lockObject = new object();
+
         #endregion
 
-        #region phuongThuc
+        #region Constructors
 
         /// <summary>
         /// Constructor mặc định
         /// </summary>
         public LoginBll()
         {
-            _userDataAccess = new ApplicationUserDataAccess();
         }
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IApplicationUserRepository GetDataAccess()
+        {
+            if (_userDataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_userDataAccess == null)
+                    {
+                        try
+                        {
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _userDataAccess = new ApplicationUserRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _userDataAccess;
+        }
+
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Xác thực đăng nhập user
@@ -58,7 +104,7 @@ namespace Bll.Authentication
                 }
 
                 // Tìm user theo userName
-                var user = _userDataAccess.GetByUserName(userName.Trim());
+                var user = GetDataAccess().GetByUserName(userName.Trim());
                 if (user == null)
                 {
                     return new LoginResult
@@ -144,7 +190,7 @@ namespace Bll.Authentication
                 string hashedPassword = SecurityHelper.HashPassword(password);
                 
                 // Tạo user mới
-                return _userDataAccess.AddNewUser(userName, hashedPassword, active);
+                return GetDataAccess().AddNewUser(userName, hashedPassword, active);
             }
             catch (Exception)
             {

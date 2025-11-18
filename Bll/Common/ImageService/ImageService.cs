@@ -1,3 +1,6 @@
+using Common.Appconfig;
+using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,7 +9,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Bll.MasterData.ProductServiceBll;
 
 namespace Bll.Common.ImageService
 {
@@ -17,11 +19,12 @@ namespace Bll.Common.ImageService
     {
         #region Fields
 
-        private readonly ProductImageDataAccess _imageDataAccess;
+        private IProductImageRepository _imageDataAccess;
         private readonly string _cdnBaseUrl;
         private readonly string _localImagePath;
         private readonly bool _useCdn;
         private readonly Dictionary<string, Image> _memoryCache;
+        private readonly object _lockObject = new object();
 
         #endregion
 
@@ -29,11 +32,48 @@ namespace Bll.Common.ImageService
 
         public ImageService()
         {
-            _imageDataAccess = new ProductImageDataAccess();
             _cdnBaseUrl = GetAppSetting("CdnBaseUrl", "");
             _localImagePath = GetAppSetting("LocalImagePath", "~/Images/");
             _useCdn = bool.Parse(GetAppSetting("UseCdn", "false"));
             _memoryCache = new Dictionary<string, Image>();
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private IProductImageRepository GetDataAccess()
+        {
+            if (_imageDataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_imageDataAccess == null)
+                    {
+                        try
+                        {
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _imageDataAccess = new ProductImageRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _imageDataAccess;
         }
 
         #endregion
@@ -83,7 +123,7 @@ namespace Bll.Common.ImageService
                 }
 
                 // Lấy dữ liệu hình ảnh từ database
-                var imageData = _imageDataAccess.GetImageData(imageId);
+                var imageData = GetDataAccess().GetImageData(imageId);
                 if (imageData == null || imageData.Length == 0)
                 {
                     return null;
@@ -327,5 +367,14 @@ namespace Bll.Common.ImageService
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Exception cho Business Logic Layer
+    /// </summary>
+    public class BusinessLogicException : Exception
+    {
+        public BusinessLogicException(string message) : base(message) { }
+        public BusinessLogicException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

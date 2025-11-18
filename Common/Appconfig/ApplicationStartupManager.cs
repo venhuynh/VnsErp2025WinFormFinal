@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Common.Appconfig;
+﻿namespace Common.Appconfig;
 
 /// <summary>
 /// Manager quản lý quá trình khởi động ứng dụng.
@@ -11,7 +9,7 @@ public sealed class ApplicationStartupManager
     #region Singleton Pattern
 
     private static volatile ApplicationStartupManager _instance;
-    private static readonly object _lock = new object();
+    private static readonly object Lock = new object();
 
     private ApplicationStartupManager()
     {
@@ -26,7 +24,7 @@ public sealed class ApplicationStartupManager
         {
             if (_instance == null)
             {
-                lock (_lock)
+                lock (Lock)
                 {
                     if (_instance == null)
                     {
@@ -45,7 +43,7 @@ public sealed class ApplicationStartupManager
     /// <summary>
     /// Flag đánh dấu đã khởi tạo hay chưa
     /// </summary>
-    private bool _isInitialized = false;
+    private bool _isInitialized;
 
     /// <summary>
     /// Lock object để đảm bảo thread safety
@@ -93,31 +91,24 @@ public sealed class ApplicationStartupManager
                 return true;
             }
 
-            try
+            // Bước 1: Khởi tạo DatabaseConnectionManager
+            if (!DatabaseConnectionManager.Instance.Initialize())
             {
-                // Bước 1: Khởi tạo DatabaseConnectionManager
-                if (!DatabaseConnectionManager.Instance.Initialize())
-                {
-                    return false;
-                }
-
-                // Bước 2: Kiểm tra kết nối database
-                if (!DatabaseConnectionManager.Instance.TestConnection())
-                {
-                    return false;
-                }
-
-                // Bước 3: Khởi tạo các manager khác (nếu có)
-                InitializeOtherManagers();
-
-                _isInitialized = true;
-
-                return true;
+                return false;
             }
-            catch (Exception ex)
+
+            // Bước 2: Kiểm tra kết nối database
+            if (!DatabaseConnectionManager.Instance.TestConnection())
             {
-                throw;
+                return false;
             }
+
+            // Bước 3: Khởi tạo các manager khác (nếu có)
+            InitializeOtherManagers();
+
+            _isInitialized = true;
+
+            return true;
         }
     }
 
@@ -140,31 +131,24 @@ public sealed class ApplicationStartupManager
                 return true;
             }
 
-            try
+            // Bước 1: Khởi tạo DatabaseConnectionManager với config tùy chỉnh
+            if (!DatabaseConnectionManager.Instance.Initialize(customDbConfig))
             {
-                // Bước 1: Khởi tạo DatabaseConnectionManager với config tùy chỉnh
-                if (!DatabaseConnectionManager.Instance.Initialize(customDbConfig))
-                {
-                    return false;
-                }
-
-                // Bước 2: Kiểm tra kết nối database
-                if (!DatabaseConnectionManager.Instance.TestConnection())
-                {
-                    return false;
-                }
-
-                // Bước 3: Khởi tạo các manager khác (nếu có)
-                InitializeOtherManagers();
-
-                _isInitialized = true;
-
-                return true;
+                return false;
             }
-            catch (Exception ex)
+
+            // Bước 2: Kiểm tra kết nối database
+            if (!DatabaseConnectionManager.Instance.TestConnection())
             {
-                throw;
+                return false;
             }
+
+            // Bước 3: Khởi tạo các manager khác (nếu có)
+            InitializeOtherManagers();
+
+            _isInitialized = true;
+
+            return true;
         }
     }
 
@@ -214,15 +198,8 @@ public sealed class ApplicationStartupManager
     /// </summary>
     private void InitializeOtherManagers()
     {
-        try
-        {
-            // TODO: Khởi tạo các manager khác ở đây
-            // Ví dụ: UserManager, CacheManager, etc.
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        // TODO: Khởi tạo các manager khác ở đây
+        // Ví dụ: UserManager, CacheManager, etc.
     }
 
     /// <summary>
@@ -243,25 +220,18 @@ public sealed class ApplicationStartupManager
                 return true;
             }
 
-            try
+            // Bước 1: Khởi tạo DatabaseConnectionManager (đã test connection)
+            if (!DatabaseConnectionManager.Instance.Initialize())
             {
-                // Bước 1: Khởi tạo DatabaseConnectionManager (đã test connection)
-                if (!DatabaseConnectionManager.Instance.Initialize())
-                {
-                    return false;
-                }
-
-                // Bước 2: Khởi tạo các manager khác (nếu có)
-                InitializeOtherManagers();
-
-                _isInitialized = true;
-
-                return true;
+                return false;
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            // Bước 2: Khởi tạo các manager khác (nếu có)
+            InitializeOtherManagers();
+
+            _isInitialized = true;
+
+            return true;
         }
     }
 

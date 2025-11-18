@@ -8,7 +8,7 @@ namespace Logger.Implementations;
 /// <summary>
 /// Implementation chính của ILogger
 /// </summary>
-public class Logger : ILogger, ILogger
+public class Logger : ILogger
 {
     #region Fields
 

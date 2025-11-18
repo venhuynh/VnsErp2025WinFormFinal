@@ -37,7 +37,7 @@ public static class GridViewColumnHelper
             }
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -72,7 +72,7 @@ public static class GridViewColumnHelper
             // Thiết lập chiều rộng cột theo loại
             SetBasicColumnWidth(column, columnName);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -215,7 +215,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -254,7 +254,7 @@ public static class GridViewColumnHelper
             // Thiết lập chiều rộng cột
             column.Width = columnWidth;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -336,7 +336,7 @@ public static class GridViewColumnHelper
                     break;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -383,7 +383,7 @@ public static class GridViewColumnHelper
                     break;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -407,7 +407,7 @@ public static class GridViewColumnHelper
                 e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -449,7 +449,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -470,7 +470,7 @@ public static class GridViewColumnHelper
             gridView.BestFitColumns();
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -496,7 +496,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -522,7 +522,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -580,7 +580,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -630,7 +630,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -828,7 +828,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -880,7 +880,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -920,7 +920,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -964,7 +964,7 @@ public static class GridViewColumnHelper
 
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
