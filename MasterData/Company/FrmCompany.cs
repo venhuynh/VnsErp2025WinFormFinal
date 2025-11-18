@@ -165,8 +165,9 @@ namespace MasterData.Company
                     
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                MsgBox.ShowException(ex);
             }
         }
 
@@ -186,7 +187,7 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                // ignored
+                MsgBox.ShowException(ex);
             }
         }
 
@@ -201,9 +202,8 @@ namespace MasterData.Company
         {
             try
             {
-                
                 // Lấy thông tin công ty hiện tại
-                if (_companyBll.GetCompany() is Dal.DataContext.Company company)
+                if (_companyBll.GetCompany() is { } company)
                 {
                     // Cập nhật logo
                     company.Logo = logoBytes != null ? new System.Data.Linq.Binary(logoBytes) : null;
@@ -233,7 +233,7 @@ namespace MasterData.Company
             {
                 
                 // Lấy thông tin công ty hiện tại
-                if (_companyBll.GetCompany() is Dal.DataContext.Company company)
+                if (_companyBll.GetCompany() is { } company)
                 {
                     // Xóa logo
                     company.Logo = null;
@@ -382,7 +382,7 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                // ignored
+                MsgBox.ShowException(ex);
             }
         }
 

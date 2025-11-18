@@ -63,7 +63,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmNhapKhoThuongMai02());
+            Application.Run(new FormMain());
 
             #endregion
 
