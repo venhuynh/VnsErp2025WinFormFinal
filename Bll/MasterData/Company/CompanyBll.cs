@@ -1,6 +1,11 @@
-﻿using Dal.Logging;
-using System;
+﻿using Common.Appconfig;
 using Dal.DataAccess.Implementations.MasterData.Company;
+using System;
+using Dal.DataAccess.Interfaces.MasterData.Company;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
+using Dal.DataContext;
 
 namespace Bll.MasterData.Company
 {
@@ -9,21 +14,67 @@ namespace Bll.MasterData.Company
     /// </summary>
     public class CompanyBll
     {
-        private readonly ICompanyRepository _companyDataAccess;
+        #region Fields
+
+        private ICompanyRepository _dataAccess;
         private readonly ILogger _logger;
+        private readonly object _lockObject = new object();
 
-        public CompanyBll(ILogger logger = null)
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor mặc định
+        /// </summary>
+        public CompanyBll()
         {
-            _logger = logger ?? new NullLogger();
-            _companyDataAccess = new CompanyDataAccess(_logger);
+            // Khởi tạo logger trước để đảm bảo không null trong khối catch
+            _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
+            // Repository sẽ được khởi tạo lazy khi cần sử dụng
         }
 
-        public CompanyBll(string connectionString, ILogger logger = null)
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo Repository (lazy initialization)
+        /// </summary>
+        private ICompanyRepository GetDataAccess()
         {
-            _logger = logger ?? new NullLogger();
-            _companyDataAccess = new CompanyDataAccess(connectionString, _logger);
+            if (_dataAccess == null)
+            {
+                lock (_lockObject)
+                {
+                    if (_dataAccess == null)
+                    {
+                        try
+                        {
+                            // Sử dụng global connection string từ ApplicationStartupManager
+                            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+                            if (string.IsNullOrEmpty(globalConnectionString))
+                            {
+                                throw new InvalidOperationException(
+                                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            }
+
+                            _dataAccess = new CompanyRepository(globalConnectionString);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error("Lỗi khi khởi tạo CompanyRepository: {0}", ex, ex.Message);
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _dataAccess;
         }
 
+        #endregion
         /// <summary>
         /// Đảm bảo chỉ có 1 công ty trong database
         /// </summary>
@@ -31,13 +82,13 @@ namespace Bll.MasterData.Company
         {
             try
             {
-                _logger?.LogInfo("Bắt đầu đảm bảo chỉ có 1 công ty trong database");
-                _companyDataAccess.EnsureDefaultCompany();
-                _logger?.LogInfo("Hoàn thành đảm bảo chỉ có 1 công ty trong database");
+                _logger?.Info("Bắt đầu đảm bảo chỉ có 1 công ty trong database");
+                GetDataAccess().EnsureDefaultCompany();
+                _logger?.Info("Hoàn thành đảm bảo chỉ có 1 công ty trong database");
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi đảm bảo chỉ có 1 công ty: {ex.Message}", ex);
+                _logger?.Error($"Lỗi khi đảm bảo chỉ có 1 công ty: {ex.Message}", ex);
                 throw;
             }
         }
@@ -46,19 +97,20 @@ namespace Bll.MasterData.Company
         /// Lấy thông tin công ty từ database
         /// </summary>
         /// <returns>Company entity</returns>
-        public object GetCompany()
+        public Company GetCompany()
         {
             try
             {
-                _logger?.LogInfo("Bắt đầu lấy thông tin công ty từ database");
-                _companyDataAccess.EnsureDefaultCompany();
-                var company = _companyDataAccess.GetCompany();
-                _logger?.LogInfo("Hoàn thành lấy thông tin công ty từ database");
+                _logger?.Info("Bắt đầu lấy thông tin công ty từ database");
+                var dataAccess = GetDataAccess();
+                dataAccess.EnsureDefaultCompany();
+                var company = dataAccess.GetCompany();
+                _logger?.Info("Hoàn thành lấy thông tin công ty từ database");
                 return company;
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi lấy thông tin công ty: {ex.Message}", ex);
+                _logger?.Error($"Lỗi khi lấy thông tin công ty: {ex.Message}", ex);
                 throw;
             }
         }
@@ -67,17 +119,17 @@ namespace Bll.MasterData.Company
         /// Cập nhật thông tin công ty
         /// </summary>
         /// <param name="company">Company entity cần cập nhật</param>
-        public void UpdateCompany(object company)
+        public void UpdateCompany(Company company)
         {
             try
             {
-                _logger?.LogInfo("Bắt đầu cập nhật thông tin công ty");
-                _companyDataAccess.UpdateCompany(company);
-                _logger?.LogInfo("Hoàn thành cập nhật thông tin công ty");
+                _logger?.Info("Bắt đầu cập nhật thông tin công ty");
+                GetDataAccess().UpdateCompany(company);
+                _logger?.Info("Hoàn thành cập nhật thông tin công ty");
             }
             catch (Exception ex)
             {
-                _logger?.LogError($"Lỗi khi cập nhật thông tin công ty: {ex.Message}", ex);
+                _logger?.Error($"Lỗi khi cập nhật thông tin công ty: {ex.Message}", ex);
                 throw;
             }
         }
@@ -87,7 +139,7 @@ namespace Bll.MasterData.Company
         /// </summary>
         public void Dispose()
         {
-            _companyDataAccess?.Dispose();
+            _dataAccess?.Dispose();
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿using Common.Appconfig;
-using Dal.DataAccess.Implementations.MasterData.Company;
-using Dal.DataAccess.Implementations.MasterData.Partner;
 using Dal.DataAccess.Interfaces;
-using Dal.DataAccess.Interfaces.MasterData.Company;
-using Dal.DataAccess.Interfaces.MasterData.Partner;
 using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
 using System;
 using System.Data;
+using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
+using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using CustomLogger = Logger.Interfaces.ILogger;
 

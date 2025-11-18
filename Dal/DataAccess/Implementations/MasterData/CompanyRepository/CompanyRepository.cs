@@ -1,15 +1,14 @@
-﻿using Dal.DataAccess.Interfaces.MasterData.Company;
+﻿using System;
+using System.Data.Linq;
+using System.Linq;
+using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataContext;
 using Dal.Exceptions;
 using Logger;
 using Logger.Configuration;
-using Logger.Interfaces;
-using System;
-using System.Data.Linq;
-using System.Linq;
 using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess.Implementations.MasterData.Company;
+namespace Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 
 /// <summary>
 /// Data Access cho thực thể Company (LINQ to SQL trên DataContext).
@@ -88,7 +87,7 @@ public class CompanyRepository : ICompanyRepository
                 _logger.Info("Không tìm thấy công ty nào, tạo công ty mặc định");
                 
                 // Tạo công ty mặc định
-                var defaultCompany = new Company
+                var defaultCompany = new DataContext.Company
                 {
                     Id = Guid.NewGuid(),
                     CompanyCode = "VNS001",

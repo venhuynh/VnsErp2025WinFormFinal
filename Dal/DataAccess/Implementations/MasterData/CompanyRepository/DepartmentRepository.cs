@@ -1,18 +1,17 @@
-using Dal.DataAccess.Interfaces.MasterData.Company;
-using Dal.DataContext;
-using Dal.Exceptions;
-using Logger;
-using Logger.Configuration;
-using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using Dal.DataContext;
+using Dal.Exceptions;
+using Logger;
+using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess.Implementations.MasterData.Company;
+namespace Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 
 /// <summary>
 /// Data Access Layer cho Department

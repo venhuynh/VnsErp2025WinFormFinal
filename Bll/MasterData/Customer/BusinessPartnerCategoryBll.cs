@@ -3,7 +3,7 @@ using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataAccess.Implementations.MasterData.Partner;
+using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 
 namespace Bll.MasterData.Customer
 {

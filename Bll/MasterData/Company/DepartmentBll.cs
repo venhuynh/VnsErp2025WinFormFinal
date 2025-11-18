@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataAccess.Implementations.MasterData.Company;
+using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 
 namespace Bll.MasterData.Company
 {

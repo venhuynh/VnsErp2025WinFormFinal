@@ -1,7 +1,7 @@
 ﻿using Dal.DataContext;
 using System;
-using Dal.DataAccess.Interfaces.MasterData.Company;
-using Dal.DataAccess.Interfaces.MasterData.Partner;
+using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 
 namespace Dal.DataAccess.Interfaces;
@@ -60,7 +60,7 @@ public interface IUnitOfWork : IDisposable
     /// Lấy repository để quản lý dữ liệu chi nhánh công ty.
     /// </summary>
     /// <returns>
-    /// Một thể hiện của <see cref="Dal.DataAccess.Interfaces.MasterData.Company.ICompanyBranchRepository"/> 
+    /// Một thể hiện của <see cref="ICompanyBranchRepository"/> 
     /// cung cấp các phương thức truy cập dữ liệu cho chi nhánh công ty.
     /// </returns>
     ICompanyBranchRepository GetCompanyBranchRepository();
@@ -78,7 +78,7 @@ public interface IUnitOfWork : IDisposable
     /// Lấy đối tượng truy cập dữ liệu cho thực thể công ty.
     /// </summary>
     /// <returns>
-    /// Một thể hiện của <see cref="Dal.DataAccess.Interfaces.MasterData.Company.ICompanyRepository"/> 
+    /// Một thể hiện của <see cref="ICompanyRepository"/> 
     /// cung cấp các phương thức truy cập dữ liệu cho thực thể công ty.
     /// </returns>
     ICompanyRepository GetCompanyRepository();
@@ -87,7 +87,7 @@ public interface IUnitOfWork : IDisposable
     /// Lấy đối tượng truy cập dữ liệu để quản lý dữ liệu phòng ban.
     /// </summary>
     /// <returns>
-    /// Một thể hiện của <see cref="Dal.DataAccess.Interfaces.MasterData.Company.IDepartmentRepository"/> 
+    /// Một thể hiện của <see cref="IDepartmentRepository"/> 
     /// cung cấp các phương thức để truy cập dữ liệu phòng ban.
     /// </returns>
     IDepartmentRepository GetDepartmentRepository();

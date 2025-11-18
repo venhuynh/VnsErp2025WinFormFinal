@@ -1,7 +1,6 @@
 ﻿using Dal.DataContext;
-using System;
 
-namespace Dal.DataAccess.Interfaces.MasterData.Company;
+namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 
 /// <summary>
 /// Data Access cho thực thể Company (LINQ to SQL trên DataContext).

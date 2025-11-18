@@ -1,17 +1,17 @@
-﻿using Dal.DataAccess.Interfaces.MasterData.Partner;
-using Dal.DataContext;
-using Dal.Exceptions;
-using Logger;
-using Logger.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
+using Dal.DataContext;
+using Dal.Exceptions;
+using Logger;
+using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess.Implementations.MasterData.Partner;
+namespace Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 
 /// <summary>
 /// Data Access cho thực thể BusinessPartner (LINQ to SQL trên VnsErp2025DataContext).

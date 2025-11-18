@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dal.DataContext;
 
-namespace Dal.DataAccess.Interfaces.MasterData.Company
+namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
 {
     /// <summary>
     /// Interface cho Data Access Layer quản lý chi nhánh công ty.
