@@ -351,17 +351,53 @@ namespace MasterData.Customer
                 }
 
                 
-                if (MsgBox.ShowYesNo($"Bạn có chắc chắn muốn xóa {_selectedContactIds.Count} liên hệ đã chọn?")) return;
+                if (!MsgBox.ShowYesNo($"Bạn có chắc chắn muốn xóa {_selectedContactIds.Count} liên hệ đã chọn?")) return;
 
                 await ExecuteWithWaitingFormAsync(async () =>
                 {
+                    var deletedCount = 0;
+                    var failedCount = 0;
+                    var failedIds = new List<Guid>();
+
                     foreach (var id in _selectedContactIds.ToList())
                     {
-                        _contactBll.Delete(id);
+                        try
+                        {
+                            var result = _contactBll.Delete(id);
+                            if (result)
+                            {
+                                deletedCount++;
+                            }
+                            else
+                            {
+                                failedCount++;
+                                failedIds.Add(id);
+                            }
+                        }
+                        catch (Exception deleteEx)
+                        {
+                            failedCount++;
+                            failedIds.Add(id);
+                            System.Diagnostics.Debug.WriteLine($"Lỗi khi xóa contact {id}: {deleteEx.Message}");
+                        }
                     }
 
                     ClearSelectionState();
                     await LoadDataAsyncWithoutSplash();
+
+                    // Hiển thị kết quả
+                    if (failedCount == 0)
+                    {
+                        MsgBox.ShowSuccess($"Đã xóa thành công {deletedCount} liên hệ.");
+                    }
+                    else if (deletedCount > 0)
+                    {
+                        MsgBox.ShowWarning($"Đã xóa thành công {deletedCount} liên hệ. Không thể xóa {failedCount} liên hệ.");
+                    }
+                    else
+                    {
+                        MsgBox.ShowError($"Không thể xóa {failedCount} liên hệ. Vui lòng kiểm tra log để biết chi tiết.");
+                    }
                 });
             }
             catch (Exception ex)

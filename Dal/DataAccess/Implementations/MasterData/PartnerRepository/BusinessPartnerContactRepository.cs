@@ -248,21 +248,50 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
         {
             using var context = CreateNewContext();
             var entity = context.BusinessPartnerContacts.FirstOrDefault(c => c.Id == id);
-            if (entity != null)
+            if (entity == null)
             {
-                context.BusinessPartnerContacts.DeleteOnSubmit(entity);
+                _logger.Warning($"Không tìm thấy BusinessPartnerContact để xóa: {id}");
+                return false;
+            }
+
+            var entityName = entity.FullName;
+            var entityId = entity.Id;
+            
+            _logger.Debug($"Bắt đầu xóa BusinessPartnerContact: {entityId} - {entityName}");
+            
+            // DeleteOnSubmit và SubmitChanges
+            context.BusinessPartnerContacts.DeleteOnSubmit(entity);
+            
+            try
+            {
                 context.SubmitChanges();
+                _logger.Info($"Đã xóa BusinessPartnerContact thành công: {entityId} - {entityName}");
                 
-                _logger.Info($"Đã xóa BusinessPartnerContact: {id} - {entity.FullName}");
+                // Verify deletion bằng cách query lại
+                using var verifyContext = CreateNewContext();
+                var verifyEntity = verifyContext.BusinessPartnerContacts.FirstOrDefault(c => c.Id == id);
+                if (verifyEntity != null)
+                {
+                    _logger.Error($"Xóa BusinessPartnerContact không thành công - Entity vẫn còn trong database: {entityId} - {entityName}");
+                    return false;
+                }
+                
+                _logger.Debug($"Đã xác nhận xóa BusinessPartnerContact: {entityId} - {entityName}");
                 return true;
             }
-            
-            _logger.Warning($"Không tìm thấy BusinessPartnerContact để xóa: {id}");
-            return false;
+            catch (SqlException sqlEx)
+            {
+                _logger.Error($"Lỗi SQL khi SubmitChanges xóa BusinessPartnerContact: {sqlEx.Message} (Error Number: {sqlEx.Number})", sqlEx);
+                throw new DataAccessException($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message}", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
         }
         catch (SqlException sqlEx)
         {
-            _logger.Error($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message}", sqlEx);
+            _logger.Error($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message} (Error Number: {sqlEx.Number})", sqlEx);
             throw new DataAccessException($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message}", sqlEx)
             {
                 SqlErrorNumber = sqlEx.Number,

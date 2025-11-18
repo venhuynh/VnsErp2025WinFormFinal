@@ -90,7 +90,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmBusinessPartnerCategory());
+            Application.Run(new FormMain());
 
             #endregion
 
