@@ -130,34 +130,37 @@ public class StockInDetailDto
     [DisplayName("VAT (%)")]
     [Display(Order = 23)]
     [Range(0, 100, ErrorMessage = "VAT phải từ 0 đến 100")]
-    public decimal Vat { get; set; }
+    public decimal Vat { get; set; } = 8;
 
     /// <summary>
-    /// Số tiền VAT
-    /// Map với: StockInOutDetail.VatAmount
-    /// </summary>
-    [DisplayName("Số tiền VAT")]
-    [Display(Order = 24)]
-    [Range(0, double.MaxValue, ErrorMessage = "Số tiền VAT phải lớn hơn hoặc bằng 0")]
-    public decimal VatAmount { get; set; }
-
-    /// <summary>
-    /// Tổng tiền (chưa VAT)
-    /// Map với: StockInOutDetail.TotalAmount
+    /// Tổng tiền (chưa VAT) - Computed property
+    /// Tính toán: StockInQty * UnitPrice
+    /// Map với: StockInOutDetail.TotalAmount (lưu vào DB khi save)
     /// </summary>
     [DisplayName("Tổng tiền")]
     [Display(Order = 25)]
     [Range(0, double.MaxValue, ErrorMessage = "Tổng tiền phải lớn hơn hoặc bằng 0")]
-    public decimal TotalAmount { get; set; }
+    public decimal TotalAmount => StockInQty * UnitPrice;
 
     /// <summary>
-    /// Tổng tiền bao gồm VAT
-    /// Map với: StockInOutDetail.TotalAmountIncludedVat
+    /// Số tiền VAT - Computed property
+    /// Tính toán: TotalAmount * (Vat / 100)
+    /// Map với: StockInOutDetail.VatAmount (lưu vào DB khi save)
+    /// </summary>
+    [DisplayName("Số tiền VAT")]
+    [Display(Order = 24)]
+    [Range(0, double.MaxValue, ErrorMessage = "Số tiền VAT phải lớn hơn hoặc bằng 0")]
+    public decimal VatAmount => TotalAmount * (Vat / 100);
+
+    /// <summary>
+    /// Tổng tiền bao gồm VAT - Computed property
+    /// Tính toán: TotalAmount + VatAmount
+    /// Map với: StockInOutDetail.TotalAmountIncludedVat (lưu vào DB khi save)
     /// </summary>
     [DisplayName("Tổng tiền gồm VAT")]
     [Display(Order = 26)]
     [Range(0, double.MaxValue, ErrorMessage = "Tổng tiền gồm VAT phải lớn hơn hoặc bằng 0")]
-    public decimal TotalAmountIncludedVat { get; set; }
+    public decimal TotalAmountIncludedVat => TotalAmount + VatAmount;
 
     #endregion
 }

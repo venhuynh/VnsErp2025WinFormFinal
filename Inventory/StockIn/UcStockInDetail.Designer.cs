@@ -34,6 +34,7 @@
             this.StockInDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
+            this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -45,14 +46,13 @@
             this.colVatAmount = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTotalAmount = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTotalAmountIncludedVat = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockInDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantDtoSearchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductFullNameHypertextLabel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // StockInDetailDtoGridControl
@@ -121,8 +121,6 @@
             this.colProductVariantCode.ColumnEdit = this.ProductVariantSearchLookUpEdit;
             this.colProductVariantCode.FieldName = "ProductVariantId";
             this.colProductVariantCode.Name = "colProductVariantCode";
-            this.colProductVariantCode.OptionsColumn.AllowEdit = true;
-            this.colProductVariantCode.OptionsColumn.ReadOnly = false;
             this.colProductVariantCode.Visible = true;
             this.colProductVariantCode.VisibleIndex = 0;
             this.colProductVariantCode.Width = 200;
@@ -130,7 +128,6 @@
             // ProductVariantSearchLookUpEdit
             // 
             this.ProductVariantSearchLookUpEdit.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.ProductVariantSearchLookUpEdit.AutoHeight = false;
             this.ProductVariantSearchLookUpEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ProductVariantSearchLookUpEdit.DataSource = this.productVariantListDtoBindingSource;
@@ -142,6 +139,10 @@
             this.ProductVariantSearchLookUpEdit.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.ProductFullNameHypertextLabel});
             this.ProductVariantSearchLookUpEdit.ValueMember = "Id";
+            // 
+            // productVariantListDtoBindingSource
+            // 
+            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantListDto);
             // 
             // ProductVariantDtoSearchLookUpEdit1View
             // 
@@ -387,10 +388,6 @@
             this.colTotalAmountIncludedVat.VisibleIndex = 8;
             this.colTotalAmountIncludedVat.Width = 150;
             // 
-            // productVariantListDtoBindingSource
-            // 
-            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantListDto);
-            // 
             // UcStockInDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -402,9 +399,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.stockInDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantDtoSearchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductFullNameHypertextLabel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
