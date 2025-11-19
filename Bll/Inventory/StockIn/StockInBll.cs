@@ -160,5 +160,35 @@ namespace Bll.Inventory.StockIn
         }
 
         #endregion
+
+        #region Query Operations
+
+        /// <summary>
+        /// Lấy số thứ tự tiếp theo cho phiếu nhập kho
+        /// </summary>
+        /// <param name="stockInDate">Ngày nhập kho</param>
+        /// <param name="loaiNhapKho">Loại nhập kho</param>
+        /// <returns>Số thứ tự tiếp theo (1-999)</returns>
+        public int GetNextSequenceNumber(DateTime stockInDate, LoaiNhapKhoEnum loaiNhapKho)
+        {
+            try
+            {
+                _logger.Debug("GetNextSequenceNumber: Date={0}, LoaiNhapKho={1}", stockInDate, loaiNhapKho);
+                
+                var loaiNhapKhoInt = (int)loaiNhapKho;
+                var nextSequence = GetDataAccess().GetNextSequenceNumber(stockInDate, loaiNhapKhoInt);
+                
+                _logger.Debug("GetNextSequenceNumber: NextSequence={0}", nextSequence);
+                return nextSequence;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"GetNextSequenceNumber: Lỗi lấy số thứ tự tiếp theo: {ex.Message}", ex);
+                // Fallback: trả về 1 nếu có lỗi
+                return 1;
+            }
+        }
+
+        #endregion
     }
 }

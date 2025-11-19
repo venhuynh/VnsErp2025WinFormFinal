@@ -224,5 +224,72 @@ public class StockInRepository : IStockInRepository
         _logger.Debug("SaveDetails: Đã chuẩn bị {0} detail entities để insert", detailEntities.Count);
     }
 
+    /// <summary>
+    /// Lấy số thứ tự tiếp theo cho phiếu nhập kho
+    /// </summary>
+    /// <param name="stockInDate">Ngày nhập kho</param>
+    /// <param name="loaiNhapKho">Loại nhập kho (StockInOutType)</param>
+    /// <returns>Số thứ tự tiếp theo (1-999)</returns>
+    public int GetNextSequenceNumber(DateTime stockInDate, int loaiNhapKho)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+
+            // Tạo pattern để tìm: PNK-MMYY-NNXXX
+            var month = stockInDate.Month.ToString("D2"); // MM
+            var year = stockInDate.Year.ToString().Substring(2); // YY (2 ký tự cuối)
+            var loaiNhapKhoIndex = loaiNhapKho.ToString("D2"); // NN (2 ký tự)
+            var pattern = $"PNK-{month}{year}-{loaiNhapKhoIndex}%"; // PNK-MMYY-NN%
+
+            _logger.Debug("GetNextSequenceNumber: Tìm pattern={0}, Date={1}, LoaiNhapKho={2}", 
+                pattern, stockInDate, loaiNhapKho);
+
+            // Tìm tất cả các phiếu nhập kho có pattern tương ứng trong cùng tháng/năm
+            var matchingVouchers = context.StockInOutMasters
+                .Where(m => m.VocherNumber.StartsWith($"PNK-{month}{year}-{loaiNhapKhoIndex}") &&
+                           m.StockInOutDate.Year == stockInDate.Year &&
+                           m.StockInOutDate.Month == stockInDate.Month &&
+                           m.StockInOutType == loaiNhapKho)
+                .Select(m => m.VocherNumber)
+                .ToList();
+
+            if (!matchingVouchers.Any())
+            {
+                _logger.Debug("GetNextSequenceNumber: Không tìm thấy phiếu nào với pattern={0}, trả về 1", pattern);
+                return 1;
+            }
+
+            // Extract số thứ tự từ các mã phiếu (3 ký tự cuối)
+            var maxSequence = 0;
+            foreach (var voucherNumber in matchingVouchers)
+            {
+                // Format: PNK-MMYY-NNXXX
+                // Lấy 3 ký tự cuối (XXX)
+                if (voucherNumber.Length >= 3)
+                {
+                    var sequencePart = voucherNumber.Substring(voucherNumber.Length - 3);
+                    if (int.TryParse(sequencePart, out var sequence))
+                    {
+                        maxSequence = Math.Max(maxSequence, sequence);
+                    }
+                }
+            }
+
+            // Trả về số tiếp theo, nhưng không vượt quá 999
+            var nextSequence = Math.Min(maxSequence + 1, 999);
+            _logger.Debug("GetNextSequenceNumber: Pattern={0}, MaxSequence={1}, NextSequence={2}", 
+                pattern, maxSequence, nextSequence);
+            
+            return nextSequence;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetNextSequenceNumber: Lỗi lấy số thứ tự tiếp theo: {ex.Message}", ex);
+            // Fallback: trả về 1 nếu có lỗi
+            return 1;
+        }
+    }
+
     #endregion
 }

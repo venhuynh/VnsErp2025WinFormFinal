@@ -34,6 +34,12 @@ namespace Inventory.StockIn
         /// </summary>
         private Guid _currentStockInId = Guid.Empty;
 
+        /// <summary>
+        /// Flag đánh dấu đang trong quá trình đóng form sau khi lưu thành công
+        /// Dùng để tránh hỏi lại khi Close() được gọi từ BeginInvoke
+        /// </summary>
+        private bool _isClosingAfterSave;
+
         #endregion
 
         #region ========== CONSTRUCTOR ==========
@@ -158,6 +164,7 @@ namespace Inventory.StockIn
         private void MarkAsSaved()
         {
             _hasUnsavedChanges = false;
+            _isClosingAfterSave = false; // Reset flag khi đánh dấu đã lưu
             _logger.Debug("MarkAsSaved: Form marked as saved");
         }
 
@@ -341,33 +348,105 @@ namespace Inventory.StockIn
         /// <summary>
         /// Event handler khi form đang đóng
         /// </summary>
-        private void FrmNhapKhoThuongMai02_FormClosing(object sender, FormClosingEventArgs e)
+        private async void FrmNhapKhoThuongMai02_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
-                _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: Form closing, HasUnsavedChanges={0}", _hasUnsavedChanges);
+                _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: Form closing, HasUnsavedChanges={0}, IsClosingAfterSave={1}", 
+                    _hasUnsavedChanges, _isClosingAfterSave);
+
+                // Nếu đang trong quá trình đóng sau khi lưu thành công, cho phép đóng luôn
+                if (_isClosingAfterSave)
+                {
+                    _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: Closing after save, allowing close");
+                    e.Cancel = false;
+                    return;
+                }
 
                 // Kiểm tra có thay đổi chưa lưu không
                 if (_hasUnsavedChanges)
                 {
-                    var confirm = MsgBox.ShowYesNo(
-                        "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn đóng form?",
+                    // Hỏi lần 1: Có muốn lưu và đóng không?
+                    var saveAndClose = MsgBox.ShowYesNo(
+                        "Bạn có thay đổi chưa lưu. Bạn có muốn lưu và đóng form?",
                         "Xác nhận đóng",
-                        this);
+                        this,
+                        yesButtonText: "Lưu và đóng",
+                        noButtonText: "Đóng không lưu");
                     
-                    _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User confirmation result={0}", confirm);
+                    _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: Save and close result={0}", saveAndClose);
                     
-                    if (!confirm)
+                    if (saveAndClose)
                     {
-                        // Người dùng chọn "Không" - không muốn đóng, cancel việc đóng form
+                        // Người dùng chọn "Lưu và đóng"
+                        // Cancel việc đóng form tạm thời để lưu dữ liệu
                         e.Cancel = true;
-                        _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User cancelled closing, form will remain open");
+                        
+                        try
+                        {
+                            _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User chose to save and close, starting save operation");
+                            
+                            // Lưu dữ liệu
+                            var saveSuccess = await SaveDataAsync();
+                            
+                            if (saveSuccess)
+                            {
+                                // Lưu thành công, đánh dấu đã lưu và chuẩn bị đóng form
+                                _logger.Info("FrmNhapKhoThuongMai02_FormClosing: Save successful, closing form");
+                                
+                                // Đánh dấu đã lưu để không hỏi lại
+                                MarkAsSaved();
+                                
+                                // Set flag để tránh hỏi lại khi Close() được gọi
+                                _isClosingAfterSave = true;
+                                
+                                // Sử dụng BeginInvoke để đóng form sau khi event handler kết thúc
+                                this.BeginInvoke(new Action(() =>
+                                {
+                                    this.Close();
+                                }));
+                            }
+                            else
+                            {
+                                // Lưu thất bại, giữ form mở
+                                _logger.Warning("FrmNhapKhoThuongMai02_FormClosing: Save failed, form will remain open");
+                                e.Cancel = true;
+                            }
+                        }
+                        catch (Exception saveEx)
+                        {
+                            _logger.Error("FrmNhapKhoThuongMai02_FormClosing: Exception during save operation", saveEx);
+                            // Lỗi khi lưu, giữ form mở
+                            e.Cancel = true;
+                        }
+                        
                         return;
                     }
-                    
-                    // Người dùng chọn "Có" - muốn đóng, đảm bảo không cancel
-                    e.Cancel = false;
-                    _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User confirmed closing, form will close");
+                    else
+                    {
+                        // Người dùng chọn "Đóng không lưu", hỏi xác nhận lần 2
+                        var confirmClose = MsgBox.ShowYesNo(
+                            "Bạn có chắc chắn muốn đóng form mà không lưu thay đổi?",
+                            "Xác nhận đóng",
+                            this,
+                            yesButtonText: "Đóng",
+                            noButtonText: "Hủy");
+                        
+                        _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: Confirm close without save result={0}", confirmClose);
+                        
+                        if (confirmClose)
+                        {
+                            // Người dùng xác nhận đóng không lưu
+                            e.Cancel = false;
+                            _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User confirmed closing without save, form will close");
+                        }
+                        else
+                        {
+                            // Người dùng chọn "Hủy" - không muốn đóng
+                            e.Cancel = true;
+                            _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User cancelled closing, form will remain open");
+                        }
+                    }
                 }
                 else
                 {
@@ -410,6 +489,7 @@ namespace Inventory.StockIn
 
                 // Reset state
                 _currentStockInId = Guid.Empty;
+                _isClosingAfterSave = false; // Reset flag khi reset form
                 MarkAsSaved();
 
                 _logger.Info("ResetForm: Form reset successfully");

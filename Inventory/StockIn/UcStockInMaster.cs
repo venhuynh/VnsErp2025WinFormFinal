@@ -1,4 +1,5 @@
-﻿using Bll.MasterData.CompanyBll;
+﻿using Bll.Inventory.StockIn;
+using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
 using Common;
 using Common.Utils;
@@ -33,6 +34,11 @@ namespace Inventory.StockIn
         /// Business Logic Layer cho BusinessPartnerSite (dùng cho Supplier lookup)
         /// </summary>
         private readonly BusinessPartnerSiteBll _businessPartnerSiteBll = new BusinessPartnerSiteBll();
+
+        /// <summary>
+        /// Business Logic Layer cho StockIn (dùng để lấy số thứ tự tiếp theo)
+        /// </summary>
+        private readonly StockInBll _stockInBll = new StockInBll();
 
         #endregion
 
@@ -725,21 +731,11 @@ namespace Inventory.StockIn
         {
             try
             {
-                // TODO: Query database để lấy số thứ tự tiếp theo
-                // Tạm thời trả về 1, sau này sẽ implement query database
+                // Query database để lấy số thứ tự tiếp theo thông qua BLL
                 // Format cần tìm: PNK-MMYY-NNXXX
                 // Trong đó MM, YY, NN đã biết, cần tìm XXX lớn nhất + 1
-
-                // Ví dụ query:
-                // SELECT MAX(CAST(SUBSTRING(StockInNumber, LEN(StockInNumber) - 2, 3) AS INT))
-                // FROM StockInMaster
-                // WHERE StockInNumber LIKE 'PNK-MMYY-NN%'
-                //   AND YEAR(StockInDate) = YYYY
-                //   AND MONTH(StockInDate) = MM
-                //   AND LoaiNhapKho = loaiNhapKho
-
-                // Tạm thời return 1
-                return 1;
+                var nextSequence = _stockInBll.GetNextSequenceNumber(stockInDate, loaiNhapKho);
+                return nextSequence;
             }
             catch (Exception ex)
             {
