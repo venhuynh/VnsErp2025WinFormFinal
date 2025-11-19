@@ -1137,6 +1137,162 @@ namespace Common.Utils
 
         #endregion
 
+        #region ========== YES/NO/CANCEL CONFIRMATION DIALOG ==========
+
+        /// <summary>
+        /// Hiển thị hộp thoại xác nhận Yes/No/Cancel với template cải tiến
+        /// </summary>
+        /// <param name="message">Thông điệp xác nhận (có thể chứa HTML)</param>
+        /// <param name="caption">Tiêu đề (mặc định: "Xác nhận")</param>
+        /// <param name="owner">Parent form (tùy chọn)</param>
+        /// <param name="yesButtonText">Text của nút Yes (mặc định: "Có")</param>
+        /// <param name="noButtonText">Text của nút No (mặc định: "Không")</param>
+        /// <param name="cancelButtonText">Text của nút Cancel (mặc định: "Hủy")</param>
+        /// <returns>DialogResult.Yes nếu chọn Yes, DialogResult.No nếu chọn No, DialogResult.Cancel nếu chọn Cancel</returns>
+        public static DialogResult ShowYesNoCancel(string message, string caption = "Xác nhận",
+            IWin32Window owner = null, string yesButtonText = "Có", string noButtonText = "Không", string cancelButtonText = "Hủy")
+        {
+            // Chuyển đổi \n thành <br> và convert HTML tags cho DevExpress
+            var htmlMessage = message?.Replace("\n", "<br>") ?? string.Empty;
+            htmlMessage = ConvertHtmlForDevExpress(htmlMessage);
+
+            var template = CreateYesNoCancelTemplate(caption, htmlMessage, yesButtonText, noButtonText, cancelButtonText);
+
+            var args = new XtraMessageBoxArgs
+            {
+                Owner = owner,
+                AllowHtmlText = DefaultBoolean.True,
+                Buttons = new[] { DialogResult.Yes, DialogResult.No, DialogResult.Cancel },
+                DefaultButtonIndex = 2, // Default là Cancel (an toàn hơn)
+                HtmlImages = GetSvgImages()
+            };
+
+            args.HtmlTemplate.Assign(template);
+            var result = XtraMessageBox.Show(args);
+            return result;
+        }
+
+        /// <summary>
+        /// Tạo HTML template cho hộp thoại xác nhận Yes/No/Cancel
+        /// </summary>
+        private static HtmlTemplate CreateYesNoCancelTemplate(string caption, string htmlMessage, string yesButtonText, string noButtonText, string cancelButtonText)
+        {
+            try
+            {
+                // Escape caption nhưng giữ nguyên HTML trong message (đã được xử lý)
+                var escapedCaption = HtmlEncode(caption ?? "Xác nhận");
+
+                // Template HTML cho hộp thoại xác nhận Yes/No/Cancel
+                var template = @"<div class=""frame"" id=""frame"">
+    <div class=""header"">
+        <div class=""caption"">" + escapedCaption + @"</div>
+        <div class=""close-button"" id=""closebutton"">
+            <img src=""close"" class=""close-button-img"" id=""close"">
+        </div>
+    </div>
+    <div class=""message-text"" id=""content"">
+        <div class=""message text"">" + htmlMessage + @"</div>
+    </div>
+    <div class=""buttons"">
+        <div class=""message button"" tabindex=""1"" id=""dialogresult-yes"">" + HtmlEncode(yesButtonText ?? "Có") + @"</div>
+        <div class=""message button"" tabindex=""2"" id=""dialogresult-no"">" + HtmlEncode(noButtonText ?? "Không") + @"</div>
+        <div class=""message button"" tabindex=""3"" id=""dialogresult-cancel"">" + HtmlEncode(cancelButtonText ?? "Hủy") + @"</div>
+    </div>
+</div>";
+
+                // CSS riêng cho Yes/No/Cancel Confirmation với @Critical
+                var styles = @"body {
+    padding: 20px;
+    font-size: 14px;
+    font-family: 'Segoe UI';
+}
+.frame {
+    width: 450px;
+    color: @ControlText;
+    background-color: @Window;
+    border: 1px solid @Critical;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0px 8px 16px @Critical/0.6;
+}
+.header {
+    padding: 8px;
+    color: @White;
+    background-color: @Critical;
+    border-radius: 15px 15px 0px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-element {
+    margin: 0px 10px;
+}
+.caption {
+    margin: 0px 10px;
+    font-weight: bold;
+}
+.close-button {
+    padding: 8px;
+    border-radius: 5px;
+}
+.close-button:hover {
+    background-color: @WindowText/0.1;
+}
+.close-button:active {
+    background-color: @ControlText/0.05;
+}
+.close-button-img {
+    fill: White;
+    width: 18px;
+    height: 18px;
+    opacity: 0.8;
+}
+.message-text {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    white-space: normal;
+    word-wrap: break-word;
+    color: @ControlText;
+    text-align: center;
+}
+.message {
+    margin: 7px;
+}
+.buttons {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+}
+.button {
+    color: @Critical;
+    padding: 8px 24px;
+    border: 1px solid @Critical;
+    border-radius: 5px;
+    margin: 7px;
+    width: 120px;
+}
+.button:hover {
+    color: @White;
+    background-color: @Critical;
+    box-shadow: 0px 0px 10px @Critical/0.5;
+}";
+
+                return new HtmlTemplate(template, styles);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi khi tạo YesNoCancelTemplate: {ex.Message}");
+                return null;
+            }
+        }
+
+        #endregion
+
         #region ========== EXCEPTION DIALOG ==========
 
         /// <summary>

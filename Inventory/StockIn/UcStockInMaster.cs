@@ -3,6 +3,7 @@ using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
 using Common;
 using Common.Utils;
+using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
 using DTO.MasterData.Company;
@@ -73,6 +74,9 @@ namespace Inventory.StockIn
 
                 // Setup events
                 SetupEvents();
+
+                // Setup SuperToolTips
+                SetupSuperToolTips();
 
                 // Không load dữ liệu lookup ở đây, sẽ được gọi từ form khi FormLoad
             }
@@ -181,6 +185,112 @@ namespace Inventory.StockIn
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi thiết lập sự kiện");
+            }
+        }
+
+        #endregion
+
+        #region ========== SUPERTOOLTIP ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho tất cả các controls trong UserControl
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                SetupTextEditSuperTips();
+                SetupDateEditSuperTips();
+                SetupSearchLookupEditSuperTips();
+                SetupMemoEditSuperTips();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi thiết lập SuperToolTip");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các TextEdit controls
+        /// </summary>
+        private void SetupTextEditSuperTips()
+        {
+            // SuperTip cho Số phiếu nhập kho
+            if (StockInNumberTextEdit != null)
+            {
+                SuperToolTipHelper.SetTextEditSuperTip(
+                    StockInNumberTextEdit,
+                    title: @"<b><color=DarkBlue>📄 Số phiếu nhập kho</color></b>",
+                    content: @"Số phiếu nhập kho được tạo tự động theo format: <b>PNK-MMYY-NNXXX</b><br/><br/><b>Format:</b><br/>• PNK: Phiếu nhập kho<br/>• MM: Tháng (2 ký tự)<br/>• YY: Năm (2 ký tự cuối)<br/>• NN: Index của Loại nhập kho (2 ký tự)<br/>• XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)<br/><br/><b>Chức năng:</b><br/>• Tự động tạo khi thay đổi ngày nhập kho<br/>• Tự động tạo khi thay đổi loại nhập kho<br/>• Query database để lấy số thứ tự tiếp theo<br/>• Đảm bảo số phiếu duy nhất trong cùng tháng/năm/loại<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Số phiếu nhập kho sẽ được lưu vào database khi lưu phiếu nhập."
+                );
+            }
+
+            // SuperTip cho Mã đơn hàng mua
+            if (PurchaseOrderSearchLookupEdit != null)
+            {
+                SuperToolTipHelper.SetTextEditSuperTip(
+                    PurchaseOrderSearchLookupEdit,
+                    title: @"<b><color=DarkBlue>🛒 Mã đơn hàng mua</color></b>",
+                    content: @"Nhập hoặc chọn mã đơn hàng mua (Purchase Order) liên quan đến phiếu nhập kho này.<br/><br/><b>Chức năng:</b><br/>• Liên kết phiếu nhập kho với đơn hàng mua<br/>• Tra cứu thông tin đơn hàng mua<br/>• Theo dõi quá trình nhập hàng theo đơn hàng<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Trường này là tùy chọn, chỉ điền khi phiếu nhập kho liên quan đến một đơn hàng mua cụ thể."
+                );
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các DateEdit controls
+        /// </summary>
+        private void SetupDateEditSuperTips()
+        {
+            // SuperTip cho Ngày nhập kho
+            if (StockInDateDateEdit != null)
+            {
+                SuperToolTipHelper.SetBaseEditSuperTip(
+                    StockInDateDateEdit,
+                    title: @"<b><color=DarkBlue>📅 Ngày nhập kho</color></b>",
+                    content: @"Chọn ngày nhập kho cho phiếu nhập.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm nhập kho<br/>• Tự động tạo số phiếu nhập kho dựa trên ngày<br/>• Format số phiếu: PNK-MMYY-NNXXX (MM, YY từ ngày này)<br/>• Query database để lấy số thứ tự tiếp theo trong tháng/năm<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Mặc định: Ngày hiện tại<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày nhập kho, hệ thống sẽ tự động tạo lại số phiếu nhập kho theo format mới."
+                );
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các SearchLookUpEdit controls
+        /// </summary>
+        private void SetupSearchLookupEditSuperTips()
+        {
+            // SuperTip cho Kho nhập
+            if (WarehouseNameSearchLookupEdit != null)
+            {
+                SuperToolTipHelper.SetBaseEditSuperTip(
+                    WarehouseNameSearchLookupEdit,
+                    title: @"<b><color=DarkBlue>🏢 Kho nhập</color></b>",
+                    content: @"Chọn kho nhập hàng từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho nhập hàng<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật WarehouseId, WarehouseCode, WarehouseName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho nhập sẽ được lưu vào database khi lưu phiếu nhập kho."
+                );
+            }
+
+            // SuperTip cho Nhà cung cấp
+            if (SupplierNameTextEdit != null)
+            {
+                SuperToolTipHelper.SetBaseEditSuperTip(
+                    SupplierNameTextEdit,
+                    title: @"<b><color=DarkBlue>🏭 Nhà cung cấp</color></b>",
+                    content: @"Chọn nhà cung cấp từ danh sách chi nhánh đối tác (Business Partner Site) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn nhà cung cấp<br/>• Hiển thị thông tin nhà cung cấp dạng HTML (mã, tên)<br/>• Tự động cập nhật SupplierId, SupplierName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Chỉ hiển thị các chi nhánh đối tác đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ BusinessPartnerSiteBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đối tác đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><color=Gray>Lưu ý:</color> Trường này là tùy chọn, chỉ điền khi phiếu nhập kho có nhà cung cấp cụ thể."
+                );
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các MemoEdit controls
+        /// </summary>
+        private void SetupMemoEditSuperTips()
+        {
+            // SuperTip cho Ghi chú
+            if (NotesTextEdit != null)
+            {
+                SuperToolTipHelper.SetBaseEditSuperTip(
+                    NotesTextEdit,
+                    title: @"<b><color=DarkBlue>📝 Ghi chú</color></b>",
+                    content: @"Nhập ghi chú hoặc mô tả bổ sung cho phiếu nhập kho.<br/><br/><b>Chức năng:</b><br/>• Lưu thông tin bổ sung về phiếu nhập kho<br/>• Ghi chú về lý do nhập kho, điều kiện nhập hàng, v.v.<br/>• Hỗ trợ nhiều dòng văn bản<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Không giới hạn độ dài<br/><br/><color=Gray>Lưu ý:</color> Ghi chú sẽ được lưu vào database khi lưu phiếu nhập kho."
+                );
             }
         }
 
@@ -583,8 +693,58 @@ namespace Inventory.StockIn
         /// </summary>
         public void ClearData()
         {
-            InitializeDto();
-            dxErrorProvider1.ClearErrors();
+            try
+            {
+                // Khởi tạo lại DTO
+                InitializeDto();
+
+                // Reset tất cả các controls về giá trị mặc định
+                // Reset SearchLookUpEdit - phải set EditValue = null để xóa selection
+                if (WarehouseNameSearchLookupEdit != null)
+                {
+                    WarehouseNameSearchLookupEdit.EditValue = null;
+                }
+
+                if (SupplierNameTextEdit != null)
+                {
+                    SupplierNameTextEdit.EditValue = null;
+                }
+
+                // Reset TextEdit
+                if (StockInNumberTextEdit != null)
+                {
+                    StockInNumberTextEdit.Text = string.Empty;
+                }
+
+                if (PurchaseOrderSearchLookupEdit != null)
+                {
+                    PurchaseOrderSearchLookupEdit.Text = string.Empty;
+                }
+
+                // Reset DateEdit
+                if (StockInDateDateEdit != null)
+                {
+                    StockInDateDateEdit.EditValue = DateTime.Now;
+                    // Tạo lại số phiếu nhập kho sau khi reset ngày
+                    GenerateStockInNumber(DateTime.Now);
+                }
+
+                // Reset MemoEdit
+                if (NotesTextEdit != null)
+                {
+                    NotesTextEdit.Text = string.Empty;
+                }
+
+                // Refresh bindings để đảm bảo UI được cập nhật
+                RefreshAllBindings();
+
+                // Clear errors
+                dxErrorProvider1.ClearErrors();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi xóa dữ liệu");
+            }
         }
 
         /// <summary>

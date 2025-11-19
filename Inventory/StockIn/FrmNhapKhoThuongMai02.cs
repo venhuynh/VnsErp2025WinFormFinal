@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.StockIn;
+using System.Linq;
 
 namespace Inventory.StockIn
 {
@@ -136,9 +137,15 @@ namespace Inventory.StockIn
 
                 // Form events
                 this.FormClosing += FrmNhapKhoThuongMai02_FormClosing;
+                this.KeyDown += FrmNhapKhoThuongMai02_KeyDown;
+                this.KeyPreview = true; // Cho phép form xử lý phím tắt trước
 
                 // Detail control events - theo dõi thay đổi để đánh dấu có thay đổi chưa lưu và cập nhật tổng lên master
                 ucStockInDetail1.DetailDataChanged += UcStockInDetail1_DetailDataChanged;
+
+                // Setup phím tắt và hiển thị hướng dẫn
+                SetupKeyboardShortcuts();
+                UpdateHotKeyBarStaticItem();
 
                 _logger.Debug("SetupEvents: Events setup completed");
             }
@@ -166,6 +173,64 @@ namespace Inventory.StockIn
             _hasUnsavedChanges = false;
             _isClosingAfterSave = false; // Reset flag khi đánh dấu đã lưu
             _logger.Debug("MarkAsSaved: Form marked as saved");
+        }
+
+        /// <summary>
+        /// Thiết lập phím tắt cho các nút chức năng
+        /// </summary>
+        private void SetupKeyboardShortcuts()
+        {
+            try
+            {
+                // Gán phím tắt cho các BarButtonItem
+                // F1: Nhập lại
+                // F2: Lưu phiếu
+                // F3: In phiếu
+                // F4: Nhập bảo hành
+                // F5: Thêm hình ảnh
+                // ESC: Đóng form
+
+                // Lưu ý: DevExpress BarButtonItem không hỗ trợ trực tiếp ItemShortcut
+                // Nên sẽ xử lý qua KeyDown event của form
+                
+                _logger.Debug("SetupKeyboardShortcuts: Keyboard shortcuts configured");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SetupKeyboardShortcuts: Exception occurred", ex);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật nội dung HotKeyBarStaticItem để hiển thị hướng dẫn phím tắt
+        /// </summary>
+        private void UpdateHotKeyBarStaticItem()
+        {
+            try
+            {
+                if (HotKeyBarStaticItem == null) return;
+
+                // Tạo nội dung HTML với các phím tắt
+                var hotKeyText = @"<color=Gray>Phím tắt:</color> " +
+                    @"<b><color=Blue>F1</color></b> Nhập lại | " +
+                    @"<b><color=Blue>F2</color></b> Lưu phiếu | " +
+                    @"<b><color=Blue>F3</color></b> In phiếu | " +
+                    @"<b><color=Blue>F4</color></b> Nhập bảo hành | " +
+                    @"<b><color=Blue>F5</color></b> Thêm hình ảnh | " +
+                    @"<b><color=Blue>ESC</color></b> Đóng | " +
+                    @"<b><color=Blue>Insert</color></b> Thêm dòng | " +
+                    @"<b><color=Blue>Delete</color></b> Xóa dòng | " +
+                    @"<b><color=Blue>Enter</color></b> Hoàn thành dòng";
+
+                HotKeyBarStaticItem.Caption = hotKeyText;
+                HotKeyBarStaticItem.Visibility = DevExpress.XtraBars.BarItemVisibility.Always;
+                
+                _logger.Debug("UpdateHotKeyBarStaticItem: Hot key bar updated");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("UpdateHotKeyBarStaticItem: Exception occurred", ex);
+            }
         }
 
         #endregion
@@ -314,6 +379,67 @@ namespace Inventory.StockIn
             {
                 _logger.Error("CloseBarButtonItem_ItemClick: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi đóng form: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler xử lý phím tắt
+        /// </summary>
+        private void FrmNhapKhoThuongMai02_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                // Chỉ xử lý phím tắt cho form (F1-F5, ESC)
+                // Phím Insert, Delete, Enter sẽ được xử lý trực tiếp trong GridView
+                // để tránh conflict khi đang edit trong grid
+
+                // Xử lý phím tắt cho form
+                switch (e.KeyCode)
+                {
+                    case Keys.F1:
+                        // F1: Nhập lại
+                        e.Handled = true;
+                        NhapLaiBarButtonItem_ItemClick(null, null);
+                        break;
+
+                    case Keys.F2:
+                        // F2: Lưu phiếu
+                        e.Handled = true;
+                        LuuPhieuBarButtonItem_ItemClick(null, null);
+                        break;
+
+                    case Keys.F3:
+                        // F3: In phiếu
+                        e.Handled = true;
+                        InPhieuBarButtonItem_ItemClick(null, null);
+                        break;
+
+                    case Keys.F4:
+                        // F4: Nhập bảo hành
+                        e.Handled = true;
+                        NhapBaoHanhBarButtonItem_ItemClick(null, null);
+                        break;
+
+                    case Keys.F5:
+                        // F5: Thêm hình ảnh
+                        e.Handled = true;
+                        ThemHinhAnhBarButtonItem_ItemClick(null, null);
+                        break;
+
+                    case Keys.Escape:
+                        // ESC: Đóng form (chỉ khi không đang edit trong grid)
+                        if (!(ActiveControl is DevExpress.XtraEditors.BaseEdit baseEdit && baseEdit.IsEditorActive))
+                        {
+                            e.Handled = true;
+                            CloseBarButtonItem_ItemClick(null, null);
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("FrmNhapKhoThuongMai02_KeyDown: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi xử lý phím tắt: {ex.Message}");
             }
         }
 

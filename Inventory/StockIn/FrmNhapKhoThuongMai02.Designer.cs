@@ -52,6 +52,7 @@
             this.ucStockInMaster1 = new Inventory.StockIn.UcStockInMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
@@ -138,9 +139,10 @@
             this.InPhieuBarButtonItem,
             this.CloseBarButtonItem,
             this.NhapBaoHanhBarButtonItem,
-            this.ThemHinhAnhBarButtonItem});
+            this.ThemHinhAnhBarButtonItem,
+            this.HotKeyBarStaticItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 6;
+            this.barManager1.MaxItemId = 7;
             // 
             // bar2
             // 
@@ -155,7 +157,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapBaoHanhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.HotKeyBarStaticItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -295,6 +298,14 @@
             this.layoutControlItem2.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem2.TextVisible = false;
             // 
+            // HotKeyBarStaticItem
+            // 
+            this.HotKeyBarStaticItem.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right;
+            this.HotKeyBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.HotKeyBarStaticItem.Caption = "barStaticItem1";
+            this.HotKeyBarStaticItem.Id = 6;
+            this.HotKeyBarStaticItem.Name = "HotKeyBarStaticItem";
+            // 
             // FrmNhapKhoThuongMai02
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -350,5 +361,6 @@
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private UcStockInDetail ucStockInDetail1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
     }
 }

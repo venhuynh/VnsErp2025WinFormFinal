@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Common.Helpers;
 using DevExpress.Data;
 using Logger;
@@ -46,6 +47,12 @@ namespace Inventory.StockIn
         /// </summary>
         private Guid _stockInMasterId = Guid.Empty;
 
+        /// <summary>
+        /// GridView để quản lý chi tiết phiếu nhập kho (public để form có thể truy cập)
+        /// Property này expose GridView từ Designer để form có thể truy cập
+        /// </summary>
+        public DevExpress.XtraGrid.Views.Grid.GridView StockInDetailDtoGridViewPublic => StockInDetailDtoGridView;
+
         #endregion
 
         #region ========== CONSTRUCTOR ==========
@@ -67,6 +74,8 @@ namespace Inventory.StockIn
         {
             try
             {
+                // GridView đã được khai báo trong Designer, property public sẽ expose nó
+
                 // Khởi tạo binding source với danh sách rỗng
                 stockInDetailDtoBindingSource.DataSource = new List<StockInDetailDto>();
 
@@ -99,6 +108,9 @@ namespace Inventory.StockIn
 
             // Event custom draw row indicator
             StockInDetailDtoGridView.CustomDrawRowIndicator += StockInDetailDtoGridView_CustomDrawRowIndicator;
+
+            // Event xử lý phím tắt cho GridView (Insert, Delete, Enter)
+            StockInDetailDtoGridView.KeyDown += StockInDetailDtoGridView_KeyDown;
         }
 
         #endregion
@@ -410,6 +422,119 @@ namespace Inventory.StockIn
                 _logger.Error("ValidateRow: Exception occurred", ex);
                 e.Valid = false;
                 e.ErrorText = $"Lỗi validate: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Event handler xử lý phím tắt trong GridView
+        /// </summary>
+        private void StockInDetailDtoGridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                var gridView = StockInDetailDtoGridView;
+                if (gridView == null) return;
+
+                switch (e.KeyCode)
+                {
+                    case Keys.Insert:
+                        // Insert: Thêm dòng mới
+                        if (!e.Control && !e.Shift && !e.Alt)
+                        {
+                            e.Handled = true;
+                            _logger.Debug("StockInDetailDtoGridView_KeyDown: Insert key - Adding new row");
+                            
+                            // Thêm dòng mới
+                            gridView.AddNewRow();
+                            
+                            // Focus vào cột ProductVariantCode để người dùng có thể chọn ngay
+                            var productVariantColumn = gridView.Columns["ProductVariantCode"];
+                            if (productVariantColumn != null)
+                            {
+                                gridView.FocusedColumn = productVariantColumn;
+                            }
+                            
+                            _logger.Info("StockInDetailDtoGridView_KeyDown: New row added successfully");
+                        }
+                        break;
+
+                    case Keys.Delete:
+                        // Delete: Xóa dòng được chọn
+                        if (!e.Control && !e.Shift && !e.Alt)
+                        {
+                            var focusedRowHandle = gridView.FocusedRowHandle;
+                            if (focusedRowHandle >= 0)
+                            {
+                                e.Handled = true;
+                                _logger.Debug("StockInDetailDtoGridView_KeyDown: Delete key - Deleting row {0}", focusedRowHandle);
+                                
+                                // Xóa dòng
+                                gridView.DeleteRow(focusedRowHandle);
+                                
+                                _logger.Info("StockInDetailDtoGridView_KeyDown: Row {0} deleted successfully", focusedRowHandle);
+                            }
+                        }
+                        break;
+
+                    case Keys.Enter:
+                        // Enter: Hoàn thành nhập dòng (commit row)
+                        if (!e.Control && !e.Shift && !e.Alt)
+                        {
+                            var focusedRowHandle = gridView.FocusedRowHandle;
+                            
+                            // Nếu đang ở new row (rowHandle < 0), commit row
+                            if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
+                            {
+                                e.Handled = true;
+                                _logger.Debug("StockInDetailDtoGridView_KeyDown: Enter key - Committing new row");
+                                
+                                // Validate row trước khi commit
+                                if (gridView.PostEditor())
+                                {
+                                    gridView.UpdateCurrentRow();
+                                    _logger.Info("StockInDetailDtoGridView_KeyDown: New row committed successfully");
+                                }
+                            }
+                            // Nếu đang ở dòng đã có, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
+                            else if (focusedRowHandle >= 0)
+                            {
+                                // Nếu đang ở cột cuối cùng, di chuyển xuống dòng tiếp theo
+                                var focusedColumn = gridView.FocusedColumn;
+                                var lastColumn = gridView.VisibleColumns[gridView.VisibleColumns.Count - 1];
+                                
+                                if (focusedColumn == lastColumn)
+                                {
+                                    e.Handled = true;
+                                    
+                                    // Di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
+                                    var nextRowHandle = focusedRowHandle + 1;
+                                    if (nextRowHandle < gridView.RowCount)
+                                    {
+                                        gridView.FocusedRowHandle = nextRowHandle;
+                                        gridView.FocusedColumn = gridView.Columns[0]; // Focus vào cột đầu tiên
+                                    }
+                                    else
+                                    {
+                                        // Thêm dòng mới
+                                        gridView.AddNewRow();
+                                        var productVariantColumn = gridView.Columns["ProductVariantCode"];
+                                        if (productVariantColumn != null)
+                                        {
+                                            gridView.FocusedColumn = productVariantColumn;
+                                        }
+                                    }
+                                    
+                                    _logger.Debug("StockInDetailDtoGridView_KeyDown: Enter key - Moved to next row");
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("StockInDetailDtoGridView_KeyDown: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi xử lý phím tắt: {ex.Message}");
             }
         }
 
