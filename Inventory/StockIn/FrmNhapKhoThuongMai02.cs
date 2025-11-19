@@ -1,5 +1,4 @@
-﻿using Bll.Inventory;
-using Common.Common;
+﻿using Common.Common;
 using Common.Utils;
 using Logger;
 using Logger.Configuration;
@@ -7,6 +6,7 @@ using Logger.Interfaces;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.Inventory.StockIn;
 
 namespace Inventory.StockIn
 {
@@ -453,39 +453,20 @@ namespace Inventory.StockIn
                     return false;
                 }
 
-                // 3. Set StockInMasterId cho các detail rows
-                if (masterDto.Id == Guid.Empty)
-                {
-                    // Tạo mới ID cho master
-                    masterDto.Id = Guid.NewGuid();
-                    _logger.Debug("SaveDataAsync: Generated new master ID={0}", masterDto.Id);
-                }
+                // 3. Lưu dữ liệu vào database
+                // Validation đã được thực hiện ở bước 1 và 2
+                // StockInBll.SaveAsync sẽ tự động tạo ID mới nếu masterDto.Id == Guid.Empty
+                var savedMasterId = await _stockInBll.SaveAsync(masterDto, detailDtos);
 
-                // Set master ID cho tất cả detail rows
-                ucStockInDetail1.SetStockInMasterId(masterDto.Id);
-                foreach (var detail in detailDtos)
-                {
-                    detail.StockInOutMasterId = masterDto.Id;
-                }
+                // 4. Cập nhật ID sau khi lưu
+                masterDto.Id = savedMasterId;
+                _currentStockInId = savedMasterId;
 
-                // 4. Lưu dữ liệu vào database
-                // TODO: Implement StockInBll.SaveAsync method
-                // await _stockInBll.SaveAsync(masterDto, detailDtos);
+                // Set master ID cho detail control để đồng bộ
+                ucStockInDetail1.SetStockInMasterId(savedMasterId);
 
-                // Temporary: Show message that save is not yet implemented
-                _logger.Warning("SaveDataAsync: StockInBll.SaveAsync not yet implemented");
-                MsgBox.ShowWarning(
-                    "Chức năng lưu dữ liệu đang được phát triển.\n" +
-                    $"Master: {masterDto.StockInNumber}\n" +
-                    $"Details: {detailDtos.Count} dòng",
-                    "Thông báo",
-                    this);
-
-                // Update current ID
-                _currentStockInId = masterDto.Id;
-
-                _logger.Info("SaveDataAsync: Save operation completed (simulated)");
-                return true; // Return true for now since we're simulating
+                _logger.Info("SaveDataAsync: Save operation completed successfully, MasterId={0}", savedMasterId);
+                return true;
             }
             catch (Exception ex)
             {

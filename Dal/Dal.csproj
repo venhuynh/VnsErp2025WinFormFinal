@@ -57,8 +57,9 @@
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\EmployeeRepository.cs" />
     <Compile Include="DataAccess\Implementations\UnitOfWork.cs" />
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\StockIn\IStockInRepository.cs" />
     <Compile Include="DataAccess\Interfaces\IUnitOfWork.cs" />
-    <Compile Include="DataAccess\Implementations\Inventory\IStockInRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\StockIn\StockInRepository.cs" />
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\CompanyBranchRepository.cs" />
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\CompanyRepository.cs" />
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\DepartmentRepository.cs" />

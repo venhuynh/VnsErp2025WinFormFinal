@@ -1,5 +1,6 @@
 ﻿using Dal.DataContext;
 using System;
+using Dal.DataAccess.Interfaces.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
@@ -148,6 +149,16 @@ public interface IUnitOfWork : IDisposable
     IProductVariantRepository GetProductVariantRepository();
 
     IUnitOfMeasureRepository GetUnitOfMeasureRepository();
+
+    #endregion
+
+    #endregion
+
+    #region Inventory
+
+    #region StockIn
+
+    IStockInRepository GetStockInRepository();
 
     #endregion
 
