@@ -39,10 +39,14 @@
             this.colFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colProductVariantName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.StockInDetailProductNameHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colUnitOfMeasureName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colStockInQty = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.StockInQtyTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.colUnitPrice = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.colVat = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.colVatAmount = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTotalAmount = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTotalAmountIncludedVat = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -53,6 +57,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantDtoSearchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductFullNameHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInDetailProductNameHtmlHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInQtyTextEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).BeginInit();
             this.SuspendLayout();
             // 
             // StockInDetailDtoGridControl
@@ -63,7 +71,11 @@
             this.StockInDetailDtoGridControl.MainView = this.StockInDetailDtoGridView;
             this.StockInDetailDtoGridControl.Name = "StockInDetailDtoGridControl";
             this.StockInDetailDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.ProductVariantSearchLookUpEdit});
+            this.ProductVariantSearchLookUpEdit,
+            this.StockInDetailProductNameHtmlHypertextLabel,
+            this.StockInQtyTextEdit,
+            this.UnitPriceTextEdit,
+            this.VatTextEdit});
             this.StockInDetailDtoGridControl.Size = new System.Drawing.Size(1267, 704);
             this.StockInDetailDtoGridControl.TabIndex = 0;
             this.StockInDetailDtoGridControl.UseEmbeddedNavigator = true;
@@ -91,9 +103,11 @@
             this.colTotalAmount,
             this.colTotalAmountIncludedVat});
             this.StockInDetailDtoGridView.GridControl = this.StockInDetailDtoGridControl;
+            this.StockInDetailDtoGridView.IndicatorWidth = 50;
             this.StockInDetailDtoGridView.Name = "StockInDetailDtoGridView";
             this.StockInDetailDtoGridView.OptionsNavigation.AutoFocusNewRow = true;
             this.StockInDetailDtoGridView.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Top;
+            this.StockInDetailDtoGridView.OptionsView.RowAutoHeight = true;
             this.StockInDetailDtoGridView.OptionsView.ShowFooter = true;
             this.StockInDetailDtoGridView.OptionsView.ShowGroupPanel = false;
             this.StockInDetailDtoGridView.OptionsView.ShowViewCaption = true;
@@ -123,7 +137,7 @@
             this.colProductVariantCode.Name = "colProductVariantCode";
             this.colProductVariantCode.Visible = true;
             this.colProductVariantCode.VisibleIndex = 0;
-            this.colProductVariantCode.Width = 200;
+            this.colProductVariantCode.Width = 120;
             // 
             // ProductVariantSearchLookUpEdit
             // 
@@ -131,7 +145,7 @@
             this.ProductVariantSearchLookUpEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ProductVariantSearchLookUpEdit.DataSource = this.productVariantListDtoBindingSource;
-            this.ProductVariantSearchLookUpEdit.DisplayMember = "FullNameHtml";
+            this.ProductVariantSearchLookUpEdit.DisplayMember = "VariantCode";
             this.ProductVariantSearchLookUpEdit.KeyMember = "Id";
             this.ProductVariantSearchLookUpEdit.Name = "ProductVariantSearchLookUpEdit";
             this.ProductVariantSearchLookUpEdit.NullText = "";
@@ -151,6 +165,7 @@
             this.ProductVariantDtoSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.ProductVariantDtoSearchLookUpEdit1View.Name = "ProductVariantDtoSearchLookUpEdit1View";
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowIndicator = false;
@@ -197,13 +212,19 @@
             this.colProductVariantName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colProductVariantName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colProductVariantName.Caption = "Tên hàng hóa";
+            this.colProductVariantName.ColumnEdit = this.StockInDetailProductNameHtmlHypertextLabel;
             this.colProductVariantName.FieldName = "ProductVariantName";
             this.colProductVariantName.Name = "colProductVariantName";
             this.colProductVariantName.OptionsColumn.AllowEdit = false;
             this.colProductVariantName.OptionsColumn.ReadOnly = true;
             this.colProductVariantName.Visible = true;
             this.colProductVariantName.VisibleIndex = 1;
-            this.colProductVariantName.Width = 250;
+            this.colProductVariantName.Width = 245;
+            // 
+            // StockInDetailProductNameHtmlHypertextLabel
+            // 
+            this.StockInDetailProductNameHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.StockInDetailProductNameHtmlHypertextLabel.Name = "StockInDetailProductNameHtmlHypertextLabel";
             // 
             // colUnitOfMeasureName
             // 
@@ -226,7 +247,7 @@
             this.colUnitOfMeasureName.OptionsColumn.ReadOnly = true;
             this.colUnitOfMeasureName.Visible = true;
             this.colUnitOfMeasureName.VisibleIndex = 2;
-            this.colUnitOfMeasureName.Width = 100;
+            this.colUnitOfMeasureName.Width = 97;
             // 
             // colStockInQty
             // 
@@ -243,6 +264,7 @@
             this.colStockInQty.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colStockInQty.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colStockInQty.Caption = "Số lượng nhập";
+            this.colStockInQty.ColumnEdit = this.StockInQtyTextEdit;
             this.colStockInQty.DisplayFormat.FormatString = "N2";
             this.colStockInQty.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.colStockInQty.FieldName = "StockInQty";
@@ -251,7 +273,19 @@
             new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "StockInQty", "Tổng: {0:N2}")});
             this.colStockInQty.Visible = true;
             this.colStockInQty.VisibleIndex = 3;
-            this.colStockInQty.Width = 120;
+            this.colStockInQty.Width = 118;
+            // 
+            // StockInQtyTextEdit
+            // 
+            this.StockInQtyTextEdit.AutoHeight = false;
+            this.StockInQtyTextEdit.DisplayFormat.FormatString = "N2";
+            this.StockInQtyTextEdit.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.StockInQtyTextEdit.EditFormat.FormatString = "N2";
+            this.StockInQtyTextEdit.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.StockInQtyTextEdit.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
+            this.StockInQtyTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
+            this.StockInQtyTextEdit.MaskSettings.Set("mask", "n2");
+            this.StockInQtyTextEdit.Name = "StockInQtyTextEdit";
             // 
             // colUnitPrice
             // 
@@ -268,13 +302,26 @@
             this.colUnitPrice.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colUnitPrice.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colUnitPrice.Caption = "Đơn giá";
+            this.colUnitPrice.ColumnEdit = this.UnitPriceTextEdit;
             this.colUnitPrice.DisplayFormat.FormatString = "N0";
             this.colUnitPrice.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.colUnitPrice.FieldName = "UnitPrice";
             this.colUnitPrice.Name = "colUnitPrice";
             this.colUnitPrice.Visible = true;
             this.colUnitPrice.VisibleIndex = 4;
-            this.colUnitPrice.Width = 130;
+            this.colUnitPrice.Width = 127;
+            // 
+            // UnitPriceTextEdit
+            // 
+            this.UnitPriceTextEdit.AutoHeight = false;
+            this.UnitPriceTextEdit.DisplayFormat.FormatString = "N0";
+            this.UnitPriceTextEdit.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.UnitPriceTextEdit.EditFormat.FormatString = "N0";
+            this.UnitPriceTextEdit.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.UnitPriceTextEdit.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
+            this.UnitPriceTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
+            this.UnitPriceTextEdit.MaskSettings.Set("mask", "n0");
+            this.UnitPriceTextEdit.Name = "UnitPriceTextEdit";
             // 
             // colVat
             // 
@@ -291,13 +338,26 @@
             this.colVat.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colVat.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colVat.Caption = "VAT (%)";
+            this.colVat.ColumnEdit = this.VatTextEdit;
             this.colVat.DisplayFormat.FormatString = "N2";
             this.colVat.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.colVat.FieldName = "Vat";
             this.colVat.Name = "colVat";
             this.colVat.Visible = true;
             this.colVat.VisibleIndex = 5;
-            this.colVat.Width = 90;
+            this.colVat.Width = 88;
+            // 
+            // VatTextEdit
+            // 
+            this.VatTextEdit.AutoHeight = false;
+            this.VatTextEdit.DisplayFormat.FormatString = "N2";
+            this.VatTextEdit.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.VatTextEdit.EditFormat.FormatString = "N2";
+            this.VatTextEdit.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.VatTextEdit.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
+            this.VatTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
+            this.VatTextEdit.MaskSettings.Set("mask", "n2");
+            this.VatTextEdit.Name = "VatTextEdit";
             // 
             // colVatAmount
             // 
@@ -324,7 +384,7 @@
             new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "VatAmount", "Tổng: {0:N0}")});
             this.colVatAmount.Visible = true;
             this.colVatAmount.VisibleIndex = 6;
-            this.colVatAmount.Width = 130;
+            this.colVatAmount.Width = 127;
             // 
             // colTotalAmount
             // 
@@ -355,7 +415,7 @@
             new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "TotalAmount", "Tổng: {0:N0}")});
             this.colTotalAmount.Visible = true;
             this.colTotalAmount.VisibleIndex = 7;
-            this.colTotalAmount.Width = 140;
+            this.colTotalAmount.Width = 137;
             // 
             // colTotalAmountIncludedVat
             // 
@@ -386,7 +446,7 @@
             new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "TotalAmountIncludedVat", "Tổng: {0:N0}")});
             this.colTotalAmountIncludedVat.Visible = true;
             this.colTotalAmountIncludedVat.VisibleIndex = 8;
-            this.colTotalAmountIncludedVat.Width = 150;
+            this.colTotalAmountIncludedVat.Width = 156;
             // 
             // UcStockInDetail
             // 
@@ -402,6 +462,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantDtoSearchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductFullNameHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInDetailProductNameHtmlHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInQtyTextEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -427,5 +491,9 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel ProductFullNameHypertextLabel;
         
         private System.Windows.Forms.BindingSource productVariantListDtoBindingSource;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel StockInDetailProductNameHtmlHypertextLabel;
+        private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit StockInQtyTextEdit;
+        private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit UnitPriceTextEdit;
+        private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
     }
 }

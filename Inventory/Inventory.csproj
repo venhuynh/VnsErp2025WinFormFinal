@@ -138,6 +138,10 @@
       <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>
       <Name>DTO</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{12f9fb39-92bf-45d5-bbb2-5353e33700f0}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\reset2_16x16.png" />

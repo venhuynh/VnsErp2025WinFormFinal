@@ -71,7 +71,7 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Public Methods
+        #region ========== READ OPERATIONS ==========
 
         /// <summary>
         /// Lấy biến thể theo ID
@@ -125,22 +125,97 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
-        /// Kiểm tra mã biến thể có trùng không
+        /// Lấy tất cả biến thể sản phẩm
         /// </summary>
-        /// <param name="variantCode">Mã biến thể</param>
-        /// <param name="excludeId">ID biến thể cần loại trừ (khi edit)</param>
-        /// <returns>True nếu trùng</returns>
-        private bool IsVariantCodeExists(string variantCode, Guid? excludeId = null)
+        /// <returns>Danh sách biến thể</returns>
+        public async Task<List<ProductVariant>> GetAllAsync()
         {
             try
             {
-                return GetDataAccess().IsVariantCodeExists(variantCode, excludeId);
+                return await GetDataAccess().GetAllAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Lỗi kiểm tra mã biến thể: {ex.Message}", ex);
+                throw new Exception($"Lỗi lấy danh sách biến thể: {ex.Message}", ex);
             }
         }
+
+        /// <summary>
+        /// Lấy tất cả biến thể sản phẩm với thông tin đầy đủ
+        /// Bao gồm thông tin sản phẩm gốc, đơn vị tính, thuộc tính và hình ảnh
+        /// Tuân thủ quy tắc: Dal -> Bll (chỉ trả về Entity)
+        /// </summary>
+        /// <returns>Danh sách ProductVariant entity với thông tin đầy đủ</returns>
+        public async Task<List<ProductVariant>> GetAllWithDetailsAsync()
+        {
+            try
+            {
+                // Lấy dữ liệu từ DAL với thông tin liên quan đã được preload
+                var variants = await GetDataAccess().GetAllWithDetailsAsync();
+                
+                // DAL đã preload tất cả navigation properties thông qua DataLoadOptions
+                // Bao gồm: ProductService, UnitOfMeasure, ProductVariantAttributes, ProductVariantImages
+                // Và cả thông tin sản phẩm gốc: ProductServiceCategory, ProductServiceAttributes, ProductServiceImages
+                
+                return variants;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy danh sách biến thể: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả biến thể sản phẩm đang hoạt động với thông tin đầy đủ
+        /// Tương tự như GetAllWithDetailsAsync nhưng chỉ lấy các record có IsActive = true
+        /// Bao gồm thông tin sản phẩm gốc, đơn vị tính, thuộc tính và hình ảnh
+        /// Tuân thủ quy tắc: Dal -> Bll (chỉ trả về Entity)
+        /// </summary>
+        /// <returns>Danh sách ProductVariant entity đang hoạt động với thông tin đầy đủ</returns>
+        public async Task<List<ProductVariant>> GetAllInUseWithDetailsAsync()
+        {
+            try
+            {
+                // Lấy dữ liệu từ DAL với thông tin liên quan đã được preload
+                var variants = await GetDataAccess().GetAllWithDetailsAsync();
+                
+                // Filter chỉ lấy các record đang hoạt động (IsActive = true)
+                var activeVariants = variants
+                    .Where(v => v.IsActive)
+                    .ToList();
+                
+                // DAL đã preload tất cả navigation properties thông qua DataLoadOptions
+                // Bao gồm: ProductService, UnitOfMeasure, ProductVariantAttributes, ProductVariantImages
+                // Và cả thông tin sản phẩm gốc: ProductServiceCategory, ProductServiceAttributes, ProductServiceImages
+                
+                return activeVariants;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy danh sách biến thể đang hoạt động: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách giá trị thuộc tính của biến thể
+        /// </summary>
+        /// <param name="variantId">ID biến thể</param>
+        /// <returns>Danh sách giá trị thuộc tính (AttributeId, AttributeName, Value)</returns>
+        public List<(Guid AttributeId, string AttributeName, string Value)> GetAttributeValues(Guid variantId)
+        {
+            try
+            {
+                return GetDataAccess().GetAttributeValues(variantId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi lấy giá trị thuộc tính: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== WRITE OPERATIONS ==========
 
         /// <summary>
         /// Lưu biến thể (tạo mới hoặc cập nhật)
@@ -188,22 +263,28 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
+        #endregion
+
+        #region ========== UPDATE OPERATIONS ==========
+
         /// <summary>
-        /// Lấy danh sách giá trị thuộc tính của biến thể
+        /// Cập nhật VariantFullName cho tất cả biến thể hiện có
         /// </summary>
-        /// <param name="variantId">ID biến thể</param>
-        /// <returns>Danh sách giá trị thuộc tính (AttributeId, AttributeName, Value)</returns>
-        public List<(Guid AttributeId, string AttributeName, string Value)> GetAttributeValues(Guid variantId)
+        public async Task UpdateAllVariantFullNamesAsync()
         {
             try
             {
-                return GetDataAccess().GetAttributeValues(variantId);
+                await GetDataAccess().UpdateAllVariantFullNamesAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Lỗi lấy giá trị thuộc tính: {ex.Message}", ex);
+                throw new Exception($"Lỗi cập nhật VariantFullName: {ex.Message}", ex);
             }
         }
+
+        #endregion
+
+        #region ========== QUERY OPERATIONS ==========
 
         /// <summary>
         /// Lấy queryable cho LinqInstantFeedbackSource (trả về Entity)
@@ -239,47 +320,6 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
-        /// Lấy tất cả biến thể sản phẩm
-        /// </summary>
-        /// <returns>Danh sách biến thể</returns>
-        public async Task<List<ProductVariant>> GetAllAsync()
-        {
-            try
-            {
-                return await GetDataAccess().GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi lấy danh sách biến thể: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy tất cả biến thể sản phẩm với thông tin đầy đủ
-        /// Bao gồm thông tin sản phẩm gốc, đơn vị tính, thuộc tính và hình ảnh
-        /// Tuân thủ quy tắc: Dal -> Bll (chỉ trả về Entity)
-        /// </summary>
-        /// <returns>Danh sách ProductVariant entity với thông tin đầy đủ</returns>
-        public async Task<List<ProductVariant>> GetAllWithDetailsAsync()
-        {
-            try
-            {
-                // Lấy dữ liệu từ DAL với thông tin liên quan đã được preload
-                var variants = await GetDataAccess().GetAllWithDetailsAsync();
-                
-                // DAL đã preload tất cả navigation properties thông qua DataLoadOptions
-                // Bao gồm: ProductService, UnitOfMeasure, ProductVariantAttributes, ProductVariantImages
-                // Và cả thông tin sản phẩm gốc: ProductServiceCategory, ProductServiceAttributes, ProductServiceImages
-                
-                return variants;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi lấy danh sách biến thể: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
         /// Lấy DataContext để sử dụng với LinqServerModeSource
         /// Tuân thủ quy tắc: Dal -> Bll -> GUI
         /// </summary>
@@ -299,8 +339,25 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Private Methods
+        #region ========== VALIDATION METHODS ==========
 
+        /// <summary>
+        /// Kiểm tra mã biến thể có trùng không
+        /// </summary>
+        /// <param name="variantCode">Mã biến thể</param>
+        /// <param name="excludeId">ID biến thể cần loại trừ (khi edit)</param>
+        /// <returns>True nếu trùng</returns>
+        private bool IsVariantCodeExists(string variantCode, Guid? excludeId = null)
+        {
+            try
+            {
+                return GetDataAccess().IsVariantCodeExists(variantCode, excludeId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi kiểm tra mã biến thể: {ex.Message}", ex);
+            }
+        }
 
         /// <summary>
         /// Validate dữ liệu biến thể
@@ -316,21 +373,6 @@ namespace Bll.MasterData.ProductServiceBll
 
                 if (string.IsNullOrWhiteSpace(value))
                     throw new ArgumentException("Vui lòng nhập đầy đủ giá trị thuộc tính");
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật VariantFullName cho tất cả biến thể hiện có
-        /// </summary>
-        public async Task UpdateAllVariantFullNamesAsync()
-        {
-            try
-            {
-                await GetDataAccess().UpdateAllVariantFullNamesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi cập nhật VariantFullName: {ex.Message}", ex);
             }
         }
 
