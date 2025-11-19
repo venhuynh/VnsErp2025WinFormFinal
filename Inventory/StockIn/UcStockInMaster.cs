@@ -581,7 +581,7 @@ namespace Inventory.StockIn
         /// <summary>
         /// Validate dữ liệu input và hiển thị lỗi bằng dxErrorProvider
         /// </summary>
-        public bool ValidateInput()
+        private bool ValidateInput()
         {
             try
             {

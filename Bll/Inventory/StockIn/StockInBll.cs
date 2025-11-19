@@ -99,6 +99,9 @@ namespace Bll.Inventory.StockIn
                 _logger.Debug("SaveAsync: Bắt đầu lưu phiếu nhập kho, MasterId={0}, DetailCount={1}", 
                     masterDto.Id, detailDtos.Count);
 
+                // 0. Validate dữ liệu trước khi lưu
+                ValidateBeforeSave(masterDto, detailDtos);
+
                 // 1. Map DTOs sang Entities
                 var masterEntity = MapMasterDtoToEntity(masterDto);
                 var detailEntities = detailDtos.Select(MapDetailDtoToEntity).ToList();
@@ -157,6 +160,34 @@ namespace Bll.Inventory.StockIn
                 TotalAmount = dto.TotalAmount, // Computed property value
                 TotalAmountIncludedVat = dto.TotalAmountIncludedVat // Computed property value
             };
+        }
+
+        /// <summary>
+        /// Validate dữ liệu trước khi lưu
+        /// </summary>
+        private void ValidateBeforeSave(StockInMasterDto masterDto, List<StockInDetailDto> detailDtos)
+        {
+            // Validate WarehouseId - không được để trống hoặc Guid.Empty
+            if (masterDto.WarehouseId == Guid.Empty)
+            {
+                throw new ArgumentException("Vui lòng chọn kho nhập. WarehouseId không được để trống.");
+            }
+
+            // Validate các detail
+            foreach (var detail in detailDtos)
+            {
+                if (detail.ProductVariantId == Guid.Empty)
+                {
+                    throw new ArgumentException($"Dòng {detail.LineNumber}: Vui lòng chọn hàng hóa. ProductVariantId không được để trống.");
+                }
+
+                if (detail.StockInQty <= 0)
+                {
+                    throw new ArgumentException($"Dòng {detail.LineNumber}: Số lượng nhập phải lớn hơn 0.");
+                }
+            }
+
+            _logger.Debug("ValidateBeforeSave: Validation passed");
         }
 
         #endregion

@@ -4,6 +4,7 @@ using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.StockIn;
@@ -67,7 +68,12 @@ namespace Inventory.StockIn
                 // Setup event handlers
                 SetupEvents();
 
-                // Load datasource với SplashScreen
+                // Đảm bảo form đã được hiển thị và sẵn sàng trước khi show splash screen
+                // Refresh form để đảm bảo nó đã được render
+                this.Refresh();
+                Application.DoEvents(); // Cho phép form render xong
+
+                // Load datasource với SplashScreen (với owner là form này)
                 await LoadDataSourcesAsync();
 
                 // Reset form về trạng thái ban đầu
@@ -84,6 +90,7 @@ namespace Inventory.StockIn
 
         /// <summary>
         /// Load tất cả datasource cho các SearchLookUpEdit với SplashScreen
+        /// SplashScreen sẽ được hiển thị với owner là form này để đảm bảo hiển thị đúng vị trí
         /// </summary>
         private async Task LoadDataSourcesAsync()
         {
@@ -91,8 +98,9 @@ namespace Inventory.StockIn
             {
                 _logger.Debug("LoadDataSourcesAsync: Starting to load datasources");
 
-                // Hiển thị SplashScreen
-                SplashScreenHelper.ShowVnsSplashScreen("VnsErp2025", "Đang tải dữ liệu...");
+                // Hiển thị SplashScreen với owner là form này
+                // Sử dụng SplashScreenManager trực tiếp để set owner
+                ShowSplashScreenWithOwner();
 
                 try
                 {
@@ -117,6 +125,76 @@ namespace Inventory.StockIn
                 _logger.Error("LoadDataSourcesAsync: Exception occurred", ex);
                 SplashScreenHelper.CloseSplashScreen();
                 MsgBox.ShowError($"Lỗi tải dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị SplashScreen với owner là form này
+        /// Đảm bảo SplashScreen hiển thị đúng vị trí và có owner đúng
+        /// Sử dụng SplashScreenHelper và SplashScreenManager với owner parameter
+        /// </summary>
+        private void ShowSplashScreenWithOwner()
+        {
+            try
+            {
+                // Đảm bảo form đã được hiển thị
+                if (!this.Visible)
+                {
+                    this.Show();
+                }
+
+                // Đảm bảo form đã được activate
+                if (!this.IsHandleCreated)
+                {
+                    this.CreateHandle();
+                }
+
+                // Đảm bảo form được bring to front và activate
+                this.BringToFront();
+                this.Activate();
+
+                // Đóng splash screen hiện tại nếu có (sử dụng SplashScreenHelper)
+                SplashScreenHelper.CloseSplashScreen();
+
+                // Hiển thị SplashScreen với owner là form này
+                // Sử dụng SplashScreenManager.ShowForm với owner parameter
+                // Khi có owner, SplashScreen sẽ tự động hiển thị trên owner form và là topmost
+                DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(
+                    this, // Owner form - đảm bảo SplashScreen hiển thị trên form này
+                    typeof(Common.Common.VnsSplashScreen),
+                    false, // fadeIn
+                    false, // fadeOut
+                    false); // useFadeInOutAnimation
+
+                // Đảm bảo SplashScreen được bring to front sau khi hiển thị
+                // Sử dụng BeginInvoke để đảm bảo SplashScreen đã được tạo xong
+                this.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        // Kiểm tra SplashScreen đã hiển thị chưa
+                        if (DevExpress.XtraSplashScreen.SplashScreenManager.Default != null &&
+                            DevExpress.XtraSplashScreen.SplashScreenManager.Default.IsSplashFormVisible)
+                        {
+                            // Đảm bảo owner form vẫn ở front
+                            this.BringToFront();
+                            
+                            _logger.Debug("ShowSplashScreenWithOwner: SplashScreen displayed with owner={0}", this.Name);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Warning("ShowSplashScreenWithOwner: Exception in BeginInvoke: {0}", ex.Message);
+                    }
+                }));
+
+                _logger.Debug("ShowSplashScreenWithOwner: SplashScreen display initiated with owner={0}", this.Name);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ShowSplashScreenWithOwner: Exception occurred", ex);
+                // Fallback: sử dụng helper nếu có lỗi
+                SplashScreenHelper.ShowVnsSplashScreen("VnsErp2025", "Đang tải dữ liệu...");
             }
         }
 
@@ -473,6 +551,7 @@ namespace Inventory.StockIn
 
         /// <summary>
         /// Event handler khi form đang đóng
+        /// Sử dụng ShowYesNoCancel để đơn giản hóa logic: Yes = Lưu và đóng, No = Đóng không lưu, Cancel = Hủy
         /// </summary>
         private async void FrmNhapKhoThuongMai02_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -492,17 +571,21 @@ namespace Inventory.StockIn
                 // Kiểm tra có thay đổi chưa lưu không
                 if (_hasUnsavedChanges)
                 {
-                    // Hỏi lần 1: Có muốn lưu và đóng không?
-                    var saveAndClose = MsgBox.ShowYesNo(
-                        "Bạn có thay đổi chưa lưu. Bạn có muốn lưu và đóng form?",
+                    // Sử dụng ShowYesNoCancel với 3 lựa chọn:
+                    // Yes = Lưu và đóng
+                    // No = Đóng không lưu
+                    // Cancel = Hủy (giữ form mở)
+                    var result = MsgBox.ShowYesNoCancel(
+                        "Bạn có thay đổi chưa lưu. Bạn muốn làm gì?",
                         "Xác nhận đóng",
                         this,
                         yesButtonText: "Lưu và đóng",
-                        noButtonText: "Đóng không lưu");
+                        noButtonText: "Đóng không lưu",
+                        cancelButtonText: "Hủy");
                     
-                    _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: Save and close result={0}", saveAndClose);
+                    _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User choice result={0}", result);
                     
-                    if (saveAndClose)
+                    if (result == DialogResult.Yes)
                     {
                         // Người dùng chọn "Lưu và đóng"
                         // Cancel việc đóng form tạm thời để lưu dữ liệu
@@ -545,33 +628,18 @@ namespace Inventory.StockIn
                             // Lỗi khi lưu, giữ form mở
                             e.Cancel = true;
                         }
-                        
-                        return;
                     }
-                    else
+                    else if (result == DialogResult.No)
                     {
-                        // Người dùng chọn "Đóng không lưu", hỏi xác nhận lần 2
-                        var confirmClose = MsgBox.ShowYesNo(
-                            "Bạn có chắc chắn muốn đóng form mà không lưu thay đổi?",
-                            "Xác nhận đóng",
-                            this,
-                            yesButtonText: "Đóng",
-                            noButtonText: "Hủy");
-                        
-                        _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: Confirm close without save result={0}", confirmClose);
-                        
-                        if (confirmClose)
-                        {
-                            // Người dùng xác nhận đóng không lưu
-                            e.Cancel = false;
-                            _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User confirmed closing without save, form will close");
-                        }
-                        else
-                        {
-                            // Người dùng chọn "Hủy" - không muốn đóng
-                            e.Cancel = true;
-                            _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User cancelled closing, form will remain open");
-                        }
+                        // Người dùng chọn "Đóng không lưu" - cho phép đóng form
+                        e.Cancel = false;
+                        _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User chose to close without save, form will close");
+                    }
+                    else // DialogResult.Cancel
+                    {
+                        // Người dùng chọn "Hủy" - không muốn đóng, giữ form mở
+                        e.Cancel = true;
+                        _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User cancelled closing, form will remain open");
                     }
                 }
                 else
@@ -629,6 +697,7 @@ namespace Inventory.StockIn
 
         /// <summary>
         /// Lưu dữ liệu async
+        /// Đảm bảo validate data từ các user control hợp lệ trước khi gọi BLL
         /// </summary>
         private async Task<bool> SaveDataAsync()
         {
@@ -636,21 +705,39 @@ namespace Inventory.StockIn
             {
                 _logger.Debug("SaveDataAsync: Starting save operation");
 
-                // 1. Validate và lấy dữ liệu từ Master control
+                // ========== BƯỚC 1: VALIDATE VÀ LẤY DỮ LIỆU TỪ MASTER CONTROL ==========
+                _logger.Debug("SaveDataAsync: Step 1 - Validating Master control");
                 var masterDto = ucStockInMaster1.GetDto();
                 if (masterDto == null)
                 {
-                    _logger.Warning("SaveDataAsync: Master validation failed");
+                    _logger.Warning("SaveDataAsync: Master validation failed - GetDto() returned null");
+                    MsgBox.ShowWarning("Vui lòng kiểm tra và điền đầy đủ thông tin phiếu nhập kho", "Cảnh báo", this);
                     return false;
                 }
 
-                // 2. Validate và lấy dữ liệu từ Detail control
+                // Validate thêm business rules cho Master
+                if (masterDto.WarehouseId == Guid.Empty)
+                {
+                    _logger.Warning("SaveDataAsync: Master validation failed - WarehouseId is Empty");
+                    MsgBox.ShowWarning("Vui lòng chọn kho nhập", "Cảnh báo", this);
+                    return false;
+                }
+
+                _logger.Debug("SaveDataAsync: Master validation passed, WarehouseId={0}, StockInNumber={1}", 
+                    masterDto.WarehouseId, masterDto.StockInNumber);
+
+                // ========== BƯỚC 2: VALIDATE VÀ LẤY DỮ LIỆU TỪ DETAIL CONTROL ==========
+                _logger.Debug("SaveDataAsync: Step 2 - Validating Detail control");
+                
+                // Validate tất cả các rows trong grid
                 if (!ucStockInDetail1.ValidateAll())
                 {
-                    _logger.Warning("SaveDataAsync: Detail validation failed");
+                    _logger.Warning("SaveDataAsync: Detail validation failed - ValidateAll() returned false");
+                    // ValidateAll() đã hiển thị thông báo lỗi chi tiết
                     return false;
                 }
 
+                // Lấy danh sách detail DTOs
                 var detailDtos = ucStockInDetail1.GetDetails();
                 if (detailDtos == null || detailDtos.Count == 0)
                 {
@@ -659,12 +746,55 @@ namespace Inventory.StockIn
                     return false;
                 }
 
-                // 3. Lưu dữ liệu vào database
-                // Validation đã được thực hiện ở bước 1 và 2
-                // StockInBll.SaveAsync sẽ tự động tạo ID mới nếu masterDto.Id == Guid.Empty
+                // Validate thêm business rules cho từng detail
+                var validationErrors = new List<string>();
+                for (int i = 0; i < detailDtos.Count; i++)
+                {
+                    var detail = detailDtos[i];
+                    var lineNumber = detail.LineNumber > 0 ? detail.LineNumber : (i + 1);
+
+                    if (detail.ProductVariantId == Guid.Empty)
+                    {
+                        validationErrors.Add($"Dòng {lineNumber}: Vui lòng chọn hàng hóa");
+                    }
+
+                    if (detail.StockInQty <= 0)
+                    {
+                        validationErrors.Add($"Dòng {lineNumber}: Số lượng nhập phải lớn hơn 0");
+                    }
+
+                    if (detail.UnitPrice < 0)
+                    {
+                        validationErrors.Add($"Dòng {lineNumber}: Đơn giá không được âm");
+                    }
+
+                    if (detail.Vat < 0 || detail.Vat > 100)
+                    {
+                        validationErrors.Add($"Dòng {lineNumber}: VAT phải từ 0 đến 100");
+                    }
+                }
+
+                if (validationErrors.Any())
+                {
+                    _logger.Warning("SaveDataAsync: Detail business rules validation failed, Errors={0}", 
+                        string.Join("; ", validationErrors));
+                    MsgBox.ShowError($"Có lỗi trong dữ liệu chi tiết:\n\n{string.Join("\n", validationErrors)}", "Lỗi validation", this);
+                    return false;
+                }
+
+                _logger.Debug("SaveDataAsync: Detail validation passed, DetailCount={0}", detailDtos.Count);
+
+                // ========== BƯỚC 3: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
+                _logger.Debug("SaveDataAsync: Step 3 - All validations passed, calling BLL.SaveAsync");
+                
+                // Tất cả validation đã được thực hiện ở bước 1 và 2
+                // StockInBll.SaveAsync sẽ có thêm validation layer nhưng chủ yếu là double-check
                 var savedMasterId = await _stockInBll.SaveAsync(masterDto, detailDtos);
 
-                // 4. Cập nhật ID sau khi lưu
+                // ========== BƯỚC 4: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
+                _logger.Debug("SaveDataAsync: Step 4 - Updating state after successful save");
+                
+                // Cập nhật ID sau khi lưu
                 masterDto.Id = savedMasterId;
                 _currentStockInId = savedMasterId;
 
@@ -673,6 +803,13 @@ namespace Inventory.StockIn
 
                 _logger.Info("SaveDataAsync: Save operation completed successfully, MasterId={0}", savedMasterId);
                 return true;
+            }
+            catch (ArgumentException argEx)
+            {
+                // Lỗi validation từ BLL (đã được validate nhưng double-check)
+                _logger.Warning("SaveDataAsync: Validation error from BLL: {0}", argEx.Message);
+                MsgBox.ShowWarning(argEx.Message, "Cảnh báo", this);
+                return false;
             }
             catch (Exception ex)
             {

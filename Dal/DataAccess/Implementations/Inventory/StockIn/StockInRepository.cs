@@ -130,7 +130,19 @@ public class StockInRepository : IStockInRepository
                     catch (Exception ex)
                     {
                         _logger.Error("SaveAsync: Lỗi trong transaction, đang rollback", ex);
-                        transaction.Rollback();
+                        try
+                        {
+                            // Chỉ rollback nếu transaction chưa completed
+                            if (transaction.Connection != null && transaction.Connection.State == ConnectionState.Open)
+                            {
+                                transaction.Rollback();
+                            }
+                        }
+                        catch (Exception rollbackEx)
+                        {
+                            _logger.Error("SaveAsync: Lỗi khi rollback transaction", rollbackEx);
+                            // Không throw lại lỗi rollback, chỉ log
+                        }
                         throw;
                     }
                 }
