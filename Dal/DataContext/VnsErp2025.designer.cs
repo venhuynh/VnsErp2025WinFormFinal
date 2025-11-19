@@ -468,6 +468,8 @@ namespace Dal.DataContext
 		
 		private int _WarrantyStatus;
 		
+		private string _UniqueProductInfo;
+		
 		private EntityRef<StockInOutDetail> _StockInOutDetail;
 		
     #region Extensibility Method Definitions
@@ -486,6 +488,8 @@ namespace Dal.DataContext
     partial void OnWarrantyUntilChanged();
     partial void OnWarrantyStatusChanging(int value);
     partial void OnWarrantyStatusChanged();
+    partial void OnUniqueProductInfoChanging(string value);
+    partial void OnUniqueProductInfoChanged();
     #endregion
 		
 		public Warranty()
@@ -614,6 +618,26 @@ namespace Dal.DataContext
 					this._WarrantyStatus = value;
 					this.SendPropertyChanged("WarrantyStatus");
 					this.OnWarrantyStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UniqueProductInfo", DbType="NVarChar(200) NOT NULL", CanBeNull=false)]
+		public string UniqueProductInfo
+		{
+			get
+			{
+				return this._UniqueProductInfo;
+			}
+			set
+			{
+				if ((this._UniqueProductInfo != value))
+				{
+					this.OnUniqueProductInfoChanging(value);
+					this.SendPropertyChanging();
+					this._UniqueProductInfo = value;
+					this.SendPropertyChanged("UniqueProductInfo");
+					this.OnUniqueProductInfoChanged();
 				}
 			}
 		}

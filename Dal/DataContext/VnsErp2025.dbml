@@ -16,6 +16,7 @@
       <Column Name="MonthOfWarranty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="WarrantyUntil" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="WarrantyStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UniqueProductInfo" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
       <Association Name="StockInOutDetail_Warranty" Member="StockInOutDetail" ThisKey="StockInOutDetailId" OtherKey="Id" Type="StockInOutDetail" IsForeignKey="true" />
     </Type>
   </Table>
