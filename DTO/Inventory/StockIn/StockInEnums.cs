@@ -263,36 +263,6 @@ namespace DTO.Inventory.StockIn
         ChoKhachHang = 2
     }
 
-    /// <summary>
-    /// Enum định nghĩa các trạng thái bảo hành
-    /// </summary>
-    public enum TrangThaiBaoHanhEnum
-    {
-        /// <summary>
-        /// Chờ xử lý - Yêu cầu bảo hành đã được tạo, chờ xử lý
-        /// </summary>
-        ChoXuLy = 1,
-
-        /// <summary>
-        /// Đang bảo hành - Sản phẩm đang trong quá trình bảo hành
-        /// </summary>
-        DangBaoHanh = 2,
-
-        /// <summary>
-        /// Đã hoàn thành - Bảo hành đã hoàn tất
-        /// </summary>
-        DaHoanThanh = 3,
-
-        /// <summary>
-        /// Đã từ chối - Yêu cầu bảo hành bị từ chối
-        /// </summary>
-        DaTuChoi = 4,
-
-        /// <summary>
-        /// Đã hủy - Yêu cầu bảo hành đã bị hủy
-        /// </summary>
-        DaHuy = 99
-    }
 
     #endregion
 }

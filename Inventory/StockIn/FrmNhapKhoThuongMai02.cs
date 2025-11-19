@@ -408,14 +408,95 @@ namespace Inventory.StockIn
         /// <summary>
         /// Event handler cho nút Nhập bảo hành
         /// </summary>
-        private void NhapBaoHanhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void NhapBaoHanhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
                 _logger.Debug("NhapBaoHanhBarButtonItem_ItemClick: Warranty input button clicked");
 
-                // TODO: Implement warranty input functionality
-                MsgBox.ShowWarning("Chức năng nhập bảo hành đang được phát triển.", "Thông báo", this);
+                // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
+                Guid stockInOutMasterId = Guid.Empty;
+                
+                // Kiểm tra phiếu đã được lưu chưa
+                if (_currentStockInId != Guid.Empty)
+                {
+                    stockInOutMasterId = _currentStockInId;
+                }
+                else
+                {
+                    // Phiếu chưa được lưu - kiểm tra có thay đổi chưa lưu không
+                    if (_hasUnsavedChanges)
+                    {
+                        // Hỏi người dùng có muốn lưu trước không
+                        if (MsgBox.ShowYesNo(
+                                "Phiếu nhập kho chưa được lưu. Bạn có muốn lưu trước khi nhập bảo hành không?",
+                                "Xác nhận",
+                                this))
+                        {
+                            // Gọi nút Lưu để lưu phiếu
+                            LuuPhieuBarButtonItem_ItemClick(null, null);
+                            
+                            // Đợi cho đến khi lưu hoàn tất (tối đa 10 giây)
+                            var timeout = TimeSpan.FromSeconds(10);
+                            var startTime = DateTime.Now;
+                            while (_currentStockInId == Guid.Empty && (DateTime.Now - startTime) < timeout)
+                            {
+                                await Task.Delay(100);
+                            }
+                            
+                            // Kiểm tra lại sau khi lưu
+                            if (_currentStockInId != Guid.Empty)
+                            {
+                                stockInOutMasterId = _currentStockInId;
+                            }
+                            else
+                            {
+                                // Lưu thất bại hoặc timeout, không mở form nhập bảo hành
+                                _logger.Warning("NhapBaoHanhBarButtonItem_ItemClick: Save failed, timeout, or cancelled, cannot open warranty form");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            // Người dùng chọn không lưu
+                            _logger.Debug("NhapBaoHanhBarButtonItem_ItemClick: User chose not to save");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // Không có thay đổi chưa lưu và chưa có ID - yêu cầu lưu
+                        MsgBox.ShowError(
+                            "Vui lòng nhập và lưu phiếu nhập kho trước khi nhập bảo hành.",
+                            "Lỗi",
+                            this);
+                        _logger.Warning("NhapBaoHanhBarButtonItem_ItemClick: Cannot add warranty - Form not saved and no unsaved changes");
+                        return;
+                    }
+                }
+
+                // Kiểm tra lại StockInOutMasterId sau khi lưu (nếu có)
+                if (stockInOutMasterId == Guid.Empty)
+                {
+                    MsgBox.ShowWarning(
+                        "Không thể lấy ID phiếu nhập kho. Vui lòng thử lại.",
+                        "Cảnh báo",
+                        this);
+                    _logger.Warning("NhapBaoHanhBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
+                    return;
+                }
+
+                // Mở form nhập bảo hành với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var frmWarranty = new InventoryManagement.FrmWarranty(stockInOutMasterId))
+                    {
+                        frmWarranty.StartPosition = FormStartPosition.CenterParent;
+                        frmWarranty.ShowDialog(this);
+                    }
+                }
+
+                _logger.Info("NhapBaoHanhBarButtonItem_ItemClick: Warranty form opened with StockInOutMasterId={0}", stockInOutMasterId);
             }
             catch (Exception ex)
             {
