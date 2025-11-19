@@ -1,5 +1,6 @@
 ﻿using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
+using Common;
 using Common.Utils;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
@@ -67,8 +68,7 @@ namespace Inventory.StockIn
                 // Setup events
                 SetupEvents();
 
-                // Load dữ liệu lookup
-                LoadLookupDataAsync();
+                // Không load dữ liệu lookup ở đây, sẽ được gọi từ form khi FormLoad
             }
             catch (Exception ex)
             {
@@ -95,12 +95,11 @@ namespace Inventory.StockIn
                 PurchaseOrderNumber = null,
                 SupplierId = Guid.Empty,
                 SupplierName = null,
-                Notes = null,
-                TotalQuantity = 0,
-                TotalAmount = 0,
-                TotalVat = 0,
-                TotalAmountIncludedVat = 0
+                Notes = null
             };
+
+            // Khởi tạo các giá trị tổng hợp bằng method SetTotals() vì các property giờ là computed (read-only)
+            _stockInMasterDto.SetTotals(0, 0, 0, 0);
         }
          
 
@@ -116,7 +115,7 @@ namespace Inventory.StockIn
                 WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
                 WarehouseNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
                 WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-                WarehouseNameSearchLookupEdit.Properties.PopupView = searchLookUpEdit1View;
+                WarehouseNameSearchLookupEdit.Properties.PopupView = CompanyBranchDtoSearchLookUpEdit1View;
                 
                 // Đảm bảo column ThongTinHtml được cấu hình đúng (đã có sẵn trong Designer)
                 if (colThongTinHtml != null)
@@ -185,8 +184,9 @@ namespace Inventory.StockIn
 
         /// <summary>
         /// Load dữ liệu lookup (Warehouse và Supplier)
+        /// Method này được gọi từ form khi FormLoad
         /// </summary>
-        private async void LoadLookupDataAsync()
+        public async Task LoadLookupDataAsync()
         {
             try
             {
@@ -251,11 +251,7 @@ namespace Inventory.StockIn
                 StockInNumberTextEdit,
                 StockInDateDateEdit,
                 PurchaseOrderSearchLookupEdit,
-                NotesTextEdit,
-                TotalQuantityTextEdit,
-                ThanTienChuaVatTextEdit,
-                VatTextEdit,
-                TongTienBaoGomVatTextEdit
+                NotesTextEdit
             };
 
             foreach (var control in controls)
@@ -583,6 +579,92 @@ namespace Inventory.StockIn
         {
             InitializeDto();
             dxErrorProvider1.ClearErrors();
+        }
+
+        /// <summary>
+        /// Cập nhật các giá trị tổng hợp từ detail
+        /// </summary>
+        /// <param name="totalQuantity">Tổng số lượng</param>
+        /// <param name="totalAmount">Tổng tiền chưa VAT</param>
+        /// <param name="totalVat">Tổng VAT</param>
+        /// <param name="totalAmountIncludedVat">Tổng tiền bao gồm VAT</param>
+        public void UpdateTotals(decimal totalQuantity, decimal totalAmount, decimal totalVat, decimal totalAmountIncludedVat)
+        {
+            try
+            {
+                // Sử dụng method SetTotals() vì các property giờ là computed (read-only)
+                _stockInMasterDto.SetTotals(totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
+
+                // Cập nhật trực tiếp vào các SimpleLabelItem để hiển thị
+                UpdateTotalQuantityLabel(totalQuantity);
+                UpdateTotalAmountLabel(totalAmount);
+                UpdateTotalVatLabel(totalVat);
+                UpdateTotalAmountIncludedVatLabel(totalAmountIncludedVat);
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi cập nhật tổng hợp");
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật label tổng số lượng
+        /// </summary>
+        private void UpdateTotalQuantityLabel(decimal value)
+        {
+            if (TotalQuantitySimpleLabelItem != null)
+            {
+                TotalQuantitySimpleLabelItem.Text = FormatQuantity(value);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật label tổng tiền chưa VAT
+        /// </summary>
+        private void UpdateTotalAmountLabel(decimal value)
+        {
+            if (TotalAmountSimpleLabelItem != null)
+            {
+                TotalAmountSimpleLabelItem.Text = FormatCurrency(value);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật label tổng VAT
+        /// </summary>
+        private void UpdateTotalVatLabel(decimal value)
+        {
+            if (TotalVatSimpleLabelItem != null)
+            {
+                TotalVatSimpleLabelItem.Text = FormatCurrency(value);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật label tổng tiền bao gồm VAT
+        /// </summary>
+        private void UpdateTotalAmountIncludedVatLabel(decimal value)
+        {
+            if (TotalAmountIncludedVatSimpleLabelItem != null)
+            {
+                TotalAmountIncludedVatSimpleLabelItem.Text = FormatCurrency(value);
+            }
+        }
+
+        /// <summary>
+        /// Format số lượng (có 2 chữ số thập phân)
+        /// </summary>
+        private string FormatQuantity(decimal value)
+        {
+            return value.ToString(ApplicationConstants.QUANTITY_FORMAT);
+        }
+
+        /// <summary>
+        /// Format tiền tệ (không có chữ số thập phân)
+        /// </summary>
+        private string FormatCurrency(decimal value)
+        {
+            return value.ToString(ApplicationConstants.CURRENCY_FORMAT);
         }
 
         #endregion

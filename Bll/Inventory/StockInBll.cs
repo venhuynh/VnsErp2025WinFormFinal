@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bll.Inventory
 {
-    internal class StockInBll
+    public class StockInBll
     {
     }
 }

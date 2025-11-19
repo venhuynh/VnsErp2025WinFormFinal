@@ -31,81 +31,90 @@ namespace Inventory.StockIn
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition1 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition2 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition1 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition2 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition3 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition4 = new DevExpress.XtraLayout.RowDefinition();
+            this.HtmlContentRepositoryItemHypertextLabel01 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.CompanyBranchRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.ThongTinKhachHangNccLayoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.TongKetSoLuongPhieuNhapLayoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
-            this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
             this.StockInNumberTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.StockInDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.PurchaseOrderSearchLookupEdit = new DevExpress.XtraEditors.TextEdit();
-            this.TotalQuantityTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.ThanTienChuaVatTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.VatTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.TongTienBaoGomVatTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.WarehouseNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
-            this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.CompanyBranchDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.SupplierNameTextEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.businessPartnerSiteListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.PartnerSiteGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colThongTinHtml1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.NotesTextEdit = new DevExpress.XtraEditors.MemoEdit();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForStockInNumber = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForStockInDate = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForWarehouseName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForPurchaseOrderId = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ThongTinKhachHangNccLayoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForSupplierName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForNotes = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForTotalQuantity = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForTotalAmount = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForCreatedBy = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForCreatedByName = new DevExpress.XtraLayout.LayoutControlItem();
-            this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.businessPartnerSiteListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.HtmlContentRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
+            this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
+            this.simpleLabelItem1 = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.TotalQuantitySimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.TotalAmountSimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.simpleLabelItem2 = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.TotalVatSimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.simpleLabelItem3 = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.simpleLabelItem4 = new DevExpress.XtraLayout.SimpleLabelItem();
+            this.TotalAmountIncludedVatSimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel01)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThongTinKhachHangNccLayoutControlGroup)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TongKetSoLuongPhieuNhapLayoutControlGroup)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInNumberTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDateDateEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PurchaseOrderSearchLookupEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TotalQuantityTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThanTienChuaVatTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TongTienBaoGomVatTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameSearchLookupEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchDtoSearchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SupplierNameTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PartnerSiteGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(repositoryItemHypertextLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStockInNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStockInDate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForWarehouseName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPurchaseOrderId)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinKhachHangNccLayoutControlGroup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForSupplierName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNotes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForTotalQuantity)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForTotalAmount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForCreatedBy)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForCreatedByName)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TongKetSoLuongPhieuNhapLayoutControlGroup)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TotalQuantitySimpleLabelItem)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TotalAmountSimpleLabelItem)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TotalVatSimpleLabelItem)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TotalAmountIncludedVatSimpleLabelItem)).BeginInit();
             this.SuspendLayout();
+            // 
+            // HtmlContentRepositoryItemHypertextLabel01
+            // 
+            this.HtmlContentRepositoryItemHypertextLabel01.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.HtmlContentRepositoryItemHypertextLabel01.Name = "HtmlContentRepositoryItemHypertextLabel01";
             // 
             // CompanyBranchRepositoryItemHypertextLabel
             // 
@@ -117,10 +126,6 @@ namespace Inventory.StockIn
             this.dataLayoutControl1.Controls.Add(this.StockInNumberTextEdit);
             this.dataLayoutControl1.Controls.Add(this.StockInDateDateEdit);
             this.dataLayoutControl1.Controls.Add(this.PurchaseOrderSearchLookupEdit);
-            this.dataLayoutControl1.Controls.Add(this.TotalQuantityTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.ThanTienChuaVatTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.VatTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.TongTienBaoGomVatTextEdit);
             this.dataLayoutControl1.Controls.Add(this.WarehouseNameSearchLookupEdit);
             this.dataLayoutControl1.Controls.Add(this.SupplierNameTextEdit);
             this.dataLayoutControl1.Controls.Add(this.NotesTextEdit);
@@ -131,6 +136,127 @@ namespace Inventory.StockIn
             this.dataLayoutControl1.Size = new System.Drawing.Size(486, 623);
             this.dataLayoutControl1.TabIndex = 0;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
+            // 
+            // StockInNumberTextEdit
+            // 
+            this.StockInNumberTextEdit.Location = new System.Drawing.Point(155, 72);
+            this.StockInNumberTextEdit.Name = "StockInNumberTextEdit";
+            this.StockInNumberTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.StockInNumberTextEdit.Size = new System.Drawing.Size(306, 20);
+            this.StockInNumberTextEdit.StyleController = this.dataLayoutControl1;
+            this.StockInNumberTextEdit.TabIndex = 5;
+            // 
+            // StockInDateDateEdit
+            // 
+            this.StockInDateDateEdit.EditValue = null;
+            this.StockInDateDateEdit.Location = new System.Drawing.Point(155, 46);
+            this.StockInDateDateEdit.Name = "StockInDateDateEdit";
+            this.StockInDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.StockInDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.StockInDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.StockInDateDateEdit.Size = new System.Drawing.Size(306, 20);
+            this.StockInDateDateEdit.StyleController = this.dataLayoutControl1;
+            this.StockInDateDateEdit.TabIndex = 6;
+            // 
+            // PurchaseOrderSearchLookupEdit
+            // 
+            this.PurchaseOrderSearchLookupEdit.Location = new System.Drawing.Point(155, 124);
+            this.PurchaseOrderSearchLookupEdit.Name = "PurchaseOrderSearchLookupEdit";
+            this.PurchaseOrderSearchLookupEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.PurchaseOrderSearchLookupEdit.Size = new System.Drawing.Size(306, 20);
+            this.PurchaseOrderSearchLookupEdit.StyleController = this.dataLayoutControl1;
+            this.PurchaseOrderSearchLookupEdit.TabIndex = 16;
+            // 
+            // WarehouseNameSearchLookupEdit
+            // 
+            this.WarehouseNameSearchLookupEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
+            this.WarehouseNameSearchLookupEdit.Location = new System.Drawing.Point(155, 98);
+            this.WarehouseNameSearchLookupEdit.Name = "WarehouseNameSearchLookupEdit";
+            this.WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.WarehouseNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.WarehouseNameSearchLookupEdit.Properties.DataSource = this.companyBranchDtoBindingSource;
+            this.WarehouseNameSearchLookupEdit.Properties.DisplayMember = "HtmlContent";
+            this.WarehouseNameSearchLookupEdit.Properties.NullText = "";
+            this.WarehouseNameSearchLookupEdit.Properties.PopupView = this.CompanyBranchDtoSearchLookUpEdit1View;
+            this.WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
+            this.WarehouseNameSearchLookupEdit.Size = new System.Drawing.Size(306, 20);
+            this.WarehouseNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
+            this.WarehouseNameSearchLookupEdit.TabIndex = 15;
+            // 
+            // companyBranchDtoBindingSource
+            // 
+            this.companyBranchDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchDto);
+            // 
+            // CompanyBranchDtoSearchLookUpEdit1View
+            // 
+            this.CompanyBranchDtoSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colThongTinHtml});
+            this.CompanyBranchDtoSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.CompanyBranchDtoSearchLookUpEdit1View.Name = "CompanyBranchDtoSearchLookUpEdit1View";
+            this.CompanyBranchDtoSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.CompanyBranchDtoSearchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.CompanyBranchDtoSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
+            this.CompanyBranchDtoSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            // 
+            // colThongTinHtml
+            // 
+            this.colThongTinHtml.ColumnEdit = this.CompanyBranchRepositoryItemHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 0;
+            // 
+            // SupplierNameTextEdit
+            // 
+            this.SupplierNameTextEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
+            this.SupplierNameTextEdit.Location = new System.Drawing.Point(147, 194);
+            this.SupplierNameTextEdit.Name = "SupplierNameTextEdit";
+            this.SupplierNameTextEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.SupplierNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
+            this.SupplierNameTextEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.SupplierNameTextEdit.Properties.DataSource = this.businessPartnerSiteListDtoBindingSource;
+            this.SupplierNameTextEdit.Properties.DisplayMember = "ThongTinHtml";
+            this.SupplierNameTextEdit.Properties.NullText = "";
+            this.SupplierNameTextEdit.Properties.PopupView = this.PartnerSiteGridView;
+            this.SupplierNameTextEdit.Properties.ValueMember = "Id";
+            this.SupplierNameTextEdit.Size = new System.Drawing.Size(315, 20);
+            this.SupplierNameTextEdit.StyleController = this.dataLayoutControl1;
+            this.SupplierNameTextEdit.TabIndex = 20;
+            // 
+            // businessPartnerSiteListDtoBindingSource
+            // 
+            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto);
+            // 
+            // PartnerSiteGridView
+            // 
+            this.PartnerSiteGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colThongTinHtml1});
+            this.PartnerSiteGridView.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.PartnerSiteGridView.Name = "PartnerSiteGridView";
+            this.PartnerSiteGridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.PartnerSiteGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.PartnerSiteGridView.OptionsView.RowAutoHeight = true;
+            this.PartnerSiteGridView.OptionsView.ShowGroupPanel = false;
+            // 
+            // colThongTinHtml1
+            // 
+            this.colThongTinHtml1.ColumnEdit = this.HtmlContentRepositoryItemHypertextLabel01;
+            this.colThongTinHtml1.FieldName = "ThongTinHtml";
+            this.colThongTinHtml1.Name = "colThongTinHtml1";
+            this.colThongTinHtml1.Visible = true;
+            this.colThongTinHtml1.VisibleIndex = 0;
+            // 
+            // NotesTextEdit
+            // 
+            this.NotesTextEdit.Location = new System.Drawing.Point(147, 218);
+            this.NotesTextEdit.Name = "NotesTextEdit";
+            this.NotesTextEdit.Size = new System.Drawing.Size(315, 104);
+            this.NotesTextEdit.StyleController = this.dataLayoutControl1;
+            this.NotesTextEdit.TabIndex = 23;
             // 
             // Root
             // 
@@ -153,7 +279,7 @@ namespace Inventory.StockIn
             this.TongKetSoLuongPhieuNhapLayoutControlGroup});
             this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(466, 475);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(466, 503);
             // 
             // layoutControlGroup2
             // 
@@ -169,6 +295,46 @@ namespace Inventory.StockIn
             this.layoutControlGroup2.Size = new System.Drawing.Size(466, 149);
             this.layoutControlGroup2.Text = "Thông tin phiếu nhập";
             // 
+            // ItemForStockInNumber
+            // 
+            this.ItemForStockInNumber.Control = this.StockInNumberTextEdit;
+            this.ItemForStockInNumber.Location = new System.Drawing.Point(0, 26);
+            this.ItemForStockInNumber.Name = "ItemForStockInNumber";
+            this.ItemForStockInNumber.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
+            this.ItemForStockInNumber.Size = new System.Drawing.Size(442, 26);
+            this.ItemForStockInNumber.Text = "Số phiếu";
+            this.ItemForStockInNumber.TextSize = new System.Drawing.Size(111, 13);
+            // 
+            // ItemForStockInDate
+            // 
+            this.ItemForStockInDate.Control = this.StockInDateDateEdit;
+            this.ItemForStockInDate.Location = new System.Drawing.Point(0, 0);
+            this.ItemForStockInDate.Name = "ItemForStockInDate";
+            this.ItemForStockInDate.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
+            this.ItemForStockInDate.Size = new System.Drawing.Size(442, 26);
+            this.ItemForStockInDate.Text = "Ngày tháng";
+            this.ItemForStockInDate.TextSize = new System.Drawing.Size(111, 13);
+            // 
+            // ItemForWarehouseName
+            // 
+            this.ItemForWarehouseName.Control = this.WarehouseNameSearchLookupEdit;
+            this.ItemForWarehouseName.Location = new System.Drawing.Point(0, 52);
+            this.ItemForWarehouseName.Name = "ItemForWarehouseName";
+            this.ItemForWarehouseName.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
+            this.ItemForWarehouseName.Size = new System.Drawing.Size(442, 26);
+            this.ItemForWarehouseName.Text = "Kho nhập";
+            this.ItemForWarehouseName.TextSize = new System.Drawing.Size(111, 13);
+            // 
+            // ItemForPurchaseOrderId
+            // 
+            this.ItemForPurchaseOrderId.Control = this.PurchaseOrderSearchLookupEdit;
+            this.ItemForPurchaseOrderId.Location = new System.Drawing.Point(0, 78);
+            this.ItemForPurchaseOrderId.Name = "ItemForPurchaseOrderId";
+            this.ItemForPurchaseOrderId.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
+            this.ItemForPurchaseOrderId.Size = new System.Drawing.Size(442, 26);
+            this.ItemForPurchaseOrderId.Text = "Số PO";
+            this.ItemForPurchaseOrderId.TextSize = new System.Drawing.Size(111, 13);
+            // 
             // ThongTinKhachHangNccLayoutControlGroup
             // 
             this.ThongTinKhachHangNccLayoutControlGroup.CustomizationFormText = "Thông tin khách hàng - NCC";
@@ -182,228 +348,6 @@ namespace Inventory.StockIn
             this.ThongTinKhachHangNccLayoutControlGroup.Size = new System.Drawing.Size(466, 177);
             this.ThongTinKhachHangNccLayoutControlGroup.Text = "Thông tin khách hàng - NCC";
             // 
-            // TongKetSoLuongPhieuNhapLayoutControlGroup
-            // 
-            this.TongKetSoLuongPhieuNhapLayoutControlGroup.ExpandButtonVisible = true;
-            this.TongKetSoLuongPhieuNhapLayoutControlGroup.GroupStyle = DevExpress.Utils.GroupStyle.Light;
-            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.ItemForTotalQuantity,
-            this.ItemForTotalAmount,
-            this.ItemForCreatedBy,
-            this.ItemForCreatedByName});
-            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Location = new System.Drawing.Point(0, 326);
-            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Name = "TongKetSoLuongPhieuNhapLayoutControlGroup";
-            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Size = new System.Drawing.Size(466, 149);
-            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Text = "Tổng kết số lượng - giá trị phiếu nhập";
-            // 
-            // emptySpaceItem1
-            // 
-            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 475);
-            this.emptySpaceItem1.Name = "emptySpaceItem1";
-            this.emptySpaceItem1.Size = new System.Drawing.Size(466, 128);
-            // 
-            // dxErrorProvider1
-            // 
-            this.dxErrorProvider1.ContainerControl = this;
-            // 
-            // StockInNumberTextEdit
-            // 
-            this.StockInNumberTextEdit.Location = new System.Drawing.Point(112, 72);
-            this.StockInNumberTextEdit.Name = "StockInNumberTextEdit";
-            this.StockInNumberTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.StockInNumberTextEdit.Size = new System.Drawing.Size(349, 20);
-            this.StockInNumberTextEdit.StyleController = this.dataLayoutControl1;
-            this.StockInNumberTextEdit.TabIndex = 5;
-            // 
-            // StockInDateDateEdit
-            // 
-            this.StockInDateDateEdit.EditValue = null;
-            this.StockInDateDateEdit.Location = new System.Drawing.Point(112, 46);
-            this.StockInDateDateEdit.Name = "StockInDateDateEdit";
-            this.StockInDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.StockInDateDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.StockInDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.StockInDateDateEdit.Size = new System.Drawing.Size(349, 20);
-            this.StockInDateDateEdit.StyleController = this.dataLayoutControl1;
-            this.StockInDateDateEdit.TabIndex = 6;
-            // 
-            // PurchaseOrderSearchLookupEdit
-            // 
-            this.PurchaseOrderSearchLookupEdit.Location = new System.Drawing.Point(112, 124);
-            this.PurchaseOrderSearchLookupEdit.Name = "PurchaseOrderSearchLookupEdit";
-            this.PurchaseOrderSearchLookupEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.PurchaseOrderSearchLookupEdit.Size = new System.Drawing.Size(349, 20);
-            this.PurchaseOrderSearchLookupEdit.StyleController = this.dataLayoutControl1;
-            this.PurchaseOrderSearchLookupEdit.TabIndex = 16;
-            // 
-            // TotalQuantityTextEdit
-            // 
-            this.TotalQuantityTextEdit.Location = new System.Drawing.Point(112, 372);
-            this.TotalQuantityTextEdit.Name = "TotalQuantityTextEdit";
-            this.TotalQuantityTextEdit.Properties.Appearance.Options.UseTextOptions = true;
-            this.TotalQuantityTextEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.TotalQuantityTextEdit.Properties.Mask.UseMaskAsDisplayFormat = true;
-            this.TotalQuantityTextEdit.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
-            this.TotalQuantityTextEdit.Properties.MaskSettings.Set("mask", "G");
-            this.TotalQuantityTextEdit.Size = new System.Drawing.Size(349, 20);
-            this.TotalQuantityTextEdit.StyleController = this.dataLayoutControl1;
-            this.TotalQuantityTextEdit.TabIndex = 26;
-            // 
-            // ThanTienChuaVatTextEdit
-            // 
-            this.ThanTienChuaVatTextEdit.Location = new System.Drawing.Point(112, 398);
-            this.ThanTienChuaVatTextEdit.Name = "ThanTienChuaVatTextEdit";
-            this.ThanTienChuaVatTextEdit.Properties.Appearance.Options.UseTextOptions = true;
-            this.ThanTienChuaVatTextEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.ThanTienChuaVatTextEdit.Properties.Mask.UseMaskAsDisplayFormat = true;
-            this.ThanTienChuaVatTextEdit.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
-            this.ThanTienChuaVatTextEdit.Properties.MaskSettings.Set("mask", "G");
-            this.ThanTienChuaVatTextEdit.Size = new System.Drawing.Size(349, 20);
-            this.ThanTienChuaVatTextEdit.StyleController = this.dataLayoutControl1;
-            this.ThanTienChuaVatTextEdit.TabIndex = 27;
-            // 
-            // VatTextEdit
-            // 
-            this.VatTextEdit.Location = new System.Drawing.Point(112, 424);
-            this.VatTextEdit.Name = "VatTextEdit";
-            this.VatTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.VatTextEdit.Size = new System.Drawing.Size(349, 20);
-            this.VatTextEdit.StyleController = this.dataLayoutControl1;
-            this.VatTextEdit.TabIndex = 28;
-            // 
-            // TongTienBaoGomVatTextEdit
-            // 
-            this.TongTienBaoGomVatTextEdit.Location = new System.Drawing.Point(112, 450);
-            this.TongTienBaoGomVatTextEdit.Name = "TongTienBaoGomVatTextEdit";
-            this.TongTienBaoGomVatTextEdit.Size = new System.Drawing.Size(349, 20);
-            this.TongTienBaoGomVatTextEdit.StyleController = this.dataLayoutControl1;
-            this.TongTienBaoGomVatTextEdit.TabIndex = 29;
-            // 
-            // WarehouseNameSearchLookupEdit
-            // 
-            this.WarehouseNameSearchLookupEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
-            this.WarehouseNameSearchLookupEdit.Location = new System.Drawing.Point(112, 98);
-            this.WarehouseNameSearchLookupEdit.Name = "WarehouseNameSearchLookupEdit";
-            this.WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.WarehouseNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.WarehouseNameSearchLookupEdit.Properties.DataSource = this.companyBranchDtoBindingSource;
-            this.WarehouseNameSearchLookupEdit.Properties.DisplayMember = "HtmlContent";
-            this.WarehouseNameSearchLookupEdit.Properties.NullText = "";
-            this.WarehouseNameSearchLookupEdit.Properties.PopupView = this.searchLookUpEdit1View;
-            this.WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
-            this.WarehouseNameSearchLookupEdit.Size = new System.Drawing.Size(349, 20);
-            this.WarehouseNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
-            this.WarehouseNameSearchLookupEdit.TabIndex = 15;
-            // 
-            // searchLookUpEdit1View
-            // 
-            this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colThongTinHtml});
-            this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
-            this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.searchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
-            this.searchLookUpEdit1View.OptionsView.RowAutoHeight = true;
-            this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
-            // 
-            // colThongTinHtml
-            // 
-            this.colThongTinHtml.ColumnEdit = this.CompanyBranchRepositoryItemHypertextLabel;
-            this.colThongTinHtml.FieldName = "ThongTinHtml";
-            this.colThongTinHtml.Name = "colThongTinHtml";
-            this.colThongTinHtml.Visible = true;
-            this.colThongTinHtml.VisibleIndex = 0;
-            // 
-            // SupplierNameTextEdit
-            // 
-            this.SupplierNameTextEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
-            this.SupplierNameTextEdit.Location = new System.Drawing.Point(104, 194);
-            this.SupplierNameTextEdit.Name = "SupplierNameTextEdit";
-            this.SupplierNameTextEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.SupplierNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.SupplierNameTextEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.SupplierNameTextEdit.Properties.DataSource = this.businessPartnerSiteListDtoBindingSource;
-            this.SupplierNameTextEdit.Properties.DisplayMember = "ThongTinHtml";
-            this.SupplierNameTextEdit.Properties.NullText = "";
-            this.SupplierNameTextEdit.Properties.PopupView = this.PartnerSiteGridView;
-            this.SupplierNameTextEdit.Properties.ValueMember = "Id";
-            this.SupplierNameTextEdit.Size = new System.Drawing.Size(358, 20);
-            this.SupplierNameTextEdit.StyleController = this.dataLayoutControl1;
-            this.SupplierNameTextEdit.TabIndex = 20;
-            // 
-            // PartnerSiteGridView
-            // 
-            this.PartnerSiteGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colThongTinHtml1});
-            this.PartnerSiteGridView.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.PartnerSiteGridView.Name = "PartnerSiteGridView";
-            this.PartnerSiteGridView.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.PartnerSiteGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
-            this.PartnerSiteGridView.OptionsView.RowAutoHeight = true;
-            this.PartnerSiteGridView.OptionsView.ShowGroupPanel = false;
-            // 
-            // colThongTinHtml1
-            // 
-            repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            repositoryItemHypertextLabel1.Name = "HtmlContentRepositoryItemHypertextLabel";
-            this.colThongTinHtml1.ColumnEdit = repositoryItemHypertextLabel1;
-            this.colThongTinHtml1.FieldName = "ThongTinHtml";
-            this.colThongTinHtml1.Name = "colThongTinHtml1";
-            this.colThongTinHtml1.Visible = true;
-            this.colThongTinHtml1.VisibleIndex = 0;
-            // 
-            // NotesTextEdit
-            // 
-            this.NotesTextEdit.Location = new System.Drawing.Point(104, 218);
-            this.NotesTextEdit.Name = "NotesTextEdit";
-            this.NotesTextEdit.Size = new System.Drawing.Size(358, 104);
-            this.NotesTextEdit.StyleController = this.dataLayoutControl1;
-            this.NotesTextEdit.TabIndex = 23;
-            // 
-            // ItemForStockInNumber
-            // 
-            this.ItemForStockInNumber.Control = this.StockInNumberTextEdit;
-            this.ItemForStockInNumber.Location = new System.Drawing.Point(0, 26);
-            this.ItemForStockInNumber.Name = "ItemForStockInNumber";
-            this.ItemForStockInNumber.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForStockInNumber.Size = new System.Drawing.Size(442, 26);
-            this.ItemForStockInNumber.Text = "Số phiếu";
-            this.ItemForStockInNumber.TextSize = new System.Drawing.Size(68, 13);
-            // 
-            // ItemForStockInDate
-            // 
-            this.ItemForStockInDate.Control = this.StockInDateDateEdit;
-            this.ItemForStockInDate.Location = new System.Drawing.Point(0, 0);
-            this.ItemForStockInDate.Name = "ItemForStockInDate";
-            this.ItemForStockInDate.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForStockInDate.Size = new System.Drawing.Size(442, 26);
-            this.ItemForStockInDate.Text = "Ngày tháng";
-            this.ItemForStockInDate.TextSize = new System.Drawing.Size(68, 13);
-            // 
-            // ItemForWarehouseName
-            // 
-            this.ItemForWarehouseName.Control = this.WarehouseNameSearchLookupEdit;
-            this.ItemForWarehouseName.Location = new System.Drawing.Point(0, 52);
-            this.ItemForWarehouseName.Name = "ItemForWarehouseName";
-            this.ItemForWarehouseName.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForWarehouseName.Size = new System.Drawing.Size(442, 26);
-            this.ItemForWarehouseName.Text = "Kho nhập";
-            this.ItemForWarehouseName.TextSize = new System.Drawing.Size(68, 13);
-            // 
-            // ItemForPurchaseOrderId
-            // 
-            this.ItemForPurchaseOrderId.Control = this.PurchaseOrderSearchLookupEdit;
-            this.ItemForPurchaseOrderId.Location = new System.Drawing.Point(0, 78);
-            this.ItemForPurchaseOrderId.Name = "ItemForPurchaseOrderId";
-            this.ItemForPurchaseOrderId.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForPurchaseOrderId.Size = new System.Drawing.Size(442, 26);
-            this.ItemForPurchaseOrderId.Text = "Số PO";
-            this.ItemForPurchaseOrderId.TextSize = new System.Drawing.Size(68, 13);
-            // 
             // ItemForSupplierName
             // 
             this.ItemForSupplierName.Control = this.SupplierNameTextEdit;
@@ -411,7 +355,7 @@ namespace Inventory.StockIn
             this.ItemForSupplierName.Name = "ItemForSupplierName";
             this.ItemForSupplierName.Size = new System.Drawing.Size(442, 24);
             this.ItemForSupplierName.Text = "Khách hàng";
-            this.ItemForSupplierName.TextSize = new System.Drawing.Size(68, 13);
+            this.ItemForSupplierName.TextSize = new System.Drawing.Size(111, 13);
             // 
             // ItemForNotes
             // 
@@ -423,60 +367,154 @@ namespace Inventory.StockIn
             this.ItemForNotes.Size = new System.Drawing.Size(442, 108);
             this.ItemForNotes.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
             this.ItemForNotes.Text = "Ghi chú";
-            this.ItemForNotes.TextSize = new System.Drawing.Size(68, 13);
+            this.ItemForNotes.TextSize = new System.Drawing.Size(111, 13);
             // 
-            // ItemForTotalQuantity
+            // TongKetSoLuongPhieuNhapLayoutControlGroup
             // 
-            this.ItemForTotalQuantity.Control = this.TotalQuantityTextEdit;
-            this.ItemForTotalQuantity.Location = new System.Drawing.Point(0, 0);
-            this.ItemForTotalQuantity.Name = "ItemForTotalQuantity";
-            this.ItemForTotalQuantity.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForTotalQuantity.Size = new System.Drawing.Size(442, 26);
-            this.ItemForTotalQuantity.Text = "Tổng số lượng";
-            this.ItemForTotalQuantity.TextSize = new System.Drawing.Size(68, 13);
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.ExpandButtonVisible = true;
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.GroupStyle = DevExpress.Utils.GroupStyle.Light;
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.simpleLabelItem1,
+            this.TotalQuantitySimpleLabelItem,
+            this.TotalAmountSimpleLabelItem,
+            this.simpleLabelItem2,
+            this.TotalVatSimpleLabelItem,
+            this.simpleLabelItem3,
+            this.simpleLabelItem4,
+            this.TotalAmountIncludedVatSimpleLabelItem});
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Location = new System.Drawing.Point(0, 326);
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Name = "TongKetSoLuongPhieuNhapLayoutControlGroup";
+            columnDefinition1.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition1.Width = 100D;
+            columnDefinition2.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition2.Width = 100D;
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] {
+            columnDefinition1,
+            columnDefinition2});
+            rowDefinition1.Height = 33D;
+            rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            rowDefinition2.Height = 33D;
+            rowDefinition2.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            rowDefinition3.Height = 33D;
+            rowDefinition3.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            rowDefinition4.Height = 33D;
+            rowDefinition4.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
+            rowDefinition1,
+            rowDefinition2,
+            rowDefinition3,
+            rowDefinition4});
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Size = new System.Drawing.Size(466, 177);
+            this.TongKetSoLuongPhieuNhapLayoutControlGroup.Text = "Tổng kết số lượng - giá trị phiếu nhập";
             // 
-            // ItemForTotalAmount
+            // emptySpaceItem1
             // 
-            this.ItemForTotalAmount.Control = this.ThanTienChuaVatTextEdit;
-            this.ItemForTotalAmount.Location = new System.Drawing.Point(0, 26);
-            this.ItemForTotalAmount.Name = "ItemForTotalAmount";
-            this.ItemForTotalAmount.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForTotalAmount.Size = new System.Drawing.Size(442, 26);
-            this.ItemForTotalAmount.Text = "Thành tiền";
-            this.ItemForTotalAmount.TextSize = new System.Drawing.Size(68, 13);
+            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 503);
+            this.emptySpaceItem1.Name = "emptySpaceItem1";
+            this.emptySpaceItem1.Size = new System.Drawing.Size(466, 100);
             // 
-            // ItemForCreatedBy
+            // dxErrorProvider1
             // 
-            this.ItemForCreatedBy.Control = this.VatTextEdit;
-            this.ItemForCreatedBy.Location = new System.Drawing.Point(0, 52);
-            this.ItemForCreatedBy.Name = "ItemForCreatedBy";
-            this.ItemForCreatedBy.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForCreatedBy.Size = new System.Drawing.Size(442, 26);
-            this.ItemForCreatedBy.Text = "VAT";
-            this.ItemForCreatedBy.TextSize = new System.Drawing.Size(68, 13);
+            this.dxErrorProvider1.ContainerControl = this;
             // 
-            // ItemForCreatedByName
+            // simpleLabelItem1
             // 
-            this.ItemForCreatedByName.Control = this.TongTienBaoGomVatTextEdit;
-            this.ItemForCreatedByName.Location = new System.Drawing.Point(0, 78);
-            this.ItemForCreatedByName.Name = "ItemForCreatedByName";
-            this.ItemForCreatedByName.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForCreatedByName.Size = new System.Drawing.Size(442, 26);
-            this.ItemForCreatedByName.Text = "Tổng tiền";
-            this.ItemForCreatedByName.TextSize = new System.Drawing.Size(68, 13);
+            this.simpleLabelItem1.AllowHtmlStringInCaption = true;
+            this.simpleLabelItem1.Location = new System.Drawing.Point(0, 0);
+            this.simpleLabelItem1.Name = "simpleLabelItem1";
+            this.simpleLabelItem1.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.simpleLabelItem1.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.simpleLabelItem1.Size = new System.Drawing.Size(221, 33);
+            this.simpleLabelItem1.Text = "Tổng số lượng";
+            this.simpleLabelItem1.TextSize = new System.Drawing.Size(111, 13);
             // 
-            // companyBranchDtoBindingSource
+            // TotalQuantitySimpleLabelItem
             // 
-            this.companyBranchDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchDto);
+            this.TotalQuantitySimpleLabelItem.AllowHtmlStringInCaption = true;
+            this.TotalQuantitySimpleLabelItem.Location = new System.Drawing.Point(221, 0);
+            this.TotalQuantitySimpleLabelItem.Name = "TotalQuantitySimpleLabelItem";
+            this.TotalQuantitySimpleLabelItem.OptionsTableLayoutItem.ColumnIndex = 1;
+            this.TotalQuantitySimpleLabelItem.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.TotalQuantitySimpleLabelItem.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.TotalQuantitySimpleLabelItem.Size = new System.Drawing.Size(221, 33);
+            this.TotalQuantitySimpleLabelItem.Text = "0";
+            this.TotalQuantitySimpleLabelItem.TextSize = new System.Drawing.Size(111, 13);
             // 
-            // businessPartnerSiteListDtoBindingSource
+            // TotalAmountSimpleLabelItem
             // 
-            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto);
+            this.TotalAmountSimpleLabelItem.AllowHtmlStringInCaption = true;
+            this.TotalAmountSimpleLabelItem.Location = new System.Drawing.Point(221, 33);
+            this.TotalAmountSimpleLabelItem.Name = "TotalAmountSimpleLabelItem";
+            this.TotalAmountSimpleLabelItem.OptionsTableLayoutItem.ColumnIndex = 1;
+            this.TotalAmountSimpleLabelItem.OptionsTableLayoutItem.RowIndex = 1;
+            this.TotalAmountSimpleLabelItem.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.TotalAmountSimpleLabelItem.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.TotalAmountSimpleLabelItem.Size = new System.Drawing.Size(221, 33);
+            this.TotalAmountSimpleLabelItem.Text = "0";
+            this.TotalAmountSimpleLabelItem.TextSize = new System.Drawing.Size(111, 13);
             // 
-            // HtmlContentRepositoryItemHypertextLabel
+            // simpleLabelItem2
             // 
-            this.HtmlContentRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.HtmlContentRepositoryItemHypertextLabel.Name = "HtmlContentRepositoryItemHypertextLabel";
+            this.simpleLabelItem2.AllowHtmlStringInCaption = true;
+            this.simpleLabelItem2.Location = new System.Drawing.Point(0, 33);
+            this.simpleLabelItem2.Name = "simpleLabelItem2";
+            this.simpleLabelItem2.OptionsTableLayoutItem.RowIndex = 1;
+            this.simpleLabelItem2.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.simpleLabelItem2.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.simpleLabelItem2.Size = new System.Drawing.Size(221, 33);
+            this.simpleLabelItem2.Text = "Tổng tiền chưa VAT";
+            this.simpleLabelItem2.TextSize = new System.Drawing.Size(111, 13);
+            // 
+            // TotalVatSimpleLabelItem
+            // 
+            this.TotalVatSimpleLabelItem.AllowHtmlStringInCaption = true;
+            this.TotalVatSimpleLabelItem.Location = new System.Drawing.Point(221, 66);
+            this.TotalVatSimpleLabelItem.Name = "TotalVatSimpleLabelItem";
+            this.TotalVatSimpleLabelItem.OptionsTableLayoutItem.ColumnIndex = 1;
+            this.TotalVatSimpleLabelItem.OptionsTableLayoutItem.RowIndex = 2;
+            this.TotalVatSimpleLabelItem.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.TotalVatSimpleLabelItem.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.TotalVatSimpleLabelItem.Size = new System.Drawing.Size(221, 33);
+            this.TotalVatSimpleLabelItem.Text = "0";
+            this.TotalVatSimpleLabelItem.TextSize = new System.Drawing.Size(111, 13);
+            // 
+            // simpleLabelItem3
+            // 
+            this.simpleLabelItem3.AllowHtmlStringInCaption = true;
+            this.simpleLabelItem3.Location = new System.Drawing.Point(0, 66);
+            this.simpleLabelItem3.Name = "simpleLabelItem3";
+            this.simpleLabelItem3.OptionsTableLayoutItem.RowIndex = 2;
+            this.simpleLabelItem3.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.simpleLabelItem3.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.simpleLabelItem3.Size = new System.Drawing.Size(221, 33);
+            this.simpleLabelItem3.Text = "Tiền thuế VAT";
+            this.simpleLabelItem3.TextSize = new System.Drawing.Size(111, 13);
+            // 
+            // simpleLabelItem4
+            // 
+            this.simpleLabelItem4.AllowHtmlStringInCaption = true;
+            this.simpleLabelItem4.Location = new System.Drawing.Point(0, 99);
+            this.simpleLabelItem4.Name = "simpleLabelItem4";
+            this.simpleLabelItem4.OptionsTableLayoutItem.RowIndex = 3;
+            this.simpleLabelItem4.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.simpleLabelItem4.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.simpleLabelItem4.Size = new System.Drawing.Size(221, 33);
+            this.simpleLabelItem4.Text = "Tổng tiền bao gồm VAT";
+            this.simpleLabelItem4.TextSize = new System.Drawing.Size(111, 13);
+            // 
+            // TotalAmountIncludedVatSimpleLabelItem
+            // 
+            this.TotalAmountIncludedVatSimpleLabelItem.AllowHtmlStringInCaption = true;
+            this.TotalAmountIncludedVatSimpleLabelItem.Location = new System.Drawing.Point(221, 99);
+            this.TotalAmountIncludedVatSimpleLabelItem.Name = "TotalAmountIncludedVatSimpleLabelItem";
+            this.TotalAmountIncludedVatSimpleLabelItem.OptionsTableLayoutItem.ColumnIndex = 1;
+            this.TotalAmountIncludedVatSimpleLabelItem.OptionsTableLayoutItem.RowIndex = 3;
+            this.TotalAmountIncludedVatSimpleLabelItem.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
+            this.TotalAmountIncludedVatSimpleLabelItem.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.TotalAmountIncludedVatSimpleLabelItem.Size = new System.Drawing.Size(221, 33);
+            this.TotalAmountIncludedVatSimpleLabelItem.Text = "0";
+            this.TotalAmountIncludedVatSimpleLabelItem.TextSize = new System.Drawing.Size(111, 13);
             // 
             // UcStockInMaster
             // 
@@ -485,43 +523,42 @@ namespace Inventory.StockIn
             this.Controls.Add(this.dataLayoutControl1);
             this.Name = "UcStockInMaster";
             this.Size = new System.Drawing.Size(486, 623);
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel01)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThongTinKhachHangNccLayoutControlGroup)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TongKetSoLuongPhieuNhapLayoutControlGroup)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInNumberTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDateDateEdit.Properties.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDateDateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PurchaseOrderSearchLookupEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TotalQuantityTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThanTienChuaVatTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TongTienBaoGomVatTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameSearchLookupEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchDtoSearchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SupplierNameTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PartnerSiteGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(repositoryItemHypertextLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStockInNumber)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForStockInDate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForWarehouseName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPurchaseOrderId)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinKhachHangNccLayoutControlGroup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForSupplierName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNotes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForTotalQuantity)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForTotalAmount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForCreatedBy)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForCreatedByName)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TongKetSoLuongPhieuNhapLayoutControlGroup)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TotalQuantitySimpleLabelItem)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TotalAmountSimpleLabelItem)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TotalVatSimpleLabelItem)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TotalAmountIncludedVatSimpleLabelItem)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -533,10 +570,6 @@ namespace Inventory.StockIn
         private DevExpress.XtraEditors.TextEdit StockInNumberTextEdit;
         private DevExpress.XtraEditors.DateEdit StockInDateDateEdit;
         private DevExpress.XtraEditors.TextEdit PurchaseOrderSearchLookupEdit;
-        private DevExpress.XtraEditors.TextEdit TotalQuantityTextEdit;
-        private DevExpress.XtraEditors.TextEdit ThanTienChuaVatTextEdit;
-        private DevExpress.XtraEditors.TextEdit VatTextEdit;
-        private DevExpress.XtraEditors.TextEdit TongTienBaoGomVatTextEdit;
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
         private DevExpress.XtraLayout.LayoutControlItem ItemForStockInNumber;
         private DevExpress.XtraLayout.LayoutControlItem ItemForStockInDate;
@@ -544,13 +577,9 @@ namespace Inventory.StockIn
         private DevExpress.XtraLayout.LayoutControlItem ItemForPurchaseOrderId;
         private DevExpress.XtraLayout.LayoutControlItem ItemForSupplierName;
         private DevExpress.XtraLayout.LayoutControlItem ItemForNotes;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForTotalQuantity;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForTotalAmount;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForCreatedBy;
-        private DevExpress.XtraLayout.LayoutControlItem ItemForCreatedByName;
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup2;
         private DevExpress.XtraEditors.SearchLookUpEdit WarehouseNameSearchLookupEdit;
-        private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
+        private DevExpress.XtraGrid.Views.Grid.GridView CompanyBranchDtoSearchLookUpEdit1View;
         private DevExpress.XtraLayout.LayoutControlGroup ThongTinKhachHangNccLayoutControlGroup;
         private DevExpress.XtraEditors.SearchLookUpEdit SupplierNameTextEdit;
         private DevExpress.XtraGrid.Views.Grid.GridView PartnerSiteGridView;
@@ -563,6 +592,14 @@ namespace Inventory.StockIn
         private System.Windows.Forms.BindingSource companyBranchDtoBindingSource;
         private System.Windows.Forms.BindingSource businessPartnerSiteListDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml1;
-        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlContentRepositoryItemHypertextLabel;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlContentRepositoryItemHypertextLabel01;
+        private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem1;
+        private DevExpress.XtraLayout.SimpleLabelItem TotalQuantitySimpleLabelItem;
+        private DevExpress.XtraLayout.SimpleLabelItem TotalAmountSimpleLabelItem;
+        private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem2;
+        private DevExpress.XtraLayout.SimpleLabelItem TotalVatSimpleLabelItem;
+        private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem3;
+        private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem4;
+        private DevExpress.XtraLayout.SimpleLabelItem TotalAmountIncludedVatSimpleLabelItem;
     }
 }

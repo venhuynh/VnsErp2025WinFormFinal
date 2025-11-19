@@ -275,35 +275,72 @@ public class StockInMasterDto
 
     #endregion
 
-    #region Properties - Tổng hợp
+    #region Private Fields - Tổng hợp
+
+    private decimal _totalQuantity;
+    private decimal _totalAmount;
+    private decimal _totalVat;
+    private decimal _totalAmountIncludedVat;
+
+    #endregion
+
+    #region Properties - Tổng hợp (Computed)
 
     /// <summary>
-    /// Tổng số lượng nhập
+    /// Tổng số lượng nhập - Computed property
+    /// Tính toán từ tổng StockInQty của tất cả các dòng detail
+    /// Map với: StockInOutMaster.TotalQuantity (lưu vào DB khi save)
     /// </summary>
     [DisplayName("Tổng SL")]
     [Display(Order = 30)]
-    public decimal TotalQuantity { get; set; }
+    public decimal TotalQuantity => _totalQuantity;
 
     /// <summary>
-    /// Tổng giá trị nhập (chưa VAT)
+    /// Tổng giá trị nhập (chưa VAT) - Computed property
+    /// Tính toán từ tổng TotalAmount của tất cả các dòng detail
+    /// Map với: StockInOutMaster.TotalAmount (lưu vào DB khi save)
     /// </summary>
     [DisplayName("Tổng tiền chưa VAT")]
     [Display(Order = 31)]
-    public decimal TotalAmount { get; set; }
+    public decimal TotalAmount => _totalAmount;
 
     /// <summary>
-    /// Tổng VAT
+    /// Tổng VAT - Computed property
+    /// Tính toán từ tổng VatAmount của tất cả các dòng detail
+    /// Map với: StockInOutMaster.TotalVat (lưu vào DB khi save)
     /// </summary>
     [DisplayName("VAT")]
     [Display(Order = 32)]
-    public decimal TotalVat { get; set; }
+    public decimal TotalVat => _totalVat;
 
     /// <summary>
-    /// Tổng tiền bao gồm VAT
+    /// Tổng tiền bao gồm VAT - Computed property
+    /// Tính toán từ tổng TotalAmountIncludedVat của tất cả các dòng detail
+    /// Map với: StockInOutMaster.TotalAmountIncludedVat (lưu vào DB khi save)
     /// </summary>
     [DisplayName("Tổng tiền bao gồm VAT")]
     [Display(Order = 33)]
-    public decimal TotalAmountIncludedVat { get; set; }
+    public decimal TotalAmountIncludedVat => _totalAmountIncludedVat;
+
+    #endregion
+
+    #region Public Methods - Cập nhật tổng hợp
+
+    /// <summary>
+    /// Cập nhật các giá trị tổng hợp từ detail
+    /// Method này được gọi từ UcStockInMaster khi có thay đổi trong Detail
+    /// </summary>
+    /// <param name="totalQuantity">Tổng số lượng</param>
+    /// <param name="totalAmount">Tổng tiền chưa VAT</param>
+    /// <param name="totalVat">Tổng VAT</param>
+    /// <param name="totalAmountIncludedVat">Tổng tiền bao gồm VAT</param>
+    public void SetTotals(decimal totalQuantity, decimal totalAmount, decimal totalVat, decimal totalAmountIncludedVat)
+    {
+        _totalQuantity = totalQuantity;
+        _totalAmount = totalAmount;
+        _totalVat = totalVat;
+        _totalAmountIncludedVat = totalAmountIncludedVat;
+    }
 
     #endregion
 }

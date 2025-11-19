@@ -30,7 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.ucStockInDetail1 = new Inventory.StockIn.UcStockInDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
@@ -50,11 +52,10 @@
             this.ucStockInMaster1 = new Inventory.StockIn.UcStockInMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ucStockInDetail1 = new Inventory.StockIn.UcStockInDetail();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
@@ -63,7 +64,6 @@
             this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -73,9 +73,16 @@
             this.layoutControl1.Location = new System.Drawing.Point(483, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(556, 543);
+            this.layoutControl1.Size = new System.Drawing.Size(888, 768);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
+            // 
+            // ucStockInDetail1
+            // 
+            this.ucStockInDetail1.Location = new System.Drawing.Point(12, 12);
+            this.ucStockInDetail1.Name = "ucStockInDetail1";
+            this.ucStockInDetail1.Size = new System.Drawing.Size(864, 744);
+            this.ucStockInDetail1.TabIndex = 4;
             // 
             // Root
             // 
@@ -84,8 +91,16 @@
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(556, 543);
+            this.Root.Size = new System.Drawing.Size(888, 768);
             this.Root.TextVisible = false;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.ucStockInDetail1;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(868, 748);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // dockManager1
             // 
@@ -198,15 +213,15 @@
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1039, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(1371, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 567);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 792);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1039, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1371, 0);
             // 
             // barDockControlLeft
             // 
@@ -214,15 +229,15 @@
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 543);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 768);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1039, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(1371, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 543);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 768);
             // 
             // dockPanel2
             // 
@@ -233,7 +248,7 @@
             this.dockPanel2.Name = "dockPanel2";
             this.dockPanel2.Options.ShowCloseButton = false;
             this.dockPanel2.OriginalSize = new System.Drawing.Size(483, 200);
-            this.dockPanel2.Size = new System.Drawing.Size(483, 543);
+            this.dockPanel2.Size = new System.Drawing.Size(483, 768);
             this.dockPanel2.Text = "THÔNG TIN PHIẾU NHẬP";
             // 
             // dockPanel2_Container
@@ -241,7 +256,7 @@
             this.dockPanel2_Container.Controls.Add(this.layoutControl2);
             this.dockPanel2_Container.Location = new System.Drawing.Point(3, 26);
             this.dockPanel2_Container.Name = "dockPanel2_Container";
-            this.dockPanel2_Container.Size = new System.Drawing.Size(476, 514);
+            this.dockPanel2_Container.Size = new System.Drawing.Size(476, 739);
             this.dockPanel2_Container.TabIndex = 0;
             // 
             // layoutControl2
@@ -251,7 +266,7 @@
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
             this.layoutControl2.Root = this.layoutControlGroup1;
-            this.layoutControl2.Size = new System.Drawing.Size(476, 514);
+            this.layoutControl2.Size = new System.Drawing.Size(476, 739);
             this.layoutControl2.TabIndex = 0;
             this.layoutControl2.Text = "layoutControl2";
             // 
@@ -259,7 +274,7 @@
             // 
             this.ucStockInMaster1.Location = new System.Drawing.Point(12, 12);
             this.ucStockInMaster1.Name = "ucStockInMaster1";
-            this.ucStockInMaster1.Size = new System.Drawing.Size(435, 505);
+            this.ucStockInMaster1.Size = new System.Drawing.Size(452, 715);
             this.ucStockInMaster1.TabIndex = 4;
             // 
             // layoutControlGroup1
@@ -269,7 +284,7 @@
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem2});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(459, 529);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
             // 
             // layoutControlItem2
@@ -277,29 +292,14 @@
             this.layoutControlItem2.Control = this.ucStockInMaster1;
             this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(439, 509);
+            this.layoutControlItem2.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem2.TextVisible = false;
-            // 
-            // ucStockInDetail1
-            // 
-            this.ucStockInDetail1.Location = new System.Drawing.Point(12, 12);
-            this.ucStockInDetail1.Name = "ucStockInDetail1";
-            this.ucStockInDetail1.Size = new System.Drawing.Size(532, 519);
-            this.ucStockInDetail1.TabIndex = 4;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.ucStockInDetail1;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(536, 523);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // FrmNhapKhoThuongMai02
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1039, 567);
+            this.ClientSize = new System.Drawing.Size(1371, 792);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.dockPanel2);
             this.Controls.Add(this.barDockControlLeft);
@@ -311,6 +311,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.dockPanel2.ResumeLayout(false);
@@ -319,7 +320,6 @@
             this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

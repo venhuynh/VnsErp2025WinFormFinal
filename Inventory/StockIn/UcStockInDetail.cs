@@ -73,8 +73,7 @@ namespace Inventory.StockIn
                 // Setup events
                 InitializeEvents();
 
-                // Load dữ liệu ProductVariant vào SearchLookUpEdit
-                LoadProductVariantsAsync();
+                // Không load dữ liệu ProductVariant ở đây, sẽ được gọi từ form khi FormLoad
             }
             catch (Exception ex)
             {
@@ -254,6 +253,10 @@ namespace Inventory.StockIn
 
                 // Cập nhật LineNumber
                 UpdateLineNumbers();
+                
+                // Trigger event để cập nhật tổng lên master khi thêm dòng mới
+                OnDetailDataChanged();
+                
                 _logger.Info("InitNewRow: New row initialized, Id={0}, LineNumber={1}", rowData.Id, rowData.LineNumber);
             }
             catch (Exception ex)
@@ -398,6 +401,9 @@ namespace Inventory.StockIn
 
                 _logger.Info("ValidateRow: Validation passed, RowId={0}", rowData.Id);
                 e.Valid = true;
+
+                // Trigger event để cập nhật tổng lên master sau khi row được validate thành công
+                OnDetailDataChanged();
             }
             catch (Exception ex)
             {
@@ -413,8 +419,9 @@ namespace Inventory.StockIn
 
         /// <summary>
         /// Load danh sách biến thể sản phẩm vào SearchLookUpEdit
+        /// Method này được gọi từ form khi FormLoad
         /// </summary>
-        private async Task LoadProductVariantsAsync()
+        public async Task LoadProductVariantsAsync()
         {
             if (_isLoadingProductVariants) return;
             _isLoadingProductVariants = true;

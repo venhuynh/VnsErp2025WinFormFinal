@@ -345,6 +345,34 @@ namespace Common
 
         #endregion
 
+        #region ========== NUMBER FORMATS ==========
+
+        /// <summary>
+        /// Format số lượng (có 2 chữ số thập phân, có dấu phẩy ngăn cách hàng nghìn)
+        /// Ví dụ: 1,234.56
+        /// </summary>
+        public const string QUANTITY_FORMAT = "N2";
+
+        /// <summary>
+        /// Format tiền tệ (không có chữ số thập phân, có dấu phẩy ngăn cách hàng nghìn)
+        /// Ví dụ: 1,234
+        /// </summary>
+        public const string CURRENCY_FORMAT = "N0";
+
+        /// <summary>
+        /// Format số nguyên (không có chữ số thập phân, có dấu phẩy ngăn cách hàng nghìn)
+        /// Ví dụ: 1,234
+        /// </summary>
+        public const string INTEGER_FORMAT = "N0";
+
+        /// <summary>
+        /// Format số thập phân (có 2 chữ số thập phân, có dấu phẩy ngăn cách hàng nghìn)
+        /// Ví dụ: 1,234.56
+        /// </summary>
+        public const string DECIMAL_FORMAT = "N2";
+
+        #endregion
+
         #region ========== MESSAGE CONSTANTS ==========
 
         /// <summary>
