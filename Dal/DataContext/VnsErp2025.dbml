@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="VnsErp2025Final" Class="VnsErp2025DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=115.75.187.3,3306;Initial Catalog=VnsErp2025Final;Persist Security Info=True;User ID=vns;Encrypt=True;Trust Server Certificate=True" SettingsObjectName="Dal.Properties.Settings" SettingsPropertyName="VnsErp2025FinalConnectionString2" Provider="System.Data.SqlClient" />
   <Table Name="dbo.ApplicationUser" Member="ApplicationUsers">
     <Type Name="ApplicationUser">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -7,14 +8,15 @@
       <Column Name="Active" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
-  <Table Name="dbo.VariantAttribute" Member="VariantAttributes">
-    <Type Name="VariantAttribute">
-      <Column Name="VariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="AttributeId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="AttributeValueId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Attribute_VariantAttribute" Member="Attribute" ThisKey="AttributeId" OtherKey="Id" Type="Attribute" IsForeignKey="true" />
-      <Association Name="AttributeValue_VariantAttribute" Member="AttributeValue" ThisKey="AttributeValueId" OtherKey="Id" Type="AttributeValue" IsForeignKey="true" />
-      <Association Name="ProductVariant_VariantAttribute" Member="ProductVariant" ThisKey="VariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+  <Table Name="dbo.Warranty" Member="Warranties">
+    <Type Name="Warranty">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StockInOutDetailId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="WarrantyFrom" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="MonthOfWarranty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="WarrantyUntil" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="WarrantyStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="StockInOutDetail_Warranty" Member="StockInOutDetail" ThisKey="StockInOutDetailId" OtherKey="Id" Type="StockInOutDetail" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Attribute" Member="Attributes">
@@ -23,8 +25,8 @@
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="DataType" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Association Name="Attribute_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="AttributeId" Type="VariantAttribute" />
       <Association Name="Attribute_AttributeValue" Member="AttributeValues" ThisKey="Id" OtherKey="AttributeId" Type="AttributeValue" />
+      <Association Name="Attribute_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="AttributeId" Type="VariantAttribute" />
     </Type>
   </Table>
   <Table Name="dbo.AttributeValue" Member="AttributeValues">
@@ -267,9 +269,9 @@
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
       <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
       <Column Name="VariantFullName" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
-      <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
       <Association Name="ProductVariant_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="VariantId" Type="ProductImage" />
       <Association Name="ProductVariant_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="ProductVariantId" Type="StockInOutDetail" />
+      <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
       <Association Name="ProductService_ProductVariant" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />
       <Association Name="UnitOfMeasure_ProductVariant" Member="UnitOfMeasure" ThisKey="UnitId" OtherKey="Id" Type="UnitOfMeasure" IsForeignKey="true" />
     </Type>
@@ -286,8 +288,21 @@
       <Column Name="VatAmount" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
       <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
       <Column Name="TotalAmountIncludedVat" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Association Name="StockInOutDetail_Warranty" Member="Warranties" ThisKey="Id" OtherKey="StockInOutDetailId" Type="Warranty" />
       <Association Name="ProductVariant_StockInOutDetail" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
       <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutMaster" ThisKey="StockInOutMasterId" OtherKey="Id" Type="StockInOutMaster" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.StockInOutImage" Member="StockInOutImages">
+    <Type Name="StockInOutImage">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StockInOutMasterId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ImageData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreateBy" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="StockInOutMaster_StockInOutImage" Member="StockInOutMaster" ThisKey="StockInOutMasterId" OtherKey="Id" Type="StockInOutMaster" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.StockInOutMaster" Member="StockInOutMasters">
@@ -310,6 +325,7 @@
       <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDetail" />
+      <Association Name="StockInOutMaster_StockInOutImage" Member="StockInOutImages" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutImage" />
       <Association Name="BusinessPartnerSite_StockInOutMaster" Member="BusinessPartnerSite" ThisKey="PartnerSiteId" OtherKey="Id" Type="BusinessPartnerSite" IsForeignKey="true" />
       <Association Name="CompanyBranch_StockInOutMaster" Member="CompanyBranch" ThisKey="WarehouseId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />
     </Type>
@@ -322,6 +338,16 @@
       <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="UnitOfMeasure_ProductVariant" Member="ProductVariants" ThisKey="Id" OtherKey="UnitId" Type="ProductVariant" />
+    </Type>
+  </Table>
+  <Table Name="dbo.VariantAttribute" Member="VariantAttributes">
+    <Type Name="VariantAttribute">
+      <Column Name="VariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AttributeId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AttributeValueId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Attribute_VariantAttribute" Member="Attribute" ThisKey="AttributeId" OtherKey="Id" Type="Attribute" IsForeignKey="true" />
+      <Association Name="AttributeValue_VariantAttribute" Member="AttributeValue" ThisKey="AttributeValueId" OtherKey="Id" Type="AttributeValue" IsForeignKey="true" />
+      <Association Name="ProductVariant_VariantAttribute" Member="ProductVariant" ThisKey="VariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

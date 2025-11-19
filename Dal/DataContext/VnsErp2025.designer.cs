@@ -33,9 +33,9 @@ namespace Dal.DataContext
     partial void InsertApplicationUser(ApplicationUser instance);
     partial void UpdateApplicationUser(ApplicationUser instance);
     partial void DeleteApplicationUser(ApplicationUser instance);
-    partial void InsertVariantAttribute(VariantAttribute instance);
-    partial void UpdateVariantAttribute(VariantAttribute instance);
-    partial void DeleteVariantAttribute(VariantAttribute instance);
+    partial void InsertWarranty(Warranty instance);
+    partial void UpdateWarranty(Warranty instance);
+    partial void DeleteWarranty(Warranty instance);
     partial void InsertAttribute(Attribute instance);
     partial void UpdateAttribute(Attribute instance);
     partial void DeleteAttribute(Attribute instance);
@@ -87,13 +87,25 @@ namespace Dal.DataContext
     partial void InsertStockInOutDetail(StockInOutDetail instance);
     partial void UpdateStockInOutDetail(StockInOutDetail instance);
     partial void DeleteStockInOutDetail(StockInOutDetail instance);
+    partial void InsertStockInOutImage(StockInOutImage instance);
+    partial void UpdateStockInOutImage(StockInOutImage instance);
+    partial void DeleteStockInOutImage(StockInOutImage instance);
     partial void InsertStockInOutMaster(StockInOutMaster instance);
     partial void UpdateStockInOutMaster(StockInOutMaster instance);
     partial void DeleteStockInOutMaster(StockInOutMaster instance);
     partial void InsertUnitOfMeasure(UnitOfMeasure instance);
     partial void UpdateUnitOfMeasure(UnitOfMeasure instance);
     partial void DeleteUnitOfMeasure(UnitOfMeasure instance);
+    partial void InsertVariantAttribute(VariantAttribute instance);
+    partial void UpdateVariantAttribute(VariantAttribute instance);
+    partial void DeleteVariantAttribute(VariantAttribute instance);
     #endregion
+		
+		public VnsErp2025DataContext() : 
+				base(global::Dal.Properties.Settings.Default.VnsErp2025FinalConnectionString2, mappingSource)
+		{
+			OnCreated();
+		}
 		
 		public VnsErp2025DataContext(string connection) : 
 				base(connection, mappingSource)
@@ -127,11 +139,11 @@ namespace Dal.DataContext
 			}
 		}
 		
-		public System.Data.Linq.Table<VariantAttribute> VariantAttributes
+		public System.Data.Linq.Table<Warranty> Warranties
 		{
 			get
 			{
-				return this.GetTable<VariantAttribute>();
+				return this.GetTable<Warranty>();
 			}
 		}
 		
@@ -271,6 +283,14 @@ namespace Dal.DataContext
 			}
 		}
 		
+		public System.Data.Linq.Table<StockInOutImage> StockInOutImages
+		{
+			get
+			{
+				return this.GetTable<StockInOutImage>();
+			}
+		}
+		
 		public System.Data.Linq.Table<StockInOutMaster> StockInOutMasters
 		{
 			get
@@ -284,6 +304,14 @@ namespace Dal.DataContext
 			get
 			{
 				return this.GetTable<UnitOfMeasure>();
+			}
+		}
+		
+		public System.Data.Linq.Table<VariantAttribute> VariantAttributes
+		{
+			get
+			{
+				return this.GetTable<VariantAttribute>();
 			}
 		}
 	}
@@ -422,214 +450,204 @@ namespace Dal.DataContext
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.VariantAttribute")]
-	public partial class VariantAttribute : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Warranty")]
+	public partial class Warranty : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private System.Guid _VariantId;
+		private System.Guid _Id;
 		
-		private System.Guid _AttributeId;
+		private System.Guid _StockInOutDetailId;
 		
-		private System.Guid _AttributeValueId;
+		private System.Nullable<System.DateTime> _WarrantyFrom;
 		
-		private EntityRef<Attribute> _Attribute;
+		private int _MonthOfWarranty;
 		
-		private EntityRef<AttributeValue> _AttributeValue;
+		private System.Nullable<System.DateTime> _WarrantyUntil;
 		
-		private EntityRef<ProductVariant> _ProductVariant;
+		private int _WarrantyStatus;
+		
+		private EntityRef<StockInOutDetail> _StockInOutDetail;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnVariantIdChanging(System.Guid value);
-    partial void OnVariantIdChanged();
-    partial void OnAttributeIdChanging(System.Guid value);
-    partial void OnAttributeIdChanged();
-    partial void OnAttributeValueIdChanging(System.Guid value);
-    partial void OnAttributeValueIdChanged();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnStockInOutDetailIdChanging(System.Guid value);
+    partial void OnStockInOutDetailIdChanged();
+    partial void OnWarrantyFromChanging(System.Nullable<System.DateTime> value);
+    partial void OnWarrantyFromChanged();
+    partial void OnMonthOfWarrantyChanging(int value);
+    partial void OnMonthOfWarrantyChanged();
+    partial void OnWarrantyUntilChanging(System.Nullable<System.DateTime> value);
+    partial void OnWarrantyUntilChanged();
+    partial void OnWarrantyStatusChanging(int value);
+    partial void OnWarrantyStatusChanged();
     #endregion
 		
-		public VariantAttribute()
+		public Warranty()
 		{
-			this._Attribute = default(EntityRef<Attribute>);
-			this._AttributeValue = default(EntityRef<AttributeValue>);
-			this._ProductVariant = default(EntityRef<ProductVariant>);
+			this._StockInOutDetail = default(EntityRef<StockInOutDetail>);
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VariantId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
-		public System.Guid VariantId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
 		{
 			get
 			{
-				return this._VariantId;
+				return this._Id;
 			}
 			set
 			{
-				if ((this._VariantId != value))
+				if ((this._Id != value))
 				{
-					if (this._ProductVariant.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnVariantIdChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
-					this._VariantId = value;
-					this.SendPropertyChanged("VariantId");
-					this.OnVariantIdChanged();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AttributeId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
-		public System.Guid AttributeId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutDetailId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid StockInOutDetailId
 		{
 			get
 			{
-				return this._AttributeId;
+				return this._StockInOutDetailId;
 			}
 			set
 			{
-				if ((this._AttributeId != value))
+				if ((this._StockInOutDetailId != value))
 				{
-					if (this._Attribute.HasLoadedOrAssignedValue)
+					if (this._StockInOutDetail.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
-					this.OnAttributeIdChanging(value);
+					this.OnStockInOutDetailIdChanging(value);
 					this.SendPropertyChanging();
-					this._AttributeId = value;
-					this.SendPropertyChanged("AttributeId");
-					this.OnAttributeIdChanged();
+					this._StockInOutDetailId = value;
+					this.SendPropertyChanged("StockInOutDetailId");
+					this.OnStockInOutDetailIdChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AttributeValueId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
-		public System.Guid AttributeValueId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyFrom", DbType="DateTime")]
+		public System.Nullable<System.DateTime> WarrantyFrom
 		{
 			get
 			{
-				return this._AttributeValueId;
+				return this._WarrantyFrom;
 			}
 			set
 			{
-				if ((this._AttributeValueId != value))
+				if ((this._WarrantyFrom != value))
 				{
-					if (this._AttributeValue.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnAttributeValueIdChanging(value);
+					this.OnWarrantyFromChanging(value);
 					this.SendPropertyChanging();
-					this._AttributeValueId = value;
-					this.SendPropertyChanged("AttributeValueId");
-					this.OnAttributeValueIdChanged();
+					this._WarrantyFrom = value;
+					this.SendPropertyChanged("WarrantyFrom");
+					this.OnWarrantyFromChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Attribute_VariantAttribute", Storage="_Attribute", ThisKey="AttributeId", OtherKey="Id", IsForeignKey=true)]
-		public Attribute Attribute
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MonthOfWarranty", DbType="Int NOT NULL")]
+		public int MonthOfWarranty
 		{
 			get
 			{
-				return this._Attribute.Entity;
+				return this._MonthOfWarranty;
 			}
 			set
 			{
-				Attribute previousValue = this._Attribute.Entity;
+				if ((this._MonthOfWarranty != value))
+				{
+					this.OnMonthOfWarrantyChanging(value);
+					this.SendPropertyChanging();
+					this._MonthOfWarranty = value;
+					this.SendPropertyChanged("MonthOfWarranty");
+					this.OnMonthOfWarrantyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyUntil", DbType="DateTime")]
+		public System.Nullable<System.DateTime> WarrantyUntil
+		{
+			get
+			{
+				return this._WarrantyUntil;
+			}
+			set
+			{
+				if ((this._WarrantyUntil != value))
+				{
+					this.OnWarrantyUntilChanging(value);
+					this.SendPropertyChanging();
+					this._WarrantyUntil = value;
+					this.SendPropertyChanged("WarrantyUntil");
+					this.OnWarrantyUntilChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyStatus", DbType="Int NOT NULL")]
+		public int WarrantyStatus
+		{
+			get
+			{
+				return this._WarrantyStatus;
+			}
+			set
+			{
+				if ((this._WarrantyStatus != value))
+				{
+					this.OnWarrantyStatusChanging(value);
+					this.SendPropertyChanging();
+					this._WarrantyStatus = value;
+					this.SendPropertyChanged("WarrantyStatus");
+					this.OnWarrantyStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_StockInOutDetail", ThisKey="StockInOutDetailId", OtherKey="Id", IsForeignKey=true)]
+		public StockInOutDetail StockInOutDetail
+		{
+			get
+			{
+				return this._StockInOutDetail.Entity;
+			}
+			set
+			{
+				StockInOutDetail previousValue = this._StockInOutDetail.Entity;
 				if (((previousValue != value) 
-							|| (this._Attribute.HasLoadedOrAssignedValue == false)))
+							|| (this._StockInOutDetail.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._Attribute.Entity = null;
-						previousValue.VariantAttributes.Remove(this);
+						this._StockInOutDetail.Entity = null;
+						previousValue.Warranties.Remove(this);
 					}
-					this._Attribute.Entity = value;
+					this._StockInOutDetail.Entity = value;
 					if ((value != null))
 					{
-						value.VariantAttributes.Add(this);
-						this._AttributeId = value.Id;
+						value.Warranties.Add(this);
+						this._StockInOutDetailId = value.Id;
 					}
 					else
 					{
-						this._AttributeId = default(System.Guid);
+						this._StockInOutDetailId = default(System.Guid);
 					}
-					this.SendPropertyChanged("Attribute");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="AttributeValue_VariantAttribute", Storage="_AttributeValue", ThisKey="AttributeValueId", OtherKey="Id", IsForeignKey=true)]
-		public AttributeValue AttributeValue
-		{
-			get
-			{
-				return this._AttributeValue.Entity;
-			}
-			set
-			{
-				AttributeValue previousValue = this._AttributeValue.Entity;
-				if (((previousValue != value) 
-							|| (this._AttributeValue.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._AttributeValue.Entity = null;
-						previousValue.VariantAttributes.Remove(this);
-					}
-					this._AttributeValue.Entity = value;
-					if ((value != null))
-					{
-						value.VariantAttributes.Add(this);
-						this._AttributeValueId = value.Id;
-					}
-					else
-					{
-						this._AttributeValueId = default(System.Guid);
-					}
-					this.SendPropertyChanged("AttributeValue");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_VariantAttribute", Storage="_ProductVariant", ThisKey="VariantId", OtherKey="Id", IsForeignKey=true)]
-		public ProductVariant ProductVariant
-		{
-			get
-			{
-				return this._ProductVariant.Entity;
-			}
-			set
-			{
-				ProductVariant previousValue = this._ProductVariant.Entity;
-				if (((previousValue != value) 
-							|| (this._ProductVariant.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ProductVariant.Entity = null;
-						previousValue.VariantAttributes.Remove(this);
-					}
-					this._ProductVariant.Entity = value;
-					if ((value != null))
-					{
-						value.VariantAttributes.Add(this);
-						this._VariantId = value.Id;
-					}
-					else
-					{
-						this._VariantId = default(System.Guid);
-					}
-					this.SendPropertyChanged("ProductVariant");
+					this.SendPropertyChanged("StockInOutDetail");
 				}
 			}
 		}
@@ -669,9 +687,9 @@ namespace Dal.DataContext
 		
 		private string _Description;
 		
-		private EntitySet<VariantAttribute> _VariantAttributes;
-		
 		private EntitySet<AttributeValue> _AttributeValues;
+		
+		private EntitySet<VariantAttribute> _VariantAttributes;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -689,8 +707,8 @@ namespace Dal.DataContext
 		
 		public Attribute()
 		{
-			this._VariantAttributes = new EntitySet<VariantAttribute>(new Action<VariantAttribute>(this.attach_VariantAttributes), new Action<VariantAttribute>(this.detach_VariantAttributes));
 			this._AttributeValues = new EntitySet<AttributeValue>(new Action<AttributeValue>(this.attach_AttributeValues), new Action<AttributeValue>(this.detach_AttributeValues));
+			this._VariantAttributes = new EntitySet<VariantAttribute>(new Action<VariantAttribute>(this.attach_VariantAttributes), new Action<VariantAttribute>(this.detach_VariantAttributes));
 			OnCreated();
 		}
 		
@@ -774,19 +792,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Attribute_VariantAttribute", Storage="_VariantAttributes", ThisKey="Id", OtherKey="AttributeId")]
-		public EntitySet<VariantAttribute> VariantAttributes
-		{
-			get
-			{
-				return this._VariantAttributes;
-			}
-			set
-			{
-				this._VariantAttributes.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Attribute_AttributeValue", Storage="_AttributeValues", ThisKey="Id", OtherKey="AttributeId")]
 		public EntitySet<AttributeValue> AttributeValues
 		{
@@ -797,6 +802,19 @@ namespace Dal.DataContext
 			set
 			{
 				this._AttributeValues.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Attribute_VariantAttribute", Storage="_VariantAttributes", ThisKey="Id", OtherKey="AttributeId")]
+		public EntitySet<VariantAttribute> VariantAttributes
+		{
+			get
+			{
+				return this._VariantAttributes;
+			}
+			set
+			{
+				this._VariantAttributes.Assign(value);
 			}
 		}
 		
@@ -820,18 +838,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		private void attach_VariantAttributes(VariantAttribute entity)
-		{
-			this.SendPropertyChanging();
-			entity.Attribute = this;
-		}
-		
-		private void detach_VariantAttributes(VariantAttribute entity)
-		{
-			this.SendPropertyChanging();
-			entity.Attribute = null;
-		}
-		
 		private void attach_AttributeValues(AttributeValue entity)
 		{
 			this.SendPropertyChanging();
@@ -839,6 +845,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_AttributeValues(AttributeValue entity)
+		{
+			this.SendPropertyChanging();
+			entity.Attribute = null;
+		}
+		
+		private void attach_VariantAttributes(VariantAttribute entity)
+		{
+			this.SendPropertyChanging();
+			entity.Attribute = this;
+		}
+		
+		private void detach_VariantAttributes(VariantAttribute entity)
 		{
 			this.SendPropertyChanging();
 			entity.Attribute = null;
@@ -5960,11 +5978,11 @@ namespace Dal.DataContext
 		
 		private string _VariantFullName;
 		
-		private EntitySet<VariantAttribute> _VariantAttributes;
-		
 		private EntitySet<ProductImage> _ProductImages;
 		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
+		
+		private EntitySet<VariantAttribute> _VariantAttributes;
 		
 		private EntityRef<ProductService> _ProductService;
 		
@@ -5996,9 +6014,9 @@ namespace Dal.DataContext
 		
 		public ProductVariant()
 		{
-			this._VariantAttributes = new EntitySet<VariantAttribute>(new Action<VariantAttribute>(this.attach_VariantAttributes), new Action<VariantAttribute>(this.detach_VariantAttributes));
 			this._ProductImages = new EntitySet<ProductImage>(new Action<ProductImage>(this.attach_ProductImages), new Action<ProductImage>(this.detach_ProductImages));
 			this._StockInOutDetails = new EntitySet<StockInOutDetail>(new Action<StockInOutDetail>(this.attach_StockInOutDetails), new Action<StockInOutDetail>(this.detach_StockInOutDetails));
+			this._VariantAttributes = new EntitySet<VariantAttribute>(new Action<VariantAttribute>(this.attach_VariantAttributes), new Action<VariantAttribute>(this.detach_VariantAttributes));
 			this._ProductService = default(EntityRef<ProductService>);
 			this._UnitOfMeasure = default(EntityRef<UnitOfMeasure>);
 			OnCreated();
@@ -6192,19 +6210,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_VariantAttribute", Storage="_VariantAttributes", ThisKey="Id", OtherKey="VariantId")]
-		public EntitySet<VariantAttribute> VariantAttributes
-		{
-			get
-			{
-				return this._VariantAttributes;
-			}
-			set
-			{
-				this._VariantAttributes.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_ProductImage", Storage="_ProductImages", ThisKey="Id", OtherKey="VariantId")]
 		public EntitySet<ProductImage> ProductImages
 		{
@@ -6228,6 +6233,19 @@ namespace Dal.DataContext
 			set
 			{
 				this._StockInOutDetails.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_VariantAttribute", Storage="_VariantAttributes", ThisKey="Id", OtherKey="VariantId")]
+		public EntitySet<VariantAttribute> VariantAttributes
+		{
+			get
+			{
+				return this._VariantAttributes;
+			}
+			set
+			{
+				this._VariantAttributes.Assign(value);
 			}
 		}
 		
@@ -6319,18 +6337,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		private void attach_VariantAttributes(VariantAttribute entity)
-		{
-			this.SendPropertyChanging();
-			entity.ProductVariant = this;
-		}
-		
-		private void detach_VariantAttributes(VariantAttribute entity)
-		{
-			this.SendPropertyChanging();
-			entity.ProductVariant = null;
-		}
-		
 		private void attach_ProductImages(ProductImage entity)
 		{
 			this.SendPropertyChanging();
@@ -6350,6 +6356,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_StockInOutDetails(StockInOutDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = null;
+		}
+		
+		private void attach_VariantAttributes(VariantAttribute entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = this;
+		}
+		
+		private void detach_VariantAttributes(VariantAttribute entity)
 		{
 			this.SendPropertyChanging();
 			entity.ProductVariant = null;
@@ -6381,6 +6399,8 @@ namespace Dal.DataContext
 		private decimal _TotalAmount;
 		
 		private decimal _TotalAmountIncludedVat;
+		
+		private EntitySet<Warranty> _Warranties;
 		
 		private EntityRef<ProductVariant> _ProductVariant;
 		
@@ -6414,6 +6434,7 @@ namespace Dal.DataContext
 		
 		public StockInOutDetail()
 		{
+			this._Warranties = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties), new Action<Warranty>(this.detach_Warranties));
 			this._ProductVariant = default(EntityRef<ProductVariant>);
 			this._StockInOutMaster = default(EntityRef<StockInOutMaster>);
 			OnCreated();
@@ -6627,6 +6648,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_Warranties", ThisKey="Id", OtherKey="StockInOutDetailId")]
+		public EntitySet<Warranty> Warranties
+		{
+			get
+			{
+				return this._Warranties;
+			}
+			set
+			{
+				this._Warranties.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_StockInOutDetail", Storage="_ProductVariant", ThisKey="ProductVariantId", OtherKey="Id", IsForeignKey=true)]
 		public ProductVariant ProductVariant
 		{
@@ -6714,6 +6748,265 @@ namespace Dal.DataContext
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+		
+		private void attach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutDetail = this;
+		}
+		
+		private void detach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutDetail = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.StockInOutImage")]
+	public partial class StockInOutImage : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _StockInOutMasterId;
+		
+		private System.Data.Linq.Binary _ImageData;
+		
+		private System.DateTime _CreateDate;
+		
+		private System.Guid _CreateBy;
+		
+		private System.Nullable<System.DateTime> _ModifiedDate;
+		
+		private System.Guid _ModifiedBy;
+		
+		private EntityRef<StockInOutMaster> _StockInOutMaster;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnStockInOutMasterIdChanging(System.Guid value);
+    partial void OnStockInOutMasterIdChanged();
+    partial void OnImageDataChanging(System.Data.Linq.Binary value);
+    partial void OnImageDataChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnCreateByChanging(System.Guid value);
+    partial void OnCreateByChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
+    partial void OnModifiedByChanging(System.Guid value);
+    partial void OnModifiedByChanged();
+    #endregion
+		
+		public StockInOutImage()
+		{
+			this._StockInOutMaster = default(EntityRef<StockInOutMaster>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutMasterId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid StockInOutMasterId
+		{
+			get
+			{
+				return this._StockInOutMasterId;
+			}
+			set
+			{
+				if ((this._StockInOutMasterId != value))
+				{
+					if (this._StockInOutMaster.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnStockInOutMasterIdChanging(value);
+					this.SendPropertyChanging();
+					this._StockInOutMasterId = value;
+					this.SendPropertyChanged("StockInOutMasterId");
+					this.OnStockInOutMasterIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageData", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary ImageData
+		{
+			get
+			{
+				return this._ImageData;
+			}
+			set
+			{
+				if ((this._ImageData != value))
+				{
+					this.OnImageDataChanging(value);
+					this.SendPropertyChanging();
+					this._ImageData = value;
+					this.SendPropertyChanged("ImageData");
+					this.OnImageDataChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid CreateBy
+		{
+			get
+			{
+				return this._CreateBy;
+			}
+			set
+			{
+				if ((this._CreateBy != value))
+				{
+					this.OnCreateByChanging(value);
+					this.SendPropertyChanging();
+					this._CreateBy = value;
+					this.SendPropertyChanged("CreateBy");
+					this.OnCreateByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
+		{
+			get
+			{
+				return this._ModifiedDate;
+			}
+			set
+			{
+				if ((this._ModifiedDate != value))
+				{
+					this.OnModifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ModifiedBy
+		{
+			get
+			{
+				return this._ModifiedBy;
+			}
+			set
+			{
+				if ((this._ModifiedBy != value))
+				{
+					this.OnModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutMaster_StockInOutImage", Storage="_StockInOutMaster", ThisKey="StockInOutMasterId", OtherKey="Id", IsForeignKey=true)]
+		public StockInOutMaster StockInOutMaster
+		{
+			get
+			{
+				return this._StockInOutMaster.Entity;
+			}
+			set
+			{
+				StockInOutMaster previousValue = this._StockInOutMaster.Entity;
+				if (((previousValue != value) 
+							|| (this._StockInOutMaster.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._StockInOutMaster.Entity = null;
+						previousValue.StockInOutImages.Remove(this);
+					}
+					this._StockInOutMaster.Entity = value;
+					if ((value != null))
+					{
+						value.StockInOutImages.Add(this);
+						this._StockInOutMasterId = value.Id;
+					}
+					else
+					{
+						this._StockInOutMasterId = default(System.Guid);
+					}
+					this.SendPropertyChanged("StockInOutMaster");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.StockInOutMaster")]
@@ -6757,6 +7050,8 @@ namespace Dal.DataContext
 		private System.Nullable<System.DateTime> _UpdatedDate;
 		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
+		
+		private EntitySet<StockInOutImage> _StockInOutImages;
 		
 		private EntityRef<BusinessPartnerSite> _BusinessPartnerSite;
 		
@@ -6805,6 +7100,7 @@ namespace Dal.DataContext
 		public StockInOutMaster()
 		{
 			this._StockInOutDetails = new EntitySet<StockInOutDetail>(new Action<StockInOutDetail>(this.attach_StockInOutDetails), new Action<StockInOutDetail>(this.detach_StockInOutDetails));
+			this._StockInOutImages = new EntitySet<StockInOutImage>(new Action<StockInOutImage>(this.attach_StockInOutImages), new Action<StockInOutImage>(this.detach_StockInOutImages));
 			this._BusinessPartnerSite = default(EntityRef<BusinessPartnerSite>);
 			this._CompanyBranch = default(EntityRef<CompanyBranch>);
 			OnCreated();
@@ -7171,6 +7467,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutMaster_StockInOutImage", Storage="_StockInOutImages", ThisKey="Id", OtherKey="StockInOutMasterId")]
+		public EntitySet<StockInOutImage> StockInOutImages
+		{
+			get
+			{
+				return this._StockInOutImages;
+			}
+			set
+			{
+				this._StockInOutImages.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartnerSite_StockInOutMaster", Storage="_BusinessPartnerSite", ThisKey="PartnerSiteId", OtherKey="Id", IsForeignKey=true)]
 		public BusinessPartnerSite BusinessPartnerSite
 		{
@@ -7266,6 +7575,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_StockInOutDetails(StockInOutDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutMaster = null;
+		}
+		
+		private void attach_StockInOutImages(StockInOutImage entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutMaster = this;
+		}
+		
+		private void detach_StockInOutImages(StockInOutImage entity)
 		{
 			this.SendPropertyChanging();
 			entity.StockInOutMaster = null;
@@ -7455,6 +7776,239 @@ namespace Dal.DataContext
 		{
 			this.SendPropertyChanging();
 			entity.UnitOfMeasure = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.VariantAttribute")]
+	public partial class VariantAttribute : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _VariantId;
+		
+		private System.Guid _AttributeId;
+		
+		private System.Guid _AttributeValueId;
+		
+		private EntityRef<Attribute> _Attribute;
+		
+		private EntityRef<AttributeValue> _AttributeValue;
+		
+		private EntityRef<ProductVariant> _ProductVariant;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnVariantIdChanging(System.Guid value);
+    partial void OnVariantIdChanged();
+    partial void OnAttributeIdChanging(System.Guid value);
+    partial void OnAttributeIdChanged();
+    partial void OnAttributeValueIdChanging(System.Guid value);
+    partial void OnAttributeValueIdChanged();
+    #endregion
+		
+		public VariantAttribute()
+		{
+			this._Attribute = default(EntityRef<Attribute>);
+			this._AttributeValue = default(EntityRef<AttributeValue>);
+			this._ProductVariant = default(EntityRef<ProductVariant>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VariantId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid VariantId
+		{
+			get
+			{
+				return this._VariantId;
+			}
+			set
+			{
+				if ((this._VariantId != value))
+				{
+					if (this._ProductVariant.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnVariantIdChanging(value);
+					this.SendPropertyChanging();
+					this._VariantId = value;
+					this.SendPropertyChanged("VariantId");
+					this.OnVariantIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AttributeId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid AttributeId
+		{
+			get
+			{
+				return this._AttributeId;
+			}
+			set
+			{
+				if ((this._AttributeId != value))
+				{
+					if (this._Attribute.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnAttributeIdChanging(value);
+					this.SendPropertyChanging();
+					this._AttributeId = value;
+					this.SendPropertyChanged("AttributeId");
+					this.OnAttributeIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AttributeValueId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid AttributeValueId
+		{
+			get
+			{
+				return this._AttributeValueId;
+			}
+			set
+			{
+				if ((this._AttributeValueId != value))
+				{
+					if (this._AttributeValue.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnAttributeValueIdChanging(value);
+					this.SendPropertyChanging();
+					this._AttributeValueId = value;
+					this.SendPropertyChanged("AttributeValueId");
+					this.OnAttributeValueIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Attribute_VariantAttribute", Storage="_Attribute", ThisKey="AttributeId", OtherKey="Id", IsForeignKey=true)]
+		public Attribute Attribute
+		{
+			get
+			{
+				return this._Attribute.Entity;
+			}
+			set
+			{
+				Attribute previousValue = this._Attribute.Entity;
+				if (((previousValue != value) 
+							|| (this._Attribute.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Attribute.Entity = null;
+						previousValue.VariantAttributes.Remove(this);
+					}
+					this._Attribute.Entity = value;
+					if ((value != null))
+					{
+						value.VariantAttributes.Add(this);
+						this._AttributeId = value.Id;
+					}
+					else
+					{
+						this._AttributeId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Attribute");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="AttributeValue_VariantAttribute", Storage="_AttributeValue", ThisKey="AttributeValueId", OtherKey="Id", IsForeignKey=true)]
+		public AttributeValue AttributeValue
+		{
+			get
+			{
+				return this._AttributeValue.Entity;
+			}
+			set
+			{
+				AttributeValue previousValue = this._AttributeValue.Entity;
+				if (((previousValue != value) 
+							|| (this._AttributeValue.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._AttributeValue.Entity = null;
+						previousValue.VariantAttributes.Remove(this);
+					}
+					this._AttributeValue.Entity = value;
+					if ((value != null))
+					{
+						value.VariantAttributes.Add(this);
+						this._AttributeValueId = value.Id;
+					}
+					else
+					{
+						this._AttributeValueId = default(System.Guid);
+					}
+					this.SendPropertyChanged("AttributeValue");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_VariantAttribute", Storage="_ProductVariant", ThisKey="VariantId", OtherKey="Id", IsForeignKey=true)]
+		public ProductVariant ProductVariant
+		{
+			get
+			{
+				return this._ProductVariant.Entity;
+			}
+			set
+			{
+				ProductVariant previousValue = this._ProductVariant.Entity;
+				if (((previousValue != value) 
+							|| (this._ProductVariant.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ProductVariant.Entity = null;
+						previousValue.VariantAttributes.Remove(this);
+					}
+					this._ProductVariant.Entity = value;
+					if ((value != null))
+					{
+						value.VariantAttributes.Add(this);
+						this._VariantId = value.Id;
+					}
+					else
+					{
+						this._VariantId = default(System.Guid);
+					}
+					this.SendPropertyChanged("ProductVariant");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

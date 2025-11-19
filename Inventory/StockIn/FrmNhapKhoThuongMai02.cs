@@ -427,14 +427,76 @@ namespace Inventory.StockIn
         /// <summary>
         /// Event handler cho nút Thêm hình ảnh
         /// </summary>
-        private void ThemHinhAnhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void ThemHinhAnhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
                 _logger.Debug("ThemHinhAnhBarButtonItem_ItemClick: Add image button clicked");
 
-                // TODO: Implement add image functionality
-                MsgBox.ShowWarning("Chức năng thêm hình ảnh đang được phát triển.", "Thông báo", this);
+                // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
+                Guid stockInOutMasterId = Guid.Empty;
+                
+                // Kiểm tra phiếu đã được lưu chưa
+                if (_currentStockInId != Guid.Empty)
+                {
+                    stockInOutMasterId = _currentStockInId;
+                }
+                else
+                {
+                    // Phiếu chưa được lưu - kiểm tra có thay đổi chưa lưu không
+                    if (_hasUnsavedChanges)
+                    {
+                        // Hỏi người dùng có muốn lưu trước không
+                        if (MsgBox.ShowYesNo(
+                                "Phiếu nhập kho chưa được lưu. Bạn có muốn lưu trước khi thêm hình ảnh không?",
+                                "Xác nhận",
+                                this))
+                        {
+                            // Gọi nút Lưu để lưu phiếu
+                            LuuPhieuBarButtonItem_ItemClick(null, null);
+                            
+                        }
+                        else
+                        {
+                            // Người dùng chọn không lưu
+                            _logger.Debug("ThemHinhAnhBarButtonItem_ItemClick: User chose not to save");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // Không có thay đổi chưa lưu và chưa có ID - yêu cầu lưu
+                        MsgBox.ShowError(
+                            "Vui lòng nhập và lưu phiếu nhập kho trước khi thêm hình ảnh.",
+                            "Lỗi",
+                            this);
+                        _logger.Warning("ThemHinhAnhBarButtonItem_ItemClick: Cannot add images - Form not saved and no unsaved changes");
+                        return;
+                    }
+                }
+
+                // Kiểm tra lại StockInOutMasterId sau khi lưu (nếu có)
+                if (stockInOutMasterId == Guid.Empty)
+                {
+                    MsgBox.ShowWarning(
+                        "Không thể lấy ID phiếu nhập kho. Vui lòng thử lại.",
+                        "Cảnh báo",
+                        this);
+                    _logger.Warning("ThemHinhAnhBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
+                    return;
+                }
+
+                // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var frmAddImages = new InventoryManagement.FrmStockInOutAddImages(stockInOutMasterId))
+                    {
+                        frmAddImages.StartPosition = FormStartPosition.CenterParent;
+                        frmAddImages.ShowDialog(this);
+                    }
+                }
+
+                _logger.Info("ThemHinhAnhBarButtonItem_ItemClick: Add images form opened with StockInOutMasterId={0}", stockInOutMasterId);
             }
             catch (Exception ex)
             {

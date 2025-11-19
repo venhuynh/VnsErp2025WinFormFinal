@@ -38,16 +38,20 @@
     <Reference Include="DevExpress.BonusSkins.v25.1" />
     <Reference Include="DevExpress.Data.Desktop.v25.1" />
     <Reference Include="DevExpress.Data.v25.1" />
+    <Reference Include="DevExpress.Dialogs.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Utils.v25.1" />
     <Reference Include="DevExpress.Sparkline.v25.1.Core" />
     <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraDialogs.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v25.1" />
     <Reference Include="DevExpress.Printing.v25.1.Core" />
     <Reference Include="DevExpress.Drawing.v25.1" />
     <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraTreeList.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,6 +63,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InventoryManagement\FrmStockInOutAddImages.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InventoryManagement\FrmStockInOutAddImages.Designer.cs">
+      <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StockIn\FrmNhapKhoThuongMai02.cs">
       <SubType>Form</SubType>
@@ -78,6 +88,15 @@
     <Compile Include="StockIn\UcStockInMaster.Designer.cs">
       <DependentUpon>UcStockInMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="XtraForm1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XtraForm1.Designer.cs">
+      <DependentUpon>XtraForm1.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="InventoryManagement\FrmStockInOutAddImages.resx">
+      <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -96,6 +115,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\UcStockInMaster.resx">
       <DependentUpon>UcStockInMaster.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XtraForm1.resx">
+      <DependentUpon>XtraForm1.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_03_NhapKhoTheoPOCustomer.md" />
@@ -118,7 +140,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="InventoryManagement\" />
     <Folder Include="StockOut\" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +199,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\insertimage_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\opendoc_16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

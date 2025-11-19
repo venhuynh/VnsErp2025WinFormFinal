@@ -1,5 +1,6 @@
 ﻿using Dal.DataContext;
 using System;
+using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
@@ -70,7 +71,7 @@ public interface IUnitOfWork : IDisposable
     /// Lấy đối tượng truy cập dữ liệu cho chức vụ.
     /// </summary>
     /// <returns>
-    /// Một thể hiện của <see cref="Dal.DataAccess.Interfaces.MasterData.Company.IPositionDataAccess"/> 
+    /// Một thể hiện của <see cref="Company.IPositionDataAccess"/> 
     /// cung cấp các phương thức truy cập dữ liệu cho chức vụ.
     /// </returns>
     IPositionRepository GetPositionReposiroty();
@@ -159,6 +160,14 @@ public interface IUnitOfWork : IDisposable
     #region StockIn
 
     IStockInRepository GetStockInRepository();
+
+    #endregion
+
+    #region InventoryManagement
+
+    IStockInOutImageRepository GetStockInOutImageRepository();
+
+    IWarrantyRepository GetWarrantyRepository();
 
     #endregion
 

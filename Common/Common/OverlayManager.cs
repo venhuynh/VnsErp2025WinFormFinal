@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using DevExpress.XtraSplashScreen;
 
+// ReSharper disable UnassignedField.Global
+
 namespace Common.Common;
 
 /// <summary>
@@ -21,14 +23,14 @@ public static class OverlayManager
     /// <param name="owner">Control/Form cần phủ</param>
     /// <param name="options">Tùy chọn Overlay (không bắt buộc)</param>
     /// <returns>Handle của Overlay để đóng sau khi hoàn thành</returns>
-    public static IOverlaySplashScreenHandle ShowOverlay(Control owner, OverlayWindowOptions options = null)
+    private static IOverlaySplashScreenHandle ShowOverlay(Control owner, OverlayWindowOptions options = null)
     {
         if (owner == null) throw new ArgumentNullException(nameof(owner));
 
         // Đảm bảo control đã tạo handle, nếu chưa sẽ gây InvalidOperationException theo DevExpress
         if (!owner.IsHandleCreated)
         {
-            var handle = owner.Handle; // buộc tạo handle
+            owner.CreateControl();
         }
 
         return options == null
@@ -141,15 +143,15 @@ public sealed class OverlayWindowOptions
     public static OverlayWindowOptions Default => new OverlayWindowOptions();
 
     public int startupDelay;
-    public System.Drawing.Color? backColor;
+    public Color? backColor;
     public byte? opacity;
     public bool? fadeIn;
     public bool? fadeOut;
     public Size? imageSize;
-    public DevExpress.XtraSplashScreen.OverlayWindowPainterBase customPainter;
+    public OverlayWindowPainterBase customPainter;
     public bool? disableInput;
     public string skinName;
-    public DevExpress.XtraSplashScreen.WaitAnimationType? animationType;
+    public WaitAnimationType? animationType;
     public Image image;
     public bool? useDirectX;
 
@@ -157,16 +159,16 @@ public sealed class OverlayWindowOptions
 
     #region Accessors (convert to nullable-safe values)
 
-    internal int? StartupDelay => startupDelay > 0 ? startupDelay : (int?)null;
+    internal int? StartupDelay => startupDelay > 0 ? startupDelay : null;
     internal Color? BackColor => backColor;
     internal byte? Opacity => opacity;
     internal bool? FadeIn => fadeIn;
     internal bool? FadeOut => fadeOut;
     internal Size? ImageSize => imageSize;
-    internal DevExpress.XtraSplashScreen.OverlayWindowPainterBase CustomPainter => customPainter;
+    internal OverlayWindowPainterBase CustomPainter => customPainter;
     internal bool? DisableInput => disableInput;
     internal string SkinName => skinName;
-    internal DevExpress.XtraSplashScreen.WaitAnimationType? AnimationType => animationType;
+    internal WaitAnimationType? AnimationType => animationType;
     internal Image Image => image;
     internal bool? UseDirectX => useDirectX;
 

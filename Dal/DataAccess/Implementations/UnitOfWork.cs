@@ -5,10 +5,12 @@ using Logger;
 using Logger.Configuration;
 using System;
 using System.Data;
+using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
+using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
@@ -408,8 +410,31 @@ namespace Dal.DataAccess.Implementations
                 : new StockInRepository(globalConnectionString);
         }
 
+
+
         #endregion
 
+        #region InventoryManagement
+
+        public IStockInOutImageRepository GetStockInOutImageRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new StockInOutImageRepository(globalConnectionString);
+        }
+
+        public IWarrantyRepository GetWarrantyRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new WarrantyRepository(globalConnectionString);
+        }
+
+        #endregion
         #endregion
         #endregion
     }
