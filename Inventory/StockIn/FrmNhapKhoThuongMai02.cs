@@ -49,7 +49,7 @@ namespace Inventory.StockIn
         public FrmNhapKhoThuongMai02()
         {
             InitializeComponent();
-            this.Load += FrmNhapKhoThuongMai02_Load;
+            Load += FrmNhapKhoThuongMai02_Load;
         }
 
         #endregion
@@ -70,7 +70,7 @@ namespace Inventory.StockIn
 
                 // Đảm bảo form đã được hiển thị và sẵn sàng trước khi show splash screen
                 // Refresh form để đảm bảo nó đã được render
-                this.Refresh();
+                Refresh();
                 Application.DoEvents(); // Cho phép form render xong
 
                 // Load datasource với SplashScreen (với owner là form này)
@@ -138,20 +138,20 @@ namespace Inventory.StockIn
             try
             {
                 // Đảm bảo form đã được hiển thị
-                if (!this.Visible)
+                if (!Visible)
                 {
-                    this.Show();
+                    Show();
                 }
 
                 // Đảm bảo form đã được activate
-                if (!this.IsHandleCreated)
+                if (!IsHandleCreated)
                 {
-                    this.CreateHandle();
+                    CreateHandle();
                 }
 
                 // Đảm bảo form được bring to front và activate
-                this.BringToFront();
-                this.Activate();
+                BringToFront();
+                Activate();
 
                 // Đóng splash screen hiện tại nếu có (sử dụng SplashScreenHelper)
                 SplashScreenHelper.CloseSplashScreen();
@@ -161,14 +161,14 @@ namespace Inventory.StockIn
                 // Khi có owner, SplashScreen sẽ tự động hiển thị trên owner form và là topmost
                 DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(
                     this, // Owner form - đảm bảo SplashScreen hiển thị trên form này
-                    typeof(Common.Common.VnsSplashScreen),
+                    typeof(VnsSplashScreen),
                     false, // fadeIn
                     false, // fadeOut
                     false); // useFadeInOutAnimation
 
                 // Đảm bảo SplashScreen được bring to front sau khi hiển thị
                 // Sử dụng BeginInvoke để đảm bảo SplashScreen đã được tạo xong
-                this.BeginInvoke(new Action(() =>
+                BeginInvoke(new Action(() =>
                 {
                     try
                     {
@@ -177,9 +177,9 @@ namespace Inventory.StockIn
                             DevExpress.XtraSplashScreen.SplashScreenManager.Default.IsSplashFormVisible)
                         {
                             // Đảm bảo owner form vẫn ở front
-                            this.BringToFront();
+                            BringToFront();
                             
-                            _logger.Debug("ShowSplashScreenWithOwner: SplashScreen displayed with owner={0}", this.Name);
+                            _logger.Debug("ShowSplashScreenWithOwner: SplashScreen displayed with owner={0}", Name);
                         }
                     }
                     catch (Exception ex)
@@ -188,7 +188,7 @@ namespace Inventory.StockIn
                     }
                 }));
 
-                _logger.Debug("ShowSplashScreenWithOwner: SplashScreen display initiated with owner={0}", this.Name);
+                _logger.Debug("ShowSplashScreenWithOwner: SplashScreen display initiated with owner={0}", Name);
             }
             catch (Exception ex)
             {
@@ -214,9 +214,9 @@ namespace Inventory.StockIn
                 CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
 
                 // Form events
-                this.FormClosing += FrmNhapKhoThuongMai02_FormClosing;
-                this.KeyDown += FrmNhapKhoThuongMai02_KeyDown;
-                this.KeyPreview = true; // Cho phép form xử lý phím tắt trước
+                FormClosing += FrmNhapKhoThuongMai02_FormClosing;
+                KeyDown += FrmNhapKhoThuongMai02_KeyDown;
+                KeyPreview = true; // Cho phép form xử lý phím tắt trước
 
                 // Detail control events - theo dõi thay đổi để đánh dấu có thay đổi chưa lưu và cập nhật tổng lên master
                 ucStockInDetail1.DetailDataChanged += UcStockInDetail1_DetailDataChanged;
@@ -451,7 +451,7 @@ namespace Inventory.StockIn
             try
             {
                 _logger.Debug("CloseBarButtonItem_ItemClick: Close button clicked");
-                this.Close();
+                Close();
             }
             catch (Exception ex)
             {
@@ -610,9 +610,9 @@ namespace Inventory.StockIn
                                 _isClosingAfterSave = true;
                                 
                                 // Sử dụng BeginInvoke để đóng form sau khi event handler kết thúc
-                                this.BeginInvoke(new Action(() =>
+                                BeginInvoke(new Action(() =>
                                 {
-                                    this.Close();
+                                    Close();
                                 }));
                             }
                             else

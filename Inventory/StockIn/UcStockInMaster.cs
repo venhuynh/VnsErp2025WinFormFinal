@@ -17,7 +17,7 @@ using System.Windows.Forms;
 
 namespace Inventory.StockIn
 {
-    public partial class UcStockInMaster : DevExpress.XtraEditors.XtraUserControl
+    public partial class UcStockInMaster : XtraUserControl
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -905,16 +905,30 @@ namespace Inventory.StockIn
         }
 
         /// <summary>
-        /// Hiển thị lỗi
+        /// Hiển thị lỗi từ Exception
         /// </summary>
         private void ShowError(Exception ex, string message)
         {
-            DevExpress.XtraEditors.XtraMessageBox.Show(
-                $"{message}: {ex.Message}",
-                "Lỗi",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error
-            );
+            try
+            {
+                // Tìm parent form để làm owner cho MsgBox
+                var parentForm = this.FindForm();
+                
+                // Sử dụng MsgBox.ShowException hoặc ShowError với thông báo chi tiết
+                if (ex != null)
+                {
+                    MsgBox.ShowException(ex, message, parentForm);
+                }
+                else
+                {
+                    MsgBox.ShowError(message, "Lỗi", parentForm);
+                }
+            }
+            catch
+            {
+                // Fallback nếu có lỗi khi hiển thị MsgBox
+                System.Diagnostics.Debug.WriteLine($"Lỗi: {message}: {ex?.Message}");
+            }
         }
 
         /// <summary>
@@ -922,12 +936,19 @@ namespace Inventory.StockIn
         /// </summary>
         private void ShowError(string message)
         {
-            DevExpress.XtraEditors.XtraMessageBox.Show(
-                message,
-                "Lỗi",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error
-            );
+            try
+            {
+                // Tìm parent form để làm owner cho MsgBox
+                var parentForm = this.FindForm();
+                
+                // Sử dụng MsgBox.ShowError
+                MsgBox.ShowError(message, "Lỗi", parentForm);
+            }
+            catch
+            {
+                // Fallback nếu có lỗi khi hiển thị MsgBox
+                System.Diagnostics.Debug.WriteLine($"Lỗi: {message}");
+            }
         }
 
         #endregion
