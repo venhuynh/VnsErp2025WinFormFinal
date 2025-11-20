@@ -25,4 +25,11 @@ public interface IStockInRepository
     /// <param name="loaiNhapKho">Loại nhập kho (StockInOutType)</param>
     /// <returns>Số thứ tự tiếp theo (1-999)</returns>
     int GetNextSequenceNumber(DateTime stockInDate, int loaiNhapKho);
+
+    /// <summary>
+    /// Lấy danh sách chi tiết phiếu nhập/xuất kho theo MasterId
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+    /// <returns>Danh sách StockInOutDetail entities</returns>
+    List<StockInOutDetail> GetDetailsByMasterId(Guid stockInOutMasterId);
 }

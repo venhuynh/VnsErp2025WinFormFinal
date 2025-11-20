@@ -220,6 +220,29 @@ namespace Bll.Inventory.StockIn
             }
         }
 
+        /// <summary>
+        /// Lấy danh sách chi tiết phiếu nhập/xuất kho theo MasterId
+        /// </summary>
+        /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+        /// <returns>Danh sách StockInOutDetail entities</returns>
+        public List<StockInOutDetail> GetDetailsByMasterId(Guid stockInOutMasterId)
+        {
+            try
+            {
+                _logger.Debug("GetDetailsByMasterId: Lấy danh sách chi tiết, StockInOutMasterId={0}", stockInOutMasterId);
+                
+                var details = GetDataAccess().GetDetailsByMasterId(stockInOutMasterId);
+                
+                _logger.Info("GetDetailsByMasterId: Lấy được {0} chi tiết", details.Count);
+                return details;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"GetDetailsByMasterId: Lỗi lấy danh sách chi tiết: {ex.Message}", ex);
+                throw;
+            }
+        }
+
         #endregion
     }
 }

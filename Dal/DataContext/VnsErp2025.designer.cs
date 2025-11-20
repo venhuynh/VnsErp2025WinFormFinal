@@ -460,6 +460,8 @@ namespace Dal.DataContext
 		
 		private System.Guid _StockInOutDetailId;
 		
+		private int _WarrantyType;
+		
 		private System.Nullable<System.DateTime> _WarrantyFrom;
 		
 		private int _MonthOfWarranty;
@@ -480,6 +482,8 @@ namespace Dal.DataContext
     partial void OnIdChanged();
     partial void OnStockInOutDetailIdChanging(System.Guid value);
     partial void OnStockInOutDetailIdChanged();
+    partial void OnWarrantyTypeChanging(int value);
+    partial void OnWarrantyTypeChanged();
     partial void OnWarrantyFromChanging(System.Nullable<System.DateTime> value);
     partial void OnWarrantyFromChanged();
     partial void OnMonthOfWarrantyChanging(int value);
@@ -538,6 +542,26 @@ namespace Dal.DataContext
 					this._StockInOutDetailId = value;
 					this.SendPropertyChanged("StockInOutDetailId");
 					this.OnStockInOutDetailIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyType", DbType="Int NOT NULL")]
+		public int WarrantyType
+		{
+			get
+			{
+				return this._WarrantyType;
+			}
+			set
+			{
+				if ((this._WarrantyType != value))
+				{
+					this.OnWarrantyTypeChanging(value);
+					this.SendPropertyChanging();
+					this._WarrantyType = value;
+					this.SendPropertyChanged("WarrantyType");
+					this.OnWarrantyTypeChanged();
 				}
 			}
 		}

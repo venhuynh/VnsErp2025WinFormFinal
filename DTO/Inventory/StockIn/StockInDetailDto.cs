@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace DTO.Inventory.StockIn;
 
@@ -161,6 +163,126 @@ public class StockInDetailDto
     [Display(Order = 26)]
     [Range(0, double.MaxValue, ErrorMessage = "Tổng tiền gồm VAT phải lớn hơn hoặc bằng 0")]
     public decimal TotalAmountIncludedVat => TotalAmount + VatAmount;
+
+    #endregion
+}
+
+/// <summary>
+/// Converter giữa StockInOutDetail entity và StockInDetailDto
+/// </summary>
+public static class StockInDetailDtoConverter
+{
+    #region Entity to DTO
+
+    /// <summary>
+    /// Chuyển đổi StockInOutDetail entity thành StockInDetailDto
+    /// </summary>
+    /// <param name="entity">StockInOutDetail entity</param>
+    /// <returns>StockInDetailDto</returns>
+    public static StockInDetailDto ToDto(this Dal.DataContext.StockInOutDetail entity)
+    {
+        if (entity == null) return null;
+
+        var dto = new StockInDetailDto
+        {
+            Id = entity.Id,
+            StockInOutMasterId = entity.StockInOutMasterId,
+            ProductVariantId = entity.ProductVariantId,
+            StockInQty = entity.StockInQty,
+            StockOutQty = entity.StockOutQty,
+            UnitPrice = entity.UnitPrice,
+            Vat = entity.Vat,
+            LineNumber = 0 // Sẽ được cập nhật sau nếu cần
+        };
+
+        // Lấy thông tin ProductVariant nếu có
+        if (entity.ProductVariant != null)
+        {
+            dto.ProductVariantCode = entity.ProductVariant.VariantCode;
+
+            // Lấy tên tương tự như FullName của ProductVariantDto
+            // Format: ProductName (ProductCode) - VariantCode | VariantFullName - UnitName
+            var productName = entity.ProductVariant.ProductService?.Name ?? string.Empty;
+            var productCode = entity.ProductVariant.ProductService?.Code ?? string.Empty;
+            var variantCode = entity.ProductVariant.VariantCode ?? string.Empty;
+            var variantFullName = entity.ProductVariant.VariantFullName ?? string.Empty;
+            var unitName = entity.ProductVariant.UnitOfMeasure?.Name ?? string.Empty;
+
+            // Tạo tên hiển thị tương tự FullName của ProductVariantListDto
+            var nameParts = new List<string>();
+
+            // Phần 1: Tên sản phẩm (và mã nếu có)
+            if (!string.IsNullOrWhiteSpace(productName))
+            {
+                if (!string.IsNullOrWhiteSpace(productCode))
+                {
+                    nameParts.Add($"{productName} ({productCode})");
+                }
+                else
+                {
+                    nameParts.Add(productName);
+                }
+            }
+
+            // Phần 2: Mã biến thể và tên biến thể
+            var variantParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(variantCode))
+            {
+                variantParts.Add(variantCode);
+            }
+            if (!string.IsNullOrWhiteSpace(variantFullName))
+            {
+                variantParts.Add(variantFullName);
+            }
+            
+            if (variantParts.Count > 0)
+            {
+                nameParts.Add(string.Join(" | ", variantParts));
+            }
+
+            // Phần 3: Đơn vị tính
+            if (!string.IsNullOrWhiteSpace(unitName))
+            {
+                nameParts.Add($"({unitName})");
+            }
+
+            // Kết hợp tất cả các phần
+            if (nameParts.Count > 0)
+            {
+                dto.ProductVariantName = string.Join(" - ", nameParts);
+            }
+            else
+            {
+                // Fallback: Nếu không có thông tin, sử dụng VariantCode hoặc ProductName
+                dto.ProductVariantName = !string.IsNullOrWhiteSpace(variantCode) 
+                    ? variantCode 
+                    : productName;
+            }
+
+            // Lấy thông tin đơn vị tính
+            dto.UnitOfMeasureId = entity.ProductVariant.UnitId;
+            
+            if (entity.ProductVariant.UnitOfMeasure != null)
+            {
+                dto.UnitOfMeasureCode = entity.ProductVariant.UnitOfMeasure.Code;
+                dto.UnitOfMeasureName = entity.ProductVariant.UnitOfMeasure.Name;
+            }
+        }
+
+        return dto;
+    }
+
+    /// <summary>
+    /// Chuyển đổi danh sách StockInOutDetail entities thành danh sách StockInDetailDto
+    /// </summary>
+    /// <param name="entities">Danh sách StockInOutDetail entities</param>
+    /// <returns>Danh sách StockInDetailDto</returns>
+    public static List<StockInDetailDto> ToDtoList(this IEnumerable<Dal.DataContext.StockInOutDetail> entities)
+    {
+        if (entities == null) return [];
+
+        return entities.Select(entity => entity.ToDto()).ToList();
+    }
 
     #endregion
 }

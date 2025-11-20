@@ -247,23 +247,6 @@ namespace DTO.Inventory.StockIn
 
     #region Warranty - Bảo Hành
 
-    /// <summary>
-    /// Enum định nghĩa các loại bảo hành
-    /// </summary>
-    public enum LoaiBaoHanhEnum
-    {
-        /// <summary>
-        /// Bảo hành từ nhà cung cấp cho VNS - Nhà cung cấp bảo hành sản phẩm cho VNS
-        /// </summary>
-        TuNhaCungCap = 1,
-
-        /// <summary>
-        /// Bảo hành cho khách hàng - VNS bảo hành sản phẩm cho khách hàng
-        /// </summary>
-        ChoKhachHang = 2
-    }
-
-
     #endregion
 }
 

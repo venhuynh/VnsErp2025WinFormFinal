@@ -303,5 +303,54 @@ public class StockInRepository : IStockInRepository
         }
     }
 
+    /// <summary>
+    /// Lấy danh sách chi tiết phiếu nhập/xuất kho theo MasterId
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+    /// <returns>Danh sách StockInOutDetail entities</returns>
+    public List<StockInOutDetail> GetDetailsByMasterId(Guid stockInOutMasterId)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetDetailsByMasterId: Lấy danh sách chi tiết, StockInOutMasterId={0}", stockInOutMasterId);
+
+            // Configure eager loading cho ProductVariant và ProductService
+            var loadOptions = new DataLoadOptions();
+            loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
+            loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
+            context.LoadOptions = loadOptions;
+
+            var details = context.StockInOutDetails
+                .Where(d => d.StockInOutMasterId == stockInOutMasterId)
+                .ToList();
+
+            // Force load ProductVariant và ProductService trước khi dispose DataContext
+            foreach (var detail in details)
+            {
+                if (detail.ProductVariant != null)
+                {
+                    // Force load ProductVariant
+                    var _ = detail.ProductVariant.VariantCode;
+                    var __ = detail.ProductVariant.VariantFullName;
+                    
+                    // Force load ProductService nếu có
+                    if (detail.ProductVariant.ProductService != null)
+                    {
+                        var ___ = detail.ProductVariant.ProductService.Name;
+                    }
+                }
+            }
+
+            _logger.Info("GetDetailsByMasterId: Lấy được {0} chi tiết", details.Count);
+            return details;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetDetailsByMasterId: Lỗi lấy danh sách chi tiết: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 }

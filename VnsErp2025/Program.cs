@@ -1,6 +1,7 @@
 ﻿using Authentication.Form;
 using Common.Utils;
 using Dal.Connection;
+using Inventory.InventoryManagement;
 using Inventory.StockIn;
 using System;
 using System.Windows.Forms;
@@ -82,7 +83,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmNhapKhoThuongMai02());
+            Application.Run(new FrmWarranty(new Guid("BBAFC433-AFD0-4680-87EB-8EE693FAF993")));
 
             #endregion
 

@@ -69,6 +69,12 @@
     <Compile Include="InventoryManagement\FrmStockInOutAddImages.Designer.cs">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </Compile>
+    <Compile Include="InventoryManagement\FrmStockInOutHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InventoryManagement\FrmStockInOutHistory.Designer.cs">
+      <DependentUpon>FrmStockInOutHistory.cs</DependentUpon>
+    </Compile>
     <Compile Include="InventoryManagement\FrmWarranty.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +109,9 @@
     <EmbeddedResource Include="InventoryManagement\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="InventoryManagement\FrmWarranty.resx">
+      <DependentUpon>FrmWarranty.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -130,6 +139,7 @@
     <None Include="Doc\NhapHang\NhapHangThuongMai_02_NhapKhoTheoPONCC.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_01_NhapKhoDoiBan.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_00_TongQuan.md" />
+    <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
@@ -208,6 +218,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\opendoc_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clear_16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
