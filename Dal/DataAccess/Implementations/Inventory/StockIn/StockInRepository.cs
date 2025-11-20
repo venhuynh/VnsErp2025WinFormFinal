@@ -315,22 +315,23 @@ public class StockInRepository : IStockInRepository
         {
             _logger.Debug("GetDetailsByMasterId: Lấy danh sách chi tiết, StockInOutMasterId={0}", stockInOutMasterId);
 
-            // Configure eager loading cho ProductVariant và ProductService
+            // Configure eager loading cho ProductVariant, ProductService và UnitOfMeasure
             var loadOptions = new DataLoadOptions();
             loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
             loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
+            loadOptions.LoadWith<ProductVariant>(v => v.UnitOfMeasure);
             context.LoadOptions = loadOptions;
 
             var details = context.StockInOutDetails
                 .Where(d => d.StockInOutMasterId == stockInOutMasterId)
                 .ToList();
 
-            // Force load ProductVariant và ProductService trước khi dispose DataContext
+            // Force load tất cả navigation properties trước khi dispose DataContext
             foreach (var detail in details)
             {
                 if (detail.ProductVariant != null)
                 {
-                    // Force load ProductVariant
+                    // Force load ProductVariant properties
                     var _ = detail.ProductVariant.VariantCode;
                     var __ = detail.ProductVariant.VariantFullName;
                     
@@ -338,6 +339,14 @@ public class StockInRepository : IStockInRepository
                     if (detail.ProductVariant.ProductService != null)
                     {
                         var ___ = detail.ProductVariant.ProductService.Name;
+                        var ____ = detail.ProductVariant.ProductService.Code;
+                    }
+                    
+                    // Force load UnitOfMeasure nếu có
+                    if (detail.ProductVariant.UnitOfMeasure != null)
+                    {
+                        var _____ = detail.ProductVariant.UnitOfMeasure.Name;
+                        var ______ = detail.ProductVariant.UnitOfMeasure.Code;
                     }
                 }
             }

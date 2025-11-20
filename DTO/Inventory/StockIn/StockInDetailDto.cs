@@ -164,6 +164,104 @@ public class StockInDetailDto
     [Range(0, double.MaxValue, ErrorMessage = "Tổng tiền gồm VAT phải lớn hơn hoặc bằng 0")]
     public decimal TotalAmountIncludedVat => TotalAmount + VatAmount;
 
+    /// <summary>
+    /// Thông tin chi tiết phiếu nhập dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Thông tin HTML")]
+    [Display(Order = 30)]
+    [Description("Thông tin chi tiết phiếu nhập dưới dạng HTML")]
+    public string FullNameHtml
+    {
+        get
+        {
+            var productVariantName = ProductVariantName ?? string.Empty;
+            var productVariantCode = ProductVariantCode ?? string.Empty;
+            var unitName = UnitOfMeasureName ?? string.Empty;
+            var unitCode = UnitOfMeasureCode ?? string.Empty;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
+            // - Mã sản phẩm: font nhỏ hơn, màu xám
+            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
+            // - Số lượng và giá: font nhỏ hơn, màu xám cho label, đen cho value
+
+            var html = string.Empty;
+
+            // Tên sản phẩm (nổi bật nhất)
+            if (!string.IsNullOrWhiteSpace(productVariantName))
+            {
+                html += $"<size=12><b><color='blue'>{productVariantName}</color></b></size>";
+            }
+
+            // Mã sản phẩm (nếu có)
+            if (!string.IsNullOrWhiteSpace(productVariantCode))
+            {
+                if (!string.IsNullOrWhiteSpace(productVariantName))
+                {
+                    html += $" <size=9><color='#757575'>({productVariantCode})</color></size>";
+                }
+                else
+                {
+                    html += $"<size=12><b><color='blue'>{productVariantCode}</color></b></size>";
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(productVariantName) || !string.IsNullOrWhiteSpace(productVariantCode))
+            {
+                html += "<br>";
+            }
+
+            // Đơn vị tính
+            if (!string.IsNullOrWhiteSpace(unitCode) || !string.IsNullOrWhiteSpace(unitName))
+            {
+                var unitDisplay = string.IsNullOrWhiteSpace(unitCode)
+                    ? unitName
+                    : string.IsNullOrWhiteSpace(unitName)
+                        ? unitCode
+                        : $"{unitCode} - {unitName}";
+
+                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitDisplay}</b></color></size><br>";
+            }
+
+            // Số lượng nhập
+            if (StockInQty > 0)
+            {
+                html += $"<size=9><color='#757575'>Số lượng:</color></size> <size=10><color='#212121'><b>{StockInQty:N2}</b></color></size>";
+            }
+
+            // Đơn giá
+            if (UnitPrice > 0)
+            {
+                if (StockInQty > 0)
+                    html += " | ";
+                html += $"<size=9><color='#757575'>Đơn giá:</color></size> <size=10><color='#212121'><b>{UnitPrice:N0}</b></color></size>";
+            }
+
+            // VAT
+            if (Vat > 0)
+            {
+                if (StockInQty > 0 || UnitPrice > 0)
+                    html += " | ";
+                html += $"<size=9><color='#757575'>VAT:</color></size> <size=10><color='#212121'><b>{Vat}%</b></color></size>";
+            }
+
+            if (StockInQty > 0 || UnitPrice > 0 || Vat > 0)
+            {
+                html += "<br>";
+            }
+
+            // Tổng tiền
+            if (TotalAmountIncludedVat > 0)
+            {
+                html += $"<size=9><color='#757575'>Tổng tiền:</color></size> <size=10><color='#2196F3'><b>{TotalAmountIncludedVat:N0}</b></color></size>";
+            }
+
+            return html;
+        }
+    }
+
     #endregion
 }
 
@@ -200,56 +298,40 @@ public static class StockInDetailDtoConverter
         {
             dto.ProductVariantCode = entity.ProductVariant.VariantCode;
 
-            // Lấy tên tương tự như FullName của ProductVariantDto
-            // Format: ProductName (ProductCode) - VariantCode | VariantFullName - UnitName
+            // Lấy tên đơn giản - tương tự FullName của ProductVariantListDto
+            // Format: VariantCode - ProductName VariantFullName (UnitName)
+            // FullNameHtml sẽ xử lý format HTML phức tạp hơn
             var productName = entity.ProductVariant.ProductService?.Name ?? string.Empty;
-            var productCode = entity.ProductVariant.ProductService?.Code ?? string.Empty;
             var variantCode = entity.ProductVariant.VariantCode ?? string.Empty;
             var variantFullName = entity.ProductVariant.VariantFullName ?? string.Empty;
             var unitName = entity.ProductVariant.UnitOfMeasure?.Name ?? string.Empty;
 
-            // Tạo tên hiển thị tương tự FullName của ProductVariantListDto
+            // Tạo tên hiển thị đơn giản (text thuần, không HTML) - tương tự FullName của ProductVariantListDto
             var nameParts = new List<string>();
-
-            // Phần 1: Tên sản phẩm (và mã nếu có)
-            if (!string.IsNullOrWhiteSpace(productName))
-            {
-                if (!string.IsNullOrWhiteSpace(productCode))
-                {
-                    nameParts.Add($"{productName} ({productCode})");
-                }
-                else
-                {
-                    nameParts.Add(productName);
-                }
-            }
-
-            // Phần 2: Mã biến thể và tên biến thể
-            var variantParts = new List<string>();
+            
             if (!string.IsNullOrWhiteSpace(variantCode))
             {
-                variantParts.Add(variantCode);
+                nameParts.Add(variantCode);
             }
+
+            if (!string.IsNullOrWhiteSpace(productName))
+            {
+                nameParts.Add(productName);
+            }
+
             if (!string.IsNullOrWhiteSpace(variantFullName))
             {
-                variantParts.Add(variantFullName);
-            }
-            
-            if (variantParts.Count > 0)
-            {
-                nameParts.Add(string.Join(" | ", variantParts));
+                nameParts.Add(variantFullName);
             }
 
-            // Phần 3: Đơn vị tính
-            if (!string.IsNullOrWhiteSpace(unitName))
-            {
-                nameParts.Add($"({unitName})");
-            }
-
-            // Kết hợp tất cả các phần
             if (nameParts.Count > 0)
             {
-                dto.ProductVariantName = string.Join(" - ", nameParts);
+                dto.ProductVariantName = string.Join(" ", nameParts);
+                
+                if (!string.IsNullOrWhiteSpace(unitName))
+                {
+                    dto.ProductVariantName += $" ({unitName})";
+                }
             }
             else
             {

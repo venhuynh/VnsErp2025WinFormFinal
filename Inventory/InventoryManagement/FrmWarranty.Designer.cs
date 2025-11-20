@@ -72,11 +72,9 @@ namespace Inventory.InventoryManagement
             this.UniqueProductInfoTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.StockInOutDetailIdSearchLookUpEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.stockInDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colProductVariantNameSearchLookUp = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colUnitOfMeasureName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colStockInQty = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.StockInDetailSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colFullNameHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForUniqueProductInfo = new DevExpress.XtraLayout.LayoutControlItem();
@@ -117,7 +115,8 @@ namespace Inventory.InventoryManagement
             ((System.ComponentModel.ISupportInitialize)(this.UniqueProductInfoTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDetailIdSearchLookUpEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockInDetailDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInDetailSearchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUniqueProductInfo)).BeginInit();
@@ -473,13 +472,16 @@ namespace Inventory.InventoryManagement
             this.StockInOutDetailIdSearchLookUpEdit.Location = new System.Drawing.Point(127, 12);
             this.StockInOutDetailIdSearchLookUpEdit.MenuManager = this.barManager1;
             this.StockInOutDetailIdSearchLookUpEdit.Name = "StockInOutDetailIdSearchLookUpEdit";
+            this.StockInOutDetailIdSearchLookUpEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.StockInOutDetailIdSearchLookUpEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
             this.StockInOutDetailIdSearchLookUpEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.StockInOutDetailIdSearchLookUpEdit.Properties.DataSource = this.stockInDetailDtoBindingSource;
-            this.StockInOutDetailIdSearchLookUpEdit.Properties.DisplayMember = "ProductVariantName";
+            this.StockInOutDetailIdSearchLookUpEdit.Properties.DisplayMember = "FullNameHtml";
             this.StockInOutDetailIdSearchLookUpEdit.Properties.NullText = "";
-            this.StockInOutDetailIdSearchLookUpEdit.Properties.PopupView = this.searchLookUpEdit1View;
+            this.StockInOutDetailIdSearchLookUpEdit.Properties.PopupView = this.StockInDetailSearchLookUpEdit1View;
+            this.StockInOutDetailIdSearchLookUpEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemHypertextLabel1});
             this.StockInOutDetailIdSearchLookUpEdit.Properties.ValueMember = "Id";
             this.StockInOutDetailIdSearchLookUpEdit.Size = new System.Drawing.Size(503, 20);
             this.StockInOutDetailIdSearchLookUpEdit.StyleController = this.dataLayoutControl2;
@@ -489,101 +491,29 @@ namespace Inventory.InventoryManagement
             // 
             this.stockInDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.StockInDetailDto);
             // 
-            // searchLookUpEdit1View
+            // StockInDetailSearchLookUpEdit1View
             // 
-            this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colProductVariantCode,
-            this.colProductVariantNameSearchLookUp,
-            this.colUnitOfMeasureName,
-            this.colStockInQty});
-            this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
-            this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.searchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
-            this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            this.StockInDetailSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colFullNameHtml});
+            this.StockInDetailSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.StockInDetailSearchLookUpEdit1View.Name = "StockInDetailSearchLookUpEdit1View";
+            this.StockInDetailSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.StockInDetailSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
+            this.StockInDetailSearchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
+            this.StockInDetailSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
-            // colProductVariantCode
+            // colFullNameHtml
             // 
-            this.colProductVariantCode.AppearanceCell.Options.UseTextOptions = true;
-            this.colProductVariantCode.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colProductVariantCode.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colProductVariantCode.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colProductVariantCode.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colProductVariantCode.AppearanceHeader.Options.UseBackColor = true;
-            this.colProductVariantCode.AppearanceHeader.Options.UseFont = true;
-            this.colProductVariantCode.AppearanceHeader.Options.UseForeColor = true;
-            this.colProductVariantCode.AppearanceHeader.Options.UseTextOptions = true;
-            this.colProductVariantCode.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colProductVariantCode.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colProductVariantCode.Caption = "Mã hàng";
-            this.colProductVariantCode.FieldName = "ProductVariantCode";
-            this.colProductVariantCode.Name = "colProductVariantCode";
-            this.colProductVariantCode.Visible = true;
-            this.colProductVariantCode.VisibleIndex = 0;
-            this.colProductVariantCode.Width = 120;
+            this.colFullNameHtml.ColumnEdit = this.repositoryItemHypertextLabel1;
+            this.colFullNameHtml.FieldName = "FullNameHtml";
+            this.colFullNameHtml.Name = "colFullNameHtml";
+            this.colFullNameHtml.Visible = true;
+            this.colFullNameHtml.VisibleIndex = 0;
             // 
-            // colProductVariantNameSearchLookUp
+            // repositoryItemHypertextLabel1
             // 
-            this.colProductVariantNameSearchLookUp.AppearanceCell.Options.UseTextOptions = true;
-            this.colProductVariantNameSearchLookUp.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colProductVariantNameSearchLookUp.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colProductVariantNameSearchLookUp.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colProductVariantNameSearchLookUp.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colProductVariantNameSearchLookUp.AppearanceHeader.Options.UseBackColor = true;
-            this.colProductVariantNameSearchLookUp.AppearanceHeader.Options.UseFont = true;
-            this.colProductVariantNameSearchLookUp.AppearanceHeader.Options.UseForeColor = true;
-            this.colProductVariantNameSearchLookUp.AppearanceHeader.Options.UseTextOptions = true;
-            this.colProductVariantNameSearchLookUp.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colProductVariantNameSearchLookUp.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colProductVariantNameSearchLookUp.Caption = "Tên hàng";
-            this.colProductVariantNameSearchLookUp.FieldName = "ProductVariantName";
-            this.colProductVariantNameSearchLookUp.Name = "colProductVariantNameSearchLookUp";
-            this.colProductVariantNameSearchLookUp.Visible = true;
-            this.colProductVariantNameSearchLookUp.VisibleIndex = 1;
-            this.colProductVariantNameSearchLookUp.Width = 250;
-            // 
-            // colUnitOfMeasureName
-            // 
-            this.colUnitOfMeasureName.AppearanceCell.Options.UseTextOptions = true;
-            this.colUnitOfMeasureName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colUnitOfMeasureName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colUnitOfMeasureName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colUnitOfMeasureName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colUnitOfMeasureName.AppearanceHeader.Options.UseBackColor = true;
-            this.colUnitOfMeasureName.AppearanceHeader.Options.UseFont = true;
-            this.colUnitOfMeasureName.AppearanceHeader.Options.UseForeColor = true;
-            this.colUnitOfMeasureName.AppearanceHeader.Options.UseTextOptions = true;
-            this.colUnitOfMeasureName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colUnitOfMeasureName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colUnitOfMeasureName.Caption = "Đơn vị tính";
-            this.colUnitOfMeasureName.FieldName = "UnitOfMeasureName";
-            this.colUnitOfMeasureName.Name = "colUnitOfMeasureName";
-            this.colUnitOfMeasureName.Visible = true;
-            this.colUnitOfMeasureName.VisibleIndex = 2;
-            this.colUnitOfMeasureName.Width = 100;
-            // 
-            // colStockInQty
-            // 
-            this.colStockInQty.AppearanceCell.Options.UseTextOptions = true;
-            this.colStockInQty.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.colStockInQty.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colStockInQty.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colStockInQty.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colStockInQty.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colStockInQty.AppearanceHeader.Options.UseBackColor = true;
-            this.colStockInQty.AppearanceHeader.Options.UseFont = true;
-            this.colStockInQty.AppearanceHeader.Options.UseForeColor = true;
-            this.colStockInQty.AppearanceHeader.Options.UseTextOptions = true;
-            this.colStockInQty.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colStockInQty.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colStockInQty.Caption = "Số lượng nhập";
-            this.colStockInQty.DisplayFormat.FormatString = "N2";
-            this.colStockInQty.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.colStockInQty.FieldName = "StockInQty";
-            this.colStockInQty.Name = "colStockInQty";
-            this.colStockInQty.Visible = true;
-            this.colStockInQty.VisibleIndex = 3;
-            this.colStockInQty.Width = 120;
+            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
             // 
             // layoutControlGroup1
             // 
@@ -844,7 +774,8 @@ namespace Inventory.InventoryManagement
             ((System.ComponentModel.ISupportInitialize)(this.UniqueProductInfoTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDetailIdSearchLookUpEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockInDetailDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInDetailSearchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUniqueProductInfo)).EndInit();
@@ -900,7 +831,7 @@ namespace Inventory.InventoryManagement
         private DevExpress.XtraGrid.GridControl WarrantyDtoGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView WarrantyDtoGridView;
         private SearchLookUpEdit StockInOutDetailIdSearchLookUpEdit;
-        private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
+        private DevExpress.XtraGrid.Views.Grid.GridView StockInDetailSearchLookUpEdit1View;
         private LayoutControlItem ItemForStockInOutDetailId;
         private LayoutControlItem layoutControlItem2;
         private LayoutControlGroup layoutControlGroup3;
@@ -916,9 +847,7 @@ namespace Inventory.InventoryManagement
         private System.Windows.Forms.BindingSource stockInDetailDtoBindingSource;
         private BarStaticItem FormHotKeyBarStaticItem;
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantName;
-        private DevExpress.XtraGrid.Columns.GridColumn colProductVariantCode;
-        private DevExpress.XtraGrid.Columns.GridColumn colProductVariantNameSearchLookUp;
-        private DevExpress.XtraGrid.Columns.GridColumn colUnitOfMeasureName;
-        private DevExpress.XtraGrid.Columns.GridColumn colStockInQty;
+        private DevExpress.XtraGrid.Columns.GridColumn colFullNameHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
     }
 }

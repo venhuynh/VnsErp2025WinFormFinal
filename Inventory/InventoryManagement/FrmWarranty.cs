@@ -2,7 +2,6 @@
 using Bll.Inventory.StockIn;
 using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
 using DevExpress.XtraEditors;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn;
@@ -77,6 +76,12 @@ namespace Inventory.InventoryManagement
             try
             {
                 _logger.Debug("FrmWarranty_Load: Form loading, StockInOutMasterId={0}", StockInOutMasterId);
+
+                // Đánh dấu các trường bắt buộc nhập
+                MarkRequiredFields();
+
+                // Setup SuperToolTips
+                SetupSuperToolTips();
 
                 // Setup events
                 SetupEvents();
@@ -199,7 +204,11 @@ namespace Inventory.InventoryManagement
                 MonthOfWarrantyTextEdit.EditValueChanged += MonthOfWarrantyTextEdit_EditValueChanged;
                 WarrantyFromDateEdit.EditValueChanged += WarrantyFromDateEdit_EditValueChanged;
 
-                // Text edit events - ENTER key để thêm vào grid
+                // SearchLookUpEdit events - clear lỗi khi thay đổi
+                StockInOutDetailIdSearchLookUpEdit.EditValueChanged += StockInOutDetailIdSearchLookUpEdit_EditValueChanged;
+
+                // Text edit events - ENTER key để thêm vào grid và clear lỗi khi thay đổi
+                UniqueProductInfoTextEdit.EditValueChanged += UniqueProductInfoTextEdit_EditValueChanged;
                 UniqueProductInfoTextEdit.KeyDown += UniqueProductInfoTextEdit_KeyDown;
 
                 // Setup phím tắt
@@ -244,6 +253,8 @@ namespace Inventory.InventoryManagement
 
                 var hotKeyText = @"<color=Gray>Phím tắt:</color> " +
                     @"<b><color=Blue>F2</color></b> Lưu | " +
+                    @"<b><color=Blue>F3</color></b> Thêm vào | " +
+                    @"<b><color=Blue>F4</color></b> Bỏ ra | " +
                     @"<b><color=Blue>ESC</color></b> Đóng";
 
                 FormHotKeyBarStaticItem.Caption = hotKeyText;
@@ -301,6 +312,116 @@ namespace Inventory.InventoryManagement
         {
             _hasUnsavedChanges = false;
             _logger.Debug("MarkAsSaved: Form marked as saved");
+        }
+
+        /// <summary>
+        /// Đánh dấu các trường bắt buộc nhập
+        /// </summary>
+        private void MarkRequiredFields()
+        {
+            try
+            {
+                RequiredFieldHelper.MarkRequiredFields(
+                    this,
+                    typeof(WarrantyDto),
+                    logger: (msg, ex) => _logger?.Error($"{msg}: {ex?.Message}")
+                );
+
+                _logger.Debug("MarkRequiredFields: Required fields marked successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("MarkRequiredFields: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi đánh dấu trường bắt buộc: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho tất cả các controls trong Form
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                SetupTextEditSuperTips();
+                SetupDateEditSuperTips();
+                SetupSearchLookupEditSuperTips();
+
+                _logger.Debug("SetupSuperToolTips: SuperToolTips setup completed");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi thiết lập SuperToolTip: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các TextEdit controls
+        /// </summary>
+        private void SetupTextEditSuperTips()
+        {
+            // SuperTip cho Số tháng bảo hành
+            if (MonthOfWarrantyTextEdit != null)
+            {
+                SuperToolTipHelper.SetTextEditSuperTip(
+                    MonthOfWarrantyTextEdit,
+                    title: @"<b><color=DarkBlue>📅 Số tháng bảo hành</color></b>",
+                    content: @"Nhập số tháng bảo hành cho sản phẩm.<br/><br/><b>Chức năng:</b><br/>• Xác định thời gian bảo hành (tính bằng tháng)<br/>• Tự động tính toán ngày kết thúc bảo hành dựa trên ngày bắt đầu<br/>• Format: Số nguyên dương (N0)<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Phải lớn hơn 0<br/>• Không được để trống<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi số tháng bảo hành, hệ thống sẽ tự động cập nhật ngày kết thúc bảo hành."
+                );
+            }
+
+            // SuperTip cho Thông tin sản phẩm duy nhất
+            if (UniqueProductInfoTextEdit != null)
+            {
+                SuperToolTipHelper.SetTextEditSuperTip(
+                    UniqueProductInfoTextEdit,
+                    title: @"<b><color=DarkBlue>🔢 Thông tin sản phẩm duy nhất</color></b>",
+                    content: @"Nhập thông tin sản phẩm duy nhất (Serial Number, IMEI, v.v.) để xác định sản phẩm cụ thể.<br/><br/><b>Chức năng:</b><br/>• Xác định sản phẩm cụ thể trong hệ thống<br/>• Tra cứu thông tin bảo hành theo serial/IMEI<br/>• Đảm bảo tính duy nhất của sản phẩm<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 200 ký tự<br/>• Phải duy nhất (không được trùng lặp trong danh sách)<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra trùng lặp khi thêm vào grid<br/>• Kiểm tra trùng lặp khi lưu<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>Phím tắt:</b><br/>• Nhấn <b>ENTER</b> để thêm vào danh sách bảo hành<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu bảo hành."
+                );
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các DateEdit controls
+        /// </summary>
+        private void SetupDateEditSuperTips()
+        {
+            // SuperTip cho Ngày bắt đầu bảo hành
+            if (WarrantyFromDateEdit != null)
+            {
+                SuperToolTipHelper.SetBaseEditSuperTip(
+                    WarrantyFromDateEdit,
+                    title: @"<b><color=DarkBlue>📅 Ngày bắt đầu bảo hành</color></b>",
+                    content: @"Chọn ngày bắt đầu bảo hành cho sản phẩm.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm bắt đầu bảo hành<br/>• Tự động tính toán ngày kết thúc bảo hành dựa trên số tháng bảo hành<br/>• Format: dd/MM/yyyy<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Mặc định: Ngày hiện tại khi khởi tạo form<br/><br/><b>Validation:</b><br/>• Kiểm tra hợp lệ của ngày<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày bắt đầu bảo hành, hệ thống sẽ tự động cập nhật ngày kết thúc bảo hành."
+                );
+            }
+
+            // SuperTip cho Ngày kết thúc bảo hành
+            if (WarrantyUntilDateEdit != null)
+            {
+                SuperToolTipHelper.SetBaseEditSuperTip(
+                    WarrantyUntilDateEdit,
+                    title: @"<b><color=DarkBlue>📅 Ngày kết thúc bảo hành</color></b>",
+                    content: @"Ngày kết thúc bảo hành được tính tự động dựa trên ngày bắt đầu và số tháng bảo hành.<br/><br/><b>Chức năng:</b><br/>• Hiển thị ngày kết thúc bảo hành<br/>• Tự động tính toán từ ngày bắt đầu + số tháng bảo hành<br/>• Format: dd/MM/yyyy<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tự động tính toán khi có đầy đủ thông tin<br/><br/><b>Tính toán:</b><br/>• WarrantyUntil = WarrantyFrom + MonthOfWarranty<br/>• Cập nhật tự động khi thay đổi WarrantyFrom hoặc MonthOfWarranty<br/><br/><color=Gray>Lưu ý:</color> Ngày này sẽ được lưu vào database khi lưu bảo hành."
+                );
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các SearchLookUpEdit controls
+        /// </summary>
+        private void SetupSearchLookupEditSuperTips()
+        {
+            // SuperTip cho Sản phẩm bảo hành
+            if (StockInOutDetailIdSearchLookUpEdit != null)
+            {
+                SuperToolTipHelper.SetBaseEditSuperTip(
+                    StockInOutDetailIdSearchLookUpEdit,
+                    title: @"<b><color=DarkBlue>📦 Sản phẩm bảo hành</color></b>",
+                    content: @"Chọn sản phẩm từ danh sách chi tiết phiếu nhập/xuất kho để nhập bảo hành.<br/><br/><b>Chức năng:</b><br/>• Chọn sản phẩm từ danh sách chi tiết phiếu nhập/xuất kho<br/>• Hiển thị thông tin sản phẩm dạng HTML (mã, tên, đơn vị tính, số lượng, giá)<br/>• Tự động cập nhật StockInOutDetailId vào DTO<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các sản phẩm trong phiếu nhập/xuất kho hiện tại<br/><br/><b>Data Source:</b><br/>• Load từ StockInBll.GetDetailsByMasterId()<br/>• Filter theo StockInOutMasterId<br/>• Hiển thị thông tin sản phẩm dạng HTML (FullNameHtml)<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Sản phẩm được chọn sẽ được lưu vào database khi lưu bảo hành."
+                );
+            }
         }
 
         #endregion
@@ -454,6 +575,8 @@ namespace Inventory.InventoryManagement
                 currentList.Add(warrantyDto);
                 warrantyDtoBindingSource.ResetBindings(false);
 
+                WarrantyDtoGridView.ExpandAllGroups();
+                
                 // Đánh dấu có thay đổi
                 MarkAsChanged();
 
@@ -535,6 +658,15 @@ namespace Inventory.InventoryManagement
         {
             try
             {
+                // Validate và clear lỗi nếu giá trị hợp lệ
+                var monthOfWarranty = Convert.ToInt32(MonthOfWarrantyTextEdit.EditValue ?? 0);
+                if (monthOfWarranty > 0)
+                {
+                    // Giá trị hợp lệ, clear lỗi
+                    dxErrorProvider1.SetError(MonthOfWarrantyTextEdit, string.Empty);
+                }
+
+                // Tính toán ngày kết thúc bảo hành
                 CalculateWarrantyUntil();
             }
             catch (Exception ex)
@@ -550,6 +682,13 @@ namespace Inventory.InventoryManagement
         {
             try
             {
+                // Clear lỗi nếu có (ngày bắt đầu không bắt buộc nhưng vẫn có thể có lỗi validation khác)
+                if (WarrantyFromDateEdit.EditValue is DateTime)
+                {
+                    dxErrorProvider1.SetError(WarrantyFromDateEdit, string.Empty);
+                }
+
+                // Tính toán ngày kết thúc bảo hành
                 CalculateWarrantyUntil();
             }
             catch (Exception ex)
@@ -590,6 +729,47 @@ namespace Inventory.InventoryManagement
         }
 
         /// <summary>
+        /// Event handler khi thay đổi giá trị trong UniqueProductInfoTextEdit - clear lỗi nếu giá trị hợp lệ
+        /// </summary>
+        private void UniqueProductInfoTextEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Validate và clear lỗi nếu giá trị hợp lệ
+                var uniqueProductInfo = UniqueProductInfoTextEdit.EditValue?.ToString().Trim() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(uniqueProductInfo))
+                {
+                    // Giá trị hợp lệ, clear lỗi
+                    dxErrorProvider1.SetError(UniqueProductInfoTextEdit, string.Empty);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("UniqueProductInfoTextEdit_EditValueChanged: Exception occurred", ex);
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi thay đổi giá trị trong StockInOutDetailIdSearchLookUpEdit - clear lỗi nếu giá trị hợp lệ
+        /// </summary>
+        private void StockInOutDetailIdSearchLookUpEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Validate và clear lỗi nếu giá trị hợp lệ
+                if (StockInOutDetailIdSearchLookUpEdit.EditValue is Guid stockInOutDetailId && stockInOutDetailId != Guid.Empty)
+                {
+                    // Giá trị hợp lệ, clear lỗi
+                    dxErrorProvider1.SetError(StockInOutDetailIdSearchLookUpEdit, string.Empty);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Exception occurred", ex);
+            }
+        }
+
+        /// <summary>
         /// Event handler khi nhấn phím trong UniqueProductInfoTextEdit - ENTER để thêm vào grid
         /// </summary>
         private void UniqueProductInfoTextEdit_KeyDown(object sender, KeyEventArgs e)
@@ -619,6 +799,14 @@ namespace Inventory.InventoryManagement
         {
             try
             {
+                // Chỉ xử lý phím tắt khi không đang edit trong control
+                if (ActiveControl is BaseEdit { IsEditorActive: true })
+                {
+                    // Nếu đang edit trong control, chỉ xử lý một số phím đặc biệt
+                    // Các phím khác sẽ được xử lý bởi control đó
+                    return;
+                }
+
                 switch (e.KeyCode)
                 {
                     case Keys.F2:
@@ -627,13 +815,22 @@ namespace Inventory.InventoryManagement
                         SaveBarButtonItem_ItemClick(null, null);
                         break;
 
+                    case Keys.F3:
+                        // F3: Thêm vào
+                        e.Handled = true;
+                        ThemVaoHyperlinkLabelControl_Click(null, null);
+                        break;
+
+                    case Keys.F4:
+                        // F4: Bỏ ra
+                        e.Handled = true;
+                        BoRaHyperlinkLabelControl_Click(null, null);
+                        break;
+
                     case Keys.Escape:
                         // ESC: Đóng form
-                        if (!(ActiveControl is BaseEdit { IsEditorActive: true }))
-                        {
-                            e.Handled = true;
-                            CloseBarButtonItem_ItemClick(null, null);
-                        }
+                        e.Handled = true;
+                        CloseBarButtonItem_ItemClick(null, null);
                         break;
                 }
             }
