@@ -67,7 +67,7 @@ namespace Inventory.StockIn
 
 
                 // Setup SearchLookUpEdit cho Warehouse
-                SetupLookupEdits();
+                //SetupLookupEdits();
 
                 // Đánh dấu các trường bắt buộc
                 MarkRequiredFields();
@@ -177,14 +177,48 @@ namespace Inventory.StockIn
             try
             {
                 Load += UcStockInMaster_Load;
-                StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
+
+                //Sự kiện của WarehouseNameSearchLookupEdit
+                WarehouseNameSearchLookupEdit.Popup += WarehouseNameSearchLookupEdit_Popup;
                 WarehouseNameSearchLookupEdit.EditValueChanged += WarehouseNameSearchLookupEdit_EditValueChanged;
-                SupplierNameTextEdit.EditValueChanged += SupplierNameTextEdit_EditValueChanged;
+
+                //Sự kiện của SupplierNameSearchLookupEdit
+                SupplierNameSearchLookupEdit.Popup += SupplierNameSearchLookupEdit_Popup;
+                SupplierNameSearchLookupEdit.EditValueChanged += SupplierNameTextEdit_EditValueChanged;
+
+                StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
+                
                 StockInNumberTextEdit.EditValueChanged += StockInNumberTextEdit_EditValueChanged;
             }
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi thiết lập sự kiện");
+            }
+        }
+
+        private async void SupplierNameSearchLookupEdit_Popup(object sender, EventArgs e)
+        {
+            try
+            {
+                // Load danh sách BusinessPartnerSite từ BusinessPartnerSiteBll (dùng cho Supplier lookup)
+                await LoadSupplierDataSourceAsync();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
+            }
+        }
+
+        private async void WarehouseNameSearchLookupEdit_Popup(object sender, EventArgs e)
+        {
+            try
+            {
+                // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
+                await LoadWarehouseDataSourceAsync();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tải dữ liệu kho");
             }
         }
 
@@ -268,10 +302,10 @@ namespace Inventory.StockIn
             }
 
             // SuperTip cho Nhà cung cấp
-            if (SupplierNameTextEdit != null)
+            if (SupplierNameSearchLookupEdit != null)
             {
                 SuperToolTipHelper.SetBaseEditSuperTip(
-                    SupplierNameTextEdit,
+                    SupplierNameSearchLookupEdit,
                     title: @"<b><color=DarkBlue>🏭 Nhà cung cấp</color></b>",
                     content: @"Chọn nhà cung cấp từ danh sách chi nhánh đối tác (Business Partner Site) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn nhà cung cấp<br/>• Hiển thị thông tin nhà cung cấp dạng HTML (mã, tên)<br/>• Tự động cập nhật SupplierId, SupplierName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Chỉ hiển thị các chi nhánh đối tác đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ BusinessPartnerSiteBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đối tác đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><color=Gray>Lưu ý:</color> Trường này là tùy chọn, chỉ điền khi phiếu nhập kho có nhà cung cấp cụ thể."
                 );
@@ -306,6 +340,25 @@ namespace Inventory.StockIn
         {
             try
             {
+                // Load cả 2 datasource song song để tối ưu performance
+                await Task.WhenAll(
+                    LoadWarehouseDataSourceAsync(),
+                    LoadSupplierDataSourceAsync()
+                );
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tải dữ liệu lookup");
+            }
+        }
+
+        /// <summary>
+        /// Load datasource cho Warehouse (CompanyBranch) - Load toàn bộ danh sách
+        /// </summary>
+        private async Task LoadWarehouseDataSourceAsync()
+        {
+            try
+            {
                 // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
                 var branches = await Task.Run(() => _companyBranchBll.GetAll());
                 var warehouseDtos = branches
@@ -315,7 +368,21 @@ namespace Inventory.StockIn
                     .ToList();
 
                 companyBranchDtoBindingSource.DataSource = warehouseDtos;
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tải dữ liệu kho");
+                throw;
+            }
+        }
 
+        /// <summary>
+        /// Load datasource cho Supplier (BusinessPartnerSite) - Load toàn bộ danh sách
+        /// </summary>
+        private async Task LoadSupplierDataSourceAsync()
+        {
+            try
+            {
                 // Load danh sách BusinessPartnerSite từ BusinessPartnerSiteBll (dùng cho Supplier lookup)
                 var sites = await Task.Run(() => _businessPartnerSiteBll.GetAll());
                 var siteDtos = sites
@@ -328,7 +395,83 @@ namespace Inventory.StockIn
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi tải dữ liệu lookup");
+                ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Load single Warehouse record theo ID và set vào datasource
+        /// Chỉ load đúng 1 record để tối ưu performance
+        /// </summary>
+        /// <param name="warehouseId">ID của Warehouse (CompanyBranch)</param>
+        private async Task LoadSingleWarehouseByIdAsync(Guid warehouseId)
+        {
+            try
+            {
+                if (warehouseId == Guid.Empty)
+                {
+                    // Nếu ID rỗng, set datasource rỗng
+                    companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
+                    return;
+                }
+
+                // Load chỉ 1 record theo ID
+                var branch = await Task.Run(() => _companyBranchBll.GetById(warehouseId));
+                if (branch != null)
+                {
+                    var warehouseDto = branch.ToDto();
+                    // Set datasource chỉ chứa 1 record
+                    companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto> { warehouseDto };
+                }
+                else
+                {
+                    // Nếu không tìm thấy, set datasource rỗng
+                    companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tải dữ liệu kho");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Load single Supplier record theo ID và set vào datasource
+        /// Chỉ load đúng 1 record để tối ưu performance
+        /// </summary>
+        /// <param name="supplierId">ID của Supplier (BusinessPartnerSite)</param>
+        private async Task LoadSingleSupplierByIdAsync(Guid supplierId)
+        {
+            try
+            {
+                if (supplierId == Guid.Empty)
+                {
+                    // Nếu ID rỗng, set datasource rỗng
+                    businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
+                    return;
+                }
+
+                // Load chỉ 1 record theo ID
+                var site = await Task.Run(() => _businessPartnerSiteBll.GetById(supplierId));
+                if (site != null)
+                {
+                    // Sử dụng ToSiteListDtos() với list chứa 1 phần tử, sau đó lấy phần tử đầu tiên
+                    var siteDtos = new List<Dal.DataContext.BusinessPartnerSite> { site }.ToSiteListDtos().ToList();
+                    // Set datasource chỉ chứa 1 record
+                    businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
+                }
+                else
+                {
+                    // Nếu không tìm thấy, set datasource rỗng
+                    businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
+                throw;
             }
         }
 
@@ -452,7 +595,7 @@ namespace Inventory.StockIn
         {
             try
             {
-                if (SupplierNameTextEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
+                if (SupplierNameSearchLookupEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
                 {
                     _stockInMasterDto.SupplierId = supplierId;
                     
@@ -466,7 +609,7 @@ namespace Inventory.StockIn
                     }
                     
                     // Xóa lỗi validation nếu có
-                    dxErrorProvider1.SetError(SupplierNameTextEdit, string.Empty);
+                    dxErrorProvider1.SetError(SupplierNameSearchLookupEdit, string.Empty);
                 }
                 else
                 {
@@ -547,9 +690,9 @@ namespace Inventory.StockIn
                 }
 
                 // Cập nhật từ Supplier SearchLookUpEdit
-                if (SupplierNameTextEdit != null)
+                if (SupplierNameSearchLookupEdit != null)
                 {
-                    if (SupplierNameTextEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
+                    if (SupplierNameSearchLookupEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
                     {
                         _stockInMasterDto.SupplierId = supplierId;
                         
@@ -642,8 +785,8 @@ namespace Inventory.StockIn
                 nameof(StockInMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
                 nameof(StockInMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
                 nameof(StockInMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
-                nameof(StockInMasterDto.SupplierId) => SupplierNameTextEdit,
-                nameof(StockInMasterDto.SupplierName) => SupplierNameTextEdit,
+                nameof(StockInMasterDto.SupplierId) => SupplierNameSearchLookupEdit,
+                nameof(StockInMasterDto.SupplierName) => SupplierNameSearchLookupEdit,
                 nameof(StockInMasterDto.PurchaseOrderNumber) => PurchaseOrderSearchLookupEdit,
                 nameof(StockInMasterDto.Notes) => NotesTextEdit,
                 _ => null
@@ -663,7 +806,7 @@ namespace Inventory.StockIn
             try
             {
                 // Cập nhật DTO từ controls trước khi validate
-                UpdateDtoFromControls();
+                //UpdateDtoFromControls();
 
                 // Validate các trường bắt buộc
                 if (!ValidateInput())
@@ -681,11 +824,41 @@ namespace Inventory.StockIn
         }
 
         /// <summary>
-        /// Set DTO và load vào controls
+        /// Load dữ liệu master từ ID phiếu nhập xuất kho
         /// </summary>
-        public void SetDto(StockInMasterDto dto)
+        /// <param name="stockInOutMasterId">ID phiếu nhập xuất kho</param>
+        public async Task LoadDataAsync(Guid stockInOutMasterId)
         {
-            LoadData(dto);
+            try
+            {
+                // Lấy master entity từ BLL
+                var masterEntity = _stockInBll.GetMasterById(stockInOutMasterId);
+                if (masterEntity == null)
+                {
+                    throw new InvalidOperationException($"Không tìm thấy phiếu nhập kho với ID: {stockInOutMasterId}");
+                }
+
+                // Set dữ liệu cho các control đơn giản (không cần datasource)
+                StockInDateDateEdit.EditValue = masterEntity.StockInOutDate;
+                StockInNumberTextEdit.EditValue = masterEntity.VocherNumber;
+                PurchaseOrderSearchLookupEdit.EditValue = masterEntity.PurchaseOrderId;
+                NotesTextEdit.EditValue = masterEntity.Notes;
+
+                // Load datasource cho Warehouse trước khi set EditValue
+                await LoadSingleWarehouseByIdAsync(masterEntity.WarehouseId);
+                WarehouseNameSearchLookupEdit.EditValue = masterEntity.WarehouseId;
+
+                await LoadSingleSupplierByIdAsync(masterEntity.PartnerSiteId);
+                SupplierNameSearchLookupEdit.EditValue = masterEntity.PartnerSiteId;
+
+                NotesTextEdit.Text = masterEntity.Notes;
+
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi tải dữ liệu phiếu nhập kho");
+                throw;
+            }
         }
 
         /// <summary>
@@ -705,9 +878,9 @@ namespace Inventory.StockIn
                     WarehouseNameSearchLookupEdit.EditValue = null;
                 }
 
-                if (SupplierNameTextEdit != null)
+                if (SupplierNameSearchLookupEdit != null)
                 {
-                    SupplierNameTextEdit.EditValue = null;
+                    SupplierNameSearchLookupEdit.EditValue = null;
                 }
 
                 // Reset TextEdit

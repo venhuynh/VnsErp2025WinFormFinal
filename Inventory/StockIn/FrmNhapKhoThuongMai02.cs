@@ -36,7 +36,7 @@ namespace Inventory.StockIn
         /// <summary>
         /// ID phiếu nhập kho hiện tại (nếu đang edit)
         /// </summary>
-        private Guid _currentStockInId = Guid.Empty;
+        private Guid _currentStockInId;
 
         /// <summary>
         /// Flag đánh dấu đang trong quá trình đóng form sau khi lưu thành công
@@ -48,10 +48,27 @@ namespace Inventory.StockIn
 
         #region ========== CONSTRUCTOR ==========
 
+        /// <summary>
+        /// Constructor mặc định (tạo phiếu mới)
+        /// </summary>
         public FrmNhapKhoThuongMai02()
         {
             InitializeComponent();
             Load += FrmNhapKhoThuongMai02_Load;
+            _currentStockInId = Guid.Empty;
+        }
+
+        /// <summary>
+        /// Constructor với ID phiếu nhập kho (mở để xem/sửa)
+        /// </summary>
+        /// <param name="stockInId">ID phiếu nhập kho</param>
+        public FrmNhapKhoThuongMai02(Guid stockInId)
+        {
+            InitializeComponent();
+            Load += FrmNhapKhoThuongMai02_Load;
+
+            // Gán ID phiếu nhập kho hiện tại
+            _currentStockInId = stockInId;
         }
 
         #endregion
@@ -76,10 +93,25 @@ namespace Inventory.StockIn
                 Application.DoEvents(); // Cho phép form render xong
 
                 // Load datasource với SplashScreen (với owner là form này)
-                await LoadDataSourcesAsync();
+                //await LoadDataSourcesAsync();
 
-                // Reset form về trạng thái ban đầu
-                ResetForm();
+                // Nếu _currentStockInId có giá trị thì load dữ liệu vào UI của 2 UserControl
+                if (_currentStockInId != Guid.Empty)
+                {
+                    _logger.Debug("FrmNhapKhoThuongMai02_Load: Loading existing stock in data, StockInId={0}", _currentStockInId);
+
+                    // Load dữ liệu từ ID vào các user controls
+                    //await LoadDataAsync(_currentStockInId);
+
+                    //FIXME: Tạo hàm LoadDataAsync trong user controls để load dữ liệu từ _currentStockInId
+                    await ucStockInMaster1.LoadDataAsync(_currentStockInId);
+                    //await ucStockInDetail1.LoadDataAsync(_currentStockInId);
+                }
+                else
+                {
+                    // Reset form về trạng thái ban đầu (tạo phiếu mới)
+                    ResetForm();
+                }
 
                 _logger.Info("FrmNhapKhoThuongMai02_Load: Form loaded successfully");
             }
@@ -102,13 +134,13 @@ namespace Inventory.StockIn
 
                 // Hiển thị SplashScreen với owner là form này
                 // Sử dụng SplashScreenManager trực tiếp để set owner
-                ShowSplashScreenWithOwner();
+                SplashScreenHelper.ShowWaitingSplashScreen();
 
                 try
                 {
                     // Load datasource cho UcStockInMaster (Warehouse và Supplier)
                     _logger.Debug("LoadDataSourcesAsync: Loading lookup data for UcStockInMaster");
-                    await ucStockInMaster1.LoadLookupDataAsync();
+                    //await ucStockInMaster1.LoadLookupDataAsync();
 
                     // Load datasource cho UcStockInDetail (ProductVariant)
                     _logger.Debug("LoadDataSourcesAsync: Loading product variants for UcStockInDetail");
@@ -1032,112 +1064,6 @@ namespace Inventory.StockIn
                 _logger.Error("SaveDataAsync: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// Load dữ liệu phiếu nhập kho từ ID
-        /// </summary>
-        /// <param name="stockInOutMasterId">ID phiếu nhập xuất kho</param>
-        public async Task LoadDataAsync(Guid stockInOutMasterId)
-        {
-            try
-            {
-                _logger.Debug("LoadDataAsync: Loading stock in data, StockInOutMasterId={0}", stockInOutMasterId);
-
-                // Hiển thị SplashScreen
-                SplashScreenHelper.ShowWaitingSplashScreen();
-
-                try
-                {
-                    // Đảm bảo lookup data đã được load trước khi set dữ liệu vào user controls
-                    // Load lookup data trực tiếp (không gọi LoadDataSourcesAsync vì nó có thể làm form visible)
-                    _logger.Debug("LoadDataAsync: Loading lookup data for user controls");
-                    await ucStockInMaster1.LoadLookupDataAsync();
-                    await ucStockInDetail1.LoadProductVariantsAsync();
-
-                    // 1. Lấy master entity từ BLL
-                    var masterEntity = _stockInBll.GetMasterById(stockInOutMasterId);
-                    if (masterEntity == null)
-                    {
-                        throw new InvalidOperationException($"Không tìm thấy phiếu nhập kho với ID: {stockInOutMasterId}");
-                    }
-
-                    // 2. Convert master entity sang DTO với đầy đủ thông tin
-                    var masterDto = new StockInMasterDto
-                    {
-                        Id = masterEntity.Id,
-                        StockInNumber = masterEntity.VocherNumber,
-                        StockInDate = masterEntity.StockInOutDate,
-                        LoaiNhapKho = (LoaiNhapKhoEnum)masterEntity.StockInOutType,
-                        TrangThai = (TrangThaiPhieuNhapEnum)masterEntity.TrangThaiPhieuNhap,
-                        WarehouseId = masterEntity.WarehouseId,
-                        WarehouseCode = masterEntity.CompanyBranch?.BranchCode,
-                        WarehouseName = masterEntity.CompanyBranch?.BranchName,
-                        PurchaseOrderId = masterEntity.PurchaseOrderId,
-                        SupplierId = masterEntity.PartnerSiteId,
-                        SupplierName = masterEntity.BusinessPartnerSite?.BusinessPartner?.PartnerName ??
-                                      masterEntity.BusinessPartnerSite?.SiteName,
-                        Notes = masterEntity.Notes
-                    };
-
-                    // Set totals sử dụng method SetTotals() vì các properties là read-only
-                    masterDto.SetTotals(
-                        masterEntity.TotalQuantity,
-                        masterEntity.TotalAmount,
-                        masterEntity.TotalVat,
-                        masterEntity.TotalAmountIncludedVat);
-
-                    // 3. Set master DTO vào user control UcStockInMaster
-                    ucStockInMaster1.SetDto(masterDto);
-
-                    // 4. Lấy detail entities từ BLL
-                    var detailEntities = _stockInBll.GetDetailsByMasterId(stockInOutMasterId);
-
-                    // 5. Convert detail entities sang DTOs sử dụng extension method ToDto()
-                    var detailDtos = detailEntities
-                        .Where(e => e != null)
-                        .Select(entity => entity.ToDto())
-                        .Where(dto => dto != null)
-                        .ToList();
-
-                    // 6. Set line numbers cho các detail DTOs
-                    for (int i = 0; i < detailDtos.Count; i++)
-                    {
-                        detailDtos[i].LineNumber = i + 1;
-                    }
-
-                    // 7. Set master ID cho detail control trước khi load details
-                    ucStockInDetail1.SetStockInMasterId(stockInOutMasterId);
-
-                    // 8. Set detail DTOs vào user control UcStockInDetail
-                    ucStockInDetail1.LoadDetails(detailDtos);
-
-                    // 9. Cập nhật tổng lên master control (đảm bảo đồng bộ)
-                    ucStockInMaster1.UpdateTotals(
-                        masterDto.TotalQuantity,
-                        masterDto.TotalAmount,
-                        masterDto.TotalVat,
-                        masterDto.TotalAmountIncludedVat);
-
-                    // 10. Cập nhật state của form
-                    _currentStockInId = stockInOutMasterId;
-                    MarkAsSaved(); // Đánh dấu đã lưu vì đây là dữ liệu từ database
-
-                    _logger.Info("LoadDataAsync: Stock in data loaded successfully, StockInOutMasterId={0}, DetailCount={1}", 
-                        stockInOutMasterId, detailDtos.Count);
-                }
-                finally
-                {
-                    SplashScreenHelper.CloseSplashScreen();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("LoadDataAsync: Exception occurred", ex);
-                SplashScreenHelper.CloseSplashScreen();
-                MsgBox.ShowError($"Lỗi tải dữ liệu phiếu nhập kho: {ex.Message}");
-                throw;
             }
         }
 

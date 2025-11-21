@@ -1,4 +1,5 @@
 ﻿using Bll.MasterData.ProductServiceBll;
+using Bll.Inventory.StockIn;
 using Common.Utils;
 using Dal.DataContext;
 using DTO.Inventory.StockIn;
@@ -776,6 +777,49 @@ namespace Inventory.StockIn
             {
                 _logger.Error("ClearData: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi xóa dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Load dữ liệu detail từ ID phiếu nhập xuất kho
+        /// </summary>
+        /// <param name="stockInOutMasterId">ID phiếu nhập xuất kho</param>
+        public async Task LoadDataAsync(Guid stockInOutMasterId)
+        {
+            try
+            {
+                _logger.Debug("LoadDataAsync: Loading details for masterId={0}", stockInOutMasterId);
+
+                // Set master ID
+                _stockInMasterId = stockInOutMasterId;
+
+                // Lấy detail entities từ BLL
+                var stockInBll = new Bll.Inventory.StockIn.StockInBll();
+                var detailEntities = stockInBll.GetDetailsByMasterId(stockInOutMasterId);
+
+                // Convert detail entities sang DTOs sử dụng extension method ToDto()
+                var detailDtos = detailEntities
+                    .Where(e => e != null)
+                    .Select(entity => entity.ToDto())
+                    .Where(dto => dto != null)
+                    .ToList();
+
+                // Set line numbers cho các detail DTOs
+                for (int i = 0; i < detailDtos.Count; i++)
+                {
+                    detailDtos[i].LineNumber = i + 1;
+                }
+
+                // Load details vào UI
+                LoadDetails(detailDtos);
+
+                _logger.Info("LoadDataAsync: Loaded {0} details for masterId={1}", detailDtos.Count, stockInOutMasterId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("LoadDataAsync: Exception occurred, masterId={0}", ex, stockInOutMasterId);
+                MsgBox.ShowError($"Lỗi tải danh sách chi tiết: {ex.Message}");
+                throw;
             }
         }
 

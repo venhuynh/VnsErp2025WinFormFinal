@@ -206,14 +206,14 @@ namespace Inventory.InventoryManagement
                 // Mở form chi tiết với OverlayManager và load dữ liệu
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new StockIn.FrmNhapKhoThuongMai02())
+                    using (var form = new StockIn.FrmNhapKhoThuongMai02(_selectedStockInOutMasterId.Value))
                     {
                         // Đảm bảo form chưa được hiển thị
                         form.Visible = false;
                         form.StartPosition = FormStartPosition.CenterParent;
                         
                         // Load dữ liệu từ ID trước khi hiển thị form
-                        await form.LoadDataAsync(_selectedStockInOutMasterId.Value);
+                        //await form.LoadDataAsync(_selectedStockInOutMasterId.Value);
                         
                         // Đảm bảo form vẫn chưa visible trước khi show dialog
                         if (form.Visible)
