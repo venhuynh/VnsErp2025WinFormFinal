@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.StockIn;
 using System.Linq;
+using Inventory.StockIn.InPhieu;
 
 namespace Inventory.StockIn
 {
@@ -389,14 +390,88 @@ namespace Inventory.StockIn
         /// <summary>
         /// Event handler cho nút In phiếu
         /// </summary>
-        private void InPhieuBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void InPhieuBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
                 _logger.Debug("InPhieuBarButtonItem_ItemClick: Print button clicked");
 
-                // TODO: Implement print functionality
-                MsgBox.ShowWarning("Chức năng in phiếu đang được phát triển.", "Thông báo", this);
+                // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
+                Guid stockInOutMasterId = Guid.Empty;
+                
+                // Kiểm tra phiếu đã được lưu chưa
+                if (_currentStockInId != Guid.Empty)
+                {
+                    stockInOutMasterId = _currentStockInId;
+                }
+                else
+                {
+                    // Phiếu chưa được lưu - kiểm tra có thay đổi chưa lưu không
+                    if (_hasUnsavedChanges)
+                    {
+                        // Hỏi người dùng có muốn lưu trước không
+                        if (MsgBox.ShowYesNo(
+                                "Phiếu nhập kho chưa được lưu. Bạn có muốn lưu trước khi in không?",
+                                "Xác nhận",
+                                this))
+                        {
+                            // Gọi nút Lưu để lưu phiếu
+                            LuuPhieuBarButtonItem_ItemClick(null, null);
+                            
+                            // Đợi cho đến khi lưu hoàn tất (tối đa 10 giây)
+                            var timeout = TimeSpan.FromSeconds(10);
+                            var startTime = DateTime.Now;
+                            while (_currentStockInId == Guid.Empty && (DateTime.Now - startTime) < timeout)
+                            {
+                                await Task.Delay(100);
+                            }
+                            
+                            // Kiểm tra lại sau khi lưu
+                            if (_currentStockInId != Guid.Empty)
+                            {
+                                stockInOutMasterId = _currentStockInId;
+                            }
+                            else
+                            {
+                                // Lưu thất bại hoặc timeout, không in phiếu
+                                _logger.Warning("InPhieuBarButtonItem_ItemClick: Save failed, timeout, or cancelled, cannot print");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            // Người dùng chọn không lưu
+                            _logger.Debug("InPhieuBarButtonItem_ItemClick: User chose not to save");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // Không có thay đổi chưa lưu và chưa có ID - yêu cầu lưu
+                        MsgBox.ShowWarning(
+                            "Vui lòng nhập và lưu phiếu nhập kho trước khi in.",
+                            "Cảnh báo",
+                            this);
+                        _logger.Warning("InPhieuBarButtonItem_ItemClick: Cannot print - Form not saved and no unsaved changes");
+                        return;
+                    }
+                }
+
+                // Kiểm tra lại StockInOutMasterId sau khi lưu (nếu có)
+                if (stockInOutMasterId == Guid.Empty)
+                {
+                    MsgBox.ShowWarning(
+                        "Không thể lấy ID phiếu nhập kho. Vui lòng thử lại.",
+                        "Cảnh báo",
+                        this);
+                    _logger.Warning("InPhieuBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
+                    return;
+                }
+
+                // In phiếu nhập kho với preview
+                StockInReportHelper.PrintStockInVoucher(stockInOutMasterId);
+
+                _logger.Info("InPhieuBarButtonItem_ItemClick: Print voucher completed, StockInOutMasterId={0}", stockInOutMasterId);
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dal.DataAccess.Implementations.Inventory.StockIn;
 
 namespace Dal.DataAccess.Interfaces.Inventory.StockIn;
 
@@ -32,4 +33,25 @@ public interface IStockInRepository
     /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
     /// <returns>Danh sách StockInOutDetail entities</returns>
     List<StockInOutDetail> GetDetailsByMasterId(Guid stockInOutMasterId);
+
+    /// <summary>
+    /// Lấy thông tin master phiếu nhập/xuất kho theo ID với đầy đủ navigation properties
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+    /// <returns>StockInOutMaster entity với navigation properties đã load</returns>
+    StockInOutMaster GetMasterById(Guid stockInOutMasterId);
+
+    /// <summary>
+    /// Query lịch sử nhập xuất kho với filter
+    /// </summary>
+    /// <param name="query">Query criteria</param>
+    /// <returns>Danh sách StockInOutMaster entities</returns>
+    List<StockInOutMaster> QueryHistory(StockInHistoryQueryCriteria query);
+
+    /// <summary>
+    /// Đếm số lượng bản ghi theo query (không phân trang)
+    /// </summary>
+    /// <param name="query">Query criteria</param>
+    /// <returns>Tổng số bản ghi</returns>
+    int CountHistory(StockInHistoryQueryCriteria query);
 }

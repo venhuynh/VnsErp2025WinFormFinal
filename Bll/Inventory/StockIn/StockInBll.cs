@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
@@ -10,6 +6,11 @@ using DTO.Inventory.StockIn;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static DTO.Inventory.StockIn.StockInListDtoConverter;
 
 namespace Bll.Inventory.StockIn
 {
@@ -241,6 +242,195 @@ namespace Bll.Inventory.StockIn
                 _logger.Error($"GetDetailsByMasterId: Lỗi lấy danh sách chi tiết: {ex.Message}", ex);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Lấy thông tin master phiếu nhập/xuất kho theo ID
+        /// </summary>
+        /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+        /// <returns>StockInOutMaster entity với navigation properties đã load</returns>
+        public StockInOutMaster GetMasterById(Guid stockInOutMasterId)
+        {
+            try
+            {
+                _logger.Debug("GetMasterById: Lấy thông tin master, StockInOutMasterId={0}", stockInOutMasterId);
+                
+                var master = GetDataAccess().GetMasterById(stockInOutMasterId);
+                
+                if (master != null)
+                {
+                    _logger.Info("GetMasterById: Lấy được master thành công, Id={0}", master.Id);
+                }
+                else
+                {
+                    _logger.Warning("GetMasterById: Không tìm thấy master với Id={0}", stockInOutMasterId);
+                }
+                
+                return master;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"GetMasterById: Lỗi lấy thông tin master: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu cho report in phiếu nhập kho
+        /// </summary>
+        /// <param name="voucherId">ID phiếu nhập kho</param>
+        /// <returns>StockInReportDto chứa master và detail data</returns>
+        public StockInReportDto GetReportData(Guid voucherId)
+        {
+            try
+            {
+                _logger.Debug("GetReportData: Lấy dữ liệu cho report, VoucherId={0}", voucherId);
+
+                // 1. Lấy master data
+                var master = GetMasterById(voucherId);
+                if (master == null)
+                {
+                    throw new Exception($"Không tìm thấy phiếu nhập kho với ID: {voucherId}");
+                }
+
+                // 2. Lấy detail data
+                var details = GetDetailsByMasterId(voucherId);
+
+                // 3. Map sang DTO
+                var reportDto = new StockInReportDto
+                {
+                    SoPhieu = master.VocherNumber ?? string.Empty,
+                    NgayThang = master.StockInOutDate,
+                    NhanHangTu = new NguoiGiaoHangDto
+                    {
+                        // TODO: Lấy thông tin người giao hàng từ master hoặc related entity
+                        // Tạm thời lấy từ BusinessPartnerSite nếu có
+                        FullName = master.BusinessPartnerSite?.BusinessPartner?.PartnerName ?? 
+                                   master.BusinessPartnerSite?.SiteName ?? 
+                                   string.Empty
+                    },
+                    NguoiNhapXuat = new NguoiNhapXuatDto
+                    {
+                        // TODO: Lấy thông tin người nhập từ CreatedBy hoặc related entity
+                        // Tạm thời để trống, sẽ cần bổ sung sau khi có authentication
+                        FullName = string.Empty
+                    },
+                    KhoNhap = new KhoNhapDto
+                    {
+                        FullProductNameName = master.CompanyBranch?.BranchName ?? string.Empty
+                    },
+                    ChiTietNhapHangNoiBos = details.Select(d => new ChiTietNhapHangNoiBoDto
+                    {
+                        SanPham = new SanPhamDto
+                        {
+                            ProductName = d.ProductVariant?.ProductService?.Name ?? 
+                                         d.ProductVariant?.VariantFullName ?? 
+                                         d.ProductVariant?.VariantCode ?? 
+                                         string.Empty
+                        },
+                        DonViTinh = d.ProductVariant?.UnitOfMeasure?.Name ?? string.Empty,
+                        SoLuong = d.StockInQty,
+                        TinhTrangSanPham = "Bình thường" // TODO: Lấy từ trường tương ứng nếu có
+                    }).ToList()
+                };
+
+                _logger.Info("GetReportData: Lấy dữ liệu report thành công, VoucherId={0}, DetailCount={1}", 
+                    voucherId, reportDto.ChiTietNhapHangNoiBos.Count);
+                
+                return reportDto;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"GetReportData: Lỗi lấy dữ liệu report: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Query lịch sử nhập xuất kho với filter
+        /// </summary>
+        /// <param name="query">Query criteria</param>
+        /// <returns>StockInHistoryResultDto chứa danh sách và pagination info</returns>
+        public async Task<StockInHistoryResultDto> QueryHistoryAsync(StockInHistoryQueryDto query)
+        {
+            try
+            {
+                _logger.Debug("QueryHistoryAsync: Bắt đầu query lịch sử, FromDate={0}, ToDate={1}", 
+                    query.FromDate, query.ToDate);
+
+                // Validate query
+                if (!query.Validate(out var errorMessage))
+                {
+                    _logger.Warning("QueryHistoryAsync: Query validation failed: {0}", errorMessage);
+                    throw new ArgumentException(errorMessage);
+                }
+
+                // Convert DTO sang Criteria (tránh circular dependency)
+                var criteria = ConvertDtoToCriteria(query);
+
+                // Query từ repository
+                var entities = await Task.Run(() => GetDataAccess().QueryHistory(criteria));
+                
+                // Map sang DTO - sử dụng extension method từ StockInListDtoConverter
+                var items = entities.ToDtoList();
+                
+                // Đếm tổng số bản ghi (nếu có pagination)
+                int totalCount;
+                if (query.UsePagination)
+                {
+                    totalCount = await Task.Run(() => GetDataAccess().CountHistory(criteria));
+                }
+                else
+                {
+                    totalCount = items.Count;
+                }
+
+                // Tạo result DTO
+                var result = new StockInHistoryResultDto
+                {
+                    Items = items,
+                    TotalCount = totalCount,
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize
+                };
+
+                _logger.Info("QueryHistoryAsync: Query thành công, TotalCount={0}, ItemCount={1}", 
+                    totalCount, items.Count);
+                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"QueryHistoryAsync: Lỗi query lịch sử: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Convert StockInHistoryQueryDto sang StockInHistoryQueryCriteria
+        /// </summary>
+        private StockInHistoryQueryCriteria ConvertDtoToCriteria(StockInHistoryQueryDto dto)
+        {
+            return new StockInHistoryQueryCriteria
+            {
+                FromDate = dto.FromDate,
+                ToDate = dto.ToDate,
+                WarehouseId = dto.WarehouseId,
+                WarehouseCode = dto.WarehouseCode,
+                LoaiNhapKho = dto.LoaiNhapKho.HasValue ? (int?)dto.LoaiNhapKho.Value : null,
+                TrangThai = dto.TrangThai.HasValue ? (int?)dto.TrangThai.Value : null,
+                TrangThaiList = dto.TrangThaiList?.Select(s => (int)s).ToArray(),
+                SupplierId = dto.SupplierId,
+                SupplierCode = dto.SupplierCode,
+                PurchaseOrderId = dto.PurchaseOrderId,
+                PurchaseOrderNumber = dto.PurchaseOrderNumber,
+                SearchText = dto.SearchText,
+                StockInNumber = dto.StockInNumber,
+                OrderBy = dto.OrderBy,
+                OrderDirection = dto.OrderDirection,
+                PageIndex = dto.PageIndex,
+                PageSize = dto.PageSize
+            };
         }
 
         #endregion

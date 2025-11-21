@@ -36,18 +36,31 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.BonusSkins.v25.1" />
+    <Reference Include="DevExpress.Charts.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Data.Desktop.v25.1" />
     <Reference Include="DevExpress.Data.v25.1" />
     <Reference Include="DevExpress.Dialogs.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Office.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Pdf.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.PivotGrid.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v25.1.Export, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Utils.v25.1" />
     <Reference Include="DevExpress.Sparkline.v25.1.Core" />
     <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraDialogs.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v25.1" />
     <Reference Include="DevExpress.Printing.v25.1.Core" />
     <Reference Include="DevExpress.Drawing.v25.1" />
+    <Reference Include="DevExpress.XtraGauges.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v25.1.CodeCompletion, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v25.1.Design.Tool, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v25.1.Extensions, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraTreeList.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -88,6 +101,13 @@
     <Compile Include="StockIn\FrmNhapKhoThuongMai02.Designer.cs">
       <DependentUpon>FrmNhapKhoThuongMai02.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockIn\InPhieu\InPhieuNhapKho.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="StockIn\InPhieu\InPhieuNhapKho.Designer.cs">
+      <DependentUpon>InPhieuNhapKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockIn\InPhieu\StockInReportHelper.cs" />
     <Compile Include="StockIn\UcStockInDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -109,6 +129,9 @@
     <EmbeddedResource Include="InventoryManagement\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="InventoryManagement\FrmStockInOutHistory.resx">
+      <DependentUpon>FrmStockInOutHistory.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InventoryManagement\FrmWarranty.resx">
       <DependentUpon>FrmWarranty.cs</DependentUpon>
     </EmbeddedResource>
@@ -124,6 +147,9 @@
     </Compile>
     <EmbeddedResource Include="StockIn\FrmNhapKhoThuongMai02.resx">
       <DependentUpon>FrmNhapKhoThuongMai02.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\InPhieu\InPhieuNhapKho.resx">
+      <DependentUpon>InPhieuNhapKho.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\UcStockInDetail.resx">
       <DependentUpon>UcStockInDetail.cs</DependentUpon>
@@ -154,6 +180,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="StockIn\InPhieu\README_IN_PHIEU_NHAP_KHO.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="StockOut\" />

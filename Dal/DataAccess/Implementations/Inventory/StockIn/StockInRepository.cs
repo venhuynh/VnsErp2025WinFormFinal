@@ -89,62 +89,60 @@ public class StockInRepository : IStockInRepository
 
                 // Bắt đầu transaction
                 context.Connection.Open();
-                using (var transaction = context.Connection.BeginTransaction())
+                using var transaction = context.Connection.BeginTransaction();
+                try
                 {
+                    context.Transaction = transaction;
+
+                    // 1. Lưu hoặc cập nhật Master
+                    var savedMaster = SaveMaster(context, master);
+                    var masterId = savedMaster.Id;
+
+                    _logger.Debug("SaveAsync: Master đã được lưu, MasterId={0}", masterId);
+
+                    // 2. Xóa các detail cũ nếu đang update
+                    if (master.Id != Guid.Empty)
+                    {
+                        var existingDetails = context.StockInOutDetails
+                            .Where(d => d.StockInOutMasterId == masterId)
+                            .ToList();
+
+                        if (existingDetails.Any())
+                        {
+                            context.StockInOutDetails.DeleteAllOnSubmit(existingDetails);
+                            _logger.Debug("SaveAsync: Đã xóa {0} detail cũ", existingDetails.Count);
+                        }
+                    }
+
+                    // 3. Lưu các Detail mới
+                    SaveDetails(context, masterId, details);
+
+                    _logger.Debug("SaveAsync: Đã lưu {0} detail", details.Count);
+
+                    // 4. Commit transaction
+                    transaction.Commit();
+                    context.SubmitChanges();
+
+                    _logger.Info("SaveAsync: Lưu phiếu nhập kho thành công, MasterId={0}", masterId);
+                    return masterId;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error("SaveAsync: Lỗi trong transaction, đang rollback", ex);
                     try
                     {
-                        context.Transaction = transaction;
-
-                        // 1. Lưu hoặc cập nhật Master
-                        var savedMaster = SaveMaster(context, master);
-                        var masterId = savedMaster.Id;
-
-                        _logger.Debug("SaveAsync: Master đã được lưu, MasterId={0}", masterId);
-
-                        // 2. Xóa các detail cũ nếu đang update
-                        if (master.Id != Guid.Empty)
+                        // Chỉ rollback nếu transaction chưa completed
+                        if (transaction.Connection != null && transaction.Connection.State == ConnectionState.Open)
                         {
-                            var existingDetails = context.StockInOutDetails
-                                .Where(d => d.StockInOutMasterId == masterId)
-                                .ToList();
-
-                            if (existingDetails.Any())
-                            {
-                                context.StockInOutDetails.DeleteAllOnSubmit(existingDetails);
-                                _logger.Debug("SaveAsync: Đã xóa {0} detail cũ", existingDetails.Count);
-                            }
+                            transaction.Rollback();
                         }
-
-                        // 3. Lưu các Detail mới
-                        SaveDetails(context, masterId, details);
-
-                        _logger.Debug("SaveAsync: Đã lưu {0} detail", details.Count);
-
-                        // 4. Commit transaction
-                        transaction.Commit();
-                        context.SubmitChanges();
-
-                        _logger.Info("SaveAsync: Lưu phiếu nhập kho thành công, MasterId={0}", masterId);
-                        return masterId;
                     }
-                    catch (Exception ex)
+                    catch (Exception rollbackEx)
                     {
-                        _logger.Error("SaveAsync: Lỗi trong transaction, đang rollback", ex);
-                        try
-                        {
-                            // Chỉ rollback nếu transaction chưa completed
-                            if (transaction.Connection != null && transaction.Connection.State == ConnectionState.Open)
-                            {
-                                transaction.Rollback();
-                            }
-                        }
-                        catch (Exception rollbackEx)
-                        {
-                            _logger.Error("SaveAsync: Lỗi khi rollback transaction", rollbackEx);
-                            // Không throw lại lỗi rollback, chỉ log
-                        }
-                        throw;
+                        _logger.Error("SaveAsync: Lỗi khi rollback transaction", rollbackEx);
+                        // Không throw lại lỗi rollback, chỉ log
                     }
+                    throw;
                 }
             }
             catch (Exception ex)
@@ -357,6 +355,318 @@ public class StockInRepository : IStockInRepository
         catch (Exception ex)
         {
             _logger.Error($"GetDetailsByMasterId: Lỗi lấy danh sách chi tiết: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy thông tin master phiếu nhập/xuất kho theo ID với đầy đủ navigation properties
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+    /// <returns>StockInOutMaster entity với navigation properties đã load</returns>
+    public StockInOutMaster GetMasterById(Guid stockInOutMasterId)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetMasterById: Lấy thông tin master, StockInOutMasterId={0}", stockInOutMasterId);
+
+            // Configure eager loading cho navigation properties
+            var loadOptions = new DataLoadOptions();
+            loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
+            loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
+            loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
+            context.LoadOptions = loadOptions;
+
+            var master = context.StockInOutMasters
+                .FirstOrDefault(m => m.Id == stockInOutMasterId);
+
+            if (master == null)
+            {
+                _logger.Warning("GetMasterById: Không tìm thấy master với Id={0}", stockInOutMasterId);
+                return null;
+            }
+
+            // Force load tất cả navigation properties trước khi dispose DataContext
+            if (master.CompanyBranch != null)
+            {
+                var _ = master.CompanyBranch.BranchName;
+                var __ = master.CompanyBranch.BranchCode;
+            }
+
+            if (master.BusinessPartnerSite != null)
+            {
+                var _ = master.BusinessPartnerSite.SiteName;
+                if (master.BusinessPartnerSite.BusinessPartner != null)
+                {
+                    var __ = master.BusinessPartnerSite.BusinessPartner.PartnerName;
+                }
+            }
+
+            _logger.Info("GetMasterById: Lấy được master thành công, Id={0}", master.Id);
+            return master;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetMasterById: Lỗi lấy thông tin master: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Query lịch sử nhập xuất kho với filter
+    /// </summary>
+    /// <param name="query">Query criteria</param>
+    /// <returns>Danh sách StockInOutMaster entities</returns>
+    public List<StockInOutMaster> QueryHistory(StockInHistoryQueryCriteria query)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("QueryHistory: Bắt đầu query lịch sử, FromDate={0}, ToDate={1}", query.FromDate, query.ToDate);
+
+            // Configure eager loading cho navigation properties
+            var loadOptions = new DataLoadOptions();
+            loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
+            loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
+            loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
+            context.LoadOptions = loadOptions;
+
+            // Bắt đầu query
+            var queryable = context.StockInOutMasters.AsQueryable();
+
+            // Filter theo thời gian (bắt buộc)
+            queryable = queryable.Where(m => m.StockInOutDate >= query.FromDate.Date && 
+                                             m.StockInOutDate <= query.ToDate.Date.AddDays(1).AddTicks(-1));
+
+            // Filter theo kho
+            if (query.WarehouseId.HasValue)
+            {
+                queryable = queryable.Where(m => m.WarehouseId == query.WarehouseId.Value);
+            }
+            else if (!string.IsNullOrWhiteSpace(query.WarehouseCode))
+            {
+                queryable = queryable.Where(m => m.CompanyBranch != null && 
+                                                 m.CompanyBranch.BranchCode.Contains(query.WarehouseCode));
+            }
+
+            // Filter theo loại nhập kho
+            if (query.LoaiNhapKho.HasValue)
+            {
+                queryable = queryable.Where(m => m.StockInOutType == query.LoaiNhapKho.Value);
+            }
+
+            // Filter theo trạng thái
+            if (query.TrangThaiList != null && query.TrangThaiList.Length > 0)
+            {
+                queryable = queryable.Where(m => query.TrangThaiList.Contains(m.TrangThaiPhieuNhap));
+            }
+            else if (query.TrangThai.HasValue)
+            {
+                queryable = queryable.Where(m => m.TrangThaiPhieuNhap == query.TrangThai.Value);
+            }
+
+            // Filter theo đối tác
+            if (query.SupplierId.HasValue)
+            {
+                queryable = queryable.Where(m => m.PartnerSiteId == query.SupplierId.Value);
+            }
+            else if (!string.IsNullOrWhiteSpace(query.SupplierCode))
+            {
+                queryable = queryable.Where(m => m.BusinessPartnerSite != null && 
+                                                 (m.BusinessPartnerSite.SiteCode.Contains(query.SupplierCode) ||
+                                                  (m.BusinessPartnerSite.BusinessPartner != null && 
+                                                   m.BusinessPartnerSite.BusinessPartner.PartnerCode.Contains(query.SupplierCode))));
+            }
+
+            // Filter theo đơn mua hàng (PO)
+            if (query.PurchaseOrderId.HasValue)
+            {
+                queryable = queryable.Where(m => m.PurchaseOrderId == query.PurchaseOrderId.Value);
+            }
+            else if (!string.IsNullOrWhiteSpace(query.PurchaseOrderNumber))
+            {
+                // TODO: Cần join với PurchaseOrder table nếu có
+                // Tạm thời bỏ qua filter này
+            }
+
+            // Filter theo số phiếu cụ thể
+            if (!string.IsNullOrWhiteSpace(query.StockInNumber))
+            {
+                queryable = queryable.Where(m => m.VocherNumber == query.StockInNumber);
+            }
+
+            // Filter theo search text (tìm trong số phiếu và ghi chú)
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                var searchText = query.SearchText.Trim();
+                queryable = queryable.Where(m => m.VocherNumber.Contains(searchText) || 
+                                                 (m.Notes != null && m.Notes.Contains(searchText)));
+            }
+
+            // Apply sorting
+            var orderBy = query.OrderBy ?? "StockInDate";
+            var orderDirection = query.OrderDirection ?? "DESC";
+            
+            switch (orderBy.ToLower())
+            {
+                case "stockindate":
+                    queryable = orderDirection.Equals("ASC", StringComparison.OrdinalIgnoreCase)
+                        ? queryable.OrderBy(m => m.StockInOutDate)
+                        : queryable.OrderByDescending(m => m.StockInOutDate);
+                    break;
+                case "stockinnumber":
+                    queryable = orderDirection.Equals("ASC", StringComparison.OrdinalIgnoreCase)
+                        ? queryable.OrderBy(m => m.VocherNumber)
+                        : queryable.OrderByDescending(m => m.VocherNumber);
+                    break;
+                case "totalamount":
+                    queryable = orderDirection.Equals("ASC", StringComparison.OrdinalIgnoreCase)
+                        ? queryable.OrderBy(m => m.TotalAmount)
+                        : queryable.OrderByDescending(m => m.TotalAmount);
+                    break;
+                case "totalquantity":
+                    queryable = orderDirection.Equals("ASC", StringComparison.OrdinalIgnoreCase)
+                        ? queryable.OrderBy(m => m.TotalQuantity)
+                        : queryable.OrderByDescending(m => m.TotalQuantity);
+                    break;
+                case "createddate":
+                    queryable = orderDirection.Equals("ASC", StringComparison.OrdinalIgnoreCase)
+                        ? queryable.OrderBy(m => m.CreatedDate ?? DateTime.MinValue)
+                        : queryable.OrderByDescending(m => m.CreatedDate ?? DateTime.MinValue);
+                    break;
+                default:
+                    // Default: Order by StockInOutDate DESC
+                    queryable = queryable.OrderByDescending(m => m.StockInOutDate);
+                    break;
+            }
+
+            // Apply pagination
+            if (query.UsePagination)
+            {
+                queryable = queryable.Skip(query.SkipCount).Take(query.TakeCount);
+            }
+
+            // Execute query
+            var results = queryable.ToList();
+
+            // Force load navigation properties trước khi dispose DataContext
+            foreach (var master in results)
+            {
+                if (master.CompanyBranch != null)
+                {
+                    var _ = master.CompanyBranch.BranchName;
+                    var __ = master.CompanyBranch.BranchCode;
+                }
+
+                if (master.BusinessPartnerSite != null)
+                {
+                    var _ = master.BusinessPartnerSite.SiteName;
+                    if (master.BusinessPartnerSite.BusinessPartner != null)
+                    {
+                        var __ = master.BusinessPartnerSite.BusinessPartner.PartnerName;
+                    }
+                }
+            }
+
+            _logger.Info("QueryHistory: Query thành công, ResultCount={0}", results.Count);
+            return results;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"QueryHistory: Lỗi query lịch sử: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Đếm số lượng bản ghi theo query (không phân trang)
+    /// </summary>
+    /// <param name="query">Query criteria</param>
+    /// <returns>Tổng số bản ghi</returns>
+    public int CountHistory(StockInHistoryQueryCriteria query)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("CountHistory: Bắt đầu đếm, FromDate={0}, ToDate={1}", query.FromDate, query.ToDate);
+
+            // Bắt đầu query (tương tự QueryHistory nhưng không có pagination và sorting)
+            var queryable = context.StockInOutMasters.AsQueryable();
+
+            // Filter theo thời gian (bắt buộc)
+            queryable = queryable.Where(m => m.StockInOutDate >= query.FromDate.Date && 
+                                             m.StockInOutDate <= query.ToDate.Date.AddDays(1).AddTicks(-1));
+
+            // Filter theo kho
+            if (query.WarehouseId.HasValue)
+            {
+                queryable = queryable.Where(m => m.WarehouseId == query.WarehouseId.Value);
+            }
+            else if (!string.IsNullOrWhiteSpace(query.WarehouseCode))
+            {
+                queryable = queryable.Where(m => m.CompanyBranch != null && 
+                                                 m.CompanyBranch.BranchCode.Contains(query.WarehouseCode));
+            }
+
+            // Filter theo loại nhập kho
+            if (query.LoaiNhapKho.HasValue)
+            {
+                queryable = queryable.Where(m => m.StockInOutType == query.LoaiNhapKho.Value);
+            }
+
+            // Filter theo trạng thái
+            if (query.TrangThaiList != null && query.TrangThaiList.Length > 0)
+            {
+                queryable = queryable.Where(m => query.TrangThaiList.Contains(m.TrangThaiPhieuNhap));
+            }
+            else if (query.TrangThai.HasValue)
+            {
+                queryable = queryable.Where(m => m.TrangThaiPhieuNhap == query.TrangThai.Value);
+            }
+
+            // Filter theo đối tác
+            if (query.SupplierId.HasValue)
+            {
+                queryable = queryable.Where(m => m.PartnerSiteId == query.SupplierId.Value);
+            }
+            else if (!string.IsNullOrWhiteSpace(query.SupplierCode))
+            {
+                queryable = queryable.Where(m => m.BusinessPartnerSite != null && 
+                                                 (m.BusinessPartnerSite.SiteCode.Contains(query.SupplierCode) ||
+                                                  (m.BusinessPartnerSite.BusinessPartner != null && 
+                                                   m.BusinessPartnerSite.BusinessPartner.PartnerCode.Contains(query.SupplierCode))));
+            }
+
+            // Filter theo đơn mua hàng (PO)
+            if (query.PurchaseOrderId.HasValue)
+            {
+                queryable = queryable.Where(m => m.PurchaseOrderId == query.PurchaseOrderId.Value);
+            }
+
+            // Filter theo số phiếu cụ thể
+            if (!string.IsNullOrWhiteSpace(query.StockInNumber))
+            {
+                queryable = queryable.Where(m => m.VocherNumber == query.StockInNumber);
+            }
+
+            // Filter theo search text
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                var searchText = query.SearchText.Trim();
+                queryable = queryable.Where(m => m.VocherNumber.Contains(searchText) || 
+                                                 (m.Notes != null && m.Notes.Contains(searchText)));
+            }
+
+            // Count
+            var count = queryable.Count();
+
+            _logger.Info("CountHistory: Đếm thành công, Count={0}", count);
+            return count;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"CountHistory: Lỗi đếm số lượng: {ex.Message}", ex);
             throw;
         }
     }

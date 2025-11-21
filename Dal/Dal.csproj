@@ -56,6 +56,7 @@
     <Compile Include="DataAccess\Implementations\ApplicationUserRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutImageRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\WarrantyRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\StockIn\StockInHistoryQueryCriteria.cs" />
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\EmployeeRepository.cs" />
     <Compile Include="DataAccess\Implementations\UnitOfWork.cs" />
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
@@ -157,6 +158,7 @@
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="DataAccess\Inventory\StockIn\" />
     <Folder Include="Examples\" />
     <Folder Include="LinqExtensions\" />
   </ItemGroup>
