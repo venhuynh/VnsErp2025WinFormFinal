@@ -2,6 +2,7 @@ using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
 using Dal.DataContext;
+using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn;
 using Logger;
 using Logger.Configuration;
@@ -10,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static DTO.Inventory.StockIn.StockInListDtoConverter;
 
 namespace Bll.Inventory.StockIn
 {
@@ -344,93 +344,6 @@ namespace Bll.Inventory.StockIn
                 _logger.Error($"GetReportData: Lỗi lấy dữ liệu report: {ex.Message}", ex);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Query lịch sử nhập xuất kho với filter
-        /// </summary>
-        /// <param name="query">Query criteria</param>
-        /// <returns>StockInHistoryResultDto chứa danh sách và pagination info</returns>
-        public async Task<StockInHistoryResultDto> QueryHistoryAsync(StockInHistoryQueryDto query)
-        {
-            try
-            {
-                _logger.Debug("QueryHistoryAsync: Bắt đầu query lịch sử, FromDate={0}, ToDate={1}", 
-                    query.FromDate, query.ToDate);
-
-                // Validate query
-                if (!query.Validate(out var errorMessage))
-                {
-                    _logger.Warning("QueryHistoryAsync: Query validation failed: {0}", errorMessage);
-                    throw new ArgumentException(errorMessage);
-                }
-
-                // Convert DTO sang Criteria (tránh circular dependency)
-                var criteria = ConvertDtoToCriteria(query);
-
-                // Query từ repository
-                var entities = await Task.Run(() => GetDataAccess().QueryHistory(criteria));
-                
-                // Map sang DTO - sử dụng extension method từ StockInListDtoConverter
-                var items = entities.ToDtoList();
-                
-                // Đếm tổng số bản ghi (nếu có pagination)
-                int totalCount;
-                if (query.UsePagination)
-                {
-                    totalCount = await Task.Run(() => GetDataAccess().CountHistory(criteria));
-                }
-                else
-                {
-                    totalCount = items.Count;
-                }
-
-                // Tạo result DTO
-                var result = new StockInHistoryResultDto
-                {
-                    Items = items,
-                    TotalCount = totalCount,
-                    PageIndex = query.PageIndex,
-                    PageSize = query.PageSize
-                };
-
-                _logger.Info("QueryHistoryAsync: Query thành công, TotalCount={0}, ItemCount={1}", 
-                    totalCount, items.Count);
-                
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"QueryHistoryAsync: Lỗi query lịch sử: {ex.Message}", ex);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Convert StockInHistoryQueryDto sang StockInHistoryQueryCriteria
-        /// </summary>
-        private StockInHistoryQueryCriteria ConvertDtoToCriteria(StockInHistoryQueryDto dto)
-        {
-            return new StockInHistoryQueryCriteria
-            {
-                FromDate = dto.FromDate,
-                ToDate = dto.ToDate,
-                WarehouseId = dto.WarehouseId,
-                WarehouseCode = dto.WarehouseCode,
-                LoaiNhapKho = dto.LoaiNhapKho.HasValue ? (int?)dto.LoaiNhapKho.Value : null,
-                TrangThai = dto.TrangThai.HasValue ? (int?)dto.TrangThai.Value : null,
-                TrangThaiList = dto.TrangThaiList?.Select(s => (int)s).ToArray(),
-                SupplierId = dto.SupplierId,
-                SupplierCode = dto.SupplierCode,
-                PurchaseOrderId = dto.PurchaseOrderId,
-                PurchaseOrderNumber = dto.PurchaseOrderNumber,
-                SearchText = dto.SearchText,
-                StockInNumber = dto.StockInNumber,
-                OrderBy = dto.OrderBy,
-                OrderDirection = dto.OrderDirection,
-                PageIndex = dto.PageIndex,
-                PageSize = dto.PageSize
-            };
         }
 
         #endregion

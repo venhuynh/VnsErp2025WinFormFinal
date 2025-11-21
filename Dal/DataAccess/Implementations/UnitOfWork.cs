@@ -434,6 +434,15 @@ namespace Dal.DataAccess.Implementations
                 : new WarrantyRepository(globalConnectionString);
         }
 
+        public IStockInOutMasterRepository GetStockInOutMasterRepository()
+        {
+            // Sử dụng global connection string từ ApplicationStartupManager
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            return string.IsNullOrEmpty(globalConnectionString)
+                ? throw new InvalidOperationException("Global connection string is not configured.")
+                : new StockInOutMasterRepository(globalConnectionString);
+        }
+
         #endregion
         #endregion
         #endregion

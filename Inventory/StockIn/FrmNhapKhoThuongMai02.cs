@@ -397,7 +397,7 @@ namespace Inventory.StockIn
                 _logger.Debug("InPhieuBarButtonItem_ItemClick: Print button clicked");
 
                 // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
-                Guid stockInOutMasterId = Guid.Empty;
+                Guid stockInOutMasterId;
                 
                 // Kiểm tra phiếu đã được lưu chưa
                 if (_currentStockInId != Guid.Empty)
@@ -490,7 +490,7 @@ namespace Inventory.StockIn
                 _logger.Debug("NhapBaoHanhBarButtonItem_ItemClick: Warranty input button clicked");
 
                 // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
-                Guid stockInOutMasterId = Guid.Empty;
+                Guid stockInOutMasterId;
                 
                 // Kiểm tra phiếu đã được lưu chưa
                 if (_currentStockInId != Guid.Empty)
@@ -583,7 +583,7 @@ namespace Inventory.StockIn
         /// <summary>
         /// Event handler cho nút Thêm hình ảnh
         /// </summary>
-        private async void ThemHinhAnhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void ThemHinhAnhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
@@ -828,10 +828,7 @@ namespace Inventory.StockIn
                                 _isClosingAfterSave = true;
                                 
                                 // Sử dụng BeginInvoke để đóng form sau khi event handler kết thúc
-                                BeginInvoke(new Action(() =>
-                                {
-                                    Close();
-                                }));
+                                BeginInvoke(new Action(Close));
                             }
                             else
                             {

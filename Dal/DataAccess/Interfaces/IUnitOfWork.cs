@@ -169,6 +169,8 @@ public interface IUnitOfWork : IDisposable
 
     IWarrantyRepository GetWarrantyRepository();
 
+    IStockInOutMasterRepository GetStockInOutMasterRepository();
+
     #endregion
 
     #endregion
