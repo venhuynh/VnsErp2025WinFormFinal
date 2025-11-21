@@ -286,6 +286,7 @@ public static class StockInDetailDtoConverter
             Id = entity.Id,
             StockInOutMasterId = entity.StockInOutMasterId,
             ProductVariantId = entity.ProductVariantId,
+            ProductVariantCode = entity.ProductVariant.VariantCode,
             StockInQty = entity.StockInQty,
             StockOutQty = entity.StockOutQty,
             UnitPrice = entity.UnitPrice,

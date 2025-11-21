@@ -284,7 +284,6 @@
             this.StockInQtyTextEdit.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.StockInQtyTextEdit.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
             this.StockInQtyTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
-            this.StockInQtyTextEdit.MaskSettings.Set("mask", "n2");
             this.StockInQtyTextEdit.Name = "StockInQtyTextEdit";
             // 
             // colUnitPrice
@@ -320,7 +319,6 @@
             this.UnitPriceTextEdit.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.UnitPriceTextEdit.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
             this.UnitPriceTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
-            this.UnitPriceTextEdit.MaskSettings.Set("mask", "n0");
             this.UnitPriceTextEdit.Name = "UnitPriceTextEdit";
             // 
             // colVat
@@ -356,7 +354,6 @@
             this.VatTextEdit.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.VatTextEdit.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
             this.VatTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
-            this.VatTextEdit.MaskSettings.Set("mask", "n2");
             this.VatTextEdit.Name = "VatTextEdit";
             // 
             // colVatAmount

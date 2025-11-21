@@ -105,7 +105,7 @@ namespace Inventory.StockIn
 
                     //FIXME: Tạo hàm LoadDataAsync trong user controls để load dữ liệu từ _currentStockInId
                     await ucStockInMaster1.LoadDataAsync(_currentStockInId);
-                    //await ucStockInDetail1.LoadDataAsync(_currentStockInId);
+                    await ucStockInDetail1.LoadDataAsyncForEdit(_currentStockInId);
                 }
                 else
                 {
@@ -119,116 +119,6 @@ namespace Inventory.StockIn
             {
                 _logger.Error("FrmNhapKhoThuongMai02_Load: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi khởi tạo form: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Load tất cả datasource cho các SearchLookUpEdit với SplashScreen
-        /// SplashScreen sẽ được hiển thị với owner là form này để đảm bảo hiển thị đúng vị trí
-        /// </summary>
-        private async Task LoadDataSourcesAsync()
-        {
-            try
-            {
-                _logger.Debug("LoadDataSourcesAsync: Starting to load datasources");
-
-                // Hiển thị SplashScreen với owner là form này
-                // Sử dụng SplashScreenManager trực tiếp để set owner
-                SplashScreenHelper.ShowWaitingSplashScreen();
-
-                try
-                {
-                    // Load datasource cho UcStockInMaster (Warehouse và Supplier)
-                    _logger.Debug("LoadDataSourcesAsync: Loading lookup data for UcStockInMaster");
-                    //await ucStockInMaster1.LoadLookupDataAsync();
-
-                    // Load datasource cho UcStockInDetail (ProductVariant)
-                    _logger.Debug("LoadDataSourcesAsync: Loading product variants for UcStockInDetail");
-                    await ucStockInDetail1.LoadProductVariantsAsync();
-
-                    _logger.Info("LoadDataSourcesAsync: All datasources loaded successfully");
-                }
-                finally
-                {
-                    // Đóng SplashScreen
-                    SplashScreenHelper.CloseSplashScreen();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("LoadDataSourcesAsync: Exception occurred", ex);
-                SplashScreenHelper.CloseSplashScreen();
-                MsgBox.ShowError($"Lỗi tải dữ liệu: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Hiển thị SplashScreen với owner là form này
-        /// Đảm bảo SplashScreen hiển thị đúng vị trí và có owner đúng
-        /// Sử dụng SplashScreenHelper và SplashScreenManager với owner parameter
-        /// </summary>
-        private void ShowSplashScreenWithOwner()
-        {
-            try
-            {
-                // Đảm bảo form đã được hiển thị
-                if (!Visible)
-                {
-                    Show();
-                }
-
-                // Đảm bảo form đã được activate
-                if (!IsHandleCreated)
-                {
-                    CreateHandle();
-                }
-
-                // Đảm bảo form được bring to front và activate
-                BringToFront();
-                Activate();
-
-                // Đóng splash screen hiện tại nếu có (sử dụng SplashScreenHelper)
-                SplashScreenHelper.CloseSplashScreen();
-
-                // Hiển thị SplashScreen với owner là form này
-                // Sử dụng SplashScreenManager.ShowForm với owner parameter
-                // Khi có owner, SplashScreen sẽ tự động hiển thị trên owner form và là topmost
-                DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(
-                    this, // Owner form - đảm bảo SplashScreen hiển thị trên form này
-                    typeof(VnsSplashScreen),
-                    false, // fadeIn
-                    false, // fadeOut
-                    false); // useFadeInOutAnimation
-
-                // Đảm bảo SplashScreen được bring to front sau khi hiển thị
-                // Sử dụng BeginInvoke để đảm bảo SplashScreen đã được tạo xong
-                BeginInvoke(new Action(() =>
-                {
-                    try
-                    {
-                        // Kiểm tra SplashScreen đã hiển thị chưa
-                        if (DevExpress.XtraSplashScreen.SplashScreenManager.Default != null &&
-                            DevExpress.XtraSplashScreen.SplashScreenManager.Default.IsSplashFormVisible)
-                        {
-                            // Đảm bảo owner form vẫn ở front
-                            BringToFront();
-                            
-                            _logger.Debug("ShowSplashScreenWithOwner: SplashScreen displayed with owner={0}", Name);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Warning("ShowSplashScreenWithOwner: Exception in BeginInvoke: {0}", ex.Message);
-                    }
-                }));
-
-                _logger.Debug("ShowSplashScreenWithOwner: SplashScreen display initiated with owner={0}", Name);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("ShowSplashScreenWithOwner: Exception occurred", ex);
-                // Fallback: sử dụng helper nếu có lỗi
-                SplashScreenHelper.ShowVnsSplashScreen("VnsErp2025", "Đang tải dữ liệu...");
             }
         }
 

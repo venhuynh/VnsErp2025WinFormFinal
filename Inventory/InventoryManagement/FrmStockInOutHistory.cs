@@ -27,7 +27,7 @@ namespace Inventory.InventoryManagement
         /// <summary>
         /// Business Logic Layer cho phiếu nhập xuất kho
         /// </summary>
-        private readonly StockInOutMasterBll _stockInOutMasterBll = new StockInOutMasterBll();
+        private readonly StockInOutMasterBll _stockInOutMasterBll = new();
 
         /// <summary>
         /// Logger để ghi log các sự kiện

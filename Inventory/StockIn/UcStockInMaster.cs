@@ -29,17 +29,29 @@ namespace Inventory.StockIn
         /// <summary>
         /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
         /// </summary>
-        private readonly CompanyBranchBll _companyBranchBll = new CompanyBranchBll();
+        private readonly CompanyBranchBll _companyBranchBll = new();
 
         /// <summary>
         /// Business Logic Layer cho BusinessPartnerSite (dùng cho Supplier lookup)
         /// </summary>
-        private readonly BusinessPartnerSiteBll _businessPartnerSiteBll = new BusinessPartnerSiteBll();
+        private readonly BusinessPartnerSiteBll _businessPartnerSiteBll = new();
 
         /// <summary>
         /// Business Logic Layer cho StockIn (dùng để lấy số thứ tự tiếp theo)
         /// </summary>
-        private readonly StockInBll _stockInBll = new StockInBll();
+        private readonly StockInBll _stockInBll = new();
+
+        /// <summary>
+        /// Flag đánh dấu Warehouse datasource đã được load chưa
+        /// </summary>
+        private bool _isWarehouseDataSourceLoaded;
+
+        /// <summary>
+        /// Flag đánh dấu Supplier datasource đã được load chưa
+        /// </summary>
+        private bool _isSupplierDataSourceLoaded;
+
+        private Guid _stockInOutMasterId=Guid.Empty;
 
         #endregion
 
@@ -200,8 +212,14 @@ namespace Inventory.StockIn
         {
             try
             {
-                // Load danh sách BusinessPartnerSite từ BusinessPartnerSiteBll (dùng cho Supplier lookup)
-                await LoadSupplierDataSourceAsync();
+                // Chỉ load nếu chưa load hoặc datasource rỗng
+                if (!_isSupplierDataSourceLoaded || 
+                    businessPartnerSiteListDtoBindingSource.DataSource == null ||
+                    (businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> list && list.Count == 0))
+                {
+                    await LoadSupplierDataSourceAsync();
+                    _isSupplierDataSourceLoaded = true;
+                }
             }
             catch (Exception ex)
             {
@@ -213,8 +231,14 @@ namespace Inventory.StockIn
         {
             try
             {
-                // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
-                await LoadWarehouseDataSourceAsync();
+                // Chỉ load nếu chưa load hoặc datasource rỗng
+                if (!_isWarehouseDataSourceLoaded || 
+                    companyBranchDtoBindingSource.DataSource == null ||
+                    (companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> list && list.Count == 0))
+                {
+                    await LoadWarehouseDataSourceAsync();
+                    _isWarehouseDataSourceLoaded = true;
+                }
             }
             catch (Exception ex)
             {
@@ -340,10 +364,14 @@ namespace Inventory.StockIn
         {
             try
             {
+                // Reset flags để đảm bảo load lại khi form load
+                _isWarehouseDataSourceLoaded = false;
+                _isSupplierDataSourceLoaded = false;
+
                 // Load cả 2 datasource song song để tối ưu performance
                 await Task.WhenAll(
-                    LoadWarehouseDataSourceAsync(),
-                    LoadSupplierDataSourceAsync()
+                    LoadWarehouseDataSourceAsync(forceRefresh: true),
+                    LoadSupplierDataSourceAsync(forceRefresh: true)
                 );
             }
             catch (Exception ex)
@@ -355,10 +383,20 @@ namespace Inventory.StockIn
         /// <summary>
         /// Load datasource cho Warehouse (CompanyBranch) - Load toàn bộ danh sách
         /// </summary>
-        private async Task LoadWarehouseDataSourceAsync()
+        /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
+        private async Task LoadWarehouseDataSourceAsync(bool forceRefresh = false)
         {
             try
             {
+                // Nếu đã load và không force refresh, không load lại
+                if (_isWarehouseDataSourceLoaded && !forceRefresh && 
+                    companyBranchDtoBindingSource.DataSource != null &&
+                    companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> existingList && 
+                    existingList.Count > 0)
+                {
+                    return;
+                }
+
                 // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
                 var branches = await Task.Run(() => _companyBranchBll.GetAll());
                 var warehouseDtos = branches
@@ -368,6 +406,7 @@ namespace Inventory.StockIn
                     .ToList();
 
                 companyBranchDtoBindingSource.DataSource = warehouseDtos;
+                _isWarehouseDataSourceLoaded = true;
             }
             catch (Exception ex)
             {
@@ -379,10 +418,20 @@ namespace Inventory.StockIn
         /// <summary>
         /// Load datasource cho Supplier (BusinessPartnerSite) - Load toàn bộ danh sách
         /// </summary>
-        private async Task LoadSupplierDataSourceAsync()
+        /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
+        private async Task LoadSupplierDataSourceAsync(bool forceRefresh = false)
         {
             try
             {
+                // Nếu đã load và không force refresh, không load lại
+                if (_isSupplierDataSourceLoaded && !forceRefresh && 
+                    businessPartnerSiteListDtoBindingSource.DataSource != null &&
+                    businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> existingList && 
+                    existingList.Count > 0)
+                {
+                    return;
+                }
+
                 // Load danh sách BusinessPartnerSite từ BusinessPartnerSiteBll (dùng cho Supplier lookup)
                 var sites = await Task.Run(() => _businessPartnerSiteBll.GetAll());
                 var siteDtos = sites
@@ -392,6 +441,7 @@ namespace Inventory.StockIn
                     .ToList();
 
                 businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
+                _isSupplierDataSourceLoaded = true;
             }
             catch (Exception ex)
             {
@@ -413,6 +463,8 @@ namespace Inventory.StockIn
                 {
                     // Nếu ID rỗng, set datasource rỗng
                     companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
+                    // Không đánh dấu đã load vì datasource rỗng
+                    _isWarehouseDataSourceLoaded = false;
                     return;
                 }
 
@@ -423,11 +475,14 @@ namespace Inventory.StockIn
                     var warehouseDto = branch.ToDto();
                     // Set datasource chỉ chứa 1 record
                     companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto> { warehouseDto };
+                    // Đánh dấu chưa load full list (khi popup sẽ load full)
+                    _isWarehouseDataSourceLoaded = false;
                 }
                 else
                 {
                     // Nếu không tìm thấy, set datasource rỗng
                     companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
+                    _isWarehouseDataSourceLoaded = false;
                 }
             }
             catch (Exception ex)
@@ -450,6 +505,8 @@ namespace Inventory.StockIn
                 {
                     // Nếu ID rỗng, set datasource rỗng
                     businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
+                    // Không đánh dấu đã load vì datasource rỗng
+                    _isSupplierDataSourceLoaded = false;
                     return;
                 }
 
@@ -461,11 +518,14 @@ namespace Inventory.StockIn
                     var siteDtos = new List<Dal.DataContext.BusinessPartnerSite> { site }.ToSiteListDtos().ToList();
                     // Set datasource chỉ chứa 1 record
                     businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
+                    // Đánh dấu đã load (nhưng chỉ có 1 record, khi popup sẽ load full)
+                    _isSupplierDataSourceLoaded = false; // Set false để popup sẽ load full list
                 }
                 else
                 {
                     // Nếu không tìm thấy, set datasource rỗng
                     businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
+                    _isSupplierDataSourceLoaded = false;
                 }
             }
             catch (Exception ex)
@@ -814,6 +874,10 @@ namespace Inventory.StockIn
                     return null; // Validation thất bại
                 }
 
+                //Cập nhật lại Id
+                _stockInMasterDto.Id = _stockInOutMasterId; 
+
+
                 return _stockInMasterDto;
             }
             catch (Exception ex)
@@ -831,6 +895,8 @@ namespace Inventory.StockIn
         {
             try
             {
+                _stockInOutMasterId = stockInOutMasterId;
+                
                 // Lấy master entity từ BLL
                 var masterEntity = _stockInBll.GetMasterById(stockInOutMasterId);
                 if (masterEntity == null)

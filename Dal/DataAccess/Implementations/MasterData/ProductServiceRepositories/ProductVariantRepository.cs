@@ -58,9 +58,18 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
         {
             var context = new VnsErp2025DataContext(_connectionString);
 
-            // Configure eager loading cho navigation properties
+            // Cấu hình DataLoadOptions để preload navigation properties
+            // Tránh vòng lặp bằng cách không load ProductVariants từ ProductService
             var loadOptions = new DataLoadOptions();
-            
+            loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
+            loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
+            loadOptions.LoadWith<ProductVariant>(pv => pv.VariantAttributes);
+            loadOptions.LoadWith<ProductVariant>(pv => pv.ProductImages);
+
+            // Preload thông tin sản phẩm gốc (không load ProductVariants để tránh vòng lặp)
+            loadOptions.LoadWith<ProductService>(ps => ps.ProductServiceCategory);
+            loadOptions.LoadWith<ProductService>(ps => ps.ProductImages);
+
             context.LoadOptions = loadOptions;
 
             return context;
@@ -147,11 +156,11 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             {
                 using var context = CreateNewContext();
 
-                // Cấu hình DataLoadOptions để preload navigation properties
-                var loadOptions = new DataLoadOptions();
-                loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
-                loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
-                context.LoadOptions = loadOptions;
+                //// Cấu hình DataLoadOptions để preload navigation properties
+                //var loadOptions = new DataLoadOptions();
+                //loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
+                //loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
+                //context.LoadOptions = loadOptions;
 
                 return await Task.Run(() => context.ProductVariants
                     .OrderBy(pv => pv.VariantCode)
@@ -174,19 +183,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             {
                 using var context = CreateNewContext();
 
-                // Cấu hình DataLoadOptions để preload navigation properties
-                // Tránh vòng lặp bằng cách không load ProductVariants từ ProductService
-                var loadOptions = new DataLoadOptions();
-                loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
-                loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
-                loadOptions.LoadWith<ProductVariant>(pv => pv.VariantAttributes);
-                loadOptions.LoadWith<ProductVariant>(pv => pv.ProductImages);
-
-                // Preload thông tin sản phẩm gốc (không load ProductVariants để tránh vòng lặp)
-                loadOptions.LoadWith<ProductService>(ps => ps.ProductServiceCategory);
-                loadOptions.LoadWith<ProductService>(ps => ps.ProductImages);
-
-                context.LoadOptions = loadOptions;
+                
 
                 return await Task.Run(() => context.ProductVariants
                     .OrderBy(pv => pv.ProductService.Name)
