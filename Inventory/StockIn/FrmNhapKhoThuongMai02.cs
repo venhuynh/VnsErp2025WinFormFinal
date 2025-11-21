@@ -1,16 +1,15 @@
-﻿using Common.Common;
+﻿using Bll.Inventory.StockIn;
+using Common.Common;
 using Common.Utils;
+using Inventory.StockIn.InPhieu;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockIn;
-using System.Linq;
-using Inventory.StockIn.InPhieu;
-using DTO.Inventory.StockIn;
 
 namespace Inventory.StockIn
 {
@@ -82,8 +81,6 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("FrmNhapKhoThuongMai02_Load: Form loading");
-
                 // Setup event handlers
                 SetupEvents();
 
@@ -98,7 +95,6 @@ namespace Inventory.StockIn
                 // Nếu _currentStockInId có giá trị thì load dữ liệu vào UI của 2 UserControl
                 if (_currentStockInId != Guid.Empty)
                 {
-                    _logger.Debug("FrmNhapKhoThuongMai02_Load: Loading existing stock in data, StockInId={0}", _currentStockInId);
 
                     // Load dữ liệu từ ID vào các user controls
                     //await LoadDataAsync(_currentStockInId);
@@ -113,7 +109,6 @@ namespace Inventory.StockIn
                     ResetForm();
                 }
 
-                _logger.Info("FrmNhapKhoThuongMai02_Load: Form loaded successfully");
             }
             catch (Exception ex)
             {
@@ -149,7 +144,6 @@ namespace Inventory.StockIn
                 SetupKeyboardShortcuts();
                 UpdateHotKeyBarStaticItem();
 
-                _logger.Debug("SetupEvents: Events setup completed");
             }
             catch (Exception ex)
             {
@@ -164,7 +158,6 @@ namespace Inventory.StockIn
         private void MarkAsChanged()
         {
             _hasUnsavedChanges = true;
-            _logger.Debug("MarkAsChanged: Form marked as having unsaved changes");
         }
 
         /// <summary>
@@ -174,7 +167,6 @@ namespace Inventory.StockIn
         {
             _hasUnsavedChanges = false;
             _isClosingAfterSave = false; // Reset flag khi đánh dấu đã lưu
-            _logger.Debug("MarkAsSaved: Form marked as saved");
         }
 
         /// <summary>
@@ -195,7 +187,6 @@ namespace Inventory.StockIn
                 // Lưu ý: DevExpress BarButtonItem không hỗ trợ trực tiếp ItemShortcut
                 // Nên sẽ xử lý qua KeyDown event của form
                 
-                _logger.Debug("SetupKeyboardShortcuts: Keyboard shortcuts configured");
             }
             catch (Exception ex)
             {
@@ -227,7 +218,6 @@ namespace Inventory.StockIn
                 HotKeyBarStaticItem.Caption = hotKeyText;
                 HotKeyBarStaticItem.Visibility = DevExpress.XtraBars.BarItemVisibility.Always;
                 
-                _logger.Debug("UpdateHotKeyBarStaticItem: Hot key bar updated");
             }
             catch (Exception ex)
             {
@@ -246,7 +236,6 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("NhapLaiBarButtonItem_ItemClick: Reset button clicked");
 
                 // Kiểm tra có thay đổi chưa lưu không
                 if (_hasUnsavedChanges)
@@ -258,13 +247,11 @@ namespace Inventory.StockIn
                     
                     if (!confirm)
                     {
-                        _logger.Debug("NhapLaiBarButtonItem_ItemClick: User cancelled reset");
                         return;
                     }
                 }
 
                 ResetForm();
-                _logger.Info("NhapLaiBarButtonItem_ItemClick: Form reset successfully");
             }
             catch (Exception ex)
             {
@@ -280,7 +267,6 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("LuuPhieuBarButtonItem_ItemClick: Save button clicked");
 
                 // Disable button để tránh double-click
                 LuuPhieuBarButtonItem.Enabled = false;
@@ -290,12 +276,9 @@ namespace Inventory.StockIn
                     // Validate và lưu dữ liệu
                     var success = await SaveDataAsync();
 
-                    if (success)
-                    {
-                        MsgBox.ShowSuccess("Lưu phiếu nhập kho thành công!", "Thành công", this);
-                        MarkAsSaved();
-                        _logger.Info("LuuPhieuBarButtonItem_ItemClick: Data saved successfully");
-                    }
+                    if (!success) return;
+                    MsgBox.ShowSuccess("Lưu phiếu nhập kho thành công!", "Thành công", this);
+                    MarkAsSaved();
                 }
                 finally
                 {
@@ -317,7 +300,6 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("InPhieuBarButtonItem_ItemClick: Print button clicked");
 
                 // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
                 Guid stockInOutMasterId;
@@ -364,7 +346,6 @@ namespace Inventory.StockIn
                         else
                         {
                             // Người dùng chọn không lưu
-                            _logger.Debug("InPhieuBarButtonItem_ItemClick: User chose not to save");
                             return;
                         }
                     }
@@ -394,7 +375,6 @@ namespace Inventory.StockIn
                 // In phiếu nhập kho với preview
                 StockInReportHelper.PrintStockInVoucher(stockInOutMasterId);
 
-                _logger.Info("InPhieuBarButtonItem_ItemClick: Print voucher completed, StockInOutMasterId={0}", stockInOutMasterId);
             }
             catch (Exception ex)
             {
@@ -410,7 +390,6 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("NhapBaoHanhBarButtonItem_ItemClick: Warranty input button clicked");
 
                 // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
                 Guid stockInOutMasterId;
@@ -457,7 +436,6 @@ namespace Inventory.StockIn
                         else
                         {
                             // Người dùng chọn không lưu
-                            _logger.Debug("NhapBaoHanhBarButtonItem_ItemClick: User chose not to save");
                             return;
                         }
                     }
@@ -493,8 +471,6 @@ namespace Inventory.StockIn
                         frmWarranty.ShowDialog(this);
                     }
                 }
-
-                _logger.Info("NhapBaoHanhBarButtonItem_ItemClick: Warranty form opened with StockInOutMasterId={0}", stockInOutMasterId);
             }
             catch (Exception ex)
             {
@@ -510,8 +486,6 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("ThemHinhAnhBarButtonItem_ItemClick: Add image button clicked");
-
                 // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
                 Guid stockInOutMasterId = Guid.Empty;
                 
@@ -537,8 +511,6 @@ namespace Inventory.StockIn
                         }
                         else
                         {
-                            // Người dùng chọn không lưu
-                            _logger.Debug("ThemHinhAnhBarButtonItem_ItemClick: User chose not to save");
                             return;
                         }
                     }
@@ -574,8 +546,6 @@ namespace Inventory.StockIn
                         frmAddImages.ShowDialog(this);
                     }
                 }
-
-                _logger.Info("ThemHinhAnhBarButtonItem_ItemClick: Add images form opened with StockInOutMasterId={0}", stockInOutMasterId);
             }
             catch (Exception ex)
             {
@@ -591,7 +561,6 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("CloseBarButtonItem_ItemClick: Close button clicked");
                 Close();
             }
             catch (Exception ex)
@@ -669,8 +638,6 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("UcStockInDetail1_DetailDataChanged: Detail data changed, updating totals");
-
                 // Đánh dấu có thay đổi chưa lưu
                 MarkAsChanged();
 
@@ -679,9 +646,6 @@ namespace Inventory.StockIn
 
                 // Cập nhật tổng lên master
                 ucStockInMaster1.UpdateTotals(totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
-
-                _logger.Debug("UcStockInDetail1_DetailDataChanged: Totals updated - Quantity={0}, Amount={1}, Vat={2}, Total={3}",
-                    totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
             }
             catch (Exception ex)
             {
@@ -698,13 +662,9 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: Form closing, HasUnsavedChanges={0}, IsClosingAfterSave={1}", 
-                    _hasUnsavedChanges, _isClosingAfterSave);
-
                 // Nếu đang trong quá trình đóng sau khi lưu thành công, cho phép đóng luôn
                 if (_isClosingAfterSave)
                 {
-                    _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: Closing after save, allowing close");
                     e.Cancel = false;
                     return;
                 }
@@ -723,71 +683,62 @@ namespace Inventory.StockIn
                         yesButtonText: "Lưu và đóng",
                         noButtonText: "Đóng không lưu",
                         cancelButtonText: "Hủy");
-                    
-                    _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User choice result={0}", result);
-                    
-                    if (result == DialogResult.Yes)
+
+                    switch (result)
                     {
-                        // Người dùng chọn "Lưu và đóng"
-                        // Cancel việc đóng form tạm thời để lưu dữ liệu
-                        e.Cancel = true;
+                        case DialogResult.Yes:
+                            // Người dùng chọn "Lưu và đóng"
+                            // Cancel việc đóng form tạm thời để lưu dữ liệu
+                            e.Cancel = true;
                         
-                        try
-                        {
-                            _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User chose to save and close, starting save operation");
-                            
-                            // Lưu dữ liệu
-                            var saveSuccess = await SaveDataAsync();
-                            
-                            if (saveSuccess)
+                            try
                             {
-                                // Lưu thành công, đánh dấu đã lưu và chuẩn bị đóng form
-                                _logger.Info("FrmNhapKhoThuongMai02_FormClosing: Save successful, closing form");
+                                // Lưu dữ liệu
+                                var saveSuccess = await SaveDataAsync();
+                            
+                                if (saveSuccess)
+                                {
+                                    // Đánh dấu đã lưu để không hỏi lại
+                                    MarkAsSaved();
                                 
-                                // Đánh dấu đã lưu để không hỏi lại
-                                MarkAsSaved();
+                                    // Set flag để tránh hỏi lại khi Close() được gọi
+                                    _isClosingAfterSave = true;
                                 
-                                // Set flag để tránh hỏi lại khi Close() được gọi
-                                _isClosingAfterSave = true;
-                                
-                                // Sử dụng BeginInvoke để đóng form sau khi event handler kết thúc
-                                BeginInvoke(new Action(Close));
+                                    // Sử dụng BeginInvoke để đóng form sau khi event handler kết thúc
+                                    BeginInvoke(new Action(Close));
+                                }
+                                else
+                                {
+                                    // Lưu thất bại, giữ form mở
+                                    _logger.Warning("FrmNhapKhoThuongMai02_FormClosing: Save failed, form will remain open");
+                                    e.Cancel = true;
+                                }
                             }
-                            else
+                            catch (Exception saveEx)
                             {
-                                // Lưu thất bại, giữ form mở
-                                _logger.Warning("FrmNhapKhoThuongMai02_FormClosing: Save failed, form will remain open");
+                                _logger.Error("FrmNhapKhoThuongMai02_FormClosing: Exception during save operation", saveEx);
+                                // Lỗi khi lưu, giữ form mở
                                 e.Cancel = true;
                             }
-                        }
-                        catch (Exception saveEx)
-                        {
-                            _logger.Error("FrmNhapKhoThuongMai02_FormClosing: Exception during save operation", saveEx);
-                            // Lỗi khi lưu, giữ form mở
+
+                            break;
+                        case DialogResult.No:
+                            // Người dùng chọn "Đóng không lưu" - cho phép đóng form
+                            e.Cancel = false;
+                            break;
+                        // DialogResult.Cancel
+                        default:
+                            // Người dùng chọn "Hủy" - không muốn đóng, giữ form mở
                             e.Cancel = true;
-                        }
-                    }
-                    else if (result == DialogResult.No)
-                    {
-                        // Người dùng chọn "Đóng không lưu" - cho phép đóng form
-                        e.Cancel = false;
-                        _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User chose to close without save, form will close");
-                    }
-                    else // DialogResult.Cancel
-                    {
-                        // Người dùng chọn "Hủy" - không muốn đóng, giữ form mở
-                        e.Cancel = true;
-                        _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: User cancelled closing, form will remain open");
+                            break;
                     }
                 }
                 else
                 {
                     // Không có thay đổi chưa lưu, cho phép đóng form
                     e.Cancel = false;
-                    _logger.Debug("FrmNhapKhoThuongMai02_FormClosing: No unsaved changes, form will close");
                 }
 
-                _logger.Info("FrmNhapKhoThuongMai02_FormClosing: Form closing completed, Cancel={0}", e.Cancel);
             }
             catch (Exception ex)
             {
@@ -808,8 +759,6 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("ResetForm: Resetting form to initial state");
-
                 // Clear master control
                 ucStockInMaster1.ClearData();
 
@@ -823,8 +772,6 @@ namespace Inventory.StockIn
                 _currentStockInId = Guid.Empty;
                 _isClosingAfterSave = false; // Reset flag khi reset form
                 MarkAsSaved();
-
-                _logger.Info("ResetForm: Form reset successfully");
             }
             catch (Exception ex)
             {
@@ -841,10 +788,8 @@ namespace Inventory.StockIn
         {
             try
             {
-                _logger.Debug("SaveDataAsync: Starting save operation");
 
                 // ========== BƯỚC 1: VALIDATE VÀ LẤY DỮ LIỆU TỪ MASTER CONTROL ==========
-                _logger.Debug("SaveDataAsync: Step 1 - Validating Master control");
                 var masterDto = ucStockInMaster1.GetDto();
                 if (masterDto == null)
                 {
@@ -861,12 +806,7 @@ namespace Inventory.StockIn
                     return false;
                 }
 
-                _logger.Debug("SaveDataAsync: Master validation passed, WarehouseId={0}, StockInNumber={1}", 
-                    masterDto.WarehouseId, masterDto.StockInNumber);
-
                 // ========== BƯỚC 2: VALIDATE VÀ LẤY DỮ LIỆU TỪ DETAIL CONTROL ==========
-                _logger.Debug("SaveDataAsync: Step 2 - Validating Detail control");
-                
                 // Validate tất cả các rows trong grid
                 if (!ucStockInDetail1.ValidateAll())
                 {
@@ -886,7 +826,7 @@ namespace Inventory.StockIn
 
                 // Validate thêm business rules cho từng detail
                 var validationErrors = new List<string>();
-                for (int i = 0; i < detailDtos.Count; i++)
+                for (var i = 0; i < detailDtos.Count; i++)
                 {
                     var detail = detailDtos[i];
                     var lineNumber = detail.LineNumber > 0 ? detail.LineNumber : (i + 1);
@@ -920,26 +860,18 @@ namespace Inventory.StockIn
                     return false;
                 }
 
-                _logger.Debug("SaveDataAsync: Detail validation passed, DetailCount={0}", detailDtos.Count);
-
                 // ========== BƯỚC 3: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
-                _logger.Debug("SaveDataAsync: Step 3 - All validations passed, calling BLL.SaveAsync");
-                
                 // Tất cả validation đã được thực hiện ở bước 1 và 2
                 // StockInBll.SaveAsync sẽ có thêm validation layer nhưng chủ yếu là double-check
                 var savedMasterId = await _stockInBll.SaveAsync(masterDto, detailDtos);
 
                 // ========== BƯỚC 4: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
-                _logger.Debug("SaveDataAsync: Step 4 - Updating state after successful save");
-                
                 // Cập nhật ID sau khi lưu
                 masterDto.Id = savedMasterId;
                 _currentStockInId = savedMasterId;
 
                 // Set master ID cho detail control để đồng bộ
                 ucStockInDetail1.SetStockInMasterId(savedMasterId);
-
-                _logger.Info("SaveDataAsync: Save operation completed successfully, MasterId={0}", savedMasterId);
                 return true;
             }
             catch (ArgumentException argEx)

@@ -1,10 +1,15 @@
-﻿using Bll.MasterData.ProductServiceBll;
-using Bll.Inventory.StockIn;
+﻿using Bll.Inventory.StockIn;
+using Bll.MasterData.ProductServiceBll;
 using Common.Common;
+using Common.Helpers;
 using Common.Utils;
 using Dal.DataContext;
+using DevExpress.Data;
 using DTO.Inventory.StockIn;
 using DTO.MasterData.ProductService;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,11 +17,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Common.Helpers;
-using DevExpress.Data;
-using Logger;
-using Logger.Configuration;
-using Logger.Interfaces;
 
 namespace Inventory.StockIn;
 
@@ -53,12 +53,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     /// ID phiếu nhập kho master (dùng để bind vào các detail rows)
     /// </summary>
     private Guid _stockInMasterId = Guid.Empty;
-
-    /// <summary>
-    /// GridView để quản lý chi tiết phiếu nhập kho (public để form có thể truy cập)
-    /// Property này expose GridView từ Designer để form có thể truy cập
-    /// </summary>
-    public DevExpress.XtraGrid.Views.Grid.GridView StockInDetailDtoGridViewPublic => StockInDetailDtoGridView;
 
     #endregion
 
@@ -146,11 +140,8 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             var fieldName = e.Column?.FieldName;
             var rowHandle = e.RowHandle;
                 
-            _logger.Debug("CellValueChanged: FieldName={0}, RowHandle={1}, Value={2}", fieldName, rowHandle, e.Value);
-                
             if (rowHandle < 0)
             {
-                _logger.Debug("CellValueChanged: Skipping new row");
                 return; // Bỏ qua new row
             }
 
@@ -164,7 +155,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             // Xử lý khi chọn ProductVariant
             if (fieldName == "ProductVariantId")
             {
-                _logger.Debug("CellValueChanged: Processing ProductVariantId change");
                 // Lấy ProductVariantId từ cell value
                 Guid productVariantId;
                 if (e.Value is Guid guidValue)
@@ -177,13 +167,11 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                 }
                 else
                 {
-                    _logger.Debug("CellValueChanged: Invalid ProductVariantId value");
                     return; // Không có giá trị hợp lệ
                 }
 
                 if (productVariantId == Guid.Empty)
                 {
-                    _logger.Debug("CellValueChanged: ProductVariantId is Empty");
                     return;
                 }
 
@@ -202,7 +190,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
                 rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantFullName}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
-                _logger.Info("CellValueChanged: Updated ProductVariant, RowHandle={0}, ProductVariantId={1}", rowHandle, productVariantId);
             }
 
             // Xử lý tính toán tự động khi thay đổi số lượng, đơn giá, VAT
@@ -210,22 +197,15 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             {
                 if (_isCalculating)
                 {
-                    _logger.Debug("CellValueChanged: Already calculating, skipping");
                     return; // Tránh tính toán lặp vô hạn
                 }
 
-                _logger.Debug("CellValueChanged: Triggering calculation for field={0}", fieldName);
                 _isCalculating = true;
 
                 try
                 {
-                    // Tính toán các giá trị
-                    CalculateRowAmounts(rowData);
-
                     // Cập nhật tổng tiền lên master (nếu có event handler)
                     OnDetailDataChanged();
-                    _logger.Debug("CellValueChanged: Calculation completed, TotalAmount={0}, VatAmount={1}, TotalAmountIncludedVat={2}", 
-                        rowData.TotalAmount, rowData.VatAmount, rowData.TotalAmountIncludedVat);
                 }
                 finally
                 {
@@ -250,8 +230,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            _logger.Debug("InitNewRow: RowHandle={0}", e.RowHandle);
-                
             var rowData = StockInDetailDtoGridView.GetRow(e.RowHandle) as StockInDetailDto;
             if (rowData == null)
             {
@@ -263,21 +241,18 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             if (rowData.Id == Guid.Empty)
             {
                 rowData.Id = Guid.NewGuid();
-                _logger.Debug("InitNewRow: Generated new Id={0}", rowData.Id);
             }
 
             // Gán StockInOutMasterId nếu chưa có
             if (rowData.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty)
             {
                 rowData.StockInOutMasterId = _stockInMasterId;
-                _logger.Debug("InitNewRow: Set StockInOutMasterId={0}", _stockInMasterId);
             }
 
                 
             // Trigger event để cập nhật tổng lên master khi thêm dòng mới
             OnDetailDataChanged();
                 
-            _logger.Info("InitNewRow: New row initialized, Id={0}, LineNumber={1}", rowData.Id, rowData.LineNumber);
         }
         catch (Exception ex)
         {
@@ -293,12 +268,8 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            _logger.Debug("RowDeleted: RowHandle={0}", rowDeletedEventArgs.RowHandle);
-                
-            
             // Cập nhật tổng tiền lên master
             OnDetailDataChanged();
-            _logger.Info("RowDeleted: Row deleted successfully, LineNumbers updated");
         }
         catch (Exception ex)
         {
@@ -318,36 +289,27 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             var fieldName = column?.FieldName;
             var rowHandle = StockInDetailDtoGridView.FocusedRowHandle;
                 
-            _logger.Debug("ValidatingEditor: FieldName={0}, RowHandle={1}, Value={2}", fieldName, rowHandle, e.Value);
-
             if (string.IsNullOrEmpty(fieldName)) return;
 
-            // Xử lý ProductVariantId: Cập nhật tên và đơn vị tính
-            if (fieldName == "ProductVariantId")
+            switch (fieldName)
             {
-                _logger.Debug("ValidatingEditor: Processing ProductVariantId change");
-                HandleProductVariantIdChange(e);
+                // Xử lý ProductVariantId: Cập nhật tên và đơn vị tính
+                case "ProductVariantId":
+                    HandleProductVariantIdChange(e);
+                    break;
+                // Validate StockInQty: Phải lớn hơn 0
+                case "StockInQty":
+                    ValidateStockInQty(e);
+                    break;
+                // Validate UnitPrice: Phải >= 0
+                case "UnitPrice":
+                    ValidateUnitPrice(e);
+                    break;
+                // Validate Vat: Phải từ 0 đến 100
+                case "Vat":
+                    ValidateVat(e);
+                    break;
             }
-            // Validate StockInQty: Phải lớn hơn 0
-            else if (fieldName == "StockInQty")
-            {
-                _logger.Debug("ValidatingEditor: Validating StockInQty");
-                ValidateStockInQty(e);
-            }
-            // Validate UnitPrice: Phải >= 0
-            else if (fieldName == "UnitPrice")
-            {
-                _logger.Debug("ValidatingEditor: Validating UnitPrice");
-                ValidateUnitPrice(e);
-            }
-            // Validate Vat: Phải từ 0 đến 100
-            else if (fieldName == "Vat")
-            {
-                _logger.Debug("ValidatingEditor: Validating Vat");
-                ValidateVat(e);
-            }
-
-            _logger.Debug("ValidatingEditor: Validation result - Valid={0}, ErrorText={1}", e.Valid, e.ErrorText);
         }
         catch (Exception ex)
         {
@@ -364,8 +326,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            _logger.Debug("ValidateRow: Starting validation");
-                
             var rowData = e.Row as StockInDetailDto;
             if (rowData == null)
             {
@@ -374,9 +334,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                 e.ErrorText = "Dữ liệu không hợp lệ";
                 return;
             }
-
-            _logger.Debug("ValidateRow: RowId={0}, ProductVariantId={1}, StockInQty={2}, UnitPrice={3}, Vat={4}", 
-                rowData.Id, rowData.ProductVariantId, rowData.StockInQty, rowData.UnitPrice, rowData.Vat);
 
             // Validate bằng DataAnnotations
             var validationResults = new List<ValidationResult>();
@@ -417,7 +374,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                 return;
             }
 
-            _logger.Info("ValidateRow: Validation passed, RowId={0}", rowData.Id);
             e.Valid = true;
 
             // Trigger event để cập nhật tổng lên master sau khi row được validate thành công
@@ -448,7 +404,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                     if (!e.Control && !e.Shift && !e.Alt)
                     {
                         e.Handled = true;
-                        _logger.Debug("StockInDetailDtoGridView_KeyDown: Insert key - Adding new row");
                             
                         // Thêm dòng mới
                         gridView.AddNewRow();
@@ -460,7 +415,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                             gridView.FocusedColumn = productVariantColumn;
                         }
                             
-                        _logger.Info("StockInDetailDtoGridView_KeyDown: New row added successfully");
                     }
                     break;
 
@@ -472,12 +426,9 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                         if (focusedRowHandle >= 0)
                         {
                             e.Handled = true;
-                            _logger.Debug("StockInDetailDtoGridView_KeyDown: Delete key - Deleting row {0}", focusedRowHandle);
                                 
                             // Xóa dòng
                             gridView.DeleteRow(focusedRowHandle);
-                                
-                            _logger.Info("StockInDetailDtoGridView_KeyDown: Row {0} deleted successfully", focusedRowHandle);
                         }
                     }
                     break;
@@ -492,13 +443,10 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                         if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
                         {
                             e.Handled = true;
-                            _logger.Debug("StockInDetailDtoGridView_KeyDown: Enter key - Committing new row");
-                                
                             // Validate row trước khi commit
                             if (gridView.PostEditor())
                             {
                                 gridView.UpdateCurrentRow();
-                                _logger.Info("StockInDetailDtoGridView_KeyDown: New row committed successfully");
                             }
                         }
                         // Nếu đang ở dòng đã có, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
@@ -529,8 +477,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                                         gridView.FocusedColumn = productVariantColumn;
                                     }
                                 }
-                                    
-                                _logger.Debug("StockInDetailDtoGridView_KeyDown: Enter key - Moved to next row");
                             }
                         }
                     }
@@ -567,11 +513,8 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                 productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> existingList && 
                 existingList.Count > 0)
             {
-                _logger.Debug("LoadProductVariantsAsync: DataSource already loaded, skipping");
                 return;
             }
-
-            _logger.Debug("LoadProductVariantsAsync: Starting to load product variants");
 
             // Hiển thị SplashScreen để thông báo đang load dữ liệu
             SplashScreenHelper.ShowWaitingSplashScreen();
@@ -589,8 +532,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                 productVariantListDtoBindingSource.ResetBindings(false);
                 
                 _isProductVariantDataSourceLoaded = true;
-                    
-                _logger.Info("LoadProductVariantsAsync: Loaded {0} product variants", variantListDtos.Count);
             }
             finally
             {
@@ -644,7 +585,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
         {
             if (details == null || details.Count == 0)
             {
-                _logger.Debug("LoadProductVariantsByIdsAsync: No details provided, skipping");
                 return;
             }
 
@@ -657,7 +597,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
             if (productVariantIds.Count == 0)
             {
-                _logger.Debug("LoadProductVariantsByIdsAsync: No ProductVariantIds found in details, skipping");
                 return;
             }
 
@@ -708,8 +647,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            _logger.Debug("ConvertToVariantListDtosAsync: Converting {0} variants", variants?.Count ?? 0);
-                
             var result = new List<ProductVariantListDto>();
 
             foreach (var variant in variants)
@@ -729,8 +666,7 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
                 result.Add(dto);
             }
-
-            _logger.Debug("ConvertToVariantListDtosAsync: Converted {0} DTOs", result.Count);
+            
             return result;
         }
         catch (Exception ex)
@@ -791,8 +727,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            _logger.Debug("LoadDetails: Loading {0} details from DTO list", details?.Count ?? 0);
-                
             details ??= new List<StockInDetailDto>();
 
             // Gán StockInOutMasterId cho các dòng chưa có
@@ -812,8 +746,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
             // Tính toán lại tất cả
             RecalculateAll();
-                
-            _logger.Info("LoadDetails: Loaded {0} details successfully", details.Count);
         }
         catch (Exception ex)
         {
@@ -832,15 +764,10 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             var details = stockInDetailDtoBindingSource.Cast<StockInDetailDto>().ToList();
 
             // Đảm bảo tất cả các dòng đều có StockInOutMasterId
-            foreach (var detail in details)
+            foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
             {
-                if (detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty)
-                {
-                    detail.StockInOutMasterId = _stockInMasterId;
-                }
+                detail.StockInOutMasterId = _stockInMasterId;
             }
-
-            _logger.Debug("GetDetails: Returning {0} details", details.Count);
             return details;
         }
         catch (Exception ex)
@@ -858,16 +785,12 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            _logger.Debug("ClearData: Clearing all data");
-                
             stockInDetailDtoBindingSource.DataSource = new List<StockInDetailDto>();
             stockInDetailDtoBindingSource.ResetBindings(false);
             _stockInMasterId = Guid.Empty;
             
             // Reset cache flag để load lại khi cần
             _isProductVariantDataSourceLoaded = false;
-                
-            _logger.Info("ClearData: Data cleared successfully");
         }
         catch (Exception ex)
         {
@@ -885,8 +808,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            _logger.Debug("LoadDataAsync: Loading details for masterId={0}", stockInOutMasterId);
-
             // Set master ID
             _stockInMasterId = stockInOutMasterId;
 
@@ -909,8 +830,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
             // Load details vào UI
             LoadDetails(detailDtos);
-
-            _logger.Info("LoadDataAsync: Loaded {0} details for masterId={1}", detailDtos.Count, stockInOutMasterId);
         }
         catch (Exception ex)
         {
@@ -929,8 +848,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            _logger.Debug("SetStockInMasterId: Setting masterId={0}", stockInMasterId);
-                
             _stockInMasterId = stockInMasterId;
 
             // Cập nhật StockInOutMasterId cho tất cả các dòng hiện có
@@ -942,8 +859,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                     detail.StockInOutMasterId = stockInMasterId;
                 }
             }
-                
-            _logger.Info("SetStockInMasterId: Updated {0} details with masterId={1}", details.Count, stockInMasterId);
         }
         catch (Exception ex)
         {
@@ -956,58 +871,24 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
     #region ========== CALCULATION ==========
 
-    /// <summary>
-    /// Tính toán các giá trị tiền cho một dòng
-    /// Lưu ý: TotalAmount, VatAmount, TotalAmountIncludedVat giờ là computed properties
-    /// nên chúng sẽ tự động tính toán khi truy cập. Method này chỉ để trigger refresh grid.
-    /// </summary>
-    private void CalculateRowAmounts(StockInDetailDto rowData)
-    {
-        try
-        {
-            _logger.Debug("CalculateRowAmounts: RowId={0}, StockInQty={1}, UnitPrice={2}, Vat={3}", 
-                rowData.Id, rowData.StockInQty, rowData.UnitPrice, rowData.Vat);
-
-            // Các giá trị TotalAmount, VatAmount, TotalAmountIncludedVat 
-            // giờ là computed properties trong StockInDetailDto, 
-            // chúng sẽ tự động tính toán từ StockInQty, UnitPrice, và Vat
-            // Không cần set giá trị nữa, chỉ cần refresh grid để hiển thị
-                
-            // Log các giá trị computed để debug
-            _logger.Debug("CalculateRowAmounts: Computed values - TotalAmount={0}, VatAmount={1}, TotalAmountIncludedVat={2}", 
-                rowData.TotalAmount, rowData.VatAmount, rowData.TotalAmountIncludedVat);
-        }
-        catch (Exception ex)
-        {
-            _logger.Error("CalculateRowAmounts: Exception occurred, RowId={0}", ex, rowData?.Id);
-            throw new Exception($"Lỗi tính toán: {ex.Message}", ex);
-        }
-    }
 
     /// <summary>
     /// Tính toán lại tất cả các dòng
     /// </summary>
-    public void RecalculateAll()
+    private void RecalculateAll()
     {
         try
         {
             if (_isCalculating) return;
             _isCalculating = true;
 
-            _logger.Debug("RecalculateAll: Starting recalculation");
-                
             var details = stockInDetailDtoBindingSource.Cast<StockInDetailDto>().ToList();
-            foreach (var detail in details)
-            {
-                CalculateRowAmounts(detail);
-            }
-
+           
             StockInDetailDtoGridView.RefreshData();
 
             // Cập nhật tổng tiền lên master
             OnDetailDataChanged();
                 
-            _logger.Info("RecalculateAll: Recalculated {0} rows", details.Count);
         }
         catch (Exception ex)
         {
@@ -1034,8 +915,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             var totalVat = details.Sum(d => d.VatAmount);
             var totalAmountIncludedVat = details.Sum(d => d.TotalAmountIncludedVat);
 
-            _logger.Debug("CalculateTotals: TotalQuantity={0}, TotalAmount={1}, TotalVat={2}, TotalAmountIncludedVat={3}", 
-                totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
 
             return (totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
         }
@@ -1069,18 +948,13 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
         }
         else
         {
-            // Cho phép giá trị null/empty trong quá trình nhập
-            _logger.Debug("HandleProductVariantIdChange: Value is null or empty, skipping");
             return;
         }
 
         if (productVariantId == Guid.Empty)
         {
-            _logger.Debug("HandleProductVariantIdChange: ProductVariantId is Empty, skipping");
             return;
         }
-
-        _logger.Debug("HandleProductVariantIdChange: ProductVariantId={0}", productVariantId);
 
         // Tìm ProductVariantListDto trong binding source
         var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
@@ -1095,8 +969,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
         }
 
         var rowHandle = StockInDetailDtoGridView.FocusedRowHandle;
-        _logger.Debug("HandleProductVariantIdChange: RowHandle={0}, VariantCode={1}, VariantName={2}", 
-            rowHandle, selectedVariant.VariantCode, selectedVariant.FullNameHtml);
 
         // Xử lý cả new row (rowHandle < 0) và existing row (rowHandle >= 0)
         if (rowHandle < 0)
@@ -1104,19 +976,16 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             // New row: Sử dụng SetFocusedRowCellValue để set giá trị vào các cell
             // Các giá trị này sẽ được commit khi row được thêm vào binding source
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
-            _logger.Debug("HandleProductVariantIdChange: Setting values for new row");
             StockInDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
             StockInDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
             StockInDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.FullNameHtml}");
             StockInDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
-            _logger.Info("HandleProductVariantIdChange: Updated new row with ProductVariantId={0}", selectedVariant.Id);
         }
         else
         {
             // Existing row: Cập nhật trực tiếp vào row data
             if (StockInDetailDtoGridView.GetRow(rowHandle) is StockInDetailDto rowData)
             {
-                _logger.Debug("HandleProductVariantIdChange: Updating existing row");
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
                 rowData.ProductVariantName = $"{selectedVariant.FullNameHtml}";
@@ -1124,7 +993,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
                 // Refresh grid để hiển thị thay đổi
                 StockInDetailDtoGridView.RefreshRow(rowHandle);
-                _logger.Info("HandleProductVariantIdChange: Updated existing row {0} with ProductVariantId={1}", rowHandle, selectedVariant.Id);
             }
         }
     }
@@ -1136,7 +1004,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         if (e.Value == null)
         {
-            _logger.Debug("ValidateStockInQty: Value is null");
             e.ErrorText = "Số lượng nhập không được để trống";
             e.Valid = false;
             return;
@@ -1144,7 +1011,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
         if (decimal.TryParse(e.Value.ToString(), out var stockInQty))
         {
-            _logger.Debug("ValidateStockInQty: Parsed value={0}", stockInQty);
             if (stockInQty <= 0)
             {
                 _logger.Warning("ValidateStockInQty: Value <= 0, value={0}", stockInQty);
@@ -1161,7 +1027,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             return;
         }
 
-        _logger.Debug("ValidateStockInQty: Validation passed, value={0}", stockInQty);
         e.Valid = true;
     }
 
@@ -1172,7 +1037,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         if (e.Value == null)
         {
-            _logger.Debug("ValidateUnitPrice: Value is null");
             e.ErrorText = "Đơn giá không được để trống";
             e.Valid = false;
             return;
@@ -1180,7 +1044,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
         if (decimal.TryParse(e.Value.ToString(), out var unitPrice))
         {
-            _logger.Debug("ValidateUnitPrice: Parsed value={0}", unitPrice);
             if (unitPrice < 0)
             {
                 _logger.Warning("ValidateUnitPrice: Value < 0, value={0}", unitPrice);
@@ -1196,8 +1059,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             e.Valid = false;
             return;
         }
-
-        _logger.Debug("ValidateUnitPrice: Validation passed, value={0}", unitPrice);
         e.Valid = true;
     }
 
@@ -1209,14 +1070,12 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
         if (e.Value == null)
         {
             // VAT có thể để trống (mặc định = 0)
-            _logger.Debug("ValidateVat: Value is null, allowing (default=0)");
             e.Valid = true;
             return;
         }
 
         if (decimal.TryParse(e.Value.ToString(), out var vat))
         {
-            _logger.Debug("ValidateVat: Parsed value={0}", vat);
             if (vat < 0 || vat > 100)
             {
                 _logger.Warning("ValidateVat: Value out of range, value={0}", vat);
@@ -1233,7 +1092,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             return;
         }
 
-        _logger.Debug("ValidateVat: Validation passed, value={0}", vat);
         e.Valid = true;
     }
 
@@ -1244,8 +1102,6 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            _logger.Debug("ValidateAll: Starting validation of all rows");
-                
             var details = stockInDetailDtoBindingSource.Cast<StockInDetailDto>().ToList();
 
             if (details.Count == 0)
@@ -1277,15 +1133,13 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
                     return false;
                 }
 
-                if (detail.StockInQty <= 0)
-                {
-                    _logger.Warning("ValidateAll: Row {0} has StockInQty <= 0, value={1}", detail.LineNumber, detail.StockInQty);
-                    MsgBox.ShowError($"Dòng {detail.LineNumber}: Số lượng nhập phải lớn hơn 0");
-                    return false;
-                }
+                if (detail.StockInQty > 0) continue;
+                
+                _logger.Warning("ValidateAll: Row {0} has StockInQty <= 0, value={1}", detail.LineNumber, detail.StockInQty);
+                MsgBox.ShowError($"Dòng {detail.LineNumber}: Số lượng nhập phải lớn hơn 0");
+                return false;
             }
 
-            _logger.Info("ValidateAll: All {0} rows validated successfully", details.Count);
             return true;
         }
         catch (Exception ex)

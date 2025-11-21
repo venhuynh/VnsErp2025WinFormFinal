@@ -9,7 +9,6 @@ using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -60,18 +59,11 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                _logger.Debug("InitializeForm: Initializing form");
-
-                // Cấu hình GridView
-                //ConfigureGridView();
-
                 // Setup events
                 SetupEvents();
 
                 // Khởi tạo giá trị mặc định cho date pickers
                 InitializeDateFilters();
-
-                _logger.Info("InitializeForm: Form initialized successfully");
             }
             catch (Exception ex)
             {
@@ -142,8 +134,6 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                _logger.Debug("FrmStockInOutHistory_Load: Form loading");
-
                 // Tự động load data khi form được mở
                 await LoadDataAsync();
             }
@@ -161,8 +151,6 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                _logger.Debug("XemBaoCaoBarButtonItem_ItemClick: View report button clicked");
-
                 await LoadDataAsync();
             }
             catch (Exception ex)
@@ -176,12 +164,10 @@ namespace Inventory.InventoryManagement
         /// Event handler cho nút Chi tiết phiếu nhập xuất
         /// Mở form FrmNhapKhoThuongMai02 và load dữ liệu từ ID đã chọn
         /// </summary>
-        private async void ChiTietPhieuNhapXuatBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void ChiTietPhieuNhapXuatBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
-                _logger.Debug("ChiTietPhieuNhapXuatBarButtonItem_ItemClick: Detail button clicked");
-
                 // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
                 var selectedCount = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
                 if (selectedCount == 0)
@@ -226,8 +212,6 @@ namespace Inventory.InventoryManagement
                     }
                 }
 
-                _logger.Info("ChiTietPhieuNhapXuatBarButtonItem_ItemClick: Detail form opened and data loaded, StockInOutMasterId={0}", 
-                    _selectedStockInOutMasterId.Value);
             }
             catch (Exception ex)
             {
@@ -244,8 +228,6 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                _logger.Debug("InPhieuBarButtonItem_ItemClick: Print button clicked");
-
                 // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
                 var selectedCount = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
                 if (selectedCount == 0)
@@ -272,9 +254,6 @@ namespace Inventory.InventoryManagement
                 {
                     StockInReportHelper.PrintStockInVoucher(_selectedStockInOutMasterId.Value);
                 }
-
-                _logger.Info("InPhieuBarButtonItem_ItemClick: Print voucher completed, StockInOutMasterId={0}", 
-                    _selectedStockInOutMasterId.Value);
             }
             catch (Exception ex)
             {
@@ -291,8 +270,6 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                _logger.Debug("NhapBaoHanhBarButtonItem_ItemClick: Warranty button clicked");
-
                 // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
                 var selectedCount = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
                 if (selectedCount == 0)
@@ -323,9 +300,6 @@ namespace Inventory.InventoryManagement
                         form.ShowDialog(this);
                     }
                 }
-
-                _logger.Info("NhapBaoHanhBarButtonItem_ItemClick: Warranty form opened, StockInOutMasterId={0}", 
-                    _selectedStockInOutMasterId.Value);
             }
             catch (Exception ex)
             {
@@ -342,20 +316,17 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                _logger.Debug("ThemHinhAnhBarButtonItem_ItemClick: Add image button clicked");
 
                 // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
                 var selectedCount = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
-                if (selectedCount == 0)
+                switch (selectedCount)
                 {
-                    MsgBox.ShowWarning("Vui lòng chọn một phiếu nhập xuất kho để thêm hình ảnh.");
-                    return;
-                }
-
-                if (selectedCount > 1)
-                {
-                    MsgBox.ShowWarning("Chỉ cho phép thêm hình ảnh cho 1 phiếu. Vui lòng bỏ chọn bớt.");
-                    return;
+                    case 0:
+                        MsgBox.ShowWarning("Vui lòng chọn một phiếu nhập xuất kho để thêm hình ảnh.");
+                        return;
+                    case > 1:
+                        MsgBox.ShowWarning("Chỉ cho phép thêm hình ảnh cho 1 phiếu. Vui lòng bỏ chọn bớt.");
+                        return;
                 }
 
                 // Kiểm tra ID phiếu được chọn
@@ -375,8 +346,6 @@ namespace Inventory.InventoryManagement
                     }
                 }
 
-                _logger.Info("ThemHinhAnhBarButtonItem_ItemClick: Add image form opened, StockInOutMasterId={0}", 
-                    _selectedStockInOutMasterId.Value);
             }
             catch (Exception ex)
             {
@@ -393,8 +362,6 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                _logger.Debug("XoaPhieuBarButtonItem_ItemClick: Delete button clicked");
-
                 // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
                 var selectedCount = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
                 if (selectedCount == 0)
@@ -427,7 +394,6 @@ namespace Inventory.InventoryManagement
                 
                 if (!MsgBox.ShowYesNo(confirmMessage, "Xác nhận xóa"))
                 {
-                    _logger.Debug("XoaPhieuBarButtonItem_ItemClick: User cancelled deletion");
                     return;
                 }
 
@@ -457,8 +423,6 @@ namespace Inventory.InventoryManagement
 
                 MsgBox.ShowSuccess("Xóa phiếu nhập xuất kho thành công.");
 
-                _logger.Info("XoaPhieuBarButtonItem_ItemClick: Delete completed successfully, StockInOutMasterId={0}", 
-                    _selectedStockInOutMasterId.Value);
             }
             catch (Exception ex)
             {
@@ -548,8 +512,7 @@ namespace Inventory.InventoryManagement
                 var gridView = sender as DevExpress.XtraGrid.Views.Grid.GridView;
                 if (gridView == null) return;
 
-                var row = gridView.GetRow(e.RowHandle) as StockInOutMasterHistoryDto;
-                if (row == null) return;
+                _ = gridView.GetRow(e.RowHandle) as StockInOutMasterHistoryDto;
 
                 // Có thể thêm logic format theo điều kiện ở đây
                 // Ví dụ: format theo loại nhập xuất, tổng tiền, v.v.
@@ -557,8 +520,8 @@ namespace Inventory.InventoryManagement
             }
             catch (Exception ex)
             {
+                MsgBox.ShowException(ex);
                 // Ignore style errors để không ảnh hưởng đến hiển thị
-                _logger.Debug("StockInOutMasterHistoryDtoGridView_RowCellStyle: Exception occurred (ignored)", ex);
             }
         }
 
@@ -573,8 +536,6 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                _logger.Debug("LoadDataAsync: Starting to load history data");
-
                 // Hiển thị SplashScreen
                 SplashScreenHelper.ShowWaitingSplashScreen();
 
@@ -587,8 +548,6 @@ namespace Inventory.InventoryManagement
                     // Đóng SplashScreen
                     SplashScreenHelper.CloseSplashScreen();
                 }
-
-                _logger.Info("LoadDataAsync: History data loaded successfully");
             }
             catch (Exception ex)
             {
@@ -646,8 +605,6 @@ namespace Inventory.InventoryManagement
                         UpdateButtonStates();
                         UpdateDataSummary();
                     }));
-
-                    _logger.Info("LoadDataWithoutSplashAsync: Loaded {0} records", dtos.Count);
                 }
                 catch (Exception ex)
                 {
