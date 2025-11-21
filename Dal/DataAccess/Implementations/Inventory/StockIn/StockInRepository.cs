@@ -430,6 +430,9 @@ public class StockInRepository : IStockInRepository
             loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
             loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
             loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
+            loadOptions.LoadWith<StockInOutMaster>(m => m.StockInOutDetails);
+            loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
+            loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
             context.LoadOptions = loadOptions;
 
             // Bắt đầu query
@@ -565,6 +568,24 @@ public class StockInRepository : IStockInRepository
                     if (master.BusinessPartnerSite.BusinessPartner != null)
                     {
                         var __ = master.BusinessPartnerSite.BusinessPartner.PartnerName;
+                    }
+                }
+
+                // Force load StockInOutDetails và các navigation properties của nó
+                if (master.StockInOutDetails != null)
+                {
+                    var details = master.StockInOutDetails.ToList();
+                    foreach (var detail in details)
+                    {
+                        if (detail.ProductVariant != null)
+                        {
+                            var _ = detail.ProductVariant.VariantCode;
+                            var __ = detail.ProductVariant.VariantFullName;
+                            if (detail.ProductVariant.ProductService != null)
+                            {
+                                var ___ = detail.ProductVariant.ProductService.Name;
+                            }
+                        }
                     }
                 }
             }

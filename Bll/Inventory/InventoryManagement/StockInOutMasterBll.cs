@@ -165,4 +165,49 @@ public class StockInOutMasterBll
     }
 
     #endregion
+
+    #region Delete Operations
+
+    /// <summary>
+    /// Xóa phiếu nhập xuất kho theo ID
+    /// </summary>
+    /// <param name="id">ID phiếu nhập xuất kho cần xóa</param>
+    public void Delete(Guid id)
+    {
+        try
+        {
+            _logger.Debug("Delete: Bắt đầu xóa phiếu nhập xuất kho, Id={0}", id);
+
+            using var context = new VnsErp2025DataContext(ApplicationStartupManager.Instance.GetGlobalConnectionString());
+
+            // Tìm master entity
+            var master = context.StockInOutMasters.FirstOrDefault(m => m.Id == id);
+            if (master == null)
+            {
+                _logger.Warning("Delete: Không tìm thấy phiếu nhập xuất kho với Id={0}", id);
+                throw new InvalidOperationException($"Không tìm thấy phiếu nhập xuất kho với ID: {id}");
+            }
+
+            // Xóa tất cả details trước
+            var details = context.StockInOutDetails.Where(d => d.StockInOutMasterId == id).ToList();
+            if (details.Any())
+            {
+                context.StockInOutDetails.DeleteAllOnSubmit(details);
+                _logger.Debug("Delete: Đã xóa {0} detail", details.Count);
+            }
+
+            // Xóa master
+            context.StockInOutMasters.DeleteOnSubmit(master);
+            context.SubmitChanges();
+
+            _logger.Info("Delete: Xóa phiếu nhập xuất kho thành công, Id={0}", id);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Delete: Lỗi xóa phiếu nhập xuất kho: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
 }

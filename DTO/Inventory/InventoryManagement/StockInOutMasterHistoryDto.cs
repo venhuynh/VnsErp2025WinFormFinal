@@ -369,14 +369,28 @@ public static class StockInOutMasterHistoryDtoConverter
     /// <returns>Mô tả sơ bộ (ví dụ: "3 sản phẩm: iPhone 15 Pro (2), MacBook Pro (1)")</returns>
     private static string BuildDetailsSummary(Dal.DataContext.StockInOutMaster entity)
     {
-        if (entity == null || entity.StockInOutDetails == null || !entity.StockInOutDetails.Any())
+        if (entity == null)
         {
             return string.Empty;
         }
 
         try
         {
+            // Kiểm tra xem StockInOutDetails có sẵn không (đã được load)
+            // Nếu DataContext đã bị dispose, sẽ throw exception
+            if (entity.StockInOutDetails == null)
+            {
+                return string.Empty;
+            }
+
+            // Thử truy cập để kiểm tra xem DataContext còn sống không
             var details = entity.StockInOutDetails.ToList();
+            
+            if (details == null || details.Count == 0)
+            {
+                return string.Empty;
+            }
+
             var totalItems = details.Count;
 
             // Nhóm theo sản phẩm và tính tổng số lượng
@@ -429,10 +443,16 @@ public static class StockInOutMasterHistoryDtoConverter
 
             return summary;
         }
-        catch
+        catch (System.ObjectDisposedException)
         {
-            // Nếu có lỗi, trả về số lượng đơn giản
-            return $"{entity.StockInOutDetails.Count} sản phẩm";
+            // DataContext đã bị dispose, không thể truy cập StockInOutDetails
+            // Trả về string rỗng để tránh lỗi
+            return string.Empty;
+        }
+        catch (Exception)
+        {
+            // Nếu có lỗi khác, trả về string rỗng để tránh crash
+            return string.Empty;
         }
     }
 
