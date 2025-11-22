@@ -2,7 +2,7 @@
 
 namespace Inventory.InventoryManagement
 {
-    partial class FrmStockInOutHistory
+    partial class FrmStockInOutMasterHistory
     {
         /// <summary>
         /// Required designer variable.

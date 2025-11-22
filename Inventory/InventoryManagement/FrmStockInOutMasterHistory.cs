@@ -19,7 +19,7 @@ namespace Inventory.InventoryManagement
     /// Form xem lịch sử nhập xuất kho
     /// Cung cấp chức năng xem, tìm kiếm, in phiếu và quản lý hình ảnh/bảo hành
     /// </summary>
-    public partial class FrmStockInOutHistory : DevExpress.XtraEditors.XtraForm
+    public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -42,7 +42,7 @@ namespace Inventory.InventoryManagement
 
         #region ========== CONSTRUCTOR ==========
 
-        public FrmStockInOutHistory()
+        public FrmStockInOutMasterHistory()
         {
             InitializeComponent();
             InitializeForm();
