@@ -7071,7 +7071,7 @@ namespace Dal.DataContext
 		
 		private int _StockInOutType;
 		
-		private int _TrangThaiPhieuNhap;
+		private int _VoucherStatus;
 		
 		private System.Guid _WarehouseId;
 		
@@ -7097,6 +7097,10 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.DateTime> _UpdatedDate;
 		
+		private string _NguoiNhanHang;
+		
+		private string _NguoiGiaoHang;
+		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
 		
 		private EntitySet<StockInOutImage> _StockInOutImages;
@@ -7117,8 +7121,8 @@ namespace Dal.DataContext
     partial void OnVocherNumberChanged();
     partial void OnStockInOutTypeChanging(int value);
     partial void OnStockInOutTypeChanged();
-    partial void OnTrangThaiPhieuNhapChanging(int value);
-    partial void OnTrangThaiPhieuNhapChanged();
+    partial void OnVoucherStatusChanging(int value);
+    partial void OnVoucherStatusChanged();
     partial void OnWarehouseIdChanging(System.Guid value);
     partial void OnWarehouseIdChanged();
     partial void OnPurchaseOrderIdChanging(System.Nullable<System.Guid> value);
@@ -7143,6 +7147,10 @@ namespace Dal.DataContext
     partial void OnUpdatedByChanged();
     partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
     partial void OnUpdatedDateChanged();
+    partial void OnNguoiNhanHangChanging(string value);
+    partial void OnNguoiNhanHangChanged();
+    partial void OnNguoiGiaoHangChanging(string value);
+    partial void OnNguoiGiaoHangChanged();
     #endregion
 		
 		public StockInOutMaster()
@@ -7234,22 +7242,22 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TrangThaiPhieuNhap", DbType="Int NOT NULL")]
-		public int TrangThaiPhieuNhap
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VoucherStatus", DbType="Int NOT NULL")]
+		public int VoucherStatus
 		{
 			get
 			{
-				return this._TrangThaiPhieuNhap;
+				return this._VoucherStatus;
 			}
 			set
 			{
-				if ((this._TrangThaiPhieuNhap != value))
+				if ((this._VoucherStatus != value))
 				{
-					this.OnTrangThaiPhieuNhapChanging(value);
+					this.OnVoucherStatusChanging(value);
 					this.SendPropertyChanging();
-					this._TrangThaiPhieuNhap = value;
-					this.SendPropertyChanged("TrangThaiPhieuNhap");
-					this.OnTrangThaiPhieuNhapChanged();
+					this._VoucherStatus = value;
+					this.SendPropertyChanged("VoucherStatus");
+					this.OnVoucherStatusChanged();
 				}
 			}
 		}
@@ -7498,6 +7506,46 @@ namespace Dal.DataContext
 					this._UpdatedDate = value;
 					this.SendPropertyChanged("UpdatedDate");
 					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NguoiNhanHang", DbType="NVarChar(500)")]
+		public string NguoiNhanHang
+		{
+			get
+			{
+				return this._NguoiNhanHang;
+			}
+			set
+			{
+				if ((this._NguoiNhanHang != value))
+				{
+					this.OnNguoiNhanHangChanging(value);
+					this.SendPropertyChanging();
+					this._NguoiNhanHang = value;
+					this.SendPropertyChanged("NguoiNhanHang");
+					this.OnNguoiNhanHangChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NguoiGiaoHang", DbType="NVarChar(500)")]
+		public string NguoiGiaoHang
+		{
+			get
+			{
+				return this._NguoiGiaoHang;
+			}
+			set
+			{
+				if ((this._NguoiGiaoHang != value))
+				{
+					this.OnNguoiGiaoHangChanging(value);
+					this.SendPropertyChanging();
+					this._NguoiGiaoHang = value;
+					this.SendPropertyChanged("NguoiGiaoHang");
+					this.OnNguoiGiaoHangChanged();
 				}
 			}
 		}

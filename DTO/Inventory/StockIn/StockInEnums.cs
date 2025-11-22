@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace DTO.Inventory.StockIn
 {
     #region Stock In - Nhập Kho
@@ -5,12 +7,13 @@ namespace DTO.Inventory.StockIn
     /// <summary>
     /// Enum định nghĩa các loại nhập kho
     /// </summary>
-    public enum LoaiNhapKhoEnum
+    public enum LoaiNhapXuatKhoEnum
     {
         /// <summary>
         /// Nhập hàng thương mại - Nhân viên nhập hàng vào kho sau đó xuất hàng mang bán cho khách
         /// </summary>
-        ThuongMai = 0,
+        [Description("Nhập hàng thương mại")]
+        NhapHangThuongMai = 0,
 
         /// <summary>
         /// Nhập hàng khác (có thể mở rộng sau)

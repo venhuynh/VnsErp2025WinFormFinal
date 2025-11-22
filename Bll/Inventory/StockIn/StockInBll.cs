@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bll.Inventory.InventoryManagement;
 
 namespace Bll.Inventory.StockIn
 {
@@ -130,8 +131,8 @@ namespace Bll.Inventory.StockIn
                 Id = dto.Id,
                 StockInOutDate = dto.StockInDate,
                 VocherNumber = dto.StockInNumber,
-                StockInOutType = (int)dto.LoaiNhapKho, // Map enum to int
-                TrangThaiPhieuNhap = (int)dto.TrangThai, // Map enum to int
+                StockInOutType = (int)dto.LoaiNhapXuatKho, // Map enum to int
+                VoucherStatus = (int)dto.TrangThai, // Map enum to int
                 WarehouseId = dto.WarehouseId,
                 PurchaseOrderId = dto.PurchaseOrderId,
                 PartnerSiteId = dto.SupplierId,
@@ -139,7 +140,9 @@ namespace Bll.Inventory.StockIn
                 TotalQuantity = dto.TotalQuantity,
                 TotalAmount = dto.TotalAmount,
                 TotalVat = dto.TotalVat,
-                TotalAmountIncludedVat = dto.TotalAmountIncludedVat
+                TotalAmountIncludedVat = dto.TotalAmountIncludedVat,
+                NguoiNhanHang = dto.NguoiNhanHang,
+                NguoiGiaoHang = dto.NguoiGiaoHang
             };
         }
 
@@ -199,15 +202,15 @@ namespace Bll.Inventory.StockIn
         /// Lấy số thứ tự tiếp theo cho phiếu nhập kho
         /// </summary>
         /// <param name="stockInDate">Ngày nhập kho</param>
-        /// <param name="loaiNhapKho">Loại nhập kho</param>
+        /// <param name="loaiNhapXuatKho">Loại nhập kho</param>
         /// <returns>Số thứ tự tiếp theo (1-999)</returns>
-        public int GetNextSequenceNumber(DateTime stockInDate, LoaiNhapKhoEnum loaiNhapKho)
+        public int GetNextSequenceNumber(DateTime stockInDate, LoaiNhapXuatKhoEnum loaiNhapXuatKho)
         {
             try
             {
-                _logger.Debug("GetNextSequenceNumber: Date={0}, LoaiNhapKho={1}", stockInDate, loaiNhapKho);
+                _logger.Debug("GetNextSequenceNumber: Date={0}, LoaiNhapXuatKho={1}", stockInDate, loaiNhapXuatKho);
                 
-                var loaiNhapKhoInt = (int)loaiNhapKho;
+                var loaiNhapKhoInt = (int)loaiNhapXuatKho;
                 var nextSequence = GetDataAccess().GetNextSequenceNumber(stockInDate, loaiNhapKhoInt);
                 
                 _logger.Debug("GetNextSequenceNumber: NextSequence={0}", nextSequence);
@@ -276,6 +279,45 @@ namespace Bll.Inventory.StockIn
         }
 
         /// <summary>
+        /// Map StockInOutMaster entity sang StockInMasterDto
+        /// </summary>
+        private StockInMasterDto MapMasterEntityToDto(StockInOutMaster entity)
+        {
+            if (entity == null) return null;
+
+            var dto = new StockInMasterDto
+            {
+                Id = entity.Id,
+                StockInNumber = entity.VocherNumber ?? string.Empty,
+                StockInDate = entity.StockInOutDate,
+                LoaiNhapXuatKho = (LoaiNhapXuatKhoEnum)entity.StockInOutType,
+                TrangThai = (TrangThaiPhieuNhapEnum)entity.VoucherStatus,
+                WarehouseId = entity.WarehouseId,
+                WarehouseCode = entity.CompanyBranch?.BranchCode ?? string.Empty,
+                WarehouseName = entity.CompanyBranch?.BranchName ?? string.Empty,
+                PurchaseOrderId = entity.PurchaseOrderId,
+                PurchaseOrderNumber = string.Empty, // TODO: Lấy từ PurchaseOrder entity nếu cần
+                SupplierId = entity.PartnerSiteId,
+                SupplierName = entity.BusinessPartnerSite?.BusinessPartner?.PartnerName ?? 
+                               entity.BusinessPartnerSite?.SiteName ?? 
+                               string.Empty,
+                Notes = entity.Notes ?? string.Empty,
+                NguoiNhanHang = entity.NguoiNhanHang ?? string.Empty,
+                NguoiGiaoHang = entity.NguoiGiaoHang ?? string.Empty
+            };
+
+            // Gán các giá trị tổng hợp từ entity
+            dto.SetTotals(
+                entity.TotalQuantity,
+                entity.TotalAmount,
+                entity.TotalVat,
+                entity.TotalAmountIncludedVat
+            );
+
+            return dto;
+        }
+
+        /// <summary>
         /// Lấy dữ liệu cho report in phiếu nhập kho
         /// </summary>
         /// <param name="voucherId">ID phiếu nhập kho</param>
@@ -287,55 +329,46 @@ namespace Bll.Inventory.StockIn
                 _logger.Debug("GetReportData: Lấy dữ liệu cho report, VoucherId={0}", voucherId);
 
                 // 1. Lấy master data
-                var master = GetMasterById(voucherId);
-                if (master == null)
+                var masterEntity = GetMasterById(voucherId);
+                if (masterEntity == null)
                 {
                     throw new Exception($"Không tìm thấy phiếu nhập kho với ID: {voucherId}");
                 }
 
                 // 2. Lấy detail data
-                var details = GetDetailsByMasterId(voucherId);
+                var detailEntities = GetDetailsByMasterId(voucherId);
 
-                // 3. Map sang DTO
+                // 3. Lấy thông tin bảo hành
+                var warrantyBll = new WarrantyBll();
+                var warrantyEntities = warrantyBll.GetByStockInOutMasterId(voucherId);
+                var warrantyDtos = warrantyEntities.Select(w => w.ToDto()).ToList();
+
+                // 4. Map sang DTO - sử dụng StockInMasterDto và StockInDetailDto
+                var masterDto = MapMasterEntityToDto(masterEntity);
+                var detailDtos = detailEntities.Select(d => 
+                {
+                    var detailDto = d.ToDto();
+                    // Gán thông tin bảo hành cho từng detail
+                    detailDto.Warranties = warrantyDtos
+                        .Where(w => w.StockInOutDetailId == d.Id)
+                        .OrderBy(w => w.WarrantyFrom ?? DateTime.MinValue)
+                        .ThenBy(w => w.WarrantyUntil ?? DateTime.MaxValue)
+                        .ToList();
+                    return detailDto;
+                }).ToList();
+
+                // 5. Tạo report DTO
                 var reportDto = new StockInReportDto
                 {
-                    SoPhieu = master.VocherNumber ?? string.Empty,
-                    NgayThang = master.StockInOutDate,
-                    NhanHangTu = new NguoiGiaoHangDto
-                    {
-                        // TODO: Lấy thông tin người giao hàng từ master hoặc related entity
-                        // Tạm thời lấy từ BusinessPartnerSite nếu có
-                        FullName = master.BusinessPartnerSite?.BusinessPartner?.PartnerName ?? 
-                                   master.BusinessPartnerSite?.SiteName ?? 
-                                   string.Empty
-                    },
-                    NguoiNhapXuat = new NguoiNhapXuatDto
-                    {
-                        // TODO: Lấy thông tin người nhập từ CreatedBy hoặc related entity
-                        // Tạm thời để trống, sẽ cần bổ sung sau khi có authentication
-                        FullName = string.Empty
-                    },
-                    KhoNhap = new KhoNhapDto
-                    {
-                        FullProductNameName = master.CompanyBranch?.BranchName ?? string.Empty
-                    },
-                    ChiTietNhapHangNoiBos = details.Select(d => new ChiTietNhapHangNoiBoDto
-                    {
-                        SanPham = new SanPhamDto
-                        {
-                            ProductName = d.ProductVariant?.ProductService?.Name ?? 
-                                         d.ProductVariant?.VariantFullName ?? 
-                                         d.ProductVariant?.VariantCode ?? 
-                                         string.Empty
-                        },
-                        DonViTinh = d.ProductVariant?.UnitOfMeasure?.Name ?? string.Empty,
-                        SoLuong = d.StockInQty,
-                        TinhTrangSanPham = "Bình thường" // TODO: Lấy từ trường tương ứng nếu có
-                    }).ToList()
+                    Master = masterDto,
+                    ChiTietNhapHangNoiBos = detailDtos
                 };
 
-                _logger.Info("GetReportData: Lấy dữ liệu report thành công, VoucherId={0}, DetailCount={1}", 
-                    voucherId, reportDto.ChiTietNhapHangNoiBos.Count);
+                // 6. Nhóm thông tin bảo hành theo thời gian và gán vào GhiChu
+                reportDto.GhiChu = BuildWarrantyInfo(warrantyDtos, masterDto.Notes);
+
+                _logger.Info("GetReportData: Lấy dữ liệu report thành công, VoucherId={0}, DetailCount={1}, WarrantyCount={2}", 
+                    voucherId, reportDto.ChiTietNhapHangNoiBos.Count, warrantyDtos.Count);
                 
                 return reportDto;
             }
@@ -344,6 +377,134 @@ namespace Bll.Inventory.StockIn
                 _logger.Error($"GetReportData: Lỗi lấy dữ liệu report: {ex.Message}", ex);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Xây dựng thông tin bảo hành đã nhóm theo thời gian và kết hợp với ghi chú
+        /// </summary>
+        /// <param name="warrantyDtos">Danh sách bảo hành</param>
+        /// <param name="notes">Ghi chú gốc từ master</param>
+        /// <returns>Chuỗi thông tin bảo hành đã nhóm và ghi chú</returns>
+        private string BuildWarrantyInfo(List<WarrantyDto> warrantyDtos, string notes)
+        {
+            var result = new List<string>();
+
+            // Thêm ghi chú gốc nếu có
+            if (!string.IsNullOrWhiteSpace(notes))
+            {
+                result.Add(notes);
+            }
+
+            // Nhóm bảo hành theo thời gian bảo hành (WarrantyFrom)
+            var groupedWarranties = warrantyDtos
+                .Where(w => w.WarrantyFrom.HasValue)
+                .GroupBy(w => w.WarrantyFrom.Value.Date)
+                .OrderBy(g => g.Key)
+                .ToList();
+
+            if (groupedWarranties.Any())
+            {
+                result.Add("=== THÔNG TIN BẢO HÀNH ===");
+
+                foreach (var group in groupedWarranties)
+                {
+                    var warrantyDate = group.Key;
+                    var warrantiesInGroup = group.OrderBy(w => w.WarrantyUntil ?? DateTime.MaxValue).ToList();
+
+                    result.Add($"Ngày bắt đầu BH: {warrantyDate:dd/MM/yyyy}");
+
+                    foreach (var warranty in warrantiesInGroup)
+                    {
+                        var warrantyInfo = new List<string>();
+
+                        // Thông tin sản phẩm
+                        //if (!string.IsNullOrWhiteSpace(warranty.ProductVariantName))
+                        //{
+                        //    warrantyInfo.Add($"SP: {warranty.ProductVariantName}");
+                        //}
+
+                        // Serial/IMEI
+                        if (!string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+                        {
+                            warrantyInfo.Add($"Serial/IMEI: {warranty.UniqueProductInfo}");
+                        }
+
+                        //// Kiểu bảo hành
+                        //if (!string.IsNullOrWhiteSpace(warranty.WarrantyTypeName))
+                        //{
+                        //    warrantyInfo.Add($"Kiểu: {warranty.WarrantyTypeName}");
+                        //}
+
+                        // Thời gian bảo hành
+                        var timeInfo = new List<string>();
+                        if (warranty.WarrantyFrom.HasValue)
+                        {
+                            timeInfo.Add($"Từ: {warranty.WarrantyFrom.Value:dd/MM/yyyy}");
+                        }
+                        if (warranty.WarrantyUntil.HasValue)
+                        {
+                            timeInfo.Add($"Đến: {warranty.WarrantyUntil.Value:dd/MM/yyyy}");
+                        }
+                        if (warranty.MonthOfWarranty > 0)
+                        {
+                            timeInfo.Add($"{warranty.MonthOfWarranty} tháng");
+                        }
+                        if (timeInfo.Any())
+                        {
+                            warrantyInfo.Add($"Thời gian: {string.Join(" - ", timeInfo)}");
+                        }
+
+                        //// Trạng thái
+                        //if (!string.IsNullOrWhiteSpace(warranty.WarrantyStatusName))
+                        //{
+                        //    warrantyInfo.Add($"Trạng thái: {warranty.WarrantyStatusName}");
+                        //}
+
+                        //// Tình trạng
+                        //if (!string.IsNullOrWhiteSpace(warranty.WarrantyStatusText))
+                        //{
+                        //    warrantyInfo.Add($"Tình trạng: {warranty.WarrantyStatusText}");
+                        //}
+
+                        if (warrantyInfo.Any())
+                        {
+                            result.Add($"  • {string.Join(" | ", warrantyInfo)}");
+                        }
+                    }
+                }
+            }
+
+            // Bảo hành không có ngày bắt đầu (nếu có)
+            var warrantiesWithoutDate = warrantyDtos
+                .Where(w => !w.WarrantyFrom.HasValue)
+                .ToList();
+
+            if (warrantiesWithoutDate.Any())
+            {
+                if (!groupedWarranties.Any())
+                {
+                    result.Add("=== THÔNG TIN BẢO HÀNH ===");
+                }
+                result.Add("\nBảo hành chưa có ngày bắt đầu:");
+                foreach (var warranty in warrantiesWithoutDate)
+                {
+                    var warrantyInfo = new List<string>();
+                    if (!string.IsNullOrWhiteSpace(warranty.ProductVariantName))
+                    {
+                        warrantyInfo.Add($"SP: {warranty.ProductVariantName}");
+                    }
+                    if (!string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+                    {
+                        warrantyInfo.Add($"Serial/IMEI: {warranty.UniqueProductInfo}");
+                    }
+                    if (warrantyInfo.Any())
+                    {
+                        result.Add($"  • {string.Join(" | ", warrantyInfo)}");
+                    }
+                }
+            }
+
+            return string.Join("\n", result);
         }
 
         #endregion

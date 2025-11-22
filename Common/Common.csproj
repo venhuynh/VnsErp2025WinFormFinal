@@ -84,6 +84,7 @@
     <Compile Include="Helpers\GridViewColumnHelper.cs" />
     <Compile Include="Helpers\GridViewHelper.cs" />
     <Compile Include="Helpers\LogTextBoxHelper.cs" />
+    <Compile Include="Helpers\NumberToWordsHelper.cs" />
     <Compile Include="Helpers\SimpleValidationHelper.cs" />
     <Compile Include="Helpers\ValidationHelper.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />

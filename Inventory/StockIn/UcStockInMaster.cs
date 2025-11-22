@@ -108,7 +108,7 @@ public partial class UcStockInMaster : XtraUserControl
             Id = Guid.Empty,
             StockInNumber = null,
             StockInDate = DateTime.Now,
-            LoaiNhapKho = LoaiNhapKhoEnum.ThuongMai,
+            LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapHangThuongMai,
             TrangThai = TrangThaiPhieuNhapEnum.TaoMoi,
             WarehouseId = Guid.Empty,
             WarehouseCode = null,
@@ -117,7 +117,9 @@ public partial class UcStockInMaster : XtraUserControl
             PurchaseOrderNumber = null,
             SupplierId = Guid.Empty,
             SupplierName = null,
-            Notes = null
+            Notes = null,
+            NguoiNhanHang = null,
+            NguoiGiaoHang = null
         };
 
         // Khởi tạo các giá trị tổng hợp bằng method SetTotals() vì các property giờ là computed (read-only)
@@ -201,6 +203,10 @@ public partial class UcStockInMaster : XtraUserControl
             StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
                 
             StockInNumberTextEdit.EditValueChanged += StockInNumberTextEdit_EditValueChanged;
+
+            // Sự kiện của NguoiNhanHangTextEdit và NguoiGiaoHangTextEdit
+            NguoiNhanHangTextEdit.EditValueChanged += NguoiNhanHangTextEdit_EditValueChanged;
+            NguoiGiaoHangTextEdit.EditValueChanged += NguoiGiaoHangTextEdit_EditValueChanged;
         }
         catch (Exception ex)
         {
@@ -290,6 +296,26 @@ public partial class UcStockInMaster : XtraUserControl
                 PurchaseOrderSearchLookupEdit,
                 title: @"<b><color=DarkBlue>🛒 Mã đơn hàng mua</color></b>",
                 content: @"Nhập hoặc chọn mã đơn hàng mua (Purchase Order) liên quan đến phiếu nhập kho này.<br/><br/><b>Chức năng:</b><br/>• Liên kết phiếu nhập kho với đơn hàng mua<br/>• Tra cứu thông tin đơn hàng mua<br/>• Theo dõi quá trình nhập hàng theo đơn hàng<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Trường này là tùy chọn, chỉ điền khi phiếu nhập kho liên quan đến một đơn hàng mua cụ thể."
+            );
+        }
+
+        // SuperTip cho Người nhận hàng
+        if (NguoiNhanHangTextEdit != null)
+        {
+            SuperToolTipHelper.SetTextEditSuperTip(
+                NguoiNhanHangTextEdit,
+                title: @"<b><color=DarkBlue>👤 Người nhận hàng</color></b>",
+                content: @"Nhập tên người nhận hàng tại kho.<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người nhận hàng<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập kho."
+            );
+        }
+
+        // SuperTip cho Người giao hàng
+        if (NguoiGiaoHangTextEdit != null)
+        {
+            SuperToolTipHelper.SetTextEditSuperTip(
+                NguoiGiaoHangTextEdit,
+                title: @"<b><color=DarkBlue>🚚 Người giao hàng</color></b>",
+                content: @"Nhập tên người giao hàng từ nhà cung cấp.<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người giao hàng<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập kho."
             );
         }
     }
@@ -570,7 +596,9 @@ public partial class UcStockInMaster : XtraUserControl
             StockInNumberTextEdit,
             StockInDateDateEdit,
             PurchaseOrderSearchLookupEdit,
-            NotesTextEdit
+            NotesTextEdit,
+            NguoiNhanHangTextEdit,
+            NguoiGiaoHangTextEdit
         };
 
         foreach (var control in controls)
@@ -701,6 +729,42 @@ public partial class UcStockInMaster : XtraUserControl
         }
     }
 
+    private void NguoiNhanHangTextEdit_EditValueChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (NguoiNhanHangTextEdit != null)
+            {
+                _stockInMasterDto.NguoiNhanHang = NguoiNhanHangTextEdit.Text?.Trim();
+                    
+                // Xóa lỗi validation nếu có
+                dxErrorProvider1.SetError(NguoiNhanHangTextEdit, string.Empty);
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi xử lý thay đổi người nhận hàng");
+        }
+    }
+
+    private void NguoiGiaoHangTextEdit_EditValueChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (NguoiGiaoHangTextEdit != null)
+            {
+                _stockInMasterDto.NguoiGiaoHang = NguoiGiaoHangTextEdit.Text?.Trim();
+                    
+                // Xóa lỗi validation nếu có
+                dxErrorProvider1.SetError(NguoiGiaoHangTextEdit, string.Empty);
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi xử lý thay đổi người giao hàng");
+        }
+    }
+
     #endregion
 
     #region ========== VALIDATION ==========
@@ -772,8 +836,17 @@ public partial class UcStockInMaster : XtraUserControl
                 }
             }
 
-            // Cập nhật các trường khác nếu có
-            // TODO: Thêm các control khác nếu cần
+            // Cập nhật từ NguoiNhanHangTextEdit
+            if (NguoiNhanHangTextEdit != null)
+            {
+                _stockInMasterDto.NguoiNhanHang = NguoiNhanHangTextEdit.Text?.Trim();
+            }
+
+            // Cập nhật từ NguoiGiaoHangTextEdit
+            if (NguoiGiaoHangTextEdit != null)
+            {
+                _stockInMasterDto.NguoiGiaoHang = NguoiGiaoHangTextEdit.Text?.Trim();
+            }
         }
         catch (Exception ex)
         {
@@ -849,6 +922,8 @@ public partial class UcStockInMaster : XtraUserControl
             nameof(StockInMasterDto.SupplierName) => SupplierNameSearchLookupEdit,
             nameof(StockInMasterDto.PurchaseOrderNumber) => PurchaseOrderSearchLookupEdit,
             nameof(StockInMasterDto.Notes) => NotesTextEdit,
+            nameof(StockInMasterDto.NguoiNhanHang) => NguoiNhanHangTextEdit,
+            nameof(StockInMasterDto.NguoiGiaoHang) => NguoiGiaoHangTextEdit,
             _ => null
         };
     }
@@ -909,6 +984,8 @@ public partial class UcStockInMaster : XtraUserControl
             StockInNumberTextEdit.EditValue = masterEntity.VocherNumber;
             PurchaseOrderSearchLookupEdit.EditValue = masterEntity.PurchaseOrderId;
             NotesTextEdit.EditValue = masterEntity.Notes;
+            NguoiNhanHangTextEdit.EditValue = masterEntity.NguoiNhanHang;
+            NguoiGiaoHangTextEdit.EditValue = masterEntity.NguoiGiaoHang;
 
             // Load datasource cho Warehouse trước khi set EditValue
             await LoadSingleWarehouseByIdAsync(masterEntity.WarehouseId);
@@ -972,6 +1049,17 @@ public partial class UcStockInMaster : XtraUserControl
             if (NotesTextEdit != null)
             {
                 NotesTextEdit.Text = string.Empty;
+            }
+
+            // Reset NguoiNhanHangTextEdit và NguoiGiaoHangTextEdit
+            if (NguoiNhanHangTextEdit != null)
+            {
+                NguoiNhanHangTextEdit.Text = string.Empty;
+            }
+
+            if (NguoiGiaoHangTextEdit != null)
+            {
+                NguoiGiaoHangTextEdit.Text = string.Empty;
             }
 
             // Refresh bindings để đảm bảo UI được cập nhật
@@ -1081,7 +1169,7 @@ public partial class UcStockInMaster : XtraUserControl
     /// PNK: Phiếu nhập kho
     /// MM: Tháng (2 ký tự)
     /// YY: Năm (2 ký tự)
-    /// NN: Index của LoaiNhapKhoEnum (2 ký tự)
+    /// NN: Index của LoaiNhapXuatKhoEnum (2 ký tự)
     /// XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)
     /// </summary>
     /// <param name="stockInDate">Ngày nhập kho</param>
@@ -1099,10 +1187,10 @@ public partial class UcStockInMaster : XtraUserControl
             // Lấy thông tin từ DTO
             var month = stockInDate.Month.ToString("D2"); // MM
             var year = stockInDate.Year.ToString().Substring(2); // YY (2 ký tự cuối)
-            var loaiNhapKhoIndex = ((int)_stockInMasterDto.LoaiNhapKho).ToString("D2"); // NN (2 ký tự)
+            var loaiNhapKhoIndex = ((int)_stockInMasterDto.LoaiNhapXuatKho).ToString("D2"); // NN (2 ký tự)
 
             // Lấy số thứ tự tiếp theo
-            var nextSequence = GetNextSequenceNumber(stockInDate, _stockInMasterDto.LoaiNhapKho);
+            var nextSequence = GetNextSequenceNumber(stockInDate, _stockInMasterDto.LoaiNhapXuatKho);
 
             // Tạo số phiếu: PNK-MMYY-NNXXX
             var stockInNumber = $"PNK-{month}{year}-{loaiNhapKhoIndex}{nextSequence:D3}";
@@ -1124,16 +1212,16 @@ public partial class UcStockInMaster : XtraUserControl
     /// Lấy số thứ tự tiếp theo cho phiếu nhập kho
     /// </summary>
     /// <param name="stockInDate">Ngày nhập kho</param>
-    /// <param name="loaiNhapKho">Loại nhập kho</param>
+    /// <param name="loaiNhapXuatKho">Loại nhập kho</param>
     /// <returns>Số thứ tự tiếp theo (1-999)</returns>
-    private int GetNextSequenceNumber(DateTime stockInDate, LoaiNhapKhoEnum loaiNhapKho)
+    private int GetNextSequenceNumber(DateTime stockInDate, LoaiNhapXuatKhoEnum loaiNhapXuatKho)
     {
         try
         {
             // Query database để lấy số thứ tự tiếp theo thông qua BLL
             // Format cần tìm: PNK-MMYY-NNXXX
             // Trong đó MM, YY, NN đã biết, cần tìm XXX lớn nhất + 1
-            var nextSequence = _stockInBll.GetNextSequenceNumber(stockInDate, loaiNhapKho);
+            var nextSequence = _stockInBll.GetNextSequenceNumber(stockInDate, loaiNhapXuatKho);
             return nextSequence;
         }
         catch (Exception ex)

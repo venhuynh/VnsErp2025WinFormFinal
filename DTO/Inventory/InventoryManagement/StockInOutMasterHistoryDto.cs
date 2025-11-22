@@ -1,8 +1,10 @@
-﻿using System;
+﻿using DTO.Inventory.StockIn;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 
 namespace DTO.Inventory.InventoryManagement;
 
@@ -38,9 +40,23 @@ public class StockInOutMasterHistoryDto
     /// <summary>
     /// Loại nhập xuất kho
     /// </summary>
-    [DisplayName("Loại nhập xuất")]
+    [DisplayName("Loại nhập xuất-Int")]
     [Display(Order = 3)]
     public int StockInOutType { get; set; }
+
+    /// <summary>
+    /// Loại nhập kho
+    /// </summary>
+    [DisplayName("Loại nhập xuất-Enum")]
+    [Display(Order = 4)]
+    public LoaiNhapXuatKhoEnum LoaiNhapXuatKho { get; set; }
+
+    /// <summary>
+    /// Tên loại nhập kho (hiển thị)
+    /// </summary>
+    [DisplayName("Loại nhập xuất")]
+    [Display(Order = 5)]
+    public string LoaiNhapXuatKhoName { get; set; }
 
     #endregion
 
@@ -91,6 +107,20 @@ public class StockInOutMasterHistoryDto
     [DisplayName("Ghi chú")]
     [Display(Order = 20)]
     public string Notes { get; set; }
+
+    /// <summary>
+    /// Người nhận hàng
+    /// </summary>
+    [DisplayName("Người nhận hàng")]
+    [Display(Order = 21)]
+    public string NguoiNhanHang { get; set; }
+
+    /// <summary>
+    /// Người giao hàng
+    /// </summary>
+    [DisplayName("Người giao hàng")]
+    [Display(Order = 22)]
+    public string NguoiGiaoHang { get; set; }
 
     #endregion
 
@@ -216,13 +246,17 @@ public class StockInOutMasterHistoryDto
                 html += "<br>";
             }
 
-            // Loại nhập xuất
-            if (StockInOutType != 0)
+            // Loại nhập xuất (sử dụng LoaiNhapXuatKhoName nếu có, fallback về StockInOutType)
+            if (!string.IsNullOrWhiteSpace(LoaiNhapXuatKhoName))
+            {
+                html += $"<size=9><color='#757575'>Loại:</color></size> <size=10><color='#212121'><b>{LoaiNhapXuatKhoName}</b></color></size>";
+            }
+            else if (StockInOutType != 0)
             {
                 html += $"<size=9><color='#757575'>Loại:</color></size> <size=10><color='#212121'><b>{StockInOutType}</b></color></size>";
             }
 
-            if (StockInOutType != 0)
+            if (!string.IsNullOrWhiteSpace(LoaiNhapXuatKhoName) || StockInOutType != 0)
             {
                 html += "<br>";
             }
@@ -286,10 +320,35 @@ public class StockInOutMasterHistoryDto
                 html += $"<size=9><color='#757575'>Tổng tiền gồm VAT:</color></size> <size=10><color='#2196F3'><b>{TotalAmountIncludedVat:N0}</b></color></size>";
             }
 
+            // Người nhận hàng và người giao hàng
+            var nguoiNhanHang = NguoiNhanHang ?? string.Empty;
+            var nguoiGiaoHang = NguoiGiaoHang ?? string.Empty;
+            
+            if (!string.IsNullOrWhiteSpace(nguoiNhanHang) || !string.IsNullOrWhiteSpace(nguoiGiaoHang))
+            {
+                if (TotalQuantity > 0 || TotalAmount > 0 || TotalVat > 0 || TotalAmountIncludedVat > 0 || !string.IsNullOrWhiteSpace(notes))
+                {
+                    html += "<br>";
+                }
+                
+                if (!string.IsNullOrWhiteSpace(nguoiNhanHang))
+                {
+                    html += $"<size=9><color='#757575'>Người nhận:</color></size> <size=10><color='#212121'><b>{nguoiNhanHang}</b></color></size>";
+                }
+                
+                if (!string.IsNullOrWhiteSpace(nguoiGiaoHang))
+                {
+                    if (!string.IsNullOrWhiteSpace(nguoiNhanHang))
+                        html += " | ";
+                    html += $"<size=9><color='#757575'>Người giao:</color></size> <size=10><color='#212121'><b>{nguoiGiaoHang}</b></color></size>";
+                }
+            }
+
             // Ghi chú (nếu có)
             if (!string.IsNullOrWhiteSpace(notes))
             {
-                if (TotalQuantity > 0 || TotalAmount > 0 || TotalVat > 0 || TotalAmountIncludedVat > 0)
+                if (TotalQuantity > 0 || TotalAmount > 0 || TotalVat > 0 || TotalAmountIncludedVat > 0 || 
+                    !string.IsNullOrWhiteSpace(nguoiNhanHang) || !string.IsNullOrWhiteSpace(nguoiGiaoHang))
                 {
                     html += "<br>";
                 }
@@ -332,6 +391,8 @@ public static class StockInOutMasterHistoryDtoConverter
             CustomerName = entity.BusinessPartnerSite?.BusinessPartner?.PartnerName ?? 
                           entity.BusinessPartnerSite?.SiteName,
             Notes = entity.Notes,
+            NguoiNhanHang = entity.NguoiNhanHang,
+            NguoiGiaoHang = entity.NguoiGiaoHang,
             TotalQuantity = entity.TotalQuantity,
             TotalAmount = entity.TotalAmount,
             TotalVat = entity.TotalVat,
@@ -342,6 +403,20 @@ public static class StockInOutMasterHistoryDtoConverter
             UpdatedDate = entity.UpdatedDate,
             DetailsSummary = BuildDetailsSummary(entity)
         };
+
+        // Chuyển đổi StockInOutType từ int sang LoaiNhapXuatKhoEnum
+        if (Enum.IsDefined(typeof(LoaiNhapXuatKhoEnum), entity.StockInOutType))
+        {
+            dto.LoaiNhapXuatKho = (LoaiNhapXuatKhoEnum)entity.StockInOutType;
+        }
+        else
+        {
+            // Nếu giá trị không hợp lệ, mặc định là Khac
+            dto.LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.Khac;
+        }
+
+        // Lấy tên loại nhập xuất từ Description attribute
+        dto.LoaiNhapXuatKhoName = GetEnumDescription(dto.LoaiNhapXuatKho);
 
         return dto;
     }
@@ -361,6 +436,21 @@ public static class StockInOutMasterHistoryDtoConverter
     #endregion
 
     #region Helper Methods
+
+    /// <summary>
+    /// Lấy Description từ enum value (generic method)
+    /// </summary>
+    /// <typeparam name="T">Kiểu enum</typeparam>
+    /// <param name="enumValue">Giá trị enum</param>
+    /// <returns>Description hoặc tên enum nếu không có Description</returns>
+    private static string GetEnumDescription<T>(T enumValue) where T : Enum
+    {
+        var fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
+        if (fieldInfo == null) return enumValue.ToString();
+
+        var descriptionAttribute = fieldInfo.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
+        return descriptionAttribute?.Description ?? enumValue.ToString();
+    }
 
     /// <summary>
     /// Xây dựng mô tả sơ bộ chi tiết phiếu nhập xuất

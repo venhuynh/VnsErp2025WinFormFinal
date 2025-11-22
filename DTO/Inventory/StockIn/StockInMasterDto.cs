@@ -38,7 +38,7 @@ public class StockInListDto
     /// </summary>
     [DisplayName("Loại nhập")]
     [Display(Order = 3)]
-    public LoaiNhapKhoEnum LoaiNhapKho { get; set; }
+    public LoaiNhapXuatKhoEnum LoaiNhapXuatKho { get; set; }
 
     /// <summary>
     /// Tên loại nhập kho (hiển thị)
@@ -107,6 +107,8 @@ public class StockInListDto
     [Display(Order = 13)]
     public string SalesOrderNumber { get; set; }
 
+    
+    
     /// <summary>
     /// Mã nhà cung cấp
     /// </summary>
@@ -198,7 +200,7 @@ public class StockInMasterDto
     [DisplayName("Loại nhập")]
     [Display(Order = 3)]
     [Required(ErrorMessage = "Loại nhập kho không được để trống")]
-    public LoaiNhapKhoEnum LoaiNhapKho { get; set; }
+    public LoaiNhapXuatKhoEnum LoaiNhapXuatKho { get; set; }
 
     /// <summary>
     /// Trạng thái phiếu nhập
@@ -275,6 +277,22 @@ public class StockInMasterDto
     [Display(Order = 20)]
     [StringLength(500, ErrorMessage = "Ghi chú không được vượt quá 500 ký tự")]
     public string Notes { get; set; }
+
+    /// <summary>
+    /// Người nhận hàng
+    /// </summary>
+    [DisplayName("Người nhận hàng")]
+    [Display(Order = 21)]
+    [StringLength(500, ErrorMessage = "Người nhận hàng không được vượt quá 500 ký tự")]
+    public string NguoiNhanHang { get; set; }
+
+    /// <summary>
+    /// Người giao hàng
+    /// </summary>
+    [DisplayName("Người giao hàng")]
+    [Display(Order = 22)]
+    [StringLength(500, ErrorMessage = "Người giao hàng không được vượt quá 500 ký tự")]
+    public string NguoiGiaoHang { get; set; }
 
     #endregion
 

@@ -56,6 +56,12 @@ public class StockInRepository : IStockInRepository
 
         // Configure eager loading cho navigation properties
         var loadOptions = new DataLoadOptions();
+        loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
+        loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
+        loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
+        loadOptions.LoadWith<StockInOutMaster>(m => m.StockInOutDetails);
+        loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
+        loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
         context.LoadOptions = loadOptions;
 
         return context;
@@ -174,7 +180,7 @@ public class StockInRepository : IStockInRepository
             masterEntity.StockInOutDate = master.StockInOutDate;
             masterEntity.VocherNumber = master.VocherNumber;
             masterEntity.StockInOutType = master.StockInOutType;
-            masterEntity.TrangThaiPhieuNhap = master.TrangThaiPhieuNhap;
+            masterEntity.VoucherStatus = master.VoucherStatus;
             masterEntity.WarehouseId = master.WarehouseId;
             masterEntity.PurchaseOrderId = master.PurchaseOrderId;
             masterEntity.PartnerSiteId = master.PartnerSiteId;
@@ -183,6 +189,8 @@ public class StockInRepository : IStockInRepository
             masterEntity.TotalAmount = master.TotalAmount;
             masterEntity.TotalVat = master.TotalVat;
             masterEntity.TotalAmountIncludedVat = master.TotalAmountIncludedVat;
+            masterEntity.NguoiNhanHang = master.NguoiNhanHang;
+            masterEntity.NguoiGiaoHang = master.NguoiGiaoHang;
             masterEntity.UpdatedDate = currentTime;
             // UpdatedBy sẽ được set sau khi có authentication
 
@@ -311,14 +319,7 @@ public class StockInRepository : IStockInRepository
         using var context = CreateNewContext();
         try
         {
-            _logger.Debug("GetDetailsByMasterId: Lấy danh sách chi tiết, StockInOutMasterId={0}", stockInOutMasterId);
-
-            // Configure eager loading cho ProductVariant, ProductService và UnitOfMeasure
-            var loadOptions = new DataLoadOptions();
-            loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
-            loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
-            loadOptions.LoadWith<ProductVariant>(v => v.UnitOfMeasure);
-            context.LoadOptions = loadOptions;
+            
 
             var details = context.StockInOutDetails
                 .Where(d => d.StockInOutMasterId == stockInOutMasterId)
@@ -369,15 +370,7 @@ public class StockInRepository : IStockInRepository
         using var context = CreateNewContext();
         try
         {
-            _logger.Debug("GetMasterById: Lấy thông tin master, StockInOutMasterId={0}", stockInOutMasterId);
-
-            // Configure eager loading cho navigation properties
-            var loadOptions = new DataLoadOptions();
-            loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
-            loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
-            loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
-            context.LoadOptions = loadOptions;
-
+           
             var master = context.StockInOutMasters
                 .FirstOrDefault(m => m.Id == stockInOutMasterId);
 
@@ -425,15 +418,7 @@ public class StockInRepository : IStockInRepository
         {
             _logger.Debug("QueryHistory: Bắt đầu query lịch sử, FromDate={0}, ToDate={1}", query.FromDate, query.ToDate);
 
-            // Configure eager loading cho navigation properties
-            var loadOptions = new DataLoadOptions();
-            loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
-            loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
-            loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
-            loadOptions.LoadWith<StockInOutMaster>(m => m.StockInOutDetails);
-            loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
-            loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
-            context.LoadOptions = loadOptions;
+            
 
             // Bắt đầu query
             var queryable = context.StockInOutMasters.AsQueryable();
@@ -462,11 +447,11 @@ public class StockInRepository : IStockInRepository
             // Filter theo trạng thái
             if (query.TrangThaiList != null && query.TrangThaiList.Length > 0)
             {
-                queryable = queryable.Where(m => query.TrangThaiList.Contains(m.TrangThaiPhieuNhap));
+                queryable = queryable.Where(m => query.TrangThaiList.Contains(m.VoucherStatus));
             }
             else if (query.TrangThai.HasValue)
             {
-                queryable = queryable.Where(m => m.TrangThaiPhieuNhap == query.TrangThai.Value);
+                queryable = queryable.Where(m => m.VoucherStatus == query.TrangThai.Value);
             }
 
             // Filter theo đối tác
@@ -639,11 +624,11 @@ public class StockInRepository : IStockInRepository
             // Filter theo trạng thái
             if (query.TrangThaiList != null && query.TrangThaiList.Length > 0)
             {
-                queryable = queryable.Where(m => query.TrangThaiList.Contains(m.TrangThaiPhieuNhap));
+                queryable = queryable.Where(m => query.TrangThaiList.Contains(m.VoucherStatus));
             }
             else if (query.TrangThai.HasValue)
             {
-                queryable = queryable.Where(m => m.TrangThaiPhieuNhap == query.TrangThai.Value);
+                queryable = queryable.Where(m => m.VoucherStatus == query.TrangThai.Value);
             }
 
             // Filter theo đối tác

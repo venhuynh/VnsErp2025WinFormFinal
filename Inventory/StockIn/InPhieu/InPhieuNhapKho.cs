@@ -1,15 +1,11 @@
-﻿using DevExpress.XtraReports.UI;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using Bll.Inventory.StockIn;
-using DTO.Inventory.StockIn;
+﻿using Bll.Inventory.StockIn;
 using Common.Utils;
+using DTO.Inventory.StockIn;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace Inventory.StockIn.InPhieu
 {
@@ -66,12 +62,12 @@ namespace Inventory.StockIn.InPhieu
                     return;
                 }
 
-                // Bind data source - DevExpress yêu cầu DataSource phải là collection
+                // Bind data source thông qua bindingSource1
                 // Wrap reportData trong List để đáp ứng yêu cầu của DevExpress
-                DataSource = new List<StockInReportDto> { reportData };
+                bindingSource1.DataSource = new List<StockInReportDto> { reportData };
                 
-                // Bind detail report data source
-                DetailReport.DataSource = reportData.ChiTietNhapHangNoiBos ?? new List<ChiTietNhapHangNoiBoDto>();
+                // Bind detail report data source - DetailReport sẽ tự động lấy từ ChiTietNhapHangNoiBos
+                // Nếu cần set trực tiếp, có thể dùng: DetailReport.DataSource = reportData.ChiTietNhapHangNoiBos
 
                 _logger.Info("LoadData: Load dữ liệu thành công, VoucherId={0}, DetailCount={1}", 
                     voucherId, reportData.ChiTietNhapHangNoiBos?.Count ?? 0);

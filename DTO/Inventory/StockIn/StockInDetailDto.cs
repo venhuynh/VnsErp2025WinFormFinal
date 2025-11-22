@@ -165,6 +165,20 @@ public class StockInDetailDto
     public decimal TotalAmountIncludedVat => TotalAmount + VatAmount;
 
     /// <summary>
+    /// Tình trạng sản phẩm (dùng cho report)
+    /// </summary>
+    [DisplayName("Tình trạng")]
+    [Display(Order = 27)]
+    public string TinhTrangSanPham { get; set; } = "Bình thường";
+
+    /// <summary>
+    /// Danh sách thông tin bảo hành cho sản phẩm này
+    /// </summary>
+    [DisplayName("Thông tin bảo hành")]
+    [Display(Order = 28)]
+    public List<DTO.Inventory.InventoryManagement.WarrantyDto> Warranties { get; set; } = new List<DTO.Inventory.InventoryManagement.WarrantyDto>();
+
+    /// <summary>
     /// Thông tin chi tiết phiếu nhập dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
@@ -291,7 +305,8 @@ public static class StockInDetailDtoConverter
             StockOutQty = entity.StockOutQty,
             UnitPrice = entity.UnitPrice,
             Vat = entity.Vat,
-            LineNumber = 0 // Sẽ được cập nhật sau nếu cần
+            LineNumber = 0, // Sẽ được cập nhật sau nếu cần
+            TinhTrangSanPham = "Bình thường" // TODO: Lấy từ trường tương ứng nếu có trong entity
         };
 
         // Lấy thông tin ProductVariant nếu có

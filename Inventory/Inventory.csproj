@@ -168,6 +168,8 @@
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutMasterHistoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInMasterDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInReportDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
