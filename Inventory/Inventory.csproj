@@ -138,6 +138,9 @@
     <EmbeddedResource Include="InventoryManagement\FrmStockInOutMasterHistory.resx">
       <DependentUpon>FrmStockInOutMasterHistory.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="InventoryManagement\FrmStockInOutProductHistory.resx">
+      <DependentUpon>FrmStockInOutProductHistory.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InventoryManagement\FrmWarranty.resx">
       <DependentUpon>FrmWarranty.cs</DependentUpon>
     </EmbeddedResource>

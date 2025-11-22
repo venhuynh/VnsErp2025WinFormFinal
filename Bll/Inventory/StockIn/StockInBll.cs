@@ -347,7 +347,7 @@ namespace Bll.Inventory.StockIn
                 var masterDto = MapMasterEntityToDto(masterEntity);
                 var detailDtos = detailEntities.Select(d => 
                 {
-                    var detailDto = d.ToDto();
+                    var detailDto = StockInDetailDtoConverter.ToDto(d);
                     // Gán thông tin bảo hành cho từng detail
                     detailDto.Warranties = warrantyDtos
                         .Where(w => w.StockInOutDetailId == d.Id)

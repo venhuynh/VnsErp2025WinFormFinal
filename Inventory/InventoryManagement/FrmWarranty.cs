@@ -123,8 +123,8 @@ namespace Inventory.InventoryManagement
                     {
                         var details = _stockInBll.GetDetailsByMasterId(StockInOutMasterId);
                         
-                        // Sử dụng converter trong DTO
-                        var detailDtos = details.ToDtoList();
+                        // Sử dụng converter trong DTO - chỉ định rõ StockInDetailDtoConverter
+                        var detailDtos = StockInDetailDtoConverter.ToDtoList(details);
                         
                         // Update UI thread
                         BeginInvoke(new Action(() =>

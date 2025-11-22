@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Inventory\InventoryManagement\StockInOutImageDto.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutMasterHistoryDto.cs" />
+    <Compile Include="Inventory\InventoryManagement\StockInOutProductHistoryDto.cs" />
     <Compile Include="Inventory\InventoryManagement\WarrantyDto.cs" />
     <Compile Include="Inventory\StockIn\StockInDetailDto.cs" />
     <Compile Include="Inventory\StockIn\StockInEnums.cs" />
