@@ -139,10 +139,27 @@ public class StockInReportDto
 
     /// <summary>
     /// Số tiền bằng chữ - chuyển đổi từ TongTienBaoGomThueVAT
+    /// Thêm "Số tiền bằng chữ:" phía trước và in hoa chữ cái đầu tiên
     /// Dùng cho report binding: [SoTienBangChu]
     /// </summary>
     [DisplayName("Số tiền bằng chữ")]
-    public string SoTienBangChu => NumberToWordsHelper.ConvertToWords(TongTienBaoGomThueVAT);
+    public string SoTienBangChu
+    {
+        get
+        {
+            var words = NumberToWordsHelper.ConvertToWords(TongTienBaoGomThueVAT);
+            if (string.IsNullOrWhiteSpace(words))
+                return "Số tiền bằng chữ: không đồng";
+            
+            // In hoa chữ cái đầu tiên
+            if (words.Length > 0)
+            {
+                words = char.ToUpper(words[0]) + (words.Length > 1 ? words.Substring(1) : string.Empty);
+            }
+            
+            return "Số tiền bằng chữ: " + words;
+        }
+    }
 
     #endregion
 
