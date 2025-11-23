@@ -31,8 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.StockInOutProductHistoryDtoGridControl = new DevExpress.XtraGrid.GridControl();
+            this.stockInOutProductHistoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.StockInOutProductHistoryDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colFullContentHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
@@ -58,10 +58,20 @@
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.stockInOutProductHistoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.colStockInOutDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colWarehouseNameHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colCustomerNameHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colProductVariantFullNameHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colStockInQty = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colStockOutQty = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colUnitPrice = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colVatAmount = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colTotalAmount = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colTotalAmountIncludedVat = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutProductHistoryDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
@@ -72,7 +82,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutProductHistoryDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -100,41 +109,38 @@
             this.StockInOutProductHistoryDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.StockInOutProductHistoryDtoGridView});
             // 
+            // stockInOutProductHistoryDtoBindingSource
+            // 
+            this.stockInOutProductHistoryDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.StockInOutProductHistoryDto);
+            // 
             // StockInOutProductHistoryDtoGridView
             // 
+            this.StockInOutProductHistoryDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.StockInOutProductHistoryDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.StockInOutProductHistoryDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.StockInOutProductHistoryDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.StockInOutProductHistoryDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colFullContentHtml});
+            this.colStockInOutDate,
+            this.colWarehouseNameHtml,
+            this.colCustomerNameHtml,
+            this.colProductVariantFullNameHtml,
+            this.colStockInQty,
+            this.colStockOutQty,
+            this.colUnitPrice,
+            this.colVatAmount,
+            this.colTotalAmount,
+            this.colTotalAmountIncludedVat});
             this.StockInOutProductHistoryDtoGridView.GridControl = this.StockInOutProductHistoryDtoGridControl;
+            this.StockInOutProductHistoryDtoGridView.IndicatorWidth = 50;
             this.StockInOutProductHistoryDtoGridView.Name = "StockInOutProductHistoryDtoGridView";
             this.StockInOutProductHistoryDtoGridView.OptionsFind.AlwaysVisible = true;
             this.StockInOutProductHistoryDtoGridView.OptionsSelection.MultiSelect = true;
             this.StockInOutProductHistoryDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.StockInOutProductHistoryDtoGridView.OptionsView.RowAutoHeight = true;
+            this.StockInOutProductHistoryDtoGridView.OptionsView.ShowFooter = true;
             this.StockInOutProductHistoryDtoGridView.OptionsView.ShowGroupPanel = false;
-            // 
-            // colFullContentHtml
-            // 
-            this.colFullContentHtml.AppearanceCell.Options.UseTextOptions = true;
-            this.colFullContentHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colFullContentHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colFullContentHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colFullContentHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colFullContentHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colFullContentHtml.AppearanceHeader.Options.UseBackColor = true;
-            this.colFullContentHtml.AppearanceHeader.Options.UseFont = true;
-            this.colFullContentHtml.AppearanceHeader.Options.UseForeColor = true;
-            this.colFullContentHtml.AppearanceHeader.Options.UseTextOptions = true;
-            this.colFullContentHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colFullContentHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colFullContentHtml.Caption = "Nội dung sản phẩm nhập xuất";
-            this.colFullContentHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
-            this.colFullContentHtml.FieldName = "FullContentHtml";
-            this.colFullContentHtml.Name = "colFullContentHtml";
-            this.colFullContentHtml.OptionsColumn.AllowEdit = false;
-            this.colFullContentHtml.OptionsColumn.ReadOnly = true;
-            this.colFullContentHtml.Visible = true;
-            this.colFullContentHtml.VisibleIndex = 1;
-            this.colFullContentHtml.Width = 800;
+            this.StockInOutProductHistoryDtoGridView.OptionsView.ShowViewCaption = true;
+            this.StockInOutProductHistoryDtoGridView.ViewCaption = "LỊCH SỬ SẢN PHẨM NHẬP XUẤT KHO";
             // 
             // HtmlRepositoryItemHypertextLabel
             // 
@@ -371,9 +377,270 @@
             this.layoutControlItem1.Size = new System.Drawing.Size(1351, 726);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // stockInOutProductHistoryDtoBindingSource
+            // colStockInOutDate
             // 
-            this.stockInOutProductHistoryDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.StockInOutProductHistoryDto);
+            this.colStockInOutDate.AppearanceCell.Options.UseTextOptions = true;
+            this.colStockInOutDate.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStockInOutDate.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStockInOutDate.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colStockInOutDate.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colStockInOutDate.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colStockInOutDate.AppearanceHeader.Options.UseBackColor = true;
+            this.colStockInOutDate.AppearanceHeader.Options.UseFont = true;
+            this.colStockInOutDate.AppearanceHeader.Options.UseForeColor = true;
+            this.colStockInOutDate.AppearanceHeader.Options.UseTextOptions = true;
+            this.colStockInOutDate.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStockInOutDate.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStockInOutDate.Caption = "Ngày nhập xuất";
+            this.colStockInOutDate.DisplayFormat.FormatString = "dd/MM/yyyy";
+            this.colStockInOutDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            this.colStockInOutDate.FieldName = "StockInOutDate";
+            this.colStockInOutDate.Name = "colStockInOutDate";
+            this.colStockInOutDate.OptionsColumn.AllowEdit = false;
+            this.colStockInOutDate.OptionsColumn.ReadOnly = true;
+            this.colStockInOutDate.Visible = true;
+            this.colStockInOutDate.VisibleIndex = 1;
+            this.colStockInOutDate.Width = 120;
+            // 
+            // colWarehouseNameHtml
+            // 
+            this.colWarehouseNameHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarehouseNameHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarehouseNameHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colWarehouseNameHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarehouseNameHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarehouseNameHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarehouseNameHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarehouseNameHtml.AppearanceHeader.Options.UseFont = true;
+            this.colWarehouseNameHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarehouseNameHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarehouseNameHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarehouseNameHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarehouseNameHtml.Caption = "Kho";
+            this.colWarehouseNameHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colWarehouseNameHtml.FieldName = "WarehouseNameHtml";
+            this.colWarehouseNameHtml.Name = "colWarehouseNameHtml";
+            this.colWarehouseNameHtml.OptionsColumn.AllowEdit = false;
+            this.colWarehouseNameHtml.OptionsColumn.ReadOnly = true;
+            this.colWarehouseNameHtml.Visible = true;
+            this.colWarehouseNameHtml.VisibleIndex = 2;
+            this.colWarehouseNameHtml.Width = 150;
+            // 
+            // colCustomerNameHtml
+            // 
+            this.colCustomerNameHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colCustomerNameHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colCustomerNameHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colCustomerNameHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colCustomerNameHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colCustomerNameHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colCustomerNameHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colCustomerNameHtml.AppearanceHeader.Options.UseFont = true;
+            this.colCustomerNameHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colCustomerNameHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colCustomerNameHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colCustomerNameHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colCustomerNameHtml.Caption = "Khách hàng - Nhà Cung cấp";
+            this.colCustomerNameHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colCustomerNameHtml.FieldName = "CustomerNameHtml";
+            this.colCustomerNameHtml.Name = "colCustomerNameHtml";
+            this.colCustomerNameHtml.OptionsColumn.AllowEdit = false;
+            this.colCustomerNameHtml.OptionsColumn.ReadOnly = true;
+            this.colCustomerNameHtml.Visible = true;
+            this.colCustomerNameHtml.VisibleIndex = 3;
+            this.colCustomerNameHtml.Width = 200;
+            // 
+            // colProductVariantFullNameHtml
+            // 
+            this.colProductVariantFullNameHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colProductVariantFullNameHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colProductVariantFullNameHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colProductVariantFullNameHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colProductVariantFullNameHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colProductVariantFullNameHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colProductVariantFullNameHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colProductVariantFullNameHtml.AppearanceHeader.Options.UseFont = true;
+            this.colProductVariantFullNameHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colProductVariantFullNameHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colProductVariantFullNameHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colProductVariantFullNameHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colProductVariantFullNameHtml.Caption = "Sản phẩm";
+            this.colProductVariantFullNameHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colProductVariantFullNameHtml.FieldName = "ProductVariantFullNameHtml";
+            this.colProductVariantFullNameHtml.Name = "colProductVariantFullNameHtml";
+            this.colProductVariantFullNameHtml.OptionsColumn.AllowEdit = false;
+            this.colProductVariantFullNameHtml.OptionsColumn.ReadOnly = true;
+            this.colProductVariantFullNameHtml.Visible = true;
+            this.colProductVariantFullNameHtml.VisibleIndex = 4;
+            this.colProductVariantFullNameHtml.Width = 300;
+            // 
+            // colStockInQty
+            // 
+            this.colStockInQty.AppearanceCell.Options.UseTextOptions = true;
+            this.colStockInQty.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colStockInQty.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStockInQty.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colStockInQty.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colStockInQty.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colStockInQty.AppearanceHeader.Options.UseBackColor = true;
+            this.colStockInQty.AppearanceHeader.Options.UseFont = true;
+            this.colStockInQty.AppearanceHeader.Options.UseForeColor = true;
+            this.colStockInQty.AppearanceHeader.Options.UseTextOptions = true;
+            this.colStockInQty.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStockInQty.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStockInQty.Caption = "SL nhập";
+            this.colStockInQty.DisplayFormat.FormatString = "N2";
+            this.colStockInQty.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colStockInQty.FieldName = "StockInQty";
+            this.colStockInQty.Name = "colStockInQty";
+            this.colStockInQty.OptionsColumn.AllowEdit = false;
+            this.colStockInQty.OptionsColumn.ReadOnly = true;
+            this.colStockInQty.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "StockInQty", "Tổng: {0:N2}")});
+            this.colStockInQty.Visible = true;
+            this.colStockInQty.VisibleIndex = 5;
+            this.colStockInQty.Width = 118;
+            // 
+            // colStockOutQty
+            // 
+            this.colStockOutQty.AppearanceCell.Options.UseTextOptions = true;
+            this.colStockOutQty.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colStockOutQty.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStockOutQty.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colStockOutQty.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colStockOutQty.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colStockOutQty.AppearanceHeader.Options.UseBackColor = true;
+            this.colStockOutQty.AppearanceHeader.Options.UseFont = true;
+            this.colStockOutQty.AppearanceHeader.Options.UseForeColor = true;
+            this.colStockOutQty.AppearanceHeader.Options.UseTextOptions = true;
+            this.colStockOutQty.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStockOutQty.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStockOutQty.Caption = "SL xuất";
+            this.colStockOutQty.DisplayFormat.FormatString = "N2";
+            this.colStockOutQty.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colStockOutQty.FieldName = "StockOutQty";
+            this.colStockOutQty.Name = "colStockOutQty";
+            this.colStockOutQty.OptionsColumn.AllowEdit = false;
+            this.colStockOutQty.OptionsColumn.ReadOnly = true;
+            this.colStockOutQty.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "StockOutQty", "Tổng: {0:N2}")});
+            this.colStockOutQty.Visible = true;
+            this.colStockOutQty.VisibleIndex = 6;
+            this.colStockOutQty.Width = 118;
+            // 
+            // colUnitPrice
+            // 
+            this.colUnitPrice.AppearanceCell.Options.UseTextOptions = true;
+            this.colUnitPrice.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colUnitPrice.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colUnitPrice.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colUnitPrice.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colUnitPrice.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colUnitPrice.AppearanceHeader.Options.UseBackColor = true;
+            this.colUnitPrice.AppearanceHeader.Options.UseFont = true;
+            this.colUnitPrice.AppearanceHeader.Options.UseForeColor = true;
+            this.colUnitPrice.AppearanceHeader.Options.UseTextOptions = true;
+            this.colUnitPrice.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colUnitPrice.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colUnitPrice.Caption = "Đơn giá";
+            this.colUnitPrice.DisplayFormat.FormatString = "N0";
+            this.colUnitPrice.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colUnitPrice.FieldName = "UnitPrice";
+            this.colUnitPrice.Name = "colUnitPrice";
+            this.colUnitPrice.OptionsColumn.AllowEdit = false;
+            this.colUnitPrice.OptionsColumn.ReadOnly = true;
+            this.colUnitPrice.Visible = true;
+            this.colUnitPrice.VisibleIndex = 7;
+            this.colUnitPrice.Width = 127;
+            // 
+            // colVatAmount
+            // 
+            this.colVatAmount.AppearanceCell.Options.UseTextOptions = true;
+            this.colVatAmount.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colVatAmount.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colVatAmount.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colVatAmount.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colVatAmount.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colVatAmount.AppearanceHeader.Options.UseBackColor = true;
+            this.colVatAmount.AppearanceHeader.Options.UseFont = true;
+            this.colVatAmount.AppearanceHeader.Options.UseForeColor = true;
+            this.colVatAmount.AppearanceHeader.Options.UseTextOptions = true;
+            this.colVatAmount.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colVatAmount.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colVatAmount.Caption = "Tiền VAT";
+            this.colVatAmount.DisplayFormat.FormatString = "N0";
+            this.colVatAmount.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colVatAmount.FieldName = "VatAmount";
+            this.colVatAmount.Name = "colVatAmount";
+            this.colVatAmount.OptionsColumn.AllowEdit = false;
+            this.colVatAmount.OptionsColumn.ReadOnly = true;
+            this.colVatAmount.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "VatAmount", "Tổng: {0:N0}")});
+            this.colVatAmount.Visible = true;
+            this.colVatAmount.VisibleIndex = 8;
+            this.colVatAmount.Width = 127;
+            // 
+            // colTotalAmount
+            // 
+            this.colTotalAmount.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colTotalAmount.AppearanceCell.ForeColor = System.Drawing.Color.DarkGreen;
+            this.colTotalAmount.AppearanceCell.Options.UseFont = true;
+            this.colTotalAmount.AppearanceCell.Options.UseForeColor = true;
+            this.colTotalAmount.AppearanceCell.Options.UseTextOptions = true;
+            this.colTotalAmount.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colTotalAmount.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalAmount.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colTotalAmount.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colTotalAmount.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colTotalAmount.AppearanceHeader.Options.UseBackColor = true;
+            this.colTotalAmount.AppearanceHeader.Options.UseFont = true;
+            this.colTotalAmount.AppearanceHeader.Options.UseForeColor = true;
+            this.colTotalAmount.AppearanceHeader.Options.UseTextOptions = true;
+            this.colTotalAmount.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colTotalAmount.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalAmount.Caption = "Thành tiền";
+            this.colTotalAmount.DisplayFormat.FormatString = "N0";
+            this.colTotalAmount.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colTotalAmount.FieldName = "TotalAmount";
+            this.colTotalAmount.Name = "colTotalAmount";
+            this.colTotalAmount.OptionsColumn.AllowEdit = false;
+            this.colTotalAmount.OptionsColumn.ReadOnly = true;
+            this.colTotalAmount.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "TotalAmount", "Tổng: {0:N0}")});
+            this.colTotalAmount.Visible = true;
+            this.colTotalAmount.VisibleIndex = 9;
+            this.colTotalAmount.Width = 137;
+            // 
+            // colTotalAmountIncludedVat
+            // 
+            this.colTotalAmountIncludedVat.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colTotalAmountIncludedVat.AppearanceCell.ForeColor = System.Drawing.Color.DarkRed;
+            this.colTotalAmountIncludedVat.AppearanceCell.Options.UseFont = true;
+            this.colTotalAmountIncludedVat.AppearanceCell.Options.UseForeColor = true;
+            this.colTotalAmountIncludedVat.AppearanceCell.Options.UseTextOptions = true;
+            this.colTotalAmountIncludedVat.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colTotalAmountIncludedVat.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalAmountIncludedVat.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colTotalAmountIncludedVat.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Options.UseBackColor = true;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Options.UseFont = true;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Options.UseForeColor = true;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Options.UseTextOptions = true;
+            this.colTotalAmountIncludedVat.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colTotalAmountIncludedVat.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalAmountIncludedVat.Caption = "Tổng tiền (gồm VAT)";
+            this.colTotalAmountIncludedVat.DisplayFormat.FormatString = "N0";
+            this.colTotalAmountIncludedVat.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colTotalAmountIncludedVat.FieldName = "TotalAmountIncludedVat";
+            this.colTotalAmountIncludedVat.Name = "colTotalAmountIncludedVat";
+            this.colTotalAmountIncludedVat.OptionsColumn.AllowEdit = false;
+            this.colTotalAmountIncludedVat.OptionsColumn.ReadOnly = true;
+            this.colTotalAmountIncludedVat.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "TotalAmountIncludedVat", "Tổng: {0:N0}")});
+            this.colTotalAmountIncludedVat.Visible = true;
+            this.colTotalAmountIncludedVat.VisibleIndex = 10;
+            this.colTotalAmountIncludedVat.Width = 156;
             // 
             // FrmStockInOutProductHistory
             // 
@@ -390,6 +657,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutProductHistoryDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
@@ -400,7 +668,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutProductHistoryDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -427,7 +694,6 @@
         private DevExpress.XtraBars.BarEditItem DenNgayBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit2;
         private DevExpress.XtraBars.BarButtonItem XemBaoCaoBarButtonItem;
-        private DevExpress.XtraGrid.Columns.GridColumn colFullContentHtml;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlRepositoryItemHypertextLabel;
         private DevExpress.XtraBars.Bar bar1;
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
@@ -439,5 +705,15 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
         
         private System.Windows.Forms.BindingSource stockInOutProductHistoryDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colStockInOutDate;
+        private DevExpress.XtraGrid.Columns.GridColumn colWarehouseNameHtml;
+        private DevExpress.XtraGrid.Columns.GridColumn colCustomerNameHtml;
+        private DevExpress.XtraGrid.Columns.GridColumn colProductVariantFullNameHtml;
+        private DevExpress.XtraGrid.Columns.GridColumn colStockInQty;
+        private DevExpress.XtraGrid.Columns.GridColumn colStockOutQty;
+        private DevExpress.XtraGrid.Columns.GridColumn colUnitPrice;
+        private DevExpress.XtraGrid.Columns.GridColumn colVatAmount;
+        private DevExpress.XtraGrid.Columns.GridColumn colTotalAmount;
+        private DevExpress.XtraGrid.Columns.GridColumn colTotalAmountIncludedVat;
     }
 }

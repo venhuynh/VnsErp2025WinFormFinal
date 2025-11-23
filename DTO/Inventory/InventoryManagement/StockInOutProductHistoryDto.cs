@@ -84,24 +84,85 @@ public class StockInOutProductHistoryDto
     public string ProductVariantFullName { get; set; }
 
     /// <summary>
+    /// Thông tin biến thể sản phẩm dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự ProductVariantListDto.FullNameHtml để đảm bảo consistency
+    /// </summary>
+    [DisplayName("Thông tin sản phẩm HTML")]
+    [Display(Order = 14)]
+    [Description("Thông tin biến thể sản phẩm dưới dạng HTML")]
+    public string ProductVariantFullNameHtml
+    {
+        get
+        {
+            var productName = ProductName ?? string.Empty;
+            var productCode = ProductCode ?? string.Empty;
+            var variantCode = ProductVariantCode ?? string.Empty;
+            var variantFullName = ProductVariantFullName ?? string.Empty;
+            var unitName = UnitOfMeasureName ?? UnitOfMeasureCode ?? string.Empty;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo ProductVariantListDto.FullNameHtml)
+            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
+            // - Mã sản phẩm: font nhỏ hơn, màu xám
+            // - Mã biến thể: font nhỏ hơn, màu cam (#FF9800)
+            // - Tên biến thể đầy đủ: font nhỏ hơn, màu xám cho label, đen cho value
+            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
+
+            var html = $"<size=12><b><color='blue'>{productName}</color></b></size>";
+
+            if (!string.IsNullOrWhiteSpace(productCode))
+            {
+                html += $" <size=9><color='#757575'>({productCode})</color></size>";
+            }
+
+            html += "<br>";
+
+            if (!string.IsNullOrWhiteSpace(variantCode))
+            {
+                html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(variantFullName))
+            {
+                if (!string.IsNullOrWhiteSpace(variantCode))
+                    html += " | ";
+                html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantFullName}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(variantCode) || !string.IsNullOrWhiteSpace(variantFullName))
+            {
+                html += "<br>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(unitName))
+            {
+                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitName}</b></color></size>";
+            }
+
+            return html;
+        }
+    }
+
+    /// <summary>
     /// ID đơn vị tính
     /// </summary>
     [DisplayName("ID ĐVT")]
-    [Display(Order = 14)]
+    [Display(Order = 15)]
     public Guid? UnitOfMeasureId { get; set; }
 
     /// <summary>
     /// Mã đơn vị tính
     /// </summary>
     [DisplayName("Mã ĐVT")]
-    [Display(Order = 15)]
+    [Display(Order = 16)]
     public string UnitOfMeasureCode { get; set; }
 
     /// <summary>
     /// Tên đơn vị tính
     /// </summary>
     [DisplayName("Đơn vị tính")]
-    [Display(Order = 16)]
+    [Display(Order = 17)]
     public string UnitOfMeasureName { get; set; }
 
     #endregion
@@ -176,202 +237,66 @@ public class StockInOutProductHistoryDto
     public string WarehouseName { get; set; }
 
     /// <summary>
-    /// Tên khách hàng (từ Master)
-    /// </summary>
-    [DisplayName("Tên khách hàng")]
-    [Display(Order = 32)]
-    public string CustomerName { get; set; }
-
-    #endregion
-
-    #region Properties - Hiển thị
-
-    /// <summary>
-    /// Nội dung tổng quát sản phẩm nhập xuất theo định dạng HTML theo chuẩn DevExpress
+    /// Thông tin kho nhập xuất dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
-    /// Format tương tự ProductVariantListDto.FullNameHtml để đảm bảo consistency
+    /// Format tương tự CompanyBranchDto.ThongTinHtml để đảm bảo consistency
     /// </summary>
-    [DisplayName("Nội dung HTML")]
-    [Display(Order = 50)]
-    [Description("Nội dung tổng quát sản phẩm nhập xuất dưới dạng HTML")]
-    public string FullContentHtml
+    [DisplayName("Thông tin kho HTML")]
+    [Display(Order = 32)]
+    [Description("Thông tin kho nhập xuất dưới dạng HTML")]
+    public string WarehouseNameHtml
     {
         get
         {
-            var productName = ProductName ?? string.Empty;
-            var productCode = ProductCode ?? string.Empty;
-            var variantCode = ProductVariantCode ?? string.Empty;
-            var variantFullName = ProductVariantFullName ?? string.Empty;
-            var unitName = UnitOfMeasureName ?? UnitOfMeasureCode ?? string.Empty;
-            var vocherNumber = VocherNumber ?? string.Empty;
+            var warehouseName = WarehouseName ?? string.Empty;
 
-            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo ProductVariantListDto.FullNameHtml)
-            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
-            // - Mã sản phẩm: font nhỏ hơn, màu xám
-            // - Mã biến thể: font nhỏ hơn, màu cam (#FF9800)
-            // - Tên biến thể đầy đủ: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Thông tin phiếu, kho, khách hàng: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Số lượng, giá, VAT: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Tổng tiền: font nhỏ hơn, màu xám cho label, xanh cho value
+            if (string.IsNullOrWhiteSpace(warehouseName))
+                return string.Empty;
 
-            var html = string.Empty;
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo CompanyBranchDto.ThongTinHtml)
+            // - Tên kho: font lớn, bold, màu xanh đậm (primary)
+            var html = $"<size=12><b><color='blue'>{warehouseName}</color></b></size>";
 
-            // === PHẦN 1: THÔNG TIN SẢN PHẨM (giống ProductVariantListDto) ===
-            
-            // Tên sản phẩm (nổi bật nhất)
-            html += $"<size=12><b><color='blue'>{productName}</color></b></size>";
+            return html;
+        }
+    }
 
-            // Mã sản phẩm
-            if (!string.IsNullOrWhiteSpace(productCode))
-            {
-                html += $" <size=9><color='#757575'>({productCode})</color></size>";
-            }
+    /// <summary>
+    /// Tên khách hàng (từ Master)
+    /// </summary>
+    [DisplayName("Tên khách hàng")]
+    [Display(Order = 33)]
+    public string CustomerName { get; set; }
 
-            html += "<br>";
+    /// <summary>
+    /// Thông tin khách hàng dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự BusinessPartnerListDto.ThongTinHtml để đảm bảo consistency
+    /// </summary>
+    [DisplayName("Thông tin khách hàng HTML")]
+    [Display(Order = 34)]
+    [Description("Thông tin khách hàng dưới dạng HTML")]
+    public string CustomerNameHtml
+    {
+        get
+        {
+            var customerName = CustomerName ?? string.Empty;
 
-            // Mã biến thể (màu cam)
-            if (!string.IsNullOrWhiteSpace(variantCode))
-            {
-                html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size>";
-            }
+            if (string.IsNullOrWhiteSpace(customerName))
+                return string.Empty;
 
-            // Tên biến thể đầy đủ
-            if (!string.IsNullOrWhiteSpace(variantFullName))
-            {
-                if (!string.IsNullOrWhiteSpace(variantCode))
-                    html += " | ";
-                html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantFullName}</b></color></size>";
-            }
-
-            if (!string.IsNullOrWhiteSpace(variantCode) || !string.IsNullOrWhiteSpace(variantFullName))
-            {
-                html += "<br>";
-            }
-
-            // Đơn vị tính
-            if (!string.IsNullOrWhiteSpace(unitName))
-            {
-                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitName}</b></color></size><br>";
-            }
-
-            // === PHẦN 2: THÔNG TIN PHIẾU NHẬP XUẤT ===
-
-            // Số phiếu và ngày
-            if (!string.IsNullOrWhiteSpace(vocherNumber))
-            {
-                html += $"<size=9><color='#757575'>Phiếu:</color></size> <size=10><color='#212121'><b>{vocherNumber}</b></color></size>";
-                
-                if (StockInOutDate != default(DateTime))
-                {
-                    html += $" <size=9><color='#757575'>({StockInOutDate:dd/MM/yyyy})</color></size>";
-                }
-                html += "<br>";
-            }
-            else if (StockInOutDate != default(DateTime))
-            {
-                html += $"<size=9><color='#757575'>Ngày:</color></size> <size=10><color='#212121'><b>{StockInOutDate:dd/MM/yyyy}</b></color></size><br>";
-            }
-
-            // Kho nhập xuất
-            if (!string.IsNullOrWhiteSpace(WarehouseName))
-            {
-                html += $"<size=9><color='#757575'>Kho:</color></size> <size=10><color='#212121'><b>{WarehouseName}</b></color></size>";
-            }
-
-            // Tên khách hàng
-            if (!string.IsNullOrWhiteSpace(CustomerName))
-            {
-                if (!string.IsNullOrWhiteSpace(WarehouseName))
-                    html += " | ";
-                html += $"<size=9><color='#757575'>Khách hàng:</color></size> <size=10><color='#212121'><b>{CustomerName}</b></color></size>";
-            }
-
-            if (!string.IsNullOrWhiteSpace(WarehouseName) || !string.IsNullOrWhiteSpace(CustomerName))
-            {
-                html += "<br>";
-            }
-
-            // === PHẦN 3: SỐ LƯỢNG VÀ GIÁ ===
-
-            // Số lượng nhập
-            if (StockInQty > 0)
-            {
-                var qtyText = $"{StockInQty:N2}";
-                if (!string.IsNullOrWhiteSpace(unitName))
-                {
-                    qtyText += $" {unitName}";
-                }
-                html += $"<size=9><color='#757575'>SL nhập:</color></size> <size=10><color='#212121'><b>{qtyText}</b></color></size>";
-            }
-
-            // Số lượng xuất
-            if (StockOutQty > 0)
-            {
-                if (StockInQty > 0)
-                    html += " | ";
-                var qtyText = $"{StockOutQty:N2}";
-                if (!string.IsNullOrWhiteSpace(unitName))
-                {
-                    qtyText += $" {unitName}";
-                }
-                html += $"<size=9><color='#757575'>SL xuất:</color></size> <size=10><color='#212121'><b>{qtyText}</b></color></size>";
-            }
-
-            // Đơn giá
-            if (UnitPrice > 0)
-            {
-                if (StockInQty > 0 || StockOutQty > 0)
-                    html += " | ";
-                html += $"<size=9><color='#757575'>Đơn giá:</color></size> <size=10><color='#212121'><b>{UnitPrice:N0}</b></color></size>";
-            }
-
-            if (StockInQty > 0 || StockOutQty > 0 || UnitPrice > 0)
-            {
-                html += "<br>";
-            }
-
-            // === PHẦN 4: VAT VÀ TỔNG TIỀN ===
-
-            // VAT
-            if (Vat > 0)
-            {
-                html += $"<size=9><color='#757575'>VAT:</color></size> <size=10><color='#212121'><b>{Vat}%</b></color></size>";
-            }
-
-            // Tiền VAT
-            if (VatAmount > 0)
-            {
-                if (Vat > 0)
-                    html += " | ";
-                html += $"<size=9><color='#757575'>Tiền VAT:</color></size> <size=10><color='#212121'><b>{VatAmount:N0}</b></color></size>";
-            }
-
-            // Thành tiền
-            if (TotalAmount > 0)
-            {
-                if (Vat > 0 || VatAmount > 0)
-                    html += " | ";
-                html += $"<size=9><color='#757575'>Thành tiền:</color></size> <size=10><color='#212121'><b>{TotalAmount:N0}</b></color></size>";
-            }
-
-            if (Vat > 0 || VatAmount > 0 || TotalAmount > 0)
-            {
-                html += "<br>";
-            }
-
-            // Tổng tiền bao gồm VAT (nổi bật - màu xanh)
-            if (TotalAmountIncludedVat > 0)
-            {
-                html += $"<size=9><color='#757575'>Tổng tiền gồm VAT:</color></size> <size=10><color='#2196F3'><b>{TotalAmountIncludedVat:N0}</b></color></size>";
-            }
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo BusinessPartnerListDto.ThongTinHtml)
+            // - Tên khách hàng: font lớn, bold, màu xanh đậm (primary)
+            var html = $"<size=12><b><color='blue'>{customerName}</color></b></size>";
 
             return html;
         }
     }
 
     #endregion
+
 }
 
 /// <summary>
