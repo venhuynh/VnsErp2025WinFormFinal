@@ -65,38 +65,57 @@ namespace Authentication.Form
         {
             try
             {
-                // Load các giá trị từ App.config
-                StorageTypeComboBoxEdit.EditValue = AppConfigHelper.GetAppSetting("ImageStorage.StorageType", "NAS");
-                ServerNameTextEdit.EditValue = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ServerName");
-                ShareNameTextEdit.EditValue = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ShareName", "ERP_Images");
-                BasePathTextEdit.EditValue = AppConfigHelper.GetAppSetting("ImageStorage.NAS.BasePath");
-                UsernameTextEdit.EditValue = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Username");
-                PasswordTextEdit.EditValue = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Password");
-                ProtocolComboBoxEdit.EditValue = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Protocol", "SMB");
-                
+                _logger.Debug("Bắt đầu tải dữ liệu từ App.config");
+
+                // Force refresh trước khi đọc
+                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+
+                // Load các giá trị từ App.config (đọc trực tiếp từ file config)
+                var storageType = AppConfigHelper.GetAppSetting("ImageStorage.StorageType", "NAS");
+                var serverName = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ServerName", "");
+                var shareName = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ShareName", "ERP_Images");
+                var basePath = AppConfigHelper.GetAppSetting("ImageStorage.NAS.BasePath", "");
+                var username = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Username", "");
+                var password = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Password", "");
+                var protocol = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Protocol", "SMB");
                 var timeout = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ConnectionTimeout", "30");
+                var retry = AppConfigHelper.GetAppSetting("ImageStorage.NAS.RetryAttempts", "3");
+                var enableCache = AppConfigHelper.GetAppSetting("ImageStorage.NAS.EnableNASCache", "false");
+                var cacheSize = AppConfigHelper.GetAppSetting("ImageStorage.NAS.NASCacheSize", "500");
+
+                _logger.Debug($"Đã đọc từ App.config - StorageType={storageType}, ServerName={serverName}, ShareName={shareName}, Username={username}, Password={(string.IsNullOrEmpty(password) ? "(empty)" : "***")}");
+
+                // Gán giá trị vào controls
+                StorageTypeComboBoxEdit.EditValue = storageType;
+                ServerNameTextEdit.EditValue = serverName;
+                ShareNameTextEdit.EditValue = shareName;
+                BasePathTextEdit.EditValue = basePath;
+                UsernameTextEdit.EditValue = username;
+                PasswordTextEdit.EditValue = password;
+                ProtocolComboBoxEdit.EditValue = protocol;
+                
                 if (int.TryParse(timeout, out int timeoutValue))
                     ConnectionTimeoutSpinEdit.EditValue = timeoutValue;
                 else
                     ConnectionTimeoutSpinEdit.EditValue = 30;
 
-                var retry = AppConfigHelper.GetAppSetting("ImageStorage.NAS.RetryAttempts", "3");
                 if (int.TryParse(retry, out int retryValue))
                     RetryAttemptsSpinEdit.EditValue = retryValue;
                 else
                     RetryAttemptsSpinEdit.EditValue = 3;
 
-                var enableCache = AppConfigHelper.GetAppSetting("ImageStorage.NAS.EnableNASCache", "false");
                 EnableCacheCheckEdit.Checked = bool.TryParse(enableCache, out bool cacheValue) && cacheValue;
 
-                var cacheSize = AppConfigHelper.GetAppSetting("ImageStorage.NAS.NASCacheSize", "500");
                 if (int.TryParse(cacheSize, out int cacheSizeValue))
                     CacheSizeSpinEdit.EditValue = cacheSizeValue;
                 else
                     CacheSizeSpinEdit.EditValue = 500;
+
+                _logger.Info($"Đã tải dữ liệu từ App.config thành công - StorageType={storageType}, ServerName={serverName}, ShareName={shareName}, Username={username}");
             }
             catch (Exception ex)
             {
+                _logger.Error($"Lỗi tải dữ liệu từ App.config: {ex.Message}", ex);
                 MsgBox.ShowException(ex, "Lỗi tải dữ liệu từ App.config");
             }
         }
@@ -126,6 +145,7 @@ namespace Authentication.Form
                 // Lưu cấu hình
                 LuuCauHinh();
 
+                _logger.Info("Đã lưu cấu hình NAS thành công");
                 // Thông báo thành công
                 MsgBox.ShowSuccess("Cấu hình NAS đã được lưu thành công!");
                 DialogResult = DialogResult.OK;
@@ -133,6 +153,7 @@ namespace Authentication.Form
             }
             catch (Exception ex)
             {
+                _logger.Error($"Lỗi lưu cấu hình NAS: {ex.Message}", ex);
                 MsgBox.ShowException(ex, "Lỗi lưu cấu hình");
             }
         }
@@ -170,15 +191,18 @@ namespace Authentication.Form
 
                 if (result)
                 {
+                    _logger.Info("Kiểm tra kết nối NAS thành công");
                     MsgBox.ShowSuccess("Kết nối NAS thành công!", "Thành công");
                 }
                 else
                 {
+                    _logger.Warning("Không thể kết nối đến NAS");
                     MsgBox.ShowError("Không thể kết nối đến NAS.\nVui lòng kiểm tra lại thông tin cấu hình.", "Lỗi kết nối");
                 }
             }
             catch (Exception ex)
             {
+                _logger.Error($"Lỗi kiểm tra kết nối NAS: {ex.Message}", ex);
                 TestConnectionSimpleButton.Enabled = true;
                 TestConnectionSimpleButton.Text = @"Kiểm tra kết nối";
                 MsgBox.ShowException(ex, @"Lỗi kiểm tra kết nối");
@@ -219,39 +243,49 @@ namespace Authentication.Form
                 {
                     try
                     {
+                        _logger.Debug($"Bắt đầu kiểm tra kết nối NAS, FullPath={fullPath}");
+
                         // Nếu có username và password, thử map network drive tạm thời
                         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
                         {
                             // Sử dụng WNetAddConnection2 để map network drive
                             // Note: Cần thêm using System.Runtime.InteropServices;
                             // Hoặc sử dụng cách đơn giản hơn: kiểm tra thư mục có accessible không
+                            _logger.Debug($"Sử dụng credentials: Username={username}");
                         }
 
                         // Kiểm tra thư mục có tồn tại và có quyền truy cập không
-                        if (!Directory.Exists(fullPath)) return false;
+                        if (!Directory.Exists(fullPath))
+                        {
+                            _logger.Warning($"Thư mục không tồn tại: {fullPath}");
+                            return false;
+                        }
+
                         // Thử tạo một file test tạm thời
                         var testFile = Path.Combine(fullPath, $"test_{Guid.NewGuid():N}.tmp");
                         try
                         {
                             File.WriteAllText(testFile, "test");
                             File.Delete(testFile);
+                            _logger.Info($"Kiểm tra kết nối NAS thành công, FullPath={fullPath}");
                             return true;
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            _logger.Warning($"Không thể ghi file test vào NAS: {ex.Message}");
                             return false;
                         }
-
-                        return false;
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        _logger.Error($"Lỗi khi kiểm tra kết nối NAS: {ex.Message}", ex);
                         return false;
                     }
                 });
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.Error($"Lỗi ngoại lệ khi kiểm tra kết nối NAS: {ex.Message}", ex);
                 return false;
             }
         }
@@ -371,9 +405,11 @@ namespace Authentication.Form
 
                 AppConfigHelper.UpdateAppSettings(settings);
 
+                _logger.Info("Đã cập nhật cấu hình NAS vào App.config");
             }
             catch (Exception ex)
             {
+                _logger.Error($"Lỗi khi lưu cấu hình NAS vào App.config: {ex.Message}", ex);
                 throw new Exception($"Không thể lưu cấu hình: {ex.Message}", ex);
             }
         }

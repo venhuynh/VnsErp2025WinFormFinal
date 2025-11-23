@@ -75,19 +75,15 @@ namespace Common.Appconfig
                 byte[] keyBytes = Encoding.UTF8.GetBytes(ENCRYPTION_KEY);
                 byte[] ivBytes = Encoding.UTF8.GetBytes(ENCRYPTION_IV);
 
-                using (var aes = Aes.Create())
-                {
-                    aes.Key = keyBytes;
-                    aes.IV = ivBytes;
-                    aes.Mode = CipherMode.CBC;
-                    aes.Padding = PaddingMode.PKCS7;
+                using var aes = Aes.Create();
+                aes.Key = keyBytes;
+                aes.IV = ivBytes;
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
 
-                    using (var decryptor = aes.CreateDecryptor())
-                    {
-                        byte[] decryptedBytes = decryptor.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
-                        return Encoding.UTF8.GetString(decryptedBytes);
-                    }
-                }
+                using var decryptor = aes.CreateDecryptor();
+                byte[] decryptedBytes = decryptor.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
+                return Encoding.UTF8.GetString(decryptedBytes);
             }
             catch (Exception ex)
             {

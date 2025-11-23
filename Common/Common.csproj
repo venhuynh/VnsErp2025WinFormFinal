@@ -64,6 +64,7 @@
     <Compile Include="Appconfig\DatabaseConfigDto.cs" />
     <Compile Include="Appconfig\DatabaseConnectionHelper.cs" />
     <Compile Include="Appconfig\DatabaseConnectionManager.cs" />
+    <Compile Include="Appconfig\NASConfigData.cs" />
     <Compile Include="Appconfig\VntaCrypto.cs" />
     <Compile Include="ApplicationConstants.cs" />
     <Compile Include="Common\OverlayManager.cs" />
