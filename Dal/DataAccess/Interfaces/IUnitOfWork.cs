@@ -171,6 +171,8 @@ public interface IUnitOfWork : IDisposable
 
     IStockInOutMasterRepository GetStockInOutMasterRepository();
 
+    IStockInOutDetailRepository GetStockInOutDetailRepository();
+
     #endregion
 
     #endregion

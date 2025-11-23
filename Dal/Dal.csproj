@@ -54,6 +54,7 @@
     <Compile Include="Connection\IConnectionManager.cs" />
     <Compile Include="DataAccess\Factories\DataContextFactory.cs" />
     <Compile Include="DataAccess\Implementations\ApplicationUserRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutDetailRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutImageRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutMasterRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\WarrantyRepository.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\EmployeeRepository.cs" />
     <Compile Include="DataAccess\Implementations\UnitOfWork.cs" />
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStockInOutDetailRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStockInOutImageRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStockInOutMasterRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IWarrantyRepository.cs" />

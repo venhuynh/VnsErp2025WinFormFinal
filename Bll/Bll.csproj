@@ -67,6 +67,7 @@
     <Compile Include="Common\ImageService\ImageServiceConfiguration.cs" />
     <Compile Include="Common\ImageService\ImageValidationService.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutMasterBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\StockInOutDetailBll.cs" />
     <Compile Include="Inventory\InventoryManagement\WarrantyBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutImageBll.cs" />
     <Compile Include="Inventory\StockIn\StockInBll.cs" />

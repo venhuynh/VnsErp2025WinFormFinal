@@ -175,6 +175,7 @@
     <None Include="Doc\NhapHang\NhapHangThuongMai_01_NhapKhoDoiBan.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_00_TongQuan.md" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutMasterHistoryDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutProductHistoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInMasterDto.datasource" />

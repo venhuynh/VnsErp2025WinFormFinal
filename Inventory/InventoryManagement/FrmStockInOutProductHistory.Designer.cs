@@ -30,12 +30,14 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.StockInOutMasterHistoryDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.StockInOutMasterHistoryDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.StockInOutProductHistoryDtoGridControl = new DevExpress.XtraGrid.GridControl();
+            this.StockInOutProductHistoryDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colFullContentHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
+            this.KeyWordBarEditItem = new DevExpress.XtraBars.BarEditItem();
+            this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TuNgayBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemDateEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.DenNgayBarEditItem = new DevExpress.XtraBars.BarEditItem();
@@ -56,26 +58,26 @@
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.KeyWordBarEditItem = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
+            this.stockInOutProductHistoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.StockInOutMasterHistoryDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StockInOutMasterHistoryDtoGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutProductHistoryDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.StockInOutMasterHistoryDtoGridControl);
+            this.layoutControl1.Controls.Add(this.StockInOutProductHistoryDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
@@ -84,30 +86,31 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // StockInOutMasterHistoryDtoGridControl
+            // StockInOutProductHistoryDtoGridControl
             // 
-            this.StockInOutMasterHistoryDtoGridControl.Location = new System.Drawing.Point(12, 12);
-            this.StockInOutMasterHistoryDtoGridControl.MainView = this.StockInOutMasterHistoryDtoGridView;
-            this.StockInOutMasterHistoryDtoGridControl.MenuManager = this.barManager1;
-            this.StockInOutMasterHistoryDtoGridControl.Name = "StockInOutMasterHistoryDtoGridControl";
-            this.StockInOutMasterHistoryDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.StockInOutProductHistoryDtoGridControl.DataSource = this.stockInOutProductHistoryDtoBindingSource;
+            this.StockInOutProductHistoryDtoGridControl.Location = new System.Drawing.Point(12, 12);
+            this.StockInOutProductHistoryDtoGridControl.MainView = this.StockInOutProductHistoryDtoGridView;
+            this.StockInOutProductHistoryDtoGridControl.MenuManager = this.barManager1;
+            this.StockInOutProductHistoryDtoGridControl.Name = "StockInOutProductHistoryDtoGridControl";
+            this.StockInOutProductHistoryDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlRepositoryItemHypertextLabel});
-            this.StockInOutMasterHistoryDtoGridControl.Size = new System.Drawing.Size(1347, 722);
-            this.StockInOutMasterHistoryDtoGridControl.TabIndex = 4;
-            this.StockInOutMasterHistoryDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.StockInOutMasterHistoryDtoGridView});
+            this.StockInOutProductHistoryDtoGridControl.Size = new System.Drawing.Size(1347, 722);
+            this.StockInOutProductHistoryDtoGridControl.TabIndex = 4;
+            this.StockInOutProductHistoryDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.StockInOutProductHistoryDtoGridView});
             // 
-            // StockInOutMasterHistoryDtoGridView
+            // StockInOutProductHistoryDtoGridView
             // 
-            this.StockInOutMasterHistoryDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.StockInOutProductHistoryDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colFullContentHtml});
-            this.StockInOutMasterHistoryDtoGridView.GridControl = this.StockInOutMasterHistoryDtoGridControl;
-            this.StockInOutMasterHistoryDtoGridView.Name = "StockInOutMasterHistoryDtoGridView";
-            this.StockInOutMasterHistoryDtoGridView.OptionsFind.AlwaysVisible = true;
-            this.StockInOutMasterHistoryDtoGridView.OptionsSelection.MultiSelect = true;
-            this.StockInOutMasterHistoryDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.StockInOutMasterHistoryDtoGridView.OptionsView.RowAutoHeight = true;
-            this.StockInOutMasterHistoryDtoGridView.OptionsView.ShowGroupPanel = false;
+            this.StockInOutProductHistoryDtoGridView.GridControl = this.StockInOutProductHistoryDtoGridControl;
+            this.StockInOutProductHistoryDtoGridView.Name = "StockInOutProductHistoryDtoGridView";
+            this.StockInOutProductHistoryDtoGridView.OptionsFind.AlwaysVisible = true;
+            this.StockInOutProductHistoryDtoGridView.OptionsSelection.MultiSelect = true;
+            this.StockInOutProductHistoryDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.StockInOutProductHistoryDtoGridView.OptionsView.RowAutoHeight = true;
+            this.StockInOutProductHistoryDtoGridView.OptionsView.ShowGroupPanel = false;
             // 
             // colFullContentHtml
             // 
@@ -123,7 +126,7 @@
             this.colFullContentHtml.AppearanceHeader.Options.UseTextOptions = true;
             this.colFullContentHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colFullContentHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colFullContentHtml.Caption = "Nội dung phiếu nhập xuất";
+            this.colFullContentHtml.Caption = "Nội dung sản phẩm nhập xuất";
             this.colFullContentHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
             this.colFullContentHtml.FieldName = "FullContentHtml";
             this.colFullContentHtml.Name = "colFullContentHtml";
@@ -189,6 +192,18 @@
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
+            // 
+            // KeyWordBarEditItem
+            // 
+            this.KeyWordBarEditItem.Caption = "Từ khóa";
+            this.KeyWordBarEditItem.Edit = this.repositoryItemTextEdit1;
+            this.KeyWordBarEditItem.Id = 15;
+            this.KeyWordBarEditItem.Name = "KeyWordBarEditItem";
+            // 
+            // repositoryItemTextEdit1
+            // 
+            this.repositoryItemTextEdit1.AutoHeight = false;
+            this.repositoryItemTextEdit1.Name = "repositoryItemTextEdit1";
             // 
             // TuNgayBarEditItem
             // 
@@ -350,23 +365,15 @@
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.StockInOutMasterHistoryDtoGridControl;
+            this.layoutControlItem1.Control = this.StockInOutProductHistoryDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1351, 726);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // KeyWordBarEditItem
+            // stockInOutProductHistoryDtoBindingSource
             // 
-            this.KeyWordBarEditItem.Caption = "Từ khóa";
-            this.KeyWordBarEditItem.Edit = this.repositoryItemTextEdit1;
-            this.KeyWordBarEditItem.Id = 15;
-            this.KeyWordBarEditItem.Name = "KeyWordBarEditItem";
-            // 
-            // repositoryItemTextEdit1
-            // 
-            this.repositoryItemTextEdit1.AutoHeight = false;
-            this.repositoryItemTextEdit1.Name = "repositoryItemTextEdit1";
+            this.stockInOutProductHistoryDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.StockInOutProductHistoryDto);
             // 
             // FrmStockInOutProductHistory
             // 
@@ -382,17 +389,18 @@
             this.Text = "LỊCH SỬ NHẬP XUẤT KHO";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.StockInOutMasterHistoryDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StockInOutMasterHistoryDtoGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutProductHistoryDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -411,8 +419,8 @@
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
         private DevExpress.XtraBars.BarButtonItem NhapBaoHanhBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
-        private DevExpress.XtraGrid.GridControl StockInOutMasterHistoryDtoGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView StockInOutMasterHistoryDtoGridView;
+        private DevExpress.XtraGrid.GridControl StockInOutProductHistoryDtoGridControl;
+        private DevExpress.XtraGrid.Views.Grid.GridView StockInOutProductHistoryDtoGridView;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraBars.BarEditItem TuNgayBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit1;
@@ -429,5 +437,7 @@
         private DevExpress.XtraBars.BarButtonItem XoaPhieuBarButtonItem;
         private DevExpress.XtraBars.BarEditItem KeyWordBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
+        
+        private System.Windows.Forms.BindingSource stockInOutProductHistoryDtoBindingSource;
     }
 }
