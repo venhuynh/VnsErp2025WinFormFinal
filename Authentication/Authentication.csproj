@@ -65,6 +65,12 @@
     <Compile Include="Form\FrmLogin.Designer.cs">
       <DependentUpon>FrmLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\FrmNASConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\FrmNASConfig.Designer.cs">
+      <DependentUpon>FrmNASConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -83,6 +89,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form\FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\FrmNASConfig.resx">
+      <DependentUpon>FrmNASConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -119,6 +128,10 @@
     <ProjectReference Include="..\Dal\Dal.csproj">
       <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
       <Name>Dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{12f9fb39-92bf-45d5-bbb2-5353e33700f0}</Project>
+      <Name>Logger</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
