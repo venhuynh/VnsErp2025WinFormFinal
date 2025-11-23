@@ -185,6 +185,7 @@
     <None Include="Doc\NhapHang\NhapHangThuongMai_00_TongQuan.md" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutMasterHistoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutProductHistoryDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyCheckListDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInMasterDto.datasource" />
@@ -285,6 +286,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\hideproduct_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxps_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxps_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

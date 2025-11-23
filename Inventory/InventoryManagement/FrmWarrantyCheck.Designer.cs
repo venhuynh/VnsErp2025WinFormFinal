@@ -31,8 +31,15 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.StockInOutProductHistoryDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.StockInOutProductHistoryDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.WarrantyCheckListDtoGridControl = new DevExpress.XtraGrid.GridControl();
+            this.warrantyCheckListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.WarrantyCheckListDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colWarrantyTypeName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colWarrantyStatusName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colWarrantyFrom = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colMonthOfWarranty = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colWarrantyUntil = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colUniqueProductInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
@@ -43,11 +50,8 @@
             this.DenNgayBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemDateEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.XemBaoCaoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.ChiTietPhieuNhapXuatBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.InPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.NhapBaoHanhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XoaPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XuatFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -58,18 +62,11 @@
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.warrantyDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.colWarrantyTypeName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colProductVariantName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colWarrantyStatusName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colUniqueProductInfo = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colWarrantyFrom = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colMonthOfWarranty = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colWarrantyUntil = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WarrantyCheckListDtoGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.warrantyCheckListDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WarrantyCheckListDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
@@ -79,12 +76,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.warrantyDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.StockInOutProductHistoryDtoGridControl);
+            this.layoutControl1.Controls.Add(this.WarrantyCheckListDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
@@ -93,45 +89,193 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // StockInOutProductHistoryDtoGridControl
+            // WarrantyCheckListDtoGridControl
             // 
-            this.StockInOutProductHistoryDtoGridControl.DataSource = this.warrantyDtoBindingSource;
-            this.StockInOutProductHistoryDtoGridControl.Location = new System.Drawing.Point(12, 12);
-            this.StockInOutProductHistoryDtoGridControl.MainView = this.StockInOutProductHistoryDtoGridView;
-            this.StockInOutProductHistoryDtoGridControl.MenuManager = this.barManager1;
-            this.StockInOutProductHistoryDtoGridControl.Name = "StockInOutProductHistoryDtoGridControl";
-            this.StockInOutProductHistoryDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.WarrantyCheckListDtoGridControl.DataSource = this.warrantyCheckListDtoBindingSource;
+            this.WarrantyCheckListDtoGridControl.Location = new System.Drawing.Point(12, 12);
+            this.WarrantyCheckListDtoGridControl.MainView = this.WarrantyCheckListDtoGridView;
+            this.WarrantyCheckListDtoGridControl.MenuManager = this.barManager1;
+            this.WarrantyCheckListDtoGridControl.Name = "WarrantyCheckListDtoGridControl";
+            this.WarrantyCheckListDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlRepositoryItemHypertextLabel});
-            this.StockInOutProductHistoryDtoGridControl.Size = new System.Drawing.Size(1347, 722);
-            this.StockInOutProductHistoryDtoGridControl.TabIndex = 4;
-            this.StockInOutProductHistoryDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.StockInOutProductHistoryDtoGridView});
+            this.WarrantyCheckListDtoGridControl.Size = new System.Drawing.Size(1347, 722);
+            this.WarrantyCheckListDtoGridControl.TabIndex = 4;
+            this.WarrantyCheckListDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.WarrantyCheckListDtoGridView});
             // 
-            // StockInOutProductHistoryDtoGridView
+            // warrantyCheckListDtoBindingSource
             // 
-            this.StockInOutProductHistoryDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.StockInOutProductHistoryDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
-            this.StockInOutProductHistoryDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
-            this.StockInOutProductHistoryDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
-            this.StockInOutProductHistoryDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.warrantyCheckListDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.WarrantyCheckListDto);
+            // 
+            // WarrantyCheckListDtoGridView
+            // 
+            this.WarrantyCheckListDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.WarrantyCheckListDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.WarrantyCheckListDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.WarrantyCheckListDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.WarrantyCheckListDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colWarrantyTypeName,
-            this.colProductVariantName,
             this.colWarrantyStatusName,
-            this.colUniqueProductInfo,
             this.colWarrantyFrom,
             this.colMonthOfWarranty,
-            this.colWarrantyUntil});
-            this.StockInOutProductHistoryDtoGridView.GridControl = this.StockInOutProductHistoryDtoGridControl;
-            this.StockInOutProductHistoryDtoGridView.IndicatorWidth = 50;
-            this.StockInOutProductHistoryDtoGridView.Name = "StockInOutProductHistoryDtoGridView";
-            this.StockInOutProductHistoryDtoGridView.OptionsFind.AlwaysVisible = true;
-            this.StockInOutProductHistoryDtoGridView.OptionsSelection.MultiSelect = true;
-            this.StockInOutProductHistoryDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.StockInOutProductHistoryDtoGridView.OptionsView.RowAutoHeight = true;
-            this.StockInOutProductHistoryDtoGridView.OptionsView.ShowFooter = true;
-            this.StockInOutProductHistoryDtoGridView.OptionsView.ShowGroupPanel = false;
-            this.StockInOutProductHistoryDtoGridView.OptionsView.ShowViewCaption = true;
-            this.StockInOutProductHistoryDtoGridView.ViewCaption = "LỊCH SỬ SẢN PHẨM NHẬP XUẤT KHO";
+            this.colWarrantyUntil,
+            this.colUniqueProductInfoHtml});
+            this.WarrantyCheckListDtoGridView.GridControl = this.WarrantyCheckListDtoGridControl;
+            this.WarrantyCheckListDtoGridView.IndicatorWidth = 50;
+            this.WarrantyCheckListDtoGridView.Name = "WarrantyCheckListDtoGridView";
+            this.WarrantyCheckListDtoGridView.OptionsFind.AlwaysVisible = true;
+            this.WarrantyCheckListDtoGridView.OptionsSelection.MultiSelect = true;
+            this.WarrantyCheckListDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.WarrantyCheckListDtoGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.WarrantyCheckListDtoGridView.OptionsView.RowAutoHeight = true;
+            this.WarrantyCheckListDtoGridView.OptionsView.ShowGroupPanel = false;
+            this.WarrantyCheckListDtoGridView.OptionsView.ShowViewCaption = true;
+            this.WarrantyCheckListDtoGridView.ViewCaption = "BẢNG QUẢN LÝ BẢO HÀNH";
+            // 
+            // colWarrantyTypeName
+            // 
+            this.colWarrantyTypeName.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarrantyTypeName.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyTypeName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyTypeName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarrantyTypeName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarrantyTypeName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarrantyTypeName.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarrantyTypeName.AppearanceHeader.Options.UseFont = true;
+            this.colWarrantyTypeName.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarrantyTypeName.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarrantyTypeName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyTypeName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyTypeName.Caption = "Kiểu BH";
+            this.colWarrantyTypeName.FieldName = "WarrantyTypeName";
+            this.colWarrantyTypeName.Name = "colWarrantyTypeName";
+            this.colWarrantyTypeName.OptionsColumn.AllowEdit = false;
+            this.colWarrantyTypeName.OptionsColumn.ReadOnly = true;
+            this.colWarrantyTypeName.Visible = true;
+            this.colWarrantyTypeName.VisibleIndex = 2;
+            this.colWarrantyTypeName.Width = 120;
+            // 
+            // colWarrantyStatusName
+            // 
+            this.colWarrantyStatusName.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarrantyStatusName.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyStatusName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyStatusName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarrantyStatusName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarrantyStatusName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarrantyStatusName.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarrantyStatusName.AppearanceHeader.Options.UseFont = true;
+            this.colWarrantyStatusName.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarrantyStatusName.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarrantyStatusName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyStatusName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyStatusName.Caption = "Trạng thái";
+            this.colWarrantyStatusName.FieldName = "WarrantyStatusText";
+            this.colWarrantyStatusName.Name = "colWarrantyStatusName";
+            this.colWarrantyStatusName.OptionsColumn.AllowEdit = false;
+            this.colWarrantyStatusName.OptionsColumn.ReadOnly = true;
+            this.colWarrantyStatusName.Visible = true;
+            this.colWarrantyStatusName.VisibleIndex = 3;
+            this.colWarrantyStatusName.Width = 120;
+            // 
+            // colWarrantyFrom
+            // 
+            this.colWarrantyFrom.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarrantyFrom.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyFrom.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyFrom.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarrantyFrom.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarrantyFrom.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarrantyFrom.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarrantyFrom.AppearanceHeader.Options.UseFont = true;
+            this.colWarrantyFrom.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarrantyFrom.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarrantyFrom.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyFrom.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyFrom.Caption = "Từ ngày";
+            this.colWarrantyFrom.DisplayFormat.FormatString = "dd/MM/yyyy";
+            this.colWarrantyFrom.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            this.colWarrantyFrom.FieldName = "WarrantyFrom";
+            this.colWarrantyFrom.Name = "colWarrantyFrom";
+            this.colWarrantyFrom.OptionsColumn.AllowEdit = true;
+            this.colWarrantyFrom.OptionsColumn.ReadOnly = false;
+            this.colWarrantyFrom.Visible = true;
+            this.colWarrantyFrom.VisibleIndex = 4;
+            this.colWarrantyFrom.Width = 120;
+            // 
+            // colMonthOfWarranty
+            // 
+            this.colMonthOfWarranty.AppearanceCell.Options.UseTextOptions = true;
+            this.colMonthOfWarranty.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colMonthOfWarranty.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colMonthOfWarranty.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colMonthOfWarranty.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colMonthOfWarranty.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colMonthOfWarranty.AppearanceHeader.Options.UseBackColor = true;
+            this.colMonthOfWarranty.AppearanceHeader.Options.UseFont = true;
+            this.colMonthOfWarranty.AppearanceHeader.Options.UseForeColor = true;
+            this.colMonthOfWarranty.AppearanceHeader.Options.UseTextOptions = true;
+            this.colMonthOfWarranty.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colMonthOfWarranty.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colMonthOfWarranty.Caption = "Số tháng BH";
+            this.colMonthOfWarranty.DisplayFormat.FormatString = "N0";
+            this.colMonthOfWarranty.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colMonthOfWarranty.FieldName = "MonthOfWarranty";
+            this.colMonthOfWarranty.Name = "colMonthOfWarranty";
+            this.colMonthOfWarranty.OptionsColumn.AllowEdit = true;
+            this.colMonthOfWarranty.OptionsColumn.ReadOnly = false;
+            this.colMonthOfWarranty.Visible = true;
+            this.colMonthOfWarranty.VisibleIndex = 5;
+            this.colMonthOfWarranty.Width = 100;
+            // 
+            // colWarrantyUntil
+            // 
+            this.colWarrantyUntil.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarrantyUntil.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyUntil.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyUntil.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarrantyUntil.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarrantyUntil.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarrantyUntil.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarrantyUntil.AppearanceHeader.Options.UseFont = true;
+            this.colWarrantyUntil.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarrantyUntil.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarrantyUntil.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyUntil.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyUntil.Caption = "Đến ngày";
+            this.colWarrantyUntil.DisplayFormat.FormatString = "dd/MM/yyyy";
+            this.colWarrantyUntil.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            this.colWarrantyUntil.FieldName = "WarrantyUntil";
+            this.colWarrantyUntil.Name = "colWarrantyUntil";
+            this.colWarrantyUntil.OptionsColumn.AllowEdit = false;
+            this.colWarrantyUntil.OptionsColumn.ReadOnly = true;
+            this.colWarrantyUntil.Visible = true;
+            this.colWarrantyUntil.VisibleIndex = 6;
+            this.colWarrantyUntil.Width = 120;
+            // 
+            // colUniqueProductInfoHtml
+            // 
+            this.colUniqueProductInfoHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colUniqueProductInfoHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colUniqueProductInfoHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colUniqueProductInfoHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colUniqueProductInfoHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colUniqueProductInfoHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colUniqueProductInfoHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colUniqueProductInfoHtml.AppearanceHeader.Options.UseFont = true;
+            this.colUniqueProductInfoHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colUniqueProductInfoHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colUniqueProductInfoHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colUniqueProductInfoHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colUniqueProductInfoHtml.Caption = "Thông tin sản phẩm dịch vụ";
+            this.colUniqueProductInfoHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colUniqueProductInfoHtml.FieldName = "UniqueProductInfoHtml";
+            this.colUniqueProductInfoHtml.Name = "colUniqueProductInfoHtml";
+            this.colUniqueProductInfoHtml.OptionsColumn.AllowEdit = false;
+            this.colUniqueProductInfoHtml.OptionsColumn.ReadOnly = true;
+            this.colUniqueProductInfoHtml.Visible = true;
+            this.colUniqueProductInfoHtml.VisibleIndex = 1;
+            this.colUniqueProductInfoHtml.Width = 300;
             // 
             // HtmlRepositoryItemHypertextLabel
             // 
@@ -149,20 +293,17 @@
             this.barManager1.DockControls.Add(this.barDockControlRight);
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.InPhieuBarButtonItem,
-            this.NhapBaoHanhBarButtonItem,
-            this.ThemHinhAnhBarButtonItem,
             this.TuNgayBarEditItem,
             this.DenNgayBarEditItem,
             this.XemBaoCaoBarButtonItem,
             this.barHeaderItem1,
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
-            this.ChiTietPhieuNhapXuatBarButtonItem,
             this.XoaPhieuBarButtonItem,
-            this.KeyWordBarEditItem});
+            this.KeyWordBarEditItem,
+            this.XuatFileBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 16;
+            this.barManager1.MaxItemId = 17;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit1,
             this.repositoryItemDateEdit2,
@@ -181,11 +322,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.TuNgayBarEditItem, "", false, true, true, 117, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.DenNgayBarEditItem, "", false, true, true, 125, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBaoCaoBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ChiTietPhieuNhapXuatBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapBaoHanhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XuatFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -243,44 +381,20 @@
             this.XemBaoCaoBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.filterbyseries_pie_32x32;
             this.XemBaoCaoBarButtonItem.Name = "XemBaoCaoBarButtonItem";
             // 
-            // ChiTietPhieuNhapXuatBarButtonItem
-            // 
-            this.ChiTietPhieuNhapXuatBarButtonItem.Caption = "Chi tiết";
-            this.ChiTietPhieuNhapXuatBarButtonItem.Id = 13;
-            this.ChiTietPhieuNhapXuatBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.hideproduct_16x16;
-            this.ChiTietPhieuNhapXuatBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.hideproduct_32x32;
-            this.ChiTietPhieuNhapXuatBarButtonItem.Name = "ChiTietPhieuNhapXuatBarButtonItem";
-            // 
-            // InPhieuBarButtonItem
-            // 
-            this.InPhieuBarButtonItem.Caption = "In phiếu";
-            this.InPhieuBarButtonItem.Id = 2;
-            this.InPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.print_16x16;
-            this.InPhieuBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.print_32x32;
-            this.InPhieuBarButtonItem.Name = "InPhieuBarButtonItem";
-            // 
-            // NhapBaoHanhBarButtonItem
-            // 
-            this.NhapBaoHanhBarButtonItem.Caption = "Nhập bảo hành";
-            this.NhapBaoHanhBarButtonItem.Id = 4;
-            this.NhapBaoHanhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
-            this.NhapBaoHanhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.barcode_32x32;
-            this.NhapBaoHanhBarButtonItem.Name = "NhapBaoHanhBarButtonItem";
-            // 
-            // ThemHinhAnhBarButtonItem
-            // 
-            this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
-            this.ThemHinhAnhBarButtonItem.Id = 5;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.insertimage_32x32;
-            this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
-            // 
             // XoaPhieuBarButtonItem
             // 
             this.XoaPhieuBarButtonItem.Caption = "Xóa";
             this.XoaPhieuBarButtonItem.Id = 14;
             this.XoaPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.clear_16x16;
             this.XoaPhieuBarButtonItem.Name = "XoaPhieuBarButtonItem";
+            // 
+            // XuatFileBarButtonItem
+            // 
+            this.XuatFileBarButtonItem.Caption = "Xuất file";
+            this.XuatFileBarButtonItem.Id = 16;
+            this.XuatFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.exporttoxps_16x16;
+            this.XuatFileBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.exporttoxps_32x32;
+            this.XuatFileBarButtonItem.Name = "XuatFileBarButtonItem";
             // 
             // bar1
             // 
@@ -362,64 +476,11 @@
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.StockInOutProductHistoryDtoGridControl;
+            this.layoutControlItem1.Control = this.WarrantyCheckListDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1351, 726);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // warrantyDtoBindingSource
-            // 
-            this.warrantyDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.WarrantyDto);
-            // 
-            // colWarrantyTypeName
-            // 
-            this.colWarrantyTypeName.FieldName = "WarrantyTypeName";
-            this.colWarrantyTypeName.Name = "colWarrantyTypeName";
-            this.colWarrantyTypeName.Visible = true;
-            this.colWarrantyTypeName.VisibleIndex = 3;
-            // 
-            // colProductVariantName
-            // 
-            this.colProductVariantName.FieldName = "ProductVariantName";
-            this.colProductVariantName.Name = "colProductVariantName";
-            this.colProductVariantName.Visible = true;
-            this.colProductVariantName.VisibleIndex = 2;
-            // 
-            // colWarrantyStatusName
-            // 
-            this.colWarrantyStatusName.FieldName = "WarrantyStatusName";
-            this.colWarrantyStatusName.Name = "colWarrantyStatusName";
-            this.colWarrantyStatusName.Visible = true;
-            this.colWarrantyStatusName.VisibleIndex = 4;
-            // 
-            // colUniqueProductInfo
-            // 
-            this.colUniqueProductInfo.FieldName = "UniqueProductInfo";
-            this.colUniqueProductInfo.Name = "colUniqueProductInfo";
-            this.colUniqueProductInfo.Visible = true;
-            this.colUniqueProductInfo.VisibleIndex = 1;
-            // 
-            // colWarrantyFrom
-            // 
-            this.colWarrantyFrom.FieldName = "WarrantyFrom";
-            this.colWarrantyFrom.Name = "colWarrantyFrom";
-            this.colWarrantyFrom.Visible = true;
-            this.colWarrantyFrom.VisibleIndex = 5;
-            // 
-            // colMonthOfWarranty
-            // 
-            this.colMonthOfWarranty.FieldName = "MonthOfWarranty";
-            this.colMonthOfWarranty.Name = "colMonthOfWarranty";
-            this.colMonthOfWarranty.Visible = true;
-            this.colMonthOfWarranty.VisibleIndex = 6;
-            // 
-            // colWarrantyUntil
-            // 
-            this.colWarrantyUntil.FieldName = "WarrantyUntil";
-            this.colWarrantyUntil.Name = "colWarrantyUntil";
-            this.colWarrantyUntil.Visible = true;
-            this.colWarrantyUntil.VisibleIndex = 7;
             // 
             // FrmWarrantyCheck
             // 
@@ -435,8 +496,9 @@
             this.Text = "KIỂM TRA BẢO HÀNH";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StockInOutProductHistoryDtoGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WarrantyCheckListDtoGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.warrantyCheckListDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.WarrantyCheckListDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
@@ -446,7 +508,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.warrantyDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -459,14 +520,11 @@
         private DevExpress.XtraBars.BarDockControl barDockControlLeft;
         private DevExpress.XtraBars.BarManager barManager1;
         private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem InPhieuBarButtonItem;
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraBars.BarButtonItem NhapBaoHanhBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
-        private DevExpress.XtraGrid.GridControl StockInOutProductHistoryDtoGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView StockInOutProductHistoryDtoGridView;
+        private DevExpress.XtraGrid.GridControl WarrantyCheckListDtoGridControl;
+        private DevExpress.XtraGrid.Views.Grid.GridView WarrantyCheckListDtoGridView;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraBars.BarEditItem TuNgayBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit1;
@@ -478,17 +536,17 @@
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
         private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
-        private DevExpress.XtraBars.BarButtonItem ChiTietPhieuNhapXuatBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem XoaPhieuBarButtonItem;
         private DevExpress.XtraBars.BarEditItem KeyWordBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
-        private System.Windows.Forms.BindingSource warrantyDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colWarrantyTypeName;
-        private DevExpress.XtraGrid.Columns.GridColumn colProductVariantName;
         private DevExpress.XtraGrid.Columns.GridColumn colWarrantyStatusName;
-        private DevExpress.XtraGrid.Columns.GridColumn colUniqueProductInfo;
         private DevExpress.XtraGrid.Columns.GridColumn colWarrantyFrom;
         private DevExpress.XtraGrid.Columns.GridColumn colMonthOfWarranty;
         private DevExpress.XtraGrid.Columns.GridColumn colWarrantyUntil;
+        
+        private System.Windows.Forms.BindingSource warrantyCheckListDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colUniqueProductInfoHtml;
+        private DevExpress.XtraBars.BarButtonItem XuatFileBarButtonItem;
     }
 }

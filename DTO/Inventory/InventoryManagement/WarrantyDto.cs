@@ -190,7 +190,7 @@ public class WarrantyDto
             // Thông tin sản phẩm duy nhất (Serial Number, IMEI, v.v.)
             if (!string.IsNullOrWhiteSpace(uniqueProductInfo))
             {
-                html += $"<size=9><color='#757575'>Serial/IMEI:</color></size> <size=10><color='#212121'><b>{uniqueProductInfo}</b></color></size><br>";
+                html += $"<size=9><color='blue'>Serial/IMEI:</color></size> <size=10><color='blue'><b>{uniqueProductInfo}</b></color></size><br>";
             }
 
             // Kiểu bảo hành

@@ -96,6 +96,32 @@ public class WarrantyBll
         }
     }
 
+    /// <summary>
+    /// Query danh sách bảo hành với filter theo từ khóa và khoảng thời gian
+    /// </summary>
+    /// <param name="fromDate">Từ ngày (nullable)</param>
+    /// <param name="toDate">Đến ngày (nullable)</param>
+    /// <param name="keyword">Từ khóa tìm kiếm (tìm trong UniqueProductInfo, ProductVariantName, CustomerName)</param>
+    /// <returns>Danh sách Warranty entities</returns>
+    public List<Warranty> Query(DateTime? fromDate, DateTime? toDate, string keyword)
+    {
+        try
+        {
+            _logger.Debug("Query: Query danh sách bảo hành, FromDate={0}, ToDate={1}, Keyword={2}", 
+                fromDate, toDate, keyword);
+            
+            var warranties = GetDataAccess().Query(fromDate, toDate, keyword);
+            
+            _logger.Info("Query: Lấy được {0} bảo hành", warranties.Count);
+            return warranties;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Query: Lỗi query danh sách bảo hành: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 
     #region Save Operations

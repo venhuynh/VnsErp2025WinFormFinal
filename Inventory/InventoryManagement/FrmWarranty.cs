@@ -446,14 +446,13 @@ namespace Inventory.InventoryManagement
                     // Validate và lưu dữ liệu
                     var success = await SaveDataAsync();
 
-                    if (success)
-                    {
-                        MsgBox.ShowSuccess("Lưu bảo hành thành công!", "Thành công", this);
-                        MarkAsSaved();
-                        await LoadWarrantiesAsync(); // Reload danh sách
-                        ResetForm(); // Reset form
-                        _logger.Info("SaveBarButtonItem_ItemClick: Data saved successfully");
-                    }
+                    if (!success) return;
+                    
+                    MsgBox.ShowSuccess("Lưu bảo hành thành công!", "Thành công", this);
+                    MarkAsSaved();
+                    await LoadWarrantiesAsync(); // Reload danh sách
+                    ResetForm(); // Reset form
+                    _logger.Info("SaveBarButtonItem_ItemClick: Data saved successfully");
                 }
                 finally
                 {

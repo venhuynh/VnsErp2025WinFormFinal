@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Common.Enums;
+using Dal.DataContext;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using Dal.DataContext;
-using DTO.Inventory.StockIn;
-using Common.Enums;
 
 namespace DTO.Inventory.InventoryManagement;
 
@@ -85,9 +84,23 @@ public class WarrantyCheckListDto
     #region Properties - Thông tin hiển thị (Display)
 
     /// <summary>
-    /// Tên sản phẩm dịch vụ (lấy từ ProductVariant)
+    /// Mã sản phẩm/dịch vụ (từ ProductService)
+    /// </summary>
+    [DisplayName("Mã sản phẩm")]
+    [Display(Order = 9)]
+    public string ProductCode { get; set; }
+
+    /// <summary>
+    /// Tên sản phẩm/dịch vụ (từ ProductService)
     /// </summary>
     [DisplayName("Tên sản phẩm")]
+    [Display(Order = 10)]
+    public string ProductName { get; set; }
+
+    /// <summary>
+    /// Tên sản phẩm dịch vụ (lấy từ ProductVariant)
+    /// </summary>
+    [DisplayName("Tên biến thể")]
     [Display(Order = 10)]
     public string ProductVariantName { get; set; }
 
@@ -106,10 +119,17 @@ public class WarrantyCheckListDto
     public string WarrantyStatusName { get; set; }
 
     /// <summary>
+    /// Tên khách hàng (lấy từ StockInOutMaster)
+    /// </summary>
+    [DisplayName("Khách hàng")]
+    [Display(Order = 13)]
+    public string CustomerName { get; set; }
+
+    /// <summary>
     /// Kiểm tra bảo hành đã hết hạn chưa (chỉ đọc)
     /// </summary>
     [DisplayName("Hết hạn BH")]
-    [Display(Order = 13)]
+    [Display(Order = 14)]
     [Description("True nếu bảo hành đã hết hạn, False nếu còn bảo hành")]
     public bool IsWarrantyExpired
     {
@@ -131,7 +151,7 @@ public class WarrantyCheckListDto
     /// Tình trạng bảo hành (chỉ đọc) - "Còn bảo hành" hoặc "Hết hạn bảo hành"
     /// </summary>
     [DisplayName("Tình trạng BH")]
-    [Display(Order = 14)]
+    [Display(Order = 15)]
     [Description("Tình trạng bảo hành hiện tại")]
     public string WarrantyStatusText
     {
@@ -149,108 +169,72 @@ public class WarrantyCheckListDto
     }
 
     /// <summary>
-    /// Tổng hợp thông tin bảo hành dưới dạng HTML (chỉ đọc)
-    /// Hiển thị đầy đủ thông tin: tên sản phẩm, sản phẩm, kiểu bảo hành, trạng thái, thời gian bảo hành, tình trạng
+    /// Tổng hợp thông tin sản phẩm dưới dạng HTML (chỉ đọc)
+    /// Hiển thị: UniqueProductInfo, thông tin sản phẩm dịch vụ, thông tin biến thể, thông tin khách hàng
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
-    [DisplayName("Thông tin tổng hợp")]
-    [Display(Order = 15)]
-    [Description("Tổng hợp đầy đủ thông tin bảo hành dưới dạng HTML")]
-    public string FullInfo
+    [DisplayName("Thông tin SP HTML")]
+    [Display(Order = 16)]
+    [Description("Tổng hợp thông tin sản phẩm dưới dạng HTML")]
+    public string UniqueProductInfoHtml
     {
         get
         {
-            var uniqueProductInfo = UniqueProductInfo ?? string.Empty;
-            var warrantyStatusName = WarrantyStatusName ?? string.Empty;
-            var warrantyStatusText = WarrantyStatusText ?? string.Empty;
-
-            // Xác định màu sắc cho trạng thái bảo hành
-            var statusColor = GetWarrantyStatusColor(WarrantyStatus);
-
-            // Xác định màu sắc cho tình trạng (còn/hết hạn)
-            var statusTextColor = IsWarrantyExpired ? "#F44336" : "#4CAF50";
-
-            // Format chuyên nghiệp với visual hierarchy rõ ràng
-            // - Thông tin sản phẩm: font lớn, bold, màu xanh đậm (primary)
-            // - Trạng thái bảo hành: highlight với màu tương ứng
-            // - Thời gian bảo hành: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Tình trạng: highlight với màu xanh (còn) hoặc đỏ (hết hạn)
-
             var html = string.Empty;
 
-            // Tên sản phẩm dịch vụ (nổi bật nhất)
-            var productVariantName = ProductVariantName ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(productVariantName))
+            // UniqueProductInfo (Serial Number, IMEI, v.v.) - nổi bật nhất
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - UniqueProductInfo: font lớn (12), bold, màu xanh đậm (primary)
+            var uniqueProductInfo = UniqueProductInfo ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(uniqueProductInfo))
             {
-                html += $"<size=12><b><color='blue'>{productVariantName}</color></b></size>";
+                html += $"<size=12><b><color='blue'>{uniqueProductInfo}</color></b></size>";
                 html += "<br>";
             }
 
-            // Thông tin sản phẩm duy nhất (Serial Number, IMEI, v.v.)
-            if (!string.IsNullOrWhiteSpace(uniqueProductInfo))
+            // Thông tin sản phẩm dịch vụ (ProductService)
+            // - Tên sản phẩm: font lớn (12), bold, màu xanh đậm (primary)
+            // - Mã sản phẩm: font nhỏ hơn (9), màu xám (#757575)
+            var productName = ProductName ?? string.Empty;
+            var productCode = ProductCode ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(productName))
             {
-                html += $"<size=9><color='#757575'>Serial/IMEI:</color></size> <size=10><color='#212121'><b>{uniqueProductInfo}</b></color></size><br>";
+                html += $"<size=12><b><color='blue'>{productName}</color></b></size>";
+                if (!string.IsNullOrWhiteSpace(productCode))
+                {
+                    html += $" <size=9><color='#757575'>({productCode})</color></size>";
+                }
+                html += "<br>";
+            }
+            else if (!string.IsNullOrWhiteSpace(productCode))
+            {
+                // Nếu chỉ có mã sản phẩm
+                html += $"<size=12><b><color='blue'>{productCode}</color></b></size>";
+                html += "<br>";
             }
 
-            // Kiểu bảo hành
-            var warrantyTypeName = WarrantyTypeName ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(warrantyTypeName))
+            // Thông tin biến thể (ProductVariantName)
+            // - Label "Biến thể:" màu xám (#757575), size nhỏ (9)
+            // - Value màu đen (#212121), size 10, bold
+            var productVariantName = ProductVariantName ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(productVariantName))
             {
-                html += $"<size=9><color='#757575'>Kiểu BH:</color></size> <size=10><color='#212121'><b>{warrantyTypeName}</b></color></size><br>";
+                html += $"<size=10><color='#212121'><b>{productVariantName}</b></color></size>";
+                html += "<br>";
             }
 
-            // Trạng thái bảo hành
-            if (!string.IsNullOrWhiteSpace(warrantyStatusName))
+            // Thông tin khách hàng
+            // - Label "Khách hàng:" màu xám (#757575), size nhỏ (9)
+            // - Value màu đen (#212121), size 10, bold
+            var customerName = CustomerName ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(customerName))
             {
-                html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{warrantyStatusName}</b></color></size><br>";
-            }
-
-            // Thời gian bảo hành
-            var timeParts = new List<string>();
-            if (WarrantyFrom.HasValue)
-            {
-                timeParts.Add($"Từ: {WarrantyFrom.Value:dd/MM/yyyy}");
-            }
-            if (WarrantyUntil.HasValue)
-            {
-                timeParts.Add($"Đến: {WarrantyUntil.Value:dd/MM/yyyy}");
-            }
-            if (MonthOfWarranty > 0)
-            {
-                timeParts.Add($"{MonthOfWarranty} tháng");
-            }
-            if (timeParts.Any())
-            {
-                html += $"<size=9><color='#757575'>Thời gian:</color></size> <size=10><color='#212121'><b>{string.Join(" - ", timeParts)}</b></color></size><br>";
-            }
-
-            // Tình trạng (còn/hết hạn)
-            if (!string.IsNullOrWhiteSpace(warrantyStatusText))
-            {
-                html += $"<size=9><color='#757575'>Tình trạng:</color></size> <size=10><color='{statusTextColor}'><b>{warrantyStatusText}</b></color></size>";
+                html += $"<size=9><color='#757575'>Khách hàng:</color></size> <size=10><color='#212121'><b>{customerName}</b></color></size>";
             }
 
             return html;
         }
-    }
-
-    /// <summary>
-    /// Lấy màu sắc tương ứng với trạng thái bảo hành
-    /// </summary>
-    /// <param name="status">Trạng thái bảo hành</param>
-    /// <returns>Mã màu hex</returns>
-    private string GetWarrantyStatusColor(TrangThaiBaoHanhEnum status)
-    {
-        return status switch
-        {
-            TrangThaiBaoHanhEnum.ChoXuLy => "#FF9800",      // Orange - Chờ xử lý
-            TrangThaiBaoHanhEnum.DangBaoHanh => "#2196F3", // Blue - Đang bảo hành
-            TrangThaiBaoHanhEnum.DaHoanThanh => "#4CAF50", // Green - Đã hoàn thành
-            TrangThaiBaoHanhEnum.DaTuChoi => "#F44336",     // Red - Đã từ chối
-            TrangThaiBaoHanhEnum.DaHuy => "#9E9E9E",        // Grey - Đã hủy
-            _ => "#212121"                                   // Default - Black
-        };
     }
 
     #endregion
@@ -282,11 +266,19 @@ public static class WarrantyCheckListDtoConverter
             UniqueProductInfo = entity.UniqueProductInfo
         };
 
-        // Lấy tên sản phẩm từ ProductVariant thông qua StockInOutDetail
+        // Lấy thông tin sản phẩm từ ProductVariant thông qua StockInOutDetail
         if (entity.StockInOutDetail != null && entity.StockInOutDetail.ProductVariant != null)
         {
             var productVariant = entity.StockInOutDetail.ProductVariant;
-            // Ưu tiên VariantFullName, nếu không có thì lấy từ ProductService.Name
+            
+            // Lấy thông tin từ ProductService (sản phẩm/dịch vụ gốc)
+            if (productVariant.ProductService != null)
+            {
+                dto.ProductCode = productVariant.ProductService.Code ?? string.Empty;
+                dto.ProductName = productVariant.ProductService.Name ?? string.Empty;
+            }
+
+            // Lấy tên biến thể - ưu tiên VariantFullName, nếu không có thì lấy từ ProductService.Name
             if (!string.IsNullOrWhiteSpace(productVariant.VariantFullName))
             {
                 dto.ProductVariantName = productVariant.VariantFullName;
@@ -295,6 +287,14 @@ public static class WarrantyCheckListDtoConverter
             {
                 dto.ProductVariantName = productVariant.ProductService.Name;
             }
+        }
+
+        // Lấy thông tin khách hàng từ StockInOutMaster thông qua StockInOutDetail
+        if (entity.StockInOutDetail != null && entity.StockInOutDetail.StockInOutMaster != null)
+        {
+            var master = entity.StockInOutDetail.StockInOutMaster;
+            dto.CustomerName = master.BusinessPartnerSite?.BusinessPartner?.PartnerName ?? 
+                              master.BusinessPartnerSite?.SiteName;
         }
 
         // Chuyển đổi WarrantyType từ int sang enum

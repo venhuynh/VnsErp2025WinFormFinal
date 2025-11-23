@@ -56,7 +56,10 @@ public class WarrantyRepository : IWarrantyRepository
         var loadOptions = new DataLoadOptions();
         loadOptions.LoadWith<Warranty>(w => w.StockInOutDetail);
         loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
+        loadOptions.LoadWith<StockInOutDetail>(d => d.StockInOutMaster);
         loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
+        loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
+        loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
         context.LoadOptions = loadOptions;
 
         return context;
@@ -89,6 +92,86 @@ public class WarrantyRepository : IWarrantyRepository
         catch (Exception ex)
         {
             _logger.Error($"GetByStockInOutMasterId: Lỗi lấy danh sách bảo hành: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Query danh sách bảo hành với filter theo từ khóa và khoảng thời gian
+    /// </summary>
+    /// <param name="fromDate">Từ ngày (nullable)</param>
+    /// <param name="toDate">Đến ngày (nullable)</param>
+    /// <param name="keyword">Từ khóa tìm kiếm (tìm trong UniqueProductInfo, ProductVariantName, CustomerName)</param>
+    /// <returns>Danh sách Warranty entities</returns>
+    public List<Warranty> Query(DateTime? fromDate, DateTime? toDate, string keyword)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("Query: Lấy danh sách bảo hành, FromDate={0}, ToDate={1}, Keyword={2}", 
+                fromDate, toDate, keyword);
+
+            var query = from w in context.Warranties
+                       select w;
+
+            // Filter theo khoảng thời gian bảo hành
+            // Hiển thị tất cả các bảo hành có thời gian bảo hành giao với khoảng thời gian filter
+            // Tức là: WarrantyFrom <= toDate AND (WarrantyUntil >= fromDate OR WarrantyUntil == null)
+            if (fromDate.HasValue || toDate.HasValue)
+            {
+                if (fromDate.HasValue && toDate.HasValue)
+                {
+                    // Có cả fromDate và toDate: hiển thị bảo hành có thời gian giao với khoảng [fromDate, toDate]
+                    query = query.Where(w => 
+                        // Bảo hành bắt đầu trước hoặc trong khoảng thời gian filter
+                        (w.WarrantyFrom.HasValue && w.WarrantyFrom.Value <= toDate.Value) &&
+                        // Và kết thúc sau hoặc trong khoảng thời gian filter (hoặc chưa có ngày kết thúc)
+                        (w.WarrantyUntil.HasValue && w.WarrantyUntil.Value >= fromDate.Value || !w.WarrantyUntil.HasValue));
+                }
+                else if (fromDate.HasValue)
+                {
+                    // Chỉ có fromDate: hiển thị bảo hành kết thúc sau fromDate (hoặc chưa có ngày kết thúc)
+                    query = query.Where(w => 
+                        !w.WarrantyUntil.HasValue || w.WarrantyUntil.Value >= fromDate.Value);
+                }
+                else if (toDate.HasValue)
+                {
+                    // Chỉ có toDate: hiển thị bảo hành bắt đầu trước hoặc trong toDate
+                    query = query.Where(w => 
+                        !w.WarrantyFrom.HasValue || w.WarrantyFrom.Value <= toDate.Value);
+                }
+            }
+
+            // Filter theo từ khóa (tìm trong UniqueProductInfo)
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(w => 
+                    (w.UniqueProductInfo != null && w.UniqueProductInfo.Contains(keyword)) ||
+                    (w.StockInOutDetail != null && 
+                     w.StockInOutDetail.ProductVariant != null &&
+                     w.StockInOutDetail.ProductVariant.VariantFullName != null &&
+                     w.StockInOutDetail.ProductVariant.VariantFullName.Contains(keyword)) ||
+                    (w.StockInOutDetail != null &&
+                     w.StockInOutDetail.StockInOutMaster != null &&
+                     w.StockInOutDetail.StockInOutMaster.BusinessPartnerSite != null &&
+                     w.StockInOutDetail.StockInOutMaster.BusinessPartnerSite.BusinessPartner != null &&
+                     w.StockInOutDetail.StockInOutMaster.BusinessPartnerSite.BusinessPartner.PartnerName != null &&
+                     w.StockInOutDetail.StockInOutMaster.BusinessPartnerSite.BusinessPartner.PartnerName.Contains(keyword)) ||
+                    (w.StockInOutDetail != null &&
+                     w.StockInOutDetail.StockInOutMaster != null &&
+                     w.StockInOutDetail.StockInOutMaster.BusinessPartnerSite != null &&
+                     w.StockInOutDetail.StockInOutMaster.BusinessPartnerSite.SiteName != null &&
+                     w.StockInOutDetail.StockInOutMaster.BusinessPartnerSite.SiteName.Contains(keyword)));
+            }
+
+            var warranties = query.ToList();
+
+            _logger.Info("Query: Lấy được {0} bảo hành", warranties.Count);
+            return warranties;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Query: Lỗi query danh sách bảo hành: {ex.Message}", ex);
             throw;
         }
     }

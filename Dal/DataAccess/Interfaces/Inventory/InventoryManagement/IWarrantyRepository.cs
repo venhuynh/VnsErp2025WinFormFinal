@@ -14,6 +14,15 @@ public interface IWarrantyRepository
     List<Warranty> GetByStockInOutMasterId(Guid stockInOutMasterId);
 
     /// <summary>
+    /// Query danh sách bảo hành với filter theo từ khóa và khoảng thời gian
+    /// </summary>
+    /// <param name="fromDate">Từ ngày (nullable)</param>
+    /// <param name="toDate">Đến ngày (nullable)</param>
+    /// <param name="keyword">Từ khóa tìm kiếm (tìm trong UniqueProductInfo, ProductVariantName, CustomerName)</param>
+    /// <returns>Danh sách Warranty entities</returns>
+    List<Warranty> Query(DateTime? fromDate, DateTime? toDate, string keyword);
+
+    /// <summary>
     /// Lưu hoặc cập nhật bảo hành
     /// </summary>
     /// <param name="warranty">Entity bảo hành cần lưu</param>

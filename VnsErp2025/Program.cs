@@ -83,7 +83,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmStockInOutProductHistory());
+            Application.Run(new FrmWarrantyCheck());
 
             #endregion
 
