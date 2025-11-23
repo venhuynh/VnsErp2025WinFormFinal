@@ -105,5 +105,55 @@ public class StockInOutDetailBll
     }
 
     #endregion
+
+    #region Delete Operations
+
+    /// <summary>
+    /// Xóa StockInOutDetail theo ID
+    /// </summary>
+    /// <param name="id">ID của StockInOutDetail cần xóa</param>
+    /// <returns>ID của StockInOutMaster (để kiểm tra xem có còn detail nào không)</returns>
+    public Guid Delete(Guid id)
+    {
+        try
+        {
+            _logger.Debug("Delete: Bắt đầu xóa StockInOutDetail, Id={0}", id);
+
+            var masterId = GetStockInOutDetailRepository().Delete(id);
+
+            _logger.Info("Delete: Xóa StockInOutDetail thành công, Id={0}, MasterId={1}", id, masterId);
+            return masterId;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Delete: Lỗi xóa StockInOutDetail: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Kiểm tra xem StockInOutMaster còn detail nào không
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID của StockInOutMaster</param>
+    /// <returns>True nếu còn detail, False nếu không còn</returns>
+    public bool HasRemainingDetails(Guid stockInOutMasterId)
+    {
+        try
+        {
+            _logger.Debug("HasRemainingDetails: Kiểm tra MasterId={0}", stockInOutMasterId);
+
+            var hasDetails = GetStockInOutDetailRepository().HasRemainingDetails(stockInOutMasterId);
+
+            _logger.Info("HasRemainingDetails: MasterId={0}, HasDetails={1}", stockInOutMasterId, hasDetails);
+            return hasDetails;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"HasRemainingDetails: Lỗi kiểm tra detail: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
 }
 

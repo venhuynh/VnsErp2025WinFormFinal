@@ -137,5 +137,78 @@ namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement
         }
 
         #endregion
+
+        #region Delete Operations
+
+        /// <summary>
+        /// Xóa StockInOutDetail theo ID
+        /// Xóa tất cả Warranty liên quan trước khi xóa detail
+        /// </summary>
+        /// <param name="id">ID của StockInOutDetail cần xóa</param>
+        /// <returns>ID của StockInOutMaster (để kiểm tra xem có còn detail nào không)</returns>
+        public Guid Delete(Guid id)
+        {
+            using var context = CreateNewContext();
+            try
+            {
+                _logger.Debug("Delete: Bắt đầu xóa StockInOutDetail, Id={0}", id);
+
+                // Tìm detail entity
+                var detail = context.StockInOutDetails.FirstOrDefault(d => d.Id == id);
+                if (detail == null)
+                {
+                    _logger.Warning("Delete: Không tìm thấy StockInOutDetail với Id={0}", id);
+                    throw new InvalidOperationException($"Không tìm thấy chi tiết nhập xuất kho với ID: {id}");
+                }
+
+                // Lưu MasterId trước khi xóa
+                var masterId = detail.StockInOutMasterId;
+
+                // Xóa tất cả Warranty liên quan đến detail này trước
+                var warranties = context.Warranties.Where(w => w.StockInOutDetailId == id).ToList();
+                if (warranties.Any())
+                {
+                    context.Warranties.DeleteAllOnSubmit(warranties);
+                    _logger.Debug("Delete: Đã xóa {0} Warranty liên quan", warranties.Count);
+                }
+
+                // Xóa detail
+                context.StockInOutDetails.DeleteOnSubmit(detail);
+                context.SubmitChanges();
+
+                _logger.Info("Delete: Đã xóa StockInOutDetail, Id={0}, MasterId={1}", id, masterId);
+                return masterId;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Delete: Lỗi xóa StockInOutDetail: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra xem StockInOutMaster còn detail nào không
+        /// </summary>
+        /// <param name="stockInOutMasterId">ID của StockInOutMaster</param>
+        /// <returns>True nếu còn detail, False nếu không còn</returns>
+        public bool HasRemainingDetails(Guid stockInOutMasterId)
+        {
+            using var context = CreateNewContext();
+            try
+            {
+                var hasDetails = context.StockInOutDetails
+                    .Any(d => d.StockInOutMasterId == stockInOutMasterId);
+
+                _logger.Debug("HasRemainingDetails: MasterId={0}, HasDetails={1}", stockInOutMasterId, hasDetails);
+                return hasDetails;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"HasRemainingDetails: Lỗi kiểm tra detail: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        #endregion
     }
 }

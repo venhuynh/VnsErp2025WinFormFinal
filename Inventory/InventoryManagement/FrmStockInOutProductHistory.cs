@@ -112,6 +112,7 @@ namespace Inventory.InventoryManagement
                 StockInOutProductHistoryDtoGridView.SelectionChanged += StockInOutProductHistoryDtoGridView_SelectionChanged;
                 StockInOutProductHistoryDtoGridView.CustomDrawRowIndicator += StockInOutProductHistoryDtoGridView_CustomDrawRowIndicator;
                 StockInOutProductHistoryDtoGridView.RowCellStyle += StockInOutProductHistoryDtoGridView_RowCellStyle;
+                StockInOutProductHistoryDtoGridView.CustomColumnDisplayText += StockInOutProductHistoryDtoGridView_CustomColumnDisplayText;
 
                 // Form events
                 Load += FrmStockInOutProductHistory_Load;
@@ -121,6 +122,7 @@ namespace Inventory.InventoryManagement
                 _logger.Error("SetupEvents: Exception occurred", ex);
             }
         }
+
 
         #endregion
 
@@ -336,41 +338,41 @@ namespace Inventory.InventoryManagement
 
         /// <summary>
         /// Event handler cho nút Xóa phiếu
-        /// Chỉ cho phép xóa 1 phiếu được chọn, sử dụng OverlayManager và confirmation dialog
+        /// Xóa các StockInOutDetail được chọn, nếu master không còn detail nào thì xóa luôn master
+        /// Cho phép xóa nhiều dòng cùng lúc
         /// </summary>
         private async void XoaPhieuBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
-                // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
+                // Kiểm tra số lượng sản phẩm được chọn
                 var selectedCount = StockInOutProductHistoryDtoGridView.SelectedRowsCount;
                 if (selectedCount == 0)
                 {
-                    MsgBox.ShowWarning("Vui lòng chọn một sản phẩm để xóa phiếu.");
+                    MsgBox.ShowWarning("Vui lòng chọn ít nhất một sản phẩm để xóa.");
                     return;
                 }
 
-                if (selectedCount > 1)
+                // Lấy tất cả các dòng được chọn
+                var selectedRowHandles = StockInOutProductHistoryDtoGridView.GetSelectedRows();
+                var selectedDtos = selectedRowHandles
+                    .Select(handle => StockInOutProductHistoryDtoGridView.GetRow(handle) as StockInOutProductHistoryDto)
+                    .Where(dto => dto != null && dto.Id != Guid.Empty)
+                    .ToList();
+
+                if (selectedDtos.Count == 0)
                 {
-                    MsgBox.ShowWarning("Chỉ cho phép xóa 1 phiếu. Vui lòng bỏ chọn bớt.");
+                    MsgBox.ShowWarning("Không có sản phẩm hợp lệ để xóa.");
                     return;
                 }
-
-                // Kiểm tra ID phiếu được chọn
-                if (!_selectedStockInOutMasterId.HasValue || _selectedStockInOutMasterId.Value == Guid.Empty)
-                {
-                    MsgBox.ShowWarning("Vui lòng chọn sản phẩm để xóa phiếu.");
-                    return;
-                }
-
-                // Lấy thông tin phiếu để hiển thị trong confirmation
-                var focusedRowHandle = StockInOutProductHistoryDtoGridView.FocusedRowHandle;
-                var dto = StockInOutProductHistoryDtoGridView.GetRow(focusedRowHandle) as StockInOutProductHistoryDto;
-                var voucherNumber = dto?.VocherNumber ?? "N/A";
 
                 // Hiển thị confirmation dialog
-                var confirmMessage = $"Bạn có chắc muốn xóa phiếu nhập xuất kho:\n<b>{voucherNumber}</b>?\n\n" +
-                                    "Hành động này không thể hoàn tác!";
+                var confirmMessage = selectedDtos.Count == 1
+                    ? $"Bạn có chắc muốn xóa sản phẩm:\n<b>{GetProductDisplayName(selectedDtos[0])}</b>\n" +
+                      $"Trong phiếu: <b>{selectedDtos[0].VocherNumber ?? "N/A"}</b>?\n\n" +
+                      "Hành động này không thể hoàn tác!"
+                    : $"Bạn có chắc muốn xóa <b>{selectedDtos.Count}</b> sản phẩm?\n\n" +
+                      "Hành động này không thể hoàn tác!";
                 
                 if (!MsgBox.ShowYesNo(confirmMessage, "Xác nhận xóa"))
                 {
@@ -378,21 +380,61 @@ namespace Inventory.InventoryManagement
                 }
 
                 // Thực hiện xóa với OverlayManager
+                var deletedCount = 0;
+                var masterIdsToCheck = new System.Collections.Generic.HashSet<Guid>();
+                
                 using (OverlayManager.ShowScope(this))
                 {
                     await Task.Run(() =>
                     {
                         try
                         {
-                            var stockInOutMasterBll = new StockInOutMasterBll();
-                            stockInOutMasterBll.Delete(_selectedStockInOutMasterId.Value);
+                            foreach (var dto in selectedDtos)
+                            {
+                                try
+                                {
+                                    // Xóa detail
+                                    var masterId = _stockInOutDetailBll.Delete(dto.Id);
+                                    _logger.Info("XoaPhieuBarButtonItem_ItemClick: Đã xóa detail, DetailId={0}, MasterId={1}", dto.Id, masterId);
+                                    
+                                    masterIdsToCheck.Add(masterId);
+                                    deletedCount++;
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.Error($"XoaPhieuBarButtonItem_ItemClick: Lỗi xóa detail {dto.Id}: {ex.Message}", ex);
+                                    // Tiếp tục xóa các detail khác
+                                }
+                            }
+
+                            // Kiểm tra và xóa các master không còn detail
+                            foreach (var masterId in masterIdsToCheck)
+                            {
+                                try
+                                {
+                                    var hasRemainingDetails = _stockInOutDetailBll.HasRemainingDetails(masterId);
+                                    
+                                    if (!hasRemainingDetails)
+                                    {
+                                        // Nếu không còn detail nào, xóa luôn master
+                                        var stockInOutMasterBll = new StockInOutMasterBll();
+                                        stockInOutMasterBll.Delete(masterId);
+                                        _logger.Info("XoaPhieuBarButtonItem_ItemClick: Đã xóa master vì không còn detail, MasterId={0}", masterId);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.Error($"XoaPhieuBarButtonItem_ItemClick: Lỗi kiểm tra/xóa master {masterId}: {ex.Message}", ex);
+                                    // Tiếp tục với master khác
+                                }
+                            }
                         }
                         catch (Exception ex)
                         {
                             _logger.Error("XoaPhieuBarButtonItem_ItemClick: Exception during delete operation", ex);
                             BeginInvoke(new Action(() =>
                             {
-                                MsgBox.ShowError($"Lỗi xóa phiếu: {ex.Message}");
+                                MsgBox.ShowError($"Lỗi xóa sản phẩm: {ex.Message}");
                             }));
                             throw;
                         }
@@ -402,14 +444,37 @@ namespace Inventory.InventoryManagement
                 // Reload data sau khi xóa thành công
                 await LoadDataAsync();
 
-                MsgBox.ShowSuccess("Xóa phiếu nhập xuất kho thành công.");
+                if (deletedCount == selectedDtos.Count)
+                {
+                    MsgBox.ShowSuccess($"Đã xóa thành công {deletedCount} sản phẩm.");
+                }
+                else
+                {
+                    MsgBox.ShowWarning($"Đã xóa {deletedCount}/{selectedDtos.Count} sản phẩm. Vui lòng kiểm tra lại.");
+                }
 
             }
             catch (Exception ex)
             {
                 _logger.Error("XoaPhieuBarButtonItem_ItemClick: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi xóa phiếu: {ex.Message}");
+                MsgBox.ShowError($"Lỗi xóa sản phẩm: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Lấy tên hiển thị của sản phẩm từ DTO
+        /// </summary>
+        private string GetProductDisplayName(StockInOutProductHistoryDto dto)
+        {
+            if (dto == null) return "N/A";
+            
+            if (!string.IsNullOrWhiteSpace(dto.ProductName))
+                return dto.ProductName;
+            
+            if (!string.IsNullOrWhiteSpace(dto.ProductVariantFullName))
+                return dto.ProductVariantFullName;
+            
+            return dto.ProductVariantCode ?? "N/A";
         }
 
         /// <summary>
@@ -481,9 +546,54 @@ namespace Inventory.InventoryManagement
             }
         }
 
+
+        /// <summary>
+        /// Xử lý sự kiện custom column display text
+        /// Ẩn các giá trị 0 cho các cột numeric
+        /// </summary>
+        private void StockInOutProductHistoryDtoGridView_CustomColumnDisplayText(object sender, 
+            DevExpress.XtraGrid.Views.Base.CustomColumnDisplayTextEventArgs e)
+        {
+            try
+            {
+                // Chỉ xử lý các cột numeric có thể có giá trị 0
+                if (e.Column == colStockInQty || 
+                    e.Column == colStockOutQty || 
+                    e.Column == colUnitPrice || 
+                    e.Column == colVatAmount || 
+                    e.Column == colTotalAmount || 
+                    e.Column == colTotalAmountIncludedVat)
+                {
+                    // Lấy giá trị thực tế từ cell
+                    var value = e.Value;
+                    
+                    // Kiểm tra nếu giá trị là 0 hoặc null
+                    if (value == null || value == DBNull.Value)
+                    {
+                        e.DisplayText = string.Empty;
+                        return;
+                    }
+
+                    // Chuyển đổi sang decimal để so sánh
+                    if (decimal.TryParse(value.ToString(), out decimal decimalValue))
+                    {
+                        if (decimalValue == 0)
+                        {
+                            e.DisplayText = string.Empty;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("StockInOutProductHistoryDtoGridView_CustomColumnDisplayText: Exception occurred", ex);
+                // Không hiển thị lỗi để không làm gián đoạn hiển thị
+            }
+        }
+
         /// <summary>
         /// Xử lý sự kiện tô màu cell theo trạng thái hoặc điều kiện
-        /// Có thể mở rộng để format theo các điều kiện khác nhau
+        /// Tô màu nền dòng theo loại phiếu: Nhập (xanh lá), Xuất (đỏ/cam), Điều chỉnh (vàng)
         /// </summary>
         private void StockInOutProductHistoryDtoGridView_RowCellStyle(object sender, 
             DevExpress.XtraGrid.Views.Grid.RowCellStyleEventArgs e)
@@ -492,19 +602,53 @@ namespace Inventory.InventoryManagement
             {
                 var gridView = sender as DevExpress.XtraGrid.Views.Grid.GridView;
                 if (gridView == null) return;
+                
+                // Bỏ qua các dòng không hợp lệ (header, footer, group row)
+                if (e.RowHandle < 0) return;
 
-                _ = gridView.GetRow(e.RowHandle) as StockInOutProductHistoryDto;
+                // Không tô màu khi dòng đang được chọn để giữ màu chọn mặc định của DevExpress
+                if (gridView.IsRowSelected(e.RowHandle)) return;
 
-                // Có thể thêm logic format theo điều kiện ở đây
-                // Ví dụ: format theo loại nhập xuất, tổng tiền, v.v.
-                // Hiện tại để trống, có thể mở rộng sau
+                var dto = gridView.GetRow(e.RowHandle) as StockInOutProductHistoryDto;
+                if (dto == null) return;
+
+                // Xác định loại phiếu dựa trên StockInQty và StockOutQty
+                System.Drawing.Color backColor;
+                
+                if (dto.StockInQty > 0 && dto.StockOutQty == 0)
+                {
+                    // Phiếu nhập: màu xanh lá nhạt
+                    backColor = System.Drawing.Color.LightGreen;
+                }
+                else if (dto.StockOutQty > 0 && dto.StockInQty == 0)
+                {
+                    // Phiếu xuất: màu đỏ/cam nhạt
+                    backColor = System.Drawing.Color.LightCoral;
+                }
+                else if (dto.StockInQty > 0 && dto.StockOutQty > 0)
+                {
+                    // Điều chỉnh (cả nhập và xuất): màu vàng nhạt
+                    backColor = System.Drawing.Color.LightYellow;
+                }
+                else
+                {
+                    // Trường hợp đặc biệt (cả hai đều = 0): màu trắng
+                    backColor = System.Drawing.Color.White;
+                }
+
+                // Áp dụng màu nền cho toàn bộ dòng
+                e.Appearance.BackColor = backColor;
+                e.Appearance.ForeColor = System.Drawing.Color.Black; // Chữ đen để tương phản tốt
+                e.Appearance.Options.UseBackColor = true;
+                e.Appearance.Options.UseForeColor = true;
             }
             catch (Exception ex)
             {
-                MsgBox.ShowException(ex);
+                _logger.Error("StockInOutProductHistoryDtoGridView_RowCellStyle: Exception occurred", ex);
                 // Ignore style errors để không ảnh hưởng đến hiển thị
             }
         }
+
 
         #endregion
 
@@ -647,12 +791,14 @@ namespace Inventory.InventoryManagement
                 // Lấy số lượng dòng được chọn
                 var selectedCount = StockInOutProductHistoryDtoGridView.SelectedRowsCount;
 
-                // Tất cả các nút: chỉ khi chọn đúng 1 dòng
+                // Các nút chỉ cho phép 1 dòng: Chi tiết, In phiếu, Nhập bảo hành, Thêm hình ảnh
                 ChiTietPhieuNhapXuatBarButtonItem.Enabled = hasSelection && selectedCount == 1;
                 InPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;
                 NhapBaoHanhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
                 ThemHinhAnhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
-                XoaPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;
+                
+                // Nút Xóa: cho phép xóa nhiều dòng (chỉ cần có selection)
+                XoaPhieuBarButtonItem.Enabled = selectedCount > 0;
             }
             catch (Exception ex)
             {
