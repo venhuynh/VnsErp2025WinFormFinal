@@ -115,30 +115,36 @@ public class WarrantyRepository : IWarrantyRepository
                        select w;
 
             // Filter theo khoảng thời gian bảo hành
-            // Hiển thị tất cả các bảo hành có thời gian bảo hành giao với khoảng thời gian filter
-            // Tức là: WarrantyFrom <= toDate AND (WarrantyUntil >= fromDate OR WarrantyUntil == null)
+            // Hiển thị các bảo hành có thời gian bảo hành giao với khoảng [fromDate, toDate]
+            // Tức là: (WarrantyFrom <= toDate AND WarrantyUntil >= fromDate)
+            // Điều này đảm bảo có ít nhất một phần của thời gian bảo hành nằm trong khoảng filter
             if (fromDate.HasValue || toDate.HasValue)
             {
                 if (fromDate.HasValue && toDate.HasValue)
                 {
-                    // Có cả fromDate và toDate: hiển thị bảo hành có thời gian giao với khoảng [fromDate, toDate]
+                    // Có cả fromDate và toDate: 
+                    // Bảo hành giao với khoảng [fromDate, toDate] khi:
+                    // WarrantyFrom <= toDate AND WarrantyUntil >= fromDate
+                    // (Bảo hành bắt đầu trước hoặc trong toDate VÀ kết thúc sau hoặc trong fromDate)
                     query = query.Where(w => 
-                        // Bảo hành bắt đầu trước hoặc trong khoảng thời gian filter
-                        (w.WarrantyFrom.HasValue && w.WarrantyFrom.Value <= toDate.Value) &&
-                        // Và kết thúc sau hoặc trong khoảng thời gian filter (hoặc chưa có ngày kết thúc)
-                        (w.WarrantyUntil.HasValue && w.WarrantyUntil.Value >= fromDate.Value || !w.WarrantyUntil.HasValue));
+                        w.WarrantyFrom.HasValue && 
+                        w.WarrantyUntil.HasValue &&
+                        w.WarrantyFrom.Value.Date <= toDate.Value.Date &&
+                        w.WarrantyUntil.Value.Date >= fromDate.Value.Date);
                 }
                 else if (fromDate.HasValue)
                 {
-                    // Chỉ có fromDate: hiển thị bảo hành kết thúc sau fromDate (hoặc chưa có ngày kết thúc)
+                    // Chỉ có fromDate: hiển thị bảo hành kết thúc sau hoặc trong fromDate
                     query = query.Where(w => 
-                        !w.WarrantyUntil.HasValue || w.WarrantyUntil.Value >= fromDate.Value);
+                        w.WarrantyUntil.HasValue && 
+                        w.WarrantyUntil.Value.Date >= fromDate.Value.Date);
                 }
-                else if (toDate.HasValue)
+                else
                 {
                     // Chỉ có toDate: hiển thị bảo hành bắt đầu trước hoặc trong toDate
                     query = query.Where(w => 
-                        !w.WarrantyFrom.HasValue || w.WarrantyFrom.Value <= toDate.Value);
+                        w.WarrantyFrom.HasValue && 
+                        w.WarrantyFrom.Value.Date <= toDate.Value.Date);
                 }
             }
 
