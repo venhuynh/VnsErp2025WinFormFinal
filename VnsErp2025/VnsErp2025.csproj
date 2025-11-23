@@ -89,6 +89,7 @@
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
+    <None Include="Docs\ImageStorageRefactoringArchitecture.md" />
     <None Include="Docs\ProjectProgress_20250115.md" />
     <None Include="Docs\SolutionDescription.md" />
     <None Include="Properties\Settings.settings">

@@ -2883,6 +2883,18 @@ namespace Dal.DataContext
 		
 		private System.Data.Linq.Binary _Logo;
 		
+		private string _LogoFileName;
+		
+		private string _LogoRelativePath;
+		
+		private string _LogoFullPath;
+		
+		private string _LogoStorageType;
+		
+		private System.Nullable<long> _LogoFileSize;
+		
+		private string _LogoChecksum;
+		
 		private EntitySet<CompanyBranch> _CompanyBranches;
 		
 		private EntitySet<Department> _Departments;
@@ -2919,6 +2931,18 @@ namespace Dal.DataContext
     partial void OnUpdatedDateChanged();
     partial void OnLogoChanging(System.Data.Linq.Binary value);
     partial void OnLogoChanged();
+    partial void OnLogoFileNameChanging(string value);
+    partial void OnLogoFileNameChanged();
+    partial void OnLogoRelativePathChanging(string value);
+    partial void OnLogoRelativePathChanged();
+    partial void OnLogoFullPathChanging(string value);
+    partial void OnLogoFullPathChanged();
+    partial void OnLogoStorageTypeChanging(string value);
+    partial void OnLogoStorageTypeChanged();
+    partial void OnLogoFileSizeChanging(System.Nullable<long> value);
+    partial void OnLogoFileSizeChanged();
+    partial void OnLogoChecksumChanging(string value);
+    partial void OnLogoChecksumChanged();
     #endregion
 		
 		public Company()
@@ -3166,6 +3190,126 @@ namespace Dal.DataContext
 					this._Logo = value;
 					this.SendPropertyChanged("Logo");
 					this.OnLogoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoFileName", DbType="NVarChar(255)")]
+		public string LogoFileName
+		{
+			get
+			{
+				return this._LogoFileName;
+			}
+			set
+			{
+				if ((this._LogoFileName != value))
+				{
+					this.OnLogoFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._LogoFileName = value;
+					this.SendPropertyChanged("LogoFileName");
+					this.OnLogoFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoRelativePath", DbType="NVarChar(500)")]
+		public string LogoRelativePath
+		{
+			get
+			{
+				return this._LogoRelativePath;
+			}
+			set
+			{
+				if ((this._LogoRelativePath != value))
+				{
+					this.OnLogoRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._LogoRelativePath = value;
+					this.SendPropertyChanged("LogoRelativePath");
+					this.OnLogoRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoFullPath", DbType="NVarChar(1000)")]
+		public string LogoFullPath
+		{
+			get
+			{
+				return this._LogoFullPath;
+			}
+			set
+			{
+				if ((this._LogoFullPath != value))
+				{
+					this.OnLogoFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._LogoFullPath = value;
+					this.SendPropertyChanged("LogoFullPath");
+					this.OnLogoFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoStorageType", DbType="NVarChar(20)")]
+		public string LogoStorageType
+		{
+			get
+			{
+				return this._LogoStorageType;
+			}
+			set
+			{
+				if ((this._LogoStorageType != value))
+				{
+					this.OnLogoStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._LogoStorageType = value;
+					this.SendPropertyChanged("LogoStorageType");
+					this.OnLogoStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoFileSize", DbType="BigInt")]
+		public System.Nullable<long> LogoFileSize
+		{
+			get
+			{
+				return this._LogoFileSize;
+			}
+			set
+			{
+				if ((this._LogoFileSize != value))
+				{
+					this.OnLogoFileSizeChanging(value);
+					this.SendPropertyChanging();
+					this._LogoFileSize = value;
+					this.SendPropertyChanged("LogoFileSize");
+					this.OnLogoFileSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoChecksum", DbType="NVarChar(64)")]
+		public string LogoChecksum
+		{
+			get
+			{
+				return this._LogoChecksum;
+			}
+			set
+			{
+				if ((this._LogoChecksum != value))
+				{
+					this.OnLogoChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._LogoChecksum = value;
+					this.SendPropertyChanged("LogoChecksum");
+					this.OnLogoChecksumChanged();
 				}
 			}
 		}
@@ -4954,6 +5098,40 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.DateTime> _ModifiedDate;
 		
+		private string _FileName;
+		
+		private string _RelativePath;
+		
+		private string _FullPath;
+		
+		private string _NASShareName;
+		
+		private string _StorageType;
+		
+		private string _StorageProvider;
+		
+		private string _FileExtension;
+		
+		private string _MimeType;
+		
+		private string _Checksum;
+		
+		private System.Nullable<bool> _HasThumbnail;
+		
+		private string _ThumbnailPath;
+		
+		private string _ThumbnailFileName;
+		
+		private System.Nullable<bool> _IsPublic;
+		
+		private string _AccessUrl;
+		
+		private System.Nullable<bool> _FileExists;
+		
+		private System.Nullable<System.DateTime> _LastVerified;
+		
+		private string _MigrationStatus;
+		
 		private EntityRef<ProductService> _ProductService;
 		
 		private EntityRef<ProductVariant> _ProductVariant;
@@ -4994,6 +5172,40 @@ namespace Dal.DataContext
     partial void OnCreatedDateChanged();
     partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
     partial void OnModifiedDateChanged();
+    partial void OnFileNameChanging(string value);
+    partial void OnFileNameChanged();
+    partial void OnRelativePathChanging(string value);
+    partial void OnRelativePathChanged();
+    partial void OnFullPathChanging(string value);
+    partial void OnFullPathChanged();
+    partial void OnNASShareNameChanging(string value);
+    partial void OnNASShareNameChanged();
+    partial void OnStorageTypeChanging(string value);
+    partial void OnStorageTypeChanged();
+    partial void OnStorageProviderChanging(string value);
+    partial void OnStorageProviderChanged();
+    partial void OnFileExtensionChanging(string value);
+    partial void OnFileExtensionChanged();
+    partial void OnMimeTypeChanging(string value);
+    partial void OnMimeTypeChanged();
+    partial void OnChecksumChanging(string value);
+    partial void OnChecksumChanged();
+    partial void OnHasThumbnailChanging(System.Nullable<bool> value);
+    partial void OnHasThumbnailChanged();
+    partial void OnThumbnailPathChanging(string value);
+    partial void OnThumbnailPathChanged();
+    partial void OnThumbnailFileNameChanging(string value);
+    partial void OnThumbnailFileNameChanged();
+    partial void OnIsPublicChanging(System.Nullable<bool> value);
+    partial void OnIsPublicChanged();
+    partial void OnAccessUrlChanging(string value);
+    partial void OnAccessUrlChanged();
+    partial void OnFileExistsChanging(System.Nullable<bool> value);
+    partial void OnFileExistsChanged();
+    partial void OnLastVerifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastVerifiedChanged();
+    partial void OnMigrationStatusChanging(string value);
+    partial void OnMigrationStatusChanged();
     #endregion
 		
 		public ProductImage()
@@ -5331,6 +5543,346 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileName", DbType="NVarChar(255)")]
+		public string FileName
+		{
+			get
+			{
+				return this._FileName;
+			}
+			set
+			{
+				if ((this._FileName != value))
+				{
+					this.OnFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._FileName = value;
+					this.SendPropertyChanged("FileName");
+					this.OnFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelativePath", DbType="NVarChar(500)")]
+		public string RelativePath
+		{
+			get
+			{
+				return this._RelativePath;
+			}
+			set
+			{
+				if ((this._RelativePath != value))
+				{
+					this.OnRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._RelativePath = value;
+					this.SendPropertyChanged("RelativePath");
+					this.OnRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FullPath", DbType="NVarChar(1000)")]
+		public string FullPath
+		{
+			get
+			{
+				return this._FullPath;
+			}
+			set
+			{
+				if ((this._FullPath != value))
+				{
+					this.OnFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._FullPath = value;
+					this.SendPropertyChanged("FullPath");
+					this.OnFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NASShareName", DbType="NVarChar(100)")]
+		public string NASShareName
+		{
+			get
+			{
+				return this._NASShareName;
+			}
+			set
+			{
+				if ((this._NASShareName != value))
+				{
+					this.OnNASShareNameChanging(value);
+					this.SendPropertyChanging();
+					this._NASShareName = value;
+					this.SendPropertyChanged("NASShareName");
+					this.OnNASShareNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StorageType", DbType="NVarChar(20)")]
+		public string StorageType
+		{
+			get
+			{
+				return this._StorageType;
+			}
+			set
+			{
+				if ((this._StorageType != value))
+				{
+					this.OnStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._StorageType = value;
+					this.SendPropertyChanged("StorageType");
+					this.OnStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StorageProvider", DbType="NVarChar(50)")]
+		public string StorageProvider
+		{
+			get
+			{
+				return this._StorageProvider;
+			}
+			set
+			{
+				if ((this._StorageProvider != value))
+				{
+					this.OnStorageProviderChanging(value);
+					this.SendPropertyChanging();
+					this._StorageProvider = value;
+					this.SendPropertyChanged("StorageProvider");
+					this.OnStorageProviderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExtension", DbType="NVarChar(10)")]
+		public string FileExtension
+		{
+			get
+			{
+				return this._FileExtension;
+			}
+			set
+			{
+				if ((this._FileExtension != value))
+				{
+					this.OnFileExtensionChanging(value);
+					this.SendPropertyChanging();
+					this._FileExtension = value;
+					this.SendPropertyChanged("FileExtension");
+					this.OnFileExtensionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MimeType", DbType="NVarChar(100)")]
+		public string MimeType
+		{
+			get
+			{
+				return this._MimeType;
+			}
+			set
+			{
+				if ((this._MimeType != value))
+				{
+					this.OnMimeTypeChanging(value);
+					this.SendPropertyChanging();
+					this._MimeType = value;
+					this.SendPropertyChanged("MimeType");
+					this.OnMimeTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Checksum", DbType="NVarChar(64)")]
+		public string Checksum
+		{
+			get
+			{
+				return this._Checksum;
+			}
+			set
+			{
+				if ((this._Checksum != value))
+				{
+					this.OnChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._Checksum = value;
+					this.SendPropertyChanged("Checksum");
+					this.OnChecksumChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HasThumbnail", DbType="Bit")]
+		public System.Nullable<bool> HasThumbnail
+		{
+			get
+			{
+				return this._HasThumbnail;
+			}
+			set
+			{
+				if ((this._HasThumbnail != value))
+				{
+					this.OnHasThumbnailChanging(value);
+					this.SendPropertyChanging();
+					this._HasThumbnail = value;
+					this.SendPropertyChanged("HasThumbnail");
+					this.OnHasThumbnailChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailPath", DbType="NVarChar(500)")]
+		public string ThumbnailPath
+		{
+			get
+			{
+				return this._ThumbnailPath;
+			}
+			set
+			{
+				if ((this._ThumbnailPath != value))
+				{
+					this.OnThumbnailPathChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailPath = value;
+					this.SendPropertyChanged("ThumbnailPath");
+					this.OnThumbnailPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailFileName", DbType="NVarChar(255)")]
+		public string ThumbnailFileName
+		{
+			get
+			{
+				return this._ThumbnailFileName;
+			}
+			set
+			{
+				if ((this._ThumbnailFileName != value))
+				{
+					this.OnThumbnailFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailFileName = value;
+					this.SendPropertyChanged("ThumbnailFileName");
+					this.OnThumbnailFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPublic", DbType="Bit")]
+		public System.Nullable<bool> IsPublic
+		{
+			get
+			{
+				return this._IsPublic;
+			}
+			set
+			{
+				if ((this._IsPublic != value))
+				{
+					this.OnIsPublicChanging(value);
+					this.SendPropertyChanging();
+					this._IsPublic = value;
+					this.SendPropertyChanged("IsPublic");
+					this.OnIsPublicChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AccessUrl", DbType="NVarChar(1000)")]
+		public string AccessUrl
+		{
+			get
+			{
+				return this._AccessUrl;
+			}
+			set
+			{
+				if ((this._AccessUrl != value))
+				{
+					this.OnAccessUrlChanging(value);
+					this.SendPropertyChanging();
+					this._AccessUrl = value;
+					this.SendPropertyChanged("AccessUrl");
+					this.OnAccessUrlChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExists", DbType="Bit")]
+		public System.Nullable<bool> FileExists
+		{
+			get
+			{
+				return this._FileExists;
+			}
+			set
+			{
+				if ((this._FileExists != value))
+				{
+					this.OnFileExistsChanging(value);
+					this.SendPropertyChanging();
+					this._FileExists = value;
+					this.SendPropertyChanged("FileExists");
+					this.OnFileExistsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastVerified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastVerified
+		{
+			get
+			{
+				return this._LastVerified;
+			}
+			set
+			{
+				if ((this._LastVerified != value))
+				{
+					this.OnLastVerifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastVerified = value;
+					this.SendPropertyChanged("LastVerified");
+					this.OnLastVerifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MigrationStatus", DbType="NVarChar(20)")]
+		public string MigrationStatus
+		{
+			get
+			{
+				return this._MigrationStatus;
+			}
+			set
+			{
+				if ((this._MigrationStatus != value))
+				{
+					this.OnMigrationStatusChanging(value);
+					this.SendPropertyChanging();
+					this._MigrationStatus = value;
+					this.SendPropertyChanged("MigrationStatus");
+					this.OnMigrationStatusChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductService_ProductImage", Storage="_ProductService", ThisKey="ProductId", OtherKey="Id", IsForeignKey=true)]
 		public ProductService ProductService
 		{
@@ -5442,6 +5994,18 @@ namespace Dal.DataContext
 		
 		private System.Data.Linq.Binary _ThumbnailImage;
 		
+		private string _ThumbnailFileName;
+		
+		private string _ThumbnailRelativePath;
+		
+		private string _ThumbnailFullPath;
+		
+		private string _ThumbnailStorageType;
+		
+		private System.Nullable<long> _ThumbnailFileSize;
+		
+		private string _ThumbnailChecksum;
+		
 		private EntitySet<ProductImage> _ProductImages;
 		
 		private EntitySet<ProductVariant> _ProductVariants;
@@ -5468,6 +6032,18 @@ namespace Dal.DataContext
     partial void OnIsActiveChanged();
     partial void OnThumbnailImageChanging(System.Data.Linq.Binary value);
     partial void OnThumbnailImageChanged();
+    partial void OnThumbnailFileNameChanging(string value);
+    partial void OnThumbnailFileNameChanged();
+    partial void OnThumbnailRelativePathChanging(string value);
+    partial void OnThumbnailRelativePathChanged();
+    partial void OnThumbnailFullPathChanging(string value);
+    partial void OnThumbnailFullPathChanged();
+    partial void OnThumbnailStorageTypeChanging(string value);
+    partial void OnThumbnailStorageTypeChanged();
+    partial void OnThumbnailFileSizeChanging(System.Nullable<long> value);
+    partial void OnThumbnailFileSizeChanged();
+    partial void OnThumbnailChecksumChanging(string value);
+    partial void OnThumbnailChecksumChanged();
     #endregion
 		
 		public ProductService()
@@ -5638,6 +6214,126 @@ namespace Dal.DataContext
 					this._ThumbnailImage = value;
 					this.SendPropertyChanged("ThumbnailImage");
 					this.OnThumbnailImageChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailFileName", DbType="NVarChar(255)")]
+		public string ThumbnailFileName
+		{
+			get
+			{
+				return this._ThumbnailFileName;
+			}
+			set
+			{
+				if ((this._ThumbnailFileName != value))
+				{
+					this.OnThumbnailFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailFileName = value;
+					this.SendPropertyChanged("ThumbnailFileName");
+					this.OnThumbnailFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailRelativePath", DbType="NVarChar(500)")]
+		public string ThumbnailRelativePath
+		{
+			get
+			{
+				return this._ThumbnailRelativePath;
+			}
+			set
+			{
+				if ((this._ThumbnailRelativePath != value))
+				{
+					this.OnThumbnailRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailRelativePath = value;
+					this.SendPropertyChanged("ThumbnailRelativePath");
+					this.OnThumbnailRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailFullPath", DbType="NVarChar(1000)")]
+		public string ThumbnailFullPath
+		{
+			get
+			{
+				return this._ThumbnailFullPath;
+			}
+			set
+			{
+				if ((this._ThumbnailFullPath != value))
+				{
+					this.OnThumbnailFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailFullPath = value;
+					this.SendPropertyChanged("ThumbnailFullPath");
+					this.OnThumbnailFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailStorageType", DbType="NVarChar(20)")]
+		public string ThumbnailStorageType
+		{
+			get
+			{
+				return this._ThumbnailStorageType;
+			}
+			set
+			{
+				if ((this._ThumbnailStorageType != value))
+				{
+					this.OnThumbnailStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailStorageType = value;
+					this.SendPropertyChanged("ThumbnailStorageType");
+					this.OnThumbnailStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailFileSize", DbType="BigInt")]
+		public System.Nullable<long> ThumbnailFileSize
+		{
+			get
+			{
+				return this._ThumbnailFileSize;
+			}
+			set
+			{
+				if ((this._ThumbnailFileSize != value))
+				{
+					this.OnThumbnailFileSizeChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailFileSize = value;
+					this.SendPropertyChanged("ThumbnailFileSize");
+					this.OnThumbnailFileSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailChecksum", DbType="NVarChar(64)")]
+		public string ThumbnailChecksum
+		{
+			get
+			{
+				return this._ThumbnailChecksum;
+			}
+			set
+			{
+				if ((this._ThumbnailChecksum != value))
+				{
+					this.OnThumbnailChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailChecksum = value;
+					this.SendPropertyChanged("ThumbnailChecksum");
+					this.OnThumbnailChecksumChanged();
 				}
 			}
 		}
@@ -6026,6 +6722,18 @@ namespace Dal.DataContext
 		
 		private string _VariantFullName;
 		
+		private string _ThumbnailFileName;
+		
+		private string _ThumbnailRelativePath;
+		
+		private string _ThumbnailFullPath;
+		
+		private string _ThumbnailStorageType;
+		
+		private System.Nullable<long> _ThumbnailFileSize;
+		
+		private string _ThumbnailChecksum;
+		
 		private EntitySet<ProductImage> _ProductImages;
 		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
@@ -6058,6 +6766,18 @@ namespace Dal.DataContext
     partial void OnModifiedDateChanged();
     partial void OnVariantFullNameChanging(string value);
     partial void OnVariantFullNameChanged();
+    partial void OnThumbnailFileNameChanging(string value);
+    partial void OnThumbnailFileNameChanged();
+    partial void OnThumbnailRelativePathChanging(string value);
+    partial void OnThumbnailRelativePathChanged();
+    partial void OnThumbnailFullPathChanging(string value);
+    partial void OnThumbnailFullPathChanged();
+    partial void OnThumbnailStorageTypeChanging(string value);
+    partial void OnThumbnailStorageTypeChanged();
+    partial void OnThumbnailFileSizeChanging(System.Nullable<long> value);
+    partial void OnThumbnailFileSizeChanged();
+    partial void OnThumbnailChecksumChanging(string value);
+    partial void OnThumbnailChecksumChanged();
     #endregion
 		
 		public ProductVariant()
@@ -6254,6 +6974,126 @@ namespace Dal.DataContext
 					this._VariantFullName = value;
 					this.SendPropertyChanged("VariantFullName");
 					this.OnVariantFullNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailFileName", DbType="NVarChar(255)")]
+		public string ThumbnailFileName
+		{
+			get
+			{
+				return this._ThumbnailFileName;
+			}
+			set
+			{
+				if ((this._ThumbnailFileName != value))
+				{
+					this.OnThumbnailFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailFileName = value;
+					this.SendPropertyChanged("ThumbnailFileName");
+					this.OnThumbnailFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailRelativePath", DbType="NVarChar(500)")]
+		public string ThumbnailRelativePath
+		{
+			get
+			{
+				return this._ThumbnailRelativePath;
+			}
+			set
+			{
+				if ((this._ThumbnailRelativePath != value))
+				{
+					this.OnThumbnailRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailRelativePath = value;
+					this.SendPropertyChanged("ThumbnailRelativePath");
+					this.OnThumbnailRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailFullPath", DbType="NVarChar(1000)")]
+		public string ThumbnailFullPath
+		{
+			get
+			{
+				return this._ThumbnailFullPath;
+			}
+			set
+			{
+				if ((this._ThumbnailFullPath != value))
+				{
+					this.OnThumbnailFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailFullPath = value;
+					this.SendPropertyChanged("ThumbnailFullPath");
+					this.OnThumbnailFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailStorageType", DbType="NVarChar(20)")]
+		public string ThumbnailStorageType
+		{
+			get
+			{
+				return this._ThumbnailStorageType;
+			}
+			set
+			{
+				if ((this._ThumbnailStorageType != value))
+				{
+					this.OnThumbnailStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailStorageType = value;
+					this.SendPropertyChanged("ThumbnailStorageType");
+					this.OnThumbnailStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailFileSize", DbType="BigInt")]
+		public System.Nullable<long> ThumbnailFileSize
+		{
+			get
+			{
+				return this._ThumbnailFileSize;
+			}
+			set
+			{
+				if ((this._ThumbnailFileSize != value))
+				{
+					this.OnThumbnailFileSizeChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailFileSize = value;
+					this.SendPropertyChanged("ThumbnailFileSize");
+					this.OnThumbnailFileSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailChecksum", DbType="NVarChar(64)")]
+		public string ThumbnailChecksum
+		{
+			get
+			{
+				return this._ThumbnailChecksum;
+			}
+			set
+			{
+				if ((this._ThumbnailChecksum != value))
+				{
+					this.OnThumbnailChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailChecksum = value;
+					this.SendPropertyChanged("ThumbnailChecksum");
+					this.OnThumbnailChecksumChanged();
 				}
 			}
 		}
@@ -6830,6 +7670,28 @@ namespace Dal.DataContext
 		
 		private System.Guid _ModifiedBy;
 		
+		private string _FileName;
+		
+		private string _RelativePath;
+		
+		private string _FullPath;
+		
+		private string _StorageType;
+		
+		private System.Nullable<long> _FileSize;
+		
+		private string _FileExtension;
+		
+		private string _MimeType;
+		
+		private string _Checksum;
+		
+		private System.Nullable<bool> _FileExists;
+		
+		private System.Nullable<System.DateTime> _LastVerified;
+		
+		private string _MigrationStatus;
+		
 		private EntityRef<StockInOutMaster> _StockInOutMaster;
 		
     #region Extensibility Method Definitions
@@ -6850,6 +7712,28 @@ namespace Dal.DataContext
     partial void OnModifiedDateChanged();
     partial void OnModifiedByChanging(System.Guid value);
     partial void OnModifiedByChanged();
+    partial void OnFileNameChanging(string value);
+    partial void OnFileNameChanged();
+    partial void OnRelativePathChanging(string value);
+    partial void OnRelativePathChanged();
+    partial void OnFullPathChanging(string value);
+    partial void OnFullPathChanged();
+    partial void OnStorageTypeChanging(string value);
+    partial void OnStorageTypeChanged();
+    partial void OnFileSizeChanging(System.Nullable<long> value);
+    partial void OnFileSizeChanged();
+    partial void OnFileExtensionChanging(string value);
+    partial void OnFileExtensionChanged();
+    partial void OnMimeTypeChanging(string value);
+    partial void OnMimeTypeChanged();
+    partial void OnChecksumChanging(string value);
+    partial void OnChecksumChanged();
+    partial void OnFileExistsChanging(System.Nullable<bool> value);
+    partial void OnFileExistsChanged();
+    partial void OnLastVerifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastVerifiedChanged();
+    partial void OnMigrationStatusChanging(string value);
+    partial void OnMigrationStatusChanged();
     #endregion
 		
 		public StockInOutImage()
@@ -6998,6 +7882,226 @@ namespace Dal.DataContext
 					this._ModifiedBy = value;
 					this.SendPropertyChanged("ModifiedBy");
 					this.OnModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileName", DbType="NVarChar(255)")]
+		public string FileName
+		{
+			get
+			{
+				return this._FileName;
+			}
+			set
+			{
+				if ((this._FileName != value))
+				{
+					this.OnFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._FileName = value;
+					this.SendPropertyChanged("FileName");
+					this.OnFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelativePath", DbType="NVarChar(500)")]
+		public string RelativePath
+		{
+			get
+			{
+				return this._RelativePath;
+			}
+			set
+			{
+				if ((this._RelativePath != value))
+				{
+					this.OnRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._RelativePath = value;
+					this.SendPropertyChanged("RelativePath");
+					this.OnRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FullPath", DbType="NVarChar(1000)")]
+		public string FullPath
+		{
+			get
+			{
+				return this._FullPath;
+			}
+			set
+			{
+				if ((this._FullPath != value))
+				{
+					this.OnFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._FullPath = value;
+					this.SendPropertyChanged("FullPath");
+					this.OnFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StorageType", DbType="NVarChar(20)")]
+		public string StorageType
+		{
+			get
+			{
+				return this._StorageType;
+			}
+			set
+			{
+				if ((this._StorageType != value))
+				{
+					this.OnStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._StorageType = value;
+					this.SendPropertyChanged("StorageType");
+					this.OnStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileSize", DbType="BigInt")]
+		public System.Nullable<long> FileSize
+		{
+			get
+			{
+				return this._FileSize;
+			}
+			set
+			{
+				if ((this._FileSize != value))
+				{
+					this.OnFileSizeChanging(value);
+					this.SendPropertyChanging();
+					this._FileSize = value;
+					this.SendPropertyChanged("FileSize");
+					this.OnFileSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExtension", DbType="NVarChar(10)")]
+		public string FileExtension
+		{
+			get
+			{
+				return this._FileExtension;
+			}
+			set
+			{
+				if ((this._FileExtension != value))
+				{
+					this.OnFileExtensionChanging(value);
+					this.SendPropertyChanging();
+					this._FileExtension = value;
+					this.SendPropertyChanged("FileExtension");
+					this.OnFileExtensionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MimeType", DbType="NVarChar(100)")]
+		public string MimeType
+		{
+			get
+			{
+				return this._MimeType;
+			}
+			set
+			{
+				if ((this._MimeType != value))
+				{
+					this.OnMimeTypeChanging(value);
+					this.SendPropertyChanging();
+					this._MimeType = value;
+					this.SendPropertyChanged("MimeType");
+					this.OnMimeTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Checksum", DbType="NVarChar(64)")]
+		public string Checksum
+		{
+			get
+			{
+				return this._Checksum;
+			}
+			set
+			{
+				if ((this._Checksum != value))
+				{
+					this.OnChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._Checksum = value;
+					this.SendPropertyChanged("Checksum");
+					this.OnChecksumChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExists", DbType="Bit")]
+		public System.Nullable<bool> FileExists
+		{
+			get
+			{
+				return this._FileExists;
+			}
+			set
+			{
+				if ((this._FileExists != value))
+				{
+					this.OnFileExistsChanging(value);
+					this.SendPropertyChanging();
+					this._FileExists = value;
+					this.SendPropertyChanged("FileExists");
+					this.OnFileExistsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastVerified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastVerified
+		{
+			get
+			{
+				return this._LastVerified;
+			}
+			set
+			{
+				if ((this._LastVerified != value))
+				{
+					this.OnLastVerifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastVerified = value;
+					this.SendPropertyChanged("LastVerified");
+					this.OnLastVerifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MigrationStatus", DbType="NVarChar(20)")]
+		public string MigrationStatus
+		{
+			get
+			{
+				return this._MigrationStatus;
+			}
+			set
+			{
+				if ((this._MigrationStatus != value))
+				{
+					this.OnMigrationStatusChanging(value);
+					this.SendPropertyChanging();
+					this._MigrationStatus = value;
+					this.SendPropertyChanged("MigrationStatus");
+					this.OnMigrationStatusChanged();
 				}
 			}
 		}
