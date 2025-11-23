@@ -100,6 +100,12 @@
     <Compile Include="InventoryManagement\FrmWarranty.Designer.cs">
       <DependentUpon>FrmWarranty.cs</DependentUpon>
     </Compile>
+    <Compile Include="InventoryManagement\FrmWarrantyCheck.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InventoryManagement\FrmWarrantyCheck.Designer.cs">
+      <DependentUpon>FrmWarrantyCheck.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StockIn\FrmNhapKhoThuongMai02.cs">
       <SubType>Form</SubType>
@@ -143,6 +149,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InventoryManagement\FrmWarranty.resx">
       <DependentUpon>FrmWarranty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InventoryManagement\FrmWarrantyCheck.resx">
+      <DependentUpon>FrmWarrantyCheck.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -66,6 +66,8 @@
     <Compile Include="Appconfig\VntaCrypto.cs" />
     <Compile Include="ApplicationConstants.cs" />
     <Compile Include="Common\OverlayManager.cs" />
+    <Compile Include="Enums\LoaiBaoHanhEnum.cs" />
+    <Compile Include="Enums\TrangThaiBaoHanhEnum.cs" />
     <Compile Include="Common\SplashScreenHelper.cs" />
     <Compile Include="Common\UserControlManager.cs" />
     <Compile Include="Common\VnsSplashScreen.cs">

@@ -13,7 +13,7 @@ namespace DTO.Inventory.InventoryManagement;
 /// <summary>
 /// Data Transfer Object cho thông tin bảo hành
 /// </summary>
-public class WarrantyDto
+public class WarrantyCheckListDto
 {
     #region Properties - Thông tin cơ bản
 
@@ -139,7 +139,7 @@ public class WarrantyDto
         {
             if (IsWarrantyExpired)
                 return "Hết hạn bảo hành";
-                
+
             // Nếu không có ngày hết hạn, không thể xác định
             if (!WarrantyUntil.HasValue)
                 return "Chưa xác định";
@@ -167,7 +167,7 @@ public class WarrantyDto
 
             // Xác định màu sắc cho trạng thái bảo hành
             var statusColor = GetWarrantyStatusColor(WarrantyStatus);
-                
+
             // Xác định màu sắc cho tình trạng (còn/hết hạn)
             var statusTextColor = IsWarrantyExpired ? "#F44336" : "#4CAF50";
 
@@ -257,9 +257,9 @@ public class WarrantyDto
 }
 
 /// <summary>
-/// Converter giữa Warranty entity và WarrantyDto
+/// Converter giữa Warranty entity và WarrantyCheckListDto
 /// </summary>
-public static class WarrantyDtoConverter
+public static class WarrantyCheckListDtoConverter
 {
     #region Entity to DTO
 
@@ -268,11 +268,11 @@ public static class WarrantyDtoConverter
     /// </summary>
     /// <param name="entity">Warranty entity</param>
     /// <returns>WarrantyDto</returns>
-    public static WarrantyDto ToDto(this Warranty entity)
+    public static WarrantyCheckListDto ToWarrantyCheckListDto(this Warranty entity)
     {
         if (entity == null) return null;
 
-        var dto = new WarrantyDto
+        var dto = new WarrantyCheckListDto
         {
             Id = entity.Id,
             StockInOutDetailId = entity.StockInOutDetailId,
@@ -329,53 +329,15 @@ public static class WarrantyDtoConverter
     }
 
     /// <summary>
-    /// Chuyển đổi danh sách Warranty entities thành danh sách WarrantyDto
+    /// Chuyển đổi danh sách Warranty entities thành danh sách WarrantyCheckListDto
     /// </summary>
     /// <param name="entities">Danh sách Warranty entities</param>
-    /// <returns>Danh sách WarrantyDto</returns>
-    public static List<WarrantyDto> ToDtoList(this IEnumerable<Warranty> entities)
+    /// <returns>Danh sách WarrantyCheckListDto</returns>
+    public static List<WarrantyCheckListDto> ToDtoList(this IEnumerable<Warranty> entities)
     {
-        if (entities == null) return new List<WarrantyDto>();
+        if (entities == null) return new List<WarrantyCheckListDto>();
 
-        return entities.Select(entity => entity.ToDto()).ToList();
-    }
-
-    #endregion
-
-    #region DTO to Entity
-
-    /// <summary>
-    /// Chuyển đổi WarrantyDto thành Warranty entity
-    /// </summary>
-    /// <param name="dto">WarrantyDto</param>
-    /// <returns>Warranty entity</returns>
-    public static Warranty ToEntity(this WarrantyDto dto)
-    {
-        if (dto == null) return null;
-
-        return new Warranty
-        {
-            Id = dto.Id,
-            StockInOutDetailId = dto.StockInOutDetailId,
-            WarrantyType = (int)dto.WarrantyType, // Chuyển đổi enum sang int
-            WarrantyFrom = dto.WarrantyFrom,
-            MonthOfWarranty = dto.MonthOfWarranty,
-            WarrantyUntil = dto.WarrantyUntil,
-            WarrantyStatus = (int)dto.WarrantyStatus, // Chuyển đổi enum sang int
-            UniqueProductInfo = dto.UniqueProductInfo
-        };
-    }
-
-    /// <summary>
-    /// Chuyển đổi danh sách WarrantyDto thành danh sách Warranty entities
-    /// </summary>
-    /// <param name="dtos">Danh sách WarrantyDto</param>
-    /// <returns>Danh sách Warranty entities</returns>
-    public static List<Warranty> ToEntityList(this IEnumerable<WarrantyDto> dtos)
-    {
-        if (dtos == null) return new List<Warranty>();
-
-        return dtos.Select(dto => dto.ToEntity()).ToList();
+        return entities.Select(entity => entity.ToWarrantyCheckListDto()).ToList();
     }
 
     #endregion
