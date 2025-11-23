@@ -3,6 +3,7 @@ using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -99,6 +100,15 @@ public class StockInOutImageRepository : IStockInOutImageRepository
                 // Cập nhật
                 existing.StockInOutMasterId = stockInOutImage.StockInOutMasterId;
                 existing.ImageData = stockInOutImage.ImageData;
+                existing.FileName = stockInOutImage.FileName;
+                existing.RelativePath = stockInOutImage.RelativePath;
+                existing.FullPath = stockInOutImage.FullPath;
+                existing.StorageType = stockInOutImage.StorageType;
+                existing.FileSize = stockInOutImage.FileSize;
+                existing.FileExtension = stockInOutImage.FileExtension;
+                existing.MimeType = stockInOutImage.MimeType;
+                existing.Checksum = stockInOutImage.Checksum;
+                existing.FileExists = stockInOutImage.FileExists;
                 existing.ModifiedDate = DateTime.Now;
                 existing.ModifiedBy = stockInOutImage.ModifiedBy;
                 
@@ -110,6 +120,103 @@ public class StockInOutImageRepository : IStockInOutImageRepository
         catch (Exception ex)
         {
             _logger.Error($"SaveOrUpdate: Lỗi lưu hình ảnh: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region Query Operations
+
+    /// <summary>
+    /// Lấy hình ảnh theo ID
+    /// </summary>
+    /// <param name="id">ID hình ảnh</param>
+    /// <returns>StockInOutImage hoặc null</returns>
+    public StockInOutImage GetById(Guid id)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetById: Lấy hình ảnh, Id={0}", id);
+
+            var image = context.StockInOutImages.FirstOrDefault(x => x.Id == id);
+
+            if (image == null)
+            {
+                _logger.Warning("GetById: Không tìm thấy hình ảnh với Id={0}", id);
+            }
+            else
+            {
+                _logger.Info("GetById: Đã lấy hình ảnh, Id={0}, StockInOutMasterId={1}", id, image.StockInOutMasterId);
+            }
+
+            return image;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetById: Lỗi lấy hình ảnh: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách hình ảnh theo StockInOutMasterId
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+    /// <returns>Danh sách hình ảnh</returns>
+    public List<StockInOutImage> GetByStockInOutMasterId(Guid stockInOutMasterId)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetByStockInOutMasterId: Lấy danh sách hình ảnh, StockInOutMasterId={0}", stockInOutMasterId);
+
+            var images = context.StockInOutImages
+                .Where(x => x.StockInOutMasterId == stockInOutMasterId)
+                .OrderBy(x => x.CreateDate)
+                .ToList();
+
+            _logger.Info("GetByStockInOutMasterId: Lấy được {0} hình ảnh", images.Count);
+            return images;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetByStockInOutMasterId: Lỗi lấy danh sách hình ảnh: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region Delete Operations
+
+    /// <summary>
+    /// Xóa hình ảnh theo ID
+    /// </summary>
+    /// <param name="id">ID hình ảnh cần xóa</param>
+    public void Delete(Guid id)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("Delete: Bắt đầu xóa hình ảnh, Id={0}", id);
+
+            var image = context.StockInOutImages.FirstOrDefault(x => x.Id == id);
+            if (image == null)
+            {
+                _logger.Warning("Delete: Không tìm thấy hình ảnh với Id={0}", id);
+                throw new InvalidOperationException($"Không tìm thấy hình ảnh với ID: {id}");
+            }
+
+            context.StockInOutImages.DeleteOnSubmit(image);
+            context.SubmitChanges();
+
+            _logger.Info("Delete: Đã xóa hình ảnh, Id={0}", id);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Delete: Lỗi xóa hình ảnh: {ex.Message}", ex);
             throw;
         }
     }

@@ -11,11 +11,16 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bll.Common.ImageStorage;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
 
 namespace Bll.MasterData.ProductServiceBll
 {
     /// <summary>
     /// Business Logic Layer cho ProductImage
+    /// Sử dụng ImageStorageService để lưu trữ hình ảnh trên NAS/Local thay vì database
     /// </summary>
     public class ProductImageBll
     {
@@ -23,7 +28,22 @@ namespace Bll.MasterData.ProductServiceBll
         #region Fields
 
         private IProductImageRepository _dataAccess;
+        private readonly IImageStorageService _imageStorage;
+        private readonly ILogger _logger;
         private readonly object _lockObject = new object();
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor mặc định
+        /// </summary>
+        public ProductImageBll()
+        {
+            _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
+            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
+        }
 
         #endregion
 
@@ -102,6 +122,85 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
+        /// Lấy dữ liệu hình ảnh từ storage (NAS/Local)
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        /// <returns>Dữ liệu hình ảnh (byte array) hoặc null</returns>
+        public async Task<byte[]> GetImageDataAsync(Guid imageId)
+        {
+            try
+            {
+                var productImage = GetDataAccess().GetById(imageId);
+                if (productImage == null)
+                {
+                    _logger.Warning($"Không tìm thấy hình ảnh với ID '{imageId}'");
+                    return null;
+                }
+
+                // Ưu tiên sử dụng RelativePath, fallback về ImagePath cho backward compatibility
+                var relativePath = productImage.RelativePath ?? productImage.ImagePath;
+                
+                if (string.IsNullOrEmpty(relativePath))
+                {
+                    _logger.Warning($"Hình ảnh '{imageId}' không có RelativePath hoặc ImagePath");
+                    return null;
+                }
+
+                // Lấy từ storage
+                var imageData = await _imageStorage.GetImageAsync(relativePath);
+                
+                if (imageData == null)
+                {
+                    _logger.Warning($"Không thể đọc file từ storage, RelativePath={relativePath}");
+                }
+
+                return imageData;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lấy dữ liệu hình ảnh '{imageId}': {ex.Message}", ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Lấy thumbnail từ storage
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        /// <returns>Dữ liệu thumbnail (byte array) hoặc null</returns>
+        public async Task<byte[]> GetThumbnailDataAsync(Guid imageId)
+        {
+            try
+            {
+                var productImage = GetDataAccess().GetById(imageId);
+                if (productImage == null)
+                {
+                    return null;
+                }
+
+                // Ưu tiên sử dụng ThumbnailPath, nếu không có thì generate từ RelativePath
+                if (!string.IsNullOrEmpty(productImage.ThumbnailPath))
+                {
+                    return await _imageStorage.GetImageAsync(productImage.ThumbnailPath);
+                }
+
+                // Fallback: generate thumbnail từ original image
+                var relativePath = productImage.RelativePath ?? productImage.ImagePath;
+                if (!string.IsNullOrEmpty(relativePath))
+                {
+                    return await _imageStorage.GetThumbnailAsync(relativePath);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lấy thumbnail '{imageId}': {ex.Message}", ex);
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Lấy hình ảnh chính của sản phẩm/dịch vụ
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
@@ -120,6 +219,7 @@ namespace Bll.MasterData.ProductServiceBll
 
         /// <summary>
         /// Lưu hình ảnh từ file và thông tin metadata
+        /// Sử dụng ImageStorageService để lưu trên NAS/Local, chỉ lưu metadata vào database
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
         /// <param name="imageFilePath">Đường dẫn file ảnh</param>
@@ -127,116 +227,182 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="caption">Chú thích</param>
         /// <param name="altText">Alt text</param>
         /// <returns>ProductImage đã lưu</returns>
-        public ProductImage SaveImageFromFile(Guid productId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null)
+        public async Task<ProductImage> SaveImageFromFileAsync(Guid productId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null)
         {
             try
             {
                 if (!File.Exists(imageFilePath))
                     throw new BusinessLogicException($"File ảnh không tồn tại: {imageFilePath}");
 
-                // Tạo thư mục đích nếu chưa có
-                var targetDirectory = GetPhotoDirectory();
-                if (!Directory.Exists(targetDirectory))
-                    Directory.CreateDirectory(targetDirectory);
+                // 1. Đọc file ảnh
+                var imageData = await Task.Run(() => File.ReadAllBytes(imageFilePath));
 
-                // Tạo tên file mới để tránh trùng lặp
+                // 2. Tạo tên file mới để tránh trùng lặp
                 var fileExtension = Path.GetExtension(imageFilePath);
                 var fileName = string.Format(ApplicationConstants.PRODUCT_IMAGE_FILENAME_FORMAT, 
                     productId, 
                     DateTime.Now, 
                     Guid.NewGuid().ToString("N").Substring(0, 8), 
                     fileExtension);
-                var targetFilePath = Path.Combine(targetDirectory, fileName);
 
-                // Copy file vào thư mục đích
-                File.Copy(imageFilePath, targetFilePath, true);
+                // 3. Lưu vào storage (NAS/Local) thông qua ImageStorageService
+                var storageResult = await _imageStorage.SaveImageAsync(
+                    imageData: imageData,
+                    fileName: fileName,
+                    category: ImageCategory.Product,
+                    entityId: productId,
+                    generateThumbnail: true
+                );
 
-                // Đọc thông tin ảnh
+                if (!storageResult.Success)
+                {
+                    throw new BusinessLogicException(
+                        $"Không thể lưu hình ảnh vào storage: {storageResult.ErrorMessage}");
+                }
+
+                // 4. Đọc thông tin ảnh
                 var imageInfo = GetImageInfo(imageFilePath);
 
-                // Lấy SortOrder tiếp theo
+                // 5. Lấy SortOrder tiếp theo
                 var nextSortOrder = GetNextSortOrder(productId);
 
-                // Tạo ProductImage entity
+                // 6. Tạo ProductImage entity (KHÔNG lưu ImageData vào database)
                 var productImage = new ProductImage
                 {
                     Id = Guid.NewGuid(),
                     ProductId = productId,
-                    ImagePath = targetFilePath,
+                    ImagePath = storageResult.RelativePath, // Giữ ImagePath cho backward compatibility
+                    FileName = storageResult.FileName,
+                    RelativePath = storageResult.RelativePath,
+                    FullPath = storageResult.FullPath,
+                    StorageType = "NAS", // Hoặc từ config
+                    FileExtension = fileExtension.TrimStart('.').ToLower(),
+                    Checksum = storageResult.Checksum,
+                    HasThumbnail = !string.IsNullOrEmpty(storageResult.ThumbnailRelativePath),
+                    ThumbnailPath = storageResult.ThumbnailRelativePath,
                     SortOrder = isPrimary ? 0 : nextSortOrder,
                     IsPrimary = isPrimary,
-                    ImageData = File.ReadAllBytes(imageFilePath),
+                    ImageData = null, // KHÔNG lưu ImageData vào database nữa
                     ImageType = fileExtension.TrimStart('.').ToLower(),
-                    ImageSize = new FileInfo(imageFilePath).Length,
+                    ImageSize = storageResult.FileSize, // Sử dụng ImageSize (property hiện có)
                     ImageWidth = imageInfo.Width,
                     ImageHeight = imageInfo.Height,
                     Caption = caption,
                     AltText = altText,
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+                    FileExists = true
                 };
 
-                // Lưu vào database
+                // 7. Lưu metadata vào database
                 GetDataAccess().SaveOrUpdate(productImage);
+
+                _logger.Info($"Đã lưu hình ảnh sản phẩm, ProductId={productId}, ImageId={productImage.Id}, RelativePath={storageResult.RelativePath}");
 
                 return productImage;
             }
             catch (Exception ex)
             {
+                _logger.Error($"Lỗi khi lưu hình ảnh từ file '{imageFilePath}': {ex.Message}", ex);
                 throw new BusinessLogicException($"Lỗi khi lưu hình ảnh từ file '{imageFilePath}': {ex.Message}", ex);
             }
         }
 
         /// <summary>
+        /// Lưu hình ảnh từ file (synchronous version - backward compatibility)
+        /// </summary>
+        public ProductImage SaveImageFromFile(Guid productId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null)
+        {
+            return SaveImageFromFileAsync(productId, imageFilePath, isPrimary, caption, altText).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
         /// Cập nhật hình ảnh chính cho sản phẩm/dịch vụ
+        /// Sử dụng ImageStorageService để lưu trên NAS/Local
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
         /// <param name="imageFilePath">Đường dẫn file ảnh mới</param>
         /// <returns>ProductImage đã cập nhật</returns>
-        public ProductImage UpdatePrimaryImage(Guid productId, string imageFilePath)
+        public async Task<ProductImage> UpdatePrimaryImageAsync(Guid productId, string imageFilePath)
         {
             try
             {
                 if (!File.Exists(imageFilePath))
                     throw new BusinessLogicException($"File ảnh không tồn tại: {imageFilePath}");
 
-                // Tạo thư mục đích nếu chưa có
-                var targetDirectory = GetPhotoDirectory();
-                if (!Directory.Exists(targetDirectory))
-                    Directory.CreateDirectory(targetDirectory);
+                // 1. Nén ảnh trước khi lưu để đảm bảo kích thước hợp lý
+                byte[] imageData;
+                using (var compressedImage = CompressImage(imageFilePath, ApplicationConstants.DEFAULT_COMPRESSION_QUALITY, ApplicationConstants.DEFAULT_MAX_DIMENSION))
+                {
+                    // Convert Image to byte array
+                    using (var ms = new MemoryStream())
+                    {
+                        compressedImage.Save(ms, ImageFormat.Jpeg);
+                        imageData = ms.ToArray();
+                    }
+                }
 
-                // Tạo tên file mới với extension .jpg để đảm bảo định dạng nhất quán
+                // 2. Tạo tên file mới với extension .jpg
                 var fileName = string.Format(ApplicationConstants.PRIMARY_IMAGE_FILENAME_FORMAT, 
                     productId, 
                     DateTime.Now, 
                     Guid.NewGuid().ToString("N").Substring(0, 8));
-                var targetFilePath = Path.Combine(targetDirectory, fileName);
 
-                // Nén ảnh trước khi lưu để đảm bảo kích thước hợp lý
-                using (var compressedImage = CompressImage(imageFilePath, ApplicationConstants.DEFAULT_COMPRESSION_QUALITY, ApplicationConstants.DEFAULT_MAX_DIMENSION))
+                // 3. Lưu vào storage (NAS/Local)
+                var storageResult = await _imageStorage.SaveImageAsync(
+                    imageData: imageData,
+                    fileName: fileName,
+                    category: ImageCategory.Product,
+                    entityId: productId,
+                    generateThumbnail: true
+                );
+
+                if (!storageResult.Success)
                 {
-                    // Lưu ảnh đã nén vào thư mục đích với phương thức an toàn
-                    SaveImageSafely(compressedImage, targetFilePath);
+                    throw new BusinessLogicException(
+                        $"Không thể lưu hình ảnh chính vào storage: {storageResult.ErrorMessage}");
                 }
 
-                // Đọc thông tin ảnh từ file đã nén
-                var imageInfo = GetImageInfo(targetFilePath);
+                // 4. Đọc thông tin ảnh
+                var imageInfo = GetImageInfo(imageFilePath);
 
-                // Kiểm tra xem đã có hình ảnh chính chưa
+                // 5. Kiểm tra xem đã có hình ảnh chính chưa
                 var existingPrimary = GetDataAccess().GetPrimaryByProductId(productId);
                 
                 ProductImage productImage;
                 if (existingPrimary != null)
                 {
+                    // Xóa file cũ từ storage nếu có
+                    if (!string.IsNullOrEmpty(existingPrimary.RelativePath))
+                    {
+                        try
+                        {
+                            await _imageStorage.DeleteImageAsync(existingPrimary.RelativePath);
+                        }
+                        catch (Exception deleteEx)
+                        {
+                            _logger.Warning($"Không thể xóa file cũ từ storage: {deleteEx.Message}");
+                        }
+                    }
+
                     // Cập nhật hình ảnh chính hiện có
                     productImage = existingPrimary;
-                    productImage.ImagePath = targetFilePath;
-                    productImage.ImageData = File.ReadAllBytes(targetFilePath);
+                    productImage.ImagePath = storageResult.RelativePath; // Backward compatibility
+                    productImage.FileName = storageResult.FileName;
+                    productImage.RelativePath = storageResult.RelativePath;
+                    productImage.FullPath = storageResult.FullPath;
+                    productImage.StorageType = "NAS";
+                    productImage.FileExtension = "jpg";
+                    productImage.Checksum = storageResult.Checksum;
+                    productImage.HasThumbnail = !string.IsNullOrEmpty(storageResult.ThumbnailRelativePath);
+                    productImage.ThumbnailPath = storageResult.ThumbnailRelativePath;
+                    productImage.ImageData = null; // KHÔNG lưu ImageData
                     productImage.ImageType = "jpg";
-                    productImage.ImageSize = new FileInfo(targetFilePath).Length;
+                    productImage.ImageSize = storageResult.FileSize; // Sử dụng ImageSize (property hiện có)
                     productImage.ImageWidth = imageInfo.Width;
                     productImage.ImageHeight = imageInfo.Height;
                     productImage.ModifiedDate = DateTime.Now;
+                    productImage.FileExists = true;
                 }
                 else
                 {
@@ -245,30 +411,50 @@ namespace Bll.MasterData.ProductServiceBll
                     {
                         Id = Guid.NewGuid(),
                         ProductId = productId,
-                        ImagePath = targetFilePath,
+                        ImagePath = storageResult.RelativePath, // Backward compatibility
+                        FileName = storageResult.FileName,
+                        RelativePath = storageResult.RelativePath,
+                        FullPath = storageResult.FullPath,
+                        StorageType = "NAS",
+                        FileExtension = "jpg",
+                        Checksum = storageResult.Checksum,
+                        HasThumbnail = !string.IsNullOrEmpty(storageResult.ThumbnailRelativePath),
+                        ThumbnailPath = storageResult.ThumbnailRelativePath,
                         SortOrder = 0,
                         IsPrimary = true,
-                        ImageData = File.ReadAllBytes(targetFilePath),
+                        ImageData = null, // KHÔNG lưu ImageData
                         ImageType = "jpg",
-                        ImageSize = new FileInfo(targetFilePath).Length,
+                        ImageSize = storageResult.FileSize, // Sử dụng ImageSize (property hiện có)
                         ImageWidth = imageInfo.Width,
                         ImageHeight = imageInfo.Height,
                         Caption = "Hình ảnh chính",
                         AltText = "Hình ảnh chính của sản phẩm",
                         IsActive = true,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.Now,
+                        FileExists = true
                     };
                 }
 
-                // Lưu vào database
+                // 6. Lưu metadata vào database
                 GetDataAccess().SaveOrUpdate(productImage);
+
+                _logger.Info($"Đã cập nhật hình ảnh chính, ProductId={productId}, ImageId={productImage.Id}");
 
                 return productImage;
             }
             catch (Exception ex)
             {
+                _logger.Error($"Lỗi khi cập nhật hình ảnh chính cho sản phẩm '{productId}': {ex.Message}", ex);
                 throw new BusinessLogicException($"Lỗi khi cập nhật hình ảnh chính cho sản phẩm '{productId}': {ex.Message}", ex);
             }
+        }
+
+        /// <summary>
+        /// Cập nhật hình ảnh chính (synchronous version - backward compatibility)
+        /// </summary>
+        public ProductImage UpdatePrimaryImage(Guid productId, string imageFilePath)
+        {
+            return UpdatePrimaryImageAsync(productId, imageFilePath).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -288,10 +474,10 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
-        /// Xóa hình ảnh hoàn chỉnh (database + file + cập nhật ProductService)
+        /// Xóa hình ảnh hoàn chỉnh (database + file từ storage + cập nhật ProductService)
         /// </summary>
         /// <param name="imageId">ID hình ảnh</param>
-        public void DeleteImageComplete(Guid imageId)
+        public async Task DeleteImageCompleteAsync(Guid imageId)
         {
             try
             {
@@ -303,26 +489,43 @@ namespace Bll.MasterData.ProductServiceBll
                 }
 
                 var productId = imageInfo.ProductId;
-                var imagePath = imageInfo.ImagePath;
+                var relativePath = imageInfo.RelativePath ?? imageInfo.ImagePath; // Fallback to ImagePath for backward compatibility
                 var isPrimary = imageInfo.IsPrimary ?? false;
 
-                // 2. Xóa file vật lý nếu tồn tại
-                if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+                // 2. Xóa file từ storage (NAS/Local) nếu có RelativePath
+                if (!string.IsNullOrEmpty(relativePath))
                 {
                     try
                     {
-                        File.Delete(imagePath);
-                        System.Diagnostics.Debug.WriteLine($"Đã xóa file: {imagePath}");
+                        var deleted = await _imageStorage.DeleteImageAsync(relativePath);
+                        if (deleted)
+                        {
+                            _logger.Info($"Đã xóa file từ storage, RelativePath={relativePath}");
+                        }
+                        else
+                        {
+                            _logger.Warning($"Không thể xóa file từ storage, RelativePath={relativePath}");
+                        }
                     }
-                    catch (Exception fileEx)
+                    catch (Exception storageEx)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Không thể xóa file '{imagePath}': {fileEx.Message}");
+                        _logger.Warning($"Lỗi khi xóa file từ storage '{relativePath}': {storageEx.Message}");
                         // Không throw exception vì có thể file đã bị xóa hoặc không có quyền
                     }
                 }
 
                 // 3. Xóa thumbnail nếu có
-                DeleteThumbnailIfExists(imageInfo);
+                if (!string.IsNullOrEmpty(imageInfo.ThumbnailPath))
+                {
+                    try
+                    {
+                        await _imageStorage.DeleteImageAsync(imageInfo.ThumbnailPath);
+                    }
+                    catch (Exception thumbEx)
+                    {
+                        _logger.Warning($"Lỗi khi xóa thumbnail '{imageInfo.ThumbnailPath}': {thumbEx.Message}");
+                    }
+                }
 
                 // 4. Xóa trong database
                 GetDataAccess().Delete(imageId);
@@ -333,12 +536,21 @@ namespace Bll.MasterData.ProductServiceBll
                     UpdateProductServiceAfterPrimaryImageDelete(productId.Value);
                 }
 
-                System.Diagnostics.Debug.WriteLine($"Đã xóa hoàn chỉnh hình ảnh '{imageId}'");
+                _logger.Info($"Đã xóa hoàn chỉnh hình ảnh, ImageId={imageId}");
             }
             catch (Exception ex)
             {
+                _logger.Error($"Lỗi khi xóa hoàn chỉnh hình ảnh '{imageId}': {ex.Message}", ex);
                 throw new BusinessLogicException($"Lỗi khi xóa hoàn chỉnh hình ảnh '{imageId}': {ex.Message}", ex);
             }
+        }
+
+        /// <summary>
+        /// Xóa hình ảnh hoàn chỉnh (synchronous version - backward compatibility)
+        /// </summary>
+        public void DeleteImageComplete(Guid imageId)
+        {
+            DeleteImageCompleteAsync(imageId).GetAwaiter().GetResult();
         }
 
         /// <summary>
