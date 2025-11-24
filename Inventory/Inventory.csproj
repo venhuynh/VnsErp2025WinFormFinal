@@ -113,6 +113,12 @@
     <Compile Include="StockIn\FrmNhapKhoThuongMai02.Designer.cs">
       <DependentUpon>FrmNhapKhoThuongMai02.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockIn\FrmNhapThietBiMuon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockIn\FrmNhapThietBiMuon.Designer.cs">
+      <DependentUpon>FrmNhapThietBiMuon.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockIn\InPhieu\InPhieuNhapKho.cs">
       <SubType>Component</SubType>
     </Compile>
