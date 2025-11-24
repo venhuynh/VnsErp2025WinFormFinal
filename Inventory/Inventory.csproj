@@ -193,6 +193,9 @@
     <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcStockInMaster.resx">
       <DependentUpon>UcStockInMaster.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\NhapThietBiMuon\UcNhapThietBiMuonMaster.resx">
+      <DependentUpon>UcNhapThietBiMuonMaster.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="XtraForm1.resx">
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </EmbeddedResource>

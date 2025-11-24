@@ -60,6 +60,7 @@ public class WarrantyRepository : IWarrantyRepository
         loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
         loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
         loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
+        loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
         context.LoadOptions = loadOptions;
 
         return context;
@@ -214,6 +215,9 @@ public class WarrantyRepository : IWarrantyRepository
                 context.SubmitChanges();
                 
                 _logger.Info("SaveOrUpdate: Đã thêm mới bảo hành, Id={0}", warranty.Id);
+                
+                // Sau khi tạo Warranty thành công, kiểm tra và tạo Device nếu chưa có
+                CreateDeviceIfNotExists(context, warranty);
             }
             else
             {
@@ -269,6 +273,228 @@ public class WarrantyRepository : IWarrantyRepository
         {
             _logger.Error($"Delete: Lỗi xóa bảo hành: {ex.Message}", ex);
             throw;
+        }
+    }
+
+    #endregion
+
+    #region Device Management
+
+    /// <summary>
+    /// Tạo Device mới nếu chưa tồn tại dựa trên Warranty
+    /// Kiểm tra xem đã có Device với UniqueProductInfo (SerialNumber/IMEI/MACAddress) chưa
+    /// Nếu chưa có thì tạo Device mới
+    /// </summary>
+    /// <param name="context">DataContext</param>
+    /// <param name="warranty">Warranty entity đã được lưu</param>
+    private void CreateDeviceIfNotExists(VnsErp2025DataContext context, Warranty warranty)
+    {
+        try
+        {
+            if (warranty == null || string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+            {
+                _logger.Debug("CreateDeviceIfNotExists: Bỏ qua vì UniqueProductInfo rỗng");
+                return;
+            }
+
+            // Lấy thông tin StockInOutDetail để có ProductVariantId
+            var stockInOutDetail = context.StockInOutDetails
+                .FirstOrDefault(d => d.Id == warranty.StockInOutDetailId);
+
+            if (stockInOutDetail == null || stockInOutDetail.ProductVariantId == Guid.Empty)
+            {
+                _logger.Warning("CreateDeviceIfNotExists: Không tìm thấy StockInOutDetail hoặc ProductVariantId, WarrantyId={0}", warranty.Id);
+                return;
+            }
+
+            var uniqueProductInfo = warranty.UniqueProductInfo.Trim();
+
+            // Kiểm tra xem đã có Device với UniqueProductInfo này chưa
+            // Tìm theo SerialNumber, IMEI, MACAddress, hoặc AssetTag
+            var existingDevice = context.Devices
+                .FirstOrDefault(d => 
+                    (d.SerialNumber != null && d.SerialNumber.Trim().Equals(uniqueProductInfo, StringComparison.OrdinalIgnoreCase)) ||
+                    (d.IMEI != null && d.IMEI.Trim().Equals(uniqueProductInfo, StringComparison.OrdinalIgnoreCase)) ||
+                    (d.MACAddress != null && d.MACAddress.Trim().Equals(uniqueProductInfo, StringComparison.OrdinalIgnoreCase)) ||
+                    (d.AssetTag != null && d.AssetTag.Trim().Equals(uniqueProductInfo, StringComparison.OrdinalIgnoreCase)) ||
+                    (d.LicenseKey != null && d.LicenseKey.Trim().Equals(uniqueProductInfo, StringComparison.OrdinalIgnoreCase))
+                );
+
+            if (existingDevice != null)
+            {
+                _logger.Info("CreateDeviceIfNotExists: Đã tồn tại Device với UniqueProductInfo='{0}', DeviceId={1}", 
+                    uniqueProductInfo, existingDevice.Id);
+                
+                // Cập nhật WarrantyId cho Device nếu chưa có
+                if (!existingDevice.WarrantyId.HasValue || existingDevice.WarrantyId.Value != warranty.Id)
+                {
+                    existingDevice.WarrantyId = warranty.Id;
+                    context.SubmitChanges();
+                    _logger.Info("CreateDeviceIfNotExists: Đã cập nhật WarrantyId cho Device, DeviceId={0}, WarrantyId={1}", 
+                        existingDevice.Id, warranty.Id);
+                }
+                return;
+            }
+
+            // Tạo Device mới
+            var device = new Device
+            {
+                Id = Guid.NewGuid(),
+                ProductVariantId = stockInOutDetail.ProductVariantId,
+                StockInOutDetailId = warranty.StockInOutDetailId,
+                WarrantyId = warranty.Id,
+                Status = 0, // Available
+                DeviceType = 0, // Hardware (mặc định, có thể cập nhật sau)
+                IsActive = true,
+                CreatedDate = DateTime.Now
+            };
+
+            // Parse UniqueProductInfo để điền vào các trường tương ứng
+            // Format có thể là: "Serial: ABC123", "IMEI: 123456789", "MAC: 00:1B:44:11:3A:B7", hoặc chỉ là giá trị
+            ParseUniqueProductInfo(uniqueProductInfo, device);
+
+            // Lấy thông tin từ StockInOutMaster nếu có (Company, Branch, etc.)
+            if (stockInOutDetail.StockInOutMaster != null)
+            {
+                var master = stockInOutDetail.StockInOutMaster;
+                
+                // Lấy CompanyId từ CompanyBranch nếu có
+                if (master.CompanyBranch != null)
+                {
+                    device.BranchId = master.WarehouseId; // WarehouseId là BranchId
+                    
+                    // Load CompanyBranch để lấy CompanyId
+                    var branch = context.CompanyBranches.FirstOrDefault(b => b.Id == master.WarehouseId);
+                    if (branch != null)
+                    {
+                        device.CompanyId = branch.CompanyId;
+                    }
+                }
+            }
+
+            // Lấy PurchaseDate từ WarrantyFrom nếu có
+            if (warranty.WarrantyFrom.HasValue)
+            {
+                device.PurchaseDate = warranty.WarrantyFrom.Value;
+            }
+
+            context.Devices.InsertOnSubmit(device);
+            context.SubmitChanges();
+
+            // Tạo DeviceHistory để ghi nhận việc tạo Device
+            try
+            {
+                var deviceHistory = new DeviceHistory
+                {
+                    Id = Guid.NewGuid(),
+                    DeviceId = device.Id,
+                    ChangeType = 0, // Created
+                    ChangeDate = DateTime.Now,
+                    Description = $"Tự động tạo từ Warranty (WarrantyId: {warranty.Id}, UniqueProductInfo: {uniqueProductInfo})",
+                    Notes = "Device được tạo tự động khi thêm Warranty mới"
+                };
+                context.DeviceHistories.InsertOnSubmit(deviceHistory);
+                context.SubmitChanges();
+                
+                _logger.Debug("CreateDeviceIfNotExists: Đã tạo DeviceHistory, DeviceId={0}", device.Id);
+            }
+            catch (Exception historyEx)
+            {
+                _logger.Warning("CreateDeviceIfNotExists: Lỗi tạo DeviceHistory: {0}", historyEx.Message);
+                // Không throw, chỉ log warning
+            }
+
+            _logger.Info("CreateDeviceIfNotExists: Đã tạo Device mới, DeviceId={0}, WarrantyId={1}, UniqueProductInfo='{2}'", 
+                device.Id, warranty.Id, uniqueProductInfo);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"CreateDeviceIfNotExists: Lỗi tạo Device: {ex.Message}", ex);
+            // Không throw exception để không ảnh hưởng đến việc lưu Warranty
+            // Chỉ log lỗi
+        }
+    }
+
+    /// <summary>
+    /// Parse UniqueProductInfo để điền vào các trường SerialNumber, IMEI, MACAddress, LicenseKey
+    /// Hỗ trợ các format:
+    /// - "Serial: ABC123" hoặc "S/N: ABC123"
+    /// - "IMEI: 123456789"
+    /// - "MAC: 00:1B:44:11:3A:B7" hoặc "MAC Address: 00:1B:44:11:3A:B7"
+    /// - "License: XXXXX-XXXXX-XXXXX"
+    /// - Hoặc chỉ là giá trị thuần: "ABC123" (sẽ điền vào SerialNumber)
+    /// </summary>
+    /// <param name="uniqueProductInfo">Thông tin sản phẩm duy nhất</param>
+    /// <param name="device">Device entity cần điền thông tin</param>
+    private void ParseUniqueProductInfo(string uniqueProductInfo, Device device)
+    {
+        if (string.IsNullOrWhiteSpace(uniqueProductInfo))
+            return;
+
+        var info = uniqueProductInfo.Trim();
+
+        // Kiểm tra format có prefix không
+        if (info.IndexOf(":", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            var parts = info.Split(new[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 2)
+            {
+                var key = parts[0].Trim();
+                var value = parts[1].Trim();
+
+                if (key.IndexOf("Serial", StringComparison.OrdinalIgnoreCase) >= 0 || 
+                    key.IndexOf("S/N", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    device.SerialNumber = value;
+                }
+                else if (key.IndexOf("IMEI", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    device.IMEI = value;
+                }
+                else if (key.IndexOf("MAC", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    device.MACAddress = value;
+                }
+                else if (key.IndexOf("License", StringComparison.OrdinalIgnoreCase) >= 0 || 
+                         key.IndexOf("Key", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    device.LicenseKey = value;
+                }
+                else
+                {
+                    // Không nhận diện được prefix, mặc định điền vào SerialNumber
+                    device.SerialNumber = value;
+                }
+            }
+            else
+            {
+                // Format không đúng, điền toàn bộ vào SerialNumber
+                device.SerialNumber = info;
+            }
+        }
+        else
+        {
+            // Không có prefix, kiểm tra format để đoán loại
+            // IMEI thường là 15 chữ số
+            if (info.Length == 15 && info.All(char.IsDigit))
+            {
+                device.IMEI = info;
+            }
+            // MAC Address có format XX:XX:XX:XX:XX:XX hoặc XX-XX-XX-XX-XX-XX
+            else if ((info.Contains(':') || info.Contains('-')) && info.Length >= 17)
+            {
+                device.MACAddress = info;
+            }
+            // License Key thường có dấu gạch ngang
+            else if (info.Contains('-') && info.Length > 10)
+            {
+                device.LicenseKey = info;
+            }
+            else
+            {
+                // Mặc định điền vào SerialNumber
+                device.SerialNumber = info;
+            }
         }
     }
 

@@ -160,6 +160,8 @@
     <Content Include="Doc\Promt\Prompt cho AI Cursor %28CRUD DataAccess Class%29.txt" />
     <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
+    <Content Include="Scripts\CreateDeviceTable.sql" />
+    <Content Include="Scripts\CreateEquipmentTables.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataAccess\Inventory\StockIn\" />

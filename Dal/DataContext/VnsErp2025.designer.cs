@@ -66,6 +66,15 @@ namespace Dal.DataContext
     partial void InsertDepartment(Department instance);
     partial void UpdateDepartment(Department instance);
     partial void DeleteDepartment(Department instance);
+    partial void InsertDevice(Device instance);
+    partial void UpdateDevice(Device instance);
+    partial void DeleteDevice(Device instance);
+    partial void InsertDeviceHistory(DeviceHistory instance);
+    partial void UpdateDeviceHistory(DeviceHistory instance);
+    partial void DeleteDeviceHistory(DeviceHistory instance);
+    partial void InsertDeviceTransfer(DeviceTransfer instance);
+    partial void UpdateDeviceTransfer(DeviceTransfer instance);
+    partial void DeleteDeviceTransfer(DeviceTransfer instance);
     partial void InsertEmployee(Employee instance);
     partial void UpdateEmployee(Employee instance);
     partial void DeleteEmployee(Employee instance);
@@ -224,6 +233,30 @@ namespace Dal.DataContext
 			get
 			{
 				return this.GetTable<Department>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Device> Devices
+		{
+			get
+			{
+				return this.GetTable<Device>();
+			}
+		}
+		
+		public System.Data.Linq.Table<DeviceHistory> DeviceHistories
+		{
+			get
+			{
+				return this.GetTable<DeviceHistory>();
+			}
+		}
+		
+		public System.Data.Linq.Table<DeviceTransfer> DeviceTransfers
+		{
+			get
+			{
+				return this.GetTable<DeviceTransfer>();
 			}
 		}
 		
@@ -472,6 +505,8 @@ namespace Dal.DataContext
 		
 		private string _UniqueProductInfo;
 		
+		private EntitySet<Device> _Devices;
+		
 		private EntityRef<StockInOutDetail> _StockInOutDetail;
 		
     #region Extensibility Method Definitions
@@ -498,6 +533,7 @@ namespace Dal.DataContext
 		
 		public Warranty()
 		{
+			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._StockInOutDetail = default(EntityRef<StockInOutDetail>);
 			OnCreated();
 		}
@@ -666,6 +702,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Device", Storage="_Devices", ThisKey="Id", OtherKey="WarrantyId")]
+		public EntitySet<Device> Devices
+		{
+			get
+			{
+				return this._Devices;
+			}
+			set
+			{
+				this._Devices.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_StockInOutDetail", ThisKey="StockInOutDetailId", OtherKey="Id", IsForeignKey=true)]
 		public StockInOutDetail StockInOutDetail
 		{
@@ -718,6 +767,18 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Warranty = this;
+		}
+		
+		private void detach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Warranty = null;
 		}
 	}
 	
@@ -2899,6 +2960,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<Department> _Departments;
 		
+		private EntitySet<Device> _Devices;
+		
 		private EntitySet<Employee> _Employees;
 		
 		private EntitySet<Position> _Positions;
@@ -2949,6 +3012,7 @@ namespace Dal.DataContext
 		{
 			this._CompanyBranches = new EntitySet<CompanyBranch>(new Action<CompanyBranch>(this.attach_CompanyBranches), new Action<CompanyBranch>(this.detach_CompanyBranches));
 			this._Departments = new EntitySet<Department>(new Action<Department>(this.attach_Departments), new Action<Department>(this.detach_Departments));
+			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._Employees = new EntitySet<Employee>(new Action<Employee>(this.attach_Employees), new Action<Employee>(this.detach_Employees));
 			this._Positions = new EntitySet<Position>(new Action<Position>(this.attach_Positions), new Action<Position>(this.detach_Positions));
 			OnCreated();
@@ -3340,6 +3404,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Company_Device", Storage="_Devices", ThisKey="Id", OtherKey="CompanyId")]
+		public EntitySet<Device> Devices
+		{
+			get
+			{
+				return this._Devices;
+			}
+			set
+			{
+				this._Devices.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Company_Employee", Storage="_Employees", ThisKey="Id", OtherKey="CompanyId")]
 		public EntitySet<Employee> Employees
 		{
@@ -3410,6 +3487,18 @@ namespace Dal.DataContext
 			entity.Company = null;
 		}
 		
+		private void attach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Company = this;
+		}
+		
+		private void detach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Company = null;
+		}
+		
 		private void attach_Employees(Employee entity)
 		{
 			this.SendPropertyChanging();
@@ -3461,6 +3550,12 @@ namespace Dal.DataContext
 		
 		private EntitySet<Department> _Departments;
 		
+		private EntitySet<Device> _Devices;
+		
+		private EntitySet<DeviceTransfer> _DeviceTransfers;
+		
+		private EntitySet<DeviceTransfer> _DeviceTransfers1;
+		
 		private EntitySet<Employee> _Employees;
 		
 		private EntitySet<StockInOutMaster> _StockInOutMasters;
@@ -3494,6 +3589,9 @@ namespace Dal.DataContext
 		public CompanyBranch()
 		{
 			this._Departments = new EntitySet<Department>(new Action<Department>(this.attach_Departments), new Action<Department>(this.detach_Departments));
+			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
+			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
+			this._DeviceTransfers1 = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers1), new Action<DeviceTransfer>(this.detach_DeviceTransfers1));
 			this._Employees = new EntitySet<Employee>(new Action<Employee>(this.attach_Employees), new Action<Employee>(this.detach_Employees));
 			this._StockInOutMasters = new EntitySet<StockInOutMaster>(new Action<StockInOutMaster>(this.attach_StockInOutMasters), new Action<StockInOutMaster>(this.detach_StockInOutMasters));
 			this._Company = default(EntityRef<Company>);
@@ -3697,6 +3795,45 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_Device", Storage="_Devices", ThisKey="Id", OtherKey="BranchId")]
+		public EntitySet<Device> Devices
+		{
+			get
+			{
+				return this._Devices;
+			}
+			set
+			{
+				this._Devices.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_DeviceTransfer", Storage="_DeviceTransfers", ThisKey="Id", OtherKey="FromBranchId")]
+		public EntitySet<DeviceTransfer> DeviceTransfers
+		{
+			get
+			{
+				return this._DeviceTransfers;
+			}
+			set
+			{
+				this._DeviceTransfers.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_DeviceTransfer1", Storage="_DeviceTransfers1", ThisKey="Id", OtherKey="ToBranchId")]
+		public EntitySet<DeviceTransfer> DeviceTransfers1
+		{
+			get
+			{
+				return this._DeviceTransfers1;
+			}
+			set
+			{
+				this._DeviceTransfers1.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_Employee", Storage="_Employees", ThisKey="Id", OtherKey="BranchId")]
 		public EntitySet<Employee> Employees
 		{
@@ -3789,6 +3926,42 @@ namespace Dal.DataContext
 			entity.CompanyBranch = null;
 		}
 		
+		private void attach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch = this;
+		}
+		
+		private void detach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch = null;
+		}
+		
+		private void attach_DeviceTransfers(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch = this;
+		}
+		
+		private void detach_DeviceTransfers(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch = null;
+		}
+		
+		private void attach_DeviceTransfers1(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch1 = this;
+		}
+		
+		private void detach_DeviceTransfers1(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch1 = null;
+		}
+		
 		private void attach_Employees(Employee entity)
 		{
 			this.SendPropertyChanging();
@@ -3838,6 +4011,12 @@ namespace Dal.DataContext
 		
 		private EntitySet<Department> _Departments;
 		
+		private EntitySet<Device> _Devices;
+		
+		private EntitySet<DeviceTransfer> _DeviceTransfers;
+		
+		private EntitySet<DeviceTransfer> _DeviceTransfers1;
+		
 		private EntitySet<Employee> _Employees;
 		
 		private EntityRef<CompanyBranch> _CompanyBranch;
@@ -3871,6 +4050,9 @@ namespace Dal.DataContext
 		public Department()
 		{
 			this._Departments = new EntitySet<Department>(new Action<Department>(this.attach_Departments), new Action<Department>(this.detach_Departments));
+			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
+			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
+			this._DeviceTransfers1 = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers1), new Action<DeviceTransfer>(this.detach_DeviceTransfers1));
 			this._Employees = new EntitySet<Employee>(new Action<Employee>(this.attach_Employees), new Action<Employee>(this.detach_Employees));
 			this._CompanyBranch = default(EntityRef<CompanyBranch>);
 			this._Company = default(EntityRef<Company>);
@@ -4063,6 +4245,45 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_Device", Storage="_Devices", ThisKey="Id", OtherKey="DepartmentId")]
+		public EntitySet<Device> Devices
+		{
+			get
+			{
+				return this._Devices;
+			}
+			set
+			{
+				this._Devices.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_DeviceTransfer", Storage="_DeviceTransfers", ThisKey="Id", OtherKey="FromDepartmentId")]
+		public EntitySet<DeviceTransfer> DeviceTransfers
+		{
+			get
+			{
+				return this._DeviceTransfers;
+			}
+			set
+			{
+				this._DeviceTransfers.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_DeviceTransfer1", Storage="_DeviceTransfers1", ThisKey="Id", OtherKey="ToDepartmentId")]
+		public EntitySet<DeviceTransfer> DeviceTransfers1
+		{
+			get
+			{
+				return this._DeviceTransfers1;
+			}
+			set
+			{
+				this._DeviceTransfers1.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_Employee", Storage="_Employees", ThisKey="Id", OtherKey="DepartmentId")]
 		public EntitySet<Employee> Employees
 		{
@@ -4210,6 +4431,42 @@ namespace Dal.DataContext
 			entity.Department1 = null;
 		}
 		
+		private void attach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Department = this;
+		}
+		
+		private void detach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Department = null;
+		}
+		
+		private void attach_DeviceTransfers(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Department = this;
+		}
+		
+		private void detach_DeviceTransfers(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Department = null;
+		}
+		
+		private void attach_DeviceTransfers1(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Department1 = this;
+		}
+		
+		private void detach_DeviceTransfers1(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Department1 = null;
+		}
+		
 		private void attach_Employees(Employee entity)
 		{
 			this.SendPropertyChanging();
@@ -4220,6 +4477,2255 @@ namespace Dal.DataContext
 		{
 			this.SendPropertyChanging();
 			entity.Department = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Device")]
+	public partial class Device : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _ProductVariantId;
+		
+		private System.Nullable<System.Guid> _StockInOutDetailId;
+		
+		private System.Nullable<System.Guid> _WarrantyId;
+		
+		private string _SerialNumber;
+		
+		private string _MACAddress;
+		
+		private string _IMEI;
+		
+		private string _AssetTag;
+		
+		private string _LicenseKey;
+		
+		private string _HostName;
+		
+		private string _IPAddress;
+		
+		private System.Nullable<System.Guid> _CompanyId;
+		
+		private System.Nullable<System.Guid> _BranchId;
+		
+		private System.Nullable<System.Guid> _DepartmentId;
+		
+		private System.Nullable<System.Guid> _AssignedEmployeeId;
+		
+		private string _Location;
+		
+		private int _Status;
+		
+		private int _DeviceType;
+		
+		private System.Nullable<System.DateTime> _PurchaseDate;
+		
+		private System.Nullable<System.DateTime> _InstallationDate;
+		
+		private System.Nullable<System.DateTime> _LastMaintenanceDate;
+		
+		private System.Nullable<System.DateTime> _NextMaintenanceDate;
+		
+		private string _Manufacturer;
+		
+		private string _Model;
+		
+		private string _Specifications;
+		
+		private string _Configuration;
+		
+		private string _Notes;
+		
+		private bool _IsActive;
+		
+		private System.DateTime _CreatedDate;
+		
+		private System.Nullable<System.DateTime> _UpdatedDate;
+		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
+		private System.Nullable<System.Guid> _UpdatedBy;
+		
+		private EntitySet<DeviceHistory> _DeviceHistories;
+		
+		private EntitySet<DeviceTransfer> _DeviceTransfers;
+		
+		private EntityRef<Company> _Company;
+		
+		private EntityRef<CompanyBranch> _CompanyBranch;
+		
+		private EntityRef<Department> _Department;
+		
+		private EntityRef<Warranty> _Warranty;
+		
+		private EntityRef<Employee> _Employee;
+		
+		private EntityRef<ProductVariant> _ProductVariant;
+		
+		private EntityRef<StockInOutDetail> _StockInOutDetail;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnProductVariantIdChanging(System.Guid value);
+    partial void OnProductVariantIdChanged();
+    partial void OnStockInOutDetailIdChanging(System.Nullable<System.Guid> value);
+    partial void OnStockInOutDetailIdChanged();
+    partial void OnWarrantyIdChanging(System.Nullable<System.Guid> value);
+    partial void OnWarrantyIdChanged();
+    partial void OnSerialNumberChanging(string value);
+    partial void OnSerialNumberChanged();
+    partial void OnMACAddressChanging(string value);
+    partial void OnMACAddressChanged();
+    partial void OnIMEIChanging(string value);
+    partial void OnIMEIChanged();
+    partial void OnAssetTagChanging(string value);
+    partial void OnAssetTagChanged();
+    partial void OnLicenseKeyChanging(string value);
+    partial void OnLicenseKeyChanged();
+    partial void OnHostNameChanging(string value);
+    partial void OnHostNameChanged();
+    partial void OnIPAddressChanging(string value);
+    partial void OnIPAddressChanged();
+    partial void OnCompanyIdChanging(System.Nullable<System.Guid> value);
+    partial void OnCompanyIdChanged();
+    partial void OnBranchIdChanging(System.Nullable<System.Guid> value);
+    partial void OnBranchIdChanged();
+    partial void OnDepartmentIdChanging(System.Nullable<System.Guid> value);
+    partial void OnDepartmentIdChanged();
+    partial void OnAssignedEmployeeIdChanging(System.Nullable<System.Guid> value);
+    partial void OnAssignedEmployeeIdChanged();
+    partial void OnLocationChanging(string value);
+    partial void OnLocationChanged();
+    partial void OnStatusChanging(int value);
+    partial void OnStatusChanged();
+    partial void OnDeviceTypeChanging(int value);
+    partial void OnDeviceTypeChanged();
+    partial void OnPurchaseDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnPurchaseDateChanged();
+    partial void OnInstallationDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnInstallationDateChanged();
+    partial void OnLastMaintenanceDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastMaintenanceDateChanged();
+    partial void OnNextMaintenanceDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnNextMaintenanceDateChanged();
+    partial void OnManufacturerChanging(string value);
+    partial void OnManufacturerChanged();
+    partial void OnModelChanging(string value);
+    partial void OnModelChanged();
+    partial void OnSpecificationsChanging(string value);
+    partial void OnSpecificationsChanged();
+    partial void OnConfigurationChanging(string value);
+    partial void OnConfigurationChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnUpdatedDateChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
+    partial void OnUpdatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnUpdatedByChanged();
+    #endregion
+		
+		public Device()
+		{
+			this._DeviceHistories = new EntitySet<DeviceHistory>(new Action<DeviceHistory>(this.attach_DeviceHistories), new Action<DeviceHistory>(this.detach_DeviceHistories));
+			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
+			this._Company = default(EntityRef<Company>);
+			this._CompanyBranch = default(EntityRef<CompanyBranch>);
+			this._Department = default(EntityRef<Department>);
+			this._Warranty = default(EntityRef<Warranty>);
+			this._Employee = default(EntityRef<Employee>);
+			this._ProductVariant = default(EntityRef<ProductVariant>);
+			this._StockInOutDetail = default(EntityRef<StockInOutDetail>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductVariantId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ProductVariantId
+		{
+			get
+			{
+				return this._ProductVariantId;
+			}
+			set
+			{
+				if ((this._ProductVariantId != value))
+				{
+					if (this._ProductVariant.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductVariantIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductVariantId = value;
+					this.SendPropertyChanged("ProductVariantId");
+					this.OnProductVariantIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutDetailId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> StockInOutDetailId
+		{
+			get
+			{
+				return this._StockInOutDetailId;
+			}
+			set
+			{
+				if ((this._StockInOutDetailId != value))
+				{
+					if (this._StockInOutDetail.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnStockInOutDetailIdChanging(value);
+					this.SendPropertyChanging();
+					this._StockInOutDetailId = value;
+					this.SendPropertyChanged("StockInOutDetailId");
+					this.OnStockInOutDetailIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> WarrantyId
+		{
+			get
+			{
+				return this._WarrantyId;
+			}
+			set
+			{
+				if ((this._WarrantyId != value))
+				{
+					if (this._Warranty.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnWarrantyIdChanging(value);
+					this.SendPropertyChanging();
+					this._WarrantyId = value;
+					this.SendPropertyChanged("WarrantyId");
+					this.OnWarrantyIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SerialNumber", DbType="NVarChar(100)")]
+		public string SerialNumber
+		{
+			get
+			{
+				return this._SerialNumber;
+			}
+			set
+			{
+				if ((this._SerialNumber != value))
+				{
+					this.OnSerialNumberChanging(value);
+					this.SendPropertyChanging();
+					this._SerialNumber = value;
+					this.SendPropertyChanged("SerialNumber");
+					this.OnSerialNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MACAddress", DbType="NVarChar(50)")]
+		public string MACAddress
+		{
+			get
+			{
+				return this._MACAddress;
+			}
+			set
+			{
+				if ((this._MACAddress != value))
+				{
+					this.OnMACAddressChanging(value);
+					this.SendPropertyChanging();
+					this._MACAddress = value;
+					this.SendPropertyChanged("MACAddress");
+					this.OnMACAddressChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IMEI", DbType="NVarChar(50)")]
+		public string IMEI
+		{
+			get
+			{
+				return this._IMEI;
+			}
+			set
+			{
+				if ((this._IMEI != value))
+				{
+					this.OnIMEIChanging(value);
+					this.SendPropertyChanging();
+					this._IMEI = value;
+					this.SendPropertyChanged("IMEI");
+					this.OnIMEIChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AssetTag", DbType="NVarChar(50)")]
+		public string AssetTag
+		{
+			get
+			{
+				return this._AssetTag;
+			}
+			set
+			{
+				if ((this._AssetTag != value))
+				{
+					this.OnAssetTagChanging(value);
+					this.SendPropertyChanging();
+					this._AssetTag = value;
+					this.SendPropertyChanged("AssetTag");
+					this.OnAssetTagChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LicenseKey", DbType="NVarChar(255)")]
+		public string LicenseKey
+		{
+			get
+			{
+				return this._LicenseKey;
+			}
+			set
+			{
+				if ((this._LicenseKey != value))
+				{
+					this.OnLicenseKeyChanging(value);
+					this.SendPropertyChanging();
+					this._LicenseKey = value;
+					this.SendPropertyChanged("LicenseKey");
+					this.OnLicenseKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HostName", DbType="NVarChar(100)")]
+		public string HostName
+		{
+			get
+			{
+				return this._HostName;
+			}
+			set
+			{
+				if ((this._HostName != value))
+				{
+					this.OnHostNameChanging(value);
+					this.SendPropertyChanging();
+					this._HostName = value;
+					this.SendPropertyChanged("HostName");
+					this.OnHostNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IPAddress", DbType="NVarChar(50)")]
+		public string IPAddress
+		{
+			get
+			{
+				return this._IPAddress;
+			}
+			set
+			{
+				if ((this._IPAddress != value))
+				{
+					this.OnIPAddressChanging(value);
+					this.SendPropertyChanging();
+					this._IPAddress = value;
+					this.SendPropertyChanged("IPAddress");
+					this.OnIPAddressChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CompanyId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CompanyId
+		{
+			get
+			{
+				return this._CompanyId;
+			}
+			set
+			{
+				if ((this._CompanyId != value))
+				{
+					if (this._Company.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCompanyIdChanging(value);
+					this.SendPropertyChanging();
+					this._CompanyId = value;
+					this.SendPropertyChanged("CompanyId");
+					this.OnCompanyIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BranchId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> BranchId
+		{
+			get
+			{
+				return this._BranchId;
+			}
+			set
+			{
+				if ((this._BranchId != value))
+				{
+					if (this._CompanyBranch.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnBranchIdChanging(value);
+					this.SendPropertyChanging();
+					this._BranchId = value;
+					this.SendPropertyChanged("BranchId");
+					this.OnBranchIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DepartmentId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> DepartmentId
+		{
+			get
+			{
+				return this._DepartmentId;
+			}
+			set
+			{
+				if ((this._DepartmentId != value))
+				{
+					if (this._Department.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDepartmentIdChanging(value);
+					this.SendPropertyChanging();
+					this._DepartmentId = value;
+					this.SendPropertyChanged("DepartmentId");
+					this.OnDepartmentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AssignedEmployeeId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> AssignedEmployeeId
+		{
+			get
+			{
+				return this._AssignedEmployeeId;
+			}
+			set
+			{
+				if ((this._AssignedEmployeeId != value))
+				{
+					if (this._Employee.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnAssignedEmployeeIdChanging(value);
+					this.SendPropertyChanging();
+					this._AssignedEmployeeId = value;
+					this.SendPropertyChanged("AssignedEmployeeId");
+					this.OnAssignedEmployeeIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Location", DbType="NVarChar(500)")]
+		public string Location
+		{
+			get
+			{
+				return this._Location;
+			}
+			set
+			{
+				if ((this._Location != value))
+				{
+					this.OnLocationChanging(value);
+					this.SendPropertyChanging();
+					this._Location = value;
+					this.SendPropertyChanged("Location");
+					this.OnLocationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="Int NOT NULL")]
+		public int Status
+		{
+			get
+			{
+				return this._Status;
+			}
+			set
+			{
+				if ((this._Status != value))
+				{
+					this.OnStatusChanging(value);
+					this.SendPropertyChanging();
+					this._Status = value;
+					this.SendPropertyChanged("Status");
+					this.OnStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceType", DbType="Int NOT NULL")]
+		public int DeviceType
+		{
+			get
+			{
+				return this._DeviceType;
+			}
+			set
+			{
+				if ((this._DeviceType != value))
+				{
+					this.OnDeviceTypeChanging(value);
+					this.SendPropertyChanging();
+					this._DeviceType = value;
+					this.SendPropertyChanged("DeviceType");
+					this.OnDeviceTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PurchaseDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> PurchaseDate
+		{
+			get
+			{
+				return this._PurchaseDate;
+			}
+			set
+			{
+				if ((this._PurchaseDate != value))
+				{
+					this.OnPurchaseDateChanging(value);
+					this.SendPropertyChanging();
+					this._PurchaseDate = value;
+					this.SendPropertyChanged("PurchaseDate");
+					this.OnPurchaseDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InstallationDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> InstallationDate
+		{
+			get
+			{
+				return this._InstallationDate;
+			}
+			set
+			{
+				if ((this._InstallationDate != value))
+				{
+					this.OnInstallationDateChanging(value);
+					this.SendPropertyChanging();
+					this._InstallationDate = value;
+					this.SendPropertyChanged("InstallationDate");
+					this.OnInstallationDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastMaintenanceDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastMaintenanceDate
+		{
+			get
+			{
+				return this._LastMaintenanceDate;
+			}
+			set
+			{
+				if ((this._LastMaintenanceDate != value))
+				{
+					this.OnLastMaintenanceDateChanging(value);
+					this.SendPropertyChanging();
+					this._LastMaintenanceDate = value;
+					this.SendPropertyChanged("LastMaintenanceDate");
+					this.OnLastMaintenanceDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NextMaintenanceDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> NextMaintenanceDate
+		{
+			get
+			{
+				return this._NextMaintenanceDate;
+			}
+			set
+			{
+				if ((this._NextMaintenanceDate != value))
+				{
+					this.OnNextMaintenanceDateChanging(value);
+					this.SendPropertyChanging();
+					this._NextMaintenanceDate = value;
+					this.SendPropertyChanged("NextMaintenanceDate");
+					this.OnNextMaintenanceDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Manufacturer", DbType="NVarChar(255)")]
+		public string Manufacturer
+		{
+			get
+			{
+				return this._Manufacturer;
+			}
+			set
+			{
+				if ((this._Manufacturer != value))
+				{
+					this.OnManufacturerChanging(value);
+					this.SendPropertyChanging();
+					this._Manufacturer = value;
+					this.SendPropertyChanged("Manufacturer");
+					this.OnManufacturerChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Model", DbType="NVarChar(255)")]
+		public string Model
+		{
+			get
+			{
+				return this._Model;
+			}
+			set
+			{
+				if ((this._Model != value))
+				{
+					this.OnModelChanging(value);
+					this.SendPropertyChanging();
+					this._Model = value;
+					this.SendPropertyChanged("Model");
+					this.OnModelChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Specifications", DbType="NVarChar(2000)")]
+		public string Specifications
+		{
+			get
+			{
+				return this._Specifications;
+			}
+			set
+			{
+				if ((this._Specifications != value))
+				{
+					this.OnSpecificationsChanging(value);
+					this.SendPropertyChanging();
+					this._Specifications = value;
+					this.SendPropertyChanged("Specifications");
+					this.OnSpecificationsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Configuration", DbType="NVarChar(2000)")]
+		public string Configuration
+		{
+			get
+			{
+				return this._Configuration;
+			}
+			set
+			{
+				if ((this._Configuration != value))
+				{
+					this.OnConfigurationChanging(value);
+					this.SendPropertyChanging();
+					this._Configuration = value;
+					this.SendPropertyChanged("Configuration");
+					this.OnConfigurationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> UpdatedDate
+		{
+			get
+			{
+				return this._UpdatedDate;
+			}
+			set
+			{
+				if ((this._UpdatedDate != value))
+				{
+					this.OnUpdatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedDate = value;
+					this.SendPropertyChanged("UpdatedDate");
+					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> UpdatedBy
+		{
+			get
+			{
+				return this._UpdatedBy;
+			}
+			set
+			{
+				if ((this._UpdatedBy != value))
+				{
+					this.OnUpdatedByChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedBy = value;
+					this.SendPropertyChanged("UpdatedBy");
+					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceHistory", Storage="_DeviceHistories", ThisKey="Id", OtherKey="DeviceId")]
+		public EntitySet<DeviceHistory> DeviceHistories
+		{
+			get
+			{
+				return this._DeviceHistories;
+			}
+			set
+			{
+				this._DeviceHistories.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceTransfer", Storage="_DeviceTransfers", ThisKey="Id", OtherKey="DeviceId")]
+		public EntitySet<DeviceTransfer> DeviceTransfers
+		{
+			get
+			{
+				return this._DeviceTransfers;
+			}
+			set
+			{
+				this._DeviceTransfers.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Company_Device", Storage="_Company", ThisKey="CompanyId", OtherKey="Id", IsForeignKey=true)]
+		public Company Company
+		{
+			get
+			{
+				return this._Company.Entity;
+			}
+			set
+			{
+				Company previousValue = this._Company.Entity;
+				if (((previousValue != value) 
+							|| (this._Company.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Company.Entity = null;
+						previousValue.Devices.Remove(this);
+					}
+					this._Company.Entity = value;
+					if ((value != null))
+					{
+						value.Devices.Add(this);
+						this._CompanyId = value.Id;
+					}
+					else
+					{
+						this._CompanyId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Company");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_Device", Storage="_CompanyBranch", ThisKey="BranchId", OtherKey="Id", IsForeignKey=true)]
+		public CompanyBranch CompanyBranch
+		{
+			get
+			{
+				return this._CompanyBranch.Entity;
+			}
+			set
+			{
+				CompanyBranch previousValue = this._CompanyBranch.Entity;
+				if (((previousValue != value) 
+							|| (this._CompanyBranch.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CompanyBranch.Entity = null;
+						previousValue.Devices.Remove(this);
+					}
+					this._CompanyBranch.Entity = value;
+					if ((value != null))
+					{
+						value.Devices.Add(this);
+						this._BranchId = value.Id;
+					}
+					else
+					{
+						this._BranchId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("CompanyBranch");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_Device", Storage="_Department", ThisKey="DepartmentId", OtherKey="Id", IsForeignKey=true)]
+		public Department Department
+		{
+			get
+			{
+				return this._Department.Entity;
+			}
+			set
+			{
+				Department previousValue = this._Department.Entity;
+				if (((previousValue != value) 
+							|| (this._Department.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Department.Entity = null;
+						previousValue.Devices.Remove(this);
+					}
+					this._Department.Entity = value;
+					if ((value != null))
+					{
+						value.Devices.Add(this);
+						this._DepartmentId = value.Id;
+					}
+					else
+					{
+						this._DepartmentId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Department");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Device", Storage="_Warranty", ThisKey="WarrantyId", OtherKey="Id", IsForeignKey=true)]
+		public Warranty Warranty
+		{
+			get
+			{
+				return this._Warranty.Entity;
+			}
+			set
+			{
+				Warranty previousValue = this._Warranty.Entity;
+				if (((previousValue != value) 
+							|| (this._Warranty.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Warranty.Entity = null;
+						previousValue.Devices.Remove(this);
+					}
+					this._Warranty.Entity = value;
+					if ((value != null))
+					{
+						value.Devices.Add(this);
+						this._WarrantyId = value.Id;
+					}
+					else
+					{
+						this._WarrantyId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Warranty");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_Device", Storage="_Employee", ThisKey="AssignedEmployeeId", OtherKey="Id", IsForeignKey=true)]
+		public Employee Employee
+		{
+			get
+			{
+				return this._Employee.Entity;
+			}
+			set
+			{
+				Employee previousValue = this._Employee.Entity;
+				if (((previousValue != value) 
+							|| (this._Employee.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Employee.Entity = null;
+						previousValue.Devices.Remove(this);
+					}
+					this._Employee.Entity = value;
+					if ((value != null))
+					{
+						value.Devices.Add(this);
+						this._AssignedEmployeeId = value.Id;
+					}
+					else
+					{
+						this._AssignedEmployeeId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Employee");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_Device", Storage="_ProductVariant", ThisKey="ProductVariantId", OtherKey="Id", IsForeignKey=true)]
+		public ProductVariant ProductVariant
+		{
+			get
+			{
+				return this._ProductVariant.Entity;
+			}
+			set
+			{
+				ProductVariant previousValue = this._ProductVariant.Entity;
+				if (((previousValue != value) 
+							|| (this._ProductVariant.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ProductVariant.Entity = null;
+						previousValue.Devices.Remove(this);
+					}
+					this._ProductVariant.Entity = value;
+					if ((value != null))
+					{
+						value.Devices.Add(this);
+						this._ProductVariantId = value.Id;
+					}
+					else
+					{
+						this._ProductVariantId = default(System.Guid);
+					}
+					this.SendPropertyChanged("ProductVariant");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Device", Storage="_StockInOutDetail", ThisKey="StockInOutDetailId", OtherKey="Id", IsForeignKey=true)]
+		public StockInOutDetail StockInOutDetail
+		{
+			get
+			{
+				return this._StockInOutDetail.Entity;
+			}
+			set
+			{
+				StockInOutDetail previousValue = this._StockInOutDetail.Entity;
+				if (((previousValue != value) 
+							|| (this._StockInOutDetail.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._StockInOutDetail.Entity = null;
+						previousValue.Devices.Remove(this);
+					}
+					this._StockInOutDetail.Entity = value;
+					if ((value != null))
+					{
+						value.Devices.Add(this);
+						this._StockInOutDetailId = value.Id;
+					}
+					else
+					{
+						this._StockInOutDetailId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("StockInOutDetail");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_DeviceHistories(DeviceHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = this;
+		}
+		
+		private void detach_DeviceHistories(DeviceHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = null;
+		}
+		
+		private void attach_DeviceTransfers(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = this;
+		}
+		
+		private void detach_DeviceTransfers(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DeviceHistory")]
+	public partial class DeviceHistory : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _DeviceId;
+		
+		private int _ChangeType;
+		
+		private System.DateTime _ChangeDate;
+		
+		private System.Nullable<System.Guid> _ChangedBy;
+		
+		private string _OldValue;
+		
+		private string _NewValue;
+		
+		private string _FieldName;
+		
+		private string _Description;
+		
+		private string _Notes;
+		
+		private EntityRef<Device> _Device;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnDeviceIdChanging(System.Guid value);
+    partial void OnDeviceIdChanged();
+    partial void OnChangeTypeChanging(int value);
+    partial void OnChangeTypeChanged();
+    partial void OnChangeDateChanging(System.DateTime value);
+    partial void OnChangeDateChanged();
+    partial void OnChangedByChanging(System.Nullable<System.Guid> value);
+    partial void OnChangedByChanged();
+    partial void OnOldValueChanging(string value);
+    partial void OnOldValueChanged();
+    partial void OnNewValueChanging(string value);
+    partial void OnNewValueChanged();
+    partial void OnFieldNameChanging(string value);
+    partial void OnFieldNameChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    #endregion
+		
+		public DeviceHistory()
+		{
+			this._Device = default(EntityRef<Device>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid DeviceId
+		{
+			get
+			{
+				return this._DeviceId;
+			}
+			set
+			{
+				if ((this._DeviceId != value))
+				{
+					if (this._Device.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDeviceIdChanging(value);
+					this.SendPropertyChanging();
+					this._DeviceId = value;
+					this.SendPropertyChanged("DeviceId");
+					this.OnDeviceIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeType", DbType="Int NOT NULL")]
+		public int ChangeType
+		{
+			get
+			{
+				return this._ChangeType;
+			}
+			set
+			{
+				if ((this._ChangeType != value))
+				{
+					this.OnChangeTypeChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeType = value;
+					this.SendPropertyChanged("ChangeType");
+					this.OnChangeTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeDate", DbType="DateTime NOT NULL")]
+		public System.DateTime ChangeDate
+		{
+			get
+			{
+				return this._ChangeDate;
+			}
+			set
+			{
+				if ((this._ChangeDate != value))
+				{
+					this.OnChangeDateChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeDate = value;
+					this.SendPropertyChanged("ChangeDate");
+					this.OnChangeDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ChangedBy
+		{
+			get
+			{
+				return this._ChangedBy;
+			}
+			set
+			{
+				if ((this._ChangedBy != value))
+				{
+					this.OnChangedByChanging(value);
+					this.SendPropertyChanging();
+					this._ChangedBy = value;
+					this.SendPropertyChanged("ChangedBy");
+					this.OnChangedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OldValue", DbType="NVarChar(500)")]
+		public string OldValue
+		{
+			get
+			{
+				return this._OldValue;
+			}
+			set
+			{
+				if ((this._OldValue != value))
+				{
+					this.OnOldValueChanging(value);
+					this.SendPropertyChanging();
+					this._OldValue = value;
+					this.SendPropertyChanged("OldValue");
+					this.OnOldValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewValue", DbType="NVarChar(500)")]
+		public string NewValue
+		{
+			get
+			{
+				return this._NewValue;
+			}
+			set
+			{
+				if ((this._NewValue != value))
+				{
+					this.OnNewValueChanging(value);
+					this.SendPropertyChanging();
+					this._NewValue = value;
+					this.SendPropertyChanged("NewValue");
+					this.OnNewValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FieldName", DbType="NVarChar(100)")]
+		public string FieldName
+		{
+			get
+			{
+				return this._FieldName;
+			}
+			set
+			{
+				if ((this._FieldName != value))
+				{
+					this.OnFieldNameChanging(value);
+					this.SendPropertyChanging();
+					this._FieldName = value;
+					this.SendPropertyChanged("FieldName");
+					this.OnFieldNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(1000)")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceHistory", Storage="_Device", ThisKey="DeviceId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public Device Device
+		{
+			get
+			{
+				return this._Device.Entity;
+			}
+			set
+			{
+				Device previousValue = this._Device.Entity;
+				if (((previousValue != value) 
+							|| (this._Device.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Device.Entity = null;
+						previousValue.DeviceHistories.Remove(this);
+					}
+					this._Device.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceHistories.Add(this);
+						this._DeviceId = value.Id;
+					}
+					else
+					{
+						this._DeviceId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Device");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DeviceTransfer")]
+	public partial class DeviceTransfer : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _DeviceId;
+		
+		private System.DateTime _TransferDate;
+		
+		private System.Nullable<System.Guid> _FromBranchId;
+		
+		private System.Nullable<System.Guid> _FromDepartmentId;
+		
+		private System.Nullable<System.Guid> _FromEmployeeId;
+		
+		private string _FromLocation;
+		
+		private System.Nullable<System.Guid> _ToBranchId;
+		
+		private System.Nullable<System.Guid> _ToDepartmentId;
+		
+		private System.Nullable<System.Guid> _ToEmployeeId;
+		
+		private string _ToLocation;
+		
+		private string _TransferReason;
+		
+		private System.Nullable<System.Guid> _TransferBy;
+		
+		private int _Status;
+		
+		private string _Notes;
+		
+		private System.DateTime _CreatedDate;
+		
+		private System.Nullable<System.DateTime> _UpdatedDate;
+		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
+		private System.Nullable<System.Guid> _UpdatedBy;
+		
+		private EntityRef<Device> _Device;
+		
+		private EntityRef<CompanyBranch> _CompanyBranch;
+		
+		private EntityRef<Department> _Department;
+		
+		private EntityRef<CompanyBranch> _CompanyBranch1;
+		
+		private EntityRef<Department> _Department1;
+		
+		private EntityRef<Employee> _Employee;
+		
+		private EntityRef<Employee> _Employee1;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnDeviceIdChanging(System.Guid value);
+    partial void OnDeviceIdChanged();
+    partial void OnTransferDateChanging(System.DateTime value);
+    partial void OnTransferDateChanged();
+    partial void OnFromBranchIdChanging(System.Nullable<System.Guid> value);
+    partial void OnFromBranchIdChanged();
+    partial void OnFromDepartmentIdChanging(System.Nullable<System.Guid> value);
+    partial void OnFromDepartmentIdChanged();
+    partial void OnFromEmployeeIdChanging(System.Nullable<System.Guid> value);
+    partial void OnFromEmployeeIdChanged();
+    partial void OnFromLocationChanging(string value);
+    partial void OnFromLocationChanged();
+    partial void OnToBranchIdChanging(System.Nullable<System.Guid> value);
+    partial void OnToBranchIdChanged();
+    partial void OnToDepartmentIdChanging(System.Nullable<System.Guid> value);
+    partial void OnToDepartmentIdChanged();
+    partial void OnToEmployeeIdChanging(System.Nullable<System.Guid> value);
+    partial void OnToEmployeeIdChanged();
+    partial void OnToLocationChanging(string value);
+    partial void OnToLocationChanged();
+    partial void OnTransferReasonChanging(string value);
+    partial void OnTransferReasonChanged();
+    partial void OnTransferByChanging(System.Nullable<System.Guid> value);
+    partial void OnTransferByChanged();
+    partial void OnStatusChanging(int value);
+    partial void OnStatusChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnUpdatedDateChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
+    partial void OnUpdatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnUpdatedByChanged();
+    #endregion
+		
+		public DeviceTransfer()
+		{
+			this._Device = default(EntityRef<Device>);
+			this._CompanyBranch = default(EntityRef<CompanyBranch>);
+			this._Department = default(EntityRef<Department>);
+			this._CompanyBranch1 = default(EntityRef<CompanyBranch>);
+			this._Department1 = default(EntityRef<Department>);
+			this._Employee = default(EntityRef<Employee>);
+			this._Employee1 = default(EntityRef<Employee>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid DeviceId
+		{
+			get
+			{
+				return this._DeviceId;
+			}
+			set
+			{
+				if ((this._DeviceId != value))
+				{
+					if (this._Device.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDeviceIdChanging(value);
+					this.SendPropertyChanging();
+					this._DeviceId = value;
+					this.SendPropertyChanged("DeviceId");
+					this.OnDeviceIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TransferDate", DbType="DateTime NOT NULL")]
+		public System.DateTime TransferDate
+		{
+			get
+			{
+				return this._TransferDate;
+			}
+			set
+			{
+				if ((this._TransferDate != value))
+				{
+					this.OnTransferDateChanging(value);
+					this.SendPropertyChanging();
+					this._TransferDate = value;
+					this.SendPropertyChanged("TransferDate");
+					this.OnTransferDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FromBranchId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> FromBranchId
+		{
+			get
+			{
+				return this._FromBranchId;
+			}
+			set
+			{
+				if ((this._FromBranchId != value))
+				{
+					if (this._CompanyBranch.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnFromBranchIdChanging(value);
+					this.SendPropertyChanging();
+					this._FromBranchId = value;
+					this.SendPropertyChanged("FromBranchId");
+					this.OnFromBranchIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FromDepartmentId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> FromDepartmentId
+		{
+			get
+			{
+				return this._FromDepartmentId;
+			}
+			set
+			{
+				if ((this._FromDepartmentId != value))
+				{
+					if (this._Department.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnFromDepartmentIdChanging(value);
+					this.SendPropertyChanging();
+					this._FromDepartmentId = value;
+					this.SendPropertyChanged("FromDepartmentId");
+					this.OnFromDepartmentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FromEmployeeId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> FromEmployeeId
+		{
+			get
+			{
+				return this._FromEmployeeId;
+			}
+			set
+			{
+				if ((this._FromEmployeeId != value))
+				{
+					if (this._Employee.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnFromEmployeeIdChanging(value);
+					this.SendPropertyChanging();
+					this._FromEmployeeId = value;
+					this.SendPropertyChanged("FromEmployeeId");
+					this.OnFromEmployeeIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FromLocation", DbType="NVarChar(500)")]
+		public string FromLocation
+		{
+			get
+			{
+				return this._FromLocation;
+			}
+			set
+			{
+				if ((this._FromLocation != value))
+				{
+					this.OnFromLocationChanging(value);
+					this.SendPropertyChanging();
+					this._FromLocation = value;
+					this.SendPropertyChanged("FromLocation");
+					this.OnFromLocationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ToBranchId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ToBranchId
+		{
+			get
+			{
+				return this._ToBranchId;
+			}
+			set
+			{
+				if ((this._ToBranchId != value))
+				{
+					if (this._CompanyBranch1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnToBranchIdChanging(value);
+					this.SendPropertyChanging();
+					this._ToBranchId = value;
+					this.SendPropertyChanged("ToBranchId");
+					this.OnToBranchIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ToDepartmentId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ToDepartmentId
+		{
+			get
+			{
+				return this._ToDepartmentId;
+			}
+			set
+			{
+				if ((this._ToDepartmentId != value))
+				{
+					if (this._Department1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnToDepartmentIdChanging(value);
+					this.SendPropertyChanging();
+					this._ToDepartmentId = value;
+					this.SendPropertyChanged("ToDepartmentId");
+					this.OnToDepartmentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ToEmployeeId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ToEmployeeId
+		{
+			get
+			{
+				return this._ToEmployeeId;
+			}
+			set
+			{
+				if ((this._ToEmployeeId != value))
+				{
+					if (this._Employee1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnToEmployeeIdChanging(value);
+					this.SendPropertyChanging();
+					this._ToEmployeeId = value;
+					this.SendPropertyChanged("ToEmployeeId");
+					this.OnToEmployeeIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ToLocation", DbType="NVarChar(500)")]
+		public string ToLocation
+		{
+			get
+			{
+				return this._ToLocation;
+			}
+			set
+			{
+				if ((this._ToLocation != value))
+				{
+					this.OnToLocationChanging(value);
+					this.SendPropertyChanging();
+					this._ToLocation = value;
+					this.SendPropertyChanged("ToLocation");
+					this.OnToLocationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TransferReason", DbType="NVarChar(500)")]
+		public string TransferReason
+		{
+			get
+			{
+				return this._TransferReason;
+			}
+			set
+			{
+				if ((this._TransferReason != value))
+				{
+					this.OnTransferReasonChanging(value);
+					this.SendPropertyChanging();
+					this._TransferReason = value;
+					this.SendPropertyChanged("TransferReason");
+					this.OnTransferReasonChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TransferBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> TransferBy
+		{
+			get
+			{
+				return this._TransferBy;
+			}
+			set
+			{
+				if ((this._TransferBy != value))
+				{
+					this.OnTransferByChanging(value);
+					this.SendPropertyChanging();
+					this._TransferBy = value;
+					this.SendPropertyChanged("TransferBy");
+					this.OnTransferByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="Int NOT NULL")]
+		public int Status
+		{
+			get
+			{
+				return this._Status;
+			}
+			set
+			{
+				if ((this._Status != value))
+				{
+					this.OnStatusChanging(value);
+					this.SendPropertyChanging();
+					this._Status = value;
+					this.SendPropertyChanged("Status");
+					this.OnStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> UpdatedDate
+		{
+			get
+			{
+				return this._UpdatedDate;
+			}
+			set
+			{
+				if ((this._UpdatedDate != value))
+				{
+					this.OnUpdatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedDate = value;
+					this.SendPropertyChanged("UpdatedDate");
+					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> UpdatedBy
+		{
+			get
+			{
+				return this._UpdatedBy;
+			}
+			set
+			{
+				if ((this._UpdatedBy != value))
+				{
+					this.OnUpdatedByChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedBy = value;
+					this.SendPropertyChanged("UpdatedBy");
+					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceTransfer", Storage="_Device", ThisKey="DeviceId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public Device Device
+		{
+			get
+			{
+				return this._Device.Entity;
+			}
+			set
+			{
+				Device previousValue = this._Device.Entity;
+				if (((previousValue != value) 
+							|| (this._Device.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Device.Entity = null;
+						previousValue.DeviceTransfers.Remove(this);
+					}
+					this._Device.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceTransfers.Add(this);
+						this._DeviceId = value.Id;
+					}
+					else
+					{
+						this._DeviceId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Device");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_DeviceTransfer", Storage="_CompanyBranch", ThisKey="FromBranchId", OtherKey="Id", IsForeignKey=true)]
+		public CompanyBranch CompanyBranch
+		{
+			get
+			{
+				return this._CompanyBranch.Entity;
+			}
+			set
+			{
+				CompanyBranch previousValue = this._CompanyBranch.Entity;
+				if (((previousValue != value) 
+							|| (this._CompanyBranch.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CompanyBranch.Entity = null;
+						previousValue.DeviceTransfers.Remove(this);
+					}
+					this._CompanyBranch.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceTransfers.Add(this);
+						this._FromBranchId = value.Id;
+					}
+					else
+					{
+						this._FromBranchId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("CompanyBranch");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_DeviceTransfer", Storage="_Department", ThisKey="FromDepartmentId", OtherKey="Id", IsForeignKey=true)]
+		public Department Department
+		{
+			get
+			{
+				return this._Department.Entity;
+			}
+			set
+			{
+				Department previousValue = this._Department.Entity;
+				if (((previousValue != value) 
+							|| (this._Department.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Department.Entity = null;
+						previousValue.DeviceTransfers.Remove(this);
+					}
+					this._Department.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceTransfers.Add(this);
+						this._FromDepartmentId = value.Id;
+					}
+					else
+					{
+						this._FromDepartmentId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Department");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_DeviceTransfer1", Storage="_CompanyBranch1", ThisKey="ToBranchId", OtherKey="Id", IsForeignKey=true)]
+		public CompanyBranch CompanyBranch1
+		{
+			get
+			{
+				return this._CompanyBranch1.Entity;
+			}
+			set
+			{
+				CompanyBranch previousValue = this._CompanyBranch1.Entity;
+				if (((previousValue != value) 
+							|| (this._CompanyBranch1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CompanyBranch1.Entity = null;
+						previousValue.DeviceTransfers1.Remove(this);
+					}
+					this._CompanyBranch1.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceTransfers1.Add(this);
+						this._ToBranchId = value.Id;
+					}
+					else
+					{
+						this._ToBranchId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("CompanyBranch1");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_DeviceTransfer1", Storage="_Department1", ThisKey="ToDepartmentId", OtherKey="Id", IsForeignKey=true)]
+		public Department Department1
+		{
+			get
+			{
+				return this._Department1.Entity;
+			}
+			set
+			{
+				Department previousValue = this._Department1.Entity;
+				if (((previousValue != value) 
+							|| (this._Department1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Department1.Entity = null;
+						previousValue.DeviceTransfers1.Remove(this);
+					}
+					this._Department1.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceTransfers1.Add(this);
+						this._ToDepartmentId = value.Id;
+					}
+					else
+					{
+						this._ToDepartmentId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Department1");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_DeviceTransfer", Storage="_Employee", ThisKey="FromEmployeeId", OtherKey="Id", IsForeignKey=true)]
+		public Employee Employee
+		{
+			get
+			{
+				return this._Employee.Entity;
+			}
+			set
+			{
+				Employee previousValue = this._Employee.Entity;
+				if (((previousValue != value) 
+							|| (this._Employee.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Employee.Entity = null;
+						previousValue.DeviceTransfers.Remove(this);
+					}
+					this._Employee.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceTransfers.Add(this);
+						this._FromEmployeeId = value.Id;
+					}
+					else
+					{
+						this._FromEmployeeId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Employee");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_DeviceTransfer1", Storage="_Employee1", ThisKey="ToEmployeeId", OtherKey="Id", IsForeignKey=true)]
+		public Employee Employee1
+		{
+			get
+			{
+				return this._Employee1.Entity;
+			}
+			set
+			{
+				Employee previousValue = this._Employee1.Entity;
+				if (((previousValue != value) 
+							|| (this._Employee1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Employee1.Entity = null;
+						previousValue.DeviceTransfers1.Remove(this);
+					}
+					this._Employee1.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceTransfers1.Add(this);
+						this._ToEmployeeId = value.Id;
+					}
+					else
+					{
+						this._ToEmployeeId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Employee1");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 	
@@ -4258,6 +6764,12 @@ namespace Dal.DataContext
 		private string _AvatarPath;
 		
 		private bool _IsActive;
+		
+		private EntitySet<Device> _Devices;
+		
+		private EntitySet<DeviceTransfer> _DeviceTransfers;
+		
+		private EntitySet<DeviceTransfer> _DeviceTransfers1;
 		
 		private EntityRef<CompanyBranch> _CompanyBranch;
 		
@@ -4305,6 +6817,9 @@ namespace Dal.DataContext
 		
 		public Employee()
 		{
+			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
+			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
+			this._DeviceTransfers1 = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers1), new Action<DeviceTransfer>(this.detach_DeviceTransfers1));
 			this._CompanyBranch = default(EntityRef<CompanyBranch>);
 			this._Company = default(EntityRef<Company>);
 			this._Department = default(EntityRef<Department>);
@@ -4628,6 +7143,45 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_Device", Storage="_Devices", ThisKey="Id", OtherKey="AssignedEmployeeId")]
+		public EntitySet<Device> Devices
+		{
+			get
+			{
+				return this._Devices;
+			}
+			set
+			{
+				this._Devices.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_DeviceTransfer", Storage="_DeviceTransfers", ThisKey="Id", OtherKey="FromEmployeeId")]
+		public EntitySet<DeviceTransfer> DeviceTransfers
+		{
+			get
+			{
+				return this._DeviceTransfers;
+			}
+			set
+			{
+				this._DeviceTransfers.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_DeviceTransfer1", Storage="_DeviceTransfers1", ThisKey="Id", OtherKey="ToEmployeeId")]
+		public EntitySet<DeviceTransfer> DeviceTransfers1
+		{
+			get
+			{
+				return this._DeviceTransfers1;
+			}
+			set
+			{
+				this._DeviceTransfers1.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_Employee", Storage="_CompanyBranch", ThisKey="BranchId", OtherKey="Id", IsForeignKey=true)]
 		public CompanyBranch CompanyBranch
 		{
@@ -4782,6 +7336,42 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Employee = this;
+		}
+		
+		private void detach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Employee = null;
+		}
+		
+		private void attach_DeviceTransfers(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Employee = this;
+		}
+		
+		private void detach_DeviceTransfers(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Employee = null;
+		}
+		
+		private void attach_DeviceTransfers1(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Employee1 = this;
+		}
+		
+		private void detach_DeviceTransfers1(DeviceTransfer entity)
+		{
+			this.SendPropertyChanging();
+			entity.Employee1 = null;
 		}
 	}
 	
@@ -6734,6 +9324,8 @@ namespace Dal.DataContext
 		
 		private string _ThumbnailChecksum;
 		
+		private EntitySet<Device> _Devices;
+		
 		private EntitySet<ProductImage> _ProductImages;
 		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
@@ -6782,6 +9374,7 @@ namespace Dal.DataContext
 		
 		public ProductVariant()
 		{
+			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._ProductImages = new EntitySet<ProductImage>(new Action<ProductImage>(this.attach_ProductImages), new Action<ProductImage>(this.detach_ProductImages));
 			this._StockInOutDetails = new EntitySet<StockInOutDetail>(new Action<StockInOutDetail>(this.attach_StockInOutDetails), new Action<StockInOutDetail>(this.detach_StockInOutDetails));
 			this._VariantAttributes = new EntitySet<VariantAttribute>(new Action<VariantAttribute>(this.attach_VariantAttributes), new Action<VariantAttribute>(this.detach_VariantAttributes));
@@ -7098,6 +9691,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_Device", Storage="_Devices", ThisKey="Id", OtherKey="ProductVariantId")]
+		public EntitySet<Device> Devices
+		{
+			get
+			{
+				return this._Devices;
+			}
+			set
+			{
+				this._Devices.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_ProductImage", Storage="_ProductImages", ThisKey="Id", OtherKey="VariantId")]
 		public EntitySet<ProductImage> ProductImages
 		{
@@ -7225,6 +9831,18 @@ namespace Dal.DataContext
 			}
 		}
 		
+		private void attach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = this;
+		}
+		
+		private void detach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = null;
+		}
+		
 		private void attach_ProductImages(ProductImage entity)
 		{
 			this.SendPropertyChanging();
@@ -7288,7 +9906,11 @@ namespace Dal.DataContext
 		
 		private decimal _TotalAmountIncludedVat;
 		
+		private string _GhiChu;
+		
 		private EntitySet<Warranty> _Warranties;
+		
+		private EntitySet<Device> _Devices;
 		
 		private EntityRef<ProductVariant> _ProductVariant;
 		
@@ -7318,11 +9940,14 @@ namespace Dal.DataContext
     partial void OnTotalAmountChanged();
     partial void OnTotalAmountIncludedVatChanging(decimal value);
     partial void OnTotalAmountIncludedVatChanged();
+    partial void OnGhiChuChanging(string value);
+    partial void OnGhiChuChanged();
     #endregion
 		
 		public StockInOutDetail()
 		{
 			this._Warranties = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties), new Action<Warranty>(this.detach_Warranties));
+			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._ProductVariant = default(EntityRef<ProductVariant>);
 			this._StockInOutMaster = default(EntityRef<StockInOutMaster>);
 			OnCreated();
@@ -7536,6 +10161,26 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GhiChu", DbType="NVarChar(1000)")]
+		public string GhiChu
+		{
+			get
+			{
+				return this._GhiChu;
+			}
+			set
+			{
+				if ((this._GhiChu != value))
+				{
+					this.OnGhiChuChanging(value);
+					this.SendPropertyChanging();
+					this._GhiChu = value;
+					this.SendPropertyChanged("GhiChu");
+					this.OnGhiChuChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_Warranties", ThisKey="Id", OtherKey="StockInOutDetailId")]
 		public EntitySet<Warranty> Warranties
 		{
@@ -7546,6 +10191,19 @@ namespace Dal.DataContext
 			set
 			{
 				this._Warranties.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Device", Storage="_Devices", ThisKey="Id", OtherKey="StockInOutDetailId")]
+		public EntitySet<Device> Devices
+		{
+			get
+			{
+				return this._Devices;
+			}
+			set
+			{
+				this._Devices.Assign(value);
 			}
 		}
 		
@@ -7644,6 +10302,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutDetail = null;
+		}
+		
+		private void attach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutDetail = this;
+		}
+		
+		private void detach_Devices(Device entity)
 		{
 			this.SendPropertyChanging();
 			entity.StockInOutDetail = null;
