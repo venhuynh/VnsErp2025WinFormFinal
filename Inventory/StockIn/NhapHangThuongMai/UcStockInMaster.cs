@@ -1,4 +1,10 @@
-﻿using Bll.Inventory.StockIn;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Bll.Inventory.StockIn;
 using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
 using Common;
@@ -8,14 +14,8 @@ using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
 using DTO.MasterData.Company;
 using DTO.MasterData.CustomerPartner;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace Inventory.StockIn;
+namespace Inventory.StockIn.NhapHangThuongMai;
 
 public partial class UcStockInMaster : XtraUserControl
 {

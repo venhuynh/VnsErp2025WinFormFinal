@@ -1,4 +1,6 @@
-﻿namespace VnsErp2025
+﻿using Inventory.StockIn.NhapHangThuongMai;
+
+namespace VnsErp2025
 {
     partial class XtraForm1
     {
@@ -28,7 +30,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ucStockInMaster1 = new Inventory.StockIn.UcStockInMaster();
+            this.ucStockInMaster1 = new UcStockInMaster();
             this.SuspendLayout();
             // 
             // ucStockInMaster1
@@ -52,6 +54,6 @@
 
         #endregion
 
-        private Inventory.StockIn.UcStockInMaster ucStockInMaster1;
+        private UcStockInMaster ucStockInMaster1;
     }
 }

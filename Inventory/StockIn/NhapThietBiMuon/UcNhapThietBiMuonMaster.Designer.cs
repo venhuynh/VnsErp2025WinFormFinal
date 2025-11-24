@@ -1,8 +1,6 @@
-﻿using DTO.MasterData.Company;
-
-namespace Inventory.StockIn
+﻿namespace Inventory.StockIn.NhapThietBiMuon
 {
-    partial class UcStockInMaster
+    partial class UcNhapThietBiMuonMaster
     {
         /// <summary> 
         /// Required designer variable.
@@ -21,6 +19,7 @@ namespace Inventory.StockIn
             }
             base.Dispose(disposing);
         }
+
 
         #region Component Designer generated code
 

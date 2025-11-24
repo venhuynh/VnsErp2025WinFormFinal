@@ -1,6 +1,8 @@
-﻿namespace Inventory.StockIn
+﻿using Inventory.StockIn.NhapHangThuongMai;
+
+namespace Inventory.StockIn
 {
-    partial class FrmNhapKhoThuongMai02
+    partial class FrmNhapThietBiMuon
     {
         /// <summary>
         /// Required designer variable.
@@ -20,6 +22,7 @@
             base.Dispose(disposing);
         }
 
+
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -30,7 +33,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucStockInDetail1 = new Inventory.StockIn.UcStockInDetail();
+            this.ucStockInDetail1 = new UcStockInDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
@@ -49,7 +52,7 @@
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucStockInMaster1 = new Inventory.StockIn.UcStockInMaster();
+            this.ucStockInMaster1 = new UcStockInMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();

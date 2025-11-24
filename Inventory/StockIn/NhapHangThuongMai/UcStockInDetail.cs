@@ -1,4 +1,10 @@
-﻿using Bll.Inventory.StockIn;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
@@ -10,15 +16,8 @@ using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace Inventory.StockIn;
+namespace Inventory.StockIn.NhapHangThuongMai;
 
 public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 {

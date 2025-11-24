@@ -1,19 +1,19 @@
-﻿using Bll.Inventory.StockIn;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Bll.Inventory.StockIn;
 using Common.Common;
 using Common.Utils;
 using Inventory.StockIn.InPhieu;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace Inventory.StockIn
+namespace Inventory.StockIn.NhapHangThuongMai
 {
-    public partial class FrmNhapKhoThuongMai02 : DevExpress.XtraEditors.XtraForm
+    public partial class FrmNhapKhoThuongMai : DevExpress.XtraEditors.XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -50,7 +50,7 @@ namespace Inventory.StockIn
         /// <summary>
         /// Constructor mặc định (tạo phiếu mới)
         /// </summary>
-        public FrmNhapKhoThuongMai02()
+        public FrmNhapKhoThuongMai()
         {
             InitializeComponent();
             Load += FrmNhapKhoThuongMai02_Load;
@@ -61,7 +61,7 @@ namespace Inventory.StockIn
         /// Constructor với ID phiếu nhập kho (mở để xem/sửa)
         /// </summary>
         /// <param name="stockInId">ID phiếu nhập kho</param>
-        public FrmNhapKhoThuongMai02(Guid stockInId)
+        public FrmNhapKhoThuongMai(Guid stockInId)
         {
             InitializeComponent();
             Load += FrmNhapKhoThuongMai02_Load;

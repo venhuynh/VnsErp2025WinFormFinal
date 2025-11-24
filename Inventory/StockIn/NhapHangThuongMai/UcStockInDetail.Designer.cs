@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockIn
+﻿namespace Inventory.StockIn.NhapHangThuongMai
 {
     partial class UcStockInDetail
     {

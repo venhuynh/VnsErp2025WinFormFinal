@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Inventory.StockIn.NhapHangThuongMai;
 
 namespace Inventory.InventoryManagement
 {
@@ -184,7 +185,7 @@ namespace Inventory.InventoryManagement
                 // Mở form chi tiết với OverlayManager và load dữ liệu
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new StockIn.FrmNhapKhoThuongMai02(_selectedStockInOutMasterId.Value))
+                    using (var form = new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value))
                     {
                         // Đảm bảo form chưa được hiển thị
                         form.Visible = false;

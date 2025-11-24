@@ -107,16 +107,16 @@
       <DependentUpon>FrmWarrantyCheck.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StockIn\FrmNhapKhoThuongMai02.cs">
+    <Compile Include="StockIn\NhapHangThuongMai\FrmNhapKhoThuongMai.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StockIn\FrmNhapKhoThuongMai02.Designer.cs">
-      <DependentUpon>FrmNhapKhoThuongMai02.cs</DependentUpon>
+    <Compile Include="StockIn\NhapHangThuongMai\FrmNhapKhoThuongMai.Designer.cs">
+      <DependentUpon>FrmNhapKhoThuongMai.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\FrmNhapThietBiMuon.cs">
+    <Compile Include="StockIn\NhapThietBiMuon\FrmNhapThietBiMuon.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StockIn\FrmNhapThietBiMuon.Designer.cs">
+    <Compile Include="StockIn\NhapThietBiMuon\FrmNhapThietBiMuon.Designer.cs">
       <DependentUpon>FrmNhapThietBiMuon.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\InPhieu\InPhieuNhapKho.cs">
@@ -126,17 +126,29 @@
       <DependentUpon>InPhieuNhapKho.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\InPhieu\StockInReportHelper.cs" />
-    <Compile Include="StockIn\UcStockInDetail.cs">
+    <Compile Include="StockIn\NhapHangThuongMai\UcStockInDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\UcStockInDetail.Designer.cs">
+    <Compile Include="StockIn\NhapHangThuongMai\UcStockInDetail.Designer.cs">
       <DependentUpon>UcStockInDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\UcStockInMaster.cs">
+    <Compile Include="StockIn\NhapHangThuongMai\UcStockInMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\UcStockInMaster.Designer.cs">
+    <Compile Include="StockIn\NhapHangThuongMai\UcStockInMaster.Designer.cs">
       <DependentUpon>UcStockInMaster.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockIn\NhapThietBiMuon\UcNhapThietBiMuonDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockIn\NhapThietBiMuon\UcNhapThietBiMuonDetail.Designer.cs">
+      <DependentUpon>UcNhapThietBiMuonDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockIn\NhapThietBiMuon\UcNhapThietBiMuonMaster.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockIn\NhapThietBiMuon\UcNhapThietBiMuonMaster.Designer.cs">
+      <DependentUpon>UcNhapThietBiMuonMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="XtraForm1.cs">
       <SubType>Form</SubType>
@@ -169,16 +181,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="StockIn\FrmNhapKhoThuongMai02.resx">
-      <DependentUpon>FrmNhapKhoThuongMai02.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapHangThuongMai\FrmNhapKhoThuongMai.resx">
+      <DependentUpon>FrmNhapKhoThuongMai.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\InPhieu\InPhieuNhapKho.resx">
       <DependentUpon>InPhieuNhapKho.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\UcStockInDetail.resx">
+    <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcStockInDetail.resx">
       <DependentUpon>UcStockInDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\UcStockInMaster.resx">
+    <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcStockInMaster.resx">
       <DependentUpon>UcStockInMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="XtraForm1.resx">
