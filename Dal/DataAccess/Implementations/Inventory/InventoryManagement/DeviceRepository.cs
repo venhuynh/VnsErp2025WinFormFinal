@@ -130,6 +130,32 @@ public class DeviceRepository : IDeviceRepository
         }
     }
 
+    /// <summary>
+    /// Lấy danh sách Device theo StockInOutDetailId
+    /// </summary>
+    /// <param name="stockInOutDetailId">ID chi tiết phiếu nhập/xuất kho</param>
+    /// <returns>Danh sách Device entities</returns>
+    public List<Device> GetByStockInOutDetailId(Guid stockInOutDetailId)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetByStockInOutDetailId: Lấy danh sách thiết bị, StockInOutDetailId={0}", stockInOutDetailId);
+
+            var devices = context.Devices
+                .Where(d => d.StockInOutDetailId.HasValue && d.StockInOutDetailId.Value == stockInOutDetailId)
+                .ToList();
+
+            _logger.Info("GetByStockInOutDetailId: Lấy được {0} thiết bị", devices.Count);
+            return devices;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetByStockInOutDetailId: Lỗi lấy danh sách thiết bị: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 
     #region Save Operations

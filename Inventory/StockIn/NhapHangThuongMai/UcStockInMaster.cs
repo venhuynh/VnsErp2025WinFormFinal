@@ -951,8 +951,10 @@ public partial class UcStockInMaster : XtraUserControl
             }
 
             //Cập nhật lại Id
-            _stockInMasterDto.Id = _stockInOutMasterId; 
+            _stockInMasterDto.Id = _stockInOutMasterId;
 
+            //Cập nhật lại LoaiNhapXuatKho
+            _stockInMasterDto.LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapHangThuongMai;
 
             return _stockInMasterDto;
         }

@@ -45,10 +45,24 @@ public class StockInOutProductHistoryDto
     public DateTime StockInOutDate { get; set; }
 
     /// <summary>
+    /// Loại nhập xuất kho (Enum)
+    /// </summary>
+    [DisplayName("Loại nhập xuất-Enum")]
+    [Display(Order = 4)]
+    public LoaiNhapXuatKhoEnum LoaiNhapXuatKho { get; set; }
+
+    /// <summary>
+    /// Tên loại nhập xuất kho (hiển thị)
+    /// </summary>
+    [DisplayName("Loại nhập xuất")]
+    [Display(Order = 5)]
+    public string LoaiNhapXuatKhoName { get; set; }
+
+    /// <summary>
     /// ID biến thể sản phẩm
     /// </summary>
     [DisplayName("ID Biến thể")]
-    [Display(Order = 4)]
+    [Display(Order = 6)]
     public Guid ProductVariantId { get; set; }
 
     #endregion
@@ -361,6 +375,20 @@ public static class StockInOutProductHistoryDtoConverter
             dto.WarehouseName = entity.StockInOutMaster.CompanyBranch?.BranchName;
             dto.CustomerName = entity.StockInOutMaster.BusinessPartnerSite?.BusinessPartner?.PartnerName ?? 
                               entity.StockInOutMaster.BusinessPartnerSite?.SiteName;
+
+            // Chuyển đổi StockInOutType từ int sang LoaiNhapXuatKhoEnum
+            if (Enum.IsDefined(typeof(LoaiNhapXuatKhoEnum), entity.StockInOutMaster.StockInOutType))
+            {
+                dto.LoaiNhapXuatKho = (LoaiNhapXuatKhoEnum)entity.StockInOutMaster.StockInOutType;
+            }
+            else
+            {
+                // Nếu giá trị không hợp lệ, mặc định là Khac
+                dto.LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.Khac;
+            }
+
+            // Lấy tên loại nhập xuất từ Description attribute
+            dto.LoaiNhapXuatKhoName = GetEnumDescription(dto.LoaiNhapXuatKho);
         }
 
         return dto;
@@ -376,6 +404,25 @@ public static class StockInOutProductHistoryDtoConverter
         if (entities == null) return [];
 
         return entities.Select(entity => entity.ToDto()).ToList();
+    }
+
+    #endregion
+
+    #region Helper Methods
+
+    /// <summary>
+    /// Lấy Description từ enum value (generic method)
+    /// </summary>
+    /// <typeparam name="T">Kiểu enum</typeparam>
+    /// <param name="enumValue">Giá trị enum</param>
+    /// <returns>Description hoặc tên enum nếu không có Description</returns>
+    private static string GetEnumDescription<T>(T enumValue) where T : Enum
+    {
+        var fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
+        if (fieldInfo == null) return enumValue.ToString();
+
+        var descriptionAttribute = fieldInfo.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
+        return descriptionAttribute?.Description ?? enumValue.ToString();
     }
 
     #endregion

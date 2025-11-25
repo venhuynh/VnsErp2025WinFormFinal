@@ -3,6 +3,7 @@ using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using DTO.Inventory.InventoryManagement;
+using DTO.Inventory.StockIn;
 using Inventory.StockIn.InPhieu;
 using Inventory.StockIn.NhapHangThuongMai;
 using Logger;
@@ -12,6 +13,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DevExpress.XtraReports.UI;
+using DevExpress.XtraPrinting;
 
 
 namespace Inventory.InventoryManagement
@@ -234,10 +237,64 @@ namespace Inventory.InventoryManagement
                     return;
                 }
 
-                // In phiếu nhập kho với preview, sử dụng OverlayManager
+                // Lấy DTO từ row được chọn để xác định loại nhập xuất
+                var focusedRowHandle = StockInOutProductHistoryDtoGridView.FocusedRowHandle;
+                if (focusedRowHandle < 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn sản phẩm để in phiếu.");
+                    return;
+                }
+
+                var selectedDto = StockInOutProductHistoryDtoGridView.GetRow(focusedRowHandle) as StockInOutProductHistoryDto;
+                if (selectedDto == null)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin sản phẩm được chọn.");
+                    return;
+                }
+
+                // Dựa vào LoaiNhapXuatKho để in đúng loại phiếu
                 using (OverlayManager.ShowScope(this))
                 {
-                    StockInReportHelper.PrintStockInVoucher(_selectedStockInOutMasterId.Value);
+                    try
+                    {
+                        switch (selectedDto.LoaiNhapXuatKho)
+                        {
+                            case LoaiNhapXuatKhoEnum.NhapHangThuongMai:
+                                // In phiếu nhập hàng thương mại
+                                StockInReportHelper.PrintStockInVoucher(_selectedStockInOutMasterId.Value);
+                                break;
+
+                            case LoaiNhapXuatKhoEnum.NhapThietBiMuonThue:
+                                // In phiếu nhập/xuất thiết bị cho mượn
+                                _logger.Debug("InPhieuBarButtonItem_ItemClick: In phiếu thiết bị cho mượn, StockInOutMasterId={0}", 
+                                    _selectedStockInOutMasterId.Value);
+
+                                var report = new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value);
+
+                                // Hiển thị preview bằng ReportPrintTool
+                                using (var printTool = new ReportPrintTool(report))
+                                {
+                                    printTool.ShowPreviewDialog();
+                                }
+
+                                _logger.Info("InPhieuBarButtonItem_ItemClick: In phiếu thiết bị cho mượn thành công, StockInOutMasterId={0}", 
+                                    _selectedStockInOutMasterId.Value);
+                                break;
+
+                            case LoaiNhapXuatKhoEnum.Khac:
+                            default:
+                                // Loại khác - dùng mặc định (InPhieuNhapKho) hoặc hiển thị cảnh báo
+                                _logger.Warning("InPhieuBarButtonItem_ItemClick: Loại nhập xuất không xác định ({0}), dùng mặc định", 
+                                    selectedDto.LoaiNhapXuatKho);
+                                StockInReportHelper.PrintStockInVoucher(_selectedStockInOutMasterId.Value);
+                                break;
+                        }
+                    }
+                    catch (Exception printEx)
+                    {
+                        _logger.Error($"InPhieuBarButtonItem_ItemClick: Lỗi in phiếu: {printEx.Message}", printEx);
+                        MsgBox.ShowError($"Lỗi in phiếu: {printEx.Message}");
+                    }
                 }
             }
             catch (Exception ex)
@@ -375,7 +432,7 @@ namespace Inventory.InventoryManagement
                       "Hành động này không thể hoàn tác!"
                     : $"Bạn có chắc muốn xóa <b>{selectedDtos.Count}</b> sản phẩm?\n\n" +
                       "Hành động này không thể hoàn tác!";
-                
+
                 if (!MsgBox.ShowYesNo(confirmMessage, "Xác nhận xóa"))
                 {
                     return;
@@ -384,64 +441,67 @@ namespace Inventory.InventoryManagement
                 // Thực hiện xóa với OverlayManager
                 var deletedCount = 0;
                 var masterIdsToCheck = new System.Collections.Generic.HashSet<Guid>();
-                
-                using (OverlayManager.ShowScope(this))
-                {
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            foreach (var dto in selectedDtos)
-                            {
-                                try
-                                {
-                                    // Xóa detail
-                                    var masterId = _stockInOutDetailBll.Delete(dto.Id);
-                                    _logger.Info("XoaPhieuBarButtonItem_ItemClick: Đã xóa detail, DetailId={0}, MasterId={1}", dto.Id, masterId);
-                                    
-                                    masterIdsToCheck.Add(masterId);
-                                    deletedCount++;
-                                }
-                                catch (Exception ex)
-                                {
-                                    _logger.Error($"XoaPhieuBarButtonItem_ItemClick: Lỗi xóa detail {dto.Id}: {ex.Message}", ex);
-                                    // Tiếp tục xóa các detail khác
-                                }
-                            }
 
-                            // Kiểm tra và xóa các master không còn detail
-                            foreach (var masterId in masterIdsToCheck)
+
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        foreach (var dto in selectedDtos)
+                        {
+                            try
                             {
-                                try
-                                {
-                                    var hasRemainingDetails = _stockInOutDetailBll.HasRemainingDetails(masterId);
-                                    
-                                    if (!hasRemainingDetails)
-                                    {
-                                        // Nếu không còn detail nào, xóa luôn master
-                                        var stockInOutMasterBll = new StockInOutMasterBll();
-                                        stockInOutMasterBll.Delete(masterId);
-                                        _logger.Info("XoaPhieuBarButtonItem_ItemClick: Đã xóa master vì không còn detail, MasterId={0}", masterId);
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    _logger.Error($"XoaPhieuBarButtonItem_ItemClick: Lỗi kiểm tra/xóa master {masterId}: {ex.Message}", ex);
-                                    // Tiếp tục với master khác
-                                }
+                                // Xóa detail
+                                var masterId = _stockInOutDetailBll.Delete(dto.Id);
+                                _logger.Info(
+                                    "XoaPhieuBarButtonItem_ItemClick: Đã xóa detail, DetailId={0}, MasterId={1}",
+                                    dto.Id, masterId);
+
+                                masterIdsToCheck.Add(masterId);
+                                deletedCount++;
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.Error($"XoaPhieuBarButtonItem_ItemClick: Lỗi xóa detail {dto.Id}: {ex.Message}",
+                                    ex);
+                                // Tiếp tục xóa các detail khác
                             }
                         }
-                        catch (Exception ex)
+
+                        // Kiểm tra và xóa các master không còn detail
+                        foreach (var masterId in masterIdsToCheck)
                         {
-                            _logger.Error("XoaPhieuBarButtonItem_ItemClick: Exception during delete operation", ex);
-                            BeginInvoke(new Action(() =>
+                            try
                             {
-                                MsgBox.ShowError($"Lỗi xóa sản phẩm: {ex.Message}");
-                            }));
-                            throw;
+                                var hasRemainingDetails = _stockInOutDetailBll.HasRemainingDetails(masterId);
+
+                                if (!hasRemainingDetails)
+                                {
+                                    // Nếu không còn detail nào, xóa luôn master
+                                    var stockInOutMasterBll = new StockInOutMasterBll();
+                                    stockInOutMasterBll.Delete(masterId);
+                                    _logger.Info(
+                                        "XoaPhieuBarButtonItem_ItemClick: Đã xóa master vì không còn detail, MasterId={0}",
+                                        masterId);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.Error(
+                                    $"XoaPhieuBarButtonItem_ItemClick: Lỗi kiểm tra/xóa master {masterId}: {ex.Message}",
+                                    ex);
+                                // Tiếp tục với master khác
+                            }
                         }
-                    });
-                }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error("XoaPhieuBarButtonItem_ItemClick: Exception during delete operation", ex);
+                        BeginInvoke(new Action(() => { MsgBox.ShowError($"Lỗi xóa sản phẩm: {ex.Message}"); }));
+                        throw;
+                    }
+                });
+
 
                 // Reload data sau khi xóa thành công
                 await LoadDataAsync();

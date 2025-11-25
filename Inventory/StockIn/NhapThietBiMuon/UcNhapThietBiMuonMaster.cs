@@ -944,6 +944,8 @@ public partial class UcNhapThietBiMuonMaster : XtraUserControl
             //Cập nhật lại Id
             _stockInMasterDto.Id = _stockInOutMasterId;
 
+            //Cập nhật lại LoaiNhapXuatKho
+            _stockInMasterDto.LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapThietBiMuonThue;
 
             return _stockInMasterDto;
         }
