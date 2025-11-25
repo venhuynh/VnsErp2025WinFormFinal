@@ -6,6 +6,7 @@ using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn;
 using Inventory.StockIn.InPhieu;
 using Inventory.StockIn.NhapHangThuongMai;
+using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -110,6 +111,8 @@ namespace Inventory.InventoryManagement
                 NhapBaoHanhBarButtonItem.ItemClick += NhapBaoHanhBarButtonItem_ItemClick;
                 ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
                 XoaPhieuBarButtonItem.ItemClick += XoaPhieuBarButtonItem_ItemClick;
+                NhapDinhDanhSPBarButtonItem.ItemClick += NhapDinhDanhSPBarButtonItem_ItemClick;
+
 
                 // GridView events
                 StockInOutProductHistoryDtoGridView.DoubleClick += StockInOutProductHistoryDtoGridView_DoubleClick;
@@ -127,6 +130,7 @@ namespace Inventory.InventoryManagement
                 _logger.Error("SetupEvents: Exception occurred", ex);
             }
         }
+
 
 
         #endregion
@@ -301,6 +305,53 @@ namespace Inventory.InventoryManagement
             {
                 _logger.Error("InPhieuBarButtonItem_ItemClick: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi in phiếu: {ex.Message}");
+            }
+        }
+
+
+        /// <summary>
+        /// Event handler cho nút Nhập định danh sản phẩm
+        /// Chỉ mở màn hình cho 1 phiếu được chọn, sử dụng OverlayManager
+        /// </summary>
+        private void NhapDinhDanhSPBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
+                var selectedCount = StockInOutProductHistoryDtoGridView.SelectedRowsCount;
+                if (selectedCount == 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn một sản phẩm để nhập định danh.");
+                    return;
+                }
+
+                if (selectedCount > 1)
+                {
+                    MsgBox.ShowWarning("Chỉ cho phép nhập định danh cho 1 phiếu. Vui lòng bỏ chọn bớt.");
+                    return;
+                }
+
+                // Kiểm tra ID phiếu được chọn
+                if (!_selectedStockInOutMasterId.HasValue || _selectedStockInOutMasterId.Value == Guid.Empty)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn sản phẩm để nhập định danh.");
+                    return;
+                }
+
+                // Mở form nhập định danh thiết bị với OverlayManager
+                using (OverlayManager.ShowScope(this))
+                {
+                    using (var form = new FrmNhapSerialMacEmei(_selectedStockInOutMasterId.Value))
+                    {
+                        form.StartPosition = FormStartPosition.CenterParent;
+                        form.ShowDialog(this);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("NhapDinhDanhSPBarButtonItem_ItemClick: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi mở form nhập định danh: {ex.Message}");
             }
         }
 
@@ -853,11 +904,12 @@ namespace Inventory.InventoryManagement
                 // Lấy số lượng dòng được chọn
                 var selectedCount = StockInOutProductHistoryDtoGridView.SelectedRowsCount;
 
-                // Các nút chỉ cho phép 1 dòng: Chi tiết, In phiếu, Nhập bảo hành, Thêm hình ảnh
+                // Các nút chỉ cho phép 1 dòng: Chi tiết, In phiếu, Nhập bảo hành, Thêm hình ảnh, Nhập định danh
                 ChiTietPhieuNhapXuatBarButtonItem.Enabled = hasSelection && selectedCount == 1;
                 InPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;
                 NhapBaoHanhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
                 ThemHinhAnhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
+                NhapDinhDanhSPBarButtonItem.Enabled = hasSelection && selectedCount == 1;
                 
                 // Nút Xóa: cho phép xóa nhiều dòng (chỉ cần có selection)
                 XoaPhieuBarButtonItem.Enabled = selectedCount > 0;
