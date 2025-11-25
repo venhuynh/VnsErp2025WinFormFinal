@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Common.Helpers;
 
-namespace DTO.Inventory.StockIn;
+namespace DTO.Inventory.StockIn.NhapHangThuongMai;
 
 /// <summary>
 /// DTO cho report in phiếu nhập kho

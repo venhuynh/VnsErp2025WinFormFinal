@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Enums;
+using DTO.Inventory.StockIn.NhapHangThuongMai;
 
 namespace Inventory.InventoryManagement
 {

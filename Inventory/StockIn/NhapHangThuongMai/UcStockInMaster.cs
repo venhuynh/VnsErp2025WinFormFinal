@@ -12,6 +12,7 @@ using Common.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
+using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.MasterData.Company;
 using DTO.MasterData.CustomerPartner;
 

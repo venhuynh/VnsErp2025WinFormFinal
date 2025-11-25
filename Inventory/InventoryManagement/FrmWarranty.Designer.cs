@@ -5,6 +5,7 @@ using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
 using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Columns;
+using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.MasterData.ProductService;
 
 namespace Inventory.InventoryManagement
@@ -489,7 +490,7 @@ namespace Inventory.InventoryManagement
             // 
             // stockInDetailDtoBindingSource
             // 
-            this.stockInDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.StockInDetailDto);
+            this.stockInDetailDtoBindingSource.DataSource = typeof(StockInDetailDto);
             // 
             // StockInDetailSearchLookUpEdit1View
             // 

@@ -61,14 +61,49 @@ namespace Bll.Common.ImageStorage
             try
             {
                 var config = ImageStorageConfiguration.LoadFromConfig();
+                
+                // Validate config trước khi tạo service
+                if (config == null)
+                {
+                    throw new InvalidOperationException(
+                        "Không thể load cấu hình Image Storage từ App.config. " +
+                        "Vui lòng kiểm tra lại file App.config.");
+                }
+
+                // Kiểm tra config theo StorageType
+                var storageType = config.StorageType?.ToUpper() ?? "NAS";
+                if (storageType == "NAS")
+                {
+                    if (string.IsNullOrEmpty(config.NASBasePath) && 
+                        (string.IsNullOrEmpty(config.NASServerName) || string.IsNullOrEmpty(config.NASShareName)))
+                    {
+                        throw new InvalidOperationException(
+                            "Cấu hình NAS không đầy đủ. " +
+                            "Vui lòng cấu hình một trong các cách sau:\n" +
+                            "1. ImageStorage.NAS.BasePath (ví dụ: \\\\192.168.1.100\\ERP_Images)\n" +
+                            "2. ImageStorage.NAS.ServerName + ImageStorage.NAS.ShareName (ví dụ: \\\\192.168.1.100 + ERP_Images)\n\n" +
+                            "Hoặc thay đổi ImageStorage.StorageType thành 'Local' nếu muốn dùng local storage.");
+                    }
+                }
+                else if (storageType == "LOCAL")
+                {
+                    // TODO: Validate Local config nếu cần
+                }
+
                 return Create(config, logger);
+            }
+            catch (InvalidOperationException)
+            {
+                // Re-throw InvalidOperationException để giữ nguyên thông báo lỗi
+                throw;
             }
             catch (Exception ex)
             {
                 logger.Error($"Lỗi khi tạo Image Storage Service từ config: {ex.Message}", ex);
                 throw new InvalidOperationException(
                     "Không thể tạo Image Storage Service từ cấu hình. " +
-                    "Vui lòng kiểm tra lại các settings trong App.config, đặc biệt là 'ImageStorage.StorageType'.", ex);
+                    "Vui lòng kiểm tra lại các settings trong App.config, đặc biệt là 'ImageStorage.StorageType'. " +
+                    $"Chi tiết lỗi: {ex.Message}", ex);
             }
         }
     }

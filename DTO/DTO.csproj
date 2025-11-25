@@ -50,10 +50,12 @@
     <Compile Include="Inventory\InventoryManagement\StockInOutProductHistoryDto.cs" />
     <Compile Include="Inventory\InventoryManagement\WarrantyCheckListDto.cs" />
     <Compile Include="Inventory\InventoryManagement\WarrantyDto.cs" />
-    <Compile Include="Inventory\StockIn\StockInDetailDto.cs" />
+    <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInDetailDto.cs" />
+    <Compile Include="Inventory\StockIn\NhapThietBiMuon\NhapThietBiMuonDetailDto.cs" />
+    <Compile Include="Inventory\StockIn\NhapThietBiMuon\NhapThietBiMuonMasterDto.cs" />
     <Compile Include="Inventory\StockIn\StockInEnums.cs" />
-    <Compile Include="Inventory\StockIn\StockInMasterDto.cs" />
-    <Compile Include="Inventory\StockIn\StockInReportDto.cs" />
+    <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInMasterDto.cs" />
+    <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInReportDto.cs" />
     <Compile Include="MasterData\Company\CompanyBranchDto.cs" />
     <Compile Include="MasterData\Company\CompanyDto.cs" />
     <Compile Include="MasterData\Company\DepartmentDto.cs" />
@@ -91,5 +93,6 @@
   <ItemGroup>
     <None Include="Inventory\StockIn\README_STOCK_IN_HISTORY_QUERY.md" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace Inventory.StockIn.NhapHangThuongMai
+﻿using DTO.Inventory.StockIn.NhapHangThuongMai;
+
+namespace Inventory.StockIn.NhapHangThuongMai
 {
     partial class UcStockInDetail
     {
@@ -84,7 +86,7 @@
             // 
             // stockInDetailDtoBindingSource
             // 
-            this.stockInDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.StockInDetailDto);
+            this.stockInDetailDtoBindingSource.DataSource = typeof(StockInDetailDto);
             // 
             // StockInDetailDtoGridView
             // 

@@ -1,4 +1,6 @@
-﻿namespace Inventory
+﻿using DTO.Inventory.StockIn.NhapHangThuongMai;
+
+namespace Inventory
 {
     partial class XtraForm1
     {
@@ -234,7 +236,7 @@
             // 
             // stockInReportDtoBindingSource
             // 
-            this.stockInReportDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.StockInReportDto);
+            this.stockInReportDtoBindingSource.DataSource = typeof(StockInReportDto);
             // 
             // XtraForm1
             // 

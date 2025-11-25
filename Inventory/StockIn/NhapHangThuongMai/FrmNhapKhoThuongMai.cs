@@ -860,12 +860,17 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     return false;
                 }
 
-                // ========== BƯỚC 3: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
+                // ========== BƯỚC 3: CHUYỂN ĐỔI DTOs SANG ENTITIES ==========
+                // Convert DTOs sang entities để truyền vào BLL
+                var masterEntity = StockInBll.MapMasterDtoToEntity(masterDto);
+                var detailEntities = detailDtos.Select(StockInBll.MapDetailDtoToEntity).ToList();
+
+                // ========== BƯỚC 4: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
                 // Tất cả validation đã được thực hiện ở bước 1 và 2
                 // StockInBll.SaveAsync sẽ có thêm validation layer nhưng chủ yếu là double-check
-                var savedMasterId = await _stockInBll.SaveAsync(masterDto, detailDtos);
+                var savedMasterId = await _stockInBll.SaveAsync(masterEntity, detailEntities);
 
-                // ========== BƯỚC 4: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
+                // ========== BƯỚC 5: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
                 // Cập nhật ID sau khi lưu
                 masterDto.Id = savedMasterId;
                 _currentStockInId = savedMasterId;

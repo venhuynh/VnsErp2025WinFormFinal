@@ -56,7 +56,52 @@ namespace Inventory.InventoryManagement
         /// </summary>
         private void InitializeBll()
         {
-            _stockInOutImageBll = new StockInOutImageBll();
+            try
+            {
+                _stockInOutImageBll = new StockInOutImageBll();
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Lỗi cấu hình Image Storage
+                var errorMessage = "Không thể khởi tạo dịch vụ lưu trữ hình ảnh.\n\n" +
+                                   "Nguyên nhân: " + ex.Message + "\n\n" +
+                                   "Vui lòng kiểm tra cấu hình trong App.config:\n" +
+                                   "- ImageStorage.StorageType (NAS hoặc Local)\n" +
+                                   "- Nếu dùng NAS: ImageStorage.NAS.BasePath hoặc ImageStorage.NAS.ServerName + ImageStorage.NAS.ShareName\n" +
+                                   "- Nếu dùng Local: ImageStorage.Local.BasePath\n\n" +
+                                   "Form sẽ được mở nhưng chức năng upload hình ảnh sẽ bị vô hiệu hóa.";
+                
+                Common.Utils.MsgBox.ShowWarning(errorMessage, "Cảnh báo cấu hình", this);
+                _stockInOutImageBll = null; // Set null để disable các chức năng upload
+                DisableUploadControls(); // Disable các control liên quan
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = "Lỗi khởi tạo dịch vụ lưu trữ hình ảnh: " + ex.Message;
+                Common.Utils.MsgBox.ShowError(errorMessage, "Lỗi", this);
+                _stockInOutImageBll = null; // Set null để disable các chức năng upload
+                DisableUploadControls(); // Disable các control liên quan
+            }
+        }
+
+        /// <summary>
+        /// Disable các control liên quan đến upload hình ảnh khi BLL không khởi tạo được
+        /// </summary>
+        private void DisableUploadControls()
+        {
+            try
+            {
+                if (OpenSelectImageHyperlinkLabelControl != null)
+                {
+                    OpenSelectImageHyperlinkLabelControl.Enabled = false;
+                    OpenSelectImageHyperlinkLabelControl.Text = "Chức năng upload hình ảnh đã bị vô hiệu hóa do thiếu cấu hình";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nhưng không throw để form vẫn có thể mở được
+                System.Diagnostics.Debug.WriteLine($"Error disabling upload controls: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -79,6 +124,14 @@ namespace Inventory.InventoryManagement
         {
             try
             {
+                // Kiểm tra BLL đã được khởi tạo chưa
+                if (_stockInOutImageBll == null)
+                {
+                    ShowError("Dịch vụ lưu trữ hình ảnh chưa được cấu hình. " +
+                              "Vui lòng kiểm tra lại cấu hình trong App.config và khởi động lại ứng dụng.");
+                    return;
+                }
+
                 // Kiểm tra StockInOutMasterId hợp lệ
                 if (StockInOutMasterId == Guid.Empty)
                 {
@@ -184,6 +237,14 @@ namespace Inventory.InventoryManagement
         {
             try
             {
+                // Kiểm tra BLL đã được khởi tạo chưa
+                if (_stockInOutImageBll == null)
+                {
+                    throw new InvalidOperationException(
+                        "Dịch vụ lưu trữ hình ảnh chưa được cấu hình. " +
+                        "Vui lòng kiểm tra lại cấu hình trong App.config và khởi động lại ứng dụng.");
+                }
+
                 if (!File.Exists(imageFilePath))
                 {
                     throw new FileNotFoundException($"File ảnh không tồn tại: {imageFilePath}");

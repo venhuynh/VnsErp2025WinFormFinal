@@ -4,6 +4,7 @@ using Common.Helpers;
 using Common.Utils;
 using DTO.Inventory.InventoryManagement;
 using Inventory.StockIn.InPhieu;
+using Inventory.StockIn.NhapHangThuongMai;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -11,7 +12,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Inventory.StockIn.NhapHangThuongMai;
+
 
 namespace Inventory.InventoryManagement
 {

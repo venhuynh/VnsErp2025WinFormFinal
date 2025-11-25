@@ -2,13 +2,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace DTO.Inventory.StockIn;
+namespace DTO.Inventory.StockIn.NhapThietBiMuon;
 
 /// <summary>
 /// Data Transfer Object cho danh sách phiếu nhập kho
 /// Dùng cho GridControl (danh sách)
 /// </summary>
-public class StockInListDto
+public class NhapThietBiMuonMasterListDto
 {
     #region Properties - Thông tin cơ bản
 
@@ -41,39 +41,11 @@ public class StockInListDto
     public LoaiNhapXuatKhoEnum LoaiNhapXuatKho { get; set; }
 
     /// <summary>
-    /// Tên loại nhập kho (hiển thị)
-    /// </summary>
-    [DisplayName("Loại nhập")]
-    [Display(Order = 4)]
-    public string LoaiNhapKhoName { get; set; }
-
-    /// <summary>
-    /// Phương thức nhập kho
-    /// </summary>
-    [DisplayName("Phương thức")]
-    [Display(Order = 5)]
-    public PhuongThucNhapKhoEnum PhuongThucNhapKho { get; set; }
-
-    /// <summary>
-    /// Tên phương thức nhập kho (hiển thị)
-    /// </summary>
-    [DisplayName("Phương thức")]
-    [Display(Order = 6)]
-    public string PhuongThucNhapKhoName { get; set; }
-
-    /// <summary>
     /// Trạng thái phiếu nhập
     /// </summary>
     [DisplayName("Trạng thái")]
-    [Display(Order = 7)]
+    [Display(Order = 4)]
     public TrangThaiPhieuNhapEnum TrangThai { get; set; }
-
-    /// <summary>
-    /// Tên trạng thái (hiển thị)
-    /// </summary>
-    [DisplayName("Trạng thái")]
-    [Display(Order = 8)]
-    public string TrangThaiName { get; set; }
 
     #endregion
 
@@ -94,33 +66,10 @@ public class StockInListDto
     public string WarehouseName { get; set; }
 
     /// <summary>
-    /// Số đơn mua hàng (PO)
-    /// </summary>
-    [DisplayName("Số PO")]
-    [Display(Order = 12)]
-    public string PurchaseOrderNumber { get; set; }
-
-    /// <summary>
-    /// Số đơn đặt hàng khách
-    /// </summary>
-    [DisplayName("Số đơn khách")]
-    [Display(Order = 13)]
-    public string SalesOrderNumber { get; set; }
-
-    
-    
-    /// <summary>
-    /// Mã nhà cung cấp
-    /// </summary>
-    [DisplayName("Mã NCC")]
-    [Display(Order = 14)]
-    public string SupplierCode { get; set; }
-
-    /// <summary>
     /// Tên nhà cung cấp
     /// </summary>
     [DisplayName("Tên NCC")]
-    [Display(Order = 15)]
+    [Display(Order = 12)]
     public string SupplierName { get; set; }
 
     #endregion
@@ -133,13 +82,6 @@ public class StockInListDto
     [DisplayName("Tổng SL")]
     [Display(Order = 20)]
     public decimal TotalQuantity { get; set; }
-
-    /// <summary>
-    /// Tổng giá trị nhập
-    /// </summary>
-    [DisplayName("Tổng giá trị")]
-    [Display(Order = 21)]
-    public decimal TotalAmount { get; set; }
 
     #endregion
 
@@ -166,7 +108,7 @@ public class StockInListDto
 /// Data Transfer Object cho phiếu nhập kho (chi tiết)
 /// Dùng cho form nhập/sửa phiếu nhập kho
 /// </summary>
-public class StockInMasterDto
+public class NhapThietBiMuonMasterDto
 {
     #region Properties - Thông tin cơ bản
 
@@ -238,31 +180,18 @@ public class StockInMasterDto
     public string WarehouseName { get; set; }
 
     /// <summary>
-    /// ID đơn mua hàng (PO)
-    /// </summary>
-    [DisplayName("ID PO")]
-    [Display(Order = 13)]
-    public Guid? PurchaseOrderId { get; set; }
-
-    /// <summary>
-    /// Số đơn mua hàng (PO) (để hiển thị)
-    /// </summary>
-    [DisplayName("Số PO")]
-    [Display(Order = 14)]
-    public string PurchaseOrderNumber { get; set; }
-
-    /// <summary>
     /// ID nhà cung cấp (PartnerSiteId)
     /// </summary>
     [DisplayName("ID NCC")]
-    [Display(Order = 15)]
+    [Display(Order = 13)]
+    [Required(ErrorMessage = "Nhà cung cấp hoặc khách hàng không được để trống")]
     public Guid SupplierId { get; set; }
 
     /// <summary>
     /// Tên nhà cung cấp (để hiển thị)
     /// </summary>
     [DisplayName("Tên NCC")]
-    [Display(Order = 16)]
+    [Display(Order = 14)]
     [Required(ErrorMessage = "Nhà cung cấp hoặc khách hàng không được để trống")]
     public string SupplierName { get; set; }
 
@@ -299,9 +228,6 @@ public class StockInMasterDto
     #region Private Fields - Tổng hợp
 
     private decimal _totalQuantity;
-    private decimal _totalAmount;
-    private decimal _totalVat;
-    private decimal _totalAmountIncludedVat;
 
     #endregion
 
@@ -316,33 +242,6 @@ public class StockInMasterDto
     [Display(Order = 30)]
     public decimal TotalQuantity => _totalQuantity;
 
-    /// <summary>
-    /// Tổng giá trị nhập (chưa VAT) - Computed property
-    /// Tính toán từ tổng TotalAmount của tất cả các dòng detail
-    /// Map với: StockInOutMaster.TotalAmount (lưu vào DB khi save)
-    /// </summary>
-    [DisplayName("Tổng tiền chưa VAT")]
-    [Display(Order = 31)]
-    public decimal TotalAmount => _totalAmount;
-
-    /// <summary>
-    /// Tổng VAT - Computed property
-    /// Tính toán từ tổng VatAmount của tất cả các dòng detail
-    /// Map với: StockInOutMaster.TotalVat (lưu vào DB khi save)
-    /// </summary>
-    [DisplayName("VAT")]
-    [Display(Order = 32)]
-    public decimal TotalVat => _totalVat;
-
-    /// <summary>
-    /// Tổng tiền bao gồm VAT - Computed property
-    /// Tính toán từ tổng TotalAmountIncludedVat của tất cả các dòng detail
-    /// Map với: StockInOutMaster.TotalAmountIncludedVat (lưu vào DB khi save)
-    /// </summary>
-    [DisplayName("Tổng tiền bao gồm VAT")]
-    [Display(Order = 33)]
-    public decimal TotalAmountIncludedVat => _totalAmountIncludedVat;
-
     #endregion
 
     #region Public Methods - Cập nhật tổng hợp
@@ -352,15 +251,9 @@ public class StockInMasterDto
     /// Method này được gọi từ UcStockInMaster khi có thay đổi trong Detail
     /// </summary>
     /// <param name="totalQuantity">Tổng số lượng</param>
-    /// <param name="totalAmount">Tổng tiền chưa VAT</param>
-    /// <param name="totalVat">Tổng VAT</param>
-    /// <param name="totalAmountIncludedVat">Tổng tiền bao gồm VAT</param>
-    public void SetTotals(decimal totalQuantity, decimal totalAmount, decimal totalVat, decimal totalAmountIncludedVat)
+    public void SetTotals(decimal totalQuantity)
     {
         _totalQuantity = totalQuantity;
-        _totalAmount = totalAmount;
-        _totalVat = totalVat;
-        _totalAmountIncludedVat = totalAmountIncludedVat;
     }
 
     #endregion

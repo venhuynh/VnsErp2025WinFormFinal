@@ -5,6 +5,7 @@ using Inventory.InventoryManagement;
 using Inventory.StockIn;
 using System;
 using System.Windows.Forms;
+using Inventory.StockIn.NhapThietBiMuon;
 
 namespace VnsErp2025
 {
@@ -83,7 +84,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmNASConfig());
+            Application.Run(new FrmNhapThietBiMuon());
 
             #endregion
 

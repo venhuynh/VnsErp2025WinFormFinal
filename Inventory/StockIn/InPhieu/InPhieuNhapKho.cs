@@ -6,6 +6,7 @@ using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using DTO.Inventory.StockIn.NhapHangThuongMai;
 
 namespace Inventory.StockIn.InPhieu
 {

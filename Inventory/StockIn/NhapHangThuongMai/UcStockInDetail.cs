@@ -12,6 +12,7 @@ using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
 using DTO.Inventory.StockIn;
+using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Inventory.StockIn.NhapHangThuongMai;
 
+
 namespace Inventory.InventoryManagement
 {
     /// <summary>

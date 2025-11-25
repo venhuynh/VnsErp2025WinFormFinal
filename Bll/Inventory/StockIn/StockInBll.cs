@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bll.Inventory.InventoryManagement;
+using DTO.Inventory.StockIn.NhapHangThuongMai;
 
 namespace Bll.Inventory.StockIn
 {
@@ -84,31 +85,28 @@ namespace Bll.Inventory.StockIn
         /// <summary>
         /// Lưu phiếu nhập kho (master và detail) với transaction
         /// Đảm bảo validation đã được thực hiện trước khi gọi method này
+        /// Method này nhận entities để có thể được sử dụng bởi nhiều màn hình khác nhau với các DTO khác nhau
         /// </summary>
-        /// <param name="masterDto">DTO phiếu nhập kho (master)</param>
-        /// <param name="detailDtos">Danh sách DTO chi tiết phiếu nhập kho</param>
+        /// <param name="masterEntity">Entity phiếu nhập kho (master)</param>
+        /// <param name="detailEntities">Danh sách entity chi tiết phiếu nhập kho</param>
         /// <returns>ID phiếu nhập kho đã lưu</returns>
-        public async Task<Guid> SaveAsync(StockInMasterDto masterDto, List<StockInDetailDto> detailDtos)
+        public async Task<Guid> SaveAsync(StockInOutMaster masterEntity, List<StockInOutDetail> detailEntities)
         {
-            if (masterDto == null)
-                throw new ArgumentNullException(nameof(masterDto));
+            if (masterEntity == null)
+                throw new ArgumentNullException(nameof(masterEntity));
 
-            if (detailDtos == null || detailDtos.Count == 0)
-                throw new ArgumentException("Danh sách chi tiết không được để trống", nameof(detailDtos));
+            if (detailEntities == null || detailEntities.Count == 0)
+                throw new ArgumentException("Danh sách chi tiết không được để trống", nameof(detailEntities));
 
             try
             {
                 _logger.Debug("SaveAsync: Bắt đầu lưu phiếu nhập kho, MasterId={0}, DetailCount={1}", 
-                    masterDto.Id, detailDtos.Count);
+                    masterEntity.Id, detailEntities.Count);
 
                 // 0. Validate dữ liệu trước khi lưu
-                ValidateBeforeSave(masterDto, detailDtos);
+                ValidateBeforeSave(masterEntity, detailEntities);
 
-                // 1. Map DTOs sang Entities
-                var masterEntity = MapMasterDtoToEntity(masterDto);
-                var detailEntities = detailDtos.Select(MapDetailDtoToEntity).ToList();
-
-                // 2. Lưu qua Repository
+                // 1. Lưu qua Repository
                 var savedMasterId = await GetDataAccess().SaveAsync(masterEntity, detailEntities);
 
                 _logger.Info("SaveAsync: Lưu phiếu nhập kho thành công, MasterId={0}", savedMasterId);
@@ -123,8 +121,9 @@ namespace Bll.Inventory.StockIn
 
         /// <summary>
         /// Map StockInMasterDto sang StockInOutMaster entity
+        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng StockInMasterDto)
         /// </summary>
-        private StockInOutMaster MapMasterDtoToEntity(StockInMasterDto dto)
+        public static StockInOutMaster MapMasterDtoToEntity(StockInMasterDto dto)
         {
             return new StockInOutMaster
             {
@@ -148,8 +147,9 @@ namespace Bll.Inventory.StockIn
 
         /// <summary>
         /// Map StockInDetailDto sang StockInOutDetail entity
+        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng StockInDetailDto)
         /// </summary>
-        private StockInOutDetail MapDetailDtoToEntity(StockInDetailDto dto)
+        public static StockInOutDetail MapDetailDtoToEntity(StockInDetailDto dto)
         {
             return new StockInOutDetail
             {
@@ -162,32 +162,36 @@ namespace Bll.Inventory.StockIn
                 Vat = dto.Vat,
                 VatAmount = dto.VatAmount, // Computed property value
                 TotalAmount = dto.TotalAmount, // Computed property value
-                TotalAmountIncludedVat = dto.TotalAmountIncludedVat // Computed property value
+                TotalAmountIncludedVat = dto.TotalAmountIncludedVat, // Computed property value
+                
             };
         }
 
         /// <summary>
         /// Validate dữ liệu trước khi lưu
         /// </summary>
-        private void ValidateBeforeSave(StockInMasterDto masterDto, List<StockInDetailDto> detailDtos)
+        private void ValidateBeforeSave(StockInOutMaster masterEntity, List<StockInOutDetail> detailEntities)
         {
             // Validate WarehouseId - không được để trống hoặc Guid.Empty
-            if (masterDto.WarehouseId == Guid.Empty)
+            if (masterEntity.WarehouseId == Guid.Empty)
             {
                 throw new ArgumentException("Vui lòng chọn kho nhập. WarehouseId không được để trống.");
             }
 
             // Validate các detail
-            foreach (var detail in detailDtos)
+            for (int i = 0; i < detailEntities.Count; i++)
             {
+                var detail = detailEntities[i];
+                var lineNumber = i + 1;
+
                 if (detail.ProductVariantId == Guid.Empty)
                 {
-                    throw new ArgumentException($"Dòng {detail.LineNumber}: Vui lòng chọn hàng hóa. ProductVariantId không được để trống.");
+                    throw new ArgumentException($"Dòng {lineNumber}: Vui lòng chọn hàng hóa. ProductVariantId không được để trống.");
                 }
 
                 if (detail.StockInQty <= 0)
                 {
-                    throw new ArgumentException($"Dòng {detail.LineNumber}: Số lượng nhập phải lớn hơn 0.");
+                    throw new ArgumentException($"Dòng {lineNumber}: Số lượng nhập phải lớn hơn 0.");
                 }
             }
 

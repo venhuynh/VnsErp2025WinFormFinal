@@ -16,6 +16,12 @@ namespace DTO.Inventory.StockIn
         NhapHangThuongMai = 0,
 
         /// <summary>
+        /// Nhập hàng thiết bị mượn - thuê
+        /// </summary>
+        [Description("Nhập thiết bị mượn-thuê")]
+        NhapThietBiMuonThue = 1,
+
+        /// <summary>
         /// Nhập hàng khác (có thể mở rộng sau)
         /// </summary>
         Khac = 99

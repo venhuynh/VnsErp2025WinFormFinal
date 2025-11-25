@@ -1,4 +1,6 @@
-﻿namespace Inventory.StockIn.InPhieu
+﻿using DTO.Inventory.StockIn.NhapHangThuongMai;
+
+namespace Inventory.StockIn.InPhieu
 {
     partial class InPhieuNhapKho
     {
@@ -1190,7 +1192,7 @@
             // 
             // bindingSource1
             // 
-            this.bindingSource1.DataSource = typeof(DTO.Inventory.StockIn.StockInReportDto);
+            this.bindingSource1.DataSource = typeof(StockInReportDto);
             // 
             // xrTableRow12
             // 
