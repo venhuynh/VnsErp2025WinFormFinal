@@ -1,12 +1,11 @@
 ﻿using Bll.Inventory.StockIn;
 using Common.Utils;
-using DTO.Inventory.StockIn;
+using DTO.Inventory.StockIn.NhapHangThuongMai;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
-using DTO.Inventory.StockIn.NhapHangThuongMai;
 
 namespace Inventory.StockIn.InPhieu
 {
@@ -21,7 +20,7 @@ namespace Inventory.StockIn.InPhieu
 
         #region Constructor
 
-        public InPhieuNhapKho()
+        private InPhieuNhapKho()
         {
             InitializeComponent();
             _stockInBll = new StockInBll();
@@ -45,7 +44,7 @@ namespace Inventory.StockIn.InPhieu
         /// Load dữ liệu và bind vào report
         /// </summary>
         /// <param name="voucherId">ID phiếu nhập kho</param>
-        public void LoadData(Guid voucherId)
+        private void LoadData(Guid voucherId)
         {
             try
             {

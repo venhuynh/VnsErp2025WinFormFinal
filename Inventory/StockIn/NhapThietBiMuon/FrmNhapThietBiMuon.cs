@@ -11,6 +11,8 @@ using Inventory.StockIn.InPhieu;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using DevExpress.XtraReports.UI;
+using DevExpress.XtraPrinting;
 
 namespace Inventory.StockIn.NhapThietBiMuon
 {
@@ -376,8 +378,27 @@ namespace Inventory.StockIn.NhapThietBiMuon
                     return;
                 }
 
-                // In phiếu nhập kho với preview
-                StockInReportHelper.PrintStockInVoucher(stockInOutMasterId);
+                // In phiếu nhập/xuất thiết bị cho mượn với preview
+                try
+                {
+                    _logger.Debug("InPhieuBarButtonItem_ItemClick: Bắt đầu in phiếu, StockInOutMasterId={0}", stockInOutMasterId);
+
+                    // Tạo và load report
+                    var report = new InPhieuNhapXuatThietBiChoMuon(stockInOutMasterId);
+
+                    // Hiển thị preview bằng ReportPrintTool
+                    using (var printTool = new ReportPrintTool(report))
+                    {
+                        printTool.ShowPreviewDialog();
+                    }
+
+                    _logger.Info("InPhieuBarButtonItem_ItemClick: In phiếu thành công, StockInOutMasterId={0}", stockInOutMasterId);
+                }
+                catch (Exception printEx)
+                {
+                    _logger.Error($"InPhieuBarButtonItem_ItemClick: Lỗi in phiếu: {printEx.Message}", printEx);
+                    MsgBox.ShowError($"Lỗi in phiếu: {printEx.Message}");
+                }
 
             }
             catch (Exception ex)

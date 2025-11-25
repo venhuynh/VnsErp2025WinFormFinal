@@ -30,7 +30,7 @@ public class StockInReportDto
     /// Sử dụng StockInDetailDto để tái sử dụng code
     /// </summary>
     [DisplayName("Chi tiết nhập hàng")]
-    public List<StockInDetailDto> ChiTietNhapHangNoiBos { get; set; } = new List<StockInDetailDto>();
+    public List<StockInDetailDto> ChiTietNhapHangNoiBos { get; set; } = [];
 
     #endregion
 

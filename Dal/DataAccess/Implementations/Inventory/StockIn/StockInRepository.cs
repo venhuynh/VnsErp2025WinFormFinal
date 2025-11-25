@@ -328,24 +328,51 @@ public class StockInRepository : IStockInRepository
             // Force load tất cả navigation properties trước khi dispose DataContext
             foreach (var detail in details)
             {
+                // Force load StockInOutMaster và các navigation properties của nó
+                if (detail.StockInOutMaster != null)
+                {
+                    var masterVocherNumber = detail.StockInOutMaster.VocherNumber;
+                    var masterStockInOutDate = detail.StockInOutMaster.StockInOutDate;
+                    var masterWarehouseId = detail.StockInOutMaster.WarehouseId;
+                    
+                    // Force load CompanyBranch nếu có
+                    if (detail.StockInOutMaster.CompanyBranch != null)
+                    {
+                        var branchName = detail.StockInOutMaster.CompanyBranch.BranchName;
+                        var branchCode = detail.StockInOutMaster.CompanyBranch.BranchCode;
+                    }
+                    
+                    // Force load BusinessPartnerSite và BusinessPartner nếu có
+                    if (detail.StockInOutMaster.BusinessPartnerSite != null)
+                    {
+                        var siteName = detail.StockInOutMaster.BusinessPartnerSite.SiteName;
+                        if (detail.StockInOutMaster.BusinessPartnerSite.BusinessPartner != null)
+                        {
+                            var partnerName = detail.StockInOutMaster.BusinessPartnerSite.BusinessPartner.PartnerName;
+                            var partnerCode = detail.StockInOutMaster.BusinessPartnerSite.BusinessPartner.PartnerCode;
+                        }
+                    }
+                }
+                
+                // Force load ProductVariant và các navigation properties của nó
                 if (detail.ProductVariant != null)
                 {
                     // Force load ProductVariant properties
-                    var _ = detail.ProductVariant.VariantCode;
-                    var __ = detail.ProductVariant.VariantFullName;
+                    var variantCode = detail.ProductVariant.VariantCode;
+                    var variantFullName = detail.ProductVariant.VariantFullName;
                     
                     // Force load ProductService nếu có
                     if (detail.ProductVariant.ProductService != null)
                     {
-                        var ___ = detail.ProductVariant.ProductService.Name;
-                        var ____ = detail.ProductVariant.ProductService.Code;
+                        var productName = detail.ProductVariant.ProductService.Name;
+                        var productCode = detail.ProductVariant.ProductService.Code;
                     }
                     
                     // Force load UnitOfMeasure nếu có
                     if (detail.ProductVariant.UnitOfMeasure != null)
                     {
-                        var _____ = detail.ProductVariant.UnitOfMeasure.Name;
-                        var ______ = detail.ProductVariant.UnitOfMeasure.Code;
+                        var unitName = detail.ProductVariant.UnitOfMeasure.Name;
+                        var unitCode = detail.ProductVariant.UnitOfMeasure.Code;
                     }
                 }
             }
