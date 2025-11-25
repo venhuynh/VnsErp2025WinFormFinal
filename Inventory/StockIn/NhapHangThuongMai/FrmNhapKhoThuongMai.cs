@@ -6,7 +6,9 @@ using System.Windows.Forms;
 using Bll.Inventory.StockIn;
 using Common.Common;
 using Common.Utils;
+using Inventory.InventoryManagement;
 using Inventory.StockIn.InPhieu;
+using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -465,7 +467,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 // Mở form nhập bảo hành với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var frmWarranty = new InventoryManagement.FrmWarranty(stockInOutMasterId))
+                    using (var frmWarranty = new FrmWarranty(stockInOutMasterId))
                     {
                         frmWarranty.StartPosition = FormStartPosition.CenterParent;
                         frmWarranty.ShowDialog(this);

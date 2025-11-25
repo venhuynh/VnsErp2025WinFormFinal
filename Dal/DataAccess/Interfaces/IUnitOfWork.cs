@@ -173,6 +173,8 @@ public interface IUnitOfWork : IDisposable
 
     IStockInOutDetailRepository GetStockInOutDetailRepository();
 
+    IDeviceRepository GetDeviceRepository();
+
     #endregion
 
     #endregion

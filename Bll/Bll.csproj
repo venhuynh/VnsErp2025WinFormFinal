@@ -74,6 +74,7 @@
     <Compile Include="Common\ImageStorage\ImageStorageResult.cs" />
     <Compile Include="Common\ImageStorage\LocalImageStorageService.cs" />
     <Compile Include="Common\ImageStorage\NASImageStorageService.cs" />
+    <Compile Include="Inventory\InventoryManagement\DeviceBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutMasterBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutDetailBll.cs" />
     <Compile Include="Inventory\InventoryManagement\WarrantyBll.cs" />

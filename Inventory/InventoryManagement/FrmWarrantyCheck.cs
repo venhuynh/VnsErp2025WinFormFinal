@@ -2,6 +2,7 @@
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
+using DevExpress.XtraGrid.Views.Base;
 using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;
@@ -9,8 +10,6 @@ using Logger.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using DevExpress.XtraGrid.Views.Base;
 
 namespace Inventory.InventoryManagement
 {
@@ -294,7 +293,7 @@ namespace Inventory.InventoryManagement
         /// Event handler khi row được chọn thay đổi
         /// </summary>
         private void WarrantyCheckListDtoGridView_FocusedRowChanged(object sender, 
-            DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+            FocusedRowChangedEventArgs e)
         {
             try
             {

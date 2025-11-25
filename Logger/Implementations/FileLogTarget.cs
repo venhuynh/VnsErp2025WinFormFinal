@@ -51,6 +51,9 @@ public class FileLogTarget : ILogTarget
             lock (_lockObject)
             {
                 CheckAndRotateLogFile();
+                
+                // Đảm bảo thư mục log tồn tại trước khi ghi
+                EnsureLogDirectoryExists();
                     
                 var logLine = entry.ToFormattedString();
                 File.AppendAllText(_currentLogFile, logLine + Environment.NewLine);
@@ -94,6 +97,10 @@ public class FileLogTarget : ILogTarget
         try
         {
             _currentLogFile = _config.GetCurrentLogFilePath();
+            
+            // Đảm bảo thư mục log tồn tại
+            EnsureLogDirectoryExists();
+            
             if (File.Exists(_currentLogFile))
             {
                 var fileInfo = new FileInfo(_currentLogFile);
@@ -109,6 +116,33 @@ public class FileLogTarget : ILogTarget
             System.Diagnostics.Debug.WriteLine($"Error initializing log file: {ex.Message}");
             _currentLogFile = null;
             _currentFileSize = 0;
+        }
+    }
+
+    /// <summary>
+    /// Đảm bảo thư mục log tồn tại, nếu không thì tạo mới
+    /// </summary>
+    private void EnsureLogDirectoryExists()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(_currentLogFile))
+                return;
+
+            var logDirectory = Path.GetDirectoryName(_currentLogFile);
+            if (string.IsNullOrEmpty(logDirectory))
+                return;
+
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+                System.Diagnostics.Debug.WriteLine($"Created log directory: {logDirectory}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error ensuring log directory exists: {ex.Message}");
+            // Không throw exception để tránh ảnh hưởng đến việc ghi log
         }
     }
 

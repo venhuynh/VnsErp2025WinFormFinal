@@ -228,7 +228,7 @@ namespace Inventory.InventoryManagement
         }
 
         /// <summary>
-        /// Lưu hình ảnh từ file
+        /// Lưu hình ảnh từ file vào NAS/Local storage và metadata vào database
         /// </summary>
         /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
         /// <param name="imageFilePath">Đường dẫn file ảnh</param>
@@ -250,30 +250,18 @@ namespace Inventory.InventoryManagement
                     throw new FileNotFoundException($"File ảnh không tồn tại: {imageFilePath}");
                 }
 
-                // Đọc dữ liệu hình ảnh
-                var imageData = await Task.Run(() => File.ReadAllBytes(imageFilePath));
+                // Sử dụng BLL để lưu hình ảnh vào NAS/Local storage và metadata vào database
+                // Method này sẽ:
+                // 1. Đọc file ảnh
+                // 2. Lưu vào NAS/Local storage thông qua ImageStorageService
+                // 3. Lưu metadata (FileName, RelativePath, FullPath, etc.) vào database
+                var stockInOutImage = await _stockInOutImageBll.SaveImageFromFileAsync(stockInOutMasterId, imageFilePath);
 
-                // Lấy thông tin user hiện tại
-                var currentUser = Bll.Common.ApplicationSystemUtils.GetCurrentUser();
-                var createBy = currentUser?.Id ?? Guid.Empty;
-
-                // Tạo entity StockInOutImage
-                var stockInOutImage = new StockInOutImage
+                // Kiểm tra kết quả
+                if (stockInOutImage == null)
                 {
-                    Id = Guid.NewGuid(),
-                    StockInOutMasterId = stockInOutMasterId,
-                    ImageData = new System.Data.Linq.Binary(imageData),
-                    CreateDate = DateTime.Now,
-                    CreateBy = createBy,
-                    ModifiedDate = null,
-                    ModifiedBy = Guid.Empty
-                };
-
-                // Lưu vào database thông qua BLL
-                await Task.Run(() =>
-                {
-                    _stockInOutImageBll.SaveOrUpdate(stockInOutImage);
-                });
+                    throw new InvalidOperationException($"Không thể lưu hình ảnh '{Path.GetFileName(imageFilePath)}'");
+                }
 
                 return true;
             }

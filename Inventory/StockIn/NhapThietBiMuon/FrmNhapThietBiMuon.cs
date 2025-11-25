@@ -129,7 +129,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
                 NhapLaiBarButtonItem.ItemClick += NhapLaiBarButtonItem_ItemClick;
                 LuuPhieuBarButtonItem.ItemClick += LuuPhieuBarButtonItem_ItemClick;
                 InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
-                NhapBaoHanhBarButtonItem.ItemClick += NhapBaoHanhBarButtonItem_ItemClick;
+                NhapQuanLyTaiSanBarButtonItem.ItemClick += NhapQuanLyTaiSanBarButtonItem_ItemClick;
                 ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
                 CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
 
@@ -390,7 +390,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// <summary>
         /// Event handler cho nút Nhập bảo hành
         /// </summary>
-        private async void NhapBaoHanhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void NhapQuanLyTaiSanBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
@@ -434,7 +434,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
                             {
                                 // Lưu thất bại hoặc timeout, không mở form nhập bảo hành
                                 _logger.Warning(
-                                    "NhapBaoHanhBarButtonItem_ItemClick: Save failed, timeout, or cancelled, cannot open warranty form");
+                                    "NhapQuanLyTaiSanBarButtonItem_ItemClick: Save failed, timeout, or cancelled, cannot open warranty form");
                                 return;
                             }
                         }
@@ -452,7 +452,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
                             "Lỗi",
                             this);
                         _logger.Warning(
-                            "NhapBaoHanhBarButtonItem_ItemClick: Cannot add warranty - Form not saved and no unsaved changes");
+                            "NhapQuanLyTaiSanBarButtonItem_ItemClick: Cannot add warranty - Form not saved and no unsaved changes");
                         return;
                     }
                 }
@@ -465,23 +465,23 @@ namespace Inventory.StockIn.NhapThietBiMuon
                         "Cảnh báo",
                         this);
                     _logger.Warning(
-                        "NhapBaoHanhBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
+                        "NhapQuanLyTaiSanBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
                     return;
                 }
 
                 // Mở form nhập bảo hành với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var frmWarranty = new InventoryManagement.FrmWarranty(stockInOutMasterId))
+                    using (var frmDeviceIdentifierInput = new FrmNhapSerialMacEmei(stockInOutMasterId))
                     {
-                        frmWarranty.StartPosition = FormStartPosition.CenterParent;
-                        frmWarranty.ShowDialog(this);
+                        frmDeviceIdentifierInput.StartPosition = FormStartPosition.CenterParent;
+                        frmDeviceIdentifierInput.ShowDialog(this);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.Error("NhapBaoHanhBarButtonItem_ItemClick: Exception occurred", ex);
+                _logger.Error("NhapQuanLyTaiSanBarButtonItem_ItemClick: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi nhập bảo hành: {ex.Message}");
             }
         }
@@ -614,7 +614,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
                     case Keys.F4:
                         // F4: Nhập bảo hành
                         e.Handled = true;
-                        NhapBaoHanhBarButtonItem_ItemClick(null, null);
+                        NhapQuanLyTaiSanBarButtonItem_ItemClick(null, null);
                         break;
 
                     case Keys.F5:

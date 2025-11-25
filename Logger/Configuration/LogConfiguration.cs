@@ -161,7 +161,12 @@ public class LogConfiguration : ILogConfiguration
             return null;
 
         var fileName = LogFilePattern.Replace("{date}", DateTime.Now.ToString("yyyy-MM-dd"));
-        return Path.Combine(LogDirectory, fileName);
+        var logFilePath = Path.Combine(GetAbsoluteLogDirectory(), fileName);
+        
+        // Đảm bảo thư mục log tồn tại
+        EnsureLogDirectoryExists();
+        
+        return logFilePath;
     }
 
     /// <summary>
@@ -173,7 +178,36 @@ public class LogConfiguration : ILogConfiguration
             return null;
 
         var fileName = LogFilePattern.Replace("{date}", date.ToString("yyyy-MM-dd"));
-        return Path.Combine(LogDirectory, fileName);
+        var logFilePath = Path.Combine(GetAbsoluteLogDirectory(), fileName);
+        
+        // Đảm bảo thư mục log tồn tại
+        EnsureLogDirectoryExists();
+        
+        return logFilePath;
+    }
+
+    /// <summary>
+    /// Đảm bảo thư mục log tồn tại, nếu không thì tạo mới
+    /// </summary>
+    private void EnsureLogDirectoryExists()
+    {
+        try
+        {
+            var absoluteLogDirectory = GetAbsoluteLogDirectory();
+            if (string.IsNullOrEmpty(absoluteLogDirectory))
+                return;
+
+            if (!Directory.Exists(absoluteLogDirectory))
+            {
+                Directory.CreateDirectory(absoluteLogDirectory);
+                System.Diagnostics.Debug.WriteLine($"Created log directory: {absoluteLogDirectory}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error ensuring log directory exists: {ex.Message}");
+            // Không throw exception để tránh ảnh hưởng đến việc ghi log
+        }
     }
 
     /// <summary>
