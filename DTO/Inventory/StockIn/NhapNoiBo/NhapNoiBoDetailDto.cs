@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Dal.DataContext;
 
 namespace DTO.Inventory.StockIn.NhapNoiBo;
 
@@ -202,11 +203,11 @@ public static class NhapNoiBoConverter
     #region Entity to DTO
 
     /// <summary>
-    /// Chuyển đổi StockInOutDetail entity thành NhapThietBiMuonDetailDto
+    /// Chuyển đổi StockInOutDetail entity thành NhapNoiBoDetailDto
     /// </summary>
     /// <param name="entity">StockInOutDetail entity</param>
-    /// <returns>NhapThietBiMuonDetailDto</returns>
-    public static NhapNoiBoDetailDto ToNhapNoiBoDetailDtolDto(this Dal.DataContext.StockInOutDetail entity)
+    /// <returns>NhapNoiBoDetailDto</returns>
+    public static NhapNoiBoDetailDto ToNhapNoiBoDetailDto(this Dal.DataContext.StockInOutDetail entity)
     {
         if (entity == null) return null;
 
@@ -287,11 +288,11 @@ public static class NhapNoiBoConverter
     /// </summary>
     /// <param name="entities">Danh sách StockInOutDetail entities</param>
     /// <returns>Danh sách NhapThietBiMuonDetailDto</returns>
-    public static List<NhapNoiBoDetailDto> ToDtoList(this IEnumerable<Dal.DataContext.StockInOutDetail> entities)
+    public static List<NhapNoiBoDetailDto> ToDtoList(this IEnumerable<StockInOutDetail> entities)
     {
         if (entities == null) return new List<NhapNoiBoDetailDto>();
 
-        return entities.Select(entity => entity.ToNhapNoiBoDetailDtolDto()).Where(dto => dto != null).ToList();
+        return entities.Select(entity => entity.ToNhapNoiBoDetailDto()).Where(dto => dto != null).ToList();
     }
 
     #endregion

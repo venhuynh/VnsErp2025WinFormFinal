@@ -186,7 +186,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             // Chỉ định rõ ràng namespace để tránh ambiguous call
             var detailDtos = detailEntities
                 .Where(e => e != null)
-                .Select(entity => entity.ToNhapNoiBoDetailDtolDto()) // Static method từ NhapNoiBo namespace
+                .Select(entity => entity.ToNhapNoiBoDetailDto()) // Extension method từ NhapNoiBo namespace
                 .Where(dto => dto != null)
                 .ToList();
 
