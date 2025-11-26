@@ -55,7 +55,7 @@
     <Compile Include="Inventory\InventoryManagement\DeviceDto.cs" />
     <Compile Include="Inventory\StockIn\NhapThietBiMuon\NhapThietBiMuonDetailDto.cs" />
     <Compile Include="Inventory\StockIn\NhapThietBiMuon\NhapThietBiMuonMasterDto.cs" />
-    <Compile Include="Inventory\StockIn\StockInEnums.cs" />
+    <Compile Include="Inventory\StockIn\InventoryEnums.cs" />
     <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInMasterDto.cs" />
     <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInReportDto.cs" />
     <Compile Include="MasterData\Company\CompanyBranchDto.cs" />

@@ -163,7 +163,7 @@ namespace Inventory.InventoryManagement
 
         /// <summary>
         /// Event handler cho nút Chi tiết phiếu nhập xuất
-        /// Mở form FrmNhapKhoThuongMai02 và load dữ liệu từ ID đã chọn
+        /// Mở form tương ứng dựa vào LoaiNhapXuatKhoEnum và load dữ liệu từ ID đã chọn
         /// </summary>
         private void ChiTietPhieuNhapXuatBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -190,20 +190,68 @@ namespace Inventory.InventoryManagement
                     return;
                 }
 
-                // Mở form chi tiết với OverlayManager và load dữ liệu
-                using (OverlayManager.ShowScope(this))
+                // Lấy DTO từ row được chọn để xác định loại nhập xuất
+                var focusedRowHandle = StockInOutProductHistoryDtoGridView.FocusedRowHandle;
+                if (focusedRowHandle < 0)
                 {
-                    using (var form = new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value))
-                    {
-                        // Đảm bảo form chưa được hiển thị
-                        form.Visible = false;
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        
-                        // Hiển thị form
-                        form.ShowDialog(this);
-                    }
+                    MsgBox.ShowWarning("Vui lòng chọn sản phẩm để xem chi tiết phiếu.");
+                    return;
                 }
 
+                var selectedDto = StockInOutProductHistoryDtoGridView.GetRow(focusedRowHandle) as StockInOutProductHistoryDto;
+                if (selectedDto == null)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin sản phẩm được chọn.");
+                    return;
+                }
+
+                // Dựa vào LoaiNhapXuatKho để mở đúng form
+                using (OverlayManager.ShowScope(this))
+                {
+                    try
+                    {
+                        switch (selectedDto.LoaiNhapXuatKho)
+                        {
+                            case LoaiNhapXuatKhoEnum.NhapHangThuongMai:
+                                // Mở form nhập hàng thương mại
+                                using (var form = new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value))
+                                {
+                                    form.StartPosition = FormStartPosition.CenterParent;
+                                    form.ShowDialog(this);
+                                }
+                                break;
+
+                            case LoaiNhapXuatKhoEnum.NhapThietBiMuonThue:
+                                // Mở form nhập/xuất thiết bị cho mượn
+                                _logger.Debug("ChiTietPhieuNhapXuatBarButtonItem_ItemClick: Mở form thiết bị cho mượn, StockInOutMasterId={0}", 
+                                    _selectedStockInOutMasterId.Value);
+
+                                using (var form = new FrmNhapThietBiMuon(_selectedStockInOutMasterId.Value))
+                                {
+                                    form.StartPosition = FormStartPosition.CenterParent;
+                                    form.ShowDialog(this);
+                                }
+                                break;
+
+                            case LoaiNhapXuatKhoEnum.Khac:
+                            default:
+                                // Loại khác - dùng mặc định (FrmNhapKhoThuongMai) hoặc hiển thị cảnh báo
+                                _logger.Warning("ChiTietPhieuNhapXuatBarButtonItem_ItemClick: Loại nhập xuất không xác định ({0}), dùng mặc định", 
+                                    selectedDto.LoaiNhapXuatKho);
+                                using (var form = new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value))
+                                {
+                                    form.StartPosition = FormStartPosition.CenterParent;
+                                    form.ShowDialog(this);
+                                }
+                                break;
+                        }
+                    }
+                    catch (Exception formEx)
+                    {
+                        _logger.Error($"ChiTietPhieuNhapXuatBarButtonItem_ItemClick: Lỗi mở form: {formEx.Message}", formEx);
+                        MsgBox.ShowError($"Lỗi mở form chi tiết: {formEx.Message}");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -281,8 +329,6 @@ namespace Inventory.InventoryManagement
                                     printTool.ShowPreviewDialog();
                                 }
 
-                                _logger.Info("InPhieuBarButtonItem_ItemClick: In phiếu thiết bị cho mượn thành công, StockInOutMasterId={0}", 
-                                    _selectedStockInOutMasterId.Value);
                                 break;
 
                             case LoaiNhapXuatKhoEnum.Khac:
@@ -504,10 +550,7 @@ namespace Inventory.InventoryManagement
                             {
                                 // Xóa detail
                                 var masterId = _stockInOutDetailBll.Delete(dto.Id);
-                                _logger.Info(
-                                    "XoaPhieuBarButtonItem_ItemClick: Đã xóa detail, DetailId={0}, MasterId={1}",
-                                    dto.Id, masterId);
-
+                                
                                 masterIdsToCheck.Add(masterId);
                                 deletedCount++;
                             }
@@ -526,15 +569,11 @@ namespace Inventory.InventoryManagement
                             {
                                 var hasRemainingDetails = _stockInOutDetailBll.HasRemainingDetails(masterId);
 
-                                if (!hasRemainingDetails)
-                                {
-                                    // Nếu không còn detail nào, xóa luôn master
-                                    var stockInOutMasterBll = new StockInOutMasterBll();
-                                    stockInOutMasterBll.Delete(masterId);
-                                    _logger.Info(
-                                        "XoaPhieuBarButtonItem_ItemClick: Đã xóa master vì không còn detail, MasterId={0}",
-                                        masterId);
-                                }
+                                if (hasRemainingDetails) continue;
+                                
+                                // Nếu không còn detail nào, xóa luôn master
+                                var stockInOutMasterBll = new StockInOutMasterBll();
+                                stockInOutMasterBll.Delete(masterId);
                             }
                             catch (Exception ex)
                             {
