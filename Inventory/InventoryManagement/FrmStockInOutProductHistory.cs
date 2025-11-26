@@ -2,6 +2,7 @@
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
+using DevExpress.XtraReports.UI;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn;
 using Inventory.StockIn.InPhieu;
@@ -14,8 +15,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DevExpress.XtraReports.UI;
-using DevExpress.XtraPrinting;
 using Inventory.StockIn.NhapNoiBo;
 
 
@@ -211,8 +210,8 @@ namespace Inventory.InventoryManagement
                 {
                     LoaiNhapXuatKhoEnum.NhapHangThuongMai => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value),
                     LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new FrmNhapThietBiMuon(_selectedStockInOutMasterId.Value),
-                    LoaiNhapXuatKhoEnum.NhapNoiBo => new FrmNhapNoiBo(_selectedStockInOutMasterId.Value),
-                    _ => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value) // Default: dùng FrmNhapKhoThuongMai
+                    //LoaiNhapXuatKhoEnum.NhapNoiBo => new FrmNhapNoiBo(_selectedStockInOutMasterId.Value),
+                    //_ => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value) // Default: dùng FrmNhapKhoThuongMai
                 };
 
                 // Mở form chi tiết

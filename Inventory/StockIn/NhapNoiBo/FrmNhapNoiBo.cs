@@ -17,8 +17,8 @@ using Inventory.StockIn.NhapThietBiMuon;
 
 namespace Inventory.StockIn.NhapNoiBo;
 
-    public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
-    {
+public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
+{
     #region ========== FIELDS & PROPERTIES ==========
 
     /// <summary>
@@ -54,8 +54,8 @@ namespace Inventory.StockIn.NhapNoiBo;
     /// <summary>
     /// Constructor mặc định (tạo phiếu mới)
     /// </summary>
-        public FrmNhapNoiBo()
-        {
+    public FrmNhapNoiBo()
+    {
         InitializeComponent();
         Load += FrmNhapNoiBo_Load;
         _currentStockInId = Guid.Empty;
@@ -384,13 +384,16 @@ namespace Inventory.StockIn.NhapNoiBo;
             {
                 _logger.Debug("InPhieuBarButtonItem_ItemClick: Bắt đầu in phiếu, StockInOutMasterId={0}", stockInOutMasterId);
 
-                // Tạo và load report - sử dụng InPhieuNhapXuatNoiBo cho nhập nội bộ
-                var report = new InPhieuNhapXuatNoiBo(stockInOutMasterId);
+                // Tạo và load report - sử dụng InPhieuNhapKho cho nhập nội bộ
+                var report = new InPhieuNhapKho(stockInOutMasterId);
 
                 // Hiển thị preview bằng ReportPrintTool
-                using var printTool = new ReportPrintTool(report);
-                
-                printTool.ShowPreviewDialog();
+                using (var printTool = new ReportPrintTool(report))
+                {
+                    printTool.ShowPreviewDialog();
+                }
+
+                _logger.Info("InPhieuBarButtonItem_ItemClick: In phiếu thành công, StockInOutMasterId={0}", stockInOutMasterId);
             }
             catch (Exception printEx)
             {

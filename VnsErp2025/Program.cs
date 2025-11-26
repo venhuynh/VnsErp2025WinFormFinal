@@ -1,12 +1,10 @@
 ﻿using Authentication.Form;
 using Common.Utils;
 using Dal.Connection;
-using Inventory.InventoryManagement;
-using Inventory.StockIn;
 using Inventory.StockIn.NhapNoiBo;
-using Inventory.StockIn.NhapThietBiMuon;
 using System;
 using System.Windows.Forms;
+
 
 namespace VnsErp2025
 {
