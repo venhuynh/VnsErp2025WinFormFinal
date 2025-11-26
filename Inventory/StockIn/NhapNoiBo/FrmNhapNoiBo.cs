@@ -13,11 +13,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTO.Inventory.StockIn.NhapNoiBo;
+using Inventory.StockIn.NhapThietBiMuon;
 
 namespace Inventory.StockIn.NhapNoiBo;
 
-public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
-{
+    public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
+    {
     #region ========== FIELDS & PROPERTIES ==========
 
     /// <summary>
@@ -53,8 +54,8 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     /// <summary>
     /// Constructor mặc định (tạo phiếu mới)
     /// </summary>
-    public FrmNhapNoiBo()
-    {
+        public FrmNhapNoiBo()
+        {
         InitializeComponent();
         Load += FrmNhapNoiBo_Load;
         _currentStockInId = Guid.Empty;

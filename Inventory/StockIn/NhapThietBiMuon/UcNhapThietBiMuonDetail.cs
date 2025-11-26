@@ -124,7 +124,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// <summary>
     /// Lấy danh sách chi tiết từ grid
     /// </summary>
-    public List<NhapThietBiMuonDetailDto> GetDetails()
+    public List<StockInOutDetail> GetDetails()
     {
         try
         {
@@ -135,13 +135,16 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             {
                 detail.StockInOutMasterId = _stockInMasterId;
             }
-            return details;
+
+            // Convert DTOs sang entities
+            var entities = details.Select(MapDetailDtoToEntity).ToList();
+            return entities;
         }
         catch (Exception ex)
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return new List<NhapThietBiMuonDetailDto>();
+            return new List<StockInOutDetail>();
         }
     }
 
@@ -1130,6 +1133,29 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     #endregion
 
     #region ========== HELPER METHODS ==========
+
+    /// <summary>
+    /// Map NhapThietBiMuonDetailDto sang StockInOutDetail entity
+    /// </summary>
+    private StockInOutDetail MapDetailDtoToEntity(NhapThietBiMuonDetailDto dto)
+    {
+        if (dto == null) return null;
+
+        return new StockInOutDetail
+        {
+            Id = dto.Id,
+            StockInOutMasterId = dto.StockInOutMasterId,
+            ProductVariantId = dto.ProductVariantId,
+            StockInQty = dto.StockInQty,
+            StockOutQty = 0, // NhapThietBiMuon chỉ có nhập, không có xuất
+            UnitPrice = 0, // NhapThietBiMuon không có giá
+            Vat = 0, // NhapThietBiMuon không có VAT
+            VatAmount = 0, // NhapThietBiMuon không có VAT
+            TotalAmount = 0, // NhapThietBiMuon không có tổng tiền
+            TotalAmountIncludedVat = 0, // NhapThietBiMuon không có tổng tiền
+            GhiChu = dto.GhiChu ?? "Bình thường"
+        };
+    }
 
     /// <summary>
     /// Hiển thị lỗi

@@ -845,27 +845,6 @@ namespace Inventory.StockIn.NhapThietBiMuon
             };
         }
 
-        /// <summary>
-        /// Map NhapThietBiMuonDetailDto sang StockInOutDetail entity
-        /// </summary>
-        private StockInOutDetail MapDetailDtoToEntity(NhapThietBiMuonDetailDto dto)
-        {
-            return new StockInOutDetail
-            {
-                Id = dto.Id,
-                StockInOutMasterId = dto.StockInOutMasterId,
-                ProductVariantId = dto.ProductVariantId,
-                StockInQty = dto.StockInQty,
-                StockOutQty = 0, // NhapThietBiMuon chỉ có nhập, không có xuất
-                UnitPrice = 0, // NhapThietBiMuon không có giá
-                Vat = 0, // NhapThietBiMuon không có VAT
-                VatAmount = 0, // NhapThietBiMuon không có VAT
-                TotalAmount = 0, // NhapThietBiMuon không có tổng tiền
-                TotalAmountIncludedVat = 0, // NhapThietBiMuon không có tổng tiền
-                GhiChu = dto.GhiChu ?? "Bình thường"
-            };
-        }
-
         #endregion
 
         #region Save Operations
@@ -905,21 +884,21 @@ namespace Inventory.StockIn.NhapThietBiMuon
                     return false;
                 }
 
-                // Lấy danh sách detail DTOs
-                var detailDtos = ucNhapThietBiMuonDetail1.GetDetails();
-                if (detailDtos == null || detailDtos.Count == 0)
+                // Lấy danh sách detail entities (GetDetails() đã trả về entities)
+                var detailEntities = ucNhapThietBiMuonDetail1.GetDetails();
+                if (detailEntities == null || detailEntities.Count == 0)
                 {
                     _logger.Warning("SaveDataAsync: No details found");
                     MsgBox.ShowWarning("Vui lòng thêm ít nhất một dòng chi tiết", "Cảnh báo", this);
                     return false;
                 }
 
-                // Validate thêm business rules cho từng detail
+                // Validate thêm business rules cho từng detail entity
                 var validationErrors = new List<string>();
-                for (var i = 0; i < detailDtos.Count; i++)
+                for (var i = 0; i < detailEntities.Count; i++)
                 {
-                    var detail = detailDtos[i];
-                    var lineNumber = detail.LineNumber > 0 ? detail.LineNumber : (i + 1);
+                    var detail = detailEntities[i];
+                    var lineNumber = i + 1;
 
                     if (detail.ProductVariantId == Guid.Empty)
                     {
@@ -941,10 +920,10 @@ namespace Inventory.StockIn.NhapThietBiMuon
                     return false;
                 }
 
-                // ========== BƯỚC 3: CHUYỂN ĐỔI DTOs SANG ENTITIES ==========
-                // Convert DTOs sang entities để truyền vào BLL
+                // ========== BƯỚC 3: CHUYỂN ĐỔI MASTER DTO SANG ENTITY ==========
+                // Convert Master DTO sang entity để truyền vào BLL
+                // Detail entities đã được lấy trực tiếp từ GetDetails()
                 var masterEntity = MapMasterDtoToEntity(masterDto);
-                var detailEntities = detailDtos.Select(MapDetailDtoToEntity).ToList();
 
                 // ========== BƯỚC 4: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
                 // Tất cả validation đã được thực hiện ở bước 1 và 2
