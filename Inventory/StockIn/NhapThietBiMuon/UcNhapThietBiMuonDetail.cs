@@ -20,7 +20,7 @@ using Logger.Interfaces;
 
 namespace Inventory.StockIn.NhapThietBiMuon;
 
-public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserControl
+public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
 {
     #region ========== FIELDS & PROPERTIES ==========
 
@@ -58,7 +58,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcNhapThietBiMuonDetail()
+    public UcNhapNoiBoDetail()
     {
         InitializeComponent();
         InitializeControl();

@@ -7,16 +7,16 @@ using Bll.Inventory.StockIn;
 using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
+using DevExpress.XtraReports.UI;
 using Inventory.StockIn.InPhieu;
+using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
-using DevExpress.XtraReports.UI;
-using DevExpress.XtraPrinting;
 
-namespace Inventory.StockIn.NhapThietBiMuon
+namespace Inventory.StockIn.NhapNoiBo
 {
-    public partial class FrmNhapThietBiMuon : DevExpress.XtraEditors.XtraForm
+    public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -53,7 +53,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// <summary>
         /// Constructor mặc định (tạo phiếu mới)
         /// </summary>
-        public FrmNhapThietBiMuon()
+        public FrmNhapNoiBo()
         {
             InitializeComponent();
             Load += FrmNhapThietBiMuon_Load;
@@ -64,7 +64,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// Constructor với ID phiếu nhập kho (mở để xem/sửa)
         /// </summary>
         /// <param name="stockInId">ID phiếu nhập kho</param>
-        public FrmNhapThietBiMuon(Guid stockInId)
+        public FrmNhapNoiBo(Guid stockInId)
         {
             InitializeComponent();
             Load += FrmNhapThietBiMuon_Load;
@@ -103,8 +103,6 @@ namespace Inventory.StockIn.NhapThietBiMuon
                     //await LoadDataAsync(_currentStockInId);
 
                     //FIXME: Tạo hàm LoadDataAsync trong user controls để load dữ liệu từ _currentStockInId
-                    await ucNhapThietBiMuonMaster1.LoadDataAsync(_currentStockInId);
-                    await ucNhapThietBiMuonDetail1.LoadDataAsyncForEdit(_currentStockInId);
                 }
                 else
                 {
@@ -141,7 +139,6 @@ namespace Inventory.StockIn.NhapThietBiMuon
                 KeyPreview = true; // Cho phép form xử lý phím tắt trước
 
                 // Detail control events - theo dõi thay đổi để đánh dấu có thay đổi chưa lưu và cập nhật tổng lên master
-                ucNhapThietBiMuonDetail1.DetailDataChanged += UcNhapThietBiMuonDetail1_DetailDataChanged;
 
                 // Setup phím tắt và hiển thị hướng dẫn
                 SetupKeyboardShortcuts();
@@ -671,13 +668,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
             {
                 // Đánh dấu có thay đổi chưa lưu
                 MarkAsChanged();
-
-                // Tính tổng số lượng từ detail
-                var details = ucNhapThietBiMuonDetail1.GetDetails();
-                var totalQuantity = details?.Sum(d => d.StockInQty) ?? 0;
-
-                // Cập nhật tổng lên master (chỉ có totalQuantity)
-                ucNhapThietBiMuonMaster1.UpdateTotals(totalQuantity, 0, 0, 0);
+                 
             }
             catch (Exception ex)
             {
@@ -793,14 +784,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         {
             try
             {
-                // Clear master control
-                ucNhapThietBiMuonMaster1.ClearData();
-
-                // Clear detail control
-                ucNhapThietBiMuonDetail1.ClearData();
-
-                // Reset tổng về 0
-                ucNhapThietBiMuonMaster1.UpdateTotals(0, 0, 0, 0);
+                 
 
                 // Reset state
                 _currentStockInId = Guid.Empty;
@@ -879,85 +863,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
             try
             {
 
-                // ========== BƯỚC 1: VALIDATE VÀ LẤY DỮ LIỆU TỪ MASTER CONTROL ==========
-                var masterDto = ucNhapThietBiMuonMaster1.GetDto();
-                if (masterDto == null)
-                {
-                    _logger.Warning("SaveDataAsync: Master validation failed - GetDto() returned null");
-                    MsgBox.ShowWarning("Vui lòng kiểm tra và điền đầy đủ thông tin phiếu nhập kho", "Cảnh báo", this);
-                    return false;
-                }
-
-                // Validate thêm business rules cho Master
-                if (masterDto.WarehouseId == Guid.Empty)
-                {
-                    _logger.Warning("SaveDataAsync: Master validation failed - WarehouseId is Empty");
-                    MsgBox.ShowWarning("Vui lòng chọn kho nhập", "Cảnh báo", this);
-                    return false;
-                }
-
-                // ========== BƯỚC 2: VALIDATE VÀ LẤY DỮ LIỆU TỪ DETAIL CONTROL ==========
-                // Validate tất cả các rows trong grid
-                if (!ucNhapThietBiMuonDetail1.ValidateAll())
-                {
-                    _logger.Warning("SaveDataAsync: Detail validation failed - ValidateAll() returned false");
-                    // ValidateAll() đã hiển thị thông báo lỗi chi tiết
-                    return false;
-                }
-
-                // Lấy danh sách detail DTOs
-                var detailDtos = ucNhapThietBiMuonDetail1.GetDetails();
-                if (detailDtos == null || detailDtos.Count == 0)
-                {
-                    _logger.Warning("SaveDataAsync: No details found");
-                    MsgBox.ShowWarning("Vui lòng thêm ít nhất một dòng chi tiết", "Cảnh báo", this);
-                    return false;
-                }
-
-                // Validate thêm business rules cho từng detail
-                var validationErrors = new List<string>();
-                for (var i = 0; i < detailDtos.Count; i++)
-                {
-                    var detail = detailDtos[i];
-                    var lineNumber = detail.LineNumber > 0 ? detail.LineNumber : (i + 1);
-
-                    if (detail.ProductVariantId == Guid.Empty)
-                    {
-                        validationErrors.Add($"Dòng {lineNumber}: Vui lòng chọn hàng hóa");
-                    }
-
-                    if (detail.StockInQty <= 0)
-                    {
-                        validationErrors.Add($"Dòng {lineNumber}: Số lượng nhập phải lớn hơn 0");
-                    }
-                }
-
-                if (validationErrors.Any())
-                {
-                    _logger.Warning("SaveDataAsync: Detail business rules validation failed, Errors={0}",
-                        string.Join("; ", validationErrors));
-                    MsgBox.ShowError($"Có lỗi trong dữ liệu chi tiết:\n\n{string.Join("\n", validationErrors)}",
-                        "Lỗi validation", this);
-                    return false;
-                }
-
-                // ========== BƯỚC 3: CHUYỂN ĐỔI DTOs SANG ENTITIES ==========
-                // Convert DTOs sang entities để truyền vào BLL
-                var masterEntity = MapMasterDtoToEntity(masterDto);
-                var detailEntities = detailDtos.Select(MapDetailDtoToEntity).ToList();
-
-                // ========== BƯỚC 4: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
-                // Tất cả validation đã được thực hiện ở bước 1 và 2
-                // StockInBll.SaveAsync sẽ có thêm validation layer nhưng chủ yếu là double-check
-                var savedMasterId = await _stockInBll.SaveAsync(masterEntity, detailEntities);
-
-                // ========== BƯỚC 5: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
-                // Cập nhật ID sau khi lưu
-                masterDto.Id = savedMasterId;
-                _currentStockInId = savedMasterId;
-
-                // Set master ID cho detail control để đồng bộ
-                ucNhapThietBiMuonDetail1.SetStockInMasterId(savedMasterId);
+                
                 return true;
             }
             catch (ArgumentException argEx)

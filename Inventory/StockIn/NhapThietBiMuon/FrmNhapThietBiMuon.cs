@@ -16,7 +16,7 @@ using DevExpress.XtraPrinting;
 
 namespace Inventory.StockIn.NhapThietBiMuon
 {
-    public partial class FrmNhapThietBiMuon : DevExpress.XtraEditors.XtraForm
+    public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -53,7 +53,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// <summary>
         /// Constructor mặc định (tạo phiếu mới)
         /// </summary>
-        public FrmNhapThietBiMuon()
+        public FrmNhapNoiBo()
         {
             InitializeComponent();
             Load += FrmNhapThietBiMuon_Load;
@@ -64,7 +64,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// Constructor với ID phiếu nhập kho (mở để xem/sửa)
         /// </summary>
         /// <param name="stockInId">ID phiếu nhập kho</param>
-        public FrmNhapThietBiMuon(Guid stockInId)
+        public FrmNhapNoiBo(Guid stockInId)
         {
             InitializeComponent();
             Load += FrmNhapThietBiMuon_Load;

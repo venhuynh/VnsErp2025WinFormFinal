@@ -1,6 +1,6 @@
-﻿namespace Inventory.StockIn.NhapThietBiMuon
+﻿namespace Inventory.StockIn.NhapNoiBo
 {
-    partial class FrmNhapThietBiMuon
+    partial class FrmNhapNoiBo
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapThietBiMuonDetail1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
@@ -51,7 +50,6 @@
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapThietBiMuonMaster1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
@@ -70,7 +68,6 @@
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.ucNhapThietBiMuonDetail1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(483, 24);
             this.layoutControl1.Name = "layoutControl1";
@@ -78,13 +75,7 @@
             this.layoutControl1.Size = new System.Drawing.Size(888, 768);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
-            // 
-            // ucNhapThietBiMuonDetail1
-            // 
-            this.ucNhapThietBiMuonDetail1.Location = new System.Drawing.Point(12, 12);
-            this.ucNhapThietBiMuonDetail1.Name = "ucNhapThietBiMuonDetail1";
-            this.ucNhapThietBiMuonDetail1.Size = new System.Drawing.Size(864, 744);
-            this.ucNhapThietBiMuonDetail1.TabIndex = 4;
+            
             // 
             // Root
             // 
@@ -98,7 +89,6 @@
             // 
             // layoutControlItem2
             // 
-            this.layoutControlItem2.Control = this.ucNhapThietBiMuonDetail1;
             this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem2.Name = "layoutControlItem2";
             this.layoutControlItem2.Size = new System.Drawing.Size(868, 748);
@@ -273,7 +263,6 @@
             // 
             // layoutControl2
             // 
-            this.layoutControl2.Controls.Add(this.ucNhapThietBiMuonMaster1);
             this.layoutControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
@@ -281,13 +270,7 @@
             this.layoutControl2.Size = new System.Drawing.Size(476, 739);
             this.layoutControl2.TabIndex = 0;
             this.layoutControl2.Text = "layoutControl2";
-            // 
-            // ucNhapThietBiMuonMaster1
-            // 
-            this.ucNhapThietBiMuonMaster1.Location = new System.Drawing.Point(12, 12);
-            this.ucNhapThietBiMuonMaster1.Name = "ucNhapThietBiMuonMaster1";
-            this.ucNhapThietBiMuonMaster1.Size = new System.Drawing.Size(452, 715);
-            this.ucNhapThietBiMuonMaster1.TabIndex = 4;
+            
             // 
             // layoutControlGroup1
             // 
@@ -301,7 +284,6 @@
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.ucNhapThietBiMuonMaster1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(456, 719);
@@ -359,9 +341,7 @@
         private DevExpress.XtraBars.BarButtonItem NhapQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
-        private NhapThietBiMuon.UcNhapThietBiMuonDetail ucNhapThietBiMuonDetail1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private NhapThietBiMuon.UcNhapThietBiMuonMaster ucNhapThietBiMuonMaster1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }
