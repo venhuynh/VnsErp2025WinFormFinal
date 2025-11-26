@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Inventory.StockIn;
+﻿using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
-using DTO.Inventory.StockIn;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Inventory.StockIn.NhapHangThuongMai;
 
@@ -757,11 +756,11 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     /// <summary>
     /// Lấy danh sách chi tiết từ grid
     /// </summary>
-    public List<StockInDetailDto> GetDetails()
+    public List<StockInOutDetail> GetDetails()
     {
         try
         {
-            var details = stockInDetailDtoBindingSource.Cast<StockInDetailDto>().ToList();
+            var details = stockInDetailDtoBindingSource.Cast<StockInOutDetail>().ToList();
 
             // Đảm bảo tất cả các dòng đều có StockInOutMasterId
             foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
@@ -774,7 +773,7 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return new List<StockInDetailDto>();
+            return new List<StockInOutDetail>();
         }
     }
 
