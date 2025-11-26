@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Dal.DataContext;
 
-namespace DTO.Inventory.StockIn.NhapThietBiMuon;
+namespace DTO.Inventory.StockIn.NhapNoiBo;
 
 /// <summary>
 /// Data Transfer Object cho chi tiết phiếu nhập kho
 /// Dùng cho GridControl và truyền dữ liệu giữa Service ↔ WinForms
 /// Map với bảng StockInOutDetail trong database
 /// </summary>
-public class NhapThietBiMuonDetailDto
+public class NhapNoiBoDetailDto
 {
     #region Properties - Thông tin cơ bản (map với DB)
 
@@ -197,20 +198,20 @@ public class NhapThietBiMuonDetailDto
 /// <summary>
 /// Converter giữa StockInOutDetail entity và NhapThietBiMuonDetailDto
 /// </summary>
-public static class NhapThietBiMuonDetailDtoConverter
+public static class NhapNoiBoConverter
 {
     #region Entity to DTO
 
     /// <summary>
-    /// Chuyển đổi StockInOutDetail entity thành NhapThietBiMuonDetailDto
+    /// Chuyển đổi StockInOutDetail entity thành NhapNoiBoDetailDto
     /// </summary>
     /// <param name="entity">StockInOutDetail entity</param>
-    /// <returns>NhapThietBiMuonDetailDto</returns>
-    public static NhapThietBiMuonDetailDto ToNhapThietBiMuonDetailDto(this Dal.DataContext.StockInOutDetail entity)
+    /// <returns>NhapNoiBoDetailDto</returns>
+    public static NhapNoiBoDetailDto ToNhapNoiBoDetailDto(this Dal.DataContext.StockInOutDetail entity)
     {
         if (entity == null) return null;
 
-        var dto = new NhapThietBiMuonDetailDto
+        var dto = new NhapNoiBoDetailDto
         {
             Id = entity.Id,
             StockInOutMasterId = entity.StockInOutMasterId,
@@ -287,11 +288,11 @@ public static class NhapThietBiMuonDetailDtoConverter
     /// </summary>
     /// <param name="entities">Danh sách StockInOutDetail entities</param>
     /// <returns>Danh sách NhapThietBiMuonDetailDto</returns>
-    public static List<NhapThietBiMuonDetailDto> ToNhapThietBiMuonDetailDtoList(this IEnumerable<Dal.DataContext.StockInOutDetail> entities)
+    public static List<NhapNoiBoDetailDto> ToDtoList(this IEnumerable<StockInOutDetail> entities)
     {
-        if (entities == null) return new List<NhapThietBiMuonDetailDto>();
+        if (entities == null) return new List<NhapNoiBoDetailDto>();
 
-        return entities.Select(entity => entity.ToNhapThietBiMuonDetailDto()).Where(dto => dto != null).ToList();
+        return entities.Select(entity => entity.ToNhapNoiBoDetailDto()).Where(dto => dto != null).ToList();
     }
 
     #endregion

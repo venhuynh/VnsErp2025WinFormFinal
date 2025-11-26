@@ -3,9 +3,10 @@ using Common.Utils;
 using Dal.Connection;
 using Inventory.InventoryManagement;
 using Inventory.StockIn;
+using Inventory.StockIn.NhapNoiBo;
+using Inventory.StockIn.NhapThietBiMuon;
 using System;
 using System.Windows.Forms;
-using Inventory.StockIn.NhapThietBiMuon;
 
 namespace VnsErp2025
 {
@@ -84,7 +85,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmStockInOutProductHistory());
+            Application.Run(new FrmNhapNoiBo());
 
             #endregion
 

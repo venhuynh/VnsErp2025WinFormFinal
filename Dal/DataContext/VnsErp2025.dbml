@@ -466,7 +466,7 @@
       <Column Name="VoucherStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="WarehouseId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="PurchaseOrderId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="PartnerSiteId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="PartnerSiteId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="Notes" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
       <Column Name="TotalQuantity" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
       <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />

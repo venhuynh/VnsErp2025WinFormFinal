@@ -5,6 +5,7 @@ using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
 using DevExpress.XtraTreeList.Columns;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
+using DTO.Inventory.StockIn.NhapThietBiMuon;
 
 namespace Inventory.StockIn.NhapThietBiMuon
 {
@@ -533,7 +534,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
             // 
             // nhapThietBiMuonDetailDtoBindingSource
             // 
-            this.nhapThietBiMuonDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapThietBiMuon.NhapThietBiMuonDetailDto);
+            this.nhapThietBiMuonDetailDtoBindingSource.DataSource = typeof(NhapThietBiMuonDetailDto);
             // 
             // colFullInfo
             // 

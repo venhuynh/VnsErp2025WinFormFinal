@@ -2,13 +2,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace DTO.Inventory.StockIn.NhapThietBiMuon;
+namespace DTO.Inventory.StockIn.NhapNoiBo;
 
 /// <summary>
 /// Data Transfer Object cho danh sách phiếu nhập kho
 /// Dùng cho GridControl (danh sách)
 /// </summary>
-public class NhapThietBiMuonMasterListDto
+public class NhapNoiBoMasterDtoListDto
 {
     #region Properties - Thông tin cơ bản
 
@@ -65,13 +65,6 @@ public class NhapThietBiMuonMasterListDto
     [Display(Order = 11)]
     public string WarehouseName { get; set; }
 
-    /// <summary>
-    /// Tên nhà cung cấp
-    /// </summary>
-    [DisplayName("Tên NCC")]
-    [Display(Order = 12)]
-    public string SupplierName { get; set; }
-
     #endregion
 
     #region Properties - Tổng hợp
@@ -108,7 +101,7 @@ public class NhapThietBiMuonMasterListDto
 /// Data Transfer Object cho phiếu nhập kho (chi tiết)
 /// Dùng cho form nhập/sửa phiếu nhập kho
 /// </summary>
-public class NhapThietBiMuonMasterDto
+public class NhapNoiBoMasterDto
 {
     #region Properties - Thông tin cơ bản
 
@@ -179,20 +172,6 @@ public class NhapThietBiMuonMasterDto
     [Required(ErrorMessage = "Kho nhập không được để trống")]
     public string WarehouseName { get; set; }
 
-    /// <summary>
-    /// ID nhà cung cấp (PartnerSiteId)
-    /// </summary>
-    [DisplayName("ID NCC")]
-    [Display(Order = 13)]
-    public Guid? SupplierId { get; set; }
-
-    /// <summary>
-    /// Tên nhà cung cấp (để hiển thị)
-    /// </summary>
-    [DisplayName("Tên NCC")]
-    [Display(Order = 14)]
-    [Required(ErrorMessage = "Nhà cung cấp hoặc khách hàng không được để trống")]
-    public string SupplierName { get; set; }
 
     #endregion
 
@@ -207,20 +186,22 @@ public class NhapThietBiMuonMasterDto
     public string Notes { get; set; }
 
     /// <summary>
-    /// Người nhận hàng
-    /// </summary>
-    [DisplayName("Người nhận hàng")]
-    [Display(Order = 21)]
-    [StringLength(500, ErrorMessage = "Người nhận hàng không được vượt quá 500 ký tự")]
-    public string NguoiNhanHang { get; set; }
-
-    /// <summary>
     /// Người giao hàng
     /// </summary>
     [DisplayName("Người giao hàng")]
-    [Display(Order = 22)]
+    [Display(Order = 21)]
     [StringLength(500, ErrorMessage = "Người giao hàng không được vượt quá 500 ký tự")]
+    [Required(ErrorMessage = "Người giao hàng không được để trống")]
     public string NguoiGiaoHang { get; set; }
+
+    /// <summary>
+    /// Người nhận hàng
+    /// </summary>
+    [DisplayName("Người nhận hàng")]
+    [Display(Order = 22)]
+    [StringLength(500, ErrorMessage = "Người nhận hàng không được vượt quá 500 ký tự")]
+    [Required(ErrorMessage = "Người nhận hàng không được để trống")]
+    public string NguoiNhanHang { get; set; }
 
     #endregion
 

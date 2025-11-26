@@ -88,7 +88,7 @@ public class StockInOutMasterHistoryDto
     /// </summary>
     [DisplayName("ID Địa điểm đối tác")]
     [Display(Order = 13)]
-    public Guid PartnerSiteId { get; set; }
+    public Guid? PartnerSiteId { get; set; }
 
     /// <summary>
     /// Tên khách hàng (hoặc nhà cung cấp)
