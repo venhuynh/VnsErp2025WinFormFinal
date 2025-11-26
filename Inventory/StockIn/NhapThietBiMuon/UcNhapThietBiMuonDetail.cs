@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Inventory.StockIn;
+﻿using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
-using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.Inventory.StockIn.NhapThietBiMuon;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using DTO.Inventory.StockIn.NhapNoiBo;
 
 namespace Inventory.StockIn.NhapThietBiMuon;
 
@@ -124,11 +124,11 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// <summary>
     /// Lấy danh sách chi tiết từ grid
     /// </summary>
-    public List<NhapNoiBoDetailDto> GetDetails()
+    public List<NhapThietBiMuonDetailDto> GetDetails()
     {
         try
         {
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapThietBiMuonDetailDto>().ToList();
 
             // Đảm bảo tất cả các dòng đều có StockInOutMasterId
             foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
@@ -141,7 +141,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return new List<NhapNoiBoDetailDto>();
+            return new List<NhapThietBiMuonDetailDto>();
         }
     }
 
@@ -152,7 +152,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            nhapThietBiMuonDetailDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
+            nhapThietBiMuonDetailDtoBindingSource.DataSource = new List<NhapThietBiMuonDetailDto>();
             nhapThietBiMuonDetailDtoBindingSource.ResetBindings(false);
             _stockInMasterId = Guid.Empty;
 
@@ -182,10 +182,11 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             var stockInBll = new StockInBll();
             var detailEntities = stockInBll.GetDetailsByMasterId(stockInOutMasterId);
 
-            // Convert detail entities sang DTOs sử dụng extension method ToNhapThietBiMuonDetailDto()
+            // Convert detail entities sang DTOs sử dụng extension method từ NhapNoiBo namespace
+            // Chỉ định rõ ràng namespace để tránh ambiguous call
             var detailDtos = detailEntities
                 .Where(e => e != null)
-                .Select(entity => entity.ToNhapThietBiMuonDetailDto())
+                .Select(entity => entity.ToNhapThietBiMuonDetailDto()) // Static method từ NhapNoiBo namespace
                 .Where(dto => dto != null)
                 .ToList();
 
@@ -218,7 +219,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             _stockInMasterId = stockInMasterId;
 
             // Cập nhật StockInOutMasterId cho tất cả các dòng hiện có
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapThietBiMuonDetailDto>().ToList();
             foreach (var detail in details)
             {
                 if (detail.StockInOutMasterId == Guid.Empty)
@@ -817,7 +818,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// Chỉ load các ProductVariant cần thiết để tối ưu performance
     /// </summary>
     /// <param name="details">Danh sách NhapThietBiMuonDetailDto chứa ProductVariantId</param>
-    private async Task LoadProductVariantsByIdsAsync(List<NhapNoiBoDetailDto> details)
+    private async Task LoadProductVariantsByIdsAsync(List<NhapThietBiMuonDetailDto> details)
     {
         try
         {
@@ -960,11 +961,11 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// <summary>
     /// Load danh sách chi tiết từ danh sách DTO
     /// </summary>
-    private async void LoadDetails(List<NhapNoiBoDetailDto> details)
+    private async void LoadDetails(List<NhapThietBiMuonDetailDto> details)
     {
         try
         {
-            details ??= new List<NhapNoiBoDetailDto>();
+            details ??= new List<NhapThietBiMuonDetailDto>();
 
             // Gán StockInOutMasterId cho các dòng chưa có
             foreach (var detail in details)

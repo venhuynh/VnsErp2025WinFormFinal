@@ -6,18 +6,15 @@ using Common.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
-using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.Inventory.StockIn.NhapThietBiMuon;
 using DTO.MasterData.Company;
 using DTO.MasterData.CustomerPartner;
-using Inventory.StockIn.NhapHangThuongMai;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Dal.DataContext;
 
 namespace Inventory.StockIn.NhapThietBiMuon;
 

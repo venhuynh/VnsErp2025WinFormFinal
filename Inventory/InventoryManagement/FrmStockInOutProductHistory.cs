@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting;
+using Inventory.StockIn.NhapNoiBo;
 
 
 namespace Inventory.InventoryManagement

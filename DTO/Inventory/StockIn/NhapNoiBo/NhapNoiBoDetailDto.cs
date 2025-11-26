@@ -197,7 +197,7 @@ public class NhapNoiBoDetailDto
 /// <summary>
 /// Converter giữa StockInOutDetail entity và NhapThietBiMuonDetailDto
 /// </summary>
-public static class NhapThietBiMuonConverter
+public static class NhapNoiBoConverter
 {
     #region Entity to DTO
 
@@ -206,7 +206,7 @@ public static class NhapThietBiMuonConverter
     /// </summary>
     /// <param name="entity">StockInOutDetail entity</param>
     /// <returns>NhapThietBiMuonDetailDto</returns>
-    public static NhapNoiBoDetailDto ToNhapThietBiMuonDetailDto(this Dal.DataContext.StockInOutDetail entity)
+    public static NhapNoiBoDetailDto ToNhapNoiBoDetailDtolDto(this Dal.DataContext.StockInOutDetail entity)
     {
         if (entity == null) return null;
 
@@ -291,7 +291,7 @@ public static class NhapThietBiMuonConverter
     {
         if (entities == null) return new List<NhapNoiBoDetailDto>();
 
-        return entities.Select(entity => entity.ToNhapThietBiMuonDetailDto()).Where(dto => dto != null).ToList();
+        return entities.Select(entity => entity.ToNhapNoiBoDetailDtolDto()).Where(dto => dto != null).ToList();
     }
 
     #endregion

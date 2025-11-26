@@ -101,7 +101,7 @@ public class NhapNoiBoMasterDtoListDto
 /// Data Transfer Object cho phiếu nhập kho (chi tiết)
 /// Dùng cho form nhập/sửa phiếu nhập kho
 /// </summary>
-public class NhapThietBiMuonMasterDto
+public class NhapNoiBoMasterDto
 {
     #region Properties - Thông tin cơ bản
 
@@ -186,12 +186,13 @@ public class NhapThietBiMuonMasterDto
     public string Notes { get; set; }
 
     /// <summary>
-    /// Người xuất hàng
+    /// Người giao hàng
     /// </summary>
-    [DisplayName("Người xuất hàng")]
+    [DisplayName("Người giao hàng")]
     [Display(Order = 21)]
-    [StringLength(500, ErrorMessage = "Người xuất hàng không được vượt quá 500 ký tự")]
-    public string NguoiXuatHang { get; set; }
+    [StringLength(500, ErrorMessage = "Người giao hàng không được vượt quá 500 ký tự")]
+    [Required(ErrorMessage = "Người giao hàng không được để trống")]
+    public string NguoiGiaoHang { get; set; }
 
     /// <summary>
     /// Người nhận hàng
@@ -199,6 +200,7 @@ public class NhapThietBiMuonMasterDto
     [DisplayName("Người nhận hàng")]
     [Display(Order = 22)]
     [StringLength(500, ErrorMessage = "Người nhận hàng không được vượt quá 500 ký tự")]
+    [Required(ErrorMessage = "Người nhận hàng không được để trống")]
     public string NguoiNhanHang { get; set; }
 
     #endregion

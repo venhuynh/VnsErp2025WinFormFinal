@@ -1,6 +1,6 @@
 ﻿namespace Inventory.StockIn.NhapThietBiMuon
 {
-    partial class FrmNhapNoiBo
+    partial class FrmNhapThietBiMuon
     {
         /// <summary>
         /// Required designer variable.
@@ -51,9 +51,9 @@
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapThietBiMuonMaster1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ucNhapThietBiMuonMaster1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonMaster();
+            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
@@ -65,7 +65,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).BeginInit();
             this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -282,6 +282,16 @@
             this.layoutControl2.TabIndex = 0;
             this.layoutControl2.Text = "layoutControl2";
             // 
+            // layoutControlGroup1
+            // 
+            this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.layoutControlGroup1.GroupBordersVisible = false;
+            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem3});
+            this.layoutControlGroup1.Name = "layoutControlGroup1";
+            this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
+            this.layoutControlGroup1.TextVisible = false;
+            // 
             // ucNhapThietBiMuonMaster1
             // 
             this.ucNhapThietBiMuonMaster1.Location = new System.Drawing.Point(12, 12);
@@ -289,23 +299,13 @@
             this.ucNhapThietBiMuonMaster1.Size = new System.Drawing.Size(452, 715);
             this.ucNhapThietBiMuonMaster1.TabIndex = 4;
             // 
-            // layoutControlGroup1
+            // layoutControlItem3
             // 
-            this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.layoutControlGroup1.GroupBordersVisible = false;
-            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
-            this.layoutControlGroup1.Name = "layoutControlGroup1";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
-            this.layoutControlGroup1.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.ucNhapThietBiMuonMaster1;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(456, 719);
-            this.layoutControlItem1.TextVisible = false;
+            this.layoutControlItem3.Control = this.ucNhapThietBiMuonMaster1;
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem3.Name = "layoutControlItem3";
+            this.layoutControlItem3.Size = new System.Drawing.Size(456, 719);
+            this.layoutControlItem3.TextVisible = false;
             // 
             // FrmNhapThietBiMuon
             // 
@@ -331,7 +331,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).EndInit();
             this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -361,7 +361,7 @@
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private Inventory.StockIn.NhapThietBiMuon.UcNhapNoiBoDetail ucNhapThietBiMuonDetail1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonMaster ucNhapThietBiMuonMaster1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private UcNhapThietBiMuonMaster ucNhapThietBiMuonMaster1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
     }
 }

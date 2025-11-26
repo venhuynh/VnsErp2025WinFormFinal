@@ -11,7 +11,7 @@ namespace DTO.Inventory.StockIn.NhapThietBiMuon;
 /// Dùng cho GridControl và truyền dữ liệu giữa Service ↔ WinForms
 /// Map với bảng StockInOutDetail trong database
 /// </summary>
-public class NhapNoiBoDetailDto
+public class NhapThietBiMuonDetailDto
 {
     #region Properties - Thông tin cơ bản (map với DB)
 
@@ -197,7 +197,7 @@ public class NhapNoiBoDetailDto
 /// <summary>
 /// Converter giữa StockInOutDetail entity và NhapThietBiMuonDetailDto
 /// </summary>
-public static class NhapThietBiMuonConverter
+public static class NhapThietBiMuonDetailDtoConverter
 {
     #region Entity to DTO
 
@@ -206,11 +206,11 @@ public static class NhapThietBiMuonConverter
     /// </summary>
     /// <param name="entity">StockInOutDetail entity</param>
     /// <returns>NhapThietBiMuonDetailDto</returns>
-    public static NhapNoiBoDetailDto ToNhapThietBiMuonDetailDto(this Dal.DataContext.StockInOutDetail entity)
+    public static NhapThietBiMuonDetailDto ToNhapThietBiMuonDetailDto(this Dal.DataContext.StockInOutDetail entity)
     {
         if (entity == null) return null;
 
-        var dto = new NhapNoiBoDetailDto
+        var dto = new NhapThietBiMuonDetailDto
         {
             Id = entity.Id,
             StockInOutMasterId = entity.StockInOutMasterId,
@@ -287,9 +287,9 @@ public static class NhapThietBiMuonConverter
     /// </summary>
     /// <param name="entities">Danh sách StockInOutDetail entities</param>
     /// <returns>Danh sách NhapThietBiMuonDetailDto</returns>
-    public static List<NhapNoiBoDetailDto> ToDtoList(this IEnumerable<Dal.DataContext.StockInOutDetail> entities)
+    public static List<NhapThietBiMuonDetailDto> ToNhapThietBiMuonDetailDtoList(this IEnumerable<Dal.DataContext.StockInOutDetail> entities)
     {
-        if (entities == null) return new List<NhapNoiBoDetailDto>();
+        if (entities == null) return new List<NhapThietBiMuonDetailDto>();
 
         return entities.Select(entity => entity.ToNhapThietBiMuonDetailDto()).Where(dto => dto != null).ToList();
     }

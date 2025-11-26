@@ -84,7 +84,6 @@
             // 
             // nhapThietBiMuonDetailDtoBindingSource
             // 
-            this.nhapThietBiMuonDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapThietBiMuon.NhapNoiBoDetailDto);
             // 
             // NhapThietBiMuonDetailDtoGridView
             // 

@@ -86,7 +86,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
             // 
             // nhapThietBiMuonDetailDtoBindingSource
             // 
-            this.nhapThietBiMuonDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapThietBiMuon.NhapNoiBoDetailDto);
+            this.nhapThietBiMuonDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapThietBiMuon.NhapThietBiMuonDetailDto);
             // 
             // NhapThietBiMuonDetailDtoGridView
             // 

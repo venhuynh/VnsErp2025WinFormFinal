@@ -12,7 +12,7 @@ using Common.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
-using DTO.Inventory.StockIn.NhapThietBiMuon;
+using DTO.Inventory.StockIn.NhapNoiBo;
 using DTO.MasterData.Company;
 using DTO.MasterData.CustomerPartner;
 
@@ -51,9 +51,9 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     private Guid _stockInOutMasterId = Guid.Empty;
 
     /// <summary>
-    /// DTO cho phiếu nhập thiết bị cho mượn/thuê
+    /// DTO cho phiếu nhập nội bộ
     /// </summary>
-    private NhapThietBiMuonMasterDto _stockInMasterDto;
+    private NhapNoiBoMasterDto _stockInMasterDto;
 
     #endregion
 
@@ -105,18 +105,16 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     /// </summary>
     private void InitializeDto()
     {
-        _stockInMasterDto = new NhapThietBiMuonMasterDto
+        _stockInMasterDto = new NhapNoiBoMasterDto
         {
             Id = Guid.Empty,
             StockInNumber = null,
             StockInDate = DateTime.Now,
-            LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapHangThuongMai,
+            LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapNoiBo,
             TrangThai = TrangThaiPhieuNhapEnum.TaoMoi,
             WarehouseId = Guid.Empty,
             WarehouseCode = null,
             WarehouseName = null,
-            SupplierId = Guid.Empty,
-            SupplierName = null,
             Notes = null,
             NguoiNhanHang = null,
             NguoiGiaoHang = null
@@ -164,7 +162,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
         {
             RequiredFieldHelper.MarkRequiredFields(
                 this,
-                typeof(NhapThietBiMuonMasterDto),
+                typeof(NhapNoiBoMasterDto),
                 logger: (msg, ex) => System.Diagnostics.Debug.WriteLine($"{msg}: {ex?.Message}")
             );
 
@@ -196,9 +194,6 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
             WarehouseNameSearchLookupEdit.Popup += WarehouseNameSearchLookupEdit_Popup;
             WarehouseNameSearchLookupEdit.EditValueChanged += WarehouseNameSearchLookupEdit_EditValueChanged;
 
-            //Sự kiện của SupplierNameSearchLookupEdit
-            SupplierNameSearchLookupEdit.Popup += SupplierNameSearchLookupEdit_Popup;
-            SupplierNameSearchLookupEdit.EditValueChanged += SupplierNameTextEdit_EditValueChanged;
 
             StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
 
@@ -211,25 +206,6 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
         catch (Exception ex)
         {
             ShowError(ex, "Lỗi thiết lập sự kiện");
-        }
-    }
-
-    private async void SupplierNameSearchLookupEdit_Popup(object sender, EventArgs e)
-    {
-        try
-        {
-            // Chỉ load nếu chưa load hoặc datasource rỗng
-            if (!_isSupplierDataSourceLoaded ||
-                businessPartnerSiteListDtoBindingSource.DataSource == null ||
-                (businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> list && list.Count == 0))
-            {
-                await LoadSupplierDataSourceAsync();
-                _isSupplierDataSourceLoaded = true;
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
         }
     }
 
@@ -342,15 +318,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
             );
         }
 
-        // SuperTip cho Nhà cung cấp
-        if (SupplierNameSearchLookupEdit != null)
-        {
-            SuperToolTipHelper.SetBaseEditSuperTip(
-                SupplierNameSearchLookupEdit,
-                title: @"<b><color=DarkBlue>🏭 Nhà cung cấp</color></b>",
-                content: @"Chọn nhà cung cấp từ danh sách chi nhánh đối tác (Business Partner Site) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn nhà cung cấp<br/>• Hiển thị thông tin nhà cung cấp dạng HTML (mã, tên)<br/>• Tự động cập nhật SupplierId, SupplierName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Chỉ hiển thị các chi nhánh đối tác đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ BusinessPartnerSiteBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đối tác đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><color=Gray>Lưu ý:</color> Trường này là tùy chọn, chỉ điền khi phiếu nhập kho có nhà cung cấp cụ thể."
-            );
-        }
+        // SuperTip cho Nhà cung cấp - Đã xóa vì nhập nội bộ không cần nhà cung cấp
     }
 
     /// <summary>
@@ -385,11 +353,8 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
             _isWarehouseDataSourceLoaded = false;
             _isSupplierDataSourceLoaded = false;
 
-            // Load cả 2 datasource song song để tối ưu performance
-            await Task.WhenAll(
-                LoadWarehouseDataSourceAsync(forceRefresh: true),
-                LoadSupplierDataSourceAsync(forceRefresh: true)
-            );
+            // Load warehouse datasource (nhập nội bộ không cần supplier)
+            await LoadWarehouseDataSourceAsync(forceRefresh: true);
         }
         catch (Exception ex)
         {
@@ -433,38 +398,13 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     }
 
     /// <summary>
-    /// Load datasource cho Supplier (BusinessPartnerSite) - Load toàn bộ danh sách
+    /// Load datasource cho Supplier (BusinessPartnerSite) - Đã xóa vì nhập nội bộ không cần nhà cung cấp
     /// </summary>
     /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
     private async Task LoadSupplierDataSourceAsync(bool forceRefresh = false)
     {
-        try
-        {
-            // Nếu đã load và không force refresh, không load lại
-            if (_isSupplierDataSourceLoaded && !forceRefresh &&
-                businessPartnerSiteListDtoBindingSource.DataSource != null &&
-                businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> existingList &&
-                existingList.Count > 0)
-            {
-                return;
-            }
-
-            // Load danh sách BusinessPartnerSite từ BusinessPartnerSiteBll (dùng cho Supplier lookup)
-            var sites = await Task.Run(() => _businessPartnerSiteBll.GetAll());
-            var siteDtos = sites
-                .Where(s => s.IsActive) // Chỉ lấy các chi nhánh đang hoạt động
-                .ToSiteListDtos()
-                .OrderBy(s => s.SiteName)
-                .ToList();
-
-            businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
-            _isSupplierDataSourceLoaded = true;
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
-            throw;
-        }
+        // Nhập nội bộ không cần supplier, method này giữ lại để tương thích nhưng không làm gì
+        await Task.CompletedTask;
     }
 
     /// <summary>
@@ -510,52 +450,19 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     }
 
     /// <summary>
-    /// Load single Supplier record theo ID và set vào datasource
-    /// Chỉ load đúng 1 record để tối ưu performance
+    /// Load single Supplier record theo ID - Đã xóa vì nhập nội bộ không cần nhà cung cấp
     /// </summary>
     /// <param name="supplierId">ID của Supplier (BusinessPartnerSite)</param>
-    private async Task LoadSingleSupplierByIdAsync(Guid supplierId)
+    private async Task LoadSingleSupplierByIdAsync(Guid? supplierId)
     {
-        try
-        {
-            if (supplierId == Guid.Empty)
-            {
-                // Nếu ID rỗng, set datasource rỗng
-                businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
-                // Không đánh dấu đã load vì datasource rỗng
-                _isSupplierDataSourceLoaded = false;
-                return;
-            }
-
-            // Load chỉ 1 record theo ID
-            var site = await Task.Run(() => _businessPartnerSiteBll.GetById(supplierId));
-            if (site != null)
-            {
-                // Sử dụng ToSiteListDtos() với list chứa 1 phần tử, sau đó lấy phần tử đầu tiên
-                var siteDtos = new List<Dal.DataContext.BusinessPartnerSite> { site }.ToSiteListDtos().ToList();
-                // Set datasource chỉ chứa 1 record
-                businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
-                // Đánh dấu đã load (nhưng chỉ có 1 record, khi popup sẽ load full)
-                _isSupplierDataSourceLoaded = false; // Set false để popup sẽ load full list
-            }
-            else
-            {
-                // Nếu không tìm thấy, set datasource rỗng
-                businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
-                _isSupplierDataSourceLoaded = false;
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
-            throw;
-        }
+        // Nhập nội bộ không cần supplier, method này giữ lại để tương thích nhưng không làm gì
+        await Task.CompletedTask;
     }
 
     /// <summary>
     /// Load dữ liệu từ DTO vào controls
     /// </summary>
-    private void LoadData(NhapThietBiMuonMasterDto dto)
+    private void LoadData(NhapNoiBoMasterDto dto)
     {
         try
         {
@@ -644,7 +551,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
                 _stockInMasterDto.WarehouseId = warehouseId;
 
                 // Lấy thông tin chi nhánh từ binding source
-                var selectedWarehouse = companyBranchDtoBindingSource.Cast<CompanyBranchDto>()
+                var selectedWarehouse = Enumerable.Cast<CompanyBranchDto>(companyBranchDtoBindingSource)
                     .FirstOrDefault(w => w.Id == warehouseId);
 
                 if (selectedWarehouse != null)
@@ -669,37 +576,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
         }
     }
 
-    private void SupplierNameTextEdit_EditValueChanged(object sender, EventArgs e)
-    {
-        try
-        {
-            if (SupplierNameSearchLookupEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
-            {
-                _stockInMasterDto.SupplierId = supplierId;
-
-                // Lấy thông tin chi nhánh đối tác từ binding source
-                var selectedSite = businessPartnerSiteListDtoBindingSource.Cast<BusinessPartnerSiteListDto>()
-                    .FirstOrDefault(s => s.Id == supplierId);
-
-                if (selectedSite != null)
-                {
-                    _stockInMasterDto.SupplierName = selectedSite.SiteName;
-                }
-
-                // Xóa lỗi validation nếu có
-                dxErrorProvider1.SetError(SupplierNameSearchLookupEdit, string.Empty);
-            }
-            else
-            {
-                _stockInMasterDto.SupplierId = Guid.Empty;
-                _stockInMasterDto.SupplierName = null;
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi xử lý thay đổi nhà cung cấp");
-        }
-    }
+    // Event handler cho Supplier - Đã xóa vì nhập nội bộ không cần nhà cung cấp
 
     private void StockInNumberTextEdit_EditValueChanged(object sender, EventArgs e)
     {
@@ -786,7 +663,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
                     _stockInMasterDto.WarehouseId = warehouseId;
 
                     // Lấy thông tin chi nhánh từ binding source
-                    var selectedWarehouse = companyBranchDtoBindingSource.Cast<CompanyBranchDto>()
+                    var selectedWarehouse = Enumerable.Cast<CompanyBranchDto>(companyBranchDtoBindingSource)
                         .FirstOrDefault(w => w.Id == warehouseId);
 
                     if (selectedWarehouse != null)
@@ -803,28 +680,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
                 }
             }
 
-            // Cập nhật từ Supplier SearchLookUpEdit
-            if (SupplierNameSearchLookupEdit != null)
-            {
-                if (SupplierNameSearchLookupEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
-                {
-                    _stockInMasterDto.SupplierId = supplierId;
-
-                    // Lấy thông tin chi nhánh đối tác từ binding source
-                    var selectedSite = businessPartnerSiteListDtoBindingSource.Cast<BusinessPartnerSiteListDto>()
-                        .FirstOrDefault(s => s.Id == supplierId);
-
-                    if (selectedSite != null)
-                    {
-                        _stockInMasterDto.SupplierName = selectedSite.SiteName;
-                    }
-                }
-                else
-                {
-                    _stockInMasterDto.SupplierId = Guid.Empty;
-                    _stockInMasterDto.SupplierName = null;
-                }
-            }
+            // Cập nhật từ Supplier SearchLookUpEdit - Đã xóa vì nhập nội bộ không cần nhà cung cấp
 
             // Cập nhật từ NguoiNhanHangTextEdit
             if (NguoiNhanHangTextEdit != null)
@@ -903,16 +759,14 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     {
         return propertyName switch
         {
-            nameof(NhapThietBiMuonMasterDto.StockInNumber) => StockInNumberTextEdit,
-            nameof(NhapThietBiMuonMasterDto.StockInDate) => StockInDateDateEdit,
-            nameof(NhapThietBiMuonMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
-            nameof(NhapThietBiMuonMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
-            nameof(NhapThietBiMuonMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
-            nameof(NhapThietBiMuonMasterDto.SupplierId) => SupplierNameSearchLookupEdit,
-            nameof(NhapThietBiMuonMasterDto.SupplierName) => SupplierNameSearchLookupEdit,
-            nameof(NhapThietBiMuonMasterDto.Notes) => NotesTextEdit,
-            nameof(NhapThietBiMuonMasterDto.NguoiNhanHang) => NguoiNhanHangTextEdit,
-            nameof(NhapThietBiMuonMasterDto.NguoiGiaoHang) => NguoiGiaoHangTextEdit,
+            nameof(NhapNoiBoMasterDto.StockInNumber) => StockInNumberTextEdit,
+            nameof(NhapNoiBoMasterDto.StockInDate) => StockInDateDateEdit,
+            nameof(NhapNoiBoMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
+            nameof(NhapNoiBoMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
+            nameof(NhapNoiBoMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
+            nameof(NhapNoiBoMasterDto.Notes) => NotesTextEdit,
+            nameof(NhapNoiBoMasterDto.NguoiNhanHang) => NguoiNhanHangTextEdit,
+            nameof(NhapNoiBoMasterDto.NguoiGiaoHang) => NguoiGiaoHangTextEdit,
             _ => null
         };
     }
@@ -925,7 +779,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     /// Lấy DTO từ controls sau khi validate các trường bắt buộc
     /// </summary>
     /// <returns>NhapThietBiMuonMasterDto nếu validation thành công, null nếu có lỗi</returns>
-    public NhapThietBiMuonMasterDto GetDto()
+    public NhapNoiBoMasterDto GetDto()
     {
         try
         {
@@ -942,7 +796,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
             _stockInMasterDto.Id = _stockInOutMasterId;
 
             //Cập nhật lại LoaiNhapXuatKho
-            _stockInMasterDto.LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapThietBiMuonThue;
+            _stockInMasterDto.LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapNoiBo;
 
             return _stockInMasterDto;
         }
@@ -981,17 +835,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
             await LoadSingleWarehouseByIdAsync(masterEntity.WarehouseId);
             WarehouseNameSearchLookupEdit.EditValue = masterEntity.WarehouseId;
 
-            if (masterEntity.PartnerSiteId.HasValue)
-            {
-                await LoadSingleSupplierByIdAsync(masterEntity.PartnerSiteId.Value);
-                SupplierNameSearchLookupEdit.EditValue = masterEntity.PartnerSiteId.Value;
-            }
-            else
-            {
-                // Nếu PartnerSiteId là null, set datasource rỗng
-                businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
-                SupplierNameSearchLookupEdit.EditValue = null;
-            }
+            // Nhập nội bộ không cần supplier, không load supplier data
 
             NotesTextEdit.Text = masterEntity.Notes;
 
@@ -1020,10 +864,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
                 WarehouseNameSearchLookupEdit.EditValue = null;
             }
 
-            if (SupplierNameSearchLookupEdit != null)
-            {
-                SupplierNameSearchLookupEdit.EditValue = null;
-            }
+            // Nhập nội bộ không có Supplier control
 
             // Reset TextEdit
             if (StockInNumberTextEdit != null)

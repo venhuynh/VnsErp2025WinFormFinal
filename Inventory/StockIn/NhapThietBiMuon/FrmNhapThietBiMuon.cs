@@ -13,10 +13,11 @@ using Logger.Configuration;
 using Logger.Interfaces;
 using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting;
+using DTO.Inventory.StockIn.NhapThietBiMuon;
 
 namespace Inventory.StockIn.NhapThietBiMuon
 {
-    public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
+    public partial class FrmNhapThietBiMuon : DevExpress.XtraEditors.XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -53,7 +54,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// <summary>
         /// Constructor mặc định (tạo phiếu mới)
         /// </summary>
-        public FrmNhapNoiBo()
+        public FrmNhapThietBiMuon()
         {
             InitializeComponent();
             Load += FrmNhapThietBiMuon_Load;
@@ -64,7 +65,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// Constructor với ID phiếu nhập kho (mở để xem/sửa)
         /// </summary>
         /// <param name="stockInId">ID phiếu nhập kho</param>
-        public FrmNhapNoiBo(Guid stockInId)
+        public FrmNhapThietBiMuon(Guid stockInId)
         {
             InitializeComponent();
             Load += FrmNhapThietBiMuon_Load;
@@ -674,7 +675,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
 
                 // Tính tổng số lượng từ detail
                 var details = ucNhapThietBiMuonDetail1.GetDetails();
-                var totalQuantity = details?.Sum(d => d.StockInQty) ?? 0;
+                var totalQuantity = details.Sum(d => d.StockInQty);
 
                 // Cập nhật tổng lên master (chỉ có totalQuantity)
                 ucNhapThietBiMuonMaster1.UpdateTotals(totalQuantity, 0, 0, 0);
@@ -847,8 +848,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// <summary>
         /// Map NhapThietBiMuonDetailDto sang StockInOutDetail entity
         /// </summary>
-        private StockInOutDetail MapDetailDtoToEntity(
-            DTO.Inventory.StockIn.NhapThietBiMuon.NhapNoiBoDetailDto dto)
+        private StockInOutDetail MapDetailDtoToEntity(NhapThietBiMuonDetailDto dto)
         {
             return new StockInOutDetail
             {
