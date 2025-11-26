@@ -384,16 +384,13 @@ namespace Inventory.StockIn.NhapNoiBo;
             {
                 _logger.Debug("InPhieuBarButtonItem_ItemClick: Bắt đầu in phiếu, StockInOutMasterId={0}", stockInOutMasterId);
 
-                // Tạo và load report - sử dụng InPhieuNhapKho cho nhập nội bộ
-                var report = new InPhieuNhapKho(stockInOutMasterId);
+                // Tạo và load report - sử dụng InPhieuNhapXuatNoiBo cho nhập nội bộ
+                var report = new InPhieuNhapXuatNoiBo(stockInOutMasterId);
 
                 // Hiển thị preview bằng ReportPrintTool
-                using (var printTool = new ReportPrintTool(report))
-                {
-                    printTool.ShowPreviewDialog();
-                }
-
-                _logger.Info("InPhieuBarButtonItem_ItemClick: In phiếu thành công, StockInOutMasterId={0}", stockInOutMasterId);
+                using var printTool = new ReportPrintTool(report);
+                
+                printTool.ShowPreviewDialog();
             }
             catch (Exception printEx)
             {

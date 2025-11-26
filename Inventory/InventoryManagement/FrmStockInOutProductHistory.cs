@@ -206,53 +206,17 @@ namespace Inventory.InventoryManagement
                     return;
                 }
 
-                // Dựa vào LoaiNhapXuatKho để mở đúng form
-                using (OverlayManager.ShowScope(this))
+                // Tạo form dựa vào loại nhập xuất
+                Form detailForm = selectedDto.LoaiNhapXuatKho switch
                 {
-                    try
-                    {
-                        switch (selectedDto.LoaiNhapXuatKho)
-                        {
-                            case LoaiNhapXuatKhoEnum.NhapHangThuongMai:
-                                // Mở form nhập hàng thương mại
-                                using (var form = new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value))
-                                {
-                                    form.StartPosition = FormStartPosition.CenterParent;
-                                    form.ShowDialog(this);
-                                }
-                                break;
+                    LoaiNhapXuatKhoEnum.NhapHangThuongMai => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value),
+                    LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new FrmNhapThietBiMuon(_selectedStockInOutMasterId.Value),
+                    LoaiNhapXuatKhoEnum.NhapNoiBo => new FrmNhapNoiBo(_selectedStockInOutMasterId.Value),
+                    _ => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value) // Default: dùng FrmNhapKhoThuongMai
+                };
 
-                            case LoaiNhapXuatKhoEnum.NhapThietBiMuonThue:
-                                // Mở form nhập/xuất thiết bị cho mượn
-                                _logger.Debug("ChiTietPhieuNhapXuatBarButtonItem_ItemClick: Mở form thiết bị cho mượn, StockInOutMasterId={0}", 
-                                    _selectedStockInOutMasterId.Value);
-
-                                using (var form = new FrmNhapNoiBo(_selectedStockInOutMasterId.Value))
-                                {
-                                    form.StartPosition = FormStartPosition.CenterParent;
-                                    form.ShowDialog(this);
-                                }
-                                break;
-
-                            case LoaiNhapXuatKhoEnum.Khac:
-                            default:
-                                // Loại khác - dùng mặc định (FrmNhapKhoThuongMai) hoặc hiển thị cảnh báo
-                                _logger.Warning("ChiTietPhieuNhapXuatBarButtonItem_ItemClick: Loại nhập xuất không xác định ({0}), dùng mặc định", 
-                                    selectedDto.LoaiNhapXuatKho);
-                                using (var form = new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value))
-                                {
-                                    form.StartPosition = FormStartPosition.CenterParent;
-                                    form.ShowDialog(this);
-                                }
-                                break;
-                        }
-                    }
-                    catch (Exception formEx)
-                    {
-                        _logger.Error($"ChiTietPhieuNhapXuatBarButtonItem_ItemClick: Lỗi mở form: {formEx.Message}", formEx);
-                        MsgBox.ShowError($"Lỗi mở form chi tiết: {formEx.Message}");
-                    }
-                }
+                // Mở form chi tiết
+                OpenDetailForm(detailForm);
             }
             catch (Exception ex)
             {
@@ -310,36 +274,17 @@ namespace Inventory.InventoryManagement
                 {
                     try
                     {
-                        switch (selectedDto.LoaiNhapXuatKho)
+                        // Tạo report dựa vào loại nhập xuất
+                        XtraReport report = selectedDto.LoaiNhapXuatKho switch
                         {
-                            case LoaiNhapXuatKhoEnum.NhapHangThuongMai:
-                                // In phiếu nhập hàng thương mại
-                                StockInReportHelper.PrintStockInVoucher(_selectedStockInOutMasterId.Value);
-                                break;
+                            LoaiNhapXuatKhoEnum.NhapHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value),
+                            LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
+                            LoaiNhapXuatKhoEnum.NhapNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
+                            _ => new InPhieuNhapKho(_selectedStockInOutMasterId.Value) // Default: dùng InPhieuNhapKho
+                        };
 
-                            case LoaiNhapXuatKhoEnum.NhapThietBiMuonThue:
-                                // In phiếu nhập/xuất thiết bị cho mượn
-                                _logger.Debug("InPhieuBarButtonItem_ItemClick: In phiếu thiết bị cho mượn, StockInOutMasterId={0}", 
-                                    _selectedStockInOutMasterId.Value);
-
-                                var report = new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value);
-
-                                // Hiển thị preview bằng ReportPrintTool
-                                using (var printTool = new ReportPrintTool(report))
-                                {
-                                    printTool.ShowPreviewDialog();
-                                }
-
-                                break;
-
-                            case LoaiNhapXuatKhoEnum.Khac:
-                            default:
-                                // Loại khác - dùng mặc định (InPhieuNhapKho) hoặc hiển thị cảnh báo
-                                _logger.Warning("InPhieuBarButtonItem_ItemClick: Loại nhập xuất không xác định ({0}), dùng mặc định", 
-                                    selectedDto.LoaiNhapXuatKho);
-                                StockInReportHelper.PrintStockInVoucher(_selectedStockInOutMasterId.Value);
-                                break;
-                        }
+                        // Hiển thị preview bằng ReportPrintTool
+                        PrintReport(report);
                     }
                     catch (Exception printEx)
                     {
@@ -1016,6 +961,60 @@ namespace Inventory.InventoryManagement
             catch (Exception ex)
             {
                 _logger.Error("UpdateDataSummary: Exception occurred", ex);
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị preview của report bằng ReportPrintTool
+        /// </summary>
+        /// <param name="report">Report cần in</param>
+        private void PrintReport(XtraReport report)
+        {
+            try
+            {
+                if (report == null)
+                {
+                    _logger.Warning("PrintReport: Report is null");
+                    MsgBox.ShowWarning("Không thể tạo report để in.");
+                    return;
+                }
+
+                using var printTool = new ReportPrintTool(report);
+                printTool.ShowPreviewDialog();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"PrintReport: Lỗi in report: {ex.Message}", ex);
+                MsgBox.ShowError($"Lỗi in phiếu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Mở form chi tiết phiếu nhập xuất kho
+        /// </summary>
+        /// <param name="form">Form cần mở (sẽ được dispose sau khi đóng)</param>
+        private void OpenDetailForm(Form form)
+        {
+            try
+            {
+                if (form == null)
+                {
+                    _logger.Warning("OpenDetailForm: Form is null");
+                    MsgBox.ShowWarning("Không thể tạo form để xem chi tiết.");
+                    return;
+                }
+
+                using (OverlayManager.ShowScope(this))
+                using (form)
+                {
+                    form.StartPosition = FormStartPosition.CenterParent;
+                    form.ShowDialog(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"OpenDetailForm: Lỗi mở form: {ex.Message}", ex);
+                MsgBox.ShowError($"Lỗi mở form chi tiết: {ex.Message}");
             }
         }
 
