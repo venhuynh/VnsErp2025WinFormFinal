@@ -848,7 +848,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// Map NhapThietBiMuonDetailDto sang StockInOutDetail entity
         /// </summary>
         private StockInOutDetail MapDetailDtoToEntity(
-            DTO.Inventory.StockIn.NhapThietBiMuon.NhapThietBiMuonDetailDto dto)
+            DTO.Inventory.StockIn.NhapThietBiMuon.NhapNoiBoDetailDto dto)
         {
             return new StockInOutDetail
             {

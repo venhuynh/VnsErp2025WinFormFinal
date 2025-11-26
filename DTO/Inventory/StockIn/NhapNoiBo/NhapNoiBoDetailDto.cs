@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace DTO.Inventory.StockIn.NhapThietBiMuon;
+namespace DTO.Inventory.StockIn.NhapNoiBo;
 
 /// <summary>
 /// Data Transfer Object cho chi tiết phiếu nhập kho

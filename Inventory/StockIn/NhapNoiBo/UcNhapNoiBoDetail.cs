@@ -77,7 +77,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             // GridView đã được khai báo trong Designer, property public sẽ expose nó
 
             // Khởi tạo binding source với danh sách rỗng
-            nhapThietBiMuonDetailDtoBindingSource.DataSource = new List<NhapThietBiMuonDetailDto>();
+            nhapThietBiMuonDetailDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
 
             // Setup events
             InitializeEvents();
@@ -123,11 +123,11 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// <summary>
     /// Lấy danh sách chi tiết từ grid
     /// </summary>
-    public List<NhapThietBiMuonDetailDto> GetDetails()
+    public List<NhapNoiBoDetailDto> GetDetails()
     {
         try
         {
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapThietBiMuonDetailDto>().ToList();
+            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
 
             // Đảm bảo tất cả các dòng đều có StockInOutMasterId
             foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
@@ -140,7 +140,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return new List<NhapThietBiMuonDetailDto>();
+            return new List<NhapNoiBoDetailDto>();
         }
     }
 
@@ -151,7 +151,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            nhapThietBiMuonDetailDtoBindingSource.DataSource = new List<NhapThietBiMuonDetailDto>();
+            nhapThietBiMuonDetailDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
             nhapThietBiMuonDetailDtoBindingSource.ResetBindings(false);
             _stockInMasterId = Guid.Empty;
 
@@ -217,7 +217,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             _stockInMasterId = stockInMasterId;
 
             // Cập nhật StockInOutMasterId cho tất cả các dòng hiện có
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapThietBiMuonDetailDto>().ToList();
+            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
             foreach (var detail in details)
             {
                 if (detail.StockInOutMasterId == Guid.Empty)
@@ -240,7 +240,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapThietBiMuonDetailDto>().ToList();
+            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
 
             if (details.Count == 0)
             {
@@ -334,7 +334,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             }
 
             // Lấy row data từ GridView
-            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is not NhapThietBiMuonDetailDto rowData)
+            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is not NhapNoiBoDetailDto rowData)
             {
                 _logger.Warning("CellValueChanged: Row data is null, RowHandle={0}", rowHandle);
                 return;
@@ -418,7 +418,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var rowData = NhapThietBiMuonDetailDtoGridView.GetRow(e.RowHandle) as NhapThietBiMuonDetailDto;
+            var rowData = NhapThietBiMuonDetailDtoGridView.GetRow(e.RowHandle) as NhapNoiBoDetailDto;
             if (rowData == null)
             {
                 _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
@@ -504,7 +504,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var rowData = e.Row as NhapThietBiMuonDetailDto;
+            var rowData = e.Row as NhapNoiBoDetailDto;
             if (rowData == null)
             {
                 _logger.Warning("ValidateRow: Row data is null");
@@ -816,7 +816,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// Chỉ load các ProductVariant cần thiết để tối ưu performance
     /// </summary>
     /// <param name="details">Danh sách NhapThietBiMuonDetailDto chứa ProductVariantId</param>
-    private async Task LoadProductVariantsByIdsAsync(List<NhapThietBiMuonDetailDto> details)
+    private async Task LoadProductVariantsByIdsAsync(List<NhapNoiBoDetailDto> details)
     {
         try
         {
@@ -959,11 +959,11 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// <summary>
     /// Load danh sách chi tiết từ danh sách DTO
     /// </summary>
-    private async void LoadDetails(List<NhapThietBiMuonDetailDto> details)
+    private async void LoadDetails(List<NhapNoiBoDetailDto> details)
     {
         try
         {
-            details ??= new List<NhapThietBiMuonDetailDto>();
+            details ??= new List<NhapNoiBoDetailDto>();
 
             // Gán StockInOutMasterId cho các dòng chưa có
             foreach (var detail in details)
@@ -1004,7 +1004,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             if (_isCalculating) return;
             _isCalculating = true;
 
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapThietBiMuonDetailDto>().ToList();
+            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
 
             NhapThietBiMuonDetailDtoGridView.RefreshData();
 
@@ -1079,7 +1079,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
         else
         {
             // Existing row: Cập nhật trực tiếp vào row data
-            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is NhapThietBiMuonDetailDto rowData)
+            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is NhapNoiBoDetailDto rowData)
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
