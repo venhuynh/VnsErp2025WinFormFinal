@@ -347,7 +347,12 @@ namespace Bll.Inventory.StockIn
                 var warrantyEntities = warrantyBll.GetByStockInOutMasterId(voucherId);
                 var warrantyDtos = warrantyEntities.Select(w => w.ToDto()).ToList();
 
-                // 4. Map sang DTO - sử dụng StockInMasterDto và StockInDetailDto
+                // 4. Lấy thông tin Device (định danh thiết bị)
+                var deviceBll = new DeviceBll();
+                var deviceEntities = deviceBll.GetByStockInOutMasterId(voucherId);
+                var deviceDtos = deviceEntities.Select(d => d.ToDto()).ToList();
+
+                // 5. Map sang DTO - sử dụng StockInMasterDto và StockInDetailDto
                 var masterDto = MapMasterEntityToDto(masterEntity);
                 var detailDtos = detailEntities.Select(d => 
                 {
@@ -357,6 +362,10 @@ namespace Bll.Inventory.StockIn
                         .Where(w => w.StockInOutDetailId == d.Id)
                         .OrderBy(w => w.WarrantyFrom ?? DateTime.MinValue)
                         .ThenBy(w => w.WarrantyUntil ?? DateTime.MaxValue)
+                        .ToList();
+                    // Gán thông tin Device (định danh thiết bị) cho từng detail
+                    detailDto.Devices = deviceDtos
+                        .Where(dev => dev.StockInOutDetailId.HasValue && dev.StockInOutDetailId.Value == d.Id)
                         .ToList();
                     return detailDto;
                 }).ToList();
@@ -371,8 +380,8 @@ namespace Bll.Inventory.StockIn
                 // 6. Nhóm thông tin bảo hành theo thời gian và gán vào GhiChu
                 reportDto.GhiChu = BuildWarrantyInfo(warrantyDtos, masterDto.Notes);
 
-                _logger.Info("GetReportData: Lấy dữ liệu report thành công, VoucherId={0}, DetailCount={1}, WarrantyCount={2}", 
-                    voucherId, reportDto.ChiTietNhapHangNoiBos.Count, warrantyDtos.Count);
+                _logger.Info("GetReportData: Lấy dữ liệu report thành công, VoucherId={0}, DetailCount={1}, WarrantyCount={2}, DeviceCount={3}", 
+                    voucherId, reportDto.ChiTietNhapHangNoiBos.Count, warrantyDtos.Count, deviceDtos.Count);
                 
                 return reportDto;
             }

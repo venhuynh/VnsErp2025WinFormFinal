@@ -84,7 +84,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmNhapThietBiMuon());
+            Application.Run(new FrmStockInOutProductHistory());
 
             #endregion
 

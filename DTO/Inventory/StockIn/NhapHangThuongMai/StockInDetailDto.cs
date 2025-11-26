@@ -180,6 +180,13 @@ public class StockInDetailDto
     public List<WarrantyDto> Warranties { get; set; } = [];
 
     /// <summary>
+    /// Danh sách thông tin định danh thiết bị (Device) cho sản phẩm này
+    /// </summary>
+    [DisplayName("Thông tin định danh thiết bị")]
+    [Display(Order = 29)]
+    public List<DeviceDto> Devices { get; set; } = [];
+
+    /// <summary>
     /// Thông tin chi tiết phiếu nhập dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting

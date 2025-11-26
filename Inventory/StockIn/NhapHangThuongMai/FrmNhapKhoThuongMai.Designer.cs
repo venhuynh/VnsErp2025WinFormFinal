@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucStockInDetail1 = new UcStockInDetail();
+            this.ucStockInDetail1 = new Inventory.StockIn.NhapHangThuongMai.UcStockInDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
@@ -42,6 +42,7 @@
             this.NhapBaoHanhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -49,10 +50,9 @@
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucStockInMaster1 = new UcStockInMaster();
+            this.ucStockInMaster1 = new Inventory.StockIn.NhapHangThuongMai.UcStockInMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
@@ -210,6 +210,14 @@
             this.CloseBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.cancel_32x32;
             this.CloseBarButtonItem.Name = "CloseBarButtonItem";
             // 
+            // HotKeyBarStaticItem
+            // 
+            this.HotKeyBarStaticItem.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right;
+            this.HotKeyBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.HotKeyBarStaticItem.Caption = "barStaticItem1";
+            this.HotKeyBarStaticItem.Id = 6;
+            this.HotKeyBarStaticItem.Name = "HotKeyBarStaticItem";
+            // 
             // barDockControlTop
             // 
             this.barDockControlTop.CausesValidation = false;
@@ -252,7 +260,7 @@
             this.dockPanel2.Options.ShowCloseButton = false;
             this.dockPanel2.OriginalSize = new System.Drawing.Size(483, 200);
             this.dockPanel2.Size = new System.Drawing.Size(483, 768);
-            this.dockPanel2.Text = "THÔNG TIN PHIẾU NHẬP";
+            this.dockPanel2.Text = "THÔNG TIN PHIẾU NHẬP HÀNG THƯƠNG MẠI";
             // 
             // dockPanel2_Container
             // 
@@ -298,15 +306,7 @@
             this.layoutControlItem2.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem2.TextVisible = false;
             // 
-            // HotKeyBarStaticItem
-            // 
-            this.HotKeyBarStaticItem.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right;
-            this.HotKeyBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.HotKeyBarStaticItem.Caption = "barStaticItem1";
-            this.HotKeyBarStaticItem.Id = 6;
-            this.HotKeyBarStaticItem.Name = "HotKeyBarStaticItem";
-            // 
-            // FrmNhapKhoThuongMai02
+            // FrmNhapKhoThuongMai
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -317,7 +317,7 @@
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.Name = "FrmNhapKhoThuongMai02";
+            this.Name = "FrmNhapKhoThuongMai";
             this.Text = "PHIẾU NHẬP KHO THƯƠNG MẠI";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
