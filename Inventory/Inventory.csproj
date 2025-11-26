@@ -119,23 +119,23 @@
     <Compile Include="StockIn\NhapHangThuongMai\FrmNhapKhoThuongMai.Designer.cs">
       <DependentUpon>FrmNhapKhoThuongMai.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\NhapNoiBo\FrmNhapThietBiMuon.cs">
+    <Compile Include="StockIn\NhapNoiBo\FrmNhapNoiBo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StockIn\NhapNoiBo\FrmNhapThietBiMuon.Designer.cs">
-      <DependentUpon>FrmNhapThietBiMuon.cs</DependentUpon>
+    <Compile Include="StockIn\NhapNoiBo\FrmNhapNoiBo.Designer.cs">
+      <DependentUpon>FrmNhapNoiBo.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\NhapNoiBo\UcNhapThietBiMuonDetail.cs">
+    <Compile Include="StockIn\NhapNoiBo\UcNhapNoiBoDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\NhapNoiBo\UcNhapThietBiMuonDetail.Designer.cs">
-      <DependentUpon>UcNhapThietBiMuonDetail.cs</DependentUpon>
+    <Compile Include="StockIn\NhapNoiBo\UcNhapNoiBoDetail.Designer.cs">
+      <DependentUpon>UcNhapNoiBoDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\NhapNoiBo\UcNhapThietBiMuonMaster.cs">
+    <Compile Include="StockIn\NhapNoiBo\UcNhapNoiBoMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\NhapNoiBo\UcNhapThietBiMuonMaster.Designer.cs">
-      <DependentUpon>UcNhapThietBiMuonMaster.cs</DependentUpon>
+    <Compile Include="StockIn\NhapNoiBo\UcNhapNoiBoMaster.Designer.cs">
+      <DependentUpon>UcNhapNoiBoMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\NhapThietBiMuon\FrmNhapSerialMacEmei.cs">
       <SubType>Form</SubType>
@@ -226,14 +226,14 @@
     <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcStockInMaster.resx">
       <DependentUpon>UcStockInMaster.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapNoiBo\FrmNhapThietBiMuon.resx">
-      <DependentUpon>FrmNhapThietBiMuon.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapNoiBo\FrmNhapNoiBo.resx">
+      <DependentUpon>FrmNhapNoiBo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapNoiBo\UcNhapThietBiMuonDetail.resx">
-      <DependentUpon>UcNhapThietBiMuonDetail.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapNoiBo\UcNhapNoiBoDetail.resx">
+      <DependentUpon>UcNhapNoiBoDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapNoiBo\UcNhapThietBiMuonMaster.resx">
-      <DependentUpon>UcNhapThietBiMuonMaster.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapNoiBo\UcNhapNoiBoMaster.resx">
+      <DependentUpon>UcNhapNoiBoMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapThietBiMuon\FrmNhapSerialMacEmei.resx">
       <DependentUpon>FrmNhapSerialMacEmei.cs</DependentUpon>
@@ -251,6 +251,7 @@
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
+    <None Include="Doc\Inventory.mmap" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_03_NhapKhoTheoPOCustomer.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_02_NhapKhoTheoPONCC.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_01_NhapKhoDoiBan.md" />

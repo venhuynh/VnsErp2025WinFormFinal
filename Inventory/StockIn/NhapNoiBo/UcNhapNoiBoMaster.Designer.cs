@@ -1,6 +1,6 @@
-﻿namespace Inventory.StockIn.NhapThietBiMuon
+﻿namespace Inventory.StockIn.NhapNoiBo
 {
-    partial class UcNhapThietBiMuonMaster
+    partial class UcNhapNoiBoMaster
     {
         /// <summary> 
         /// Required designer variable.

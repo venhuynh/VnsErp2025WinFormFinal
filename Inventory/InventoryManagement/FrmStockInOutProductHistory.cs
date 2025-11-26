@@ -226,7 +226,7 @@ namespace Inventory.InventoryManagement
                                 _logger.Debug("ChiTietPhieuNhapXuatBarButtonItem_ItemClick: Mở form thiết bị cho mượn, StockInOutMasterId={0}", 
                                     _selectedStockInOutMasterId.Value);
 
-                                using (var form = new FrmNhapThietBiMuon(_selectedStockInOutMasterId.Value))
+                                using (var form = new FrmNhapNoiBo(_selectedStockInOutMasterId.Value))
                                 {
                                     form.StartPosition = FormStartPosition.CenterParent;
                                     form.ShowDialog(this);

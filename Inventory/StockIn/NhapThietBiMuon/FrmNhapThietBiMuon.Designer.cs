@@ -1,6 +1,6 @@
 ﻿namespace Inventory.StockIn.NhapThietBiMuon
 {
-    partial class FrmNhapThietBiMuon
+    partial class FrmNhapNoiBo
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapThietBiMuonDetail1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail();
+            this.ucNhapThietBiMuonDetail1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapNoiBoDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
@@ -359,9 +359,9 @@
         private DevExpress.XtraBars.BarButtonItem NhapQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
-        private NhapThietBiMuon.UcNhapThietBiMuonDetail ucNhapThietBiMuonDetail1;
+        private Inventory.StockIn.NhapThietBiMuon.UcNhapNoiBoDetail ucNhapThietBiMuonDetail1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private NhapThietBiMuon.UcNhapThietBiMuonMaster ucNhapThietBiMuonMaster1;
+        private Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonMaster ucNhapThietBiMuonMaster1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

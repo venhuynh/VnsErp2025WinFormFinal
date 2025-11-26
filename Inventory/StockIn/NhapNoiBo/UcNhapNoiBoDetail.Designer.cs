@@ -1,8 +1,6 @@
-﻿using DTO.Inventory.StockIn.NhapHangThuongMai;
-
-namespace Inventory.StockIn.NhapThietBiMuon
+﻿namespace Inventory.StockIn.NhapNoiBo
 {
-    partial class UcNhapThietBiMuonDetail
+    partial class UcNhapNoiBoDetail
     {
         /// <summary> 
         /// Required designer variable.

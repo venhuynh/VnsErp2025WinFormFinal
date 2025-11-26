@@ -11,16 +11,15 @@ using Common.Helpers;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
-using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.Inventory.StockIn.NhapThietBiMuon;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 
-namespace Inventory.StockIn.NhapThietBiMuon;
+namespace Inventory.StockIn.NhapNoiBo;
 
-public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserControl
+public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
 {
     #region ========== FIELDS & PROPERTIES ==========
 
@@ -58,7 +57,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcNhapThietBiMuonDetail()
+    public UcNhapNoiBoDetail()
     {
         InitializeComponent();
         InitializeControl();
