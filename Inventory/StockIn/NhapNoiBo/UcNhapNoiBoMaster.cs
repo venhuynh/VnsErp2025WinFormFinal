@@ -981,8 +981,17 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
             await LoadSingleWarehouseByIdAsync(masterEntity.WarehouseId);
             WarehouseNameSearchLookupEdit.EditValue = masterEntity.WarehouseId;
 
-            await LoadSingleSupplierByIdAsync(masterEntity.PartnerSiteId);
-            SupplierNameSearchLookupEdit.EditValue = masterEntity.PartnerSiteId;
+            if (masterEntity.PartnerSiteId.HasValue)
+            {
+                await LoadSingleSupplierByIdAsync(masterEntity.PartnerSiteId.Value);
+                SupplierNameSearchLookupEdit.EditValue = masterEntity.PartnerSiteId.Value;
+            }
+            else
+            {
+                // Nếu PartnerSiteId là null, set datasource rỗng
+                businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
+                SupplierNameSearchLookupEdit.EditValue = null;
+            }
 
             NotesTextEdit.Text = masterEntity.Notes;
 

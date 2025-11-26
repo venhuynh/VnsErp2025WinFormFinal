@@ -212,7 +212,7 @@ public class StockInMasterDto
     /// </summary>
     [DisplayName("ID NCC")]
     [Display(Order = 15)]
-    public Guid SupplierId { get; set; }
+    public Guid? SupplierId { get; set; }
 
     /// <summary>
     /// Tên nhà cung cấp (để hiển thị)

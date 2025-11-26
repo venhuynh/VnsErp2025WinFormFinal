@@ -984,7 +984,7 @@ public partial class UcNhapThietBiMuonMaster : XtraUserControl
             await LoadSingleWarehouseByIdAsync(masterEntity.WarehouseId);
             WarehouseNameSearchLookupEdit.EditValue = masterEntity.WarehouseId;
 
-            await LoadSingleSupplierByIdAsync(masterEntity.PartnerSiteId);
+            await LoadSingleSupplierByIdAsync(masterEntity.PartnerSiteId.Value);
             SupplierNameSearchLookupEdit.EditValue = masterEntity.PartnerSiteId;
 
             NotesTextEdit.Text = masterEntity.Notes;

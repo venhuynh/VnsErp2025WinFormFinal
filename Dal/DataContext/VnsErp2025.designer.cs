@@ -10851,7 +10851,7 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _PurchaseOrderId;
 		
-		private System.Guid _PartnerSiteId;
+		private System.Nullable<System.Guid> _PartnerSiteId;
 		
 		private string _Notes;
 		
@@ -10901,7 +10901,7 @@ namespace Dal.DataContext
     partial void OnWarehouseIdChanged();
     partial void OnPurchaseOrderIdChanging(System.Nullable<System.Guid> value);
     partial void OnPurchaseOrderIdChanged();
-    partial void OnPartnerSiteIdChanging(System.Guid value);
+    partial void OnPartnerSiteIdChanging(System.Nullable<System.Guid> value);
     partial void OnPartnerSiteIdChanged();
     partial void OnNotesChanging(string value);
     partial void OnNotesChanged();
@@ -11080,8 +11080,8 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PartnerSiteId", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid PartnerSiteId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PartnerSiteId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> PartnerSiteId
 		{
 			get
 			{
@@ -11377,7 +11377,7 @@ namespace Dal.DataContext
 					}
 					else
 					{
-						this._PartnerSiteId = default(System.Guid);
+						this._PartnerSiteId = default(Nullable<System.Guid>);
 					}
 					this.SendPropertyChanged("BusinessPartnerSite");
 				}

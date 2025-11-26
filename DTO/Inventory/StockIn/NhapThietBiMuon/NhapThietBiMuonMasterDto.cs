@@ -184,8 +184,7 @@ public class NhapThietBiMuonMasterDto
     /// </summary>
     [DisplayName("ID NCC")]
     [Display(Order = 13)]
-    [Required(ErrorMessage = "Nhà cung cấp hoặc khách hàng không được để trống")]
-    public Guid SupplierId { get; set; }
+    public Guid? SupplierId { get; set; }
 
     /// <summary>
     /// Tên nhà cung cấp (để hiển thị)
