@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Inventory.StockIn;
+﻿using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
@@ -12,11 +6,16 @@ using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
 using DTO.Inventory.StockIn.NhapNoiBo;
-using DTO.Inventory.StockIn.NhapThietBiMuon;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Inventory.StockIn.NhapNoiBo;
 
@@ -124,11 +123,11 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// <summary>
     /// Lấy danh sách chi tiết từ grid
     /// </summary>
-    public List<NhapNoiBoDetailDto> GetDetails()
+    public List<StockInOutDetail> GetDetails()
     {
         try
         {
-            var details = nhapNoiBoDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            var details = nhapNoiBoDetailDtoBindingSource.Cast<StockInOutDetail>().ToList();
 
             // Đảm bảo tất cả các dòng đều có StockInOutMasterId
             foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
@@ -141,7 +140,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return new List<NhapNoiBoDetailDto>();
+            return new List<StockInOutDetail>();
         }
     }
 
@@ -857,24 +856,6 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
         {
             _logger.Error("LoadProductVariantsByIdsAsync: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi tải biến thể sản phẩm: {ex.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Comparer để so sánh ProductVariantListDto theo Id (dùng cho Union)
-    /// </summary>
-    private class ProductVariantListDtoComparer : IEqualityComparer<ProductVariantListDto>
-    {
-        public bool Equals(ProductVariantListDto x, ProductVariantListDto y)
-        {
-            if (x == null && y == null) return true;
-            if (x == null || y == null) return false;
-            return x.Id == y.Id;
-        }
-
-        public int GetHashCode(ProductVariantListDto obj)
-        {
-            return obj?.Id.GetHashCode() ?? 0;
         }
     }
 

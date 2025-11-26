@@ -904,21 +904,21 @@ namespace Inventory.StockIn.NhapNoiBo;
                 return false;
             }
 
-            // Lấy danh sách detail DTOs
-            var detailDtos = ucNhapNoiBoDetail1.GetDetails();
-            if (detailDtos == null || detailDtos.Count == 0)
+            // Lấy danh sách detail entities (GetDetails() trả về List<StockInOutDetail>)
+            var detailEntities = ucNhapNoiBoDetail1.GetDetails();
+            if (detailEntities == null || detailEntities.Count == 0)
             {
                 _logger.Warning("SaveDataAsync: No details found");
                 MsgBox.ShowWarning("Vui lòng thêm ít nhất một dòng chi tiết", "Cảnh báo", this);
                 return false;
             }
 
-            // Validate thêm business rules cho từng detail
+            // Validate thêm business rules cho từng detail entity
             var validationErrors = new List<string>();
-            for (var i = 0; i < detailDtos.Count; i++)
+            for (var i = 0; i < detailEntities.Count; i++)
             {
-                var detail = detailDtos[i];
-                var lineNumber = detail.LineNumber > 0 ? detail.LineNumber : (i + 1);
+                var detail = detailEntities[i];
+                var lineNumber = i + 1; // Entity không có LineNumber, tính từ index
 
                 if (detail.ProductVariantId == Guid.Empty)
                 {
@@ -940,10 +940,10 @@ namespace Inventory.StockIn.NhapNoiBo;
                 return false;
             }
 
-            // ========== BƯỚC 3: CHUYỂN ĐỔI DTOs SANG ENTITIES ==========
-            // Convert DTOs sang entities để truyền vào BLL
+            // ========== BƯỚC 3: CHUYỂN ĐỔI MASTER DTO SANG ENTITY ==========
+            // Convert Master DTO sang entity để truyền vào BLL
+            // Detail entities đã được trả về trực tiếp từ GetDetails(), không cần convert
             var masterEntity = MapMasterDtoToEntity(masterDto);
-            var detailEntities = detailDtos.Select(dto => MapDetailDtoToEntity(dto)).ToList();
 
             // ========== BƯỚC 4: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
             // Tất cả validation đã được thực hiện ở bước 1 và 2

@@ -864,24 +864,6 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     }
 
     /// <summary>
-    /// Comparer để so sánh ProductVariantListDto theo Id (dùng cho Union)
-    /// </summary>
-    private class ProductVariantListDtoComparer : IEqualityComparer<ProductVariantListDto>
-    {
-        public bool Equals(ProductVariantListDto x, ProductVariantListDto y)
-        {
-            if (x == null && y == null) return true;
-            if (x == null || y == null) return false;
-            return x.Id == y.Id;
-        }
-
-        public int GetHashCode(ProductVariantListDto obj)
-        {
-            return obj?.Id.GetHashCode() ?? 0;
-        }
-    }
-
-    /// <summary>
     /// Convert Entity sang ProductVariantListDto (Async)
     /// </summary>
     private async Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
