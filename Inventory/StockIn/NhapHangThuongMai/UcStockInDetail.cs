@@ -6,6 +6,7 @@ using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
+using DTO.Inventory.StockIn.NhapNoiBo;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
@@ -742,12 +743,27 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var details = stockInDetailDtoBindingSource.Cast<StockInOutDetail>().ToList();
+            //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
+            var details = new List<StockInOutDetail>();
 
-            // Đảm bảo tất cả các dòng đều có StockInOutMasterId
-            foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
+            foreach (var item in stockInDetailDtoBindingSource)
             {
-                detail.StockInOutMasterId = _stockInMasterId;
+                if (item is not NhapNoiBoDetailDto detailDto) continue;
+
+                details.Add(new StockInOutDetail
+                {
+                    Id = default,
+                    StockInOutMasterId = _stockInMasterId,
+                    ProductVariantId = detailDto.ProductVariantId,
+                    StockInQty = detailDto.StockInQty,
+                    StockOutQty = 0,
+                    UnitPrice = 0,
+                    Vat = 0,
+                    VatAmount = 0,
+                    TotalAmount = 0,
+                    TotalAmountIncludedVat = 0,
+                    GhiChu = detailDto.GhiChu,
+                });
             }
             return details;
         }

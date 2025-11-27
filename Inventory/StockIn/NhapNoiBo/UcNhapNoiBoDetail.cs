@@ -150,12 +150,6 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
                 });
             }
             
-
-            //// Đảm bảo tất cả các dòng đều có StockInOutMasterId
-            //foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
-            //{
-            //    detail.StockInOutMasterId = _stockInMasterId;
-            //}
             return details;
         }
         catch (Exception ex)
