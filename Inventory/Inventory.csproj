@@ -123,6 +123,24 @@
     <Compile Include="StockIn\InPhieu\InPhieuNhapXuatThietBiChoMuon.Designer.cs">
       <DependentUpon>InPhieuNhapXuatThietBiChoMuon.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockIn\NhapBaoHanh\FrmNhapBaoHanh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockIn\NhapBaoHanh\FrmNhapBaoHanh.Designer.cs">
+      <DependentUpon>FrmNhapBaoHanh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockIn\NhapBaoHanh\UcNhapBaoHanhDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockIn\NhapBaoHanh\UcNhapBaoHanhDetail.Designer.cs">
+      <DependentUpon>UcNhapBaoHanhDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockIn\NhapBaoHanh\UcNhapBaoHanhMaster.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockIn\NhapBaoHanh\UcNhapBaoHanhMaster.Designer.cs">
+      <DependentUpon>UcNhapBaoHanhMaster.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockIn\NhapHangThuongMai\FrmNhapKhoThuongMai.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -244,6 +262,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\InPhieu\InPhieuNhapXuatThietBiChoMuon.resx">
       <DependentUpon>InPhieuNhapXuatThietBiChoMuon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\NhapBaoHanh\FrmNhapBaoHanh.resx">
+      <DependentUpon>FrmNhapBaoHanh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\NhapBaoHanh\UcNhapBaoHanhDetail.resx">
+      <DependentUpon>UcNhapBaoHanhDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\NhapBaoHanh\UcNhapBaoHanhMaster.resx">
+      <DependentUpon>UcNhapBaoHanhMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapHangThuongMai\FrmNhapKhoThuongMai.resx">
       <DependentUpon>FrmNhapKhoThuongMai.cs</DependentUpon>
