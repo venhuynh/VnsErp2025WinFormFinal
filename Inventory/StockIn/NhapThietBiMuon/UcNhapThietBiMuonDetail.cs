@@ -20,7 +20,7 @@ using DTO.Inventory.StockIn.NhapNoiBo;
 
 namespace Inventory.StockIn.NhapThietBiMuon;
 
-public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
+public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserControl
 {
     #region ========== FIELDS & PROPERTIES ==========
 
@@ -58,7 +58,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcNhapNoiBoDetail()
+    public UcNhapThietBiMuonDetail()
     {
         InitializeComponent();
         InitializeControl();
@@ -128,17 +128,29 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapThietBiMuonDetailDto>().ToList();
+            //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
+            var details = new List<StockInOutDetail>();
 
-            // Đảm bảo tất cả các dòng đều có StockInOutMasterId
-            foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
+            foreach (var item in nhapThietBiMuonDetailDtoBindingSource)
             {
-                detail.StockInOutMasterId = _stockInMasterId;
-            }
+                if (item is not NhapThietBiMuonDetailDto detailDto) continue;
 
-            // Convert DTOs sang entities
-            var entities = details.Select(MapDetailDtoToEntity).ToList();
-            return entities;
+                details.Add(new StockInOutDetail
+                {
+                    Id = default,
+                    StockInOutMasterId = _stockInMasterId,
+                    ProductVariantId = detailDto.ProductVariantId,
+                    StockInQty = detailDto.StockInQty,
+                    StockOutQty = 0,
+                    UnitPrice = 0,
+                    Vat = 0,
+                    VatAmount = 0,
+                    TotalAmount = 0,
+                    TotalAmountIncludedVat = 0,
+                    GhiChu = detailDto.GhiChu,
+                });
+            }
+            return details;
         }
         catch (Exception ex)
         {

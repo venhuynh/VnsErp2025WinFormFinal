@@ -96,21 +96,21 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     private void InitializeEvents()
     {
         // Event khi thay đổi cell value (xử lý cả ProductVariant và tính toán)
-        NhapThietBiMuonDetailDtoGridView.CellValueChanged += StockInDetailDtoGridView_CellValueChanged;
+        NhapNoiBoDetailDtoGridView.CellValueChanged += StockInDetailDtoGridView_CellValueChanged;
 
         // Event khi thêm/xóa dòng để cập nhật LineNumber
-        NhapThietBiMuonDetailDtoGridView.InitNewRow += StockInDetailDtoGridView_InitNewRow;
-        NhapThietBiMuonDetailDtoGridView.RowDeleted += StockInDetailDtoGridView_RowDeleted;
+        NhapNoiBoDetailDtoGridView.InitNewRow += StockInDetailDtoGridView_InitNewRow;
+        NhapNoiBoDetailDtoGridView.RowDeleted += StockInDetailDtoGridView_RowDeleted;
 
         // Event khi validate cell và row
-        NhapThietBiMuonDetailDtoGridView.ValidateRow += StockInDetailDtoGridView_ValidateRow;
-        NhapThietBiMuonDetailDtoGridView.ValidatingEditor += StockInDetailDtoGridView_ValidatingEditor;
+        NhapNoiBoDetailDtoGridView.ValidateRow += StockInDetailDtoGridView_ValidateRow;
+        NhapNoiBoDetailDtoGridView.ValidatingEditor += StockInDetailDtoGridView_ValidatingEditor;
 
         // Event custom draw row indicator
-        NhapThietBiMuonDetailDtoGridView.CustomDrawRowIndicator += StockInDetailDtoGridView_CustomDrawRowIndicator;
+        NhapNoiBoDetailDtoGridView.CustomDrawRowIndicator += StockInDetailDtoGridView_CustomDrawRowIndicator;
 
         // Event xử lý phím tắt cho GridView (Insert, Delete, Enter)
-        NhapThietBiMuonDetailDtoGridView.KeyDown += StockInDetailDtoGridView_KeyDown;
+        NhapNoiBoDetailDtoGridView.KeyDown += StockInDetailDtoGridView_KeyDown;
 
         // Event Popup cho ProductVariantSearchLookUpEdit (RepositoryItem)
         ProductVariantSearchLookUpEdit.Popup += ProductVariantSearchLookUpEdit_Popup;
@@ -127,13 +127,35 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var details = nhapNoiBoDetailDtoBindingSource.Cast<StockInOutDetail>().ToList();
+            //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
+            var details = new List<StockInOutDetail>();
 
-            // Đảm bảo tất cả các dòng đều có StockInOutMasterId
-            foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
+            foreach (var item in nhapNoiBoDetailDtoBindingSource)
             {
-                detail.StockInOutMasterId = _stockInMasterId;
+                if(item is not NhapNoiBoDetailDto detailDto) continue;
+
+                details.Add(new StockInOutDetail
+                {
+                    Id = default,
+                    StockInOutMasterId = _stockInMasterId,
+                    ProductVariantId = detailDto.ProductVariantId,
+                    StockInQty = detailDto.StockInQty,
+                    StockOutQty = 0,
+                    UnitPrice = 0,
+                    Vat = 0,
+                    VatAmount = 0,
+                    TotalAmount = 0,
+                    TotalAmountIncludedVat = 0,
+                    GhiChu = detailDto.GhiChu,
+                });
             }
+            
+
+            //// Đảm bảo tất cả các dòng đều có StockInOutMasterId
+            //foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
+            //{
+            //    detail.StockInOutMasterId = _stockInMasterId;
+            //}
             return details;
         }
         catch (Exception ex)
@@ -315,7 +337,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// </summary>
     private void StockInDetailDtoGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
     {
-        GridViewHelper.CustomDrawRowIndicator(NhapThietBiMuonDetailDtoGridView, e);
+        GridViewHelper.CustomDrawRowIndicator(NhapNoiBoDetailDtoGridView, e);
     }
 
     /// <summary>
@@ -335,7 +357,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             }
 
             // Lấy row data từ GridView
-            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is not NhapNoiBoDetailDto rowData)
+            if (NhapNoiBoDetailDtoGridView.GetRow(rowHandle) is not NhapNoiBoDetailDto rowData)
             {
                 _logger.Warning("CellValueChanged: Row data is null, RowHandle={0}", rowHandle);
                 return;
@@ -403,7 +425,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             }
 
             // Refresh grid để hiển thị thay đổi
-            NhapThietBiMuonDetailDtoGridView.RefreshRow(rowHandle);
+            NhapNoiBoDetailDtoGridView.RefreshRow(rowHandle);
         }
         catch (Exception ex)
         {
@@ -419,7 +441,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var rowData = NhapThietBiMuonDetailDtoGridView.GetRow(e.RowHandle) as NhapNoiBoDetailDto;
+            var rowData = NhapNoiBoDetailDtoGridView.GetRow(e.RowHandle) as NhapNoiBoDetailDto;
             if (rowData == null)
             {
                 _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
@@ -472,9 +494,9 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var column = NhapThietBiMuonDetailDtoGridView.FocusedColumn;
+            var column = NhapNoiBoDetailDtoGridView.FocusedColumn;
             var fieldName = column?.FieldName;
-            var rowHandle = NhapThietBiMuonDetailDtoGridView.FocusedRowHandle;
+            var rowHandle = NhapNoiBoDetailDtoGridView.FocusedRowHandle;
 
             if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -565,7 +587,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var gridView = NhapThietBiMuonDetailDtoGridView;
+            var gridView = NhapNoiBoDetailDtoGridView;
             if (gridView == null) return;
 
             switch (e.KeyCode)
@@ -989,7 +1011,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
 
             var details = nhapNoiBoDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
 
-            NhapThietBiMuonDetailDtoGridView.RefreshData();
+            NhapNoiBoDetailDtoGridView.RefreshData();
 
             // Cập nhật tổng tiền lên master
             OnDetailDataChanged();
@@ -1046,7 +1068,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             return;
         }
 
-        var rowHandle = NhapThietBiMuonDetailDtoGridView.FocusedRowHandle;
+        var rowHandle = NhapNoiBoDetailDtoGridView.FocusedRowHandle;
 
         // Xử lý cả new row (rowHandle < 0) và existing row (rowHandle >= 0)
         if (rowHandle < 0)
@@ -1054,15 +1076,15 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             // New row: Sử dụng SetFocusedRowCellValue để set giá trị vào các cell
             // Các giá trị này sẽ được commit khi row được thêm vào binding source
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
-            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
-            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.FullNameHtml}");
-            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
+            NhapNoiBoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
+            NhapNoiBoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
+            NhapNoiBoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.FullNameHtml}");
+            NhapNoiBoDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
         {
             // Existing row: Cập nhật trực tiếp vào row data
-            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is NhapNoiBoDetailDto rowData)
+            if (NhapNoiBoDetailDtoGridView.GetRow(rowHandle) is NhapNoiBoDetailDto rowData)
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
@@ -1070,7 +1092,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                 // Refresh grid để hiển thị thay đổi
-                NhapThietBiMuonDetailDtoGridView.RefreshRow(rowHandle);
+                NhapNoiBoDetailDtoGridView.RefreshRow(rowHandle);
             }
         }
     }

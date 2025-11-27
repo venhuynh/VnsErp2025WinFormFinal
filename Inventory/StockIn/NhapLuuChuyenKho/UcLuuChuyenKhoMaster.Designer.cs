@@ -264,7 +264,7 @@
             this.layoutControlGroup2.Location = new System.Drawing.Point(0, 0);
             this.layoutControlGroup2.Name = "layoutControlGroup2";
             this.layoutControlGroup2.Size = new System.Drawing.Size(466, 255);
-            this.layoutControlGroup2.Text = "Thông tin phiếu nhập";
+            this.layoutControlGroup2.Text = "Thông tin phiếu nhập lưu chuyển kho";
             // 
             // ItemForStockInNumber
             // 
@@ -415,12 +415,12 @@
             // 
             this.companyBranchDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchDto);
             // 
-            // UcLuuChuyenKhoMaster
+            // UcNhapLuuChuyenKhoMaster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dataLayoutControl1);
-            this.Name = "UcLuuChuyenKhoMaster";
+            this.Name = "UcNhapLuuChuyenKhoMaster";
             this.Size = new System.Drawing.Size(486, 792);
             ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel01)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchRepositoryItemHypertextLabel)).EndInit();

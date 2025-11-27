@@ -554,6 +554,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
             {
                 // Cập nhật WarehouseId vào Entity
                 _stockInMaster.WarehouseId = warehouseId;
+                _stockInMaster.PartnerSiteId = null;
 
                 // Xóa lỗi validation nếu có
                 dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, string.Empty);

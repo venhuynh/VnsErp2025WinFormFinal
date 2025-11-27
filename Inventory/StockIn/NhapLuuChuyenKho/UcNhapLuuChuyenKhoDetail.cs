@@ -11,6 +11,7 @@ using Common.Helpers;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
+using DTO.Inventory.StockIn.NhapLuuChuyenKho;
 using DTO.Inventory.StockIn.NhapNoiBo;
 using DTO.MasterData.ProductService;
 using Logger;
@@ -77,7 +78,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             // GridView đã được khai báo trong Designer, property public sẽ expose nó
 
             // Khởi tạo binding source với danh sách rỗng
-            nhapLuuChuyenKhoMasterDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
+            nhapLuuChuyenKhoDetailDtoBindingSource.DataSource = new List<NhapLuuChuyenKhoDetailDto>();
 
             // Setup events
             InitializeEvents();
@@ -96,21 +97,21 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     private void InitializeEvents()
     {
         // Event khi thay đổi cell value (xử lý cả ProductVariant và tính toán)
-        NhapThietBiMuonDetailDtoGridView.CellValueChanged += StockInDetailDtoGridView_CellValueChanged;
+        NhapLuuChuyenKhoDetailDtoGridView.CellValueChanged += StockInDetailDtoGridView_CellValueChanged;
 
         // Event khi thêm/xóa dòng để cập nhật LineNumber
-        NhapThietBiMuonDetailDtoGridView.InitNewRow += StockInDetailDtoGridView_InitNewRow;
-        NhapThietBiMuonDetailDtoGridView.RowDeleted += StockInDetailDtoGridView_RowDeleted;
+        NhapLuuChuyenKhoDetailDtoGridView.InitNewRow += StockInDetailDtoGridView_InitNewRow;
+        NhapLuuChuyenKhoDetailDtoGridView.RowDeleted += StockInDetailDtoGridView_RowDeleted;
 
         // Event khi validate cell và row
-        NhapThietBiMuonDetailDtoGridView.ValidateRow += StockInDetailDtoGridView_ValidateRow;
-        NhapThietBiMuonDetailDtoGridView.ValidatingEditor += StockInDetailDtoGridView_ValidatingEditor;
+        NhapLuuChuyenKhoDetailDtoGridView.ValidateRow += StockInDetailDtoGridView_ValidateRow;
+        NhapLuuChuyenKhoDetailDtoGridView.ValidatingEditor += StockInDetailDtoGridView_ValidatingEditor;
 
         // Event custom draw row indicator
-        NhapThietBiMuonDetailDtoGridView.CustomDrawRowIndicator += StockInDetailDtoGridView_CustomDrawRowIndicator;
+        NhapLuuChuyenKhoDetailDtoGridView.CustomDrawRowIndicator += StockInDetailDtoGridView_CustomDrawRowIndicator;
 
         // Event xử lý phím tắt cho GridView (Insert, Delete, Enter)
-        NhapThietBiMuonDetailDtoGridView.KeyDown += StockInDetailDtoGridView_KeyDown;
+        NhapLuuChuyenKhoDetailDtoGridView.KeyDown += StockInDetailDtoGridView_KeyDown;
 
         // Event Popup cho ProductVariantSearchLookUpEdit (RepositoryItem)
         ProductVariantSearchLookUpEdit.Popup += ProductVariantSearchLookUpEdit_Popup;
@@ -127,13 +128,29 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            var details = nhapLuuChuyenKhoMasterDtoBindingSource.Cast<StockInOutDetail>().ToList();
+            //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
+            var details = new List<StockInOutDetail>();
 
-            // Đảm bảo tất cả các dòng đều có StockInOutMasterId
-            foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
+            foreach (var item in nhapLuuChuyenKhoDetailDtoBindingSource)
             {
-                detail.StockInOutMasterId = _stockInMasterId;
+                if (item is not NhapLuuChuyenKhoDetailDto detailDto) continue;
+
+                details.Add(new StockInOutDetail
+                {
+                    Id = default,
+                    StockInOutMasterId = _stockInMasterId,
+                    ProductVariantId = detailDto.ProductVariantId,
+                    StockInQty = detailDto.StockInQty,
+                    StockOutQty = 0,
+                    UnitPrice = 0,
+                    Vat = 0,
+                    VatAmount = 0,
+                    TotalAmount = 0,
+                    TotalAmountIncludedVat = 0,
+                    GhiChu = detailDto.GhiChu,
+                });
             }
+
             return details;
         }
         catch (Exception ex)
@@ -151,8 +168,8 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            nhapLuuChuyenKhoMasterDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
-            nhapLuuChuyenKhoMasterDtoBindingSource.ResetBindings(false);
+            nhapLuuChuyenKhoDetailDtoBindingSource.DataSource = new List<NhapLuuChuyenKhoDetailDto>();
+            nhapLuuChuyenKhoDetailDtoBindingSource.ResetBindings(false);
             _stockInMasterId = Guid.Empty;
 
             // Reset cache flag để load lại khi cần
@@ -185,7 +202,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             // Chỉ định rõ ràng namespace để tránh ambiguous call
             var detailDtos = detailEntities
                 .Where(e => e != null)
-                .Select(entity => entity.ToNhapNoiBoDetailDto()) // Extension method từ NhapNoiBo namespace
+                .Select(entity => entity.ToNhapLuuChuyenKhoDetailDto()) // Extension method từ NhapNoiBo namespace
                 .Where(dto => dto != null)
                 .ToList();
 
@@ -218,7 +235,15 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             _stockInMasterId = stockInMasterId;
 
             // Cập nhật StockInOutMasterId cho tất cả các dòng hiện có
-            var details = nhapLuuChuyenKhoMasterDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            List<NhapLuuChuyenKhoDetailDto> details;
+            if (nhapLuuChuyenKhoDetailDtoBindingSource.DataSource is List<NhapLuuChuyenKhoDetailDto> dataSourceList)
+            {
+                details = dataSourceList;
+            }
+            else
+            {
+                details = nhapLuuChuyenKhoDetailDtoBindingSource.OfType<NhapLuuChuyenKhoDetailDto>().ToList();
+            }
             foreach (var detail in details)
             {
                 if (detail.StockInOutMasterId == Guid.Empty)
@@ -241,7 +266,15 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            var details = nhapLuuChuyenKhoMasterDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            List<NhapLuuChuyenKhoDetailDto> details;
+            if (nhapLuuChuyenKhoDetailDtoBindingSource.DataSource is List<NhapLuuChuyenKhoDetailDto> dataSourceList)
+            {
+                details = dataSourceList;
+            }
+            else
+            {
+                details = nhapLuuChuyenKhoDetailDtoBindingSource.OfType<NhapLuuChuyenKhoDetailDto>().ToList();
+            }
 
             if (details.Count == 0)
             {
@@ -315,7 +348,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     /// </summary>
     private void StockInDetailDtoGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
     {
-        GridViewHelper.CustomDrawRowIndicator(NhapThietBiMuonDetailDtoGridView, e);
+        GridViewHelper.CustomDrawRowIndicator(NhapLuuChuyenKhoDetailDtoGridView, e);
     }
 
     /// <summary>
@@ -335,7 +368,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             }
 
             // Lấy row data từ GridView
-            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is not NhapNoiBoDetailDto rowData)
+            if (NhapLuuChuyenKhoDetailDtoGridView.GetRow(rowHandle) is not NhapLuuChuyenKhoDetailDto rowData)
             {
                 _logger.Warning("CellValueChanged: Row data is null, RowHandle={0}", rowHandle);
                 return;
@@ -403,7 +436,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             }
 
             // Refresh grid để hiển thị thay đổi
-            NhapThietBiMuonDetailDtoGridView.RefreshRow(rowHandle);
+            NhapLuuChuyenKhoDetailDtoGridView.RefreshRow(rowHandle);
         }
         catch (Exception ex)
         {
@@ -419,7 +452,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            var rowData = NhapThietBiMuonDetailDtoGridView.GetRow(e.RowHandle) as NhapNoiBoDetailDto;
+            var rowData = NhapLuuChuyenKhoDetailDtoGridView.GetRow(e.RowHandle) as NhapLuuChuyenKhoDetailDto;
             if (rowData == null)
             {
                 _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
@@ -472,9 +505,9 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            var column = NhapThietBiMuonDetailDtoGridView.FocusedColumn;
+            var column = NhapLuuChuyenKhoDetailDtoGridView.FocusedColumn;
             var fieldName = column?.FieldName;
-            var rowHandle = NhapThietBiMuonDetailDtoGridView.FocusedRowHandle;
+            var rowHandle = NhapLuuChuyenKhoDetailDtoGridView.FocusedRowHandle;
 
             if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -505,7 +538,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            var rowData = e.Row as NhapNoiBoDetailDto;
+            var rowData = e.Row as NhapLuuChuyenKhoDetailDto;
             if (rowData == null)
             {
                 _logger.Warning("ValidateRow: Row data is null");
@@ -565,7 +598,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            var gridView = NhapThietBiMuonDetailDtoGridView;
+            var gridView = NhapLuuChuyenKhoDetailDtoGridView;
             if (gridView == null) return;
 
             switch (e.KeyCode)
@@ -816,8 +849,8 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     /// Load chỉ các ProductVariant theo danh sách ID từ details
     /// Chỉ load các ProductVariant cần thiết để tối ưu performance
     /// </summary>
-    /// <param name="details">Danh sách NhapNoiBoDetailDto chứa ProductVariantId</param>
-    private async Task LoadProductVariantsByIdsAsync(List<NhapNoiBoDetailDto> details)
+    /// <param name="details">Danh sách NhapLuuChuyenKhoDetailDto chứa ProductVariantId</param>
+    private async Task LoadProductVariantsByIdsAsync(List<NhapLuuChuyenKhoDetailDto> details)
     {
         try
         {
@@ -942,11 +975,11 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     /// <summary>
     /// Load danh sách chi tiết từ danh sách DTO
     /// </summary>
-    private async void LoadDetails(List<NhapNoiBoDetailDto> details)
+    private async void LoadDetails(List<NhapLuuChuyenKhoDetailDto> details)
     {
         try
         {
-            details ??= new List<NhapNoiBoDetailDto>();
+            details ??= new List<NhapLuuChuyenKhoDetailDto>();
 
             // Gán StockInOutMasterId cho các dòng chưa có
             foreach (var detail in details)
@@ -957,8 +990,8 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
                 }
             }
 
-            nhapLuuChuyenKhoMasterDtoBindingSource.DataSource = details;
-            nhapLuuChuyenKhoMasterDtoBindingSource.ResetBindings(false);
+            nhapLuuChuyenKhoDetailDtoBindingSource.DataSource = details;
+            nhapLuuChuyenKhoDetailDtoBindingSource.ResetBindings(false);
 
             // Load ProductVariant datasource chỉ cho các ProductVariantId có trong details
             await LoadProductVariantsByIdsAsync(details);
@@ -987,9 +1020,17 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             if (_isCalculating) return;
             _isCalculating = true;
 
-            var details = nhapLuuChuyenKhoMasterDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            List<NhapLuuChuyenKhoDetailDto> details;
+            if (nhapLuuChuyenKhoDetailDtoBindingSource.DataSource is List<NhapLuuChuyenKhoDetailDto> dataSourceList)
+            {
+                details = dataSourceList;
+            }
+            else
+            {
+                details = nhapLuuChuyenKhoDetailDtoBindingSource.OfType<NhapLuuChuyenKhoDetailDto>().ToList();
+            }
 
-            NhapThietBiMuonDetailDtoGridView.RefreshData();
+            NhapLuuChuyenKhoDetailDtoGridView.RefreshData();
 
             // Cập nhật tổng tiền lên master
             OnDetailDataChanged();
@@ -1046,7 +1087,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             return;
         }
 
-        var rowHandle = NhapThietBiMuonDetailDtoGridView.FocusedRowHandle;
+        var rowHandle = NhapLuuChuyenKhoDetailDtoGridView.FocusedRowHandle;
 
         // Xử lý cả new row (rowHandle < 0) và existing row (rowHandle >= 0)
         if (rowHandle < 0)
@@ -1054,15 +1095,15 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             // New row: Sử dụng SetFocusedRowCellValue để set giá trị vào các cell
             // Các giá trị này sẽ được commit khi row được thêm vào binding source
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
-            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
-            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.FullNameHtml}");
-            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
+            NhapLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
+            NhapLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
+            NhapLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.FullNameHtml}");
+            NhapLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
         {
             // Existing row: Cập nhật trực tiếp vào row data
-            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is NhapNoiBoDetailDto rowData)
+            if (NhapLuuChuyenKhoDetailDtoGridView.GetRow(rowHandle) is NhapLuuChuyenKhoDetailDto rowData)
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
@@ -1070,7 +1111,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                 // Refresh grid để hiển thị thay đổi
-                NhapThietBiMuonDetailDtoGridView.RefreshRow(rowHandle);
+                NhapLuuChuyenKhoDetailDtoGridView.RefreshRow(rowHandle);
             }
         }
     }
@@ -1111,6 +1152,29 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     #endregion
 
     #region ========== HELPER METHODS ==========
+
+    /// <summary>
+    /// Map NhapLuuChuyenKhoDetailDto sang StockInOutDetail entity
+    /// </summary>
+    private StockInOutDetail MapDetailDtoToEntity(NhapLuuChuyenKhoDetailDto dto)
+    {
+        if (dto == null) return null;
+
+        return new StockInOutDetail
+        {
+            Id = dto.Id,
+            StockInOutMasterId = dto.StockInOutMasterId,
+            ProductVariantId = dto.ProductVariantId,
+            StockInQty = dto.StockInQty,
+            StockOutQty = 0, // NhapLuuChuyenKho chỉ có nhập, không có xuất
+            UnitPrice = 0, // NhapLuuChuyenKho không có giá
+            Vat = 0, // NhapLuuChuyenKho không có VAT
+            VatAmount = 0, // NhapLuuChuyenKho không có VAT
+            TotalAmount = 0, // NhapLuuChuyenKho không có tổng tiền
+            TotalAmountIncludedVat = 0, // NhapLuuChuyenKho không có tổng tiền
+            GhiChu = dto.GhiChu ?? "Bình thường"
+        };
+    }
 
     /// <summary>
     /// Hiển thị lỗi

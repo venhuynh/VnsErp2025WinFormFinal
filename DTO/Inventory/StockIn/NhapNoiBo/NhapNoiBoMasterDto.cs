@@ -161,7 +161,6 @@ public class NhapNoiBoMasterDto
     /// </summary>
     [DisplayName("Mã kho")]
     [Display(Order = 11)]
-    [Required(ErrorMessage = "Kho nhập không được để trống")]
     public string WarehouseCode { get; set; }
 
     /// <summary>
@@ -169,7 +168,6 @@ public class NhapNoiBoMasterDto
     /// </summary>
     [DisplayName("Tên kho")]
     [Display(Order = 12)]
-    [Required(ErrorMessage = "Kho nhập không được để trống")]
     public string WarehouseName { get; set; }
 
 

@@ -2,7 +2,7 @@
 
 namespace Inventory.StockIn.NhapThietBiMuon
 {
-    partial class UcNhapNoiBoDetail
+    partial class UcNhapThietBiMuonDetail
     {
         /// <summary> 
         /// Required designer variable.

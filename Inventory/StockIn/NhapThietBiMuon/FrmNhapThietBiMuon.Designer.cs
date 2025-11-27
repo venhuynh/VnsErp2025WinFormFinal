@@ -31,7 +31,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapThietBiMuonDetail1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapNoiBoDetail();
+            this.ucNhapThietBiMuonDetail1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
@@ -359,7 +359,7 @@
         private DevExpress.XtraBars.BarButtonItem NhapQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
-        private Inventory.StockIn.NhapThietBiMuon.UcNhapNoiBoDetail ucNhapThietBiMuonDetail1;
+        private Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail ucNhapThietBiMuonDetail1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private UcNhapThietBiMuonMaster ucNhapThietBiMuonMaster1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;

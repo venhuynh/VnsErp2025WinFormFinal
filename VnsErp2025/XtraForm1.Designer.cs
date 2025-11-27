@@ -30,30 +30,73 @@ namespace VnsErp2025
         /// </summary>
         private void InitializeComponent()
         {
-            this.ucStockInMaster1 = new UcStockInMaster();
+            this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.ucNhapNoiBoDetail1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
+            this.layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
-            // ucStockInMaster1
+            // layoutControl1
             // 
-            this.ucStockInMaster1.Location = new System.Drawing.Point(139, 12);
-            this.ucStockInMaster1.Name = "ucStockInMaster1";
-            this.ucStockInMaster1.Size = new System.Drawing.Size(486, 623);
-            this.ucStockInMaster1.TabIndex = 0;
+            this.layoutControl1.Controls.Add(this.ucNhapNoiBoDetail1);
+            this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layoutControl1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControl1.Name = "layoutControl1";
+            this.layoutControl1.Root = this.Root;
+            this.layoutControl1.Size = new System.Drawing.Size(885, 654);
+            this.layoutControl1.TabIndex = 0;
+            this.layoutControl1.Text = "layoutControl1";
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(885, 654);
+            this.Root.TextVisible = false;
+            // 
+            // ucNhapNoiBoDetail1
+            // 
+            this.ucNhapNoiBoDetail1.Location = new System.Drawing.Point(12, 12);
+            this.ucNhapNoiBoDetail1.Name = "ucNhapNoiBoDetail1";
+            this.ucNhapNoiBoDetail1.Size = new System.Drawing.Size(861, 630);
+            this.ucNhapNoiBoDetail1.TabIndex = 4;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.ucNhapNoiBoDetail1;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(865, 634);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // XtraForm1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(885, 654);
-            this.Controls.Add(this.ucStockInMaster1);
+            this.Controls.Add(this.layoutControl1);
             this.Name = "XtraForm1";
             this.Text = "XtraForm1";
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
+            this.layoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private UcStockInMaster ucStockInMaster1;
+        private DevExpress.XtraLayout.LayoutControl layoutControl1;
+        private Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail ucNhapNoiBoDetail1;
+        private DevExpress.XtraLayout.LayoutControlGroup Root;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

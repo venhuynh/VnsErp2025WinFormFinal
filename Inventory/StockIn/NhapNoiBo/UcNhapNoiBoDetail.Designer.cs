@@ -30,8 +30,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.NhapThietBiMuonDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.NhapThietBiMuonDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.NhapNoiBoDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
+            this.nhapNoiBoDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.NhapNoiBoDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -47,9 +48,9 @@
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.nhapNoiBoDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NhapNoiBoDetailDtoGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nhapNoiBoDetailDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NhapNoiBoDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantDtoSearchLookUpEdit1View)).BeginInit();
@@ -59,51 +60,54 @@
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nhapNoiBoDetailDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
-            // NhapThietBiMuonDetailDtoGridControl
+            // NhapNoiBoDetailDtoGridControl
             // 
-            this.NhapThietBiMuonDetailDtoGridControl.DataSource = this.nhapNoiBoDetailDtoBindingSource;
-            this.NhapThietBiMuonDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.NhapThietBiMuonDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
-            this.NhapThietBiMuonDetailDtoGridControl.MainView = this.NhapThietBiMuonDetailDtoGridView;
-            this.NhapThietBiMuonDetailDtoGridControl.Name = "NhapThietBiMuonDetailDtoGridControl";
-            this.NhapThietBiMuonDetailDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.NhapNoiBoDetailDtoGridControl.DataSource = this.nhapNoiBoDetailDtoBindingSource;
+            this.NhapNoiBoDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.NhapNoiBoDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
+            this.NhapNoiBoDetailDtoGridControl.MainView = this.NhapNoiBoDetailDtoGridView;
+            this.NhapNoiBoDetailDtoGridControl.Name = "NhapNoiBoDetailDtoGridControl";
+            this.NhapNoiBoDetailDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.ProductVariantSearchLookUpEdit,
             this.StockInDetailProductNameHtmlHypertextLabel,
             this.StockInQtyTextEdit,
             this.UnitPriceTextEdit,
             this.VatTextEdit,
             this.GhiChuMemoEdit});
-            this.NhapThietBiMuonDetailDtoGridControl.Size = new System.Drawing.Size(1267, 704);
-            this.NhapThietBiMuonDetailDtoGridControl.TabIndex = 0;
-            this.NhapThietBiMuonDetailDtoGridControl.UseEmbeddedNavigator = true;
-            this.NhapThietBiMuonDetailDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.NhapThietBiMuonDetailDtoGridView});
+            this.NhapNoiBoDetailDtoGridControl.Size = new System.Drawing.Size(1267, 704);
+            this.NhapNoiBoDetailDtoGridControl.TabIndex = 0;
+            this.NhapNoiBoDetailDtoGridControl.UseEmbeddedNavigator = true;
+            this.NhapNoiBoDetailDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.NhapNoiBoDetailDtoGridView});
             // 
-            // NhapThietBiMuonDetailDtoGridView
+            // nhapNoiBoDetailDtoBindingSource
             // 
-            this.NhapThietBiMuonDetailDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.NhapThietBiMuonDetailDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
-            this.NhapThietBiMuonDetailDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
-            this.NhapThietBiMuonDetailDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
-            this.NhapThietBiMuonDetailDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.nhapNoiBoDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapNoiBo.NhapNoiBoDetailDto);
+            // 
+            // NhapNoiBoDetailDtoGridView
+            // 
+            this.NhapNoiBoDetailDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.NhapNoiBoDetailDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.NhapNoiBoDetailDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.NhapNoiBoDetailDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.NhapNoiBoDetailDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colProductVariantCode,
             this.colProductVariantName,
             this.colUnitOfMeasureName,
             this.colStockInQty,
             this.colGhiChu});
-            this.NhapThietBiMuonDetailDtoGridView.GridControl = this.NhapThietBiMuonDetailDtoGridControl;
-            this.NhapThietBiMuonDetailDtoGridView.IndicatorWidth = 50;
-            this.NhapThietBiMuonDetailDtoGridView.Name = "NhapThietBiMuonDetailDtoGridView";
-            this.NhapThietBiMuonDetailDtoGridView.OptionsNavigation.AutoFocusNewRow = true;
-            this.NhapThietBiMuonDetailDtoGridView.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Top;
-            this.NhapThietBiMuonDetailDtoGridView.OptionsView.RowAutoHeight = true;
-            this.NhapThietBiMuonDetailDtoGridView.OptionsView.ShowFooter = true;
-            this.NhapThietBiMuonDetailDtoGridView.OptionsView.ShowGroupPanel = false;
-            this.NhapThietBiMuonDetailDtoGridView.OptionsView.ShowViewCaption = true;
-            this.NhapThietBiMuonDetailDtoGridView.ViewCaption = "DANH SÁCH HÀNG HÓA DỊCH VỤ NHẬP KHO";
+            this.NhapNoiBoDetailDtoGridView.GridControl = this.NhapNoiBoDetailDtoGridControl;
+            this.NhapNoiBoDetailDtoGridView.IndicatorWidth = 50;
+            this.NhapNoiBoDetailDtoGridView.Name = "NhapNoiBoDetailDtoGridView";
+            this.NhapNoiBoDetailDtoGridView.OptionsNavigation.AutoFocusNewRow = true;
+            this.NhapNoiBoDetailDtoGridView.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Top;
+            this.NhapNoiBoDetailDtoGridView.OptionsView.RowAutoHeight = true;
+            this.NhapNoiBoDetailDtoGridView.OptionsView.ShowFooter = true;
+            this.NhapNoiBoDetailDtoGridView.OptionsView.ShowGroupPanel = false;
+            this.NhapNoiBoDetailDtoGridView.OptionsView.ShowViewCaption = true;
+            this.NhapNoiBoDetailDtoGridView.ViewCaption = "DANH SÁCH HÀNG HÓA THIẾT BỊ NHẬP NỘI BỘ";
             // 
             // colProductVariantCode
             // 
@@ -321,19 +325,16 @@
             this.VatTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.VatTextEdit.Name = "VatTextEdit";
             // 
-            // nhapNoiBoDetailDtoBindingSource
-            // 
-            this.nhapNoiBoDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapNoiBo.NhapNoiBoDetailDto);
-            // 
             // UcNhapNoiBoDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.NhapThietBiMuonDetailDtoGridControl);
+            this.Controls.Add(this.NhapNoiBoDetailDtoGridControl);
             this.Name = "UcNhapNoiBoDetail";
             this.Size = new System.Drawing.Size(1267, 704);
-            ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NhapNoiBoDetailDtoGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nhapNoiBoDetailDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NhapNoiBoDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantDtoSearchLookUpEdit1View)).EndInit();
@@ -343,15 +344,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nhapNoiBoDetailDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private DevExpress.XtraGrid.GridControl NhapThietBiMuonDetailDtoGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView NhapThietBiMuonDetailDtoGridView;
+        private DevExpress.XtraGrid.GridControl NhapNoiBoDetailDtoGridControl;
+        private DevExpress.XtraGrid.Views.Grid.GridView NhapNoiBoDetailDtoGridView;
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantCode;
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantName;
         private DevExpress.XtraGrid.Columns.GridColumn colUnitOfMeasureName;

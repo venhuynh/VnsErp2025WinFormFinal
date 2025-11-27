@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Inventory.StockIn;
+﻿using Bll.Inventory.StockIn;
 using Bll.MasterData.CompanyBll;
-using Bll.MasterData.CustomerBll;
 using Common;
 using Common.Utils;
 using Dal.DataContext;
@@ -15,6 +8,12 @@ using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
 using DTO.Inventory.StockIn.NhapNoiBo;
 using DTO.MasterData.Company;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Inventory.StockIn.NhapLuuChuyenKho;
 
@@ -38,10 +37,6 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
     /// </summary>
     private bool _isWarehouseDataSourceLoaded;
 
-    /// <summary>
-    /// Flag đánh dấu Supplier datasource đã được load chưa
-    /// </summary>
-    private bool _isSupplierDataSourceLoaded;
 
     private Guid _stockInOutMasterId = Guid.Empty;
 
@@ -340,7 +335,6 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
         {
             // Reset flags để đảm bảo load lại khi form load
             _isWarehouseDataSourceLoaded = false;
-            _isSupplierDataSourceLoaded = false;
 
             // Load warehouse datasource (nhập nội bộ không cần supplier)
             await LoadWarehouseDataSourceAsync(forceRefresh: true);
@@ -387,16 +381,6 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
     }
 
     /// <summary>
-    /// Load datasource cho Supplier (BusinessPartnerSite) - Đã xóa vì nhập nội bộ không cần nhà cung cấp
-    /// </summary>
-    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-    private async Task LoadSupplierDataSourceAsync(bool forceRefresh = false)
-    {
-        // Nhập nội bộ không cần supplier, method này giữ lại để tương thích nhưng không làm gì
-        await Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Load single Warehouse record theo ID và set vào datasource
     /// Chỉ load đúng 1 record để tối ưu performance
     /// </summary>
@@ -436,16 +420,6 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
             ShowError(ex, "Lỗi tải dữ liệu kho");
             throw;
         }
-    }
-
-    /// <summary>
-    /// Load single Supplier record theo ID - Đã xóa vì nhập nội bộ không cần nhà cung cấp
-    /// </summary>
-    /// <param name="supplierId">ID của Supplier (BusinessPartnerSite)</param>
-    private async Task LoadSingleSupplierByIdAsync(Guid? supplierId)
-    {
-        // Nhập nội bộ không cần supplier, method này giữ lại để tương thích nhưng không làm gì
-        await Task.CompletedTask;
     }
 
     /// <summary>
@@ -996,14 +970,6 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
     private string FormatQuantity(decimal value)
     {
         return value.ToString(ApplicationConstants.QUANTITY_FORMAT);
-    }
-
-    /// <summary>
-    /// Format tiền tệ (không có chữ số thập phân)
-    /// </summary>
-    private string FormatCurrency(decimal value)
-    {
-        return value.ToString(ApplicationConstants.CURRENCY_FORMAT);
     }
 
     #endregion
