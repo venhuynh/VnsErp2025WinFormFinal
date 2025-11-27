@@ -77,7 +77,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             // GridView đã được khai báo trong Designer, property public sẽ expose nó
 
             // Khởi tạo binding source với danh sách rỗng
-            nhapNoiBoDetailDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
+            nhapLuuChuyenKhoMasterDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
 
             // Setup events
             InitializeEvents();
@@ -127,7 +127,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            var details = nhapNoiBoDetailDtoBindingSource.Cast<StockInOutDetail>().ToList();
+            var details = nhapLuuChuyenKhoMasterDtoBindingSource.Cast<StockInOutDetail>().ToList();
 
             // Đảm bảo tất cả các dòng đều có StockInOutMasterId
             foreach (var detail in details.Where(detail => detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty))
@@ -151,8 +151,8 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            nhapNoiBoDetailDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
-            nhapNoiBoDetailDtoBindingSource.ResetBindings(false);
+            nhapLuuChuyenKhoMasterDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
+            nhapLuuChuyenKhoMasterDtoBindingSource.ResetBindings(false);
             _stockInMasterId = Guid.Empty;
 
             // Reset cache flag để load lại khi cần
@@ -218,7 +218,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             _stockInMasterId = stockInMasterId;
 
             // Cập nhật StockInOutMasterId cho tất cả các dòng hiện có
-            var details = nhapNoiBoDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            var details = nhapLuuChuyenKhoMasterDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
             foreach (var detail in details)
             {
                 if (detail.StockInOutMasterId == Guid.Empty)
@@ -241,7 +241,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            var details = nhapNoiBoDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            var details = nhapLuuChuyenKhoMasterDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
 
             if (details.Count == 0)
             {
@@ -957,8 +957,8 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
                 }
             }
 
-            nhapNoiBoDetailDtoBindingSource.DataSource = details;
-            nhapNoiBoDetailDtoBindingSource.ResetBindings(false);
+            nhapLuuChuyenKhoMasterDtoBindingSource.DataSource = details;
+            nhapLuuChuyenKhoMasterDtoBindingSource.ResetBindings(false);
 
             // Load ProductVariant datasource chỉ cho các ProductVariantId có trong details
             await LoadProductVariantsByIdsAsync(details);
@@ -987,7 +987,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             if (_isCalculating) return;
             _isCalculating = true;
 
-            var details = nhapNoiBoDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            var details = nhapLuuChuyenKhoMasterDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
 
             NhapThietBiMuonDetailDtoGridView.RefreshData();
 

@@ -18,7 +18,7 @@ using DTO.MasterData.Company;
 
 namespace Inventory.StockIn.NhapLuuChuyenKho;
 
-public partial class UcLuuChuyenKhoMaster : XtraUserControl
+public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
 {
     #region ========== KHAI BÁO BIẾN ==========
 
@@ -27,11 +27,6 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
     /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
     /// </summary>
     private readonly CompanyBranchBll _companyBranchBll = new();
-
-    /// <summary>
-    /// Business Logic Layer cho BusinessPartnerSite (dùng cho Supplier lookup)
-    /// </summary>
-    private readonly BusinessPartnerSiteBll _businessPartnerSiteBll = new();
 
     /// <summary>
     /// Business Logic Layer cho StockIn (dùng để lấy số thứ tự tiếp theo)
@@ -59,7 +54,7 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcLuuChuyenKhoMaster()
+    public UcNhapLuuChuyenKhoMaster()
     {
         InitializeComponent();
         InitializeControl();
@@ -110,7 +105,7 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
             Id = Guid.Empty,
             VocherNumber = null,
             StockInOutDate = DateTime.Now,
-            StockInOutType = (int)LoaiNhapXuatKhoEnum.NhapNoiBo,
+            StockInOutType = (int)LoaiNhapXuatKhoEnum.NhapLuuChuyenKho,
             VoucherStatus = (int)TrangThaiPhieuNhapEnum.TaoMoi,
             WarehouseId = Guid.Empty,
             PartnerSiteId = null, // Nhập nội bộ không có supplier
@@ -133,11 +128,11 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
         try
         {
             // Setup Warehouse SearchLookUpEdit
-            WarehouseNameSearchLookupEdit.Properties.DataSource = companyBranchDtoBindingSource;
-            WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
-            WarehouseNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
-            WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            WarehouseNameSearchLookupEdit.Properties.PopupView = CompanyBranchDtoSearchLookUpEdit1View;
+            WarehouseStockInNameSearchLookupEdit.Properties.DataSource = companyBranchDtoBindingSource;
+            WarehouseStockInNameSearchLookupEdit.Properties.ValueMember = "Id";
+            WarehouseStockInNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
+            WarehouseStockInNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            WarehouseStockInNameSearchLookupEdit.Properties.PopupView = CompanyBranchDtoSearchLookUpEdit1View;
 
             // Đảm bảo column ThongTinHtml được cấu hình đúng (đã có sẵn trong Designer)
             if (colThongTinHtml != null)
@@ -191,8 +186,12 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
             Load += UcStockInMaster_Load;
 
             //Sự kiện của WarehouseNameSearchLookupEdit
-            WarehouseNameSearchLookupEdit.Popup += WarehouseNameSearchLookupEdit_Popup;
-            WarehouseNameSearchLookupEdit.EditValueChanged += WarehouseNameSearchLookupEdit_EditValueChanged;
+            WarehouseStockInNameSearchLookupEdit.Popup += WarehouseNameSearchLookupEdit_Popup;
+            WarehouseStockInNameSearchLookupEdit.EditValueChanged += WarehouseNameSearchLookupEdit_EditValueChanged;
+
+            //Sự kiện của WarehouseStockOutNameSearchLookupEdit
+            WarehouseStockOutNameSearchLookupEdit.Popup += WarehouseStockOutNameSearchLookupEdit_Popup;
+            WarehouseStockOutNameSearchLookupEdit.EditValueChanged += WarehouseStockOutNameSearchLookupEdit_EditValueChanged;
 
 
             StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
@@ -209,24 +208,6 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
         }
     }
 
-    private async void WarehouseNameSearchLookupEdit_Popup(object sender, EventArgs e)
-    {
-        try
-        {
-            // Chỉ load nếu chưa load hoặc datasource rỗng
-            if (!_isWarehouseDataSourceLoaded ||
-                companyBranchDtoBindingSource.DataSource == null ||
-                (companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> list && list.Count == 0))
-            {
-                await LoadWarehouseDataSourceAsync();
-                _isWarehouseDataSourceLoaded = true;
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi tải dữ liệu kho");
-        }
-    }
 
     #endregion
 
@@ -255,13 +236,13 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
     /// </summary>
     private void SetupTextEditSuperTips()
     {
-        // SuperTip cho Số phiếu nhập nội bộ
+        // SuperTip cho Số phiếu lưu chuyển kho
         if (StockInNumberTextEdit != null)
         {
             SuperToolTipHelper.SetTextEditSuperTip(
                 StockInNumberTextEdit,
-                title: @"<b><color=DarkBlue>📄 Số phiếu nhập nội bộ</color></b>",
-                content: @"Số phiếu nhập nội bộ được tạo tự động theo format: <b>PNK-MMYY-NNXXX</b><br/><br/><b>Format:</b><br/>• PNK: Phiếu nhập kho<br/>• MM: Tháng (2 ký tự)<br/>• YY: Năm (2 ký tự cuối)<br/>• NN: Index của Loại nhập kho (2 ký tự)<br/>• XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)<br/><br/><b>Chức năng:</b><br/>• Tự động tạo khi thay đổi ngày nhập nội bộ<br/>• Tự động tạo khi thay đổi loại nhập kho<br/>• Query database để lấy số thứ tự tiếp theo<br/>• Đảm bảo số phiếu duy nhất trong cùng tháng/năm/loại<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Số phiếu nhập nội bộ sẽ được lưu vào database khi lưu phiếu nhập."
+                title: @"<b><color=DarkBlue>📄 Số phiếu lưu chuyển kho</color></b>",
+                content: @"Số phiếu lưu chuyển kho được tạo tự động theo format: <b>PNK-MMYY-NNXXX</b><br/><br/><b>Format:</b><br/>• PNK: Phiếu nhập kho<br/>• MM: Tháng (2 ký tự)<br/>• YY: Năm (2 ký tự cuối)<br/>• NN: Index của Loại nhập kho (2 ký tự)<br/>• XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)<br/><br/><b>Chức năng:</b><br/>• Tự động tạo khi thay đổi ngày lưu chuyển kho<br/>• Tự động tạo khi thay đổi loại nhập kho<br/>• Query database để lấy số thứ tự tiếp theo<br/>• Đảm bảo số phiếu duy nhất trong cùng tháng/năm/loại<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Số phiếu lưu chuyển kho sẽ được lưu vào database khi lưu phiếu."
             );
         }
 
@@ -272,7 +253,7 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
             SuperToolTipHelper.SetTextEditSuperTip(
                 NguoiNhanHangTextEdit,
                 title: @"<b><color=DarkBlue>👤 Người nhận hàng</color></b>",
-                content: @"Nhập tên người nhận hàng nội bộ tại kho.<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người nhận hàng nội bộ<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập nội bộ."
+                content: @"Nhập tên người nhận hàng tại kho đích (kho nhận).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người nhận hàng tại kho đích<br/>• Hỗ trợ tra cứu và theo dõi quá trình lưu chuyển kho<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu lưu chuyển kho."
             );
         }
 
@@ -282,7 +263,7 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
             SuperToolTipHelper.SetTextEditSuperTip(
                 NguoiGiaoHangTextEdit,
                 title: @"<b><color=DarkBlue>🚚 Người giao hàng</color></b>",
-                content: @"Nhập tên người giao hàng nội bộ (từ chi nhánh/đơn vị nội bộ).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người giao hàng nội bộ<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập nội bộ."
+                content: @"Nhập tên người giao hàng tại kho nguồn (kho xuất).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người giao hàng tại kho nguồn<br/>• Hỗ trợ tra cứu và theo dõi quá trình lưu chuyển kho<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu lưu chuyển kho."
             );
         }
     }
@@ -292,13 +273,13 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
     /// </summary>
     private void SetupDateEditSuperTips()
     {
-        // SuperTip cho Ngày nhập nội bộ
+        // SuperTip cho Ngày lưu chuyển kho
         if (StockInDateDateEdit != null)
         {
             SuperToolTipHelper.SetBaseEditSuperTip(
                 StockInDateDateEdit,
-                title: @"<b><color=DarkBlue>📅 Ngày nhập nội bộ</color></b>",
-                content: @"Chọn ngày nhập nội bộ cho phiếu nhập.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm nhập nội bộ<br/>• Tự động tạo số phiếu nhập nội bộ dựa trên ngày<br/>• Format số phiếu: PNK-MMYY-NNXXX (MM, YY từ ngày này)<br/>• Query database để lấy số thứ tự tiếp theo trong tháng/năm<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Mặc định: Ngày hiện tại<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày nhập nội bộ, hệ thống sẽ tự động tạo lại số phiếu nhập nội bộ theo format mới."
+                title: @"<b><color=DarkBlue>📅 Ngày lưu chuyển kho</color></b>",
+                content: @"Chọn ngày lưu chuyển kho cho phiếu.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm lưu chuyển kho<br/>• Tự động tạo số phiếu lưu chuyển kho dựa trên ngày<br/>• Format số phiếu: PNK-MMYY-NNXXX (MM, YY từ ngày này)<br/>• Query database để lấy số thứ tự tiếp theo trong tháng/năm<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Mặc định: Ngày hiện tại<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày lưu chuyển kho, hệ thống sẽ tự động tạo lại số phiếu theo format mới."
             );
         }
     }
@@ -308,17 +289,25 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
     /// </summary>
     private void SetupSearchLookupEditSuperTips()
     {
-        // SuperTip cho Kho nhập
-        if (WarehouseNameSearchLookupEdit != null)
+        // SuperTip cho Kho nhận (kho đích)
+        if (WarehouseStockInNameSearchLookupEdit != null)
         {
             SuperToolTipHelper.SetBaseEditSuperTip(
-                WarehouseNameSearchLookupEdit,
-                title: @"<b><color=DarkBlue>🏢 Kho nhập</color></b>",
-                content: @"Chọn kho nhập nội bộ từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho nhập nội bộ<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật WarehouseId vào Entity<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho nhập nội bộ sẽ được lưu vào database khi lưu phiếu nhập nội bộ."
+                WarehouseStockInNameSearchLookupEdit,
+                title: @"<b><color=DarkBlue>🏢 Kho nhận (Kho đích)</color></b>",
+                content: @"Chọn kho nhận hàng (kho đích) từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho nhận hàng trong quá trình lưu chuyển kho<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật WarehouseId vào Entity<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Không được trùng với kho xuất<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra không được trùng với kho xuất<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho nhận sẽ được lưu vào database khi lưu phiếu lưu chuyển kho."
             );
         }
 
-        // SuperTip cho Nhà cung cấp - Đã xóa vì nhập nội bộ không cần nhà cung cấp
+        // SuperTip cho Kho xuất (kho nguồn)
+        if (WarehouseStockOutNameSearchLookupEdit != null)
+        {
+            SuperToolTipHelper.SetBaseEditSuperTip(
+                WarehouseStockOutNameSearchLookupEdit,
+                title: @"<b><color=DarkBlue>📤 Kho xuất (Kho nguồn)</color></b>",
+                content: @"Chọn kho xuất hàng (kho nguồn) từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho xuất hàng trong quá trình lưu chuyển kho<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật PartnerSiteId vào Entity (để lưu thông tin kho nguồn)<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Không được trùng với kho nhận<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Kiểm tra không được trùng với kho nhận<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho xuất sẽ được lưu vào PartnerSiteId trong database khi lưu phiếu lưu chuyển kho."
+            );
+        }
     }
 
     /// <summary>
@@ -332,7 +321,7 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
             SuperToolTipHelper.SetBaseEditSuperTip(
                 NotesTextEdit,
                 title: @"<b><color=DarkBlue>📝 Ghi chú</color></b>",
-                content: @"Nhập ghi chú hoặc mô tả bổ sung cho phiếu nhập nội bộ.<br/><br/><b>Chức năng:</b><br/>• Lưu thông tin bổ sung về phiếu nhập nội bộ<br/>• Ghi chú về lý do nhập nội bộ, điều kiện chuyển kho, nguồn gốc hàng hóa, v.v.<br/>• Hỗ trợ nhiều dòng văn bản<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Không giới hạn độ dài<br/><br/><color=Gray>Lưu ý:</color> Ghi chú sẽ được lưu vào database khi lưu phiếu nhập nội bộ."
+                content: @"Nhập ghi chú hoặc mô tả bổ sung cho phiếu lưu chuyển kho.<br/><br/><b>Chức năng:</b><br/>• Lưu thông tin bổ sung về phiếu lưu chuyển kho<br/>• Ghi chú về lý do lưu chuyển kho, điều kiện vận chuyển, phương tiện vận chuyển, thời gian giao nhận, v.v.<br/>• Hỗ trợ nhiều dòng văn bản<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Không giới hạn độ dài<br/><br/><color=Gray>Lưu ý:</color> Ghi chú sẽ được lưu vào database khi lưu phiếu lưu chuyển kho."
             );
         }
     }
@@ -549,13 +538,13 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
     {
         try
         {
-            if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
+            if (WarehouseStockInNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
             {
                 // Cập nhật WarehouseId vào Entity
                 _stockInMaster.WarehouseId = warehouseId;
 
                 // Xóa lỗi validation nếu có
-                dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, string.Empty);
+                dxErrorProvider1.SetError(WarehouseStockInNameSearchLookupEdit, string.Empty);
             }
             else
             {
@@ -565,6 +554,76 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
         catch (Exception ex)
         {
             ShowError(ex, "Lỗi xử lý thay đổi kho");
+        }
+    }
+
+
+    private void WarehouseStockOutNameSearchLookupEdit_EditValueChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (WarehouseStockInNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
+            {
+                //Nếu 
+                if (_stockInMaster.WarehouseId == warehouseId)
+                {
+                    //Báo lỗi kho nhập và kho xuất không được trùng nhau
+                    dxErrorProvider1.SetError(WarehouseStockOutNameSearchLookupEdit, "Kho nhập và kho xuất không được trùng nhau");
+                    return;
+                }
+
+                // Cập nhật PartnerSiteId vào Entity
+                _stockInMaster.PartnerSiteId = warehouseId;
+
+                // Xóa lỗi validation nếu có
+                dxErrorProvider1.SetError(WarehouseStockInNameSearchLookupEdit, string.Empty);
+            }
+            else
+            {
+                _stockInMaster.WarehouseId = Guid.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi xử lý thay đổi kho");
+        }
+    }
+
+    private async void WarehouseStockOutNameSearchLookupEdit_Popup(object sender, EventArgs e)
+    {
+        try
+        {
+            // Chỉ load nếu chưa load hoặc datasource rỗng
+            if (!_isWarehouseDataSourceLoaded ||
+                companyBranchDtoBindingSource.DataSource == null ||
+                (companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> list && list.Count == 0))
+            {
+                await LoadWarehouseDataSourceAsync();
+                _isWarehouseDataSourceLoaded = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi tải dữ liệu kho");
+        }
+    }
+
+    private async void WarehouseNameSearchLookupEdit_Popup(object sender, EventArgs e)
+    {
+        try
+        {
+            // Chỉ load nếu chưa load hoặc datasource rỗng
+            if (!_isWarehouseDataSourceLoaded ||
+                companyBranchDtoBindingSource.DataSource == null ||
+                (companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> list && list.Count == 0))
+            {
+                await LoadWarehouseDataSourceAsync();
+                _isWarehouseDataSourceLoaded = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi tải dữ liệu kho");
         }
     }
 
@@ -648,9 +707,9 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
             }
 
             // Cập nhật từ Warehouse SearchLookUpEdit
-            if (WarehouseNameSearchLookupEdit != null)
+            if (WarehouseStockInNameSearchLookupEdit != null)
             {
-                if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
+                if (WarehouseStockInNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
                 {
                     _stockInMaster.WarehouseId = warehouseId;
                 }
@@ -747,9 +806,9 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
         {
             nameof(NhapNoiBoMasterDto.StockInNumber) => StockInNumberTextEdit,
             nameof(NhapNoiBoMasterDto.StockInDate) => StockInDateDateEdit,
-            nameof(NhapNoiBoMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
-            nameof(NhapNoiBoMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
-            nameof(NhapNoiBoMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
+            nameof(NhapNoiBoMasterDto.WarehouseId) => WarehouseStockInNameSearchLookupEdit,
+            nameof(NhapNoiBoMasterDto.WarehouseCode) => WarehouseStockInNameSearchLookupEdit,
+            nameof(NhapNoiBoMasterDto.WarehouseName) => WarehouseStockInNameSearchLookupEdit,
             nameof(NhapNoiBoMasterDto.Notes) => NotesTextEdit,
             nameof(NhapNoiBoMasterDto.NguoiNhanHang) => NguoiNhanHangTextEdit,
             nameof(NhapNoiBoMasterDto.NguoiGiaoHang) => NguoiGiaoHangTextEdit,
@@ -780,7 +839,7 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
 
             // Cập nhật lại Id và LoaiNhapXuatKho vào Entity
             _stockInMaster.Id = _stockInOutMasterId;
-            _stockInMaster.StockInOutType = (int)LoaiNhapXuatKhoEnum.NhapNoiBo;
+            _stockInMaster.StockInOutType = (int)LoaiNhapXuatKhoEnum.NhapLuuChuyenKho;
 
             // Convert Entity sang DTO để trả về
             return MapEntityToDto(_stockInMaster);
@@ -821,7 +880,7 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
 
             // Load datasource cho Warehouse trước khi set EditValue
             await LoadSingleWarehouseByIdAsync(masterEntity.WarehouseId);
-            WarehouseNameSearchLookupEdit.EditValue = masterEntity.WarehouseId;
+            WarehouseStockInNameSearchLookupEdit.EditValue = masterEntity.WarehouseId;
 
             // Nhập nội bộ không cần supplier, không load supplier data
 
@@ -845,9 +904,9 @@ public partial class UcLuuChuyenKhoMaster : XtraUserControl
 
             // Reset tất cả các controls về giá trị mặc định
             // Reset SearchLookUpEdit - phải set EditValue = null để xóa selection
-            if (WarehouseNameSearchLookupEdit != null)
+            if (WarehouseStockInNameSearchLookupEdit != null)
             {
-                WarehouseNameSearchLookupEdit.EditValue = null;
+                WarehouseStockInNameSearchLookupEdit.EditValue = null;
             }
 
             // Nhập nội bộ không có Supplier control

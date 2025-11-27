@@ -47,7 +47,7 @@
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.nhapNoiBoDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.nhapLuuChuyenKhoMasterDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
@@ -59,12 +59,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nhapNoiBoDetailDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nhapLuuChuyenKhoMasterDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // NhapThietBiMuonDetailDtoGridControl
             // 
-            this.NhapThietBiMuonDetailDtoGridControl.DataSource = this.nhapNoiBoDetailDtoBindingSource;
+            this.NhapThietBiMuonDetailDtoGridControl.DataSource = this.nhapLuuChuyenKhoMasterDtoBindingSource;
             this.NhapThietBiMuonDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NhapThietBiMuonDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
             this.NhapThietBiMuonDetailDtoGridControl.MainView = this.NhapThietBiMuonDetailDtoGridView;
@@ -321,16 +321,16 @@
             this.VatTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.VatTextEdit.Name = "VatTextEdit";
             // 
-            // nhapNoiBoDetailDtoBindingSource
+            // nhapLuuChuyenKhoMasterDtoBindingSource
             // 
-            this.nhapNoiBoDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapNoiBo.NhapNoiBoDetailDto);
+            this.nhapLuuChuyenKhoMasterDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapLuuChuyenKho.NhapLuuChuyenKhoMasterDto);
             // 
-            // UcNhapNoiBoDetail
+            // UcNhapLuuChuyenKhoDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.NhapThietBiMuonDetailDtoGridControl);
-            this.Name = "UcNhapNoiBoDetail";
+            this.Name = "UcNhapLuuChuyenKhoDetail";
             this.Size = new System.Drawing.Size(1267, 704);
             ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridView)).EndInit();
@@ -343,7 +343,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nhapNoiBoDetailDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nhapLuuChuyenKhoMasterDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -368,6 +368,6 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
-        private System.Windows.Forms.BindingSource nhapNoiBoDetailDtoBindingSource;
+        private System.Windows.Forms.BindingSource nhapLuuChuyenKhoMasterDtoBindingSource;
     }
 }

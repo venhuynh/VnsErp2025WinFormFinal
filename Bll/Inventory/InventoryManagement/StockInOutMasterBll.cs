@@ -5,12 +5,10 @@ using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
+using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Logger.Interfaces;
 
 namespace Bll.Inventory.InventoryManagement;
 
@@ -123,7 +121,7 @@ public class StockInOutMasterBll
     /// </summary>
     /// <param name="query">Query criteria</param>
     /// <returns>Danh sách StockInOutMaster entities</returns>
-    public List<StockInOutMaster> QueryHistory(Dal.DataAccess.Implementations.Inventory.StockIn.StockInHistoryQueryCriteria query)
+    public List<StockInOutMaster> QueryHistory(StockInHistoryQueryCriteria query)
     {
         try
         {
@@ -146,7 +144,7 @@ public class StockInOutMasterBll
     /// </summary>
     /// <param name="query">Query criteria</param>
     /// <returns>Tổng số bản ghi</returns>
-    public int CountHistory(Dal.DataAccess.Implementations.Inventory.StockIn.StockInHistoryQueryCriteria query)
+    public int CountHistory(StockInHistoryQueryCriteria query)
     {
         try
         {

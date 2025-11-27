@@ -6,6 +6,7 @@ using System;
 using System.Windows.Forms;
 
 
+
 namespace VnsErp2025
 {
     internal static class Program

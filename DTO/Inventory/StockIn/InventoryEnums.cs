@@ -24,7 +24,13 @@ namespace DTO.Inventory.StockIn
         /// </summary>
         [Description("Nhập thiết bị nội bộ")]
         NhapNoiBo = 3,
-        
+
+        /// <summary>
+        /// Nhập lưu chuyển kho
+        /// </summary>
+        [Description("Nhập lưu chuyển kho")]
+        NhapLuuChuyenKho = 4,
+
         /// <summary>
         /// Khác
         /// </summary>
