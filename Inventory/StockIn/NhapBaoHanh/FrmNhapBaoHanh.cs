@@ -7,6 +7,7 @@ using Bll.Inventory.StockIn;
 using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
+using DevExpress.XtraReports.UI;
 using DTO.Inventory.StockIn.NhapBaoHanh;
 using Inventory.InventoryManagement;
 using Inventory.StockIn.InPhieu;
@@ -374,9 +375,27 @@ namespace Inventory.StockIn.NhapBaoHanh
                     _logger.Warning("InPhieuBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
                     return;
                 }
+                // In phiếu nhập hàng bảo hành với preview
+                try
+                {
+                    _logger.Debug("InPhieuBarButtonItem_ItemClick: Bắt đầu in phiếu, StockInOutMasterId={0}", stockInOutMasterId);
 
-                // In phiếu nhập kho với preview
-                StockInReportHelper.PrintStockInVoucher(stockInOutMasterId);
+                    // Tạo và load report - sử dụng InPhieuBaoHanh cho nhập hàng bảo hành
+                    var report = new InPhieuBaoHanh(stockInOutMasterId);
+
+                    // Hiển thị preview bằng ReportPrintTool
+                    using (var printTool = new ReportPrintTool(report))
+                    {
+                        printTool.ShowPreviewDialog();
+                    }
+
+                    _logger.Info("InPhieuBarButtonItem_ItemClick: In phiếu thành công, StockInOutMasterId={0}", stockInOutMasterId);
+                }
+                catch (Exception printEx)
+                {
+                    _logger.Error($"InPhieuBarButtonItem_ItemClick: Lỗi in phiếu: {printEx.Message}", printEx);
+                    MsgBox.ShowError($"Lỗi in phiếu: {printEx.Message}");
+                }
 
             }
             catch (Exception ex)

@@ -111,6 +111,12 @@
       <DependentUpon>FrmWarrantyCheck.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StockIn\InPhieu\InPhieuBaoHanh.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="StockIn\InPhieu\InPhieuBaoHanh.Designer.cs">
+      <DependentUpon>InPhieuBaoHanh.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockIn\InPhieu\InPhieuNhapXuatNoiBo.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -257,6 +263,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="StockIn\InPhieu\InPhieuBaoHanh.resx">
+      <DependentUpon>InPhieuBaoHanh.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockIn\InPhieu\InPhieuNhapXuatNoiBo.resx">
       <DependentUpon>InPhieuNhapXuatNoiBo.cs</DependentUpon>
     </EmbeddedResource>
