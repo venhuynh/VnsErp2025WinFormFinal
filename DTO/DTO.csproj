@@ -50,6 +50,7 @@
     <Compile Include="Inventory\InventoryManagement\StockInOutProductHistoryDto.cs" />
     <Compile Include="Inventory\InventoryManagement\WarrantyCheckListDto.cs" />
     <Compile Include="Inventory\InventoryManagement\WarrantyDto.cs" />
+    <Compile Include="Inventory\StockIn\NhapBaoHanh\NhapBaoHanhDetailDto.cs" />
     <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInDetailDto.cs" />
     <Compile Include="Inventory\InventoryManagement\DeviceIdentifierEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DeviceDto.cs" />
