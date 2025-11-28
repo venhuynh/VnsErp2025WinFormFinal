@@ -232,6 +232,12 @@
     <Compile Include="StockIn\NhapThietBiMuon\UcNhapThietBiMuonMaster.Designer.cs">
       <DependentUpon>UcNhapThietBiMuonMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhDetail.Designer.cs">
+      <DependentUpon>UcXuatBaoHanhDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="XtraForm1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -323,6 +329,9 @@
     <EmbeddedResource Include="StockIn\NhapThietBiMuon\UcNhapThietBiMuonMaster.resx">
       <DependentUpon>UcNhapThietBiMuonMaster.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatBaoHanh\UcXuatBaoHanhDetail.resx">
+      <DependentUpon>UcXuatBaoHanhDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="XtraForm1.resx">
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </EmbeddedResource>
@@ -346,6 +355,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInMasterDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInReportDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
@@ -363,7 +373,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Report\" />
-    <Folder Include="StockOut\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">

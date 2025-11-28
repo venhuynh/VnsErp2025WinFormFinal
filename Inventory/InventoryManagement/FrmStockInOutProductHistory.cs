@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
-
 namespace Inventory.InventoryManagement
 {
     /// <summary>

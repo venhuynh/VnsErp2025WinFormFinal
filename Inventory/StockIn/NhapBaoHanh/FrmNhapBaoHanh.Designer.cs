@@ -53,7 +53,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ucNhapBaoHanhMaster1 = new Inventory.StockIn.NhapBaoHanh.UcNhapBaoHanhMaster();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ucNhapBaoHanhDetail1 = new Inventory.StockIn.NhapBaoHanh.UcNhapBaoHanhDetail();
+            this.ucNhapBaoHanhDetail1 = new UcNhapBaoHanhDetail();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
