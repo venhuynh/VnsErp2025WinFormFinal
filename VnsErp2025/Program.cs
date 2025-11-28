@@ -1,11 +1,6 @@
 ﻿using Authentication.Form;
 using Common.Utils;
 using Dal.Connection;
-using Inventory.InventoryManagement;
-using Inventory.StockIn.NhapBaoHanh;
-using Inventory.StockIn.NhapHangThuongMai;
-using Inventory.StockIn.NhapLuuChuyenKho;
-using Inventory.StockIn.NhapNoiBo;
 using Inventory.StockOut.XuatBaoHanh;
 using System;
 using System.Windows.Forms;
