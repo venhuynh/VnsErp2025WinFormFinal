@@ -51,7 +51,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.ucNhapBaoHanhMaster1 = new Inventory.StockIn.NhapBaoHanh.UcNhapBaoHanhMaster();
+            this.ucNhapBaoHanhMaster1 = new UcNhapBaoHanhMaster();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.ucNhapBaoHanhDetail1 = new UcNhapBaoHanhDetail();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();

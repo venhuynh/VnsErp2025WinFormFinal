@@ -232,11 +232,23 @@
     <Compile Include="StockIn\NhapThietBiMuon\UcNhapThietBiMuonMaster.Designer.cs">
       <DependentUpon>UcNhapThietBiMuonMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatBaoHanh\FrmXuatBaoHanh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatBaoHanh\FrmXuatBaoHanh.Designer.cs">
+      <DependentUpon>FrmXuatBaoHanh.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhDetail.Designer.cs">
       <DependentUpon>UcXuatBaoHanhDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.Designer.cs">
+      <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="XtraForm1.cs">
       <SubType>Form</SubType>
@@ -331,6 +343,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatBaoHanh\UcXuatBaoHanhDetail.resx">
       <DependentUpon>UcXuatBaoHanhDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.resx">
+      <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="XtraForm1.resx">
       <DependentUpon>XtraForm1.cs</DependentUpon>
