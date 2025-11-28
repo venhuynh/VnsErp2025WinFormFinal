@@ -33,6 +33,7 @@ namespace Inventory
             this.components = new System.ComponentModel.Container();
             this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog(this.components);
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+            this.stockInReportDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colId = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colStockInNumber = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -53,10 +54,9 @@ namespace Inventory
             this.colTotalAmount = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTotalVat = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTotalAmountIncludedVat = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.stockInReportDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockInReportDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // xtraOpenFileDialog1
@@ -73,6 +73,10 @@ namespace Inventory
             this.gridControl1.TabIndex = 0;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
+            // 
+            // stockInReportDtoBindingSource
+            // 
+            this.stockInReportDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapHangThuongMai.StockInReportDto);
             // 
             // gridView1
             // 
@@ -234,10 +238,6 @@ namespace Inventory
             this.colTotalAmountIncludedVat.Visible = true;
             this.colTotalAmountIncludedVat.VisibleIndex = 17;
             // 
-            // stockInReportDtoBindingSource
-            // 
-            this.stockInReportDtoBindingSource.DataSource = typeof(StockInReportDto);
-            // 
             // XtraForm1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -247,8 +247,8 @@ namespace Inventory
             this.Name = "XtraForm1";
             this.Text = "XtraForm1";
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockInReportDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -278,5 +278,6 @@ namespace Inventory
         private DevExpress.XtraGrid.Columns.GridColumn colTotalVat;
         private DevExpress.XtraGrid.Columns.GridColumn colTotalAmountIncludedVat;
         private System.Windows.Forms.BindingSource stockInReportDtoBindingSource;
+        private System.Windows.Forms.BindingSource xuatBaoHanhMasterDtoBindingSource;
     }
 }

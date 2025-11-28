@@ -156,7 +156,7 @@ public class XuatBaoHanhMasterDto
     /// </summary>
     [DisplayName("Loại nhập")]
     [Display(Order = 3)]
-    [Required(ErrorMessage = "Loại nhập kho không được để trống")]
+    
     public LoaiNhapXuatKhoEnum LoaiNhapXuatKho { get; set; }
 
     /// <summary>
@@ -175,7 +175,7 @@ public class XuatBaoHanhMasterDto
     /// </summary>
     [DisplayName("ID Kho")]
     [Display(Order = 10)]
-    [Required(ErrorMessage = "Kho nhập không được để trống")]
+    
     public Guid WarehouseId { get; set; }
 
     /// <summary>
@@ -213,7 +213,7 @@ public class XuatBaoHanhMasterDto
     /// </summary>
     [DisplayName("ID NCC")]
     [Display(Order = 15)]
-    [Required(ErrorMessage = "Nhà cung cấp hoặc khách hàng không được để trống")]
+    
     public Guid? SupplierId { get; set; }
 
     /// <summary>

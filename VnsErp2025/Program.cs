@@ -6,6 +6,7 @@ using Inventory.StockIn.NhapBaoHanh;
 using Inventory.StockIn.NhapHangThuongMai;
 using Inventory.StockIn.NhapLuuChuyenKho;
 using Inventory.StockIn.NhapNoiBo;
+using Inventory.StockOut.XuatBaoHanh;
 using System;
 using System.Windows.Forms;
 
@@ -88,7 +89,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmStockInOutProductHistory());
+            Application.Run(new FrmXuatBaoHanh());
 
             #endregion
 
