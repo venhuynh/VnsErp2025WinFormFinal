@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockIn;
 using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
@@ -40,9 +41,14 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
     private readonly BusinessPartnerSiteBll _businessPartnerSiteBll = new();
 
     /// <summary>
-    /// Business Logic Layer cho StockIn (dùng để lấy số thứ tự tiếp theo)
+    /// Business Logic Layer cho StockIn (dùng để lấy master entity)
     /// </summary>
     private readonly StockInBll _stockInBll = new();
+
+    /// <summary>
+    /// Business Logic Layer cho StockInOutMaster (dùng để tạo số phiếu)
+    /// </summary>
+    private readonly StockInOutMasterBll _stockInOutMasterBll = new();
 
     /// <summary>
     /// Flag đánh dấu Warehouse datasource đã được load chưa
@@ -1146,12 +1152,8 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
     #region ========== HELPER METHODS ==========
 
     /// <summary>
-    /// Tạo số phiếu nhập kho theo format: PNK-MMYY-NNXXX
-    /// PNK: Phiếu nhập kho
-    /// MM: Tháng (2 ký tự)
-    /// YY: Năm (2 ký tự)
-    /// NN: Index của LoaiNhapXuatKhoEnum (2 ký tự)
-    /// XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)
+    /// Tạo số phiếu nhập kho tự động
+    /// Sử dụng BLL để tự động xác định PNK hay PXK dựa trên LoaiNhapXuatKhoEnum
     /// </summary>
     /// <param name="stockInDate">Ngày nhập kho</param>
     private void GenerateStockInNumber(DateTime stockInDate)
@@ -1165,51 +1167,22 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
                 return;
             }
 
-            // Lấy thông tin từ Entity
-            var month = stockInDate.Month.ToString("D2"); // MM
-            var year = stockInDate.Year.ToString().Substring(2); // YY (2 ký tự cuối)
-            var loaiNhapKhoIndex = _stockInMaster.StockInOutType.ToString("D2"); // NN (2 ký tự)
-
-            // Lấy số thứ tự tiếp theo
+            // Lấy loại nhập/xuất kho từ Entity
             var loaiNhapXuatKho = (LoaiNhapXuatKhoEnum)_stockInMaster.StockInOutType;
-            var nextSequence = GetNextSequenceNumber(stockInDate, loaiNhapXuatKho);
 
-            // Tạo số phiếu: PNK-MMYY-NNXXX
-            var stockInNumber = $"PNK-{month}{year}-{loaiNhapKhoIndex}{nextSequence:D3}";
+            // Gọi BLL để tạo số phiếu tự động (tự động xác định PNK hay PXK)
+            var voucherNumber = _stockInOutMasterBll.GenerateVoucherNumber(stockInDate, loaiNhapXuatKho);
 
             // Cập nhật vào Entity và control
-            _stockInMaster.VocherNumber = stockInNumber;
+            _stockInMaster.VocherNumber = voucherNumber;
             if (StockInNumberTextEdit != null)
             {
-                StockInNumberTextEdit.Text = stockInNumber;
+                StockInNumberTextEdit.Text = voucherNumber;
             }
         }
         catch (Exception ex)
         {
             ShowError(ex, "Lỗi tạo số phiếu nhập");
-        }
-    }
-
-    /// <summary>
-    /// Lấy số thứ tự tiếp theo cho phiếu nhập kho
-    /// </summary>
-    /// <param name="stockInDate">Ngày nhập kho</param>
-    /// <param name="loaiNhapXuatKho">Loại nhập kho</param>
-    /// <returns>Số thứ tự tiếp theo (1-999)</returns>
-    private int GetNextSequenceNumber(DateTime stockInDate, LoaiNhapXuatKhoEnum loaiNhapXuatKho)
-    {
-        try
-        {
-            // Query database để lấy số thứ tự tiếp theo thông qua BLL
-            // Format cần tìm: PNK-MMYY-NNXXX
-            // Trong đó MM, YY, NN đã biết, cần tìm XXX lớn nhất + 1
-            var nextSequence = _stockInBll.GetNextSequenceNumber(stockInDate, loaiNhapXuatKho);
-            return nextSequence;
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi lấy số thứ tự phiếu nhập");
-            return 1; // Fallback
         }
     }
 

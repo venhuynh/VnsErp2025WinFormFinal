@@ -3,6 +3,7 @@ using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
+using DTO.Inventory.StockIn;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -158,6 +159,62 @@ public class StockInOutMasterBll
         catch (Exception ex)
         {
             _logger.Error($"CountHistory: Lỗi đếm: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region Voucher Number Generation
+
+    /// <summary>
+    /// Tạo số phiếu nhập/xuất kho tự động theo format: PNK-MMYY-NNXXX hoặc PXK-MMYY-NNXXX
+    /// Tự động xác định PNK (Phiếu nhập kho) hoặc PXK (Phiếu xuất kho) dựa trên LoaiNhapXuatKhoEnum
+    /// </summary>
+    /// <param name="stockInOutDate">Ngày nhập/xuất kho</param>
+    /// <param name="loaiNhapXuatKho">Loại nhập/xuất kho</param>
+    /// <returns>Số phiếu nhập/xuất kho theo format: PNK-MMYY-NNXXX hoặc PXK-MMYY-NNXXX</returns>
+    /// <remarks>
+    /// Format:
+    /// - PNK/PXK: Phiếu nhập kho / Phiếu xuất kho (tự động xác định)
+    /// - MM: Tháng (2 ký tự)
+    /// - YY: Năm (2 ký tự cuối)
+    /// - NN: Index của LoaiNhapXuatKhoEnum (2 ký tự)
+    /// - XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)
+    /// 
+    /// Logic xác định PNK hay PXK:
+    /// - Nếu LoaiNhapXuatKhoEnum < 10: PNK (Nhập kho)
+    /// - Nếu LoaiNhapXuatKhoEnum >= 10: PXK (Xuất kho)
+    /// </remarks>
+    public string GenerateVoucherNumber(DateTime stockInOutDate, LoaiNhapXuatKhoEnum loaiNhapXuatKho)
+    {
+        try
+        {
+            _logger.Debug("GenerateVoucherNumber: Date={0}, LoaiNhapXuatKho={1}", stockInOutDate, loaiNhapXuatKho);
+
+            // Xác định prefix: PNK (Nhập kho) hoặc PXK (Xuất kho)
+            // Logic: LoaiNhapXuatKhoEnum < 10 = Nhập kho, >= 10 = Xuất kho
+            var isNhapKho = (int)loaiNhapXuatKho < 10;
+            var prefix = isNhapKho ? "PNK" : "PXK";
+
+            // Lấy thông tin từ ngày
+            var month = stockInOutDate.Month.ToString("D2"); // MM
+            var year = stockInOutDate.Year.ToString().Substring(2); // YY (2 ký tự cuối)
+            var loaiNhapXuatKhoIndex = ((int)loaiNhapXuatKho).ToString("D2"); // NN (2 ký tự)
+
+            // Lấy số thứ tự tiếp theo từ StockInRepository
+            var loaiNhapKhoInt = (int)loaiNhapXuatKho;
+            var nextSequence = GetStockInRepository().GetNextSequenceNumber(stockInOutDate, loaiNhapKhoInt);
+
+            // Tạo số phiếu: PNK-MMYY-NNXXX hoặc PXK-MMYY-NNXXX
+            var voucherNumber = $"{prefix}-{month}{year}-{loaiNhapXuatKhoIndex}{nextSequence:D3}";
+
+            _logger.Debug("GenerateVoucherNumber: Generated={0}", voucherNumber);
+            return voucherNumber;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GenerateVoucherNumber: Lỗi tạo số phiếu: {ex.Message}", ex);
             throw;
         }
     }
