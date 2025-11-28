@@ -270,7 +270,16 @@ public class StockInOutProductHistoryDto
 
             // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo CompanyBranchDto.ThongTinHtml)
             // - Tên kho: font lớn, bold, màu xanh đậm (primary)
+            // - Loại nhập xuất: font nhỏ hơn, màu xám, không bold (secondary)
             var html = $"<size=12><b><color='blue'>{warehouseName}</color></b></size>";
+
+            // Thêm loại nhập xuất nếu có
+            var loaiNhapXuatKhoName = LoaiNhapXuatKhoName ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(loaiNhapXuatKhoName))
+            {
+                html += "<br>";
+                html += $"<size=9><color='#757575'>Loại:</color></size> <size=9><color='#757575'><i>{loaiNhapXuatKhoName}</i></color></size>";
+            }
 
             return html;
         }

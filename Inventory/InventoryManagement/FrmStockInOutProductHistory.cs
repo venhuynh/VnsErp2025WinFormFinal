@@ -6,7 +6,10 @@ using DevExpress.XtraReports.UI;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn;
 using Inventory.StockIn.InPhieu;
+using Inventory.StockIn.NhapBaoHanh;
 using Inventory.StockIn.NhapHangThuongMai;
+using Inventory.StockIn.NhapLuuChuyenKho;
+using Inventory.StockIn.NhapNoiBo;
 using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
 using Logger.Configuration;
@@ -210,8 +213,10 @@ namespace Inventory.InventoryManagement
                 {
                     LoaiNhapXuatKhoEnum.NhapHangThuongMai => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value),
                     LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new FrmNhapThietBiMuon(_selectedStockInOutMasterId.Value),
-                    //LoaiNhapXuatKhoEnum.NhapNoiBo => new FrmNhapNoiBo(_selectedStockInOutMasterId.Value),
-                    //_ => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value) // Default: dùng FrmNhapKhoThuongMai
+                    LoaiNhapXuatKhoEnum.NhapNoiBo => new FrmNhapNoiBo(_selectedStockInOutMasterId.Value),
+                    LoaiNhapXuatKhoEnum.NhapLuuChuyenKho => new FrmNhapLuuChuyenKho(_selectedStockInOutMasterId.Value),
+                    LoaiNhapXuatKhoEnum.NhapHangBaoHanh => new FrmNhapBaoHanh(_selectedStockInOutMasterId.Value),
+                    _ => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value) // Default: dùng FrmNhapKhoThuongMai
                 };
 
                 // Mở form chi tiết
@@ -279,7 +284,8 @@ namespace Inventory.InventoryManagement
                             LoaiNhapXuatKhoEnum.NhapHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value),
                             LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
                             LoaiNhapXuatKhoEnum.NhapNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
-                            _ => new InPhieuNhapKho(_selectedStockInOutMasterId.Value) // Default: dùng InPhieuNhapKho
+                            LoaiNhapXuatKhoEnum.NhapHangBaoHanh => new InPhieuBaoHanh(_selectedStockInOutMasterId.Value),
+                            _ => new InPhieuNhapKho(_selectedStockInOutMasterId.Value) // Default: dùng InPhieuNhapKho cho NhapLuuChuyenKho và các loại khác
                         };
 
                         // Hiển thị preview bằng ReportPrintTool

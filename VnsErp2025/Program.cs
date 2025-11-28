@@ -1,6 +1,7 @@
 ﻿using Authentication.Form;
 using Common.Utils;
 using Dal.Connection;
+using Inventory.InventoryManagement;
 using Inventory.StockIn.NhapBaoHanh;
 using Inventory.StockIn.NhapHangThuongMai;
 using Inventory.StockIn.NhapLuuChuyenKho;
@@ -87,7 +88,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmNhapBaoHanh());
+            Application.Run(new FrmStockInOutProductHistory());
 
             #endregion
 
