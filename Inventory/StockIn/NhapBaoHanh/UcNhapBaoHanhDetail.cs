@@ -162,6 +162,35 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     }
 
     /// <summary>
+    /// Tính tổng số lượng, tiền từ các detail DTOs
+    /// Trả về tuple (totalQuantity, totalAmount, totalVat, totalAmountIncludedVat)
+    /// Lưu ý: Nhập bảo hành chỉ tính số lượng, các giá trị tiền sẽ là 0
+    /// </summary>
+    public (decimal totalQuantity, decimal totalAmount, decimal totalVat, decimal totalAmountIncludedVat) CalculateTotals()
+    {
+        try
+        {
+            var details = nhapBaoHanhDetailDtoBindingSource.Cast<NhapBaoHanhDetailDto>().ToList();
+
+            // Tính tổng số lượng từ các detail DTOs
+            var totalQuantity = details.Sum(d => d.StockInQty);
+
+            // Nhập bảo hành không tính tiền, nên các giá trị tiền là 0
+            var totalAmount = 0m;
+            var totalVat = 0m;
+            var totalAmountIncludedVat = 0m;
+
+            return (totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("CalculateTotals: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi tính tổng: {ex.Message}");
+            return (0m, 0m, 0m, 0m);
+        }
+    }
+
+    /// <summary>
     /// Clear dữ liệu và reset về trạng thái ban đầu
     /// </summary>
     public void ClearData()

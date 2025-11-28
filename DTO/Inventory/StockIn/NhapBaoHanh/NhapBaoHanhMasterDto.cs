@@ -182,7 +182,7 @@ public class NhapBaoHanhMasterDto
     /// </summary>
     [DisplayName("Mã kho")]
     [Display(Order = 11)]
-    [Required(ErrorMessage = "Kho nhập không được để trống")]
+    
     public string WarehouseCode { get; set; }
 
     /// <summary>
@@ -190,7 +190,7 @@ public class NhapBaoHanhMasterDto
     /// </summary>
     [DisplayName("Tên kho")]
     [Display(Order = 12)]
-    [Required(ErrorMessage = "Kho nhập không được để trống")]
+    
     public string WarehouseName { get; set; }
 
     /// <summary>
@@ -212,6 +212,7 @@ public class NhapBaoHanhMasterDto
     /// </summary>
     [DisplayName("ID NCC")]
     [Display(Order = 15)]
+    [Required(ErrorMessage = "Nhà cung cấp hoặc khách hàng không được để trống")]
     public Guid? SupplierId { get; set; }
 
     /// <summary>
@@ -219,7 +220,7 @@ public class NhapBaoHanhMasterDto
     /// </summary>
     [DisplayName("Tên NCC")]
     [Display(Order = 16)]
-    [Required(ErrorMessage = "Nhà cung cấp hoặc khách hàng không được để trống")]
+    
     public string SupplierName { get; set; }
 
     #endregion

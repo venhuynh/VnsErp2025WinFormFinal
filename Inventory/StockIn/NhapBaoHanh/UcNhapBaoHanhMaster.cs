@@ -787,7 +787,7 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
             }
 
             // Cập nhật từ DateEdit
-            if (StockInDateDateEdit != null && StockInDateDateEdit.EditValue is DateTime date)
+            if (StockInDateDateEdit is { EditValue: DateTime date })
             {
                 _stockInMaster.StockInOutDate = date;
             }

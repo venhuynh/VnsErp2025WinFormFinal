@@ -51,18 +51,27 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.ucNhapBaoHanhMaster1 = new Inventory.StockIn.NhapBaoHanh.UcNhapBaoHanhMaster();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ucNhapBaoHanhDetail1 = new Inventory.StockIn.NhapBaoHanh.UcNhapBaoHanhDetail();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
+            this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
             this.dockPanel2_Container.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).BeginInit();
+            this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.ucNhapBaoHanhDetail1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(483, 24);
             this.layoutControl1.Name = "layoutControl1";
@@ -75,6 +84,8 @@ namespace Inventory.StockIn.NhapBaoHanh
             // 
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem2});
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(888, 768);
             this.Root.TextVisible = false;
@@ -248,6 +259,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             // 
             // layoutControl2
             // 
+            this.layoutControl2.Controls.Add(this.ucNhapBaoHanhMaster1);
             this.layoutControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
@@ -260,9 +272,41 @@ namespace Inventory.StockIn.NhapBaoHanh
             // 
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.layoutControlGroup1.GroupBordersVisible = false;
+            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
             this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
+            // 
+            // ucNhapBaoHanhMaster1
+            // 
+            this.ucNhapBaoHanhMaster1.Location = new System.Drawing.Point(12, 12);
+            this.ucNhapBaoHanhMaster1.Name = "ucNhapBaoHanhMaster1";
+            this.ucNhapBaoHanhMaster1.Size = new System.Drawing.Size(452, 715);
+            this.ucNhapBaoHanhMaster1.TabIndex = 4;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.ucNhapBaoHanhMaster1;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(456, 719);
+            this.layoutControlItem1.TextVisible = false;
+            // 
+            // ucNhapBaoHanhDetail1
+            // 
+            this.ucNhapBaoHanhDetail1.Location = new System.Drawing.Point(12, 12);
+            this.ucNhapBaoHanhDetail1.Name = "ucNhapBaoHanhDetail1";
+            this.ucNhapBaoHanhDetail1.Size = new System.Drawing.Size(864, 744);
+            this.ucNhapBaoHanhDetail1.TabIndex = 4;
+            // 
+            // layoutControlItem2
+            // 
+            this.layoutControlItem2.Control = this.ucNhapBaoHanhDetail1;
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.Size = new System.Drawing.Size(868, 748);
+            this.layoutControlItem2.TextVisible = false;
             // 
             // FrmNhapBaoHanh
             // 
@@ -278,13 +322,17 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.Name = "FrmNhapBaoHanh";
             this.Text = "PHIẾU NHẬP HÀNG BẢO HÀNH";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
+            this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.dockPanel2.ResumeLayout(false);
             this.dockPanel2_Container.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).EndInit();
+            this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -312,5 +360,9 @@ namespace Inventory.StockIn.NhapBaoHanh
         private DevExpress.XtraBars.BarButtonItem NhapBaoHanhBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
+        private UcNhapBaoHanhDetail ucNhapBaoHanhDetail1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
+        private UcNhapBaoHanhMaster ucNhapBaoHanhMaster1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

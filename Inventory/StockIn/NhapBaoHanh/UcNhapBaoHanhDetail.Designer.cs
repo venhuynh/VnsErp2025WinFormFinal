@@ -107,7 +107,7 @@
             this.NhapBaoHanhDetailDtoGridView.OptionsView.ShowFooter = true;
             this.NhapBaoHanhDetailDtoGridView.OptionsView.ShowGroupPanel = false;
             this.NhapBaoHanhDetailDtoGridView.OptionsView.ShowViewCaption = true;
-            this.NhapBaoHanhDetailDtoGridView.ViewCaption = "DANH SÁCH HÀNG HÓA THIẾT BỊ NHẬP NỘI BỘ";
+            this.NhapBaoHanhDetailDtoGridView.ViewCaption = "DANH SÁCH HÀNG HÓA THIẾT BỊ NHẬP BẢO HÀNH";
             // 
             // colProductVariantCode
             // 
