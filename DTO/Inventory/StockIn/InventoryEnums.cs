@@ -38,6 +38,35 @@ namespace DTO.Inventory.StockIn
         NhapHangBaoHanh = 5,
 
         /// <summary>
+        /// Xuất hàng thương mại
+        /// </summary>
+        [Description("Xuất hàng thương mại")]
+        XuatHangThuongMai = 11,
+
+        /// <summary>
+        /// Xuất thiết bị mượn/thuê
+        /// </summary>
+        [Description("Xuất thiết bị mượn/thuê")]
+        XuatThietBiMuonThue = 12,
+
+        /// <summary>
+        /// Xuất thiết bị nội bộ
+        /// </summary>
+        [Description("Xuất thiết bị nội bộ")]
+        XuatNoiBo = 13,
+
+        /// <summary>
+        /// Xuất lưu chuyển kho
+        /// </summary>
+        [Description("Xuất lưu chuyển kho")]
+        XuatLuuChuyenKho = 14,
+
+        /// <summary>
+        /// Xuất hàng bảo hành  
+        /// </summary>
+        [Description("Xuất hàng bảo hành")]
+        XuatHangBaoHanh = 15,
+        /// <summary>
         /// Khác
         /// </summary>
         [Description("Khác")]

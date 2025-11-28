@@ -362,6 +362,7 @@
     <None Include="StockIn\InPhieu\README_IN_PHIEU_NHAP_KHO.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Report\" />
     <Folder Include="StockOut\" />
   </ItemGroup>
   <ItemGroup>
