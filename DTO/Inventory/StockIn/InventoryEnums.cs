@@ -32,6 +32,12 @@ namespace DTO.Inventory.StockIn
         NhapLuuChuyenKho = 4,
 
         /// <summary>
+        /// Nhập hàng bảo hành  
+        /// </summary>
+        [Description("Nhập hàng bảo hành")]
+        NhapHangBaoHanh = 5,
+
+        /// <summary>
         /// Khác
         /// </summary>
         [Description("Khác")]

@@ -328,6 +328,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutProductHistoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyCheckListDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapBaoHanh.NhapBaoHanhDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapHangThuongMai.StockInReportDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapLuuChuyenKho.NhapLuuChuyenKhoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapLuuChuyenKho.NhapLuuChuyenKhoMasterDto.datasource" />
