@@ -179,7 +179,9 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             if (ItemForWarehouseName != null && !ItemForWarehouseName.Text.Contains("*"))
             {
                 ItemForWarehouseName.AllowHtmlStringInCaption = true;
-                var baseCaption = string.IsNullOrWhiteSpace(ItemForWarehouseName.Text) ? "Kho xuất" : ItemForWarehouseName.Text;
+                var baseCaption = string.IsNullOrWhiteSpace(ItemForWarehouseName.Text)
+                    ? "Kho xuất"
+                    : ItemForWarehouseName.Text;
                 ItemForWarehouseName.Text = baseCaption + @" <color=red>*</color>";
             }
 
@@ -188,7 +190,9 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             if (ItemForSupplierName != null && !ItemForSupplierName.Text.Contains("*"))
             {
                 ItemForSupplierName.AllowHtmlStringInCaption = true;
-                var baseCaption = string.IsNullOrWhiteSpace(ItemForSupplierName.Text) ? "Khách hàng" : ItemForSupplierName.Text;
+                var baseCaption = string.IsNullOrWhiteSpace(ItemForSupplierName.Text)
+                    ? "Khách hàng"
+                    : ItemForSupplierName.Text;
                 ItemForSupplierName.Text = baseCaption + @" <color=red>*</color>";
             }
         }
@@ -236,7 +240,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             // Chỉ load nếu chưa load hoặc datasource rỗng
             if (!_isSupplierDataSourceLoaded ||
                 businessPartnerSiteListDtoBindingSource.DataSource == null ||
-                (businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> list && list.Count == 0))
+                (businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> list &&
+                 list.Count == 0))
             {
                 await LoadSupplierDataSourceAsync();
                 _isSupplierDataSourceLoaded = true;
@@ -256,9 +261,9 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             if (_isWarehouseDataSourceLoaded &&
                 companyBranchDtoBindingSource.DataSource != null &&
                 companyBranchDtoBindingSource.DataSource is not List<CompanyBranchDto> { Count: 0 }) return;
-            
+
             await LoadWarehouseDataSourceAsync();
-            
+
             _isWarehouseDataSourceLoaded = true;
         }
         catch (Exception ex)
@@ -300,7 +305,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             SuperToolTipHelper.SetTextEditSuperTip(
                 StockInNumberTextEdit,
                 title: @"<b><color=DarkBlue>📄 Số phiếu xuất kho</color></b>",
-                content: @"Số phiếu xuất kho được tạo tự động theo format: <b>PXK-MMYY-NNXXX</b><br/><br/><b>Format:</b><br/>• PXK: Phiếu xuất kho<br/>• MM: Tháng (2 ký tự)<br/>• YY: Năm (2 ký tự cuối)<br/>• NN: Index của Loại xuất kho (2 ký tự)<br/>• XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)<br/><br/><b>Chức năng:</b><br/>• Tự động tạo khi thay đổi ngày xuất kho<br/>• Tự động tạo khi thay đổi loại xuất kho<br/>• Query database để lấy số thứ tự tiếp theo<br/>• Đảm bảo số phiếu duy nhất trong cùng tháng/năm/loại<br/><br/><b>Ràng buộc:</b><br/>• <b><color=Red>Bắt buộc nhập</color></b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi: ""Số phiếu xuất không được để trống""<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Số phiếu xuất kho sẽ được lưu vào database khi lưu phiếu xuất."
+                content:
+                @"Số phiếu xuất kho được tạo tự động theo format: <b>PXK-MMYY-NNXXX</b><br/><br/><b>Format:</b><br/>• PXK: Phiếu xuất kho<br/>• MM: Tháng (2 ký tự)<br/>• YY: Năm (2 ký tự cuối)<br/>• NN: Index của Loại xuất kho (2 ký tự)<br/>• XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)<br/><br/><b>Chức năng:</b><br/>• Tự động tạo khi thay đổi ngày xuất kho<br/>• Tự động tạo khi thay đổi loại xuất kho<br/>• Query database để lấy số thứ tự tiếp theo<br/>• Đảm bảo số phiếu duy nhất trong cùng tháng/năm/loại<br/><br/><b>Ràng buộc:</b><br/>• <b><color=Red>Bắt buộc nhập</color></b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi: ""Số phiếu xuất không được để trống""<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Số phiếu xuất kho sẽ được lưu vào database khi lưu phiếu xuất."
             );
         }
 
@@ -310,7 +316,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             SuperToolTipHelper.SetTextEditSuperTip(
                 PurchaseOrderSearchLookupEdit,
                 title: @"<b><color=DarkBlue>🛒 Mã đơn hàng mua</color></b>",
-                content: @"Nhập hoặc chọn mã đơn hàng mua (Purchase Order) liên quan đến phiếu xuất kho này.<br/><br/><b>Chức năng:</b><br/>• Liên kết phiếu xuất kho với đơn hàng mua<br/>• Tra cứu thông tin đơn hàng mua<br/>• Theo dõi quá trình xuất hàng theo đơn hàng<br/><br/><b>Ràng buộc:</b><br/>• <color=Green>Không bắt buộc</color> (có thể để trống)<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Trường này là tùy chọn, chỉ điền khi phiếu xuất kho liên quan đến một đơn hàng mua cụ thể."
+                content:
+                @"Nhập hoặc chọn mã đơn hàng mua (Purchase Order) liên quan đến phiếu xuất kho này.<br/><br/><b>Chức năng:</b><br/>• Liên kết phiếu xuất kho với đơn hàng mua<br/>• Tra cứu thông tin đơn hàng mua<br/>• Theo dõi quá trình xuất hàng theo đơn hàng<br/><br/><b>Ràng buộc:</b><br/>• <color=Green>Không bắt buộc</color> (có thể để trống)<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Trường này là tùy chọn, chỉ điền khi phiếu xuất kho liên quan đến một đơn hàng mua cụ thể."
             );
         }
 
@@ -320,7 +327,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             SuperToolTipHelper.SetTextEditSuperTip(
                 NguoiNhanHangTextEdit,
                 title: @"<b><color=DarkBlue>👤 Người nhận hàng</color></b>",
-                content: @"Nhập tên người nhận hàng tại địa điểm giao hàng (khách hàng).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người nhận hàng tại phía khách hàng<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <color=Green>Không bắt buộc</color> (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><b>Validation:</b><br/>• Kiểm tra độ dài khi validating<br/>• Hiển thị lỗi: ""Người nhận hàng không được vượt quá 500 ký tự""<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu xuất kho."
+                content:
+                @"Nhập tên người nhận hàng tại địa điểm giao hàng (khách hàng).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người nhận hàng tại phía khách hàng<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <color=Green>Không bắt buộc</color> (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><b>Validation:</b><br/>• Kiểm tra độ dài khi validating<br/>• Hiển thị lỗi: ""Người nhận hàng không được vượt quá 500 ký tự""<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu xuất kho."
             );
         }
 
@@ -330,7 +338,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             SuperToolTipHelper.SetTextEditSuperTip(
                 NguoiGiaoHangTextEdit,
                 title: @"<b><color=DarkBlue>🚚 Người giao hàng</color></b>",
-                content: @"Nhập tên người giao hàng từ kho (nhân viên công ty).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người giao hàng từ phía công ty<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <color=Green>Không bắt buộc</color> (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><b>Validation:</b><br/>• Kiểm tra độ dài khi validating<br/>• Hiển thị lỗi: ""Người giao hàng không được vượt quá 500 ký tự""<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu xuất kho."
+                content:
+                @"Nhập tên người giao hàng từ kho (nhân viên công ty).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người giao hàng từ phía công ty<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <color=Green>Không bắt buộc</color> (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><b>Validation:</b><br/>• Kiểm tra độ dài khi validating<br/>• Hiển thị lỗi: ""Người giao hàng không được vượt quá 500 ký tự""<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu xuất kho."
             );
         }
     }
@@ -346,7 +355,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             SuperToolTipHelper.SetBaseEditSuperTip(
                 StockInDateDateEdit,
                 title: @"<b><color=DarkBlue>📅 Ngày xuất kho</color></b>",
-                content: @"Chọn ngày xuất kho cho phiếu xuất.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm xuất kho<br/>• Tự động tạo số phiếu xuất kho dựa trên ngày<br/>• Format số phiếu: PXK-MMYY-NNXXX (MM, YY từ ngày này)<br/>• Query database để lấy số thứ tự tiếp theo trong tháng/năm<br/><br/><b>Ràng buộc:</b><br/>• <b><color=Red>Bắt buộc nhập</color></b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Mặc định: Ngày hiện tại<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi: ""Ngày xuất không được để trống""<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày xuất kho, hệ thống sẽ tự động tạo lại số phiếu xuất kho theo format mới."
+                content:
+                @"Chọn ngày xuất kho cho phiếu xuất.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm xuất kho<br/>• Tự động tạo số phiếu xuất kho dựa trên ngày<br/>• Format số phiếu: PXK-MMYY-NNXXX (MM, YY từ ngày này)<br/>• Query database để lấy số thứ tự tiếp theo trong tháng/năm<br/><br/><b>Ràng buộc:</b><br/>• <b><color=Red>Bắt buộc nhập</color></b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Mặc định: Ngày hiện tại<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi: ""Ngày xuất không được để trống""<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày xuất kho, hệ thống sẽ tự động tạo lại số phiếu xuất kho theo format mới."
             );
         }
     }
@@ -362,7 +372,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             SuperToolTipHelper.SetBaseEditSuperTip(
                 WarehouseNameSearchLookupEdit,
                 title: @"<b><color=DarkBlue>🏢 Kho xuất</color></b>",
-                content: @"Chọn kho xuất hàng từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho xuất hàng<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật WarehouseId, WarehouseCode, WarehouseName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• <b><color=Red>Bắt buộc chọn</color></b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi: ""Kho xuất không được để trống""<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho xuất sẽ được lưu vào database khi lưu phiếu xuất kho."
+                content:
+                @"Chọn kho xuất hàng từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho xuất hàng<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật WarehouseId, WarehouseCode, WarehouseName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• <b><color=Red>Bắt buộc chọn</color></b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi: ""Kho xuất không được để trống""<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho xuất sẽ được lưu vào database khi lưu phiếu xuất kho."
             );
         }
 
@@ -372,7 +383,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             SuperToolTipHelper.SetBaseEditSuperTip(
                 SupplierNameSearchLookupEdit,
                 title: @"<b><color=DarkBlue>👥 Khách hàng</color></b>",
-                content: @"Chọn khách hàng từ danh sách chi nhánh đối tác (Business Partner Site) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn khách hàng nhận hàng<br/>• Hiển thị thông tin đối tác dạng HTML (mã, tên)<br/>• Tự động cập nhật SupplierId, SupplierName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• <b><color=Red>Bắt buộc chọn</color></b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đối tác đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ BusinessPartnerSiteBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đối tác đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi: ""Khách hàng không được để trống""<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Trường này bắt buộc phải chọn khách hàng cho phiếu xuất hàng bảo hành."
+                content:
+                @"Chọn khách hàng từ danh sách chi nhánh đối tác (Business Partner Site) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn khách hàng nhận hàng<br/>• Hiển thị thông tin đối tác dạng HTML (mã, tên)<br/>• Tự động cập nhật SupplierId, SupplierName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• <b><color=Red>Bắt buộc chọn</color></b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đối tác đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ BusinessPartnerSiteBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đối tác đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi: ""Khách hàng không được để trống""<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Trường này bắt buộc phải chọn khách hàng cho phiếu xuất hàng bảo hành."
             );
         }
     }
@@ -388,7 +400,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             SuperToolTipHelper.SetBaseEditSuperTip(
                 NotesTextEdit,
                 title: @"<b><color=DarkBlue>📝 Ghi chú</color></b>",
-                content: @"Nhập ghi chú hoặc mô tả bổ sung cho phiếu xuất kho.<br/><br/><b>Chức năng:</b><br/>• Lưu thông tin bổ sung về phiếu xuất kho<br/>• Ghi chú về lý do xuất kho, điều kiện xuất hàng, v.v.<br/>• Hỗ trợ nhiều dòng văn bản<br/><br/><b>Ràng buộc:</b><br/>• <color=Green>Không bắt buộc</color> (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><b>Validation:</b><br/>• Kiểm tra độ dài khi validating<br/>• Hiển thị lỗi: ""Ghi chú không được vượt quá 500 ký tự""<br/><br/><color=Gray>Lưu ý:</color> Ghi chú sẽ được lưu vào database khi lưu phiếu xuất kho."
+                content:
+                @"Nhập ghi chú hoặc mô tả bổ sung cho phiếu xuất kho.<br/><br/><b>Chức năng:</b><br/>• Lưu thông tin bổ sung về phiếu xuất kho<br/>• Ghi chú về lý do xuất kho, điều kiện xuất hàng, v.v.<br/>• Hỗ trợ nhiều dòng văn bản<br/><br/><b>Ràng buộc:</b><br/>• <color=Green>Không bắt buộc</color> (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><b>Validation:</b><br/>• Kiểm tra độ dài khi validating<br/>• Hiển thị lỗi: ""Ghi chú không được vượt quá 500 ký tự""<br/><br/><color=Gray>Lưu ý:</color> Ghi chú sẽ được lưu vào database khi lưu phiếu xuất kho."
             );
         }
     }
@@ -597,8 +610,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             PurchaseOrderNumber = string.Empty, // TODO: Lấy từ PurchaseOrder entity nếu cần
             SupplierId = entity.PartnerSiteId,
             SupplierName = entity.BusinessPartnerSite?.BusinessPartner?.PartnerName ??
-                          entity.BusinessPartnerSite?.SiteName ??
-                          string.Empty,
+                           entity.BusinessPartnerSite?.SiteName ??
+                           string.Empty,
             Notes = entity.Notes ?? string.Empty,
             NguoiNhanHang = entity.NguoiNhanHang ?? string.Empty,
             NguoiGiaoHang = entity.NguoiGiaoHang ?? string.Empty
@@ -1099,7 +1112,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     /// <param name="totalAmount">Tổng tiền chưa VAT</param>
     /// <param name="totalVat">Tổng VAT</param>
     /// <param name="totalAmountIncludedVat">Tổng tiền bao gồm VAT</param>
-    public void UpdateTotals(decimal totalQuantity, decimal totalAmount, decimal totalVat, decimal totalAmountIncludedVat)
+    public void UpdateTotals(decimal totalQuantity, decimal totalAmount, decimal totalVat,
+        decimal totalAmountIncludedVat)
     {
         try
         {
