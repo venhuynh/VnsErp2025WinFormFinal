@@ -375,12 +375,18 @@ namespace Bll.Inventory.StockIn
                 var reportDto = new StockInReportDto
                 {
                     Master = masterDto,
-                    ChiTietNhapHangNoiBos = detailDtos
+                    ChiTietNhapHangNoiBos = detailDtos,
+                    // 6. Nhóm thông tin bảo hành theo thời gian và gán vào GhiChu
+                    GhiChu = BuildWarrantyInfo(warrantyDtos, masterDto.Notes),
+                    
+                    
                 };
 
-                // 6. Nhóm thông tin bảo hành theo thời gian và gán vào GhiChu
-                reportDto.GhiChu = BuildWarrantyInfo(warrantyDtos, masterDto.Notes);
-
+                //7. Nếu thông tin PO có thì thêm vào
+                if (reportDto.GhiChu != null && masterEntity.PurchaseOrderId != null)
+                {
+                   // reportDto.GhiChu += $"\n=== THÔNG TIN ĐƠN HÀNG MUA ===\nSố PO: {masterEntity.PurchaseOrderId.VocherNumber}\nNgày PO: {masterEntity.PurchaseOrder.PurchaseOrderDate:dd/MM/yyyy}";
+                }
                 _logger.Info("GetReportData: Lấy dữ liệu report thành công, VoucherId={0}, DetailCount={1}, WarrantyCount={2}, DeviceCount={3}", 
                     voucherId, reportDto.ChiTietNhapHangNoiBos.Count, warrantyDtos.Count, deviceDtos.Count);
                 
