@@ -250,6 +250,12 @@
     <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.Designer.cs">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatLuuChuyenKho\UcXuatChuyenKhoMaster.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatLuuChuyenKho\UcXuatChuyenKhoMaster.Designer.cs">
+      <DependentUpon>UcXuatChuyenKhoMaster.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockOut\XuatLuuChuyenKho\UcXuatLuuChuyenKhoDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
