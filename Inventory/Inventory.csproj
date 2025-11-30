@@ -250,6 +250,12 @@
     <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.Designer.cs">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatLuuChuyenKho\UcXuatLuuChuyenKhoDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatLuuChuyenKho\UcXuatLuuChuyenKhoDetail.Designer.cs">
+      <DependentUpon>UcXuatLuuChuyenKhoDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="XtraForm1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -350,6 +356,9 @@
     <EmbeddedResource Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.resx">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\UcXuatLuuChuyenKhoDetail.resx">
+      <DependentUpon>UcXuatLuuChuyenKhoDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="XtraForm1.resx">
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </EmbeddedResource>
@@ -375,6 +384,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInReportDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhMasterDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLuuChuyenKho.XuatLuuChuyenKhoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
@@ -392,7 +402,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Report\" />
-    <Folder Include="StockOut\XuatLuuChuyenKho\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
