@@ -1,1 +1,102 @@
-﻿
+﻿✅ PROMPT 01 – Sinh file MD cho Lập Trình Viên (UI → BLL → DAL)
+
+Tên file gợi ý: HuongDanKyThuat_Module.md
+
+📌 PROMPT CHO COPILOT – TÀI LIỆU KỸ THUẬT (TIẾNG VIỆT)
+
+Bạn là kiến trúc sư phần mềm cấp cao.
+Dựa vào source code hiện có trong repository, hãy tạo một file tài liệu kỹ thuật bằng Markdown, nội dung HOÀN TOÀN TIẾNG VIỆT, giải thích chi tiết cách module/chức năng này hoạt động theo luồng: UI → BLL → DAL.
+
+Yêu cầu nội dung:
+1. Giới thiệu chung
+
+Mục đích của module
+
+Chức năng chính
+
+Đối tượng lập trình viên cần hiểu
+
+2. Phân tích tầng UI (WinForms / XAF / Blazor)
+
+Liệt kê tất cả Form, UserControl hoặc Page liên quan
+
+Mỗi nút bấm / sự kiện UI phải mô tả:
+
+Sự kiện gì?
+
+Gọi hàm nào?
+
+Truyền tham số gì?
+
+Xử lý kiểm tra dữ liệu tại UI
+
+3. Phân tích tầng BLL (Business Logic Layer)
+
+Liệt kê các class BLL
+
+Với từng phương thức BLL:
+
+Tên phương thức
+
+Chức năng
+
+Quy tắc nghiệp vụ áp dụng
+
+Luồng xử lý chi tiết
+
+Mapping DTO ↔ Entity
+
+Xử lý ngoại lệ
+
+4. Phân tích tầng DAL (Data Access Layer)
+
+Class repository hoặc query sử dụng
+
+Phương thức CRUD tương ứng
+
+Bảng nào trong DB được tác động
+
+Logic Insert/Update/Delete/Select
+
+Stored procedure hoặc câu SQL liên quan
+
+5. Sơ đồ tổng quan kiến trúc
+
+Tạo sơ đồ dạng Markdown:
+
+[UI] → [BLL] → [DAL] → [Database]
+
+
+Mỗi khối phải ghi rõ: gọi hàm gì.
+
+6. Luồng xử lý End-to-End
+
+Ví dụ: khi người dùng nhấn nút “Lưu”
+
+UI gọi hàm …
+
+BLL xử lý nghiệp vụ …
+
+Gọi DAL lưu dữ liệu …
+
+Trả kết quả lên UI …
+
+7. Danh sách file – class
+
+Liệt kê và mô tả:
+
+Form
+
+DTO
+
+BLL
+
+DAL
+
+Bảng DB
+
+8. Định dạng đầu ra
+
+Sinh một file Markdown tiếng Việt chuẩn, rõ ràng, có cấu trúc.
+
+Kết quả OUTPUT: 100% TIẾNG VIỆT.
