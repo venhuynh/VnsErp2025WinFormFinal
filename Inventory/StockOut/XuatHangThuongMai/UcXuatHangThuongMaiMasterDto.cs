@@ -2,7 +2,6 @@
 using Bll.Inventory.StockIn;
 using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
-using Common;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.XtraEditors;
@@ -941,8 +940,18 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
     {
         try
         {
-            var stockOutType = (int)LoaiNhapXuatKhoEnum.XuatHangThuongMai;
-            var voucherNumber = _stockInOutMasterBll.GenerateVoucherNumber(date, stockOutType);
+            // Chỉ tạo số phiếu nếu chưa có hoặc đang ở trạng thái tạo mới
+            if (!string.IsNullOrWhiteSpace(_stockOutMaster.VocherNumber) &&
+                _stockOutMaster.VoucherStatus != (int)TrangThaiPhieuNhapEnum.TaoMoi)
+            {
+                return;
+            }
+
+            // Gọi BLL để tạo số phiếu tự động (tự động xác định PNK hay PXK)
+            var voucherNumber = _stockInOutMasterBll.GenerateVoucherNumber(date, LoaiNhapXuatKhoEnum.XuatHangThuongMai);
+            
+            // Cập nhật vào Entity và control
+            _stockOutMaster.VocherNumber = voucherNumber;
             if (StockOutNumberTextEdit != null)
             {
                 StockOutNumberTextEdit.Text = voucherNumber;
@@ -975,7 +984,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
     /// </summary>
     private void ShowError(Exception ex, string message)
     {
-        Common.Common.MsgBox.ShowError($"{message}: {ex.Message}");
+        MsgBox.ShowError($"{message}: {ex.Message}");
     }
 
     /// <summary>
@@ -983,7 +992,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
     /// </summary>
     private void ShowError(string message)
     {
-        Common.Common.MsgBox.ShowError(message);
+        MsgBox.ShowError(message);
     }
 
     #endregion
