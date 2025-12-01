@@ -250,6 +250,12 @@
     <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.Designer.cs">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.Designer.cs">
+      <DependentUpon>FrmXuatLuuChuyenKho.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockOut\XuatLuuChuyenKho\UcXuatChuyenKhoMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -361,6 +367,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.resx">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.resx">
+      <DependentUpon>FrmXuatLuuChuyenKho.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\UcXuatChuyenKhoMaster.resx">
+      <DependentUpon>UcXuatChuyenKhoMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\UcXuatLuuChuyenKhoDetail.resx">
       <DependentUpon>UcXuatLuuChuyenKhoDetail.cs</DependentUpon>
