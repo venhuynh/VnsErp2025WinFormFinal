@@ -139,6 +139,7 @@
     <Content Include="Docs\Promt\Tạo file Md dựa vào source code.txt" />
     <Content Include="Docs\Promt\Prompt chung – Refactor toàn bộ màn hình GUI.txt" />
     <Content Include="Docs\Promt\Tái cấu trúc source code.txt" />
+    <Content Include="Docs\Promt\Tạo file MD\PROMPT 01 – Dùng để tạo file MD cho Developer %28UI → BLL → DAL%29.txt" />
     <None Include="Resources\team.svg" />
     <None Include="Resources\variant.svg" />
     <None Include="Resources\cost.svg" />
