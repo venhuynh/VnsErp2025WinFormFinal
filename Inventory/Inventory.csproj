@@ -420,6 +420,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Report\" />
+    <Folder Include="StockOut\XuatHangThuongMai\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
