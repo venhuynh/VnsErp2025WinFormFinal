@@ -250,6 +250,18 @@
     <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.Designer.cs">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatLuuChuyenKhoDetailDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatLuuChuyenKhoDetailDto.Designer.cs">
+      <DependentUpon>UcXuatLuuChuyenKhoDetailDto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMasterDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMasterDto.Designer.cs">
+      <DependentUpon>UcXuatHangThuongMaiMasterDto.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -368,6 +380,9 @@
     <EmbeddedResource Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.resx">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatLuuChuyenKhoDetailDto.resx">
+      <DependentUpon>UcXuatLuuChuyenKhoDetailDto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.resx">
       <DependentUpon>FrmXuatLuuChuyenKho.cs</DependentUpon>
     </EmbeddedResource>
@@ -402,6 +417,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInReportDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhMasterDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLuuChuyenKho.XuatLuuChuyenKhoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
@@ -420,7 +436,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Report\" />
-    <Folder Include="StockOut\XuatHangThuongMai\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
