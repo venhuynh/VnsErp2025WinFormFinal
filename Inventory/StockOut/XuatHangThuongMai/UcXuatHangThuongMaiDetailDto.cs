@@ -67,7 +67,12 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     public UcXuatHangThuongMaiDetailDto()
     {
         InitializeComponent();
-        InitializeControl();
+        
+        // Chỉ khởi tạo control khi không ở design mode
+        if (!DesignMode)
+        {
+            InitializeControl();
+        }
     }
 
     #endregion
@@ -79,6 +84,12 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// </summary>
     private void InitializeControl()
     {
+        // Không khởi tạo khi ở design mode
+        if (DesignMode)
+        {
+            return;
+        }
+
         try
         {
             // GridView đã được khai báo trong Designer, property public sẽ expose nó
@@ -93,7 +104,11 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
         }
         catch (Exception ex)
         {
-            ShowError(ex, "Lỗi khởi tạo control");
+            // Chỉ show error khi không ở design mode
+            if (!DesignMode)
+            {
+                ShowError(ex, "Lỗi khởi tạo control");
+            }
         }
     }
 
@@ -102,6 +117,12 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// </summary>
     private void InitializeEvents()
     {
+        // Không khởi tạo events khi ở design mode
+        if (DesignMode)
+        {
+            return;
+        }
+
         // Event khi thay đổi cell value (xử lý cả ProductVariant và tính toán)
         XuatHangThuongMaiDetailDtoGridView.CellValueChanged += XuatHangThuongMaiDetailDtoGridView_CellValueChanged;
 

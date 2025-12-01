@@ -959,7 +959,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
         }
         catch (Exception ex)
         {
-            ShowError(ex, "Lỗi tạo số phiếu xuất kho");
+            //ShowError(ex, "Lỗi tạo số phiếu xuất kho");
         }
     }
 

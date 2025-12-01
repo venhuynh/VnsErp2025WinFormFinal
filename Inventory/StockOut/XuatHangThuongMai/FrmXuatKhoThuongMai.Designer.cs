@@ -1,6 +1,4 @@
-﻿using Inventory.StockIn.NhapHangThuongMai;
-
-namespace Inventory.StockOut.XuatHangThuongMai
+﻿namespace Inventory.StockOut.XuatHangThuongMai
 {
     partial class FrmXuatKhoThuongMai
     {
@@ -54,8 +52,6 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ucXuatHangThuongMaiMasterDto1 = new Inventory.StockOut.XuatHangThuongMai.UcXuatHangThuongMaiMasterDto();
-            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
@@ -64,10 +60,8 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.dockPanel2.SuspendLayout();
             this.dockPanel2_Container.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).BeginInit();
-            this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -161,47 +155,36 @@ namespace Inventory.StockOut.XuatHangThuongMai
             // 
             this.NhapLaiBarButtonItem.Caption = "Nhập lại";
             this.NhapLaiBarButtonItem.Id = 0;
-            this.NhapLaiBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.reset2_16x16;
-            this.NhapLaiBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.reset2_32x32;
             this.NhapLaiBarButtonItem.Name = "NhapLaiBarButtonItem";
             // 
             // LuuPhieuBarButtonItem
             // 
             this.LuuPhieuBarButtonItem.Caption = "Lưu phiếu";
             this.LuuPhieuBarButtonItem.Id = 1;
-            this.LuuPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.save_16x16;
             this.LuuPhieuBarButtonItem.Name = "LuuPhieuBarButtonItem";
             // 
             // InPhieuBarButtonItem
             // 
             this.InPhieuBarButtonItem.Caption = "In phiếu";
             this.InPhieuBarButtonItem.Id = 2;
-            this.InPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.print_16x16;
-            this.InPhieuBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.print_32x32;
             this.InPhieuBarButtonItem.Name = "InPhieuBarButtonItem";
             // 
             // NhapBaoHanhBarButtonItem
             // 
             this.NhapBaoHanhBarButtonItem.Caption = "Nhập bảo hành";
             this.NhapBaoHanhBarButtonItem.Id = 4;
-            this.NhapBaoHanhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
-            this.NhapBaoHanhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.barcode_32x32;
             this.NhapBaoHanhBarButtonItem.Name = "NhapBaoHanhBarButtonItem";
             // 
             // ThemHinhAnhBarButtonItem
             // 
             this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
             this.ThemHinhAnhBarButtonItem.Id = 5;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
-            this.ThemHinhAnhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.insertimage_32x32;
             this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
             // 
             // CloseBarButtonItem
             // 
             this.CloseBarButtonItem.Caption = "Đóng";
             this.CloseBarButtonItem.Id = 3;
-            this.CloseBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.cancel_16x16;
-            this.CloseBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.cancel_32x32;
             this.CloseBarButtonItem.Name = "CloseBarButtonItem";
             // 
             // HotKeyBarStaticItem
@@ -254,7 +237,7 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.dockPanel2.Options.ShowCloseButton = false;
             this.dockPanel2.OriginalSize = new System.Drawing.Size(483, 200);
             this.dockPanel2.Size = new System.Drawing.Size(483, 768);
-            this.dockPanel2.Text = "THÔNG TIN PHIẾU NHẬP HÀNG THƯƠNG MẠI";
+            this.dockPanel2.Text = "THÔNG TIN PHIẾU XUẤT HÀNG THƯƠNG MẠI";
             // 
             // dockPanel2_Container
             // 
@@ -266,7 +249,6 @@ namespace Inventory.StockOut.XuatHangThuongMai
             // 
             // layoutControl2
             // 
-            this.layoutControl2.Controls.Add(this.ucXuatHangThuongMaiMasterDto1);
             this.layoutControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
@@ -280,33 +262,17 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.layoutControlGroup1.GroupBordersVisible = false;
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem2,
-            this.layoutControlItem3});
+            this.layoutControlItem2});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
             this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
             // 
             // layoutControlItem2
             // 
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 585);
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(456, 134);
+            this.layoutControlItem2.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem2.TextVisible = false;
-            // 
-            // ucXuatHangThuongMaiMasterDto1
-            // 
-            this.ucXuatHangThuongMaiMasterDto1.Location = new System.Drawing.Point(12, 12);
-            this.ucXuatHangThuongMaiMasterDto1.Name = "ucXuatHangThuongMaiMasterDto1";
-            this.ucXuatHangThuongMaiMasterDto1.Size = new System.Drawing.Size(452, 581);
-            this.ucXuatHangThuongMaiMasterDto1.TabIndex = 4;
-            // 
-            // layoutControlItem3
-            // 
-            this.layoutControlItem3.Control = this.ucXuatHangThuongMaiMasterDto1;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(456, 585);
-            this.layoutControlItem3.TextVisible = false;
             // 
             // FrmXuatKhoThuongMai
             // 
@@ -320,7 +286,7 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
             this.Name = "FrmXuatKhoThuongMai";
-            this.Text = "PHIẾU NHẬP KHO THƯƠNG MẠI";
+            this.Text = "PHIẾU XUẤT KHO THƯƠNG MẠI";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
@@ -329,10 +295,8 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.dockPanel2.ResumeLayout(false);
             this.dockPanel2_Container.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).EndInit();
-            this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -362,7 +326,5 @@ namespace Inventory.StockOut.XuatHangThuongMai
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
-        private UcXuatHangThuongMaiMasterDto ucXuatHangThuongMaiMasterDto1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
     }
 }

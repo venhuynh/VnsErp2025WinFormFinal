@@ -9,13 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Inventory.StockOut.XuatHangThuongMai
+namespace Inventory.StockOut.XuatHangThuongMai;
+
+public partial class FrmXuatKhoThuongMai : DevExpress.XtraEditors.XtraForm
 {
-    public partial class FrmXuatKhoThuongMai : DevExpress.XtraEditors.XtraForm
+    public FrmXuatKhoThuongMai()
     {
-        public FrmXuatKhoThuongMai()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

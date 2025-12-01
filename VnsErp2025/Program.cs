@@ -2,9 +2,10 @@
 using Common.Utils;
 using Dal.Connection;
 using Inventory.StockOut.XuatBaoHanh;
+using Inventory.StockOut.XuatHangThuongMai;
 using System;
 using System.Windows.Forms;
-
+using Inventory;
 
 
 namespace VnsErp2025
@@ -84,7 +85,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmXuatBaoHanh());
+            Application.Run(new FrmXuatKhoThuongMai());
 
             #endregion
 

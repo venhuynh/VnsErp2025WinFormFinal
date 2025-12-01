@@ -289,11 +289,11 @@
     <Compile Include="StockOut\XuatLuuChuyenKho\UcXuatLuuChuyenKhoDetail.Designer.cs">
       <DependentUpon>UcXuatLuuChuyenKhoDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="XtraForm1.cs">
+    <Compile Include="InventoryXtraForm1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="XtraForm1.Designer.cs">
-      <DependentUpon>XtraForm1.cs</DependentUpon>
+    <Compile Include="InventoryXtraForm1.Designer.cs">
+      <DependentUpon>InventoryXtraForm1.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="InventoryManagement\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
@@ -407,8 +407,8 @@
     <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\UcXuatLuuChuyenKhoDetail.resx">
       <DependentUpon>UcXuatLuuChuyenKhoDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="XtraForm1.resx">
-      <DependentUpon>XtraForm1.cs</DependentUpon>
+    <EmbeddedResource Include="InventoryXtraForm1.resx">
+      <DependentUpon>InventoryXtraForm1.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Doc\Inventory.mmap" />
