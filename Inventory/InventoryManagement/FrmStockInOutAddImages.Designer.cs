@@ -64,7 +64,7 @@ namespace Inventory.InventoryManagement
             // OpenSelectImageHyperlinkLabelControl
             // 
             this.OpenSelectImageHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
-            this.OpenSelectImageHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.opendoc_16x16;
+                this.OpenSelectImageHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.opendoc_16x16;
             this.OpenSelectImageHyperlinkLabelControl.Location = new System.Drawing.Point(242, 16);
             this.OpenSelectImageHyperlinkLabelControl.Name = "OpenSelectImageHyperlinkLabelControl";
             this.OpenSelectImageHyperlinkLabelControl.Padding = new System.Windows.Forms.Padding(10);

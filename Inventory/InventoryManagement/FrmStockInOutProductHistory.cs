@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DevExpress.XtraGrid.Views.Grid;
 
 
 namespace Inventory.InventoryManagement
@@ -200,8 +201,7 @@ namespace Inventory.InventoryManagement
                     return;
                 }
 
-                var selectedDto = StockInOutProductHistoryDtoGridView.GetRow(focusedRowHandle) as StockInOutProductHistoryDto;
-                if (selectedDto == null)
+                if (StockInOutProductHistoryDtoGridView.GetRow(focusedRowHandle) is not StockInOutProductHistoryDto selectedDto)
                 {
                     MsgBox.ShowWarning("Không thể lấy thông tin sản phẩm được chọn.");
                     return;
@@ -265,8 +265,7 @@ namespace Inventory.InventoryManagement
                     return;
                 }
 
-                var selectedDto = StockInOutProductHistoryDtoGridView.GetRow(focusedRowHandle) as StockInOutProductHistoryDto;
-                if (selectedDto == null)
+                if (StockInOutProductHistoryDtoGridView.GetRow(focusedRowHandle) is not StockInOutProductHistoryDto selectedDto)
                 {
                     MsgBox.ShowWarning("Không thể lấy thông tin sản phẩm được chọn.");
                     return;
@@ -337,11 +336,9 @@ namespace Inventory.InventoryManagement
                 // Mở form nhập định danh thiết bị với OverlayManager
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new FrmNhapSerialMacEmei(_selectedStockInOutMasterId.Value))
-                    {
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        form.ShowDialog(this);
-                    }
+                    using var form = new FrmNhapSerialMacEmei(_selectedStockInOutMasterId.Value);
+                    form.StartPosition = FormStartPosition.CenterParent;
+                    form.ShowDialog(this);
                 }
             }
             catch (Exception ex)
@@ -383,11 +380,9 @@ namespace Inventory.InventoryManagement
                 // Mở form nhập bảo hành với OverlayManager
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new FrmWarranty(_selectedStockInOutMasterId.Value))
-                    {
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        form.ShowDialog(this);
-                    }
+                    using var form = new FrmWarranty(_selectedStockInOutMasterId.Value);
+                    form.StartPosition = FormStartPosition.CenterParent;
+                    form.ShowDialog(this);
                 }
             }
             catch (Exception ex)
@@ -427,11 +422,9 @@ namespace Inventory.InventoryManagement
                 // Mở form thêm hình ảnh với OverlayManager
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new FrmStockInOutAddImages(_selectedStockInOutMasterId.Value))
-                    {
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        form.ShowDialog(this);
-                    }
+                    using var form = new FrmStockInOutAddImages(_selectedStockInOutMasterId.Value);
+                    form.StartPosition = FormStartPosition.CenterParent;
+                    form.ShowDialog(this);
                 }
 
             }
@@ -702,8 +695,7 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                var gridView = sender as DevExpress.XtraGrid.Views.Grid.GridView;
-                if (gridView == null) return;
+                if (sender is not GridView gridView) return;
                 
                 // Bỏ qua các dòng không hợp lệ (header, footer, group row)
                 if (e.RowHandle < 0) return;
@@ -711,8 +703,7 @@ namespace Inventory.InventoryManagement
                 // Không tô màu khi dòng đang được chọn để giữ màu chọn mặc định của DevExpress
                 if (gridView.IsRowSelected(e.RowHandle)) return;
 
-                var dto = gridView.GetRow(e.RowHandle) as StockInOutProductHistoryDto;
-                if (dto == null) return;
+                if (gridView.GetRow(e.RowHandle) is not StockInOutProductHistoryDto dto) return;
 
                 // Xác định loại phiếu dựa trên StockInQty và StockOutQty
                 System.Drawing.Color backColor;

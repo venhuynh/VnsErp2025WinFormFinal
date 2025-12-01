@@ -30,6 +30,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmXuatKhoThuongMai));
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -155,36 +156,42 @@
             // 
             this.NhapLaiBarButtonItem.Caption = "Nhập lại";
             this.NhapLaiBarButtonItem.Id = 0;
+            this.NhapLaiBarButtonItem.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("NhapLaiBarButtonItem.ImageOptions.Image")));
             this.NhapLaiBarButtonItem.Name = "NhapLaiBarButtonItem";
             // 
             // LuuPhieuBarButtonItem
             // 
             this.LuuPhieuBarButtonItem.Caption = "Lưu phiếu";
             this.LuuPhieuBarButtonItem.Id = 1;
+            this.LuuPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.save_16x16;
             this.LuuPhieuBarButtonItem.Name = "LuuPhieuBarButtonItem";
             // 
             // InPhieuBarButtonItem
             // 
             this.InPhieuBarButtonItem.Caption = "In phiếu";
             this.InPhieuBarButtonItem.Id = 2;
+            this.InPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.print_16x16;
             this.InPhieuBarButtonItem.Name = "InPhieuBarButtonItem";
             // 
             // NhapBaoHanhBarButtonItem
             // 
             this.NhapBaoHanhBarButtonItem.Caption = "Nhập bảo hành";
             this.NhapBaoHanhBarButtonItem.Id = 4;
+            this.NhapBaoHanhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
             this.NhapBaoHanhBarButtonItem.Name = "NhapBaoHanhBarButtonItem";
             // 
             // ThemHinhAnhBarButtonItem
             // 
             this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
             this.ThemHinhAnhBarButtonItem.Id = 5;
+            this.ThemHinhAnhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
             this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
             // 
             // CloseBarButtonItem
             // 
             this.CloseBarButtonItem.Caption = "Đóng";
             this.CloseBarButtonItem.Id = 3;
+            this.CloseBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.cancel_16x16;
             this.CloseBarButtonItem.Name = "CloseBarButtonItem";
             // 
             // HotKeyBarStaticItem

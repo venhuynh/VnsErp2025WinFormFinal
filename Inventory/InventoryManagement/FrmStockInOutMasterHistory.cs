@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DevExpress.XtraGrid.Views.Grid;
 using Inventory.StockIn.NhapHangThuongMai;
 
 
@@ -195,24 +196,23 @@ namespace Inventory.InventoryManagement
                 // Mở form chi tiết với OverlayManager và load dữ liệu
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value))
+                    using var form = new Inventory.StockIn.NhapHangThuongMai.FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value);
+                    
+                    // Đảm bảo form chưa được hiển thị
+                    form.Visible = false;
+                    form.StartPosition = FormStartPosition.CenterParent;
+                        
+                    // Load dữ liệu từ ID trước khi hiển thị form
+                    //await form.LoadDataAsync(_selectedStockInOutMasterId.Value);
+                        
+                    // Đảm bảo form vẫn chưa visible trước khi show dialog
+                    if (form.Visible)
                     {
-                        // Đảm bảo form chưa được hiển thị
                         form.Visible = false;
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        
-                        // Load dữ liệu từ ID trước khi hiển thị form
-                        //await form.LoadDataAsync(_selectedStockInOutMasterId.Value);
-                        
-                        // Đảm bảo form vẫn chưa visible trước khi show dialog
-                        if (form.Visible)
-                        {
-                            form.Visible = false;
-                        }
-                        
-                        // Hiển thị form
-                        form.ShowDialog(this);
                     }
+                        
+                    // Hiển thị form
+                    form.ShowDialog(this);
                 }
 
             }
@@ -255,7 +255,7 @@ namespace Inventory.InventoryManagement
                 // In phiếu nhập kho với preview, sử dụng OverlayManager
                 using (OverlayManager.ShowScope(this))
                 {
-                    StockInReportHelper.PrintStockInVoucher(_selectedStockInOutMasterId.Value);
+                    Inventory.StockIn.InPhieu.StockInReportHelper.PrintStockInVoucher(_selectedStockInOutMasterId.Value);
                 }
             }
             catch (Exception ex)
@@ -297,11 +297,10 @@ namespace Inventory.InventoryManagement
                 // Mở form nhập bảo hành với OverlayManager
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new FrmWarranty(_selectedStockInOutMasterId.Value))
-                    {
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        form.ShowDialog(this);
-                    }
+                    using var form = new FrmWarranty(_selectedStockInOutMasterId.Value);
+                    
+                    form.StartPosition = FormStartPosition.CenterParent;
+                    form.ShowDialog(this);
                 }
             }
             catch (Exception ex)
@@ -342,11 +341,10 @@ namespace Inventory.InventoryManagement
                 // Mở form thêm hình ảnh với OverlayManager
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var form = new FrmStockInOutAddImages(_selectedStockInOutMasterId.Value))
-                    {
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        form.ShowDialog(this);
-                    }
+                    using var form = new FrmStockInOutAddImages(_selectedStockInOutMasterId.Value);
+                    
+                    form.StartPosition = FormStartPosition.CenterParent;
+                    form.ShowDialog(this);
                 }
 
             }
@@ -512,8 +510,7 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                var gridView = sender as DevExpress.XtraGrid.Views.Grid.GridView;
-                if (gridView == null) return;
+                if (sender is not GridView gridView) return;
 
                 _ = gridView.GetRow(e.RowHandle) as StockInOutMasterHistoryDto;
 

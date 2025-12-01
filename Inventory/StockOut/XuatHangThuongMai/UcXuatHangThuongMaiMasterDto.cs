@@ -628,10 +628,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
                     .Select(FindControlByPropertyName)
                     .FirstOrDefault(c => c != null);
 
-                if (firstErrorControl != null)
-                {
-                    firstErrorControl.Focus();
-                }
+                firstErrorControl?.Focus();
 
                 return false;
             }
@@ -706,6 +703,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
     /// Load dữ liệu master từ ID phiếu xuất kho
     /// </summary>
     /// <param name="stockInOutMasterId">ID phiếu xuất kho</param>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task LoadDataAsync(Guid stockInOutMasterId)
     {
         try
@@ -714,13 +712,9 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
 
             // Lấy master entity từ BLL
             var masterEntity = _stockInBll.GetMasterById(stockInOutMasterId);
-            if (masterEntity == null)
-            {
-                throw new InvalidOperationException($"Không tìm thấy phiếu xuất kho với ID: {stockInOutMasterId}");
-            }
 
             // Gán entity vào _stockOutMaster
-            _stockOutMaster = masterEntity;
+            _stockOutMaster = masterEntity ?? throw new InvalidOperationException($"Không tìm thấy phiếu xuất kho với ID: {stockInOutMasterId}");
 
             // Set dữ liệu cho các control đơn giản (không cần datasource)
             StockOutDateDateEdit.EditValue = masterEntity.StockInOutDate;
@@ -957,7 +951,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
                 StockOutNumberTextEdit.Text = voucherNumber;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             //ShowError(ex, "Lỗi tạo số phiếu xuất kho");
         }
