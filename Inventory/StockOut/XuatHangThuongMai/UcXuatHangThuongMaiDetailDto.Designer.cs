@@ -2,7 +2,7 @@
 
 namespace Inventory.StockOut.XuatHangThuongMai
 {
-    partial class UcXuatLuuChuyenKhoDetailDto
+    partial class UcXuatHangThuongMaiDetailDto
     {
         /// <summary> 
         /// Required designer variable.
@@ -448,12 +448,12 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.colTotalAmountIncludedVat.VisibleIndex = 8;
             this.colTotalAmountIncludedVat.Width = 156;
             // 
-            // UcXuatHangThuongMai
+            // UcXuatHangThuongMaiDetailDto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.XuatHangThuongMaiDetailDtoGridControl);
-            this.Name = "UcXuatHangThuongMai";
+            this.Name = "UcXuatHangThuongMaiDetailDto";
             this.Size = new System.Drawing.Size(1267, 704);
             ((System.ComponentModel.ISupportInitialize)(this.xuatHangThuongMaiDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatHangThuongMaiDetailDtoGridControl)).EndInit();

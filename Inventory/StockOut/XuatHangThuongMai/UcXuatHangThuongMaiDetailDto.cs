@@ -5,26 +5,23 @@ using Common.Helpers;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
-using DevExpress.XtraEditors;
 using DTO.Inventory.StockOut.XuatHangThuongMai;
+using XuatHangThuongMaiDetailDto = DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiDetailDto;
 using DTO.MasterData.ProductService;
 using Logger;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Inventory.StockOut.XuatHangThuongMai;
 
-public partial class UcXuatLuuChuyenKhoDetailDto : DevExpress.XtraEditors.XtraUserControl
+public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraUserControl
 {
     #region ========== FIELDS & PROPERTIES ==========
 
@@ -67,7 +64,7 @@ public partial class UcXuatLuuChuyenKhoDetailDto : DevExpress.XtraEditors.XtraUs
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcXuatLuuChuyenKhoDetailDto()
+    public UcXuatHangThuongMaiDetailDto()
     {
         InitializeComponent();
         InitializeControl();
