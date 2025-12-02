@@ -143,7 +143,7 @@ namespace Inventory.InventoryManagement
         /// <summary>
         /// Event handler khi form được load
         /// </summary>
-        private async void FrmStockInOutProductHistory_Load(object sender, EventArgs e)
+        private void FrmStockInOutProductHistory_Load(object sender, EventArgs e)
         {
             
         }

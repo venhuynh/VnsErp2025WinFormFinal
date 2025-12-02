@@ -69,7 +69,6 @@ namespace Inventory
 
         private DevExpress.XtraEditors.XtraOpenFileDialog xtraOpenFileDialog1;
         private System.Windows.Forms.BindingSource stockInReportDtoBindingSource;
-        private System.Windows.Forms.BindingSource xuatBaoHanhMasterDtoBindingSource;
         private StockOut.XuatHangThuongMai.UcXuatHangThuongMaiMasterDto ucXuatHangThuongMaiMasterDto1;
     }
 }

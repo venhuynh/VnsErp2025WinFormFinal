@@ -50,11 +50,6 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     /// </summary>
     private bool _isWarehouseDataSourceLoaded;
 
-    /// <summary>
-    /// Flag đánh dấu Supplier datasource đã được load chưa
-    /// </summary>
-    private bool _isSupplierDataSourceLoaded;
-
     private Guid _stockInOutMasterId = Guid.Empty;
 
     /// <summary>
@@ -358,7 +353,6 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
         {
             // Reset flags để đảm bảo load lại khi form load
             _isWarehouseDataSourceLoaded = false;
-            _isSupplierDataSourceLoaded = false;
 
             // Load warehouse datasource (nhập nội bộ không cần supplier)
             await LoadWarehouseDataSourceAsync(forceRefresh: true);

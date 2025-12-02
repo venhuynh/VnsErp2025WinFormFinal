@@ -1,9 +1,9 @@
-﻿using Bll.Inventory.StockIn;
+﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.StockIn;
 using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
 using Common.Utils;
 using Dal.DataContext;
-using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.StockIn;
 using DTO.Inventory.StockOut.XuatThietBiChoThueMuon;

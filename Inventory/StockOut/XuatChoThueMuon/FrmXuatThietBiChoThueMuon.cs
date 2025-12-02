@@ -23,7 +23,7 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
     /// <summary>
     /// Business Logic Layer cho StockIn/StockOut (dùng chung BLL)
     /// </summary>
-    private readonly StockInBll _stockInBll = new StockInBll();
+    private readonly StockInBll _stockInBll = new();
 
     /// <summary>
     /// Logger để ghi log các sự kiện
@@ -493,11 +493,9 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
             // Mở form nhập bảo hành với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
-                using (var frmDeviceIdentifierInput = new FrmNhapSerialMacEmei(stockInOutMasterId))
-                {
-                    frmDeviceIdentifierInput.StartPosition = FormStartPosition.CenterParent;
-                    frmDeviceIdentifierInput.ShowDialog(this);
-                }
+                using var frmDeviceIdentifierInput = new FrmNhapSerialMacEmei(stockInOutMasterId);
+                frmDeviceIdentifierInput.StartPosition = FormStartPosition.CenterParent;
+                frmDeviceIdentifierInput.ShowDialog(this);
             }
         }
         catch (Exception ex)
@@ -570,11 +568,9 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
             // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
-                using (var frmAddImages = new InventoryManagement.FrmStockInOutAddImages(stockInOutMasterId))
-                {
-                    frmAddImages.StartPosition = FormStartPosition.CenterParent;
-                    frmAddImages.ShowDialog(this);
-                }
+                using var frmAddImages = new InventoryManagement.FrmStockInOutAddImages(stockInOutMasterId);
+                frmAddImages.StartPosition = FormStartPosition.CenterParent;
+                frmAddImages.ShowDialog(this);
             }
         }
         catch (Exception ex)
