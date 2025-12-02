@@ -51,8 +51,8 @@
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ucNhapThietBiMuonMaster1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonMaster();
+            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -282,6 +282,13 @@
             this.layoutControl2.TabIndex = 0;
             this.layoutControl2.Text = "layoutControl2";
             // 
+            // ucNhapThietBiMuonMaster1
+            // 
+            this.ucNhapThietBiMuonMaster1.Location = new System.Drawing.Point(12, 12);
+            this.ucNhapThietBiMuonMaster1.Name = "ucNhapThietBiMuonMaster1";
+            this.ucNhapThietBiMuonMaster1.Size = new System.Drawing.Size(452, 715);
+            this.ucNhapThietBiMuonMaster1.TabIndex = 4;
+            // 
             // layoutControlGroup1
             // 
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -291,13 +298,6 @@
             this.layoutControlGroup1.Name = "layoutControlGroup1";
             this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
-            // 
-            // ucNhapThietBiMuonMaster1
-            // 
-            this.ucNhapThietBiMuonMaster1.Location = new System.Drawing.Point(12, 12);
-            this.ucNhapThietBiMuonMaster1.Name = "ucNhapThietBiMuonMaster1";
-            this.ucNhapThietBiMuonMaster1.Size = new System.Drawing.Size(452, 715);
-            this.ucNhapThietBiMuonMaster1.TabIndex = 4;
             // 
             // layoutControlItem3
             // 
@@ -319,7 +319,7 @@
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
             this.Name = "FrmNhapThietBiMuon";
-            this.Text = "PHIẾU NHẬP KHO THƯƠNG MẠI";
+            this.Text = "PHIẾU NHẬP THIẾT BỊ CHO THUÊ - MƯỢN";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();

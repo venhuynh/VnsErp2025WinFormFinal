@@ -408,8 +408,14 @@
     <EmbeddedResource Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.resx">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatChoThueMuon\FrmXuatThietBiChoThueMuon.resx">
+      <DependentUpon>FrmXuatThietBiChoThueMuon.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetailDto.resx">
       <DependentUpon>UcXuatThietBiChoThueMuonDetailDto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMasterDto.resx">
+      <DependentUpon>UcXuatThietBiChoThueMuonMasterDto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatHangThuongMai\FrmXuatKhoThuongMai.resx">
       <DependentUpon>FrmXuatKhoThuongMai.cs</DependentUpon>
