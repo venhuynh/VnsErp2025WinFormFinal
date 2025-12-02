@@ -11,6 +11,17 @@ using Common.Common;
 using Common.Utils;
 using Dal.Connection;
 using Dal.DataContext;
+using Inventory.StockIn.NhapBaoHanh;
+using Inventory.StockIn.NhapHangThuongMai;
+using Inventory.StockIn.NhapLuuChuyenKho;
+using Inventory.StockIn.NhapNoiBo;
+using Inventory.StockIn.NhapThietBiMuon;
+using Inventory.StockOut.XuatBaoHanh;
+using Inventory.StockOut.XuatHangThuongMai;
+using Inventory.StockOut.XuatLuuChuyenKho;
+using Inventory.StockOut.XuatNoiBo;
+using Inventory.StockOut.XuatChoThueMuon;
+using Inventory.InventoryManagement;
 
 // ReSharper disable InconsistentNaming
 
@@ -74,6 +85,7 @@ namespace VnsErp2025.Form
                 SetupFormProperties();
                 SetupRibbon();
                 SetupStatusBar();
+                SetupSuperToolTips();
                 SetupDatabaseRefreshTimer();
                 //ShowWelcomeMessage();
 
@@ -187,6 +199,298 @@ namespace VnsErp2025.Form
             catch (Exception ex)
             {
                 MsgBox.ShowException(ex, @"Lỗi thiết lập timer refresh database");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho tất cả các BarButtonItem trong form
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                // Hệ thống
+                if (ConfigSqlServerInfoBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ConfigSqlServerInfoBarButtonItem,
+                        title: "<b><color=DarkBlue>⚙️ Cấu hình SQL Server</color></b>",
+                        content: "Cấu hình kết nối đến SQL Server database.<br/><br/><b>Chức năng:</b><br/>• Thiết lập thông tin server, database<br/>• Cấu hình authentication (Windows/SQL)<br/>• Kiểm tra kết nối database<br/>• Lưu cấu hình vào file config<br/><br/><color=Gray>Lưu ý:</color> Cần khởi động lại ứng dụng sau khi thay đổi cấu hình."
+                    );
+                }
+
+                // Master Data - Khách hàng - Đối tác
+                if (KhachHangDoiTacBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        KhachHangDoiTacBarButtonItem,
+                        title: "<b><color=Blue>🤝 Khách hàng - Đối tác</color></b>",
+                        content: "Quản lý danh sách khách hàng và đối tác trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách khách hàng/đối tác<br/>• Thêm, sửa, xóa thông tin<br/>• Tìm kiếm và lọc dữ liệu<br/>• Quản lý thông tin liên hệ<br/><br/><color=Gray>Lưu ý:</color> Dữ liệu này được sử dụng trong các module bán hàng, mua hàng và kho."
+                    );
+                }
+
+                if (PhanLoaiKhachHangBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        PhanLoaiKhachHangBarButtonItem,
+                        title: "<b><color=Blue>📂 Phân loại khách hàng</color></b>",
+                        content: "Quản lý các phân loại khách hàng/đối tác (ví dụ: Khách hàng VIP, Đối tác chiến lược, v.v.).<br/><br/><b>Chức năng:</b><br/>• Tạo và quản lý các phân loại<br/>• Gán phân loại cho khách hàng/đối tác<br/>• Hỗ trợ báo cáo và phân tích<br/><br/><color=Gray>Lưu ý:</color> Phân loại giúp tổ chức và quản lý khách hàng hiệu quả hơn."
+                    );
+                }
+
+                if (SiteKhachHangBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        SiteKhachHangBarButtonItem,
+                        title: "<b><color=Blue>📍 Site khách hàng</color></b>",
+                        content: "Quản lý các địa điểm/chi nhánh của khách hàng/đối tác.<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa địa điểm<br/>• Quản lý thông tin địa chỉ chi tiết<br/>• Gán địa điểm cho khách hàng/đối tác<br/><br/><color=Gray>Lưu ý:</color> Một khách hàng có thể có nhiều địa điểm giao hàng."
+                    );
+                }
+
+                if (LienHeKhachHangDoiTacBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        LienHeKhachHangDoiTacBarButtonItem,
+                        title: "<b><color=Blue>📞 Liên hệ khách hàng - Đối tác</color></b>",
+                        content: "Quản lý thông tin liên hệ của khách hàng/đối tác.<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa người liên hệ<br/>• Quản lý thông tin: tên, chức vụ, email, điện thoại<br/>• Gán người liên hệ cho khách hàng/đối tác<br/><br/><color=Gray>Lưu ý:</color> Thông tin liên hệ giúp giao tiếp hiệu quả với khách hàng/đối tác."
+                    );
+                }
+
+                // Master Data - Công ty
+                if (CongTyBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        CongTyBarButtonItem,
+                        title: "<b><color=Green>🏢 Công ty</color></b>",
+                        content: "Quản lý thông tin công ty trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách công ty<br/>• Thêm, sửa, xóa thông tin công ty<br/>• Quản lý thông tin: tên, mã số thuế, địa chỉ<br/><br/><color=Gray>Lưu ý:</color> Thông tin công ty được sử dụng trong các báo cáo và tài liệu."
+                    );
+                }
+
+                if (ChiNhanhBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ChiNhanhBarButtonItem,
+                        title: "<b><color=Green>🏛️ Chi nhánh</color></b>",
+                        content: "Quản lý các chi nhánh của công ty.<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa chi nhánh<br/>• Quản lý thông tin: tên, địa chỉ, mã chi nhánh<br/>• Gán chi nhánh cho công ty<br/><br/><color=Gray>Lưu ý:</color> Chi nhánh được sử dụng để phân bổ hàng hóa và quản lý kho."
+                    );
+                }
+
+                if (PhongBanBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        PhongBanBarButtonItem,
+                        title: "<b><color=Green>🏢 Phòng ban</color></b>",
+                        content: "Quản lý các phòng ban trong công ty.<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa phòng ban<br/>• Quản lý cấu trúc phòng ban (có thể có phòng ban con)<br/>• Gán phòng ban cho chi nhánh<br/><br/><color=Gray>Lưu ý:</color> Phòng ban giúp tổ chức nhân sự và phân quyền trong hệ thống."
+                    );
+                }
+
+                if (ChucVuBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ChucVuBarButtonItem,
+                        title: "<b><color=Green>👔 Chức vụ</color></b>",
+                        content: "Quản lý các chức vụ trong công ty.<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa chức vụ<br/>• Quản lý thông tin: tên chức vụ, mô tả<br/>• Gán chức vụ cho nhân viên<br/><br/><color=Gray>Lưu ý:</color> Chức vụ được sử dụng để quản lý nhân sự và phân quyền."
+                    );
+                }
+
+                if (NhanVienBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NhanVienBarButtonItem,
+                        title: "<b><color=Green>👥 Nhân viên</color></b>",
+                        content: "Quản lý thông tin nhân viên trong công ty.<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa nhân viên<br/>• Quản lý thông tin: tên, mã nhân viên, phòng ban, chức vụ<br/>• Gán nhân viên cho phòng ban và chức vụ<br/><br/><color=Gray>Lưu ý:</color> Thông tin nhân viên được sử dụng trong các module quản lý và báo cáo."
+                    );
+                }
+
+                // Master Data - Sản phẩm Dịch vụ
+                if (SanPhamDichVuBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        SanPhamDichVuBarButtonItem,
+                        title: "<b><color=Purple>📦 Sản phẩm - Dịch vụ</color></b>",
+                        content: "Quản lý danh sách sản phẩm và dịch vụ trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách sản phẩm/dịch vụ<br/>• Thêm, sửa, xóa thông tin<br/>• Quản lý giá, đơn vị tính, phân loại<br/>• Quản lý hình ảnh và mô tả<br/><br/><color=Gray>Lưu ý:</color> Dữ liệu này được sử dụng trong các module bán hàng, mua hàng và kho."
+                    );
+                }
+
+                if (HinhAnhSPDVBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        HinhAnhSPDVBarButtonItem,
+                        title: "<b><color=Purple>🖼️ Hình ảnh sản phẩm - Dịch vụ</color></b>",
+                        content: "Quản lý hình ảnh cho sản phẩm và dịch vụ.<br/><br/><b>Chức năng:</b><br/>• Upload, xóa hình ảnh<br/>• Quản lý nhiều hình ảnh cho một sản phẩm<br/>• Đặt hình ảnh chính<br/><br/><color=Gray>Lưu ý:</color> Hình ảnh giúp hiển thị sản phẩm/dịch vụ một cách trực quan."
+                    );
+                }
+
+                if (PhanLoaiSPDVBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        PhanLoaiSPDVBarButtonItem,
+                        title: "<b><color=Purple>📂 Phân loại sản phẩm - Dịch vụ</color></b>",
+                        content: "Quản lý các phân loại sản phẩm/dịch vụ (ví dụ: Điện tử, Quần áo, Dịch vụ tư vấn, v.v.).<br/><br/><b>Chức năng:</b><br/>• Tạo và quản lý các phân loại<br/>• Gán phân loại cho sản phẩm/dịch vụ<br/>• Hỗ trợ báo cáo và phân tích<br/><br/><color=Gray>Lưu ý:</color> Phân loại giúp tổ chức và tìm kiếm sản phẩm/dịch vụ hiệu quả hơn."
+                    );
+                }
+
+                if (DonViTinhBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        DonViTinhBarButtonItem,
+                        title: "<b><color=Purple>📏 Đơn vị tính</color></b>",
+                        content: "Quản lý các đơn vị tính (ví dụ: Cái, Hộp, Thùng, Kg, v.v.).<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa đơn vị tính<br/>• Quản lý quy đổi giữa các đơn vị<br/>• Gán đơn vị tính cho sản phẩm<br/><br/><color=Gray>Lưu ý:</color> Đơn vị tính được sử dụng trong các phiếu nhập/xuất kho và báo cáo."
+                    );
+                }
+
+                if (BienTheSPDVBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        BienTheSPDVBarButtonItem,
+                        title: "<b><color=Purple>🎨 Biến thể sản phẩm - Dịch vụ</color></b>",
+                        content: "Quản lý các biến thể của sản phẩm/dịch vụ (ví dụ: Màu sắc, Kích thước, v.v.).<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa biến thể<br/>• Quản lý thuộc tính biến thể (màu, size, v.v.)<br/>• Gán biến thể cho sản phẩm<br/><br/><color=Gray>Lưu ý:</color> Biến thể giúp quản lý các phiên bản khác nhau của cùng một sản phẩm."
+                    );
+                }
+
+                // Nhập kho
+                if (NhapBaoHanhBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NhapBaoHanhBarButtonItem,
+                        title: "<b><color=Orange>📥 Nhập bảo hành</color></b>",
+                        content: "Tạo phiếu nhập kho cho hàng hóa thiết bị bảo hành.<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu nhập bảo hành<br/>• Quản lý chi tiết hàng hóa nhập<br/>• Theo dõi số lượng và giá trị<br/><br/><color=Gray>Lưu ý:</color> Phiếu nhập bảo hành được sử dụng khi nhận hàng hóa từ khách hàng để bảo hành."
+                    );
+                }
+
+                if (NhapHangThuongMaiBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NhapHangThuongMaiBarButtonItem,
+                        title: "<b><color=Orange>📥 Nhập hàng thương mại</color></b>",
+                        content: "Tạo phiếu nhập kho cho hàng hóa thương mại (mua từ nhà cung cấp).<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu nhập hàng thương mại<br/>• Quản lý chi tiết hàng hóa nhập<br/>• Theo dõi nhà cung cấp, số lượng, giá trị<br/><br/><color=Gray>Lưu ý:</color> Phiếu nhập hàng thương mại được sử dụng khi nhận hàng từ nhà cung cấp."
+                    );
+                }
+
+                if (NhapLuuChuyenKhoBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NhapLuuChuyenKhoBarButtonItem,
+                        title: "<b><color=Orange>📥 Nhập lưu chuyển kho</color></b>",
+                        content: "Tạo phiếu nhập kho từ việc chuyển kho (từ kho khác đến).<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu nhập lưu chuyển kho<br/>• Quản lý chi tiết hàng hóa nhập<br/>• Theo dõi kho nguồn, kho đích<br/><br/><color=Gray>Lưu ý:</color> Phiếu nhập lưu chuyển kho được sử dụng khi chuyển hàng giữa các kho."
+                    );
+                }
+
+                if (NhapNoiBoBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NhapNoiBoBarButtonItem,
+                        title: "<b><color=Orange>📥 Nhập nội bộ</color></b>",
+                        content: "Tạo phiếu nhập kho cho hàng hóa thiết bị nội bộ.<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu nhập nội bộ<br/>• Quản lý chi tiết hàng hóa thiết bị nhập<br/>• Theo dõi số lượng và giá trị<br/><br/><color=Gray>Lưu ý:</color> Phiếu nhập nội bộ được sử dụng khi nhận hàng hóa thiết bị từ các đơn vị nội bộ."
+                    );
+                }
+
+                if (NhapThietBiMuonBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NhapThietBiMuonBarButtonItem,
+                        title: "<b><color=Orange>📥 Nhập thiết bị mượn - thuê</color></b>",
+                        content: "Tạo phiếu nhập kho cho thiết bị được mượn hoặc thuê về.<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu nhập thiết bị mượn/thuê<br/>• Quản lý chi tiết thiết bị nhập<br/>• Theo dõi khách hàng, số lượng<br/><br/><color=Gray>Lưu ý:</color> Phiếu nhập thiết bị mượn/thuê được sử dụng khi nhận lại thiết bị từ khách hàng sau khi cho mượn/thuê."
+                    );
+                }
+
+                // Xuất kho
+                if (XuatBaoHanhBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        XuatBaoHanhBarButtonItem,
+                        title: "<b><color=Red>📤 Xuất bảo hành</color></b>",
+                        content: "Tạo phiếu xuất kho cho hàng hóa thiết bị bảo hành (trả lại cho khách hàng).<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu xuất bảo hành<br/>• Quản lý chi tiết hàng hóa xuất<br/>• Theo dõi số lượng và giá trị<br/><br/><color=Gray>Lưu ý:</color> Phiếu xuất bảo hành được sử dụng khi trả lại hàng hóa đã bảo hành cho khách hàng."
+                    );
+                }
+
+                if (XuatHangThuongMaiBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        XuatHangThuongMaiBarButtonItem,
+                        title: "<b><color=Red>📤 Xuất hàng thương mại</color></b>",
+                        content: "Tạo phiếu xuất kho cho hàng hóa thương mại (bán cho khách hàng).<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu xuất hàng thương mại<br/>• Quản lý chi tiết hàng hóa xuất<br/>• Theo dõi khách hàng, số lượng, giá trị<br/><br/><color=Gray>Lưu ý:</color> Phiếu xuất hàng thương mại được sử dụng khi bán hàng cho khách hàng."
+                    );
+                }
+
+                if (XuatLuuChuyenKhoBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        XuatLuuChuyenKhoBarButtonItem,
+                        title: "<b><color=Red>📤 Xuất lưu chuyển kho</color></b>",
+                        content: "Tạo phiếu xuất kho để chuyển kho (từ kho này sang kho khác).<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu xuất lưu chuyển kho<br/>• Quản lý chi tiết hàng hóa xuất<br/>• Theo dõi kho nguồn, kho đích<br/><br/><color=Gray>Lưu ý:</color> Phiếu xuất lưu chuyển kho được sử dụng khi chuyển hàng giữa các kho."
+                    );
+                }
+
+                if (XuatNoiBoBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        XuatNoiBoBarButtonItem,
+                        title: "<b><color=Red>📤 Xuất nội bộ</color></b>",
+                        content: "Tạo phiếu xuất kho cho hàng hóa thiết bị nội bộ.<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu xuất nội bộ<br/>• Quản lý chi tiết hàng hóa thiết bị xuất<br/>• Theo dõi số lượng và giá trị<br/><br/><color=Gray>Lưu ý:</color> Phiếu xuất nội bộ được sử dụng khi xuất hàng hóa thiết bị cho các đơn vị nội bộ."
+                    );
+                }
+
+                if (XuatChoThueMuonBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        XuatChoThueMuonBarButtonItem,
+                        title: "<b><color=Red>📤 Xuất thiết bị mượn - thuê</color></b>",
+                        content: "Tạo phiếu xuất kho cho thiết bị cho mượn hoặc cho thuê.<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu xuất thiết bị mượn/thuê<br/>• Quản lý chi tiết thiết bị xuất<br/>• Theo dõi khách hàng, số lượng<br/><br/><color=Gray>Lưu ý:</color> Phiếu xuất thiết bị mượn/thuê được sử dụng khi cho khách hàng mượn hoặc thuê thiết bị."
+                    );
+                }
+
+                // Quản lý kho
+                if (InventoryBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        InventoryBarButtonItem,
+                        title: "<b><color=Teal>📊 Quản lý kho</color></b>",
+                        content: "Quản lý tổng quan về kho hàng trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Xem tồn kho theo sản phẩm<br/>• Theo dõi lịch sử nhập/xuất<br/>• Quản lý kho và vị trí lưu trữ<br/><br/><color=Gray>Lưu ý:</color> Module này giúp theo dõi và quản lý hàng tồn kho hiệu quả."
+                    );
+                }
+
+                // Truy vấn
+                if (StockInOutMasterHistoryBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        StockInOutMasterHistoryBarButtonItem,
+                        title: "<b><color=DarkBlue>📋 Phiếu xuất kho</color></b>",
+                        content: "Xem lịch sử các phiếu nhập/xuất kho trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách phiếu nhập/xuất<br/>• Tìm kiếm và lọc theo nhiều tiêu chí<br/>• Xem chi tiết từng phiếu<br/>• In và xuất báo cáo<br/><br/><color=Gray>Lưu ý:</color> Module này giúp tra cứu và theo dõi lịch sử giao dịch kho."
+                    );
+                }
+
+                if (StockInOutProductHistoryBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        StockInOutProductHistoryBarButtonItem,
+                        title: "<b><color=DarkBlue>📦 Sản phẩm - Dịch vụ</color></b>",
+                        content: "Xem lịch sử nhập/xuất kho theo từng sản phẩm/dịch vụ.<br/><br/><b>Chức năng:</b><br/>• Xem lịch sử nhập/xuất của sản phẩm<br/>• Theo dõi số lượng tồn kho<br/>• Xem chi tiết các phiếu liên quan<br/><br/><color=Gray>Lưu ý:</color> Module này giúp tra cứu lịch sử giao dịch của từng sản phẩm/dịch vụ."
+                    );
+                }
+
+                if (WarrantyCheckBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        WarrantyCheckBarButtonItem,
+                        title: "<b><color=DarkBlue>🛡️ Bảo hành</color></b>",
+                        content: "Kiểm tra và quản lý thông tin bảo hành của sản phẩm/thiết bị.<br/><br/><b>Chức năng:</b><br/>• Tra cứu thông tin bảo hành<br/>• Kiểm tra thời hạn bảo hành<br/>• Xem lịch sử bảo hành<br/><br/><color=Gray>Lưu ý:</color> Module này giúp quản lý và theo dõi bảo hành hiệu quả."
+                    );
+                }
+
+                if (StockInOutImagesBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        StockInOutImagesBarButtonItem,
+                        title: "<b><color=DarkBlue>🖼️ Hình ảnh</color></b>",
+                        content: "Xem và quản lý hình ảnh liên quan đến các phiếu nhập/xuất kho.<br/><br/><b>Chức năng:</b><br/>• Xem hình ảnh của phiếu nhập/xuất<br/>• Upload và quản lý hình ảnh<br/>• Xem hình ảnh sản phẩm/thiết bị<br/><br/><color=Gray>Lưu ý:</color> Module này giúp lưu trữ và tra cứu hình ảnh liên quan đến kho."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignore lỗi setup SuperToolTip để không chặn form
+                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
             }
         }
 
@@ -705,6 +1009,278 @@ namespace VnsErp2025.Form
             }
         }
         #endregion
+
+        #endregion
+
+        #endregion
+
+        #region Inventory - Nhập Xuất Tồn Kho
+
+        #region Nhập kho
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Nhập bảo hành
+        /// </summary>
+        private void NhapBaoHanhBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmNhapBaoHanh>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form nhập bảo hành");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Nhập hàng thương mại
+        /// </summary>
+        private void NhapHangThuongMaiBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmNhapKhoThuongMai>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form nhập hàng thương mại");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Nhập lưu chuyển kho
+        /// </summary>
+        private void NhapLuuChuyenKhoBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmNhapLuuChuyenKho>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form nhập lưu chuyển kho");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Nhập nội bộ
+        /// </summary>
+        private void NhapNoiBoBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmNhapNoiBo>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form nhập nội bộ");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Nhập thiết bị mượn - thuê
+        /// </summary>
+        private void NhapThietBiMuonBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmNhapThietBiMuon>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form nhập thiết bị mượn - thuê");
+            }
+        }
+
+        #endregion
+
+        #region Xuất kho
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Xuất bảo hành
+        /// </summary>
+        private void XuatBaoHanhBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmXuatBaoHanh>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form xuất bảo hành");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Xuất hàng thương mại
+        /// </summary>
+        private void XuatHangThuongMaiBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmXuatKhoThuongMai>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form xuất hàng thương mại");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Xuất lưu chuyển kho
+        /// </summary>
+        private void XuatLuuChuyenKhoBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmXuatLuuChuyenKho>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form xuất lưu chuyển kho");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Xuất nội bộ
+        /// </summary>
+        private void XuatNoiBoBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmXuatNoiBo>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form xuất nội bộ");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Xuất thiết bị mượn - thuê
+        /// </summary>
+        private void XuatChoThueMuonBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmXuatThietBiChoThueMuon>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form xuất thiết bị mượn - thuê");
+            }
+        }
+
+        #endregion
+
+        #region Quản lý kho & Truy vấn
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Quản lý kho
+        /// </summary>
+        private void InventoryBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                // TODO: Thêm form quản lý kho khi có
+                MsgBox.ShowSuccess("Chức năng quản lý kho đang được phát triển.", "Thông báo");
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý kho");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Phiếu xuất kho (Lịch sử phiếu nhập/xuất)
+        /// </summary>
+        private void StockInOutMasterHistoryBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmStockInOutMasterHistory>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form lịch sử phiếu nhập/xuất kho");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Sản phẩm - Dịch vụ (Lịch sử sản phẩm nhập/xuất)
+        /// </summary>
+        private void StockInOutProductHistoryBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmStockInOutProductHistory>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form lịch sử sản phẩm nhập/xuất kho");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Bảo hành
+        /// </summary>
+        private void WarrantyCheckBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmWarrantyCheck>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form kiểm tra bảo hành");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Hình ảnh
+        /// </summary>
+        private void StockInOutImagesBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                //ApplicationSystemUtils.ShowOrActivateForm<FrmStockInOutAddImages>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý hình ảnh");
+            }
+        }
 
         #endregion
 

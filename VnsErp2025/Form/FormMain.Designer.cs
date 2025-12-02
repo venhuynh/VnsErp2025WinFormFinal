@@ -122,6 +122,7 @@
             this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1,
             this.XuatNhapTonKhoRibbonPage});
+            this.ribbon.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office365;
             this.ribbon.Size = new System.Drawing.Size(1303, 161);
             this.ribbon.StatusBar = this.ribbonStatusBar;
             // 
@@ -272,6 +273,7 @@
             this.NhapBaoHanhBarButtonItem.Id = 18;
             this.NhapBaoHanhBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insurance;
             this.NhapBaoHanhBarButtonItem.Name = "NhapBaoHanhBarButtonItem";
+            this.NhapBaoHanhBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapBaoHanhBarButtonItem_ItemClick);
             // 
             // NhapHangThuongMaiBarButtonItem
             // 
@@ -279,6 +281,7 @@
             this.NhapHangThuongMaiBarButtonItem.Id = 19;
             this.NhapHangThuongMaiBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.replacement;
             this.NhapHangThuongMaiBarButtonItem.Name = "NhapHangThuongMaiBarButtonItem";
+            this.NhapHangThuongMaiBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapHangThuongMaiBarButtonItem_ItemClick);
             // 
             // NhapLuuChuyenKhoBarButtonItem
             // 
@@ -286,6 +289,7 @@
             this.NhapLuuChuyenKhoBarButtonItem.Id = 20;
             this.NhapLuuChuyenKhoBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.supplier;
             this.NhapLuuChuyenKhoBarButtonItem.Name = "NhapLuuChuyenKhoBarButtonItem";
+            this.NhapLuuChuyenKhoBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapLuuChuyenKhoBarButtonItem_ItemClick);
             // 
             // NhapNoiBoBarButtonItem
             // 
@@ -293,6 +297,7 @@
             this.NhapNoiBoBarButtonItem.Id = 21;
             this.NhapNoiBoBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.inventory__1_;
             this.NhapNoiBoBarButtonItem.Name = "NhapNoiBoBarButtonItem";
+            this.NhapNoiBoBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapNoiBoBarButtonItem_ItemClick);
             // 
             // NhapThietBiMuonBarButtonItem
             // 
@@ -300,6 +305,7 @@
             this.NhapThietBiMuonBarButtonItem.Id = 22;
             this.NhapThietBiMuonBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.hardware;
             this.NhapThietBiMuonBarButtonItem.Name = "NhapThietBiMuonBarButtonItem";
+            this.NhapThietBiMuonBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapThietBiMuonBarButtonItem_ItemClick);
             // 
             // XuatBaoHanhBarButtonItem
             // 
@@ -307,6 +313,7 @@
             this.XuatBaoHanhBarButtonItem.Id = 23;
             this.XuatBaoHanhBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insurance;
             this.XuatBaoHanhBarButtonItem.Name = "XuatBaoHanhBarButtonItem";
+            this.XuatBaoHanhBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatBaoHanhBarButtonItem_ItemClick);
             // 
             // XuatHangThuongMaiBarButtonItem
             // 
@@ -314,6 +321,7 @@
             this.XuatHangThuongMaiBarButtonItem.Id = 24;
             this.XuatHangThuongMaiBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.replacement;
             this.XuatHangThuongMaiBarButtonItem.Name = "XuatHangThuongMaiBarButtonItem";
+            this.XuatHangThuongMaiBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatHangThuongMaiBarButtonItem_ItemClick);
             // 
             // XuatLuuChuyenKhoBarButtonItem
             // 
@@ -321,6 +329,7 @@
             this.XuatLuuChuyenKhoBarButtonItem.Id = 25;
             this.XuatLuuChuyenKhoBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.supplier;
             this.XuatLuuChuyenKhoBarButtonItem.Name = "XuatLuuChuyenKhoBarButtonItem";
+            this.XuatLuuChuyenKhoBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatLuuChuyenKhoBarButtonItem_ItemClick);
             // 
             // XuatNoiBoBarButtonItem
             // 
@@ -328,6 +337,7 @@
             this.XuatNoiBoBarButtonItem.Id = 26;
             this.XuatNoiBoBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.inventory__1_;
             this.XuatNoiBoBarButtonItem.Name = "XuatNoiBoBarButtonItem";
+            this.XuatNoiBoBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatNoiBoBarButtonItem_ItemClick);
             // 
             // XuatChoThueMuonBarButtonItem
             // 
@@ -335,12 +345,14 @@
             this.XuatChoThueMuonBarButtonItem.Id = 27;
             this.XuatChoThueMuonBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.hardware;
             this.XuatChoThueMuonBarButtonItem.Name = "XuatChoThueMuonBarButtonItem";
+            this.XuatChoThueMuonBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatChoThueMuonBarButtonItem_ItemClick);
             // 
             // InventoryBarButtonItem
             // 
             this.InventoryBarButtonItem.Caption = "barButtonItem1";
             this.InventoryBarButtonItem.Id = 28;
             this.InventoryBarButtonItem.Name = "InventoryBarButtonItem";
+            this.InventoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.InventoryBarButtonItem_ItemClick);
             // 
             // StockInOutMasterHistoryBarButtonItem
             // 
@@ -348,6 +360,7 @@
             this.StockInOutMasterHistoryBarButtonItem.Id = 29;
             this.StockInOutMasterHistoryBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.invoice;
             this.StockInOutMasterHistoryBarButtonItem.Name = "StockInOutMasterHistoryBarButtonItem";
+            this.StockInOutMasterHistoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutMasterHistoryBarButtonItem_ItemClick);
             // 
             // ribbonPage1
             // 
@@ -455,6 +468,7 @@
             this.StockInOutProductHistoryBarButtonItem.Id = 30;
             this.StockInOutProductHistoryBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.product_management;
             this.StockInOutProductHistoryBarButtonItem.Name = "StockInOutProductHistoryBarButtonItem";
+            this.StockInOutProductHistoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutProductHistoryBarButtonItem_ItemClick);
             // 
             // WarrantyCheckBarButtonItem
             // 
@@ -462,6 +476,7 @@
             this.WarrantyCheckBarButtonItem.Id = 31;
             this.WarrantyCheckBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insurance;
             this.WarrantyCheckBarButtonItem.Name = "WarrantyCheckBarButtonItem";
+            this.WarrantyCheckBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.WarrantyCheckBarButtonItem_ItemClick);
             // 
             // StockInOutImagesBarButtonItem
             // 
@@ -469,6 +484,7 @@
             this.StockInOutImagesBarButtonItem.Id = 32;
             this.StockInOutImagesBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.brand_image;
             this.StockInOutImagesBarButtonItem.Name = "StockInOutImagesBarButtonItem";
+            this.StockInOutImagesBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutImagesBarButtonItem_ItemClick);
             // 
             // FormMain
             // 

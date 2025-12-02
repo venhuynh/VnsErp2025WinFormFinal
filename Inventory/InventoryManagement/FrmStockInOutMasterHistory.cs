@@ -138,8 +138,7 @@ namespace Inventory.InventoryManagement
         {
             try
             {
-                // Tự động load data khi form được mở
-                await LoadDataAsync();
+            
             }
             catch (Exception ex)
             {
