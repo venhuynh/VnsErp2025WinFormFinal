@@ -23,8 +23,8 @@ public class StockInOutMasterBll
     private IStockInOutMasterRepository _dataAccess;
     private Dal.DataAccess.Interfaces.Inventory.StockIn.IStockInRepository _stockInRepository;
     private readonly ILogger _logger;
-    private readonly object _lockObject = new object();
-    private readonly object _stockInRepositoryLock = new object();
+    private readonly object _lockObject = new();
+    private readonly object _stockInRepositoryLock = new();
 
     #endregion
 
@@ -95,8 +95,9 @@ public class StockInOutMasterBll
                         var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
                         if (string.IsNullOrEmpty(globalConnectionString))
                         {
-                            throw new InvalidOperationException(
-                                "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+                            return null;
+                            //throw new InvalidOperationException(
+                            //    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
                         }
 
                         _stockInRepository = new StockInRepository(globalConnectionString);
