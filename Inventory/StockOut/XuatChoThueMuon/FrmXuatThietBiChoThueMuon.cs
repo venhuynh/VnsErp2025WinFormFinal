@@ -2,20 +2,25 @@
 using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
+using DevExpress.XtraEditors;
 using DevExpress.XtraReports.UI;
 using Inventory.StockIn.InPhieu;
+using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
-using Logger.Configuration;
-using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Logger.Interfaces;
 
-namespace Inventory.StockIn.NhapThietBiMuon;
+namespace Inventory.StockOut.XuatChoThueMuon;
 
-public partial class FrmNhapThietBiMuon : DevExpress.XtraEditors.XtraForm
+public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
 {
     #region ========== FIELDS & PROPERTIES ==========
 

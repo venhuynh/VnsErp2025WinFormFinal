@@ -254,6 +254,12 @@
     <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.Designer.cs">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatChoThueMuon\FrmXuatThietBiChoThueMuon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatChoThueMuon\FrmXuatThietBiChoThueMuon.Designer.cs">
+      <DependentUpon>FrmXuatThietBiChoThueMuon.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetailDto.cs">
       <SubType>UserControl</SubType>
     </Compile>
