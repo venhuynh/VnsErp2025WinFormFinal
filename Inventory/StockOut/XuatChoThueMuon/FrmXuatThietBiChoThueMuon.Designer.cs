@@ -1,6 +1,6 @@
-﻿namespace Inventory.StockIn.NhapThietBiMuon
+﻿namespace Inventory.StockOut.XuatChoThueMuon
 {
-    partial class FrmNhapThietBiMuon
+    partial class FrmXuatThietBiChoThueMuon
     {
         /// <summary>
         /// Required designer variable.
@@ -31,9 +31,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapThietBiMuonDetail1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
@@ -51,13 +49,14 @@
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapThietBiMuonMaster1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ucXuatThietBiChoThueMuonMasterDto1 = new Inventory.StockOut.XuatChoThueMuon.UcXuatThietBiChoThueMuonMasterDto();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ucXuatThietBiChoThueMuonDetailDto1 = new Inventory.StockOut.XuatChoThueMuon.UcXuatThietBiChoThueMuonDetailDto();
+            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
@@ -65,12 +64,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).BeginInit();
             this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.ucNhapThietBiMuonDetail1);
+            this.layoutControl1.Controls.Add(this.ucXuatThietBiChoThueMuonDetailDto1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(483, 24);
             this.layoutControl1.Name = "layoutControl1";
@@ -79,30 +79,15 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // ucNhapThietBiMuonDetail1
-            // 
-            this.ucNhapThietBiMuonDetail1.Location = new System.Drawing.Point(12, 12);
-            this.ucNhapThietBiMuonDetail1.Name = "ucNhapThietBiMuonDetail1";
-            this.ucNhapThietBiMuonDetail1.Size = new System.Drawing.Size(864, 744);
-            this.ucNhapThietBiMuonDetail1.TabIndex = 4;
-            // 
             // Root
             // 
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem2});
+            this.layoutControlItem4});
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(888, 768);
             this.Root.TextVisible = false;
-            // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Control = this.ucNhapThietBiMuonDetail1;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(868, 748);
-            this.layoutControlItem2.TextVisible = false;
             // 
             // dockManager1
             // 
@@ -261,7 +246,7 @@
             this.dockPanel2.Options.ShowCloseButton = false;
             this.dockPanel2.OriginalSize = new System.Drawing.Size(483, 200);
             this.dockPanel2.Size = new System.Drawing.Size(483, 768);
-            this.dockPanel2.Text = "THÔNG TIN PHIẾU NHẬP HÀNG CHO MƯỢN - THUÊ";
+            this.dockPanel2.Text = "THÔNG TIN PHIẾU XUẤT THIẾT BỊ CHO MƯỢN - THUÊ";
             // 
             // dockPanel2_Container
             // 
@@ -273,7 +258,7 @@
             // 
             // layoutControl2
             // 
-            this.layoutControl2.Controls.Add(this.ucNhapThietBiMuonMaster1);
+            this.layoutControl2.Controls.Add(this.ucXuatThietBiChoThueMuonMasterDto1);
             this.layoutControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
@@ -282,32 +267,47 @@
             this.layoutControl2.TabIndex = 0;
             this.layoutControl2.Text = "layoutControl2";
             // 
-            // ucNhapThietBiMuonMaster1
-            // 
-            this.ucNhapThietBiMuonMaster1.Location = new System.Drawing.Point(12, 12);
-            this.ucNhapThietBiMuonMaster1.Name = "ucNhapThietBiMuonMaster1";
-            this.ucNhapThietBiMuonMaster1.Size = new System.Drawing.Size(452, 715);
-            this.ucNhapThietBiMuonMaster1.TabIndex = 4;
-            // 
             // layoutControlGroup1
             // 
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.layoutControlGroup1.GroupBordersVisible = false;
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem3});
+            this.layoutControlItem1});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
             this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
             // 
-            // layoutControlItem3
+            // ucXuatThietBiChoThueMuonMasterDto1
             // 
-            this.layoutControlItem3.Control = this.ucNhapThietBiMuonMaster1;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(456, 719);
-            this.layoutControlItem3.TextVisible = false;
+            this.ucXuatThietBiChoThueMuonMasterDto1.Location = new System.Drawing.Point(12, 12);
+            this.ucXuatThietBiChoThueMuonMasterDto1.Name = "ucXuatThietBiChoThueMuonMasterDto1";
+            this.ucXuatThietBiChoThueMuonMasterDto1.Size = new System.Drawing.Size(452, 715);
+            this.ucXuatThietBiChoThueMuonMasterDto1.TabIndex = 4;
             // 
-            // FrmNhapThietBiMuon
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.ucXuatThietBiChoThueMuonMasterDto1;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(456, 719);
+            this.layoutControlItem1.TextVisible = false;
+            // 
+            // ucXuatThietBiChoThueMuonDetailDto1
+            // 
+            this.ucXuatThietBiChoThueMuonDetailDto1.Location = new System.Drawing.Point(12, 12);
+            this.ucXuatThietBiChoThueMuonDetailDto1.Name = "ucXuatThietBiChoThueMuonDetailDto1";
+            this.ucXuatThietBiChoThueMuonDetailDto1.Size = new System.Drawing.Size(864, 744);
+            this.ucXuatThietBiChoThueMuonDetailDto1.TabIndex = 4;
+            // 
+            // layoutControlItem4
+            // 
+            this.layoutControlItem4.Control = this.ucXuatThietBiChoThueMuonDetailDto1;
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem4.Name = "layoutControlItem4";
+            this.layoutControlItem4.Size = new System.Drawing.Size(868, 748);
+            this.layoutControlItem4.TextVisible = false;
+            // 
+            // FrmXuatThietBiChoThueMuon
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -318,12 +318,11 @@
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.Name = "FrmNhapThietBiMuon";
-            this.Text = "PHIẾU NHẬP THIẾT BỊ CHO THUÊ - MƯỢN";
+            this.Name = "FrmXuatThietBiChoThueMuon";
+            this.Text = "PHIẾU XUẤT THIẾT BỊ CHO MƯỢN - THUÊ";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.dockPanel2.ResumeLayout(false);
@@ -331,7 +330,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).EndInit();
             this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -359,9 +359,9 @@
         private DevExpress.XtraBars.BarButtonItem NhapQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
-        private Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail ucNhapThietBiMuonDetail1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private UcNhapThietBiMuonMaster ucNhapThietBiMuonMaster1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
+        private UcXuatThietBiChoThueMuonMasterDto ucXuatThietBiChoThueMuonMasterDto1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private UcXuatThietBiChoThueMuonDetailDto ucXuatThietBiChoThueMuonDetailDto1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
     }
 }

@@ -254,6 +254,24 @@
     <Compile Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.Designer.cs">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatChoThueMuon\FrmXuatThietBiChoThueMuon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatChoThueMuon\FrmXuatThietBiChoThueMuon.Designer.cs">
+      <DependentUpon>FrmXuatThietBiChoThueMuon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetailDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetailDto.Designer.cs">
+      <DependentUpon>UcXuatThietBiChoThueMuonDetailDto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMasterDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMasterDto.Designer.cs">
+      <DependentUpon>UcXuatThietBiChoThueMuonMasterDto.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockOut\XuatHangThuongMai\FrmXuatKhoThuongMai.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -390,6 +408,15 @@
     <EmbeddedResource Include="StockOut\XuatBaoHanh\UcXuatBaoHanhMaster.resx">
       <DependentUpon>UcXuatBaoHanhMaster.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatChoThueMuon\FrmXuatThietBiChoThueMuon.resx">
+      <DependentUpon>FrmXuatThietBiChoThueMuon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetailDto.resx">
+      <DependentUpon>UcXuatThietBiChoThueMuonDetailDto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMasterDto.resx">
+      <DependentUpon>UcXuatThietBiChoThueMuonMasterDto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatHangThuongMai\FrmXuatKhoThuongMai.resx">
       <DependentUpon>FrmXuatKhoThuongMai.cs</DependentUpon>
     </EmbeddedResource>
@@ -435,6 +462,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhMasterDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLuuChuyenKho.XuatLuuChuyenKhoDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
@@ -452,7 +480,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Report\" />
-    <Folder Include="StockOut\XuatChoThueMuon\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
