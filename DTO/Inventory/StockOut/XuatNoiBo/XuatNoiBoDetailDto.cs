@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DTO.Inventory.StockOut.XuatNoiBo;
 
@@ -122,7 +119,7 @@ public class XuatNoiBoDetailDto
     /// </summary>
     [DisplayName("Thông tin bảo hành")]
     [Display(Order = 28)]
-    public List<DTO.Inventory.InventoryManagement.WarrantyDto> Warranties { get; set; } = new List<DTO.Inventory.InventoryManagement.WarrantyDto>();
+    public List<InventoryManagement.WarrantyDto> Warranties { get; set; } = [];
 
     /// <summary>
     /// Thông tin chi tiết phiếu xuất dưới dạng HTML theo format DevExpress
@@ -294,9 +291,14 @@ public static class XuatNoiBoConverter
     /// <returns>Danh sách XuatNoiBoDetailDto</returns>
     public static List<XuatNoiBoDetailDto> ToXuatNoiBoDetailDtoList(this IEnumerable<StockInOutDetail> entities)
     {
-        if (entities == null) return new List<XuatNoiBoDetailDto>();
+        List<XuatNoiBoDetailDto> list = [];
+        foreach (var entity in entities)
+        {
+            var dto = entity.ToXuatNoiBoDetailDto();
+            if (dto != null) list.Add(dto);
+        }
 
-        return entities.Select(entity => entity.ToXuatNoiBoDetailDto()).Where(dto => dto != null).ToList();
+        return list;
     }
 
     #endregion

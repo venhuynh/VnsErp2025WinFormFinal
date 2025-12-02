@@ -119,7 +119,7 @@ public class NhapNoiBoDetailDto
     /// </summary>
     [DisplayName("Thông tin bảo hành")]
     [Display(Order = 28)]
-    public List<DTO.Inventory.InventoryManagement.WarrantyDto> Warranties { get; set; } = new List<DTO.Inventory.InventoryManagement.WarrantyDto>();
+    public List<InventoryManagement.WarrantyDto> Warranties { get; set; } = [];
 
     /// <summary>
     /// Thông tin chi tiết phiếu nhập dưới dạng HTML theo format DevExpress
@@ -291,9 +291,12 @@ public static class NhapNoiBoConverter
     /// <returns>Danh sách NhapThietBiMuonDetailDto</returns>
     public static List<NhapNoiBoDetailDto> ToDtoList(this IEnumerable<StockInOutDetail> entities)
     {
-        if (entities == null) return new List<NhapNoiBoDetailDto>();
+        if (entities == null) return [];
 
-        return entities.Select(entity => entity.ToNhapNoiBoDetailDto()).Where(dto => dto != null).ToList();
+        List<NhapNoiBoDetailDto> list = [];
+        list.AddRange(entities.Select(entity => entity.ToNhapNoiBoDetailDto()).Where(dto => dto != null));
+
+        return list;
     }
 
     #endregion

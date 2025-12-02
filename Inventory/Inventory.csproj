@@ -314,6 +314,24 @@
     <Compile Include="InventoryXtraForm1.Designer.cs">
       <DependentUpon>InventoryXtraForm1.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatNoiBo\FrmXuatNoiBo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\FrmXuatNoiBo.Designer.cs">
+      <DependentUpon>FrmXuatNoiBo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.Designer.cs">
+      <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.Designer.cs">
+      <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="InventoryManagement\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </EmbeddedResource>
@@ -438,6 +456,9 @@
     <EmbeddedResource Include="InventoryXtraForm1.resx">
       <DependentUpon>InventoryXtraForm1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.resx">
+      <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Doc\Inventory.mmap" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_03_NhapKhoTheoPOCustomer.md" />
@@ -462,6 +483,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhMasterDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLuuChuyenKho.XuatLuuChuyenKhoDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatNoiBo.XuatNoiBoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
@@ -480,7 +502,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Report\" />
-    <Folder Include="StockOut\XuatNoiBo\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
