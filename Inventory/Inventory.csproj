@@ -480,6 +480,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Report\" />
+    <Folder Include="StockOut\XuatNoiBo\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
