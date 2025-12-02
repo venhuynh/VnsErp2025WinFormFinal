@@ -134,12 +134,11 @@ namespace Inventory.InventoryManagement
         /// <summary>
         /// Event handler khi form được load
         /// </summary>
-        private async void FrmStockInOutHistory_Load(object sender, EventArgs e)
+        private void FrmStockInOutHistory_Load(object sender, EventArgs e)
         {
             try
             {
-                // Tự động load data khi form được mở
-                await LoadDataAsync();
+            
             }
             catch (Exception ex)
             {

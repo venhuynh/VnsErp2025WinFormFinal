@@ -46,13 +46,33 @@
             this.NhanVienBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.BienTheSPDVBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.HinhAnhSPDVBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapBaoHanhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapHangThuongMaiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapLuuChuyenKhoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapNoiBoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapThietBiMuonBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XuatBaoHanhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XuatHangThuongMaiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XuatLuuChuyenKhoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XuatNoiBoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XuatChoThueMuonBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.InventoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.StockInOutMasterHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.PartnerRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.CongTyRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.SanPhamDichVuRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.XuatNhapTonKhoRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.NhapKhoRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.XuatKhoRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.QuanLyKhoRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.StockInOutRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
             this.documentManager1 = new DevExpress.XtraBars.Docking2010.DocumentManager(this.components);
             this.tabbedView1 = new DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView(this.components);
+            this.StockInOutProductHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.WarrantyCheckBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.StockInOutImagesBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.documentManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).BeginInit();
@@ -80,13 +100,30 @@
             this.DonViTinhBarButtonItem,
             this.NhanVienBarButtonItem,
             this.BienTheSPDVBarButtonItem,
-            this.HinhAnhSPDVBarButtonItem});
+            this.HinhAnhSPDVBarButtonItem,
+            this.NhapBaoHanhBarButtonItem,
+            this.NhapHangThuongMaiBarButtonItem,
+            this.NhapLuuChuyenKhoBarButtonItem,
+            this.NhapNoiBoBarButtonItem,
+            this.NhapThietBiMuonBarButtonItem,
+            this.XuatBaoHanhBarButtonItem,
+            this.XuatHangThuongMaiBarButtonItem,
+            this.XuatLuuChuyenKhoBarButtonItem,
+            this.XuatNoiBoBarButtonItem,
+            this.XuatChoThueMuonBarButtonItem,
+            this.InventoryBarButtonItem,
+            this.StockInOutMasterHistoryBarButtonItem,
+            this.StockInOutProductHistoryBarButtonItem,
+            this.WarrantyCheckBarButtonItem,
+            this.StockInOutImagesBarButtonItem});
             this.ribbon.Location = new System.Drawing.Point(0, 0);
-            this.ribbon.MaxItemId = 18;
+            this.ribbon.MaxItemId = 33;
             this.ribbon.Name = "ribbon";
             this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
-            this.ribbonPage1});
-            this.ribbon.Size = new System.Drawing.Size(1303, 201);
+            this.ribbonPage1,
+            this.XuatNhapTonKhoRibbonPage});
+            this.ribbon.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office365;
+            this.ribbon.Size = new System.Drawing.Size(1303, 161);
             this.ribbon.StatusBar = this.ribbonStatusBar;
             // 
             // DBInfoBarStaticItem
@@ -230,6 +267,101 @@
             this.HinhAnhSPDVBarButtonItem.Name = "HinhAnhSPDVBarButtonItem";
             this.HinhAnhSPDVBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.HinhAnhSPDVBarButtonItem_ItemClick);
             // 
+            // NhapBaoHanhBarButtonItem
+            // 
+            this.NhapBaoHanhBarButtonItem.Caption = "Nhập bảo hành";
+            this.NhapBaoHanhBarButtonItem.Id = 18;
+            this.NhapBaoHanhBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insurance;
+            this.NhapBaoHanhBarButtonItem.Name = "NhapBaoHanhBarButtonItem";
+            this.NhapBaoHanhBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapBaoHanhBarButtonItem_ItemClick);
+            // 
+            // NhapHangThuongMaiBarButtonItem
+            // 
+            this.NhapHangThuongMaiBarButtonItem.Caption = "Nhập hàng thương mại";
+            this.NhapHangThuongMaiBarButtonItem.Id = 19;
+            this.NhapHangThuongMaiBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.replacement;
+            this.NhapHangThuongMaiBarButtonItem.Name = "NhapHangThuongMaiBarButtonItem";
+            this.NhapHangThuongMaiBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapHangThuongMaiBarButtonItem_ItemClick);
+            // 
+            // NhapLuuChuyenKhoBarButtonItem
+            // 
+            this.NhapLuuChuyenKhoBarButtonItem.Caption = "Nhập lưu chuyển kho";
+            this.NhapLuuChuyenKhoBarButtonItem.Id = 20;
+            this.NhapLuuChuyenKhoBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.supplier;
+            this.NhapLuuChuyenKhoBarButtonItem.Name = "NhapLuuChuyenKhoBarButtonItem";
+            this.NhapLuuChuyenKhoBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapLuuChuyenKhoBarButtonItem_ItemClick);
+            // 
+            // NhapNoiBoBarButtonItem
+            // 
+            this.NhapNoiBoBarButtonItem.Caption = "Nhập nội bộ";
+            this.NhapNoiBoBarButtonItem.Id = 21;
+            this.NhapNoiBoBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.inventory__1_;
+            this.NhapNoiBoBarButtonItem.Name = "NhapNoiBoBarButtonItem";
+            this.NhapNoiBoBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapNoiBoBarButtonItem_ItemClick);
+            // 
+            // NhapThietBiMuonBarButtonItem
+            // 
+            this.NhapThietBiMuonBarButtonItem.Caption = "Nhập thiết bị mượn - thuê";
+            this.NhapThietBiMuonBarButtonItem.Id = 22;
+            this.NhapThietBiMuonBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.hardware;
+            this.NhapThietBiMuonBarButtonItem.Name = "NhapThietBiMuonBarButtonItem";
+            this.NhapThietBiMuonBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapThietBiMuonBarButtonItem_ItemClick);
+            // 
+            // XuatBaoHanhBarButtonItem
+            // 
+            this.XuatBaoHanhBarButtonItem.Caption = "Xuất hàng bảo hành";
+            this.XuatBaoHanhBarButtonItem.Id = 23;
+            this.XuatBaoHanhBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insurance;
+            this.XuatBaoHanhBarButtonItem.Name = "XuatBaoHanhBarButtonItem";
+            this.XuatBaoHanhBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatBaoHanhBarButtonItem_ItemClick);
+            // 
+            // XuatHangThuongMaiBarButtonItem
+            // 
+            this.XuatHangThuongMaiBarButtonItem.Caption = "Xuất hàng thương mại";
+            this.XuatHangThuongMaiBarButtonItem.Id = 24;
+            this.XuatHangThuongMaiBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.replacement;
+            this.XuatHangThuongMaiBarButtonItem.Name = "XuatHangThuongMaiBarButtonItem";
+            this.XuatHangThuongMaiBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatHangThuongMaiBarButtonItem_ItemClick);
+            // 
+            // XuatLuuChuyenKhoBarButtonItem
+            // 
+            this.XuatLuuChuyenKhoBarButtonItem.Caption = "Xuất lưu chuyển kho";
+            this.XuatLuuChuyenKhoBarButtonItem.Id = 25;
+            this.XuatLuuChuyenKhoBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.supplier;
+            this.XuatLuuChuyenKhoBarButtonItem.Name = "XuatLuuChuyenKhoBarButtonItem";
+            this.XuatLuuChuyenKhoBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatLuuChuyenKhoBarButtonItem_ItemClick);
+            // 
+            // XuatNoiBoBarButtonItem
+            // 
+            this.XuatNoiBoBarButtonItem.Caption = "Xuất nội bộ";
+            this.XuatNoiBoBarButtonItem.Id = 26;
+            this.XuatNoiBoBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.inventory__1_;
+            this.XuatNoiBoBarButtonItem.Name = "XuatNoiBoBarButtonItem";
+            this.XuatNoiBoBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatNoiBoBarButtonItem_ItemClick);
+            // 
+            // XuatChoThueMuonBarButtonItem
+            // 
+            this.XuatChoThueMuonBarButtonItem.Caption = "Xuất thiết bị mượn - thuê";
+            this.XuatChoThueMuonBarButtonItem.Id = 27;
+            this.XuatChoThueMuonBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.hardware;
+            this.XuatChoThueMuonBarButtonItem.Name = "XuatChoThueMuonBarButtonItem";
+            this.XuatChoThueMuonBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatChoThueMuonBarButtonItem_ItemClick);
+            // 
+            // InventoryBarButtonItem
+            // 
+            this.InventoryBarButtonItem.Caption = "barButtonItem1";
+            this.InventoryBarButtonItem.Id = 28;
+            this.InventoryBarButtonItem.Name = "InventoryBarButtonItem";
+            this.InventoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.InventoryBarButtonItem_ItemClick);
+            // 
+            // StockInOutMasterHistoryBarButtonItem
+            // 
+            this.StockInOutMasterHistoryBarButtonItem.Caption = "Phiếu xuất kho";
+            this.StockInOutMasterHistoryBarButtonItem.Id = 29;
+            this.StockInOutMasterHistoryBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.invoice;
+            this.StockInOutMasterHistoryBarButtonItem.Name = "StockInOutMasterHistoryBarButtonItem";
+            this.StockInOutMasterHistoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutMasterHistoryBarButtonItem_ItemClick);
+            // 
             // ribbonPage1
             // 
             this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
@@ -268,12 +400,59 @@
             this.SanPhamDichVuRibbonPageGroup.Name = "SanPhamDichVuRibbonPageGroup";
             this.SanPhamDichVuRibbonPageGroup.Text = "Sản phẩm dịch vụ";
             // 
+            // XuatNhapTonKhoRibbonPage
+            // 
+            this.XuatNhapTonKhoRibbonPage.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+            this.NhapKhoRibbonPageGroup,
+            this.XuatKhoRibbonPageGroup,
+            this.QuanLyKhoRibbonPageGroup,
+            this.StockInOutRibbonPageGroup});
+            this.XuatNhapTonKhoRibbonPage.ImageOptions.Image = global::VnsErp2025.Properties.Resources.inventory1;
+            this.XuatNhapTonKhoRibbonPage.ImageOptions.SvgImageSize = new System.Drawing.Size(16, 16);
+            this.XuatNhapTonKhoRibbonPage.Name = "XuatNhapTonKhoRibbonPage";
+            this.XuatNhapTonKhoRibbonPage.Text = "Xuất - Nhập - Tồn kho";
+            // 
+            // NhapKhoRibbonPageGroup
+            // 
+            this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapHangThuongMaiBarButtonItem);
+            this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapBaoHanhBarButtonItem);
+            this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapLuuChuyenKhoBarButtonItem);
+            this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapNoiBoBarButtonItem);
+            this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapThietBiMuonBarButtonItem);
+            this.NhapKhoRibbonPageGroup.Name = "NhapKhoRibbonPageGroup";
+            this.NhapKhoRibbonPageGroup.Text = "Nhập kho";
+            // 
+            // XuatKhoRibbonPageGroup
+            // 
+            this.XuatKhoRibbonPageGroup.ItemLinks.Add(this.XuatBaoHanhBarButtonItem);
+            this.XuatKhoRibbonPageGroup.ItemLinks.Add(this.XuatHangThuongMaiBarButtonItem);
+            this.XuatKhoRibbonPageGroup.ItemLinks.Add(this.XuatLuuChuyenKhoBarButtonItem);
+            this.XuatKhoRibbonPageGroup.ItemLinks.Add(this.XuatNoiBoBarButtonItem);
+            this.XuatKhoRibbonPageGroup.ItemLinks.Add(this.XuatChoThueMuonBarButtonItem);
+            this.XuatKhoRibbonPageGroup.Name = "XuatKhoRibbonPageGroup";
+            this.XuatKhoRibbonPageGroup.Text = "Xuất kho";
+            // 
+            // QuanLyKhoRibbonPageGroup
+            // 
+            this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.InventoryBarButtonItem);
+            this.QuanLyKhoRibbonPageGroup.Name = "QuanLyKhoRibbonPageGroup";
+            this.QuanLyKhoRibbonPageGroup.Text = "Quản lý kho";
+            // 
+            // StockInOutRibbonPageGroup
+            // 
+            this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutMasterHistoryBarButtonItem);
+            this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutProductHistoryBarButtonItem);
+            this.StockInOutRibbonPageGroup.ItemLinks.Add(this.WarrantyCheckBarButtonItem);
+            this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutImagesBarButtonItem);
+            this.StockInOutRibbonPageGroup.Name = "StockInOutRibbonPageGroup";
+            this.StockInOutRibbonPageGroup.Text = "Truy vấn";
+            // 
             // ribbonStatusBar
             // 
-            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 674);
+            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 687);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbon;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(1303, 37);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(1303, 24);
             // 
             // documentManager1
             // 
@@ -282,6 +461,30 @@
             this.documentManager1.View = this.tabbedView1;
             this.documentManager1.ViewCollection.AddRange(new DevExpress.XtraBars.Docking2010.Views.BaseView[] {
             this.tabbedView1});
+            // 
+            // StockInOutProductHistoryBarButtonItem
+            // 
+            this.StockInOutProductHistoryBarButtonItem.Caption = "Sản phẩm - dịch vụ";
+            this.StockInOutProductHistoryBarButtonItem.Id = 30;
+            this.StockInOutProductHistoryBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.product_management;
+            this.StockInOutProductHistoryBarButtonItem.Name = "StockInOutProductHistoryBarButtonItem";
+            this.StockInOutProductHistoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutProductHistoryBarButtonItem_ItemClick);
+            // 
+            // WarrantyCheckBarButtonItem
+            // 
+            this.WarrantyCheckBarButtonItem.Caption = "Bảo hành";
+            this.WarrantyCheckBarButtonItem.Id = 31;
+            this.WarrantyCheckBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insurance;
+            this.WarrantyCheckBarButtonItem.Name = "WarrantyCheckBarButtonItem";
+            this.WarrantyCheckBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.WarrantyCheckBarButtonItem_ItemClick);
+            // 
+            // StockInOutImagesBarButtonItem
+            // 
+            this.StockInOutImagesBarButtonItem.Caption = "Hình ảnh";
+            this.StockInOutImagesBarButtonItem.Id = 32;
+            this.StockInOutImagesBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.brand_image;
+            this.StockInOutImagesBarButtonItem.Name = "StockInOutImagesBarButtonItem";
+            this.StockInOutImagesBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutImagesBarButtonItem_ItemClick);
             // 
             // FormMain
             // 
@@ -329,5 +532,25 @@
         private DevExpress.XtraBars.BarButtonItem NhanVienBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem BienTheSPDVBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem HinhAnhSPDVBarButtonItem;
+        private DevExpress.XtraBars.Ribbon.RibbonPage XuatNhapTonKhoRibbonPage;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup NhapKhoRibbonPageGroup;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup XuatKhoRibbonPageGroup;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup QuanLyKhoRibbonPageGroup;
+        private DevExpress.XtraBars.BarButtonItem NhapBaoHanhBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem NhapHangThuongMaiBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem NhapLuuChuyenKhoBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem NhapNoiBoBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem NhapThietBiMuonBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem XuatBaoHanhBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem XuatHangThuongMaiBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem XuatLuuChuyenKhoBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem XuatNoiBoBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem XuatChoThueMuonBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem InventoryBarButtonItem;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup StockInOutRibbonPageGroup;
+        private DevExpress.XtraBars.BarButtonItem StockInOutMasterHistoryBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem StockInOutProductHistoryBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem WarrantyCheckBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem StockInOutImagesBarButtonItem;
     }
 }
