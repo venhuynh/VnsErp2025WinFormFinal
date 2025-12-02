@@ -9,6 +9,7 @@ using Common.Utils;
 using Dal.DataContext;
 using DevExpress.XtraReports.UI;
 using DTO.Inventory.StockIn.NhapNoiBo;
+using Inventory.OverlayForm;
 using Inventory.StockIn.InPhieu;
 using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
@@ -571,7 +572,7 @@ public partial class FrmNhapLuuChuyenKho : DevExpress.XtraEditors.XtraForm
             // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
-                using (var frmAddImages = new InventoryManagement.FrmStockInOutAddImages(stockInOutMasterId))
+                using (var frmAddImages = new FrmStockInOutAddImages(stockInOutMasterId))
                 {
                     frmAddImages.StartPosition = FormStartPosition.CenterParent;
                     frmAddImages.ShowDialog(this);

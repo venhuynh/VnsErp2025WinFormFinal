@@ -21,7 +21,7 @@ using Inventory.StockOut.XuatHangThuongMai;
 using Inventory.StockOut.XuatLuuChuyenKho;
 using Inventory.StockOut.XuatNoiBo;
 using Inventory.StockOut.XuatChoThueMuon;
-using Inventory.InventoryManagement;
+using Inventory.Query;
 
 // ReSharper disable InconsistentNaming
 

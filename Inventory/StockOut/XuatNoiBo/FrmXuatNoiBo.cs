@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Inventory.OverlayForm;
 using Logger.Configuration;
 using Logger.Interfaces;
 
@@ -570,7 +571,7 @@ public partial class FrmXuatNoiBo : DevExpress.XtraEditors.XtraForm
             // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
-                using var frmAddImages = new InventoryManagement.FrmStockInOutAddImages(stockInOutMasterId);
+                using var frmAddImages = new FrmStockInOutAddImages(stockInOutMasterId);
                 frmAddImages.StartPosition = FormStartPosition.CenterParent;
                 frmAddImages.ShowDialog(this);
             }

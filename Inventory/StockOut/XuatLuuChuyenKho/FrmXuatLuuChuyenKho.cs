@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Inventory.OverlayForm;
 using Inventory.StockIn.NhapThietBiMuon;
 
 namespace Inventory.StockOut.XuatLuuChuyenKho;
@@ -571,7 +572,7 @@ public partial class FrmXuatLuuChuyenKho : DevExpress.XtraEditors.XtraForm
             // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
-                using (var frmAddImages = new InventoryManagement.FrmStockInOutAddImages(stockInOutMasterId))
+                using (var frmAddImages = new FrmStockInOutAddImages(stockInOutMasterId))
                 {
                     frmAddImages.StartPosition = FormStartPosition.CenterParent;
                     frmAddImages.ShowDialog(this);

@@ -1,6 +1,4 @@
-﻿using Inventory.StockIn;
-
-namespace Inventory.InventoryManagement
+﻿namespace Inventory.Query
 {
     partial class FrmStockInOutMasterHistory
     {

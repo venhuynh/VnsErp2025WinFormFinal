@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTO.Inventory.StockIn.NhapNoiBo;
+using Inventory.OverlayForm;
 using Inventory.StockIn.NhapThietBiMuon;
 
 namespace Inventory.StockIn.NhapNoiBo;
@@ -569,7 +570,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
-                using var frmAddImages = new InventoryManagement.FrmStockInOutAddImages(stockInOutMasterId);
+                using var frmAddImages = new FrmStockInOutAddImages(stockInOutMasterId);
                 frmAddImages.StartPosition = FormStartPosition.CenterParent;
                 frmAddImages.ShowDialog(this);
             }
