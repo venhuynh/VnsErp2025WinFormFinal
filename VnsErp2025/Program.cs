@@ -56,20 +56,41 @@ namespace VnsErp2025
                 {
                     // Nếu không thể khởi tạo, thử với connection string từ ConnectionManager
                     var connectionString = connectionManager.ConnectionString;
-                    if (!string.IsNullOrEmpty(connectionString))
+                    if (string.IsNullOrEmpty(connectionString))
                     {
-                        // Parse connection string thành DatabaseConfigDto (nếu cần)
-                        // Hoặc đơn giản là đảm bảo DatabaseConnectionManager đã được khởi tạo
-                        // DatabaseConnectionManager sẽ tự động khởi tạo khi GetGlobalConnectionString() được gọi
-                        System.Diagnostics.Debug.WriteLine($"Connection string từ ConnectionManager: {connectionString.Substring(0, Math.Min(50, connectionString.Length))}...");
+                        MessageBox.Show(
+                            "Không thể khởi tạo connection string. Vui lòng kiểm tra lại cấu hình database.",
+                            "Lỗi khởi tạo",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        Application.Exit();
+                        return;
                     }
+                    
+                    System.Diagnostics.Debug.WriteLine($"Connection string từ ConnectionManager: {connectionString.Substring(0, Math.Min(50, connectionString.Length))}...");
+                }
+                
+                // Kiểm tra lại ApplicationStartupManager đã sẵn sàng chưa
+                if (!ApplicationStartupManager.Instance.IsApplicationReady())
+                {
+                    MessageBox.Show(
+                        "Ứng dụng chưa sẵn sàng. Vui lòng khởi động lại.",
+                        "Lỗi khởi tạo",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    Application.Exit();
+                    return;
                 }
             }
             catch (Exception ex)
             {
-                // Log lỗi nhưng không dừng ứng dụng
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi khởi tạo ApplicationStartupManager: {ex.Message}");
-                // Vẫn tiếp tục chạy ứng dụng vì DatabaseConnectionManager có thể tự động khởi tạo
+                MessageBox.Show(
+                    $"Lỗi khi khởi tạo ApplicationStartupManager: {ex.Message}",
+                    "Lỗi khởi tạo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                Application.Exit();
+                return;
             }
 
             #region Dành cho debug

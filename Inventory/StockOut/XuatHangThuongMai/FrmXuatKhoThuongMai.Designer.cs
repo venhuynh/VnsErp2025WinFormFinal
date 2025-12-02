@@ -33,7 +33,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmXuatKhoThuongMai));
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
@@ -52,21 +51,27 @@
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ucXuatHangThuongMaiDetailDto1 = new Inventory.StockOut.XuatHangThuongMai.UcXuatHangThuongMaiDetailDto();
+            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ucXuatHangThuongMaiMasterDto1 = new Inventory.StockOut.XuatHangThuongMai.UcXuatHangThuongMaiMasterDto();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
+            this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
             this.dockPanel2_Container.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).BeginInit();
+            this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.ucXuatHangThuongMaiDetailDto1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(483, 24);
             this.layoutControl1.Name = "layoutControl1";
@@ -80,17 +85,10 @@
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
+            this.layoutControlItem3});
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(888, 768);
             this.Root.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(868, 748);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // dockManager1
             // 
@@ -256,6 +254,7 @@
             // 
             // layoutControl2
             // 
+            this.layoutControl2.Controls.Add(this.ucXuatHangThuongMaiMasterDto1);
             this.layoutControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
@@ -269,17 +268,40 @@
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.layoutControlGroup1.GroupBordersVisible = false;
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem2});
+            this.layoutControlItem1});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
             this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
             // 
-            // layoutControlItem2
+            // ucXuatHangThuongMaiDetailDto1
             // 
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(456, 719);
-            this.layoutControlItem2.TextVisible = false;
+            this.ucXuatHangThuongMaiDetailDto1.Location = new System.Drawing.Point(12, 12);
+            this.ucXuatHangThuongMaiDetailDto1.Name = "ucXuatHangThuongMaiDetailDto1";
+            this.ucXuatHangThuongMaiDetailDto1.Size = new System.Drawing.Size(864, 744);
+            this.ucXuatHangThuongMaiDetailDto1.TabIndex = 4;
+            // 
+            // layoutControlItem3
+            // 
+            this.layoutControlItem3.Control = this.ucXuatHangThuongMaiDetailDto1;
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem3.Name = "layoutControlItem3";
+            this.layoutControlItem3.Size = new System.Drawing.Size(868, 748);
+            this.layoutControlItem3.TextVisible = false;
+            // 
+            // ucXuatHangThuongMaiMasterDto1
+            // 
+            this.ucXuatHangThuongMaiMasterDto1.Location = new System.Drawing.Point(12, 12);
+            this.ucXuatHangThuongMaiMasterDto1.Name = "ucXuatHangThuongMaiMasterDto1";
+            this.ucXuatHangThuongMaiMasterDto1.Size = new System.Drawing.Size(452, 715);
+            this.ucXuatHangThuongMaiMasterDto1.TabIndex = 4;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.ucXuatHangThuongMaiMasterDto1;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(456, 719);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // FrmXuatKhoThuongMai
             // 
@@ -295,15 +317,17 @@
             this.Name = "FrmXuatKhoThuongMai";
             this.Text = "PHIẾU XUẤT KHO THƯƠNG MẠI";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
+            this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.dockPanel2.ResumeLayout(false);
             this.dockPanel2_Container.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).EndInit();
+            this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -318,7 +342,6 @@
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel2_Container;
         private DevExpress.XtraLayout.LayoutControl layoutControl2;
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private DevExpress.XtraBars.BarDockControl barDockControlLeft;
         private DevExpress.XtraBars.BarManager barManager1;
         private DevExpress.XtraBars.Bar bar2;
@@ -331,7 +354,10 @@
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
         private DevExpress.XtraBars.BarButtonItem NhapBaoHanhBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
+        private UcXuatHangThuongMaiDetailDto ucXuatHangThuongMaiDetailDto1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
+        private UcXuatHangThuongMaiMasterDto ucXuatHangThuongMaiMasterDto1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }
