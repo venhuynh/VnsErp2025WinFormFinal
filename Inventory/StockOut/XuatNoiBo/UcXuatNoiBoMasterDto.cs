@@ -696,10 +696,7 @@ public partial class UcXuatNoiBoMasterDto : XtraUserControl
                     .Select(FindControlByPropertyName)
                     .FirstOrDefault(c => c != null);
 
-                if (firstErrorControl != null)
-                {
-                    firstErrorControl.Focus();
-                }
+                firstErrorControl?.Focus();
 
                 return false;
             }

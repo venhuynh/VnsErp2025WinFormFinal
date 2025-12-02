@@ -456,6 +456,9 @@
     <EmbeddedResource Include="InventoryXtraForm1.resx">
       <DependentUpon>InventoryXtraForm1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatNoiBo\FrmXuatNoiBo.resx">
+      <DependentUpon>FrmXuatNoiBo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.resx">
       <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
     </EmbeddedResource>

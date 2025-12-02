@@ -26,7 +26,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// <summary>
     /// Business Logic Layer cho biến thể sản phẩm
     /// </summary>
-    private readonly ProductVariantBll _productVariantBll = new ProductVariantBll();
+    private readonly ProductVariantBll _productVariantBll = new();
 
     /// <summary>
     /// Logger để ghi log các sự kiện
@@ -156,7 +156,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return new List<StockInOutDetail>();
+            return [];
         }
     }
 
@@ -435,8 +435,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var rowData = NhapNoiBoDetailDtoGridView.GetRow(e.RowHandle) as NhapNoiBoDetailDto;
-            if (rowData == null)
+            if (NhapNoiBoDetailDtoGridView.GetRow(e.RowHandle) is not NhapNoiBoDetailDto rowData)
             {
                 _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
                 return;
@@ -521,8 +520,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            var rowData = e.Row as NhapNoiBoDetailDto;
-            if (rowData == null)
+            if (e.Row is not NhapNoiBoDetailDto rowData)
             {
                 _logger.Warning("ValidateRow: Row data is null");
                 e.Valid = false;
@@ -962,7 +960,7 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         try
         {
-            details ??= new List<NhapNoiBoDetailDto>();
+            details ??= [];
 
             // Gán StockInOutMasterId cho các dòng chưa có
             foreach (var detail in details)

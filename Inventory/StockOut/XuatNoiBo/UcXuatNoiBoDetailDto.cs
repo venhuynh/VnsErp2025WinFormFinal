@@ -15,6 +15,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Logger.Configuration;
+using Logger.Interfaces;
 
 namespace Inventory.StockOut.XuatNoiBo;
 
@@ -25,7 +27,7 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
     /// <summary>
     /// Business Logic Layer cho biến thể sản phẩm
     /// </summary>
-    private readonly ProductVariantBll _productVariantBll = new ProductVariantBll();
+    private readonly ProductVariantBll _productVariantBll = new();
 
     /// <summary>
     /// Logger để ghi log các sự kiện
@@ -155,7 +157,7 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return new List<StockInOutDetail>();
+            return [];
         }
     }
 
@@ -434,8 +436,7 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
     {
         try
         {
-            var rowData = XuatNoiBoDetailDtoGridView.GetRow(e.RowHandle) as XuatNoiBoDetailDto;
-            if (rowData == null)
+            if (XuatNoiBoDetailDtoGridView.GetRow(e.RowHandle) is not XuatNoiBoDetailDto rowData)
             {
                 _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
                 return;
@@ -520,8 +521,7 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
     {
         try
         {
-            var rowData = e.Row as XuatNoiBoDetailDto;
-            if (rowData == null)
+            if (e.Row is not XuatNoiBoDetailDto rowData)
             {
                 _logger.Warning("ValidateRow: Row data is null");
                 e.Valid = false;
@@ -961,7 +961,7 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
     {
         try
         {
-            details ??= new List<XuatNoiBoDetailDto>();
+            details ??= [];
 
             // Gán StockInOutMasterId cho các dòng chưa có
             foreach (var detail in details)

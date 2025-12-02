@@ -399,16 +399,6 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     }
 
     /// <summary>
-    /// Load datasource cho Supplier (BusinessPartnerSite) - Đã xóa vì nhập nội bộ không cần nhà cung cấp
-    /// </summary>
-    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-    private async Task LoadSupplierDataSourceAsync(bool forceRefresh = false)
-    {
-        // Nhập nội bộ không cần supplier, method này giữ lại để tương thích nhưng không làm gì
-        await Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Load single Warehouse record theo ID và set vào datasource
     /// Chỉ load đúng 1 record để tối ưu performance
     /// </summary>
@@ -448,16 +438,6 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
             ShowError(ex, "Lỗi tải dữ liệu kho");
             throw;
         }
-    }
-
-    /// <summary>
-    /// Load single Supplier record theo ID - Đã xóa vì nhập nội bộ không cần nhà cung cấp
-    /// </summary>
-    /// <param name="supplierId">ID của Supplier (BusinessPartnerSite)</param>
-    private async Task LoadSingleSupplierByIdAsync(Guid? supplierId)
-    {
-        // Nhập nội bộ không cần supplier, method này giữ lại để tương thích nhưng không làm gì
-        await Task.CompletedTask;
     }
 
     /// <summary>
@@ -723,10 +703,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
                     .Select(FindControlByPropertyName)
                     .FirstOrDefault(c => c != null);
 
-                if (firstErrorControl != null)
-                {
-                    firstErrorControl.Focus();
-                }
+                firstErrorControl?.Focus();
 
                 return false;
             }
@@ -806,13 +783,9 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
 
             // Lấy master entity từ BLL
             var masterEntity = _stockInBll.GetMasterById(stockInOutMasterId);
-            if (masterEntity == null)
-            {
-                throw new InvalidOperationException($"Không tìm thấy phiếu nhập kho với ID: {stockInOutMasterId}");
-            }
 
             // Gán entity vào _stockInMaster
-            _stockInMaster = masterEntity;
+            _stockInMaster = masterEntity ?? throw new InvalidOperationException($"Không tìm thấy phiếu nhập kho với ID: {stockInOutMasterId}");
 
             // Set dữ liệu cho các control đơn giản (không cần datasource)
             StockInDateDateEdit.EditValue = masterEntity.StockInOutDate;
@@ -902,10 +875,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     /// Cập nhật các giá trị tổng hợp từ detail
     /// </summary>
     /// <param name="totalQuantity">Tổng số lượng</param>
-    /// <param name="totalAmount">Tổng tiền chưa VAT</param>
-    /// <param name="totalVat">Tổng VAT</param>
-    /// <param name="totalAmountIncludedVat">Tổng tiền bao gồm VAT</param>
-    public void UpdateTotals(decimal totalQuantity, decimal totalAmount, decimal totalVat, decimal totalAmountIncludedVat)
+    public void UpdateTotals(decimal totalQuantity)
     {
         try
         {

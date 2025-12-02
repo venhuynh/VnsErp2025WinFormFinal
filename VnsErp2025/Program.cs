@@ -1,11 +1,9 @@
 ﻿using Authentication.Form;
 using Common.Utils;
 using Dal.Connection;
-using Inventory.StockOut.XuatBaoHanh;
-using Inventory.StockOut.XuatHangThuongMai;
+using Inventory.StockOut.XuatNoiBo;
 using System;
 using System.Windows.Forms;
-using Inventory;
 
 
 namespace VnsErp2025
@@ -59,8 +57,8 @@ namespace VnsErp2025
                     if (string.IsNullOrEmpty(connectionString))
                     {
                         MessageBox.Show(
-                            "Không thể khởi tạo connection string. Vui lòng kiểm tra lại cấu hình database.",
-                            "Lỗi khởi tạo",
+                            @"Không thể khởi tạo connection string. Vui lòng kiểm tra lại cấu hình database.",
+                            @"Lỗi khởi tạo",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                         Application.Exit();
@@ -74,8 +72,8 @@ namespace VnsErp2025
                 if (!ApplicationStartupManager.Instance.IsApplicationReady())
                 {
                     MessageBox.Show(
-                        "Ứng dụng chưa sẵn sàng. Vui lòng khởi động lại.",
-                        "Lỗi khởi tạo",
+                        @"Ứng dụng chưa sẵn sàng. Vui lòng khởi động lại.",
+                        @"Lỗi khởi tạo",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     Application.Exit();
@@ -85,8 +83,8 @@ namespace VnsErp2025
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Lỗi khi khởi tạo ApplicationStartupManager: {ex.Message}",
-                    "Lỗi khởi tạo",
+                    $@"Lỗi khi khởi tạo ApplicationStartupManager: {ex.Message}",
+                    @"Lỗi khởi tạo",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 Application.Exit();
@@ -106,7 +104,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmXuatKhoThuongMai());
+            Application.Run(new FrmXuatNoiBo());
 
             #endregion
 
