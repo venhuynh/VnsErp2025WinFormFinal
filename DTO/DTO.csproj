@@ -70,6 +70,8 @@
     <Compile Include="Inventory\StockOut\XuatHangThuongMai\XuatHangThuongMaiMasterDto.cs" />
     <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoDetailDto.cs" />
     <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoMasterDto.cs" />
+    <Compile Include="Inventory\StockOut\XuatNoiBo\XuatNoiBoDetailDto.cs" />
+    <Compile Include="Inventory\StockOut\XuatNoiBo\XuatNoiBoMasterDto.cs" />
     <Compile Include="Inventory\StockOut\XuatThietBiChoThueMuon\XuatThietBiChoThueMuonDetailDto.cs" />
     <Compile Include="Inventory\StockOut\XuatThietBiChoThueMuon\XuatThietBiChoThueMuonMasterDto.cs" />
     <Compile Include="MasterData\Company\CompanyBranchDto.cs" />

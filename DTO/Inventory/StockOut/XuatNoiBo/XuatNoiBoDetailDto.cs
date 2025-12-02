@@ -1,23 +1,23 @@
+﻿using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using Dal.DataContext;
 
-namespace DTO.Inventory.StockIn.NhapNoiBo;
+namespace DTO.Inventory.StockOut.XuatNoiBo;
+
 
 /// <summary>
-/// Data Transfer Object cho chi tiết phiếu nhập kho
+/// Data Transfer Object cho chi tiết phiếu xuất thiết bị nội bộ
 /// Dùng cho GridControl và truyền dữ liệu giữa Service ↔ WinForms
 /// Map với bảng StockInOutDetail trong database
 /// </summary>
-public class NhapNoiBoDetailDto
+public class XuatNoiBoDetailDto
 {
     #region Properties - Thông tin cơ bản (map với DB)
 
     /// <summary>
-    /// ID duy nhất của chi tiết phiếu nhập
+    /// ID duy nhất của chi tiết phiếu xuất
     /// Map với: StockInOutDetail.Id
     /// </summary>
     [DisplayName("ID")]
@@ -25,12 +25,12 @@ public class NhapNoiBoDetailDto
     public Guid Id { get; set; }
 
     /// <summary>
-    /// ID phiếu nhập kho (Master)
+    /// ID phiếu xuất kho (Master)
     /// Map với: StockInOutDetail.StockInOutMasterId
     /// </summary>
-    [DisplayName("ID Phiếu nhập")]
+    [DisplayName("ID Phiếu xuất")]
     [Display(Order = 0)]
-    [Required(ErrorMessage = "ID phiếu nhập không được để trống")]
+    [Required(ErrorMessage = "ID phiếu xuất không được để trống")]
     public Guid StockInOutMasterId { get; set; }
 
     /// <summary>
@@ -98,14 +98,14 @@ public class NhapNoiBoDetailDto
     #region Properties - Số lượng và giá (map với DB)
 
     /// <summary>
-    /// Số lượng nhập
-    /// Map với: StockInOutDetail.StockInQty
+    /// Số lượng xuất
+    /// Map với: StockInOutDetail.StockOutQty
     /// </summary>
-    [DisplayName("SL nhập")]
+    [DisplayName("SL xuất")]
     [Display(Order = 20)]
-    [Required(ErrorMessage = "Số lượng nhập không được để trống")]
-    [Range(0, double.MaxValue, ErrorMessage = "Số lượng nhập phải lớn hơn hoặc bằng 0")]
-    public decimal StockInQty { get; set; }
+    [Required(ErrorMessage = "Số lượng xuất không được để trống")]
+    [Range(0, double.MaxValue, ErrorMessage = "Số lượng xuất phải lớn hơn hoặc bằng 0")]
+    public decimal StockOutQty { get; set; }
 
     /// <summary>
     /// Ghi chú tình trạng sản phẩm
@@ -122,13 +122,13 @@ public class NhapNoiBoDetailDto
     public List<InventoryManagement.WarrantyDto> Warranties { get; set; } = [];
 
     /// <summary>
-    /// Thông tin chi tiết phiếu nhập dưới dạng HTML theo format DevExpress
+    /// Thông tin chi tiết phiếu xuất dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [DisplayName("Thông tin HTML")]
     [Display(Order = 30)]
-    [Description("Thông tin chi tiết phiếu nhập dưới dạng HTML")]
+    [Description("Thông tin chi tiết phiếu xuất dưới dạng HTML")]
     public string FullNameHtml
     {
         get
@@ -182,10 +182,10 @@ public class NhapNoiBoDetailDto
                 html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitDisplay}</b></color></size><br>";
             }
 
-            // Số lượng nhập
-            if (StockInQty > 0)
+            // Số lượng xuất
+            if (StockOutQty > 0)
             {
-                html += $"<size=9><color='#757575'>Số lượng:</color></size> <size=10><color='#212121'><b>{StockInQty:N2}</b></color></size>";
+                html += $"<size=9><color='#757575'>Số lượng xuất:</color></size> <size=10><color='#212121'><b>{StockOutQty:N2}</b></color></size>";
             }
 
             return html;
@@ -197,28 +197,28 @@ public class NhapNoiBoDetailDto
 }
 
 /// <summary>
-/// Converter giữa StockInOutDetail entity và NhapThietBiMuonDetailDto
+/// Converter giữa StockInOutDetail entity và XuatNoiBoDetailDto
 /// </summary>
-public static class NhapNoiBoConverter
+public static class XuatNoiBoConverter
 {
     #region Entity to DTO
 
     /// <summary>
-    /// Chuyển đổi StockInOutDetail entity thành NhapNoiBoDetailDto
+    /// Chuyển đổi StockInOutDetail entity thành XuatNoiBoDetailDto
     /// </summary>
     /// <param name="entity">StockInOutDetail entity</param>
-    /// <returns>NhapNoiBoDetailDto</returns>
-    public static NhapNoiBoDetailDto ToNhapNoiBoDetailDto(this Dal.DataContext.StockInOutDetail entity)
+    /// <returns>XuatNoiBoDetailDto</returns>
+    public static XuatNoiBoDetailDto ToXuatNoiBoDetailDto(this Dal.DataContext.StockInOutDetail entity)
     {
         if (entity == null) return null;
 
-        var dto = new NhapNoiBoDetailDto
+        var dto = new XuatNoiBoDetailDto
         {
             Id = entity.Id,
             StockInOutMasterId = entity.StockInOutMasterId,
             ProductVariantId = entity.ProductVariantId,
             ProductVariantCode = entity.ProductVariant?.VariantCode,
-            StockInQty = entity.StockInQty,
+            StockOutQty = entity.StockOutQty,
             GhiChu = entity.GhiChu ?? "Bình thường",
             LineNumber = 0 // Sẽ được cập nhật sau nếu cần
         };
@@ -238,7 +238,7 @@ public static class NhapNoiBoConverter
 
             // Tạo tên hiển thị đơn giản (text thuần, không HTML) - tương tự FullName của ProductVariantListDto
             var nameParts = new List<string>();
-            
+
             if (!string.IsNullOrWhiteSpace(variantCode))
             {
                 nameParts.Add(variantCode);
@@ -257,7 +257,7 @@ public static class NhapNoiBoConverter
             if (nameParts.Count > 0)
             {
                 dto.ProductVariantName = string.Join(" ", nameParts);
-                
+
                 if (!string.IsNullOrWhiteSpace(unitName))
                 {
                     dto.ProductVariantName += $" ({unitName})";
@@ -266,14 +266,14 @@ public static class NhapNoiBoConverter
             else
             {
                 // Fallback: Nếu không có thông tin, sử dụng VariantCode hoặc ProductName
-                dto.ProductVariantName = !string.IsNullOrWhiteSpace(variantCode) 
-                    ? variantCode 
+                dto.ProductVariantName = !string.IsNullOrWhiteSpace(variantCode)
+                    ? variantCode
                     : productName;
             }
 
             // Lấy thông tin đơn vị tính
             dto.UnitOfMeasureId = entity.ProductVariant.UnitId;
-            
+
             if (entity.ProductVariant.UnitOfMeasure != null)
             {
                 dto.UnitOfMeasureCode = entity.ProductVariant.UnitOfMeasure.Code;
@@ -285,16 +285,18 @@ public static class NhapNoiBoConverter
     }
 
     /// <summary>
-    /// Chuyển đổi danh sách StockInOutDetail entities thành danh sách NhapThietBiMuonDetailDto
+    /// Chuyển đổi danh sách StockInOutDetail entities thành danh sách XuatNoiBoDetailDto
     /// </summary>
     /// <param name="entities">Danh sách StockInOutDetail entities</param>
-    /// <returns>Danh sách NhapThietBiMuonDetailDto</returns>
-    public static List<NhapNoiBoDetailDto> ToDtoList(this IEnumerable<StockInOutDetail> entities)
+    /// <returns>Danh sách XuatNoiBoDetailDto</returns>
+    public static List<XuatNoiBoDetailDto> ToXuatNoiBoDetailDtoList(this IEnumerable<StockInOutDetail> entities)
     {
-        if (entities == null) return [];
-
-        List<NhapNoiBoDetailDto> list = [];
-        list.AddRange(entities.Select(entity => entity.ToNhapNoiBoDetailDto()).Where(dto => dto != null));
+        List<XuatNoiBoDetailDto> list = [];
+        foreach (var entity in entities)
+        {
+            var dto = entity.ToXuatNoiBoDetailDto();
+            if (dto != null) list.Add(dto);
+        }
 
         return list;
     }

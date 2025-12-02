@@ -2,22 +2,27 @@
 using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
+using DevExpress.XtraEditors;
 using DevExpress.XtraReports.UI;
+using DTO.Inventory.StockOut.XuatNoiBo;
 using Inventory.StockIn.InPhieu;
+using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
-using Logger.Configuration;
-using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DTO.Inventory.StockIn.NhapNoiBo;
-using Inventory.StockIn.NhapThietBiMuon;
+using Logger.Configuration;
+using Logger.Interfaces;
 
-namespace Inventory.StockIn.NhapNoiBo;
+namespace Inventory.StockOut.XuatNoiBo;
 
-public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
+public partial class FrmXuatNoiBo : DevExpress.XtraEditors.XtraForm
 {
     #region ========== FIELDS & PROPERTIES ==========
 
@@ -37,9 +42,9 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     private bool _hasUnsavedChanges;
 
     /// <summary>
-    /// ID phiếu nhập kho hiện tại (nếu đang edit)
+    /// ID phiếu xuất kho hiện tại (nếu đang edit)
     /// </summary>
-    private Guid _currentStockInId;
+    private Guid _currentStockOutId;
 
     /// <summary>
     /// Flag đánh dấu đang trong quá trình đóng form sau khi lưu thành công
@@ -54,24 +59,24 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     /// <summary>
     /// Constructor mặc định (tạo phiếu mới)
     /// </summary>
-    public FrmNhapNoiBo()
+    public FrmXuatNoiBo()
     {
         InitializeComponent();
-        Load += FrmNhapNoiBo_Load;
-        _currentStockInId = Guid.Empty;
+        Load += FrmXuatNoiBo_Load;
+        _currentStockOutId = Guid.Empty;
     }
 
     /// <summary>
-    /// Constructor với ID phiếu nhập kho (mở để xem/sửa)
+    /// Constructor với ID phiếu xuất kho (mở để xem/sửa)
     /// </summary>
-    /// <param name="stockInId">ID phiếu nhập kho</param>
-    public FrmNhapNoiBo(Guid stockInId)
+    /// <param name="stockOutId">ID phiếu xuất kho</param>
+    public FrmXuatNoiBo(Guid stockOutId)
     {
         InitializeComponent();
-        Load += FrmNhapNoiBo_Load;
+        Load += FrmXuatNoiBo_Load;
 
-        // Gán ID phiếu nhập kho hiện tại
-        _currentStockInId = stockInId;
+        // Gán ID phiếu xuất kho hiện tại
+        _currentStockOutId = stockOutId;
     }
 
     #endregion
@@ -81,7 +86,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     /// <summary>
     /// Event handler khi form được load
     /// </summary>
-    private async void FrmNhapNoiBo_Load(object sender, EventArgs e)
+    private async void FrmXuatNoiBo_Load(object sender, EventArgs e)
     {
         try
         {
@@ -93,19 +98,15 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             Refresh();
             Application.DoEvents(); // Cho phép form render xong
 
-            // Load datasource với SplashScreen (với owner là form này)
-            //await LoadDataSourcesAsync();
+            // Load lookup data cho master control
+            await ucXuatNoiBoMasterDto1.LoadLookupDataAsync();
 
-            // Nếu _currentStockInId có giá trị thì load dữ liệu vào UI của 2 UserControl
-            if (_currentStockInId != Guid.Empty)
+            // Nếu _currentStockOutId có giá trị thì load dữ liệu vào UI của 2 UserControl
+            if (_currentStockOutId != Guid.Empty)
             {
-
                 // Load dữ liệu từ ID vào các user controls
-                //await LoadDataAsync(_currentStockInId);
-
-                //FIXME: Tạo hàm LoadDataAsync trong user controls để load dữ liệu từ _currentStockInId
-                await ucNhapNoiBoMaster1.LoadDataAsync(_currentStockInId);
-                await ucNhapNoiBoDetail1.LoadDataAsyncForEdit(_currentStockInId);
+                await ucXuatNoiBoMasterDto1.LoadDataAsync(_currentStockOutId);
+                await ucXuatNoiBoDetailDto1.LoadDataAsyncForEdit(_currentStockOutId);
             }
             else
             {
@@ -116,7 +117,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         }
         catch (Exception ex)
         {
-            _logger.Error("FrmNhapNoiBo_Load: Exception occurred", ex);
+            _logger.Error("FrmXuatNoiBo_Load: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi khởi tạo form: {ex.Message}");
         }
     }
@@ -129,20 +130,20 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         try
         {
             // Bar button events
-            NhapLaiBarButtonItem.ItemClick += NhapLaiBarButtonItem_ItemClick;
+            XuatLaiBarButtonItem.ItemClick += XuatLaiBarButtonItem_ItemClick;
             LuuPhieuBarButtonItem.ItemClick += LuuPhieuBarButtonItem_ItemClick;
             InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
-            NhapQuanLyTaiSanBarButtonItem.ItemClick += NhapQuanLyTaiSanBarButtonItem_ItemClick;
+            XuatQuanLyTaiSanBarButtonItem.ItemClick += XuatQuanLyTaiSanBarButtonItem_ItemClick;
             ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
             CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
 
             // Form events
-            FormClosing += FrmNhapNoiBo_FormClosing;
-            KeyDown += FrmNhapNoiBo_KeyDown;
+            FormClosing += FrmXuatNoiBo_FormClosing;
+            KeyDown += FrmXuatNoiBo_KeyDown;
             KeyPreview = true; // Cho phép form xử lý phím tắt trước
 
             // Detail control events - theo dõi thay đổi để đánh dấu có thay đổi chưa lưu và cập nhật tổng lên master
-            ucNhapNoiBoDetail1.DetailDataChanged += UcNhapNoiBoDetail1_DetailDataChanged;
+            ucXuatNoiBoDetailDto1.DetailDataChanged += UcXuatNoiBoDetailDto1_DetailDataChanged;
 
             // Setup phím tắt và hiển thị hướng dẫn
             SetupKeyboardShortcuts();
@@ -181,10 +182,10 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         try
         {
             // Gán phím tắt cho các BarButtonItem
-            // F1: Nhập lại
+            // F1: Xuất lại
             // F2: Lưu phiếu
             // F3: In phiếu
-            // F4: Nhập bảo hành
+            // F4: Xuất quản lý tài sản
             // F5: Thêm hình ảnh
             // ESC: Đóng form
 
@@ -209,10 +210,10 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
 
             // Tạo nội dung HTML với các phím tắt
             var hotKeyText = @"<color=Gray>Phím tắt:</color> " +
-                             @"<b><color=Blue>F1</color></b> Nhập lại | " +
+                             @"<b><color=Blue>F1</color></b> Xuất lại | " +
                              @"<b><color=Blue>F2</color></b> Lưu phiếu | " +
                              @"<b><color=Blue>F3</color></b> In phiếu | " +
-                             @"<b><color=Blue>F4</color></b> Nhập bảo hành | " +
+                             @"<b><color=Blue>F4</color></b> Xuất quản lý tài sản | " +
                              @"<b><color=Blue>F5</color></b> Thêm hình ảnh | " +
                              @"<b><color=Blue>ESC</color></b> Đóng | " +
                              @"<b><color=Blue>Insert</color></b> Thêm dòng | " +
@@ -234,9 +235,9 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     #region ========== EVENT HANDLERS ==========
 
     /// <summary>
-    /// Event handler cho nút Nhập lại
+    /// Event handler cho nút Xuất lại
     /// </summary>
-    private void NhapLaiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    private void XuatLaiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
         try
         {
@@ -245,8 +246,8 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             if (_hasUnsavedChanges)
             {
                 var confirm = MsgBox.ShowYesNo(
-                    "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn nhập lại?",
-                    "Xác nhận nhập lại",
+                    "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn xuất lại?",
+                    "Xác nhận xuất lại",
                     this);
 
                 if (!confirm)
@@ -259,8 +260,8 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         }
         catch (Exception ex)
         {
-            _logger.Error("NhapLaiBarButtonItem_ItemClick: Exception occurred", ex);
-            MsgBox.ShowError($"Lỗi nhập lại: {ex.Message}");
+            _logger.Error("XuatLaiBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi xuất lại: {ex.Message}");
         }
     }
 
@@ -281,7 +282,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                 var success = await SaveDataAsync();
 
                 if (!success) return;
-                MsgBox.ShowSuccess("Lưu phiếu nhập kho thành công!", "Thành công", this);
+                MsgBox.ShowSuccess("Lưu phiếu xuất kho thành công!", "Thành công", this);
                 MarkAsSaved();
             }
             finally
@@ -305,13 +306,13 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         try
         {
 
-            // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
+            // Lấy StockInOutMasterId từ _currentStockOutId (phải đã được lưu)
             Guid stockInOutMasterId;
 
             // Kiểm tra phiếu đã được lưu chưa
-            if (_currentStockInId != Guid.Empty)
+            if (_currentStockOutId != Guid.Empty)
             {
-                stockInOutMasterId = _currentStockInId;
+                stockInOutMasterId = _currentStockOutId;
             }
             else
             {
@@ -320,7 +321,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                 {
                     // Hỏi người dùng có muốn lưu trước không
                     if (MsgBox.ShowYesNo(
-                            "Phiếu nhập kho chưa được lưu. Bạn có muốn lưu trước khi in không?",
+                            "Phiếu xuất kho chưa được lưu. Bạn có muốn lưu trước khi in không?",
                             "Xác nhận",
                             this))
                     {
@@ -330,15 +331,15 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                         // Đợi cho đến khi lưu hoàn tất (tối đa 10 giây)
                         var timeout = TimeSpan.FromSeconds(10);
                         var startTime = DateTime.Now;
-                        while (_currentStockInId == Guid.Empty && (DateTime.Now - startTime) < timeout)
+                        while (_currentStockOutId == Guid.Empty && (DateTime.Now - startTime) < timeout)
                         {
                             await Task.Delay(100);
                         }
 
                         // Kiểm tra lại sau khi lưu
-                        if (_currentStockInId != Guid.Empty)
+                        if (_currentStockOutId != Guid.Empty)
                         {
-                            stockInOutMasterId = _currentStockInId;
+                            stockInOutMasterId = _currentStockOutId;
                         }
                         else
                         {
@@ -358,7 +359,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                 {
                     // Không có thay đổi chưa lưu và chưa có ID - yêu cầu lưu
                     MsgBox.ShowWarning(
-                        "Vui lòng nhập và lưu phiếu nhập kho trước khi in.",
+                        "Vui lòng nhập và lưu phiếu xuất kho trước khi in.",
                         "Cảnh báo",
                         this);
                     _logger.Warning(
@@ -371,7 +372,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             if (stockInOutMasterId == Guid.Empty)
             {
                 MsgBox.ShowWarning(
-                    "Không thể lấy ID phiếu nhập kho. Vui lòng thử lại.",
+                    "Không thể lấy ID phiếu xuất kho. Vui lòng thử lại.",
                     "Cảnh báo",
                     this);
                 _logger.Warning(
@@ -379,12 +380,12 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                 return;
             }
 
-            // In phiếu nhập nội bộ với preview
+            // In phiếu xuất nội bộ với preview
             try
             {
                 _logger.Debug("InPhieuBarButtonItem_ItemClick: Bắt đầu in phiếu, StockInOutMasterId={0}", stockInOutMasterId);
 
-                // Tạo và load report - sử dụng InPhieuNhapKho cho nhập nội bộ
+                // Tạo và load report - sử dụng InPhieuNhapKho cho xuất nội bộ (có thể cần tạo InPhieuXuatKho sau)
                 var report = new InPhieuNhapKho(stockInOutMasterId);
 
                 // Hiển thị preview bằng ReportPrintTool
@@ -410,20 +411,20 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     }
 
     /// <summary>
-    /// Event handler cho nút Nhập bảo hành
+    /// Event handler cho nút Xuất quản lý tài sản
     /// </summary>
-    private async void NhapQuanLyTaiSanBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    private async void XuatQuanLyTaiSanBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
         try
         {
 
-            // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
+            // Lấy StockInOutMasterId từ _currentStockOutId (phải đã được lưu)
             Guid stockInOutMasterId;
 
             // Kiểm tra phiếu đã được lưu chưa
-            if (_currentStockInId != Guid.Empty)
+            if (_currentStockOutId != Guid.Empty)
             {
-                stockInOutMasterId = _currentStockInId;
+                stockInOutMasterId = _currentStockOutId;
             }
             else
             {
@@ -432,7 +433,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                 {
                     // Hỏi người dùng có muốn lưu trước không
                     if (MsgBox.ShowYesNo(
-                            "Phiếu nhập kho chưa được lưu. Bạn có muốn lưu trước khi nhập bảo hành không?",
+                            "Phiếu xuất kho chưa được lưu. Bạn có muốn lưu trước khi xuất quản lý tài sản không?",
                             "Xác nhận",
                             this))
                     {
@@ -442,21 +443,21 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                         // Đợi cho đến khi lưu hoàn tất (tối đa 10 giây)
                         var timeout = TimeSpan.FromSeconds(10);
                         var startTime = DateTime.Now;
-                        while (_currentStockInId == Guid.Empty && (DateTime.Now - startTime) < timeout)
+                        while (_currentStockOutId == Guid.Empty && (DateTime.Now - startTime) < timeout)
                         {
                             await Task.Delay(100);
                         }
 
                         // Kiểm tra lại sau khi lưu
-                        if (_currentStockInId != Guid.Empty)
+                        if (_currentStockOutId != Guid.Empty)
                         {
-                            stockInOutMasterId = _currentStockInId;
+                            stockInOutMasterId = _currentStockOutId;
                         }
                         else
                         {
-                            // Lưu thất bại hoặc timeout, không mở form nhập bảo hành
+                            // Lưu thất bại hoặc timeout, không mở form xuất quản lý tài sản
                             _logger.Warning(
-                                "NhapQuanLyTaiSanBarButtonItem_ItemClick: Save failed, timeout, or cancelled, cannot open warranty form");
+                                "XuatQuanLyTaiSanBarButtonItem_ItemClick: Save failed, timeout, or cancelled, cannot open device management form");
                             return;
                         }
                     }
@@ -470,11 +471,11 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                 {
                     // Không có thay đổi chưa lưu và chưa có ID - yêu cầu lưu
                     MsgBox.ShowError(
-                        "Vui lòng nhập và lưu phiếu nhập kho trước khi nhập bảo hành.",
+                        "Vui lòng nhập và lưu phiếu xuất kho trước khi xuất quản lý tài sản.",
                         "Lỗi",
                         this);
                     _logger.Warning(
-                        "NhapQuanLyTaiSanBarButtonItem_ItemClick: Cannot add warranty - Form not saved and no unsaved changes");
+                        "XuatQuanLyTaiSanBarButtonItem_ItemClick: Cannot add device management - Form not saved and no unsaved changes");
                     return;
                 }
             }
@@ -483,15 +484,15 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             if (stockInOutMasterId == Guid.Empty)
             {
                 MsgBox.ShowWarning(
-                    "Không thể lấy ID phiếu nhập kho. Vui lòng thử lại.",
+                    "Không thể lấy ID phiếu xuất kho. Vui lòng thử lại.",
                     "Cảnh báo",
                     this);
                 _logger.Warning(
-                    "NhapQuanLyTaiSanBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
+                    "XuatQuanLyTaiSanBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
                 return;
             }
 
-            // Mở form nhập bảo hành với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
+            // Mở form xuất quản lý tài sản với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
                 using var frmDeviceIdentifierInput = new FrmNhapSerialMacEmei(stockInOutMasterId);
@@ -501,8 +502,8 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         }
         catch (Exception ex)
         {
-            _logger.Error("NhapQuanLyTaiSanBarButtonItem_ItemClick: Exception occurred", ex);
-            MsgBox.ShowError($"Lỗi nhập bảo hành: {ex.Message}");
+            _logger.Error("XuatQuanLyTaiSanBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi xuất quản lý tài sản: {ex.Message}");
         }
     }
 
@@ -513,13 +514,13 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     {
         try
         {
-            // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
+            // Lấy StockInOutMasterId từ _currentStockOutId (phải đã được lưu)
             Guid stockInOutMasterId = Guid.Empty;
 
             // Kiểm tra phiếu đã được lưu chưa
-            if (_currentStockInId != Guid.Empty)
+            if (_currentStockOutId != Guid.Empty)
             {
-                stockInOutMasterId = _currentStockInId;
+                stockInOutMasterId = _currentStockOutId;
             }
             else
             {
@@ -528,7 +529,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                 {
                     // Hỏi người dùng có muốn lưu trước không
                     if (MsgBox.ShowYesNo(
-                            "Phiếu nhập kho chưa được lưu. Bạn có muốn lưu trước khi thêm hình ảnh không?",
+                            "Phiếu xuất kho chưa được lưu. Bạn có muốn lưu trước khi thêm hình ảnh không?",
                             "Xác nhận",
                             this))
                     {
@@ -545,7 +546,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                 {
                     // Không có thay đổi chưa lưu và chưa có ID - yêu cầu lưu
                     MsgBox.ShowError(
-                        "Vui lòng nhập và lưu phiếu nhập kho trước khi thêm hình ảnh.",
+                        "Vui lòng nhập và lưu phiếu xuất kho trước khi thêm hình ảnh.",
                         "Lỗi",
                         this);
                     _logger.Warning(
@@ -558,7 +559,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             if (stockInOutMasterId == Guid.Empty)
             {
                 MsgBox.ShowWarning(
-                    "Không thể lấy ID phiếu nhập kho. Vui lòng thử lại.",
+                    "Không thể lấy ID phiếu xuất kho. Vui lòng thử lại.",
                     "Cảnh báo",
                     this);
                 _logger.Warning(
@@ -600,7 +601,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     /// <summary>
     /// Event handler xử lý phím tắt
     /// </summary>
-    private void FrmNhapNoiBo_KeyDown(object sender, KeyEventArgs e)
+    private void FrmXuatNoiBo_KeyDown(object sender, KeyEventArgs e)
     {
         try
         {
@@ -612,9 +613,9 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             switch (e.KeyCode)
             {
                 case Keys.F1:
-                    // F1: Nhập lại
+                    // F1: Xuất lại
                     e.Handled = true;
-                    NhapLaiBarButtonItem_ItemClick(null, null);
+                    XuatLaiBarButtonItem_ItemClick(null, null);
                     break;
 
                 case Keys.F2:
@@ -630,9 +631,9 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                     break;
 
                 case Keys.F4:
-                    // F4: Nhập bảo hành
+                    // F4: Xuất quản lý tài sản
                     e.Handled = true;
-                    NhapQuanLyTaiSanBarButtonItem_ItemClick(null, null);
+                    XuatQuanLyTaiSanBarButtonItem_ItemClick(null, null);
                     break;
 
                 case Keys.F5:
@@ -654,7 +655,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         }
         catch (Exception ex)
         {
-            _logger.Error("FrmNhapNoiBo_KeyDown: Exception occurred", ex);
+            _logger.Error("FrmXuatNoiBo_KeyDown: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi xử lý phím tắt: {ex.Message}");
         }
     }
@@ -662,7 +663,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     /// <summary>
     /// Event handler khi dữ liệu detail thay đổi
     /// </summary>
-    private void UcNhapNoiBoDetail1_DetailDataChanged(object sender, EventArgs e)
+    private void UcXuatNoiBoDetailDto1_DetailDataChanged(object sender, EventArgs e)
     {
         try
         {
@@ -670,15 +671,15 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             MarkAsChanged();
 
             // Tính tổng số lượng từ detail
-            var details = ucNhapNoiBoDetail1.GetDetails();
-            var totalQuantity = details.Sum(d => d.StockInQty);
+            var details = ucXuatNoiBoDetailDto1.GetDetails();
+            var totalQuantity = details.Sum(d => d.StockOutQty);
 
             // Cập nhật tổng lên master (chỉ có totalQuantity)
-            ucNhapNoiBoMaster1.UpdateTotals(totalQuantity);
+            ucXuatNoiBoMasterDto1.UpdateTotals(totalQuantity);
         }
         catch (Exception ex)
         {
-            _logger.Error("UcNhapNoiBoDetail1_DetailDataChanged: Exception occurred", ex);
+            _logger.Error("UcXuatNoiBoDetailDto1_DetailDataChanged: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi cập nhật tổng hợp: {ex.Message}");
         }
     }
@@ -687,7 +688,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     /// Event handler khi form đang đóng
     /// Sử dụng ShowYesNoCancel để đơn giản hóa logic: Yes = Lưu và đóng, No = Đóng không lưu, Cancel = Hủy
     /// </summary>
-    private async void FrmNhapNoiBo_FormClosing(object sender, FormClosingEventArgs e)
+    private async void FrmXuatNoiBo_FormClosing(object sender, FormClosingEventArgs e)
     {
         try
         {
@@ -740,13 +741,13 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                             {
                                 // Lưu thất bại, giữ form mở
                                 _logger.Warning(
-                                    "FrmNhapNoiBo_FormClosing: Save failed, form will remain open");
+                                    "FrmXuatNoiBo_FormClosing: Save failed, form will remain open");
                                 e.Cancel = true;
                             }
                         }
                         catch (Exception saveEx)
                         {
-                            _logger.Error("FrmNhapNoiBo_FormClosing: Exception during save operation",
+                            _logger.Error("FrmXuatNoiBo_FormClosing: Exception during save operation",
                                 saveEx);
                             // Lỗi khi lưu, giữ form mở
                             e.Cancel = true;
@@ -773,7 +774,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         }
         catch (Exception ex)
         {
-            _logger.Error("FrmNhapNoiBo_FormClosing: Exception occurred", ex);
+            _logger.Error("FrmXuatNoiBo_FormClosing: Exception occurred", ex);
             // Nếu có lỗi, vẫn cho phép đóng form (không cancel)
             e.Cancel = false;
         }
@@ -791,16 +792,16 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         try
         {
             // Clear master control
-            ucNhapNoiBoMaster1.ClearData();
+            ucXuatNoiBoMasterDto1.ClearData();
 
             // Clear detail control
-            ucNhapNoiBoDetail1.ClearData();
+            ucXuatNoiBoDetailDto1.ClearData();
 
             // Reset tổng về 0
-            ucNhapNoiBoMaster1.UpdateTotals(0);
+            ucXuatNoiBoMasterDto1.UpdateTotals(0);
 
             // Reset state
-            _currentStockInId = Guid.Empty;
+            _currentStockOutId = Guid.Empty;
             _isClosingAfterSave = false; // Reset flag khi reset form
             MarkAsSaved();
         }
@@ -816,48 +817,27 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
     #region Helper Methods - DTO to Entity Conversion
 
     /// <summary>
-    /// Map NhapNoiBoMasterDto sang StockInOutMaster entity
+    /// Map XuatNoiBoMasterDto sang StockInOutMaster entity
     /// </summary>
-    private StockInOutMaster MapMasterDtoToEntity(NhapNoiBoMasterDto dto)
+    private StockInOutMaster MapMasterDtoToEntity(XuatNoiBoMasterDto dto)
     {
         return new StockInOutMaster
         {
             Id = dto.Id,
-            StockInOutDate = dto.StockInDate,
-            VocherNumber = dto.StockInNumber,
+            StockInOutDate = dto.StockOutDate,
+            VocherNumber = dto.StockOutNumber,
             StockInOutType = (int)dto.LoaiNhapXuatKho,
             VoucherStatus = (int)dto.TrangThai,
             WarehouseId = dto.WarehouseId,
-            PurchaseOrderId = null, // Nhập nội bộ không có PurchaseOrder
-            PartnerSiteId = null, // Nhập nội bộ không có nhà cung cấp/khách hàng
+            PurchaseOrderId = null, // Xuất nội bộ không có PurchaseOrder
+            PartnerSiteId = null, // Xuất nội bộ không có nhà cung cấp/khách hàng
             Notes = dto.Notes ?? string.Empty,
             TotalQuantity = dto.TotalQuantity,
-            TotalAmount = 0, // Nhập nội bộ không có giá trị tiền
-            TotalVat = 0, // Nhập nội bộ không có VAT
-            TotalAmountIncludedVat = 0, // Nhập nội bộ không có tổng tiền
+            TotalAmount = 0, // Xuất nội bộ không có giá trị tiền
+            TotalVat = 0, // Xuất nội bộ không có VAT
+            TotalAmountIncludedVat = 0, // Xuất nội bộ không có tổng tiền
             NguoiNhanHang = dto.NguoiNhanHang ?? string.Empty,
             NguoiGiaoHang = dto.NguoiGiaoHang ?? string.Empty
-        };
-    }
-
-    /// <summary>
-    /// Map NhapNoiBoDetailDto sang StockInOutDetail entity
-    /// </summary>
-    private StockInOutDetail MapDetailDtoToEntity(NhapNoiBoDetailDto dto)
-    {
-        return new StockInOutDetail
-        {
-            Id = dto.Id,
-            StockInOutMasterId = dto.StockInOutMasterId,
-            ProductVariantId = dto.ProductVariantId,
-            StockInQty = dto.StockInQty,
-            StockOutQty = 0, // Nhập nội bộ chỉ có nhập, không có xuất
-            UnitPrice = 0, // Nhập nội bộ không có giá
-            Vat = 0, // Nhập nội bộ không có VAT
-            VatAmount = 0, // Nhập nội bộ không có VAT
-            TotalAmount = 0, // Nhập nội bộ không có tổng tiền
-            TotalAmountIncludedVat = 0, // Nhập nội bộ không có tổng tiền
-            GhiChu = dto.GhiChu ?? "Bình thường"
         };
     }
 
@@ -875,11 +855,11 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         {
 
             // ========== BƯỚC 1: VALIDATE VÀ LẤY DỮ LIỆU TỪ MASTER CONTROL ==========
-            var masterDto = ucNhapNoiBoMaster1.GetDto();
+            var masterDto = ucXuatNoiBoMasterDto1.GetDto();
             if (masterDto == null)
             {
                 _logger.Warning("SaveDataAsync: Master validation failed - GetDto() returned null");
-                MsgBox.ShowWarning("Vui lòng kiểm tra và điền đầy đủ thông tin phiếu nhập kho", "Cảnh báo", this);
+                MsgBox.ShowWarning("Vui lòng kiểm tra và điền đầy đủ thông tin phiếu xuất kho", "Cảnh báo", this);
                 return false;
             }
 
@@ -887,13 +867,13 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             if (masterDto.WarehouseId == Guid.Empty)
             {
                 _logger.Warning("SaveDataAsync: Master validation failed - WarehouseId is Empty");
-                MsgBox.ShowWarning("Vui lòng chọn kho nhập", "Cảnh báo", this);
+                MsgBox.ShowWarning("Vui lòng chọn kho xuất", "Cảnh báo", this);
                 return false;
             }
 
             // ========== BƯỚC 2: VALIDATE VÀ LẤY DỮ LIỆU TỪ DETAIL CONTROL ==========
             // Validate tất cả các rows trong grid
-            if (!ucNhapNoiBoDetail1.ValidateAll())
+            if (!ucXuatNoiBoDetailDto1.ValidateAll())
             {
                 _logger.Warning("SaveDataAsync: Detail validation failed - ValidateAll() returned false");
                 // ValidateAll() đã hiển thị thông báo lỗi chi tiết
@@ -901,7 +881,7 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             }
 
             // Lấy danh sách detail entities (GetDetails() trả về List<StockInOutDetail>)
-            var detailEntities = ucNhapNoiBoDetail1.GetDetails();
+            var detailEntities = ucXuatNoiBoDetailDto1.GetDetails();
             if (detailEntities == null || detailEntities.Count == 0)
             {
                 _logger.Warning("SaveDataAsync: No details found");
@@ -921,9 +901,9 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
                     validationErrors.Add($"Dòng {lineNumber}: Vui lòng chọn hàng hóa");
                 }
 
-                if (detail.StockInQty <= 0)
+                if (detail.StockOutQty <= 0)
                 {
-                    validationErrors.Add($"Dòng {lineNumber}: Số lượng nhập phải lớn hơn 0");
+                    validationErrors.Add($"Dòng {lineNumber}: Số lượng xuất phải lớn hơn 0");
                 }
             }
 
@@ -949,10 +929,10 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             // ========== BƯỚC 5: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
             // Cập nhật ID sau khi lưu
             masterDto.Id = savedMasterId;
-            _currentStockInId = savedMasterId;
+            _currentStockOutId = savedMasterId;
 
             // Set master ID cho detail control để đồng bộ
-            ucNhapNoiBoDetail1.SetStockInMasterId(savedMasterId);
+            ucXuatNoiBoDetailDto1.SetStockOutMasterId(savedMasterId);
             return true;
         }
         catch (ArgumentException argEx)

@@ -81,6 +81,9 @@
     <Reference Include="System.Resources.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Resources.Extensions.4.6.0\lib\netstandard2.0\System.Resources.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -314,6 +317,24 @@
     <Compile Include="InventoryXtraForm1.Designer.cs">
       <DependentUpon>InventoryXtraForm1.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatNoiBo\FrmXuatNoiBo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\FrmXuatNoiBo.Designer.cs">
+      <DependentUpon>FrmXuatNoiBo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.Designer.cs">
+      <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.Designer.cs">
+      <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="InventoryManagement\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </EmbeddedResource>
@@ -438,6 +459,12 @@
     <EmbeddedResource Include="InventoryXtraForm1.resx">
       <DependentUpon>InventoryXtraForm1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatNoiBo\FrmXuatNoiBo.resx">
+      <DependentUpon>FrmXuatNoiBo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.resx">
+      <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Doc\Inventory.mmap" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_03_NhapKhoTheoPOCustomer.md" />
@@ -462,6 +489,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhMasterDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLuuChuyenKho.XuatLuuChuyenKhoDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatNoiBo.XuatNoiBoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
