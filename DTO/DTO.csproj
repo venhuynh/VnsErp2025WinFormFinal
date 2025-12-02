@@ -71,6 +71,7 @@
     <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoDetailDto.cs" />
     <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoMasterDto.cs" />
     <Compile Include="Inventory\StockOut\XuatThietBiChoThueMuon\XuatThietBiChoThueMuonDetailDto.cs" />
+    <Compile Include="Inventory\StockOut\XuatThietBiChoThueMuon\XuatThietBiChoThueMuonMasterDto.cs" />
     <Compile Include="MasterData\Company\CompanyBranchDto.cs" />
     <Compile Include="MasterData\Company\CompanyDto.cs" />
     <Compile Include="MasterData\Company\DepartmentDto.cs" />
