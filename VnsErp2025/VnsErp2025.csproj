@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
     <PreBuildEvent Condition="'$(DesignTimeBuild)' != 'true'">powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(SolutionDir)KillVnsErpProcess.ps1"</PreBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>VNS Logo - Website.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.BonusSkins.v25.1" />
     <Reference Include="DevExpress.Data.Desktop.v25.1" />
@@ -149,6 +152,9 @@
     <Content Include="Docs\Promt\Prompt chung – Refactor toàn bộ màn hình GUI.txt" />
     <Content Include="Docs\Promt\Tái cấu trúc source code.txt" />
     <Content Include="Docs\Promt\Tạo file MD\PROMPT 01 – Dùng để tạo file MD cho Developer %28UI → BLL → DAL%29.txt" />
+    <Content Include="VNS Logo - Website.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\invoice.svg" />
     <None Include="Resources\hardware.svg" />
     <None Include="Resources\inventory %281%29.svg" />

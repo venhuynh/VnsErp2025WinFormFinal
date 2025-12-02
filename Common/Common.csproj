@@ -57,6 +57,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +107,9 @@
     <Compile Include="Utils\SecurityHelper.cs" />
     <Compile Include="Utils\SkinHelper.cs" />
     <Compile Include="Utils\SuperToolTipHelper.cs" />
+    <Compile Include="Utils\ApplicationVersionService.cs" />
+    <Compile Include="Utils\UpdateChecker.cs" />
+    <Compile Include="Utils\ApplicationIconHelper.cs" />
     <Compile Include="Validation\ValidationHelper.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -54,6 +54,11 @@ namespace VnsErp2025.Form
         /// </summary>
         private Timer _dbRefreshTimer;
 
+        /// <summary>
+        /// Update checker để kiểm tra cập nhật tự động
+        /// </summary>
+        private UpdateChecker _updateChecker;
+
         #endregion
 
         #region Constructor
@@ -87,6 +92,7 @@ namespace VnsErp2025.Form
                 SetupStatusBar();
                 SetupSuperToolTips();
                 SetupDatabaseRefreshTimer();
+                SetupUpdateChecker();
                 //ShowWelcomeMessage();
 
                 SplashScreenHelper.CloseSplashScreen();
@@ -142,8 +148,8 @@ namespace VnsErp2025.Form
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             
-            // TODO: Thiết lập icon ứng dụng khi có
-            // this.Icon = Properties.Resources.AppIcon;
+            // Thiết lập icon ứng dụng
+            ApplicationIconHelper.SetFormIcon(this);
         }
 
         /// <summary>
@@ -191,14 +197,88 @@ namespace VnsErp2025.Form
         {
             try
             {
-                _dbRefreshTimer = new System.Windows.Forms.Timer();
-                _dbRefreshTimer.Interval = DATABASE_REFRESH_INTERVAL;
+                _dbRefreshTimer = new System.Windows.Forms.Timer
+                {
+                    Interval = DATABASE_REFRESH_INTERVAL
+                };
                 _dbRefreshTimer.Tick += OnDatabaseRefreshTimerTick;
                 _dbRefreshTimer.Start();
             }
             catch (Exception ex)
             {
                 MsgBox.ShowException(ex, @"Lỗi thiết lập timer refresh database");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập update checker để kiểm tra cập nhật tự động
+        /// </summary>
+        private void SetupUpdateChecker()
+        {
+            try
+            {
+                _updateChecker = new UpdateChecker();
+                _updateChecker.UpdateAvailable += OnUpdateAvailable;
+                _updateChecker.StartPeriodicCheck();
+                
+                // Kiểm tra khi khởi động (background)
+                _ = _updateChecker.CheckOnStartupAsync();
+            }
+            catch (Exception ex)
+            {
+                // Không block ứng dụng nếu có lỗi với update checker
+                System.Diagnostics.Debug.WriteLine($"Lỗi thiết lập update checker: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi có bản cập nhật mới
+        /// </summary>
+        private void OnUpdateAvailable(object sender, UpdateAvailableEventArgs e)
+        {
+            try
+            {
+                // Hiển thị thông báo trên UI thread
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Action(() => OnUpdateAvailable(sender, e)));
+                    return;
+                }
+
+                var versionInfo = e.VersionInfo;
+                var message = $"Có bản cập nhật mới: {versionInfo.Version}\n\n" +
+                             $"Phiên bản hiện tại: {e.CurrentVersion}\n" +
+                             $"Phiên bản mới: {versionInfo.Version}\n\n";
+
+                if (versionInfo.ReleaseNotes != null && !string.IsNullOrEmpty(versionInfo.ReleaseNotes.Vietnamese))
+                {
+                    message += $"Thông tin cập nhật:\n{versionInfo.ReleaseNotes.Vietnamese}\n\n";
+                }
+
+                if (versionInfo.Changes != null && versionInfo.Changes.Length > 0)
+                {
+                    message += "Các thay đổi:\n";
+                    foreach (var change in versionInfo.Changes)
+                    {
+                        message += $"• {change}\n";
+                    }
+                    message += "\n";
+                }
+
+                message += "Bạn có muốn cập nhật ngay bây giờ không?";
+
+                var result = MsgBox.ShowYesNoCancel(message, "Cập nhật ứng dụng");
+                
+                if (result == DialogResult.Yes)
+                {
+                    // TODO: Mở form cập nhật
+                    // ShowUpdateForm(versionInfo);
+                    MsgBox.ShowWarning("Chức năng cập nhật đang được phát triển. Vui lòng tải bản cập nhật thủ công.", "Thông báo");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi xử lý thông báo cập nhật: {ex.Message}");
             }
         }
 

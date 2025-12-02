@@ -100,19 +100,17 @@ namespace Bll.Common
 
         public string ConvertImageToBase64(Image image)
         {
-            using (var stream = new MemoryStream())
-            {
-                // Save the image to the stream
-                image.Save(stream, ImageFormat.Png);
+            using var stream = new MemoryStream();
+            // Save the image to the stream
+            image.Save(stream, ImageFormat.Png);
 
-                // Convert the stream data to a byte array
-                byte[] bytes = stream.ToArray();
+            // Convert the stream data to a byte array
+            byte[] bytes = stream.ToArray();
 
-                // Encode the byte array as a base64 string
-                string base64String = Convert.ToBase64String(bytes);
+            // Encode the byte array as a base64 string
+            string base64String = Convert.ToBase64String(bytes);
 
-                return base64String;
-            }
+            return base64String;
         }
 
         public static void ShowOrActivateForm<T>(Form mdiParent) where T : Form, new()
@@ -142,6 +140,9 @@ namespace Bll.Common
                 if (!isActive)
                 {
                     T frm = new T();
+                    
+                    // Thiết lập icon cho form
+                    ApplicationIconHelper.SetFormIcon(frm);
                     
                     // Chỉ thiết lập MdiParent nếu form parent là MDI Container
                     if (mdiParent.IsMdiContainer)
