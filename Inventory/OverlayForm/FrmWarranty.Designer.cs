@@ -3,12 +3,10 @@ using DevExpress.XtraDataLayout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
-using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Columns;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
-using DTO.MasterData.ProductService;
 
-namespace Inventory.InventoryManagement
+namespace Inventory.OverlayForm
 {
     partial class FrmWarranty
     {

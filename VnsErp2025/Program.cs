@@ -4,6 +4,7 @@ using Dal.Connection;
 using Inventory.StockOut.XuatNoiBo;
 using System;
 using System.Windows.Forms;
+using Inventory.Query;
 using VnsErp2025.Form;
 
 
@@ -105,7 +106,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FormMain());
+            Application.Run(new FrmWarrantyCheck());
 
             #endregion
 

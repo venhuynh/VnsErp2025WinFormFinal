@@ -4,7 +4,6 @@ using Common.Utils;
 using Dal.DataContext;
 using DevExpress.XtraEditors;
 using DTO.Inventory.StockOut.XuatHangThuongMai;
-using Inventory.InventoryManagement;
 using Inventory.StockIn.InPhieu;
 using Logger;
 using Logger.Configuration;
@@ -14,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Inventory.OverlayForm;
 
 namespace Inventory.StockOut.XuatHangThuongMai;
 
@@ -541,7 +541,7 @@ public partial class FrmXuatKhoThuongMai : XtraForm
             // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
-                using (var frmAddImages = new InventoryManagement.FrmStockInOutAddImages(stockInOutMasterId))
+                using (var frmAddImages = new FrmStockInOutAddImages(stockInOutMasterId))
                 {
                     frmAddImages.StartPosition = FormStartPosition.CenterParent;
                     frmAddImages.ShowDialog(this);

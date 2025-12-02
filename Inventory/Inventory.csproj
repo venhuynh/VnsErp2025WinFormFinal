@@ -87,34 +87,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InventoryManagement\FrmStockInOutAddImages.cs">
+    <Compile Include="OverlayForm\FrmStockInOutAddImages.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InventoryManagement\FrmStockInOutAddImages.Designer.cs">
+    <Compile Include="OverlayForm\FrmStockInOutAddImages.Designer.cs">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </Compile>
-    <Compile Include="InventoryManagement\FrmStockInOutMasterHistory.cs">
+    <Compile Include="Query\FrmStockInOutMasterHistory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InventoryManagement\FrmStockInOutMasterHistory.Designer.cs">
+    <Compile Include="Query\FrmStockInOutMasterHistory.Designer.cs">
       <DependentUpon>FrmStockInOutMasterHistory.cs</DependentUpon>
     </Compile>
-    <Compile Include="InventoryManagement\FrmStockInOutProductHistory.cs">
+    <Compile Include="Query\FrmStockInOutProductHistory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InventoryManagement\FrmStockInOutProductHistory.Designer.cs">
+    <Compile Include="Query\FrmStockInOutProductHistory.Designer.cs">
       <DependentUpon>FrmStockInOutProductHistory.cs</DependentUpon>
     </Compile>
-    <Compile Include="InventoryManagement\FrmWarranty.cs">
+    <Compile Include="OverlayForm\FrmWarranty.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InventoryManagement\FrmWarranty.Designer.cs">
+    <Compile Include="OverlayForm\FrmWarranty.Designer.cs">
       <DependentUpon>FrmWarranty.cs</DependentUpon>
     </Compile>
-    <Compile Include="InventoryManagement\FrmWarrantyCheck.cs">
+    <Compile Include="Query\FrmWarrantyCheck.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InventoryManagement\FrmWarrantyCheck.Designer.cs">
+    <Compile Include="Query\FrmWarrantyCheck.Designer.cs">
       <DependentUpon>FrmWarrantyCheck.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -335,19 +335,19 @@
     <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.Designer.cs">
       <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="InventoryManagement\FrmStockInOutAddImages.resx">
+    <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InventoryManagement\FrmStockInOutMasterHistory.resx">
+    <EmbeddedResource Include="Query\FrmStockInOutMasterHistory.resx">
       <DependentUpon>FrmStockInOutMasterHistory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InventoryManagement\FrmStockInOutProductHistory.resx">
+    <EmbeddedResource Include="Query\FrmStockInOutProductHistory.resx">
       <DependentUpon>FrmStockInOutProductHistory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InventoryManagement\FrmWarranty.resx">
+    <EmbeddedResource Include="OverlayForm\FrmWarranty.resx">
       <DependentUpon>FrmWarranty.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InventoryManagement\FrmWarrantyCheck.resx">
+    <EmbeddedResource Include="Query\FrmWarrantyCheck.resx">
       <DependentUpon>FrmWarrantyCheck.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -507,6 +507,7 @@
     <None Include="StockIn\InPhieu\README_IN_PHIEU_NHAP_KHO.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="InventoryManagement\" />
     <Folder Include="Report\" />
   </ItemGroup>
   <ItemGroup>

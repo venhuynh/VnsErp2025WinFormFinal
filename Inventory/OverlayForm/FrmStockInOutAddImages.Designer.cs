@@ -1,11 +1,8 @@
 ﻿using System.Windows.Forms;
 using DevExpress.XtraEditors;
-using DevExpress.XtraGrid.Columns;
-using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
-using DTO.MasterData.ProductService;
 
-namespace Inventory.InventoryManagement
+namespace Inventory.OverlayForm
 {
     partial class FrmStockInOutAddImages
     {

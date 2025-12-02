@@ -1,4 +1,4 @@
-﻿namespace Inventory.InventoryManagement
+﻿namespace Inventory.Query
 {
     partial class FrmStockInOutProductHistory
     {

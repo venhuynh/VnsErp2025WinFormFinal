@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using Bll.Inventory.StockIn;
 using Common.Common;
 using Common.Utils;
-using Inventory.InventoryManagement;
+using Inventory.OverlayForm;
 using Inventory.StockIn.InPhieu;
 using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
@@ -542,7 +542,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 // Mở form thêm hình ảnh với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
                 using (OverlayManager.ShowScope(this))
                 {
-                    using (var frmAddImages = new InventoryManagement.FrmStockInOutAddImages(stockInOutMasterId))
+                    using (var frmAddImages = new FrmStockInOutAddImages(stockInOutMasterId))
                     {
                         frmAddImages.StartPosition = FormStartPosition.CenterParent;
                         frmAddImages.ShowDialog(this);
