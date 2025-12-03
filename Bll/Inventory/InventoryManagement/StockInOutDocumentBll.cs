@@ -218,7 +218,7 @@ public class StockInOutDocumentBll
                 NASShareName = "ERP_Documents",
                 StorageType = "NAS",
                 StorageProvider = null,
-                FileExtension = fileExtension.TrimStart('.').ToLower(),
+                FileExtension = EnsureFileExtensionFormat(fileExtension),
                 MimeType = storageResult.MimeType ?? GetMimeType(fileExtension),
                 FileSize = fileData.Length,
                 Checksum = storageResult.Checksum ?? checksum,
@@ -308,6 +308,30 @@ public class StockInOutDocumentBll
             _logger.Error($"Lỗi khi lấy dữ liệu chứng từ từ RelativePath '{relativePath}': {ex.Message}", ex);
             return null;
         }
+    }
+
+    /// <summary>
+    /// Đảm bảo FileExtension có format đúng theo constraint: bắt đầu bằng dấu chấm và lowercase
+    /// Constraint yêu cầu: LIKE '.[a-z][a-z0-9][a-z0-9][a-z0-9]%'
+    /// </summary>
+    private string EnsureFileExtensionFormat(string fileExtension)
+    {
+        if (string.IsNullOrWhiteSpace(fileExtension))
+        {
+            return ".unknown";
+        }
+
+        // Loại bỏ dấu chấm ở đầu nếu có, sau đó thêm lại và chuyển thành lowercase
+        var extension = fileExtension.TrimStart('.').ToLower();
+        
+        // Đảm bảo có ít nhất 1 ký tự
+        if (string.IsNullOrEmpty(extension))
+        {
+            return ".unknown";
+        }
+
+        // Thêm dấu chấm ở đầu và trả về
+        return "." + extension;
     }
 
     /// <summary>
