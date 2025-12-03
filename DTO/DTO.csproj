@@ -48,6 +48,7 @@
     <Compile Include="Inventory\InventoryManagement\DocumentAccessLevelEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentCategoryEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentTypeEnum.cs" />
+    <Compile Include="Inventory\InventoryManagement\InventoryBalanceDto.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutDocumentDto.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutImageDto.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutMasterHistoryDto.cs" />
