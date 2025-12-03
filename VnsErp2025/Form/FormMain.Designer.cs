@@ -58,6 +58,9 @@
             this.XuatChoThueMuonBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.InventoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutMasterHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.StockInOutProductHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.WarrantyCheckBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.StockInOutImagesBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.PartnerRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.CongTyRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -70,9 +73,7 @@
             this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
             this.documentManager1 = new DevExpress.XtraBars.Docking2010.DocumentManager(this.components);
             this.tabbedView1 = new DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView(this.components);
-            this.StockInOutProductHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.WarrantyCheckBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.StockInOutImagesBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.StockInOutDocumentBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.documentManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).BeginInit();
@@ -115,9 +116,10 @@
             this.StockInOutMasterHistoryBarButtonItem,
             this.StockInOutProductHistoryBarButtonItem,
             this.WarrantyCheckBarButtonItem,
-            this.StockInOutImagesBarButtonItem});
+            this.StockInOutImagesBarButtonItem,
+            this.StockInOutDocumentBarButtonItem});
             this.ribbon.Location = new System.Drawing.Point(0, 0);
-            this.ribbon.MaxItemId = 33;
+            this.ribbon.MaxItemId = 34;
             this.ribbon.Name = "ribbon";
             this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1,
@@ -362,6 +364,30 @@
             this.StockInOutMasterHistoryBarButtonItem.Name = "StockInOutMasterHistoryBarButtonItem";
             this.StockInOutMasterHistoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutMasterHistoryBarButtonItem_ItemClick);
             // 
+            // StockInOutProductHistoryBarButtonItem
+            // 
+            this.StockInOutProductHistoryBarButtonItem.Caption = "Sản phẩm - dịch vụ";
+            this.StockInOutProductHistoryBarButtonItem.Id = 30;
+            this.StockInOutProductHistoryBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.product_management;
+            this.StockInOutProductHistoryBarButtonItem.Name = "StockInOutProductHistoryBarButtonItem";
+            this.StockInOutProductHistoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutProductHistoryBarButtonItem_ItemClick);
+            // 
+            // WarrantyCheckBarButtonItem
+            // 
+            this.WarrantyCheckBarButtonItem.Caption = "Bảo hành";
+            this.WarrantyCheckBarButtonItem.Id = 31;
+            this.WarrantyCheckBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insurance;
+            this.WarrantyCheckBarButtonItem.Name = "WarrantyCheckBarButtonItem";
+            this.WarrantyCheckBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.WarrantyCheckBarButtonItem_ItemClick);
+            // 
+            // StockInOutImagesBarButtonItem
+            // 
+            this.StockInOutImagesBarButtonItem.Caption = "Hình ảnh";
+            this.StockInOutImagesBarButtonItem.Id = 32;
+            this.StockInOutImagesBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.brand_image;
+            this.StockInOutImagesBarButtonItem.Name = "StockInOutImagesBarButtonItem";
+            this.StockInOutImagesBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutImagesBarButtonItem_ItemClick);
+            // 
             // ribbonPage1
             // 
             this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
@@ -444,6 +470,7 @@
             this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutProductHistoryBarButtonItem);
             this.StockInOutRibbonPageGroup.ItemLinks.Add(this.WarrantyCheckBarButtonItem);
             this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutImagesBarButtonItem);
+            this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutDocumentBarButtonItem);
             this.StockInOutRibbonPageGroup.Name = "StockInOutRibbonPageGroup";
             this.StockInOutRibbonPageGroup.Text = "Truy vấn";
             // 
@@ -462,29 +489,14 @@
             this.documentManager1.ViewCollection.AddRange(new DevExpress.XtraBars.Docking2010.Views.BaseView[] {
             this.tabbedView1});
             // 
-            // StockInOutProductHistoryBarButtonItem
+            // StockInOutDocumentBarButtonItem
             // 
-            this.StockInOutProductHistoryBarButtonItem.Caption = "Sản phẩm - dịch vụ";
-            this.StockInOutProductHistoryBarButtonItem.Id = 30;
-            this.StockInOutProductHistoryBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.product_management;
-            this.StockInOutProductHistoryBarButtonItem.Name = "StockInOutProductHistoryBarButtonItem";
-            this.StockInOutProductHistoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutProductHistoryBarButtonItem_ItemClick);
-            // 
-            // WarrantyCheckBarButtonItem
-            // 
-            this.WarrantyCheckBarButtonItem.Caption = "Bảo hành";
-            this.WarrantyCheckBarButtonItem.Id = 31;
-            this.WarrantyCheckBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insurance;
-            this.WarrantyCheckBarButtonItem.Name = "WarrantyCheckBarButtonItem";
-            this.WarrantyCheckBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.WarrantyCheckBarButtonItem_ItemClick);
-            // 
-            // StockInOutImagesBarButtonItem
-            // 
-            this.StockInOutImagesBarButtonItem.Caption = "Hình ảnh";
-            this.StockInOutImagesBarButtonItem.Id = 32;
-            this.StockInOutImagesBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.brand_image;
-            this.StockInOutImagesBarButtonItem.Name = "StockInOutImagesBarButtonItem";
-            this.StockInOutImagesBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutImagesBarButtonItem_ItemClick);
+            this.StockInOutDocumentBarButtonItem.Caption = "Chứng từ";
+            this.StockInOutDocumentBarButtonItem.Id = 33;
+            this.StockInOutDocumentBarButtonItem.ImageOptions.Image = global::VnsErp2025.Properties.Resources.attachment_16x16;
+            this.StockInOutDocumentBarButtonItem.ImageOptions.LargeImage = global::VnsErp2025.Properties.Resources.attachment_32x32;
+            this.StockInOutDocumentBarButtonItem.Name = "StockInOutDocumentBarButtonItem";
+            this.StockInOutDocumentBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutDocumentBarButtonItem_ItemClick);
             // 
             // FormMain
             // 
@@ -552,5 +564,6 @@
         private DevExpress.XtraBars.BarButtonItem StockInOutProductHistoryBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem WarrantyCheckBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem StockInOutImagesBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem StockInOutDocumentBarButtonItem;
     }
 }

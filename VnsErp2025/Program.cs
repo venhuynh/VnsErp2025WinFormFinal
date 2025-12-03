@@ -107,7 +107,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmStockInOutDocumentDtoLookup());
+            Application.Run(new FormMain());
 
             #endregion
 

@@ -31,8 +31,8 @@ namespace VnsErp2025
         private void InitializeComponent()
         {
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ucNhapNoiBoDetail1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -51,6 +51,13 @@ namespace VnsErp2025
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
+            // ucNhapNoiBoDetail1
+            // 
+            this.ucNhapNoiBoDetail1.Location = new System.Drawing.Point(12, 12);
+            this.ucNhapNoiBoDetail1.Name = "ucNhapNoiBoDetail1";
+            this.ucNhapNoiBoDetail1.Size = new System.Drawing.Size(861, 630);
+            this.ucNhapNoiBoDetail1.TabIndex = 4;
+            // 
             // Root
             // 
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -60,13 +67,6 @@ namespace VnsErp2025
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(885, 654);
             this.Root.TextVisible = false;
-            // 
-            // ucNhapNoiBoDetail1
-            // 
-            this.ucNhapNoiBoDetail1.Location = new System.Drawing.Point(12, 12);
-            this.ucNhapNoiBoDetail1.Name = "ucNhapNoiBoDetail1";
-            this.ucNhapNoiBoDetail1.Size = new System.Drawing.Size(861, 630);
-            this.ucNhapNoiBoDetail1.TabIndex = 4;
             // 
             // layoutControlItem1
             // 

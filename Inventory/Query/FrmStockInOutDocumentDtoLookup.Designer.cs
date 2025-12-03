@@ -123,7 +123,7 @@
             this.colStockInOutDate.FieldName = "StockInOutDate";
             this.colStockInOutDate.Name = "colStockInOutDate";
             this.colStockInOutDate.Visible = true;
-            this.colStockInOutDate.VisibleIndex = 0;
+            this.colStockInOutDate.VisibleIndex = 1;
             this.colStockInOutDate.Width = 150;
             // 
             // colVocherNumber
@@ -132,7 +132,7 @@
             this.colVocherNumber.FieldName = "VocherNumber";
             this.colVocherNumber.Name = "colVocherNumber";
             this.colVocherNumber.Visible = true;
-            this.colVocherNumber.VisibleIndex = 1;
+            this.colVocherNumber.VisibleIndex = 2;
             this.colVocherNumber.Width = 120;
             // 
             // colLoaiNhapXuatKhoText
@@ -141,7 +141,7 @@
             this.colLoaiNhapXuatKhoText.FieldName = "LoaiNhapXuatKhoText";
             this.colLoaiNhapXuatKhoText.Name = "colLoaiNhapXuatKhoText";
             this.colLoaiNhapXuatKhoText.Visible = true;
-            this.colLoaiNhapXuatKhoText.VisibleIndex = 2;
+            this.colLoaiNhapXuatKhoText.VisibleIndex = 3;
             this.colLoaiNhapXuatKhoText.Width = 150;
             // 
             // colFileName
@@ -150,7 +150,7 @@
             this.colFileName.FieldName = "FileName";
             this.colFileName.Name = "colFileName";
             this.colFileName.Visible = true;
-            this.colFileName.VisibleIndex = 3;
+            this.colFileName.VisibleIndex = 4;
             this.colFileName.Width = 250;
             // 
             // colFileSizeDisplay
@@ -159,7 +159,7 @@
             this.colFileSizeDisplay.FieldName = "FileSizeDisplay";
             this.colFileSizeDisplay.Name = "colFileSizeDisplay";
             this.colFileSizeDisplay.Visible = true;
-            this.colFileSizeDisplay.VisibleIndex = 4;
+            this.colFileSizeDisplay.VisibleIndex = 5;
             this.colFileSizeDisplay.Width = 100;
             // 
             // colGroupCaption
@@ -167,7 +167,6 @@
             this.colGroupCaption.Caption = "Group Caption";
             this.colGroupCaption.FieldName = "GroupCaption";
             this.colGroupCaption.Name = "colGroupCaption";
-            this.colGroupCaption.Visible = false;
             // 
             // barManager1
             // 
@@ -265,7 +264,7 @@
             // 
             this.OpenFileBarButtonItem.Caption = "Mở file";
             this.OpenFileBarButtonItem.Id = 16;
-            this.OpenFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.save_16x16;
+            this.OpenFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.opendoc_16x16;
             this.OpenFileBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.exporttoxps_32x32;
             this.OpenFileBarButtonItem.Name = "OpenFileBarButtonItem";
             // 

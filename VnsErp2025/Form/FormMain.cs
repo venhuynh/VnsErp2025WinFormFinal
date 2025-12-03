@@ -566,6 +566,15 @@ namespace VnsErp2025.Form
                         content: "Xem và quản lý hình ảnh liên quan đến các phiếu nhập/xuất kho.<br/><br/><b>Chức năng:</b><br/>• Xem hình ảnh của phiếu nhập/xuất<br/>• Upload và quản lý hình ảnh<br/>• Xem hình ảnh sản phẩm/thiết bị<br/><br/><color=Gray>Lưu ý:</color> Module này giúp lưu trữ và tra cứu hình ảnh liên quan đến kho."
                     );
                 }
+
+                if (StockInOutDocumentBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        StockInOutDocumentBarButtonItem,
+                        title: "<b><color=DarkBlue>📎 Chứng từ</color></b>",
+                        content: "Xem và quản lý chứng từ liên quan đến các phiếu nhập/xuất kho.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách chứng từ của phiếu nhập/xuất<br/>• Upload và quản lý chứng từ (PDF, Word, Excel, v.v.)<br/>• Tải xuống và mở chứng từ<br/>• Xóa chứng từ<br/><br/><color=Gray>Lưu ý:</color> Module này giúp lưu trữ và tra cứu các file chứng từ liên quan đến kho."
+                    );
+                }
             }
             catch (Exception ex)
             {
@@ -1359,6 +1368,23 @@ namespace VnsErp2025.Form
             catch (Exception ex)
             {
                 MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý hình ảnh");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Chứng từ
+        /// </summary>
+        private void StockInOutDocumentBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmStockInOutDocumentDtoLookup>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý chứng từ");
             }
         }
 
