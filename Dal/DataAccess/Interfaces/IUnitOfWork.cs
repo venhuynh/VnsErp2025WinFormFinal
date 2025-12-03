@@ -177,6 +177,8 @@ public interface IUnitOfWork : IDisposable
 
     IStockInOutDocumentRepository GetStockInOutDocumentRepository();
 
+    IInventoryBalanceRepository GetInventoryBalanceRepository();
+
     #endregion
 
     #endregion
