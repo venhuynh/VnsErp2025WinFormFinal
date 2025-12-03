@@ -8,25 +8,25 @@ using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Bll.Common.ImageStorage;
+// ReSharper disable UnusedParameter.Local
 
 namespace Bll.Inventory.InventoryManagement;
 
 /// <summary>
 /// Business Logic Layer cho StockInOutDocument
-/// Sử dụng IFileStorageService để lưu trữ chứng từ trên NAS/Local thay vì database
+/// Sử dụng ImageStorageService để lưu trữ chứng từ trên NAS/Local thay vì database
 /// </summary>
-public class StockInOutDocumentBll : IStockInOutDocumentBll
+public class StockInOutDocumentBll
 {
     #region Fields
 
     private IStockInOutDocumentRepository _dataAccess;
-    private readonly IFileStorageService _fileStorage;
+    private readonly IImageStorageService _imageStorage;
     private readonly ILogger _logger;
-    private readonly object _lockObject = new object();
+    private readonly object _lockObject = new();
 
     #endregion
 
@@ -38,9 +38,7 @@ public class StockInOutDocumentBll : IStockInOutDocumentBll
     public StockInOutDocumentBll()
     {
         _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
-        // Sử dụng IFileStorageService thông qua IImageStorageService (vì IImageStorageService kế thừa IFileStorageService)
-        var imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
-        _fileStorage = imageStorage as IFileStorageService ?? throw new InvalidOperationException("ImageStorageService không implement IFileStorageService");
+        _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
     }
 
     #endregion
@@ -171,8 +169,14 @@ public class StockInOutDocumentBll : IStockInOutDocumentBll
             // 3. Xác định FileCategory
             var fileCategory = GetFileCategory(documentType, stockInOutMasterId, businessPartnerId);
 
-            // 4. Lưu vào storage (NAS/Local) thông qua IFileStorageService
-            var storageResult = await _fileStorage.SaveFileAsync(
+            // 4. Lưu vào storage (NAS/Local) thông qua ImageStorageService
+            // Sử dụng IFileStorageService interface (IImageStorageService kế thừa IFileStorageService)
+            if (_imageStorage is not IFileStorageService fileStorage)
+            {
+                throw new InvalidOperationException("ImageStorageService không implement IFileStorageService");
+            }
+
+            var storageResult = await fileStorage.SaveFileAsync(
                 fileData: fileData,
                 fileName: fileName,
                 category: fileCategory,
@@ -187,7 +191,7 @@ public class StockInOutDocumentBll : IStockInOutDocumentBll
             }
 
             // 5. Lấy thông tin user hiện tại
-            var currentUser = Bll.Common.ApplicationSystemUtils.GetCurrentUser();
+            var currentUser = Common.ApplicationSystemUtils.GetCurrentUser();
             var createBy = currentUser?.Id ?? Guid.Empty;
 
             // 6. Tính checksum
@@ -279,7 +283,14 @@ public class StockInOutDocumentBll : IStockInOutDocumentBll
             }
 
             // Lấy trực tiếp từ storage sử dụng RelativePath
-            var documentData = await _fileStorage.GetFileAsync(relativePath);
+            // Sử dụng IFileStorageService interface (IImageStorageService kế thừa IFileStorageService)
+            if (_imageStorage is not IFileStorageService fileStorage)
+            {
+                _logger.Warning("ImageStorageService không implement IFileStorageService");
+                return null;
+            }
+
+            var documentData = await fileStorage.GetFileAsync(relativePath);
             
             if (documentData == null)
             {
@@ -355,14 +366,27 @@ public class StockInOutDocumentBll : IStockInOutDocumentBll
             {
                 try
                 {
-                    var deleted = await _fileStorage.DeleteFileAsync(document.RelativePath);
-                    if (deleted)
+                    // Sử dụng IFileStorageService interface (IImageStorageService kế thừa IFileStorageService)
+                    if (_imageStorage is IFileStorageService fileStorage)
                     {
-                        _logger.Info($"Đã xóa file chứng từ từ storage, RelativePath={document.RelativePath}");
+                        var deleted = await fileStorage.DeleteFileAsync(document.RelativePath);
+                        if (deleted)
+                        {
+                            _logger.Info($"Đã xóa file chứng từ từ storage, RelativePath={document.RelativePath}");
+                        }
+                        else
+                        {
+                            _logger.Warning($"Không thể xóa file chứng từ từ storage, RelativePath={document.RelativePath}");
+                        }
                     }
                     else
                     {
-                        _logger.Warning($"Không thể xóa file chứng từ từ storage, RelativePath={document.RelativePath}");
+                        // Fallback: sử dụng DeleteImageAsync nếu không có IFileStorageService
+                        var deleted = await _imageStorage.DeleteImageAsync(document.RelativePath);
+                        if (deleted)
+                        {
+                            _logger.Info($"Đã xóa file chứng từ từ storage (fallback), RelativePath={document.RelativePath}");
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -373,7 +397,7 @@ public class StockInOutDocumentBll : IStockInOutDocumentBll
             }
 
             // 3. Xóa record trong database (soft delete)
-            var currentUser = Bll.Common.ApplicationSystemUtils.GetCurrentUser();
+            var currentUser = Common.ApplicationSystemUtils.GetCurrentUser();
             var deletedBy = currentUser?.Id ?? Guid.Empty;
             GetDataAccess().Delete(documentId, deletedBy);
 
@@ -438,11 +462,11 @@ public class StockInOutDocumentBll : IStockInOutDocumentBll
     /// <summary>
     /// Cập nhật trạng thái xác minh của chứng từ
     /// </summary>
-    public async Task UpdateVerificationStatusAsync(Guid id, bool isVerified)
+    public Task UpdateVerificationStatusAsync(Guid id, bool isVerified)
     {
         try
         {
-            var currentUser = Bll.Common.ApplicationSystemUtils.GetCurrentUser();
+            var currentUser = Common.ApplicationSystemUtils.GetCurrentUser();
             var verifiedBy = currentUser?.Id ?? Guid.Empty;
 
             GetDataAccess().UpdateVerificationStatus(id, isVerified, verifiedBy);
@@ -454,6 +478,42 @@ public class StockInOutDocumentBll : IStockInOutDocumentBll
             _logger.Error($"Lỗi khi cập nhật trạng thái xác minh '{id}': {ex.Message}", ex);
             throw;
         }
+
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Lưu chứng từ từ file (synchronous version - backward compatibility)
+    /// </summary>
+    public StockInOutDocument SaveDocumentFromFile(
+        Guid? stockInOutMasterId,
+        Guid? businessPartnerId,
+        string documentFilePath,
+        int documentType,
+        int? documentCategory = null,
+        string documentNumber = null,
+        DateTime? documentDate = null,
+        string displayName = null,
+        string description = null)
+    {
+        return SaveDocumentFromFileAsync(
+            stockInOutMasterId,
+            businessPartnerId,
+            documentFilePath,
+            documentType,
+            documentCategory,
+            documentNumber,
+            documentDate,
+            displayName,
+            description).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Xóa chứng từ (synchronous version - backward compatibility)
+    /// </summary>
+    public void DeleteDocument(Guid documentId)
+    {
+        DeleteDocumentAsync(documentId).GetAwaiter().GetResult();
     }
 
     #endregion

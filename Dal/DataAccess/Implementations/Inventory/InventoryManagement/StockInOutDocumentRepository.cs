@@ -58,8 +58,6 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
 
         // Configure eager loading cho navigation properties
         var loadOptions = new DataLoadOptions();
-        loadOptions.LoadWith<StockInOutDocument>(d => d.StockInOutMaster);
-        loadOptions.LoadWith<StockInOutDocument>(d => d.BusinessPartner);
         context.LoadOptions = loadOptions;
 
         return context;
@@ -94,15 +92,7 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
                     stockInOutDocument.Id = Guid.NewGuid();
                 
                 // Thiết lập giá trị mặc định
-                if (stockInOutDocument.CreateDate == default(DateTime))
-                    stockInOutDocument.CreateDate = DateTime.Now;
-                
-                if (stockInOutDocument.CreateBy == Guid.Empty)
-                {
-                    // Lấy user hiện tại nếu có
-                    var currentUser = Common.ApplicationSystemUtils.GetCurrentUser();
-                    stockInOutDocument.CreateBy = currentUser?.Id ?? Guid.Empty;
-                }
+                stockInOutDocument.CreateDate = DateTime.Now;
 
                 context.StockInOutDocuments.InsertOnSubmit(stockInOutDocument);
                 context.SubmitChanges();
@@ -187,8 +177,7 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
         {
             _logger.Debug("GetById: Lấy chứng từ, Id={0}", id);
 
-            var document = context.StockInOutDocuments
-                .FirstOrDefault(x => x.Id == id && !x.IsDeleted);
+            var document = context.StockInOutDocuments.FirstOrDefault(x => x.Id == id);
 
             if (document == null)
             {
@@ -223,10 +212,19 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
                 stockInOutMasterId);
 
             var documents = context.StockInOutDocuments
-                .Where(x => x.StockInOutMasterId == stockInOutMasterId && !x.IsDeleted)
-                .OrderByDescending(x => x.DocumentDate ?? x.CreateDate)
-                .ThenByDescending(x => x.CreateDate)
+                .Where(x => x.StockInOutMasterId == stockInOutMasterId)
+                .OrderBy(x => x.CreateDate)
                 .ToList();
+            
+            // Load StockInOutMaster cho tất cả documents để có thông tin phiếu
+            foreach (var document in documents)
+            {
+                if (document.StockInOutMaster == null && document.StockInOutMasterId.HasValue)
+                {
+                    document.StockInOutMaster = context.StockInOutMasters
+                        .FirstOrDefault(m => m.Id == document.StockInOutMasterId.Value);
+                }
+            }
 
             _logger.Info("GetByStockInOutMasterId: Lấy được {0} chứng từ", documents.Count);
             return documents;
@@ -252,9 +250,8 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
                 businessPartnerId);
 
             var documents = context.StockInOutDocuments
-                .Where(x => x.BusinessPartnerId == businessPartnerId && !x.IsDeleted)
-                .OrderByDescending(x => x.DocumentDate ?? x.CreateDate)
-                .ThenByDescending(x => x.CreateDate)
+                .Where(x => x.BusinessPartnerId == businessPartnerId)
+                .OrderBy(x => x.CreateDate)
                 .ToList();
 
             _logger.Info("GetByBusinessPartnerId: Lấy được {0} chứng từ", documents.Count);
@@ -285,25 +282,14 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
             _logger.Debug("QueryDocuments: Bắt đầu query chứng từ, FromDate={0}, ToDate={1}, DocumentType={2}, Keyword={3}", 
                 fromDate, toDate, documentType, keyword ?? "null");
 
-            var queryable = context.StockInOutDocuments
-                .Where(x => !x.IsDeleted && x.IsActive)
-                .AsQueryable();
+            // Bắt đầu query từ StockInOutDocument
+            var queryable = context.StockInOutDocuments.AsQueryable();
 
-            // Filter theo thời gian (ưu tiên DocumentDate, nếu không có thì dùng CreateDate)
-            if (fromDate.HasValue)
+            // Filter theo thời gian (CreateDate)
+            if (fromDate.HasValue && toDate.HasValue)
             {
-                var from = fromDate.Value.Date;
-                queryable = queryable.Where(x => 
-                    (x.DocumentDate.HasValue && x.DocumentDate.Value.Date >= from) ||
-                    (!x.DocumentDate.HasValue && x.CreateDate.Date >= from));
-            }
-
-            if (toDate.HasValue)
-            {
-                var to = toDate.Value.Date.AddDays(1).AddTicks(-1);
-                queryable = queryable.Where(x => 
-                    (x.DocumentDate.HasValue && x.DocumentDate.Value <= to) ||
-                    (!x.DocumentDate.HasValue && x.CreateDate <= to));
+                queryable = queryable.Where(x => x.CreateDate >= fromDate.Value.Date && 
+                                                x.CreateDate <= toDate.Value.Date.AddDays(1).AddTicks(-1));
             }
 
             // Filter theo loại chứng từ
@@ -343,18 +329,41 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
                     (x.DocumentNumber != null && x.DocumentNumber.Contains(searchText)) ||
                     // Tìm trong mô tả
                     (x.Description != null && x.Description.Contains(searchText)) ||
-                    // Tìm trong tags
-                    (x.Tags != null && x.Tags.Contains(searchText)) ||
-                    // Tìm trong keywords
-                    (x.Keywords != null && x.Keywords.Contains(searchText))
+                    // Tìm trong đường dẫn tương đối
+                    (x.RelativePath != null && x.RelativePath.Contains(searchText)) ||
+                    // Tìm trong đường dẫn đầy đủ
+                    (x.FullPath != null && x.FullPath.Contains(searchText))
                 );
             }
 
-            // Sắp xếp theo ngày chứng từ hoặc ngày tạo (mới nhất trước)
+            // Sắp xếp theo ngày tạo (mới nhất trước)
             var result = queryable
-                .OrderByDescending(x => x.DocumentDate ?? x.CreateDate)
-                .ThenByDescending(x => x.CreateDate)
+                .OrderByDescending(x => x.CreateDate)
+                .ThenByDescending(x => x.FileName ?? string.Empty)
                 .ToList();
+
+            // Load StockInOutMaster cho tất cả documents để có thông tin phiếu
+            var masterIds = result.Where(x => x.StockInOutMasterId.HasValue)
+                .Select(x => x.StockInOutMasterId.Value)
+                .Distinct()
+                .ToList();
+            
+            if (masterIds.Any())
+            {
+                var masters = context.StockInOutMasters
+                    .Where(m => masterIds.Contains(m.Id))
+                    .ToDictionary(m => m.Id);
+
+                foreach (var document in result)
+                {
+                    if (document.StockInOutMaster == null && 
+                        document.StockInOutMasterId.HasValue && 
+                        masters.TryGetValue(document.StockInOutMasterId.Value, out var master))
+                    {
+                        document.StockInOutMaster = master;
+                    }
+                }
+            }
 
             _logger.Info("QueryDocuments: Query thành công, ResultCount={0}", result.Count);
             return result;
@@ -378,8 +387,7 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
             _logger.Debug("GetUnverifiedDocuments: Lấy danh sách chứng từ cần xác minh");
 
             var documents = context.StockInOutDocuments
-                .Where(x => !x.IsDeleted && x.IsActive && 
-                           (x.IsVerified == null || x.IsVerified == false) &&
+                .Where(x => (x.IsVerified == null || x.IsVerified == false) &&
                            (x.FileExists == null || x.FileExists == true))
                 .OrderByDescending(x => x.CreateDate)
                 .ToList();
@@ -436,11 +444,11 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
     #region Delete Operations
 
     /// <summary>
-    /// Xóa chứng từ theo ID (soft delete)
+    /// Xóa chứng từ theo ID
     /// </summary>
     /// <param name="id">ID chứng từ cần xóa</param>
-    /// <param name="deletedBy">ID người xóa</param>
-    public void Delete(Guid id, Guid deletedBy)
+    /// <param name="deletedBy">ID người xóa (optional, để tương thích với BLL)</param>
+    public void Delete(Guid id, Guid deletedBy = default)
     {
         using var context = CreateNewContext();
         try
@@ -454,15 +462,10 @@ public class StockInOutDocumentRepository : IStockInOutDocumentRepository
                 throw new InvalidOperationException($"Không tìm thấy chứng từ với ID: {id}");
             }
 
-            // Soft delete
-            document.IsDeleted = true;
-            document.DeletedDate = DateTime.Now;
-            document.DeletedBy = deletedBy;
-            document.IsActive = false;
-
+            context.StockInOutDocuments.DeleteOnSubmit(document);
             context.SubmitChanges();
 
-            _logger.Info("Delete: Đã xóa chứng từ (soft delete), Id={0}", id);
+            _logger.Info("Delete: Đã xóa chứng từ, Id={0}", id);
         }
         catch (Exception ex)
         {

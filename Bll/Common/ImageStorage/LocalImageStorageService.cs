@@ -284,11 +284,9 @@ namespace Bll.Common.ImageStorage
 
         private string CalculateChecksum(byte[] data)
         {
-            using (var md5 = System.Security.Cryptography.MD5.Create())
-            {
-                var hash = md5.ComputeHash(data);
-                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-            }
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            var hash = md5.ComputeHash(data);
+            return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
 
         #endregion
@@ -438,44 +436,6 @@ namespace Bll.Common.ImageStorage
             {
                 throw new ArgumentException($"File extension '{extension}' is not allowed. Allowed extensions: {string.Join(", ", allowedExtensions)}", nameof(fileName));
             }
-        }
-
-        /// <summary>
-        /// Generate relative path dựa trên FileCategory và entityId
-        /// </summary>
-        private string GenerateRelativePath(FileCategory category, string fileName, Guid? entityId)
-        {
-            var year = DateTime.Now.Year;
-            var month = DateTime.Now.Month.ToString("00");
-
-            return category switch
-            {
-                // Image categories (backward compatibility)
-                FileCategory.Product => entityId.HasValue
-                    ? $"{_config.ProductsPath}/{entityId.Value}/{year}/{month}/{fileName}"
-                    : $"{_config.ProductsPath}/{year}/{month}/{fileName}",
-                FileCategory.ProductVariant => entityId.HasValue
-                    ? $"{_config.ProductsPath}/Variants/{entityId.Value}/{year}/{month}/{fileName}"
-                    : $"{_config.ProductsPath}/Variants/{year}/{month}/{fileName}",
-                FileCategory.StockInOut => $"{_config.StockInOutPath}/{year}/{month}/{fileName}",
-                FileCategory.Company => entityId.HasValue
-                    ? $"{_config.CompanyPath}/{entityId.Value}_{fileName}"
-                    : $"{_config.CompanyPath}/{fileName}",
-                FileCategory.Avatar => entityId.HasValue
-                    ? $"{_config.AvatarsPath}/{entityId.Value}_{fileName}"
-                    : $"{_config.AvatarsPath}/{fileName}",
-                FileCategory.Temp => $"{_config.TempPath}/{year}/{month}/{fileName}",
-                
-                // Document categories (mới)
-                FileCategory.StockInOutDocument => $"Documents/StockInOut/{year}/{month}/{fileName}",
-                FileCategory.BusinessPartnerDocument => entityId.HasValue
-                    ? $"Documents/BusinessPartner/{entityId.Value}/{year}/{month}/{fileName}"
-                    : $"Documents/BusinessPartner/{year}/{month}/{fileName}",
-                FileCategory.Document => $"Documents/General/{year}/{month}/{fileName}",
-                FileCategory.Report => $"Documents/Reports/{year}/{month}/{fileName}",
-                
-                _ => $"{_config.TempPath}/{fileName}"
-            };
         }
 
         /// <summary>

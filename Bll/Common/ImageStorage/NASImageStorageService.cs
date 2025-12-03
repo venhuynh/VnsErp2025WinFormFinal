@@ -1,5 +1,6 @@
 using Logger.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -663,36 +664,6 @@ namespace Bll.Common.ImageStorage
         /// </summary>
         private string GenerateRelativePath(ImageCategory category, string fileName, Guid? entityId)
         {
-            var year = DateTime.Now.Year;
-            var month = DateTime.Now.Month.ToString("00");
-
-            // Sử dụng Path.Combine thay vì string interpolation với forward slash
-            // để đảm bảo path separator đúng cho Windows
-            return category switch
-            {
-                ImageCategory.Product => entityId.HasValue
-                    ? Path.Combine(_config.ProductsPath, entityId.Value.ToString(), year.ToString(), month, fileName)
-                    : Path.Combine(_config.ProductsPath, year.ToString(), month, fileName),
-                ImageCategory.ProductVariant => entityId.HasValue
-                    ? Path.Combine(_config.ProductsPath, "Variants", entityId.Value.ToString(), year.ToString(), month, fileName)
-                    : Path.Combine(_config.ProductsPath, "Variants", year.ToString(), month, fileName),
-                ImageCategory.StockInOut => Path.Combine(_config.StockInOutPath, year.ToString(), month, fileName),
-                ImageCategory.Company => entityId.HasValue
-                    ? Path.Combine(_config.CompanyPath, $"{entityId.Value}_{fileName}")
-                    : Path.Combine(_config.CompanyPath, fileName),
-                ImageCategory.Avatar => entityId.HasValue
-                    ? Path.Combine(_config.AvatarsPath, $"{entityId.Value}_{fileName}")
-                    : Path.Combine(_config.AvatarsPath, fileName),
-                ImageCategory.Temp => Path.Combine(_config.TempPath, year.ToString(), month, fileName),
-                _ => Path.Combine(_config.TempPath, fileName)
-            };
-        }
-
-        /// <summary>
-        /// Generate relative path dựa trên ImageCategory và entityId (backward compatibility)
-        /// </summary>
-        private string GenerateRelativePath(ImageCategory category, string fileName, Guid? entityId)
-        {
             // Convert ImageCategory sang FileCategory
             var fileCategory = category switch
             {
@@ -980,44 +951,6 @@ namespace Bll.Common.ImageStorage
             {
                 throw new ArgumentException($@"File extension '{extension}' is not allowed. Allowed extensions: {string.Join(", ", allowedExtensions)}", nameof(fileName));
             }
-        }
-
-        /// <summary>
-        /// Generate relative path dựa trên FileCategory và entityId
-        /// </summary>
-        private string GenerateRelativePath(FileCategory category, string fileName, Guid? entityId)
-        {
-            var year = DateTime.Now.Year;
-            var month = DateTime.Now.Month.ToString("00");
-
-            return category switch
-            {
-                // Image categories (backward compatibility)
-                FileCategory.Product => entityId.HasValue
-                    ? Path.Combine(_config.ProductsPath, entityId.Value.ToString(), year.ToString(), month, fileName)
-                    : Path.Combine(_config.ProductsPath, year.ToString(), month, fileName),
-                FileCategory.ProductVariant => entityId.HasValue
-                    ? Path.Combine(_config.ProductsPath, "Variants", entityId.Value.ToString(), year.ToString(), month, fileName)
-                    : Path.Combine(_config.ProductsPath, "Variants", year.ToString(), month, fileName),
-                FileCategory.StockInOut => Path.Combine(_config.StockInOutPath, year.ToString(), month, fileName),
-                FileCategory.Company => entityId.HasValue
-                    ? Path.Combine(_config.CompanyPath, $"{entityId.Value}_{fileName}")
-                    : Path.Combine(_config.CompanyPath, fileName),
-                FileCategory.Avatar => entityId.HasValue
-                    ? Path.Combine(_config.AvatarsPath, $"{entityId.Value}_{fileName}")
-                    : Path.Combine(_config.AvatarsPath, fileName),
-                FileCategory.Temp => Path.Combine(_config.TempPath, year.ToString(), month, fileName),
-                
-                // Document categories (mới)
-                FileCategory.StockInOutDocument => Path.Combine("Documents", "StockInOut", year.ToString(), month, fileName),
-                FileCategory.BusinessPartnerDocument => entityId.HasValue
-                    ? Path.Combine("Documents", "BusinessPartner", entityId.Value.ToString(), year.ToString(), month, fileName)
-                    : Path.Combine("Documents", "BusinessPartner", year.ToString(), month, fileName),
-                FileCategory.Document => Path.Combine("Documents", "General", year.ToString(), month, fileName),
-                FileCategory.Report => Path.Combine("Documents", "Reports", year.ToString(), month, fileName),
-                
-                _ => Path.Combine(_config.TempPath, fileName)
-            };
         }
 
         /// <summary>
