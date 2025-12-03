@@ -45,6 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Inventory\InventoryManagement\DocumentAccessLevelEnum.cs" />
+    <Compile Include="Inventory\InventoryManagement\DocumentCategoryEnum.cs" />
+    <Compile Include="Inventory\InventoryManagement\DocumentTypeEnum.cs" />
+    <Compile Include="Inventory\InventoryManagement\StockInOutDocumentDto.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutImageDto.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutMasterHistoryDto.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutProductHistoryDto.cs" />

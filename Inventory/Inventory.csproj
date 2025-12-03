@@ -93,6 +93,12 @@
     <Compile Include="OverlayForm\FrmStockInOutAddImages.Designer.cs">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </Compile>
+    <Compile Include="OverlayForm\FrmStockInOutDocumentDto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OverlayForm\FrmStockInOutDocumentDto.Designer.cs">
+      <DependentUpon>FrmStockInOutDocumentDto.cs</DependentUpon>
+    </Compile>
     <Compile Include="Query\FrmStockInOutImageLookup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -343,6 +349,9 @@
     </Compile>
     <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OverlayForm\FrmStockInOutDocumentDto.resx">
+      <DependentUpon>FrmStockInOutDocumentDto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Query\FrmStockInOutImageLookup.resx">
       <DependentUpon>FrmStockInOutImageLookup.cs</DependentUpon>
@@ -617,6 +626,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\showtestreport_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\attachment_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\attachment_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
