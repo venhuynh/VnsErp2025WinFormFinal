@@ -401,10 +401,23 @@ namespace Inventory.Query
 
                     var dtos = MapEntitiesToDtos(entities);
                     
-                    // Log số lượng DTOs sau khi map
-                    System.Diagnostics.Debug.WriteLine($"LoadDataAsync: Map được {dtos?.Count ?? 0} DTOs");
+                    // Filter bỏ các records không hợp lệ (không có RelativePath hoặc FileName)
+                    // Vì không thể load thumbnail nếu không có RelativePath
+                    var validDtos = dtos.Where(dto => 
+                        !string.IsNullOrWhiteSpace(dto.RelativePath) && 
+                        !string.IsNullOrWhiteSpace(dto.FileName)
+                    ).ToList();
                     
-                    LoadData(dtos);
+                    var invalidCount = dtos.Count - validDtos.Count;
+                    if (invalidCount > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"LoadDataAsync: Filter bỏ {invalidCount} hình ảnh không hợp lệ (không có RelativePath hoặc FileName)");
+                    }
+                    
+                    // Log số lượng DTOs sau khi filter
+                    System.Diagnostics.Debug.WriteLine($"LoadDataAsync: Còn lại {validDtos.Count} hình ảnh hợp lệ sau khi filter");
+                    
+                    LoadData(validDtos);
                 });
             }
             catch (Exception ex)
@@ -434,8 +447,25 @@ namespace Inventory.Query
             stockInOutImageDtoBindingSource.DataSource = images;
             stockInOutImageDtoBindingSource.ResetBindings(false);
             
+            // Log chi tiết về các hình ảnh hợp lệ
+            var validImages = images.Where(img => !string.IsNullOrWhiteSpace(img.RelativePath) && !string.IsNullOrWhiteSpace(img.FileName)).ToList();
+            System.Diagnostics.Debug.WriteLine($"LoadData: Tổng số hình ảnh: {images.Count}, Hợp lệ: {validImages.Count}");
+            if (validImages.Count < images.Count)
+            {
+                var invalidImages = images.Where(img => string.IsNullOrWhiteSpace(img.RelativePath) || string.IsNullOrWhiteSpace(img.FileName)).ToList();
+                System.Diagnostics.Debug.WriteLine($"LoadData: Có {invalidImages.Count} hình ảnh không hợp lệ (không có RelativePath hoặc FileName)");
+                foreach (var invalid in invalidImages.Take(5))
+                {
+                    System.Diagnostics.Debug.WriteLine($"  - ImageId: {invalid.Id}, FileName: '{invalid.FileName}', RelativePath: '{invalid.RelativePath}'");
+                }
+            }
+            
             // Force refresh WinExplorerView để trigger GetThumbnailImage event cho tất cả items
             winExplorerView1.RefreshData();
+            
+            // Preload tất cả thumbnails trong background để đảm bảo tất cả hình ảnh được load
+            // WinExplorerView chỉ load thumbnail cho items visible, nên cần preload để đảm bảo tất cả đều có thumbnail
+            PreloadAllThumbnailsAsync(validImages);
             
             // Sử dụng BeginInvoke để đảm bảo UI được update sau khi data được set
             BeginInvoke(new Action(() =>
@@ -612,6 +642,127 @@ namespace Inventory.Query
             {
                 // Đóng WaitingForm
                 DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
+            }
+        }
+
+        /// <summary>
+        /// Preload tất cả thumbnails trong background để đảm bảo tất cả hình ảnh được load
+        /// WinExplorerView chỉ load thumbnail cho items visible, nên cần preload để đảm bảo tất cả đều có thumbnail
+        /// </summary>
+        private async void PreloadAllThumbnailsAsync(List<StockInOutImageDto> validImages)
+        {
+            if (validImages == null || validImages.Count == 0 || _stockInOutImageBll == null)
+                return;
+
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Bắt đầu preload {validImages.Count} thumbnails");
+                
+                // Preload tất cả thumbnails trong background
+                await System.Threading.Tasks.Task.Run(async () =>
+                {
+                    var loadedCount = 0;
+                    var errorCount = 0;
+                    
+                    foreach (var dto in validImages)
+                    {
+                        try
+                        {
+                            // Skip nếu đã có ImageData
+                            if (dto.ImageData != null && dto.ImageData.Length > 0)
+                            {
+                                loadedCount++;
+                                continue;
+                            }
+
+                            // Skip nếu không có RelativePath
+                            if (string.IsNullOrWhiteSpace(dto.RelativePath))
+                            {
+                                continue;
+                            }
+
+                            // Load image data từ storage
+                            var imageData = await _stockInOutImageBll.GetImageDataByRelativePathAsync(dto.RelativePath);
+                            
+                            if (imageData != null && imageData.Length > 0)
+                            {
+                                // Cache vào DTO trên UI thread
+                                if (InvokeRequired)
+                                {
+                                    BeginInvoke(new Action(() =>
+                                    {
+                                        dto.ImageData = imageData;
+                                    }));
+                                }
+                                else
+                                {
+                                    dto.ImageData = imageData;
+                                }
+                                
+                                loadedCount++;
+                            }
+                            else
+                            {
+                                errorCount++;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCount++;
+                            System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Lỗi load thumbnail cho {dto.FileName}: {ex.Message}");
+                        }
+                    }
+                    
+                    System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Hoàn thành - Loaded: {loadedCount}, Errors: {errorCount}");
+                    
+                    // Force refresh WinExplorerView sau khi preload xong để hiển thị tất cả thumbnails
+                    // WinExplorerView cần được refresh để trigger GetThumbnailImage event cho tất cả items
+                    // Cần refresh nhiều lần để đảm bảo tất cả items đều được render
+                    if (InvokeRequired)
+                    {
+                        BeginInvoke(new Action(() =>
+                        {
+                            // Refresh ngay lập tức để trigger GetThumbnailImage cho các items visible
+                            winExplorerView1.RefreshData();
+                            winExplorerView1.LayoutChanged();
+                            
+                            System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Đã refresh WinExplorerView lần 1 sau khi preload {loadedCount} thumbnails");
+                            
+                            // Refresh lại sau một khoảng thời gian để đảm bảo tất cả thumbnails được hiển thị
+                            // Đặc biệt là các items không visible ban đầu
+                            System.Threading.Tasks.Task.Delay(300).ContinueWith(_ =>
+                            {
+                                if (InvokeRequired)
+                                {
+                                    BeginInvoke(new Action(() =>
+                                    {
+                                        winExplorerView1.RefreshData();
+                                        winExplorerView1.LayoutChanged();
+                                        
+                                        // Force refresh lại một lần nữa để đảm bảo
+                                        System.Threading.Tasks.Task.Delay(200).ContinueWith(__ =>
+                                        {
+                                            if (InvokeRequired)
+                                            {
+                                                BeginInvoke(new Action(() =>
+                                                {
+                                                    winExplorerView1.RefreshData();
+                                                    System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Đã refresh WinExplorerView lần 3 sau khi preload");
+                                                }));
+                                            }
+                                        });
+                                        
+                                        System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Đã refresh WinExplorerView lần 2 sau khi preload");
+                                    }));
+                                }
+                            });
+                        }));
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Lỗi: {ex.Message}");
             }
         }
 

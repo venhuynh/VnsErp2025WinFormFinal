@@ -106,7 +106,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmStockInOutImageLookup());
+            Application.Run(new FormMain());
 
             #endregion
 

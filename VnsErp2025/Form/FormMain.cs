@@ -1353,7 +1353,7 @@ namespace VnsErp2025.Form
             try
             {
                 SplashScreenHelper.ShowVnsSplashScreen();
-                //ApplicationSystemUtils.ShowOrActivateForm<FrmStockInOutAddImages>(this);
+                ApplicationSystemUtils.ShowOrActivateForm<FrmStockInOutImageLookup>(this);
                 SplashScreenHelper.CloseSplashScreen();
             }
             catch (Exception ex)
