@@ -15,8 +15,9 @@ namespace Bll.Common.ImageStorage
     /// <summary>
     /// Implementation cho NAS Storage (Synology)
     /// Sử dụng SMB/CIFS protocol để truy cập NAS
+    /// Hỗ trợ lưu trữ nhiều loại file: images, PDF, DOCX, XLSX, etc.
     /// </summary>
-    public class NASImageStorageService : IImageStorageService
+    public class NASImageStorageService : IImageStorageService, IFileStorageService
     {
         #region Fields
 
@@ -619,8 +620,46 @@ namespace Bll.Common.ImageStorage
         }
 
         /// <summary>
-        /// Generate relative path dựa trên category và entityId
+        /// Generate relative path dựa trên FileCategory và entityId
         /// Sử dụng Path.Combine để đảm bảo path separator đúng cho Windows (backslash)
+        /// </summary>
+        private string GenerateRelativePath(FileCategory category, string fileName, Guid? entityId)
+        {
+            var year = DateTime.Now.Year;
+            var month = DateTime.Now.Month.ToString("00");
+
+            return category switch
+            {
+                // Image categories (backward compatibility)
+                FileCategory.Product => entityId.HasValue
+                    ? Path.Combine(_config.ProductsPath, entityId.Value.ToString(), year.ToString(), month, fileName)
+                    : Path.Combine(_config.ProductsPath, year.ToString(), month, fileName),
+                FileCategory.ProductVariant => entityId.HasValue
+                    ? Path.Combine(_config.ProductsPath, "Variants", entityId.Value.ToString(), year.ToString(), month, fileName)
+                    : Path.Combine(_config.ProductsPath, "Variants", year.ToString(), month, fileName),
+                FileCategory.StockInOut => Path.Combine(_config.StockInOutPath, year.ToString(), month, fileName),
+                FileCategory.Company => entityId.HasValue
+                    ? Path.Combine(_config.CompanyPath, $"{entityId.Value}_{fileName}")
+                    : Path.Combine(_config.CompanyPath, fileName),
+                FileCategory.Avatar => entityId.HasValue
+                    ? Path.Combine(_config.AvatarsPath, $"{entityId.Value}_{fileName}")
+                    : Path.Combine(_config.AvatarsPath, fileName),
+                FileCategory.Temp => Path.Combine(_config.TempPath, year.ToString(), month, fileName),
+                
+                // Document categories (mới)
+                FileCategory.StockInOutDocument => Path.Combine("Documents", "StockInOut", year.ToString(), month, fileName),
+                FileCategory.BusinessPartnerDocument => entityId.HasValue
+                    ? Path.Combine("Documents", "BusinessPartner", entityId.Value.ToString(), year.ToString(), month, fileName)
+                    : Path.Combine("Documents", "BusinessPartner", year.ToString(), month, fileName),
+                FileCategory.Document => Path.Combine("Documents", "General", year.ToString(), month, fileName),
+                FileCategory.Report => Path.Combine("Documents", "Reports", year.ToString(), month, fileName),
+                
+                _ => Path.Combine(_config.TempPath, fileName)
+            };
+        }
+
+        /// <summary>
+        /// Generate relative path dựa trên ImageCategory và entityId (backward compatibility)
         /// </summary>
         private string GenerateRelativePath(ImageCategory category, string fileName, Guid? entityId)
         {
@@ -647,6 +686,26 @@ namespace Bll.Common.ImageStorage
                 ImageCategory.Temp => Path.Combine(_config.TempPath, year.ToString(), month, fileName),
                 _ => Path.Combine(_config.TempPath, fileName)
             };
+        }
+
+        /// <summary>
+        /// Generate relative path dựa trên ImageCategory và entityId (backward compatibility)
+        /// </summary>
+        private string GenerateRelativePath(ImageCategory category, string fileName, Guid? entityId)
+        {
+            // Convert ImageCategory sang FileCategory
+            var fileCategory = category switch
+            {
+                ImageCategory.Product => FileCategory.Product,
+                ImageCategory.ProductVariant => FileCategory.ProductVariant,
+                ImageCategory.StockInOut => FileCategory.StockInOut,
+                ImageCategory.Company => FileCategory.Company,
+                ImageCategory.Avatar => FileCategory.Avatar,
+                ImageCategory.Temp => FileCategory.Temp,
+                _ => FileCategory.Temp
+            };
+
+            return GenerateRelativePath(fileCategory, fileName, entityId);
         }
 
         /// <summary>
@@ -734,6 +793,258 @@ namespace Bll.Common.ImageStorage
             
             var hash = md5.ComputeHash(data);
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+        }
+
+        #endregion
+
+        #region IFileStorageService Implementation
+
+        /// <summary>
+        /// Lưu file vào storage (hỗ trợ mọi loại file: images, PDF, DOCX, XLSX, etc.)
+        /// </summary>
+        public async Task<FileStorageResult> SaveFileAsync(
+            byte[] fileData,
+            string fileName,
+            FileCategory category,
+            Guid? entityId = null,
+            bool generateThumbnail = false)
+        {
+            try
+            {
+                _logger.Debug("SaveFileAsync: Bắt đầu lưu file, FileName={0}, Category={1}", fileName, category);
+
+                // 1. Validate file (mở rộng từ ValidateImage)
+                ValidateFile(fileData, fileName);
+
+                // 2. Generate file path
+                var relativePath = GenerateRelativePath(category, fileName, entityId);
+                var normalizedRelativePath = NormalizePath(relativePath);
+                var fullPath = Path.Combine(_config.NASBasePath, normalizedRelativePath);
+                
+                _logger.Info("SaveFileAsync: Tạo file path");
+                _logger.Info("  - NASBasePath: {0}", _config.NASBasePath);
+                _logger.Info("  - RelativePath (original): {0}", relativePath);
+                _logger.Info("  - RelativePath (normalized): {0}", normalizedRelativePath);
+                _logger.Info("  - FullPath: {0}", fullPath);
+
+                // 3. Ensure directory exists
+                var directory = Path.GetDirectoryName(fullPath);
+                if (!Directory.Exists(directory))
+                {
+                    if (directory != null)
+                    {
+                        Directory.CreateDirectory(directory);
+                        _logger.Debug("SaveFileAsync: Đã tạo thư mục {0}", directory);
+                    }
+                }
+
+                // 4. Save file
+                _logger.Info("SaveFileAsync: Bắt đầu lưu file vào đường dẫn: {0}", fullPath);
+                await Task.Run(() => File.WriteAllBytes(fullPath, fileData));
+                _logger.Info("SaveFileAsync: Đã lưu file thành công vào đường dẫn: {0}", fullPath);
+
+                // 5. Calculate checksum
+                var checksum = CalculateChecksum(fileData);
+                _logger.Debug("SaveFileAsync: Checksum: {0}", checksum);
+
+                // 6. Generate thumbnail if requested (chỉ cho image files)
+                string thumbnailPath = null;
+                string thumbnailFullPath = null;
+                var fileExtension = Path.GetExtension(fileName).TrimStart('.').ToLower();
+                var isImageFile = new[] { "jpg", "jpeg", "png", "gif", "bmp" }.Contains(fileExtension);
+                
+                if (generateThumbnail && isImageFile && _config.EnableThumbnailGeneration)
+                {
+                    _logger.Info("SaveFileAsync: Bắt đầu tạo thumbnail cho: {0}", normalizedRelativePath);
+                    thumbnailPath = await GenerateThumbnailAsync(normalizedRelativePath, _config.ThumbnailWidth, _config.ThumbnailHeight);
+                    if (!string.IsNullOrEmpty(thumbnailPath))
+                    {
+                        thumbnailFullPath = Path.Combine(_config.NASBasePath, NormalizePath(thumbnailPath));
+                        _logger.Info("SaveFileAsync: Đã tạo thumbnail tại đường dẫn: {0}", thumbnailFullPath);
+                    }
+                }
+
+                // 7. Get MIME type
+                var mimeType = GetMimeType(fileExtension);
+
+                _logger.Info("SaveFileAsync: ĐÃ LƯU FILE THÀNH CÔNG");
+                _logger.Info("  - FileName: {0}", fileName);
+                _logger.Info("  - Category: {0}", category);
+                _logger.Info("  - RelativePath: {0}", normalizedRelativePath);
+                _logger.Info("  - FullPath: {0}", fullPath);
+                _logger.Info("  - FileSize: {0} bytes", fileData.Length);
+                _logger.Info("  - MimeType: {0}", mimeType);
+
+                return new FileStorageResult
+                {
+                    Success = true,
+                    RelativePath = normalizedRelativePath,
+                    FullPath = fullPath,
+                    FileName = fileName,
+                    FileSize = fileData.Length,
+                    Checksum = checksum,
+                    ThumbnailRelativePath = thumbnailPath != null ? NormalizePath(thumbnailPath) : null,
+                    ThumbnailFullPath = thumbnailFullPath,
+                    MimeType = mimeType,
+                    FileExtension = fileExtension
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"SaveFileAsync: Lỗi lưu file: {ex.Message}", ex);
+                return new FileStorageResult
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message,
+                    Exception = ex
+                };
+            }
+        }
+
+        /// <summary>
+        /// Lấy file từ storage
+        /// </summary>
+        public async Task<byte[]> GetFileAsync(string relativePath)
+        {
+            // Sử dụng chung logic với GetImageAsync
+            return await GetImageAsync(relativePath);
+        }
+
+        /// <summary>
+        /// Xóa file từ storage
+        /// </summary>
+        public async Task<bool> DeleteFileAsync(string relativePath)
+        {
+            // Sử dụng chung logic với DeleteImageAsync
+            return await DeleteImageAsync(relativePath);
+        }
+
+        /// <summary>
+        /// Kiểm tra file tồn tại
+        /// </summary>
+        public async Task<bool> FileExistsAsync(string relativePath)
+        {
+            // Sử dụng chung logic với ImageExistsAsync
+            return await ImageExistsAsync(relativePath);
+        }
+
+        /// <summary>
+        /// Verify file integrity bằng checksum
+        /// </summary>
+        public async Task<bool> VerifyFileAsync(string relativePath, string checksum)
+        {
+            // Sử dụng chung logic với VerifyImageAsync
+            return await VerifyImageAsync(relativePath, checksum);
+        }
+
+        #endregion
+
+        #region Helper Methods - File Storage
+
+        /// <summary>
+        /// Validate file trước khi lưu (mở rộng từ ValidateImage để hỗ trợ nhiều loại file)
+        /// </summary>
+        private void ValidateFile(byte[] fileData, string fileName)
+        {
+            if (fileData == null || fileData.Length == 0)
+            {
+                throw new ArgumentException(@"FileData cannot be null or empty", nameof(fileData));
+            }
+
+            if (fileData.Length > _config.MaxFileSize)
+            {
+                throw new ArgumentException($@"File size ({fileData.Length}) exceeds maximum allowed size ({_config.MaxFileSize})", nameof(fileData));
+            }
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException(@"FileName cannot be null or empty", nameof(fileName));
+            }
+
+            var extension = Path.GetExtension(fileName).TrimStart('.').ToLower();
+            
+            // Mở rộng danh sách allowed extensions để hỗ trợ nhiều loại file
+            var allowedExtensions = new List<string>(_config.AllowedExtensions);
+            
+            // Thêm các extension cho documents
+            var documentExtensions = new[] { "pdf", "doc", "docx", "xls", "xlsx", "txt", "zip", "rar" };
+            foreach (var ext in documentExtensions)
+            {
+                if (!allowedExtensions.Contains(ext))
+                {
+                    allowedExtensions.Add(ext);
+                }
+            }
+
+            if (string.IsNullOrEmpty(extension) || !allowedExtensions.Contains(extension))
+            {
+                throw new ArgumentException($@"File extension '{extension}' is not allowed. Allowed extensions: {string.Join(", ", allowedExtensions)}", nameof(fileName));
+            }
+        }
+
+        /// <summary>
+        /// Generate relative path dựa trên FileCategory và entityId
+        /// </summary>
+        private string GenerateRelativePath(FileCategory category, string fileName, Guid? entityId)
+        {
+            var year = DateTime.Now.Year;
+            var month = DateTime.Now.Month.ToString("00");
+
+            return category switch
+            {
+                // Image categories (backward compatibility)
+                FileCategory.Product => entityId.HasValue
+                    ? Path.Combine(_config.ProductsPath, entityId.Value.ToString(), year.ToString(), month, fileName)
+                    : Path.Combine(_config.ProductsPath, year.ToString(), month, fileName),
+                FileCategory.ProductVariant => entityId.HasValue
+                    ? Path.Combine(_config.ProductsPath, "Variants", entityId.Value.ToString(), year.ToString(), month, fileName)
+                    : Path.Combine(_config.ProductsPath, "Variants", year.ToString(), month, fileName),
+                FileCategory.StockInOut => Path.Combine(_config.StockInOutPath, year.ToString(), month, fileName),
+                FileCategory.Company => entityId.HasValue
+                    ? Path.Combine(_config.CompanyPath, $"{entityId.Value}_{fileName}")
+                    : Path.Combine(_config.CompanyPath, fileName),
+                FileCategory.Avatar => entityId.HasValue
+                    ? Path.Combine(_config.AvatarsPath, $"{entityId.Value}_{fileName}")
+                    : Path.Combine(_config.AvatarsPath, fileName),
+                FileCategory.Temp => Path.Combine(_config.TempPath, year.ToString(), month, fileName),
+                
+                // Document categories (mới)
+                FileCategory.StockInOutDocument => Path.Combine("Documents", "StockInOut", year.ToString(), month, fileName),
+                FileCategory.BusinessPartnerDocument => entityId.HasValue
+                    ? Path.Combine("Documents", "BusinessPartner", entityId.Value.ToString(), year.ToString(), month, fileName)
+                    : Path.Combine("Documents", "BusinessPartner", year.ToString(), month, fileName),
+                FileCategory.Document => Path.Combine("Documents", "General", year.ToString(), month, fileName),
+                FileCategory.Report => Path.Combine("Documents", "Reports", year.ToString(), month, fileName),
+                
+                _ => Path.Combine(_config.TempPath, fileName)
+            };
+        }
+
+        /// <summary>
+        /// Lấy MIME type từ file extension
+        /// </summary>
+        private string GetMimeType(string fileExtension)
+        {
+            if (string.IsNullOrEmpty(fileExtension))
+                return "application/octet-stream";
+
+            var ext = fileExtension.TrimStart('.').ToLower();
+            return ext switch
+            {
+                "pdf" => "application/pdf",
+                "doc" => "application/msword",
+                "docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "xls" => "application/vnd.ms-excel",
+                "xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "jpg" or "jpeg" => "image/jpeg",
+                "png" => "image/png",
+                "gif" => "image/gif",
+                "bmp" => "image/bmp",
+                "txt" => "text/plain",
+                "zip" => "application/zip",
+                "rar" => "application/x-rar-compressed",
+                _ => "application/octet-stream"
+            };
         }
 
         #endregion
