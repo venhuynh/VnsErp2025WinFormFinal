@@ -93,11 +93,17 @@
     <Compile Include="OverlayForm\FrmStockInOutAddImages.Designer.cs">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </Compile>
-    <Compile Include="OverlayForm\FrmStockInOutDocumentDto.cs">
+    <Compile Include="OverlayForm\FrmAddStockInOutDocumentDto.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OverlayForm\FrmStockInOutDocumentDto.Designer.cs">
-      <DependentUpon>FrmStockInOutDocumentDto.cs</DependentUpon>
+    <Compile Include="OverlayForm\FrmAddStockInOutDocumentDto.Designer.cs">
+      <DependentUpon>FrmAddStockInOutDocumentDto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Query\FrmStockInOutDocumentDtoLookup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Query\FrmStockInOutDocumentDtoLookup.Designer.cs">
+      <DependentUpon>FrmStockInOutDocumentDtoLookup.cs</DependentUpon>
     </Compile>
     <Compile Include="Query\FrmStockInOutImageLookup.cs">
       <SubType>Form</SubType>
@@ -350,8 +356,11 @@
     <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OverlayForm\FrmStockInOutDocumentDto.resx">
-      <DependentUpon>FrmStockInOutDocumentDto.cs</DependentUpon>
+    <EmbeddedResource Include="OverlayForm\FrmAddStockInOutDocumentDto.resx">
+      <DependentUpon>FrmAddStockInOutDocumentDto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Query\FrmStockInOutDocumentDtoLookup.resx">
+      <DependentUpon>FrmStockInOutDocumentDtoLookup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Query\FrmStockInOutImageLookup.resx">
       <DependentUpon>FrmStockInOutImageLookup.cs</DependentUpon>

@@ -1,10 +1,11 @@
 ﻿using Authentication.Form;
 using Common.Utils;
 using Dal.Connection;
+using Inventory.OverlayForm;
+using Inventory.Query;
 using Inventory.StockOut.XuatNoiBo;
 using System;
 using System.Windows.Forms;
-using Inventory.Query;
 using VnsErp2025.Form;
 
 
@@ -106,7 +107,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmStockInOutMasterHistory());
+            Application.Run(new FrmStockInOutDocumentDtoLookup());
 
             #endregion
 

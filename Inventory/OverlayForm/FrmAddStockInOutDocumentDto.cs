@@ -8,15 +8,14 @@ using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Utils;
 using DevExpress.XtraEditors;
-using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.OverlayForm
 {
     /// <summary>
     /// Form thêm chứng từ cho phiếu nhập/xuất kho.
-    /// Cung cấp chức năng chọn và upload nhiều chứng từ (PDF, DOCX, XLSX, etc.) cho phiếu nhập/xuất kho.
+    /// Cung cấp chức năng chọn và upload nhiều chứng từ cho phiếu nhập/xuất kho.
     /// </summary>
-    public partial class FrmStockInOutDocumentDto : XtraForm
+    public partial class FrmAddStockInOutDocumentDto : XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -38,7 +37,7 @@ namespace Inventory.OverlayForm
         /// Constructor với StockInOutMasterId
         /// </summary>
         /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
-        public FrmStockInOutDocumentDto(Guid stockInOutMasterId)
+        public FrmAddStockInOutDocumentDto(Guid stockInOutMasterId)
         {
             InitializeComponent();
             StockInOutMasterId = stockInOutMasterId;
@@ -83,7 +82,6 @@ namespace Inventory.OverlayForm
                 DisableUploadControls(); // Disable các control liên quan
             }
         }
-
 
         /// <summary>
         /// Disable các control liên quan đến upload chứng từ khi BLL không khởi tạo được
@@ -195,7 +193,7 @@ namespace Inventory.OverlayForm
             var errorMessages = new List<string>();
 
             // Sử dụng DocumentType mặc định là "Chứng từ khác"
-            var documentType = (int)DocumentTypeEnum.Other;
+            var documentType = (int)DTO.Inventory.InventoryManagement.DocumentTypeEnum.Other;
 
             foreach (var documentPath in documentPaths)
             {
@@ -394,3 +392,4 @@ namespace Inventory.OverlayForm
         #endregion
     }
 }
+
