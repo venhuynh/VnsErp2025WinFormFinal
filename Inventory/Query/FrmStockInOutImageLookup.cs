@@ -1,10 +1,10 @@
-﻿using DevExpress.XtraEditors;
-using DevExpress.XtraGrid.Views.WinExplorer;
-using DevExpress.Utils;
-using DTO.Inventory.Query;
-using Bll.Inventory.InventoryManagement;
-using Dal.DataContext;
+﻿using Bll.Inventory.InventoryManagement;
+using Common.Common;
 using Common.Utils;
+using Dal.DataContext;
+using DevExpress.Utils;
+using DevExpress.XtraEditors;
+using DTO.Inventory.Query;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,7 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Common.Common;
 
 namespace Inventory.Query
 {
@@ -77,20 +76,30 @@ namespace Inventory.Query
         /// </summary>
         private void InitializeWinExplorerView()
         {
-            // Cấu hình ColumnSet
-            winExplorerView1.ColumnSet.TextColumn = colFileName;
-            winExplorerView1.ColumnSet.DescriptionColumn = colFileSizeDisplay;
-            winExplorerView1.ColumnSet.ExtraLargeImageColumn = colImageData;
-            winExplorerView1.ColumnSet.LargeImageColumn = colImageData;
-            winExplorerView1.ColumnSet.MediumImageColumn = colImageData;
-            winExplorerView1.ColumnSet.SmallImageColumn = colImageData;
+            // Cấu hình ColumnSet - Sử dụng DisplayCaption thay vì FileName để hiển thị "Số phiếu (số thứ tự)"
+            StockInOutImageDtoWinExplorerView.ColumnSet.TextColumn = colDisplayCaption;
+            StockInOutImageDtoWinExplorerView.ColumnSet.DescriptionColumn = colFileSizeDisplay;
+            StockInOutImageDtoWinExplorerView.ColumnSet.ExtraLargeImageColumn = colImageData;
+            StockInOutImageDtoWinExplorerView.ColumnSet.LargeImageColumn = colImageData;
+            StockInOutImageDtoWinExplorerView.ColumnSet.MediumImageColumn = colImageData;
+            StockInOutImageDtoWinExplorerView.ColumnSet.SmallImageColumn = colImageData;
 
             // Đảm bảo async loading được bật để load nhiều thumbnails cùng lúc
-            winExplorerView1.OptionsImageLoad.AsyncLoad = true;
-            winExplorerView1.OptionsImageLoad.CacheThumbnails = true;
+            StockInOutImageDtoWinExplorerView.OptionsImageLoad.AsyncLoad = true;
+            StockInOutImageDtoWinExplorerView.OptionsImageLoad.CacheThumbnails = true;
+            
+            // Cấu hình group theo GroupCaption để nhóm các hình ảnh theo: StockInOutDate - LoaiNhapXuatKhoText - VocherNumber - CustomerInfo
+            // Sử dụng ColumnSet.GroupColumn và GroupCount như trong demo
+            StockInOutImageDtoWinExplorerView.ColumnSet.GroupColumn = colGroupCaption;
+            StockInOutImageDtoWinExplorerView.GroupCount = 1;
+            
+            // Sort theo GroupCaption để group đúng
+            StockInOutImageDtoWinExplorerView.SortInfo.Clear();
+            StockInOutImageDtoWinExplorerView.SortInfo.Add(
+                new DevExpress.XtraGrid.Columns.GridColumnSortInfo(colGroupCaption, DevExpress.Data.ColumnSortOrder.Ascending));
 
             // Đăng ký event để xử lý thumbnail
-            winExplorerView1.GetThumbnailImage += WinExplorerView1_GetThumbnailImage;
+            StockInOutImageDtoWinExplorerView.GetThumbnailImage += WinExplorerView1_GetThumbnailImage;
         }
 
         /// <summary>
@@ -124,7 +133,7 @@ namespace Inventory.Query
             XuatFileBarButtonItem.ItemClick += XuatFileBarButtonItem_ItemClick;
 
             // GridView events
-            winExplorerView1.SelectionChanged += WinExplorerView1_SelectionChanged;
+            StockInOutImageDtoWinExplorerView.SelectionChanged += WinExplorerView1_SelectionChanged;
 
             // Form events
             Load += FrmStockInOutImageLookup_Load;
@@ -137,16 +146,16 @@ namespace Inventory.Query
         /// <summary>
         /// Event handler khi form được load
         /// </summary>
-        private async void FrmStockInOutImageLookup_Load(object sender, EventArgs e)
+        private void FrmStockInOutImageLookup_Load(object sender, EventArgs e)
         {
-            try
-            {
-                await LoadDataAsync();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi khi tải dữ liệu");
-            }
+            //try
+            //{
+            //    await LoadDataAsync();
+            //}
+            //catch (Exception ex)
+            //{
+            //    ShowError(ex, "Lỗi khi tải dữ liệu");
+            //}
         }
 
         /// <summary>
@@ -197,23 +206,165 @@ namespace Inventory.Query
         /// <summary>
         /// Event handler cho nút Xuất file
         /// </summary>
-        private void XuatFileBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        /// <summary>
+        /// Event handler cho nút Download - tải các hình ảnh được chọn về local
+        /// </summary>
+        private async void XuatFileBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
                 var selectedImages = GetSelectedImages();
                 if (selectedImages == null || selectedImages.Count == 0)
                 {
-                    MsgBox.ShowWarning("Vui lòng chọn ít nhất một hình ảnh để xuất.");
+                    MsgBox.ShowWarning("Vui lòng chọn ít nhất một hình ảnh để tải về.");
                     return;
                 }
 
-                // TODO: Implement export functionality
-                MsgBox.ShowWarning("Chức năng xuất file đang được phát triển.");
+                // Chọn thư mục để lưu file
+                using var folderDialog = new FolderBrowserDialog();
+                folderDialog.Description = @"Chọn thư mục để lưu các hình ảnh";
+                folderDialog.ShowNewFolderButton = true;
+
+                if (folderDialog.ShowDialog() == DialogResult.OK)
+                {
+                    var targetFolder = folderDialog.SelectedPath;
+                    await DownloadSelectedImagesAsync(selectedImages, targetFolder);
+                }
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi khi xuất file");
+                ShowError(ex, "Lỗi khi tải file");
+            }
+        }
+
+        /// <summary>
+        /// Tải các hình ảnh được chọn về thư mục local
+        /// </summary>
+        private async Task DownloadSelectedImagesAsync(List<StockInOutImageDto> selectedImages, string targetFolder)
+        {
+            try
+            {
+                if (_stockInOutImageBll == null)
+                {
+                    MsgBox.ShowWarning("Dịch vụ hình ảnh chưa được khởi tạo.");
+                    return;
+                }
+
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    var successCount = 0;
+                    var errorCount = 0;
+                    var errorMessages = new List<string>();
+
+                    foreach (var dto in selectedImages)
+                    {
+                        try
+                        {
+                            // Lấy image data từ storage
+                            byte[] imageData = null;
+
+                            // Nếu đã có ImageData trong DTO, dùng luôn
+                            if (dto.ImageData != null && dto.ImageData.Length > 0)
+                            {
+                                imageData = dto.ImageData;
+                            }
+                            // Nếu không có, load từ storage
+                            else if (!string.IsNullOrWhiteSpace(dto.RelativePath))
+                            {
+                                imageData = await _stockInOutImageBll.GetImageDataByRelativePathAsync(dto.RelativePath);
+                            }
+
+                            if (imageData == null || imageData.Length == 0)
+                            {
+                                errorCount++;
+                                errorMessages.Add($"{dto.FileName ?? "Unknown"}: Không thể đọc dữ liệu hình ảnh");
+                                continue;
+                            }
+
+                            // Tạo tên file để lưu
+                            // Sử dụng FileName nếu có, nếu không thì tạo từ ImageId
+                            string fileName = dto.FileName;
+                            if (string.IsNullOrWhiteSpace(fileName))
+                            {
+                                // Tạo tên file từ ImageId và extension
+                                var extension = dto.FileExtension ?? ".png";
+                                if (!extension.StartsWith("."))
+                                {
+                                    extension = "." + extension;
+                                }
+                                fileName = $"{dto.Id}{extension}";
+                            }
+
+                            // Đảm bảo tên file hợp lệ (loại bỏ các ký tự không hợp lệ)
+                            fileName = Path.GetFileName(fileName);
+                            if (string.IsNullOrWhiteSpace(fileName))
+                            {
+                                fileName = $"{dto.Id}.png";
+                            }
+
+                            // Tạo đường dẫn đầy đủ
+                            var targetPath = Path.Combine(targetFolder, fileName);
+
+                            // Nếu file đã tồn tại, thêm số thứ tự vào tên file
+                            if (File.Exists(targetPath))
+                            {
+                                var nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+                                var extension = Path.GetExtension(fileName);
+                                int counter = 1;
+                                do
+                                {
+                                    fileName = $"{nameWithoutExt}_{counter}{extension}";
+                                    targetPath = Path.Combine(targetFolder, fileName);
+                                    counter++;
+                                } while (File.Exists(targetPath) && counter < 1000);
+                            }
+
+                            // Lưu file
+                            await Task.Run(() =>
+                            {
+                                File.WriteAllBytes(targetPath, imageData);
+                            });
+
+                            successCount++;
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCount++;
+                            errorMessages.Add($"{dto.FileName ?? "Unknown"}: {ex.Message}");
+                        }
+                    }
+
+                    // Hiển thị kết quả
+                    var message = $"Kết quả tải hình ảnh:\n\n";
+                    message += $"✅ Thành công: {successCount} hình ảnh\n";
+                    message += $"❌ Lỗi: {errorCount} hình ảnh\n";
+
+                    if (errorCount > 0 && errorMessages.Any())
+                    {
+                        message += "\nChi tiết lỗi:\n";
+                        foreach (var error in errorMessages.Take(10))
+                        {
+                            message += $"• {error}\n";
+                        }
+                        if (errorMessages.Count > 10)
+                        {
+                            message += $"• ... và {errorMessages.Count - 10} lỗi khác\n";
+                        }
+                    }
+
+                    if (successCount > 0)
+                    {
+                        MsgBox.ShowSuccess(message);
+                    }
+                    else
+                    {
+                        MsgBox.ShowError(message);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi tải hình ảnh");
             }
         }
 
@@ -293,10 +444,7 @@ namespace Inventory.Query
                         System.Diagnostics.Debug.WriteLine($"Lỗi load image từ storage (NAS/Local): {ex.Message}");
                         System.Diagnostics.Debug.WriteLine($"  - StackTrace: {ex.StackTrace}");
                         // Có thể log chi tiết hơn nếu cần
-                        if (dto != null)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"  - ImageId: {dto.Id}, RelativePath: {dto.RelativePath}");
-                        }
+                        System.Diagnostics.Debug.WriteLine($"  - ImageId: {dto.Id}, RelativePath: {dto.RelativePath}");
                     }
                 }
                 else if (imageData == null || imageData.Length == 0)
@@ -347,13 +495,7 @@ namespace Inventory.Query
 
                 await ExecuteWithWaitingFormAsync(async () =>
                 {
-                    // Lấy filter criteria
-                    var keyword = KeyWordBarEditItem.EditValue?.ToString();
-                    if (string.IsNullOrWhiteSpace(keyword))
-                    {
-                        keyword = null;
-                    }
-
+                    // Lấy filter criteria - chỉ theo ngày tháng
                     var fromDate = TuNgayBarEditItem.EditValue as DateTime? ?? 
                                    new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     var toDate = DenNgayBarEditItem.EditValue as DateTime? ?? DateTime.Now;
@@ -374,26 +516,14 @@ namespace Inventory.Query
                         // Khi có StockInOutMasterId, load TẤT CẢ hình ảnh của phiếu đó
                         // KHÔNG filter theo date vì mục đích là xem tất cả hình ảnh của phiếu
                         entities = _stockInOutImageBll.GetByStockInOutMasterId(_stockInOutMasterId.Value);
-
-                        // Chỉ filter theo keyword nếu có (không filter theo date)
-                        if (!string.IsNullOrWhiteSpace(keyword))
-                        {
-                            var keywordLower = keyword.Trim().ToLower();
-                            entities = entities.Where(e =>
-                                (!string.IsNullOrEmpty(e.FileName) && e.FileName.ToLower().Contains(keywordLower)) ||
-                                (!string.IsNullOrEmpty(e.RelativePath) && e.RelativePath.ToLower().Contains(keywordLower)) ||
-                                (!string.IsNullOrEmpty(e.FullPath) && e.FullPath.ToLower().Contains(keywordLower))
-                            ).ToList();
-                        }
                     }
                     else
                     {
-                        // Query hình ảnh theo khoảng thời gian và từ khóa
-                        // Khi không có StockInOutMasterId, filter theo date range và keyword
+                        // Query hình ảnh theo khoảng thời gian
+                        // Khi không có StockInOutMasterId, filter theo date range
                         entities = _stockInOutImageBll.QueryImages(
                             fromDate.Date, 
-                            toDate.Date.AddDays(1).AddTicks(-1), 
-                            keyword);
+                            toDate.Date.AddDays(1).AddTicks(-1)); // Không dùng keyword nữa
                     }
 
                     // Log số lượng entities trước khi map
@@ -401,10 +531,28 @@ namespace Inventory.Query
 
                     var dtos = MapEntitiesToDtos(entities);
                     
-                    // Log số lượng DTOs sau khi map
-                    System.Diagnostics.Debug.WriteLine($"LoadDataAsync: Map được {dtos?.Count ?? 0} DTOs");
+                    // Filter bỏ các records không hợp lệ (không có RelativePath hoặc FileName)
+                    // Vì không thể load thumbnail nếu không có RelativePath
+                    var validDtos = dtos.Where(dto => 
+                        !string.IsNullOrWhiteSpace(dto.RelativePath) && 
+                        !string.IsNullOrWhiteSpace(dto.FileName)
+                    ).ToList();
                     
-                    LoadData(dtos);
+                    var invalidCount = dtos.Count - validDtos.Count;
+                    if (invalidCount > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"LoadDataAsync: Filter bỏ {invalidCount} hình ảnh không hợp lệ (không có RelativePath hoặc FileName)");
+                    }
+                    
+                    // Log số lượng DTOs sau khi filter
+                    System.Diagnostics.Debug.WriteLine($"LoadDataAsync: Còn lại {validDtos.Count} hình ảnh hợp lệ sau khi filter");
+                    
+                    // Set data source trước
+                    LoadData(validDtos);
+                    
+                    // Preload tất cả thumbnails và đợi cho đến khi hoàn thành
+                    // Đảm bảo tất cả hình ảnh được load trước khi đóng WaitForm
+                    await PreloadAllThumbnailsAsync(validDtos);
                 });
             }
             catch (Exception ex)
@@ -424,7 +572,7 @@ namespace Inventory.Query
                 _dataSource = null;
                 stockInOutImageDtoBindingSource.DataSource = null;
                 stockInOutImageDtoBindingSource.ResetBindings(false);
-                winExplorerView1.RefreshData();
+                StockInOutImageDtoWinExplorerView.RefreshData();
                 UpdateStatusBar();
                 return;
             }
@@ -434,15 +582,22 @@ namespace Inventory.Query
             stockInOutImageDtoBindingSource.DataSource = images;
             stockInOutImageDtoBindingSource.ResetBindings(false);
             
-            // Force refresh WinExplorerView để trigger GetThumbnailImage event cho tất cả items
-            winExplorerView1.RefreshData();
-            
-            // Sử dụng BeginInvoke để đảm bảo UI được update sau khi data được set
-            BeginInvoke(new Action(() =>
+            // Log chi tiết về các hình ảnh hợp lệ
+            var validImages = images.Where(img => !string.IsNullOrWhiteSpace(img.RelativePath) && !string.IsNullOrWhiteSpace(img.FileName)).ToList();
+            System.Diagnostics.Debug.WriteLine($"LoadData: Tổng số hình ảnh: {images.Count}, Hợp lệ: {validImages.Count}");
+            if (validImages.Count < images.Count)
             {
-                winExplorerView1.LayoutChanged();
-                winExplorerView1.RefreshData();
-            }));
+                var invalidImages = images.Where(img => string.IsNullOrWhiteSpace(img.RelativePath) || string.IsNullOrWhiteSpace(img.FileName)).ToList();
+                System.Diagnostics.Debug.WriteLine($"LoadData: Có {invalidImages.Count} hình ảnh không hợp lệ (không có RelativePath hoặc FileName)");
+                foreach (var invalid in invalidImages.Take(5))
+                {
+                    System.Diagnostics.Debug.WriteLine($"  - ImageId: {invalid.Id}, FileName: '{invalid.FileName}', RelativePath: '{invalid.RelativePath}'");
+                }
+            }
+            
+            // Force refresh WinExplorerView để trigger GetThumbnailImage event cho tất cả items
+            StockInOutImageDtoWinExplorerView.RefreshData();
+            StockInOutImageDtoWinExplorerView.LayoutChanged();
             
             UpdateStatusBar();
             
@@ -460,29 +615,99 @@ namespace Inventory.Query
             if (entities == null)
                 return new List<StockInOutImageDto>();
 
-            return entities.Select(entity => new StockInOutImageDto
+            // Group theo StockInOutMasterId để tính số thứ tự hình ảnh trong mỗi phiếu
+            var groupedByMaster = entities
+                .GroupBy(e => e.StockInOutMasterId)
+                .ToList();
+
+            var dtos = new List<StockInOutImageDto>();
+
+            foreach (var group in groupedByMaster)
             {
-                Id = entity.Id,
-                StockInOutMasterId = entity.StockInOutMasterId,
-                // ImageData sẽ được load từ storage (NAS/Local) trong GetThumbnailImage event nếu cần
-                // Sử dụng lazy loading để tối ưu hiệu suất
-                ImageData = null,
-                FileName = entity.FileName,
-                RelativePath = entity.RelativePath,
-                FullPath = entity.FullPath,
-                StorageType = entity.StorageType,
-                FileSize = entity.FileSize,
-                FileExtension = entity.FileExtension,
-                MimeType = entity.MimeType,
-                Checksum = entity.Checksum,
-                FileExists = entity.FileExists,
-                LastVerified = entity.LastVerified,
-                MigrationStatus = entity.MigrationStatus,
-                CreateDate = entity.CreateDate,
-                CreateBy = entity.CreateBy,
-                ModifiedDate = entity.ModifiedDate,
-                ModifiedBy = entity.ModifiedBy
-            }).ToList();
+                // Sắp xếp theo CreateDate để xác định số thứ tự
+                var sortedImages = group.OrderBy(e => e.CreateDate).ToList();
+                
+                for (int i = 0; i < sortedImages.Count; i++)
+                {
+                    var entity = sortedImages[i];
+                    var master = entity.StockInOutMaster;
+
+                    var dto = new StockInOutImageDto
+                    {
+                        Id = entity.Id,
+                        StockInOutMasterId = entity.StockInOutMasterId,
+                        // ImageData sẽ được load từ storage (NAS/Local) trong GetThumbnailImage event nếu cần
+                        // Sử dụng lazy loading để tối ưu hiệu suất
+                        ImageData = null,
+                        FileName = entity.FileName,
+                        RelativePath = entity.RelativePath,
+                        FullPath = entity.FullPath,
+                        StorageType = entity.StorageType,
+                        FileSize = entity.FileSize,
+                        FileExtension = entity.FileExtension,
+                        MimeType = entity.MimeType,
+                        Checksum = entity.Checksum,
+                        FileExists = entity.FileExists,
+                        LastVerified = entity.LastVerified,
+                        MigrationStatus = entity.MigrationStatus,
+                        CreateDate = entity.CreateDate,
+                        CreateBy = entity.CreateBy,
+                        ModifiedDate = entity.ModifiedDate,
+                        ModifiedBy = entity.ModifiedBy,
+                        // Thông tin từ StockInOutMaster
+                        VocherNumber = master?.VocherNumber,
+                        StockInOutDate = master?.StockInOutDate,
+                        // Convert StockInOutType (int) sang LoaiNhapXuatKhoEnum
+                        LoaiNhapXuatKho = master?.StockInOutType != null 
+                            ? (DTO.Inventory.StockIn.LoaiNhapXuatKhoEnum?)master.StockInOutType 
+                            : null,
+                        LoaiNhapXuatKhoText = master?.StockInOutType != null 
+                            ? GetLoaiNhapXuatKhoText((DTO.Inventory.StockIn.LoaiNhapXuatKhoEnum)master.StockInOutType) 
+                            : null,
+                        CustomerInfo = GetCustomerInfo(master),
+                        // Số thứ tự hình ảnh trong phiếu (bắt đầu từ 1)
+                        ImageSequenceNumber = i + 1
+                    };
+
+                    dtos.Add(dto);
+                }
+            }
+
+            return dtos;
+        }
+
+        /// <summary>
+        /// Lấy text hiển thị cho LoaiNhapXuatKhoEnum
+        /// </summary>
+        private string GetLoaiNhapXuatKhoText(DTO.Inventory.StockIn.LoaiNhapXuatKhoEnum loai)
+        {
+            var fieldInfo = loai.GetType().GetField(loai.ToString());
+            if (fieldInfo != null)
+            {
+                var attributes = fieldInfo.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false);
+                if (attributes.Length > 0)
+                {
+                    return ((System.ComponentModel.DescriptionAttribute)attributes[0]).Description;
+                }
+            }
+            return loai.ToString();
+        }
+
+        /// <summary>
+        /// Lấy thông tin khách hàng từ StockInOutMaster (nếu có)
+        /// </summary>
+        private string GetCustomerInfo(StockInOutMaster master)
+        {
+            if (master == null)
+                return null;
+
+            // TODO: Cần kiểm tra cấu trúc thực tế của StockInOutMaster để lấy thông tin khách hàng
+            // Có thể là CustomerId, CustomerName, hoặc từ bảng liên quan
+            // Tạm thời trả về null, cần cập nhật sau khi biết cấu trúc chính xác
+            
+            // Ví dụ: return master.Customer?.Name ?? master.CustomerName ?? null;
+            
+            return null;
         }
 
         /// <summary>
@@ -491,11 +716,11 @@ namespace Inventory.Query
         public List<StockInOutImageDto> GetSelectedImages()
         {
             var selectedImages = new List<StockInOutImageDto>();
-            var selectedRows = winExplorerView1.GetSelectedRows();
+            var selectedRows = StockInOutImageDtoWinExplorerView.GetSelectedRows();
 
             foreach (int rowHandle in selectedRows)
             {
-                var dto = winExplorerView1.GetRow(rowHandle) as StockInOutImageDto;
+                var dto = StockInOutImageDtoWinExplorerView.GetRow(rowHandle) as StockInOutImageDto;
                 if (dto != null)
                 {
                     selectedImages.Add(dto);
@@ -513,9 +738,9 @@ namespace Inventory.Query
             try
             {
                 var totalCount = _dataSource?.Count ?? 0;
-                var selectedCount = winExplorerView1.SelectedRowsCount;
+                var selectedCount = StockInOutImageDtoWinExplorerView.SelectedRowsCount;
 
-                DataSummaryBarStaticItem.Caption = $"Tổng số: <b>{totalCount}</b> hình ảnh";
+                DataSummaryBarStaticItem.Caption = $@"Tổng số: <b>{totalCount}</b> hình ảnh";
                 SelectedRowBarStaticItem.Caption = selectedCount > 0
                     ? $"Đã chọn: <b>{selectedCount}</b> hình ảnh"
                     : "Chưa chọn dòng nào";
@@ -615,6 +840,132 @@ namespace Inventory.Query
             }
         }
 
+        /// <summary>
+        /// Preload tất cả thumbnails để đảm bảo tất cả hình ảnh được load
+        /// WinExplorerView chỉ load thumbnail cho items visible, nên cần preload để đảm bảo tất cả đều có thumbnail
+        /// </summary>
+        private async Task PreloadAllThumbnailsAsync(List<StockInOutImageDto> validImages)
+        {
+            if (validImages == null || validImages.Count == 0 || _stockInOutImageBll == null)
+                return;
+
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Bắt đầu preload {validImages.Count} thumbnails");
+                
+                var loadedCount = 0;
+                var errorCount = 0;
+                
+                // Preload tất cả thumbnails
+                foreach (var dto in validImages)
+                {
+                    try
+                    {
+                        // Skip nếu đã có ImageData
+                        if (dto.ImageData != null && dto.ImageData.Length > 0)
+                        {
+                            loadedCount++;
+                            continue;
+                        }
+
+                        // Skip nếu không có RelativePath
+                        if (string.IsNullOrWhiteSpace(dto.RelativePath))
+                        {
+                            continue;
+                        }
+
+                        // Load image data từ storage
+                        var imageData = await _stockInOutImageBll.GetImageDataByRelativePathAsync(dto.RelativePath);
+                        
+                        if (imageData != null && imageData.Length > 0)
+                        {
+                            // Cache vào DTO
+                            dto.ImageData = imageData;
+                            loadedCount++;
+                        }
+                        else
+                        {
+                            errorCount++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errorCount++;
+                        System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Lỗi load thumbnail cho {dto.FileName}: {ex.Message}");
+                    }
+                }
+                
+                System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Hoàn thành - Loaded: {loadedCount}, Errors: {errorCount}");
+                
+                // Force refresh WinExplorerView trên UI thread để hiển thị tất cả thumbnails
+                // Đảm bảo tất cả refresh hoàn thành trước khi return
+                if (InvokeRequired)
+                {
+                    // Đợi một chút để đảm bảo tất cả ImageData đã được set
+                    await Task.Delay(100);
+                    
+                    // Refresh lần 1
+                    await Task.Run(() =>
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            StockInOutImageDtoWinExplorerView.RefreshData();
+                            StockInOutImageDtoWinExplorerView.LayoutChanged();
+                            System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Đã refresh WinExplorerView lần 1");
+                        }));
+                    });
+                    
+                    // Đợi một chút rồi refresh lần 2
+                    await Task.Delay(200);
+                    await Task.Run(() =>
+                    {
+                        if (!IsDisposed && InvokeRequired)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                StockInOutImageDtoWinExplorerView.RefreshData();
+                                StockInOutImageDtoWinExplorerView.LayoutChanged();
+                                System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Đã refresh WinExplorerView lần 2");
+                            }));
+                        }
+                    });
+                    
+                    // Đợi một chút rồi refresh lần cuối
+                    await Task.Delay(200);
+                    await Task.Run(() =>
+                    {
+                        if (!IsDisposed && InvokeRequired)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                StockInOutImageDtoWinExplorerView.RefreshData();
+                                System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Đã refresh WinExplorerView lần 3 - Hoàn thành");
+                            }));
+                        }
+                    });
+                }
+                else
+                {
+                    // Nếu đã ở UI thread, refresh trực tiếp
+                    StockInOutImageDtoWinExplorerView.RefreshData();
+                    StockInOutImageDtoWinExplorerView.LayoutChanged();
+                    System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Đã refresh WinExplorerView (UI thread)");
+                    
+                    // Đợi một chút rồi refresh thêm
+                    await Task.Delay(200);
+                    StockInOutImageDtoWinExplorerView.RefreshData();
+                    StockInOutImageDtoWinExplorerView.LayoutChanged();
+                    
+                    await Task.Delay(200);
+                    StockInOutImageDtoWinExplorerView.RefreshData();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Lỗi: {ex.Message}");
+            }
+        }
+
         #endregion
 
         #region ========== TIỆN ÍCH ==========
@@ -635,6 +986,7 @@ namespace Inventory.Query
         {
             MsgBox.ShowError(message);
         }
+
 
         #endregion
     }

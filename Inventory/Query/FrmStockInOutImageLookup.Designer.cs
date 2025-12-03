@@ -30,8 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.WarrantyCheckListDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.winExplorerView1 = new DevExpress.XtraGrid.Views.WinExplorer.WinExplorerView();
+            this.StockInOutImageDtoGridControl = new DevExpress.XtraGrid.GridControl();
+            this.stockInOutImageDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.StockInOutImageDtoWinExplorerView = new DevExpress.XtraGrid.Views.WinExplorer.WinExplorerView();
             this.colId = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colFileName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colFileSizeDisplay = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -40,9 +41,11 @@
             this.colFullPath = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colStorageType = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colFileExtension = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDisplayCaption = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colVocherNumber = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colGroupCaption = new DevExpress.XtraGrid.Columns.GridColumn();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
-            this.KeyWordBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TuNgayBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemDateEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
@@ -61,11 +64,11 @@
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.stockInOutImageDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.WarrantyCheckListDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.winExplorerView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInOutImageDtoGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutImageDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInOutImageDtoWinExplorerView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1)).BeginInit();
@@ -74,12 +77,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutImageDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.WarrantyCheckListDtoGridControl);
+            this.layoutControl1.Controls.Add(this.StockInOutImageDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
@@ -88,21 +90,25 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // WarrantyCheckListDtoGridControl
+            // StockInOutImageDtoGridControl
             // 
-            this.WarrantyCheckListDtoGridControl.DataSource = this.stockInOutImageDtoBindingSource;
-            this.WarrantyCheckListDtoGridControl.Location = new System.Drawing.Point(12, 12);
-            this.WarrantyCheckListDtoGridControl.MainView = this.winExplorerView1;
-            this.WarrantyCheckListDtoGridControl.MenuManager = this.barManager1;
-            this.WarrantyCheckListDtoGridControl.Name = "WarrantyCheckListDtoGridControl";
-            this.WarrantyCheckListDtoGridControl.Size = new System.Drawing.Size(1011, 419);
-            this.WarrantyCheckListDtoGridControl.TabIndex = 4;
-            this.WarrantyCheckListDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.winExplorerView1});
+            this.StockInOutImageDtoGridControl.DataSource = this.stockInOutImageDtoBindingSource;
+            this.StockInOutImageDtoGridControl.Location = new System.Drawing.Point(12, 12);
+            this.StockInOutImageDtoGridControl.MainView = this.StockInOutImageDtoWinExplorerView;
+            this.StockInOutImageDtoGridControl.MenuManager = this.barManager1;
+            this.StockInOutImageDtoGridControl.Name = "StockInOutImageDtoGridControl";
+            this.StockInOutImageDtoGridControl.Size = new System.Drawing.Size(1011, 419);
+            this.StockInOutImageDtoGridControl.TabIndex = 4;
+            this.StockInOutImageDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.StockInOutImageDtoWinExplorerView});
             // 
-            // winExplorerView1
+            // stockInOutImageDtoBindingSource
             // 
-            this.winExplorerView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.stockInOutImageDtoBindingSource.DataSource = typeof(DTO.Inventory.Query.StockInOutImageDto);
+            // 
+            // StockInOutImageDtoWinExplorerView
+            // 
+            this.StockInOutImageDtoWinExplorerView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colId,
             this.colFileName,
             this.colFileSizeDisplay,
@@ -110,31 +116,31 @@
             this.colCreateDate,
             this.colFullPath,
             this.colStorageType,
-            this.colFileExtension});
-            this.winExplorerView1.GridControl = this.WarrantyCheckListDtoGridControl;
-            this.winExplorerView1.Name = "winExplorerView1";
-            this.winExplorerView1.OptionsBehavior.Editable = false;
-            this.winExplorerView1.OptionsImageLoad.AnimationType = DevExpress.Utils.ImageContentAnimationType.Expand;
-            this.winExplorerView1.OptionsImageLoad.AsyncLoad = true;
-            this.winExplorerView1.OptionsImageLoad.CacheThumbnails = true;
-            this.winExplorerView1.OptionsSelection.AllowMarqueeSelection = true;
-            this.winExplorerView1.OptionsSelection.MultiSelect = true;
-            this.winExplorerView1.OptionsView.ImageLayoutMode = DevExpress.Utils.Drawing.ImageLayoutMode.Stretch;
-            this.winExplorerView1.OptionsView.ShowCheckBoxes = true;
-            this.winExplorerView1.OptionsView.ShowCheckBoxInGroupCaption = true;
-            this.winExplorerView1.OptionsView.ShowExpandCollapseButtons = true;
-            this.winExplorerView1.OptionsView.ShowViewCaption = false;
-            this.winExplorerView1.OptionsView.Style = DevExpress.XtraGrid.Views.WinExplorer.WinExplorerViewStyle.ExtraLarge;
-            this.winExplorerView1.OptionsViewStyles.ExtraLarge.ImageSize = new System.Drawing.Size(256, 256);
-            this.winExplorerView1.OptionsViewStyles.Large.ImageSize = new System.Drawing.Size(96, 96);
-            this.winExplorerView1.OptionsViewStyles.Medium.ImageSize = new System.Drawing.Size(48, 48);
-            this.winExplorerView1.OptionsViewStyles.Small.ImageSize = new System.Drawing.Size(16, 16);
+            this.colFileExtension,
+            this.colDisplayCaption,
+            this.colVocherNumber,
+            this.colGroupCaption});
+            this.StockInOutImageDtoWinExplorerView.GridControl = this.StockInOutImageDtoGridControl;
+            this.StockInOutImageDtoWinExplorerView.Name = "StockInOutImageDtoWinExplorerView";
+            this.StockInOutImageDtoWinExplorerView.OptionsBehavior.Editable = false;
+            this.StockInOutImageDtoWinExplorerView.OptionsHtmlTemplate.AllowContentSelection = DevExpress.Utils.DefaultBoolean.True;
+            this.StockInOutImageDtoWinExplorerView.OptionsImageLoad.AnimationType = DevExpress.Utils.ImageContentAnimationType.Expand;
+            this.StockInOutImageDtoWinExplorerView.OptionsImageLoad.AsyncLoad = true;
+            this.StockInOutImageDtoWinExplorerView.OptionsSelection.AllowMarqueeSelection = true;
+            this.StockInOutImageDtoWinExplorerView.OptionsSelection.ItemSelectionMode = DevExpress.XtraGrid.Views.WinExplorer.IconItemSelectionMode.Click;
+            this.StockInOutImageDtoWinExplorerView.OptionsSelection.MultiSelect = true;
+            this.StockInOutImageDtoWinExplorerView.OptionsView.ImageLayoutMode = DevExpress.Utils.Drawing.ImageLayoutMode.Stretch;
+            this.StockInOutImageDtoWinExplorerView.OptionsView.ShowExpandCollapseButtons = true;
+            this.StockInOutImageDtoWinExplorerView.OptionsView.Style = DevExpress.XtraGrid.Views.WinExplorer.WinExplorerViewStyle.ExtraLarge;
+            this.StockInOutImageDtoWinExplorerView.OptionsViewStyles.ExtraLarge.ImageSize = new System.Drawing.Size(256, 256);
+            this.StockInOutImageDtoWinExplorerView.OptionsViewStyles.Large.ImageSize = new System.Drawing.Size(96, 96);
+            this.StockInOutImageDtoWinExplorerView.OptionsViewStyles.Medium.ImageSize = new System.Drawing.Size(48, 48);
+            this.StockInOutImageDtoWinExplorerView.OptionsViewStyles.Small.ImageSize = new System.Drawing.Size(16, 16);
             // 
             // colId
             // 
             this.colId.FieldName = "Id";
             this.colId.Name = "colId";
-            this.colId.Visible = false;
             // 
             // colFileName
             // 
@@ -149,42 +155,60 @@
             this.colFileSizeDisplay.Caption = "Kích thước";
             this.colFileSizeDisplay.FieldName = "FileSizeDisplay";
             this.colFileSizeDisplay.Name = "colFileSizeDisplay";
-            this.colFileSizeDisplay.Visible = false;
             // 
             // colImageData
             // 
             this.colImageData.Caption = "Hình ảnh";
             this.colImageData.FieldName = "ImageData";
             this.colImageData.Name = "colImageData";
-            this.colImageData.Visible = false;
             // 
             // colCreateDate
             // 
             this.colCreateDate.Caption = "Ngày tạo";
             this.colCreateDate.FieldName = "CreateDate";
             this.colCreateDate.Name = "colCreateDate";
-            this.colCreateDate.Visible = false;
             // 
             // colFullPath
             // 
             this.colFullPath.Caption = "Đường dẫn";
             this.colFullPath.FieldName = "FullPath";
             this.colFullPath.Name = "colFullPath";
-            this.colFullPath.Visible = false;
             // 
             // colStorageType
             // 
             this.colStorageType.Caption = "Loại lưu trữ";
             this.colStorageType.FieldName = "StorageType";
             this.colStorageType.Name = "colStorageType";
-            this.colStorageType.Visible = false;
             // 
             // colFileExtension
             // 
             this.colFileExtension.Caption = "Phần mở rộng";
             this.colFileExtension.FieldName = "FileExtension";
             this.colFileExtension.Name = "colFileExtension";
-            this.colFileExtension.Visible = false;
+            // 
+            // colDisplayCaption
+            // 
+            this.colDisplayCaption.Caption = "Caption";
+            this.colDisplayCaption.FieldName = "DisplayCaption";
+            this.colDisplayCaption.Name = "colDisplayCaption";
+            this.colDisplayCaption.Visible = true;
+            this.colDisplayCaption.VisibleIndex = 1;
+            // 
+            // colVocherNumber
+            // 
+            this.colVocherNumber.Caption = "Số phiếu";
+            this.colVocherNumber.FieldName = "VocherNumber";
+            this.colVocherNumber.Name = "colVocherNumber";
+            this.colVocherNumber.Visible = true;
+            this.colVocherNumber.VisibleIndex = 2;
+            // 
+            // colGroupCaption
+            // 
+            this.colGroupCaption.Caption = "Group Caption";
+            this.colGroupCaption.FieldName = "GroupCaption";
+            this.colGroupCaption.Name = "colGroupCaption";
+            this.colGroupCaption.Visible = true;
+            this.colGroupCaption.VisibleIndex = 3;
             // 
             // barManager1
             // 
@@ -204,10 +228,9 @@
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
             this.XoaPhieuBarButtonItem,
-            this.KeyWordBarEditItem,
             this.XuatFileBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 17;
+            this.barManager1.MaxItemId = 18;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit1,
             this.repositoryItemDateEdit2,
@@ -222,7 +245,6 @@
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.KeyWordBarEditItem, "", false, true, true, 147, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.TuNgayBarEditItem, "", false, true, true, 117, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.DenNgayBarEditItem, "", false, true, true, 125, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBaoCaoBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
@@ -231,13 +253,6 @@
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
-            // 
-            // KeyWordBarEditItem
-            // 
-            this.KeyWordBarEditItem.Caption = "Từ khóa";
-            this.KeyWordBarEditItem.Edit = this.repositoryItemTextEdit1;
-            this.KeyWordBarEditItem.Id = 15;
-            this.KeyWordBarEditItem.Name = "KeyWordBarEditItem";
             // 
             // repositoryItemTextEdit1
             // 
@@ -294,9 +309,9 @@
             // 
             // XuatFileBarButtonItem
             // 
-            this.XuatFileBarButtonItem.Caption = "Xuất file";
+            this.XuatFileBarButtonItem.Caption = "Tải về";
             this.XuatFileBarButtonItem.Id = 16;
-            this.XuatFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.exporttoxps_16x16;
+            this.XuatFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.save_16x16;
             this.XuatFileBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.exporttoxps_32x32;
             this.XuatFileBarButtonItem.Name = "XuatFileBarButtonItem";
             // 
@@ -380,15 +395,11 @@
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.WarrantyCheckListDtoGridControl;
+            this.layoutControlItem1.Control = this.StockInOutImageDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1015, 423);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // stockInOutImageDtoBindingSource
-            // 
-            this.stockInOutImageDtoBindingSource.DataSource = typeof(DTO.Inventory.Query.StockInOutImageDto);
             // 
             // FrmStockInOutImageLookup
             // 
@@ -404,8 +415,9 @@
             this.Text = "Danh sách hình ảnh nhập/xuất kho";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.WarrantyCheckListDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.winExplorerView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInOutImageDtoGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutImageDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInOutImageDtoWinExplorerView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1.CalendarTimeProperties)).EndInit();
@@ -414,7 +426,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutImageDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -430,7 +441,7 @@
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraGrid.GridControl WarrantyCheckListDtoGridControl;
+        private DevExpress.XtraGrid.GridControl StockInOutImageDtoGridControl;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraBars.BarEditItem TuNgayBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit1;
@@ -443,14 +454,16 @@
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
         private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem XoaPhieuBarButtonItem;
-        private DevExpress.XtraBars.BarEditItem KeyWordBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
         private DevExpress.XtraBars.BarButtonItem XuatFileBarButtonItem;
-        private DevExpress.XtraGrid.Views.WinExplorer.WinExplorerView winExplorerView1;
+        private DevExpress.XtraGrid.Views.WinExplorer.WinExplorerView StockInOutImageDtoWinExplorerView;
         private DevExpress.XtraGrid.Columns.GridColumn colId;
         private DevExpress.XtraGrid.Columns.GridColumn colFileName;
         private DevExpress.XtraGrid.Columns.GridColumn colFileSizeDisplay;
         private DevExpress.XtraGrid.Columns.GridColumn colImageData;
+        private DevExpress.XtraGrid.Columns.GridColumn colDisplayCaption;
+        private DevExpress.XtraGrid.Columns.GridColumn colVocherNumber;
+        private DevExpress.XtraGrid.Columns.GridColumn colGroupCaption;
         private DevExpress.XtraGrid.Columns.GridColumn colCreateDate;
         private DevExpress.XtraGrid.Columns.GridColumn colFullPath;
         private DevExpress.XtraGrid.Columns.GridColumn colStorageType;

@@ -176,6 +176,16 @@ public class StockInOutImageRepository : IStockInOutImageRepository
                 .Where(x => x.StockInOutMasterId == stockInOutMasterId)
                 .OrderBy(x => x.CreateDate)
                 .ToList();
+            
+            // Load StockInOutMaster cho tất cả images để có thông tin phiếu
+            foreach (var image in images)
+            {
+                if (image.StockInOutMaster == null)
+                {
+                    image.StockInOutMaster = context.StockInOutMasters
+                        .FirstOrDefault(m => m.Id == image.StockInOutMasterId);
+                }
+            }
 
             _logger.Info("GetByStockInOutMasterId: Lấy được {0} hình ảnh", images.Count);
             return images;
@@ -202,7 +212,7 @@ public class StockInOutImageRepository : IStockInOutImageRepository
             _logger.Debug("QueryImages: Bắt đầu query hình ảnh, FromDate={0}, ToDate={1}, Keyword={2}", 
                 fromDate, toDate, keyword ?? "null");
 
-            // Bắt đầu query từ StockInOutImage
+            // Bắt đầu query từ StockInOutImage và include StockInOutMaster để lấy thông tin phiếu
             var queryable = context.StockInOutImages.AsQueryable();
 
             // Filter theo thời gian (CreateDate)
@@ -228,6 +238,20 @@ public class StockInOutImageRepository : IStockInOutImageRepository
                 .OrderByDescending(x => x.CreateDate)
                 .ThenByDescending(x => x.FileName ?? string.Empty)
                 .ToList();
+
+            // Load StockInOutMaster cho tất cả images để có thông tin phiếu
+            var masterIds = result.Select(x => x.StockInOutMasterId).Distinct().ToList();
+            var masters = context.StockInOutMasters
+                .Where(m => masterIds.Contains(m.Id))
+                .ToDictionary(m => m.Id);
+
+            foreach (var image in result)
+            {
+                if (image.StockInOutMaster == null && masters.TryGetValue(image.StockInOutMasterId, out var master))
+                {
+                    image.StockInOutMaster = master;
+                }
+            }
 
             _logger.Info("QueryImages: Query thành công, ResultCount={0}", result.Count);
             return result;
