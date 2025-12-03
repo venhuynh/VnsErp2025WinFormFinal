@@ -77,20 +77,30 @@ namespace Inventory.Query
         /// </summary>
         private void InitializeWinExplorerView()
         {
-            // Cấu hình ColumnSet
-            winExplorerView1.ColumnSet.TextColumn = colFileName;
-            winExplorerView1.ColumnSet.DescriptionColumn = colFileSizeDisplay;
-            winExplorerView1.ColumnSet.ExtraLargeImageColumn = colImageData;
-            winExplorerView1.ColumnSet.LargeImageColumn = colImageData;
-            winExplorerView1.ColumnSet.MediumImageColumn = colImageData;
-            winExplorerView1.ColumnSet.SmallImageColumn = colImageData;
+            // Cấu hình ColumnSet - Sử dụng DisplayCaption thay vì FileName để hiển thị "Số phiếu (số thứ tự)"
+            StockInOutImageDtoWinExplorerView.ColumnSet.TextColumn = colDisplayCaption;
+            StockInOutImageDtoWinExplorerView.ColumnSet.DescriptionColumn = colFileSizeDisplay;
+            StockInOutImageDtoWinExplorerView.ColumnSet.ExtraLargeImageColumn = colImageData;
+            StockInOutImageDtoWinExplorerView.ColumnSet.LargeImageColumn = colImageData;
+            StockInOutImageDtoWinExplorerView.ColumnSet.MediumImageColumn = colImageData;
+            StockInOutImageDtoWinExplorerView.ColumnSet.SmallImageColumn = colImageData;
 
             // Đảm bảo async loading được bật để load nhiều thumbnails cùng lúc
-            winExplorerView1.OptionsImageLoad.AsyncLoad = true;
-            winExplorerView1.OptionsImageLoad.CacheThumbnails = true;
+            StockInOutImageDtoWinExplorerView.OptionsImageLoad.AsyncLoad = true;
+            StockInOutImageDtoWinExplorerView.OptionsImageLoad.CacheThumbnails = true;
+            
+            // Cấu hình group theo GroupCaption để nhóm các hình ảnh theo: StockInOutDate - LoaiNhapXuatKhoText - VocherNumber - CustomerInfo
+            // Sử dụng ColumnSet.GroupColumn và GroupCount như trong demo
+            StockInOutImageDtoWinExplorerView.ColumnSet.GroupColumn = colGroupCaption;
+            StockInOutImageDtoWinExplorerView.GroupCount = 1;
+            
+            // Sort theo GroupCaption để group đúng
+            StockInOutImageDtoWinExplorerView.SortInfo.Clear();
+            StockInOutImageDtoWinExplorerView.SortInfo.Add(
+                new DevExpress.XtraGrid.Columns.GridColumnSortInfo(colGroupCaption, DevExpress.Data.ColumnSortOrder.Ascending));
 
             // Đăng ký event để xử lý thumbnail
-            winExplorerView1.GetThumbnailImage += WinExplorerView1_GetThumbnailImage;
+            StockInOutImageDtoWinExplorerView.GetThumbnailImage += WinExplorerView1_GetThumbnailImage;
         }
 
         /// <summary>
@@ -124,7 +134,7 @@ namespace Inventory.Query
             XuatFileBarButtonItem.ItemClick += XuatFileBarButtonItem_ItemClick;
 
             // GridView events
-            winExplorerView1.SelectionChanged += WinExplorerView1_SelectionChanged;
+            StockInOutImageDtoWinExplorerView.SelectionChanged += WinExplorerView1_SelectionChanged;
 
             // Form events
             Load += FrmStockInOutImageLookup_Load;
@@ -437,7 +447,7 @@ namespace Inventory.Query
                 _dataSource = null;
                 stockInOutImageDtoBindingSource.DataSource = null;
                 stockInOutImageDtoBindingSource.ResetBindings(false);
-                winExplorerView1.RefreshData();
+                StockInOutImageDtoWinExplorerView.RefreshData();
                 UpdateStatusBar();
                 return;
             }
@@ -461,7 +471,7 @@ namespace Inventory.Query
             }
             
             // Force refresh WinExplorerView để trigger GetThumbnailImage event cho tất cả items
-            winExplorerView1.RefreshData();
+            StockInOutImageDtoWinExplorerView.RefreshData();
             
             // Preload tất cả thumbnails trong background để đảm bảo tất cả hình ảnh được load
             // WinExplorerView chỉ load thumbnail cho items visible, nên cần preload để đảm bảo tất cả đều có thumbnail
@@ -470,8 +480,8 @@ namespace Inventory.Query
             // Sử dụng BeginInvoke để đảm bảo UI được update sau khi data được set
             BeginInvoke(new Action(() =>
             {
-                winExplorerView1.LayoutChanged();
-                winExplorerView1.RefreshData();
+                StockInOutImageDtoWinExplorerView.LayoutChanged();
+                StockInOutImageDtoWinExplorerView.RefreshData();
             }));
             
             UpdateStatusBar();
@@ -490,29 +500,99 @@ namespace Inventory.Query
             if (entities == null)
                 return new List<StockInOutImageDto>();
 
-            return entities.Select(entity => new StockInOutImageDto
+            // Group theo StockInOutMasterId để tính số thứ tự hình ảnh trong mỗi phiếu
+            var groupedByMaster = entities
+                .GroupBy(e => e.StockInOutMasterId)
+                .ToList();
+
+            var dtos = new List<StockInOutImageDto>();
+
+            foreach (var group in groupedByMaster)
             {
-                Id = entity.Id,
-                StockInOutMasterId = entity.StockInOutMasterId,
-                // ImageData sẽ được load từ storage (NAS/Local) trong GetThumbnailImage event nếu cần
-                // Sử dụng lazy loading để tối ưu hiệu suất
-                ImageData = null,
-                FileName = entity.FileName,
-                RelativePath = entity.RelativePath,
-                FullPath = entity.FullPath,
-                StorageType = entity.StorageType,
-                FileSize = entity.FileSize,
-                FileExtension = entity.FileExtension,
-                MimeType = entity.MimeType,
-                Checksum = entity.Checksum,
-                FileExists = entity.FileExists,
-                LastVerified = entity.LastVerified,
-                MigrationStatus = entity.MigrationStatus,
-                CreateDate = entity.CreateDate,
-                CreateBy = entity.CreateBy,
-                ModifiedDate = entity.ModifiedDate,
-                ModifiedBy = entity.ModifiedBy
-            }).ToList();
+                // Sắp xếp theo CreateDate để xác định số thứ tự
+                var sortedImages = group.OrderBy(e => e.CreateDate).ToList();
+                
+                for (int i = 0; i < sortedImages.Count; i++)
+                {
+                    var entity = sortedImages[i];
+                    var master = entity.StockInOutMaster;
+
+                    var dto = new StockInOutImageDto
+                    {
+                        Id = entity.Id,
+                        StockInOutMasterId = entity.StockInOutMasterId,
+                        // ImageData sẽ được load từ storage (NAS/Local) trong GetThumbnailImage event nếu cần
+                        // Sử dụng lazy loading để tối ưu hiệu suất
+                        ImageData = null,
+                        FileName = entity.FileName,
+                        RelativePath = entity.RelativePath,
+                        FullPath = entity.FullPath,
+                        StorageType = entity.StorageType,
+                        FileSize = entity.FileSize,
+                        FileExtension = entity.FileExtension,
+                        MimeType = entity.MimeType,
+                        Checksum = entity.Checksum,
+                        FileExists = entity.FileExists,
+                        LastVerified = entity.LastVerified,
+                        MigrationStatus = entity.MigrationStatus,
+                        CreateDate = entity.CreateDate,
+                        CreateBy = entity.CreateBy,
+                        ModifiedDate = entity.ModifiedDate,
+                        ModifiedBy = entity.ModifiedBy,
+                        // Thông tin từ StockInOutMaster
+                        VocherNumber = master?.VocherNumber,
+                        StockInOutDate = master?.StockInOutDate,
+                        // Convert StockInOutType (int) sang LoaiNhapXuatKhoEnum
+                        LoaiNhapXuatKho = master?.StockInOutType != null 
+                            ? (DTO.Inventory.StockIn.LoaiNhapXuatKhoEnum?)master.StockInOutType 
+                            : null,
+                        LoaiNhapXuatKhoText = master?.StockInOutType != null 
+                            ? GetLoaiNhapXuatKhoText((DTO.Inventory.StockIn.LoaiNhapXuatKhoEnum)master.StockInOutType) 
+                            : null,
+                        CustomerInfo = GetCustomerInfo(master),
+                        // Số thứ tự hình ảnh trong phiếu (bắt đầu từ 1)
+                        ImageSequenceNumber = i + 1
+                    };
+
+                    dtos.Add(dto);
+                }
+            }
+
+            return dtos;
+        }
+
+        /// <summary>
+        /// Lấy text hiển thị cho LoaiNhapXuatKhoEnum
+        /// </summary>
+        private string GetLoaiNhapXuatKhoText(DTO.Inventory.StockIn.LoaiNhapXuatKhoEnum loai)
+        {
+            var fieldInfo = loai.GetType().GetField(loai.ToString());
+            if (fieldInfo != null)
+            {
+                var attributes = fieldInfo.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false);
+                if (attributes.Length > 0)
+                {
+                    return ((System.ComponentModel.DescriptionAttribute)attributes[0]).Description;
+                }
+            }
+            return loai.ToString();
+        }
+
+        /// <summary>
+        /// Lấy thông tin khách hàng từ StockInOutMaster (nếu có)
+        /// </summary>
+        private string GetCustomerInfo(Dal.DataContext.StockInOutMaster master)
+        {
+            if (master == null)
+                return null;
+
+            // TODO: Cần kiểm tra cấu trúc thực tế của StockInOutMaster để lấy thông tin khách hàng
+            // Có thể là CustomerId, CustomerName, hoặc từ bảng liên quan
+            // Tạm thời trả về null, cần cập nhật sau khi biết cấu trúc chính xác
+            
+            // Ví dụ: return master.Customer?.Name ?? master.CustomerName ?? null;
+            
+            return null;
         }
 
         /// <summary>
@@ -521,11 +601,11 @@ namespace Inventory.Query
         public List<StockInOutImageDto> GetSelectedImages()
         {
             var selectedImages = new List<StockInOutImageDto>();
-            var selectedRows = winExplorerView1.GetSelectedRows();
+            var selectedRows = StockInOutImageDtoWinExplorerView.GetSelectedRows();
 
             foreach (int rowHandle in selectedRows)
             {
-                var dto = winExplorerView1.GetRow(rowHandle) as StockInOutImageDto;
+                var dto = StockInOutImageDtoWinExplorerView.GetRow(rowHandle) as StockInOutImageDto;
                 if (dto != null)
                 {
                     selectedImages.Add(dto);
@@ -543,7 +623,7 @@ namespace Inventory.Query
             try
             {
                 var totalCount = _dataSource?.Count ?? 0;
-                var selectedCount = winExplorerView1.SelectedRowsCount;
+                var selectedCount = StockInOutImageDtoWinExplorerView.SelectedRowsCount;
 
                 DataSummaryBarStaticItem.Caption = $"Tổng số: <b>{totalCount}</b> hình ảnh";
                 SelectedRowBarStaticItem.Caption = selectedCount > 0
@@ -723,8 +803,8 @@ namespace Inventory.Query
                         BeginInvoke(new Action(() =>
                         {
                             // Refresh ngay lập tức để trigger GetThumbnailImage cho các items visible
-                            winExplorerView1.RefreshData();
-                            winExplorerView1.LayoutChanged();
+                            StockInOutImageDtoWinExplorerView.RefreshData();
+                            StockInOutImageDtoWinExplorerView.LayoutChanged();
                             
                             System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Đã refresh WinExplorerView lần 1 sau khi preload {loadedCount} thumbnails");
                             
@@ -736,8 +816,8 @@ namespace Inventory.Query
                                 {
                                     BeginInvoke(new Action(() =>
                                     {
-                                        winExplorerView1.RefreshData();
-                                        winExplorerView1.LayoutChanged();
+                                        StockInOutImageDtoWinExplorerView.RefreshData();
+                                        StockInOutImageDtoWinExplorerView.LayoutChanged();
                                         
                                         // Force refresh lại một lần nữa để đảm bảo
                                         System.Threading.Tasks.Task.Delay(200).ContinueWith(__ =>
@@ -746,7 +826,7 @@ namespace Inventory.Query
                                             {
                                                 BeginInvoke(new Action(() =>
                                                 {
-                                                    winExplorerView1.RefreshData();
+                                                    StockInOutImageDtoWinExplorerView.RefreshData();
                                                     System.Diagnostics.Debug.WriteLine($"PreloadAllThumbnailsAsync: Đã refresh WinExplorerView lần 3 sau khi preload");
                                                 }));
                                             }

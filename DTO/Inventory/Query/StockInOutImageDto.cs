@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DTO.Inventory.StockIn;
 
 namespace DTO.Inventory.Query
 {
@@ -29,6 +31,118 @@ namespace DTO.Inventory.Query
         [Display(Order = 1)]
         [Required(ErrorMessage = "ID phiếu nhập/xuất không được để trống")]
         public Guid StockInOutMasterId { get; set; }
+
+        #endregion
+
+        #region Properties - Thông tin phiếu nhập/xuất (từ StockInOutMaster)
+
+        /// <summary>
+        /// Số phiếu nhập/xuất kho
+        /// Map với: StockInOutMaster.VocherNumber
+        /// </summary>
+        [DisplayName("Số phiếu")]
+        [Display(Order = 1)]
+        [StringLength(50, ErrorMessage = "Số phiếu không được vượt quá 50 ký tự")]
+        public string VocherNumber { get; set; }
+
+        /// <summary>
+        /// Ngày tháng phiếu nhập/xuất kho
+        /// Map với: StockInOutMaster.StockInOutDate
+        /// </summary>
+        [DisplayName("Ngày tháng")]
+        [Display(Order = 2)]
+        public DateTime? StockInOutDate { get; set; }
+
+        /// <summary>
+        /// Loại nhập/xuất kho
+        /// Map với: StockInOutMaster.LoaiNhapXuatKho
+        /// </summary>
+        [DisplayName("Loại nhập/xuất")]
+        [Display(Order = 3)]
+        public LoaiNhapXuatKhoEnum? LoaiNhapXuatKho { get; set; }
+
+        /// <summary>
+        /// Tên loại nhập/xuất kho (hiển thị)
+        /// </summary>
+        [DisplayName("Loại nhập/xuất (text)")]
+        [Display(Order = 4)]
+        public string LoaiNhapXuatKhoText { get; set; }
+
+        /// <summary>
+        /// Thông tin khách hàng (nếu có)
+        /// Có thể là tên khách hàng hoặc mã khách hàng
+        /// </summary>
+        [DisplayName("Khách hàng")]
+        [Display(Order = 5)]
+        [StringLength(255, ErrorMessage = "Thông tin khách hàng không được vượt quá 255 ký tự")]
+        public string CustomerInfo { get; set; }
+
+        /// <summary>
+        /// Số thứ tự hình ảnh trong phiếu (1, 2, 3, ...)
+        /// Được tính dựa trên CreateDate của các hình ảnh cùng StockInOutMasterId
+        /// </summary>
+        [DisplayName("Số thứ tự")]
+        [Display(Order = 6)]
+        public int ImageSequenceNumber { get; set; }
+
+        /// <summary>
+        /// Caption hiển thị trên UI: "Số phiếu (số thứ tự)"
+        /// Ví dụ: "NK001 (1)", "NK001 (2)"
+        /// </summary>
+        [DisplayName("Caption")]
+        [Display(Order = 7)]
+        public string DisplayCaption
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(VocherNumber))
+                    return ImageSequenceNumber > 0 ? $"({ImageSequenceNumber})" : FileName ?? "";
+                
+                return ImageSequenceNumber > 0 
+                    ? $"{VocherNumber} ({ImageSequenceNumber})" 
+                    : VocherNumber;
+            }
+        }
+
+        /// <summary>
+        /// Group Caption để nhóm các hình ảnh: "StockInOutDate - LoaiNhapXuatKhoText - VocherNumber - CustomerInfo"
+        /// Ví dụ: "01/12/2025 - Nhập hàng thương mại - NK001 - Công ty ABC"
+        /// </summary>
+        [DisplayName("Group Caption")]
+        [Display(Order = 8)]
+        public string GroupCaption
+        {
+            get
+            {
+                var parts = new List<string>();
+
+                // StockInOutDate
+                if (StockInOutDate.HasValue)
+                {
+                    parts.Add(StockInOutDate.Value.ToString("dd/MM/yyyy"));
+                }
+
+                // LoaiNhapXuatKhoText
+                if (!string.IsNullOrWhiteSpace(LoaiNhapXuatKhoText))
+                {
+                    parts.Add(LoaiNhapXuatKhoText);
+                }
+
+                // VocherNumber
+                if (!string.IsNullOrWhiteSpace(VocherNumber))
+                {
+                    parts.Add(VocherNumber);
+                }
+
+                // CustomerInfo
+                if (!string.IsNullOrWhiteSpace(CustomerInfo))
+                {
+                    parts.Add(CustomerInfo);
+                }
+
+                return parts.Count > 0 ? string.Join(" - ", parts) : "Không có thông tin";
+            }
+        }
 
         /// <summary>
         /// Dữ liệu hình ảnh (byte array)
