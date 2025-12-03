@@ -279,6 +279,8 @@ public class StockInOutProductHistoryDto
             {
                 html += "<br>";
                 html += $"<size=9><color='#757575'>Loại:</color></size> <size=9><color='#757575'><i>{loaiNhapXuatKhoName}</i></color></size>";
+                html += "<br>";
+                html += $"<size=9><color='#757575'>Số phiếu:</color></size> <size=9><color='#757575'><i>{VocherNumber}</i></color></size>";
             }
 
             return html;

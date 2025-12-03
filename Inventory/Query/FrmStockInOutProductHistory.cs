@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Inventory.InventoryManagement;
+﻿using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
+using Dal.DataContext;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraReports.UI;
 using DTO.Inventory.InventoryManagement;
@@ -17,9 +14,18 @@ using Inventory.StockIn.NhapHangThuongMai;
 using Inventory.StockIn.NhapLuuChuyenKho;
 using Inventory.StockIn.NhapNoiBo;
 using Inventory.StockIn.NhapThietBiMuon;
+using Inventory.StockOut.XuatBaoHanh;
+using Inventory.StockOut.XuatChoThueMuon;
+using Inventory.StockOut.XuatHangThuongMai;
+using Inventory.StockOut.XuatLuuChuyenKho;
+using Inventory.StockOut.XuatNoiBo;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Inventory.Query;
 
@@ -173,19 +179,23 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
         try
         {
             // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
-            var selectedCount = StockInOutProductHistoryDtoGridView.SelectedRowsCount;
-            if (selectedCount == 0)
+            var selectedStockInOutMasterIds =
+                GridViewHelper.GetSelectedRowColumnValues<Guid>(StockInOutProductHistoryDtoGridView,
+                    "StockInOutMasterId");
+            if (selectedStockInOutMasterIds.Count == 0)
             {
                 MsgBox.ShowWarning("Vui lòng chọn một sản phẩm để xem chi tiết phiếu.");
                 return;
             }
 
-            if (selectedCount > 1)
+            if (selectedStockInOutMasterIds.Count > 1)
             {
                 MsgBox.ShowWarning("Chỉ cho phép xem chi tiết 1 phiếu. Vui lòng bỏ chọn bớt.");
                 return;
             }
 
+            _selectedStockInOutMasterId = selectedStockInOutMasterIds[0];
+            
             // Kiểm tra ID phiếu được chọn
             if (!_selectedStockInOutMasterId.HasValue || _selectedStockInOutMasterId.Value == Guid.Empty)
             {
@@ -207,14 +217,25 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
                 return;
             }
 
+            //FIXME: Điều chỉnh thêm các trường hợp khác cho đúng với LoaiNhapXuatKhoEnum
             // Tạo form dựa vào loại nhập xuất
             Form detailForm = selectedDto.LoaiNhapXuatKho switch
             {
+                // Các trường hợp Nhập
                 LoaiNhapXuatKhoEnum.NhapHangThuongMai => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value),
                 LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new FrmNhapThietBiMuon(_selectedStockInOutMasterId.Value),
                 LoaiNhapXuatKhoEnum.NhapNoiBo => new FrmNhapNoiBo(_selectedStockInOutMasterId.Value),
                 LoaiNhapXuatKhoEnum.NhapLuuChuyenKho => new FrmNhapLuuChuyenKho(_selectedStockInOutMasterId.Value),
                 LoaiNhapXuatKhoEnum.NhapHangBaoHanh => new FrmNhapBaoHanh(_selectedStockInOutMasterId.Value),
+                
+                // Các trường hợp Xuất
+                LoaiNhapXuatKhoEnum.XuatHangThuongMai => new FrmXuatKhoThuongMai(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.XuatThietBiMuonThue => new FrmXuatThietBiChoThueMuon(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.XuatNoiBo => new FrmXuatNoiBo(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.XuatLuuChuyenKho => new FrmXuatLuuChuyenKho(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.XuatHangBaoHanh => new FrmXuatBaoHanh(_selectedStockInOutMasterId.Value),
+                
+                // Trường hợp mặc định
                 _ => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value) // Default: dùng FrmNhapKhoThuongMai
             };
 
@@ -279,11 +300,20 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
                     // Tạo report dựa vào loại nhập xuất
                     XtraReport report = selectedDto.LoaiNhapXuatKho switch
                     {
+                        // Các trường hợp Nhập
                         LoaiNhapXuatKhoEnum.NhapHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value),
                         LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
                         LoaiNhapXuatKhoEnum.NhapNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
                         LoaiNhapXuatKhoEnum.NhapHangBaoHanh => new InPhieuBaoHanh(_selectedStockInOutMasterId.Value),
-                        _ => new InPhieuNhapKho(_selectedStockInOutMasterId.Value) // Default: dùng InPhieuNhapKho cho NhapLuuChuyenKho và các loại khác
+                        
+                        // Các trường hợp Xuất - sử dụng report chung cho cả nhập và xuất
+                        LoaiNhapXuatKhoEnum.XuatHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value), // Report nhập cũng dùng được cho xuất
+                        LoaiNhapXuatKhoEnum.XuatThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
+                        LoaiNhapXuatKhoEnum.XuatNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
+                        LoaiNhapXuatKhoEnum.XuatHangBaoHanh => new InPhieuBaoHanh(_selectedStockInOutMasterId.Value),
+                        
+                        // Trường hợp mặc định
+                        _ => new InPhieuNhapKho(_selectedStockInOutMasterId.Value) // Default: dùng InPhieuNhapKho cho NhapLuuChuyenKho, XuatLuuChuyenKho và các loại khác
                     };
 
                     // Hiển thị preview bằng ReportPrintTool
@@ -1002,6 +1032,8 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
             using (OverlayManager.ShowScope(this))
             using (form)
             {
+                form.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                
                 form.StartPosition = FormStartPosition.CenterParent;
                 form.ShowDialog(this);
             }

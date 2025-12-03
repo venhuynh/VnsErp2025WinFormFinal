@@ -8,8 +8,21 @@ using Common.Helpers;
 using Common.Utils;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraReports.UI;
 using DTO.Inventory.InventoryManagement;
+using DTO.Inventory.StockIn;
 using Inventory.OverlayForm;
+using Inventory.StockIn.InPhieu;
+using Inventory.StockIn.NhapBaoHanh;
+using Inventory.StockIn.NhapHangThuongMai;
+using Inventory.StockIn.NhapLuuChuyenKho;
+using Inventory.StockIn.NhapNoiBo;
+using Inventory.StockIn.NhapThietBiMuon;
+using Inventory.StockOut.XuatBaoHanh;
+using Inventory.StockOut.XuatChoThueMuon;
+using Inventory.StockOut.XuatHangThuongMai;
+using Inventory.StockOut.XuatLuuChuyenKho;
+using Inventory.StockOut.XuatNoiBo;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -189,26 +202,48 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
                 return;
             }
 
-            // Mở form chi tiết với OverlayManager và load dữ liệu
-            using (OverlayManager.ShowScope(this))
+            // Lấy DTO từ row được chọn để xác định loại nhập xuất
+            var focusedRowHandle = StockInOutMasterHistoryDtoGridView.FocusedRowHandle;
+            if (focusedRowHandle < 0)
             {
-                using var form = new Inventory.StockIn.NhapHangThuongMai.FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value);
-                    
-                // Đảm bảo form chưa được hiển thị
-                form.Visible = false;
-                form.StartPosition = FormStartPosition.CenterParent;
-                        
-                // Load dữ liệu từ ID trước khi hiển thị form
-                //await form.LoadDataAsync(_selectedStockInOutMasterId.Value);
-                        
-                // Đảm bảo form vẫn chưa visible trước khi show dialog
-                if (form.Visible)
-                {
-                    form.Visible = false;
-                }
-                        
-                // Hiển thị form
-                form.ShowDialog(this);
+                MsgBox.ShowWarning("Vui lòng chọn phiếu nhập xuất kho để xem chi tiết.");
+                return;
+            }
+
+            if (StockInOutMasterHistoryDtoGridView.GetRow(focusedRowHandle) is not StockInOutMasterHistoryDto selectedDto)
+            {
+                MsgBox.ShowWarning("Không thể lấy thông tin phiếu được chọn.");
+                return;
+            }
+
+            // Tạo form dựa vào loại nhập xuất
+            Form detailForm = selectedDto.LoaiNhapXuatKho switch
+            {
+                // Các trường hợp Nhập
+                LoaiNhapXuatKhoEnum.NhapHangThuongMai => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new FrmNhapThietBiMuon(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.NhapNoiBo => new FrmNhapNoiBo(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.NhapLuuChuyenKho => new FrmNhapLuuChuyenKho(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.NhapHangBaoHanh => new FrmNhapBaoHanh(_selectedStockInOutMasterId.Value),
+                
+                // Các trường hợp Xuất
+                LoaiNhapXuatKhoEnum.XuatHangThuongMai => new FrmXuatKhoThuongMai(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.XuatThietBiMuonThue => new FrmXuatThietBiChoThueMuon(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.XuatNoiBo => new FrmXuatNoiBo(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.XuatLuuChuyenKho => new FrmXuatLuuChuyenKho(_selectedStockInOutMasterId.Value),
+                LoaiNhapXuatKhoEnum.XuatHangBaoHanh => new FrmXuatBaoHanh(_selectedStockInOutMasterId.Value),
+                
+                // Trường hợp mặc định
+                _ => new FrmNhapKhoThuongMai(_selectedStockInOutMasterId.Value) // Default: dùng FrmNhapKhoThuongMai
+            };
+
+            // Mở form chi tiết với OverlayManager
+            using (OverlayManager.ShowScope(this))
+            using (detailForm)
+            {
+                detailForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                detailForm.StartPosition = FormStartPosition.CenterParent;
+                detailForm.ShowDialog(this);
             }
 
         }
@@ -248,10 +283,52 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
                 return;
             }
 
-            // In phiếu nhập kho với preview, sử dụng OverlayManager
+            // Lấy DTO từ row được chọn để xác định loại nhập xuất
+            var focusedRowHandle = StockInOutMasterHistoryDtoGridView.FocusedRowHandle;
+            if (focusedRowHandle < 0)
+            {
+                MsgBox.ShowWarning("Vui lòng chọn phiếu nhập xuất kho để in.");
+                return;
+            }
+
+            if (StockInOutMasterHistoryDtoGridView.GetRow(focusedRowHandle) is not StockInOutMasterHistoryDto selectedDto)
+            {
+                MsgBox.ShowWarning("Không thể lấy thông tin phiếu được chọn.");
+                return;
+            }
+
+            // Tạo report dựa vào loại nhập xuất
             using (OverlayManager.ShowScope(this))
             {
-                Inventory.StockIn.InPhieu.StockInReportHelper.PrintStockInVoucher(_selectedStockInOutMasterId.Value);
+                try
+                {
+                    XtraReport report = selectedDto.LoaiNhapXuatKho switch
+                    {
+                        // Các trường hợp Nhập
+                        LoaiNhapXuatKhoEnum.NhapHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value),
+                        LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
+                        LoaiNhapXuatKhoEnum.NhapNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
+                        LoaiNhapXuatKhoEnum.NhapHangBaoHanh => new InPhieuBaoHanh(_selectedStockInOutMasterId.Value),
+                        
+                        // Các trường hợp Xuất - sử dụng report chung cho cả nhập và xuất
+                        LoaiNhapXuatKhoEnum.XuatHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value), // Report nhập cũng dùng được cho xuất
+                        LoaiNhapXuatKhoEnum.XuatThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
+                        LoaiNhapXuatKhoEnum.XuatNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
+                        LoaiNhapXuatKhoEnum.XuatHangBaoHanh => new InPhieuBaoHanh(_selectedStockInOutMasterId.Value),
+                        
+                        // Trường hợp mặc định
+                        _ => new InPhieuNhapKho(_selectedStockInOutMasterId.Value) // Default: dùng InPhieuNhapKho cho NhapLuuChuyenKho, XuatLuuChuyenKho và các loại khác
+                    };
+
+                    // Hiển thị preview bằng ReportPrintTool
+                    using var printTool = new DevExpress.XtraReports.UI.ReportPrintTool(report);
+                    printTool.ShowPreviewDialog();
+                }
+                catch (Exception printEx)
+                {
+                    _logger.Error($"InPhieuBarButtonItem_ItemClick: Lỗi in phiếu: {printEx.Message}", printEx);
+                    MsgBox.ShowError($"Lỗi in phiếu: {printEx.Message}");
+                }
             }
         }
         catch (Exception ex)
