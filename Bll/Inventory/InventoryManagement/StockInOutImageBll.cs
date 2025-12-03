@@ -81,31 +81,6 @@ public class StockInOutImageBll
     #region Business Methods
 
     /// <summary>
-    /// Lưu hoặc cập nhật hình ảnh nhập/xuất kho
-    /// </summary>
-    /// <param name="stockInOutImage">Entity hình ảnh cần lưu</param>
-    public void SaveOrUpdate(Dal.DataContext.StockInOutImage stockInOutImage)
-    {
-        try
-        {
-            if (stockInOutImage == null)
-                throw new ArgumentNullException(nameof(stockInOutImage));
-
-            _logger.Debug("SaveOrUpdate: Bắt đầu lưu hình ảnh, Id={0}, StockInOutMasterId={1}", 
-                stockInOutImage.Id, stockInOutImage.StockInOutMasterId);
-
-            GetDataAccess().SaveOrUpdate(stockInOutImage);
-
-            _logger.Info("SaveOrUpdate: Lưu hình ảnh thành công, Id={0}", stockInOutImage.Id);
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"SaveOrUpdate: Lỗi lưu hình ảnh: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
     /// Lưu hình ảnh từ file vào storage (NAS/Local) và metadata vào database
     /// </summary>
     /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
@@ -190,7 +165,46 @@ public class StockInOutImageBll
     }
 
     /// <summary>
-    /// Lấy dữ liệu hình ảnh từ storage (NAS/Local)
+    /// Lấy dữ liệu hình ảnh từ storage (NAS/Local) bằng RelativePath
+    /// Tối ưu hơn GetImageDataAsync vì không cần query database lại
+    /// </summary>
+    /// <param name="relativePath">Đường dẫn tương đối của hình ảnh trong storage</param>
+    /// <returns>Dữ liệu hình ảnh (byte array) hoặc null</returns>
+    public async Task<byte[]> GetImageDataByRelativePathAsync(string relativePath)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(relativePath))
+            {
+                _logger.Warning("RelativePath is null or empty");
+                return null;
+            }
+
+            // Lấy trực tiếp từ storage (NAS/Local) sử dụng RelativePath
+            // Logic tương tự SaveImageFromFileAsync: sử dụng ImageStorageService để đọc file
+            var imageData = await _imageStorage.GetImageAsync(relativePath);
+            
+            if (imageData == null)
+            {
+                _logger.Warning($"Không thể đọc file từ storage, RelativePath={relativePath}");
+            }
+            else
+            {
+                _logger.Debug($"Đã load hình ảnh từ storage, RelativePath={relativePath}, Size={imageData.Length} bytes");
+            }
+
+            return imageData;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy dữ liệu hình ảnh từ RelativePath '{relativePath}': {ex.Message}", ex);
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Lấy dữ liệu hình ảnh từ storage (NAS/Local) bằng ImageId
+    /// Query database để lấy RelativePath, sau đó load từ storage
     /// </summary>
     /// <param name="imageId">ID hình ảnh</param>
     /// <returns>Dữ liệu hình ảnh (byte array) hoặc null</returns>
@@ -198,6 +212,8 @@ public class StockInOutImageBll
     {
         try
         {
+            // 1. Query database để lấy metadata (RelativePath)
+            // Logic tương tự SaveImageFromFileAsync: metadata được lưu trong database
             var stockInOutImage = GetDataAccess().GetById(imageId);
             if (stockInOutImage == null)
             {
@@ -205,7 +221,7 @@ public class StockInOutImageBll
                 return null;
             }
 
-            // Ưu tiên sử dụng RelativePath
+            // 2. Lấy RelativePath từ metadata (đã được lưu khi SaveImageFromFileAsync)
             var relativePath = stockInOutImage.RelativePath;
             
             if (string.IsNullOrEmpty(relativePath))
@@ -214,14 +230,10 @@ public class StockInOutImageBll
                 return null;
             }
 
-            // Lấy từ storage
-            var imageData = await _imageStorage.GetImageAsync(relativePath);
+            // 3. Load từ storage sử dụng RelativePath
+            // Logic tương tự SaveImageFromFileAsync: sử dụng ImageStorageService để đọc file
+            var imageData = await GetImageDataByRelativePathAsync(relativePath);
             
-            if (imageData == null)
-            {
-                _logger.Warning($"Không thể đọc file từ storage, RelativePath={relativePath}");
-            }
-
             return imageData;
         }
         catch (Exception ex)

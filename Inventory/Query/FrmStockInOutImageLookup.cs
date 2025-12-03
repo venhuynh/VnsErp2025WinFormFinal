@@ -85,6 +85,10 @@ namespace Inventory.Query
             winExplorerView1.ColumnSet.MediumImageColumn = colImageData;
             winExplorerView1.ColumnSet.SmallImageColumn = colImageData;
 
+            // Đảm bảo async loading được bật để load nhiều thumbnails cùng lúc
+            winExplorerView1.OptionsImageLoad.AsyncLoad = true;
+            winExplorerView1.OptionsImageLoad.CacheThumbnails = true;
+
             // Đăng ký event để xử lý thumbnail
             winExplorerView1.GetThumbnailImage += WinExplorerView1_GetThumbnailImage;
         }
@@ -239,44 +243,65 @@ namespace Inventory.Query
             {
                 // Sử dụng DataSourceIndex để lấy dữ liệu từ DataSource
                 if (_dataSource == null || e.DataSourceIndex < 0 || e.DataSourceIndex >= _dataSource.Count)
+                {
+                    System.Diagnostics.Debug.WriteLine($"GetThumbnailImage: Invalid DataSourceIndex={e.DataSourceIndex}, Count={_dataSource?.Count ?? 0}");
                     return;
+                }
 
                 var dto = _dataSource[e.DataSourceIndex];
                 if (dto == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"GetThumbnailImage: DTO is null at index {e.DataSourceIndex}");
                     return;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"GetThumbnailImage: Loading thumbnail for index {e.DataSourceIndex}, ImageId={dto.Id}, FileName={dto.FileName}");
 
                 byte[] imageData = dto.ImageData;
 
                 // Nếu ImageData chưa có, load từ storage (NAS/Local)
-                // Kiểm tra BLL đã được khởi tạo và có RelativePath
+                // Logic tương tự SaveImageFromFileAsync:
+                // 1. Query database để lấy metadata (RelativePath) - đã có trong DTO từ MapEntitiesToDtos
+                // 2. Sử dụng RelativePath để load trực tiếp từ storage (NAS/Local) thông qua ImageStorageService
                 if ((imageData == null || imageData.Length == 0) &&
                     _stockInOutImageBll != null &&
                     !string.IsNullOrEmpty(dto.RelativePath))
                 {
                     try
                     {
-                        // Load từ storage thông qua BLL
-                        // BLL sẽ:
-                        // 1. Lấy metadata từ database (RelativePath)
-                        // 2. Sử dụng ImageStorageService để đọc file từ NAS/Local storage
-                        imageData = await _stockInOutImageBll.GetImageDataAsync(dto.Id);
+                        System.Diagnostics.Debug.WriteLine($"GetThumbnailImage: Loading image from storage for index {e.DataSourceIndex}, RelativePath={dto.RelativePath}");
+                        
+                        // Tối ưu: Sử dụng RelativePath trực tiếp từ DTO (đã query từ database trong LoadDataAsync)
+                        // Thay vì query database lại trong GetImageDataAsync, sử dụng GetImageDataByRelativePathAsync
+                        // Logic tương tự SaveImageFromFileAsync: sử dụng ImageStorageService để đọc file từ storage
+                        imageData = await _stockInOutImageBll.GetImageDataByRelativePathAsync(dto.RelativePath);
                         
                         // Cache lại vào DTO để không phải load lại lần sau
                         if (imageData != null && imageData.Length > 0)
                         {
                             dto.ImageData = imageData;
+                            System.Diagnostics.Debug.WriteLine($"GetThumbnailImage: Successfully loaded image data, Size={imageData.Length} bytes");
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"GetThumbnailImage: Image data is null or empty after loading from RelativePath={dto.RelativePath}");
                         }
                     }
                     catch (Exception ex)
                     {
                         // Log lỗi nhưng không throw để không làm gián đoạn hiển thị
                         System.Diagnostics.Debug.WriteLine($"Lỗi load image từ storage (NAS/Local): {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"  - StackTrace: {ex.StackTrace}");
                         // Có thể log chi tiết hơn nếu cần
                         if (dto != null)
                         {
                             System.Diagnostics.Debug.WriteLine($"  - ImageId: {dto.Id}, RelativePath: {dto.RelativePath}");
                         }
                     }
+                }
+                else if (imageData == null || imageData.Length == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"GetThumbnailImage: Skipping load - BLL={_stockInOutImageBll != null}, RelativePath={!string.IsNullOrEmpty(dto.RelativePath)}");
                 }
 
                 // Convert byte[] thành Image và tạo thumbnail
@@ -287,7 +312,12 @@ namespace Inventory.Query
                         var image = Image.FromStream(ms);
                         // Sử dụng CreateThumbnailImage để tạo thumbnail với kích thước mong muốn
                         e.ThumbnailImage = e.CreateThumbnailImage(image, e.DesiredThumbnailSize);
+                        System.Diagnostics.Debug.WriteLine($"GetThumbnailImage: Successfully created thumbnail for index {e.DataSourceIndex}, FileName={dto.FileName}");
                     }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"GetThumbnailImage: No image data for index {e.DataSourceIndex}, FileName={dto.FileName}, RelativePath={dto.RelativePath}");
                 }
             }
             catch (Exception ex)
@@ -341,34 +371,39 @@ namespace Inventory.Query
                     if (_stockInOutMasterId.HasValue)
                     {
                         // Load hình ảnh theo StockInOutMasterId
+                        // Khi có StockInOutMasterId, load TẤT CẢ hình ảnh của phiếu đó
+                        // KHÔNG filter theo date vì mục đích là xem tất cả hình ảnh của phiếu
                         entities = _stockInOutImageBll.GetByStockInOutMasterId(_stockInOutMasterId.Value);
 
-                        // Filter theo keyword và date nếu có (vì GetByStockInOutMasterId không hỗ trợ filter)
+                        // Chỉ filter theo keyword nếu có (không filter theo date)
                         if (!string.IsNullOrWhiteSpace(keyword))
                         {
                             var keywordLower = keyword.Trim().ToLower();
                             entities = entities.Where(e =>
                                 (!string.IsNullOrEmpty(e.FileName) && e.FileName.ToLower().Contains(keywordLower)) ||
-                                (!string.IsNullOrEmpty(e.RelativePath) && e.RelativePath.ToLower().Contains(keywordLower))
+                                (!string.IsNullOrEmpty(e.RelativePath) && e.RelativePath.ToLower().Contains(keywordLower)) ||
+                                (!string.IsNullOrEmpty(e.FullPath) && e.FullPath.ToLower().Contains(keywordLower))
                             ).ToList();
                         }
-
-                        // Filter theo date
-                        entities = entities.Where(e => 
-                            e.CreateDate >= fromDate.Date && 
-                            e.CreateDate <= toDate.Date.AddDays(1).AddTicks(-1)
-                        ).ToList();
                     }
                     else
                     {
                         // Query hình ảnh theo khoảng thời gian và từ khóa
+                        // Khi không có StockInOutMasterId, filter theo date range và keyword
                         entities = _stockInOutImageBll.QueryImages(
                             fromDate.Date, 
                             toDate.Date.AddDays(1).AddTicks(-1), 
                             keyword);
                     }
 
+                    // Log số lượng entities trước khi map
+                    System.Diagnostics.Debug.WriteLine($"LoadDataAsync: Load được {entities?.Count ?? 0} hình ảnh từ database");
+
                     var dtos = MapEntitiesToDtos(entities);
+                    
+                    // Log số lượng DTOs sau khi map
+                    System.Diagnostics.Debug.WriteLine($"LoadDataAsync: Map được {dtos?.Count ?? 0} DTOs");
+                    
                     LoadData(dtos);
                 });
             }
@@ -387,15 +422,32 @@ namespace Inventory.Query
             if (images == null)
             {
                 _dataSource = null;
-                WarrantyCheckListDtoGridControl.DataSource = null;
+                stockInOutImageDtoBindingSource.DataSource = null;
+                stockInOutImageDtoBindingSource.ResetBindings(false);
+                winExplorerView1.RefreshData();
+                UpdateStatusBar();
                 return;
             }
 
             // Lưu reference để sử dụng trong GetThumbnailImage event
             _dataSource = images;
             stockInOutImageDtoBindingSource.DataSource = images;
+            stockInOutImageDtoBindingSource.ResetBindings(false);
+            
+            // Force refresh WinExplorerView để trigger GetThumbnailImage event cho tất cả items
             winExplorerView1.RefreshData();
+            
+            // Sử dụng BeginInvoke để đảm bảo UI được update sau khi data được set
+            BeginInvoke(new Action(() =>
+            {
+                winExplorerView1.LayoutChanged();
+                winExplorerView1.RefreshData();
+            }));
+            
             UpdateStatusBar();
+            
+            // Log để debug
+            System.Diagnostics.Debug.WriteLine($"LoadData: Đã load {images.Count} hình ảnh vào grid");
         }
 
         /// <summary>
