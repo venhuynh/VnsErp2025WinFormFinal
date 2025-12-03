@@ -191,7 +191,6 @@ public class StockInOutDocumentBll
 
             // 2. Tạo tên file mới theo format: "Số phiếu (số thứ tự file)"
             var fileExtension = Path.GetExtension(documentFilePath);
-            var originalFileName = Path.GetFileName(documentFilePath);
             string fileName;
 
             if (stockInOutMasterId.HasValue)
@@ -204,15 +203,23 @@ public class StockInOutDocumentBll
                 var sequenceNumber = existingDocuments.Count + 1;
                 
                 // Lấy VocherNumber từ StockInOutMaster
-                string vocherNumber = "PHIEU";
+                // Thử lấy từ existingDocuments trước (nếu có document đã load StockInOutMaster)
+                string vocherNumber = "P";
                 try
                 {
-                    using (var context = new VnsErp2025DataContext(ApplicationStartupManager.Instance.GetGlobalConnectionString()))
+                    var firstDocument = existingDocuments.FirstOrDefault();
+                    if (firstDocument?.StockInOutMaster != null && !string.IsNullOrWhiteSpace(firstDocument.StockInOutMaster.VocherNumber))
                     {
-                        var master = context.StockInOutMasters.FirstOrDefault(m => m.Id == stockInOutMasterId.Value);
-                        if (master != null && !string.IsNullOrWhiteSpace(master.VocherNumber))
+                        vocherNumber = firstDocument.StockInOutMaster.VocherNumber;
+                    }
+                    else
+                    {
+                        // Nếu không có trong existingDocuments, query từ Repository
+                        var masterRepository = new StockInOutMasterRepository(ApplicationStartupManager.Instance.GetGlobalConnectionString());
+                        var vocherNumberFromRepo = masterRepository.GetVocherNumber(stockInOutMasterId.Value);
+                        if (!string.IsNullOrWhiteSpace(vocherNumberFromRepo))
                         {
-                            vocherNumber = master.VocherNumber;
+                            vocherNumber = vocherNumberFromRepo;
                         }
                     }
                 }
