@@ -106,7 +106,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmWarrantyCheck());
+            Application.Run(new FrmStockInOutImageLookup());
 
             #endregion
 

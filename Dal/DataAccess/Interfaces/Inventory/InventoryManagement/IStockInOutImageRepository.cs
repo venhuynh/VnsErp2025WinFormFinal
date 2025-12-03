@@ -31,4 +31,13 @@ public interface IStockInOutImageRepository
     /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
     /// <returns>Danh sách hình ảnh</returns>
     List<StockInOutImage> GetByStockInOutMasterId(Guid stockInOutMasterId);
+
+    /// <summary>
+    /// Query hình ảnh theo khoảng thời gian và từ khóa
+    /// </summary>
+    /// <param name="fromDate">Từ ngày</param>
+    /// <param name="toDate">Đến ngày</param>
+    /// <param name="keyword">Từ khóa tìm kiếm (tên file, đường dẫn)</param>
+    /// <returns>Danh sách hình ảnh</returns>
+    List<StockInOutImage> QueryImages(DateTime fromDate, DateTime toDate, string keyword = null);
 }

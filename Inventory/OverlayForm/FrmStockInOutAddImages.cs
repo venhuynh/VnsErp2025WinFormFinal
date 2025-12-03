@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,10 @@ using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Utils;
 using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Views.WinExplorer;
+using DevExpress.Utils;
+using DTO.Inventory.Query;
+using Dal.DataContext;
 
 namespace Inventory.OverlayForm;
 
@@ -29,6 +34,11 @@ public partial class FrmStockInOutAddImages : XtraForm
     /// </summary>
     private Guid StockInOutMasterId { get; set; }
 
+    /// <summary>
+    /// Danh sách hình ảnh hiện tại
+    /// </summary>
+    private List<StockInOutImageDto> _dataSource;
+
     #endregion
 
     #region ========== CONSTRUCTOR ==========
@@ -42,6 +52,8 @@ public partial class FrmStockInOutAddImages : XtraForm
         InitializeComponent();
         StockInOutMasterId = stockInOutMasterId;
         InitializeBll();
+        InitializeWinExplorerView();
+        InitializeDateFilters();
         InitializeEvents();
         SetupSuperToolTips();
     }
@@ -104,17 +116,195 @@ public partial class FrmStockInOutAddImages : XtraForm
     }
 
     /// <summary>
+    /// Khởi tạo cấu hình WinExplorerView
+    /// </summary>
+    private void InitializeWinExplorerView()
+    {
+        // Cấu hình ColumnSet
+        winExplorerView.ColumnSet.TextColumn = colFileName;
+        winExplorerView.ColumnSet.DescriptionColumn = colFileSizeDisplay;
+        winExplorerView.ColumnSet.ExtraLargeImageColumn = colImageData;
+        winExplorerView.ColumnSet.LargeImageColumn = colImageData;
+        winExplorerView.ColumnSet.MediumImageColumn = colImageData;
+        winExplorerView.ColumnSet.SmallImageColumn = colImageData;
+
+        // Đăng ký event để xử lý thumbnail
+        winExplorerView.GetThumbnailImage += WinExplorerView_GetThumbnailImage;
+    }
+
+    /// <summary>
+    /// Khởi tạo giá trị mặc định cho date filters
+    /// </summary>
+    private void InitializeDateFilters()
+    {
+        try
+        {
+            // Từ ngày: đầu tháng hiện tại
+            var fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            TuNgayBarEditItem.EditValue = fromDate;
+
+            // Đến ngày: ngày hiện tại
+            DenNgayBarEditItem.EditValue = DateTime.Now;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error initializing date filters: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Khởi tạo events
     /// </summary>
     private void InitializeEvents()
     {
         // Event cho nút chọn hình ảnh
         OpenSelectImageHyperlinkLabelControl.Click += OpenSelectImageHyperlinkLabelControl_Click;
+
+        // Bar button events
+        XemBarButtonItem.ItemClick += XemBarButtonItem_ItemClick;
+        XoaBarButtonItem.ItemClick += XoaBarButtonItem_ItemClick;
+
+        // GridView events
+        winExplorerView.SelectionChanged += WinExplorerView_SelectionChanged;
+
+        // Form events
+        Load += FrmStockInOutAddImages_Load;
     }
 
     #endregion
 
     #region ========== SỰ KIỆN FORM ==========
+
+    /// <summary>
+    /// Event handler khi form được load
+    /// </summary>
+    private async void FrmStockInOutAddImages_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            await LoadDataAsync();
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi khi tải dữ liệu");
+        }
+    }
+
+    /// <summary>
+    /// Event handler cho nút Xem
+    /// </summary>
+    private async void XemBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    {
+        try
+        {
+            await LoadDataAsync();
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi khi tải dữ liệu");
+        }
+    }
+
+    /// <summary>
+    /// Event handler cho nút Xóa
+    /// </summary>
+    private async void XoaBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    {
+        try
+        {
+            var selectedImages = GetSelectedImages();
+            if (selectedImages == null || selectedImages.Count == 0)
+            {
+                MsgBox.ShowWarning("Vui lòng chọn ít nhất một hình ảnh để xóa.");
+                return;
+            }
+
+            var result = MsgBox.ShowYesNo(
+                $"Bạn có chắc chắn muốn xóa {selectedImages.Count} hình ảnh đã chọn?",
+                "Xác nhận xóa",
+                this);
+
+            if (result)
+            {
+                await DeleteSelectedImagesAsync(selectedImages);
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi khi xóa hình ảnh");
+        }
+    }
+
+    /// <summary>
+    /// Event handler khi selection thay đổi
+    /// </summary>
+    private void WinExplorerView_SelectionChanged(object sender, DevExpress.Data.SelectionChangedEventArgs e)
+    {
+        try
+        {
+            UpdateStatusBar();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error updating status bar: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Xử lý event GetThumbnailImage để convert ImageData (byte[]) thành Image
+    /// Load từ storage nếu ImageData chưa có trong DTO
+    /// </summary>
+    private async void WinExplorerView_GetThumbnailImage(object sender, ThumbnailImageEventArgs e)
+    {
+        try
+        {
+            // Sử dụng DataSourceIndex để lấy dữ liệu từ DataSource
+            if (_dataSource == null || e.DataSourceIndex < 0 || e.DataSourceIndex >= _dataSource.Count)
+                return;
+
+            var dto = _dataSource[e.DataSourceIndex];
+            if (dto == null)
+                return;
+
+            byte[] imageData = dto.ImageData;
+
+            // Nếu ImageData chưa có, load từ storage
+            if ((imageData == null || imageData.Length == 0) &&
+                _stockInOutImageBll != null &&
+                !string.IsNullOrEmpty(dto.RelativePath))
+            {
+                try
+                {
+                    imageData = await _stockInOutImageBll.GetImageDataAsync(dto.Id);
+                    // Cache lại vào DTO để không phải load lại lần sau
+                    if (imageData != null)
+                    {
+                        dto.ImageData = imageData;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Lỗi load image từ storage: {ex.Message}");
+                }
+            }
+
+            // Convert byte[] thành Image
+            if (imageData != null && imageData.Length > 0)
+            {
+                using (var ms = new MemoryStream(imageData))
+                {
+                    var image = Image.FromStream(ms);
+                    // Sử dụng CreateThumbnailImage để tạo thumbnail với kích thước mong muốn
+                    e.ThumbnailImage = e.CreateThumbnailImage(image, e.DesiredThumbnailSize);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log error nếu cần
+            System.Diagnostics.Debug.WriteLine($"Lỗi load thumbnail: {ex.Message}");
+        }
+    }
 
     /// <summary>
     /// Xử lý sự kiện click nút chọn hình ảnh
@@ -156,6 +346,223 @@ public partial class FrmStockInOutAddImages : XtraForm
         catch (Exception ex)
         {
             ShowError(ex, "Lỗi khi chọn hình ảnh");
+        }
+    }
+
+    #endregion
+
+    #region ========== LOAD DỮ LIỆU ==========
+
+    /// <summary>
+    /// Load dữ liệu hình ảnh từ database
+    /// </summary>
+    public async Task LoadDataAsync()
+    {
+        try
+        {
+            if (_stockInOutImageBll == null)
+            {
+                MsgBox.ShowWarning("Dịch vụ hình ảnh chưa được khởi tạo.");
+                LoadData(new List<StockInOutImageDto>());
+                return;
+            }
+
+            await ExecuteWithWaitingFormAsync(async () =>
+            {
+                // Lấy filter criteria
+                var keyword = KeyWordBarEditItem.EditValue?.ToString() ?? string.Empty;
+                var fromDate = TuNgayBarEditItem.EditValue as DateTime?;
+                var toDate = DenNgayBarEditItem.EditValue as DateTime?;
+
+                // Load hình ảnh theo StockInOutMasterId
+                var entities = _stockInOutImageBll.GetByStockInOutMasterId(StockInOutMasterId);
+                
+                // Filter theo keyword và date nếu có
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    var keywordLower = keyword.ToLower();
+                    entities = entities.Where(e => 
+                        (!string.IsNullOrEmpty(e.FileName) && e.FileName.ToLower().Contains(keywordLower)) ||
+                        (!string.IsNullOrEmpty(e.RelativePath) && e.RelativePath.ToLower().Contains(keywordLower))
+                    ).ToList();
+                }
+
+                if (fromDate.HasValue)
+                {
+                    entities = entities.Where(e => e.CreateDate >= fromDate.Value).ToList();
+                }
+
+                if (toDate.HasValue)
+                {
+                    var toDateEnd = toDate.Value.Date.AddDays(1).AddTicks(-1);
+                    entities = entities.Where(e => e.CreateDate <= toDateEnd).ToList();
+                }
+
+                var dtos = MapEntitiesToDtos(entities);
+                LoadData(dtos);
+            });
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi khi tải dữ liệu");
+            LoadData(new List<StockInOutImageDto>());
+        }
+    }
+
+    /// <summary>
+    /// Load dữ liệu hình ảnh
+    /// </summary>
+    public void LoadData(List<StockInOutImageDto> images)
+    {
+        if (images == null)
+        {
+            _dataSource = null;
+            StockInOutImageGridControl.DataSource = null;
+            return;
+        }
+
+        // Lưu reference để sử dụng trong GetThumbnailImage event
+        _dataSource = images;
+        stockInOutImageDtoBindingSource.DataSource = images;
+        winExplorerView.RefreshData();
+        UpdateStatusBar();
+    }
+
+    /// <summary>
+    /// Map entities sang DTOs
+    /// </summary>
+    private List<StockInOutImageDto> MapEntitiesToDtos(List<StockInOutImage> entities)
+    {
+        if (entities == null)
+            return new List<StockInOutImageDto>();
+
+        return entities.Select(entity => new StockInOutImageDto
+        {
+            Id = entity.Id,
+            StockInOutMasterId = entity.StockInOutMasterId,
+            // ImageData sẽ được load từ storage trong GetThumbnailImage event nếu cần
+            ImageData = null,
+            FileName = entity.FileName,
+            RelativePath = entity.RelativePath,
+            FullPath = entity.FullPath,
+            StorageType = entity.StorageType,
+            FileSize = entity.FileSize,
+            FileExtension = entity.FileExtension,
+            MimeType = entity.MimeType,
+            Checksum = entity.Checksum,
+            FileExists = entity.FileExists,
+            LastVerified = entity.LastVerified,
+            MigrationStatus = entity.MigrationStatus,
+            CreateDate = entity.CreateDate,
+            CreateBy = entity.CreateBy,
+            ModifiedDate = entity.ModifiedDate,
+            ModifiedBy = entity.ModifiedBy
+        }).ToList();
+    }
+
+    /// <summary>
+    /// Lấy danh sách hình ảnh được chọn
+    /// </summary>
+    public List<StockInOutImageDto> GetSelectedImages()
+    {
+        var selectedImages = new List<StockInOutImageDto>();
+        var selectedRows = winExplorerView.GetSelectedRows();
+
+        foreach (int rowHandle in selectedRows)
+        {
+            var dto = winExplorerView.GetRow(rowHandle) as StockInOutImageDto;
+            if (dto != null)
+            {
+                selectedImages.Add(dto);
+            }
+        }
+
+        return selectedImages;
+    }
+
+    /// <summary>
+    /// Cập nhật status bar
+    /// </summary>
+    private void UpdateStatusBar()
+    {
+        try
+        {
+            var totalCount = _dataSource?.Count ?? 0;
+            var selectedCount = winExplorerView.SelectedRowsCount;
+
+            DataSummaryBarStaticItem.Caption = $"Tổng số: <b>{totalCount}</b> hình ảnh";
+            SelectedRowBarStaticItem.Caption = selectedCount > 0 
+                ? $"Đã chọn: <b>{selectedCount}</b> hình ảnh" 
+                : "Chưa chọn dòng nào";
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error updating status bar: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Xóa các hình ảnh đã chọn
+    /// </summary>
+    private async Task DeleteSelectedImagesAsync(List<StockInOutImageDto> selectedImages)
+    {
+        try
+        {
+            if (_stockInOutImageBll == null)
+            {
+                ShowError("Dịch vụ hình ảnh chưa được khởi tạo.");
+                return;
+            }
+
+            await ExecuteWithWaitingFormAsync(async () =>
+            {
+                var successCount = 0;
+                var errorCount = 0;
+                var errorMessages = new List<string>();
+
+                foreach (var dto in selectedImages)
+                {
+                    try
+                    {
+                        await _stockInOutImageBll.DeleteImageAsync(dto.Id);
+                        successCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        errorCount++;
+                        errorMessages.Add($"{dto.FileName}: {ex.Message}");
+                    }
+                }
+
+                // Hiển thị kết quả
+                var message = $"Kết quả xóa hình ảnh:\n\n";
+                message += $"✅ Thành công: {successCount} hình ảnh\n";
+                message += $"❌ Lỗi: {errorCount} hình ảnh\n";
+
+                if (errorCount > 0 && errorMessages.Any())
+                {
+                    message += "\nChi tiết lỗi:\n";
+                    foreach (var error in errorMessages.Take(5))
+                    {
+                        message += $"• {error}\n";
+                    }
+                }
+
+                if (successCount > 0)
+                {
+                    MsgBox.ShowSuccess(message);
+                    // Reload data
+                    await LoadDataAsync();
+                }
+                else
+                {
+                    MsgBox.ShowError(message);
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi khi xóa hình ảnh");
         }
     }
 

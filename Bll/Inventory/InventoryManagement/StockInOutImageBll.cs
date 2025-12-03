@@ -327,6 +327,32 @@ public class StockInOutImageBll
         }
     }
 
+    /// <summary>
+    /// Query hình ảnh theo khoảng thời gian và từ khóa
+    /// </summary>
+    /// <param name="fromDate">Từ ngày</param>
+    /// <param name="toDate">Đến ngày</param>
+    /// <param name="keyword">Từ khóa tìm kiếm (tên file, đường dẫn)</param>
+    /// <returns>Danh sách hình ảnh</returns>
+    public System.Collections.Generic.List<Dal.DataContext.StockInOutImage> QueryImages(DateTime fromDate, DateTime toDate, string keyword = null)
+    {
+        try
+        {
+            _logger.Debug("QueryImages: Bắt đầu query hình ảnh, FromDate={0}, ToDate={1}, Keyword={2}", 
+                fromDate, toDate, keyword ?? "null");
+
+            var result = GetDataAccess().QueryImages(fromDate, toDate, keyword);
+
+            _logger.Info("QueryImages: Query thành công, ResultCount={0}", result.Count);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi query hình ảnh: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 
     #region Private Helper Methods

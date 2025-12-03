@@ -197,8 +197,6 @@
             this.colWarrantyFrom.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
             this.colWarrantyFrom.FieldName = "WarrantyFrom";
             this.colWarrantyFrom.Name = "colWarrantyFrom";
-            this.colWarrantyFrom.OptionsColumn.AllowEdit = true;
-            this.colWarrantyFrom.OptionsColumn.ReadOnly = false;
             this.colWarrantyFrom.Visible = true;
             this.colWarrantyFrom.VisibleIndex = 4;
             this.colWarrantyFrom.Width = 120;
@@ -222,8 +220,6 @@
             this.colMonthOfWarranty.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.colMonthOfWarranty.FieldName = "MonthOfWarranty";
             this.colMonthOfWarranty.Name = "colMonthOfWarranty";
-            this.colMonthOfWarranty.OptionsColumn.AllowEdit = true;
-            this.colMonthOfWarranty.OptionsColumn.ReadOnly = false;
             this.colMonthOfWarranty.Visible = true;
             this.colMonthOfWarranty.VisibleIndex = 5;
             this.colMonthOfWarranty.Width = 100;

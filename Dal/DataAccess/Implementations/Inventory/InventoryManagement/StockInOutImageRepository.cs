@@ -187,6 +187,58 @@ public class StockInOutImageRepository : IStockInOutImageRepository
         }
     }
 
+    /// <summary>
+    /// Query hình ảnh theo khoảng thời gian và từ khóa
+    /// </summary>
+    /// <param name="fromDate">Từ ngày</param>
+    /// <param name="toDate">Đến ngày</param>
+    /// <param name="keyword">Từ khóa tìm kiếm (tên file, đường dẫn)</param>
+    /// <returns>Danh sách hình ảnh</returns>
+    public List<StockInOutImage> QueryImages(DateTime fromDate, DateTime toDate, string keyword = null)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("QueryImages: Bắt đầu query hình ảnh, FromDate={0}, ToDate={1}, Keyword={2}", 
+                fromDate, toDate, keyword ?? "null");
+
+            // Bắt đầu query từ StockInOutImage
+            var queryable = context.StockInOutImages.AsQueryable();
+
+            // Filter theo thời gian (CreateDate)
+            queryable = queryable.Where(x => x.CreateDate >= fromDate.Date && 
+                                            x.CreateDate <= toDate.Date.AddDays(1).AddTicks(-1));
+
+            // Filter theo từ khóa nếu có
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                var searchText = keyword.Trim();
+                queryable = queryable.Where(x =>
+                    // Tìm trong tên file
+                    (x.FileName != null && x.FileName.Contains(searchText)) ||
+                    // Tìm trong đường dẫn tương đối
+                    (x.RelativePath != null && x.RelativePath.Contains(searchText)) ||
+                    // Tìm trong đường dẫn đầy đủ
+                    (x.FullPath != null && x.FullPath.Contains(searchText))
+                );
+            }
+
+            // Sắp xếp theo ngày tạo (mới nhất trước)
+            var result = queryable
+                .OrderByDescending(x => x.CreateDate)
+                .ThenByDescending(x => x.FileName ?? string.Empty)
+                .ToList();
+
+            _logger.Info("QueryImages: Query thành công, ResultCount={0}", result.Count);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"QueryImages: Lỗi query hình ảnh: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 
     #region Delete Operations
