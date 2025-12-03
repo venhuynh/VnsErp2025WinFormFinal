@@ -8,6 +8,7 @@ using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Bll.Common.ImageStorage;
@@ -133,6 +134,33 @@ public class StockInOutDocumentBll
         return FileCategory.Document;
     }
 
+    /// <summary>
+    /// Loại bỏ các ký tự không hợp lệ trong tên file
+    /// </summary>
+    private string SanitizeFileName(string fileName)
+    {
+        if (string.IsNullOrWhiteSpace(fileName))
+            return "PHIEU";
+
+        // Loại bỏ các ký tự không hợp lệ: < > : " / \ | ? *
+        var invalidChars = Path.GetInvalidFileNameChars();
+        var sanitized = fileName;
+        
+        foreach (var c in invalidChars)
+        {
+            sanitized = sanitized.Replace(c, '_');
+        }
+
+        // Loại bỏ khoảng trắng ở đầu và cuối
+        sanitized = sanitized.Trim();
+
+        // Nếu sau khi sanitize trống, trả về giá trị mặc định
+        if (string.IsNullOrWhiteSpace(sanitized))
+            return "PHIEU";
+
+        return sanitized;
+    }
+
     #endregion
 
     #region Business Methods
@@ -161,10 +189,55 @@ public class StockInOutDocumentBll
             // 1. Đọc file
             var fileData = await Task.Run(() => File.ReadAllBytes(documentFilePath));
 
-            // 2. Tạo tên file mới để tránh trùng lặp
+            // 2. Tạo tên file mới theo format: "Số phiếu (số thứ tự file)"
             var fileExtension = Path.GetExtension(documentFilePath);
-            var originalFileName = Path.GetFileName(documentFilePath);
-            var fileName = $"Document_{stockInOutMasterId ?? businessPartnerId ?? Guid.NewGuid()}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+            string fileName;
+
+            if (stockInOutMasterId.HasValue)
+            {
+                // Lấy thông tin StockInOutMaster để lấy VocherNumber
+                var dataAccess = GetDataAccess();
+                var existingDocuments = dataAccess.GetByStockInOutMasterId(stockInOutMasterId.Value);
+                
+                // Tính số thứ tự file (bắt đầu từ 1)
+                var sequenceNumber = existingDocuments.Count + 1;
+                
+                // Lấy VocherNumber từ StockInOutMaster
+                // Thử lấy từ existingDocuments trước (nếu có document đã load StockInOutMaster)
+                string vocherNumber = "P";
+                try
+                {
+                    var firstDocument = existingDocuments.FirstOrDefault();
+                    if (firstDocument?.StockInOutMaster != null && !string.IsNullOrWhiteSpace(firstDocument.StockInOutMaster.VocherNumber))
+                    {
+                        vocherNumber = firstDocument.StockInOutMaster.VocherNumber;
+                    }
+                    else
+                    {
+                        // Nếu không có trong existingDocuments, query từ Repository
+                        var masterRepository = new StockInOutMasterRepository(ApplicationStartupManager.Instance.GetGlobalConnectionString());
+                        var vocherNumberFromRepo = masterRepository.GetVocherNumber(stockInOutMasterId.Value);
+                        if (!string.IsNullOrWhiteSpace(vocherNumberFromRepo))
+                        {
+                            vocherNumber = vocherNumberFromRepo;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warning($"Không thể lấy VocherNumber từ StockInOutMaster: {ex.Message}");
+                }
+                
+                // Tạo tên file: VocherNumber_SequenceNumber.extension
+                // Loại bỏ các ký tự không hợp lệ trong tên file
+                var safeVocherNumber = SanitizeFileName(vocherNumber);
+                fileName = $"{safeVocherNumber}_{sequenceNumber:D3}{fileExtension}";
+            }
+            else
+            {
+                // Nếu không có stockInOutMasterId, dùng format cũ
+                fileName = $"Document_{businessPartnerId ?? Guid.NewGuid()}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+            }
 
             // 3. Xác định FileCategory
             var fileCategory = GetFileCategory(documentType, stockInOutMasterId, businessPartnerId);
@@ -210,8 +283,8 @@ public class StockInOutDocumentBll
                 DocumentType = documentType,
                 DocumentCategory = documentCategory,
                 DocumentSubType = null,
-                FileName = originalFileName,
-                DisplayName = displayName ?? originalFileName,
+                FileName = fileName, // Lưu tên file mới (VocherNumber_SequenceNumber.extension)
+                DisplayName = displayName ?? fileName, // Hiển thị tên file mới để trực quan hơn
                 Description = description,
                 RelativePath = storageResult.RelativePath,
                 FullPath = storageResult.FullPath,

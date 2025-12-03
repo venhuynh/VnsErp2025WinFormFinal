@@ -4,7 +4,7 @@ using DevExpress.XtraLayout;
 
 namespace Inventory.OverlayForm
 {
-    partial class FrmStockInOutDocumentDto
+    partial class FrmAddStockInOutDocumentDto
     {
         /// <summary>
         /// Required designer variable.
@@ -36,12 +36,12 @@ namespace Inventory.OverlayForm
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.OpenSelectDocumentHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -51,18 +51,18 @@ namespace Inventory.OverlayForm
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(634, 70);
+            this.layoutControl1.Size = new System.Drawing.Size(594, 73);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
             // OpenSelectDocumentHyperlinkLabelControl
             // 
             this.OpenSelectDocumentHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
-            this.OpenSelectDocumentHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.opendoc_16x16;
-            this.OpenSelectDocumentHyperlinkLabelControl.Location = new System.Drawing.Point(260, 15);
+            this.OpenSelectDocumentHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.attachment_16x16;
+            this.OpenSelectDocumentHyperlinkLabelControl.Location = new System.Drawing.Point(242, 16);
             this.OpenSelectDocumentHyperlinkLabelControl.Name = "OpenSelectDocumentHyperlinkLabelControl";
             this.OpenSelectDocumentHyperlinkLabelControl.Padding = new System.Windows.Forms.Padding(10);
-            this.OpenSelectDocumentHyperlinkLabelControl.Size = new System.Drawing.Size(113, 40);
+            this.OpenSelectDocumentHyperlinkLabelControl.Size = new System.Drawing.Size(110, 40);
             this.OpenSelectDocumentHyperlinkLabelControl.StyleController = this.layoutControl1;
             this.OpenSelectDocumentHyperlinkLabelControl.TabIndex = 3;
             this.OpenSelectDocumentHyperlinkLabelControl.Text = "Chọn chứng từ";
@@ -72,38 +72,39 @@ namespace Inventory.OverlayForm
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem2});
+            this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(634, 70);
+            this.Root.Size = new System.Drawing.Size(594, 73);
             this.Root.TextVisible = false;
             // 
-            // layoutControlItem2
+            // layoutControlItem1
             // 
-            this.layoutControlItem2.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.layoutControlItem2.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem2.Control = this.OpenSelectDocumentHyperlinkLabelControl;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(614, 50);
-            this.layoutControlItem2.TextVisible = false;
+            this.layoutControlItem1.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.layoutControlItem1.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.layoutControlItem1.Control = this.OpenSelectDocumentHyperlinkLabelControl;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(574, 53);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // xtraOpenFileDialog1
             // 
             this.xtraOpenFileDialog1.FileName = "xtraOpenFileDialog1";
             // 
-            // FrmStockInOutDocumentDto
+            // FrmAddStockInOutDocumentDto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(634, 70);
+            this.ClientSize = new System.Drawing.Size(594, 73);
             this.Controls.Add(this.layoutControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "FrmStockInOutDocumentDto";
+            this.Name = "FrmAddStockInOutDocumentDto";
             this.Text = "Thêm chứng từ";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
+            this.layoutControl1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -113,7 +114,7 @@ namespace Inventory.OverlayForm
         private LayoutControl layoutControl1;
         private LayoutControlGroup Root;
         private HyperlinkLabelControl OpenSelectDocumentHyperlinkLabelControl;
-        private LayoutControlItem layoutControlItem2;
+        private LayoutControlItem layoutControlItem1;
         private XtraOpenFileDialog xtraOpenFileDialog1;
     }
 }

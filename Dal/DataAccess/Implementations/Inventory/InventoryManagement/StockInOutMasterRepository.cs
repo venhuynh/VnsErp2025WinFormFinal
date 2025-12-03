@@ -4,6 +4,7 @@ using Logger;
 using Logger.Configuration;
 using System;
 using System.Data.Linq;
+using System.Linq;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement;
@@ -58,6 +59,30 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
         context.LoadOptions = loadOptions;
 
         return context;
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    /// <summary>
+    /// Lấy VocherNumber từ StockInOutMaster theo ID
+    /// </summary>
+    /// <param name="id">ID của StockInOutMaster</param>
+    /// <returns>VocherNumber hoặc null nếu không tìm thấy</returns>
+    public string GetVocherNumber(Guid id)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            var master = context.StockInOutMasters.FirstOrDefault(m => m.Id == id);
+            return master?.VocherNumber;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetVocherNumber: Lỗi lấy VocherNumber cho ID={id}: {ex.Message}", ex);
+            throw;
+        }
     }
 
     #endregion

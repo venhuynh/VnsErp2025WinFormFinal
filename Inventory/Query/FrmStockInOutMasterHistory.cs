@@ -459,7 +459,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             // Mở form thêm chứng từ với OverlayManager
             using (OverlayManager.ShowScope(this))
             {
-                using var form = new FrmStockInOutDocumentDto(_selectedStockInOutMasterId.Value);
+                using var form = new FrmAddStockInOutDocumentDto(_selectedStockInOutMasterId.Value);
                     
                 form.StartPosition = FormStartPosition.CenterParent;
                 form.ShowDialog(this);
