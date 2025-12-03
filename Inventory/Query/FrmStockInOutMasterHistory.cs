@@ -119,6 +119,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
             NhapBaoHanhBarButtonItem.ItemClick += NhapBaoHanhBarButtonItem_ItemClick;
             ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
+            AttachFileBarButtonItem.ItemClick += AttachFileBarButtonItem_ItemClick;
             XoaPhieuBarButtonItem.ItemClick += XoaPhieuBarButtonItem_ItemClick;
 
             // GridView events
@@ -425,6 +426,50 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
         {
             _logger.Error("ThemHinhAnhBarButtonItem_ItemClick: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi mở form thêm hình ảnh: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Event handler cho nút Thêm chứng từ
+    /// Chỉ mở màn hình cho 1 phiếu được chọn, sử dụng OverlayManager
+    /// </summary>
+    private void AttachFileBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    {
+        try
+        {
+            // Kiểm tra số lượng phiếu được chọn - chỉ cho phép 1 phiếu
+            var selectedCount = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
+            switch (selectedCount)
+            {
+                case 0:
+                    MsgBox.ShowWarning("Vui lòng chọn một phiếu nhập xuất kho để thêm chứng từ.");
+                    return;
+                case > 1:
+                    MsgBox.ShowWarning("Chỉ cho phép thêm chứng từ cho 1 phiếu. Vui lòng bỏ chọn bớt.");
+                    return;
+            }
+
+            // Kiểm tra ID phiếu được chọn
+            if (!_selectedStockInOutMasterId.HasValue || _selectedStockInOutMasterId.Value == Guid.Empty)
+            {
+                MsgBox.ShowWarning("Vui lòng chọn phiếu nhập xuất kho để thêm chứng từ.");
+                return;
+            }
+
+            // Mở form thêm chứng từ với OverlayManager
+            using (OverlayManager.ShowScope(this))
+            {
+                using var form = new FrmStockInOutDocumentDto(_selectedStockInOutMasterId.Value);
+                    
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.ShowDialog(this);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("AttachFileBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi mở form thêm chứng từ: {ex.Message}");
         }
     }
 
@@ -741,6 +786,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             InPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             NhapBaoHanhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             ThemHinhAnhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
+            AttachFileBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             XoaPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;
         }
         catch (Exception ex)

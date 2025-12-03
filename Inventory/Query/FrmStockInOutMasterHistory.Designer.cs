@@ -46,6 +46,7 @@
             this.InPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.NhapBaoHanhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XoaPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -56,7 +57,7 @@
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.XoaPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.AttachFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutMasterHistoryDtoGridControl)).BeginInit();
@@ -163,9 +164,10 @@
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
             this.ChiTietPhieuNhapXuatBarButtonItem,
-            this.XoaPhieuBarButtonItem});
+            this.XoaPhieuBarButtonItem,
+            this.AttachFileBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 15;
+            this.barManager1.MaxItemId = 16;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit1,
             this.repositoryItemDateEdit2});
@@ -186,6 +188,7 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapBaoHanhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AttachFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
@@ -263,6 +266,13 @@
             this.ThemHinhAnhBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.insertimage_16x16;
             this.ThemHinhAnhBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.insertimage_32x32;
             this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
+            // 
+            // XoaPhieuBarButtonItem
+            // 
+            this.XoaPhieuBarButtonItem.Caption = "Xóa phiếu";
+            this.XoaPhieuBarButtonItem.Id = 14;
+            this.XoaPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.clear_16x16;
+            this.XoaPhieuBarButtonItem.Name = "XoaPhieuBarButtonItem";
             // 
             // bar1
             // 
@@ -350,14 +360,15 @@
             this.layoutControlItem1.Size = new System.Drawing.Size(1351, 726);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // XoaPhieuBarButtonItem
+            // AttachFileBarButtonItem
             // 
-            this.XoaPhieuBarButtonItem.Caption = "Xóa phiếu";
-            this.XoaPhieuBarButtonItem.Id = 14;
-            this.XoaPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.clear_16x16;
-            this.XoaPhieuBarButtonItem.Name = "XoaPhieuBarButtonItem";
+            this.AttachFileBarButtonItem.Caption = "Thêm chứng từ";
+            this.AttachFileBarButtonItem.Id = 15;
+            this.AttachFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.attachment_16x16;
+            this.AttachFileBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.attachment_32x32;
+            this.AttachFileBarButtonItem.Name = "AttachFileBarButtonItem";
             // 
-            // FrmStockInOutHistory
+            // FrmStockInOutMasterHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -367,7 +378,7 @@
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.Name = "FrmStockInOutHistory";
+            this.Name = "FrmStockInOutMasterHistory";
             this.Text = "LỊCH SỬ NHẬP XUẤT KHO";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
@@ -418,5 +429,6 @@
         private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ChiTietPhieuNhapXuatBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem XoaPhieuBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem AttachFileBarButtonItem;
     }
 }
