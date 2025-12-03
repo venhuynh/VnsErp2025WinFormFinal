@@ -37,16 +37,15 @@
             this.colFileName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colFileSizeDisplay = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colImageData = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDisplayCaption = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colVocherNumber = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colGroupCaption = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colCreateDate = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colFullPath = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colStorageType = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colFileExtension = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDisplayCaption = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colVocherNumber = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colGroupCaption = new DevExpress.XtraGrid.Columns.GridColumn();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
-            this.KeyWordBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TuNgayBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemDateEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
@@ -131,7 +130,6 @@
             this.StockInOutImageDtoWinExplorerView.OptionsSelection.ItemSelectionMode = DevExpress.XtraGrid.Views.WinExplorer.IconItemSelectionMode.Click;
             this.StockInOutImageDtoWinExplorerView.OptionsSelection.MultiSelect = true;
             this.StockInOutImageDtoWinExplorerView.OptionsView.ImageLayoutMode = DevExpress.Utils.Drawing.ImageLayoutMode.Stretch;
-            this.StockInOutImageDtoWinExplorerView.OptionsView.ShowCheckBoxInGroupCaption = true;
             this.StockInOutImageDtoWinExplorerView.OptionsView.ShowExpandCollapseButtons = true;
             this.StockInOutImageDtoWinExplorerView.OptionsView.Style = DevExpress.XtraGrid.Views.WinExplorer.WinExplorerViewStyle.ExtraLarge;
             this.StockInOutImageDtoWinExplorerView.OptionsViewStyles.ExtraLarge.ImageSize = new System.Drawing.Size(256, 256);
@@ -230,10 +228,9 @@
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
             this.XoaPhieuBarButtonItem,
-            this.KeyWordBarEditItem,
             this.XuatFileBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 17;
+            this.barManager1.MaxItemId = 18;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit1,
             this.repositoryItemDateEdit2,
@@ -248,7 +245,6 @@
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.KeyWordBarEditItem, "", false, true, true, 147, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.TuNgayBarEditItem, "", false, true, true, 117, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.DenNgayBarEditItem, "", false, true, true, 125, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBaoCaoBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
@@ -257,13 +253,6 @@
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
-            // 
-            // KeyWordBarEditItem
-            // 
-            this.KeyWordBarEditItem.Caption = "Từ khóa";
-            this.KeyWordBarEditItem.Edit = this.repositoryItemTextEdit1;
-            this.KeyWordBarEditItem.Id = 15;
-            this.KeyWordBarEditItem.Name = "KeyWordBarEditItem";
             // 
             // repositoryItemTextEdit1
             // 
@@ -320,9 +309,9 @@
             // 
             // XuatFileBarButtonItem
             // 
-            this.XuatFileBarButtonItem.Caption = "Xuất file";
+            this.XuatFileBarButtonItem.Caption = "Tải về";
             this.XuatFileBarButtonItem.Id = 16;
-            this.XuatFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.exporttoxps_16x16;
+            this.XuatFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.save_16x16;
             this.XuatFileBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.exporttoxps_32x32;
             this.XuatFileBarButtonItem.Name = "XuatFileBarButtonItem";
             // 
@@ -465,7 +454,6 @@
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
         private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem XoaPhieuBarButtonItem;
-        private DevExpress.XtraBars.BarEditItem KeyWordBarEditItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
         private DevExpress.XtraBars.BarButtonItem XuatFileBarButtonItem;
         private DevExpress.XtraGrid.Views.WinExplorer.WinExplorerView StockInOutImageDtoWinExplorerView;
