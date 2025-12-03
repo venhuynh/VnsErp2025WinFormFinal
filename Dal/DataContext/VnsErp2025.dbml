@@ -65,6 +65,7 @@
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartner_BusinessPartnerCategory" />
       <Association Name="BusinessPartner_BusinessPartnerSite" Member="BusinessPartnerSites" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartnerSite" />
+      <Association Name="BusinessPartner_StockInOutDocument" Member="StockInOutDocuments" ThisKey="Id" OtherKey="BusinessPartnerId" Type="StockInOutDocument" />
     </Type>
   </Table>
   <Table Name="dbo.BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories">
@@ -434,6 +435,64 @@
       <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutMaster" ThisKey="StockInOutMasterId" OtherKey="Id" Type="StockInOutMaster" IsForeignKey="true" />
     </Type>
   </Table>
+  <Table Name="dbo.StockInOutDocument" Member="StockInOutDocuments">
+    <Type Name="StockInOutDocument">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StockInOutMasterId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="BusinessPartnerId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="PurchaseOrderId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="RelatedEntityType" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="RelatedEntityId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DocumentType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DocumentCategory" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DocumentSubType" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="FileName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="DisplayName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="RelativePath" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="FullPath" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="NASShareName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="StorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="StorageProvider" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="FileExtension" Type="System.String" DbType="NVarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="MimeType" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="FileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="Checksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="FileVersion" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DocumentNumber" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="DocumentDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IssueDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ExpiryDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Amount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Currency" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="IsPublic" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsConfidential" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AccessLevel" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AccessUrl" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="PasswordHash" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="FileExists" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="LastVerified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsVerified" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="VerifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="VerifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="MigrationStatus" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="HasThumbnail" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ThumbnailPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="ThumbnailFileName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Tags" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="Keywords" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreateBy" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="DeletedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DeletedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="BusinessPartner_StockInOutDocument" Member="BusinessPartner" ThisKey="BusinessPartnerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" />
+      <Association Name="StockInOutMaster_StockInOutDocument" Member="StockInOutMaster" ThisKey="StockInOutMasterId" OtherKey="Id" Type="StockInOutMaster" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.StockInOutImage" Member="StockInOutImages">
     <Type Name="StockInOutImage">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -479,6 +538,7 @@
       <Column Name="NguoiNhanHang" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Column Name="NguoiGiaoHang" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDetail" />
+      <Association Name="StockInOutMaster_StockInOutDocument" Member="StockInOutDocuments" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDocument" />
       <Association Name="StockInOutMaster_StockInOutImage" Member="StockInOutImages" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutImage" />
       <Association Name="BusinessPartnerSite_StockInOutMaster" Member="BusinessPartnerSite" ThisKey="PartnerSiteId" OtherKey="Id" Type="BusinessPartnerSite" IsForeignKey="true" />
       <Association Name="CompanyBranch_StockInOutMaster" Member="CompanyBranch" ThisKey="WarehouseId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />

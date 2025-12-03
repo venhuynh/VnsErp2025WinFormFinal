@@ -475,6 +475,7 @@
       <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
+    <None Include="Doc\DatabaseSchema_StockInOutDocument_Proposal.md" />
     <None Include="Doc\Inventory.mmap" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_03_NhapKhoTheoPOCustomer.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_02_NhapKhoTheoPONCC.md" />

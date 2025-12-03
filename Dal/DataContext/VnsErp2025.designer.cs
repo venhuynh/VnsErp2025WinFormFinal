@@ -96,6 +96,9 @@ namespace Dal.DataContext
     partial void InsertStockInOutDetail(StockInOutDetail instance);
     partial void UpdateStockInOutDetail(StockInOutDetail instance);
     partial void DeleteStockInOutDetail(StockInOutDetail instance);
+    partial void InsertStockInOutDocument(StockInOutDocument instance);
+    partial void UpdateStockInOutDocument(StockInOutDocument instance);
+    partial void DeleteStockInOutDocument(StockInOutDocument instance);
     partial void InsertStockInOutImage(StockInOutImage instance);
     partial void UpdateStockInOutImage(StockInOutImage instance);
     partial void DeleteStockInOutImage(StockInOutImage instance);
@@ -313,6 +316,14 @@ namespace Dal.DataContext
 			get
 			{
 				return this.GetTable<StockInOutDetail>();
+			}
+		}
+		
+		public System.Data.Linq.Table<StockInOutDocument> StockInOutDocuments
+		{
+			get
+			{
+				return this.GetTable<StockInOutDocument>();
 			}
 		}
 		
@@ -1201,6 +1212,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<BusinessPartnerSite> _BusinessPartnerSites;
 		
+		private EntitySet<StockInOutDocument> _StockInOutDocuments;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1251,6 +1264,7 @@ namespace Dal.DataContext
 		{
 			this._BusinessPartner_BusinessPartnerCategories = new EntitySet<BusinessPartner_BusinessPartnerCategory>(new Action<BusinessPartner_BusinessPartnerCategory>(this.attach_BusinessPartner_BusinessPartnerCategories), new Action<BusinessPartner_BusinessPartnerCategory>(this.detach_BusinessPartner_BusinessPartnerCategories));
 			this._BusinessPartnerSites = new EntitySet<BusinessPartnerSite>(new Action<BusinessPartnerSite>(this.attach_BusinessPartnerSites), new Action<BusinessPartnerSite>(this.detach_BusinessPartnerSites));
+			this._StockInOutDocuments = new EntitySet<StockInOutDocument>(new Action<StockInOutDocument>(this.attach_StockInOutDocuments), new Action<StockInOutDocument>(this.detach_StockInOutDocuments));
 			OnCreated();
 		}
 		
@@ -1680,6 +1694,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartner_StockInOutDocument", Storage="_StockInOutDocuments", ThisKey="Id", OtherKey="BusinessPartnerId")]
+		public EntitySet<StockInOutDocument> StockInOutDocuments
+		{
+			get
+			{
+				return this._StockInOutDocuments;
+			}
+			set
+			{
+				this._StockInOutDocuments.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1719,6 +1746,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_BusinessPartnerSites(BusinessPartnerSite entity)
+		{
+			this.SendPropertyChanging();
+			entity.BusinessPartner = null;
+		}
+		
+		private void attach_StockInOutDocuments(StockInOutDocument entity)
+		{
+			this.SendPropertyChanging();
+			entity.BusinessPartner = this;
+		}
+		
+		private void detach_StockInOutDocuments(StockInOutDocument entity)
 		{
 			this.SendPropertyChanging();
 			entity.BusinessPartner = null;
@@ -10320,6 +10359,1374 @@ namespace Dal.DataContext
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.StockInOutDocument")]
+	public partial class StockInOutDocument : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Nullable<System.Guid> _StockInOutMasterId;
+		
+		private System.Nullable<System.Guid> _BusinessPartnerId;
+		
+		private System.Nullable<System.Guid> _PurchaseOrderId;
+		
+		private string _RelatedEntityType;
+		
+		private System.Nullable<System.Guid> _RelatedEntityId;
+		
+		private int _DocumentType;
+		
+		private System.Nullable<int> _DocumentCategory;
+		
+		private string _DocumentSubType;
+		
+		private string _FileName;
+		
+		private string _DisplayName;
+		
+		private string _Description;
+		
+		private string _RelativePath;
+		
+		private string _FullPath;
+		
+		private string _NASShareName;
+		
+		private string _StorageType;
+		
+		private string _StorageProvider;
+		
+		private string _FileExtension;
+		
+		private string _MimeType;
+		
+		private System.Nullable<long> _FileSize;
+		
+		private string _Checksum;
+		
+		private System.Nullable<int> _FileVersion;
+		
+		private string _DocumentNumber;
+		
+		private System.Nullable<System.DateTime> _DocumentDate;
+		
+		private System.Nullable<System.DateTime> _IssueDate;
+		
+		private System.Nullable<System.DateTime> _ExpiryDate;
+		
+		private System.Nullable<decimal> _Amount;
+		
+		private string _Currency;
+		
+		private System.Nullable<bool> _IsPublic;
+		
+		private System.Nullable<bool> _IsConfidential;
+		
+		private System.Nullable<int> _AccessLevel;
+		
+		private string _AccessUrl;
+		
+		private string _PasswordHash;
+		
+		private System.Nullable<bool> _FileExists;
+		
+		private System.Nullable<System.DateTime> _LastVerified;
+		
+		private System.Nullable<bool> _IsVerified;
+		
+		private System.Nullable<System.Guid> _VerifiedBy;
+		
+		private System.Nullable<System.DateTime> _VerifiedDate;
+		
+		private string _MigrationStatus;
+		
+		private System.Nullable<bool> _HasThumbnail;
+		
+		private string _ThumbnailPath;
+		
+		private string _ThumbnailFileName;
+		
+		private string _Tags;
+		
+		private string _Keywords;
+		
+		private System.DateTime _CreateDate;
+		
+		private System.Guid _CreateBy;
+		
+		private System.Nullable<System.DateTime> _ModifiedDate;
+		
+		private System.Nullable<System.Guid> _ModifiedBy;
+		
+		private bool _IsActive;
+		
+		private bool _IsDeleted;
+		
+		private System.Nullable<System.DateTime> _DeletedDate;
+		
+		private System.Nullable<System.Guid> _DeletedBy;
+		
+		private EntityRef<BusinessPartner> _BusinessPartner;
+		
+		private EntityRef<StockInOutMaster> _StockInOutMaster;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnStockInOutMasterIdChanging(System.Nullable<System.Guid> value);
+    partial void OnStockInOutMasterIdChanged();
+    partial void OnBusinessPartnerIdChanging(System.Nullable<System.Guid> value);
+    partial void OnBusinessPartnerIdChanged();
+    partial void OnPurchaseOrderIdChanging(System.Nullable<System.Guid> value);
+    partial void OnPurchaseOrderIdChanged();
+    partial void OnRelatedEntityTypeChanging(string value);
+    partial void OnRelatedEntityTypeChanged();
+    partial void OnRelatedEntityIdChanging(System.Nullable<System.Guid> value);
+    partial void OnRelatedEntityIdChanged();
+    partial void OnDocumentTypeChanging(int value);
+    partial void OnDocumentTypeChanged();
+    partial void OnDocumentCategoryChanging(System.Nullable<int> value);
+    partial void OnDocumentCategoryChanged();
+    partial void OnDocumentSubTypeChanging(string value);
+    partial void OnDocumentSubTypeChanged();
+    partial void OnFileNameChanging(string value);
+    partial void OnFileNameChanged();
+    partial void OnDisplayNameChanging(string value);
+    partial void OnDisplayNameChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnRelativePathChanging(string value);
+    partial void OnRelativePathChanged();
+    partial void OnFullPathChanging(string value);
+    partial void OnFullPathChanged();
+    partial void OnNASShareNameChanging(string value);
+    partial void OnNASShareNameChanged();
+    partial void OnStorageTypeChanging(string value);
+    partial void OnStorageTypeChanged();
+    partial void OnStorageProviderChanging(string value);
+    partial void OnStorageProviderChanged();
+    partial void OnFileExtensionChanging(string value);
+    partial void OnFileExtensionChanged();
+    partial void OnMimeTypeChanging(string value);
+    partial void OnMimeTypeChanged();
+    partial void OnFileSizeChanging(System.Nullable<long> value);
+    partial void OnFileSizeChanged();
+    partial void OnChecksumChanging(string value);
+    partial void OnChecksumChanged();
+    partial void OnFileVersionChanging(System.Nullable<int> value);
+    partial void OnFileVersionChanged();
+    partial void OnDocumentNumberChanging(string value);
+    partial void OnDocumentNumberChanged();
+    partial void OnDocumentDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDocumentDateChanged();
+    partial void OnIssueDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnIssueDateChanged();
+    partial void OnExpiryDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnExpiryDateChanged();
+    partial void OnAmountChanging(System.Nullable<decimal> value);
+    partial void OnAmountChanged();
+    partial void OnCurrencyChanging(string value);
+    partial void OnCurrencyChanged();
+    partial void OnIsPublicChanging(System.Nullable<bool> value);
+    partial void OnIsPublicChanged();
+    partial void OnIsConfidentialChanging(System.Nullable<bool> value);
+    partial void OnIsConfidentialChanged();
+    partial void OnAccessLevelChanging(System.Nullable<int> value);
+    partial void OnAccessLevelChanged();
+    partial void OnAccessUrlChanging(string value);
+    partial void OnAccessUrlChanged();
+    partial void OnPasswordHashChanging(string value);
+    partial void OnPasswordHashChanged();
+    partial void OnFileExistsChanging(System.Nullable<bool> value);
+    partial void OnFileExistsChanged();
+    partial void OnLastVerifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastVerifiedChanged();
+    partial void OnIsVerifiedChanging(System.Nullable<bool> value);
+    partial void OnIsVerifiedChanged();
+    partial void OnVerifiedByChanging(System.Nullable<System.Guid> value);
+    partial void OnVerifiedByChanged();
+    partial void OnVerifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnVerifiedDateChanged();
+    partial void OnMigrationStatusChanging(string value);
+    partial void OnMigrationStatusChanged();
+    partial void OnHasThumbnailChanging(System.Nullable<bool> value);
+    partial void OnHasThumbnailChanged();
+    partial void OnThumbnailPathChanging(string value);
+    partial void OnThumbnailPathChanged();
+    partial void OnThumbnailFileNameChanging(string value);
+    partial void OnThumbnailFileNameChanged();
+    partial void OnTagsChanging(string value);
+    partial void OnTagsChanged();
+    partial void OnKeywordsChanging(string value);
+    partial void OnKeywordsChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnCreateByChanging(System.Guid value);
+    partial void OnCreateByChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
+    partial void OnModifiedByChanging(System.Nullable<System.Guid> value);
+    partial void OnModifiedByChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnIsDeletedChanging(bool value);
+    partial void OnIsDeletedChanged();
+    partial void OnDeletedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeletedDateChanged();
+    partial void OnDeletedByChanging(System.Nullable<System.Guid> value);
+    partial void OnDeletedByChanged();
+    #endregion
+		
+		public StockInOutDocument()
+		{
+			this._BusinessPartner = default(EntityRef<BusinessPartner>);
+			this._StockInOutMaster = default(EntityRef<StockInOutMaster>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutMasterId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> StockInOutMasterId
+		{
+			get
+			{
+				return this._StockInOutMasterId;
+			}
+			set
+			{
+				if ((this._StockInOutMasterId != value))
+				{
+					if (this._StockInOutMaster.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnStockInOutMasterIdChanging(value);
+					this.SendPropertyChanging();
+					this._StockInOutMasterId = value;
+					this.SendPropertyChanged("StockInOutMasterId");
+					this.OnStockInOutMasterIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BusinessPartnerId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> BusinessPartnerId
+		{
+			get
+			{
+				return this._BusinessPartnerId;
+			}
+			set
+			{
+				if ((this._BusinessPartnerId != value))
+				{
+					if (this._BusinessPartner.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnBusinessPartnerIdChanging(value);
+					this.SendPropertyChanging();
+					this._BusinessPartnerId = value;
+					this.SendPropertyChanged("BusinessPartnerId");
+					this.OnBusinessPartnerIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PurchaseOrderId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> PurchaseOrderId
+		{
+			get
+			{
+				return this._PurchaseOrderId;
+			}
+			set
+			{
+				if ((this._PurchaseOrderId != value))
+				{
+					this.OnPurchaseOrderIdChanging(value);
+					this.SendPropertyChanging();
+					this._PurchaseOrderId = value;
+					this.SendPropertyChanged("PurchaseOrderId");
+					this.OnPurchaseOrderIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelatedEntityType", DbType="NVarChar(50)")]
+		public string RelatedEntityType
+		{
+			get
+			{
+				return this._RelatedEntityType;
+			}
+			set
+			{
+				if ((this._RelatedEntityType != value))
+				{
+					this.OnRelatedEntityTypeChanging(value);
+					this.SendPropertyChanging();
+					this._RelatedEntityType = value;
+					this.SendPropertyChanged("RelatedEntityType");
+					this.OnRelatedEntityTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelatedEntityId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> RelatedEntityId
+		{
+			get
+			{
+				return this._RelatedEntityId;
+			}
+			set
+			{
+				if ((this._RelatedEntityId != value))
+				{
+					this.OnRelatedEntityIdChanging(value);
+					this.SendPropertyChanging();
+					this._RelatedEntityId = value;
+					this.SendPropertyChanged("RelatedEntityId");
+					this.OnRelatedEntityIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DocumentType", DbType="Int NOT NULL")]
+		public int DocumentType
+		{
+			get
+			{
+				return this._DocumentType;
+			}
+			set
+			{
+				if ((this._DocumentType != value))
+				{
+					this.OnDocumentTypeChanging(value);
+					this.SendPropertyChanging();
+					this._DocumentType = value;
+					this.SendPropertyChanged("DocumentType");
+					this.OnDocumentTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DocumentCategory", DbType="Int")]
+		public System.Nullable<int> DocumentCategory
+		{
+			get
+			{
+				return this._DocumentCategory;
+			}
+			set
+			{
+				if ((this._DocumentCategory != value))
+				{
+					this.OnDocumentCategoryChanging(value);
+					this.SendPropertyChanging();
+					this._DocumentCategory = value;
+					this.SendPropertyChanged("DocumentCategory");
+					this.OnDocumentCategoryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DocumentSubType", DbType="NVarChar(100)")]
+		public string DocumentSubType
+		{
+			get
+			{
+				return this._DocumentSubType;
+			}
+			set
+			{
+				if ((this._DocumentSubType != value))
+				{
+					this.OnDocumentSubTypeChanging(value);
+					this.SendPropertyChanging();
+					this._DocumentSubType = value;
+					this.SendPropertyChanged("DocumentSubType");
+					this.OnDocumentSubTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileName", DbType="NVarChar(255) NOT NULL", CanBeNull=false)]
+		public string FileName
+		{
+			get
+			{
+				return this._FileName;
+			}
+			set
+			{
+				if ((this._FileName != value))
+				{
+					this.OnFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._FileName = value;
+					this.SendPropertyChanged("FileName");
+					this.OnFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DisplayName", DbType="NVarChar(255)")]
+		public string DisplayName
+		{
+			get
+			{
+				return this._DisplayName;
+			}
+			set
+			{
+				if ((this._DisplayName != value))
+				{
+					this.OnDisplayNameChanging(value);
+					this.SendPropertyChanging();
+					this._DisplayName = value;
+					this.SendPropertyChanged("DisplayName");
+					this.OnDisplayNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(1000)")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelativePath", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
+		public string RelativePath
+		{
+			get
+			{
+				return this._RelativePath;
+			}
+			set
+			{
+				if ((this._RelativePath != value))
+				{
+					this.OnRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._RelativePath = value;
+					this.SendPropertyChanged("RelativePath");
+					this.OnRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FullPath", DbType="NVarChar(1000)")]
+		public string FullPath
+		{
+			get
+			{
+				return this._FullPath;
+			}
+			set
+			{
+				if ((this._FullPath != value))
+				{
+					this.OnFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._FullPath = value;
+					this.SendPropertyChanged("FullPath");
+					this.OnFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NASShareName", DbType="NVarChar(100)")]
+		public string NASShareName
+		{
+			get
+			{
+				return this._NASShareName;
+			}
+			set
+			{
+				if ((this._NASShareName != value))
+				{
+					this.OnNASShareNameChanging(value);
+					this.SendPropertyChanging();
+					this._NASShareName = value;
+					this.SendPropertyChanged("NASShareName");
+					this.OnNASShareNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StorageType", DbType="NVarChar(20)")]
+		public string StorageType
+		{
+			get
+			{
+				return this._StorageType;
+			}
+			set
+			{
+				if ((this._StorageType != value))
+				{
+					this.OnStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._StorageType = value;
+					this.SendPropertyChanged("StorageType");
+					this.OnStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StorageProvider", DbType="NVarChar(50)")]
+		public string StorageProvider
+		{
+			get
+			{
+				return this._StorageProvider;
+			}
+			set
+			{
+				if ((this._StorageProvider != value))
+				{
+					this.OnStorageProviderChanging(value);
+					this.SendPropertyChanging();
+					this._StorageProvider = value;
+					this.SendPropertyChanged("StorageProvider");
+					this.OnStorageProviderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExtension", DbType="NVarChar(10) NOT NULL", CanBeNull=false)]
+		public string FileExtension
+		{
+			get
+			{
+				return this._FileExtension;
+			}
+			set
+			{
+				if ((this._FileExtension != value))
+				{
+					this.OnFileExtensionChanging(value);
+					this.SendPropertyChanging();
+					this._FileExtension = value;
+					this.SendPropertyChanged("FileExtension");
+					this.OnFileExtensionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MimeType", DbType="NVarChar(100)")]
+		public string MimeType
+		{
+			get
+			{
+				return this._MimeType;
+			}
+			set
+			{
+				if ((this._MimeType != value))
+				{
+					this.OnMimeTypeChanging(value);
+					this.SendPropertyChanging();
+					this._MimeType = value;
+					this.SendPropertyChanged("MimeType");
+					this.OnMimeTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileSize", DbType="BigInt")]
+		public System.Nullable<long> FileSize
+		{
+			get
+			{
+				return this._FileSize;
+			}
+			set
+			{
+				if ((this._FileSize != value))
+				{
+					this.OnFileSizeChanging(value);
+					this.SendPropertyChanging();
+					this._FileSize = value;
+					this.SendPropertyChanged("FileSize");
+					this.OnFileSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Checksum", DbType="NVarChar(64)")]
+		public string Checksum
+		{
+			get
+			{
+				return this._Checksum;
+			}
+			set
+			{
+				if ((this._Checksum != value))
+				{
+					this.OnChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._Checksum = value;
+					this.SendPropertyChanged("Checksum");
+					this.OnChecksumChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileVersion", DbType="Int")]
+		public System.Nullable<int> FileVersion
+		{
+			get
+			{
+				return this._FileVersion;
+			}
+			set
+			{
+				if ((this._FileVersion != value))
+				{
+					this.OnFileVersionChanging(value);
+					this.SendPropertyChanging();
+					this._FileVersion = value;
+					this.SendPropertyChanged("FileVersion");
+					this.OnFileVersionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DocumentNumber", DbType="NVarChar(100)")]
+		public string DocumentNumber
+		{
+			get
+			{
+				return this._DocumentNumber;
+			}
+			set
+			{
+				if ((this._DocumentNumber != value))
+				{
+					this.OnDocumentNumberChanging(value);
+					this.SendPropertyChanging();
+					this._DocumentNumber = value;
+					this.SendPropertyChanged("DocumentNumber");
+					this.OnDocumentNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DocumentDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> DocumentDate
+		{
+			get
+			{
+				return this._DocumentDate;
+			}
+			set
+			{
+				if ((this._DocumentDate != value))
+				{
+					this.OnDocumentDateChanging(value);
+					this.SendPropertyChanging();
+					this._DocumentDate = value;
+					this.SendPropertyChanged("DocumentDate");
+					this.OnDocumentDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IssueDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> IssueDate
+		{
+			get
+			{
+				return this._IssueDate;
+			}
+			set
+			{
+				if ((this._IssueDate != value))
+				{
+					this.OnIssueDateChanging(value);
+					this.SendPropertyChanging();
+					this._IssueDate = value;
+					this.SendPropertyChanged("IssueDate");
+					this.OnIssueDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ExpiryDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ExpiryDate
+		{
+			get
+			{
+				return this._ExpiryDate;
+			}
+			set
+			{
+				if ((this._ExpiryDate != value))
+				{
+					this.OnExpiryDateChanging(value);
+					this.SendPropertyChanging();
+					this._ExpiryDate = value;
+					this.SendPropertyChanged("ExpiryDate");
+					this.OnExpiryDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Amount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> Amount
+		{
+			get
+			{
+				return this._Amount;
+			}
+			set
+			{
+				if ((this._Amount != value))
+				{
+					this.OnAmountChanging(value);
+					this.SendPropertyChanging();
+					this._Amount = value;
+					this.SendPropertyChanged("Amount");
+					this.OnAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Currency", DbType="NVarChar(10)")]
+		public string Currency
+		{
+			get
+			{
+				return this._Currency;
+			}
+			set
+			{
+				if ((this._Currency != value))
+				{
+					this.OnCurrencyChanging(value);
+					this.SendPropertyChanging();
+					this._Currency = value;
+					this.SendPropertyChanged("Currency");
+					this.OnCurrencyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPublic", DbType="Bit")]
+		public System.Nullable<bool> IsPublic
+		{
+			get
+			{
+				return this._IsPublic;
+			}
+			set
+			{
+				if ((this._IsPublic != value))
+				{
+					this.OnIsPublicChanging(value);
+					this.SendPropertyChanging();
+					this._IsPublic = value;
+					this.SendPropertyChanged("IsPublic");
+					this.OnIsPublicChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsConfidential", DbType="Bit")]
+		public System.Nullable<bool> IsConfidential
+		{
+			get
+			{
+				return this._IsConfidential;
+			}
+			set
+			{
+				if ((this._IsConfidential != value))
+				{
+					this.OnIsConfidentialChanging(value);
+					this.SendPropertyChanging();
+					this._IsConfidential = value;
+					this.SendPropertyChanged("IsConfidential");
+					this.OnIsConfidentialChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AccessLevel", DbType="Int")]
+		public System.Nullable<int> AccessLevel
+		{
+			get
+			{
+				return this._AccessLevel;
+			}
+			set
+			{
+				if ((this._AccessLevel != value))
+				{
+					this.OnAccessLevelChanging(value);
+					this.SendPropertyChanging();
+					this._AccessLevel = value;
+					this.SendPropertyChanged("AccessLevel");
+					this.OnAccessLevelChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AccessUrl", DbType="NVarChar(1000)")]
+		public string AccessUrl
+		{
+			get
+			{
+				return this._AccessUrl;
+			}
+			set
+			{
+				if ((this._AccessUrl != value))
+				{
+					this.OnAccessUrlChanging(value);
+					this.SendPropertyChanging();
+					this._AccessUrl = value;
+					this.SendPropertyChanged("AccessUrl");
+					this.OnAccessUrlChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PasswordHash", DbType="NVarChar(255)")]
+		public string PasswordHash
+		{
+			get
+			{
+				return this._PasswordHash;
+			}
+			set
+			{
+				if ((this._PasswordHash != value))
+				{
+					this.OnPasswordHashChanging(value);
+					this.SendPropertyChanging();
+					this._PasswordHash = value;
+					this.SendPropertyChanged("PasswordHash");
+					this.OnPasswordHashChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExists", DbType="Bit")]
+		public System.Nullable<bool> FileExists
+		{
+			get
+			{
+				return this._FileExists;
+			}
+			set
+			{
+				if ((this._FileExists != value))
+				{
+					this.OnFileExistsChanging(value);
+					this.SendPropertyChanging();
+					this._FileExists = value;
+					this.SendPropertyChanged("FileExists");
+					this.OnFileExistsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastVerified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastVerified
+		{
+			get
+			{
+				return this._LastVerified;
+			}
+			set
+			{
+				if ((this._LastVerified != value))
+				{
+					this.OnLastVerifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastVerified = value;
+					this.SendPropertyChanged("LastVerified");
+					this.OnLastVerifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsVerified", DbType="Bit")]
+		public System.Nullable<bool> IsVerified
+		{
+			get
+			{
+				return this._IsVerified;
+			}
+			set
+			{
+				if ((this._IsVerified != value))
+				{
+					this.OnIsVerifiedChanging(value);
+					this.SendPropertyChanging();
+					this._IsVerified = value;
+					this.SendPropertyChanged("IsVerified");
+					this.OnIsVerifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VerifiedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> VerifiedBy
+		{
+			get
+			{
+				return this._VerifiedBy;
+			}
+			set
+			{
+				if ((this._VerifiedBy != value))
+				{
+					this.OnVerifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._VerifiedBy = value;
+					this.SendPropertyChanged("VerifiedBy");
+					this.OnVerifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VerifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> VerifiedDate
+		{
+			get
+			{
+				return this._VerifiedDate;
+			}
+			set
+			{
+				if ((this._VerifiedDate != value))
+				{
+					this.OnVerifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._VerifiedDate = value;
+					this.SendPropertyChanged("VerifiedDate");
+					this.OnVerifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MigrationStatus", DbType="NVarChar(20)")]
+		public string MigrationStatus
+		{
+			get
+			{
+				return this._MigrationStatus;
+			}
+			set
+			{
+				if ((this._MigrationStatus != value))
+				{
+					this.OnMigrationStatusChanging(value);
+					this.SendPropertyChanging();
+					this._MigrationStatus = value;
+					this.SendPropertyChanged("MigrationStatus");
+					this.OnMigrationStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HasThumbnail", DbType="Bit")]
+		public System.Nullable<bool> HasThumbnail
+		{
+			get
+			{
+				return this._HasThumbnail;
+			}
+			set
+			{
+				if ((this._HasThumbnail != value))
+				{
+					this.OnHasThumbnailChanging(value);
+					this.SendPropertyChanging();
+					this._HasThumbnail = value;
+					this.SendPropertyChanged("HasThumbnail");
+					this.OnHasThumbnailChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailPath", DbType="NVarChar(500)")]
+		public string ThumbnailPath
+		{
+			get
+			{
+				return this._ThumbnailPath;
+			}
+			set
+			{
+				if ((this._ThumbnailPath != value))
+				{
+					this.OnThumbnailPathChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailPath = value;
+					this.SendPropertyChanged("ThumbnailPath");
+					this.OnThumbnailPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailFileName", DbType="NVarChar(255)")]
+		public string ThumbnailFileName
+		{
+			get
+			{
+				return this._ThumbnailFileName;
+			}
+			set
+			{
+				if ((this._ThumbnailFileName != value))
+				{
+					this.OnThumbnailFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._ThumbnailFileName = value;
+					this.SendPropertyChanged("ThumbnailFileName");
+					this.OnThumbnailFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Tags", DbType="NVarChar(500)")]
+		public string Tags
+		{
+			get
+			{
+				return this._Tags;
+			}
+			set
+			{
+				if ((this._Tags != value))
+				{
+					this.OnTagsChanging(value);
+					this.SendPropertyChanging();
+					this._Tags = value;
+					this.SendPropertyChanged("Tags");
+					this.OnTagsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Keywords", DbType="NVarChar(1000)")]
+		public string Keywords
+		{
+			get
+			{
+				return this._Keywords;
+			}
+			set
+			{
+				if ((this._Keywords != value))
+				{
+					this.OnKeywordsChanging(value);
+					this.SendPropertyChanging();
+					this._Keywords = value;
+					this.SendPropertyChanged("Keywords");
+					this.OnKeywordsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid CreateBy
+		{
+			get
+			{
+				return this._CreateBy;
+			}
+			set
+			{
+				if ((this._CreateBy != value))
+				{
+					this.OnCreateByChanging(value);
+					this.SendPropertyChanging();
+					this._CreateBy = value;
+					this.SendPropertyChanged("CreateBy");
+					this.OnCreateByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
+		{
+			get
+			{
+				return this._ModifiedDate;
+			}
+			set
+			{
+				if ((this._ModifiedDate != value))
+				{
+					this.OnModifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ModifiedBy
+		{
+			get
+			{
+				return this._ModifiedBy;
+			}
+			set
+			{
+				if ((this._ModifiedBy != value))
+				{
+					this.OnModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsDeleted", DbType="Bit NOT NULL")]
+		public bool IsDeleted
+		{
+			get
+			{
+				return this._IsDeleted;
+			}
+			set
+			{
+				if ((this._IsDeleted != value))
+				{
+					this.OnIsDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._IsDeleted = value;
+					this.SendPropertyChanged("IsDeleted");
+					this.OnIsDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeletedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> DeletedDate
+		{
+			get
+			{
+				return this._DeletedDate;
+			}
+			set
+			{
+				if ((this._DeletedDate != value))
+				{
+					this.OnDeletedDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeletedDate = value;
+					this.SendPropertyChanged("DeletedDate");
+					this.OnDeletedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeletedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> DeletedBy
+		{
+			get
+			{
+				return this._DeletedBy;
+			}
+			set
+			{
+				if ((this._DeletedBy != value))
+				{
+					this.OnDeletedByChanging(value);
+					this.SendPropertyChanging();
+					this._DeletedBy = value;
+					this.SendPropertyChanged("DeletedBy");
+					this.OnDeletedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartner_StockInOutDocument", Storage="_BusinessPartner", ThisKey="BusinessPartnerId", OtherKey="Id", IsForeignKey=true)]
+		public BusinessPartner BusinessPartner
+		{
+			get
+			{
+				return this._BusinessPartner.Entity;
+			}
+			set
+			{
+				BusinessPartner previousValue = this._BusinessPartner.Entity;
+				if (((previousValue != value) 
+							|| (this._BusinessPartner.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._BusinessPartner.Entity = null;
+						previousValue.StockInOutDocuments.Remove(this);
+					}
+					this._BusinessPartner.Entity = value;
+					if ((value != null))
+					{
+						value.StockInOutDocuments.Add(this);
+						this._BusinessPartnerId = value.Id;
+					}
+					else
+					{
+						this._BusinessPartnerId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("BusinessPartner");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutMaster_StockInOutDocument", Storage="_StockInOutMaster", ThisKey="StockInOutMasterId", OtherKey="Id", IsForeignKey=true)]
+		public StockInOutMaster StockInOutMaster
+		{
+			get
+			{
+				return this._StockInOutMaster.Entity;
+			}
+			set
+			{
+				StockInOutMaster previousValue = this._StockInOutMaster.Entity;
+				if (((previousValue != value) 
+							|| (this._StockInOutMaster.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._StockInOutMaster.Entity = null;
+						previousValue.StockInOutDocuments.Remove(this);
+					}
+					this._StockInOutMaster.Entity = value;
+					if ((value != null))
+					{
+						value.StockInOutDocuments.Add(this);
+						this._StockInOutMasterId = value.Id;
+					}
+					else
+					{
+						this._StockInOutMasterId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("StockInOutMaster");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.StockInOutImage")]
 	public partial class StockInOutImage : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -10877,6 +12284,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
 		
+		private EntitySet<StockInOutDocument> _StockInOutDocuments;
+		
 		private EntitySet<StockInOutImage> _StockInOutImages;
 		
 		private EntityRef<BusinessPartnerSite> _BusinessPartnerSite;
@@ -10930,6 +12339,7 @@ namespace Dal.DataContext
 		public StockInOutMaster()
 		{
 			this._StockInOutDetails = new EntitySet<StockInOutDetail>(new Action<StockInOutDetail>(this.attach_StockInOutDetails), new Action<StockInOutDetail>(this.detach_StockInOutDetails));
+			this._StockInOutDocuments = new EntitySet<StockInOutDocument>(new Action<StockInOutDocument>(this.attach_StockInOutDocuments), new Action<StockInOutDocument>(this.detach_StockInOutDocuments));
 			this._StockInOutImages = new EntitySet<StockInOutImage>(new Action<StockInOutImage>(this.attach_StockInOutImages), new Action<StockInOutImage>(this.detach_StockInOutImages));
 			this._BusinessPartnerSite = default(EntityRef<BusinessPartnerSite>);
 			this._CompanyBranch = default(EntityRef<CompanyBranch>);
@@ -11337,6 +12747,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutMaster_StockInOutDocument", Storage="_StockInOutDocuments", ThisKey="Id", OtherKey="StockInOutMasterId")]
+		public EntitySet<StockInOutDocument> StockInOutDocuments
+		{
+			get
+			{
+				return this._StockInOutDocuments;
+			}
+			set
+			{
+				this._StockInOutDocuments.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutMaster_StockInOutImage", Storage="_StockInOutImages", ThisKey="Id", OtherKey="StockInOutMasterId")]
 		public EntitySet<StockInOutImage> StockInOutImages
 		{
@@ -11445,6 +12868,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_StockInOutDetails(StockInOutDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutMaster = null;
+		}
+		
+		private void attach_StockInOutDocuments(StockInOutDocument entity)
+		{
+			this.SendPropertyChanging();
+			entity.StockInOutMaster = this;
+		}
+		
+		private void detach_StockInOutDocuments(StockInOutDocument entity)
 		{
 			this.SendPropertyChanging();
 			entity.StockInOutMaster = null;
