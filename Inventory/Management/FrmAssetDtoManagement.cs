@@ -65,8 +65,8 @@ namespace Inventory.Management
         {
             // Cấu hình sắp xếp mặc định
             AssetDtoGridView.SortInfo.Clear();
-            AssetDtoGridView.SortInfo.Add(
-                new DevExpress.XtraGrid.Columns.GridColumnSortInfo(colCreateDate, DevExpress.Data.ColumnSortOrder.Descending));
+            //AssetDtoGridView.SortInfo.Add(
+            //    new DevExpress.XtraGrid.Columns.GridColumnSortInfo(colCreateDate, DevExpress.Data.ColumnSortOrder.Descending));
             
             // Enable footer để hiển thị summary (nếu cần)
             AssetDtoGridView.OptionsView.ShowFooter = false;

@@ -1,3 +1,4 @@
+using Common;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.Assembly;
 using Dal.DataAccess.Interfaces.Inventory.Assembly;
@@ -44,7 +45,7 @@ public class ProductBOMBll
             {
                 if (_dataAccess == null)
                 {
-                    var connectionString = ConnectionStringManager.GetConnectionString();
+                    var connectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
                     _dataAccess = new ProductBOMRepository(connectionString);
                 }
             }
@@ -216,10 +217,12 @@ public class ProductBOMBll
             CreatedDate = entity.CreatedDate,
             ModifiedDate = entity.ModifiedDate,
             // Load navigation properties if available
-            ProductVariantCode = entity.ProductVariant?.VariantCode ?? string.Empty,
-            ProductVariantName = entity.ProductVariant?.VariantFullName ?? entity.ProductVariant?.ProductService?.Name ?? string.Empty,
-            ComponentVariantCode = entity.ComponentVariant?.VariantCode ?? string.Empty,
-            ComponentVariantName = entity.ComponentVariant?.VariantFullName ?? entity.ComponentVariant?.ProductService?.Name ?? string.Empty,
+            // ProductVariant1 là sản phẩm hoàn chỉnh (ProductVariantId)
+            ProductVariantCode = entity.ProductVariant1?.VariantCode ?? string.Empty,
+            ProductVariantName = entity.ProductVariant1?.VariantFullName ?? entity.ProductVariant1?.ProductService?.Name ?? string.Empty,
+            // ProductVariant là linh kiện (ComponentVariantId)
+            ComponentVariantCode = entity.ProductVariant?.VariantCode ?? string.Empty,
+            ComponentVariantName = entity.ProductVariant?.VariantFullName ?? entity.ProductVariant?.ProductService?.Name ?? string.Empty,
             UnitCode = entity.UnitOfMeasure?.Code ?? string.Empty,
             UnitName = entity.UnitOfMeasure?.Name ?? string.Empty
         };

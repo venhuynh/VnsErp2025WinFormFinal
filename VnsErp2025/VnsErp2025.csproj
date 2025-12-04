@@ -102,6 +102,7 @@
     <None Include="App.config" />
     <None Include="Docs\AssemblyManufacturing_Implementation_Steps.md" />
     <None Include="Docs\AssemblyManufacturing_Plan.md" />
+    <None Include="Docs\AssemblyManufacturing_UI_Workflow.md" />
     <None Include="Docs\DatabaseSchema_Asset_Proposal.md" />
     <None Include="Docs\Icons.xlsx" />
     <None Include="Docs\ImageStorageRefactoringArchitecture.md" />

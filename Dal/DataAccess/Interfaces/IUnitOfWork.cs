@@ -1,5 +1,6 @@
 ﻿using Dal.DataContext;
 using System;
+using Dal.DataAccess.Interfaces.Inventory.Assembly;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
@@ -180,6 +181,14 @@ public interface IUnitOfWork : IDisposable
     IInventoryBalanceRepository GetInventoryBalanceRepository();
 
     IAssetRepository GetAssetRepository();
+
+    #endregion
+
+    #region Assembly
+
+    IProductBOMRepository GetProductBOMRepository();
+
+    IAssemblyTransactionRepository GetAssemblyTransactionRepository();
 
     #endregion
 

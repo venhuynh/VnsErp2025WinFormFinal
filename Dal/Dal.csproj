@@ -54,6 +54,8 @@
     <Compile Include="Connection\IConnectionManager.cs" />
     <Compile Include="DataAccess\Factories\DataContextFactory.cs" />
     <Compile Include="DataAccess\Implementations\ApplicationUserRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\Assembly\AssemblyTransactionRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\Assembly\ProductBOMRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\AssetRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\DeviceRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\InventoryBalanceRepository.cs" />
