@@ -58,6 +58,15 @@ public class InventoryBalanceRepository : IInventoryBalanceRepository
 
         // Configure eager loading cho navigation properties
         var loadOptions = new DataLoadOptions();
+        loadOptions.LoadWith<InventoryBalance>(b => b.CompanyBranch);
+        loadOptions.LoadWith<InventoryBalance>(b => b.ProductVariant);
+        loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
+        loadOptions.LoadWith<InventoryBalance>(b => b.ApplicationUser); // ApprovedBy
+        loadOptions.LoadWith<InventoryBalance>(b => b.ApplicationUser1); // CreateBy
+        loadOptions.LoadWith<InventoryBalance>(b => b.ApplicationUser2); // DeletedBy
+        loadOptions.LoadWith<InventoryBalance>(b => b.ApplicationUser3); // LockedBy
+        loadOptions.LoadWith<InventoryBalance>(b => b.ApplicationUser4); // ModifiedBy
+        loadOptions.LoadWith<InventoryBalance>(b => b.ApplicationUser5); // VerifiedBy
         context.LoadOptions = loadOptions;
 
         return context;

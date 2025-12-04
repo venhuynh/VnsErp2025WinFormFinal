@@ -249,7 +249,7 @@ namespace Inventory.Query
                 if (_stockInOutDocumentBll == null)
                 {
                     MsgBox.ShowWarning("Dịch vụ chứng từ chưa được khởi tạo.");
-                    LoadData(new List<StockInOutDocumentDto>());
+                    LoadData([]);
                     return;
                 }
 
@@ -264,7 +264,7 @@ namespace Inventory.Query
                     if (fromDate > toDate)
                     {
                         MsgBox.ShowWarning("Từ ngày không được lớn hơn đến ngày.");
-                        LoadData(new List<StockInOutDocumentDto>());
+                        LoadData([]);
                         return Task.CompletedTask;
                     }
 
@@ -306,14 +306,14 @@ namespace Inventory.Query
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi khi tải dữ liệu");
-                LoadData(new List<StockInOutDocumentDto>());
+                LoadData([]);
             }
         }
 
         /// <summary>
         /// Load dữ liệu chứng từ
         /// </summary>
-        public void LoadData(List<StockInOutDocumentDto> documents)
+        private void LoadData(List<StockInOutDocumentDto> documents)
         {
             if (documents == null)
             {
@@ -345,7 +345,7 @@ namespace Inventory.Query
         private List<StockInOutDocumentDto> MapEntitiesToDtos(List<Dal.DataContext.StockInOutDocument> entities)
         {
             if (entities == null)
-                return new List<StockInOutDocumentDto>();
+                return [];
 
             var dtos = new List<StockInOutDocumentDto>();
 
@@ -424,15 +424,14 @@ namespace Inventory.Query
         /// <summary>
         /// Lấy danh sách chứng từ được chọn
         /// </summary>
-        public List<StockInOutDocumentDto> GetSelectedDocuments()
+        private List<StockInOutDocumentDto> GetSelectedDocuments()
         {
             var selectedDocuments = new List<StockInOutDocumentDto>();
             var selectedRows = StockInOutDocumentDtoGridView.GetSelectedRows();
 
             foreach (int rowHandle in selectedRows)
             {
-                var dto = StockInOutDocumentDtoGridView.GetRow(rowHandle) as StockInOutDocumentDto;
-                if (dto != null)
+                if (StockInOutDocumentDtoGridView.GetRow(rowHandle) is StockInOutDocumentDto dto)
                 {
                     selectedDocuments.Add(dto);
                 }
@@ -676,18 +675,16 @@ namespace Inventory.Query
                 // Cách 2: Thử đọc từ Registry (nếu user đã thay đổi vị trí Downloads)
                 try
                 {
-                    using (var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"))
+                    using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders");
+                    if (key != null)
                     {
-                        if (key != null)
+                        var downloads = key.GetValue("{374DE290-123F-4565-9164-39C4925E467B}");
+                        if (downloads != null)
                         {
-                            var downloads = key.GetValue("{374DE290-123F-4565-9164-39C4925E467B}");
-                            if (downloads != null)
+                            var customDownloadsPath = downloads.ToString();
+                            if (Directory.Exists(customDownloadsPath))
                             {
-                                var customDownloadsPath = downloads.ToString();
-                                if (Directory.Exists(customDownloadsPath))
-                                {
-                                    return customDownloadsPath;
-                                }
+                                return customDownloadsPath;
                             }
                         }
                     }

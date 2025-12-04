@@ -2,6 +2,7 @@ using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
+using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -320,6 +321,7 @@ public class InventoryBalanceBll
             warehouseId, productVariantId, periodYear, periodMonth,
             fromDate, toDate, isLocked, isVerified, isApproved, status);
     }
+
 
     /// <summary>
     /// Lấy danh sách tồn kho cần xác thực (IsVerified = false)

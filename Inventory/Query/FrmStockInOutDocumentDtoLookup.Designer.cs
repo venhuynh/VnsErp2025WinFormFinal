@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.StockInOutDocumentDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.stockInOutDocumentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.StockInOutDocumentDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colStockInOutDate = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colVocherNumber = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -59,10 +58,10 @@
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.stockInOutDocumentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDocumentDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDocumentDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDocumentDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1)).BeginInit();
@@ -72,6 +71,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDocumentDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -96,10 +96,6 @@
             this.StockInOutDocumentDtoGridControl.TabIndex = 4;
             this.StockInOutDocumentDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.StockInOutDocumentDtoGridView});
-            // 
-            // stockInOutDocumentDtoBindingSource
-            // 
-            this.stockInOutDocumentDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.StockInOutDocumentDto);
             // 
             // StockInOutDocumentDtoGridView
             // 
@@ -359,6 +355,10 @@
             this.layoutControlItem1.Size = new System.Drawing.Size(1015, 423);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // stockInOutDocumentDtoBindingSource
+            // 
+            this.stockInOutDocumentDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.StockInOutDocumentDto);
+            // 
             // FrmStockInOutDocumentDtoLookup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -374,7 +374,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDocumentDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDocumentDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDocumentDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1.CalendarTimeProperties)).EndInit();
@@ -384,6 +383,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDocumentDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -420,6 +420,7 @@
         private DevExpress.XtraGrid.Columns.GridColumn colFileName;
         private DevExpress.XtraGrid.Columns.GridColumn colFileSizeDisplay;
         private DevExpress.XtraGrid.Columns.GridColumn colGroupCaption;
+        
         private System.Windows.Forms.BindingSource stockInOutDocumentDtoBindingSource;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Authentication.Form;
 using Common.Utils;
 using Dal.Connection;
+using Inventory.Management;
 using Inventory.OverlayForm;
 using Inventory.Query;
 using Inventory.StockOut.XuatNoiBo;
@@ -107,7 +108,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FormMain());
+            Application.Run(new FrmInventoryBalanceDto());
 
             #endregion
 
