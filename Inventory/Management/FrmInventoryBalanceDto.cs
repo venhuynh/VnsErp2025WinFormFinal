@@ -143,6 +143,9 @@ namespace Inventory.Management
             InventoryBalanceDtoBandedGridView.SelectionChanged += InventoryBalanceDtoGridView_SelectionChanged;
             InventoryBalanceDtoBandedGridView.CustomSummaryCalculate += InventoryBalanceDtoBandedGridView_CustomSummaryCalculate;
             InventoryBalanceDtoBandedGridView.CustomDrawFooterCell += InventoryBalanceDtoBandedGridView_CustomDrawFooterCell;
+            InventoryBalanceDtoBandedGridView.CustomDrawRowIndicator += InventoryBalanceDtoBandedGridView_CustomDrawRowIndicator;
+            InventoryBalanceDtoBandedGridView.CustomColumnDisplayText += InventoryBalanceDtoBandedGridView_CustomColumnDisplayText;
+            InventoryBalanceDtoBandedGridView.RowCellStyle += InventoryBalanceDtoBandedGridView_RowCellStyle;
 
             // Form events
             Load += FrmInventoryBalanceDto_Load;
@@ -619,6 +622,164 @@ namespace Inventory.Management
             catch (Exception)
             {
                 e.Handled = false; // Để DevExpress tự vẽ nếu có lỗi
+            }
+        }
+
+        /// <summary>
+        /// Xử lý hiển thị tùy chỉnh cho các cột trong GridView
+        /// Ẩn các giá trị "0" trên các cột số lượng và giá trị để giao diện gọn gàng hơn
+        /// </summary>
+        private void InventoryBalanceDtoBandedGridView_CustomColumnDisplayText(object sender, DevExpress.XtraGrid.Views.Base.CustomColumnDisplayTextEventArgs e)
+        {
+            try
+            {
+                if (e.Column == null || e.Value == null)
+                    return;
+
+                var fieldName = e.Column.FieldName;
+
+                // Xử lý các cột số lượng (decimal)
+                if (fieldName == "OpeningBalance" || fieldName == "TotalInQty" || 
+                    fieldName == "TotalOutQty" || fieldName == "ClosingBalance")
+                {
+                    // Kiểm tra nếu giá trị là 0
+                    if (e.Value is decimal decimalValue && Math.Abs(decimalValue) < 0.001m)
+                    {
+                        e.DisplayText = ""; // Ẩn giá trị 0
+                        return;
+                    }
+                    if (e.Value is double doubleValue && Math.Abs(doubleValue) < 0.001)
+                    {
+                        e.DisplayText = ""; // Ẩn giá trị 0
+                        return;
+                    }
+                    if (e.Value is float floatValue && Math.Abs(floatValue) < 0.001f)
+                    {
+                        e.DisplayText = ""; // Ẩn giá trị 0
+                        return;
+                    }
+                }
+
+                // Xử lý các cột giá trị (nullable decimal)
+                if (fieldName == "OpeningValue" || fieldName == "TotalInValue" || 
+                    fieldName == "TotalOutValue" || fieldName == "TotalInAmountIncludedVat" ||
+                    fieldName == "TotalInVatAmount" || fieldName == "TotalOutAmountIncludedVat" ||
+                    fieldName == "TotalOutVatAmount" || fieldName == "ClosingValue")
+                {
+                    // Kiểm tra nếu giá trị là 0 hoặc null
+                    if (e.Value == null || e.Value == DBNull.Value)
+                    {
+                        e.DisplayText = ""; // Ẩn giá trị null
+                        return;
+                    }
+                    
+                    // Xử lý decimal
+                    if (e.Value is decimal decimalValue)
+                    {
+                        if (Math.Abs(decimalValue) < 0.001m)
+                        {
+                            e.DisplayText = ""; // Ẩn giá trị 0
+                            return;
+                        }
+                    }
+                    // Xử lý nullable decimal
+                    else if (e.Value is decimal?)
+                    {
+                        var nullableDec = (decimal?)e.Value;
+                        if (!nullableDec.HasValue || Math.Abs(nullableDec.Value) < 0.001m)
+                        {
+                            e.DisplayText = ""; // Ẩn giá trị null hoặc 0
+                            return;
+                        }
+                    }
+                    // Xử lý double
+                    else if (e.Value is double doubleValue)
+                    {
+                        if (Math.Abs(doubleValue) < 0.001)
+                        {
+                            e.DisplayText = ""; // Ẩn giá trị 0
+                            return;
+                        }
+                    }
+                    // Xử lý float
+                    else if (e.Value is float floatValue)
+                    {
+                        if (Math.Abs(floatValue) < 0.001f)
+                        {
+                            e.DisplayText = ""; // Ẩn giá trị 0
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore errors để tránh crash UI
+            }
+        }
+
+        /// <summary>
+        /// Xử lý tô màu cho cells dựa trên điều kiện
+        /// </summary>
+        private void InventoryBalanceDtoBandedGridView_RowCellStyle(object sender, RowCellStyleEventArgs e)
+        {
+            try
+            {
+                if (sender is not BandedGridView) return;
+
+                // Kiểm tra nếu đây là dòng dữ liệu hợp lệ
+                if (e.RowHandle < 0) return;
+
+                // Lấy dữ liệu từ row
+                var row = InventoryBalanceDtoBandedGridView.GetRow(e.RowHandle) as InventoryBalanceDto;
+                if (row == null) return;
+
+                // Highlight các dòng có trạng thái khóa
+                if (e.Column.FieldName == "StatusHtml" || e.Column.FieldName == "StatusText")
+                {
+                    if (row.IsLocked)
+                    {
+                        // Màu cam nhạt cho dòng đã khóa
+                        e.Appearance.BackColor = System.Drawing.Color.FromArgb(255, 243, 224);
+                        e.Appearance.BackColor2 = System.Drawing.Color.FromArgb(255, 243, 224);
+                    }
+                }
+
+                // Highlight các cột số lượng nếu có giá trị âm (bất thường)
+                if (e.Column.FieldName == "ClosingBalance" || e.Column.FieldName == "TotalInQty" || 
+                    e.Column.FieldName == "TotalOutQty")
+                {
+                    var cellValue = e.CellValue;
+                    if (cellValue != null && cellValue != DBNull.Value)
+                    {
+                        if (cellValue is decimal dec && dec < 0)
+                        {
+                            // Màu đỏ nhạt cho giá trị âm
+                            e.Appearance.BackColor = System.Drawing.Color.FromArgb(255, 235, 238);
+                            e.Appearance.BackColor2 = System.Drawing.Color.FromArgb(255, 235, 238);
+                            e.Appearance.ForeColor = System.Drawing.Color.DarkRed;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore errors
+            }
+        }
+
+        /// <summary>
+        /// Vẽ số thứ tự cho rows
+        /// </summary>
+        private void InventoryBalanceDtoBandedGridView_CustomDrawRowIndicator(object sender, RowIndicatorCustomDrawEventArgs e)
+        {
+            try
+            {
+                GridViewHelper.CustomDrawRowIndicator(InventoryBalanceDtoBandedGridView, e);
+            }
+            catch (Exception)
+            {
+                // Ignore errors
             }
         }
 
