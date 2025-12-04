@@ -66,6 +66,8 @@
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\EmployeeRepository.cs" />
     <Compile Include="DataAccess\Implementations\UnitOfWork.cs" />
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\Assembly\IAssemblyTransactionRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\Assembly\IProductBOMRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IAssetRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IDeviceRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IInventoryBalanceRepository.cs" />
@@ -168,9 +170,11 @@
     <Content Include="Doc\Promt\Prompt cho AI Cursor %28CRUD DataAccess Class%29.txt" />
     <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
+    <Content Include="Scripts\CreateAssemblyTransactionTable.sql" />
     <Content Include="Scripts\CreateAssetTable.sql" />
     <Content Include="Scripts\CreateDeviceTable.sql" />
     <Content Include="Scripts\CreateEquipmentTables.sql" />
+    <Content Include="Scripts\CreateProductBOMTable.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataAccess\Inventory\StockIn\" />

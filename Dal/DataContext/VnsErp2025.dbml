@@ -30,6 +30,28 @@
       <Association Name="StockInOutDetail_Warranty" Member="StockInOutDetail" ThisKey="StockInOutDetailId" OtherKey="Id" Type="StockInOutDetail" IsForeignKey="true" />
     </Type>
   </Table>
+  <Table Name="dbo.AssemblyTransaction" Member="AssemblyTransactions">
+    <Type Name="AssemblyTransaction">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AssemblyDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ProductVariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="StockOutMasterId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="StockInMasterId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="WarehouseId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="TotalCost" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="UnitCost" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="CompanyBranch_AssemblyTransaction" Member="CompanyBranch" ThisKey="WarehouseId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />
+      <Association Name="ProductVariant_AssemblyTransaction" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+      <Association Name="StockInOutMaster_AssemblyTransaction" Member="StockInOutMaster" ThisKey="StockInMasterId" OtherKey="Id" Type="StockInOutMaster" IsForeignKey="true" />
+      <Association Name="StockInOutMaster_AssemblyTransaction1" Member="StockInOutMaster1" ThisKey="StockOutMasterId" OtherKey="Id" Type="StockInOutMaster" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.Asset" Member="Assets">
     <Type Name="Asset">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -223,6 +245,7 @@
       <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="ManagerName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="CompanyBranch_AssemblyTransaction" Member="AssemblyTransactions" ThisKey="Id" OtherKey="WarehouseId" Type="AssemblyTransaction" />
       <Association Name="CompanyBranch_Asset" Member="Assets" ThisKey="Id" OtherKey="BranchId" Type="Asset" />
       <Association Name="CompanyBranch_Department" Member="Departments" ThisKey="Id" OtherKey="BranchId" Type="Department" />
       <Association Name="CompanyBranch_Device" Member="Devices" ThisKey="Id" OtherKey="BranchId" Type="Device" />
@@ -435,6 +458,22 @@
       <Association Name="Company_Position" Member="Company" ThisKey="CompanyId" OtherKey="Id" Type="Company" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
+  <Table Name="dbo.ProductBOM" Member="ProductBOMs">
+    <Type Name="ProductBOM">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProductVariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ComponentVariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="UnitId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
+      <Association Name="ProductVariant_ProductBOM" Member="ProductVariant" ThisKey="ComponentVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+      <Association Name="ProductVariant_ProductBOM1" Member="ProductVariant1" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+      <Association Name="UnitOfMeasure_ProductBOM" Member="UnitOfMeasure" ThisKey="UnitId" OtherKey="Id" Type="UnitOfMeasure" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.ProductImage" Member="ProductImages">
     <Type Name="ProductImage">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -524,9 +563,12 @@
       <Column Name="ThumbnailStorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Column Name="ThumbnailFileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="ThumbnailChecksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Association Name="ProductVariant_AssemblyTransaction" Member="AssemblyTransactions" ThisKey="Id" OtherKey="ProductVariantId" Type="AssemblyTransaction" />
       <Association Name="ProductVariant_Asset" Member="Assets" ThisKey="Id" OtherKey="ProductVariantId" Type="Asset" />
       <Association Name="ProductVariant_Device" Member="Devices" ThisKey="Id" OtherKey="ProductVariantId" Type="Device" />
       <Association Name="ProductVariant_InventoryBalance" Member="InventoryBalances" ThisKey="Id" OtherKey="ProductVariantId" Type="InventoryBalance" />
+      <Association Name="ProductVariant_ProductBOM" Member="ProductBOMs" ThisKey="Id" OtherKey="ComponentVariantId" Type="ProductBOM" />
+      <Association Name="ProductVariant_ProductBOM1" Member="ProductBOMs1" ThisKey="Id" OtherKey="ProductVariantId" Type="ProductBOM" />
       <Association Name="ProductVariant_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="VariantId" Type="ProductImage" />
       <Association Name="ProductVariant_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="ProductVariantId" Type="StockInOutDetail" />
       <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
@@ -655,6 +697,8 @@
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="NguoiNhanHang" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Column Name="NguoiGiaoHang" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Association Name="StockInOutMaster_AssemblyTransaction" Member="AssemblyTransactions" ThisKey="Id" OtherKey="StockInMasterId" Type="AssemblyTransaction" />
+      <Association Name="StockInOutMaster_AssemblyTransaction1" Member="AssemblyTransactions1" ThisKey="Id" OtherKey="StockOutMasterId" Type="AssemblyTransaction" />
       <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDetail" />
       <Association Name="StockInOutMaster_StockInOutDocument" Member="StockInOutDocuments" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDocument" />
       <Association Name="StockInOutMaster_StockInOutImage" Member="StockInOutImages" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutImage" />
@@ -669,6 +713,7 @@
       <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="UnitOfMeasure_ProductBOM" Member="ProductBOMs" ThisKey="Id" OtherKey="UnitId" Type="ProductBOM" />
       <Association Name="UnitOfMeasure_ProductVariant" Member="ProductVariants" ThisKey="Id" OtherKey="UnitId" Type="ProductVariant" />
     </Type>
   </Table>
