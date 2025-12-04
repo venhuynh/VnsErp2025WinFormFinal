@@ -54,6 +54,7 @@
     <Compile Include="Connection\IConnectionManager.cs" />
     <Compile Include="DataAccess\Factories\DataContextFactory.cs" />
     <Compile Include="DataAccess\Implementations\ApplicationUserRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\AssetRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\DeviceRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\InventoryBalanceRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutDetailRepository.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\EmployeeRepository.cs" />
     <Compile Include="DataAccess\Implementations\UnitOfWork.cs" />
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IAssetRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IDeviceRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IInventoryBalanceRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStockInOutDetailRepository.cs" />
@@ -166,6 +168,7 @@
     <Content Include="Doc\Promt\Prompt cho AI Cursor %28CRUD DataAccess Class%29.txt" />
     <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
     <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
+    <Content Include="Scripts\CreateAssetTable.sql" />
     <Content Include="Scripts\CreateDeviceTable.sql" />
     <Content Include="Scripts\CreateEquipmentTables.sql" />
   </ItemGroup>

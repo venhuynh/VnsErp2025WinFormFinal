@@ -5,6 +5,9 @@
       <Column Name="UserName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="HashPassword" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
       <Column Name="Active" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="ApplicationUser_Asset" Member="Assets" ThisKey="Id" OtherKey="CreateBy" Type="Asset" />
+      <Association Name="ApplicationUser_Asset1" Member="Assets1" ThisKey="Id" OtherKey="DeletedBy" Type="Asset" />
+      <Association Name="ApplicationUser_Asset2" Member="Assets2" ThisKey="Id" OtherKey="ModifiedBy" Type="Asset" />
       <Association Name="ApplicationUser_InventoryBalance" Member="InventoryBalances" ThisKey="Id" OtherKey="ApprovedBy" Type="InventoryBalance" />
       <Association Name="ApplicationUser_InventoryBalance1" Member="InventoryBalances1" ThisKey="Id" OtherKey="DeletedBy" Type="InventoryBalance" />
       <Association Name="ApplicationUser_InventoryBalance2" Member="InventoryBalances2" ThisKey="Id" OtherKey="LockedBy" Type="InventoryBalance" />
@@ -22,8 +25,62 @@
       <Column Name="WarrantyUntil" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="WarrantyStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="UniqueProductInfo" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Association Name="Warranty_Asset" Member="Assets" ThisKey="Id" OtherKey="WarrantyId" Type="Asset" />
       <Association Name="Warranty_Device" Member="Devices" ThisKey="Id" OtherKey="WarrantyId" Type="Device" />
       <Association Name="StockInOutDetail_Warranty" Member="StockInOutDetail" ThisKey="StockInOutDetailId" OtherKey="Id" Type="StockInOutDetail" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Asset" Member="Assets">
+    <Type Name="Asset">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AssetCode" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="AssetName" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="AssetType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AssetCategory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="ProductVariantId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CompanyId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="BranchId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DepartmentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="AssignedEmployeeId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Location" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="PurchasePrice" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="PurchaseDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SupplierName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="InvoiceNumber" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="InvoiceDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DepreciationMethod" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DepreciationRate" Type="System.Decimal" DbType="Decimal(5,2)" CanBeNull="true" />
+      <Column Name="UsefulLife" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="DepreciationStartDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="AccumulatedDepreciation" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
+      <Column Name="CurrentValue" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Condition" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="WarrantyId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="WarrantyExpiryDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="SerialNumber" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Manufacturer" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Model" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Specifications" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreateBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DeletedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DeletedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="ApplicationUser_Asset" Member="ApplicationUser" ThisKey="CreateBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_Asset1" Member="ApplicationUser1" ThisKey="DeletedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_Asset2" Member="ApplicationUser2" ThisKey="ModifiedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="Warranty_Asset" Member="Warranty" ThisKey="WarrantyId" OtherKey="Id" Type="Warranty" IsForeignKey="true" />
+      <Association Name="Company_Asset" Member="Company" ThisKey="CompanyId" OtherKey="Id" Type="Company" IsForeignKey="true" />
+      <Association Name="CompanyBranch_Asset" Member="CompanyBranch" ThisKey="BranchId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />
+      <Association Name="Department_Asset" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
+      <Association Name="Employee_Asset" Member="Employee" ThisKey="AssignedEmployeeId" OtherKey="Id" Type="Employee" IsForeignKey="true" />
+      <Association Name="ProductVariant_Asset" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Attribute" Member="Attributes">
@@ -147,6 +204,7 @@
       <Column Name="LogoStorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Column Name="LogoFileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="LogoChecksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Association Name="Company_Asset" Member="Assets" ThisKey="Id" OtherKey="CompanyId" Type="Asset" />
       <Association Name="Company_CompanyBranch" Member="CompanyBranches" ThisKey="Id" OtherKey="CompanyId" Type="CompanyBranch" />
       <Association Name="Company_Department" Member="Departments" ThisKey="Id" OtherKey="CompanyId" Type="Department" />
       <Association Name="Company_Device" Member="Devices" ThisKey="Id" OtherKey="CompanyId" Type="Device" />
@@ -165,6 +223,7 @@
       <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="ManagerName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="CompanyBranch_Asset" Member="Assets" ThisKey="Id" OtherKey="BranchId" Type="Asset" />
       <Association Name="CompanyBranch_Department" Member="Departments" ThisKey="Id" OtherKey="BranchId" Type="Department" />
       <Association Name="CompanyBranch_Device" Member="Devices" ThisKey="Id" OtherKey="BranchId" Type="Device" />
       <Association Name="CompanyBranch_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="FromBranchId" Type="DeviceTransfer" />
@@ -185,6 +244,7 @@
       <Column Name="ParentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Department_Asset" Member="Assets" ThisKey="Id" OtherKey="DepartmentId" Type="Asset" />
       <Association Name="Department_Department" Member="Departments" ThisKey="Id" OtherKey="ParentId" Type="Department" />
       <Association Name="Department_Device" Member="Devices" ThisKey="Id" OtherKey="DepartmentId" Type="Device" />
       <Association Name="Department_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="FromDepartmentId" Type="DeviceTransfer" />
@@ -302,6 +362,7 @@
       <Column Name="ResignDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="AvatarPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Employee_Asset" Member="Assets" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Asset" />
       <Association Name="Employee_Device" Member="Devices" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Device" />
       <Association Name="Employee_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="FromEmployeeId" Type="DeviceTransfer" />
       <Association Name="Employee_DeviceTransfer1" Member="DeviceTransfers1" ThisKey="Id" OtherKey="ToEmployeeId" Type="DeviceTransfer" />
@@ -463,6 +524,7 @@
       <Column Name="ThumbnailStorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Column Name="ThumbnailFileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="ThumbnailChecksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Association Name="ProductVariant_Asset" Member="Assets" ThisKey="Id" OtherKey="ProductVariantId" Type="Asset" />
       <Association Name="ProductVariant_Device" Member="Devices" ThisKey="Id" OtherKey="ProductVariantId" Type="Device" />
       <Association Name="ProductVariant_InventoryBalance" Member="InventoryBalances" ThisKey="Id" OtherKey="ProductVariantId" Type="InventoryBalance" />
       <Association Name="ProductVariant_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="VariantId" Type="ProductImage" />
