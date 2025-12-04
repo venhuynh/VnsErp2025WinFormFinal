@@ -116,12 +116,6 @@ namespace Dal.DataContext
     partial void DeleteVariantAttribute(VariantAttribute instance);
     #endregion
 		
-		public VnsErp2025DataContext() : 
-				base(global::Dal.Properties.Settings.Default.VnsErp2025FinalConnectionString2, mappingSource)
-		{
-			OnCreated();
-		}
-		
 		public VnsErp2025DataContext(string connection) : 
 				base(connection, mappingSource)
 		{
@@ -395,8 +389,6 @@ namespace Dal.DataContext
 		
 		private EntitySet<InventoryBalance> _InventoryBalances4;
 		
-		private EntitySet<InventoryBalance> _InventoryBalances5;
-		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -418,7 +410,6 @@ namespace Dal.DataContext
 			this._InventoryBalances2 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances2), new Action<InventoryBalance>(this.detach_InventoryBalances2));
 			this._InventoryBalances3 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances3), new Action<InventoryBalance>(this.detach_InventoryBalances3));
 			this._InventoryBalances4 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances4), new Action<InventoryBalance>(this.detach_InventoryBalances4));
-			this._InventoryBalances5 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances5), new Action<InventoryBalance>(this.detach_InventoryBalances5));
 			OnCreated();
 		}
 		
@@ -515,7 +506,7 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance1", Storage="_InventoryBalances1", ThisKey="Id", OtherKey="CreateBy")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance1", Storage="_InventoryBalances1", ThisKey="Id", OtherKey="DeletedBy")]
 		public EntitySet<InventoryBalance> InventoryBalances1
 		{
 			get
@@ -528,7 +519,7 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance2", Storage="_InventoryBalances2", ThisKey="Id", OtherKey="DeletedBy")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance2", Storage="_InventoryBalances2", ThisKey="Id", OtherKey="LockedBy")]
 		public EntitySet<InventoryBalance> InventoryBalances2
 		{
 			get
@@ -541,7 +532,7 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance3", Storage="_InventoryBalances3", ThisKey="Id", OtherKey="LockedBy")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance3", Storage="_InventoryBalances3", ThisKey="Id", OtherKey="ModifiedBy")]
 		public EntitySet<InventoryBalance> InventoryBalances3
 		{
 			get
@@ -554,7 +545,7 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance4", Storage="_InventoryBalances4", ThisKey="Id", OtherKey="ModifiedBy")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance4", Storage="_InventoryBalances4", ThisKey="Id", OtherKey="VerifiedBy")]
 		public EntitySet<InventoryBalance> InventoryBalances4
 		{
 			get
@@ -564,19 +555,6 @@ namespace Dal.DataContext
 			set
 			{
 				this._InventoryBalances4.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance5", Storage="_InventoryBalances5", ThisKey="Id", OtherKey="VerifiedBy")]
-		public EntitySet<InventoryBalance> InventoryBalances5
-		{
-			get
-			{
-				return this._InventoryBalances5;
-			}
-			set
-			{
-				this._InventoryBalances5.Assign(value);
 			}
 		}
 		
@@ -658,18 +636,6 @@ namespace Dal.DataContext
 		{
 			this.SendPropertyChanging();
 			entity.ApplicationUser4 = null;
-		}
-		
-		private void attach_InventoryBalances5(InventoryBalance entity)
-		{
-			this.SendPropertyChanging();
-			entity.ApplicationUser5 = this;
-		}
-		
-		private void detach_InventoryBalances5(InventoryBalance entity)
-		{
-			this.SendPropertyChanging();
-			entity.ApplicationUser5 = null;
 		}
 	}
 	
@@ -7717,8 +7683,6 @@ namespace Dal.DataContext
 		
 		private EntityRef<ApplicationUser> _ApplicationUser4;
 		
-		private EntityRef<ApplicationUser> _ApplicationUser5;
-		
 		private EntityRef<ProductVariant> _ProductVariant;
 		
     #region Extensibility Method Definitions
@@ -7813,7 +7777,6 @@ namespace Dal.DataContext
 			this._ApplicationUser2 = default(EntityRef<ApplicationUser>);
 			this._ApplicationUser3 = default(EntityRef<ApplicationUser>);
 			this._ApplicationUser4 = default(EntityRef<ApplicationUser>);
-			this._ApplicationUser5 = default(EntityRef<ApplicationUser>);
 			this._ProductVariant = default(EntityRef<ProductVariant>);
 			OnCreated();
 		}
@@ -8217,7 +8180,7 @@ namespace Dal.DataContext
 			{
 				if ((this._LockedBy != value))
 				{
-					if (this._ApplicationUser3.HasLoadedOrAssignedValue)
+					if (this._ApplicationUser2.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -8301,7 +8264,7 @@ namespace Dal.DataContext
 			{
 				if ((this._VerifiedBy != value))
 				{
-					if (this._ApplicationUser5.HasLoadedOrAssignedValue)
+					if (this._ApplicationUser4.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -8529,10 +8492,6 @@ namespace Dal.DataContext
 			{
 				if ((this._CreateBy != value))
 				{
-					if (this._ApplicationUser1.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
 					this.OnCreateByChanging(value);
 					this.SendPropertyChanging();
 					this._CreateBy = value;
@@ -8573,7 +8532,7 @@ namespace Dal.DataContext
 			{
 				if ((this._ModifiedBy != value))
 				{
-					if (this._ApplicationUser4.HasLoadedOrAssignedValue)
+					if (this._ApplicationUser3.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -8617,7 +8576,7 @@ namespace Dal.DataContext
 			{
 				if ((this._DeletedBy != value))
 				{
-					if (this._ApplicationUser2.HasLoadedOrAssignedValue)
+					if (this._ApplicationUser1.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -8698,7 +8657,7 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance1", Storage="_ApplicationUser1", ThisKey="CreateBy", OtherKey="Id", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance1", Storage="_ApplicationUser1", ThisKey="DeletedBy", OtherKey="Id", IsForeignKey=true)]
 		public ApplicationUser ApplicationUser1
 		{
 			get
@@ -8721,18 +8680,18 @@ namespace Dal.DataContext
 					if ((value != null))
 					{
 						value.InventoryBalances1.Add(this);
-						this._CreateBy = value.Id;
+						this._DeletedBy = value.Id;
 					}
 					else
 					{
-						this._CreateBy = default(System.Guid);
+						this._DeletedBy = default(Nullable<System.Guid>);
 					}
 					this.SendPropertyChanged("ApplicationUser1");
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance2", Storage="_ApplicationUser2", ThisKey="DeletedBy", OtherKey="Id", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance2", Storage="_ApplicationUser2", ThisKey="LockedBy", OtherKey="Id", IsForeignKey=true)]
 		public ApplicationUser ApplicationUser2
 		{
 			get
@@ -8755,18 +8714,18 @@ namespace Dal.DataContext
 					if ((value != null))
 					{
 						value.InventoryBalances2.Add(this);
-						this._DeletedBy = value.Id;
+						this._LockedBy = value.Id;
 					}
 					else
 					{
-						this._DeletedBy = default(Nullable<System.Guid>);
+						this._LockedBy = default(Nullable<System.Guid>);
 					}
 					this.SendPropertyChanged("ApplicationUser2");
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance3", Storage="_ApplicationUser3", ThisKey="LockedBy", OtherKey="Id", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance3", Storage="_ApplicationUser3", ThisKey="ModifiedBy", OtherKey="Id", IsForeignKey=true)]
 		public ApplicationUser ApplicationUser3
 		{
 			get
@@ -8789,18 +8748,18 @@ namespace Dal.DataContext
 					if ((value != null))
 					{
 						value.InventoryBalances3.Add(this);
-						this._LockedBy = value.Id;
+						this._ModifiedBy = value.Id;
 					}
 					else
 					{
-						this._LockedBy = default(Nullable<System.Guid>);
+						this._ModifiedBy = default(Nullable<System.Guid>);
 					}
 					this.SendPropertyChanged("ApplicationUser3");
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance4", Storage="_ApplicationUser4", ThisKey="ModifiedBy", OtherKey="Id", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance4", Storage="_ApplicationUser4", ThisKey="VerifiedBy", OtherKey="Id", IsForeignKey=true)]
 		public ApplicationUser ApplicationUser4
 		{
 			get
@@ -8823,47 +8782,13 @@ namespace Dal.DataContext
 					if ((value != null))
 					{
 						value.InventoryBalances4.Add(this);
-						this._ModifiedBy = value.Id;
-					}
-					else
-					{
-						this._ModifiedBy = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("ApplicationUser4");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance5", Storage="_ApplicationUser5", ThisKey="VerifiedBy", OtherKey="Id", IsForeignKey=true)]
-		public ApplicationUser ApplicationUser5
-		{
-			get
-			{
-				return this._ApplicationUser5.Entity;
-			}
-			set
-			{
-				ApplicationUser previousValue = this._ApplicationUser5.Entity;
-				if (((previousValue != value) 
-							|| (this._ApplicationUser5.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ApplicationUser5.Entity = null;
-						previousValue.InventoryBalances5.Remove(this);
-					}
-					this._ApplicationUser5.Entity = value;
-					if ((value != null))
-					{
-						value.InventoryBalances5.Add(this);
 						this._VerifiedBy = value.Id;
 					}
 					else
 					{
 						this._VerifiedBy = default(Nullable<System.Guid>);
 					}
-					this.SendPropertyChanged("ApplicationUser5");
+					this.SendPropertyChanged("ApplicationUser4");
 				}
 			}
 		}

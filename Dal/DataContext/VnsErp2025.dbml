@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="VnsErp2025Final" Class="VnsErp2025DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=115.75.187.3,3306;Initial Catalog=VnsErp2025Final;Persist Security Info=True;User ID=vns;Encrypt=True;Trust Server Certificate=True" SettingsObjectName="Dal.Properties.Settings" SettingsPropertyName="VnsErp2025FinalConnectionString2" Provider="System.Data.SqlClient" />
   <Table Name="dbo.ApplicationUser" Member="ApplicationUsers">
     <Type Name="ApplicationUser">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -7,11 +6,10 @@
       <Column Name="HashPassword" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
       <Column Name="Active" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="ApplicationUser_InventoryBalance" Member="InventoryBalances" ThisKey="Id" OtherKey="ApprovedBy" Type="InventoryBalance" />
-      <Association Name="ApplicationUser_InventoryBalance1" Member="InventoryBalances1" ThisKey="Id" OtherKey="CreateBy" Type="InventoryBalance" />
-      <Association Name="ApplicationUser_InventoryBalance2" Member="InventoryBalances2" ThisKey="Id" OtherKey="DeletedBy" Type="InventoryBalance" />
-      <Association Name="ApplicationUser_InventoryBalance3" Member="InventoryBalances3" ThisKey="Id" OtherKey="LockedBy" Type="InventoryBalance" />
-      <Association Name="ApplicationUser_InventoryBalance4" Member="InventoryBalances4" ThisKey="Id" OtherKey="ModifiedBy" Type="InventoryBalance" />
-      <Association Name="ApplicationUser_InventoryBalance5" Member="InventoryBalances5" ThisKey="Id" OtherKey="VerifiedBy" Type="InventoryBalance" />
+      <Association Name="ApplicationUser_InventoryBalance1" Member="InventoryBalances1" ThisKey="Id" OtherKey="DeletedBy" Type="InventoryBalance" />
+      <Association Name="ApplicationUser_InventoryBalance2" Member="InventoryBalances2" ThisKey="Id" OtherKey="LockedBy" Type="InventoryBalance" />
+      <Association Name="ApplicationUser_InventoryBalance3" Member="InventoryBalances3" ThisKey="Id" OtherKey="ModifiedBy" Type="InventoryBalance" />
+      <Association Name="ApplicationUser_InventoryBalance4" Member="InventoryBalances4" ThisKey="Id" OtherKey="VerifiedBy" Type="InventoryBalance" />
     </Type>
   </Table>
   <Table Name="dbo.Warranty" Member="Warranties">
@@ -356,11 +354,10 @@
       <Column Name="DeletedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="ApplicationUser_InventoryBalance" Member="ApplicationUser" ThisKey="ApprovedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
       <Association Name="CompanyBranch_InventoryBalance" Member="CompanyBranch" ThisKey="WarehouseId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />
-      <Association Name="ApplicationUser_InventoryBalance1" Member="ApplicationUser1" ThisKey="CreateBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
-      <Association Name="ApplicationUser_InventoryBalance2" Member="ApplicationUser2" ThisKey="DeletedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
-      <Association Name="ApplicationUser_InventoryBalance3" Member="ApplicationUser3" ThisKey="LockedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
-      <Association Name="ApplicationUser_InventoryBalance4" Member="ApplicationUser4" ThisKey="ModifiedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
-      <Association Name="ApplicationUser_InventoryBalance5" Member="ApplicationUser5" ThisKey="VerifiedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_InventoryBalance1" Member="ApplicationUser1" ThisKey="DeletedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_InventoryBalance2" Member="ApplicationUser2" ThisKey="LockedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_InventoryBalance3" Member="ApplicationUser3" ThisKey="ModifiedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_InventoryBalance4" Member="ApplicationUser4" ThisKey="VerifiedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
       <Association Name="ProductVariant_InventoryBalance" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
     </Type>
   </Table>

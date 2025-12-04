@@ -678,9 +678,9 @@ public static class InventoryBalanceDtoConverter
             dto.LockedByName = entity.ApplicationUser3.UserName;
         }
 
-        if (entity.ApplicationUser5 != null) // VerifiedBy
+        if (entity.ApplicationUser4 != null) // VerifiedBy
         {
-            dto.VerifiedByName = entity.ApplicationUser5.UserName;
+            dto.VerifiedByName = entity.ApplicationUser4.UserName;
         }
 
         if (entity.ApplicationUser != null) // ApprovedBy

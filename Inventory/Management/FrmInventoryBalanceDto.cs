@@ -403,7 +403,7 @@ namespace Inventory.Management
             try
             {
                 // Kiểm tra xem đã có WaitingForm đang hiển thị chưa
-                if (!DevExpress.XtraSplashScreen.SplashScreenManager.IsSplashFormVisible)
+                if (!SplashScreenHelper.IsSplashScreenVisible())
                 {
                     // Hiển thị WaitingForm
                     DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(typeof(WaitForm1));
@@ -419,7 +419,7 @@ namespace Inventory.Management
             finally
             {
                 // Đóng WaitingForm nếu đang hiển thị
-                if (DevExpress.XtraSplashScreen.SplashScreenManager.IsSplashFormVisible)
+                if (SplashScreenHelper.IsSplashScreenVisible())
                 {
                     DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
                 }
