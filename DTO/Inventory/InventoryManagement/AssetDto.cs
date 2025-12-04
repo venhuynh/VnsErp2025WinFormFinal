@@ -112,6 +112,59 @@ public class AssetDto
     [StringLength(1000, ErrorMessage = "Mô tả không được vượt quá 1000 ký tự")]
     public string Description { get; set; }
 
+    /// <summary>
+    /// Thông tin tài sản dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự InventoryBalanceDto.ProductHtml để đảm bảo consistency
+    /// Bao gồm: mã tài sản, phân loại, danh mục, tên tài sản
+    /// </summary>
+    [DisplayName("Thông tin tài sản HTML")]
+    [Display(Order = 8)]
+    [Description("Thông tin tài sản dưới dạng HTML")]
+    public string AssetInfoHtml
+    {
+        get
+        {
+            var assetName = AssetName ?? string.Empty;
+            var assetCode = AssetCode ?? string.Empty;
+            var assetTypeDisplay = AssetTypeDisplay ?? string.Empty;
+            var assetCategoryDisplay = AssetCategoryDisplay ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(assetName) && string.IsNullOrWhiteSpace(assetCode))
+                return string.Empty;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo InventoryBalanceDto.ProductHtml)
+            // - Tên tài sản: font lớn (12), bold, màu xanh đậm (primary)
+            // - Mã tài sản: font nhỏ hơn (9), màu xám
+            // - Loại tài sản: font nhỏ hơn (9), màu xám cho label, đen cho value
+            // - Danh mục: font nhỏ hơn (9), màu xám cho label, đen cho value
+
+            var html = $"<size=12><b><color='blue'>{assetName}</color></b></size>";
+
+            if (!string.IsNullOrWhiteSpace(assetCode))
+            {
+                html += $" <size=9><color='#757575'>({assetCode})</color></size>";
+            }
+
+            html += "<br>";
+
+            if (!string.IsNullOrWhiteSpace(assetTypeDisplay))
+            {
+                html += $"<size=9><color='#757575'>Loại:</color></size> <size=10><color='#212121'><b>{assetTypeDisplay}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(assetCategoryDisplay))
+            {
+                if (!string.IsNullOrWhiteSpace(assetTypeDisplay))
+                    html += " | ";
+                html += $"<size=9><color='#757575'>Danh mục:</color></size> <size=10><color='#212121'><b>{assetCategoryDisplay}</b></color></size>";
+            }
+
+            return html;
+        }
+    }
+
     #endregion
 
     #region Properties - Liên kết sản phẩm
@@ -233,6 +286,64 @@ public class AssetDto
     [StringLength(500, ErrorMessage = "Vị trí không được vượt quá 500 ký tự")]
     public string Location { get; set; }
 
+    /// <summary>
+    /// Vị trí tài sản dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự InventoryBalanceDto.WarehouseHtml để đảm bảo consistency
+    /// </summary>
+    [DisplayName("Vị trí HTML")]
+    [Display(Order = 30)]
+    [Description("Vị trí tài sản dưới dạng HTML")]
+    public string LocationHtml
+    {
+        get
+        {
+            var location = Location ?? string.Empty;
+            var companyName = CompanyName ?? string.Empty;
+            var branchName = BranchName ?? string.Empty;
+            var departmentName = DepartmentName ?? string.Empty;
+            var employeeName = AssignedEmployeeName ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(location) && 
+                string.IsNullOrWhiteSpace(companyName) && 
+                string.IsNullOrWhiteSpace(branchName) &&
+                string.IsNullOrWhiteSpace(departmentName) &&
+                string.IsNullOrWhiteSpace(employeeName))
+                return string.Empty;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo InventoryBalanceDto.WarehouseHtml)
+            // - Vị trí chính: font lớn (12), bold, màu xanh đậm (primary)
+            // - Thông tin bổ sung: font nhỏ hơn (9), màu xám
+
+            var html = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                html = $"<size=12><b><color='blue'>{location}</color></b></size>";
+            }
+
+            var additionalInfo = new List<string>();
+            if (!string.IsNullOrWhiteSpace(companyName))
+                additionalInfo.Add($"Công ty: {companyName}");
+            if (!string.IsNullOrWhiteSpace(branchName))
+                additionalInfo.Add($"Chi nhánh: {branchName}");
+            if (!string.IsNullOrWhiteSpace(departmentName))
+                additionalInfo.Add($"Phòng ban: {departmentName}");
+            if (!string.IsNullOrWhiteSpace(employeeName))
+                additionalInfo.Add($"NV: {employeeName}");
+
+            if (additionalInfo.Count > 0)
+            {
+                if (!string.IsNullOrWhiteSpace(html))
+                    html += "<br>";
+                html += $"<size=9><color='#757575'>{string.Join(" | ", additionalInfo)}</color></size>";
+            }
+
+            return html;
+        }
+    }
+
     #endregion
 
     #region Properties - Thông tin tài chính
@@ -255,11 +366,90 @@ public class AssetDto
     public DateTime? PurchaseDate { get; set; }
 
     /// <summary>
+    /// Ngày mua dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự InventoryBalanceDto.PeriodHtml để đảm bảo consistency
+    /// </summary>
+    [DisplayName("Ngày mua HTML")]
+    [Display(Order = 32)]
+    [Description("Ngày mua dưới dạng HTML")]
+    public string PurchaseDateHtml
+    {
+        get
+        {
+            if (!PurchaseDate.HasValue)
+                return string.Empty;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo InventoryBalanceDto.PeriodHtml)
+            // - Ngày mua: font lớn (12), màu xám
+            var purchaseDateStr = PurchaseDate.Value.ToString("dd/MM/yyyy");
+            var html = $"<size=12><color='#757575'>{purchaseDateStr}</color></size>";
+
+            // Thêm thông tin nhà cung cấp nếu có
+            if (!string.IsNullOrWhiteSpace(SupplierName))
+            {
+                html += "<br>";
+                html += $"<size=9><color='#757575'>NCC: {SupplierName}</color></size>";
+            }
+
+            // Thêm số hóa đơn nếu có
+            if (!string.IsNullOrWhiteSpace(InvoiceNumber))
+            {
+                html += "<br>";
+                html += $"<size=9><color='#757575'>HĐ: {InvoiceNumber}</color></size>";
+            }
+
+            return html;
+        }
+    }
+
+    /// <summary>
+    /// Giá mua dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự InventoryBalanceDto để đảm bảo consistency
+    /// </summary>
+    [DisplayName("Giá mua HTML")]
+    [Display(Order = 33)]
+    [Description("Giá mua dưới dạng HTML")]
+    public string PurchasePriceHtml
+    {
+        get
+        {
+            if (PurchasePrice <= 0)
+                return string.Empty;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - Giá mua: font lớn (12), bold, màu xanh đậm (primary)
+            // - Thông tin khấu hao: font nhỏ hơn (9), màu xám
+            var purchasePriceStr = PurchasePrice.ToString("N0");
+            var html = $"<size=12><b><color='blue'>{purchasePriceStr} VNĐ</color></b></size>";
+
+            // Thêm thông tin khấu hao nếu có
+            if (AccumulatedDepreciation > 0)
+            {
+                html += "<br>";
+                html += $"<size=9><color='#757575'>Khấu hao: {AccumulatedDepreciation:N0} VNĐ</color></size>";
+            }
+
+            // Thêm giá trị hiện tại nếu có
+            if (CurrentValue.HasValue && CurrentValue.Value > 0)
+            {
+                html += "<br>";
+                html += $"<size=9><color='#4CAF50'>Giá trị hiện tại: {CurrentValue.Value:N0} VNĐ</color></size>";
+            }
+
+            return html;
+        }
+    }
+
+    /// <summary>
     /// Tên nhà cung cấp
     /// Map với: Asset.SupplierName
     /// </summary>
     [DisplayName("Nhà cung cấp")]
-    [Display(Order = 32)]
+    [Display(Order = 34)]
     [StringLength(255, ErrorMessage = "Tên nhà cung cấp không được vượt quá 255 ký tự")]
     public string SupplierName { get; set; }
 
@@ -268,7 +458,7 @@ public class AssetDto
     /// Map với: Asset.InvoiceNumber
     /// </summary>
     [DisplayName("Số hóa đơn")]
-    [Display(Order = 33)]
+    [Display(Order = 35)]
     [StringLength(100, ErrorMessage = "Số hóa đơn không được vượt quá 100 ký tự")]
     public string InvoiceNumber { get; set; }
 
@@ -277,7 +467,7 @@ public class AssetDto
     /// Map với: Asset.InvoiceDate
     /// </summary>
     [DisplayName("Ngày hóa đơn")]
-    [Display(Order = 34)]
+    [Display(Order = 36)]
     public DateTime? InvoiceDate { get; set; }
 
     #endregion
@@ -419,6 +609,78 @@ public class AssetDto
         }
     }
 
+    /// <summary>
+    /// Tình trạng tài sản dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự InventoryBalanceDto.StatusHtml để đảm bảo consistency
+    /// </summary>
+    [DisplayName("Tình trạng HTML")]
+    [Display(Order = 54)]
+    [Description("Tình trạng tài sản dưới dạng HTML")]
+    public string ConditionHtml
+    {
+        get
+        {
+            var conditionText = ConditionDisplay ?? "Không xác định";
+            var statusText = StatusDisplay ?? "Không xác định";
+            
+            // Xác định màu sắc dựa trên tình trạng
+            string conditionColor;
+            switch (Condition)
+            {
+                case 0: // Mới
+                    conditionColor = "#4CAF50"; // Xanh lá
+                    break;
+                case 1: // Tốt
+                    conditionColor = "#2196F3"; // Xanh dương
+                    break;
+                case 2: // Khá
+                    conditionColor = "#FF9800"; // Cam
+                    break;
+                case 3: // Trung bình
+                    conditionColor = "#FF5722"; // Đỏ cam
+                    break;
+                case 4: // Kém
+                    conditionColor = "#F44336"; // Đỏ
+                    break;
+                default:
+                    conditionColor = "#757575"; // Xám
+                    break;
+            }
+
+            // Xác định màu sắc dựa trên trạng thái
+            string statusColor;
+            switch (Status)
+            {
+                case 0: // Đang sử dụng
+                    statusColor = "#4CAF50"; // Xanh lá
+                    break;
+                case 1: // Bảo trì
+                    statusColor = "#FF9800"; // Cam
+                    break;
+                case 2: // Ngừng sử dụng
+                    statusColor = "#757575"; // Xám
+                    break;
+                case 3: // Thanh lý
+                    statusColor = "#F44336"; // Đỏ
+                    break;
+                default:
+                    statusColor = "#757575"; // Xám
+                    break;
+            }
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo InventoryBalanceDto.StatusHtml)
+            // - Label: font nhỏ (9), màu xám
+            // - Value: font lớn hơn (10), bold, màu theo trạng thái
+            var html = $"<size=9><color='#757575'>Tình trạng:</color></size> <size=10><color='{conditionColor}'><b>{conditionText}</b></color></size>";
+            html += "<br>";
+            html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+
+            return html;
+        }
+    }
+
     #endregion
 
     #region Properties - Bảo hành
@@ -447,6 +709,79 @@ public class AssetDto
     [DisplayName("Ngày hết hạn BH")]
     [Display(Order = 62)]
     public DateTime? WarrantyExpiryDate { get; set; }
+
+    /// <summary>
+    /// Tình trạng bảo hành dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự InventoryBalanceDto.StatusHtml để đảm bảo consistency
+    /// </summary>
+    [DisplayName("Tình trạng bảo hành HTML")]
+    [Display(Order = 63)]
+    [Description("Tình trạng bảo hành dưới dạng HTML")]
+    public string WarrantyStatusHtml
+    {
+        get
+        {
+            var warrantyName = WarrantyName ?? string.Empty;
+            var hasWarranty = WarrantyId.HasValue && !string.IsNullOrWhiteSpace(warrantyName);
+            var expiryDate = WarrantyExpiryDate;
+
+            if (!hasWarranty && !expiryDate.HasValue)
+            {
+                // Không có bảo hành
+                return $"<size=9><color='#757575'>Bảo hành:</color></size> <size=10><color='#757575'><b>Không có</b></color></size>";
+            }
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo InventoryBalanceDto.StatusHtml)
+            // - Label: font nhỏ (9), màu xám
+            // - Value: font lớn hơn (10), bold, màu theo trạng thái
+
+            var html = string.Empty;
+
+            if (hasWarranty)
+            {
+                html = $"<size=9><color='#757575'>Bảo hành:</color></size> <size=10><color='#4CAF50'><b>{warrantyName}</b></color></size>";
+            }
+
+            if (expiryDate.HasValue)
+            {
+                var expiryDateStr = expiryDate.Value.ToString("dd/MM/yyyy");
+                var now = DateTime.Now;
+                var daysRemaining = (expiryDate.Value - now).Days;
+
+                // Xác định màu sắc dựa trên thời gian còn lại
+                string dateColor;
+                string statusText;
+                if (daysRemaining < 0)
+                {
+                    // Đã hết hạn
+                    dateColor = "#F44336"; // Đỏ
+                    statusText = "Đã hết hạn";
+                }
+                else if (daysRemaining <= 30)
+                {
+                    // Sắp hết hạn (trong 30 ngày)
+                    dateColor = "#FF9800"; // Cam
+                    statusText = $"Còn {daysRemaining} ngày";
+                }
+                else
+                {
+                    // Còn hạn
+                    dateColor = "#4CAF50"; // Xanh lá
+                    statusText = "Còn hạn";
+                }
+
+                if (!string.IsNullOrWhiteSpace(html))
+                    html += "<br>";
+                html += $"<size=9><color='#757575'>Hết hạn:</color></size> <size=10><color='{dateColor}'><b>{expiryDateStr}</b></color></size>";
+                html += "<br>";
+                html += $"<size=9><color='{dateColor}'><b>{statusText}</b></color></size>";
+            }
+
+            return html;
+        }
+    }
 
     #endregion
 
