@@ -179,6 +179,8 @@ public interface IUnitOfWork : IDisposable
 
     IInventoryBalanceRepository GetInventoryBalanceRepository();
 
+    IAssetRepository GetAssetRepository();
+
     #endregion
 
     #endregion
