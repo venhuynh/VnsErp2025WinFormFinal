@@ -1,7 +1,10 @@
+using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace DTO.Inventory.InventoryManagement;
 
@@ -584,7 +587,7 @@ public static class InventoryBalanceDtoConverter
     /// </summary>
     /// <param name="entity">InventoryBalance entity</param>
     /// <returns>InventoryBalanceDto</returns>
-    public static InventoryBalanceDto ToDto(this Dal.DataContext.InventoryBalance entity)
+    public static InventoryBalanceDto ToDto(this InventoryBalance entity)
     {
         if (entity == null) return null;
 
@@ -693,11 +696,18 @@ public static class InventoryBalanceDtoConverter
     /// </summary>
     /// <param name="entities">Danh sách InventoryBalance entities</param>
     /// <returns>Danh sách InventoryBalanceDto</returns>
-    public static List<InventoryBalanceDto> ToDtoList(this IEnumerable<Dal.DataContext.InventoryBalance> entities)
+    public static List<InventoryBalanceDto> ToDtoList(this IEnumerable<InventoryBalance> entities)
     {
-        if (entities == null) return new List<InventoryBalanceDto>();
+        if (entities == null) return [];
 
-        return entities.Select(entity => entity.ToDto()).Where(dto => dto != null).ToList();
+        List<InventoryBalanceDto> list = [];
+        foreach (var entity in entities)
+        {
+            var dto = entity.ToDto();
+            if (dto != null) list.Add(dto);
+        }
+
+        return list;
     }
 
     #endregion
@@ -710,11 +720,11 @@ public static class InventoryBalanceDtoConverter
     /// <param name="dto">InventoryBalanceDto</param>
     /// <param name="existingEntity">Entity hiện có (nếu đang update), null nếu tạo mới</param>
     /// <returns>InventoryBalance entity</returns>
-    public static Dal.DataContext.InventoryBalance ToEntity(this InventoryBalanceDto dto, Dal.DataContext.InventoryBalance existingEntity = null)
+    public static InventoryBalance ToEntity(this InventoryBalanceDto dto, InventoryBalance existingEntity = null)
     {
         if (dto == null) return null;
 
-        var entity = existingEntity ?? new Dal.DataContext.InventoryBalance();
+        var entity = existingEntity ?? new InventoryBalance();
 
         // Chỉ map các properties có thể chỉnh sửa, không map navigation properties
         entity.WarehouseId = dto.WarehouseId;
@@ -753,15 +763,8 @@ public static class InventoryBalanceDtoConverter
         // Chỉ set ID và audit fields nếu là entity mới
         if (existingEntity == null)
         {
-            if (dto.Id != Guid.Empty)
-            {
-                entity.Id = dto.Id;
-            }
-            else
-            {
-                entity.Id = Guid.NewGuid();
-            }
-            entity.CreateDate = dto.CreateDate != default(DateTime) ? dto.CreateDate : DateTime.Now;
+            entity.Id = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid();
+            entity.CreateDate = DateTime.Now;
             entity.CreateBy = dto.CreateBy;
         }
         else
@@ -784,11 +787,18 @@ public static class InventoryBalanceDtoConverter
     /// </summary>
     /// <param name="dtos">Danh sách InventoryBalanceDto</param>
     /// <returns>Danh sách InventoryBalance entities</returns>
-    public static List<Dal.DataContext.InventoryBalance> ToEntityList(this IEnumerable<InventoryBalanceDto> dtos)
+    public static List<InventoryBalance> ToEntityList(this IEnumerable<InventoryBalanceDto> dtos)
     {
-        if (dtos == null) return new List<Dal.DataContext.InventoryBalance>();
+        if (dtos == null) return [];
 
-        return dtos.Select(dto => dto.ToEntity()).Where(entity => entity != null).ToList();
+        List<InventoryBalance> list = [];
+        foreach (var dto in dtos)
+        {
+            var entity = dto.ToEntity();
+            if (entity != null) list.Add(entity);
+        }
+
+        return list;
     }
 
     #endregion

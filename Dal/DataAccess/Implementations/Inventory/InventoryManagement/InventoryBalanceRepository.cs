@@ -762,5 +762,160 @@ public class InventoryBalanceRepository : IInventoryBalanceRepository
     }
 
     #endregion
+
+    #region Recalculate Summary Operations
+
+    /// <summary>
+    /// Tính lại tổng kết tồn kho cho kỳ được chỉ định
+    /// Tính toán từ StockInOutDetail và cập nhật lại InventoryBalance
+    /// </summary>
+    /// <param name="periodYear">Năm kỳ</param>
+    /// <param name="periodMonth">Tháng kỳ (1-12)</param>
+    /// <returns>Số lượng tồn kho đã được cập nhật</returns>
+    public int RecalculateSummary(int periodYear, int periodMonth)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Info("RecalculateSummary: Bắt đầu tính lại tổng kết cho kỳ {0}/{1:D2}", periodYear, periodMonth);
+
+            // Validate period
+            if (periodYear < 2000 || periodYear > 9999)
+                throw new ArgumentException($"PeriodYear phải trong khoảng 2000-9999, giá trị hiện tại: {periodYear}");
+            
+            if (periodMonth < 1 || periodMonth > 12)
+                throw new ArgumentException($"PeriodMonth phải trong khoảng 1-12, giá trị hiện tại: {periodMonth}");
+
+            // Lấy tất cả tồn kho của kỳ này
+            var balances = context.InventoryBalances
+                .Where(b => b.PeriodYear == periodYear && b.PeriodMonth == periodMonth && !b.IsDeleted)
+                .ToList();
+
+            if (!balances.Any())
+            {
+                _logger.Warning("RecalculateSummary: Không tìm thấy tồn kho nào cho kỳ {0}/{1:D2}", periodYear, periodMonth);
+                return 0;
+            }
+
+            // Kiểm tra có tồn kho nào bị khóa không
+            var lockedBalances = balances.Where(b => b.IsLocked).ToList();
+            if (lockedBalances.Any())
+            {
+                var lockedCount = lockedBalances.Count;
+                _logger.Warning("RecalculateSummary: Có {0} tồn kho đã bị khóa, không thể tính lại tổng kết", lockedCount);
+                throw new InvalidOperationException(
+                    $"Không thể tính lại tổng kết vì có {lockedCount} tồn kho đã bị khóa trong kỳ {periodYear}/{periodMonth:D2}. " +
+                    "Vui lòng mở khóa các tồn kho này trước khi thực hiện tổng kết.");
+            }
+
+            // Tính ngày bắt đầu và kết thúc của kỳ
+            var periodStartDate = new DateTime(periodYear, periodMonth, 1);
+            var periodEndDate = periodStartDate.AddMonths(1).AddDays(-1);
+
+            int updatedCount = 0;
+
+            foreach (var balance in balances)
+            {
+                try
+                {
+                    // Lấy tồn đầu kỳ từ kỳ trước
+                    var previousPeriodMonth = periodMonth == 1 ? 12 : periodMonth - 1;
+                    var previousPeriodYear = periodMonth == 1 ? periodYear - 1 : periodYear;
+                    
+                    var previousBalance = context.InventoryBalances
+                        .FirstOrDefault(b => b.WarehouseId == balance.WarehouseId 
+                                           && b.ProductVariantId == balance.ProductVariantId
+                                           && b.PeriodYear == previousPeriodYear
+                                           && b.PeriodMonth == previousPeriodMonth
+                                           && !b.IsDeleted);
+
+                    decimal openingBalance = previousBalance?.ClosingBalance ?? 0;
+                    decimal? openingValue = previousBalance?.ClosingValue;
+
+                    // Tính tổng nhập/xuất từ StockInOutDetail trong kỳ
+                    var stockInOutDetails = context.StockInOutDetails
+                        .Where(d => d.StockInOutMaster.StockInOutDate >= periodStartDate
+                                 && d.StockInOutMaster.StockInOutDate <= periodEndDate
+                                 && d.StockInOutMaster.WarehouseId == balance.WarehouseId
+                                 && d.ProductVariantId == balance.ProductVariantId)
+                        .ToList();
+
+                    // Tính tổng nhập (StockInOutType = 1 hoặc các loại nhập khác)
+                    var totalInQty = stockInOutDetails
+                        .Where(d => d.StockInOutMaster.StockInOutType == 1 || d.StockInOutMaster.StockInOutType == 3) // 1: Nhập, 3: Nhập lưu chuyển
+                        .Sum(d => d.StockInQty);
+
+                    // Tính tổng xuất (StockInOutType = 2 hoặc các loại xuất khác)
+                    var totalOutQty = stockInOutDetails
+                        .Where(d => d.StockInOutMaster.StockInOutType == 2 || d.StockInOutMaster.StockInOutType == 4) // 2: Xuất, 4: Xuất lưu chuyển
+                        .Sum(d => d.StockOutQty);
+
+                    // Tính tổng giá trị nhập
+                    var totalInValue = stockInOutDetails
+                        .Where(d => d.StockInOutMaster.StockInOutType == 1 || d.StockInOutMaster.StockInOutType == 3)
+                        .Sum(d => (decimal?)(d.UnitPrice) * (d.StockInQty));
+
+                    // Tính tổng giá trị xuất
+                    var totalOutValue = stockInOutDetails
+                        .Where(d => d.StockInOutMaster.StockInOutType == 2 || d.StockInOutMaster.StockInOutType == 4)
+                        .Sum(d => (decimal?)(d.StockInQty) * (d.StockInQty));
+
+                    // Tính VAT
+                    var totalInVatAmount = stockInOutDetails
+                        .Where(d => d.StockInOutMaster.StockInOutType == 1 || d.StockInOutMaster.StockInOutType == 3)
+                        .Sum(d => d.VatAmount);
+
+                    var totalOutVatAmount = stockInOutDetails
+                        .Where(d => d.StockInOutMaster.StockInOutType == 2 || d.StockInOutMaster.StockInOutType == 4)
+                        .Sum(d => d.VatAmount);
+
+                    // Tính tổng tiền có VAT
+                    var totalInAmountIncludedVat = totalInValue + totalInVatAmount;
+
+                    var totalOutAmountIncludedVat = totalOutValue + totalOutVatAmount;
+
+                    // Tính tồn cuối kỳ
+                    var closingBalance = openingBalance + totalInQty - totalOutQty;
+                    var closingValue = (openingValue ?? 0) + (totalInValue ?? 0) - (totalOutValue ?? 0);
+
+                    // Cập nhật balance
+                    balance.OpeningBalance = openingBalance;
+                    balance.OpeningValue = openingValue;
+                    balance.TotalInQty = totalInQty;
+                    balance.TotalOutQty = totalOutQty;
+                    balance.ClosingBalance = closingBalance;
+                    balance.TotalInValue = totalInValue;
+                    balance.TotalOutValue = totalOutValue;
+                    balance.ClosingValue = closingValue;
+                    balance.TotalInVatAmount = totalInVatAmount;
+                    balance.TotalOutVatAmount = totalOutVatAmount;
+                    balance.TotalInAmountIncludedVat = totalInAmountIncludedVat;
+                    balance.TotalOutAmountIncludedVat = totalOutAmountIncludedVat;
+                    balance.ModifiedDate = DateTime.Now;
+                    
+
+                    updatedCount++;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"RecalculateSummary: Lỗi khi tính lại tổng kết cho tồn kho Id={balance.Id}: {ex.Message}", ex);
+                    // Tiếp tục với tồn kho tiếp theo
+                }
+            }
+
+            // Lưu tất cả thay đổi
+            context.SubmitChanges();
+
+            _logger.Info("RecalculateSummary: Đã tính lại tổng kết cho {0} tồn kho trong kỳ {1}/{2:D2}", updatedCount, periodYear, periodMonth);
+            return updatedCount;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"RecalculateSummary: Lỗi tính lại tổng kết cho kỳ {periodYear}/{periodMonth:D2}: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
 }
 

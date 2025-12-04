@@ -115,6 +115,18 @@
             // 
             // colStockInOutDate
             // 
+            this.colStockInOutDate.AppearanceCell.Options.UseTextOptions = true;
+            this.colStockInOutDate.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStockInOutDate.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStockInOutDate.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colStockInOutDate.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colStockInOutDate.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colStockInOutDate.AppearanceHeader.Options.UseBackColor = true;
+            this.colStockInOutDate.AppearanceHeader.Options.UseFont = true;
+            this.colStockInOutDate.AppearanceHeader.Options.UseForeColor = true;
+            this.colStockInOutDate.AppearanceHeader.Options.UseTextOptions = true;
+            this.colStockInOutDate.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStockInOutDate.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colStockInOutDate.Caption = "Ngày tháng nhập xuất";
             this.colStockInOutDate.FieldName = "StockInOutDate";
             this.colStockInOutDate.Name = "colStockInOutDate";
@@ -124,6 +136,22 @@
             // 
             // colVocherNumber
             // 
+            this.colVocherNumber.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colVocherNumber.AppearanceCell.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colVocherNumber.AppearanceCell.Options.UseFont = true;
+            this.colVocherNumber.AppearanceCell.Options.UseForeColor = true;
+            this.colVocherNumber.AppearanceCell.Options.UseTextOptions = true;
+            this.colVocherNumber.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colVocherNumber.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colVocherNumber.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colVocherNumber.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colVocherNumber.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colVocherNumber.AppearanceHeader.Options.UseBackColor = true;
+            this.colVocherNumber.AppearanceHeader.Options.UseFont = true;
+            this.colVocherNumber.AppearanceHeader.Options.UseForeColor = true;
+            this.colVocherNumber.AppearanceHeader.Options.UseTextOptions = true;
+            this.colVocherNumber.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colVocherNumber.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colVocherNumber.Caption = "Số phiếu";
             this.colVocherNumber.FieldName = "VocherNumber";
             this.colVocherNumber.Name = "colVocherNumber";
@@ -133,6 +161,18 @@
             // 
             // colLoaiNhapXuatKhoText
             // 
+            this.colLoaiNhapXuatKhoText.AppearanceCell.Options.UseTextOptions = true;
+            this.colLoaiNhapXuatKhoText.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colLoaiNhapXuatKhoText.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Options.UseBackColor = true;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Options.UseFont = true;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Options.UseForeColor = true;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Options.UseTextOptions = true;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colLoaiNhapXuatKhoText.Caption = "Kiểu nhập xuất";
             this.colLoaiNhapXuatKhoText.FieldName = "LoaiNhapXuatKhoText";
             this.colLoaiNhapXuatKhoText.Name = "colLoaiNhapXuatKhoText";
@@ -142,6 +182,17 @@
             // 
             // colFileName
             // 
+            this.colFileName.AppearanceCell.Options.UseTextOptions = true;
+            this.colFileName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFileName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colFileName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colFileName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colFileName.AppearanceHeader.Options.UseBackColor = true;
+            this.colFileName.AppearanceHeader.Options.UseFont = true;
+            this.colFileName.AppearanceHeader.Options.UseForeColor = true;
+            this.colFileName.AppearanceHeader.Options.UseTextOptions = true;
+            this.colFileName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colFileName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colFileName.Caption = "Tên file";
             this.colFileName.FieldName = "FileName";
             this.colFileName.Name = "colFileName";
@@ -151,6 +202,18 @@
             // 
             // colFileSizeDisplay
             // 
+            this.colFileSizeDisplay.AppearanceCell.Options.UseTextOptions = true;
+            this.colFileSizeDisplay.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colFileSizeDisplay.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFileSizeDisplay.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colFileSizeDisplay.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colFileSizeDisplay.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colFileSizeDisplay.AppearanceHeader.Options.UseBackColor = true;
+            this.colFileSizeDisplay.AppearanceHeader.Options.UseFont = true;
+            this.colFileSizeDisplay.AppearanceHeader.Options.UseForeColor = true;
+            this.colFileSizeDisplay.AppearanceHeader.Options.UseTextOptions = true;
+            this.colFileSizeDisplay.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colFileSizeDisplay.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colFileSizeDisplay.Caption = "Kích thước";
             this.colFileSizeDisplay.FieldName = "FileSizeDisplay";
             this.colFileSizeDisplay.Name = "colFileSizeDisplay";

@@ -126,5 +126,14 @@ public interface IInventoryBalanceRepository
     /// <param name="id">ID tồn kho cần xóa</param>
     /// <param name="deletedBy">ID người xóa (optional, để tương thích với BLL)</param>
     void Delete(Guid id, Guid deletedBy = default);
+
+    /// <summary>
+    /// Tính lại tổng kết tồn kho cho kỳ được chỉ định
+    /// Tính toán từ StockInOutDetail và cập nhật lại InventoryBalance
+    /// </summary>
+    /// <param name="periodYear">Năm kỳ</param>
+    /// <param name="periodMonth">Tháng kỳ (1-12)</param>
+    /// <returns>Số lượng tồn kho đã được cập nhật</returns>
+    int RecalculateSummary(int periodYear, int periodMonth);
 }
 

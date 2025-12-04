@@ -64,8 +64,8 @@ namespace Inventory.Management
         private void InitializeGridView()
         {
             // Cấu hình group theo GroupCaption
-            InventoryBalanceDtoGridView.SortInfo.Clear();
-            InventoryBalanceDtoGridView.SortInfo.Add(
+            InventoryBalanceDtoBandedGridView.SortInfo.Clear();
+            InventoryBalanceDtoBandedGridView.SortInfo.Add(
                 new DevExpress.XtraGrid.Columns.GridColumnSortInfo(colGroupCaption, DevExpress.Data.ColumnSortOrder.Ascending));
         }
 
@@ -96,9 +96,10 @@ namespace Inventory.Management
             // Bar button events
             XemBaoCaoBarButtonItem.ItemClick += XemBaoCaoBarButtonItem_ItemClick;
             ExportFileBarButtonItem.ItemClick += ExportFileBarButtonItem_ItemClick;
+            TongKetBarButtonItem.ItemClick += TongKetBarButtonItem_ItemClick;
 
-            // GridView events
-            InventoryBalanceDtoGridView.SelectionChanged += InventoryBalanceDtoGridView_SelectionChanged;
+            // BandedGridView events
+            InventoryBalanceDtoBandedGridView.SelectionChanged += InventoryBalanceDtoGridView_SelectionChanged;
 
             // Form events
             Load += FrmInventoryBalanceDto_Load;
@@ -154,7 +155,7 @@ namespace Inventory.Management
             try
             {
                 // Kiểm tra có dữ liệu không
-                var rowCount = InventoryBalanceDtoGridView.RowCount;
+                var rowCount = InventoryBalanceDtoBandedGridView.RowCount;
                 if (rowCount == 0)
                 {
                     MsgBox.ShowWarning("Không có dữ liệu để xuất. Vui lòng tải dữ liệu trước.");
@@ -167,11 +168,74 @@ namespace Inventory.Management
                 var defaultFileName = $"TonKho_{periodYear}_{periodMonth:D2}";
 
                 // Sử dụng Common helper để xuất file
-                GridViewHelper.ExportGridControl(InventoryBalanceDtoGridView, defaultFileName);
+                GridViewHelper.ExportGridControl(InventoryBalanceDtoBandedGridView, defaultFileName);
             }
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi khi xuất file");
+            }
+        }
+
+        /// <summary>
+        /// Event handler cho nút Tổng kết
+        /// </summary>
+        private async void TongKetBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                if (_inventoryBalanceBll == null)
+                {
+                    MsgBox.ShowWarning("Dịch vụ tồn kho chưa được khởi tạo.");
+                    return;
+                }
+
+                // Lấy kỳ được chọn
+                var periodYear = NamBarEditItem.EditValue as int? ?? DateTime.Now.Year;
+                var periodMonth = ThangBarEditItem.EditValue as int? ?? DateTime.Now.Month;
+
+                // Validate period
+                if (periodYear < 2000 || periodYear > 9999)
+                {
+                    MsgBox.ShowWarning("Năm phải trong khoảng 2000-9999.");
+                    return;
+                }
+
+                if (periodMonth < 1 || periodMonth > 12)
+                {
+                    MsgBox.ShowWarning("Tháng phải trong khoảng 1-12.");
+                    return;
+                }
+
+                // Xác nhận có muốn chạy lại tổng kết
+                var confirmMessage = $"Bạn có chắc chắn muốn tính lại tổng kết cho kỳ {periodYear}/{periodMonth:D2}?\n\n" +
+                                    "Hệ thống sẽ tính lại tổng nhập/xuất từ các phiếu nhập xuất kho và cập nhật lại dữ liệu tồn kho.\n\n" +
+                                    "Lưu ý: Chỉ có thể thực hiện khi dữ liệu chưa bị khóa.";
+
+                if (!MsgBox.ShowYesNo(confirmMessage, "Xác nhận tổng kết"))
+                {
+                    return;
+                }
+
+                // Thực hiện tổng kết tại Repository
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    var updatedCount = _inventoryBalanceBll.RecalculateSummary(periodYear, periodMonth);
+                    
+                    // Reload dữ liệu sau khi tổng kết xong (không dùng ExecuteWithWaitingFormAsync để tránh lồng nhau)
+                    await ReloadDataWithoutWaitingFormAsync();
+                    
+                    MsgBox.ShowSuccess($"Đã tính lại tổng kết thành công cho {updatedCount} tồn kho trong kỳ {periodYear}/{periodMonth:D2}.\n\n" +
+                                   "Dữ liệu đã được cập nhật và tải lại.", "Tổng kết thành công");
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Lỗi do dữ liệu bị khóa hoặc các lỗi business logic
+                MsgBox.ShowWarning(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi tính tổng kết");
             }
         }
 
@@ -241,14 +305,14 @@ namespace Inventory.Management
         /// <summary>
         /// Load dữ liệu tồn kho
         /// </summary>
-        public void LoadData(List<InventoryBalanceDto> balances)
+        private void LoadData(List<InventoryBalanceDto> balances)
         {
             if (balances == null)
             {
                 _dataSource = null;
                 inventoryBalanceDtoBindingSource.DataSource = null;
                 inventoryBalanceDtoBindingSource.ResetBindings(false);
-                InventoryBalanceDtoGridView.RefreshData();
+                InventoryBalanceDtoBandedGridView.RefreshData();
                 UpdateStatusBar();
                 return;
             }
@@ -259,7 +323,7 @@ namespace Inventory.Management
             inventoryBalanceDtoBindingSource.ResetBindings(false);
 
             // Force refresh GridView
-            InventoryBalanceDtoGridView.RefreshData();
+            InventoryBalanceDtoBandedGridView.RefreshData();
 
             UpdateStatusBar();
 
@@ -276,7 +340,7 @@ namespace Inventory.Management
             try
             {
                 var totalCount = _dataSource?.Count ?? 0;
-                var selectedCount = InventoryBalanceDtoGridView.SelectedRowsCount;
+                var selectedCount = InventoryBalanceDtoBandedGridView.SelectedRowsCount;
 
                 DataSummaryBarStaticItem.Caption = $@"Tổng số: <b>{totalCount}</b> tồn kho";
                 SelectedRowBarStaticItem.Caption = selectedCount > 0
@@ -290,14 +354,60 @@ namespace Inventory.Management
         }
 
         /// <summary>
+        /// Load dữ liệu mà không hiển thị WaitingForm (dùng khi đã có WaitingForm đang hiển thị)
+        /// </summary>
+        private async Task ReloadDataWithoutWaitingFormAsync()
+        {
+            try
+            {
+                if (_inventoryBalanceBll == null)
+                {
+                    return;
+                }
+
+                // Lấy filter criteria
+                var periodYear = NamBarEditItem.EditValue as int? ?? DateTime.Now.Year;
+                var periodMonth = ThangBarEditItem.EditValue as int? ?? DateTime.Now.Month;
+
+                // Validate period
+                if (periodYear < 2000 || periodYear > 9999 || periodMonth < 1 || periodMonth > 12)
+                {
+                    return;
+                }
+
+                // Query tồn kho theo kỳ (UI -> BLL -> DAL)
+                var entities = _inventoryBalanceBll.QueryBalances(
+                    warehouseId: null,
+                    productVariantId: null,
+                    periodYear: periodYear,
+                    periodMonth: periodMonth);
+
+                // Convert entities sang DTOs sử dụng converter
+                var dtos = entities.ToDtoList();
+
+                // Set data source
+                LoadData(dtos);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error reloading data: {ex.Message}");
+                LoadData([]);
+            }
+        }
+
+        /// <summary>
         /// Thực hiện operation async với WaitingForm hiển thị
         /// </summary>
         private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
         {
             try
             {
-                // Hiển thị WaitingForm
-                DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(typeof(WaitForm1));
+                // Kiểm tra xem đã có WaitingForm đang hiển thị chưa
+                if (!DevExpress.XtraSplashScreen.SplashScreenManager.IsSplashFormVisible)
+                {
+                    // Hiển thị WaitingForm
+                    DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(typeof(WaitForm1));
+                }
 
                 // Thực hiện operation
                 await operation();
@@ -308,9 +418,116 @@ namespace Inventory.Management
             }
             finally
             {
-                // Đóng WaitingForm
-                DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
+                // Đóng WaitingForm nếu đang hiển thị
+                if (DevExpress.XtraSplashScreen.SplashScreenManager.IsSplashFormVisible)
+                {
+                    DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
+                }
             }
+        }
+
+        #endregion
+
+        #region ========== TỔNG KẾT ==========
+
+        /// <summary>
+        /// Class chứa thông tin tổng kết
+        /// </summary>
+        private class SummaryInfo
+        {
+            public int PeriodYear { get; set; }
+            public int PeriodMonth { get; set; }
+            public int TotalItems { get; set; }
+            
+            // Tổng số lượng
+            public decimal TotalOpeningBalance { get; set; }
+            public decimal TotalInQty { get; set; }
+            public decimal TotalOutQty { get; set; }
+            public decimal TotalClosingBalance { get; set; }
+            
+            // Tổng giá trị
+            public decimal? TotalOpeningValue { get; set; }
+            public decimal? TotalInValue { get; set; }
+            public decimal? TotalOutValue { get; set; }
+            public decimal? TotalInAmountIncludedVat { get; set; }
+            public decimal? TotalInVatAmount { get; set; }
+            public decimal? TotalOutAmountIncludedVat { get; set; }
+            public decimal? TotalOutVatAmount { get; set; }
+            public decimal? TotalClosingValue { get; set; }
+        }
+
+        /// <summary>
+        /// Tính tổng kết từ danh sách tồn kho
+        /// </summary>
+        private SummaryInfo CalculateSummary(List<InventoryBalanceDto> balances)
+        {
+            if (balances == null || balances.Count == 0)
+                return new SummaryInfo();
+
+            var periodYear = NamBarEditItem.EditValue as int? ?? DateTime.Now.Year;
+            var periodMonth = ThangBarEditItem.EditValue as int? ?? DateTime.Now.Month;
+
+            var summary = new SummaryInfo
+            {
+                PeriodYear = periodYear,
+                PeriodMonth = periodMonth,
+                TotalItems = balances.Count,
+                
+                // Tổng số lượng
+                TotalOpeningBalance = balances.Sum(b => b.OpeningBalance),
+                TotalInQty = balances.Sum(b => b.TotalInQty),
+                TotalOutQty = balances.Sum(b => b.TotalOutQty),
+                TotalClosingBalance = balances.Sum(b => b.ClosingBalance),
+                
+                // Tổng giá trị
+                TotalOpeningValue = balances.Where(b => b.OpeningValue.HasValue).Sum(b => b.OpeningValue.Value),
+                TotalInValue = balances.Where(b => b.TotalInValue.HasValue).Sum(b => b.TotalInValue.Value),
+                TotalOutValue = balances.Where(b => b.TotalOutValue.HasValue).Sum(b => b.TotalOutValue.Value),
+                TotalInAmountIncludedVat = balances.Where(b => b.TotalInAmountIncludedVat.HasValue).Sum(b => b.TotalInAmountIncludedVat.Value),
+                TotalInVatAmount = balances.Where(b => b.TotalInVatAmount.HasValue).Sum(b => b.TotalInVatAmount.Value),
+                TotalOutAmountIncludedVat = balances.Where(b => b.TotalOutAmountIncludedVat.HasValue).Sum(b => b.TotalOutAmountIncludedVat.Value),
+                TotalOutVatAmount = balances.Where(b => b.TotalOutVatAmount.HasValue).Sum(b => b.TotalOutVatAmount.Value)
+            };
+
+            // Tính ClosingValue
+            var openingValue = summary.TotalOpeningValue ?? 0;
+            var inValue = summary.TotalInValue ?? 0;
+            var outValue = summary.TotalOutValue ?? 0;
+            summary.TotalClosingValue = openingValue + inValue - outValue;
+
+            return summary;
+        }
+
+        /// <summary>
+        /// Hiển thị dialog tổng kết
+        /// </summary>
+        private void ShowSummaryDialog(SummaryInfo summary)
+        {
+            var periodText = $"{summary.PeriodYear}/{summary.PeriodMonth:D2}";
+            
+            var message = $@"<b>TỔNG KẾT TỒN KHO KỲ {periodText}</b>
+
+            <b>Số lượng bản ghi:</b> {summary.TotalItems:N0}
+
+            <b>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</b>
+            <b>TỔNG KẾT SỐ LƯỢNG:</b>
+              • Tồn đầu kỳ: {summary.TotalOpeningBalance:N2}
+              • Tổng nhập: {summary.TotalInQty:N2}
+              • Tổng xuất: {summary.TotalOutQty:N2}
+              • Tồn cuối kỳ: {summary.TotalClosingBalance:N2}
+
+            <b>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</b>
+            <b>TỔNG KẾT GIÁ TRỊ:</b>
+              • Giá trị đầu kỳ: {(summary.TotalOpeningValue.HasValue ? summary.TotalOpeningValue.Value.ToString("N0") : "N/A")}
+              • Giá trị nhập: {(summary.TotalInValue.HasValue ? summary.TotalInValue.Value.ToString("N0") : "N/A")}
+              • Giá trị xuất: {(summary.TotalOutValue.HasValue ? summary.TotalOutValue.Value.ToString("N0") : "N/A")}
+              • VAT nhập: {(summary.TotalInVatAmount.HasValue ? summary.TotalInVatAmount.Value.ToString("N0") : "N/A")}
+              • VAT xuất: {(summary.TotalOutVatAmount.HasValue ? summary.TotalOutVatAmount.Value.ToString("N0") : "N/A")}
+              • Tổng tiền nhập (có VAT): {(summary.TotalInAmountIncludedVat.HasValue ? summary.TotalInAmountIncludedVat.Value.ToString("N0") : "N/A")}
+              • Tổng tiền xuất (có VAT): {(summary.TotalOutAmountIncludedVat.HasValue ? summary.TotalOutAmountIncludedVat.Value.ToString("N0") : "N/A")}
+              • Giá trị cuối kỳ: {(summary.TotalClosingValue.HasValue ? summary.TotalClosingValue.Value.ToString("N0") : "N/A")}";
+
+            MsgBox.ShowSuccess(message, "Tổng kết tồn kho");
         }
 
         #endregion

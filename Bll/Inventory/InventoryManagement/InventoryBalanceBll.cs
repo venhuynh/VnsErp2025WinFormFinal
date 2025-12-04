@@ -463,22 +463,24 @@ public class InventoryBalanceBll
 
             // Kiểm tra xem tồn kho đã được xác thực chưa
             var balance = GetDataAccess().GetById(id);
-            if (balance == null)
+            if (balance != null)
+            {
+                if (!balance.IsVerified)
+                {
+                    throw new InvalidOperationException(
+                        $"Không thể phê duyệt tồn kho chưa được xác thực. " +
+                        $"Tồn kho ID: {id}, Period: {balance.PeriodYear}/{balance.PeriodMonth}");
+                }
+
+                GetDataAccess().UpdateApprovalStatus(id, true, approvedBy, approvalNotes);
+
+                _logger.Info("ApproveBalance: Đã phê duyệt tồn kho, Id={0}, ApprovedBy={1}, ApprovalNotes={2}",
+                    id, approvedBy, approvalNotes ?? "N/A");
+            }
+            else
             {
                 throw new InvalidOperationException($"Không tìm thấy tồn kho với ID: {id}");
             }
-
-            if (!balance.IsVerified)
-            {
-                throw new InvalidOperationException(
-                    $"Không thể phê duyệt tồn kho chưa được xác thực. " +
-                    $"Tồn kho ID: {id}, Period: {balance.PeriodYear}/{balance.PeriodMonth}");
-            }
-
-            GetDataAccess().UpdateApprovalStatus(id, true, approvedBy, approvalNotes);
-
-            _logger.Info("ApproveBalance: Đã phê duyệt tồn kho, Id={0}, ApprovedBy={1}, ApprovalNotes={2}", 
-                id, approvedBy, approvalNotes ?? "N/A");
         }
         catch (Exception ex)
         {
@@ -523,31 +525,33 @@ public class InventoryBalanceBll
         {
             // Kiểm tra xem tồn kho có đang bị khóa không
             var balance = GetDataAccess().GetById(id);
-            if (balance == null)
+            if (balance != null)
+            {
+                if (balance.IsLocked)
+                {
+                    throw new InvalidOperationException(
+                        $"Không thể xóa tồn kho đang bị khóa. " +
+                        $"Tồn kho ID: {id}, Period: {balance.PeriodYear}/{balance.PeriodMonth}");
+                }
+
+                if (balance.IsApproved)
+                {
+                    throw new InvalidOperationException(
+                        $"Không thể xóa tồn kho đã được phê duyệt. " +
+                        $"Tồn kho ID: {id}, Period: {balance.PeriodYear}/{balance.PeriodMonth}");
+                }
+
+                var currentUser = Common.ApplicationSystemUtils.GetCurrentUser();
+                var deletedBy = currentUser?.Id ?? Guid.Empty;
+
+                GetDataAccess().Delete(id, deletedBy);
+
+                _logger.Info("Delete: Đã xóa tồn kho, Id={0}, DeletedBy={1}", id, deletedBy);
+            }
+            else
             {
                 throw new InvalidOperationException($"Không tìm thấy tồn kho với ID: {id}");
             }
-
-            if (balance.IsLocked)
-            {
-                throw new InvalidOperationException(
-                    $"Không thể xóa tồn kho đang bị khóa. " +
-                    $"Tồn kho ID: {id}, Period: {balance.PeriodYear}/{balance.PeriodMonth}");
-            }
-
-            if (balance.IsApproved)
-            {
-                throw new InvalidOperationException(
-                    $"Không thể xóa tồn kho đã được phê duyệt. " +
-                    $"Tồn kho ID: {id}, Period: {balance.PeriodYear}/{balance.PeriodMonth}");
-            }
-
-            var currentUser = Common.ApplicationSystemUtils.GetCurrentUser();
-            var deletedBy = currentUser?.Id ?? Guid.Empty;
-
-            GetDataAccess().Delete(id, deletedBy);
-
-            _logger.Info("Delete: Đã xóa tồn kho, Id={0}, DeletedBy={1}", id, deletedBy);
         }
         catch (Exception ex)
         {
@@ -582,6 +586,38 @@ public class InventoryBalanceBll
         catch (Exception ex)
         {
             _logger.Error($"Lỗi khi tính toán tồn kho: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Tính lại tổng kết tồn kho cho kỳ được chỉ định
+    /// Tính toán từ StockInOutDetail và cập nhật lại InventoryBalance
+    /// </summary>
+    /// <param name="periodYear">Năm kỳ</param>
+    /// <param name="periodMonth">Tháng kỳ (1-12)</param>
+    /// <returns>Số lượng tồn kho đã được cập nhật</returns>
+    public int RecalculateSummary(int periodYear, int periodMonth)
+    {
+        try
+        {
+            _logger.Info("RecalculateSummary: Bắt đầu tính lại tổng kết cho kỳ {0}/{1:D2}", periodYear, periodMonth);
+
+            // Validate period
+            if (periodYear < 2000 || periodYear > 9999)
+                throw new ArgumentException($"PeriodYear phải trong khoảng 2000-9999, giá trị hiện tại: {periodYear}");
+            
+            if (periodMonth < 1 || periodMonth > 12)
+                throw new ArgumentException($"PeriodMonth phải trong khoảng 1-12, giá trị hiện tại: {periodMonth}");
+
+            var updatedCount = GetDataAccess().RecalculateSummary(periodYear, periodMonth);
+
+            _logger.Info("RecalculateSummary: Đã tính lại tổng kết cho {0} tồn kho trong kỳ {1}/{2:D2}", updatedCount, periodYear, periodMonth);
+            return updatedCount;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi tính lại tổng kết cho kỳ {periodYear}/{periodMonth:D2}: {ex.Message}", ex);
             throw;
         }
     }
