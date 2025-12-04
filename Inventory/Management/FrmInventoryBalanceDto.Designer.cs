@@ -34,9 +34,9 @@
             this.InventoryBalanceDtoGridControl = new DevExpress.XtraGrid.GridControl();
             this.inventoryBalanceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.InventoryBalanceDtoBandedGridView = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridView();
-            this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.gridBand1 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
             this.colPeriodHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colWarehouseHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.colProductHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.colStatusHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
@@ -163,6 +163,8 @@
             this.InventoryBalanceDtoBandedGridView.OptionsBehavior.Editable = false;
             this.InventoryBalanceDtoBandedGridView.OptionsSelection.MultiSelect = true;
             this.InventoryBalanceDtoBandedGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.InventoryBalanceDtoBandedGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.InventoryBalanceDtoBandedGridView.OptionsView.RowAutoHeight = true;
             this.InventoryBalanceDtoBandedGridView.OptionsView.ShowGroupPanel = false;
             this.InventoryBalanceDtoBandedGridView.OptionsView.ShowViewCaption = true;
             this.InventoryBalanceDtoBandedGridView.ViewCaption = "BÁO CÁO TỒN KHO THEO THÁNG";
@@ -192,7 +194,7 @@
             this.gridBand1.Columns.Add(this.colGroupCaption);
             this.gridBand1.Name = "gridBand1";
             this.gridBand1.VisibleIndex = 0;
-            this.gridBand1.Width = 690;
+            this.gridBand1.Width = 620;
             // 
             // colPeriodHtml
             // 
@@ -216,6 +218,11 @@
             this.colPeriodHtml.OptionsColumn.ReadOnly = true;
             this.colPeriodHtml.Visible = true;
             this.colPeriodHtml.Width = 100;
+            // 
+            // HtmlRepositoryItemHypertextLabel
+            // 
+            this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
             // 
             // colWarehouseHtml
             // 
@@ -287,11 +294,6 @@
             this.colStatusHtml.Visible = true;
             this.colStatusHtml.Width = 120;
             // 
-            // HtmlRepositoryItemHypertextLabel
-            // 
-            this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
-            // 
             // colPeriodDisplay
             // 
             this.colPeriodDisplay.AppearanceCell.Options.UseTextOptions = true;
@@ -309,7 +311,6 @@
             this.colPeriodDisplay.Caption = "Kỳ";
             this.colPeriodDisplay.FieldName = "PeriodDisplay";
             this.colPeriodDisplay.Name = "colPeriodDisplay";
-            this.colPeriodDisplay.Visible = false;
             this.colPeriodDisplay.Width = 100;
             // 
             // colWarehouseName
@@ -328,7 +329,6 @@
             this.colWarehouseName.Caption = "Kho";
             this.colWarehouseName.FieldName = "WarehouseName";
             this.colWarehouseName.Name = "colWarehouseName";
-            this.colWarehouseName.Visible = false;
             this.colWarehouseName.Width = 150;
             // 
             // colProductName
@@ -347,7 +347,6 @@
             this.colProductName.Caption = "Tên sản phẩm";
             this.colProductName.FieldName = "ProductName";
             this.colProductName.Name = "colProductName";
-            this.colProductName.Visible = false;
             this.colProductName.Width = 200;
             // 
             // colProductCode
@@ -371,7 +370,6 @@
             this.colProductCode.Caption = "Mã sản phẩm";
             this.colProductCode.FieldName = "ProductCode";
             this.colProductCode.Name = "colProductCode";
-            this.colProductCode.Visible = false;
             this.colProductCode.Width = 120;
             // 
             // colStatusText
@@ -391,7 +389,6 @@
             this.colStatusText.Caption = "Trạng thái";
             this.colStatusText.FieldName = "StatusText";
             this.colStatusText.Name = "colStatusText";
-            this.colStatusText.Visible = false;
             this.colStatusText.Width = 120;
             // 
             // colDisplayCaption

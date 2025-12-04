@@ -61,6 +61,7 @@ public class InventoryBalanceRepository : IInventoryBalanceRepository
         loadOptions.LoadWith<InventoryBalance>(b => b.CompanyBranch);
         loadOptions.LoadWith<InventoryBalance>(b => b.ProductVariant);
         loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
+        loadOptions.LoadWith<ProductVariant>(v => v.UnitOfMeasure); // Đơn vị tính
         loadOptions.LoadWith<InventoryBalance>(b => b.ApplicationUser); // ApprovedBy
         loadOptions.LoadWith<InventoryBalance>(b => b.ApplicationUser1); // DeletedBy
         loadOptions.LoadWith<InventoryBalance>(b => b.ApplicationUser2); // LockedBy
@@ -516,19 +517,75 @@ public class InventoryBalanceRepository : IInventoryBalanceRepository
             }
         }
 
-        // Load ProductVariant
+        // Load ProductVariant với ProductService và UnitOfMeasure
         var productVariantIds = balances.Select(x => x.ProductVariantId).Distinct().ToList();
         if (productVariantIds.Any())
         {
+            // Load ProductVariants với navigation properties
             var productVariants = context.ProductVariants
                 .Where(pv => productVariantIds.Contains(pv.Id))
-                .ToDictionary(pv => pv.Id);
+                .ToList();
 
+            // Load ProductService cho các ProductVariants
+            var productIds = productVariants
+                .Where(pv => pv.ProductId != Guid.Empty)
+                .Select(pv => pv.ProductId)
+                .Distinct()
+                .ToList();
+            
+            if (productIds.Any())
+            {
+                var productServices = context.ProductServices
+                    .Where(ps => productIds.Contains(ps.Id))
+                    .ToDictionary(ps => ps.Id);
+
+                foreach (var productVariant in productVariants)
+                {
+                    if (productVariant.ProductService == null && 
+                        productVariant.ProductId != Guid.Empty &&
+                        productServices.TryGetValue(productVariant.ProductId, out var productService))
+                    {
+                        productVariant.ProductService = productService;
+                    }
+                }
+            }
+
+            // Load UnitOfMeasure cho các ProductVariants
+            // UnitId là Guid không nullable, chỉ cần kiểm tra != Guid.Empty
+            var unitIds = productVariants
+                .Where(pv => pv.UnitId != Guid.Empty)
+                .Select(pv => pv.UnitId)
+                .Distinct()
+                .ToList();
+
+            if (unitIds.Any())
+            {
+                var unitOfMeasures = context.UnitOfMeasures
+                    .Where(u => unitIds.Contains(u.Id))
+                    .ToDictionary(u => u.Id);
+
+                foreach (var productVariant in productVariants)
+                {
+                    if (productVariant.UnitOfMeasure == null && 
+                        productVariant.UnitId != Guid.Empty &&
+                        unitOfMeasures.TryGetValue(productVariant.UnitId, out var unitOfMeasure))
+                    {
+                        productVariant.UnitOfMeasure = unitOfMeasure;
+                    }
+                }
+            }
+
+            // Gán ProductVariant vào InventoryBalance và materialize navigation properties
+            var productVariantsDict = productVariants.ToDictionary(pv => pv.Id);
             foreach (var balance in balances)
             {
-                if (balance.ProductVariant == null && productVariants.TryGetValue(balance.ProductVariantId, out var productVariant))
+                if (balance.ProductVariant == null && productVariantsDict.TryGetValue(balance.ProductVariantId, out var productVariant))
                 {
                     balance.ProductVariant = productVariant;
+                    
+                    // Materialize navigation properties để tránh lazy loading sau khi context dispose
+                    _ = productVariant.ProductService?.Name; // Materialize ProductService
+                    _ = productVariant.UnitOfMeasure?.Name; // Materialize UnitOfMeasure
                 }
             }
         }

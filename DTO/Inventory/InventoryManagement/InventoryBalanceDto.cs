@@ -71,8 +71,8 @@ public class InventoryBalanceDto
     public string ProductName { get; set; }
 
     /// <summary>
-    /// Mã sản phẩm
-    /// Map với: ProductVariant.VariantCode
+    /// Mã sản phẩm/dịch vụ (từ ProductService)
+    /// Map với: ProductService.Code
     /// </summary>
     [DisplayName("Mã sản phẩm")]
     [Display(Order = 6)]
@@ -80,11 +80,55 @@ public class InventoryBalanceDto
     public string ProductCode { get; set; }
 
     /// <summary>
+    /// Mã biến thể sản phẩm
+    /// Map với: ProductVariant.VariantCode
+    /// </summary>
+    [DisplayName("Mã biến thể")]
+    [Display(Order = 7)]
+    [StringLength(50, ErrorMessage = "Mã biến thể không được vượt quá 50 ký tự")]
+    public string ProductVariantCode { get; set; }
+
+    /// <summary>
+    /// Tên biến thể sản phẩm đầy đủ
+    /// Map với: ProductVariant.VariantFullName
+    /// </summary>
+    [DisplayName("Tên biến thể")]
+    [Display(Order = 8)]
+    [StringLength(500, ErrorMessage = "Tên biến thể không được vượt quá 500 ký tự")]
+    public string ProductVariantFullName { get; set; }
+
+    /// <summary>
+    /// ID đơn vị tính
+    /// Map với: ProductVariant.UnitId
+    /// </summary>
+    [DisplayName("ID ĐVT")]
+    [Display(Order = 9)]
+    public Guid? UnitOfMeasureId { get; set; }
+
+    /// <summary>
+    /// Mã đơn vị tính
+    /// Map với: UnitOfMeasure.Code
+    /// </summary>
+    [DisplayName("Mã ĐVT")]
+    [Display(Order = 10)]
+    [StringLength(50, ErrorMessage = "Mã đơn vị tính không được vượt quá 50 ký tự")]
+    public string UnitOfMeasureCode { get; set; }
+
+    /// <summary>
+    /// Tên đơn vị tính
+    /// Map với: UnitOfMeasure.Name
+    /// </summary>
+    [DisplayName("Đơn vị tính")]
+    [Display(Order = 11)]
+    [StringLength(100, ErrorMessage = "Tên đơn vị tính không được vượt quá 100 ký tự")]
+    public string UnitOfMeasureName { get; set; }
+
+    /// <summary>
     /// Năm kỳ
     /// Map với: InventoryBalance.PeriodYear
     /// </summary>
     [DisplayName("Năm")]
-    [Display(Order = 7)]
+    [Display(Order = 12)]
     [Range(2000, 9999, ErrorMessage = "Năm phải trong khoảng 2000-9999")]
     public int PeriodYear { get; set; }
 
@@ -93,7 +137,7 @@ public class InventoryBalanceDto
     /// Map với: InventoryBalance.PeriodMonth
     /// </summary>
     [DisplayName("Tháng")]
-    [Display(Order = 8)]
+    [Display(Order = 13)]
     [Range(1, 12, ErrorMessage = "Tháng phải trong khoảng 1-12")]
     public int PeriodMonth { get; set; }
 
@@ -101,7 +145,7 @@ public class InventoryBalanceDto
     /// Hiển thị kỳ: "YYYY/MM" hoặc "Tháng MM/YYYY"
     /// </summary>
     [DisplayName("Kỳ")]
-    [Display(Order = 9)]
+    [Display(Order = 14)]
     public string PeriodDisplay
     {
         get
@@ -116,7 +160,7 @@ public class InventoryBalanceDto
     /// Hiển thị kỳ đầy đủ: "Tháng MM/YYYY"
     /// </summary>
     [DisplayName("Kỳ (đầy đủ)")]
-    [Display(Order = 10)]
+    [Display(Order = 15)]
     public string PeriodFullDisplay
     {
         get
@@ -130,9 +174,11 @@ public class InventoryBalanceDto
     /// <summary>
     /// Thông tin kỳ dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự ProductVariantListDto.FullNameHtml để đảm bảo consistency
     /// </summary>
     [DisplayName("Kỳ HTML")]
-    [Display(Order = 11)]
+    [Display(Order = 16)]
     [Description("Thông tin kỳ dưới dạng HTML")]
     public string PeriodHtml
     {
@@ -141,10 +187,10 @@ public class InventoryBalanceDto
             if (PeriodYear <= 0 || PeriodMonth <= 0)
                 return string.Empty;
 
-            // Format chuyên nghiệp với visual hierarchy rõ ràng
-            var html = $"<size=12><b><color='blue'>{PeriodYear}/{PeriodMonth:D2}</color></b></size>";
-            html += "<br>";
-            html += $"<size=9><color='#757575'>Tháng {PeriodMonth:D2}/{PeriodYear}</color></size>";
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo ProductVariantListDto.FullNameHtml)
+            // - Kỳ chính: font lớn (12), bold, màu xanh đậm (primary)
+            // - Thông tin chi tiết: font nhỏ hơn (9), màu xám
+            var html = $"<size=12><color='#757575'>Tháng {PeriodMonth:D2}/{PeriodYear}</color></size>";
             return html;
         }
     }
@@ -152,9 +198,11 @@ public class InventoryBalanceDto
     /// <summary>
     /// Thông tin kho dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự ProductVariantListDto.FullNameHtml để đảm bảo consistency
     /// </summary>
     [DisplayName("Thông tin kho HTML")]
-    [Display(Order = 12)]
+    [Display(Order = 17)]
     [Description("Thông tin kho dưới dạng HTML")]
     public string WarehouseHtml
     {
@@ -166,24 +214,14 @@ public class InventoryBalanceDto
             if (string.IsNullOrWhiteSpace(warehouseName) && string.IsNullOrWhiteSpace(warehouseCode))
                 return string.Empty;
 
-            // Format chuyên nghiệp với visual hierarchy rõ ràng
-            var html = string.Empty;
-
-            if (!string.IsNullOrWhiteSpace(warehouseName))
-            {
-                html += $"<size=12><b><color='blue'>{warehouseName}</color></b></size>";
-            }
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo ProductVariantListDto.FullNameHtml)
+            // - Tên kho: font lớn (12), bold, màu xanh đậm (primary)
+            // - Mã kho: font nhỏ hơn (9), màu xám
+            var html = $"<size=12><b><color='blue'>{warehouseName}</color></b></size>";
 
             if (!string.IsNullOrWhiteSpace(warehouseCode))
             {
-                if (!string.IsNullOrWhiteSpace(warehouseName))
-                {
-                    html += $" <size=9><color='#757575'>({warehouseCode})</color></size>";
-                }
-                else
-                {
-                    html += $"<size=12><b><color='blue'>{warehouseCode}</color></b></size>";
-                }
+                html += $" <size=9><color='#757575'>({warehouseCode})</color></size>";
             }
 
             return html;
@@ -191,42 +229,60 @@ public class InventoryBalanceDto
     }
 
     /// <summary>
-    /// Thông tin sản phẩm dưới dạng HTML theo format DevExpress
+    /// Thông tin biến thể sản phẩm dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự StockInOutProductHistoryDto.ProductVariantFullNameHtml để đảm bảo consistency
     /// </summary>
     [DisplayName("Thông tin sản phẩm HTML")]
-    [Display(Order = 13)]
-    [Description("Thông tin sản phẩm dưới dạng HTML")]
+    [Display(Order = 18)]
+    [Description("Thông tin biến thể sản phẩm dưới dạng HTML")]
     public string ProductHtml
     {
         get
         {
             var productName = ProductName ?? string.Empty;
             var productCode = ProductCode ?? string.Empty;
+            var variantCode = ProductVariantCode ?? string.Empty;
+            var variantFullName = ProductVariantFullName ?? string.Empty;
+            var unitName = UnitOfMeasureName ?? UnitOfMeasureCode ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(productName) && string.IsNullOrWhiteSpace(productCode))
-                return string.Empty;
-
-            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo StockInOutProductHistoryDto.ProductVariantFullNameHtml)
             // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
             // - Mã sản phẩm: font nhỏ hơn, màu xám
-            var html = string.Empty;
+            // - Mã biến thể: font nhỏ hơn, màu cam (#FF9800)
+            // - Tên biến thể đầy đủ: font nhỏ hơn, màu xám cho label, đen cho value
+            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
 
-            if (!string.IsNullOrWhiteSpace(productName))
-            {
-                html += $"<size=12><b><color='blue'>{productName}</color></b></size>";
-            }
+            var html = $"<size=12><b><color='blue'>{productName}</color></b></size>";
 
             if (!string.IsNullOrWhiteSpace(productCode))
             {
-                if (!string.IsNullOrWhiteSpace(productName))
-                {
-                    html += $" <size=9><color='#757575'>({productCode})</color></size>";
-                }
-                else
-                {
-                    html += $"<size=12><b><color='blue'>{productCode}</color></b></size>";
-                }
+                html += $" <size=9><color='#757575'>({productCode})</color></size>";
+            }
+
+            html += "<br>";
+
+            if (!string.IsNullOrWhiteSpace(variantCode))
+            {
+                html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(variantFullName))
+            {
+                if (!string.IsNullOrWhiteSpace(variantCode))
+                    html += "<br/>";
+                html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantFullName}</b></color></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(variantCode) || !string.IsNullOrWhiteSpace(variantFullName))
+            {
+                html += "<br>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(unitName))
+            {
+                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitName}</b></color></size>";
             }
 
             return html;
@@ -234,47 +290,38 @@ public class InventoryBalanceDto
     }
 
     /// <summary>
-    /// Trạng thái dưới dạng HTML theo format DevExpress
+    /// Trạng thái khóa dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// Format tương tự ProductVariantListDto.FullNameHtml để đảm bảo consistency
     /// </summary>
     [DisplayName("Trạng thái HTML")]
-    [Display(Order = 14)]
-    [Description("Trạng thái dưới dạng HTML")]
+    [Display(Order = 19)]
+    [Description("Trạng thái khóa dưới dạng HTML")]
     public string StatusHtml
     {
         get
         {
-            var statusText = StatusText;
-            var statusColor = Status switch
+            var statusText = IsLocked ? "Khóa" : "Không khóa";
+            var statusColor = IsLocked ? "#FF9800" : "#4CAF50"; // Cam cho khóa, xanh lá cho không khóa
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo ProductVariantListDto.FullNameHtml)
+            // - Label: font nhỏ (9), màu xám
+            // - Value: font lớn hơn (10), bold, màu theo trạng thái
+            var html = $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+
+            // Thêm thông tin người khóa và ngày khóa nếu đã khóa
+            if (IsLocked && LockedDate.HasValue)
             {
-                0 => "#757575", // Nháp - xám
-                1 => "#FF9800", // Đã khóa - cam
-                2 => "#2196F3", // Đã xác thực - xanh dương
-                3 => "#4CAF50", // Đã phê duyệt - xanh lá
-                4 => "#F44336", // Đã từ chối - đỏ
-                _ => "#757575"  // Mặc định - xám
-            };
-
-            if (string.IsNullOrWhiteSpace(statusText))
-                return string.Empty;
-
-            // Format chuyên nghiệp với màu sắc theo trạng thái
-            var html = $"<size=10><b><color='{statusColor}'>{statusText}</color></b></size>";
-
-            // Thêm icon/badge nếu cần
-            if (IsLocked)
-            {
-                html += " <size=9><color='#FF9800'>🔒</color></size>";
-            }
-
-            if (IsVerified)
-            {
-                html += " <size=9><color='#2196F3'>✓</color></size>";
-            }
-
-            if (IsApproved)
-            {
-                html += " <size=9><color='#4CAF50'>✓✓</color></size>";
+                html += "<br>";
+                var lockedDateStr = LockedDate.Value.ToString("dd/MM/yyyy");
+                html += $"<size=9><color='#757575'>Ngày khóa:</color></size> <size=9><color='#212121'><b>{lockedDateStr}</b></color></size>";
+                
+                if (!string.IsNullOrWhiteSpace(LockedByName))
+                {
+                    html += "<br>";
+                    html += $"<size=9><color='#757575'>Người khóa:</color></size> <size=9><color='#212121'><b>{LockedByName}</b></color></size>";
+                }
             }
 
             return html;
@@ -799,15 +846,23 @@ public static class InventoryBalanceDtoConverter
         // Product
         if (entity.ProductVariant != null)
         {
-            dto.ProductCode = entity.ProductVariant.VariantCode;
+            dto.ProductVariantCode = entity.ProductVariant.VariantCode;
+            dto.ProductVariantFullName = entity.ProductVariant.VariantFullName ?? string.Empty;
 
+            dto.UnitOfMeasureId = entity.ProductVariant.UnitId;
+
+            // Lấy thông tin đơn vị tính nếu có
+            if (entity.ProductVariant.UnitOfMeasure != null)
+            {
+                dto.UnitOfMeasureCode = entity.ProductVariant.UnitOfMeasure.Code;
+                dto.UnitOfMeasureName = entity.ProductVariant.UnitOfMeasure.Name;
+            }
+
+            // Lấy thông tin từ ProductService (sản phẩm/dịch vụ gốc)
             if (entity.ProductVariant.ProductService != null)
             {
-                dto.ProductName = entity.ProductVariant.ProductService.Name;
-            }
-            else
-            {
-                dto.ProductName = entity.ProductVariant.VariantFullName;
+                dto.ProductCode = entity.ProductVariant.ProductService.Code ?? string.Empty;
+                dto.ProductName = entity.ProductVariant.ProductService.Name ?? string.Empty;
             }
         }
 
