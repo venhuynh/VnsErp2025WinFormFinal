@@ -135,5 +135,15 @@ public interface IInventoryBalanceRepository
     /// <param name="periodMonth">Tháng kỳ (1-12)</param>
     /// <returns>Số lượng tồn kho đã được cập nhật</returns>
     int RecalculateSummary(int periodYear, int periodMonth);
+
+    /// <summary>
+    /// Kết chuyển dữ liệu tồn kho từ kỳ hiện tại sang kỳ tiếp theo
+    /// Tạo tồn kho mới cho kỳ tiếp theo với OpeningBalance = ClosingBalance của kỳ hiện tại
+    /// </summary>
+    /// <param name="fromPeriodYear">Năm kỳ nguồn</param>
+    /// <param name="fromPeriodMonth">Tháng kỳ nguồn (1-12)</param>
+    /// <param name="overwriteExisting">Nếu true, ghi đè dữ liệu đã tồn tại ở kỳ đích. Nếu false, báo lỗi nếu đã có dữ liệu</param>
+    /// <returns>Số lượng tồn kho đã được kết chuyển</returns>
+    int ForwardBalance(int fromPeriodYear, int fromPeriodMonth, bool overwriteExisting = false);
 }
 

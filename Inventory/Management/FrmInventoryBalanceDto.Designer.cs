@@ -101,7 +101,7 @@
             this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1035, 443);
+            this.layoutControl1.Size = new System.Drawing.Size(1725, 486);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -114,7 +114,7 @@
             this.InventoryBalanceDtoGridControl.Name = "InventoryBalanceDtoGridControl";
             this.InventoryBalanceDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlRepositoryItemHypertextLabel});
-            this.InventoryBalanceDtoGridControl.Size = new System.Drawing.Size(1011, 419);
+            this.InventoryBalanceDtoGridControl.Size = new System.Drawing.Size(1701, 462);
             this.InventoryBalanceDtoGridControl.TabIndex = 4;
             this.InventoryBalanceDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.InventoryBalanceDtoBandedGridView});
@@ -891,15 +891,15 @@
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1035, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(1725, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 467);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 510);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1035, 22);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1725, 22);
             // 
             // barDockControlLeft
             // 
@@ -907,15 +907,15 @@
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 443);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 486);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1035, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(1725, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 443);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 486);
             // 
             // Root
             // 
@@ -924,7 +924,7 @@
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1035, 443);
+            this.Root.Size = new System.Drawing.Size(1725, 486);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -932,14 +932,14 @@
             this.layoutControlItem1.Control = this.InventoryBalanceDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1015, 423);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1705, 466);
             this.layoutControlItem1.TextVisible = false;
             // 
             // FrmInventoryBalanceDto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1035, 489);
+            this.ClientSize = new System.Drawing.Size(1725, 532);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);

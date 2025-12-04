@@ -622,6 +622,45 @@ public class InventoryBalanceBll
         }
     }
 
+    /// <summary>
+    /// Kết chuyển dữ liệu tồn kho từ kỳ hiện tại sang kỳ tiếp theo
+    /// Tạo tồn kho mới cho kỳ tiếp theo với OpeningBalance = ClosingBalance của kỳ hiện tại
+    /// </summary>
+    /// <param name="fromPeriodYear">Năm kỳ nguồn</param>
+    /// <param name="fromPeriodMonth">Tháng kỳ nguồn (1-12)</param>
+    /// <param name="overwriteExisting">Nếu true, ghi đè dữ liệu đã tồn tại ở kỳ đích. Nếu false, báo lỗi nếu đã có dữ liệu</param>
+    /// <returns>Số lượng tồn kho đã được kết chuyển</returns>
+    public int ForwardBalance(int fromPeriodYear, int fromPeriodMonth, bool overwriteExisting = false)
+    {
+        try
+        {
+            _logger.Info("ForwardBalance: Bắt đầu kết chuyển tồn kho từ kỳ {0}/{1:D2}", fromPeriodYear, fromPeriodMonth);
+
+            // Validate period
+            if (fromPeriodYear < 2000 || fromPeriodYear > 9999)
+                throw new ArgumentException($"PeriodYear phải trong khoảng 2000-9999, giá trị hiện tại: {fromPeriodYear}");
+            
+            if (fromPeriodMonth < 1 || fromPeriodMonth > 12)
+                throw new ArgumentException($"PeriodMonth phải trong khoảng 1-12, giá trị hiện tại: {fromPeriodMonth}");
+
+            var forwardedCount = GetDataAccess().ForwardBalance(fromPeriodYear, fromPeriodMonth, overwriteExisting);
+
+            // Tính kỳ đích để log
+            var toPeriodMonth = fromPeriodMonth == 12 ? 1 : fromPeriodMonth + 1;
+            var toPeriodYear = fromPeriodMonth == 12 ? fromPeriodYear + 1 : fromPeriodYear;
+
+            _logger.Info("ForwardBalance: Đã kết chuyển {0} tồn kho từ kỳ {1}/{2:D2} sang kỳ {3}/{4:D2}", 
+                forwardedCount, fromPeriodYear, fromPeriodMonth, toPeriodYear, toPeriodMonth);
+            
+            return forwardedCount;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi kết chuyển tồn kho từ kỳ {fromPeriodYear}/{fromPeriodMonth:D2}: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 }
 

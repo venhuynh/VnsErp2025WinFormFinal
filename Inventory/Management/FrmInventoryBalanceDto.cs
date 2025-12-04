@@ -138,6 +138,7 @@ namespace Inventory.Management
             XemBaoCaoBarButtonItem.ItemClick += XemBaoCaoBarButtonItem_ItemClick;
             ExportFileBarButtonItem.ItemClick += ExportFileBarButtonItem_ItemClick;
             TongKetBarButtonItem.ItemClick += TongKetBarButtonItem_ItemClick;
+            KetChuyenBarButtonItem.ItemClick += KetChuyenBarButtonItem_ItemClick;
 
             // BandedGridView events
             InventoryBalanceDtoBandedGridView.SelectionChanged += InventoryBalanceDtoGridView_SelectionChanged;
@@ -282,6 +283,95 @@ namespace Inventory.Management
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi khi tính tổng kết");
+            }
+        }
+
+        /// <summary>
+        /// Event handler cho nút Kết chuyển
+        /// </summary>
+        private async void KetChuyenBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                if (_inventoryBalanceBll == null)
+                {
+                    MsgBox.ShowWarning("Dịch vụ tồn kho chưa được khởi tạo.");
+                    return;
+                }
+
+                // Lấy kỳ được chọn (kỳ nguồn)
+                var fromPeriodYear = NamBarEditItem.EditValue as int? ?? DateTime.Now.Year;
+                var fromPeriodMonth = ThangBarEditItem.EditValue as int? ?? DateTime.Now.Month;
+
+                // Validate period
+                if (fromPeriodYear < 2000 || fromPeriodYear > 9999)
+                {
+                    MsgBox.ShowWarning("Năm phải trong khoảng 2000-9999.");
+                    return;
+                }
+
+                if (fromPeriodMonth < 1 || fromPeriodMonth > 12)
+                {
+                    MsgBox.ShowWarning("Tháng phải trong khoảng 1-12.");
+                    return;
+                }
+
+                // Tính kỳ đích (kỳ tiếp theo)
+                var toPeriodMonth = fromPeriodMonth == 12 ? 1 : fromPeriodMonth + 1;
+                var toPeriodYear = fromPeriodMonth == 12 ? fromPeriodYear + 1 : fromPeriodYear;
+
+                // Kiểm tra xem kỳ đích đã có dữ liệu chưa
+                var existingTargetBalances = _inventoryBalanceBll.QueryBalances(
+                    warehouseId: null,
+                    productVariantId: null,
+                    periodYear: toPeriodYear,
+                    periodMonth: toPeriodMonth);
+
+                bool overwriteExisting = false;
+                if (existingTargetBalances.Any())
+                {
+                    var existingCount = existingTargetBalances.Count;
+                    var overwriteMessage = $"Kỳ đích {toPeriodYear}/{toPeriodMonth:D2} đã có {existingCount} tồn kho.\n\n" +
+                                          "Bạn có muốn ghi đè dữ liệu cũ không?\n\n" +
+                                          "Lưu ý: Nếu chọn 'Có', tất cả dữ liệu cũ sẽ bị xóa và thay thế bằng dữ liệu kết chuyển.";
+
+                    if (!MsgBox.ShowYesNo(overwriteMessage, "Xác nhận ghi đè"))
+                    {
+                        return; // Người dùng không muốn ghi đè
+                    }
+                    overwriteExisting = true;
+                }
+
+                // Xác nhận kết chuyển
+                var confirmMessage = $"Bạn có chắc chắn muốn kết chuyển tồn kho từ kỳ {fromPeriodYear}/{fromPeriodMonth:D2} sang kỳ {toPeriodYear}/{toPeriodMonth:D2}?\n\n" +
+                                    "Hệ thống sẽ:\n" +
+                                    "• Tạo tồn kho mới cho kỳ tiếp theo\n" +
+                                    "• Tồn đầu kỳ mới = Tồn cuối kỳ hiện tại\n" +
+                                    "• Chỉ kết chuyển các tồn kho đã được khóa\n\n" +
+                                    "Lưu ý: Tất cả tồn kho trong kỳ nguồn phải đã được khóa trước khi thực hiện kết chuyển.";
+
+                if (!MsgBox.ShowYesNo(confirmMessage, "Xác nhận kết chuyển"))
+                {
+                    return;
+                }
+
+                // Thực hiện kết chuyển
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    var forwardedCount = _inventoryBalanceBll.ForwardBalance(fromPeriodYear, fromPeriodMonth, overwriteExisting);
+                    
+                    MsgBox.ShowSuccess($"Đã kết chuyển thành công {forwardedCount} tồn kho từ kỳ {fromPeriodYear}/{fromPeriodMonth:D2} sang kỳ {toPeriodYear}/{toPeriodMonth:D2}.\n\n" +
+                                   "Dữ liệu đã được tạo cho kỳ tiếp theo.", "Kết chuyển thành công");
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Lỗi do dữ liệu chưa khóa hoặc các lỗi business logic
+                MsgBox.ShowWarning(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi kết chuyển tồn kho");
             }
         }
 

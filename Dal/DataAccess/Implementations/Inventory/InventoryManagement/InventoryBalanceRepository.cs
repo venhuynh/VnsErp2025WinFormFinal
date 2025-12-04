@@ -1009,6 +1009,171 @@ public class InventoryBalanceRepository : IInventoryBalanceRepository
         }
     }
 
+    /// <summary>
+    /// Kết chuyển dữ liệu tồn kho từ kỳ hiện tại sang kỳ tiếp theo
+    /// Tạo tồn kho mới cho kỳ tiếp theo với OpeningBalance = ClosingBalance của kỳ hiện tại
+    /// </summary>
+    /// <param name="fromPeriodYear">Năm kỳ nguồn</param>
+    /// <param name="fromPeriodMonth">Tháng kỳ nguồn (1-12)</param>
+    /// <param name="overwriteExisting">Nếu true, ghi đè dữ liệu đã tồn tại ở kỳ đích. Nếu false, báo lỗi nếu đã có dữ liệu</param>
+    /// <returns>Số lượng tồn kho đã được kết chuyển</returns>
+    public int ForwardBalance(int fromPeriodYear, int fromPeriodMonth, bool overwriteExisting = false)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Info("ForwardBalance: Bắt đầu kết chuyển tồn kho từ kỳ {0}/{1:D2}", fromPeriodYear, fromPeriodMonth);
+
+            // Validate period
+            if (fromPeriodYear < 2000 || fromPeriodYear > 9999)
+                throw new ArgumentException($"PeriodYear phải trong khoảng 2000-9999, giá trị hiện tại: {fromPeriodYear}");
+            
+            if (fromPeriodMonth < 1 || fromPeriodMonth > 12)
+                throw new ArgumentException($"PeriodMonth phải trong khoảng 1-12, giá trị hiện tại: {fromPeriodMonth}");
+
+            // Tính kỳ đích (kỳ tiếp theo)
+            var toPeriodMonth = fromPeriodMonth == 12 ? 1 : fromPeriodMonth + 1;
+            var toPeriodYear = fromPeriodMonth == 12 ? fromPeriodYear + 1 : fromPeriodYear;
+
+            // Lấy tất cả tồn kho của kỳ nguồn (phải đã khóa)
+            var sourceBalances = context.InventoryBalances
+                .Where(b => b.PeriodYear == fromPeriodYear 
+                         && b.PeriodMonth == fromPeriodMonth 
+                         && !b.IsDeleted)
+                .ToList();
+
+            if (!sourceBalances.Any())
+            {
+                _logger.Warning("ForwardBalance: Không có dữ liệu tồn kho trong kỳ {0}/{1:D2} để kết chuyển", fromPeriodYear, fromPeriodMonth);
+                throw new InvalidOperationException(
+                    $"Không có dữ liệu tồn kho trong kỳ {fromPeriodYear}/{fromPeriodMonth:D2} để kết chuyển.");
+            }
+
+            // Kiểm tra tất cả tồn kho nguồn phải đã khóa
+            var unlockedBalances = sourceBalances.Where(b => !b.IsLocked).ToList();
+            if (unlockedBalances.Any())
+            {
+                var unlockedCount = unlockedBalances.Count;
+                _logger.Warning("ForwardBalance: Có {0} tồn kho chưa được khóa trong kỳ {1}/{2:D2}", unlockedCount, fromPeriodYear, fromPeriodMonth);
+                throw new InvalidOperationException(
+                    $"Không thể kết chuyển vì có {unlockedCount} tồn kho chưa được khóa trong kỳ {fromPeriodYear}/{fromPeriodMonth:D2}. " +
+                    "Vui lòng khóa tất cả tồn kho trước khi thực hiện kết chuyển.");
+            }
+
+            // Kiểm tra kỳ đích đã có dữ liệu chưa
+            var existingTargetBalances = context.InventoryBalances
+                .Where(b => b.PeriodYear == toPeriodYear 
+                         && b.PeriodMonth == toPeriodMonth 
+                         && !b.IsDeleted)
+                .ToList();
+
+            if (existingTargetBalances.Any())
+            {
+                if (!overwriteExisting)
+                {
+                    var existingCount = existingTargetBalances.Count;
+                    _logger.Warning("ForwardBalance: Kỳ đích {0}/{1:D2} đã có {2} tồn kho", toPeriodYear, toPeriodMonth, existingCount);
+                    throw new InvalidOperationException(
+                        $"Kỳ đích {toPeriodYear}/{toPeriodMonth:D2} đã có {existingCount} tồn kho. " +
+                        "Vui lòng xóa dữ liệu cũ hoặc chọn ghi đè.");
+                }
+                else
+                {
+                    // Xóa dữ liệu cũ nếu cho phép ghi đè
+                    foreach (var existing in existingTargetBalances)
+                    {
+                        context.InventoryBalances.DeleteOnSubmit(existing);
+                    }
+                    context.SubmitChanges();
+                    _logger.Info("ForwardBalance: Đã xóa {0} tồn kho cũ trong kỳ {1}/{2:D2}", existingTargetBalances.Count, toPeriodYear, toPeriodMonth);
+                }
+            }
+
+            int forwardedCount = 0;
+
+            // Kết chuyển từng tồn kho
+            foreach (var sourceBalance in sourceBalances)
+            {
+                try
+                {
+                    // Chỉ kết chuyển nếu có tồn cuối kỳ (ClosingBalance > 0 hoặc có giá trị)
+                    if (sourceBalance.ClosingBalance == 0 && 
+                        (!sourceBalance.ClosingValue.HasValue || sourceBalance.ClosingValue.Value == 0))
+                    {
+                        // Bỏ qua nếu không có tồn
+                        continue;
+                    }
+
+                    // Tạo tồn kho mới cho kỳ tiếp theo
+                    var newBalance = new InventoryBalance
+                    {
+                        Id = Guid.NewGuid(),
+                        WarehouseId = sourceBalance.WarehouseId,
+                        ProductVariantId = sourceBalance.ProductVariantId,
+                        PeriodYear = toPeriodYear,
+                        PeriodMonth = toPeriodMonth,
+                        // Kết chuyển: OpeningBalance = ClosingBalance của kỳ trước
+                        OpeningBalance = sourceBalance.ClosingBalance,
+                        OpeningValue = sourceBalance.ClosingValue,
+                        // Ban đầu chưa có nhập/xuất
+                        TotalInQty = 0,
+                        TotalOutQty = 0,
+                        TotalInValue = null,
+                        TotalOutValue = null,
+                        TotalInVatAmount = null,
+                        TotalOutVatAmount = null,
+                        TotalInAmountIncludedVat = null,
+                        TotalOutAmountIncludedVat = null,
+                        // ClosingBalance = OpeningBalance (ban đầu, sẽ được tính lại khi có nhập/xuất)
+                        ClosingBalance = sourceBalance.ClosingBalance,
+                        ClosingValue = sourceBalance.ClosingValue,
+                        // Trạng thái ban đầu
+                        IsLocked = false,
+                        LockedDate = null,
+                        LockedBy = null,
+                        LockReason = null,
+                        IsVerified = false,
+                        VerifiedDate = null,
+                        VerifiedBy = null,
+                        VerificationNotes = null,
+                        IsApproved = false,
+                        ApprovedDate = null,
+                        ApprovedBy = null,
+                        ApprovalNotes = null,
+                        Status = 0, // Draft
+                        Notes = $"Kết chuyển từ kỳ {fromPeriodYear}/{fromPeriodMonth:D2}",
+                        IsActive = true,
+                        IsDeleted = false,
+                        CreateDate = DateTime.Now,
+                        ModifiedDate = null,
+                        ModifiedBy = null,
+                        DeletedDate = null,
+                        DeletedBy = null
+                    };
+
+                    context.InventoryBalances.InsertOnSubmit(newBalance);
+                    forwardedCount++;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"ForwardBalance: Lỗi khi kết chuyển tồn kho WarehouseId={sourceBalance.WarehouseId}, ProductVariantId={sourceBalance.ProductVariantId}: {ex.Message}", ex);
+                    // Tiếp tục với tồn kho tiếp theo
+                }
+            }
+
+            context.SubmitChanges();
+            _logger.Info("ForwardBalance: Đã kết chuyển {0} tồn kho từ kỳ {1}/{2:D2} sang kỳ {3}/{4:D2}", 
+                forwardedCount, fromPeriodYear, fromPeriodMonth, toPeriodYear, toPeriodMonth);
+            
+            return forwardedCount;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"ForwardBalance: Lỗi kết chuyển tồn kho từ kỳ {fromPeriodYear}/{fromPeriodMonth:D2}: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 }
 
