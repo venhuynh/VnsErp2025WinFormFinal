@@ -3,12 +3,15 @@ using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Views.BandedGrid;
+using DevExpress.Data;
 using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DevExpress.XtraGrid.Views.Grid;
 
 namespace Inventory.Management
 {
@@ -67,6 +70,44 @@ namespace Inventory.Management
             InventoryBalanceDtoBandedGridView.SortInfo.Clear();
             InventoryBalanceDtoBandedGridView.SortInfo.Add(
                 new DevExpress.XtraGrid.Columns.GridColumnSortInfo(colGroupCaption, DevExpress.Data.ColumnSortOrder.Ascending));
+            
+            // Enable footer để hiển thị summary
+            InventoryBalanceDtoBandedGridView.OptionsView.ShowFooter = true;
+            
+            // Cấu hình SummaryItem cho các cột số lượng
+            colOpeningBalance.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colOpeningBalance.SummaryItem.DisplayFormat = "{0:N2}";
+            
+            colTotalInQty.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colTotalInQty.SummaryItem.DisplayFormat = "{0:N2}";
+            
+            colTotalOutQty.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colTotalOutQty.SummaryItem.DisplayFormat = "{0:N2}";
+            
+            colClosingBalance.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colClosingBalance.SummaryItem.DisplayFormat = "{0:N2}";
+            
+            // Cấu hình SummaryItem cho các cột giá trị
+            colOpeningValue.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colOpeningValue.SummaryItem.DisplayFormat = "{0:N0}";
+            
+            colTotalInValue.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colTotalInValue.SummaryItem.DisplayFormat = "{0:N0}";
+            
+            colTotalOutValue.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colTotalOutValue.SummaryItem.DisplayFormat = "{0:N0}";
+            
+            colTotalInAmountIncludedVat.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colTotalInAmountIncludedVat.SummaryItem.DisplayFormat = "{0:N0}";
+            
+            colTotalInVatAmount.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colTotalInVatAmount.SummaryItem.DisplayFormat = "{0:N0}";
+            
+            colTotalOutAmountIncludedVat.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colTotalOutAmountIncludedVat.SummaryItem.DisplayFormat = "{0:N0}";
+            
+            colTotalOutVatAmount.SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum;
+            colTotalOutVatAmount.SummaryItem.DisplayFormat = "{0:N0}";
         }
 
         /// <summary>
@@ -100,6 +141,8 @@ namespace Inventory.Management
 
             // BandedGridView events
             InventoryBalanceDtoBandedGridView.SelectionChanged += InventoryBalanceDtoGridView_SelectionChanged;
+            InventoryBalanceDtoBandedGridView.CustomSummaryCalculate += InventoryBalanceDtoBandedGridView_CustomSummaryCalculate;
+            InventoryBalanceDtoBandedGridView.CustomDrawFooterCell += InventoryBalanceDtoBandedGridView_CustomDrawFooterCell;
 
             // Form events
             Load += FrmInventoryBalanceDto_Load;
@@ -423,6 +466,159 @@ namespace Inventory.Management
                 {
                     DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
                 }
+            }
+        }
+
+        #endregion
+
+        #region ========== SUMMARY EVENTS ==========
+
+        /// <summary>
+        /// Xử lý tính toán summary cho các cột
+        /// </summary>
+        private void InventoryBalanceDtoBandedGridView_CustomSummaryCalculate(object sender, DevExpress.Data.CustomSummaryEventArgs e)
+        {
+            try
+            {
+                var view = sender as DevExpress.XtraGrid.Views.BandedGrid.BandedGridView;
+                if (view == null) return;
+
+                var summaryItem = e.Item as DevExpress.XtraGrid.GridSummaryItem;
+                var fieldName = summaryItem?.FieldName;
+                if (string.IsNullOrEmpty(fieldName)) return;
+
+                if (e.SummaryProcess == DevExpress.Data.CustomSummaryProcess.Start)
+                {
+                    // Khởi tạo giá trị ban đầu
+                    e.TotalValue = 0m;
+                }
+                else if (e.SummaryProcess == DevExpress.Data.CustomSummaryProcess.Calculate)
+                {
+                    // Lấy giá trị cell hiện tại
+                    var cellValue = view.GetRowCellValue(e.RowHandle, fieldName);
+                    if (cellValue == null || cellValue == DBNull.Value) return;
+
+                    var current = (decimal)e.TotalValue;
+                    decimal cellDecimal = 0m;
+
+                    // Xử lý nullable decimal
+                    if (cellValue is decimal dec)
+                        cellDecimal = dec;
+                    else if (decimal.TryParse(cellValue.ToString(), out var parsed))
+                        cellDecimal = parsed;
+
+                    e.TotalValue = current + cellDecimal;
+                }
+                else if (e.SummaryProcess == DevExpress.Data.CustomSummaryProcess.Finalize)
+                {
+                    // Giữ nguyên giá trị đã tính
+                }
+            }
+            catch (Exception)
+            {
+                e.TotalValue = 0m;
+            }
+        }
+
+        /// <summary>
+        /// Vẽ footer cell với format đẹp và màu sắc
+        /// </summary>
+        private void InventoryBalanceDtoBandedGridView_CustomDrawFooterCell(object sender, FooterCellCustomDrawEventArgs e)
+        {
+            try
+            {
+                var view = sender as DevExpress.XtraGrid.Views.BandedGrid.BandedGridView;
+                if (view == null || e.Info?.SummaryItem == null)
+                {
+                    e.Handled = false;
+                    return;
+                }
+
+                string fieldName = e.Info.SummaryItem.FieldName;
+                if (string.IsNullOrEmpty(fieldName))
+                {
+                    e.Handled = false;
+                    return;
+                }
+
+                // Kiểm tra các đối tượng cần thiết
+                if (e.Appearance == null || e.Cache == null || e.Cache.Graphics == null)
+                {
+                    e.Handled = false;
+                    return;
+                }
+
+                e.Handled = true; // Báo rằng ta tự vẽ toàn bộ ô footer
+
+                // Vẽ nền
+                e.Appearance.FillRectangle(e.Cache, e.Bounds);
+
+                // Lấy giá trị tổng hợp
+                var summaryValue = e.Info.Value;
+                if (summaryValue == null || summaryValue == DBNull.Value)
+                {
+                    return;
+                }
+
+                // Font cho footer
+                var appearanceFont = e.Appearance.Font ?? new System.Drawing.Font("Tahoma", 8.25f, System.Drawing.FontStyle.Regular);
+                using var fontBold = new System.Drawing.Font(appearanceFont.FontFamily, appearanceFont.Size, System.Drawing.FontStyle.Bold);
+
+                var g = e.Cache.Graphics;
+
+                // Parse giá trị
+                decimal totalValue = 0m;
+                if (summaryValue is decimal dec)
+                    totalValue = dec;
+                else if (decimal.TryParse(summaryValue.ToString(), out var parsed))
+                    totalValue = parsed;
+
+                // Ẩn giá trị 0
+                if (Math.Abs(totalValue) < 0.001m)
+                {
+                    return;
+                }
+
+                // Xác định màu và format dựa trên field name
+                System.Drawing.Brush brush;
+                string formatString;
+
+                if (fieldName == "OpeningBalance" || fieldName == "ClosingBalance" || 
+                    fieldName == "OpeningValue")
+                {
+                    // Màu xanh dương cho tồn đầu/cuối kỳ và giá trị đầu kỳ
+                    brush = System.Drawing.Brushes.Blue;
+                    formatString = fieldName.Contains("Value") ? "{0:N0}" : "{0:N2}";
+                }
+                else if (fieldName.Contains("In") || fieldName.Contains("Nhập"))
+                {
+                    // Màu xanh lá cho các cột nhập
+                    brush = System.Drawing.Brushes.Green;
+                    formatString = fieldName.Contains("Qty") ? "{0:N2}" : "{0:N0}";
+                }
+                else if (fieldName.Contains("Out") || fieldName.Contains("Xuất"))
+                {
+                    // Màu đỏ cho các cột xuất
+                    brush = System.Drawing.Brushes.Red;
+                    formatString = fieldName.Contains("Qty") ? "{0:N2}" : "{0:N0}";
+                }
+                else
+                {
+                    // Màu mặc định
+                    brush = System.Drawing.Brushes.Black;
+                    formatString = "{0:N2}";
+                }
+
+                // Format và hiển thị giá trị
+                var displayText = string.Format(System.Globalization.CultureInfo.CurrentCulture, formatString, totalValue);
+                var size = g.MeasureString(displayText, fontBold);
+                var x = e.Bounds.X + (e.Bounds.Width - size.Width) / 2;
+                var y = e.Bounds.Y + (e.Bounds.Height - size.Height) / 2;
+                g.DrawString(displayText, fontBold, brush, x, y);
+            }
+            catch (Exception)
+            {
+                e.Handled = false; // Để DevExpress tự vẽ nếu có lỗi
             }
         }
 

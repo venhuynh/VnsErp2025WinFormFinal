@@ -196,6 +196,7 @@
             this.gridBand1.Columns.Add(this.colStatusText);
             this.gridBand1.Columns.Add(this.colDisplayCaption);
             this.gridBand1.Columns.Add(this.colGroupCaption);
+            this.gridBand1.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
             this.gridBand1.Name = "gridBand1";
             this.gridBand1.VisibleIndex = 0;
             this.gridBand1.Width = 620;
