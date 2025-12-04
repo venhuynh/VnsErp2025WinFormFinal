@@ -139,6 +139,7 @@ namespace Inventory.Management
             ExportFileBarButtonItem.ItemClick += ExportFileBarButtonItem_ItemClick;
             TongKetBarButtonItem.ItemClick += TongKetBarButtonItem_ItemClick;
             KetChuyenBarButtonItem.ItemClick += KetChuyenBarButtonItem_ItemClick;
+            LockUnLockBarButtonItem.ItemClick += LockUnLockBarButtonItem_ItemClick;
 
             // BandedGridView events
             InventoryBalanceDtoBandedGridView.SelectionChanged += InventoryBalanceDtoGridView_SelectionChanged;
@@ -372,6 +373,22 @@ namespace Inventory.Management
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi khi kết chuyển tồn kho");
+            }
+        }
+
+        /// <summary>
+        /// Event handler cho nút Khóa/Mở khóa
+        /// </summary>
+        private void LockUnLockBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                MsgBox.ShowWarning("Chức năng Khóa/Mở khóa tồn kho đang được triển khai sau.\n\n" +
+                                 "Vui lòng quay lại sau.", "Chức năng đang phát triển");
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi xử lý sự kiện");
             }
         }
 

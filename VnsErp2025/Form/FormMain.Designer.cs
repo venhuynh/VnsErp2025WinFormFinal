@@ -56,12 +56,13 @@
             this.XuatLuuChuyenKhoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XuatNoiBoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XuatChoThueMuonBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.InventoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.InventoryBalanceBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutMasterHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutProductHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.WarrantyCheckBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutImagesBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutDocumentBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.PartnerRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.CongTyRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -74,6 +75,8 @@
             this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
             this.documentManager1 = new DevExpress.XtraBars.Docking2010.DocumentManager(this.components);
             this.tabbedView1 = new DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView(this.components);
+            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.documentManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).BeginInit();
@@ -112,14 +115,17 @@
             this.XuatLuuChuyenKhoBarButtonItem,
             this.XuatNoiBoBarButtonItem,
             this.XuatChoThueMuonBarButtonItem,
-            this.InventoryBarButtonItem,
+            this.InventoryBalanceBarButtonItem,
             this.StockInOutMasterHistoryBarButtonItem,
             this.StockInOutProductHistoryBarButtonItem,
             this.WarrantyCheckBarButtonItem,
             this.StockInOutImagesBarButtonItem,
-            this.StockInOutDocumentBarButtonItem});
+            this.StockInOutDocumentBarButtonItem,
+            this.barSubItem1,
+            this.barButtonItem1,
+            this.barButtonItem2});
             this.ribbon.Location = new System.Drawing.Point(0, 0);
-            this.ribbon.MaxItemId = 34;
+            this.ribbon.MaxItemId = 37;
             this.ribbon.Name = "ribbon";
             this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1,
@@ -359,12 +365,14 @@
             this.XuatChoThueMuonBarButtonItem.Name = "XuatChoThueMuonBarButtonItem";
             this.XuatChoThueMuonBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatChoThueMuonBarButtonItem_ItemClick);
             // 
-            // InventoryBarButtonItem
+            // InventoryBalanceBarButtonItem
             // 
-            this.InventoryBarButtonItem.Caption = "barButtonItem1";
-            this.InventoryBarButtonItem.Id = 28;
-            this.InventoryBarButtonItem.Name = "InventoryBarButtonItem";
-            this.InventoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.InventoryBarButtonItem_ItemClick);
+            this.InventoryBalanceBarButtonItem.Caption = "Tồn kho";
+            this.InventoryBalanceBarButtonItem.Id = 28;
+            this.InventoryBalanceBarButtonItem.ImageOptions.Image = global::VnsErp2025.Properties.Resources.pivot_16x16;
+            this.InventoryBalanceBarButtonItem.ImageOptions.LargeImage = global::VnsErp2025.Properties.Resources.pivot_32x32;
+            this.InventoryBalanceBarButtonItem.Name = "InventoryBalanceBarButtonItem";
+            this.InventoryBalanceBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.InventoryBalanceBarButtonItem_ItemClick);
             // 
             // StockInOutMasterHistoryBarButtonItem
             // 
@@ -409,6 +417,17 @@
             this.StockInOutDocumentBarButtonItem.Name = "StockInOutDocumentBarButtonItem";
             this.StockInOutDocumentBarButtonItem.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText;
             this.StockInOutDocumentBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutDocumentBarButtonItem_ItemClick);
+            // 
+            // barSubItem1
+            // 
+            this.barSubItem1.Caption = "Báo cáo";
+            this.barSubItem1.Id = 34;
+            this.barSubItem1.ImageOptions.Image = global::VnsErp2025.Properties.Resources.productsalesreport_16x16;
+            this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.InventoryBalanceBarButtonItem)});
+            this.barSubItem1.Name = "barSubItem1";
+            this.barSubItem1.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             // 
             // ribbonPage1
             // 
@@ -482,7 +501,9 @@
             // 
             // QuanLyKhoRibbonPageGroup
             // 
-            this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.InventoryBarButtonItem);
+            this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.barSubItem1);
+            this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.barButtonItem1);
+            this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.barButtonItem2);
             this.QuanLyKhoRibbonPageGroup.Name = "QuanLyKhoRibbonPageGroup";
             this.QuanLyKhoRibbonPageGroup.Text = "Quản lý kho";
             // 
@@ -510,6 +531,18 @@
             this.documentManager1.View = this.tabbedView1;
             this.documentManager1.ViewCollection.AddRange(new DevExpress.XtraBars.Docking2010.Views.BaseView[] {
             this.tabbedView1});
+            // 
+            // barButtonItem1
+            // 
+            this.barButtonItem1.Caption = "Kiểm kho";
+            this.barButtonItem1.Id = 35;
+            this.barButtonItem1.Name = "barButtonItem1";
+            // 
+            // barButtonItem2
+            // 
+            this.barButtonItem2.Caption = "Tài sản";
+            this.barButtonItem2.Id = 36;
+            this.barButtonItem2.Name = "barButtonItem2";
             // 
             // FormMain
             // 
@@ -571,12 +604,15 @@
         private DevExpress.XtraBars.BarButtonItem XuatLuuChuyenKhoBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem XuatNoiBoBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem XuatChoThueMuonBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem InventoryBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem InventoryBalanceBarButtonItem;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup StockInOutRibbonPageGroup;
         private DevExpress.XtraBars.BarButtonItem StockInOutMasterHistoryBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem StockInOutProductHistoryBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem WarrantyCheckBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem StockInOutImagesBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem StockInOutDocumentBarButtonItem;
+        private DevExpress.XtraBars.BarSubItem barSubItem1;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem2;
     }
 }

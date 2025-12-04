@@ -108,7 +108,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmInventoryBalanceDto());
+            Application.Run(new FormMain());
 
             #endregion
 
