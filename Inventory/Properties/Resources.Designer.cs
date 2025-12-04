@@ -143,6 +143,26 @@ namespace Inventory.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap edit_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("edit_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap edit_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("edit_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap exporttoxps_16x16 {
             get {
                 object obj = ResourceManager.GetObject("exporttoxps_16x16", resourceCulture);
@@ -236,6 +256,26 @@ namespace Inventory.Properties {
         internal static System.Drawing.Bitmap insertimage_32x32 {
             get {
                 object obj = ResourceManager.GetObject("insertimage_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap listnumbers_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("listnumbers_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap listnumbers_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("listnumbers_32x32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

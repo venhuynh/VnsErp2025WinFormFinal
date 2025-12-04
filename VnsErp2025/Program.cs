@@ -108,7 +108,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FormMain());
+            Application.Run(new FrmAssetDtoManagement());
 
             #endregion
 

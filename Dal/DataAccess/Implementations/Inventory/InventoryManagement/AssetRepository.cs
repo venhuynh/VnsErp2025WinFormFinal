@@ -103,8 +103,7 @@ public class AssetRepository : IAssetRepository
                     asset.Id = Guid.NewGuid();
                 
                 // Thiết lập giá trị mặc định
-                if (asset.CreateDate == default(DateTime))
-                    asset.CreateDate = DateTime.Now;
+                asset.CreateDate = DateTime.Now;
 
                 context.Assets.InsertOnSubmit(asset);
                 context.SubmitChanges();
@@ -186,7 +185,7 @@ public class AssetRepository : IAssetRepository
             else
             {
                 // Load navigation properties
-                LoadNavigationProperties(context, new List<Asset> { asset });
+                LoadNavigationProperties(context, [asset]);
                 
                 _logger.Info("GetById: Đã lấy tài sản, Id={0}, AssetCode={1}, AssetName={2}", 
                     id, asset.AssetCode, asset.AssetName);
@@ -229,7 +228,7 @@ public class AssetRepository : IAssetRepository
             else
             {
                 // Load navigation properties
-                LoadNavigationProperties(context, new List<Asset> { asset });
+                LoadNavigationProperties(context, [asset]);
                 
                 _logger.Info("GetByAssetCode: Đã lấy tài sản, Id={0}, AssetCode={1}", asset.Id, asset.AssetCode);
             }

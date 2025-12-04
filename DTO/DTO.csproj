@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Inventory\InventoryManagement\AssetDto.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentAccessLevelEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentCategoryEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentTypeEnum.cs" />

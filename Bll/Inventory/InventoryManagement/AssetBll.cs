@@ -91,39 +91,39 @@ public class AssetBll
             throw new ArgumentNullException(nameof(asset));
 
         if (string.IsNullOrWhiteSpace(asset.AssetCode))
-            throw new ArgumentException("AssetCode không được để trống", nameof(asset));
+            throw new ArgumentException(@"AssetCode không được để trống", nameof(asset));
 
         if (string.IsNullOrWhiteSpace(asset.AssetName))
-            throw new ArgumentException("AssetName không được để trống", nameof(asset));
+            throw new ArgumentException(@"AssetName không được để trống", nameof(asset));
 
         if (asset.CompanyId == Guid.Empty)
-            throw new ArgumentException("CompanyId không được để trống", nameof(asset));
+            throw new ArgumentException(@"CompanyId không được để trống", nameof(asset));
 
         if (asset.PurchasePrice < 0)
-            throw new ArgumentException($"PurchasePrice phải >= 0, giá trị hiện tại: {asset.PurchasePrice}", nameof(asset));
+            throw new ArgumentException($@"PurchasePrice phải >= 0, giá trị hiện tại: {asset.PurchasePrice}", nameof(asset));
 
         if (asset.AccumulatedDepreciation < 0)
-            throw new ArgumentException($"AccumulatedDepreciation phải >= 0, giá trị hiện tại: {asset.AccumulatedDepreciation}", nameof(asset));
+            throw new ArgumentException($@"AccumulatedDepreciation phải >= 0, giá trị hiện tại: {asset.AccumulatedDepreciation}", nameof(asset));
 
         // Validate AssetType
         if (asset.AssetType < 0 || asset.AssetType > 2)
-            throw new ArgumentException($"AssetType phải trong khoảng 0-2, giá trị hiện tại: {asset.AssetType}", nameof(asset));
+            throw new ArgumentException($@"AssetType phải trong khoảng 0-2, giá trị hiện tại: {asset.AssetType}", nameof(asset));
 
         // Validate AssetCategory
         if (asset.AssetCategory < 0 || asset.AssetCategory > 4)
-            throw new ArgumentException($"AssetCategory phải trong khoảng 0-4, giá trị hiện tại: {asset.AssetCategory}", nameof(asset));
+            throw new ArgumentException($@"AssetCategory phải trong khoảng 0-4, giá trị hiện tại: {asset.AssetCategory}", nameof(asset));
 
         // Validate DepreciationMethod
-        if (asset.DepreciationMethod < 0 || asset.DepreciationMethod > 2)
-            throw new ArgumentException($"DepreciationMethod phải trong khoảng 0-2, giá trị hiện tại: {asset.DepreciationMethod}", nameof(asset));
+        if (asset.DepreciationMethod is < 0 or > 2)
+            throw new ArgumentException($@"DepreciationMethod phải trong khoảng 0-2, giá trị hiện tại: {asset.DepreciationMethod}", nameof(asset));
 
         // Validate Status
         if (asset.Status < 0 || asset.Status > 4)
-            throw new ArgumentException($"Status phải trong khoảng 0-4, giá trị hiện tại: {asset.Status}", nameof(asset));
+            throw new ArgumentException($@"Status phải trong khoảng 0-4, giá trị hiện tại: {asset.Status}", nameof(asset));
 
         // Validate Condition
         if (asset.Condition < 0 || asset.Condition > 4)
-            throw new ArgumentException($"Condition phải trong khoảng 0-4, giá trị hiện tại: {asset.Condition}", nameof(asset));
+            throw new ArgumentException($@"Condition phải trong khoảng 0-4, giá trị hiện tại: {asset.Condition}", nameof(asset));
 
         // Validate CurrentValue nếu có giá trị
         if (asset.CurrentValue.HasValue)
@@ -215,7 +215,7 @@ public class AssetBll
     public Asset GetByAssetCode(string assetCode)
     {
         if (string.IsNullOrWhiteSpace(assetCode))
-            throw new ArgumentException("AssetCode không được để trống", nameof(assetCode));
+            throw new ArgumentException(@"AssetCode không được để trống", nameof(assetCode));
 
         return GetDataAccess().GetByAssetCode(assetCode);
     }
@@ -226,7 +226,7 @@ public class AssetBll
     public List<Asset> GetByCompanyId(Guid companyId)
     {
         if (companyId == Guid.Empty)
-            throw new ArgumentException("CompanyId không được để trống", nameof(companyId));
+            throw new ArgumentException(@"CompanyId không được để trống", nameof(companyId));
 
         return GetDataAccess().GetByCompanyId(companyId);
     }
@@ -237,7 +237,7 @@ public class AssetBll
     public List<Asset> GetByBranchId(Guid branchId)
     {
         if (branchId == Guid.Empty)
-            throw new ArgumentException("BranchId không được để trống", nameof(branchId));
+            throw new ArgumentException(@"BranchId không được để trống", nameof(branchId));
 
         return GetDataAccess().GetByBranchId(branchId);
     }
@@ -248,7 +248,7 @@ public class AssetBll
     public List<Asset> GetByDepartmentId(Guid departmentId)
     {
         if (departmentId == Guid.Empty)
-            throw new ArgumentException("DepartmentId không được để trống", nameof(departmentId));
+            throw new ArgumentException(@"DepartmentId không được để trống", nameof(departmentId));
 
         return GetDataAccess().GetByDepartmentId(departmentId);
     }
@@ -259,7 +259,7 @@ public class AssetBll
     public List<Asset> GetByEmployeeId(Guid employeeId)
     {
         if (employeeId == Guid.Empty)
-            throw new ArgumentException("EmployeeId không được để trống", nameof(employeeId));
+            throw new ArgumentException(@"EmployeeId không được để trống", nameof(employeeId));
 
         return GetDataAccess().GetByEmployeeId(employeeId);
     }
@@ -270,7 +270,7 @@ public class AssetBll
     public List<Asset> GetByProductVariantId(Guid productVariantId)
     {
         if (productVariantId == Guid.Empty)
-            throw new ArgumentException("ProductVariantId không được để trống", nameof(productVariantId));
+            throw new ArgumentException(@"ProductVariantId không được để trống", nameof(productVariantId));
 
         return GetDataAccess().GetByProductVariantId(productVariantId);
     }
@@ -339,12 +339,12 @@ public class AssetBll
         try
         {
             if (accumulatedDepreciation < 0)
-                throw new ArgumentException($"AccumulatedDepreciation phải >= 0, giá trị hiện tại: {accumulatedDepreciation}", nameof(accumulatedDepreciation));
+                throw new ArgumentException($@"AccumulatedDepreciation phải >= 0, giá trị hiện tại: {accumulatedDepreciation}", nameof(accumulatedDepreciation));
 
             var asset = GetDataAccess().GetById(id);
             if (asset == null)
             {
-                throw new InvalidOperationException($"Không tìm thấy tài sản với ID: {id}");
+                throw new InvalidOperationException($@"Không tìm thấy tài sản với ID: {id}");
             }
 
             asset.AccumulatedDepreciation = accumulatedDepreciation;
@@ -354,7 +354,7 @@ public class AssetBll
 
             GetDataAccess().SaveOrUpdate(asset);
 
-            _logger.Info("UpdateDepreciation: Đã cập nhật khấu hao cho tài sản, Id={0}, AssetCode={1}, AccumulatedDepreciation={2}, CurrentValue={3}",
+            _logger.Info(@"UpdateDepreciation: Đã cập nhật khấu hao cho tài sản, Id={0}, AssetCode={1}, AccumulatedDepreciation={2}, CurrentValue={3}",
                 id, asset.AssetCode, accumulatedDepreciation, asset.CurrentValue);
 
             return asset;
@@ -374,12 +374,12 @@ public class AssetBll
         try
         {
             if (status < 0 || status > 4)
-                throw new ArgumentException($"Status phải trong khoảng 0-4, giá trị hiện tại: {status}", nameof(status));
+                throw new ArgumentException($@"Status phải trong khoảng 0-4, giá trị hiện tại: {status}", nameof(status));
 
             var asset = GetDataAccess().GetById(id);
             if (asset == null)
             {
-                throw new InvalidOperationException($"Không tìm thấy tài sản với ID: {id}");
+                throw new InvalidOperationException($@"Không tìm thấy tài sản với ID: {id}");
             }
 
             asset.Status = status;
@@ -408,7 +408,7 @@ public class AssetBll
         try
         {
             if (condition < 0 || condition > 4)
-                throw new ArgumentException($"Condition phải trong khoảng 0-4, giá trị hiện tại: {condition}", nameof(condition));
+                throw new ArgumentException($@"Condition phải trong khoảng 0-4, giá trị hiện tại: {condition}", nameof(condition));
 
             var asset = GetDataAccess().GetById(id);
             if (asset == null)
