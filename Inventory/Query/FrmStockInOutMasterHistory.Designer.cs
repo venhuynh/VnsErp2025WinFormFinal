@@ -35,6 +35,9 @@
             this.StockInOutMasterHistoryDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colFullContentHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colTotalQuantity = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colTotalAmount = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colTotalAmountIncludedVat = new DevExpress.XtraGrid.Columns.GridColumn();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.TuNgayBarEditItem = new DevExpress.XtraBars.BarEditItem();
@@ -105,7 +108,10 @@
             // StockInOutMasterHistoryDtoGridView
             // 
             this.StockInOutMasterHistoryDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colFullContentHtml});
+            this.colFullContentHtml,
+            this.colTotalQuantity,
+            this.colTotalAmount,
+            this.colTotalAmountIncludedVat});
             this.StockInOutMasterHistoryDtoGridView.GridControl = this.StockInOutMasterHistoryDtoGridControl;
             this.StockInOutMasterHistoryDtoGridView.Name = "StockInOutMasterHistoryDtoGridView";
             this.StockInOutMasterHistoryDtoGridView.OptionsFind.AlwaysVisible = true;
@@ -135,13 +141,88 @@
             this.colFullContentHtml.OptionsColumn.AllowEdit = false;
             this.colFullContentHtml.OptionsColumn.ReadOnly = true;
             this.colFullContentHtml.Visible = true;
-            this.colFullContentHtml.VisibleIndex = 1;
+            this.colFullContentHtml.VisibleIndex = 0;
             this.colFullContentHtml.Width = 800;
             // 
             // HtmlRepositoryItemHypertextLabel
             // 
             this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
+            // 
+            // colTotalQuantity
+            // 
+            this.colTotalQuantity.AppearanceCell.Options.UseTextOptions = true;
+            this.colTotalQuantity.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colTotalQuantity.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalQuantity.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colTotalQuantity.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colTotalQuantity.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colTotalQuantity.AppearanceHeader.Options.UseBackColor = true;
+            this.colTotalQuantity.AppearanceHeader.Options.UseFont = true;
+            this.colTotalQuantity.AppearanceHeader.Options.UseForeColor = true;
+            this.colTotalQuantity.AppearanceHeader.Options.UseTextOptions = true;
+            this.colTotalQuantity.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colTotalQuantity.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalQuantity.Caption = "Tổng số lượng";
+            this.colTotalQuantity.DisplayFormat.FormatString = "N2";
+            this.colTotalQuantity.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colTotalQuantity.FieldName = "TotalQuantity";
+            this.colTotalQuantity.Name = "colTotalQuantity";
+            this.colTotalQuantity.OptionsColumn.AllowEdit = false;
+            this.colTotalQuantity.OptionsColumn.ReadOnly = true;
+            this.colTotalQuantity.Visible = true;
+            this.colTotalQuantity.VisibleIndex = 1;
+            this.colTotalQuantity.Width = 120;
+            // 
+            // colTotalAmount
+            // 
+            this.colTotalAmount.AppearanceCell.Options.UseTextOptions = true;
+            this.colTotalAmount.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colTotalAmount.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalAmount.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colTotalAmount.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colTotalAmount.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colTotalAmount.AppearanceHeader.Options.UseBackColor = true;
+            this.colTotalAmount.AppearanceHeader.Options.UseFont = true;
+            this.colTotalAmount.AppearanceHeader.Options.UseForeColor = true;
+            this.colTotalAmount.AppearanceHeader.Options.UseTextOptions = true;
+            this.colTotalAmount.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colTotalAmount.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalAmount.Caption = "Tổng tiền (chưa VAT)";
+            this.colTotalAmount.DisplayFormat.FormatString = "N0";
+            this.colTotalAmount.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colTotalAmount.FieldName = "TotalAmount";
+            this.colTotalAmount.Name = "colTotalAmount";
+            this.colTotalAmount.OptionsColumn.AllowEdit = false;
+            this.colTotalAmount.OptionsColumn.ReadOnly = true;
+            this.colTotalAmount.Visible = true;
+            this.colTotalAmount.VisibleIndex = 2;
+            this.colTotalAmount.Width = 150;
+            // 
+            // colTotalAmountIncludedVat
+            // 
+            this.colTotalAmountIncludedVat.AppearanceCell.Options.UseTextOptions = true;
+            this.colTotalAmountIncludedVat.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colTotalAmountIncludedVat.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalAmountIncludedVat.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colTotalAmountIncludedVat.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Options.UseBackColor = true;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Options.UseFont = true;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Options.UseForeColor = true;
+            this.colTotalAmountIncludedVat.AppearanceHeader.Options.UseTextOptions = true;
+            this.colTotalAmountIncludedVat.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colTotalAmountIncludedVat.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colTotalAmountIncludedVat.Caption = "Tổng tiền (có VAT)";
+            this.colTotalAmountIncludedVat.DisplayFormat.FormatString = "N0";
+            this.colTotalAmountIncludedVat.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colTotalAmountIncludedVat.FieldName = "TotalAmountIncludedVat";
+            this.colTotalAmountIncludedVat.Name = "colTotalAmountIncludedVat";
+            this.colTotalAmountIncludedVat.OptionsColumn.AllowEdit = false;
+            this.colTotalAmountIncludedVat.OptionsColumn.ReadOnly = true;
+            this.colTotalAmountIncludedVat.Visible = true;
+            this.colTotalAmountIncludedVat.VisibleIndex = 3;
+            this.colTotalAmountIncludedVat.Width = 150;
             // 
             // barManager1
             // 
@@ -423,6 +504,9 @@
         private System.Windows.Forms.BindingSource stockInOutMasterHistoryDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colFullContentHtml;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlRepositoryItemHypertextLabel;
+        private DevExpress.XtraGrid.Columns.GridColumn colTotalQuantity;
+        private DevExpress.XtraGrid.Columns.GridColumn colTotalAmount;
+        private DevExpress.XtraGrid.Columns.GridColumn colTotalAmountIncludedVat;
         private DevExpress.XtraBars.Bar bar1;
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;

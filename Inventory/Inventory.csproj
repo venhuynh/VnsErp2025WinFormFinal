@@ -87,6 +87,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Management\FrmInventoryBalanceDto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\FrmInventoryBalanceDto.Designer.cs">
+      <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
+    </Compile>
     <Compile Include="OverlayForm\FrmStockInOutAddImages.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -353,6 +359,9 @@
     <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.Designer.cs">
       <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Management\FrmInventoryBalanceDto.resx">
+      <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </EmbeddedResource>
@@ -500,6 +509,7 @@
     <None Include="Doc\NhapHang\NhapHangThuongMai_01_NhapKhoDoiBan.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_00_TongQuan.md" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.DeviceDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutDocumentDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutMasterHistoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutProductHistoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyCheckListDto.datasource" />
@@ -536,7 +546,6 @@
     <None Include="StockIn\InPhieu\README_IN_PHIEU_NHAP_KHO.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="InventoryManagement\" />
     <Folder Include="Report\" />
   </ItemGroup>
   <ItemGroup>
@@ -641,6 +650,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\attachment_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\locknavigation_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\locknavigation_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pivot_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pivot_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\forward_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\forward_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

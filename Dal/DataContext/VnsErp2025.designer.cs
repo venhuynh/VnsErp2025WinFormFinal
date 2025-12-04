@@ -78,6 +78,9 @@ namespace Dal.DataContext
     partial void InsertEmployee(Employee instance);
     partial void UpdateEmployee(Employee instance);
     partial void DeleteEmployee(Employee instance);
+    partial void InsertInventoryBalance(InventoryBalance instance);
+    partial void UpdateInventoryBalance(InventoryBalance instance);
+    partial void DeleteInventoryBalance(InventoryBalance instance);
     partial void InsertPosition(Position instance);
     partial void UpdatePosition(Position instance);
     partial void DeletePosition(Position instance);
@@ -112,12 +115,6 @@ namespace Dal.DataContext
     partial void UpdateVariantAttribute(VariantAttribute instance);
     partial void DeleteVariantAttribute(VariantAttribute instance);
     #endregion
-		
-		public VnsErp2025DataContext() : 
-				base(global::Dal.Properties.Settings.Default.VnsErp2025FinalConnectionString2, mappingSource)
-		{
-			OnCreated();
-		}
 		
 		public VnsErp2025DataContext(string connection) : 
 				base(connection, mappingSource)
@@ -271,6 +268,14 @@ namespace Dal.DataContext
 			}
 		}
 		
+		public System.Data.Linq.Table<InventoryBalance> InventoryBalances
+		{
+			get
+			{
+				return this.GetTable<InventoryBalance>();
+			}
+		}
+		
 		public System.Data.Linq.Table<Position> Positions
 		{
 			get
@@ -374,6 +379,16 @@ namespace Dal.DataContext
 		
 		private bool _Active;
 		
+		private EntitySet<InventoryBalance> _InventoryBalances;
+		
+		private EntitySet<InventoryBalance> _InventoryBalances1;
+		
+		private EntitySet<InventoryBalance> _InventoryBalances2;
+		
+		private EntitySet<InventoryBalance> _InventoryBalances3;
+		
+		private EntitySet<InventoryBalance> _InventoryBalances4;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -390,6 +405,11 @@ namespace Dal.DataContext
 		
 		public ApplicationUser()
 		{
+			this._InventoryBalances = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances), new Action<InventoryBalance>(this.detach_InventoryBalances));
+			this._InventoryBalances1 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances1), new Action<InventoryBalance>(this.detach_InventoryBalances1));
+			this._InventoryBalances2 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances2), new Action<InventoryBalance>(this.detach_InventoryBalances2));
+			this._InventoryBalances3 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances3), new Action<InventoryBalance>(this.detach_InventoryBalances3));
+			this._InventoryBalances4 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances4), new Action<InventoryBalance>(this.detach_InventoryBalances4));
 			OnCreated();
 		}
 		
@@ -473,6 +493,71 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance", Storage="_InventoryBalances", ThisKey="Id", OtherKey="ApprovedBy")]
+		public EntitySet<InventoryBalance> InventoryBalances
+		{
+			get
+			{
+				return this._InventoryBalances;
+			}
+			set
+			{
+				this._InventoryBalances.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance1", Storage="_InventoryBalances1", ThisKey="Id", OtherKey="DeletedBy")]
+		public EntitySet<InventoryBalance> InventoryBalances1
+		{
+			get
+			{
+				return this._InventoryBalances1;
+			}
+			set
+			{
+				this._InventoryBalances1.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance2", Storage="_InventoryBalances2", ThisKey="Id", OtherKey="LockedBy")]
+		public EntitySet<InventoryBalance> InventoryBalances2
+		{
+			get
+			{
+				return this._InventoryBalances2;
+			}
+			set
+			{
+				this._InventoryBalances2.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance3", Storage="_InventoryBalances3", ThisKey="Id", OtherKey="ModifiedBy")]
+		public EntitySet<InventoryBalance> InventoryBalances3
+		{
+			get
+			{
+				return this._InventoryBalances3;
+			}
+			set
+			{
+				this._InventoryBalances3.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance4", Storage="_InventoryBalances4", ThisKey="Id", OtherKey="VerifiedBy")]
+		public EntitySet<InventoryBalance> InventoryBalances4
+		{
+			get
+			{
+				return this._InventoryBalances4;
+			}
+			set
+			{
+				this._InventoryBalances4.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -491,6 +576,66 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_InventoryBalances(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = this;
+		}
+		
+		private void detach_InventoryBalances(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = null;
+		}
+		
+		private void attach_InventoryBalances1(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = this;
+		}
+		
+		private void detach_InventoryBalances1(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = null;
+		}
+		
+		private void attach_InventoryBalances2(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser2 = this;
+		}
+		
+		private void detach_InventoryBalances2(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser2 = null;
+		}
+		
+		private void attach_InventoryBalances3(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser3 = this;
+		}
+		
+		private void detach_InventoryBalances3(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser3 = null;
+		}
+		
+		private void attach_InventoryBalances4(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser4 = this;
+		}
+		
+		private void detach_InventoryBalances4(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser4 = null;
 		}
 	}
 	
@@ -3597,6 +3742,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<Employee> _Employees;
 		
+		private EntitySet<InventoryBalance> _InventoryBalances;
+		
 		private EntitySet<StockInOutMaster> _StockInOutMasters;
 		
 		private EntityRef<Company> _Company;
@@ -3632,6 +3779,7 @@ namespace Dal.DataContext
 			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
 			this._DeviceTransfers1 = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers1), new Action<DeviceTransfer>(this.detach_DeviceTransfers1));
 			this._Employees = new EntitySet<Employee>(new Action<Employee>(this.attach_Employees), new Action<Employee>(this.detach_Employees));
+			this._InventoryBalances = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances), new Action<InventoryBalance>(this.detach_InventoryBalances));
 			this._StockInOutMasters = new EntitySet<StockInOutMaster>(new Action<StockInOutMaster>(this.attach_StockInOutMasters), new Action<StockInOutMaster>(this.detach_StockInOutMasters));
 			this._Company = default(EntityRef<Company>);
 			OnCreated();
@@ -3886,6 +4034,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_InventoryBalance", Storage="_InventoryBalances", ThisKey="Id", OtherKey="WarehouseId")]
+		public EntitySet<InventoryBalance> InventoryBalances
+		{
+			get
+			{
+				return this._InventoryBalances;
+			}
+			set
+			{
+				this._InventoryBalances.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_StockInOutMaster", Storage="_StockInOutMasters", ThisKey="Id", OtherKey="WarehouseId")]
 		public EntitySet<StockInOutMaster> StockInOutMasters
 		{
@@ -4008,6 +4169,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_Employees(Employee entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch = null;
+		}
+		
+		private void attach_InventoryBalances(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.CompanyBranch = this;
+		}
+		
+		private void detach_InventoryBalances(InventoryBalance entity)
 		{
 			this.SendPropertyChanging();
 			entity.CompanyBranch = null;
@@ -7414,6 +7587,1267 @@ namespace Dal.DataContext
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.InventoryBalance")]
+	public partial class InventoryBalance : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _WarehouseId;
+		
+		private System.Guid _ProductVariantId;
+		
+		private int _PeriodYear;
+		
+		private int _PeriodMonth;
+		
+		private decimal _OpeningBalance;
+		
+		private decimal _TotalInQty;
+		
+		private decimal _TotalOutQty;
+		
+		private decimal _ClosingBalance;
+		
+		private System.Nullable<decimal> _OpeningValue;
+		
+		private System.Nullable<decimal> _TotalInValue;
+		
+		private System.Nullable<decimal> _TotalOutValue;
+		
+		private System.Nullable<decimal> _ClosingValue;
+		
+		private System.Nullable<decimal> _TotalInVatAmount;
+		
+		private System.Nullable<decimal> _TotalOutVatAmount;
+		
+		private System.Nullable<decimal> _TotalInAmountIncludedVat;
+		
+		private System.Nullable<decimal> _TotalOutAmountIncludedVat;
+		
+		private bool _IsLocked;
+		
+		private System.Nullable<System.DateTime> _LockedDate;
+		
+		private System.Nullable<System.Guid> _LockedBy;
+		
+		private string _LockReason;
+		
+		private bool _IsVerified;
+		
+		private System.Nullable<System.DateTime> _VerifiedDate;
+		
+		private System.Nullable<System.Guid> _VerifiedBy;
+		
+		private string _VerificationNotes;
+		
+		private bool _IsApproved;
+		
+		private System.Nullable<System.DateTime> _ApprovedDate;
+		
+		private System.Nullable<System.Guid> _ApprovedBy;
+		
+		private string _ApprovalNotes;
+		
+		private int _Status;
+		
+		private string _Notes;
+		
+		private bool _IsActive;
+		
+		private bool _IsDeleted;
+		
+		private System.DateTime _CreateDate;
+		
+		private System.Guid _CreateBy;
+		
+		private System.Nullable<System.DateTime> _ModifiedDate;
+		
+		private System.Nullable<System.Guid> _ModifiedBy;
+		
+		private System.Nullable<System.DateTime> _DeletedDate;
+		
+		private System.Nullable<System.Guid> _DeletedBy;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser;
+		
+		private EntityRef<CompanyBranch> _CompanyBranch;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser1;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser2;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser3;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser4;
+		
+		private EntityRef<ProductVariant> _ProductVariant;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnWarehouseIdChanging(System.Guid value);
+    partial void OnWarehouseIdChanged();
+    partial void OnProductVariantIdChanging(System.Guid value);
+    partial void OnProductVariantIdChanged();
+    partial void OnPeriodYearChanging(int value);
+    partial void OnPeriodYearChanged();
+    partial void OnPeriodMonthChanging(int value);
+    partial void OnPeriodMonthChanged();
+    partial void OnOpeningBalanceChanging(decimal value);
+    partial void OnOpeningBalanceChanged();
+    partial void OnTotalInQtyChanging(decimal value);
+    partial void OnTotalInQtyChanged();
+    partial void OnTotalOutQtyChanging(decimal value);
+    partial void OnTotalOutQtyChanged();
+    partial void OnClosingBalanceChanging(decimal value);
+    partial void OnClosingBalanceChanged();
+    partial void OnOpeningValueChanging(System.Nullable<decimal> value);
+    partial void OnOpeningValueChanged();
+    partial void OnTotalInValueChanging(System.Nullable<decimal> value);
+    partial void OnTotalInValueChanged();
+    partial void OnTotalOutValueChanging(System.Nullable<decimal> value);
+    partial void OnTotalOutValueChanged();
+    partial void OnClosingValueChanging(System.Nullable<decimal> value);
+    partial void OnClosingValueChanged();
+    partial void OnTotalInVatAmountChanging(System.Nullable<decimal> value);
+    partial void OnTotalInVatAmountChanged();
+    partial void OnTotalOutVatAmountChanging(System.Nullable<decimal> value);
+    partial void OnTotalOutVatAmountChanged();
+    partial void OnTotalInAmountIncludedVatChanging(System.Nullable<decimal> value);
+    partial void OnTotalInAmountIncludedVatChanged();
+    partial void OnTotalOutAmountIncludedVatChanging(System.Nullable<decimal> value);
+    partial void OnTotalOutAmountIncludedVatChanged();
+    partial void OnIsLockedChanging(bool value);
+    partial void OnIsLockedChanged();
+    partial void OnLockedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnLockedDateChanged();
+    partial void OnLockedByChanging(System.Nullable<System.Guid> value);
+    partial void OnLockedByChanged();
+    partial void OnLockReasonChanging(string value);
+    partial void OnLockReasonChanged();
+    partial void OnIsVerifiedChanging(bool value);
+    partial void OnIsVerifiedChanged();
+    partial void OnVerifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnVerifiedDateChanged();
+    partial void OnVerifiedByChanging(System.Nullable<System.Guid> value);
+    partial void OnVerifiedByChanged();
+    partial void OnVerificationNotesChanging(string value);
+    partial void OnVerificationNotesChanged();
+    partial void OnIsApprovedChanging(bool value);
+    partial void OnIsApprovedChanged();
+    partial void OnApprovedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnApprovedDateChanged();
+    partial void OnApprovedByChanging(System.Nullable<System.Guid> value);
+    partial void OnApprovedByChanged();
+    partial void OnApprovalNotesChanging(string value);
+    partial void OnApprovalNotesChanged();
+    partial void OnStatusChanging(int value);
+    partial void OnStatusChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnIsDeletedChanging(bool value);
+    partial void OnIsDeletedChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnCreateByChanging(System.Guid value);
+    partial void OnCreateByChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
+    partial void OnModifiedByChanging(System.Nullable<System.Guid> value);
+    partial void OnModifiedByChanged();
+    partial void OnDeletedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeletedDateChanged();
+    partial void OnDeletedByChanging(System.Nullable<System.Guid> value);
+    partial void OnDeletedByChanged();
+    #endregion
+		
+		public InventoryBalance()
+		{
+			this._ApplicationUser = default(EntityRef<ApplicationUser>);
+			this._CompanyBranch = default(EntityRef<CompanyBranch>);
+			this._ApplicationUser1 = default(EntityRef<ApplicationUser>);
+			this._ApplicationUser2 = default(EntityRef<ApplicationUser>);
+			this._ApplicationUser3 = default(EntityRef<ApplicationUser>);
+			this._ApplicationUser4 = default(EntityRef<ApplicationUser>);
+			this._ProductVariant = default(EntityRef<ProductVariant>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarehouseId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid WarehouseId
+		{
+			get
+			{
+				return this._WarehouseId;
+			}
+			set
+			{
+				if ((this._WarehouseId != value))
+				{
+					if (this._CompanyBranch.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnWarehouseIdChanging(value);
+					this.SendPropertyChanging();
+					this._WarehouseId = value;
+					this.SendPropertyChanged("WarehouseId");
+					this.OnWarehouseIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductVariantId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ProductVariantId
+		{
+			get
+			{
+				return this._ProductVariantId;
+			}
+			set
+			{
+				if ((this._ProductVariantId != value))
+				{
+					if (this._ProductVariant.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductVariantIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductVariantId = value;
+					this.SendPropertyChanged("ProductVariantId");
+					this.OnProductVariantIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PeriodYear", DbType="Int NOT NULL")]
+		public int PeriodYear
+		{
+			get
+			{
+				return this._PeriodYear;
+			}
+			set
+			{
+				if ((this._PeriodYear != value))
+				{
+					this.OnPeriodYearChanging(value);
+					this.SendPropertyChanging();
+					this._PeriodYear = value;
+					this.SendPropertyChanged("PeriodYear");
+					this.OnPeriodYearChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PeriodMonth", DbType="Int NOT NULL")]
+		public int PeriodMonth
+		{
+			get
+			{
+				return this._PeriodMonth;
+			}
+			set
+			{
+				if ((this._PeriodMonth != value))
+				{
+					this.OnPeriodMonthChanging(value);
+					this.SendPropertyChanging();
+					this._PeriodMonth = value;
+					this.SendPropertyChanged("PeriodMonth");
+					this.OnPeriodMonthChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OpeningBalance", DbType="Decimal(18,2) NOT NULL")]
+		public decimal OpeningBalance
+		{
+			get
+			{
+				return this._OpeningBalance;
+			}
+			set
+			{
+				if ((this._OpeningBalance != value))
+				{
+					this.OnOpeningBalanceChanging(value);
+					this.SendPropertyChanging();
+					this._OpeningBalance = value;
+					this.SendPropertyChanged("OpeningBalance");
+					this.OnOpeningBalanceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalInQty", DbType="Decimal(18,2) NOT NULL")]
+		public decimal TotalInQty
+		{
+			get
+			{
+				return this._TotalInQty;
+			}
+			set
+			{
+				if ((this._TotalInQty != value))
+				{
+					this.OnTotalInQtyChanging(value);
+					this.SendPropertyChanging();
+					this._TotalInQty = value;
+					this.SendPropertyChanged("TotalInQty");
+					this.OnTotalInQtyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalOutQty", DbType="Decimal(18,2) NOT NULL")]
+		public decimal TotalOutQty
+		{
+			get
+			{
+				return this._TotalOutQty;
+			}
+			set
+			{
+				if ((this._TotalOutQty != value))
+				{
+					this.OnTotalOutQtyChanging(value);
+					this.SendPropertyChanging();
+					this._TotalOutQty = value;
+					this.SendPropertyChanged("TotalOutQty");
+					this.OnTotalOutQtyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ClosingBalance", DbType="Decimal(18,2) NOT NULL")]
+		public decimal ClosingBalance
+		{
+			get
+			{
+				return this._ClosingBalance;
+			}
+			set
+			{
+				if ((this._ClosingBalance != value))
+				{
+					this.OnClosingBalanceChanging(value);
+					this.SendPropertyChanging();
+					this._ClosingBalance = value;
+					this.SendPropertyChanged("ClosingBalance");
+					this.OnClosingBalanceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OpeningValue", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> OpeningValue
+		{
+			get
+			{
+				return this._OpeningValue;
+			}
+			set
+			{
+				if ((this._OpeningValue != value))
+				{
+					this.OnOpeningValueChanging(value);
+					this.SendPropertyChanging();
+					this._OpeningValue = value;
+					this.SendPropertyChanged("OpeningValue");
+					this.OnOpeningValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalInValue", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalInValue
+		{
+			get
+			{
+				return this._TotalInValue;
+			}
+			set
+			{
+				if ((this._TotalInValue != value))
+				{
+					this.OnTotalInValueChanging(value);
+					this.SendPropertyChanging();
+					this._TotalInValue = value;
+					this.SendPropertyChanged("TotalInValue");
+					this.OnTotalInValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalOutValue", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalOutValue
+		{
+			get
+			{
+				return this._TotalOutValue;
+			}
+			set
+			{
+				if ((this._TotalOutValue != value))
+				{
+					this.OnTotalOutValueChanging(value);
+					this.SendPropertyChanging();
+					this._TotalOutValue = value;
+					this.SendPropertyChanged("TotalOutValue");
+					this.OnTotalOutValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ClosingValue", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> ClosingValue
+		{
+			get
+			{
+				return this._ClosingValue;
+			}
+			set
+			{
+				if ((this._ClosingValue != value))
+				{
+					this.OnClosingValueChanging(value);
+					this.SendPropertyChanging();
+					this._ClosingValue = value;
+					this.SendPropertyChanged("ClosingValue");
+					this.OnClosingValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalInVatAmount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalInVatAmount
+		{
+			get
+			{
+				return this._TotalInVatAmount;
+			}
+			set
+			{
+				if ((this._TotalInVatAmount != value))
+				{
+					this.OnTotalInVatAmountChanging(value);
+					this.SendPropertyChanging();
+					this._TotalInVatAmount = value;
+					this.SendPropertyChanged("TotalInVatAmount");
+					this.OnTotalInVatAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalOutVatAmount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalOutVatAmount
+		{
+			get
+			{
+				return this._TotalOutVatAmount;
+			}
+			set
+			{
+				if ((this._TotalOutVatAmount != value))
+				{
+					this.OnTotalOutVatAmountChanging(value);
+					this.SendPropertyChanging();
+					this._TotalOutVatAmount = value;
+					this.SendPropertyChanged("TotalOutVatAmount");
+					this.OnTotalOutVatAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalInAmountIncludedVat", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalInAmountIncludedVat
+		{
+			get
+			{
+				return this._TotalInAmountIncludedVat;
+			}
+			set
+			{
+				if ((this._TotalInAmountIncludedVat != value))
+				{
+					this.OnTotalInAmountIncludedVatChanging(value);
+					this.SendPropertyChanging();
+					this._TotalInAmountIncludedVat = value;
+					this.SendPropertyChanged("TotalInAmountIncludedVat");
+					this.OnTotalInAmountIncludedVatChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalOutAmountIncludedVat", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalOutAmountIncludedVat
+		{
+			get
+			{
+				return this._TotalOutAmountIncludedVat;
+			}
+			set
+			{
+				if ((this._TotalOutAmountIncludedVat != value))
+				{
+					this.OnTotalOutAmountIncludedVatChanging(value);
+					this.SendPropertyChanging();
+					this._TotalOutAmountIncludedVat = value;
+					this.SendPropertyChanged("TotalOutAmountIncludedVat");
+					this.OnTotalOutAmountIncludedVatChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsLocked", DbType="Bit NOT NULL")]
+		public bool IsLocked
+		{
+			get
+			{
+				return this._IsLocked;
+			}
+			set
+			{
+				if ((this._IsLocked != value))
+				{
+					this.OnIsLockedChanging(value);
+					this.SendPropertyChanging();
+					this._IsLocked = value;
+					this.SendPropertyChanged("IsLocked");
+					this.OnIsLockedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LockedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LockedDate
+		{
+			get
+			{
+				return this._LockedDate;
+			}
+			set
+			{
+				if ((this._LockedDate != value))
+				{
+					this.OnLockedDateChanging(value);
+					this.SendPropertyChanging();
+					this._LockedDate = value;
+					this.SendPropertyChanged("LockedDate");
+					this.OnLockedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LockedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> LockedBy
+		{
+			get
+			{
+				return this._LockedBy;
+			}
+			set
+			{
+				if ((this._LockedBy != value))
+				{
+					if (this._ApplicationUser2.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnLockedByChanging(value);
+					this.SendPropertyChanging();
+					this._LockedBy = value;
+					this.SendPropertyChanged("LockedBy");
+					this.OnLockedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LockReason", DbType="NVarChar(500)")]
+		public string LockReason
+		{
+			get
+			{
+				return this._LockReason;
+			}
+			set
+			{
+				if ((this._LockReason != value))
+				{
+					this.OnLockReasonChanging(value);
+					this.SendPropertyChanging();
+					this._LockReason = value;
+					this.SendPropertyChanged("LockReason");
+					this.OnLockReasonChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsVerified", DbType="Bit NOT NULL")]
+		public bool IsVerified
+		{
+			get
+			{
+				return this._IsVerified;
+			}
+			set
+			{
+				if ((this._IsVerified != value))
+				{
+					this.OnIsVerifiedChanging(value);
+					this.SendPropertyChanging();
+					this._IsVerified = value;
+					this.SendPropertyChanged("IsVerified");
+					this.OnIsVerifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VerifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> VerifiedDate
+		{
+			get
+			{
+				return this._VerifiedDate;
+			}
+			set
+			{
+				if ((this._VerifiedDate != value))
+				{
+					this.OnVerifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._VerifiedDate = value;
+					this.SendPropertyChanged("VerifiedDate");
+					this.OnVerifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VerifiedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> VerifiedBy
+		{
+			get
+			{
+				return this._VerifiedBy;
+			}
+			set
+			{
+				if ((this._VerifiedBy != value))
+				{
+					if (this._ApplicationUser4.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnVerifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._VerifiedBy = value;
+					this.SendPropertyChanged("VerifiedBy");
+					this.OnVerifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VerificationNotes", DbType="NVarChar(1000)")]
+		public string VerificationNotes
+		{
+			get
+			{
+				return this._VerificationNotes;
+			}
+			set
+			{
+				if ((this._VerificationNotes != value))
+				{
+					this.OnVerificationNotesChanging(value);
+					this.SendPropertyChanging();
+					this._VerificationNotes = value;
+					this.SendPropertyChanged("VerificationNotes");
+					this.OnVerificationNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsApproved", DbType="Bit NOT NULL")]
+		public bool IsApproved
+		{
+			get
+			{
+				return this._IsApproved;
+			}
+			set
+			{
+				if ((this._IsApproved != value))
+				{
+					this.OnIsApprovedChanging(value);
+					this.SendPropertyChanging();
+					this._IsApproved = value;
+					this.SendPropertyChanged("IsApproved");
+					this.OnIsApprovedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ApprovedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ApprovedDate
+		{
+			get
+			{
+				return this._ApprovedDate;
+			}
+			set
+			{
+				if ((this._ApprovedDate != value))
+				{
+					this.OnApprovedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ApprovedDate = value;
+					this.SendPropertyChanged("ApprovedDate");
+					this.OnApprovedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ApprovedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ApprovedBy
+		{
+			get
+			{
+				return this._ApprovedBy;
+			}
+			set
+			{
+				if ((this._ApprovedBy != value))
+				{
+					if (this._ApplicationUser.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnApprovedByChanging(value);
+					this.SendPropertyChanging();
+					this._ApprovedBy = value;
+					this.SendPropertyChanged("ApprovedBy");
+					this.OnApprovedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ApprovalNotes", DbType="NVarChar(1000)")]
+		public string ApprovalNotes
+		{
+			get
+			{
+				return this._ApprovalNotes;
+			}
+			set
+			{
+				if ((this._ApprovalNotes != value))
+				{
+					this.OnApprovalNotesChanging(value);
+					this.SendPropertyChanging();
+					this._ApprovalNotes = value;
+					this.SendPropertyChanged("ApprovalNotes");
+					this.OnApprovalNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="Int NOT NULL")]
+		public int Status
+		{
+			get
+			{
+				return this._Status;
+			}
+			set
+			{
+				if ((this._Status != value))
+				{
+					this.OnStatusChanging(value);
+					this.SendPropertyChanging();
+					this._Status = value;
+					this.SendPropertyChanged("Status");
+					this.OnStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsDeleted", DbType="Bit NOT NULL")]
+		public bool IsDeleted
+		{
+			get
+			{
+				return this._IsDeleted;
+			}
+			set
+			{
+				if ((this._IsDeleted != value))
+				{
+					this.OnIsDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._IsDeleted = value;
+					this.SendPropertyChanged("IsDeleted");
+					this.OnIsDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid CreateBy
+		{
+			get
+			{
+				return this._CreateBy;
+			}
+			set
+			{
+				if ((this._CreateBy != value))
+				{
+					this.OnCreateByChanging(value);
+					this.SendPropertyChanging();
+					this._CreateBy = value;
+					this.SendPropertyChanged("CreateBy");
+					this.OnCreateByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
+		{
+			get
+			{
+				return this._ModifiedDate;
+			}
+			set
+			{
+				if ((this._ModifiedDate != value))
+				{
+					this.OnModifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ModifiedBy
+		{
+			get
+			{
+				return this._ModifiedBy;
+			}
+			set
+			{
+				if ((this._ModifiedBy != value))
+				{
+					if (this._ApplicationUser3.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeletedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> DeletedDate
+		{
+			get
+			{
+				return this._DeletedDate;
+			}
+			set
+			{
+				if ((this._DeletedDate != value))
+				{
+					this.OnDeletedDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeletedDate = value;
+					this.SendPropertyChanged("DeletedDate");
+					this.OnDeletedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeletedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> DeletedBy
+		{
+			get
+			{
+				return this._DeletedBy;
+			}
+			set
+			{
+				if ((this._DeletedBy != value))
+				{
+					if (this._ApplicationUser1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDeletedByChanging(value);
+					this.SendPropertyChanging();
+					this._DeletedBy = value;
+					this.SendPropertyChanged("DeletedBy");
+					this.OnDeletedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance", Storage="_ApplicationUser", ThisKey="ApprovedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser
+		{
+			get
+			{
+				return this._ApplicationUser.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser.Entity = null;
+						previousValue.InventoryBalances.Remove(this);
+					}
+					this._ApplicationUser.Entity = value;
+					if ((value != null))
+					{
+						value.InventoryBalances.Add(this);
+						this._ApprovedBy = value.Id;
+					}
+					else
+					{
+						this._ApprovedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_InventoryBalance", Storage="_CompanyBranch", ThisKey="WarehouseId", OtherKey="Id", IsForeignKey=true)]
+		public CompanyBranch CompanyBranch
+		{
+			get
+			{
+				return this._CompanyBranch.Entity;
+			}
+			set
+			{
+				CompanyBranch previousValue = this._CompanyBranch.Entity;
+				if (((previousValue != value) 
+							|| (this._CompanyBranch.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CompanyBranch.Entity = null;
+						previousValue.InventoryBalances.Remove(this);
+					}
+					this._CompanyBranch.Entity = value;
+					if ((value != null))
+					{
+						value.InventoryBalances.Add(this);
+						this._WarehouseId = value.Id;
+					}
+					else
+					{
+						this._WarehouseId = default(System.Guid);
+					}
+					this.SendPropertyChanged("CompanyBranch");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance1", Storage="_ApplicationUser1", ThisKey="DeletedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser1
+		{
+			get
+			{
+				return this._ApplicationUser1.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser1.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser1.Entity = null;
+						previousValue.InventoryBalances1.Remove(this);
+					}
+					this._ApplicationUser1.Entity = value;
+					if ((value != null))
+					{
+						value.InventoryBalances1.Add(this);
+						this._DeletedBy = value.Id;
+					}
+					else
+					{
+						this._DeletedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser1");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance2", Storage="_ApplicationUser2", ThisKey="LockedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser2
+		{
+			get
+			{
+				return this._ApplicationUser2.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser2.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser2.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser2.Entity = null;
+						previousValue.InventoryBalances2.Remove(this);
+					}
+					this._ApplicationUser2.Entity = value;
+					if ((value != null))
+					{
+						value.InventoryBalances2.Add(this);
+						this._LockedBy = value.Id;
+					}
+					else
+					{
+						this._LockedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser2");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance3", Storage="_ApplicationUser3", ThisKey="ModifiedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser3
+		{
+			get
+			{
+				return this._ApplicationUser3.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser3.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser3.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser3.Entity = null;
+						previousValue.InventoryBalances3.Remove(this);
+					}
+					this._ApplicationUser3.Entity = value;
+					if ((value != null))
+					{
+						value.InventoryBalances3.Add(this);
+						this._ModifiedBy = value.Id;
+					}
+					else
+					{
+						this._ModifiedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser3");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance4", Storage="_ApplicationUser4", ThisKey="VerifiedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser4
+		{
+			get
+			{
+				return this._ApplicationUser4.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser4.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser4.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser4.Entity = null;
+						previousValue.InventoryBalances4.Remove(this);
+					}
+					this._ApplicationUser4.Entity = value;
+					if ((value != null))
+					{
+						value.InventoryBalances4.Add(this);
+						this._VerifiedBy = value.Id;
+					}
+					else
+					{
+						this._VerifiedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser4");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_InventoryBalance", Storage="_ProductVariant", ThisKey="ProductVariantId", OtherKey="Id", IsForeignKey=true)]
+		public ProductVariant ProductVariant
+		{
+			get
+			{
+				return this._ProductVariant.Entity;
+			}
+			set
+			{
+				ProductVariant previousValue = this._ProductVariant.Entity;
+				if (((previousValue != value) 
+							|| (this._ProductVariant.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ProductVariant.Entity = null;
+						previousValue.InventoryBalances.Remove(this);
+					}
+					this._ProductVariant.Entity = value;
+					if ((value != null))
+					{
+						value.InventoryBalances.Add(this);
+						this._ProductVariantId = value.Id;
+					}
+					else
+					{
+						this._ProductVariantId = default(System.Guid);
+					}
+					this.SendPropertyChanged("ProductVariant");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Position")]
 	public partial class Position : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -9365,6 +10799,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<Device> _Devices;
 		
+		private EntitySet<InventoryBalance> _InventoryBalances;
+		
 		private EntitySet<ProductImage> _ProductImages;
 		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
@@ -9414,6 +10850,7 @@ namespace Dal.DataContext
 		public ProductVariant()
 		{
 			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
+			this._InventoryBalances = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances), new Action<InventoryBalance>(this.detach_InventoryBalances));
 			this._ProductImages = new EntitySet<ProductImage>(new Action<ProductImage>(this.attach_ProductImages), new Action<ProductImage>(this.detach_ProductImages));
 			this._StockInOutDetails = new EntitySet<StockInOutDetail>(new Action<StockInOutDetail>(this.attach_StockInOutDetails), new Action<StockInOutDetail>(this.detach_StockInOutDetails));
 			this._VariantAttributes = new EntitySet<VariantAttribute>(new Action<VariantAttribute>(this.attach_VariantAttributes), new Action<VariantAttribute>(this.detach_VariantAttributes));
@@ -9743,6 +11180,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_InventoryBalance", Storage="_InventoryBalances", ThisKey="Id", OtherKey="ProductVariantId")]
+		public EntitySet<InventoryBalance> InventoryBalances
+		{
+			get
+			{
+				return this._InventoryBalances;
+			}
+			set
+			{
+				this._InventoryBalances.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_ProductImage", Storage="_ProductImages", ThisKey="Id", OtherKey="VariantId")]
 		public EntitySet<ProductImage> ProductImages
 		{
@@ -9877,6 +11327,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = null;
+		}
+		
+		private void attach_InventoryBalances(InventoryBalance entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = this;
+		}
+		
+		private void detach_InventoryBalances(InventoryBalance entity)
 		{
 			this.SendPropertyChanging();
 			entity.ProductVariant = null;

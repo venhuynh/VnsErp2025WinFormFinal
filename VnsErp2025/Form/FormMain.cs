@@ -22,6 +22,7 @@ using Inventory.StockOut.XuatLuuChuyenKho;
 using Inventory.StockOut.XuatNoiBo;
 using Inventory.StockOut.XuatChoThueMuon;
 using Inventory.Query;
+using Inventory.Management;
 
 // ReSharper disable InconsistentNaming
 
@@ -520,13 +521,13 @@ namespace VnsErp2025.Form
                     );
                 }
 
-                // Quản lý kho
-                if (InventoryBarButtonItem != null)
+                // Quản lý kho - Tồn kho theo tháng
+                if (InventoryBalanceBarButtonItem != null)
                 {
                     SuperToolTipHelper.SetBarButtonSuperTip(
-                        InventoryBarButtonItem,
-                        title: "<b><color=Teal>📊 Quản lý kho</color></b>",
-                        content: "Quản lý tổng quan về kho hàng trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Xem tồn kho theo sản phẩm<br/>• Theo dõi lịch sử nhập/xuất<br/>• Quản lý kho và vị trí lưu trữ<br/><br/><color=Gray>Lưu ý:</color> Module này giúp theo dõi và quản lý hàng tồn kho hiệu quả."
+                        InventoryBalanceBarButtonItem,
+                        title: "<b><color=Teal>📊 Tồn kho theo tháng</color></b>",
+                        content: "Quản lý và theo dõi tồn kho theo từng kỳ (tháng/năm).<br/><br/><b>Chức năng:</b><br/>• Xem tồn kho theo kỳ (tháng/năm)<br/>• Tính tổng kết nhập/xuất cho kỳ<br/>• Kết chuyển tồn kho sang kỳ tiếp theo<br/>• Khóa/mở khóa tồn kho<br/>• Xuất báo cáo tồn kho<br/><br/><color=Gray>Lưu ý:</color> Module này giúp quản lý tồn kho theo từng kỳ một cách có hệ thống và chính xác."
                     );
                 }
 
@@ -1286,20 +1287,19 @@ namespace VnsErp2025.Form
         #region Quản lý kho & Truy vấn
 
         /// <summary>
-        /// Xử lý sự kiện click nút Quản lý kho
+        /// Xử lý sự kiện click nút Tồn kho theo tháng
         /// </summary>
-        private void InventoryBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        private void InventoryBalanceBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
                 SplashScreenHelper.ShowVnsSplashScreen();
-                // TODO: Thêm form quản lý kho khi có
-                MsgBox.ShowSuccess("Chức năng quản lý kho đang được phát triển.", "Thông báo");
+                ApplicationSystemUtils.ShowOrActivateForm<FrmInventoryBalanceDto>(this);
                 SplashScreenHelper.CloseSplashScreen();
             }
             catch (Exception ex)
             {
-                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý kho");
+                MsgBox.ShowException(ex, "Lỗi hiển thị form tồn kho theo tháng");
             }
         }
 

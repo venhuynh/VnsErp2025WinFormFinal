@@ -86,7 +86,7 @@ public class ProductVariantListDto
             if (!string.IsNullOrWhiteSpace(variantFullName))
             {
                 if (!string.IsNullOrWhiteSpace(variantCode))
-                    html += " | ";
+                    html += "<br/>";
                 html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantFullName}</b></color></size>";
             }
 
@@ -206,10 +206,9 @@ public static class ProductVariantConverters
         Func<Guid, string> getUnitName = null,
         Func<Guid, string> getUnitCode = null)
     {
-        if (entities == null) return new List<ProductVariantDto>();
+        if (entities == null) return [];
 
-        return entities.Select(entity => entity.ToDto(
-            getProductName,
+        return entities.Select(entity => ToDto(entity, getProductName,
             getProductCode,
             getUnitName,
             getUnitCode
@@ -240,38 +239,6 @@ public static class ProductVariantConverters
         };
 
         return entity;
-    }
-
-    /// <summary>
-    /// Chuyển đổi danh sách ProductVariantDto thành danh sách ProductVariant entities
-    /// </summary>
-    /// <param name="dtos">Danh sách ProductVariantDto</param>
-    /// <returns>Danh sách ProductVariant entities</returns>
-    public static List<ProductVariant> ToEntityList(this IEnumerable<ProductVariantDto> dtos)
-    {
-        if (dtos == null) return new List<ProductVariant>();
-
-        return dtos.Select(dto => dto.ToEntity()).ToList();
-    }
-
-    #endregion
-
-    #region Update Entity from DTO
-
-    /// <summary>
-    /// Cập nhật ProductVariant entity từ ProductVariantDto
-    /// </summary>
-    /// <param name="entity">ProductVariant entity cần cập nhật</param>
-    /// <param name="dto">ProductVariantDto chứa dữ liệu mới</param>
-    public static void UpdateFromDto(this ProductVariant entity, ProductVariantDto dto)
-    {
-        if (entity == null || dto == null) return;
-
-        entity.ProductId = dto.ProductId;
-        entity.VariantCode = dto.VariantCode;
-        entity.UnitId = dto.UnitId;
-        entity.IsActive = dto.IsActive;
-        entity.ThumbnailImage = dto.ThumbnailImage;
     }
 
     #endregion
@@ -331,7 +298,7 @@ public static class ProductVariantConverters
     {
         if (variantCodes == null) return new List<ProductVariantDto>();
 
-        return variantCodes.Select(variantCode => CreateNew(
+        return Enumerable.ToList(Enumerable.Select(variantCodes, variantCode => CreateNew(
             productId,
             variantCode,
             unitId,
@@ -339,7 +306,7 @@ public static class ProductVariantConverters
             getProductCode,
             getUnitName,
             getUnitCode
-        )).ToList();
+        )));
     }
 
     /// <summary>
@@ -371,29 +338,29 @@ public static class ProductVariantConverters
         // Load unit information
         if (entity.UnitOfMeasure != null)
         {
-            var unitDto = entity.UnitOfMeasure.ToDto();
+            var unitDto = UnitOfMeasureConverters.ToDto(entity.UnitOfMeasure);
             dto.UnitCode = unitDto.Code;
             dto.UnitName = unitDto.Name;
         }
 
         // Convert attributes
-        if (entity.VariantAttributes != null && entity.VariantAttributes.Any())
+        if (entity.VariantAttributes != null && Enumerable.Any(entity.VariantAttributes))
         {
-            dto.Attributes = entity.VariantAttributes.Select(va => new ProductVariantAttributeDto
+            dto.Attributes = Enumerable.ToList(Enumerable.Select(entity.VariantAttributes, va => new ProductVariantAttributeDto
             {
                 AttributeId = va.AttributeId,
                 AttributeName = va.Attribute?.Name,
                 AttributeValueId = va.AttributeValueId,
                 AttributeValue = va.AttributeValue?.Value,
                 Description = va.Attribute?.Description,
-            }).ToList();
+            }));
             dto.AttributeCount = dto.Attributes.Count;
         }
 
         // Convert images
-        if (entity.ProductImages != null && entity.ProductImages.Any())
+        if (entity.ProductImages != null && Enumerable.Any(entity.ProductImages))
         {
-            dto.Images = entity.ProductImages.Select(pi => new ProductVariantImageDto
+            dto.Images = Enumerable.ToList(Enumerable.Select(entity.ProductImages, pi => new ProductVariantImageDto
             {
                 ImageId = pi.Id,
                 ImagePath = pi.ImagePath,
@@ -407,47 +374,11 @@ public static class ProductVariantConverters
                 Caption = pi.Caption,
                 AltText = pi.AltText,
                 IsActive = pi.IsActive ?? true
-            }).ToList();
+            }));
             dto.ImageCount = dto.Images.Count;
         }
 
         return dto;
-    }
-
-    /// <summary>
-    /// Tạo danh sách ProductVariantDto từ danh sách ProductVariant entities với thông tin đầy đủ
-    /// </summary>
-    /// <param name="entities">Danh sách ProductVariant entities</param>
-    /// <returns>Danh sách ProductVariantDto với thông tin đầy đủ</returns>
-    public static List<ProductVariantDto> ToFullDtoList(this IEnumerable<ProductVariant> entities)
-    {
-        if (entities == null) return new List<ProductVariantDto>();
-
-        return entities.Select(entity => entity.ToFullDto()).ToList();
-    }
-
-    #endregion
-
-    #region Validation Helpers
-
-    /// <summary>
-    /// Kiểm tra tính hợp lệ của ProductVariantDto
-    /// </summary>
-    /// <param name="dto">ProductVariantDto cần kiểm tra</param>
-    /// <returns>True nếu hợp lệ</returns>
-    public static bool IsValidDto(this ProductVariantDto dto)
-    {
-        return dto?.IsValid() == true;
-    }
-
-    /// <summary>
-    /// Lấy danh sách lỗi validation của ProductVariantDto
-    /// </summary>
-    /// <param name="dto">ProductVariantDto cần kiểm tra</param>
-    /// <returns>Danh sách lỗi</returns>
-    public static List<string> GetValidationErrors(this ProductVariantDto dto)
-    {
-        return dto?.GetValidationErrors() ?? new List<string> { "DTO không được null" };
     }
 
     #endregion

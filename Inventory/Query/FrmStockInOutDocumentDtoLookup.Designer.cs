@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.StockInOutDocumentDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.stockInOutDocumentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.StockInOutDocumentDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colStockInOutDate = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colVocherNumber = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -59,10 +58,10 @@
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.stockInOutDocumentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDocumentDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDocumentDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDocumentDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1)).BeginInit();
@@ -72,6 +71,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDocumentDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -97,10 +97,6 @@
             this.StockInOutDocumentDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.StockInOutDocumentDtoGridView});
             // 
-            // stockInOutDocumentDtoBindingSource
-            // 
-            this.stockInOutDocumentDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.StockInOutDocumentDto);
-            // 
             // StockInOutDocumentDtoGridView
             // 
             this.StockInOutDocumentDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
@@ -119,6 +115,18 @@
             // 
             // colStockInOutDate
             // 
+            this.colStockInOutDate.AppearanceCell.Options.UseTextOptions = true;
+            this.colStockInOutDate.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStockInOutDate.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStockInOutDate.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colStockInOutDate.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colStockInOutDate.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colStockInOutDate.AppearanceHeader.Options.UseBackColor = true;
+            this.colStockInOutDate.AppearanceHeader.Options.UseFont = true;
+            this.colStockInOutDate.AppearanceHeader.Options.UseForeColor = true;
+            this.colStockInOutDate.AppearanceHeader.Options.UseTextOptions = true;
+            this.colStockInOutDate.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStockInOutDate.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colStockInOutDate.Caption = "Ngày tháng nhập xuất";
             this.colStockInOutDate.FieldName = "StockInOutDate";
             this.colStockInOutDate.Name = "colStockInOutDate";
@@ -128,6 +136,22 @@
             // 
             // colVocherNumber
             // 
+            this.colVocherNumber.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colVocherNumber.AppearanceCell.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colVocherNumber.AppearanceCell.Options.UseFont = true;
+            this.colVocherNumber.AppearanceCell.Options.UseForeColor = true;
+            this.colVocherNumber.AppearanceCell.Options.UseTextOptions = true;
+            this.colVocherNumber.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colVocherNumber.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colVocherNumber.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colVocherNumber.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colVocherNumber.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colVocherNumber.AppearanceHeader.Options.UseBackColor = true;
+            this.colVocherNumber.AppearanceHeader.Options.UseFont = true;
+            this.colVocherNumber.AppearanceHeader.Options.UseForeColor = true;
+            this.colVocherNumber.AppearanceHeader.Options.UseTextOptions = true;
+            this.colVocherNumber.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colVocherNumber.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colVocherNumber.Caption = "Số phiếu";
             this.colVocherNumber.FieldName = "VocherNumber";
             this.colVocherNumber.Name = "colVocherNumber";
@@ -137,6 +161,18 @@
             // 
             // colLoaiNhapXuatKhoText
             // 
+            this.colLoaiNhapXuatKhoText.AppearanceCell.Options.UseTextOptions = true;
+            this.colLoaiNhapXuatKhoText.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colLoaiNhapXuatKhoText.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Options.UseBackColor = true;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Options.UseFont = true;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Options.UseForeColor = true;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.Options.UseTextOptions = true;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colLoaiNhapXuatKhoText.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colLoaiNhapXuatKhoText.Caption = "Kiểu nhập xuất";
             this.colLoaiNhapXuatKhoText.FieldName = "LoaiNhapXuatKhoText";
             this.colLoaiNhapXuatKhoText.Name = "colLoaiNhapXuatKhoText";
@@ -146,6 +182,17 @@
             // 
             // colFileName
             // 
+            this.colFileName.AppearanceCell.Options.UseTextOptions = true;
+            this.colFileName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFileName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colFileName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colFileName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colFileName.AppearanceHeader.Options.UseBackColor = true;
+            this.colFileName.AppearanceHeader.Options.UseFont = true;
+            this.colFileName.AppearanceHeader.Options.UseForeColor = true;
+            this.colFileName.AppearanceHeader.Options.UseTextOptions = true;
+            this.colFileName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colFileName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colFileName.Caption = "Tên file";
             this.colFileName.FieldName = "FileName";
             this.colFileName.Name = "colFileName";
@@ -155,6 +202,18 @@
             // 
             // colFileSizeDisplay
             // 
+            this.colFileSizeDisplay.AppearanceCell.Options.UseTextOptions = true;
+            this.colFileSizeDisplay.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.colFileSizeDisplay.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFileSizeDisplay.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colFileSizeDisplay.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colFileSizeDisplay.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colFileSizeDisplay.AppearanceHeader.Options.UseBackColor = true;
+            this.colFileSizeDisplay.AppearanceHeader.Options.UseFont = true;
+            this.colFileSizeDisplay.AppearanceHeader.Options.UseForeColor = true;
+            this.colFileSizeDisplay.AppearanceHeader.Options.UseTextOptions = true;
+            this.colFileSizeDisplay.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colFileSizeDisplay.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colFileSizeDisplay.Caption = "Kích thước";
             this.colFileSizeDisplay.FieldName = "FileSizeDisplay";
             this.colFileSizeDisplay.Name = "colFileSizeDisplay";
@@ -359,6 +418,10 @@
             this.layoutControlItem1.Size = new System.Drawing.Size(1015, 423);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // stockInOutDocumentDtoBindingSource
+            // 
+            this.stockInOutDocumentDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.StockInOutDocumentDto);
+            // 
             // FrmStockInOutDocumentDtoLookup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -374,7 +437,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDocumentDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDocumentDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInOutDocumentDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1.CalendarTimeProperties)).EndInit();
@@ -384,6 +446,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDocumentDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -420,6 +483,7 @@
         private DevExpress.XtraGrid.Columns.GridColumn colFileName;
         private DevExpress.XtraGrid.Columns.GridColumn colFileSizeDisplay;
         private DevExpress.XtraGrid.Columns.GridColumn colGroupCaption;
+        
         private System.Windows.Forms.BindingSource stockInOutDocumentDtoBindingSource;
     }
 }

@@ -301,6 +301,26 @@ namespace VnsErp2025.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap pivot_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("pivot_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap pivot_32x32 {
+            get {
+                object obj = ResourceManager.GetObject("pivot_32x32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type DevExpress.Utils.Svg.SvgImage.
         /// </summary>
         internal static DevExpress.Utils.Svg.SvgImage product_image {
@@ -317,6 +337,16 @@ namespace VnsErp2025.Properties {
             get {
                 object obj = ResourceManager.GetObject("product-management", resourceCulture);
                 return ((DevExpress.Utils.Svg.SvgImage)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap productsalesreport_16x16 {
+            get {
+                object obj = ResourceManager.GetObject("productsalesreport_16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
