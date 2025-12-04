@@ -81,8 +81,6 @@
     <Compile Include="Common\ImageStorage\ImageStorageResult.cs" />
     <Compile Include="Common\ImageStorage\LocalImageStorageService.cs" />
     <Compile Include="Common\ImageStorage\NASImageStorageService.cs" />
-    <Compile Include="Inventory\Assembly\AssemblyBll.cs" />
-    <Compile Include="Inventory\Assembly\ProductBOMBll.cs" />
     <Compile Include="Inventory\InventoryManagement\AssetBll.cs" />
     <Compile Include="Inventory\InventoryManagement\DeviceBll.cs" />
     <Compile Include="Inventory\InventoryManagement\InventoryBalanceBll.cs" />

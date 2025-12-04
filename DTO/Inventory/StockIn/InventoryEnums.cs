@@ -44,6 +44,12 @@ namespace DTO.Inventory.StockIn
         NhapSanPhamLapRap = 6,
 
         /// <summary>
+        /// Nhập linh kiện phân rã (từ thành phẩm phân rã ra)
+        /// </summary>
+        [Description("Nhập linh kiện phân rã")]
+        NhapLinhKienPhanRa = 7,
+
+        /// <summary>
         /// Xuất hàng thương mại
         /// </summary>
         [Description("Xuất hàng thương mại")]
@@ -78,6 +84,12 @@ namespace DTO.Inventory.StockIn
         /// </summary>
         [Description("Xuất linh kiện lắp ráp")]
         XuatLinhKienLapRap = 16,
+
+        /// <summary>
+        /// Xuất thành phẩm phân rã (để phân rã ra linh kiện)
+        /// </summary>
+        [Description("Xuất thành phẩm phân rã")]
+        XuatThanhPhamPhanRa = 17,
 
         /// <summary>
         /// Khác

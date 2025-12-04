@@ -1,22 +1,20 @@
 ﻿using Dal.Connection;
-using Dal.DataAccess.Interfaces;
-using Dal.DataContext;
-using Logger;
-using Logger.Configuration;
-using System;
-using System.Data;
-using Dal.DataAccess.Implementations.Inventory.Assembly;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
-using Dal.DataAccess.Interfaces.Inventory.Assembly;
+using Dal.DataAccess.Interfaces;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
+using Dal.DataContext;
+using Logger;
+using Logger.Configuration;
+using System;
+using System.Data;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations
@@ -492,27 +490,7 @@ namespace Dal.DataAccess.Implementations
 
         #endregion
 
-        #region Assembly
-
-        public IProductBOMRepository GetProductBOMRepository()
-        {
-            // Sử dụng global connection string từ ApplicationStartupManager
-            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
-            return string.IsNullOrEmpty(globalConnectionString)
-                ? throw new InvalidOperationException("Global connection string is not configured.")
-                : new ProductBOMRepository(globalConnectionString);
-        }
-
-        public IAssemblyTransactionRepository GetAssemblyTransactionRepository()
-        {
-            // Sử dụng global connection string từ ApplicationStartupManager
-            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
-            return string.IsNullOrEmpty(globalConnectionString)
-                ? throw new InvalidOperationException("Global connection string is not configured.")
-                : new AssemblyTransactionRepository(globalConnectionString);
-        }
-
-        #endregion
+        
         #endregion
         #endregion
     }

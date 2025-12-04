@@ -1,11 +1,10 @@
-﻿using Dal.DataContext;
-using System;
-using Dal.DataAccess.Interfaces.Inventory.Assembly;
-using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
+﻿using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
+using Dal.DataContext;
+using System;
 
 namespace Dal.DataAccess.Interfaces;
 
@@ -181,14 +180,6 @@ public interface IUnitOfWork : IDisposable
     IInventoryBalanceRepository GetInventoryBalanceRepository();
 
     IAssetRepository GetAssetRepository();
-
-    #endregion
-
-    #region Assembly
-
-    IProductBOMRepository GetProductBOMRepository();
-
-    IAssemblyTransactionRepository GetAssemblyTransactionRepository();
 
     #endregion
 
