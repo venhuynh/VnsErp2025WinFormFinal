@@ -248,6 +248,8 @@
             // 
             // colStockInQty
             // 
+            this.colStockInQty.AppearanceCell.ForeColor = System.Drawing.Color.Green;
+            this.colStockInQty.AppearanceCell.Options.UseForeColor = true;
             this.colStockInQty.AppearanceCell.Options.UseTextOptions = true;
             this.colStockInQty.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colStockInQty.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
@@ -275,6 +277,8 @@
             // 
             // colStockOutQty
             // 
+            this.colStockOutQty.AppearanceCell.ForeColor = System.Drawing.Color.Red;
+            this.colStockOutQty.AppearanceCell.Options.UseForeColor = true;
             this.colStockOutQty.AppearanceCell.Options.UseTextOptions = true;
             this.colStockOutQty.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colStockOutQty.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;

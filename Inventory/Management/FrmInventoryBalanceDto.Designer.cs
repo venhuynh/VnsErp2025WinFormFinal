@@ -131,6 +131,10 @@
             this.InventoryBalanceDtoBandedGridView.Appearance.BandPanel.Options.UseBackColor = true;
             this.InventoryBalanceDtoBandedGridView.Appearance.BandPanel.Options.UseFont = true;
             this.InventoryBalanceDtoBandedGridView.Appearance.BandPanel.Options.UseForeColor = true;
+            this.InventoryBalanceDtoBandedGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.InventoryBalanceDtoBandedGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.InventoryBalanceDtoBandedGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.InventoryBalanceDtoBandedGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.InventoryBalanceDtoBandedGridView.Bands.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.GridBand[] {
             this.gridBand1,
             this.gridBand2,
@@ -450,6 +454,8 @@
             // 
             // colTotalInQty
             // 
+            this.colTotalInQty.AppearanceCell.ForeColor = System.Drawing.Color.Green;
+            this.colTotalInQty.AppearanceCell.Options.UseForeColor = true;
             this.colTotalInQty.AppearanceCell.Options.UseTextOptions = true;
             this.colTotalInQty.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colTotalInQty.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
@@ -472,6 +478,8 @@
             // 
             // colTotalOutQty
             // 
+            this.colTotalOutQty.AppearanceCell.ForeColor = System.Drawing.Color.Red;
+            this.colTotalOutQty.AppearanceCell.Options.UseForeColor = true;
             this.colTotalOutQty.AppearanceCell.Options.UseTextOptions = true;
             this.colTotalOutQty.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colTotalOutQty.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
@@ -561,6 +569,8 @@
             // 
             // colTotalInValue
             // 
+            this.colTotalInValue.AppearanceCell.ForeColor = System.Drawing.Color.Green;
+            this.colTotalInValue.AppearanceCell.Options.UseForeColor = true;
             this.colTotalInValue.AppearanceCell.Options.UseTextOptions = true;
             this.colTotalInValue.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colTotalInValue.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
@@ -583,6 +593,8 @@
             // 
             // colTotalOutValue
             // 
+            this.colTotalOutValue.AppearanceCell.ForeColor = System.Drawing.Color.Red;
+            this.colTotalOutValue.AppearanceCell.Options.UseForeColor = true;
             this.colTotalOutValue.AppearanceCell.Options.UseTextOptions = true;
             this.colTotalOutValue.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colTotalOutValue.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
@@ -605,6 +617,8 @@
             // 
             // colTotalInAmountIncludedVat
             // 
+            this.colTotalInAmountIncludedVat.AppearanceCell.ForeColor = System.Drawing.Color.Green;
+            this.colTotalInAmountIncludedVat.AppearanceCell.Options.UseForeColor = true;
             this.colTotalInAmountIncludedVat.AppearanceCell.Options.UseTextOptions = true;
             this.colTotalInAmountIncludedVat.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colTotalInAmountIncludedVat.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
@@ -627,6 +641,8 @@
             // 
             // colTotalInVatAmount
             // 
+            this.colTotalInVatAmount.AppearanceCell.ForeColor = System.Drawing.Color.Green;
+            this.colTotalInVatAmount.AppearanceCell.Options.UseForeColor = true;
             this.colTotalInVatAmount.AppearanceCell.Options.UseTextOptions = true;
             this.colTotalInVatAmount.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colTotalInVatAmount.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
@@ -649,6 +665,8 @@
             // 
             // colTotalOutAmountIncludedVat
             // 
+            this.colTotalOutAmountIncludedVat.AppearanceCell.ForeColor = System.Drawing.Color.Red;
+            this.colTotalOutAmountIncludedVat.AppearanceCell.Options.UseForeColor = true;
             this.colTotalOutAmountIncludedVat.AppearanceCell.Options.UseTextOptions = true;
             this.colTotalOutAmountIncludedVat.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colTotalOutAmountIncludedVat.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
@@ -671,6 +689,8 @@
             // 
             // colTotalOutVatAmount
             // 
+            this.colTotalOutVatAmount.AppearanceCell.ForeColor = System.Drawing.Color.Red;
+            this.colTotalOutVatAmount.AppearanceCell.Options.UseForeColor = true;
             this.colTotalOutVatAmount.AppearanceCell.Options.UseTextOptions = true;
             this.colTotalOutVatAmount.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.colTotalOutVatAmount.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
