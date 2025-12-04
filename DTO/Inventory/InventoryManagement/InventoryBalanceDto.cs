@@ -127,6 +127,160 @@ public class InventoryBalanceDto
         }
     }
 
+    /// <summary>
+    /// Thông tin kỳ dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// </summary>
+    [DisplayName("Kỳ HTML")]
+    [Display(Order = 11)]
+    [Description("Thông tin kỳ dưới dạng HTML")]
+    public string PeriodHtml
+    {
+        get
+        {
+            if (PeriodYear <= 0 || PeriodMonth <= 0)
+                return string.Empty;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            var html = $"<size=12><b><color='blue'>{PeriodYear}/{PeriodMonth:D2}</color></b></size>";
+            html += "<br>";
+            html += $"<size=9><color='#757575'>Tháng {PeriodMonth:D2}/{PeriodYear}</color></size>";
+            return html;
+        }
+    }
+
+    /// <summary>
+    /// Thông tin kho dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// </summary>
+    [DisplayName("Thông tin kho HTML")]
+    [Display(Order = 12)]
+    [Description("Thông tin kho dưới dạng HTML")]
+    public string WarehouseHtml
+    {
+        get
+        {
+            var warehouseName = WarehouseName ?? string.Empty;
+            var warehouseCode = WarehouseCode ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(warehouseName) && string.IsNullOrWhiteSpace(warehouseCode))
+                return string.Empty;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            var html = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(warehouseName))
+            {
+                html += $"<size=12><b><color='blue'>{warehouseName}</color></b></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(warehouseCode))
+            {
+                if (!string.IsNullOrWhiteSpace(warehouseName))
+                {
+                    html += $" <size=9><color='#757575'>({warehouseCode})</color></size>";
+                }
+                else
+                {
+                    html += $"<size=12><b><color='blue'>{warehouseCode}</color></b></size>";
+                }
+            }
+
+            return html;
+        }
+    }
+
+    /// <summary>
+    /// Thông tin sản phẩm dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// </summary>
+    [DisplayName("Thông tin sản phẩm HTML")]
+    [Display(Order = 13)]
+    [Description("Thông tin sản phẩm dưới dạng HTML")]
+    public string ProductHtml
+    {
+        get
+        {
+            var productName = ProductName ?? string.Empty;
+            var productCode = ProductCode ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(productName) && string.IsNullOrWhiteSpace(productCode))
+                return string.Empty;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
+            // - Mã sản phẩm: font nhỏ hơn, màu xám
+            var html = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(productName))
+            {
+                html += $"<size=12><b><color='blue'>{productName}</color></b></size>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(productCode))
+            {
+                if (!string.IsNullOrWhiteSpace(productName))
+                {
+                    html += $" <size=9><color='#757575'>({productCode})</color></size>";
+                }
+                else
+                {
+                    html += $"<size=12><b><color='blue'>{productCode}</color></b></size>";
+                }
+            }
+
+            return html;
+        }
+    }
+
+    /// <summary>
+    /// Trạng thái dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// </summary>
+    [DisplayName("Trạng thái HTML")]
+    [Display(Order = 14)]
+    [Description("Trạng thái dưới dạng HTML")]
+    public string StatusHtml
+    {
+        get
+        {
+            var statusText = StatusText;
+            var statusColor = Status switch
+            {
+                0 => "#757575", // Nháp - xám
+                1 => "#FF9800", // Đã khóa - cam
+                2 => "#2196F3", // Đã xác thực - xanh dương
+                3 => "#4CAF50", // Đã phê duyệt - xanh lá
+                4 => "#F44336", // Đã từ chối - đỏ
+                _ => "#757575"  // Mặc định - xám
+            };
+
+            if (string.IsNullOrWhiteSpace(statusText))
+                return string.Empty;
+
+            // Format chuyên nghiệp với màu sắc theo trạng thái
+            var html = $"<size=10><b><color='{statusColor}'>{statusText}</color></b></size>";
+
+            // Thêm icon/badge nếu cần
+            if (IsLocked)
+            {
+                html += " <size=9><color='#FF9800'>🔒</color></size>";
+            }
+
+            if (IsVerified)
+            {
+                html += " <size=9><color='#2196F3'>✓</color></size>";
+            }
+
+            if (IsApproved)
+            {
+                html += " <size=9><color='#4CAF50'>✓✓</color></size>";
+            }
+
+            return html;
+        }
+    }
+
     #endregion
 
     #region Properties - Thông tin tồn kho (số lượng)

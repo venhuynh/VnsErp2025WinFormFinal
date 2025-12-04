@@ -34,7 +34,12 @@
             this.InventoryBalanceDtoGridControl = new DevExpress.XtraGrid.GridControl();
             this.inventoryBalanceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.InventoryBalanceDtoBandedGridView = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridView();
+            this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.gridBand1 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
+            this.colPeriodHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colWarehouseHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colProductHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colStatusHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.colPeriodDisplay = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.colWarehouseName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.colProductName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
@@ -81,6 +86,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.InventoryBalanceDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.inventoryBalanceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.InventoryBalanceDtoBandedGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).BeginInit();
@@ -106,6 +112,8 @@
             this.InventoryBalanceDtoGridControl.MainView = this.InventoryBalanceDtoBandedGridView;
             this.InventoryBalanceDtoGridControl.MenuManager = this.barManager1;
             this.InventoryBalanceDtoGridControl.Name = "InventoryBalanceDtoGridControl";
+            this.InventoryBalanceDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.HtmlRepositoryItemHypertextLabel});
             this.InventoryBalanceDtoGridControl.Size = new System.Drawing.Size(1011, 419);
             this.InventoryBalanceDtoGridControl.TabIndex = 4;
             this.InventoryBalanceDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -128,6 +136,10 @@
             this.gridBand2,
             this.gridBand3});
             this.InventoryBalanceDtoBandedGridView.Columns.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn[] {
+            this.colPeriodHtml,
+            this.colWarehouseHtml,
+            this.colProductHtml,
+            this.colStatusHtml,
             this.colPeriodDisplay,
             this.colWarehouseName,
             this.colProductName,
@@ -167,6 +179,10 @@
             this.gridBand1.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.gridBand1.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.gridBand1.Caption = "Thông tin sản phẩm dịch vụ";
+            this.gridBand1.Columns.Add(this.colPeriodHtml);
+            this.gridBand1.Columns.Add(this.colWarehouseHtml);
+            this.gridBand1.Columns.Add(this.colProductHtml);
+            this.gridBand1.Columns.Add(this.colStatusHtml);
             this.gridBand1.Columns.Add(this.colPeriodDisplay);
             this.gridBand1.Columns.Add(this.colWarehouseName);
             this.gridBand1.Columns.Add(this.colProductName);
@@ -177,6 +193,104 @@
             this.gridBand1.Name = "gridBand1";
             this.gridBand1.VisibleIndex = 0;
             this.gridBand1.Width = 690;
+            // 
+            // colPeriodHtml
+            // 
+            this.colPeriodHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colPeriodHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colPeriodHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colPeriodHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colPeriodHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colPeriodHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colPeriodHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colPeriodHtml.AppearanceHeader.Options.UseFont = true;
+            this.colPeriodHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colPeriodHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colPeriodHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colPeriodHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colPeriodHtml.Caption = "Kỳ";
+            this.colPeriodHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colPeriodHtml.FieldName = "PeriodHtml";
+            this.colPeriodHtml.Name = "colPeriodHtml";
+            this.colPeriodHtml.OptionsColumn.AllowEdit = false;
+            this.colPeriodHtml.OptionsColumn.ReadOnly = true;
+            this.colPeriodHtml.Visible = true;
+            this.colPeriodHtml.Width = 100;
+            // 
+            // colWarehouseHtml
+            // 
+            this.colWarehouseHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarehouseHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarehouseHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colWarehouseHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarehouseHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarehouseHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarehouseHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarehouseHtml.AppearanceHeader.Options.UseFont = true;
+            this.colWarehouseHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarehouseHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarehouseHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarehouseHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarehouseHtml.Caption = "Kho";
+            this.colWarehouseHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colWarehouseHtml.FieldName = "WarehouseHtml";
+            this.colWarehouseHtml.Name = "colWarehouseHtml";
+            this.colWarehouseHtml.OptionsColumn.AllowEdit = false;
+            this.colWarehouseHtml.OptionsColumn.ReadOnly = true;
+            this.colWarehouseHtml.Visible = true;
+            this.colWarehouseHtml.Width = 150;
+            // 
+            // colProductHtml
+            // 
+            this.colProductHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colProductHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colProductHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colProductHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colProductHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colProductHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colProductHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colProductHtml.AppearanceHeader.Options.UseFont = true;
+            this.colProductHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colProductHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colProductHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colProductHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colProductHtml.Caption = "Sản phẩm";
+            this.colProductHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colProductHtml.FieldName = "ProductHtml";
+            this.colProductHtml.Name = "colProductHtml";
+            this.colProductHtml.OptionsColumn.AllowEdit = false;
+            this.colProductHtml.OptionsColumn.ReadOnly = true;
+            this.colProductHtml.Visible = true;
+            this.colProductHtml.Width = 250;
+            // 
+            // colStatusHtml
+            // 
+            this.colStatusHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colStatusHtml.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStatusHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStatusHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colStatusHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colStatusHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colStatusHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colStatusHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colStatusHtml.AppearanceHeader.Options.UseFont = true;
+            this.colStatusHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colStatusHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colStatusHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colStatusHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colStatusHtml.Caption = "Trạng thái";
+            this.colStatusHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colStatusHtml.FieldName = "StatusHtml";
+            this.colStatusHtml.Name = "colStatusHtml";
+            this.colStatusHtml.OptionsColumn.AllowEdit = false;
+            this.colStatusHtml.OptionsColumn.ReadOnly = true;
+            this.colStatusHtml.Visible = true;
+            this.colStatusHtml.Width = 120;
+            // 
+            // HtmlRepositoryItemHypertextLabel
+            // 
+            this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
             // 
             // colPeriodDisplay
             // 
@@ -195,7 +309,7 @@
             this.colPeriodDisplay.Caption = "Kỳ";
             this.colPeriodDisplay.FieldName = "PeriodDisplay";
             this.colPeriodDisplay.Name = "colPeriodDisplay";
-            this.colPeriodDisplay.Visible = true;
+            this.colPeriodDisplay.Visible = false;
             this.colPeriodDisplay.Width = 100;
             // 
             // colWarehouseName
@@ -214,7 +328,7 @@
             this.colWarehouseName.Caption = "Kho";
             this.colWarehouseName.FieldName = "WarehouseName";
             this.colWarehouseName.Name = "colWarehouseName";
-            this.colWarehouseName.Visible = true;
+            this.colWarehouseName.Visible = false;
             this.colWarehouseName.Width = 150;
             // 
             // colProductName
@@ -233,7 +347,7 @@
             this.colProductName.Caption = "Tên sản phẩm";
             this.colProductName.FieldName = "ProductName";
             this.colProductName.Name = "colProductName";
-            this.colProductName.Visible = true;
+            this.colProductName.Visible = false;
             this.colProductName.Width = 200;
             // 
             // colProductCode
@@ -257,7 +371,7 @@
             this.colProductCode.Caption = "Mã sản phẩm";
             this.colProductCode.FieldName = "ProductCode";
             this.colProductCode.Name = "colProductCode";
-            this.colProductCode.Visible = true;
+            this.colProductCode.Visible = false;
             this.colProductCode.Width = 120;
             // 
             // colStatusText
@@ -277,7 +391,7 @@
             this.colStatusText.Caption = "Trạng thái";
             this.colStatusText.FieldName = "StatusText";
             this.colStatusText.Name = "colStatusText";
-            this.colStatusText.Visible = true;
+            this.colStatusText.Visible = false;
             this.colStatusText.Width = 120;
             // 
             // colDisplayCaption
@@ -820,6 +934,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.InventoryBalanceDtoGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.inventoryBalanceDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.InventoryBalanceDtoBandedGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).EndInit();
@@ -854,7 +969,12 @@
         private System.Windows.Forms.BindingSource inventoryBalanceDtoBindingSource;
         private DevExpress.XtraBars.BarButtonItem ExportFileBarButtonItem;
         private DevExpress.XtraGrid.Views.BandedGrid.BandedGridView InventoryBalanceDtoBandedGridView;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlRepositoryItemHypertextLabel;
         private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand1;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colPeriodHtml;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colWarehouseHtml;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colProductHtml;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colStatusHtml;
         private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colPeriodDisplay;
         private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colWarehouseName;
         private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colProductName;
