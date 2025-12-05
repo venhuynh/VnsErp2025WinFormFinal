@@ -6,9 +6,9 @@ using Logger.Interfaces;
 using System;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 
-namespace Bll.MasterData.CompanyBll;
-
-internal class EmployeeBll
+namespace Bll.MasterData.CompanyBll
+{
+    internal class EmployeeBll
 {
     #region Fields
 
@@ -71,4 +71,5 @@ internal class EmployeeBll
     }
 
     #endregion
+}
 }

@@ -9,9 +9,9 @@ using System;
 using System.Collections.Generic;
 
 
-namespace Bll.Inventory.InventoryManagement;
-
-public class DeviceBll
+namespace Bll.Inventory.InventoryManagement
+{
+    public class DeviceBll
 {
     #region Fields
 
@@ -181,4 +181,5 @@ public class DeviceBll
     }
 
     #endregion
+}
 }

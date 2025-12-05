@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 using Bll.Common.ImageStorage;
 // ReSharper disable UnusedParameter.Local
 
-namespace Bll.Inventory.InventoryManagement;
-
-/// <summary>
-/// Business Logic Layer cho StockInOutDocument
-/// Sử dụng ImageStorageService để lưu trữ chứng từ trên NAS/Local thay vì database
-/// </summary>
-public class StockInOutDocumentBll
+namespace Bll.Inventory.InventoryManagement
+{
+    /// <summary>
+    /// Business Logic Layer cho StockInOutDocument
+    /// Sử dụng ImageStorageService để lưu trữ chứng từ trên NAS/Local thay vì database
+    /// </summary>
+    public class StockInOutDocumentBll
 {
     #region Fields
 
@@ -614,4 +614,5 @@ public class StockInOutDocumentBll
     }
 
     #endregion
+}
 }

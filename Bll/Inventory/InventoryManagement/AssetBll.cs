@@ -8,13 +8,13 @@ using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace Bll.Inventory.InventoryManagement;
-
-/// <summary>
-/// Business Logic Layer cho Asset
-/// Quản lý tài sản, bao gồm tính toán khấu hao và giá trị hiện tại
-/// </summary>
-public class AssetBll
+namespace Bll.Inventory.InventoryManagement
+{
+    /// <summary>
+    /// Business Logic Layer cho Asset
+    /// Quản lý tài sản, bao gồm tính toán khấu hao và giá trị hiện tại
+    /// </summary>
+    public class AssetBll
 {
     #region Fields
 
@@ -436,4 +436,4 @@ public class AssetBll
 
     #endregion
 }
-
+}

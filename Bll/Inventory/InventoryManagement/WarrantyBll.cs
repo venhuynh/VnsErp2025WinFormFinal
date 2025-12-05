@@ -8,9 +8,9 @@ using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace Bll.Inventory.InventoryManagement;
-
-public class WarrantyBll
+namespace Bll.Inventory.InventoryManagement
+{
+    public class WarrantyBll
 {
     #region Fields
 
@@ -177,4 +177,5 @@ public class WarrantyBll
     }
 
     #endregion
+}
 }

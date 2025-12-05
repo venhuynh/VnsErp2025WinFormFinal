@@ -12,12 +12,12 @@ using System.Collections.Generic;
 using System.Linq;
 using DTO.Inventory.InventoryManagement;
 
-namespace Bll.Inventory.InventoryManagement;
-
-/// <summary>
-/// Business Logic Layer cho StockInOutMaster (Phiếu nhập xuất kho)
-/// </summary>
-public class StockInOutMasterBll
+namespace Bll.Inventory.InventoryManagement
+{
+    /// <summary>
+    /// Business Logic Layer cho StockInOutMaster (Phiếu nhập xuất kho)
+    /// </summary>
+    public class StockInOutMasterBll
 {
     #region Fields
 
@@ -267,4 +267,5 @@ public class StockInOutMasterBll
     }
 
     #endregion
+}
 }
