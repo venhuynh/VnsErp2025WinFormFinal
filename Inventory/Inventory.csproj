@@ -516,6 +516,9 @@
     <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.resx">
       <DependentUpon>UcXuatLapRapDetailDto.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapMasterDto.resx">
+      <DependentUpon>UcXuatLapRapMasterDto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.resx">
       <DependentUpon>FrmXuatLuuChuyenKho.cs</DependentUpon>
     </EmbeddedResource>

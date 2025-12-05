@@ -61,7 +61,12 @@ namespace Inventory.StockOut.XuatLapRap
         public UcXuatLapRapDetailDto()
         {
             InitializeComponent();
-            InitializeControl();
+            
+            // Chỉ khởi tạo control khi không ở design mode
+            if (!DesignMode)
+            {
+                InitializeControl();
+            }
         }
 
         #endregion
@@ -75,6 +80,9 @@ namespace Inventory.StockOut.XuatLapRap
         {
             try
             {
+                // Không chạy trong design mode để tránh lỗi load type
+                if (DesignMode) return;
+
                 // GridView đã được khai báo trong Designer, property public sẽ expose nó
 
                 // Khởi tạo binding source với danh sách rỗng
@@ -87,7 +95,11 @@ namespace Inventory.StockOut.XuatLapRap
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi khởi tạo control");
+                // Trong design mode, không hiển thị lỗi
+                if (!DesignMode)
+                {
+                    ShowError(ex, "Lỗi khởi tạo control");
+                }
             }
         }
 

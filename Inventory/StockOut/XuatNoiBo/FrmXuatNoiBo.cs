@@ -2,24 +2,19 @@
 using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
-using DevExpress.XtraEditors;
 using DevExpress.XtraReports.UI;
 using DTO.Inventory.StockOut.XuatNoiBo;
+using Inventory.OverlayForm;
 using Inventory.StockIn.InPhieu;
 using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Inventory.OverlayForm;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Inventory.StockOut.XuatNoiBo;
 

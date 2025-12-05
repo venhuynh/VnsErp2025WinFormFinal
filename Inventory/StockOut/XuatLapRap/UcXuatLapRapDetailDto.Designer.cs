@@ -325,7 +325,8 @@
             // 
             // xuatLapRapDetailDtoBindingSource
             // 
-            this.xuatLapRapDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockOut.XuatLapRap.XuatLapRapDetailDto);
+            // DataSource sẽ được set trong InitializeControl() để tránh lỗi load type trong design mode
+            // this.xuatLapRapDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockOut.XuatLapRap.XuatLapRapDetailDto);
             // 
             // UcXuatLapRapDetailDto
             // 
