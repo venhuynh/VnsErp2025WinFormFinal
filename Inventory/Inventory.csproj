@@ -498,6 +498,9 @@
     <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetailDto.resx">
       <DependentUpon>UcXuatHangThuongMaiDetailDto.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.resx">
+      <DependentUpon>UcXuatLapRapDetailDto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.resx">
       <DependentUpon>FrmXuatLuuChuyenKho.cs</DependentUpon>
     </EmbeddedResource>
@@ -542,6 +545,10 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhMasterDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLapRap.XuatLapRapConverter.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLapRap.XuatLapRapDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLapRap.XuatLapRapMasterDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLapRap.XuatLapRapMasterListDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatLuuChuyenKho.XuatLuuChuyenKhoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatNoiBo.XuatNoiBoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonDetailDto.datasource" />
