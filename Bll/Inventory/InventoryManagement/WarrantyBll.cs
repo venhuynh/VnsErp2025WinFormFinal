@@ -7,6 +7,7 @@ using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bll.Inventory.InventoryManagement
 {
@@ -118,6 +119,58 @@ namespace Bll.Inventory.InventoryManagement
         catch (Exception ex)
         {
             _logger.Error($"Query: Lỗi query danh sách bảo hành: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Tìm Warranty theo UniqueProductInfo (mã BarCode)
+    /// </summary>
+    /// <param name="uniqueProductInfo">Mã BarCode hoặc UniqueProductInfo cần tìm</param>
+    /// <returns>Warranty entity nếu tìm thấy, null nếu không tìm thấy</returns>
+    public Warranty FindByUniqueProductInfo(string uniqueProductInfo)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(uniqueProductInfo))
+            {
+                _logger.Warning("FindByUniqueProductInfo: UniqueProductInfo is null or empty");
+                return null;
+            }
+
+            _logger.Debug("FindByUniqueProductInfo: Tìm bảo hành theo UniqueProductInfo, UniqueProductInfo={0}", uniqueProductInfo);
+
+            // Sử dụng DataContext trực tiếp để tìm kiếm
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            if (string.IsNullOrEmpty(globalConnectionString))
+            {
+                throw new InvalidOperationException(
+                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+            }
+
+            using var context = new VnsErp2025DataContext(globalConnectionString);
+            var trimmedInfo = uniqueProductInfo.Trim();
+
+            // Tìm Warranty theo UniqueProductInfo
+            var warranty = context.Warranties.FirstOrDefault(w =>
+                w.UniqueProductInfo != null && 
+                w.UniqueProductInfo.Trim().Equals(trimmedInfo, StringComparison.OrdinalIgnoreCase)
+            );
+
+            if (warranty == null)
+            {
+                _logger.Warning("FindByUniqueProductInfo: Không tìm thấy bảo hành với UniqueProductInfo, UniqueProductInfo={0}", uniqueProductInfo);
+            }
+            else
+            {
+                _logger.Info("FindByUniqueProductInfo: Tìm thấy bảo hành, WarrantyId={0}, UniqueProductInfo={1}", warranty.Id, uniqueProductInfo);
+            }
+
+            return warranty;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"FindByUniqueProductInfo: Lỗi tìm bảo hành theo UniqueProductInfo: {ex.Message}", ex);
             throw;
         }
     }

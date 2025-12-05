@@ -1,4 +1,5 @@
-﻿using Bll.Inventory.StockIn;
+﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
@@ -13,7 +14,6 @@ using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,6 +28,16 @@ namespace Inventory.StockOut.XuatLapRap
         /// Business Logic Layer cho biến thể sản phẩm
         /// </summary>
         private readonly ProductVariantBll _productVariantBll = new();
+
+        /// <summary>
+        /// Business Logic Layer cho Device
+        /// </summary>
+        private readonly DeviceBll _deviceBll = new();
+
+        /// <summary>
+        /// Business Logic Layer cho Warranty
+        /// </summary>
+        private readonly WarrantyBll _warrantyBll = new();
 
         /// <summary>
         /// Logger để ghi log các sự kiện
@@ -91,6 +101,9 @@ namespace Inventory.StockOut.XuatLapRap
                 // Setup events
                 InitializeEvents();
 
+                // Setup BarCode scanning events
+                SetupBarCodeEvents();
+
                 // Không load dữ liệu ProductVariant ở đây, sẽ được gọi từ form khi FormLoad
             }
             catch (Exception ex)
@@ -127,6 +140,26 @@ namespace Inventory.StockOut.XuatLapRap
 
             // Event Popup cho ProductVariantSearchLookUpEdit (RepositoryItem)
             ProductVariantSearchLookUpEdit.Popup += ProductVariantSearchLookUpEdit_Popup;
+        }
+
+        /// <summary>
+        /// Setup các event handlers cho BarCode scanning
+        /// </summary>
+        private void SetupBarCodeEvents()
+        {
+            try
+            {
+                // Event KeyDown cho BarCodeTextEdit (Enter để thêm vào grid)
+                BarCodeTextEdit.KeyDown += BarCodeTextEdit_KeyDown;
+
+                // Event Click cho AddBarCodeHyperlinkLabelControl
+                AddBarCodeHyperlinkLabelControl.Click += AddBarCodeHyperlinkLabelControl_Click;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SetupBarCodeEvents: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi setup BarCode events: {ex.Message}");
+            }
         }
 
         #endregion
@@ -1028,8 +1061,6 @@ namespace Inventory.StockOut.XuatLapRap
                 if (_isCalculating) return;
                 _isCalculating = true;
 
-                var details = xuatLapRapDetailDtoBindingSource.Cast<XuatLapRapDetailDto>().ToList();
-
                 XuatLapRapDetailDtoGridView.RefreshData();
 
                 // Cập nhật tổng tiền lên master
@@ -1149,6 +1180,275 @@ namespace Inventory.StockOut.XuatLapRap
             }
 
             e.Valid = true;
+        }
+
+        #endregion
+
+        #region ========== BARCODE SCANNING ==========
+
+        /// <summary>
+        /// Event handler khi nhấn phím trong BarCodeTextEdit
+        /// </summary>
+        private void BarCodeTextEdit_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                // Khi nhấn Enter, thêm vào grid
+                if (e.KeyCode == Keys.Enter)
+                {
+                    e.Handled = true;
+                    e.SuppressKeyPress = true; // Ngăn tiếng beep
+                    ProcessBarCodeAndAddToGrid();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("BarCodeTextEdit_KeyDown: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi xử lý mã vạch: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi click vào nút "Thêm vào"
+        /// </summary>
+        private void AddBarCodeHyperlinkLabelControl_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ProcessBarCodeAndAddToGrid();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("AddBarCodeHyperlinkLabelControl_Click: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi thêm mã vạch: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý mã BarCode và thêm vào grid
+        /// Tìm trong bảng Device hoặc Warranty để lấy thông tin linh kiện
+        /// </summary>
+        private void ProcessBarCodeAndAddToGrid()
+        {
+            try
+            {
+                // Lấy mã BarCode từ BarCodeTextEdit
+                var barCode = BarCodeTextEdit.Text?.Trim();
+                if (string.IsNullOrWhiteSpace(barCode))
+                {
+                    MsgBox.ShowWarning("Vui lòng nhập mã vạch");
+                    BarCodeTextEdit.Focus();
+                    return;
+                }
+
+                _logger.Debug("ProcessBarCodeAndAddToGrid: Bắt đầu xử lý mã vạch, BarCode={0}", barCode);
+
+                // Ghi log vào LogTextBox
+                AppendLog($"Đang tìm kiếm mã vạch: {barCode}");
+
+                // Bước 1: Tìm trong bảng Device trước
+                var device = _deviceBll.FindByBarCode(barCode);
+                if (device != null)
+                {
+                    _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Device, DeviceId={0}, ProductVariantId={1}", 
+                        device.Id, device.ProductVariantId);
+                    AppendLog($"✓ Tìm thấy thiết bị: {device.ProductVariant?.ProductService?.Name ?? "N/A"}");
+
+                    // Thêm vào grid với ProductVariantId từ Device
+                    AddDetailFromDeviceOrWarranty(device.ProductVariantId, device);
+
+                    // Clear BarCode text
+                    BarCodeTextEdit.Text = string.Empty;
+                    BarCodeTextEdit.Focus();
+                    return;
+                }
+
+                // Bước 2: Nếu không tìm thấy trong Device, tìm trong Warranty
+                var warranty = _warrantyBll.FindByUniqueProductInfo(barCode);
+                if (warranty != null)
+                {
+                    _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Warranty, WarrantyId={0}, StockInOutDetailId={1}", 
+                        warranty.Id, warranty.StockInOutDetailId);
+                    
+                    // Lấy ProductVariantId từ StockInOutDetail của Warranty
+                    if (warranty.StockInOutDetail?.ProductVariantId != null)
+                    {
+                        var productVariantId = warranty.StockInOutDetail.ProductVariantId;
+                        AppendLog($"✓ Tìm thấy bảo hành: {warranty.StockInOutDetail.ProductVariant?.ProductService?.Name ?? "N/A"}");
+
+                        // Thêm vào grid với ProductVariantId từ Warranty
+                        AddDetailFromDeviceOrWarranty(productVariantId, null, warranty);
+
+                        // Clear BarCode text
+                        BarCodeTextEdit.Text = string.Empty;
+                        BarCodeTextEdit.Focus();
+                        return;
+                    }
+                    else
+                    {
+                        AppendLog("⚠ Bảo hành không có thông tin sản phẩm");
+                        MsgBox.ShowWarning("Bảo hành không có thông tin sản phẩm. Vui lòng kiểm tra lại.");
+                        return;
+                    }
+                }
+
+                // Không tìm thấy trong cả Device và Warranty
+                _logger.Warning("ProcessBarCodeAndAddToGrid: Không tìm thấy thiết bị hoặc bảo hành với mã vạch, BarCode={0}", barCode);
+                AppendLog($"✗ Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
+                MsgBox.ShowWarning($"Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ProcessBarCodeAndAddToGrid: Exception occurred", ex);
+                AppendLog($"✗ Lỗi: {ex.Message}");
+                MsgBox.ShowError($"Lỗi xử lý mã vạch: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Thêm dòng chi tiết vào grid từ Device hoặc Warranty
+        /// </summary>
+        /// <param name="productVariantId">ID biến thể sản phẩm</param>
+        /// <param name="device">Device entity (nếu có)</param>
+        /// <param name="warranty">Warranty entity (nếu có)</param>
+        private void AddDetailFromDeviceOrWarranty(Guid productVariantId, Device device = null, Warranty warranty = null)
+        {
+            try
+            {
+                if (productVariantId == Guid.Empty)
+                {
+                    _logger.Warning("AddDetailFromDeviceOrWarranty: ProductVariantId is Empty");
+                    MsgBox.ShowWarning("Không có thông tin sản phẩm");
+                    return;
+                }
+
+                // Kiểm tra xem ProductVariant đã có trong datasource chưa
+                var variant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+                    .FirstOrDefault(v => v.Id == productVariantId);
+
+                if (variant == null)
+                {
+                    // Nếu chưa có, cần load ProductVariant vào datasource
+                    _logger.Debug("AddDetailFromDeviceOrWarranty: ProductVariant chưa có trong datasource, cần load");
+                    
+                    // Load ProductVariant từ BLL
+                    var productVariantBll = new ProductVariantBll();
+                    var productVariantEntity = productVariantBll.GetById(productVariantId);
+                    
+                    if (productVariantEntity == null)
+                    {
+                        _logger.Warning("AddDetailFromDeviceOrWarranty: Không tìm thấy ProductVariant, ProductVariantId={0}", productVariantId);
+                        MsgBox.ShowWarning("Không tìm thấy thông tin sản phẩm");
+                        return;
+                    }
+
+                    // Convert sang ProductVariantListDto và thêm vào datasource
+                    variant = new ProductVariantListDto
+                    {
+                        Id = productVariantEntity.Id,
+                        ProductCode = productVariantEntity.ProductService?.Code ?? string.Empty,
+                        ProductName = productVariantEntity.ProductService?.Name ?? string.Empty,
+                        VariantCode = productVariantEntity.VariantCode ?? string.Empty,
+                        VariantFullName = productVariantEntity.VariantFullName ?? string.Empty,
+                        UnitName = productVariantEntity.UnitOfMeasure?.Name ?? string.Empty,
+                        IsActive = productVariantEntity.IsActive
+                    };
+
+                    // Thêm vào datasource nếu chưa có
+                    var existingList = productVariantListDtoBindingSource.DataSource as List<ProductVariantListDto> ?? new List<ProductVariantListDto>();
+                    if (existingList.All(v => v.Id != productVariantId))
+                    {
+                        existingList.Add(variant);
+                        productVariantListDtoBindingSource.DataSource = existingList;
+                        productVariantListDtoBindingSource.ResetBindings(false);
+                    }
+                }
+
+                // Tạo detail DTO mới
+                var detailDto = new XuatLapRapDetailDto
+                {
+                    Id = Guid.NewGuid(),
+                    StockInOutMasterId = _stockOutMasterId,
+                    ProductVariantId = productVariantId,
+                    ProductVariantCode = variant.VariantCode,
+                    ProductVariantName = $"{variant.ProductName} - {variant.VariantFullName}",
+                    UnitOfMeasureName = variant.UnitName,
+                    StockOutQty = 1, // Mặc định số lượng là 1
+                    LineNumber = xuatLapRapDetailDtoBindingSource.Count + 1
+                };
+
+                // Thêm ghi chú nếu có thông tin từ Device hoặc Warranty
+                var ghiChuParts = new List<string>();
+                if (device != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(device.SerialNumber))
+                        ghiChuParts.Add($"Serial: {device.SerialNumber}");
+                    if (!string.IsNullOrWhiteSpace(device.IMEI))
+                        ghiChuParts.Add($"IMEI: {device.IMEI}");
+                    if (!string.IsNullOrWhiteSpace(device.MACAddress))
+                        ghiChuParts.Add($"MAC: {device.MACAddress}");
+                }
+                if (warranty != null && !string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+                {
+                    ghiChuParts.Add($"Bảo hành: {warranty.UniqueProductInfo}");
+                }
+                
+                if (ghiChuParts.Any())
+                {
+                    detailDto.GhiChu = string.Join(", ", ghiChuParts);
+                }
+
+                // Thêm vào binding source
+                var details = xuatLapRapDetailDtoBindingSource.DataSource as List<XuatLapRapDetailDto> ?? new List<XuatLapRapDetailDto>();
+                details.Add(detailDto);
+                xuatLapRapDetailDtoBindingSource.DataSource = details;
+                xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+
+                // Cập nhật LineNumber cho tất cả các dòng
+                for (int i = 0; i < details.Count; i++)
+                {
+                    details[i].LineNumber = i + 1;
+                }
+
+                // Refresh grid
+                XuatLapRapDetailDtoGridView.RefreshData();
+
+                // Trigger event để cập nhật tổng lên master
+                OnDetailDataChanged();
+
+                _logger.Info("AddDetailFromDeviceOrWarranty: Đã thêm dòng chi tiết, ProductVariantId={0}", productVariantId);
+                AppendLog($"✓ Đã thêm vào danh sách: {detailDto.ProductVariantName}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("AddDetailFromDeviceOrWarranty: Exception occurred", ex);
+                AppendLog($"✗ Lỗi thêm vào danh sách: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Thêm log vào LogTextBox
+        /// </summary>
+        private void AppendLog(string message)
+        {
+            try
+            {
+                if (LogTextBox == null) return;
+
+                var timestamp = DateTime.Now.ToString("HH:mm:ss");
+                var logMessage = $"[{timestamp}] {message}\r\n";
+                
+                LogTextBox.AppendText(logMessage);
+                
+                // Auto scroll to bottom
+                LogTextBox.SelectionStart = LogTextBox.Text.Length;
+                LogTextBox.ScrollToCaret();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("AppendLog: Exception occurred", ex);
+            }
         }
 
         #endregion
