@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using Common.Helpers;
+using DTO.Inventory.InventoryManagement;
 
 namespace DTO.Inventory.StockIn.NhapHangThuongMai;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn;
 
 namespace DTO.Inventory.StockOut.XuatLuuChuyenKho;

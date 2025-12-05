@@ -13,6 +13,7 @@ using Common.Utils;
 using Dal.DataContext;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
+using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn;
 using DTO.Inventory.StockIn.NhapBaoHanh;
 using DTO.Inventory.StockIn.NhapHangThuongMai;

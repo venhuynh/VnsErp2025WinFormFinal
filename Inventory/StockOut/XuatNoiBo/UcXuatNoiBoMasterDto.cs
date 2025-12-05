@@ -16,6 +16,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockOut.XuatNoiBo;
 

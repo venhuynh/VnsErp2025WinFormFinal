@@ -4,7 +4,6 @@ using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
-using DTO.Inventory.Query;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,6 +11,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DTO.Inventory.InventoryManagement;
+using StockInOutImageDto = DTO.Inventory.Query.StockInOutImageDto;
 
 namespace Inventory.Query
 {
@@ -659,10 +660,10 @@ namespace Inventory.Query
                         StockInOutDate = master?.StockInOutDate,
                         // Convert StockInOutType (int) sang LoaiNhapXuatKhoEnum
                         LoaiNhapXuatKho = master?.StockInOutType != null 
-                            ? (DTO.Inventory.StockIn.LoaiNhapXuatKhoEnum?)master.StockInOutType 
+                            ? (LoaiNhapXuatKhoEnum?)master.StockInOutType 
                             : null,
                         LoaiNhapXuatKhoText = master?.StockInOutType != null 
-                            ? GetLoaiNhapXuatKhoText((DTO.Inventory.StockIn.LoaiNhapXuatKhoEnum)master.StockInOutType) 
+                            ? GetLoaiNhapXuatKhoText((LoaiNhapXuatKhoEnum)master.StockInOutType) 
                             : null,
                         CustomerInfo = GetCustomerInfo(master),
                         // Số thứ tự hình ảnh trong phiếu (bắt đầu từ 1)
@@ -679,7 +680,7 @@ namespace Inventory.Query
         /// <summary>
         /// Lấy text hiển thị cho LoaiNhapXuatKhoEnum
         /// </summary>
-        private string GetLoaiNhapXuatKhoText(DTO.Inventory.StockIn.LoaiNhapXuatKhoEnum loai)
+        private string GetLoaiNhapXuatKhoText(LoaiNhapXuatKhoEnum loai)
         {
             var fieldInfo = loai.GetType().GetField(loai.ToString());
             if (fieldInfo != null)

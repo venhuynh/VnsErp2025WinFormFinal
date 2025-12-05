@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DTO.Inventory.InventoryManagement;
 
 namespace DTO.Inventory.StockOut.XuatHangThuongMai;
 
