@@ -19,16 +19,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraEditors.DXErrorProvider;
 
-namespace Inventory.StockOut.XuatLapRap;
-
-public partial class UcXuatLapRapMasterDto : DevExpress.XtraEditors.XtraUserControl
+namespace Inventory.StockOut.XuatLapRap
 {
-    #region ========== KHAI BÁO BIẾN ==========
+    public partial class UcXuatLapRapMasterDto : DevExpress.XtraEditors.XtraUserControl
+    {
+        #region ========== KHAI BÁO BIẾN ==========
 
 
-    /// <summary>
-    /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
-    /// </summary>
+        /// <summary>
+        /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
+        /// </summary>
     private readonly CompanyBranchBll _companyBranchBll = new();
 
 
@@ -75,6 +75,9 @@ public partial class UcXuatLapRapMasterDto : DevExpress.XtraEditors.XtraUserCont
     {
         try
         {
+            // Không chạy trong design mode để tránh lỗi load type
+            if (DesignMode) return;
+
             // Khởi tạo Entity
             InitializeEntity();
 
@@ -95,7 +98,11 @@ public partial class UcXuatLapRapMasterDto : DevExpress.XtraEditors.XtraUserCont
         }
         catch (Exception ex)
         {
-            ShowError(ex, "Lỗi khởi tạo control");
+            // Trong design mode, không hiển thị lỗi
+            if (!DesignMode)
+            {
+                ShowError(ex, "Lỗi khởi tạo control");
+            }
         }
     }
 
@@ -159,6 +166,9 @@ public partial class UcXuatLapRapMasterDto : DevExpress.XtraEditors.XtraUserCont
     {
         try
         {
+            // Không chạy trong design mode để tránh lỗi load type
+            if (DesignMode) return;
+
             RequiredFieldHelper.MarkRequiredFields(
                 this,
                 typeof(XuatLapRapMasterDto),
@@ -177,7 +187,11 @@ public partial class UcXuatLapRapMasterDto : DevExpress.XtraEditors.XtraUserCont
         }
         catch (Exception ex)
         {
-            ShowError(ex, "Lỗi đánh dấu trường bắt buộc");
+            // Trong design mode, không hiển thị lỗi
+            if (!DesignMode)
+            {
+                ShowError(ex, "Lỗi đánh dấu trường bắt buộc");
+            }
         }
     }
 
@@ -940,4 +954,5 @@ public partial class UcXuatLapRapMasterDto : DevExpress.XtraEditors.XtraUserCont
     }
 
     #endregion
+}
 }
