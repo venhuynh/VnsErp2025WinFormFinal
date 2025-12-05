@@ -75,6 +75,8 @@
     <Compile Include="Inventory\StockOut\XuatBaoHanh\XuatBaoHanhMasterDto.cs" />
     <Compile Include="Inventory\StockOut\XuatHangThuongMai\XuatHangThuongMaiDetailDto.cs" />
     <Compile Include="Inventory\StockOut\XuatHangThuongMai\XuatHangThuongMaiMasterDto.cs" />
+    <Compile Include="Inventory\StockOut\XuatLapRap\XuatLapRapDetailDto.cs" />
+    <Compile Include="Inventory\StockOut\XuatLapRap\XuatLapRapMasterDto.cs" />
     <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoDetailDto.cs" />
     <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoMasterDto.cs" />
     <Compile Include="Inventory\StockOut\XuatNoiBo\XuatNoiBoDetailDto.cs" />
