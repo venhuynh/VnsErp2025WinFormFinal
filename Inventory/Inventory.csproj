@@ -323,6 +323,12 @@
     <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMasterDto.Designer.cs">
       <DependentUpon>UcXuatHangThuongMaiMasterDto.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.Designer.cs">
+      <DependentUpon>UcXuatLapRapDetailDto.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.cs">
       <SubType>Form</SubType>
     </Compile>
