@@ -51,7 +51,6 @@
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.ucXuatLapRapMasterDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapMasterDto();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
@@ -64,7 +63,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).BeginInit();
             this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -278,24 +276,16 @@
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.layoutControlGroup1.GroupBordersVisible = false;
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem2,
             this.layoutControlItem1});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
             this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
             // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Location = new System.Drawing.Point(252, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(204, 719);
-            this.layoutControlItem2.TextVisible = false;
-            // 
             // ucXuatLapRapMasterDto1
             // 
             this.ucXuatLapRapMasterDto1.Location = new System.Drawing.Point(12, 12);
             this.ucXuatLapRapMasterDto1.Name = "ucXuatLapRapMasterDto1";
-            this.ucXuatLapRapMasterDto1.Size = new System.Drawing.Size(248, 715);
+            this.ucXuatLapRapMasterDto1.Size = new System.Drawing.Size(452, 715);
             this.ucXuatLapRapMasterDto1.TabIndex = 4;
             // 
             // layoutControlItem1
@@ -303,7 +293,7 @@
             this.layoutControlItem1.Control = this.ucXuatLapRapMasterDto1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(252, 719);
+            this.layoutControlItem1.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem1.TextVisible = false;
             // 
             // FrmXuatLapRap
@@ -329,7 +319,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).EndInit();
             this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -358,7 +347,6 @@
         private DevExpress.XtraBars.BarButtonItem XuatQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
         private UcXuatLapRapMasterDto ucXuatLapRapMasterDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
