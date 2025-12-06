@@ -161,6 +161,7 @@
     <None Include="Resources\productsalesreport_16x16.png" />
     <None Include="Resources\pivot_16x16.png" />
     <None Include="Resources\pivot_32x32.png" />
+    <None Include="Resources\dashboard.svg" />
     <Content Include="VNS Logo - Website.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

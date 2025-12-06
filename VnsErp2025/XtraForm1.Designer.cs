@@ -31,7 +31,6 @@ namespace VnsErp2025
         private void InitializeComponent()
         {
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapNoiBoDetail1 = new Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
@@ -42,7 +41,6 @@ namespace VnsErp2025
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.ucNhapNoiBoDetail1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
@@ -50,13 +48,6 @@ namespace VnsErp2025
             this.layoutControl1.Size = new System.Drawing.Size(885, 654);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
-            // 
-            // ucNhapNoiBoDetail1
-            // 
-            this.ucNhapNoiBoDetail1.Location = new System.Drawing.Point(12, 12);
-            this.ucNhapNoiBoDetail1.Name = "ucNhapNoiBoDetail1";
-            this.ucNhapNoiBoDetail1.Size = new System.Drawing.Size(861, 630);
-            this.ucNhapNoiBoDetail1.TabIndex = 4;
             // 
             // Root
             // 
@@ -67,10 +58,7 @@ namespace VnsErp2025
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(885, 654);
             this.Root.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.ucNhapNoiBoDetail1;
+           
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(865, 634);
@@ -95,7 +83,6 @@ namespace VnsErp2025
         #endregion
 
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
-        private Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail ucNhapNoiBoDetail1;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }

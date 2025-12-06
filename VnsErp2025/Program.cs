@@ -4,6 +4,7 @@ using Dal.Connection;
 using Inventory.Management;
 using Inventory.OverlayForm;
 using Inventory.Query;
+using Inventory.StockOut.XuatLapRap;
 using Inventory.StockOut.XuatNoiBo;
 using System;
 using System.Windows.Forms;
@@ -108,7 +109,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmAssetDtoManagement());
+            Application.Run(new FormMain());
 
             #endregion
 

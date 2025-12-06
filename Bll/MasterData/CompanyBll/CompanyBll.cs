@@ -6,12 +6,12 @@ using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 
-namespace Bll.MasterData.CompanyBll;
-
-/// <summary>
-/// Business Logic Layer cho Company
-/// </summary>
-public class CompanyBll
+namespace Bll.MasterData.CompanyBll
+{
+    /// <summary>
+    /// Business Logic Layer cho Company
+    /// </summary>
+    public class CompanyBll
 {
     #region Fields
 
@@ -134,4 +134,5 @@ public class CompanyBll
         }
     }
 
+}
 }

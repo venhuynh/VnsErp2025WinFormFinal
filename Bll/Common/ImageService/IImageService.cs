@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 
-namespace Bll.Common.ImageService;
-
-/// <summary>
-/// Interface cho Image Service với CDN và Cache support
-/// </summary>
-public interface IImageService
+namespace Bll.Common.ImageService
+{
+    /// <summary>
+    /// Interface cho Image Service với CDN và Cache support
+    /// </summary>
+    public interface IImageService
 {
     /// <summary>
     /// Lấy URL của hình ảnh (CDN hoặc local)
@@ -59,4 +59,5 @@ public enum ImageSize
     Medium = 600,       // 600x600
     Large = 1200,       // 1200x1200
     Original = 0        // Kích thước gốc
+}
 }

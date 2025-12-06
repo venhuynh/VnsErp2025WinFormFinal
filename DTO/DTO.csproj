@@ -68,13 +68,15 @@
     <Compile Include="Inventory\StockIn\NhapNoiBo\NhapNoiBoMasterDto.cs" />
     <Compile Include="Inventory\StockIn\NhapThietBiMuon\NhapThietBiMuonDetailDto.cs" />
     <Compile Include="Inventory\StockIn\NhapThietBiMuon\NhapThietBiMuonMasterDto.cs" />
-    <Compile Include="Inventory\StockIn\InventoryEnums.cs" />
+    <Compile Include="Inventory\InventoryManagement\InventoryEnums.cs" />
     <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInMasterDto.cs" />
     <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInReportDto.cs" />
     <Compile Include="Inventory\StockOut\XuatBaoHanh\XuatBaoHanhDetailDto.cs" />
     <Compile Include="Inventory\StockOut\XuatBaoHanh\XuatBaoHanhMasterDto.cs" />
     <Compile Include="Inventory\StockOut\XuatHangThuongMai\XuatHangThuongMaiDetailDto.cs" />
     <Compile Include="Inventory\StockOut\XuatHangThuongMai\XuatHangThuongMaiMasterDto.cs" />
+    <Compile Include="Inventory\StockOut\XuatLapRap\XuatLapRapDetailDto.cs" />
+    <Compile Include="Inventory\StockOut\XuatLapRap\XuatLapRapMasterDto.cs" />
     <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoDetailDto.cs" />
     <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoMasterDto.cs" />
     <Compile Include="Inventory\StockOut\XuatNoiBo\XuatNoiBoDetailDto.cs" />

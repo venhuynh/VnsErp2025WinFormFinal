@@ -10,13 +10,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bll.Inventory.InventoryManagement;
-
-/// <summary>
-/// Business Logic Layer cho InventoryBalance
-/// Quản lý tồn kho theo tháng, bao gồm tính toán, khóa, xác thực và phê duyệt
-/// </summary>
-public class InventoryBalanceBll
+namespace Bll.Inventory.InventoryManagement
+{
+    /// <summary>
+    /// Business Logic Layer cho InventoryBalance
+    /// Quản lý tồn kho theo tháng, bao gồm tính toán, khóa, xác thực và phê duyệt
+    /// </summary>
+    public class InventoryBalanceBll
 {
     #region Fields
 
@@ -663,4 +663,4 @@ public class InventoryBalanceBll
 
     #endregion
 }
-
+}

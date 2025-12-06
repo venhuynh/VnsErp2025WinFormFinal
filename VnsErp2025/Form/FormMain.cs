@@ -21,6 +21,7 @@ using Inventory.StockOut.XuatHangThuongMai;
 using Inventory.StockOut.XuatLuuChuyenKho;
 using Inventory.StockOut.XuatNoiBo;
 using Inventory.StockOut.XuatChoThueMuon;
+using Inventory.StockOut.XuatLapRap;
 using Inventory.Query;
 using Inventory.Management;
 
@@ -518,6 +519,15 @@ namespace VnsErp2025.Form
                         XuatChoThueMuonBarButtonItem,
                         title: "<b><color=Red>📤 Xuất thiết bị mượn - thuê</color></b>",
                         content: "Tạo phiếu xuất kho cho thiết bị cho mượn hoặc cho thuê.<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu xuất thiết bị mượn/thuê<br/>• Quản lý chi tiết thiết bị xuất<br/>• Theo dõi khách hàng, số lượng<br/><br/><color=Gray>Lưu ý:</color> Phiếu xuất thiết bị mượn/thuê được sử dụng khi cho khách hàng mượn hoặc thuê thiết bị."
+                    );
+                }
+
+                if (XuatLapRapBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        XuatLapRapBarButtonItem,
+                        title: "<b><color=Red>📤 Xuất linh kiện lắp ráp</color></b>",
+                        content: "Tạo phiếu xuất kho cho linh kiện để lắp ráp thành một bộ máy hoàn chỉnh.<br/><br/><b>Chức năng:</b><br/>• Tạo phiếu xuất linh kiện lắp ráp<br/>• Quản lý chi tiết linh kiện xuất<br/>• Đọc mã vạch để tự động thêm linh kiện<br/>• Theo dõi số lượng linh kiện xuất<br/><br/><color=Gray>Lưu ý:</color> Phiếu xuất linh kiện lắp ráp được sử dụng khi xuất các linh kiện để lắp ráp thành một bộ máy hoàn chỉnh."
                     );
                 }
 
@@ -1279,6 +1289,23 @@ namespace VnsErp2025.Form
             catch (Exception ex)
             {
                 MsgBox.ShowException(ex, "Lỗi hiển thị form xuất thiết bị mượn - thuê");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Xuất linh kiện lắp ráp
+        /// </summary>
+        private void XuatLapRapBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmXuatLapRap>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form xuất linh kiện lắp ráp");
             }
         }
 

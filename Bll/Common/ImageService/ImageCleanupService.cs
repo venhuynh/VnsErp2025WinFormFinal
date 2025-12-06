@@ -8,12 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Bll.Common.ImageService;
-
-/// <summary>
-/// Service xử lý cleanup orphaned files và optimization
-/// </summary>
-public class ImageCleanupService
+namespace Bll.Common.ImageService
+{
+    /// <summary>
+    /// Service xử lý cleanup orphaned files và optimization
+    /// </summary>
+    public class ImageCleanupService
 {
     #region Fields
 
@@ -418,4 +418,5 @@ public class DiskUsageInfo
         }
         return $"{number:n1} {suffixes[counter]}";
     }
+}
 }

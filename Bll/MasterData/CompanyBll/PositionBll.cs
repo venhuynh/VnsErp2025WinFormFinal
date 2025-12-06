@@ -8,13 +8,13 @@ using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
 
-namespace Bll.MasterData.CompanyBll;
-
-/// <summary>
-/// Business Logic Layer cho quản lý chức vụ.
-/// Cung cấp các phương thức xử lý nghiệp vụ cho chức vụ.
-/// </summary>
-public class PositionBll
+namespace Bll.MasterData.CompanyBll
+{
+    /// <summary>
+    /// Business Logic Layer cho quản lý chức vụ.
+    /// Cung cấp các phương thức xử lý nghiệp vụ cho chức vụ.
+    /// </summary>
+    public class PositionBll
 {
     #region Fields
 
@@ -422,4 +422,5 @@ public class PositionBll
     }
 
     #endregion
+}
 }

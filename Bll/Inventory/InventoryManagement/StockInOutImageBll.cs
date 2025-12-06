@@ -9,13 +9,13 @@ using System.IO;
 using System.Threading.Tasks;
 using Bll.Common.ImageStorage;
 
-namespace Bll.Inventory.InventoryManagement;
-
-/// <summary>
-/// Business Logic Layer cho StockInOutImage
-/// Sử dụng ImageStorageService để lưu trữ hình ảnh trên NAS/Local thay vì database
-/// </summary>
-public class StockInOutImageBll
+namespace Bll.Inventory.InventoryManagement
+{
+    /// <summary>
+    /// Business Logic Layer cho StockInOutImage
+    /// Sử dụng ImageStorageService để lưu trữ hình ảnh trên NAS/Local thay vì database
+    /// </summary>
+    public class StockInOutImageBll
 {
     #region Fields
 
@@ -390,4 +390,5 @@ public class StockInOutImageBll
     }
 
     #endregion
+}
 }

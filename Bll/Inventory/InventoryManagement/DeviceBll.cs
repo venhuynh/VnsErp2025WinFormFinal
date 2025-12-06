@@ -7,11 +7,12 @@ using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
-namespace Bll.Inventory.InventoryManagement;
-
-public class DeviceBll
+namespace Bll.Inventory.InventoryManagement
+{
+    public class DeviceBll
 {
     #region Fields
 
@@ -151,6 +152,62 @@ public class DeviceBll
         }
     }
 
+    /// <summary>
+    /// Tìm Device theo mã BarCode (SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey)
+    /// </summary>
+    /// <param name="barCode">Mã BarCode cần tìm</param>
+    /// <returns>Device entity nếu tìm thấy, null nếu không tìm thấy</returns>
+    public Device FindByBarCode(string barCode)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(barCode))
+            {
+                _logger.Warning("FindByBarCode: BarCode is null or empty");
+                return null;
+            }
+
+            _logger.Debug("FindByBarCode: Tìm thiết bị theo mã vạch, BarCode={0}", barCode);
+
+            // Sử dụng DataContext trực tiếp để tìm kiếm
+            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
+            if (string.IsNullOrEmpty(globalConnectionString))
+            {
+                throw new InvalidOperationException(
+                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
+            }
+
+            using var context = new VnsErp2025DataContext(globalConnectionString);
+            var trimmedBarCode = barCode.Trim().ToLower();
+
+            // Tìm Device theo SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey
+            // Sử dụng ToLower() để so sánh không phân biệt hoa thường (LINQ to SQL hỗ trợ)
+            var device = context.Devices.FirstOrDefault(d =>
+                (d.SerialNumber != null && d.SerialNumber.Trim().ToLower() == trimmedBarCode) ||
+                (d.IMEI != null && d.IMEI.Trim().ToLower() == trimmedBarCode) ||
+                (d.MACAddress != null && d.MACAddress.Trim().ToLower() == trimmedBarCode) ||
+                (d.AssetTag != null && d.AssetTag.Trim().ToLower() == trimmedBarCode) ||
+                (d.LicenseKey != null && d.LicenseKey.Trim().ToLower() == trimmedBarCode)
+            );
+
+            if (device == null)
+            {
+                _logger.Warning("FindByBarCode: Không tìm thấy thiết bị với mã vạch, BarCode={0}", barCode);
+            }
+            else
+            {
+                _logger.Info("FindByBarCode: Tìm thấy thiết bị, DeviceId={0}, BarCode={1}", device.Id, barCode);
+            }
+
+            return device;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"FindByBarCode: Lỗi tìm thiết bị theo mã vạch: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 
     #region Save Operations
@@ -181,4 +238,5 @@ public class DeviceBll
     }
 
     #endregion
+}
 }
