@@ -190,6 +190,12 @@
     <Compile Include="StockIn\NhapHangThuongMai\FrmNhapKhoThuongMai.Designer.cs">
       <DependentUpon>FrmNhapKhoThuongMai.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.Designer.cs">
+      <DependentUpon>UcNhapLapRapLapRapDetailDto.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockIn\NhapLuuChuyenKho\FrmNhapLuuChuyenKho.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -587,7 +593,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Report\" />
-    <Folder Include="StockIn\NhapLapRap\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
