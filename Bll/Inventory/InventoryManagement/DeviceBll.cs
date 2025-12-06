@@ -178,15 +178,16 @@ namespace Bll.Inventory.InventoryManagement
             }
 
             using var context = new VnsErp2025DataContext(globalConnectionString);
-            var trimmedBarCode = barCode.Trim();
+            var trimmedBarCode = barCode.Trim().ToLower();
 
             // Tìm Device theo SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey
+            // Sử dụng ToLower() để so sánh không phân biệt hoa thường (LINQ to SQL hỗ trợ)
             var device = context.Devices.FirstOrDefault(d =>
-                (d.SerialNumber != null && d.SerialNumber.Trim().Equals(trimmedBarCode, StringComparison.OrdinalIgnoreCase)) ||
-                (d.IMEI != null && d.IMEI.Trim().Equals(trimmedBarCode, StringComparison.OrdinalIgnoreCase)) ||
-                (d.MACAddress != null && d.MACAddress.Trim().Equals(trimmedBarCode, StringComparison.OrdinalIgnoreCase)) ||
-                (d.AssetTag != null && d.AssetTag.Trim().Equals(trimmedBarCode, StringComparison.OrdinalIgnoreCase)) ||
-                (d.LicenseKey != null && d.LicenseKey.Trim().Equals(trimmedBarCode, StringComparison.OrdinalIgnoreCase))
+                (d.SerialNumber != null && d.SerialNumber.Trim().ToLower() == trimmedBarCode) ||
+                (d.IMEI != null && d.IMEI.Trim().ToLower() == trimmedBarCode) ||
+                (d.MACAddress != null && d.MACAddress.Trim().ToLower() == trimmedBarCode) ||
+                (d.AssetTag != null && d.AssetTag.Trim().ToLower() == trimmedBarCode) ||
+                (d.LicenseKey != null && d.LicenseKey.Trim().ToLower() == trimmedBarCode)
             );
 
             if (device == null)

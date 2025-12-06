@@ -587,6 +587,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Report\" />
+    <Folder Include="StockIn\NhapLapRap\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">

@@ -109,7 +109,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmXuatLapRap());
+            Application.Run(new FormMain());
 
             #endregion
 

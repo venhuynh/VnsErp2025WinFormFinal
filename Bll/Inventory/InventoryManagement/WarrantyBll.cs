@@ -149,12 +149,13 @@ namespace Bll.Inventory.InventoryManagement
             }
 
             using var context = new VnsErp2025DataContext(globalConnectionString);
-            var trimmedInfo = uniqueProductInfo.Trim();
+            var trimmedInfo = uniqueProductInfo.Trim().ToLower();
 
             // Tìm Warranty theo UniqueProductInfo
+            // Sử dụng ToLower() để so sánh không phân biệt hoa thường (LINQ to SQL hỗ trợ)
             var warranty = context.Warranties.FirstOrDefault(w =>
                 w.UniqueProductInfo != null && 
-                w.UniqueProductInfo.Trim().Equals(trimmedInfo, StringComparison.OrdinalIgnoreCase)
+                w.UniqueProductInfo.Trim().ToLower() == trimmedInfo
             );
 
             if (warranty == null)
