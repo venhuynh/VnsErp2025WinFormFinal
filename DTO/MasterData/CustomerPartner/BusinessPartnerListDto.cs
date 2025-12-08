@@ -86,6 +86,94 @@ public class BusinessPartnerListDto
     public string CategoryNames { get; set; }
 
     /// <summary>
+    /// Danh sách đường dẫn đầy đủ của các danh mục phân loại (ngăn cách bởi dấu phẩy)
+    /// Ví dụ: "Danh mục A > Danh mục A1, Danh mục B > Danh mục B1"
+    /// </summary>
+    [DisplayName("Đường dẫn danh mục")]
+    [Description("Danh sách đường dẫn đầy đủ của các danh mục phân loại (ngăn cách bởi dấu phẩy)")]
+    public string CategoryPaths { get; set; }
+
+    /// <summary>
+    /// Đường dẫn phân loại đầy đủ dưới dạng HTML theo format DevExpress
+    /// Hiển thị tất cả các đường dẫn phân loại với màu sắc và format chuyên nghiệp
+    /// </summary>
+    [DisplayName("Đường dẫn phân loại HTML")]
+    [Description("Đường dẫn đầy đủ của các danh mục phân loại dưới dạng HTML")]
+    public string CategoryPathHtml
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(CategoryPaths))
+                return string.Empty;
+
+            // Tách các đường dẫn phân loại (ngăn cách bởi dấu phẩy)
+            var paths = CategoryPaths.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+            var htmlPaths = new List<string>();
+
+            foreach (var path in paths)
+            {
+                var trimmedPath = path.Trim();
+                if (string.IsNullOrWhiteSpace(trimmedPath))
+                    continue;
+
+                // Tách đường dẫn thành các phần (ngăn cách bởi " > ")
+                var parts = trimmedPath.Split(new[] { " > " }, StringSplitOptions.None);
+                var htmlParts = new List<string>();
+
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    var isLast = i == parts.Length - 1;
+                    var color = isLast ? "blue" : "#757575";
+                    var size = isLast ? "12" : "10";
+                    var weight = isLast ? "<b>" : "";
+                    var weightClose = isLast ? "</b>" : "";
+
+                    htmlParts.Add($"<size={size}>{weight}<color='{color}'>{parts[i]}</color>{weightClose}</size>");
+                }
+
+                // Kết hợp các phần với dấu " > "
+                var htmlPath = string.Join(" <size=9><color='#757575'>></color></size> ", htmlParts);
+                htmlPaths.Add(htmlPath);
+            }
+
+            // Kết hợp tất cả các đường dẫn, mỗi đường dẫn trên một dòng
+            return string.Join("<br>", htmlPaths);
+        }
+    }
+
+    // Logo metadata fields (để hiển thị và load logo từ NAS)
+    [DisplayName("Tên file logo")]
+    [StringLength(255, ErrorMessage = "Tên file logo không được vượt quá 255 ký tự")]
+    public string LogoFileName { get; set; }
+
+    [DisplayName("Đường dẫn tương đối logo")]
+    [StringLength(500, ErrorMessage = "Đường dẫn tương đối logo không được vượt quá 500 ký tự")]
+    public string LogoRelativePath { get; set; }
+
+    [DisplayName("Đường dẫn đầy đủ logo")]
+    [StringLength(1000, ErrorMessage = "Đường dẫn đầy đủ logo không được vượt quá 1000 ký tự")]
+    public string LogoFullPath { get; set; }
+
+    [DisplayName("Loại storage logo")]
+    [StringLength(20, ErrorMessage = "Loại storage logo không được vượt quá 20 ký tự")]
+    public string LogoStorageType { get; set; }
+
+    [DisplayName("Kích thước file logo")]
+    public long? LogoFileSize { get; set; }
+
+    [DisplayName("Checksum logo")]
+    [StringLength(64, ErrorMessage = "Checksum logo không được vượt quá 64 ký tự")]
+    public string LogoChecksum { get; set; }
+
+    /// <summary>
+    /// Dữ liệu binary của logo thumbnail (để hiển thị nhanh trong gridview)
+    /// Lưu ý: Chỉ lưu thumbnail trong database, logo gốc lưu trên NAS
+    /// </summary>
+    [DisplayName("Dữ liệu thumbnail logo")]
+    [Description("Dữ liệu binary của logo thumbnail (để hiển thị nhanh trong gridview)")]
+    public byte[] LogoThumbnailData { get; set; }
+
+    /// <summary>
     /// Địa chỉ đầy đủ được tính từ Address, City, Country
     /// </summary>
     [DisplayName("Địa chỉ đầy đủ")]
@@ -249,12 +337,14 @@ public static class BusinessPartnerConverters
     /// Chuyển đổi BusinessPartner Entity sang BusinessPartnerListDto
     /// </summary>
     /// <param name="entity">BusinessPartner Entity</param>
+    /// <param name="categoryDict">Dictionary chứa tất cả BusinessPartnerCategory entities để tính FullPath (optional)</param>
     /// <returns>BusinessPartnerListDto</returns>
-    public static BusinessPartnerListDto ToListDto(this BusinessPartner entity)
+    public static BusinessPartnerListDto ToListDto(this BusinessPartner entity, 
+        Dictionary<Guid, BusinessPartnerCategory> categoryDict = null)
     {
         if (entity == null) return null;
 
-        return new BusinessPartnerListDto
+        var dto = new BusinessPartnerListDto
         {
             Id = entity.Id,
             PartnerCode = entity.PartnerCode,
@@ -272,8 +362,49 @@ public static class BusinessPartnerConverters
             CreatedDate = entity.CreatedDate,
             UpdatedDate = entity.UpdatedDate,
             CreatedBy = entity.CreatedBy,
-            ModifiedBy = entity.ModifiedBy
+            ModifiedBy = entity.ModifiedBy,
+            LogoFileName = entity.LogoFileName,
+            LogoRelativePath = entity.LogoRelativePath,
+            LogoFullPath = entity.LogoFullPath,
+            LogoStorageType = entity.LogoStorageType,
+            LogoFileSize = entity.LogoFileSize,
+            LogoChecksum = entity.LogoChecksum,
+            LogoThumbnailData = entity.LogoThumbnailData?.ToArray()
         };
+
+        // Tính CategoryNames và CategoryPaths nếu có BusinessPartner_BusinessPartnerCategories loaded
+        if (entity.BusinessPartner_BusinessPartnerCategories != null && 
+            entity.BusinessPartner_BusinessPartnerCategories.Count > 0)
+        {
+            var categoryNames = new List<string>();
+            var categoryPaths = new List<string>();
+
+            foreach (var mapping in entity.BusinessPartner_BusinessPartnerCategories)
+            {
+                if (mapping.BusinessPartnerCategory != null)
+                {
+                    var category = mapping.BusinessPartnerCategory;
+                    categoryNames.Add(category.CategoryName);
+
+                    // Tính FullPath nếu có categoryDict
+                    if (categoryDict != null && categoryDict.ContainsKey(category.Id))
+                    {
+                        var fullPath = CalculateCategoryFullPath(category, categoryDict);
+                        categoryPaths.Add(fullPath);
+                    }
+                    else
+                    {
+                        // Nếu không có categoryDict, chỉ dùng CategoryName
+                        categoryPaths.Add(category.CategoryName);
+                    }
+                }
+            }
+
+            dto.CategoryNames = string.Join(", ", categoryNames);
+            dto.CategoryPaths = string.Join(", ", categoryPaths);
+        }
+
+        return dto;
     }
 
     /// <summary>
@@ -281,46 +412,33 @@ public static class BusinessPartnerConverters
     /// </summary>
     /// <param name="entity">BusinessPartner Entity</param>
     /// <param name="partnerTypeNameResolver">Function để resolve tên loại đối tác</param>
+    /// <param name="categoryDict">Dictionary chứa tất cả BusinessPartnerCategory entities để tính FullPath (optional)</param>
     /// <returns>BusinessPartnerListDto</returns>
     public static BusinessPartnerListDto ToListDto(this BusinessPartner entity,
-        Func<int, string> partnerTypeNameResolver)
+        Func<int, string> partnerTypeNameResolver,
+        Dictionary<Guid, BusinessPartnerCategory> categoryDict = null)
     {
         if (entity == null) return null;
 
-        return new BusinessPartnerListDto
-        {
-            Id = entity.Id,
-            PartnerCode = entity.PartnerCode,
-            PartnerName = entity.PartnerName,
-            PartnerType = entity.PartnerType,
-            PartnerTypeName = partnerTypeNameResolver?.Invoke(entity.PartnerType) ??
-                              ResolvePartnerTypeName(entity.PartnerType),
-            TaxCode = entity.TaxCode,
-            Phone = entity.Phone,
-            Email = entity.Email,
-            Website = entity.Website,
-            Address = entity.Address,
-            City = entity.City,
-            Country = entity.Country,
-            IsActive = entity.IsActive,
-            CreatedDate = entity.CreatedDate,
-            UpdatedDate = entity.UpdatedDate,
-            CreatedBy = entity.CreatedBy,
-            ModifiedBy = entity.ModifiedBy
-        };
+        var dto = entity.ToListDto(categoryDict);
+        dto.PartnerTypeName = partnerTypeNameResolver?.Invoke(entity.PartnerType) ??
+                              ResolvePartnerTypeName(entity.PartnerType);
+        return dto;
     }
 
     /// <summary>
     /// Chuyển đổi danh sách BusinessPartner Entity sang danh sách BusinessPartnerListDto
     /// </summary>
     /// <param name="entities">Danh sách BusinessPartner Entity</param>
+    /// <param name="categoryDict">Dictionary chứa tất cả BusinessPartnerCategory entities để tính FullPath (optional)</param>
     /// <returns>Danh sách BusinessPartnerListDto</returns>
     public static IEnumerable<BusinessPartnerListDto> ToBusinessPartnerListDtos(
-        this IEnumerable<BusinessPartner> entities)
+        this IEnumerable<BusinessPartner> entities,
+        Dictionary<Guid, BusinessPartnerCategory> categoryDict = null)
     {
         if (entities == null) return Enumerable.Empty<BusinessPartnerListDto>();
 
-        return entities.Select(entity => entity.ToListDto());
+        return entities.Select(entity => entity.ToListDto(categoryDict));
     }
 
     /// <summary>
@@ -328,13 +446,16 @@ public static class BusinessPartnerConverters
     /// </summary>
     /// <param name="entities">Danh sách BusinessPartner Entity</param>
     /// <param name="partnerTypeNameResolver">Function để resolve tên loại đối tác</param>
+    /// <param name="categoryDict">Dictionary chứa tất cả BusinessPartnerCategory entities để tính FullPath (optional)</param>
     /// <returns>Danh sách BusinessPartnerListDto</returns>
     public static IEnumerable<BusinessPartnerListDto> ToBusinessPartnerListDtos(
-        this IEnumerable<BusinessPartner> entities, Func<int, string> partnerTypeNameResolver)
+        this IEnumerable<BusinessPartner> entities, 
+        Func<int, string> partnerTypeNameResolver,
+        Dictionary<Guid, BusinessPartnerCategory> categoryDict = null)
     {
         if (entities == null) return Enumerable.Empty<BusinessPartnerListDto>();
 
-        return entities.Select(entity => entity.ToListDto(partnerTypeNameResolver));
+        return entities.Select(entity => entity.ToListDto(partnerTypeNameResolver, categoryDict));
     }
 
     /// <summary>
@@ -342,16 +463,18 @@ public static class BusinessPartnerConverters
     /// </summary>
     /// <param name="entity">BusinessPartner Entity</param>
     /// <param name="categoryNames">Danh sách tên danh mục (ngăn cách bởi dấu phẩy)</param>
+    /// <param name="categoryPaths">Danh sách đường dẫn đầy đủ của các danh mục (ngăn cách bởi dấu phẩy)</param>
     /// <param name="createdByName">Tên người tạo</param>
     /// <param name="modifiedByName">Tên người cập nhật</param>
     /// <returns>BusinessPartnerListDto</returns>
     public static BusinessPartnerListDto ToListDtoWithNames(this BusinessPartner entity,
-        string categoryNames = null, string createdByName = null, string modifiedByName = null)
+        string categoryNames = null, string categoryPaths = null, string createdByName = null, string modifiedByName = null)
     {
         if (entity == null) return null;
 
         var dto = entity.ToListDto();
         dto.CategoryNames = categoryNames;
+        dto.CategoryPaths = categoryPaths;
         dto.CreatedByName = createdByName;
         dto.ModifiedByName = modifiedByName;
         return dto;
@@ -362,12 +485,14 @@ public static class BusinessPartnerConverters
     /// </summary>
     /// <param name="entities">Danh sách BusinessPartner Entity</param>
     /// <param name="categoryNamesResolver">Function để resolve category names theo PartnerId</param>
+    /// <param name="categoryPathsResolver">Function để resolve category paths (FullPath) theo PartnerId</param>
     /// <param name="createdByNameResolver">Function để resolve created by name theo CreatedBy</param>
     /// <param name="modifiedByNameResolver">Function để resolve modified by name theo ModifiedBy</param>
     /// <returns>Danh sách BusinessPartnerListDto</returns>
     public static IEnumerable<BusinessPartnerListDto> ToBusinessPartnerListDtosWithNames(
         this IEnumerable<BusinessPartner> entities,
         Func<Guid, string> categoryNamesResolver = null,
+        Func<Guid, string> categoryPathsResolver = null,
         Func<Guid?, string> createdByNameResolver = null,
         Func<Guid?, string> modifiedByNameResolver = null)
     {
@@ -376,9 +501,10 @@ public static class BusinessPartnerConverters
         return entities.Select(entity =>
         {
             var categoryNames = categoryNamesResolver?.Invoke(entity.Id);
+            var categoryPaths = categoryPathsResolver?.Invoke(entity.Id);
             var createdByName = createdByNameResolver?.Invoke(entity.CreatedBy);
             var modifiedByName = modifiedByNameResolver?.Invoke(entity.ModifiedBy);
-            return entity.ToListDtoWithNames(categoryNames, createdByName, modifiedByName);
+            return entity.ToListDtoWithNames(categoryNames, categoryPaths, createdByName, modifiedByName);
         });
     }
 
@@ -412,7 +538,8 @@ public static class BusinessPartnerConverters
             LogoFullPath = entity.LogoFullPath,
             LogoStorageType = entity.LogoStorageType,
             LogoFileSize = entity.LogoFileSize,
-            LogoChecksum = entity.LogoChecksum
+            LogoChecksum = entity.LogoChecksum,
+            LogoThumbnailData = entity.LogoThumbnailData?.ToArray()
         };
     }
 
@@ -455,6 +582,16 @@ public static class BusinessPartnerConverters
         entity.LogoStorageType = dto.LogoStorageType;
         entity.LogoFileSize = dto.LogoFileSize;
         entity.LogoChecksum = dto.LogoChecksum;
+        
+        // Copy LogoThumbnailData (binary)
+        if (dto.LogoThumbnailData != null && dto.LogoThumbnailData.Length > 0)
+        {
+            entity.LogoThumbnailData = new System.Data.Linq.Binary(dto.LogoThumbnailData);
+        }
+        else
+        {
+            entity.LogoThumbnailData = null;
+        }
 
         return entity;
     }
@@ -473,5 +610,30 @@ public static class BusinessPartnerConverters
             3 => "Cả hai",
             _ => "Không xác định"
         };
+    }
+
+    /// <summary>
+    /// Tính toán đường dẫn đầy đủ từ gốc đến category
+    /// Tham khảo: BusinessPartnerCategoryDto.CalculateFullPath
+    /// </summary>
+    /// <param name="category">BusinessPartnerCategory entity</param>
+    /// <param name="categoryDict">Dictionary chứa tất cả BusinessPartnerCategory entities</param>
+    /// <returns>Đường dẫn đầy đủ (ví dụ: "Danh mục A > Danh mục A1")</returns>
+    private static string CalculateCategoryFullPath(BusinessPartnerCategory category,
+        Dictionary<Guid, BusinessPartnerCategory> categoryDict)
+    {
+        if (category == null) return string.Empty;
+
+        var pathParts = new List<string> { category.CategoryName };
+        var current = category;
+
+        while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
+        {
+            current = categoryDict[current.ParentId.Value];
+            pathParts.Insert(0, current.CategoryName);
+            if (pathParts.Count > 10) break; // Tránh infinite loop
+        }
+
+        return string.Join(" > ", pathParts);
     }
 }

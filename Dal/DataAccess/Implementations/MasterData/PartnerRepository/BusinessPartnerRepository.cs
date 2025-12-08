@@ -61,9 +61,68 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
 
         // Configure eager loading cho navigation properties
         var loadOptions = new DataLoadOptions();
+        
+        // Load BusinessPartner_BusinessPartnerCategories (EntitySet) để có thể truy cập categories
+        loadOptions.LoadWith<BusinessPartner>(bp => bp.BusinessPartner_BusinessPartnerCategories);
+        
+        // Load BusinessPartnerCategory từ BusinessPartner_BusinessPartnerCategory để có thể truy cập category details
+        loadOptions.LoadWith<BusinessPartner_BusinessPartnerCategory>(m => m.BusinessPartnerCategory);
+        
+        // Load BusinessPartnerSites nếu cần
+        loadOptions.LoadWith<BusinessPartner>(bp => bp.BusinessPartnerSites);
+        
         context.LoadOptions = loadOptions;
 
         return context;
+    }
+
+    /// <summary>
+    /// Materialize navigation properties để tránh lỗi "Cannot access a disposed object"
+    /// Force load EntitySet và navigation properties trước khi dispose DataContext
+    /// </summary>
+    /// <param name="partner">BusinessPartner entity</param>
+    private void MaterializeNavigationProperties(BusinessPartner partner)
+    {
+        if (partner == null) return;
+
+        try
+        {
+            // Force load BusinessPartner_BusinessPartnerCategories (EntitySet)
+            if (partner.BusinessPartner_BusinessPartnerCategories != null)
+            {
+                var categoriesCount = partner.BusinessPartner_BusinessPartnerCategories.Count;
+                
+                // Force load BusinessPartnerCategory cho mỗi mapping
+                foreach (var mapping in partner.BusinessPartner_BusinessPartnerCategories)
+                {
+                    if (mapping.BusinessPartnerCategory != null)
+                    {
+                        // Materialize category properties
+                        var categoryName = mapping.BusinessPartnerCategory.CategoryName;
+                        var categoryCode = mapping.BusinessPartnerCategory.CategoryCode;
+                        var parentId = mapping.BusinessPartnerCategory.ParentId;
+                        
+                        // Nếu có parent, cần load parent category (nhưng không thể load recursive trong LINQ to SQL)
+                        // Parent sẽ được load trong converter nếu có categoryDict
+                    }
+                }
+            }
+
+            // Force load BusinessPartnerSites nếu cần
+            if (partner.BusinessPartnerSites != null)
+            {
+                var sitesCount = partner.BusinessPartnerSites.Count;
+                foreach (var site in partner.BusinessPartnerSites)
+                {
+                    var siteName = site.SiteName; // Materialize
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning($"Lỗi khi materialize navigation properties cho partner {partner.Id}: {ex.Message}");
+            // Không throw exception, chỉ log warning vì có thể một số properties chưa được load
+        }
     }
 
     #endregion
@@ -223,6 +282,9 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             
             if (partner != null)
             {
+                // Materialize navigation properties trước khi dispose context
+                MaterializeNavigationProperties(partner);
+                
                 _logger.Debug($"Đã lấy đối tác theo ID: {id} - {partner.PartnerName}");
             }
             
@@ -261,6 +323,9 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             
             if (partner != null)
             {
+                // Materialize navigation properties trước khi dispose context
+                await Task.Run(() => MaterializeNavigationProperties(partner));
+                
                 _logger.Debug($"Đã lấy đối tác theo ID (async): {id} - {partner.PartnerName}");
             }
             
@@ -347,19 +412,29 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         try
         {
             using var context = CreateNewContext();
+            List<BusinessPartner> results;
+            
             if (string.IsNullOrWhiteSpace(keyword))
             {
-                var all = context.BusinessPartners.Where(x => !x.IsDeleted).ToList();
-                _logger.Debug($"Đã tìm kiếm đối tác (không có keyword): {all.Count} kết quả");
-                return all;
+                results = context.BusinessPartners.Where(x => !x.IsDeleted).ToList();
+                _logger.Debug($"Đã tìm kiếm đối tác (không có keyword): {results.Count} kết quả");
+            }
+            else
+            {
+                var lower = keyword.ToLower();
+                results = context.BusinessPartners
+                    .Where(x => !x.IsDeleted && x.PartnerName.ToLower().Contains(lower))
+                    .ToList();
+                
+                _logger.Debug($"Đã tìm kiếm đối tác theo keyword '{keyword}': {results.Count} kết quả");
             }
             
-            var lower = keyword.ToLower();
-            var results = context.BusinessPartners
-                .Where(x => !x.IsDeleted && x.PartnerName.ToLower().Contains(lower))
-                .ToList();
+            // Materialize navigation properties cho tất cả partners trước khi dispose context
+            foreach (var partner in results)
+            {
+                MaterializeNavigationProperties(partner);
+            }
             
-            _logger.Debug($"Đã tìm kiếm đối tác theo keyword '{keyword}': {results.Count} kết quả");
             return results;
         }
         catch (Exception ex)
@@ -378,6 +453,12 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         {
             using var context = CreateNewContext();
             var partners = context.BusinessPartners.Where(x => x.IsActive == true && !x.IsDeleted).ToList();
+            
+            // Materialize navigation properties cho tất cả partners trước khi dispose context
+            foreach (var partner in partners)
+            {
+                MaterializeNavigationProperties(partner);
+            }
             
             _logger.Debug($"Đã lấy {partners.Count} đối tác đang hoạt động");
             return partners;

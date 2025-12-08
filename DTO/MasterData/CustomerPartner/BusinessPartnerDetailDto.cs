@@ -80,6 +80,14 @@ public class BusinessPartnerDetailDto
     [StringLength(64, ErrorMessage = "Checksum logo không được vượt quá 64 ký tự")]
     public string LogoChecksum { get; set; }
 
+    /// <summary>
+    /// Dữ liệu binary của logo thumbnail (để hiển thị nhanh trong gridview)
+    /// Lưu ý: Chỉ lưu thumbnail trong database, logo gốc lưu trên NAS
+    /// </summary>
+    [DisplayName("Dữ liệu thumbnail logo")]
+    [Description("Dữ liệu binary của logo thumbnail (để hiển thị nhanh trong gridview)")]
+    public byte[] LogoThumbnailData { get; set; }
+
     [DisplayName("Ngày tạo")]
     public DateTime CreatedDate { get; set; }
 

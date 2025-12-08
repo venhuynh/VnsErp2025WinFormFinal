@@ -54,6 +54,10 @@ namespace MasterData.Customer
             this.BusinessPartnerListGridControl = new DevExpress.XtraGrid.GridControl();
             this.businessPartnerListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.BusinessPartnerListGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.HtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colLogoThumbnailData = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colCategoryPathHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
@@ -62,6 +66,7 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -191,6 +196,8 @@ namespace MasterData.Customer
             this.BusinessPartnerListGridControl.MainView = this.BusinessPartnerListGridView;
             this.BusinessPartnerListGridControl.MenuManager = this.barManager1;
             this.BusinessPartnerListGridControl.Name = "BusinessPartnerListGridControl";
+            this.BusinessPartnerListGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.HtmlHypertextLabel});
             this.BusinessPartnerListGridControl.Size = new System.Drawing.Size(1051, 579);
             this.BusinessPartnerListGridControl.TabIndex = 5;
             this.BusinessPartnerListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -206,18 +213,55 @@ namespace MasterData.Customer
             this.BusinessPartnerListGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
             this.BusinessPartnerListGridView.Appearance.ViewCaption.Options.UseFont = true;
             this.BusinessPartnerListGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.BusinessPartnerListGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colThongTinHtml,
+            this.colLogoThumbnailData,
+            this.colCategoryPathHtml});
             this.BusinessPartnerListGridView.GridControl = this.BusinessPartnerListGridControl;
             this.BusinessPartnerListGridView.IndicatorWidth = 40;
             this.BusinessPartnerListGridView.Name = "BusinessPartnerListGridView";
             this.BusinessPartnerListGridView.OptionsSelection.MultiSelect = true;
             this.BusinessPartnerListGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.BusinessPartnerListGridView.OptionsView.ColumnAutoWidth = false;
+            this.BusinessPartnerListGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
             this.BusinessPartnerListGridView.OptionsView.RowAutoHeight = true;
             this.BusinessPartnerListGridView.OptionsView.ShowAutoFilterRow = true;
             this.BusinessPartnerListGridView.OptionsView.ShowFooter = true;
             this.BusinessPartnerListGridView.OptionsView.ShowGroupPanel = false;
             this.BusinessPartnerListGridView.OptionsView.ShowViewCaption = true;
             this.BusinessPartnerListGridView.ViewCaption = "BẢNG DỮ LIỆU ĐỐI TÁC";
+            // 
+            // colThongTinHtml
+            // 
+            this.colThongTinHtml.Caption = "Thông tin đầy đủ";
+            this.colThongTinHtml.ColumnEdit = this.HtmlHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 75;
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 3;
+            // 
+            // HtmlHypertextLabel
+            // 
+            this.HtmlHypertextLabel.Name = "HtmlHypertextLabel";
+            // 
+            // colLogoThumbnailData
+            // 
+            this.colLogoThumbnailData.Caption = "Logo";
+            this.colLogoThumbnailData.FieldName = "LogoThumbnailData";
+            this.colLogoThumbnailData.Name = "colLogoThumbnailData";
+            this.colLogoThumbnailData.Visible = true;
+            this.colLogoThumbnailData.VisibleIndex = 1;
+            // 
+            // colCategoryPathHtml
+            // 
+            this.colCategoryPathHtml.Caption = "Phân loại";
+            this.colCategoryPathHtml.ColumnEdit = this.HtmlHypertextLabel;
+            this.colCategoryPathHtml.FieldName = "CategoryPathHtml";
+            this.colCategoryPathHtml.MinWidth = 75;
+            this.colCategoryPathHtml.Name = "colCategoryPathHtml";
+            this.colCategoryPathHtml.Visible = true;
+            this.colCategoryPathHtml.VisibleIndex = 2;
             // 
             // Root
             // 
@@ -255,6 +299,7 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
@@ -281,5 +326,9 @@ namespace MasterData.Customer
         private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
+        private GridColumn colThongTinHtml;
+        private GridColumn colLogoThumbnailData;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlHypertextLabel;
+        private GridColumn colCategoryPathHtml;
     }
 }
