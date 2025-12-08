@@ -919,7 +919,8 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
                 // Cập nhật
                 if (IsCategoryNameExists(entity.CategoryName, entity.Id))
                     throw new DataAccessException($"Tên danh mục '{entity.CategoryName}' đã tồn tại");
-                
+
+                existing.ParentId = entity.ParentId;
                 existing.CategoryName = entity.CategoryName;
                 existing.Description = entity.Description;
                 existing.CategoryCode = entity.CategoryCode;
