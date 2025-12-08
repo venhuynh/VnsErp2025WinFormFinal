@@ -58,29 +58,6 @@ public class BusinessPartnerListDto
     [StringLength(100, ErrorMessage = "Quốc gia không được vượt quá 100 ký tự")]
     public string Country { get; set; }
 
-    [DisplayName("Người liên hệ")]
-    [StringLength(100, ErrorMessage = "Người liên hệ không được vượt quá 100 ký tự")]
-    public string ContactPerson { get; set; }
-
-    [DisplayName("Chức vụ")]
-    [StringLength(100, ErrorMessage = "Chức vụ không được vượt quá 100 ký tự")]
-    public string ContactPosition { get; set; }
-
-    [DisplayName("Số tài khoản")]
-    [StringLength(50, ErrorMessage = "Số tài khoản không được vượt quá 50 ký tự")]
-    public string BankAccount { get; set; }
-
-    [DisplayName("Tên ngân hàng")]
-    [StringLength(100, ErrorMessage = "Tên ngân hàng không được vượt quá 100 ký tự")]
-    public string BankName { get; set; }
-
-    [DisplayName("Hạn mức tín dụng")]
-    public decimal? CreditLimit { get; set; }
-
-    [DisplayName("Điều khoản thanh toán")]
-    [StringLength(50, ErrorMessage = "Điều khoản thanh toán không được vượt quá 50 ký tự")]
-    public string PaymentTerm { get; set; }
-
     [DisplayName("Trạng thái")]
     public bool IsActive { get; set; }
 
@@ -291,12 +268,6 @@ public static class BusinessPartnerConverters
             Address = entity.Address,
             City = entity.City,
             Country = entity.Country,
-            ContactPerson = entity.ContactPerson,
-            ContactPosition = entity.ContactPosition,
-            BankAccount = entity.BankAccount,
-            BankName = entity.BankName,
-            CreditLimit = entity.CreditLimit,
-            PaymentTerm = entity.PaymentTerm,
             IsActive = entity.IsActive,
             CreatedDate = entity.CreatedDate,
             UpdatedDate = entity.UpdatedDate,
@@ -331,12 +302,6 @@ public static class BusinessPartnerConverters
             Address = entity.Address,
             City = entity.City,
             Country = entity.Country,
-            ContactPerson = entity.ContactPerson,
-            ContactPosition = entity.ContactPosition,
-            BankAccount = entity.BankAccount,
-            BankName = entity.BankName,
-            CreditLimit = entity.CreditLimit,
-            PaymentTerm = entity.PaymentTerm,
             IsActive = entity.IsActive,
             CreatedDate = entity.CreatedDate,
             UpdatedDate = entity.UpdatedDate,

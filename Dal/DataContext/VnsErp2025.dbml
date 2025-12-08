@@ -121,12 +121,6 @@
       <Column Name="Address" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="City" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Country" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="ContactPerson" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="ContactPosition" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="BankAccount" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="BankName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="CreditLimit" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
-      <Column Name="PaymentTerm" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
@@ -135,6 +129,12 @@
       <Column Name="DeletedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="DeletedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LogoFileName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="LogoRelativePath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="LogoFullPath" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="LogoStorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="LogoFileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="LogoChecksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
       <Association Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartner_BusinessPartnerCategory" />
       <Association Name="BusinessPartner_BusinessPartnerSite" Member="BusinessPartnerSites" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartnerSite" />
       <Association Name="BusinessPartner_StockInOutDocument" Member="StockInOutDocuments" ThisKey="Id" OtherKey="BusinessPartnerId" Type="StockInOutDocument" />

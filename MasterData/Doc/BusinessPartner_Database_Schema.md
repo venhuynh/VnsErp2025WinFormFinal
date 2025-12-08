@@ -38,13 +38,14 @@ Bảng chính lưu trữ thông tin đối tác kinh doanh.
 | `Address` | `NVarChar(255)` | NULL | Địa chỉ |
 | `City` | `NVarChar(100)` | NULL | Thành phố |
 | `Country` | `NVarChar(100)` | NULL | Quốc gia |
-| `ContactPerson` | `NVarChar(100)` | NULL | Người liên hệ |
-| `ContactPosition` | `NVarChar(100)` | NULL | Chức vụ người liên hệ |
-| `BankAccount` | `NVarChar(50)` | NULL | Số tài khoản ngân hàng |
-| `BankName` | `NVarChar(100)` | NULL | Tên ngân hàng |
-| `CreditLimit` | `Decimal(18,2)` | NULL | Hạn mức tín dụng (>= 0) |
-| `PaymentTerm` | `NVarChar(50)` | NULL | Điều khoản thanh toán |
 | `IsActive` | `Bit` | NOT NULL | Trạng thái hoạt động (mặc định: 1) |
+| `Logo` | `VarBinary(MAX)` | NULL | Dữ liệu binary của logo |
+| `LogoFileName` | `NVarChar(255)` | NULL | Tên file logo |
+| `LogoRelativePath` | `NVarChar(500)` | NULL | Đường dẫn tương đối của logo |
+| `LogoFullPath` | `NVarChar(1000)` | NULL | Đường dẫn đầy đủ của logo |
+| `LogoStorageType` | `NVarChar(20)` | NULL | Loại storage (Database, FileSystem, NAS, etc.) |
+| `LogoFileSize` | `BigInt` | NULL | Kích thước file logo (bytes) |
+| `LogoChecksum` | `NVarChar(64)` | NULL | Checksum để verify integrity |
 | `CreatedDate` | `DateTime` | NOT NULL | Ngày tạo |
 | `UpdatedDate` | `DateTime` | NULL | Ngày cập nhật |
 | `CreatedBy` | `UniqueIdentifier` | NULL | ID người tạo (FK → ApplicationUser.Id) |
@@ -52,6 +53,17 @@ Bảng chính lưu trữ thông tin đối tác kinh doanh.
 | `DeletedBy` | `UniqueIdentifier` | NULL | ID người xóa (FK → ApplicationUser.Id) |
 | `IsDeleted` | `Bit` | NOT NULL | Đánh dấu xóa mềm (mặc định: 0) |
 | `DeletedDate` | `DateTime` | NULL | Ngày xóa |
+| `Logo` | `VarBinary(MAX)` | NULL | Dữ liệu binary của logo |
+| `LogoFileName` | `NVarChar(255)` | NULL | Tên file logo |
+| `LogoRelativePath` | `NVarChar(500)` | NULL | Đường dẫn tương đối của logo |
+| `LogoFullPath` | `NVarChar(1000)` | NULL | Đường dẫn đầy đủ của logo |
+| `LogoStorageType` | `NVarChar(20)` | NULL | Loại storage (Database, FileSystem, NAS, etc.) |
+| `LogoFileSize` | `BigInt` | NULL | Kích thước file logo (bytes) |
+| `LogoChecksum` | `NVarChar(64)` | NULL | Checksum để verify integrity |
+
+**Lưu ý:** Các cột sau đã bị xóa khỏi bảng (tách ra bảng riêng):
+- `ContactPerson`, `ContactPosition` - Sử dụng bảng `BusinessPartnerContact`
+- `BankAccount`, `BankName`, `CreditLimit`, `PaymentTerm` - Sẽ tách ra bảng riêng
 
 ### 1.2. Ràng Buộc
 
@@ -59,7 +71,6 @@ Bảng chính lưu trữ thông tin đối tác kinh doanh.
 - **Unique Index:** `IX_BusinessPartner_PartnerCode` trên `PartnerCode`
 - **Check Constraint:** 
   - `CK_BusinessPartner_EmailFormat`: Email phải có format hợp lệ (LIKE '%@%.%') hoặc NULL
-  - `CK_BusinessPartner_CreditLimit`: CreditLimit >= 0 hoặc NULL
 - **Foreign Keys:**
   - `FK_BusinessPartner_CreatedBy` → `ApplicationUser(Id)`
   - `FK_BusinessPartner_ModifiedBy` → `ApplicationUser(Id)`
@@ -71,6 +82,18 @@ Bảng chính lưu trữ thông tin đối tác kinh doanh.
 - `IX_BusinessPartner_PartnerName` trên `PartnerName`
 - `IX_BusinessPartner_IsActive_IsDeleted` trên `IsActive`, `IsDeleted`
 - `IX_BusinessPartner_CreatedDate` trên `CreatedDate`
+- `IX_BusinessPartner_LogoFileName` (FILTERED) trên `LogoFileName` (WHERE LogoFileName IS NOT NULL)
+- `IX_BusinessPartner_LogoStorageType` (FILTERED) trên `LogoStorageType` (WHERE LogoStorageType IS NOT NULL)
+
+### 1.4. Các cột đã bị xóa (tách ra bảng riêng)
+
+Các cột sau đã được xóa khỏi bảng `BusinessPartner` và sẽ được tách ra làm bảng riêng:
+- `ContactPerson` - Người liên hệ (sử dụng bảng `BusinessPartnerContact`)
+- `ContactPosition` - Chức vụ người liên hệ (sử dụng bảng `BusinessPartnerContact`)
+- `BankAccount` - Số tài khoản ngân hàng (sẽ tách ra bảng riêng)
+- `BankName` - Tên ngân hàng (sẽ tách ra bảng riêng)
+- `CreditLimit` - Hạn mức tín dụng (sẽ tách ra bảng riêng)
+- `PaymentTerm` - Điều khoản thanh toán (sẽ tách ra bảng riêng)
 
 ---
 
@@ -242,7 +265,6 @@ Bảng liên kết nhiều-nhiều giữa BusinessPartner và BusinessPartnerCat
 
 #### BusinessPartner
 - `CK_BusinessPartner_EmailFormat`: Email phải có format hợp lệ (`Email LIKE '%@%.%' OR Email IS NULL`)
-- `CK_BusinessPartner_CreditLimit`: Hạn mức tín dụng phải >= 0 (`CreditLimit >= 0 OR CreditLimit IS NULL`)
 
 #### BusinessPartnerSite
 - `CK_BusinessPartnerSite_EmailFormat`: Email phải có format hợp lệ (`Email LIKE '%@%.%' OR Email IS NULL`)
@@ -339,7 +361,7 @@ ApplicationUser (1) ──< (N) BusinessPartner_BusinessPartnerCategory [Created
 
 ### 8.2. Data Validation
 - Thêm check constraints cho email format
-- Thêm check constraint cho CreditLimit (>= 0)
+- Xóa các cột liên hệ, ngân hàng, thanh toán (ContactPerson, ContactPosition, BankAccount, BankName, CreditLimit, PaymentTerm)
 
 ### 8.3. Data Integrity
 - Unique filtered indexes đảm bảo mỗi đối tác chỉ có 1 địa điểm mặc định
@@ -371,18 +393,40 @@ ApplicationUser (1) ──< (N) BusinessPartner_BusinessPartnerCategory [Created
 - Mỗi địa điểm chỉ nên có 1 liên hệ chính (`IsPrimary = 1`)
 - Unique filtered indexes sẽ đảm bảo ràng buộc này
 
-### 9.4. Credit Limit
-- CreditLimit phải >= 0 hoặc NULL
-- Check constraint sẽ tự động validate
+### 9.4. Các cột đã bị xóa (tách ra bảng riêng)
+
+Các cột sau đã được xóa khỏi bảng `BusinessPartner`:
+- `ContactPerson`, `ContactPosition` - Sử dụng bảng `BusinessPartnerContact` thay thế
+- `BankAccount`, `BankName`, `CreditLimit`, `PaymentTerm` - Sẽ tách ra bảng riêng
+
+Xem migration script: `Migration_BusinessPartner_RemoveContactBankFields.sql`
 
 ---
 
 ## 10. Migration Scripts
 
 Các migration scripts được lưu trong:
-- `Database/Migrations/Migration_BusinessPartner_Improvements.sql` - Script migration chính
+- `Database/Migrations/Migration_BusinessPartner_Improvements.sql` - Script migration chính (thêm audit fields, constraints, indexes)
+- `Database/Migrations/Migration_BusinessPartner_AddLogo.sql` - Script thêm các cột Logo cho BusinessPartner
+- `Database/Migrations/Migration_BusinessPartner_RemoveContactBankFields.sql` - Script xóa các cột liên hệ, ngân hàng, thanh toán
 - `Database/Migrations/Fix_Existing_Data.sql` - Script cleanup dữ liệu trước khi migration
 - `Database/Migrations/Verify_Migration_Results.sql` - Script kiểm tra kết quả migration
+
+### 10.1. Logo Columns Migration
+
+Migration script `Migration_BusinessPartner_AddLogo.sql` thêm các cột để lưu trữ logo của BusinessPartner:
+- Tham khảo: Bảng `Company` có cấu trúc tương tự
+- Tất cả các cột đều NULL, không ảnh hưởng đến dữ liệu hiện có
+- Xem chi tiết trong `README_BusinessPartner_Logo_Migration.md`
+
+### 10.2. Remove Contact/Bank/Payment Fields Migration
+
+Migration script `Migration_BusinessPartner_RemoveContactBankFields.sql` xóa các cột:
+- `ContactPerson`, `ContactPosition` - Sử dụng bảng `BusinessPartnerContact` thay thế
+- `BankAccount`, `BankName`, `CreditLimit`, `PaymentTerm` - Sẽ tách ra bảng riêng
+
+⚠️ **CẢNH BÁO**: Script này sẽ XÓA VĨNH VIỄN dữ liệu. Bắt buộc phải backup trước khi chạy!
+- Xem chi tiết trong `README_BusinessPartner_RemoveContactBankFields.md`
 
 ---
 

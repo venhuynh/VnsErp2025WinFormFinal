@@ -2993,18 +2993,6 @@ namespace Dal.DataContext
 		
 		private string _Country;
 		
-		private string _ContactPerson;
-		
-		private string _ContactPosition;
-		
-		private string _BankAccount;
-		
-		private string _BankName;
-		
-		private System.Nullable<decimal> _CreditLimit;
-		
-		private string _PaymentTerm;
-		
 		private bool _IsActive;
 		
 		private System.DateTime _CreatedDate;
@@ -3020,6 +3008,18 @@ namespace Dal.DataContext
 		private bool _IsDeleted;
 		
 		private System.Nullable<System.DateTime> _DeletedDate;
+		
+		private string _LogoFileName;
+		
+		private string _LogoRelativePath;
+		
+		private string _LogoFullPath;
+		
+		private string _LogoStorageType;
+		
+		private System.Nullable<long> _LogoFileSize;
+		
+		private string _LogoChecksum;
 		
 		private EntitySet<BusinessPartner_BusinessPartnerCategory> _BusinessPartner_BusinessPartnerCategories;
 		
@@ -3059,18 +3059,6 @@ namespace Dal.DataContext
     partial void OnCityChanged();
     partial void OnCountryChanging(string value);
     partial void OnCountryChanged();
-    partial void OnContactPersonChanging(string value);
-    partial void OnContactPersonChanged();
-    partial void OnContactPositionChanging(string value);
-    partial void OnContactPositionChanged();
-    partial void OnBankAccountChanging(string value);
-    partial void OnBankAccountChanged();
-    partial void OnBankNameChanging(string value);
-    partial void OnBankNameChanged();
-    partial void OnCreditLimitChanging(System.Nullable<decimal> value);
-    partial void OnCreditLimitChanged();
-    partial void OnPaymentTermChanging(string value);
-    partial void OnPaymentTermChanged();
     partial void OnIsActiveChanging(bool value);
     partial void OnIsActiveChanged();
     partial void OnCreatedDateChanging(System.DateTime value);
@@ -3087,6 +3075,18 @@ namespace Dal.DataContext
     partial void OnIsDeletedChanged();
     partial void OnDeletedDateChanging(System.Nullable<System.DateTime> value);
     partial void OnDeletedDateChanged();
+    partial void OnLogoFileNameChanging(string value);
+    partial void OnLogoFileNameChanged();
+    partial void OnLogoRelativePathChanging(string value);
+    partial void OnLogoRelativePathChanged();
+    partial void OnLogoFullPathChanging(string value);
+    partial void OnLogoFullPathChanged();
+    partial void OnLogoStorageTypeChanging(string value);
+    partial void OnLogoStorageTypeChanged();
+    partial void OnLogoFileSizeChanging(System.Nullable<long> value);
+    partial void OnLogoFileSizeChanged();
+    partial void OnLogoChecksumChanging(string value);
+    partial void OnLogoChecksumChanged();
     #endregion
 		
 		public BusinessPartner()
@@ -3320,126 +3320,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ContactPerson", DbType="NVarChar(100)")]
-		public string ContactPerson
-		{
-			get
-			{
-				return this._ContactPerson;
-			}
-			set
-			{
-				if ((this._ContactPerson != value))
-				{
-					this.OnContactPersonChanging(value);
-					this.SendPropertyChanging();
-					this._ContactPerson = value;
-					this.SendPropertyChanged("ContactPerson");
-					this.OnContactPersonChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ContactPosition", DbType="NVarChar(100)")]
-		public string ContactPosition
-		{
-			get
-			{
-				return this._ContactPosition;
-			}
-			set
-			{
-				if ((this._ContactPosition != value))
-				{
-					this.OnContactPositionChanging(value);
-					this.SendPropertyChanging();
-					this._ContactPosition = value;
-					this.SendPropertyChanged("ContactPosition");
-					this.OnContactPositionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BankAccount", DbType="NVarChar(50)")]
-		public string BankAccount
-		{
-			get
-			{
-				return this._BankAccount;
-			}
-			set
-			{
-				if ((this._BankAccount != value))
-				{
-					this.OnBankAccountChanging(value);
-					this.SendPropertyChanging();
-					this._BankAccount = value;
-					this.SendPropertyChanged("BankAccount");
-					this.OnBankAccountChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BankName", DbType="NVarChar(100)")]
-		public string BankName
-		{
-			get
-			{
-				return this._BankName;
-			}
-			set
-			{
-				if ((this._BankName != value))
-				{
-					this.OnBankNameChanging(value);
-					this.SendPropertyChanging();
-					this._BankName = value;
-					this.SendPropertyChanged("BankName");
-					this.OnBankNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreditLimit", DbType="Decimal(18,2)")]
-		public System.Nullable<decimal> CreditLimit
-		{
-			get
-			{
-				return this._CreditLimit;
-			}
-			set
-			{
-				if ((this._CreditLimit != value))
-				{
-					this.OnCreditLimitChanging(value);
-					this.SendPropertyChanging();
-					this._CreditLimit = value;
-					this.SendPropertyChanged("CreditLimit");
-					this.OnCreditLimitChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PaymentTerm", DbType="NVarChar(50)")]
-		public string PaymentTerm
-		{
-			get
-			{
-				return this._PaymentTerm;
-			}
-			set
-			{
-				if ((this._PaymentTerm != value))
-				{
-					this.OnPaymentTermChanging(value);
-					this.SendPropertyChanging();
-					this._PaymentTerm = value;
-					this.SendPropertyChanged("PaymentTerm");
-					this.OnPaymentTermChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
 		public bool IsActive
 		{
@@ -3608,6 +3488,126 @@ namespace Dal.DataContext
 					this._DeletedDate = value;
 					this.SendPropertyChanged("DeletedDate");
 					this.OnDeletedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoFileName", DbType="NVarChar(255)")]
+		public string LogoFileName
+		{
+			get
+			{
+				return this._LogoFileName;
+			}
+			set
+			{
+				if ((this._LogoFileName != value))
+				{
+					this.OnLogoFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._LogoFileName = value;
+					this.SendPropertyChanged("LogoFileName");
+					this.OnLogoFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoRelativePath", DbType="NVarChar(500)")]
+		public string LogoRelativePath
+		{
+			get
+			{
+				return this._LogoRelativePath;
+			}
+			set
+			{
+				if ((this._LogoRelativePath != value))
+				{
+					this.OnLogoRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._LogoRelativePath = value;
+					this.SendPropertyChanged("LogoRelativePath");
+					this.OnLogoRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoFullPath", DbType="NVarChar(1000)")]
+		public string LogoFullPath
+		{
+			get
+			{
+				return this._LogoFullPath;
+			}
+			set
+			{
+				if ((this._LogoFullPath != value))
+				{
+					this.OnLogoFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._LogoFullPath = value;
+					this.SendPropertyChanged("LogoFullPath");
+					this.OnLogoFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoStorageType", DbType="NVarChar(20)")]
+		public string LogoStorageType
+		{
+			get
+			{
+				return this._LogoStorageType;
+			}
+			set
+			{
+				if ((this._LogoStorageType != value))
+				{
+					this.OnLogoStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._LogoStorageType = value;
+					this.SendPropertyChanged("LogoStorageType");
+					this.OnLogoStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoFileSize", DbType="BigInt")]
+		public System.Nullable<long> LogoFileSize
+		{
+			get
+			{
+				return this._LogoFileSize;
+			}
+			set
+			{
+				if ((this._LogoFileSize != value))
+				{
+					this.OnLogoFileSizeChanging(value);
+					this.SendPropertyChanging();
+					this._LogoFileSize = value;
+					this.SendPropertyChanged("LogoFileSize");
+					this.OnLogoFileSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoChecksum", DbType="NVarChar(64)")]
+		public string LogoChecksum
+		{
+			get
+			{
+				return this._LogoChecksum;
+			}
+			set
+			{
+				if ((this._LogoChecksum != value))
+				{
+					this.OnLogoChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._LogoChecksum = value;
+					this.SendPropertyChanged("LogoChecksum");
+					this.OnLogoChecksumChanged();
 				}
 			}
 		}
