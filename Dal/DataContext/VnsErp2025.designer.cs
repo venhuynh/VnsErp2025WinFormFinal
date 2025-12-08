@@ -3021,6 +3021,8 @@ namespace Dal.DataContext
 		
 		private string _LogoChecksum;
 		
+		private System.Data.Linq.Binary _LogoThumbnailData;
+		
 		private EntitySet<BusinessPartner_BusinessPartnerCategory> _BusinessPartner_BusinessPartnerCategories;
 		
 		private EntitySet<BusinessPartnerSite> _BusinessPartnerSites;
@@ -3087,6 +3089,8 @@ namespace Dal.DataContext
     partial void OnLogoFileSizeChanged();
     partial void OnLogoChecksumChanging(string value);
     partial void OnLogoChecksumChanged();
+    partial void OnLogoThumbnailDataChanging(System.Data.Linq.Binary value);
+    partial void OnLogoThumbnailDataChanged();
     #endregion
 		
 		public BusinessPartner()
@@ -3608,6 +3612,26 @@ namespace Dal.DataContext
 					this._LogoChecksum = value;
 					this.SendPropertyChanged("LogoChecksum");
 					this.OnLogoChecksumChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LogoThumbnailData", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary LogoThumbnailData
+		{
+			get
+			{
+				return this._LogoThumbnailData;
+			}
+			set
+			{
+				if ((this._LogoThumbnailData != value))
+				{
+					this.OnLogoThumbnailDataChanging(value);
+					this.SendPropertyChanging();
+					this._LogoThumbnailData = value;
+					this.SendPropertyChanged("LogoThumbnailData");
+					this.OnLogoThumbnailDataChanged();
 				}
 			}
 		}

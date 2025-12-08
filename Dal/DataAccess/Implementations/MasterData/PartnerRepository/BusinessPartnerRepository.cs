@@ -669,6 +669,9 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                 existing.LogoFileSize = source.LogoFileSize;
                 existing.LogoChecksum = source.LogoChecksum;
                 
+                // Copy LogoThumbnailData (binary data stored in database)
+                existing.LogoThumbnailData = source.LogoThumbnailData;
+                
                 existing.UpdatedDate = DateTime.Now;
                 existing.ModifiedBy = userId;
                 

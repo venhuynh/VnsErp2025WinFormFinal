@@ -135,6 +135,7 @@
       <Column Name="LogoStorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Column Name="LogoFileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="LogoChecksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="LogoThumbnailData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
       <Association Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartner_BusinessPartnerCategory" />
       <Association Name="BusinessPartner_BusinessPartnerSite" Member="BusinessPartnerSites" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartnerSite" />
       <Association Name="BusinessPartner_StockInOutDocument" Member="StockInOutDocuments" ThisKey="Id" OtherKey="BusinessPartnerId" Type="StockInOutDocument" />

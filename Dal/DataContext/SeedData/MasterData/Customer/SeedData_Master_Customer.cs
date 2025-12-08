@@ -102,12 +102,7 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
                     Address = GenerateAddress(random),
                     City = cities[random.Next(cities.Length)],
                     Country = countries[random.Next(countries.Length)],
-                    ContactPerson = GenerateContactPerson(random),
-                    ContactPosition = GenerateContactPosition(random),
-                    BankAccount = GenerateBankAccount(random),
-                    BankName = bankNames[random.Next(bankNames.Length)],
-                    CreditLimit = random.Next(0, 2) == 1 ? (decimal?)random.Next(1000000, 100000000) : null,
-                    PaymentTerm = paymentTerms[random.Next(paymentTerms.Length)],
+                    
                     IsActive = random.Next(0, 10) < 9, // 90% active
                     CreatedDate = DateTime.Now.AddDays(-random.Next(0, 365)),
                     UpdatedDate = random.Next(0, 2) == 1 ? DateTime.Now.AddDays(-random.Next(0, 30)) : (DateTime?)null

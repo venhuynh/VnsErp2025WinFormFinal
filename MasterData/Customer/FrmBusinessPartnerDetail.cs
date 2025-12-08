@@ -197,12 +197,6 @@ namespace MasterData.Customer
                 if (AddressTextEdit != null) AddressTextEdit.EditValue = entity.Address;
                 if (CityTextEdit != null) CityTextEdit.EditValue = entity.City;
                 if (CountryTextEdit != null) CountryTextEdit.EditValue = entity.Country;
-                if (ContactPersonTextEdit != null) ContactPersonTextEdit.EditValue = entity.ContactPerson;
-                if (ContactPositionTextEdit != null) ContactPositionTextEdit.EditValue = entity.ContactPosition;
-                if (BankAccountTextEdit != null) BankAccountTextEdit.EditValue = entity.BankAccount;
-                if (BankNameTextEdit != null) BankNameTextEdit.EditValue = entity.BankName;
-                if (CreditLimitTextEdit != null) CreditLimitTextEdit.EditValue = entity.CreditLimit;
-                if (PaymentTermTextEdit != null) PaymentTermTextEdit.EditValue = entity.PaymentTerm;
                 if (IsActiveToggleSwitch != null) IsActiveToggleSwitch.EditValue = entity.IsActive;
 
                 if (PartnerTypeNameComboBoxEdit != null)
@@ -353,12 +347,6 @@ namespace MasterData.Customer
                 Address = AddressTextEdit?.EditValue?.ToString(),
                 City = CityTextEdit?.EditValue?.ToString(),
                 Country = CountryTextEdit?.EditValue?.ToString(),
-                ContactPerson = ContactPersonTextEdit?.EditValue?.ToString(),
-                ContactPosition = ContactPositionTextEdit?.EditValue?.ToString(),
-                BankAccount = BankAccountTextEdit?.EditValue?.ToString(),
-                BankName = BankNameTextEdit?.EditValue?.ToString(),
-                CreditLimit = decimal.TryParse(CreditLimitTextEdit?.EditValue?.ToString(), out var cl) ? cl : null,
-                PaymentTerm = PaymentTermTextEdit?.EditValue?.ToString(),
                 IsActive = (IsActiveToggleSwitch?.EditValue as bool?) ?? true,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now

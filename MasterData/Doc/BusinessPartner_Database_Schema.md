@@ -25,12 +25,18 @@ Bảng chính lưu trữ thông tin đối tác kinh doanh.
 
 ### 1.1. Các Trường Dữ Liệu
 
+#### Thông Tin Cơ Bản
 | Tên Trường | Kiểu Dữ Liệu | Nullable | Mô Tả |
 |------------|--------------|----------|-------|
 | `Id` | `UniqueIdentifier` | NOT NULL | Khóa chính (Primary Key) |
 | `PartnerCode` | `NVarChar(50)` | NOT NULL | Mã đối tác (duy nhất) |
 | `PartnerName` | `NVarChar(255)` | NOT NULL | Tên đối tác |
 | `PartnerType` | `Int` | NOT NULL | Loại đối tác (1: Khách hàng, 2: Nhà cung cấp, ...) |
+| `IsActive` | `Bit` | NOT NULL | Trạng thái hoạt động (mặc định: 1) |
+
+#### Thông Tin Liên Hệ
+| Tên Trường | Kiểu Dữ Liệu | Nullable | Mô Tả |
+|------------|--------------|----------|-------|
 | `TaxCode` | `NVarChar(50)` | NULL | Mã số thuế |
 | `Phone` | `NVarChar(50)` | NULL | Số điện thoại |
 | `Email` | `NVarChar(100)` | NULL | Email (có validation format) |
@@ -38,22 +44,10 @@ Bảng chính lưu trữ thông tin đối tác kinh doanh.
 | `Address` | `NVarChar(255)` | NULL | Địa chỉ |
 | `City` | `NVarChar(100)` | NULL | Thành phố |
 | `Country` | `NVarChar(100)` | NULL | Quốc gia |
-| `IsActive` | `Bit` | NOT NULL | Trạng thái hoạt động (mặc định: 1) |
-| `Logo` | `VarBinary(MAX)` | NULL | Dữ liệu binary của logo |
-| `LogoFileName` | `NVarChar(255)` | NULL | Tên file logo |
-| `LogoRelativePath` | `NVarChar(500)` | NULL | Đường dẫn tương đối của logo |
-| `LogoFullPath` | `NVarChar(1000)` | NULL | Đường dẫn đầy đủ của logo |
-| `LogoStorageType` | `NVarChar(20)` | NULL | Loại storage (Database, FileSystem, NAS, etc.) |
-| `LogoFileSize` | `BigInt` | NULL | Kích thước file logo (bytes) |
-| `LogoChecksum` | `NVarChar(64)` | NULL | Checksum để verify integrity |
-| `CreatedDate` | `DateTime` | NOT NULL | Ngày tạo |
-| `UpdatedDate` | `DateTime` | NULL | Ngày cập nhật |
-| `CreatedBy` | `UniqueIdentifier` | NULL | ID người tạo (FK → ApplicationUser.Id) |
-| `ModifiedBy` | `UniqueIdentifier` | NULL | ID người sửa (FK → ApplicationUser.Id) |
-| `DeletedBy` | `UniqueIdentifier` | NULL | ID người xóa (FK → ApplicationUser.Id) |
-| `IsDeleted` | `Bit` | NOT NULL | Đánh dấu xóa mềm (mặc định: 0) |
-| `DeletedDate` | `DateTime` | NULL | Ngày xóa |
-| `Logo` | `VarBinary(MAX)` | NULL | Dữ liệu binary của logo |
+
+#### Logo (Metadata Only)
+| Tên Trường | Kiểu Dữ Liệu | Nullable | Mô Tả |
+|------------|--------------|----------|-------|
 | `LogoFileName` | `NVarChar(255)` | NULL | Tên file logo |
 | `LogoRelativePath` | `NVarChar(500)` | NULL | Đường dẫn tương đối của logo |
 | `LogoFullPath` | `NVarChar(1000)` | NULL | Đường dẫn đầy đủ của logo |
@@ -61,9 +55,32 @@ Bảng chính lưu trữ thông tin đối tác kinh doanh.
 | `LogoFileSize` | `BigInt` | NULL | Kích thước file logo (bytes) |
 | `LogoChecksum` | `NVarChar(64)` | NULL | Checksum để verify integrity |
 
+**Lưu ý:** Bảng `BusinessPartner` chỉ lưu metadata của logo (không lưu binary data trong database). Logo binary được lưu trong file system hoặc NAS theo `LogoStorageType`.
+
+#### Logo Thumbnail (Binary Data Only)
+| Tên Trường | Kiểu Dữ Liệu | Nullable | Mô Tả |
+|------------|--------------|----------|-------|
+| `LogoThumbnailData` | `VarBinary(MAX)` | NULL | Dữ liệu binary của logo thumbnail (kích thước nhỏ) |
+
+**Lưu ý:** 
+- Bảng `BusinessPartner` chỉ lưu binary data của thumbnail trong database (không có metadata fields riêng cho thumbnail).
+- Thumbnail được tạo tự động từ logo gốc và lưu trực tiếp trong database để tối ưu hiệu suất hiển thị.
+- Pattern này khác với `ProductService` và `ProductVariant` (có đầy đủ metadata cho thumbnail) vì BusinessPartner chỉ cần lưu thumbnail binary trong database.
+
+#### Audit Fields
+| Tên Trường | Kiểu Dữ Liệu | Nullable | Mô Tả |
+|------------|--------------|----------|-------|
+| `CreatedDate` | `DateTime` | NOT NULL | Ngày tạo |
+| `UpdatedDate` | `DateTime` | NULL | Ngày cập nhật |
+| `CreatedBy` | `UniqueIdentifier` | NULL | ID người tạo (FK → ApplicationUser.Id) |
+| `ModifiedBy` | `UniqueIdentifier` | NULL | ID người sửa (FK → ApplicationUser.Id) |
+| `DeletedBy` | `UniqueIdentifier` | NULL | ID người xóa (FK → ApplicationUser.Id) |
+| `IsDeleted` | `Bit` | NOT NULL | Đánh dấu xóa mềm (mặc định: 0) |
+| `DeletedDate` | `DateTime` | NULL | Ngày xóa |
+
 **Lưu ý:** Các cột sau đã bị xóa khỏi bảng (tách ra bảng riêng):
-- `ContactPerson`, `ContactPosition` - Sử dụng bảng `BusinessPartnerContact`
-- `BankAccount`, `BankName`, `CreditLimit`, `PaymentTerm` - Sẽ tách ra bảng riêng
+- `ContactPerson`, `ContactPosition` - Sử dụng bảng `BusinessPartnerContact` thay thế
+- `BankAccount`, `BankName`, `CreditLimit`, `PaymentTerm` - Đã xóa, sẽ tách ra bảng riêng trong tương lai
 
 ### 1.2. Ràng Buộc
 
@@ -361,7 +378,18 @@ ApplicationUser (1) ──< (N) BusinessPartner_BusinessPartnerCategory [Created
 
 ### 8.2. Data Validation
 - Thêm check constraints cho email format
-- Xóa các cột liên hệ, ngân hàng, thanh toán (ContactPerson, ContactPosition, BankAccount, BankName, CreditLimit, PaymentTerm)
+- Xóa các cột liên hệ, ngân hàng, thanh toán (ContactPerson, ContactPosition, BankAccount, BankName, CreditLimit, PaymentTerm) khỏi bảng `BusinessPartner`
+
+### 8.6. Logo Storage
+- Thêm các cột metadata để lưu trữ thông tin logo của BusinessPartner (LogoFileName, LogoRelativePath, LogoFullPath, LogoStorageType, LogoFileSize, LogoChecksum)
+- **Lưu ý:** Bảng `BusinessPartner` chỉ lưu metadata, không lưu binary data của logo trong database. Logo binary được lưu trong file system hoặc NAS.
+- Tham khảo: Bảng `Company` có cấu trúc tương tự nhưng có thêm cột `Logo` (binary)
+
+### 8.7. Logo Thumbnail Storage
+- Thêm cột `LogoThumbnailData` (VARBINARY(MAX)) để lưu trữ binary data của logo thumbnail
+- **Lưu ý:** Chỉ lưu binary data, không có metadata fields riêng cho thumbnail (khác với `ProductService` và `ProductVariant`)
+- Thumbnail được tạo tự động từ logo gốc và lưu trực tiếp trong database để tối ưu hiệu suất hiển thị
+- Giúp tăng tốc độ tải trang và giảm băng thông khi hiển thị trong danh sách và grid
 
 ### 8.3. Data Integrity
 - Unique filtered indexes đảm bảo mỗi đối tác chỉ có 1 địa điểm mặc định
@@ -397,9 +425,42 @@ ApplicationUser (1) ──< (N) BusinessPartner_BusinessPartnerCategory [Created
 
 Các cột sau đã được xóa khỏi bảng `BusinessPartner`:
 - `ContactPerson`, `ContactPosition` - Sử dụng bảng `BusinessPartnerContact` thay thế
-- `BankAccount`, `BankName`, `CreditLimit`, `PaymentTerm` - Sẽ tách ra bảng riêng
+- `BankAccount`, `BankName`, `CreditLimit`, `PaymentTerm` - Đã xóa, sẽ tách ra bảng riêng trong tương lai
 
 Xem migration script: `Migration_BusinessPartner_RemoveContactBankFields.sql`
+
+### 9.5. Logo Storage
+
+Các cột Logo metadata được thêm vào để lưu trữ thông tin logo của BusinessPartner:
+- `LogoFileName` - Tên file gốc
+- `LogoRelativePath` - Đường dẫn tương đối (nếu lưu trong file system/NAS)
+- `LogoFullPath` - Đường dẫn đầy đủ (nếu lưu trong file system/NAS)
+- `LogoStorageType` - Loại storage: 'Database', 'FileSystem', 'NAS', etc.
+- `LogoFileSize` - Kích thước file (bytes)
+- `LogoChecksum` - SHA256 checksum để verify integrity
+
+**Lưu ý:** Bảng `BusinessPartner` chỉ lưu metadata, không lưu binary data của logo trong database. Logo binary được lưu trong file system hoặc NAS theo `LogoStorageType`.
+
+Xem migration script: `Migration_BusinessPartner_AddLogo.sql`
+
+### 9.6. Logo Thumbnail Storage
+
+Cột `LogoThumbnailData` được thêm vào để lưu trữ binary data của thumbnail (phiên bản nhỏ) của logo:
+- `LogoThumbnailData` - Dữ liệu binary của thumbnail (lưu trực tiếp trong database)
+
+**Đặc điểm:**
+- Chỉ lưu binary data, không có metadata fields riêng (khác với `ProductService` và `ProductVariant`)
+- Thumbnail được tạo tự động từ logo gốc và lưu trực tiếp trong database để tối ưu hiệu suất
+- Giúp tải nhanh hơn trong danh sách và grid
+- Giảm băng thông mạng
+- Cải thiện trải nghiệm người dùng
+
+**Khuyến nghị:**
+- Kích thước thumbnail: 150x150, 200x200, hoặc 300x300 pixels
+- Format: JPEG (để giảm kích thước) hoặc PNG (nếu cần transparency)
+- Tự động tạo thumbnail khi upload logo
+
+**Lưu ý:** Migration script `Migration_BusinessPartner_AddLogoThumbnail.sql` đã được tạo với đầy đủ metadata fields, nhưng thực tế chỉ cột `LogoThumbnailData` được thêm vào database. Các metadata fields có thể được thêm sau nếu cần.
 
 ---
 
@@ -408,6 +469,7 @@ Xem migration script: `Migration_BusinessPartner_RemoveContactBankFields.sql`
 Các migration scripts được lưu trong:
 - `Database/Migrations/Migration_BusinessPartner_Improvements.sql` - Script migration chính (thêm audit fields, constraints, indexes)
 - `Database/Migrations/Migration_BusinessPartner_AddLogo.sql` - Script thêm các cột Logo cho BusinessPartner
+- `Database/Migrations/Migration_BusinessPartner_AddLogoThumbnail.sql` - Script thêm các cột Logo Thumbnail cho BusinessPartner
 - `Database/Migrations/Migration_BusinessPartner_RemoveContactBankFields.sql` - Script xóa các cột liên hệ, ngân hàng, thanh toán
 - `Database/Migrations/Fix_Existing_Data.sql` - Script cleanup dữ liệu trước khi migration
 - `Database/Migrations/Verify_Migration_Results.sql` - Script kiểm tra kết quả migration
@@ -423,10 +485,27 @@ Migration script `Migration_BusinessPartner_AddLogo.sql` thêm các cột để 
 
 Migration script `Migration_BusinessPartner_RemoveContactBankFields.sql` xóa các cột:
 - `ContactPerson`, `ContactPosition` - Sử dụng bảng `BusinessPartnerContact` thay thế
-- `BankAccount`, `BankName`, `CreditLimit`, `PaymentTerm` - Sẽ tách ra bảng riêng
+- `BankAccount`, `BankName`, `CreditLimit`, `PaymentTerm` - Đã xóa, sẽ tách ra bảng riêng trong tương lai
 
 ⚠️ **CẢNH BÁO**: Script này sẽ XÓA VĨNH VIỄN dữ liệu. Bắt buộc phải backup trước khi chạy!
 - Xem chi tiết trong `README_BusinessPartner_RemoveContactBankFields.md`
+
+### 10.3. Logo Thumbnail Migration
+
+Migration script `Migration_BusinessPartner_AddLogoThumbnail.sql` thêm các cột để lưu trữ thumbnail của logo BusinessPartner:
+- Thumbnail là phiên bản nhỏ hơn của logo, hữu ích cho việc hiển thị trong danh sách
+- Tất cả các cột đều NULL, không ảnh hưởng đến dữ liệu hiện có
+- Xem chi tiết trong `README_BusinessPartner_LogoThumbnail_Migration.md`
+
+### 10.4. Migration Order
+
+**Thứ tự chạy migration scripts (quan trọng):**
+1. `Fix_Existing_Data.sql` - Cleanup dữ liệu hiện có (nếu cần)
+2. `Migration_BusinessPartner_Improvements.sql` - Thêm audit fields, constraints, indexes
+3. `Migration_BusinessPartner_AddLogo.sql` - Thêm các cột Logo
+4. `Migration_BusinessPartner_AddLogoThumbnail.sql` - Thêm các cột Logo Thumbnail
+5. `Migration_BusinessPartner_RemoveContactBankFields.sql` - Xóa các cột liên hệ, ngân hàng, thanh toán
+6. `Verify_Migration_Results.sql` - Kiểm tra kết quả migration
 
 ---
 
