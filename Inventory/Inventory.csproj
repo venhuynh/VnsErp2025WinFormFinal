@@ -190,11 +190,23 @@
     <Compile Include="StockIn\NhapHangThuongMai\FrmNhapKhoThuongMai.Designer.cs">
       <DependentUpon>FrmNhapKhoThuongMai.cs</DependentUpon>
     </Compile>
+    <Compile Include="StockIn\NhapLapRap\FrmNhapLapRap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockIn\NhapLapRap\FrmNhapLapRap.Designer.cs">
+      <DependentUpon>FrmNhapLapRap.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.Designer.cs">
       <DependentUpon>UcNhapLapRapLapRapDetailDto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMasterDto.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMasterDto.Designer.cs">
+      <DependentUpon>UcNhapLapRapMasterDto.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\NhapLuuChuyenKho\FrmNhapLuuChuyenKho.cs">
       <SubType>Form</SubType>
@@ -459,6 +471,9 @@
     <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcStockInMaster.resx">
       <DependentUpon>UcStockInMaster.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.resx">
+      <DependentUpon>UcNhapLapRapLapRapDetailDto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapLuuChuyenKho\FrmNhapLuuChuyenKho.resx">
       <DependentUpon>FrmNhapLuuChuyenKho.cs</DependentUpon>
     </EmbeddedResource>
@@ -559,6 +574,9 @@
     <None Include="Properties\DataSources\DTO.Inventory.Query.StockInOutImageDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapBaoHanh.NhapBaoHanhDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapHangThuongMai.StockInReportDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapLapRap.NhapLapRapDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapLapRap.NhapLapRapMasterDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapLapRap.NhapLapRapMasterListDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapLuuChuyenKho.NhapLuuChuyenKhoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapLuuChuyenKho.NhapLuuChuyenKhoMasterDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapNoiBo.NhapNoiBoDetailDto.datasource" />
@@ -578,6 +596,8 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.AttributeDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductServiceDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantListDto.datasource" />
     <None Include="Properties\Settings.settings">
@@ -726,6 +746,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\edit_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\additem_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\additem_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

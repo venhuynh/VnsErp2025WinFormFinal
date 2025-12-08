@@ -31,11 +31,14 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.ucXuatLapRapDetailDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapDetailDto();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.XuatLaiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             this.LuuPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.InPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XuatQuanLyTaiSanBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -52,11 +55,10 @@
             this.ucXuatLapRapMasterDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapMasterDto();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ucXuatLapRapDetailDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapDetailDto();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
@@ -65,7 +67,6 @@
             this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -79,6 +80,13 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
+            // ucXuatLapRapDetailDto1
+            // 
+            this.ucXuatLapRapDetailDto1.Location = new System.Drawing.Point(12, 12);
+            this.ucXuatLapRapDetailDto1.Name = "ucXuatLapRapDetailDto1";
+            this.ucXuatLapRapDetailDto1.Size = new System.Drawing.Size(864, 744);
+            this.ucXuatLapRapDetailDto1.TabIndex = 4;
+            // 
             // Root
             // 
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -88,6 +96,14 @@
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(888, 768);
             this.Root.TextVisible = false;
+            // 
+            // layoutControlItem2
+            // 
+            this.layoutControlItem2.Control = this.ucXuatLapRapDetailDto1;
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.Size = new System.Drawing.Size(868, 748);
+            this.layoutControlItem2.TextVisible = false;
             // 
             // dockManager1
             // 
@@ -126,9 +142,10 @@
             this.CloseBarButtonItem,
             this.XuatQuanLyTaiSanBarButtonItem,
             this.ThemHinhAnhBarButtonItem,
-            this.HotKeyBarStaticItem});
+            this.HotKeyBarStaticItem,
+            this.barButtonItem1});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 7;
+            this.barManager1.MaxItemId = 8;
             // 
             // bar2
             // 
@@ -139,6 +156,7 @@
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XuatLaiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LuuPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XuatQuanLyTaiSanBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
@@ -156,6 +174,14 @@
             this.XuatLaiBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.reset2_16x16;
             this.XuatLaiBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.reset2_32x32;
             this.XuatLaiBarButtonItem.Name = "XuatLaiBarButtonItem";
+            // 
+            // barButtonItem1
+            // 
+            this.barButtonItem1.Caption = "Đăng ký thiết bị";
+            this.barButtonItem1.Id = 7;
+            this.barButtonItem1.ImageOptions.Image = global::Inventory.Properties.Resources.additem_16x16;
+            this.barButtonItem1.ImageOptions.LargeImage = global::Inventory.Properties.Resources.additem_32x32;
+            this.barButtonItem1.Name = "barButtonItem1";
             // 
             // LuuPhieuBarButtonItem
             // 
@@ -292,21 +318,6 @@
             this.layoutControlItem1.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // ucXuatLapRapDetailDto1
-            // 
-            this.ucXuatLapRapDetailDto1.Location = new System.Drawing.Point(12, 12);
-            this.ucXuatLapRapDetailDto1.Name = "ucXuatLapRapDetailDto1";
-            this.ucXuatLapRapDetailDto1.Size = new System.Drawing.Size(864, 744);
-            this.ucXuatLapRapDetailDto1.TabIndex = 4;
-            // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Control = this.ucXuatLapRapDetailDto1;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(868, 748);
-            this.layoutControlItem2.TextVisible = false;
-            // 
             // FrmXuatLapRap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -323,6 +334,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.dockPanel2.ResumeLayout(false);
@@ -331,7 +343,6 @@
             this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -363,5 +374,6 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private UcXuatLapRapDetailDto ucXuatLapRapDetailDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
     }
 }
