@@ -442,7 +442,7 @@ namespace MasterData.Customer
         #region ========== XỬ LÝ DỮ LIỆU ==========
 
         /// <summary>
-        /// Cấu hình TreeList để hiển thị dữ liệu xuống dòng (word wrap) cho các cột văn bản dài.
+        /// Cấu hình TreeList để hiển thị dữ liệu xuống dòng (word wrap) cho các cột văn bản dài và HTML.
         /// </summary>
         private void ConfigureMultiLineGridView()
         {
@@ -451,6 +451,10 @@ namespace MasterData.Customer
                 // Cấu hình TreeList để hiển thị dạng cây
                 treeList1.OptionsView.ShowButtons = true;
                 treeList1.OptionsView.ShowRoot = true;
+                
+                // Bật HTML formatting cho TreeList
+                treeList1.OptionsView.EnableAppearanceEvenRow = true;
+                treeList1.OptionsView.EnableAppearanceOddRow = true;
 
                 // RepositoryItemMemoEdit cho wrap text
                 var memo = new RepositoryItemMemoEdit
@@ -463,10 +467,51 @@ namespace MasterData.Customer
                 // Áp dụng cho các cột có khả năng dài
                 ApplyMemoEditorToColumn("CategoryName", memo);
                 ApplyMemoEditorToColumn("Description", memo);
+                ApplyMemoEditorToColumn("CategoryCode", memo);
+
+                // Cấu hình HTML columns - DevExpress TreeList hỗ trợ HTML formatting tự động
+                ConfigureHtmlColumn("CategoryInfoHtml");
+                ConfigureHtmlColumn("FullPathHtml");
+                ConfigureHtmlColumn("AuditInfoHtml");
+
+                // Cấu hình cột IsActive với CheckEdit
+                var checkEdit = new RepositoryItemCheckEdit();
+                if (treeList1.Columns["IsActive"] != null)
+                {
+                    if (!treeList1.RepositoryItems.Contains(checkEdit))
+                    {
+                        treeList1.RepositoryItems.Add(checkEdit);
+                    }
+                    treeList1.Columns["IsActive"].ColumnEdit = checkEdit;
+                    treeList1.Columns["IsActive"].OptionsColumn.AllowEdit = false;
+                }
+
+                // Cấu hình alignment cho các cột số
+                if (treeList1.Columns["SortOrder"] != null)
+                {
+                    treeList1.Columns["SortOrder"].AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+                    treeList1.Columns["SortOrder"].AppearanceCell.Options.UseTextOptions = true;
+                }
+
+                if (treeList1.Columns["PartnerCount"] != null)
+                {
+                    treeList1.Columns["PartnerCount"].AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+                    treeList1.Columns["PartnerCount"].AppearanceCell.Options.UseTextOptions = true;
+                }
 
                 // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
                 treeList1.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
                 treeList1.Appearance.HeaderPanel.Options.UseTextOptions = true;
+
+                // Cấu hình sắp xếp mặc định theo SortOrder, sau đó CategoryName
+                if (treeList1.Columns["SortOrder"] != null)
+                {
+                    treeList1.Columns["SortOrder"].SortOrder = System.Windows.Forms.SortOrder.Ascending;
+                }
+                else if (treeList1.Columns["CategoryName"] != null)
+                {
+                    treeList1.Columns["CategoryName"].SortOrder = System.Windows.Forms.SortOrder.Ascending;
+                }
             }
             catch (Exception ex)
             {
@@ -489,6 +534,39 @@ namespace MasterData.Customer
                 treeList1.RepositoryItems.Add(memo);
             }
 
+            col.ColumnEdit = memo;
+        }
+
+        /// <summary>
+        /// Cấu hình cột HTML để hiển thị HTML formatting (DevExpress TreeList hỗ trợ HTML tự động)
+        /// </summary>
+        /// <param name="fieldName">Tên field của cột</param>
+        private void ConfigureHtmlColumn(string fieldName)
+        {
+            var col = treeList1.Columns[fieldName];
+            if (col == null) return;
+            
+            // Cấu hình để hiển thị HTML
+            col.OptionsColumn.AllowEdit = false;
+            col.OptionsColumn.ReadOnly = true;
+            
+            // Bật HTML formatting cho cột
+            col.AppearanceCell.TextOptions.WordWrap = WordWrap.Wrap;
+            col.AppearanceCell.Options.UseTextOptions = true;
+            
+            // Sử dụng RepositoryItemMemoEdit với word wrap cho HTML columns
+            var memo = new RepositoryItemMemoEdit
+            {
+                WordWrap = true,
+                AutoHeight = true
+            };
+            memo.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
+            
+            if (!treeList1.RepositoryItems.Contains(memo))
+            {
+                treeList1.RepositoryItems.Add(memo);
+            }
+            
             col.ColumnEdit = memo;
         }
 

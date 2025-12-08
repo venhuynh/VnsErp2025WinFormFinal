@@ -6,6 +6,7 @@ using Inventory.OverlayForm;
 using Inventory.Query;
 using Inventory.StockOut.XuatLapRap;
 using Inventory.StockOut.XuatNoiBo;
+using MasterData.Customer;
 using System;
 using System.Windows.Forms;
 using VnsErp2025.Form;
@@ -109,7 +110,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FormMain());
+            Application.Run(new FrmBusinessPartnerCategory());
 
             #endregion
 

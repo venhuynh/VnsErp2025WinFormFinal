@@ -52,9 +52,15 @@ namespace MasterData.Customer
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.treeList1 = new DevExpress.XtraTreeList.TreeList();
+            this.colCategoryInfoHtml = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colCategoryCode = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colIsActive = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colSortOrder = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colPartnerCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colFullPathHtml = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colAuditInfoHtml = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.businessPartnerCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -193,9 +199,15 @@ namespace MasterData.Customer
             this.treeList1.Appearance.Caption.Options.UseForeColor = true;
             this.treeList1.Caption = "BẢNG QUẢN LÝ PHÂN LOẠI ĐỔI TÁC";
             this.treeList1.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
+            this.colCategoryInfoHtml,
             this.colCategoryName,
+            this.colCategoryCode,
             this.colDescription,
-            this.colPartnerCount});
+            this.colIsActive,
+            this.colSortOrder,
+            this.colPartnerCount,
+            this.colFullPathHtml,
+            this.colAuditInfoHtml});
             this.treeList1.DataSource = this.businessPartnerCategoryDtoBindingSource;
             this.treeList1.KeyFieldName = "Id";
             this.treeList1.Location = new System.Drawing.Point(12, 12);
@@ -205,31 +217,102 @@ namespace MasterData.Customer
             this.treeList1.OptionsSelection.MultiSelect = true;
             this.treeList1.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check;
             this.treeList1.OptionsView.ShowCaption = true;
+            this.treeList1.OptionsView.EnableAppearanceEvenRow = true;
+            this.treeList1.OptionsView.EnableAppearanceOddRow = true;
             this.treeList1.ParentFieldName = "ParentId";
             this.treeList1.Size = new System.Drawing.Size(1051, 579);
             this.treeList1.TabIndex = 4;
             // 
+            // colCategoryInfoHtml
+            // 
+            this.colCategoryInfoHtml.Caption = "Thông tin danh mục";
+            this.colCategoryInfoHtml.FieldName = "CategoryInfoHtml";
+            this.colCategoryInfoHtml.Name = "colCategoryInfoHtml";
+            this.colCategoryInfoHtml.OptionsColumn.AllowEdit = false;
+            this.colCategoryInfoHtml.OptionsColumn.ReadOnly = true;
+            this.colCategoryInfoHtml.Visible = true;
+            this.colCategoryInfoHtml.VisibleIndex = 0;
+            this.colCategoryInfoHtml.Width = 350;
+            // 
             // colCategoryName
             // 
+            this.colCategoryName.Caption = "Tên phân loại";
             this.colCategoryName.FieldName = "CategoryName";
             this.colCategoryName.Name = "colCategoryName";
             this.colCategoryName.Visible = true;
-            this.colCategoryName.VisibleIndex = 0;
+            this.colCategoryName.VisibleIndex = 1;
+            this.colCategoryName.Width = 200;
+            // 
+            // colCategoryCode
+            // 
+            this.colCategoryCode.Caption = "Mã danh mục";
+            this.colCategoryCode.FieldName = "CategoryCode";
+            this.colCategoryCode.Name = "colCategoryCode";
+            this.colCategoryCode.Visible = true;
+            this.colCategoryCode.VisibleIndex = 2;
+            this.colCategoryCode.Width = 120;
             // 
             // colDescription
             // 
+            this.colDescription.Caption = "Mô tả";
             this.colDescription.FieldName = "Description";
             this.colDescription.Name = "colDescription";
             this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 1;
+            this.colDescription.VisibleIndex = 3;
+            this.colDescription.Width = 250;
+            // 
+            // colIsActive
+            // 
+            this.colIsActive.Caption = "Hoạt động";
+            this.colIsActive.FieldName = "IsActive";
+            this.colIsActive.Name = "colIsActive";
+            this.colIsActive.OptionsColumn.AllowEdit = false;
+            this.colIsActive.OptionsColumn.ReadOnly = true;
+            this.colIsActive.Visible = true;
+            this.colIsActive.VisibleIndex = 4;
+            this.colIsActive.Width = 80;
+            // 
+            // colSortOrder
+            // 
+            this.colSortOrder.Caption = "Thứ tự";
+            this.colSortOrder.FieldName = "SortOrder";
+            this.colSortOrder.Name = "colSortOrder";
+            this.colSortOrder.Visible = true;
+            this.colSortOrder.VisibleIndex = 5;
+            this.colSortOrder.Width = 80;
             // 
             // colPartnerCount
             // 
-            this.colPartnerCount.Caption = "Số lượng";
+            this.colPartnerCount.Caption = "Số lượng đối tác";
             this.colPartnerCount.FieldName = "PartnerCount";
             this.colPartnerCount.Name = "colPartnerCount";
+            this.colPartnerCount.OptionsColumn.AllowEdit = false;
+            this.colPartnerCount.OptionsColumn.ReadOnly = true;
             this.colPartnerCount.Visible = true;
-            this.colPartnerCount.VisibleIndex = 2;
+            this.colPartnerCount.VisibleIndex = 6;
+            this.colPartnerCount.Width = 100;
+            // 
+            // colFullPathHtml
+            // 
+            this.colFullPathHtml.Caption = "Đường dẫn";
+            this.colFullPathHtml.FieldName = "FullPathHtml";
+            this.colFullPathHtml.Name = "colFullPathHtml";
+            this.colFullPathHtml.OptionsColumn.AllowEdit = false;
+            this.colFullPathHtml.OptionsColumn.ReadOnly = true;
+            this.colFullPathHtml.Visible = false;
+            this.colFullPathHtml.VisibleIndex = 7;
+            this.colFullPathHtml.Width = 300;
+            // 
+            // colAuditInfoHtml
+            // 
+            this.colAuditInfoHtml.Caption = "Thông tin audit";
+            this.colAuditInfoHtml.FieldName = "AuditInfoHtml";
+            this.colAuditInfoHtml.Name = "colAuditInfoHtml";
+            this.colAuditInfoHtml.OptionsColumn.AllowEdit = false;
+            this.colAuditInfoHtml.OptionsColumn.ReadOnly = true;
+            this.colAuditInfoHtml.Visible = false;
+            this.colAuditInfoHtml.VisibleIndex = 8;
+            this.colAuditInfoHtml.Width = 250;
             // 
             // Root
             // 
@@ -294,9 +377,15 @@ namespace MasterData.Customer
         private BarButtonItem ExportBarButtonItem;
         private TreeList treeList1;
         private LayoutControlItem layoutControlItem1;
+        private TreeListColumn colCategoryInfoHtml;
         private TreeListColumn colCategoryName;
+        private TreeListColumn colCategoryCode;
         private TreeListColumn colDescription;
+        private TreeListColumn colIsActive;
+        private TreeListColumn colSortOrder;
         private TreeListColumn colPartnerCount;
+        private TreeListColumn colFullPathHtml;
+        private TreeListColumn colAuditInfoHtml;
         
         private BindingSource businessPartnerCategoryDtoBindingSource;
     }

@@ -48,6 +48,174 @@ public class BusinessPartnerCategoryDto
     [DisplayName("Đường dẫn đầy đủ")]
     [Description("Đường dẫn đầy đủ từ gốc đến danh mục này")]
     public string FullPath { get; set; }
+
+    [DisplayName("Mã danh mục")]
+    [StringLength(50, ErrorMessage = "Mã danh mục không được vượt quá 50 ký tự")]
+    public string CategoryCode { get; set; }
+
+    [DisplayName("Trạng thái hoạt động")]
+    [Description("Danh mục có đang hoạt động hay không")]
+    public bool IsActive { get; set; } = true;
+
+    [DisplayName("Thứ tự sắp xếp")]
+    [Description("Thứ tự hiển thị trong danh sách (số nhỏ hơn hiển thị trước)")]
+    public int? SortOrder { get; set; }
+
+    [DisplayName("Ngày tạo")]
+    [Description("Ngày giờ tạo danh mục")]
+    public DateTime CreatedDate { get; set; }
+
+    [DisplayName("Người tạo")]
+    [Description("ID người tạo danh mục")]
+    public Guid? CreatedBy { get; set; }
+
+    [DisplayName("Tên người tạo")]
+    [Description("Tên người dùng đã tạo danh mục")]
+    public string CreatedByName { get; set; }
+
+    [DisplayName("Ngày cập nhật")]
+    [Description("Ngày giờ cập nhật danh mục lần cuối")]
+    public DateTime? ModifiedDate { get; set; }
+
+    [DisplayName("Người cập nhật")]
+    [Description("ID người cập nhật danh mục")]
+    public Guid? ModifiedBy { get; set; }
+
+    [DisplayName("Tên người cập nhật")]
+    [Description("Tên người dùng đã cập nhật danh mục")]
+    public string ModifiedByName { get; set; }
+
+    /// <summary>
+    /// Thông tin danh mục dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Thông tin HTML")]
+    [Description("Thông tin danh mục dưới dạng HTML")]
+    public string CategoryInfoHtml
+    {
+        get
+        {
+            var html = string.Empty;
+
+            // Tên danh mục (màu xanh, đậm, size 12)
+            if (!string.IsNullOrWhiteSpace(CategoryName))
+            {
+                html += $"<size=12><b><color='blue'>{CategoryName}</color></b></size>";
+            }
+
+            // Mã danh mục (nếu có, màu xám, size 9)
+            if (!string.IsNullOrWhiteSpace(CategoryCode))
+            {
+                if (!string.IsNullOrWhiteSpace(html))
+                    html += " ";
+                html += $"<size=9><color='#757575'>({CategoryCode})</color></size>";
+            }
+
+            html += "<br>";
+
+            // Thông tin bổ sung
+            var additionalInfo = new List<string>();
+
+            // Trạng thái hoạt động
+            var statusText = IsActive ? "Hoạt động" : "Không hoạt động";
+            var statusColor = IsActive ? "#4CAF50" : "#F44336";
+            additionalInfo.Add($"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>");
+
+            // Số lượng đối tác
+            if (PartnerCount > 0)
+            {
+                additionalInfo.Add($"<size=9><color='#757575'>Số đối tác:</color></size> <size=10><color='#212121'><b>{PartnerCount}</b></color></size>");
+            }
+
+            // Thứ tự sắp xếp
+            if (SortOrder.HasValue)
+            {
+                additionalInfo.Add($"<size=9><color='#757575'>Thứ tự:</color></size> <size=10><color='#212121'><b>{SortOrder.Value}</b></color></size>");
+            }
+
+            if (additionalInfo.Any())
+            {
+                html += string.Join(" | ", additionalInfo);
+            }
+
+            return html;
+        }
+    }
+
+    /// <summary>
+    /// Đường dẫn đầy đủ dưới dạng HTML theo format DevExpress
+    /// </summary>
+    [DisplayName("Đường dẫn HTML")]
+    [Description("Đường dẫn đầy đủ từ gốc đến danh mục này dưới dạng HTML")]
+    public string FullPathHtml
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(FullPath))
+                return string.Empty;
+
+            // Tách đường dẫn và format với màu sắc
+            var parts = FullPath.Split(new[] { " > " }, StringSplitOptions.None);
+            var htmlParts = new List<string>();
+
+            for (int i = 0; i < parts.Length; i++)
+            {
+                var isLast = i == parts.Length - 1;
+                var color = isLast ? "blue" : "#757575";
+                var size = isLast ? "12" : "10";
+                var weight = isLast ? "<b>" : "";
+                var weightClose = isLast ? "</b>" : "";
+
+                htmlParts.Add($"<size={size}>{weight}<color='{color}'>{parts[i]}</color>{weightClose}</size>");
+            }
+
+            return string.Join(" <size=9><color='#757575'>></color></size> ", htmlParts);
+        }
+    }
+
+    /// <summary>
+    /// Thông tin audit (người tạo/sửa) dưới dạng HTML theo format DevExpress
+    /// </summary>
+    [DisplayName("Thông tin audit HTML")]
+    [Description("Thông tin người tạo và cập nhật dưới dạng HTML")]
+    public string AuditInfoHtml
+    {
+        get
+        {
+            var html = string.Empty;
+            var infoParts = new List<string>();
+
+            // Người tạo
+            if (CreatedDate != default(DateTime))
+            {
+                var createdInfo = $"<size=9><color='#757575'>Tạo:</color></size> <size=10><color='#212121'>{CreatedDate:dd/MM/yyyy HH:mm}</color></size>";
+                if (!string.IsNullOrWhiteSpace(CreatedByName))
+                {
+                    createdInfo += $" <size=9><color='#757575'>bởi</color></size> <size=10><color='#212121'><b>{CreatedByName}</b></color></size>";
+                }
+                infoParts.Add(createdInfo);
+            }
+
+            // Người cập nhật
+            if (ModifiedDate.HasValue)
+            {
+                var modifiedInfo = $"<size=9><color='#757575'>Sửa:</color></size> <size=10><color='#212121'>{ModifiedDate.Value:dd/MM/yyyy HH:mm}</color></size>";
+                if (!string.IsNullOrWhiteSpace(ModifiedByName))
+                {
+                    modifiedInfo += $" <size=9><color='#757575'>bởi</color></size> <size=10><color='#212121'><b>{ModifiedByName}</b></color></size>";
+                }
+                infoParts.Add(modifiedInfo);
+            }
+
+            if (infoParts.Any())
+            {
+                html = string.Join("<br>", infoParts);
+            }
+
+            return html;
+        }
+    }
 }
 
 public static class BusinessPartnerCategoryConverters
@@ -65,7 +233,14 @@ public static class BusinessPartnerCategoryConverters
             PartnerCount = 0, // Sẽ được cập nhật bởi method có đếm
             Level = 0, // Sẽ được tính toán
             HasChildren = false, // Sẽ được cập nhật
-            FullPath = entity.CategoryName // Sẽ được cập nhật với đường dẫn đầy đủ
+            FullPath = entity.CategoryName, // Sẽ được cập nhật với đường dẫn đầy đủ
+            CategoryCode = entity.CategoryCode,
+            IsActive = entity.IsActive,
+            SortOrder = entity.SortOrder,
+            CreatedDate = entity.CreatedDate,
+            CreatedBy = entity.CreatedBy,
+            ModifiedDate = entity.ModifiedDate,
+            ModifiedBy = entity.ModifiedBy
         };
     }
 
@@ -82,7 +257,14 @@ public static class BusinessPartnerCategoryConverters
             PartnerCount = partnerCount,
             Level = 0, // Sẽ được tính toán
             HasChildren = false, // Sẽ được cập nhật
-            FullPath = entity.CategoryName // Sẽ được cập nhật với đường dẫn đầy đủ
+            FullPath = entity.CategoryName, // Sẽ được cập nhật với đường dẫn đầy đủ
+            CategoryCode = entity.CategoryCode,
+            IsActive = entity.IsActive,
+            SortOrder = entity.SortOrder,
+            CreatedDate = entity.CreatedDate,
+            CreatedBy = entity.CreatedBy,
+            ModifiedDate = entity.ModifiedDate,
+            ModifiedBy = entity.ModifiedBy
         };
     }
 
@@ -143,6 +325,22 @@ public static class BusinessPartnerCategoryConverters
         entity.CategoryName = dto.CategoryName;
         entity.Description = dto.Description;
         entity.ParentId = dto.ParentId;
+        entity.CategoryCode = dto.CategoryCode;
+        entity.IsActive = dto.IsActive;
+        entity.SortOrder = dto.SortOrder;
+        
+        // Chỉ cập nhật CreatedDate và CreatedBy nếu là entity mới
+        if (destination == null)
+        {
+            entity.CreatedDate = dto.CreatedDate != default(DateTime) ? dto.CreatedDate : DateTime.Now;
+            entity.CreatedBy = dto.CreatedBy;
+        }
+        else
+        {
+            // Khi update, chỉ cập nhật ModifiedDate và ModifiedBy
+            entity.ModifiedDate = DateTime.Now;
+            entity.ModifiedBy = dto.ModifiedBy;
+        }
 
         return entity;
     }

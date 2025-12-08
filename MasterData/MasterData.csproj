@@ -338,6 +338,7 @@
     <None Include="Customer\Dto\DTO_README.md" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Doc\BusinessPartner_Database_Schema.md" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
