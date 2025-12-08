@@ -477,6 +477,9 @@
     <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.resx">
       <DependentUpon>UcNhapLapRapLapRapDetailDto.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapMasterDto.resx">
+      <DependentUpon>UcNhapLapRapMasterDto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapLuuChuyenKho\FrmNhapLuuChuyenKho.resx">
       <DependentUpon>FrmNhapLuuChuyenKho.cs</DependentUpon>
     </EmbeddedResource>
@@ -568,6 +571,7 @@
     <None Include="Doc\NhapHang\NhapHangThuongMai_02_NhapKhoTheoPONCC.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_01_NhapKhoDoiBan.md" />
     <None Include="Doc\NhapHang\NhapHangThuongMai_00_TongQuan.md" />
+    <None Include="Doc\Quy trình - Visio\Nhập linh kiện ráp PC bán.vsdx" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.DeviceDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutDocumentDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutMasterHistoryDto.datasource" />
