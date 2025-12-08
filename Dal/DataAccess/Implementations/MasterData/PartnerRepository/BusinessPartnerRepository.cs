@@ -633,7 +633,6 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                     City = source.City,
                     Province = source.City, // Sử dụng City làm Province cho trụ sở chính
                     Country = source.Country,
-                    ContactPerson = source.ContactPerson,
                     Phone = source.Phone,
                     Email = source.Email,
                     IsDefault = true, // Đánh dấu là trụ sở chính
@@ -660,13 +659,16 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                 existing.Address = source.Address;
                 existing.City = source.City;
                 existing.Country = source.Country;
-                existing.ContactPerson = source.ContactPerson;
-                existing.ContactPosition = source.ContactPosition;
-                existing.BankAccount = source.BankAccount;
-                existing.BankName = source.BankName;
-                existing.CreditLimit = source.CreditLimit;
-                existing.PaymentTerm = source.PaymentTerm;
                 existing.IsActive = source.IsActive;
+                
+                // Copy Logo fields (metadata only, Logo binary field not in DataContext)
+                existing.LogoFileName = source.LogoFileName;
+                existing.LogoRelativePath = source.LogoRelativePath;
+                existing.LogoFullPath = source.LogoFullPath;
+                existing.LogoStorageType = source.LogoStorageType;
+                existing.LogoFileSize = source.LogoFileSize;
+                existing.LogoChecksum = source.LogoChecksum;
+                
                 existing.UpdatedDate = DateTime.Now;
                 existing.ModifiedBy = userId;
                 
