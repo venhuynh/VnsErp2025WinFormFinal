@@ -100,11 +100,13 @@ namespace Bll.MasterData.CustomerBll
         }
 
         /// <summary>
-        /// Xóa đối tác theo Id.
+        /// Xóa đối tác theo Id (Soft Delete).
         /// </summary>
-        public void Delete(Guid id)
+        /// <param name="id">ID đối tác</param>
+        /// <param name="deletedBy">ID người xóa (optional)</param>
+        public void Delete(Guid id, Guid? deletedBy = null)
         {
-            GetDataAccess().DeletePartner(id);
+            GetDataAccess().DeletePartner(id, deletedBy);
         }
 
         /// <summary>
@@ -126,9 +128,11 @@ namespace Bll.MasterData.CustomerBll
         /// <summary>
         /// Lưu/cập nhật đầy đủ thông tin đối tác.
         /// </summary>
-        public void SaveOrUpdate(BusinessPartner entity)
+        /// <param name="entity">Entity đối tác</param>
+        /// <param name="userId">ID người dùng thực hiện (optional, dùng cho audit fields)</param>
+        public void SaveOrUpdate(BusinessPartner entity, Guid? userId = null)
         {
-            GetDataAccess().SaveOrUpdate(entity);
+            GetDataAccess().SaveOrUpdate(entity, userId);
         }
     }
 }

@@ -244,6 +244,14 @@ namespace Bll.MasterData.CustomerBll
                 existingEntity.IsDefault = entity.IsDefault;
                 existingEntity.IsActive = entity.IsActive;
                 existingEntity.UpdatedDate = DateTime.Now;
+                
+                // Cập nhật các fields mới
+                existingEntity.PostalCode = entity.PostalCode;
+                existingEntity.District = entity.District;
+                existingEntity.Latitude = entity.Latitude;
+                existingEntity.Longitude = entity.Longitude;
+                existingEntity.SiteType = entity.SiteType;
+                existingEntity.Notes = entity.Notes;
 
                 // Lưu vào database
                 var result = SaveOrUpdate(existingEntity);

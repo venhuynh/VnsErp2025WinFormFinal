@@ -8,6 +8,12 @@
       <Association Name="ApplicationUser_Asset" Member="Assets" ThisKey="Id" OtherKey="CreateBy" Type="Asset" />
       <Association Name="ApplicationUser_Asset1" Member="Assets1" ThisKey="Id" OtherKey="DeletedBy" Type="Asset" />
       <Association Name="ApplicationUser_Asset2" Member="Assets2" ThisKey="Id" OtherKey="ModifiedBy" Type="Asset" />
+      <Association Name="ApplicationUser_BusinessPartner" Member="BusinessPartners" ThisKey="Id" OtherKey="CreatedBy" Type="BusinessPartner" />
+      <Association Name="ApplicationUser_BusinessPartner1" Member="BusinessPartners1" ThisKey="Id" OtherKey="DeletedBy" Type="BusinessPartner" />
+      <Association Name="ApplicationUser_BusinessPartner2" Member="BusinessPartners2" ThisKey="Id" OtherKey="ModifiedBy" Type="BusinessPartner" />
+      <Association Name="ApplicationUser_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="CreatedBy" Type="BusinessPartner_BusinessPartnerCategory" />
+      <Association Name="ApplicationUser_BusinessPartnerCategory" Member="BusinessPartnerCategories" ThisKey="Id" OtherKey="CreatedBy" Type="BusinessPartnerCategory" />
+      <Association Name="ApplicationUser_BusinessPartnerCategory1" Member="BusinessPartnerCategories1" ThisKey="Id" OtherKey="ModifiedBy" Type="BusinessPartnerCategory" />
       <Association Name="ApplicationUser_InventoryBalance" Member="InventoryBalances" ThisKey="Id" OtherKey="ApprovedBy" Type="InventoryBalance" />
       <Association Name="ApplicationUser_InventoryBalance1" Member="InventoryBalances1" ThisKey="Id" OtherKey="DeletedBy" Type="InventoryBalance" />
       <Association Name="ApplicationUser_InventoryBalance2" Member="InventoryBalances2" ThisKey="Id" OtherKey="LockedBy" Type="InventoryBalance" />
@@ -124,16 +130,27 @@
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DeletedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="DeletedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartner_BusinessPartnerCategory" />
       <Association Name="BusinessPartner_BusinessPartnerSite" Member="BusinessPartnerSites" ThisKey="Id" OtherKey="PartnerId" Type="BusinessPartnerSite" />
       <Association Name="BusinessPartner_StockInOutDocument" Member="StockInOutDocuments" ThisKey="Id" OtherKey="BusinessPartnerId" Type="StockInOutDocument" />
+      <Association Name="ApplicationUser_BusinessPartner" Member="ApplicationUser" ThisKey="CreatedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_BusinessPartner1" Member="ApplicationUser1" ThisKey="DeletedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_BusinessPartner2" Member="ApplicationUser2" ThisKey="ModifiedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories">
     <Type Name="BusinessPartner_BusinessPartnerCategory">
       <Column Name="PartnerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="CategoryId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner" ThisKey="PartnerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="ApplicationUser_BusinessPartner_BusinessPartnerCategory" Member="ApplicationUser" ThisKey="CreatedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
       <Association Name="BusinessPartnerCategory_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartnerCategory" ThisKey="CategoryId" OtherKey="Id" Type="BusinessPartnerCategory" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
@@ -143,8 +160,17 @@
       <Column Name="CategoryName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="Description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="ParentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CategoryCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="SortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="BusinessPartnerCategory_BusinessPartner_BusinessPartnerCategory" Member="BusinessPartner_BusinessPartnerCategories" ThisKey="Id" OtherKey="CategoryId" Type="BusinessPartner_BusinessPartnerCategory" />
       <Association Name="BusinessPartnerCategory_BusinessPartnerCategory" Member="BusinessPartnerCategories" ThisKey="Id" OtherKey="ParentId" Type="BusinessPartnerCategory" />
+      <Association Name="ApplicationUser_BusinessPartnerCategory" Member="ApplicationUser" ThisKey="CreatedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_BusinessPartnerCategory1" Member="ApplicationUser1" ThisKey="ModifiedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
       <Association Name="BusinessPartnerCategory_BusinessPartnerCategory" Member="BusinessPartnerCategory1" ThisKey="ParentId" OtherKey="Id" Type="BusinessPartnerCategory" IsForeignKey="true" />
     </Type>
   </Table>
@@ -159,6 +185,18 @@
       <Column Name="IsPrimary" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="Avatar" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Mobile" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Fax" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Department" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="BirthDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Gender" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="LinkedIn" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Skype" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="WeChat" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="AvatarPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="BusinessPartnerSite_BusinessPartnerContact" Member="BusinessPartnerSite" ThisKey="SiteId" OtherKey="Id" Type="BusinessPartnerSite" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
@@ -179,6 +217,12 @@
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PostalCode" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="District" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Latitude" Type="System.Decimal" DbType="Decimal(10,8)" CanBeNull="true" />
+      <Column Name="Longitude" Type="System.Decimal" DbType="Decimal(11,8)" CanBeNull="true" />
+      <Column Name="SiteType" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Association Name="BusinessPartnerSite_BusinessPartnerContact" Member="BusinessPartnerContacts" ThisKey="Id" OtherKey="SiteId" Type="BusinessPartnerContact" />
       <Association Name="BusinessPartnerSite_StockInOutMaster" Member="StockInOutMasters" ThisKey="Id" OtherKey="PartnerSiteId" Type="StockInOutMaster" />
       <Association Name="BusinessPartner_BusinessPartnerSite" Member="BusinessPartner" ThisKey="PartnerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />

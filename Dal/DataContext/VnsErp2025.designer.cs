@@ -396,6 +396,18 @@ namespace Dal.DataContext
 		
 		private EntitySet<Asset> _Assets2;
 		
+		private EntitySet<BusinessPartner> _BusinessPartners;
+		
+		private EntitySet<BusinessPartner> _BusinessPartners1;
+		
+		private EntitySet<BusinessPartner> _BusinessPartners2;
+		
+		private EntitySet<BusinessPartner_BusinessPartnerCategory> _BusinessPartner_BusinessPartnerCategories;
+		
+		private EntitySet<BusinessPartnerCategory> _BusinessPartnerCategories;
+		
+		private EntitySet<BusinessPartnerCategory> _BusinessPartnerCategories1;
+		
 		private EntitySet<InventoryBalance> _InventoryBalances;
 		
 		private EntitySet<InventoryBalance> _InventoryBalances1;
@@ -425,6 +437,12 @@ namespace Dal.DataContext
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._Assets1 = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets1), new Action<Asset>(this.detach_Assets1));
 			this._Assets2 = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets2), new Action<Asset>(this.detach_Assets2));
+			this._BusinessPartners = new EntitySet<BusinessPartner>(new Action<BusinessPartner>(this.attach_BusinessPartners), new Action<BusinessPartner>(this.detach_BusinessPartners));
+			this._BusinessPartners1 = new EntitySet<BusinessPartner>(new Action<BusinessPartner>(this.attach_BusinessPartners1), new Action<BusinessPartner>(this.detach_BusinessPartners1));
+			this._BusinessPartners2 = new EntitySet<BusinessPartner>(new Action<BusinessPartner>(this.attach_BusinessPartners2), new Action<BusinessPartner>(this.detach_BusinessPartners2));
+			this._BusinessPartner_BusinessPartnerCategories = new EntitySet<BusinessPartner_BusinessPartnerCategory>(new Action<BusinessPartner_BusinessPartnerCategory>(this.attach_BusinessPartner_BusinessPartnerCategories), new Action<BusinessPartner_BusinessPartnerCategory>(this.detach_BusinessPartner_BusinessPartnerCategories));
+			this._BusinessPartnerCategories = new EntitySet<BusinessPartnerCategory>(new Action<BusinessPartnerCategory>(this.attach_BusinessPartnerCategories), new Action<BusinessPartnerCategory>(this.detach_BusinessPartnerCategories));
+			this._BusinessPartnerCategories1 = new EntitySet<BusinessPartnerCategory>(new Action<BusinessPartnerCategory>(this.attach_BusinessPartnerCategories1), new Action<BusinessPartnerCategory>(this.detach_BusinessPartnerCategories1));
 			this._InventoryBalances = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances), new Action<InventoryBalance>(this.detach_InventoryBalances));
 			this._InventoryBalances1 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances1), new Action<InventoryBalance>(this.detach_InventoryBalances1));
 			this._InventoryBalances2 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances2), new Action<InventoryBalance>(this.detach_InventoryBalances2));
@@ -552,6 +570,84 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartner", Storage="_BusinessPartners", ThisKey="Id", OtherKey="CreatedBy")]
+		public EntitySet<BusinessPartner> BusinessPartners
+		{
+			get
+			{
+				return this._BusinessPartners;
+			}
+			set
+			{
+				this._BusinessPartners.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartner1", Storage="_BusinessPartners1", ThisKey="Id", OtherKey="DeletedBy")]
+		public EntitySet<BusinessPartner> BusinessPartners1
+		{
+			get
+			{
+				return this._BusinessPartners1;
+			}
+			set
+			{
+				this._BusinessPartners1.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartner2", Storage="_BusinessPartners2", ThisKey="Id", OtherKey="ModifiedBy")]
+		public EntitySet<BusinessPartner> BusinessPartners2
+		{
+			get
+			{
+				return this._BusinessPartners2;
+			}
+			set
+			{
+				this._BusinessPartners2.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartner_BusinessPartnerCategory", Storage="_BusinessPartner_BusinessPartnerCategories", ThisKey="Id", OtherKey="CreatedBy")]
+		public EntitySet<BusinessPartner_BusinessPartnerCategory> BusinessPartner_BusinessPartnerCategories
+		{
+			get
+			{
+				return this._BusinessPartner_BusinessPartnerCategories;
+			}
+			set
+			{
+				this._BusinessPartner_BusinessPartnerCategories.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartnerCategory", Storage="_BusinessPartnerCategories", ThisKey="Id", OtherKey="CreatedBy")]
+		public EntitySet<BusinessPartnerCategory> BusinessPartnerCategories
+		{
+			get
+			{
+				return this._BusinessPartnerCategories;
+			}
+			set
+			{
+				this._BusinessPartnerCategories.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartnerCategory1", Storage="_BusinessPartnerCategories1", ThisKey="Id", OtherKey="ModifiedBy")]
+		public EntitySet<BusinessPartnerCategory> BusinessPartnerCategories1
+		{
+			get
+			{
+				return this._BusinessPartnerCategories1;
+			}
+			set
+			{
+				this._BusinessPartnerCategories1.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_InventoryBalance", Storage="_InventoryBalances", ThisKey="Id", OtherKey="ApprovedBy")]
 		public EntitySet<InventoryBalance> InventoryBalances
 		{
@@ -671,6 +767,78 @@ namespace Dal.DataContext
 		{
 			this.SendPropertyChanging();
 			entity.ApplicationUser2 = null;
+		}
+		
+		private void attach_BusinessPartners(BusinessPartner entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = this;
+		}
+		
+		private void detach_BusinessPartners(BusinessPartner entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = null;
+		}
+		
+		private void attach_BusinessPartners1(BusinessPartner entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = this;
+		}
+		
+		private void detach_BusinessPartners1(BusinessPartner entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = null;
+		}
+		
+		private void attach_BusinessPartners2(BusinessPartner entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser2 = this;
+		}
+		
+		private void detach_BusinessPartners2(BusinessPartner entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser2 = null;
+		}
+		
+		private void attach_BusinessPartner_BusinessPartnerCategories(BusinessPartner_BusinessPartnerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = this;
+		}
+		
+		private void detach_BusinessPartner_BusinessPartnerCategories(BusinessPartner_BusinessPartnerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = null;
+		}
+		
+		private void attach_BusinessPartnerCategories(BusinessPartnerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = this;
+		}
+		
+		private void detach_BusinessPartnerCategories(BusinessPartnerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = null;
+		}
+		
+		private void attach_BusinessPartnerCategories1(BusinessPartnerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = this;
+		}
+		
+		private void detach_BusinessPartnerCategories1(BusinessPartnerCategory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = null;
 		}
 		
 		private void attach_InventoryBalances(InventoryBalance entity)
@@ -2843,11 +3011,27 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.DateTime> _UpdatedDate;
 		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
+		private System.Nullable<System.Guid> _ModifiedBy;
+		
+		private System.Nullable<System.Guid> _DeletedBy;
+		
+		private bool _IsDeleted;
+		
+		private System.Nullable<System.DateTime> _DeletedDate;
+		
 		private EntitySet<BusinessPartner_BusinessPartnerCategory> _BusinessPartner_BusinessPartnerCategories;
 		
 		private EntitySet<BusinessPartnerSite> _BusinessPartnerSites;
 		
 		private EntitySet<StockInOutDocument> _StockInOutDocuments;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser1;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser2;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -2893,6 +3077,16 @@ namespace Dal.DataContext
     partial void OnCreatedDateChanged();
     partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
     partial void OnUpdatedDateChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
+    partial void OnModifiedByChanging(System.Nullable<System.Guid> value);
+    partial void OnModifiedByChanged();
+    partial void OnDeletedByChanging(System.Nullable<System.Guid> value);
+    partial void OnDeletedByChanged();
+    partial void OnIsDeletedChanging(bool value);
+    partial void OnIsDeletedChanged();
+    partial void OnDeletedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeletedDateChanged();
     #endregion
 		
 		public BusinessPartner()
@@ -2900,6 +3094,9 @@ namespace Dal.DataContext
 			this._BusinessPartner_BusinessPartnerCategories = new EntitySet<BusinessPartner_BusinessPartnerCategory>(new Action<BusinessPartner_BusinessPartnerCategory>(this.attach_BusinessPartner_BusinessPartnerCategories), new Action<BusinessPartner_BusinessPartnerCategory>(this.detach_BusinessPartner_BusinessPartnerCategories));
 			this._BusinessPartnerSites = new EntitySet<BusinessPartnerSite>(new Action<BusinessPartnerSite>(this.attach_BusinessPartnerSites), new Action<BusinessPartnerSite>(this.detach_BusinessPartnerSites));
 			this._StockInOutDocuments = new EntitySet<StockInOutDocument>(new Action<StockInOutDocument>(this.attach_StockInOutDocuments), new Action<StockInOutDocument>(this.detach_StockInOutDocuments));
+			this._ApplicationUser = default(EntityRef<ApplicationUser>);
+			this._ApplicationUser1 = default(EntityRef<ApplicationUser>);
+			this._ApplicationUser2 = default(EntityRef<ApplicationUser>);
 			OnCreated();
 		}
 		
@@ -3303,6 +3500,118 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					if (this._ApplicationUser.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ModifiedBy
+		{
+			get
+			{
+				return this._ModifiedBy;
+			}
+			set
+			{
+				if ((this._ModifiedBy != value))
+				{
+					if (this._ApplicationUser2.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeletedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> DeletedBy
+		{
+			get
+			{
+				return this._DeletedBy;
+			}
+			set
+			{
+				if ((this._DeletedBy != value))
+				{
+					if (this._ApplicationUser1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDeletedByChanging(value);
+					this.SendPropertyChanging();
+					this._DeletedBy = value;
+					this.SendPropertyChanged("DeletedBy");
+					this.OnDeletedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsDeleted", DbType="Bit NOT NULL")]
+		public bool IsDeleted
+		{
+			get
+			{
+				return this._IsDeleted;
+			}
+			set
+			{
+				if ((this._IsDeleted != value))
+				{
+					this.OnIsDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._IsDeleted = value;
+					this.SendPropertyChanged("IsDeleted");
+					this.OnIsDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeletedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> DeletedDate
+		{
+			get
+			{
+				return this._DeletedDate;
+			}
+			set
+			{
+				if ((this._DeletedDate != value))
+				{
+					this.OnDeletedDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeletedDate = value;
+					this.SendPropertyChanged("DeletedDate");
+					this.OnDeletedDateChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory", Storage="_BusinessPartner_BusinessPartnerCategories", ThisKey="Id", OtherKey="PartnerId")]
 		public EntitySet<BusinessPartner_BusinessPartnerCategory> BusinessPartner_BusinessPartnerCategories
 		{
@@ -3339,6 +3648,108 @@ namespace Dal.DataContext
 			set
 			{
 				this._StockInOutDocuments.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartner", Storage="_ApplicationUser", ThisKey="CreatedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser
+		{
+			get
+			{
+				return this._ApplicationUser.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser.Entity = null;
+						previousValue.BusinessPartners.Remove(this);
+					}
+					this._ApplicationUser.Entity = value;
+					if ((value != null))
+					{
+						value.BusinessPartners.Add(this);
+						this._CreatedBy = value.Id;
+					}
+					else
+					{
+						this._CreatedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartner1", Storage="_ApplicationUser1", ThisKey="DeletedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser1
+		{
+			get
+			{
+				return this._ApplicationUser1.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser1.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser1.Entity = null;
+						previousValue.BusinessPartners1.Remove(this);
+					}
+					this._ApplicationUser1.Entity = value;
+					if ((value != null))
+					{
+						value.BusinessPartners1.Add(this);
+						this._DeletedBy = value.Id;
+					}
+					else
+					{
+						this._DeletedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser1");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartner2", Storage="_ApplicationUser2", ThisKey="ModifiedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser2
+		{
+			get
+			{
+				return this._ApplicationUser2.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser2.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser2.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser2.Entity = null;
+						previousValue.BusinessPartners2.Remove(this);
+					}
+					this._ApplicationUser2.Entity = value;
+					if ((value != null))
+					{
+						value.BusinessPartners2.Add(this);
+						this._ModifiedBy = value.Id;
+					}
+					else
+					{
+						this._ModifiedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser2");
+				}
 			}
 		}
 		
@@ -3409,7 +3820,13 @@ namespace Dal.DataContext
 		
 		private System.Guid _CategoryId;
 		
+		private System.DateTime _CreatedDate;
+		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
 		private EntityRef<BusinessPartner> _BusinessPartner;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser;
 		
 		private EntityRef<BusinessPartnerCategory> _BusinessPartnerCategory;
 		
@@ -3421,11 +3838,16 @@ namespace Dal.DataContext
     partial void OnPartnerIdChanged();
     partial void OnCategoryIdChanging(System.Guid value);
     partial void OnCategoryIdChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
     #endregion
 		
 		public BusinessPartner_BusinessPartnerCategory()
 		{
 			this._BusinessPartner = default(EntityRef<BusinessPartner>);
+			this._ApplicationUser = default(EntityRef<ApplicationUser>);
 			this._BusinessPartnerCategory = default(EntityRef<BusinessPartnerCategory>);
 			OnCreated();
 		}
@@ -3478,6 +3900,50 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					if (this._ApplicationUser.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartner_BusinessPartner_BusinessPartnerCategory", Storage="_BusinessPartner", ThisKey="PartnerId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public BusinessPartner BusinessPartner
 		{
@@ -3508,6 +3974,40 @@ namespace Dal.DataContext
 						this._PartnerId = default(System.Guid);
 					}
 					this.SendPropertyChanged("BusinessPartner");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartner_BusinessPartnerCategory", Storage="_ApplicationUser", ThisKey="CreatedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser
+		{
+			get
+			{
+				return this._ApplicationUser.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser.Entity = null;
+						previousValue.BusinessPartner_BusinessPartnerCategories.Remove(this);
+					}
+					this._ApplicationUser.Entity = value;
+					if ((value != null))
+					{
+						value.BusinessPartner_BusinessPartnerCategories.Add(this);
+						this._CreatedBy = value.Id;
+					}
+					else
+					{
+						this._CreatedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser");
 				}
 			}
 		}
@@ -3581,9 +4081,27 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _ParentId;
 		
+		private string _CategoryCode;
+		
+		private bool _IsActive;
+		
+		private System.Nullable<int> _SortOrder;
+		
+		private System.DateTime _CreatedDate;
+		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
+		private System.Nullable<System.DateTime> _ModifiedDate;
+		
+		private System.Nullable<System.Guid> _ModifiedBy;
+		
 		private EntitySet<BusinessPartner_BusinessPartnerCategory> _BusinessPartner_BusinessPartnerCategories;
 		
 		private EntitySet<BusinessPartnerCategory> _BusinessPartnerCategories;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser1;
 		
 		private EntityRef<BusinessPartnerCategory> _BusinessPartnerCategory1;
 		
@@ -3599,12 +4117,28 @@ namespace Dal.DataContext
     partial void OnDescriptionChanged();
     partial void OnParentIdChanging(System.Nullable<System.Guid> value);
     partial void OnParentIdChanged();
+    partial void OnCategoryCodeChanging(string value);
+    partial void OnCategoryCodeChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnSortOrderChanging(System.Nullable<int> value);
+    partial void OnSortOrderChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
+    partial void OnModifiedByChanging(System.Nullable<System.Guid> value);
+    partial void OnModifiedByChanged();
     #endregion
 		
 		public BusinessPartnerCategory()
 		{
 			this._BusinessPartner_BusinessPartnerCategories = new EntitySet<BusinessPartner_BusinessPartnerCategory>(new Action<BusinessPartner_BusinessPartnerCategory>(this.attach_BusinessPartner_BusinessPartnerCategories), new Action<BusinessPartner_BusinessPartnerCategory>(this.detach_BusinessPartner_BusinessPartnerCategories));
 			this._BusinessPartnerCategories = new EntitySet<BusinessPartnerCategory>(new Action<BusinessPartnerCategory>(this.attach_BusinessPartnerCategories), new Action<BusinessPartnerCategory>(this.detach_BusinessPartnerCategories));
+			this._ApplicationUser = default(EntityRef<ApplicationUser>);
+			this._ApplicationUser1 = default(EntityRef<ApplicationUser>);
 			this._BusinessPartnerCategory1 = default(EntityRef<BusinessPartnerCategory>);
 			OnCreated();
 		}
@@ -3693,6 +4227,154 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CategoryCode", DbType="NVarChar(50)")]
+		public string CategoryCode
+		{
+			get
+			{
+				return this._CategoryCode;
+			}
+			set
+			{
+				if ((this._CategoryCode != value))
+				{
+					this.OnCategoryCodeChanging(value);
+					this.SendPropertyChanging();
+					this._CategoryCode = value;
+					this.SendPropertyChanged("CategoryCode");
+					this.OnCategoryCodeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SortOrder", DbType="Int")]
+		public System.Nullable<int> SortOrder
+		{
+			get
+			{
+				return this._SortOrder;
+			}
+			set
+			{
+				if ((this._SortOrder != value))
+				{
+					this.OnSortOrderChanging(value);
+					this.SendPropertyChanging();
+					this._SortOrder = value;
+					this.SendPropertyChanged("SortOrder");
+					this.OnSortOrderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					if (this._ApplicationUser.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
+		{
+			get
+			{
+				return this._ModifiedDate;
+			}
+			set
+			{
+				if ((this._ModifiedDate != value))
+				{
+					this.OnModifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ModifiedBy
+		{
+			get
+			{
+				return this._ModifiedBy;
+			}
+			set
+			{
+				if ((this._ModifiedBy != value))
+				{
+					if (this._ApplicationUser1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartnerCategory_BusinessPartner_BusinessPartnerCategory", Storage="_BusinessPartner_BusinessPartnerCategories", ThisKey="Id", OtherKey="CategoryId")]
 		public EntitySet<BusinessPartner_BusinessPartnerCategory> BusinessPartner_BusinessPartnerCategories
 		{
@@ -3716,6 +4398,74 @@ namespace Dal.DataContext
 			set
 			{
 				this._BusinessPartnerCategories.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartnerCategory", Storage="_ApplicationUser", ThisKey="CreatedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser
+		{
+			get
+			{
+				return this._ApplicationUser.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser.Entity = null;
+						previousValue.BusinessPartnerCategories.Remove(this);
+					}
+					this._ApplicationUser.Entity = value;
+					if ((value != null))
+					{
+						value.BusinessPartnerCategories.Add(this);
+						this._CreatedBy = value.Id;
+					}
+					else
+					{
+						this._CreatedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_BusinessPartnerCategory1", Storage="_ApplicationUser1", ThisKey="ModifiedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser1
+		{
+			get
+			{
+				return this._ApplicationUser1.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser1.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser1.Entity = null;
+						previousValue.BusinessPartnerCategories1.Remove(this);
+					}
+					this._ApplicationUser1.Entity = value;
+					if ((value != null))
+					{
+						value.BusinessPartnerCategories1.Add(this);
+						this._ModifiedBy = value.Id;
+					}
+					else
+					{
+						this._ModifiedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser1");
+				}
 			}
 		}
 		
@@ -3822,6 +4572,30 @@ namespace Dal.DataContext
 		
 		private bool _IsActive;
 		
+		private string _Mobile;
+		
+		private string _Fax;
+		
+		private string _Department;
+		
+		private System.Nullable<System.DateTime> _BirthDate;
+		
+		private string _Gender;
+		
+		private string _LinkedIn;
+		
+		private string _Skype;
+		
+		private string _WeChat;
+		
+		private string _Notes;
+		
+		private string _AvatarPath;
+		
+		private System.DateTime _CreatedDate;
+		
+		private System.Nullable<System.DateTime> _ModifiedDate;
+		
 		private EntityRef<BusinessPartnerSite> _BusinessPartnerSite;
 		
     #region Extensibility Method Definitions
@@ -3846,6 +4620,30 @@ namespace Dal.DataContext
     partial void OnAvatarChanged();
     partial void OnIsActiveChanging(bool value);
     partial void OnIsActiveChanged();
+    partial void OnMobileChanging(string value);
+    partial void OnMobileChanged();
+    partial void OnFaxChanging(string value);
+    partial void OnFaxChanged();
+    partial void OnDepartmentChanging(string value);
+    partial void OnDepartmentChanged();
+    partial void OnBirthDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnBirthDateChanged();
+    partial void OnGenderChanging(string value);
+    partial void OnGenderChanged();
+    partial void OnLinkedInChanging(string value);
+    partial void OnLinkedInChanged();
+    partial void OnSkypeChanging(string value);
+    partial void OnSkypeChanged();
+    partial void OnWeChatChanging(string value);
+    partial void OnWeChatChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    partial void OnAvatarPathChanging(string value);
+    partial void OnAvatarPathChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
     #endregion
 		
 		public BusinessPartnerContact()
@@ -4038,6 +4836,246 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Mobile", DbType="NVarChar(50)")]
+		public string Mobile
+		{
+			get
+			{
+				return this._Mobile;
+			}
+			set
+			{
+				if ((this._Mobile != value))
+				{
+					this.OnMobileChanging(value);
+					this.SendPropertyChanging();
+					this._Mobile = value;
+					this.SendPropertyChanged("Mobile");
+					this.OnMobileChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Fax", DbType="NVarChar(50)")]
+		public string Fax
+		{
+			get
+			{
+				return this._Fax;
+			}
+			set
+			{
+				if ((this._Fax != value))
+				{
+					this.OnFaxChanging(value);
+					this.SendPropertyChanging();
+					this._Fax = value;
+					this.SendPropertyChanged("Fax");
+					this.OnFaxChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Department", DbType="NVarChar(100)")]
+		public string Department
+		{
+			get
+			{
+				return this._Department;
+			}
+			set
+			{
+				if ((this._Department != value))
+				{
+					this.OnDepartmentChanging(value);
+					this.SendPropertyChanging();
+					this._Department = value;
+					this.SendPropertyChanged("Department");
+					this.OnDepartmentChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BirthDate", DbType="Date")]
+		public System.Nullable<System.DateTime> BirthDate
+		{
+			get
+			{
+				return this._BirthDate;
+			}
+			set
+			{
+				if ((this._BirthDate != value))
+				{
+					this.OnBirthDateChanging(value);
+					this.SendPropertyChanging();
+					this._BirthDate = value;
+					this.SendPropertyChanged("BirthDate");
+					this.OnBirthDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Gender", DbType="NVarChar(10)")]
+		public string Gender
+		{
+			get
+			{
+				return this._Gender;
+			}
+			set
+			{
+				if ((this._Gender != value))
+				{
+					this.OnGenderChanging(value);
+					this.SendPropertyChanging();
+					this._Gender = value;
+					this.SendPropertyChanged("Gender");
+					this.OnGenderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LinkedIn", DbType="NVarChar(255)")]
+		public string LinkedIn
+		{
+			get
+			{
+				return this._LinkedIn;
+			}
+			set
+			{
+				if ((this._LinkedIn != value))
+				{
+					this.OnLinkedInChanging(value);
+					this.SendPropertyChanging();
+					this._LinkedIn = value;
+					this.SendPropertyChanged("LinkedIn");
+					this.OnLinkedInChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Skype", DbType="NVarChar(100)")]
+		public string Skype
+		{
+			get
+			{
+				return this._Skype;
+			}
+			set
+			{
+				if ((this._Skype != value))
+				{
+					this.OnSkypeChanging(value);
+					this.SendPropertyChanging();
+					this._Skype = value;
+					this.SendPropertyChanged("Skype");
+					this.OnSkypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WeChat", DbType="NVarChar(100)")]
+		public string WeChat
+		{
+			get
+			{
+				return this._WeChat;
+			}
+			set
+			{
+				if ((this._WeChat != value))
+				{
+					this.OnWeChatChanging(value);
+					this.SendPropertyChanging();
+					this._WeChat = value;
+					this.SendPropertyChanged("WeChat");
+					this.OnWeChatChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvatarPath", DbType="NVarChar(500)")]
+		public string AvatarPath
+		{
+			get
+			{
+				return this._AvatarPath;
+			}
+			set
+			{
+				if ((this._AvatarPath != value))
+				{
+					this.OnAvatarPathChanging(value);
+					this.SendPropertyChanging();
+					this._AvatarPath = value;
+					this.SendPropertyChanged("AvatarPath");
+					this.OnAvatarPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
+		{
+			get
+			{
+				return this._ModifiedDate;
+			}
+			set
+			{
+				if ((this._ModifiedDate != value))
+				{
+					this.OnModifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="BusinessPartnerSite_BusinessPartnerContact", Storage="_BusinessPartnerSite", ThisKey="SiteId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public BusinessPartnerSite BusinessPartnerSite
 		{
@@ -4129,6 +5167,18 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.DateTime> _UpdatedDate;
 		
+		private string _PostalCode;
+		
+		private string _District;
+		
+		private System.Nullable<decimal> _Latitude;
+		
+		private System.Nullable<decimal> _Longitude;
+		
+		private System.Nullable<int> _SiteType;
+		
+		private string _Notes;
+		
 		private EntitySet<BusinessPartnerContact> _BusinessPartnerContacts;
 		
 		private EntitySet<StockInOutMaster> _StockInOutMasters;
@@ -4169,6 +5219,18 @@ namespace Dal.DataContext
     partial void OnCreatedDateChanged();
     partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
     partial void OnUpdatedDateChanged();
+    partial void OnPostalCodeChanging(string value);
+    partial void OnPostalCodeChanged();
+    partial void OnDistrictChanging(string value);
+    partial void OnDistrictChanged();
+    partial void OnLatitudeChanging(System.Nullable<decimal> value);
+    partial void OnLatitudeChanged();
+    partial void OnLongitudeChanging(System.Nullable<decimal> value);
+    partial void OnLongitudeChanged();
+    partial void OnSiteTypeChanging(System.Nullable<int> value);
+    partial void OnSiteTypeChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
     #endregion
 		
 		public BusinessPartnerSite()
@@ -4479,6 +5541,126 @@ namespace Dal.DataContext
 					this._UpdatedDate = value;
 					this.SendPropertyChanged("UpdatedDate");
 					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PostalCode", DbType="NVarChar(20)")]
+		public string PostalCode
+		{
+			get
+			{
+				return this._PostalCode;
+			}
+			set
+			{
+				if ((this._PostalCode != value))
+				{
+					this.OnPostalCodeChanging(value);
+					this.SendPropertyChanging();
+					this._PostalCode = value;
+					this.SendPropertyChanged("PostalCode");
+					this.OnPostalCodeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_District", DbType="NVarChar(100)")]
+		public string District
+		{
+			get
+			{
+				return this._District;
+			}
+			set
+			{
+				if ((this._District != value))
+				{
+					this.OnDistrictChanging(value);
+					this.SendPropertyChanging();
+					this._District = value;
+					this.SendPropertyChanged("District");
+					this.OnDistrictChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Latitude", DbType="Decimal(10,8)")]
+		public System.Nullable<decimal> Latitude
+		{
+			get
+			{
+				return this._Latitude;
+			}
+			set
+			{
+				if ((this._Latitude != value))
+				{
+					this.OnLatitudeChanging(value);
+					this.SendPropertyChanging();
+					this._Latitude = value;
+					this.SendPropertyChanged("Latitude");
+					this.OnLatitudeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Longitude", DbType="Decimal(11,8)")]
+		public System.Nullable<decimal> Longitude
+		{
+			get
+			{
+				return this._Longitude;
+			}
+			set
+			{
+				if ((this._Longitude != value))
+				{
+					this.OnLongitudeChanging(value);
+					this.SendPropertyChanging();
+					this._Longitude = value;
+					this.SendPropertyChanged("Longitude");
+					this.OnLongitudeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SiteType", DbType="Int")]
+		public System.Nullable<int> SiteType
+		{
+			get
+			{
+				return this._SiteType;
+			}
+			set
+			{
+				if ((this._SiteType != value))
+				{
+					this.OnSiteTypeChanging(value);
+					this.SendPropertyChanging();
+					this._SiteType = value;
+					this.SendPropertyChanged("SiteType");
+					this.OnSiteTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
 				}
 			}
 		}

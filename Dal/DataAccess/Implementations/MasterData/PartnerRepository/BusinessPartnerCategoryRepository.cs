@@ -91,7 +91,9 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
             {
                 Id = Guid.NewGuid(),
                 CategoryName = categoryName.Trim(),
-                Description = description?.Trim()
+                Description = description?.Trim(),
+                IsActive = true,
+                CreatedDate = DateTime.Now
             };
 
             context.BusinessPartnerCategories.InsertOnSubmit(entity);
@@ -143,7 +145,9 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
             {
                 Id = Guid.NewGuid(),
                 CategoryName = categoryName.Trim(),
-                Description = description?.Trim()
+                Description = description?.Trim(),
+                IsActive = true,
+                CreatedDate = DateTime.Now
             };
 
             context.BusinessPartnerCategories.InsertOnSubmit(entity);
@@ -300,6 +304,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
 
             entity.CategoryName = categoryName.Trim();
             entity.Description = description?.Trim();
+            entity.ModifiedDate = DateTime.Now;
             context.SubmitChanges();
             
             _logger.Info($"Đã cập nhật danh mục: {id} - {entity.CategoryName}");
@@ -332,6 +337,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
 
             entity.CategoryName = categoryName.Trim();
             entity.Description = description?.Trim();
+            entity.ModifiedDate = DateTime.Now;
             await Task.Run(() => context.SubmitChanges());
             
             _logger.Info($"Đã cập nhật danh mục (async): {id} - {entity.CategoryName}");
@@ -874,6 +880,10 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
                 
                 existing.CategoryName = entity.CategoryName;
                 existing.Description = entity.Description;
+                existing.CategoryCode = entity.CategoryCode;
+                existing.IsActive = entity.IsActive;
+                existing.SortOrder = entity.SortOrder;
+                existing.ModifiedDate = DateTime.Now;
                 context.SubmitChanges();
                 
                 _logger.Info($"Đã cập nhật danh mục (SaveOrUpdate): {existing.CategoryName}");
@@ -919,6 +929,10 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
                 
                 existing.CategoryName = entity.CategoryName;
                 existing.Description = entity.Description;
+                existing.CategoryCode = entity.CategoryCode;
+                existing.IsActive = entity.IsActive;
+                existing.SortOrder = entity.SortOrder;
+                existing.ModifiedDate = DateTime.Now;
                 await Task.Run(() => context.SubmitChanges());
                 
                 _logger.Info($"Đã cập nhật danh mục (SaveOrUpdateAsync): {existing.CategoryName}");

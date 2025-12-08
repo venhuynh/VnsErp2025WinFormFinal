@@ -77,8 +77,9 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <param name="name">Tên đối tác</param>
     /// <param name="partnerType">Loại đối tác</param>
     /// <param name="isActive">Trạng thái</param>
+    /// <param name="createdBy">ID người tạo (optional)</param>
     /// <returns>Đối tác đã tạo</returns>
-    public BusinessPartner AddNewPartner(string code, string name, int partnerType, bool isActive = true)
+    public BusinessPartner AddNewPartner(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null)
     {
         try
         {
@@ -99,7 +100,12 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                 PartnerType = partnerType,
                 IsActive = isActive,
                 CreatedDate = DateTime.Now,
-                UpdatedDate = null
+                UpdatedDate = null,
+                CreatedBy = createdBy,
+                ModifiedBy = null,
+                IsDeleted = false,
+                DeletedBy = null,
+                DeletedDate = null
             };
 
             context.BusinessPartners.InsertOnSubmit(entity);
@@ -136,7 +142,12 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Thêm đối tác mới (Async).
     /// </summary>
-    public async Task<BusinessPartner> AddNewPartnerAsync(string code, string name, int partnerType, bool isActive = true)
+    /// <param name="code">Mã đối tác</param>
+    /// <param name="name">Tên đối tác</param>
+    /// <param name="partnerType">Loại đối tác</param>
+    /// <param name="isActive">Trạng thái</param>
+    /// <param name="createdBy">ID người tạo (optional)</param>
+    public async Task<BusinessPartner> AddNewPartnerAsync(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null)
     {
         try
         {
@@ -157,7 +168,12 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                 PartnerType = partnerType,
                 IsActive = isActive,
                 CreatedDate = DateTime.Now,
-                UpdatedDate = null
+                UpdatedDate = null,
+                CreatedBy = createdBy,
+                ModifiedBy = null,
+                IsDeleted = false,
+                DeletedBy = null,
+                DeletedDate = null
             };
 
             context.BusinessPartners.InsertOnSubmit(entity);
@@ -196,14 +212,14 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     #region Read
 
     /// <summary>
-    /// Lấy đối tác theo Id.
+    /// Lấy đối tác theo Id (chỉ lấy các đối tác chưa bị xóa).
     /// </summary>
     public BusinessPartner GetById(Guid id)
     {
         try
         {
             using var context = CreateNewContext();
-            var partner = context.BusinessPartners.FirstOrDefault(x => x.Id == id);
+            var partner = context.BusinessPartners.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
             
             if (partner != null)
             {
@@ -234,14 +250,14 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     }
 
     /// <summary>
-    /// Lấy đối tác theo Id (Async).
+    /// Lấy đối tác theo Id (Async) - chỉ lấy các đối tác chưa bị xóa.
     /// </summary>
     public async Task<BusinessPartner> GetByIdAsync(Guid id)
     {
         try
         {
             using var context = CreateNewContext();
-            var partner = await Task.Run(() => context.BusinessPartners.FirstOrDefault(x => x.Id == id));
+            var partner = await Task.Run(() => context.BusinessPartners.FirstOrDefault(x => x.Id == id && !x.IsDeleted));
             
             if (partner != null)
             {
@@ -272,7 +288,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     }
 
     /// <summary>
-    /// Lấy đối tác theo mã.
+    /// Lấy đối tác theo mã (chỉ lấy các đối tác chưa bị xóa).
     /// </summary>
     public BusinessPartner GetByCode(string code)
     {
@@ -281,7 +297,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             if (string.IsNullOrWhiteSpace(code)) return null;
             
             using var context = CreateNewContext();
-            var partner = context.BusinessPartners.FirstOrDefault(x => x.PartnerCode == code);
+            var partner = context.BusinessPartners.FirstOrDefault(x => x.PartnerCode == code && !x.IsDeleted);
             
             if (partner != null)
             {
@@ -298,7 +314,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     }
 
     /// <summary>
-    /// Lấy đối tác theo mã (Async).
+    /// Lấy đối tác theo mã (Async) - chỉ lấy các đối tác chưa bị xóa.
     /// </summary>
     public async Task<BusinessPartner> GetByCodeAsync(string code)
     {
@@ -307,7 +323,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             if (string.IsNullOrWhiteSpace(code)) return null;
             
             using var context = CreateNewContext();
-            var partner = await Task.Run(() => context.BusinessPartners.FirstOrDefault(x => x.PartnerCode == code));
+            var partner = await Task.Run(() => context.BusinessPartners.FirstOrDefault(x => x.PartnerCode == code && !x.IsDeleted));
             
             if (partner != null)
             {
@@ -324,7 +340,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     }
 
     /// <summary>
-    /// Tìm kiếm đối tác theo tên (contains, case-insensitive).
+    /// Tìm kiếm đối tác theo tên (contains, case-insensitive) - chỉ lấy các đối tác chưa bị xóa.
     /// </summary>
     public List<BusinessPartner> SearchByName(string keyword)
     {
@@ -333,14 +349,14 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             using var context = CreateNewContext();
             if (string.IsNullOrWhiteSpace(keyword))
             {
-                var all = context.BusinessPartners.ToList();
+                var all = context.BusinessPartners.Where(x => !x.IsDeleted).ToList();
                 _logger.Debug($"Đã tìm kiếm đối tác (không có keyword): {all.Count} kết quả");
                 return all;
             }
             
             var lower = keyword.ToLower();
             var results = context.BusinessPartners
-                .Where(x => x.PartnerName.ToLower().Contains(lower))
+                .Where(x => !x.IsDeleted && x.PartnerName.ToLower().Contains(lower))
                 .ToList();
             
             _logger.Debug($"Đã tìm kiếm đối tác theo keyword '{keyword}': {results.Count} kết quả");
@@ -354,14 +370,14 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     }
 
     /// <summary>
-    /// Lấy danh sách đối tác đang hoạt động.
+    /// Lấy danh sách đối tác đang hoạt động (chỉ lấy các đối tác chưa bị xóa).
     /// </summary>
     public List<BusinessPartner> GetActivePartners()
     {
         try
         {
             using var context = CreateNewContext();
-            var partners = context.BusinessPartners.Where(x => x.IsActive == true).ToList();
+            var partners = context.BusinessPartners.Where(x => x.IsActive == true && !x.IsDeleted).ToList();
             
             _logger.Debug($"Đã lấy {partners.Count} đối tác đang hoạt động");
             return partners;
@@ -380,18 +396,23 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Cập nhật thông tin liên hệ (điện thoại, email) cho đối tác.
     /// </summary>
-    public void UpdateContactInfo(Guid id, string phone, string email)
+    /// <param name="id">ID đối tác</param>
+    /// <param name="phone">Số điện thoại</param>
+    /// <param name="email">Email</param>
+    /// <param name="modifiedBy">ID người cập nhật (optional)</param>
+    public void UpdateContactInfo(Guid id, string phone, string email, Guid? modifiedBy = null)
     {
         try
         {
             using var context = CreateNewContext();
-            var entity = context.BusinessPartners.FirstOrDefault(x => x.Id == id);
+            var entity = context.BusinessPartners.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
             if (entity == null)
                 throw new DataAccessException($"Không tìm thấy đối tác với Id: {id}");
 
             entity.Phone = phone;
             entity.Email = email;
             entity.UpdatedDate = DateTime.Now;
+            entity.ModifiedBy = modifiedBy;
             context.SubmitChanges();
             
             _logger.Info($"Đã cập nhật thông tin liên hệ cho đối tác: {id} - {entity.PartnerName}");
@@ -406,17 +427,21 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Kích hoạt/Vô hiệu hóa đối tác.
     /// </summary>
-    public void SetActive(Guid id, bool isActive)
+    /// <param name="id">ID đối tác</param>
+    /// <param name="isActive">Trạng thái hoạt động</param>
+    /// <param name="modifiedBy">ID người cập nhật (optional)</param>
+    public void SetActive(Guid id, bool isActive, Guid? modifiedBy = null)
     {
         try
         {
             using var context = CreateNewContext();
-            var entity = context.BusinessPartners.FirstOrDefault(x => x.Id == id);
+            var entity = context.BusinessPartners.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
             if (entity == null)
                 throw new DataAccessException($"Không tìm thấy đối tác với Id: {id}");
 
             entity.IsActive = isActive;
             entity.UpdatedDate = DateTime.Now;
+            entity.ModifiedBy = modifiedBy;
             context.SubmitChanges();
             
             _logger.Info($"Đã cập nhật trạng thái đối tác: {id} - {entity.PartnerName} (IsActive={isActive})");
@@ -433,21 +458,26 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     #region Delete
 
     /// <summary>
-    /// Xóa đối tác theo Id.
+    /// Xóa đối tác theo Id (Soft Delete - đánh dấu IsDeleted = true).
     /// </summary>
-    public void DeletePartner(Guid id)
+    /// <param name="id">ID đối tác</param>
+    /// <param name="deletedBy">ID người xóa (optional)</param>
+    public void DeletePartner(Guid id, Guid? deletedBy = null)
     {
         try
         {
             using var context = CreateNewContext();
-            var entity = context.BusinessPartners.FirstOrDefault(x => x.Id == id);
+            var entity = context.BusinessPartners.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
             if (entity == null)
                 return;
                 
-            context.BusinessPartners.DeleteOnSubmit(entity);
+            entity.IsDeleted = true;
+            entity.DeletedBy = deletedBy;
+            entity.DeletedDate = DateTime.Now;
+            entity.UpdatedDate = DateTime.Now;
             context.SubmitChanges();
             
-            _logger.Info($"Đã xóa đối tác: {id} - {entity.PartnerName}");
+            _logger.Info($"Đã xóa đối tác (soft delete): {id} - {entity.PartnerName}");
         }
         catch (Exception ex)
         {
@@ -457,21 +487,26 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     }
 
     /// <summary>
-    /// Xóa đối tác theo Id (Async).
+    /// Xóa đối tác theo Id (Async) - Soft Delete.
     /// </summary>
-    public async Task DeletePartnerAsync(Guid id)
+    /// <param name="id">ID đối tác</param>
+    /// <param name="deletedBy">ID người xóa (optional)</param>
+    public async Task DeletePartnerAsync(Guid id, Guid? deletedBy = null)
     {
         try
         {
             using var context = CreateNewContext();
-            var entity = context.BusinessPartners.FirstOrDefault(x => x.Id == id);
+            var entity = context.BusinessPartners.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
             if (entity == null)
                 return;
                 
-            context.BusinessPartners.DeleteOnSubmit(entity);
+            entity.IsDeleted = true;
+            entity.DeletedBy = deletedBy;
+            entity.DeletedDate = DateTime.Now;
+            entity.UpdatedDate = DateTime.Now;
             await Task.Run(() => context.SubmitChanges());
             
-            _logger.Info($"Đã xóa đối tác (async): {id} - {entity.PartnerName}");
+            _logger.Info($"Đã xóa đối tác (async, soft delete): {id} - {entity.PartnerName}");
         }
         catch (Exception ex)
         {
@@ -485,14 +520,14 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     #region Exists Checks
 
     /// <summary>
-    /// Kiểm tra tồn tại theo Id.
+    /// Kiểm tra tồn tại theo Id (chỉ kiểm tra các đối tác chưa bị xóa).
     /// </summary>
     public bool Exists(Guid id)
     {
         try
         {
             using var context = CreateNewContext();
-            var result = context.BusinessPartners.Any(x => x.Id == id);
+            var result = context.BusinessPartners.Any(x => x.Id == id && !x.IsDeleted);
             
             _logger.Debug($"Exists check cho partner ID {id}: {result}");
             return result;
@@ -505,7 +540,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     }
 
     /// <summary>
-    /// Kiểm tra tồn tại mã đối tác.
+    /// Kiểm tra tồn tại mã đối tác (chỉ kiểm tra các đối tác chưa bị xóa).
     /// </summary>
     public bool IsPartnerCodeExists(string code)
     {
@@ -514,7 +549,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             if (string.IsNullOrWhiteSpace(code)) return false;
             
             using var context = CreateNewContext();
-            var result = context.BusinessPartners.Any(x => x.PartnerCode == code);
+            var result = context.BusinessPartners.Any(x => x.PartnerCode == code && !x.IsDeleted);
             
             _logger.Debug($"IsPartnerCodeExists: Code='{code}', Result={result}");
             return result;
@@ -527,7 +562,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     }
 
     /// <summary>
-    /// Kiểm tra tồn tại mã đối tác (Async).
+    /// Kiểm tra tồn tại mã đối tác (Async) - chỉ kiểm tra các đối tác chưa bị xóa.
     /// </summary>
     public async Task<bool> IsPartnerCodeExistsAsync(string code)
     {
@@ -536,7 +571,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             if (string.IsNullOrWhiteSpace(code)) return false;
             
             using var context = CreateNewContext();
-            var result = await Task.Run(() => context.BusinessPartners.Any(x => x.PartnerCode == code));
+            var result = await Task.Run(() => context.BusinessPartners.Any(x => x.PartnerCode == code && !x.IsDeleted));
             
             _logger.Debug($"IsPartnerCodeExistsAsync: Code='{code}', Result={result}");
             return result;
@@ -566,18 +601,25 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// Nếu Id tồn tại -> cập nhật tất cả trường theo entity truyền vào.
     /// Nếu không tồn tại -> thêm mới.
     /// </summary>
-    public void SaveOrUpdate(BusinessPartner source)
+    /// <param name="source">Entity đối tác</param>
+    /// <param name="userId">ID người dùng thực hiện (optional, dùng cho audit fields)</param>
+    public void SaveOrUpdate(BusinessPartner source, Guid? userId = null)
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
         try
         {
             using var context = CreateNewContext();
-            var existing = context.BusinessPartners.FirstOrDefault(x => x.Id == source.Id);
+            var existing = context.BusinessPartners.FirstOrDefault(x => x.Id == source.Id && !x.IsDeleted);
             if (existing == null || source.Id == Guid.Empty)
             {
                 // ensure new Id
                 if (source.Id == Guid.Empty) source.Id = Guid.NewGuid();
                 source.CreatedDate = DateTime.Now;
+                source.CreatedBy = userId;
+                source.ModifiedBy = null;
+                source.IsDeleted = false;
+                source.DeletedBy = null;
+                source.DeletedDate = null;
                 context.BusinessPartners.InsertOnSubmit(source);
                 
                 // Tạo BusinessPartnerSite là trụ sở chính
@@ -626,6 +668,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                 existing.PaymentTerm = source.PaymentTerm;
                 existing.IsActive = source.IsActive;
                 existing.UpdatedDate = DateTime.Now;
+                existing.ModifiedBy = userId;
                 
                 context.SubmitChanges();
                 
