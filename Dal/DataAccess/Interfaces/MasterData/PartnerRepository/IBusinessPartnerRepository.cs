@@ -68,6 +68,11 @@ public interface IBusinessPartnerRepository
     /// </summary>
     List<BusinessPartner> GetActivePartners();
 
+    /// <summary>
+    /// Lấy danh sách đối tác đang hoạt động (Async).
+    /// </summary>
+    Task<List<BusinessPartner>> GetActivePartnersAsync();
+
     #endregion
 
     #region Update

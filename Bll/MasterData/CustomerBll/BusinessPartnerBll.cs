@@ -94,8 +94,38 @@ namespace Bll.MasterData.CustomerBll
         /// </summary>
         public async Task<List<BusinessPartner>> GetAllAsync()
         {
-            // TODO: IBusinessPartnerRepository không có GetAllAsync(), sử dụng GetActivePartners() tạm thời
-            return await Task.Run(() => GetDataAccess().GetActivePartners());
+            try
+            {
+                _logger.Debug("[BLL] GetAllAsync: Bắt đầu gọi repository");
+                var result = await GetDataAccess().GetActivePartnersAsync();
+                _logger.Debug($"[BLL] GetAllAsync: Đã nhận được {result?.Count ?? 0} entities từ repository");
+                
+                // Log thông tin về navigation properties của entities đầu tiên (nếu có)
+                if (result != null && result.Count > 0)
+                {
+                    var firstPartner = result[0];
+                    try
+                    {
+                        var hasApplicationUser = firstPartner.ApplicationUser != null;
+                        var hasApplicationUser2 = firstPartner.ApplicationUser2 != null;
+                        var categoriesCount = firstPartner.BusinessPartner_BusinessPartnerCategories?.Count ?? 0;
+                        _logger.Debug($"[BLL] GetAllAsync: Entity đầu tiên - ApplicationUser: {hasApplicationUser}, ApplicationUser2: {hasApplicationUser2}, Categories: {categoriesCount}");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error($"[BLL] GetAllAsync: LỖI khi kiểm tra navigation properties của entity đầu tiên: {ex.Message}", ex);
+                        _logger.Error($"[BLL] GetAllAsync: StackTrace: {ex.StackTrace}");
+                    }
+                }
+                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"[BLL] GetAllAsync: LỖI TỔNG QUÁT: {ex.Message}", ex);
+                _logger.Error($"[BLL] GetAllAsync: StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
         /// <summary>
@@ -105,6 +135,29 @@ namespace Bll.MasterData.CustomerBll
         {
             // TODO: IBusinessPartnerRepository không có GetAll(), sử dụng GetActivePartners() tạm thời
             return GetDataAccess().GetActivePartners();
+        }
+
+        /// <summary>
+        /// Lấy dictionary chứa tất cả BusinessPartnerCategory để tính FullPath
+        /// </summary>
+        /// <returns>Dictionary với Key là CategoryId, Value là BusinessPartnerCategory</returns>
+        public async Task<Dictionary<Guid, BusinessPartnerCategory>> GetCategoryDictAsync()
+        {
+            try
+            {
+                _logger.Debug("[BLL] GetCategoryDictAsync: Bắt đầu lấy tất cả categories");
+                var categoryBll = new BusinessPartnerCategoryBll();
+                var categories = await categoryBll.GetAllAsync();
+                var categoryDict = categories.ToDictionary(c => c.Id);
+                _logger.Debug($"[BLL] GetCategoryDictAsync: Đã lấy được {categoryDict.Count} categories");
+                return categoryDict;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"[BLL] GetCategoryDictAsync: LỖI: {ex.Message}", ex);
+                _logger.Error($"[BLL] GetCategoryDictAsync: StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
         /// <summary>

@@ -71,6 +71,12 @@ namespace MasterData.Customer
 
             // Setup SuperToolTips
             SetupSuperToolTips();
+
+            // Cấu hình HtmlHypertextLabel để enable HTML rendering
+            if (HtmlHypertextLabel != null)
+            {
+                HtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            }
         }
 
         #endregion
@@ -108,12 +114,26 @@ namespace MasterData.Customer
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu gọi BLL.GetAllAsync()");
                 var entities = await _businessPartnerBll.GetAllAsync();
-                var dtoList = entities.Select(x => x.ToListDto(ResolvePartnerTypeName)).ToList();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã nhận được {entities?.Count ?? 0} entities từ BLL");
+                
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu lấy categoryDict");
+                var categoryDict = await _businessPartnerBll.GetCategoryDictAsync();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã lấy được {categoryDict?.Count ?? 0} categories");
+                
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu convert sang DTO với categoryDict");
+                var dtoList = entities.ToBusinessPartnerListDtos(categoryDict).ToList();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã convert được {dtoList.Count} DTOs");
+                
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu bind vào grid");
                 BindGrid(dtoList);
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Hoàn thành");
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: LỖI: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: StackTrace: {ex.StackTrace}");
                 ShowError(ex, "Lỗi tải dữ liệu");
             }
         }

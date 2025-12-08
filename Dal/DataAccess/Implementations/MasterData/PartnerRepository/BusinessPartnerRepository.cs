@@ -68,6 +68,13 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         // Load BusinessPartnerCategory từ BusinessPartner_BusinessPartnerCategory để có thể truy cập category details
         loadOptions.LoadWith<BusinessPartner_BusinessPartnerCategory>(m => m.BusinessPartnerCategory);
         
+        // KHÔNG load BusinessPartnerCategory1 (parent) trong LoadOptions vì sẽ tạo cycle
+        // Parent category sẽ được materialize thủ công trong MaterializeNavigationProperties nếu cần
+        
+        // Load ApplicationUser navigation properties cho CreatedBy và ModifiedBy
+        loadOptions.LoadWith<BusinessPartner>(bp => bp.ApplicationUser);
+        loadOptions.LoadWith<BusinessPartner>(bp => bp.ApplicationUser2);
+        
         // Load BusinessPartnerSites nếu cần
         loadOptions.LoadWith<BusinessPartner>(bp => bp.BusinessPartnerSites);
         
@@ -76,54 +83,151 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         return context;
     }
 
-    /// <summary>
-    /// Materialize navigation properties để tránh lỗi "Cannot access a disposed object"
-    /// Force load EntitySet và navigation properties trước khi dispose DataContext
-    /// </summary>
-    /// <param name="partner">BusinessPartner entity</param>
-    private void MaterializeNavigationProperties(BusinessPartner partner)
-    {
-        if (partner == null) return;
-
-        try
+        /// <summary>
+        /// Materialize navigation properties để tránh lỗi "Cannot access a disposed object"
+        /// Force load EntitySet và navigation properties trước khi dispose DataContext
+        /// </summary>
+        /// <param name="partner">BusinessPartner entity</param>
+        private void MaterializeNavigationProperties(BusinessPartner partner)
         {
-            // Force load BusinessPartner_BusinessPartnerCategories (EntitySet)
-            if (partner.BusinessPartner_BusinessPartnerCategories != null)
+            if (partner == null) return;
+
+            _logger.Debug($"[Materialize] Bắt đầu materialize navigation properties cho partner {partner.Id} ({partner.PartnerCode})");
+
+            try
             {
-                var categoriesCount = partner.BusinessPartner_BusinessPartnerCategories.Count;
-                
-                // Force load BusinessPartnerCategory cho mỗi mapping
-                foreach (var mapping in partner.BusinessPartner_BusinessPartnerCategories)
+                // Force load ApplicationUser (CreatedBy) - materialize toàn bộ object
+                try
                 {
-                    if (mapping.BusinessPartnerCategory != null)
+                    _logger.Debug($"[Materialize] Đang materialize ApplicationUser cho partner {partner.Id}");
+                    var createdByUser = partner.ApplicationUser;
+                    if (createdByUser != null)
                     {
-                        // Materialize category properties
-                        var categoryName = mapping.BusinessPartnerCategory.CategoryName;
-                        var categoryCode = mapping.BusinessPartnerCategory.CategoryCode;
-                        var parentId = mapping.BusinessPartnerCategory.ParentId;
-                        
-                        // Nếu có parent, cần load parent category (nhưng không thể load recursive trong LINQ to SQL)
-                        // Parent sẽ được load trong converter nếu có categoryDict
+                        // Materialize tất cả properties cần thiết
+                        var userName = createdByUser.UserName;
+                        var userId = createdByUser.Id;
+                        _logger.Debug($"[Materialize] Đã materialize ApplicationUser: {userName} (Id: {userId})");
+                    }
+                    else
+                    {
+                        _logger.Debug($"[Materialize] ApplicationUser là null cho partner {partner.Id}");
                     }
                 }
-            }
-
-            // Force load BusinessPartnerSites nếu cần
-            if (partner.BusinessPartnerSites != null)
-            {
-                var sitesCount = partner.BusinessPartnerSites.Count;
-                foreach (var site in partner.BusinessPartnerSites)
+                catch (Exception ex)
                 {
-                    var siteName = site.SiteName; // Materialize
+                    _logger.Error($"[Materialize] LỖI khi materialize ApplicationUser cho partner {partner.Id}: {ex.Message}", ex);
+                    _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
                 }
+
+                // Force load ApplicationUser2 (ModifiedBy) - materialize toàn bộ object
+                try
+                {
+                    _logger.Debug($"[Materialize] Đang materialize ApplicationUser2 cho partner {partner.Id}");
+                    var modifiedByUser = partner.ApplicationUser2;
+                    if (modifiedByUser != null)
+                    {
+                        // Materialize tất cả properties cần thiết
+                        var userName = modifiedByUser.UserName;
+                        var userId = modifiedByUser.Id;
+                        _logger.Debug($"[Materialize] Đã materialize ApplicationUser2: {userName} (Id: {userId})");
+                    }
+                    else
+                    {
+                        _logger.Debug($"[Materialize] ApplicationUser2 là null cho partner {partner.Id}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"[Materialize] LỖI khi materialize ApplicationUser2 cho partner {partner.Id}: {ex.Message}", ex);
+                    _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
+                }
+
+                // Force load BusinessPartner_BusinessPartnerCategories (EntitySet)
+                try
+                {
+                    _logger.Debug($"[Materialize] Đang materialize BusinessPartner_BusinessPartnerCategories cho partner {partner.Id}");
+                    var categories = partner.BusinessPartner_BusinessPartnerCategories;
+                    if (categories != null)
+                    {
+                        // Force load toàn bộ collection
+                        var categoriesList = categories.ToList();
+                        _logger.Debug($"[Materialize] Đã load {categoriesList.Count} categories cho partner {partner.Id}");
+                        
+                        // Force load BusinessPartnerCategory cho mỗi mapping
+                        int index = 0;
+                        foreach (var mapping in categoriesList)
+                        {
+                            try
+                            {
+                                _logger.Debug($"[Materialize] Đang materialize category mapping {index} cho partner {partner.Id}");
+                                var category = mapping.BusinessPartnerCategory;
+                                if (category != null)
+                                {
+                                    // Materialize tất cả category properties cần thiết
+                                    var categoryName = category.CategoryName;
+                                    var categoryCode = category.CategoryCode;
+                                    var parentId = category.ParentId;
+                                    var categoryId = category.Id;
+                                    _logger.Debug($"[Materialize] Đã materialize category: {categoryName} (Id: {categoryId}, ParentId: {parentId})");
+                                }
+                                else
+                                {
+                                    _logger.Warning($"[Materialize] BusinessPartnerCategory là null cho mapping {index}");
+                                }
+                                index++;
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.Error($"[Materialize] LỖI khi materialize BusinessPartnerCategory cho mapping {index}: {ex.Message}", ex);
+                                _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logger.Debug($"[Materialize] BusinessPartner_BusinessPartnerCategories là null cho partner {partner.Id}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"[Materialize] LỖI khi materialize BusinessPartner_BusinessPartnerCategories cho partner {partner.Id}: {ex.Message}", ex);
+                    _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
+                }
+
+                // Force load BusinessPartnerSites nếu cần
+                try
+                {
+                    _logger.Debug($"[Materialize] Đang materialize BusinessPartnerSites cho partner {partner.Id}");
+                    var sites = partner.BusinessPartnerSites;
+                    if (sites != null)
+                    {
+                        var sitesList = sites.ToList();
+                        _logger.Debug($"[Materialize] Đã load {sitesList.Count} sites cho partner {partner.Id}");
+                        foreach (var site in sitesList)
+                        {
+                            var siteName = site.SiteName; // Materialize
+                        }
+                    }
+                    else
+                    {
+                        _logger.Debug($"[Materialize] BusinessPartnerSites là null cho partner {partner.Id}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"[Materialize] LỖI khi materialize BusinessPartnerSites cho partner {partner.Id}: {ex.Message}", ex);
+                    _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
+                }
+
+                _logger.Debug($"[Materialize] Hoàn thành materialize navigation properties cho partner {partner.Id}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"[Materialize] LỖI TỔNG QUÁT khi materialize navigation properties cho partner {partner.Id}: {ex.Message}", ex);
+                _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
+                // Không throw exception, chỉ log warning vì có thể một số properties chưa được load
             }
         }
-        catch (Exception ex)
-        {
-            _logger.Warning($"Lỗi khi materialize navigation properties cho partner {partner.Id}: {ex.Message}");
-            // Không throw exception, chỉ log warning vì có thể một số properties chưa được load
-        }
-    }
 
     #endregion
 
@@ -467,6 +571,57 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         {
             _logger.Error($"Lỗi khi lấy danh sách đối tác active: {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi lấy danh sách đối tác active: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách đối tác đang hoạt động (Async) - chỉ lấy các đối tác chưa bị xóa.
+    /// </summary>
+    public async Task<List<BusinessPartner>> GetActivePartnersAsync()
+    {
+        try
+        {
+            _logger.Debug("[GetActivePartnersAsync] Bắt đầu lấy danh sách đối tác active");
+            
+            // Sử dụng Task.Run để chạy trên thread pool, nhưng đảm bảo materialize đầy đủ
+            return await Task.Run(() =>
+            {
+                _logger.Debug("[GetActivePartnersAsync] Tạo DataContext mới");
+                using var context = CreateNewContext();
+                
+                _logger.Debug("[GetActivePartnersAsync] Đang query database");
+                var partners = context.BusinessPartners.Where(x => x.IsActive == true && !x.IsDeleted).ToList();
+                _logger.Debug($"[GetActivePartnersAsync] Đã query được {partners.Count} đối tác");
+                
+                // Materialize navigation properties cho tất cả partners TRƯỚC KHI dispose context
+                int index = 0;
+                foreach (var partner in partners)
+                {
+                    try
+                    {
+                        _logger.Debug($"[GetActivePartnersAsync] Đang materialize partner {index + 1}/{partners.Count}: {partner.PartnerCode}");
+                        MaterializeNavigationProperties(partner);
+                        _logger.Debug($"[GetActivePartnersAsync] Đã materialize xong partner {index + 1}: {partner.PartnerCode}");
+                        index++;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error($"[GetActivePartnersAsync] LỖI khi materialize partner {index + 1} ({partner.PartnerCode}): {ex.Message}", ex);
+                        _logger.Error($"[GetActivePartnersAsync] StackTrace: {ex.StackTrace}");
+                    }
+                }
+                
+                _logger.Debug($"[GetActivePartnersAsync] Hoàn thành materialize, chuẩn bị dispose context");
+                // Context sẽ được dispose ở đây khi ra khỏi using block
+                _logger.Debug($"[GetActivePartnersAsync] Đã lấy {partners.Count} đối tác đang hoạt động (async)");
+                return partners;
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"[GetActivePartnersAsync] LỖI TỔNG QUÁT khi lấy danh sách đối tác active (async): {ex.Message}", ex);
+            _logger.Error($"[GetActivePartnersAsync] StackTrace: {ex.StackTrace}");
+            throw new DataAccessException($"Lỗi khi lấy danh sách đối tác active (async): {ex.Message}", ex);
         }
     }
 
