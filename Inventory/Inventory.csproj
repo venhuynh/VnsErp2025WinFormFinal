@@ -471,6 +471,9 @@
     <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcStockInMaster.resx">
       <DependentUpon>UcStockInMaster.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockIn\NhapLapRap\FrmNhapLapRap.resx">
+      <DependentUpon>FrmNhapLapRap.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.resx">
       <DependentUpon>UcNhapLapRapLapRapDetailDto.cs</DependentUpon>
     </EmbeddedResource>
