@@ -437,16 +437,37 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
         }
 
         // Chuyển tất cả partners từ category cũ sang "Chưa phân loại"
-        var mappings = context.BusinessPartner_BusinessPartnerCategories
+        // Lưu ý: Không thể cập nhật CategoryId vì nó là phần của composite primary key
+        // Cần tạo record mới và xóa record cũ
+        var oldMappings = context.BusinessPartner_BusinessPartnerCategories
             .Where(m => m.CategoryId == categoryId).ToList();
 
-        foreach (var mapping in mappings)
+        foreach (var oldMapping in oldMappings)
         {
-            mapping.CategoryId = uncategorizedCategory.Id;
+            // Kiểm tra xem mapping mới đã tồn tại chưa (tránh duplicate)
+            var existingMapping = context.BusinessPartner_BusinessPartnerCategories
+                .FirstOrDefault(m => m.PartnerId == oldMapping.PartnerId && 
+                                    m.CategoryId == uncategorizedCategory.Id);
+            
+            if (existingMapping == null)
+            {
+                // Tạo mapping mới
+                var newMapping = new BusinessPartner_BusinessPartnerCategory
+                {
+                    PartnerId = oldMapping.PartnerId,
+                    CategoryId = uncategorizedCategory.Id,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = oldMapping.CreatedBy
+                };
+                context.BusinessPartner_BusinessPartnerCategories.InsertOnSubmit(newMapping);
+            }
+            
+            // Xóa mapping cũ
+            context.BusinessPartner_BusinessPartnerCategories.DeleteOnSubmit(oldMapping);
         }
         
         context.SubmitChanges();
-        _logger.Info($"Đã chuyển {mappings.Count} partners từ category {categoryId} sang 'Chưa phân loại'");
+        _logger.Info($"Đã chuyển {oldMappings.Count} partners từ category {categoryId} sang 'Chưa phân loại'");
     }
 
     /// <summary>
@@ -473,16 +494,37 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
         }
 
         // Chuyển tất cả partners từ category cũ sang "Chưa phân loại"
-        var mappings = context.BusinessPartner_BusinessPartnerCategories
+        // Lưu ý: Không thể cập nhật CategoryId vì nó là phần của composite primary key
+        // Cần tạo record mới và xóa record cũ
+        var oldMappings = context.BusinessPartner_BusinessPartnerCategories
             .Where(m => m.CategoryId == categoryId).ToList();
 
-        foreach (var mapping in mappings)
+        foreach (var oldMapping in oldMappings)
         {
-            mapping.CategoryId = uncategorizedCategory.Id;
+            // Kiểm tra xem mapping mới đã tồn tại chưa (tránh duplicate)
+            var existingMapping = context.BusinessPartner_BusinessPartnerCategories
+                .FirstOrDefault(m => m.PartnerId == oldMapping.PartnerId && 
+                                    m.CategoryId == uncategorizedCategory.Id);
+            
+            if (existingMapping == null)
+            {
+                // Tạo mapping mới
+                var newMapping = new BusinessPartner_BusinessPartnerCategory
+                {
+                    PartnerId = oldMapping.PartnerId,
+                    CategoryId = uncategorizedCategory.Id,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = oldMapping.CreatedBy
+                };
+                context.BusinessPartner_BusinessPartnerCategories.InsertOnSubmit(newMapping);
+            }
+            
+            // Xóa mapping cũ
+            context.BusinessPartner_BusinessPartnerCategories.DeleteOnSubmit(oldMapping);
         }
         
         await Task.Run(() => context.SubmitChanges());
-        _logger.Info($"Đã chuyển {mappings.Count} partners từ category {categoryId} sang 'Chưa phân loại' (async)");
+        _logger.Info($"Đã chuyển {oldMappings.Count} partners từ category {categoryId} sang 'Chưa phân loại' (async)");
     }
 
     #endregion

@@ -156,6 +156,10 @@ namespace MasterData.Customer
 
             // Đảm bảo selection được clear sau khi bind
             ClearSelectionState();
+            
+            // Cập nhật summary và selection info
+            UpdateDataSummary();
+            UpdateCurrentSelection();
         }
 
         #endregion
@@ -366,6 +370,7 @@ namespace MasterData.Customer
                 // Cập nhật danh sách selected IDs khi selection thay đổi
                 UpdateSelectedCategoryIds();
                 UpdateButtonStates();
+                UpdateCurrentSelection();
             }
             catch (Exception ex)
             {
@@ -413,6 +418,7 @@ namespace MasterData.Customer
 
         /// <summary>
         /// Xóa các danh mục theo thứ tự: con trước, cha sau để tránh lỗi foreign key constraint.
+        /// Nếu danh mục có đối tác, sẽ tự động di chuyển các đối tác sang danh mục "Chưa phân loại" trước khi xóa.
         /// </summary>
         private async Task DeleteCategoriesInOrder(List<Guid> categoryIds)
         {
@@ -422,7 +428,7 @@ namespace MasterData.Customer
             var allCategories = await _businessPartnerCategoryBll.GetAllAsync();
             var categoryDict = allCategories.ToDictionary(c => c.Id);
 
-            // Tạo danh sách categories cần xóa với thông tin level
+            // Tạo danh sách categories cần xóa với thông tin level và số lượng đối tác
             var categoriesToDelete = categoryIds.Select(id =>
             {
                 var category = categoryDict.TryGetValue(id, out var value) ? value : null;
@@ -430,21 +436,64 @@ namespace MasterData.Customer
 
                 // Tính level để xác định thứ tự xóa (level cao hơn = xóa trước)
                 var level = CalculateCategoryLevel(category, categoryDict);
-                return new { Category = category, Level = level };
+                
+                // Kiểm tra số lượng đối tác
+                var partnerCount = _businessPartnerCategoryBll.GetPartnerCount(id);
+                
+                return new { Category = category, Level = level, PartnerCount = partnerCount };
             }).Where(x => x != null).OrderByDescending(x => x.Level).ToList();
 
+            // Thông báo cho người dùng về các danh mục có đối tác sẽ được di chuyển
+            var categoriesWithPartners = categoriesToDelete.Where(x => x.PartnerCount > 0).ToList();
+            if (categoriesWithPartners.Any())
+            {
+                var message = "Các danh mục sau đây có đối tác và sẽ được di chuyển sang danh mục 'Chưa phân loại' trước khi xóa:\n\n";
+                foreach (var item in categoriesWithPartners)
+                {
+                    message += $"• {item.Category.CategoryName}: {item.PartnerCount:N0} đối tác\n";
+                }
+                message += "\nBạn có muốn tiếp tục?";
+                
+                if (!MsgBox.ShowYesNo(message))
+                {
+                    return; // Người dùng hủy
+                }
+            }
+
             // Xóa theo thứ tự từ level cao xuống level thấp
+            int totalMovedPartners = 0;
             foreach (var item in categoriesToDelete)
             {
                 try
                 {
+                    // Repository sẽ tự động di chuyển đối tác sang "Chưa phân loại" nếu có
+                    if (item.PartnerCount > 0)
+                    {
+                        _logger.Info("Đang xóa danh mục '{0}' có {1} đối tác. Các đối tác sẽ được di chuyển sang 'Chưa phân loại'", 
+                            item.Category.CategoryName, item.PartnerCount);
+                        totalMovedPartners += item.PartnerCount;
+                    }
+                    
                     _businessPartnerCategoryBll.Delete(item.Category.Id);
+                    
+                    _logger.Info("Đã xóa danh mục: {0}", item.Category.CategoryName);
                 }
                 catch (Exception ex)
                 {
                     // Log lỗi nhưng tiếp tục xóa các item khác
                     _logger.Error("Lỗi xóa category {0}: {1}", item.Category.CategoryName, ex.Message);
+                    throw; // Re-throw để form có thể hiển thị lỗi
                 }
+            }
+
+            // Thông báo kết quả
+            if (totalMovedPartners > 0)
+            {
+                ShowInfo($"Đã xóa {categoriesToDelete.Count} danh mục. {totalMovedPartners:N0} đối tác đã được di chuyển sang danh mục 'Chưa phân loại'.");
+            }
+            else
+            {
+                ShowInfo($"Đã xóa {categoriesToDelete.Count} danh mục thành công.");
             }
         }
 
@@ -517,6 +566,127 @@ namespace MasterData.Customer
         }
 
         /// <summary>
+        /// Cập nhật thông tin tổng kết dữ liệu với format HTML
+        /// </summary>
+        private void UpdateDataSummary()
+        {
+            try
+            {
+                if (DataSummaryBarStaticItem == null) return;
+
+                var totalRows = BusinessPartnerCategoryDtoGridView.RowCount;
+                var activeCount = 0;
+                var inactiveCount = 0;
+                var totalPartners = 0;
+
+                // Đếm số lượng active/inactive và tổng số đối tác
+                if (businessPartnerCategoryDtoBindingSource.DataSource is IEnumerable<BusinessPartnerCategoryDto> data)
+                {
+                    foreach (var dto in data)
+                    {
+                        if (dto.IsActive)
+                            activeCount++;
+                        else
+                            inactiveCount++;
+                        totalPartners += dto.PartnerCount;
+                    }
+                }
+
+                // Format HTML - font bình thường, chỉ in đậm và làm nổi bật các con số
+                string html;
+                if (totalRows == 0)
+                {
+                    html = "<color='#757575'>Chưa có dữ liệu</color>";
+                }
+                else
+                {
+                    html = "Tổng: <b><color='#1976D2'>{0:N0}</color></b> danh mục";
+                    html = string.Format(html, totalRows);
+                    
+                    if (activeCount > 0 || inactiveCount > 0)
+                    {
+                        html += $" | <b><color='#4CAF50'>{activeCount:N0}</color></b> hoạt động";
+                        if (inactiveCount > 0)
+                        {
+                            html += $" | <b><color='#F44336'>{inactiveCount:N0}</color></b> ngừng";
+                        }
+                    }
+                    
+                    if (totalPartners > 0)
+                    {
+                        html += $" | <b><color='#FF9800'>{totalPartners:N0}</color></b> đối tác";
+                    }
+                }
+
+                DataSummaryBarStaticItem.Caption = html;
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning("Lỗi cập nhật DataSummary: {0}", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật thông tin selection hiện tại với format HTML
+        /// </summary>
+        private void UpdateCurrentSelection()
+        {
+            try
+            {
+                if (CurrentSelectBarStaticItem == null) return;
+
+                var selectedCount = _selectedCategoryIds?.Count ?? 0;
+                string html;
+
+                if (selectedCount == 0)
+                {
+                    html = "<color='#757575'>Chưa chọn dòng nào</color>";
+                }
+                else if (selectedCount == 1)
+                {
+                    // Hiển thị thông tin chi tiết của dòng được chọn
+                    var selectedId = _selectedCategoryIds[0];
+                    var selectedDto = businessPartnerCategoryDtoBindingSource.Cast<BusinessPartnerCategoryDto>()
+                        .FirstOrDefault(d => d.Id == selectedId);
+
+                    if (selectedDto != null)
+                    {
+                        var statusColor = selectedDto.IsActive ? "#4CAF50" : "#F44336";
+                        var statusText = selectedDto.IsActive ? "Hoạt động" : "Ngừng";
+                        
+                        html = $"<b><color='#1976D2'>{selectedCount:N0}</color></b> dòng: <b><color='blue'>{selectedDto.CategoryName}</color></b>";
+                        
+                        if (!string.IsNullOrWhiteSpace(selectedDto.CategoryCode))
+                        {
+                            html += $" <color='#757575'>({selectedDto.CategoryCode})</color>";
+                        }
+                        
+                        html += $" | Trạng thái: <b><color='{statusColor}'>{statusText}</color></b>";
+                        
+                        if (selectedDto.PartnerCount > 0)
+                        {
+                            html += $" | Đối tác: <b><color='#FF9800'>{selectedDto.PartnerCount:N0}</color></b>";
+                        }
+                    }
+                    else
+                    {
+                        html = $"<b><color='#1976D2'>{selectedCount:N0}</color></b> dòng được chọn";
+                    }
+                }
+                else
+                {
+                    html = $"<b><color='#1976D2'>{selectedCount:N0}</color></b> dòng được chọn";
+                }
+
+                CurrentSelectBarStaticItem.Caption = html;
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning("Lỗi cập nhật CurrentSelection: {0}", ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Cập nhật danh sách selected category IDs.
         /// </summary>
         private void UpdateSelectedCategoryIds()
@@ -556,6 +726,7 @@ namespace MasterData.Customer
             BusinessPartnerCategoryDtoGridView.FocusedRowHandle = DevExpress.XtraGrid.GridControl.InvalidRowHandle;
 
             UpdateButtonStates();
+            UpdateCurrentSelection();
         }
 
         #endregion
