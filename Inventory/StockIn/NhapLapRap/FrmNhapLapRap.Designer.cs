@@ -1,6 +1,6 @@
-﻿namespace Inventory.StockOut.XuatLapRap
+﻿namespace Inventory.StockIn.NhapLapRap
 {
-    partial class FrmXuatLapRap
+    partial class FrmNhapLapRap
     {
         /// <summary>
         /// Required designer variable.
@@ -21,6 +21,7 @@
         }
 
 
+
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -31,17 +32,14 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucXuatLapRapDetailDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapDetailDto();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
-            this.XuatLaiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapLaiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.LuuPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.InPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.XuatQuanLyTaiSanBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapQuanLyTaiSanBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -52,13 +50,14 @@
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucXuatLapRapMasterDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapMasterDto();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.ucNhapLapRapMasterDto1 = new Inventory.StockIn.NhapLapRap.UcNhapLapRapMasterDto();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ucNhapLapRapLapRapDetailDto1 = new Inventory.StockIn.NhapLapRap.UcNhapLapRapLapRapDetailDto();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
@@ -67,11 +66,12 @@
             this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.ucXuatLapRapDetailDto1);
+            this.layoutControl1.Controls.Add(this.ucNhapLapRapLapRapDetailDto1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(483, 24);
             this.layoutControl1.Name = "layoutControl1";
@@ -79,13 +79,6 @@
             this.layoutControl1.Size = new System.Drawing.Size(888, 768);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
-            // 
-            // ucXuatLapRapDetailDto1
-            // 
-            this.ucXuatLapRapDetailDto1.Location = new System.Drawing.Point(12, 12);
-            this.ucXuatLapRapDetailDto1.Name = "ucXuatLapRapDetailDto1";
-            this.ucXuatLapRapDetailDto1.Size = new System.Drawing.Size(864, 744);
-            this.ucXuatLapRapDetailDto1.TabIndex = 4;
             // 
             // Root
             // 
@@ -96,14 +89,6 @@
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(888, 768);
             this.Root.TextVisible = false;
-            // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Control = this.ucXuatLapRapDetailDto1;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(868, 748);
-            this.layoutControlItem2.TextVisible = false;
             // 
             // dockManager1
             // 
@@ -136,16 +121,15 @@
             this.barManager1.DockManager = this.dockManager1;
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.XuatLaiBarButtonItem,
+            this.NhapLaiBarButtonItem,
             this.LuuPhieuBarButtonItem,
             this.InPhieuBarButtonItem,
             this.CloseBarButtonItem,
-            this.XuatQuanLyTaiSanBarButtonItem,
+            this.NhapQuanLyTaiSanBarButtonItem,
             this.ThemHinhAnhBarButtonItem,
-            this.HotKeyBarStaticItem,
-            this.barButtonItem1});
+            this.HotKeyBarStaticItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 8;
+            this.barManager1.MaxItemId = 7;
             // 
             // bar2
             // 
@@ -155,11 +139,10 @@
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XuatLaiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapLaiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LuuPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XuatQuanLyTaiSanBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapQuanLyTaiSanBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.HotKeyBarStaticItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
@@ -167,21 +150,13 @@
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
             // 
-            // XuatLaiBarButtonItem
+            // NhapLaiBarButtonItem
             // 
-            this.XuatLaiBarButtonItem.Caption = "Xuất lại";
-            this.XuatLaiBarButtonItem.Id = 0;
-            this.XuatLaiBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.reset2_16x16;
-            this.XuatLaiBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.reset2_32x32;
-            this.XuatLaiBarButtonItem.Name = "XuatLaiBarButtonItem";
-            // 
-            // barButtonItem1
-            // 
-            this.barButtonItem1.Caption = "Đăng ký thiết bị";
-            this.barButtonItem1.Id = 7;
-            this.barButtonItem1.ImageOptions.Image = global::Inventory.Properties.Resources.additem_16x16;
-            this.barButtonItem1.ImageOptions.LargeImage = global::Inventory.Properties.Resources.additem_32x32;
-            this.barButtonItem1.Name = "barButtonItem1";
+            this.NhapLaiBarButtonItem.Caption = "Nhập lại";
+            this.NhapLaiBarButtonItem.Id = 0;
+            this.NhapLaiBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.reset2_16x16;
+            this.NhapLaiBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.reset2_32x32;
+            this.NhapLaiBarButtonItem.Name = "NhapLaiBarButtonItem";
             // 
             // LuuPhieuBarButtonItem
             // 
@@ -198,13 +173,13 @@
             this.InPhieuBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.print_32x32;
             this.InPhieuBarButtonItem.Name = "InPhieuBarButtonItem";
             // 
-            // XuatQuanLyTaiSanBarButtonItem
+            // NhapQuanLyTaiSanBarButtonItem
             // 
-            this.XuatQuanLyTaiSanBarButtonItem.Caption = "Xuất quản lý tài sản";
-            this.XuatQuanLyTaiSanBarButtonItem.Id = 4;
-            this.XuatQuanLyTaiSanBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
-            this.XuatQuanLyTaiSanBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.barcode_32x32;
-            this.XuatQuanLyTaiSanBarButtonItem.Name = "XuatQuanLyTaiSanBarButtonItem";
+            this.NhapQuanLyTaiSanBarButtonItem.Caption = "Nhập quản lý tài sản";
+            this.NhapQuanLyTaiSanBarButtonItem.Id = 4;
+            this.NhapQuanLyTaiSanBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
+            this.NhapQuanLyTaiSanBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.barcode_32x32;
+            this.NhapQuanLyTaiSanBarButtonItem.Name = "NhapQuanLyTaiSanBarButtonItem";
             // 
             // ThemHinhAnhBarButtonItem
             // 
@@ -272,7 +247,7 @@
             this.dockPanel2.Options.ShowCloseButton = false;
             this.dockPanel2.OriginalSize = new System.Drawing.Size(483, 200);
             this.dockPanel2.Size = new System.Drawing.Size(483, 768);
-            this.dockPanel2.Text = "THÔNG TIN PHIẾU XUẤT LINH KIỆN LẮP RÁP";
+            this.dockPanel2.Text = "THÔNG TIN PHIẾU NHẬP LẮP RÁP";
             // 
             // dockPanel2_Container
             // 
@@ -284,7 +259,7 @@
             // 
             // layoutControl2
             // 
-            this.layoutControl2.Controls.Add(this.ucXuatLapRapMasterDto1);
+            this.layoutControl2.Controls.Add(this.ucNhapLapRapMasterDto1);
             this.layoutControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
@@ -292,13 +267,6 @@
             this.layoutControl2.Size = new System.Drawing.Size(476, 739);
             this.layoutControl2.TabIndex = 0;
             this.layoutControl2.Text = "layoutControl2";
-            // 
-            // ucXuatLapRapMasterDto1
-            // 
-            this.ucXuatLapRapMasterDto1.Location = new System.Drawing.Point(12, 12);
-            this.ucXuatLapRapMasterDto1.Name = "ucXuatLapRapMasterDto1";
-            this.ucXuatLapRapMasterDto1.Size = new System.Drawing.Size(452, 715);
-            this.ucXuatLapRapMasterDto1.TabIndex = 4;
             // 
             // layoutControlGroup1
             // 
@@ -310,15 +278,37 @@
             this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
             this.layoutControlGroup1.TextVisible = false;
             // 
+            // ucNhapLapRapMasterDto1
+            // 
+            this.ucNhapLapRapMasterDto1.Location = new System.Drawing.Point(12, 12);
+            this.ucNhapLapRapMasterDto1.Name = "ucNhapLapRapMasterDto1";
+            this.ucNhapLapRapMasterDto1.Size = new System.Drawing.Size(452, 715);
+            this.ucNhapLapRapMasterDto1.TabIndex = 4;
+            // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.ucXuatLapRapMasterDto1;
+            this.layoutControlItem1.Control = this.ucNhapLapRapMasterDto1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(456, 719);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // FrmXuatLapRap
+            // ucNhapLapRapLapRapDetailDto1
+            // 
+            this.ucNhapLapRapLapRapDetailDto1.Location = new System.Drawing.Point(12, 12);
+            this.ucNhapLapRapLapRapDetailDto1.Name = "ucNhapLapRapLapRapDetailDto1";
+            this.ucNhapLapRapLapRapDetailDto1.Size = new System.Drawing.Size(864, 744);
+            this.ucNhapLapRapLapRapDetailDto1.TabIndex = 4;
+            // 
+            // layoutControlItem2
+            // 
+            this.layoutControlItem2.Control = this.ucNhapLapRapLapRapDetailDto1;
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.Size = new System.Drawing.Size(868, 748);
+            this.layoutControlItem2.TextVisible = false;
+            // 
+            // FrmNhapLapRap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -329,12 +319,11 @@
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.Name = "FrmXuatLapRap";
-            this.Text = "XUẤT LINH KIỆN LẮP RÁP";
+            this.Name = "FrmNhapLapRap";
+            this.Text = "PHIẾU NHẬP LẮP RÁP";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.dockPanel2.ResumeLayout(false);
@@ -343,6 +332,7 @@
             this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -360,20 +350,19 @@
         private DevExpress.XtraBars.BarDockControl barDockControlLeft;
         private DevExpress.XtraBars.BarManager barManager1;
         private DevExpress.XtraBars.Bar bar2;
-        private DevExpress.XtraBars.BarButtonItem XuatLaiBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem NhapLaiBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem LuuPhieuBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem InPhieuBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem CloseBarButtonItem;
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraBars.BarButtonItem XuatQuanLyTaiSanBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem NhapQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
-        private UcXuatLapRapMasterDto ucXuatLapRapMasterDto1;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private UcXuatLapRapDetailDto ucXuatLapRapDetailDto1;
+        private UcNhapLapRapLapRapDetailDto ucNhapLapRapLapRapDetailDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        private UcNhapLapRapMasterDto ucNhapLapRapMasterDto1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

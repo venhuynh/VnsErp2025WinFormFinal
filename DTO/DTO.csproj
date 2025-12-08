@@ -62,6 +62,8 @@
     <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInDetailDto.cs" />
     <Compile Include="Inventory\InventoryManagement\DeviceIdentifierEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DeviceDto.cs" />
+    <Compile Include="Inventory\StockIn\NhapLapRap\NhapLapRapDetailDto.cs" />
+    <Compile Include="Inventory\StockIn\NhapLapRap\NhapLapRapMasterDto.cs" />
     <Compile Include="Inventory\StockIn\NhapLuuChuyenKho\NhapLuuChuyenKhoDetailDto.cs" />
     <Compile Include="Inventory\StockIn\NhapLuuChuyenKho\NhapLuuChuyenKhoMasterDto.cs" />
     <Compile Include="Inventory\StockIn\NhapNoiBo\NhapNoiBoDetailDto.cs" />

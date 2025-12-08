@@ -1,44 +1,36 @@
-﻿using System;
+﻿using DevExpress.XtraEditors;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockIn;
 using Bll.MasterData.CompanyBll;
-using Bll.MasterData.CustomerBll;
-using Common;
 using Common.Utils;
 using Dal.DataContext;
-using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.InventoryManagement;
-using DTO.Inventory.StockIn;
-using DTO.Inventory.StockIn.NhapHangThuongMai;
+using DTO.Inventory.StockIn.NhapLapRap;
 using DTO.MasterData.Company;
-using DTO.MasterData.CustomerPartner;
 
-namespace Inventory.StockIn.NhapHangThuongMai
+namespace Inventory.StockIn.NhapLapRap
 {
-    public partial class UcStockInMaster : XtraUserControl
+    public partial class UcNhapLapRapMasterDto : DevExpress.XtraEditors.XtraUserControl
     {
         #region ========== KHAI BÁO BIẾN ==========
 
-        /// <summary>
-        /// StockInOutMaster entity
-        /// </summary>
-        private StockInOutMaster _stockInMaster;
 
         /// <summary>
         /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
         /// </summary>
         private readonly CompanyBranchBll _companyBranchBll = new();
 
-        /// <summary>
-        /// Business Logic Layer cho BusinessPartnerSite (dùng cho Supplier lookup)
-        /// </summary>
-        private readonly BusinessPartnerSiteBll _businessPartnerSiteBll = new();
 
         /// <summary>
         /// Business Logic Layer cho StockIn (dùng để lấy master entity)
@@ -55,18 +47,18 @@ namespace Inventory.StockIn.NhapHangThuongMai
         /// </summary>
         private bool _isWarehouseDataSourceLoaded;
 
-        /// <summary>
-        /// Flag đánh dấu Supplier datasource đã được load chưa
-        /// </summary>
-        private bool _isSupplierDataSourceLoaded;
-
         private Guid _stockInOutMasterId = Guid.Empty;
+
+        /// <summary>
+        /// StockInOutMaster entity
+        /// </summary>
+        private StockInOutMaster _stockInMaster;
 
         #endregion
 
         #region ========== CONSTRUCTOR ==========
 
-        public UcStockInMaster()
+        public UcNhapLapRapMasterDto()
         {
             InitializeComponent();
             InitializeControl();
@@ -83,6 +75,9 @@ namespace Inventory.StockIn.NhapHangThuongMai
         {
             try
             {
+                // Không chạy trong design mode để tránh lỗi load type
+                if (DesignMode) return;
+
                 // Khởi tạo Entity
                 InitializeEntity();
 
@@ -103,7 +98,11 @@ namespace Inventory.StockIn.NhapHangThuongMai
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi khởi tạo control");
+                // Trong design mode, không hiển thị lỗi
+                if (!DesignMode)
+                {
+                    ShowError(ex, "Lỗi khởi tạo control");
+                }
             }
         }
 
@@ -117,11 +116,10 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 Id = Guid.Empty,
                 VocherNumber = null,
                 StockInOutDate = DateTime.Now,
-                StockInOutType = (int)LoaiNhapXuatKhoEnum.NhapHangThuongMai,
+                StockInOutType = (int)LoaiNhapXuatKhoEnum.NhapSanPhamLapRap,
                 VoucherStatus = (int)TrangThaiPhieuNhapEnum.TaoMoi,
                 WarehouseId = Guid.Empty,
-                PurchaseOrderId = null,
-                PartnerSiteId = null,
+                PartnerSiteId = null, // Nhập lắp ráp không có customer
                 Notes = null,
                 TotalQuantity = 0,
                 TotalAmount = 0,
@@ -168,9 +166,13 @@ namespace Inventory.StockIn.NhapHangThuongMai
         {
             try
             {
+                // Không chạy trong design mode để tránh lỗi load type
+                if (DesignMode) return;
+
                 RequiredFieldHelper.MarkRequiredFields(
                     this,
-                    typeof(StockInMasterDto),
+                    typeof(NhapLapRapMasterDto),
+                    nullValuePrompt: "Bắt buộc nhập",
                     logger: (msg, ex) => System.Diagnostics.Debug.WriteLine($"{msg}: {ex?.Message}")
                 );
 
@@ -187,7 +189,11 @@ namespace Inventory.StockIn.NhapHangThuongMai
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi đánh dấu trường bắt buộc");
+                // Trong design mode, không hiển thị lỗi
+                if (!DesignMode)
+                {
+                    ShowError(ex, "Lỗi đánh dấu trường bắt buộc");
+                }
             }
         }
 
@@ -198,15 +204,11 @@ namespace Inventory.StockIn.NhapHangThuongMai
         {
             try
             {
-                Load += UcStockInMaster_Load;
+                Load += UcNhapLapRapMasterDto_Load;
 
                 //Sự kiện của WarehouseNameSearchLookupEdit
                 WarehouseNameSearchLookupEdit.Popup += WarehouseNameSearchLookupEdit_Popup;
                 WarehouseNameSearchLookupEdit.EditValueChanged += WarehouseNameSearchLookupEdit_EditValueChanged;
-
-                //Sự kiện của SupplierNameSearchLookupEdit
-                SupplierNameSearchLookupEdit.Popup += SupplierNameSearchLookupEdit_Popup;
-                SupplierNameSearchLookupEdit.EditValueChanged += SupplierNameTextEdit_EditValueChanged;
 
                 StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
 
@@ -219,26 +221,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi thiết lập sự kiện");
-            }
-        }
-
-        private async void SupplierNameSearchLookupEdit_Popup(object sender, EventArgs e)
-        {
-            try
-            {
-                // Chỉ load nếu chưa load hoặc datasource rỗng
-                if (!_isSupplierDataSourceLoaded ||
-                    businessPartnerSiteListDtoBindingSource.DataSource == null ||
-                    (businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> list &&
-                     list.Count == 0))
-                {
-                    await LoadSupplierDataSourceAsync();
-                    _isSupplierDataSourceLoaded = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
             }
         }
 
@@ -288,27 +270,17 @@ namespace Inventory.StockIn.NhapHangThuongMai
         /// </summary>
         private void SetupTextEditSuperTips()
         {
-            // SuperTip cho Số phiếu nhập kho
+            // SuperTip cho Số phiếu nhập lắp ráp
             if (StockInNumberTextEdit != null)
             {
                 SuperToolTipHelper.SetTextEditSuperTip(
                     StockInNumberTextEdit,
-                    title: @"<b><color=DarkBlue>📄 Số phiếu nhập kho</color></b>",
+                    title: @"<b><color=DarkBlue>📄 Số phiếu nhập lắp ráp</color></b>",
                     content:
-                    @"Số phiếu nhập kho được tạo tự động theo format: <b>PNK-MMYY-NNXXX</b><br/><br/><b>Format:</b><br/>• PNK: Phiếu nhập kho<br/>• MM: Tháng (2 ký tự)<br/>• YY: Năm (2 ký tự cuối)<br/>• NN: Index của Loại nhập kho (2 ký tự)<br/>• XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)<br/><br/><b>Chức năng:</b><br/>• Tự động tạo khi thay đổi ngày nhập kho<br/>• Tự động tạo khi thay đổi loại nhập kho<br/>• Query database để lấy số thứ tự tiếp theo<br/>• Đảm bảo số phiếu duy nhất trong cùng tháng/năm/loại<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Số phiếu nhập kho sẽ được lưu vào database khi lưu phiếu nhập."
+                    @"Số phiếu nhập lắp ráp được tạo tự động theo format: <b>PNK-MMYY-NNXXX</b><br/><br/><b>Format:</b><br/>• PNK: Phiếu nhập kho<br/>• MM: Tháng (2 ký tự)<br/>• YY: Năm (2 ký tự cuối)<br/>• NN: Index của Loại nhập kho (2 ký tự)<br/>• XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)<br/><br/><b>Chức năng:</b><br/>• Tự động tạo khi thay đổi ngày nhập lắp ráp<br/>• Tự động tạo khi thay đổi loại nhập kho<br/>• Query database để lấy số thứ tự tiếp theo<br/>• Đảm bảo số phiếu duy nhất trong cùng tháng/năm/loại<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Số phiếu nhập lắp ráp sẽ được lưu vào database khi lưu phiếu nhập."
                 );
             }
 
-            // SuperTip cho Mã đơn hàng mua
-            if (PurchaseOrderSearchLookupEdit != null)
-            {
-                SuperToolTipHelper.SetTextEditSuperTip(
-                    PurchaseOrderSearchLookupEdit,
-                    title: @"<b><color=DarkBlue>🛒 Mã đơn hàng mua</color></b>",
-                    content:
-                    @"Nhập hoặc chọn mã đơn hàng mua (Purchase Order) liên quan đến phiếu nhập kho này.<br/><br/><b>Chức năng:</b><br/>• Liên kết phiếu nhập kho với đơn hàng mua<br/>• Tra cứu thông tin đơn hàng mua<br/>• Theo dõi quá trình nhập hàng theo đơn hàng<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Trường này là tùy chọn, chỉ điền khi phiếu nhập kho liên quan đến một đơn hàng mua cụ thể."
-                );
-            }
 
             // SuperTip cho Người nhận hàng
             if (NguoiNhanHangTextEdit != null)
@@ -317,7 +289,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     NguoiNhanHangTextEdit,
                     title: @"<b><color=DarkBlue>👤 Người nhận hàng</color></b>",
                     content:
-                    @"Nhập tên người nhận hàng tại kho.<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người nhận hàng<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập kho."
+                    @"Nhập tên người nhận hàng lắp ráp tại kho.<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người nhận hàng lắp ráp<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập lắp ráp."
                 );
             }
 
@@ -328,7 +300,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     NguoiGiaoHangTextEdit,
                     title: @"<b><color=DarkBlue>🚚 Người giao hàng</color></b>",
                     content:
-                    @"Nhập tên người giao hàng từ nhà cung cấp.<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người giao hàng<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập kho."
+                    @"Nhập tên người giao hàng lắp ráp (từ chi nhánh/đơn vị).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người giao hàng lắp ráp<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập lắp ráp."
                 );
             }
         }
@@ -338,14 +310,14 @@ namespace Inventory.StockIn.NhapHangThuongMai
         /// </summary>
         private void SetupDateEditSuperTips()
         {
-            // SuperTip cho Ngày nhập kho
+            // SuperTip cho Ngày nhập lắp ráp
             if (StockInDateDateEdit != null)
             {
                 SuperToolTipHelper.SetBaseEditSuperTip(
                     StockInDateDateEdit,
-                    title: @"<b><color=DarkBlue>📅 Ngày nhập kho</color></b>",
+                    title: @"<b><color=DarkBlue>📅 Ngày nhập lắp ráp</color></b>",
                     content:
-                    @"Chọn ngày nhập kho cho phiếu nhập.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm nhập kho<br/>• Tự động tạo số phiếu nhập kho dựa trên ngày<br/>• Format số phiếu: PNK-MMYY-NNXXX (MM, YY từ ngày này)<br/>• Query database để lấy số thứ tự tiếp theo trong tháng/năm<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Mặc định: Ngày hiện tại<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày nhập kho, hệ thống sẽ tự động tạo lại số phiếu nhập kho theo format mới."
+                    @"Chọn ngày nhập lắp ráp cho phiếu nhập.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm nhập lắp ráp<br/>• Tự động tạo số phiếu nhập lắp ráp dựa trên ngày<br/>• Format số phiếu: PNK-MMYY-NNXXX (MM, YY từ ngày này)<br/>• Query database để lấy số thứ tự tiếp theo trong tháng/năm<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Mặc định: Ngày hiện tại<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày nhập lắp ráp, hệ thống sẽ tự động tạo lại số phiếu nhập lắp ráp theo format mới."
                 );
             }
         }
@@ -362,18 +334,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     WarehouseNameSearchLookupEdit,
                     title: @"<b><color=DarkBlue>🏢 Kho nhập</color></b>",
                     content:
-                    @"Chọn kho nhập hàng từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho nhập hàng<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật WarehouseId, WarehouseCode, WarehouseName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho nhập sẽ được lưu vào database khi lưu phiếu nhập kho."
-                );
-            }
-
-            // SuperTip cho Nhà cung cấp
-            if (SupplierNameSearchLookupEdit != null)
-            {
-                SuperToolTipHelper.SetBaseEditSuperTip(
-                    SupplierNameSearchLookupEdit,
-                    title: @"<b><color=DarkBlue>🏭 Nhà cung cấp</color></b>",
-                    content:
-                    @"Chọn nhà cung cấp từ danh sách chi nhánh đối tác (Business Partner Site) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn nhà cung cấp<br/>• Hiển thị thông tin nhà cung cấp dạng HTML (mã, tên)<br/>• Tự động cập nhật SupplierId, SupplierName vào DTO<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Chỉ hiển thị các chi nhánh đối tác đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ BusinessPartnerSiteBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đối tác đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><color=Gray>Lưu ý:</color> Trường này là tùy chọn, chỉ điền khi phiếu nhập kho có nhà cung cấp cụ thể."
+                    @"Chọn kho nhập lắp ráp từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho nhập lắp ráp<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật WarehouseId vào Entity<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho nhập lắp ráp sẽ được lưu vào database khi lưu phiếu nhập lắp ráp."
                 );
             }
         }
@@ -390,7 +351,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     NotesTextEdit,
                     title: @"<b><color=DarkBlue>📝 Ghi chú</color></b>",
                     content:
-                    @"Nhập ghi chú hoặc mô tả bổ sung cho phiếu nhập kho.<br/><br/><b>Chức năng:</b><br/>• Lưu thông tin bổ sung về phiếu nhập kho<br/>• Ghi chú về lý do nhập kho, điều kiện nhập hàng, v.v.<br/>• Hỗ trợ nhiều dòng văn bản<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Không giới hạn độ dài<br/><br/><color=Gray>Lưu ý:</color> Ghi chú sẽ được lưu vào database khi lưu phiếu nhập kho."
+                    @"Nhập ghi chú hoặc mô tả bổ sung cho phiếu nhập lắp ráp.<br/><br/><b>Chức năng:</b><br/>• Lưu thông tin bổ sung về phiếu nhập lắp ráp<br/>• Ghi chú về lý do nhập lắp ráp, điều kiện nhập kho, nguồn gốc hàng hóa, v.v.<br/>• Hỗ trợ nhiều dòng văn bản<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Ghi chú sẽ được lưu vào database khi lưu phiếu nhập lắp ráp."
                 );
             }
         }
@@ -400,7 +361,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
         #region ========== DATA LOADING ==========
 
         /// <summary>
-        /// Load dữ liệu lookup (Warehouse và Supplier)
+        /// Load dữ liệu lookup (Warehouse)
         /// Method này được gọi từ form khi FormLoad
         /// </summary>
         public async Task LoadLookupDataAsync()
@@ -409,13 +370,9 @@ namespace Inventory.StockIn.NhapHangThuongMai
             {
                 // Reset flags để đảm bảo load lại khi form load
                 _isWarehouseDataSourceLoaded = false;
-                _isSupplierDataSourceLoaded = false;
 
-                // Load cả 2 datasource song song để tối ưu performance
-                await Task.WhenAll(
-                    LoadWarehouseDataSourceAsync(forceRefresh: true),
-                    LoadSupplierDataSourceAsync(forceRefresh: true)
-                );
+                // Load warehouse datasource (nhập lắp ráp không cần customer)
+                await LoadWarehouseDataSourceAsync(forceRefresh: true);
             }
             catch (Exception ex)
             {
@@ -458,41 +415,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
             }
         }
 
-        /// <summary>
-        /// Load datasource cho Supplier (BusinessPartnerSite) - Load toàn bộ danh sách
-        /// </summary>
-        /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-        private async Task LoadSupplierDataSourceAsync(bool forceRefresh = false)
-        {
-            try
-            {
-                // Nếu đã load và không force refresh, không load lại
-                if (_isSupplierDataSourceLoaded && !forceRefresh &&
-                    businessPartnerSiteListDtoBindingSource.DataSource != null &&
-                    businessPartnerSiteListDtoBindingSource
-                        .DataSource is List<BusinessPartnerSiteListDto> existingList &&
-                    existingList.Count > 0)
-                {
-                    return;
-                }
-
-                // Load danh sách BusinessPartnerSite từ BusinessPartnerSiteBll (dùng cho Supplier lookup)
-                var sites = await Task.Run(() => _businessPartnerSiteBll.GetAll());
-                var siteDtos = sites
-                    .Where(s => s.IsActive) // Chỉ lấy các chi nhánh đang hoạt động
-                    .ToSiteListDtos()
-                    .OrderBy(s => s.SiteName)
-                    .ToList();
-
-                businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
-                _isSupplierDataSourceLoaded = true;
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
-                throw;
-            }
-        }
 
         /// <summary>
         /// Load single Warehouse record theo ID và set vào datasource
@@ -536,57 +458,15 @@ namespace Inventory.StockIn.NhapHangThuongMai
             }
         }
 
-        /// <summary>
-        /// Load single Supplier record theo ID và set vào datasource
-        /// Chỉ load đúng 1 record để tối ưu performance
-        /// </summary>
-        /// <param name="supplierId">ID của Supplier (BusinessPartnerSite)</param>
-        private async Task LoadSingleSupplierByIdAsync(Guid supplierId)
-        {
-            try
-            {
-                if (supplierId == Guid.Empty)
-                {
-                    // Nếu ID rỗng, set datasource rỗng
-                    businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
-                    // Không đánh dấu đã load vì datasource rỗng
-                    _isSupplierDataSourceLoaded = false;
-                    return;
-                }
-
-                // Load chỉ 1 record theo ID
-                var site = await Task.Run(() => _businessPartnerSiteBll.GetById(supplierId));
-                if (site != null)
-                {
-                    // Sử dụng ToSiteListDtos() với list chứa 1 phần tử, sau đó lấy phần tử đầu tiên
-                    var siteDtos = new List<Dal.DataContext.BusinessPartnerSite> { site }.ToSiteListDtos().ToList();
-                    // Set datasource chỉ chứa 1 record
-                    businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
-                    // Đánh dấu đã load (nhưng chỉ có 1 record, khi popup sẽ load full)
-                    _isSupplierDataSourceLoaded = false; // Set false để popup sẽ load full list
-                }
-                else
-                {
-                    // Nếu không tìm thấy, set datasource rỗng
-                    businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
-                    _isSupplierDataSourceLoaded = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
-                throw;
-            }
-        }
 
         /// <summary>
-        /// Map StockInOutMaster entity sang StockInMasterDto
+        /// Map StockInOutMaster entity sang NhapLapRapMasterDto
         /// </summary>
-        private StockInMasterDto MapEntityToDto(StockInOutMaster entity)
+        private NhapLapRapMasterDto MapEntityToDto(StockInOutMaster entity)
         {
             if (entity == null) return null;
 
-            var dto = new StockInMasterDto
+            var dto = new NhapLapRapMasterDto
             {
                 Id = entity.Id,
                 StockInNumber = entity.VocherNumber ?? string.Empty,
@@ -596,24 +476,13 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 WarehouseId = entity.WarehouseId,
                 WarehouseCode = entity.CompanyBranch?.BranchCode ?? string.Empty,
                 WarehouseName = entity.CompanyBranch?.BranchName ?? string.Empty,
-                PurchaseOrderId = entity.PurchaseOrderId,
-                PurchaseOrderNumber = string.Empty, // TODO: Lấy từ PurchaseOrder entity nếu cần
-                SupplierId = entity.PartnerSiteId,
-                SupplierName = entity.BusinessPartnerSite?.BusinessPartner?.PartnerName ??
-                               entity.BusinessPartnerSite?.SiteName ??
-                               string.Empty,
                 Notes = entity.Notes ?? string.Empty,
                 NguoiNhanHang = entity.NguoiNhanHang ?? string.Empty,
                 NguoiGiaoHang = entity.NguoiGiaoHang ?? string.Empty
             };
 
-            // Gán các giá trị tổng hợp từ entity
-            dto.SetTotals(
-                entity.TotalQuantity,
-                entity.TotalAmount,
-                entity.TotalVat,
-                entity.TotalAmountIncludedVat
-            );
+            // Gán giá trị tổng hợp từ entity (chỉ có TotalQuantity cho nhập lắp ráp)
+            dto.SetTotals(entity.TotalQuantity);
 
             return dto;
         }
@@ -627,7 +496,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
             {
                 StockInNumberTextEdit,
                 StockInDateDateEdit,
-                PurchaseOrderSearchLookupEdit,
                 NotesTextEdit,
                 NguoiNhanHangTextEdit,
                 NguoiGiaoHangTextEdit
@@ -649,7 +517,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
 
         #region ========== EVENT HANDLERS ==========
 
-        private void UcStockInMaster_Load(object sender, EventArgs e)
+        private void UcNhapLapRapMasterDto_Load(object sender, EventArgs e)
         {
             // Control đã được load
             StockInDateDateEdit.EditValue = DateTime.Now;
@@ -685,6 +553,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 {
                     // Cập nhật WarehouseId vào Entity
                     _stockInMaster.WarehouseId = warehouseId;
+                    _stockInMaster.PartnerSiteId = null;
 
                     // Xóa lỗi validation nếu có
                     dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, string.Empty);
@@ -697,29 +566,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi xử lý thay đổi kho");
-            }
-        }
-
-        private void SupplierNameTextEdit_EditValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (SupplierNameSearchLookupEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
-                {
-                    // Cập nhật PartnerSiteId vào Entity
-                    _stockInMaster.PartnerSiteId = supplierId;
-
-                    // Xóa lỗi validation nếu có
-                    dxErrorProvider1.SetError(SupplierNameSearchLookupEdit, string.Empty);
-                }
-                else
-                {
-                    _stockInMaster.PartnerSiteId = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi xử lý thay đổi nhà cung cấp");
             }
         }
 
@@ -795,23 +641,9 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 }
 
                 // Cập nhật từ DateEdit
-                if (StockInDateDateEdit != null && StockInDateDateEdit.EditValue is DateTime date)
+                if (StockInDateDateEdit is { EditValue: DateTime date })
                 {
                     _stockInMaster.StockInOutDate = date;
-                }
-
-                // Cập nhật từ PurchaseOrder SearchLookUpEdit
-                if (PurchaseOrderSearchLookupEdit != null)
-                {
-                    if (PurchaseOrderSearchLookupEdit.EditValue is Guid purchaseOrderId &&
-                        purchaseOrderId != Guid.Empty)
-                    {
-                        _stockInMaster.PurchaseOrderId = purchaseOrderId;
-                    }
-                    else
-                    {
-                        _stockInMaster.PurchaseOrderId = null;
-                    }
                 }
 
                 // Cập nhật từ Warehouse SearchLookUpEdit
@@ -824,19 +656,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     else
                     {
                         _stockInMaster.WarehouseId = Guid.Empty;
-                    }
-                }
-
-                // Cập nhật từ Supplier SearchLookUpEdit
-                if (SupplierNameSearchLookupEdit != null)
-                {
-                    if (SupplierNameSearchLookupEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
-                    {
-                        _stockInMaster.PartnerSiteId = supplierId;
-                    }
-                    else
-                    {
-                        _stockInMaster.PartnerSiteId = null;
                     }
                 }
 
@@ -901,10 +720,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                         .Select(FindControlByPropertyName)
                         .FirstOrDefault(c => c != null);
 
-                    if (firstErrorControl != null)
-                    {
-                        firstErrorControl.Focus();
-                    }
+                    firstErrorControl?.Focus();
 
                     return false;
                 }
@@ -925,17 +741,14 @@ namespace Inventory.StockIn.NhapHangThuongMai
         {
             return propertyName switch
             {
-                nameof(StockInMasterDto.StockInNumber) => StockInNumberTextEdit,
-                nameof(StockInMasterDto.StockInDate) => StockInDateDateEdit,
-                nameof(StockInMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
-                nameof(StockInMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
-                nameof(StockInMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
-                nameof(StockInMasterDto.SupplierId) => SupplierNameSearchLookupEdit,
-                nameof(StockInMasterDto.SupplierName) => SupplierNameSearchLookupEdit,
-                nameof(StockInMasterDto.PurchaseOrderNumber) => PurchaseOrderSearchLookupEdit,
-                nameof(StockInMasterDto.Notes) => NotesTextEdit,
-                nameof(StockInMasterDto.NguoiNhanHang) => NguoiNhanHangTextEdit,
-                nameof(StockInMasterDto.NguoiGiaoHang) => NguoiGiaoHangTextEdit,
+                nameof(NhapLapRapMasterDto.StockInNumber) => StockInNumberTextEdit,
+                nameof(NhapLapRapMasterDto.StockInDate) => StockInDateDateEdit,
+                nameof(NhapLapRapMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
+                nameof(NhapLapRapMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
+                nameof(NhapLapRapMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
+                nameof(NhapLapRapMasterDto.Notes) => NotesTextEdit,
+                nameof(NhapLapRapMasterDto.NguoiNhanHang) => NguoiNhanHangTextEdit,
+                nameof(NhapLapRapMasterDto.NguoiGiaoHang) => NguoiGiaoHangTextEdit,
                 _ => null
             };
         }
@@ -947,8 +760,8 @@ namespace Inventory.StockIn.NhapHangThuongMai
         /// <summary>
         /// Lấy DTO từ Entity sau khi validate các trường bắt buộc
         /// </summary>
-        /// <returns>StockInMasterDto nếu validation thành công, null nếu có lỗi</returns>
-        public StockInMasterDto GetDto()
+        /// <returns>NhapLapRapMasterDto nếu validation thành công, null nếu có lỗi</returns>
+        public NhapLapRapMasterDto GetDto()
         {
             try
             {
@@ -963,7 +776,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
 
                 // Cập nhật lại Id và LoaiNhapXuatKho vào Entity
                 _stockInMaster.Id = _stockInOutMasterId;
-                _stockInMaster.StockInOutType = (int)LoaiNhapXuatKhoEnum.NhapHangThuongMai;
+                _stockInMaster.StockInOutType = (int)LoaiNhapXuatKhoEnum.NhapSanPhamLapRap;
 
                 // Convert Entity sang DTO để trả về
                 return MapEntityToDto(_stockInMaster);
@@ -976,9 +789,10 @@ namespace Inventory.StockIn.NhapHangThuongMai
         }
 
         /// <summary>
-        /// Load dữ liệu master từ ID phiếu nhập xuất kho
+        /// Load dữ liệu master từ ID phiếu nhập kho
         /// </summary>
-        /// <param name="stockInOutMasterId">ID phiếu nhập xuất kho</param>
+        /// <param name="stockInOutMasterId">ID phiếu nhập kho</param>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task LoadDataAsync(Guid stockInOutMasterId)
         {
             try
@@ -987,18 +801,15 @@ namespace Inventory.StockIn.NhapHangThuongMai
 
                 // Lấy master entity từ BLL
                 var masterEntity = _stockInBll.GetMasterById(stockInOutMasterId);
-                if (masterEntity == null)
-                {
-                    throw new InvalidOperationException($"Không tìm thấy phiếu nhập kho với ID: {stockInOutMasterId}");
-                }
 
                 // Gán entity vào _stockInMaster
-                _stockInMaster = masterEntity;
+                _stockInMaster = masterEntity ??
+                                  throw new InvalidOperationException(
+                                      $"Không tìm thấy phiếu nhập kho với ID: {stockInOutMasterId}");
 
                 // Set dữ liệu cho các control đơn giản (không cần datasource)
                 StockInDateDateEdit.EditValue = masterEntity.StockInOutDate;
                 StockInNumberTextEdit.EditValue = masterEntity.VocherNumber;
-                PurchaseOrderSearchLookupEdit.EditValue = masterEntity.PurchaseOrderId;
                 NotesTextEdit.EditValue = masterEntity.Notes;
                 NguoiNhanHangTextEdit.EditValue = masterEntity.NguoiNhanHang;
                 NguoiGiaoHangTextEdit.EditValue = masterEntity.NguoiGiaoHang;
@@ -1007,17 +818,8 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 await LoadSingleWarehouseByIdAsync(masterEntity.WarehouseId);
                 WarehouseNameSearchLookupEdit.EditValue = masterEntity.WarehouseId;
 
-                // Load datasource cho Supplier nếu có PartnerSiteId
-                if (masterEntity.PartnerSiteId.HasValue)
-                {
-                    await LoadSingleSupplierByIdAsync(masterEntity.PartnerSiteId.Value);
-                    SupplierNameSearchLookupEdit.EditValue = masterEntity.PartnerSiteId;
-                }
-                else
-                {
-                    SupplierNameSearchLookupEdit.EditValue = null;
-                }
-
+                // Cập nhật tổng hợp
+                UpdateTotals(masterEntity.TotalQuantity);
             }
             catch (Exception ex)
             {
@@ -1043,10 +845,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     WarehouseNameSearchLookupEdit.EditValue = null;
                 }
 
-                if (SupplierNameSearchLookupEdit != null)
-                {
-                    SupplierNameSearchLookupEdit.EditValue = null;
-                }
+                // Xuất lắp ráp không có Supplier control
 
                 // Reset TextEdit
                 if (StockInNumberTextEdit != null)
@@ -1054,16 +853,10 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     StockInNumberTextEdit.Text = string.Empty;
                 }
 
-                if (PurchaseOrderSearchLookupEdit != null)
-                {
-                    PurchaseOrderSearchLookupEdit.Text = string.Empty;
-                }
-
                 // Reset DateEdit
                 if (StockInDateDateEdit != null)
                 {
                     StockInDateDateEdit.EditValue = DateTime.Now;
-                    // Tạo lại số phiếu nhập kho sau khi reset ngày
                     GenerateStockInNumber(DateTime.Now);
                 }
 
@@ -1100,25 +893,18 @@ namespace Inventory.StockIn.NhapHangThuongMai
         /// Cập nhật các giá trị tổng hợp từ detail
         /// </summary>
         /// <param name="totalQuantity">Tổng số lượng</param>
-        /// <param name="totalAmount">Tổng tiền chưa VAT</param>
-        /// <param name="totalVat">Tổng VAT</param>
-        /// <param name="totalAmountIncludedVat">Tổng tiền bao gồm VAT</param>
-        public void UpdateTotals(decimal totalQuantity, decimal totalAmount, decimal totalVat,
-            decimal totalAmountIncludedVat)
+        public void UpdateTotals(decimal totalQuantity)
         {
             try
             {
                 // Cập nhật trực tiếp vào Entity
                 _stockInMaster.TotalQuantity = totalQuantity;
-                _stockInMaster.TotalAmount = totalAmount;
-                _stockInMaster.TotalVat = totalVat;
-                _stockInMaster.TotalAmountIncludedVat = totalAmountIncludedVat;
 
                 // Cập nhật trực tiếp vào các SimpleLabelItem để hiển thị
-                UpdateTotalQuantityLabel(totalQuantity);
-                UpdateTotalAmountLabel(totalAmount);
-                UpdateTotalVatLabel(totalVat);
-                UpdateTotalAmountIncludedVatLabel(totalAmountIncludedVat);
+                if (TotalQuantitySimpleLabelItem != null)
+                {
+                    TotalQuantitySimpleLabelItem.Text = totalQuantity.ToString("N2");
+                }
             }
             catch (Exception ex)
             {
@@ -1126,65 +912,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
             }
         }
 
-        /// <summary>
-        /// Cập nhật label tổng số lượng
-        /// </summary>
-        private void UpdateTotalQuantityLabel(decimal value)
-        {
-            if (TotalQuantitySimpleLabelItem != null)
-            {
-                TotalQuantitySimpleLabelItem.Text = FormatQuantity(value);
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật label tổng tiền chưa VAT
-        /// </summary>
-        private void UpdateTotalAmountLabel(decimal value)
-        {
-            if (TotalAmountSimpleLabelItem != null)
-            {
-                TotalAmountSimpleLabelItem.Text = FormatCurrency(value);
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật label tổng VAT
-        /// </summary>
-        private void UpdateTotalVatLabel(decimal value)
-        {
-            if (TotalVatSimpleLabelItem != null)
-            {
-                TotalVatSimpleLabelItem.Text = FormatCurrency(value);
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật label tổng tiền bao gồm VAT
-        /// </summary>
-        private void UpdateTotalAmountIncludedVatLabel(decimal value)
-        {
-            if (TotalAmountIncludedVatSimpleLabelItem != null)
-            {
-                TotalAmountIncludedVatSimpleLabelItem.Text = FormatCurrency(value);
-            }
-        }
-
-        /// <summary>
-        /// Format số lượng (có 2 chữ số thập phân)
-        /// </summary>
-        private string FormatQuantity(decimal value)
-        {
-            return value.ToString(ApplicationConstants.QUANTITY_FORMAT);
-        }
-
-        /// <summary>
-        /// Format tiền tệ (không có chữ số thập phân)
-        /// </summary>
-        private string FormatCurrency(decimal value)
-        {
-            return value.ToString(ApplicationConstants.CURRENCY_FORMAT);
-        }
 
         #endregion
 
@@ -1192,10 +919,8 @@ namespace Inventory.StockIn.NhapHangThuongMai
 
         /// <summary>
         /// Tạo số phiếu nhập kho tự động
-        /// Sử dụng BLL để tự động xác định PNK hay PXK dựa trên LoaiNhapXuatKhoEnum
         /// </summary>
-        /// <param name="stockInDate">Ngày nhập kho</param>
-        private void GenerateStockInNumber(DateTime stockInDate)
+        private void GenerateStockInNumber(DateTime date)
         {
             try
             {
@@ -1206,11 +931,9 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     return;
                 }
 
-                // Lấy loại nhập/xuất kho từ Entity
-                var loaiNhapXuatKho = (LoaiNhapXuatKhoEnum)_stockInMaster.StockInOutType;
-
                 // Gọi BLL để tạo số phiếu tự động (tự động xác định PNK hay PXK)
-                var voucherNumber = _stockInOutMasterBll.GenerateVoucherNumber(stockInDate, loaiNhapXuatKho);
+                var voucherNumber =
+                    _stockInOutMasterBll.GenerateVoucherNumber(date, LoaiNhapXuatKhoEnum.NhapSanPhamLapRap);
 
                 // Cập nhật vào Entity và control
                 _stockInMaster.VocherNumber = voucherNumber;
@@ -1219,37 +942,18 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     StockInNumberTextEdit.Text = voucherNumber;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ShowError(ex, "Lỗi tạo số phiếu nhập");
+                //ShowError(ex, "Lỗi tạo số phiếu nhập kho");
             }
         }
 
         /// <summary>
-        /// Hiển thị lỗi từ Exception
+        /// Hiển thị lỗi
         /// </summary>
         private void ShowError(Exception ex, string message)
         {
-            try
-            {
-                // Tìm parent form để làm owner cho MsgBox
-                var parentForm = this.FindForm();
-
-                // Sử dụng MsgBox.ShowException hoặc ShowError với thông báo chi tiết
-                if (ex != null)
-                {
-                    MsgBox.ShowException(ex, message, parentForm);
-                }
-                else
-                {
-                    MsgBox.ShowError(message, "Lỗi", parentForm);
-                }
-            }
-            catch
-            {
-                // Fallback nếu có lỗi khi hiển thị MsgBox
-                System.Diagnostics.Debug.WriteLine($"Lỗi: {message}: {ex?.Message}");
-            }
+            MsgBox.ShowError($"{message}: {ex.Message}");
         }
 
         /// <summary>
@@ -1257,19 +961,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
         /// </summary>
         private void ShowError(string message)
         {
-            try
-            {
-                // Tìm parent form để làm owner cho MsgBox
-                var parentForm = this.FindForm();
-
-                // Sử dụng MsgBox.ShowError
-                MsgBox.ShowError(message, "Lỗi", parentForm);
-            }
-            catch
-            {
-                // Fallback nếu có lỗi khi hiển thị MsgBox
-                System.Diagnostics.Debug.WriteLine($"Lỗi: {message}");
-            }
+            MsgBox.ShowError(message);
         }
 
         #endregion
