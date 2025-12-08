@@ -404,15 +404,15 @@ public static class BusinessPartnerConverters
             Address = entity.Address,
             City = entity.City,
             Country = entity.Country,
-            ContactPerson = entity.ContactPerson,
-            ContactPosition = entity.ContactPosition,
-            BankAccount = entity.BankAccount,
-            BankName = entity.BankName,
-            CreditLimit = entity.CreditLimit,
-            PaymentTerm = entity.PaymentTerm,
             IsActive = entity.IsActive,
             CreatedDate = entity.CreatedDate,
-            UpdatedDate = entity.UpdatedDate
+            UpdatedDate = entity.UpdatedDate,
+            LogoFileName = entity.LogoFileName,
+            LogoRelativePath = entity.LogoRelativePath,
+            LogoFullPath = entity.LogoFullPath,
+            LogoStorageType = entity.LogoStorageType,
+            LogoFileSize = entity.LogoFileSize,
+            LogoChecksum = entity.LogoChecksum
         };
     }
 
@@ -444,15 +444,17 @@ public static class BusinessPartnerConverters
         entity.Address = dto.Address;
         entity.City = dto.City;
         entity.Country = dto.Country;
-        entity.ContactPerson = dto.ContactPerson;
-        entity.ContactPosition = dto.ContactPosition;
-        entity.BankAccount = dto.BankAccount;
-        entity.BankName = dto.BankName;
-        entity.CreditLimit = dto.CreditLimit;
-        entity.PaymentTerm = dto.PaymentTerm;
         entity.IsActive = dto.IsActive;
         entity.CreatedDate = dto.CreatedDate;
         entity.UpdatedDate = dto.UpdatedDate;
+        
+        // Copy Logo fields (metadata only)
+        entity.LogoFileName = dto.LogoFileName;
+        entity.LogoRelativePath = dto.LogoRelativePath;
+        entity.LogoFullPath = dto.LogoFullPath;
+        entity.LogoStorageType = dto.LogoStorageType;
+        entity.LogoFileSize = dto.LogoFileSize;
+        entity.LogoChecksum = dto.LogoChecksum;
 
         return entity;
     }

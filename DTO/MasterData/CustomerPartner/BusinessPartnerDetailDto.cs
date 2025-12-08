@@ -54,31 +54,31 @@ public class BusinessPartnerDetailDto
     [StringLength(100, ErrorMessage = "Quốc gia không được vượt quá 100 ký tự")]
     public string Country { get; set; }
 
-    [DisplayName("Người liên hệ")]
-    [StringLength(100, ErrorMessage = "Người liên hệ không được vượt quá 100 ký tự")]
-    public string ContactPerson { get; set; }
-
-    [DisplayName("Chức vụ")]
-    [StringLength(100, ErrorMessage = "Chức vụ không được vượt quá 100 ký tự")]
-    public string ContactPosition { get; set; }
-
-    [DisplayName("Số tài khoản")]
-    [StringLength(50, ErrorMessage = "Số tài khoản không được vượt quá 50 ký tự")]
-    public string BankAccount { get; set; }
-
-    [DisplayName("Tên ngân hàng")]
-    [StringLength(255, ErrorMessage = "Tên ngân hàng không được vượt quá 255 ký tự")]
-    public string BankName { get; set; }
-
-    [DisplayName("Hạn mức tín dụng")]
-    public decimal? CreditLimit { get; set; }
-
-    [DisplayName("Điều khoản thanh toán")]
-    [StringLength(255, ErrorMessage = "Điều khoản thanh toán không được vượt quá 255 ký tự")]
-    public string PaymentTerm { get; set; }
-
     [DisplayName("Trạng thái")]
     public bool IsActive { get; set; }
+
+    [DisplayName("Tên file logo")]
+    [StringLength(255, ErrorMessage = "Tên file logo không được vượt quá 255 ký tự")]
+    public string LogoFileName { get; set; }
+
+    [DisplayName("Đường dẫn tương đối logo")]
+    [StringLength(500, ErrorMessage = "Đường dẫn tương đối logo không được vượt quá 500 ký tự")]
+    public string LogoRelativePath { get; set; }
+
+    [DisplayName("Đường dẫn đầy đủ logo")]
+    [StringLength(1000, ErrorMessage = "Đường dẫn đầy đủ logo không được vượt quá 1000 ký tự")]
+    public string LogoFullPath { get; set; }
+
+    [DisplayName("Loại storage logo")]
+    [StringLength(20, ErrorMessage = "Loại storage logo không được vượt quá 20 ký tự")]
+    public string LogoStorageType { get; set; }
+
+    [DisplayName("Kích thước file logo")]
+    public long? LogoFileSize { get; set; }
+
+    [DisplayName("Checksum logo")]
+    [StringLength(64, ErrorMessage = "Checksum logo không được vượt quá 64 ký tự")]
+    public string LogoChecksum { get; set; }
 
     [DisplayName("Ngày tạo")]
     public DateTime CreatedDate { get; set; }
