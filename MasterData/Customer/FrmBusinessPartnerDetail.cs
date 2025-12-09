@@ -24,6 +24,15 @@ namespace MasterData.Customer
     /// </summary>
     public partial class FrmBusinessPartnerDetail : XtraForm
     {
+        #region Events
+
+        /// <summary>
+        /// Event được trigger khi lưu thành công, trả về DTO đã được cập nhật
+        /// </summary>
+        public event Action<BusinessPartnerListDto> PartnerSaved;
+
+        #endregion
+
         #region Fields
 
         /// <summary>
@@ -539,6 +548,23 @@ namespace MasterData.Customer
             if (LogoThumbnailDataPictureEdit?.Image != null && entity.Id != Guid.Empty)
             {
                 await UploadLogoIfValidAsync(entity.Id);
+            }
+
+            // Bước 5: Lấy lại entity đã lưu và convert sang BusinessPartnerListDto để trigger event
+            var savedEntity = await _bll.GetByIdAsync(entity.Id);
+            if (savedEntity != null)
+            {
+                // Lấy categoryDict để convert entity sang DTO
+                var categoryDict = await _bll.GetCategoryDictAsync();
+                
+                // Convert single entity sang DTO
+                var listDto = savedEntity.ToListDto(categoryDict);
+                
+                // Trigger event để form cha có thể update datasource
+                if (listDto != null)
+                {
+                    PartnerSaved?.Invoke(listDto);
+                }
             }
         }
 

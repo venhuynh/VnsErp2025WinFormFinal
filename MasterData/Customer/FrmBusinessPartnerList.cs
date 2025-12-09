@@ -158,6 +158,54 @@ namespace MasterData.Customer
             UpdateButtonStates();
         }
 
+        /// <summary>
+        /// Cập nhật một dòng trong datasource thay vì reload toàn bộ (cải thiện UX)
+        /// </summary>
+        /// <param name="updatedDto">DTO đã được cập nhật</param>
+        private void UpdateSingleRowInDataSource(BusinessPartnerListDto updatedDto)
+        {
+            try
+            {
+                if (updatedDto == null || businessPartnerListDtoBindingSource.DataSource == null)
+                {
+                    return;
+                }
+
+                // Tìm dòng cần update trong datasource
+                if (businessPartnerListDtoBindingSource.DataSource is List<BusinessPartnerListDto> dataList)
+                {
+                    var index = dataList.FindIndex(d => d.Id == updatedDto.Id);
+                    if (index >= 0)
+                    {
+                        // Update dòng hiện có
+                        dataList[index] = updatedDto;
+                        
+                        // Refresh binding source để cập nhật UI
+                        businessPartnerListDtoBindingSource.ResetBindings(false);
+                        
+                        // Refresh grid view để hiển thị thay đổi
+                        var rowHandle = BusinessPartnerListGridView.GetRowHandle(index);
+                        if (rowHandle >= 0)
+                        {
+                            BusinessPartnerListGridView.RefreshRow(rowHandle);
+                        }
+                    }
+                    else
+                    {
+                        // Nếu không tìm thấy (trường hợp thêm mới), thêm vào đầu danh sách
+                        dataList.Insert(0, updatedDto);
+                        businessPartnerListDtoBindingSource.ResetBindings(false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Nếu có lỗi khi update, fallback về reload toàn bộ
+                System.Diagnostics.Debug.WriteLine($"Lỗi update single row: {ex.Message}");
+                _ = LoadDataAsync();
+            }
+        }
+
         #endregion
 
         #region ========== SỰ KIỆN FORM ==========
@@ -189,9 +237,21 @@ namespace MasterData.Customer
                     using (var form = new FrmBusinessPartnerDetail(Guid.Empty))
                     {
                         form.StartPosition = FormStartPosition.CenterParent;
+                        
+                        // Subscribe event để nhận DTO đã lưu và update datasource
+                        form.PartnerSaved += (updatedDto) =>
+                        {
+                            UpdateSingleRowInDataSource(updatedDto);
+                        };
+                        
                         form.ShowDialog(this);
 
-                        await LoadDataAsync();
+                        // Chỉ reload nếu form đóng mà không lưu (DialogResult != OK)
+                        if (form.DialogResult != DialogResult.OK)
+                        {
+                            // Không cần reload vì không có thay đổi
+                        }
+                        
                         UpdateButtonStates();
                     }
                 }
@@ -250,9 +310,21 @@ namespace MasterData.Customer
                     using (var form = new FrmBusinessPartnerDetail(dto.Id))
                     {
                         form.StartPosition = FormStartPosition.CenterParent;
+                        
+                        // Subscribe event để nhận DTO đã lưu và update datasource
+                        form.PartnerSaved += (updatedDto) =>
+                        {
+                            UpdateSingleRowInDataSource(updatedDto);
+                        };
+                        
                         form.ShowDialog(this);
                         
-                        await LoadDataAsync();
+                        // Chỉ reload nếu form đóng mà không lưu (DialogResult != OK)
+                        if (form.DialogResult != DialogResult.OK)
+                        {
+                            // Không cần reload vì không có thay đổi
+                        }
+                        
                         UpdateButtonStates();
                     }
                 }
