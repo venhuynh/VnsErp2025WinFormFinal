@@ -60,11 +60,11 @@ public interface IBusinessPartnerContactRepository
     bool IsEmailExists(string email, Guid? excludeId = null);
 
     /// <summary>
-    /// Cập nhật chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
+    /// Cập nhật chỉ avatar thumbnail của BusinessPartnerContact (chỉ xử lý hình ảnh thumbnail)
     /// </summary>
     /// <param name="contactId">ID của liên hệ</param>
-    /// <param name="avatarBytes">Dữ liệu hình ảnh</param>
-    void UpdateAvatarOnly(Guid contactId, byte[] avatarBytes);
+    /// <param name="avatarThumbnailBytes">Dữ liệu hình ảnh thumbnail</param>
+    void UpdateAvatarOnly(Guid contactId, byte[] avatarThumbnailBytes);
 
     /// <summary>
     /// Xóa chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)

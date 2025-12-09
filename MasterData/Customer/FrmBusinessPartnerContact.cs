@@ -48,6 +48,11 @@ namespace MasterData.Customer
         /// </summary>
         private bool _isLoading;
 
+        /// <summary>
+        /// RowHandle đang được edit (để lấy ContactId khi upload avatar)
+        /// </summary>
+        private int _editingRowHandle = GridControl.InvalidRowHandle;
+
         #endregion
 
         #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
@@ -109,6 +114,8 @@ namespace MasterData.Customer
             BusinessPartnerContactGridCardView.CellValueChanged += BusinessPartnerContactGridCardView_CellValueChanged;
             BusinessPartnerContactGridCardView.ValidatingEditor += BusinessPartnerContactGridCardView_ValidatingEditor;
             BusinessPartnerContactGridCardView.ValidateRow += BusinessPartnerContactGridCardView_ValidateRow;
+            BusinessPartnerContactGridCardView.ShownEditor += BusinessPartnerContactGridCardView_ShownEditor;
+            BusinessPartnerContactGridCardView.HiddenEditor += BusinessPartnerContactGridCardView_HiddenEditor;
 
             // PictureEdit events - đăng ký ContextButtonClick cho RepositoryItemPictureEdit
             if (colAvatar?.ColumnEdit is RepositoryItemPictureEdit pictureEdit)
@@ -674,6 +681,37 @@ namespace MasterData.Customer
             }
         }
 
+        /// <summary>
+        /// Xử lý sự kiện khi editor được hiển thị (lưu rowHandle đang edit)
+        /// </summary>
+        private void BusinessPartnerContactGridCardView_ShownEditor(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender is not CardView view) return;
+                _editingRowHandle = view.FocusedRowHandle;
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi editor bị ẩn (clear rowHandle)
+        /// </summary>
+        private void BusinessPartnerContactGridCardView_HiddenEditor(object sender, EventArgs e)
+        {
+            try
+            {
+                _editingRowHandle = GridControl.InvalidRowHandle;
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+        }
+
         #endregion
 
         #region ========== XỬ LÝ HÌNH ẢNH ==========
@@ -723,31 +761,49 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Xử lý sự kiện ImageChanged của RepositoryItemPictureEdit
+        /// Xử lý sự kiện ImageChanged của RepositoryItemPictureEdit để cập nhật avatar liên hệ
         /// </summary>
-        private void ContactAvatarPictureEdit_ImageChanged(object sender, EventArgs e)
+        private async void ContactAvatarPictureEdit_ImageChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
 
-            if (sender is not PictureEdit pictureEdit) return;
-
-            var selectedContactDtos = GetSelectedContactDtos();
-            if (selectedContactDtos == null || selectedContactDtos.Count == 0) return;
-
-            _ = ExecuteWithWaitingFormAsync(async () =>
+            try
             {
-                foreach (var contactDto in selectedContactDtos)
+                if (sender is not PictureEdit pictureEdit) return;
+
+                // Lấy row đang được edit
+                if (_editingRowHandle < 0 || _editingRowHandle == GridControl.InvalidRowHandle)
+                {
+                    // Fallback: lấy từ focused row
+                    _editingRowHandle = BusinessPartnerContactGridCardView.FocusedRowHandle;
+                }
+
+                if (_editingRowHandle < 0 || _editingRowHandle == GridControl.InvalidRowHandle)
+                {
+                    return; // Không có row nào đang được edit
+                }
+
+                // Lấy DTO từ row
+                if (BusinessPartnerContactGridCardView.GetRow(_editingRowHandle) is not BusinessPartnerContactDto contactDto)
+                {
+                    return;
+                }
+
+                var contactId = contactDto.Id;
+
+                // Xử lý upload avatar
+                await ExecuteWithWaitingFormAsync(async () =>
                 {
                     if (pictureEdit.Image != null)
                     {
-                        // Trường hợp có hình ảnh mới - UPDATE
+                        // Trường hợp có hình ảnh mới - UPLOAD
                         var imageBytes = ImageToByteArray(pictureEdit.Image);
 
-                        // Kiểm tra kích thước hình ảnh (tối đa 5MB)
-                        const int maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+                        // Kiểm tra kích thước hình ảnh (tối đa 10MB)
+                        const int maxSizeInBytes = 10 * 1024 * 1024; // 10MB
                         if (imageBytes.Length > maxSizeInBytes)
                         {
-                            MsgBox.ShowWarning("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 5MB.");
+                            MsgBox.ShowWarning("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 10MB.");
                             return;
                         }
 
@@ -759,26 +815,27 @@ namespace MasterData.Customer
                             return;
                         }
 
-                        // Cập nhật avatar
-                        _contactBll.UpdateAvatarOnly(contactDto.Id, imageBytes);
-                        contactDto.Avatar = imageBytes; // Cập nhật DTO
+                        // Cập nhật avatar (lưu thumbnail trong database)
+                        // Lưu ý: BusinessPartnerContact chỉ lưu thumbnail, không có logic upload file gốc lên NAS như BusinessPartner
+                        _contactBll.UpdateAvatarOnly(contactId, imageBytes);
+
+                        ShowInfo("Đã cập nhật avatar liên hệ thành công!");
+
+                        // Reload data để cập nhật avatar mới
+                        await LoadDataAsyncWithoutSplash();
                     }
                     else
                     {
-                        // Trường hợp hình ảnh bị xóa - DELETE
-                        // Chỉ xóa nếu DTO hiện tại có avatar
-                        if (contactDto.Avatar != null)
-                        {
-                            _contactBll.DeleteAvatarOnly(contactDto.Id);
-                            contactDto.Avatar = null; // Cập nhật DTO
-                        }
+                        // Trường hợp hình ảnh bị xóa - có thể xóa avatar nếu cần
+                        // Hiện tại không xóa, chỉ bỏ qua
+                        System.Diagnostics.Debug.WriteLine($"Avatar đã bị xóa cho liên hệ {contactId}");
                     }
-                }
-
-                await LoadDataAsync();
-                UpdateButtonStates();
-                MsgBox.ShowSuccess("Đã cập nhật avatar thành công!");
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi cập nhật avatar liên hệ");
+            }
         }
 
         /// <summary>
@@ -796,11 +853,11 @@ namespace MasterData.Customer
                 {
                     var imageBytes = File.ReadAllBytes(openFileDialog.FileName);
 
-                    // Kiểm tra kích thước hình ảnh (tối đa 5MB)
-                    const int maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+                    // Kiểm tra kích thước hình ảnh (tối đa 10MB)
+                    const int maxSizeInBytes = 10 * 1024 * 1024; // 10MB
                     if (imageBytes.Length > maxSizeInBytes)
                     {
-                        MsgBox.ShowWarning("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 5MB.");
+                        MsgBox.ShowWarning("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 10MB.");
                         return;
                     }
 
@@ -812,21 +869,19 @@ namespace MasterData.Customer
                         return;
                     }
 
-                    await ExecuteWithWaitingFormAsync(() =>
+                    await ExecuteWithWaitingFormAsync(async () =>
                     {
                         _contactBll.UpdateAvatarOnly(contactDto.Id, imageBytes);
-                        return Task.CompletedTask;
+                        // Reload data để cập nhật avatar mới
+                        await LoadDataAsyncWithoutSplash();
                     });
 
-                    // Cập nhật DTO
-                    contactDto.Avatar = imageBytes;
-
-                    MsgBox.ShowSuccess("Đã cập nhật avatar thành công!");
+                    ShowInfo("Đã cập nhật avatar thành công!");
                 }
             }
             catch (Exception ex)
             {
-                MsgBox.ShowException(new Exception("Lỗi khi load avatar: " + ex.Message, ex));
+                ShowError(ex, "Lỗi khi load avatar");
             }
         }
 
@@ -868,11 +923,11 @@ namespace MasterData.Customer
                     var image = Clipboard.GetImage();
                     var imageBytes = ImageToByteArray(image);
 
-                    // Kiểm tra kích thước hình ảnh (tối đa 5MB)
-                    const int maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+                    // Kiểm tra kích thước hình ảnh (tối đa 10MB)
+                    const int maxSizeInBytes = 10 * 1024 * 1024; // 10MB
                     if (imageBytes.Length > maxSizeInBytes)
                     {
-                        MsgBox.ShowWarning("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 5MB.");
+                        MsgBox.ShowWarning("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 10MB.");
                         return;
                     }
 
@@ -884,16 +939,14 @@ namespace MasterData.Customer
                         return;
                     }
 
-                    await ExecuteWithWaitingFormAsync(() =>
+                    await ExecuteWithWaitingFormAsync(async () =>
                     {
                         _contactBll.UpdateAvatarOnly(contactDto.Id, imageBytes);
-                        return Task.CompletedTask;
+                        // Reload data để cập nhật avatar mới
+                        await LoadDataAsyncWithoutSplash();
                     });
 
-                    // Cập nhật DTO
-                    contactDto.Avatar = imageBytes;
-
-                    MsgBox.ShowSuccess("Đã paste avatar thành công!");
+                    ShowInfo("Đã paste avatar thành công!");
                 }
                 else
                 {
@@ -902,7 +955,7 @@ namespace MasterData.Customer
             }
             catch (Exception ex)
             {
-                MsgBox.ShowException(new Exception("Lỗi khi paste avatar: " + ex.Message, ex));
+                ShowError(ex, "Lỗi khi paste avatar");
             }
         }
 
@@ -1086,32 +1139,47 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Kiểm tra format hình ảnh có hợp lệ không
+        /// Kiểm tra định dạng hình ảnh có hợp lệ không (JPG, PNG, GIF)
         /// </summary>
         /// <param name="imageBytes">Byte array của hình ảnh</param>
         /// <returns>True nếu format hợp lệ</returns>
         private bool IsValidImageFormat(byte[] imageBytes)
         {
-            try
-            {
-                if (imageBytes == null || imageBytes.Length < 4) return false;
+            if (imageBytes == null || imageBytes.Length < 4) return false;
 
-                // Kiểm tra magic bytes của các format phổ biến
-                var jpegSignature = new byte[] { 0xFF, 0xD8, 0xFF };
-                var pngSignature = new byte[] { 0x89, 0x50, 0x4E, 0x47 };
-                var gifSignature = new byte[] { 0x47, 0x49, 0x46 };
-                var bmpSignature = new byte[] { 0x42, 0x4D };
+            // Kiểm tra magic bytes
+            // JPEG: FF D8 FF
+            if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8 && imageBytes[2] == 0xFF)
+                return true;
 
-                return imageBytes.Take(3).SequenceEqual(jpegSignature) ||
-                       imageBytes.Take(4).SequenceEqual(pngSignature) ||
-                       imageBytes.Take(3).SequenceEqual(gifSignature) ||
-                       imageBytes.Take(2).SequenceEqual(bmpSignature);
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(new Exception("Lỗi kiểm tra image format: " + ex.Message, ex));
-                return false;
-            }
+            // PNG: 89 50 4E 47
+            if (imageBytes[0] == 0x89 && imageBytes[1] == 0x50 && imageBytes[2] == 0x4E && imageBytes[3] == 0x47)
+                return true;
+
+            // GIF: 47 49 46 38 (GIF8)
+            if (imageBytes[0] == 0x47 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46 && imageBytes[3] == 0x38)
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Hiển thị thông tin.
+        /// </summary>
+        private void ShowInfo(string message)
+        {
+            MsgBox.ShowSuccess(message);
+        }
+
+        /// <summary>
+        /// Hiển thị lỗi với thông tin ngữ cảnh.
+        /// </summary>
+        private void ShowError(Exception ex, string context = null)
+        {
+            if (string.IsNullOrWhiteSpace(context))
+                MsgBox.ShowException(ex);
+            else
+                MsgBox.ShowException(new Exception(context + ": " + ex.Message, ex));
         }
 
         #endregion

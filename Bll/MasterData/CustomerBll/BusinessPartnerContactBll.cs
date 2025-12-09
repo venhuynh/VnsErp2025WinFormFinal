@@ -181,19 +181,19 @@ namespace Bll.MasterData.CustomerBll
         }
 
         /// <summary>
-        /// Cập nhật chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
+        /// Cập nhật chỉ avatar thumbnail của BusinessPartnerContact (chỉ xử lý hình ảnh thumbnail)
         /// </summary>
         /// <param name="contactId">ID của liên hệ</param>
-        /// <param name="avatarBytes">Dữ liệu hình ảnh</param>
-        public void UpdateAvatarOnly(Guid contactId, byte[] avatarBytes)
+        /// <param name="avatarThumbnailBytes">Dữ liệu hình ảnh thumbnail</param>
+        public void UpdateAvatarOnly(Guid contactId, byte[] avatarThumbnailBytes)
         {
             try
             {
-                GetDataAccess().UpdateAvatarOnly(contactId, avatarBytes);
+                GetDataAccess().UpdateAvatarOnly(contactId, avatarThumbnailBytes);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Lỗi khi cập nhật avatar cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi cập nhật avatar thumbnail cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
             }
         }
 
@@ -214,7 +214,7 @@ namespace Bll.MasterData.CustomerBll
         }
 
         /// <summary>
-        /// Cập nhật entity mà không thay đổi avatar
+        /// Cập nhật entity mà không thay đổi avatar (giữ nguyên các trường Avatar metadata và thumbnail)
         /// </summary>
         /// <param name="entity">BusinessPartnerContact entity</param>
         public void UpdateEntityWithoutAvatar(BusinessPartnerContact entity)
@@ -227,7 +227,7 @@ namespace Bll.MasterData.CustomerBll
                 var existingEntity = GetDataAccess().GetById(entity.Id);
                 if (existingEntity == null) throw new InvalidOperationException($"Entity with ID {entity.Id} does not exist.");
 
-                // Update fields except for the Avatar
+                // Update fields except for the Avatar fields (metadata and thumbnail)
                 existingEntity.SiteId = entity.SiteId;
                 existingEntity.FullName = entity.FullName;
                 existingEntity.Position = entity.Position;
@@ -246,7 +246,11 @@ namespace Bll.MasterData.CustomerBll
                 existingEntity.Skype = entity.Skype;
                 existingEntity.WeChat = entity.WeChat;
                 existingEntity.Notes = entity.Notes;
-                existingEntity.AvatarPath = entity.AvatarPath;
+                
+                // Không cập nhật các trường Avatar (giữ nguyên giá trị hiện có):
+                // - AvatarFileName, AvatarRelativePath, AvatarFullPath
+                // - AvatarStorageType, AvatarFileSize, AvatarChecksum
+                // - AvatarThumbnailData
 
                 // Save changes to the database
                 GetDataAccess().SaveOrUpdate(existingEntity);

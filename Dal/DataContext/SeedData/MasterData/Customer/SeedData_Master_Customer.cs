@@ -638,7 +638,7 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
                     Phone = GeneratePhoneNumber(random),
                     Email = GenerateContactEmail(selectedSite.SiteCode, existingContactsCount + 1, random),
                     IsPrimary = isPrimary,
-                    Avatar = null, // Không có avatar mặc định
+                    // Không có avatar mặc định (AvatarThumbnailData và các metadata fields sẽ là null)
                     IsActive = random.Next(0, 10) < 9 // 90% active
                 };
                 

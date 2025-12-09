@@ -144,14 +144,12 @@ namespace MasterData.Customer
         /// <summary>
         /// Xử lý sự kiện click button Lưu
         /// </summary>
-        private void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        private async void SaveBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (!ValidateInput()) return;
             
             try
             {
-                var entity = GetDataFromControls();
-                
                 // Kiểm tra SiteId trước khi lưu
                 if (_selectedSiteId == null || _selectedSiteId == Guid.Empty)
                 {
@@ -159,8 +157,40 @@ namespace MasterData.Customer
                     return;
                 }
                 
-                // Chỉ thêm mới, không update
-                _bll.Add(entity);
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    var entity = GetDataFromControls();
+                    
+                    // Kiểm tra và validate avatar trước khi lưu
+                    byte[] avatarBytes = null;
+                    if (AvatarThumbnailDataPictureEdit?.Image != null)
+                    {
+                        avatarBytes = ImageToByteArray(AvatarThumbnailDataPictureEdit.Image);
+                        if (avatarBytes != null && avatarBytes.Length > 0)
+                        {
+                            // Kiểm tra kích thước hình ảnh (tối đa 10MB)
+                            const int maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+                            if (avatarBytes.Length > maxSizeInBytes)
+                            {
+                                throw new Exception("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 10MB.");
+                            }
+                            
+                            // Kiểm tra format hình ảnh
+                            if (!IsValidImageFormat(avatarBytes))
+                            {
+                                throw new Exception("Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
+                            }
+                            
+                            // Set avatar vào entity để lưu cùng lúc
+                            entity.AvatarThumbnailData = new System.Data.Linq.Binary(avatarBytes);
+                        }
+                    }
+                    
+                    // Lưu entity (thêm mới) - Id sẽ được tạo tự động trong Add method
+                    // Avatar đã được set vào entity, nên sẽ được lưu cùng lúc
+                    var savedId = _bll.Add(entity);
+                });
+                
                 ShowInfo("Thêm mới liên hệ đối tác thành công!");
                 DialogResult = DialogResult.OK;
                 Close();
@@ -179,6 +209,29 @@ namespace MasterData.Customer
             DialogResult = DialogResult.Cancel;
             Close();
         }
+        
+        /// <summary>
+        /// Kiểm tra định dạng hình ảnh có hợp lệ không (JPG, PNG, GIF)
+        /// </summary>
+        private bool IsValidImageFormat(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length < 4) return false;
+
+            // Kiểm tra magic bytes
+            // JPEG: FF D8 FF
+            if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8 && imageBytes[2] == 0xFF)
+                return true;
+
+            // PNG: 89 50 4E 47
+            if (imageBytes[0] == 0x89 && imageBytes[1] == 0x50 && imageBytes[2] == 0x4E && imageBytes[3] == 0x47)
+                return true;
+
+            // GIF: 47 49 46 38 (GIF8)
+            if (imageBytes[0] == 0x47 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46 && imageBytes[3] == 0x38)
+                return true;
+
+            return false;
+        }
 
         #endregion
 
@@ -189,25 +242,46 @@ namespace MasterData.Customer
         /// </summary>
         private BusinessPartnerContact GetDataFromControls()
         {
-            // Lấy IsActive từ control nếu có, nếu không thì dùng default
-            bool isActive = true; // Default value
-            if (FindControlByName(this, "IsActiveCheckEdit") is CheckEdit isActiveCheck)
-            {
-                isActive = isActiveCheck.Checked;
-            }
-            
+            // Không set Id ở đây - để Add method trong BLL tự động tạo Id mới
+            // Nếu đang edit mode, Id sẽ được set từ entity hiện có
             var entity = new BusinessPartnerContact
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.Empty, // Để BLL tự động tạo Id mới khi thêm mới
                 SiteId = _selectedSiteId ?? Guid.Empty,
                 FullName = FullNameTextEdit?.EditValue?.ToString(),
                 Position = PositionTextEdit?.EditValue?.ToString(),
                 Phone = PhoneTextEdit?.EditValue?.ToString(),
                 Email = EmailTextEdit?.EditValue?.ToString(),
                 IsPrimary = IsPrimaryCheckEdit?.Checked ?? false,
-                IsActive = isActive
+                IsActive = IsActiveToggleSwitch?.EditValue as bool? ?? true
             };
+            
+            // Xử lý avatar từ PictureEdit
+            if (AvatarThumbnailDataPictureEdit?.Image != null)
+            {
+                var imageBytes = ImageToByteArray(AvatarThumbnailDataPictureEdit.Image);
+                entity.AvatarThumbnailData = imageBytes != null ? new System.Data.Linq.Binary(imageBytes) : null;
+            }
+            else
+            {
+                entity.AvatarThumbnailData = null;
+            }
+            
             return entity;
+        }
+        
+        /// <summary>
+        /// Convert Image to byte array
+        /// </summary>
+        private byte[] ImageToByteArray(System.Drawing.Image image)
+        {
+            if (image == null) return null;
+            
+            using (var ms = new System.IO.MemoryStream())
+            {
+                image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                return ms.ToArray();
+            }
         }
 
         /// <summary>
@@ -492,6 +566,24 @@ namespace MasterData.Customer
                         IsPrimaryCheckEdit,
                         title: "<b><color=DarkBlue>⭐ Liên hệ chính</color></b>",
                         content: "Đánh dấu nếu đây là liên hệ chính của chi nhánh."
+                    );
+                }
+
+                if (IsActiveToggleSwitch != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        IsActiveToggleSwitch,
+                        title: "<b><color=DarkBlue>🔄 Trạng thái</color></b>",
+                        content: "Bật/tắt trạng thái hoạt động của liên hệ."
+                    );
+                }
+
+                if (AvatarThumbnailDataPictureEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        AvatarThumbnailDataPictureEdit,
+                        title: "<b><color=DarkBlue>📷 Ảnh đại diện</color></b>",
+                        content: "Chọn ảnh đại diện cho liên hệ (JPG, PNG, GIF, tối đa 10MB)."
                     );
                 }
 

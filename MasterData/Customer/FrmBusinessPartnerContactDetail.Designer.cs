@@ -58,12 +58,15 @@ namespace MasterData.Customer
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colPartnerName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colSiteName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.colAddress = new DevExpress.XtraGrid.Columns.GridColumn();
             this.FullNameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.PositionTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.PhoneTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.EmailTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.IsPrimaryCheckEdit = new DevExpress.XtraEditors.CheckEdit();
+            this.IsActiveToggleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
+            this.AvatarThumbnailDataPictureEdit = new DevExpress.XtraEditors.PictureEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForPartnerName = new DevExpress.XtraLayout.LayoutControlItem();
@@ -72,7 +75,8 @@ namespace MasterData.Customer
             this.ItemForPhone = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForEmail = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForIsPrimary = new DevExpress.XtraLayout.LayoutControlItem();
-            this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ItemForAvatar = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -80,11 +84,14 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.PartnerNameSearchLookUpEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FullNameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PositionTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhoneTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EmailTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsPrimaryCheckEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AvatarThumbnailDataPictureEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPartnerName)).BeginInit();
@@ -93,7 +100,8 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPhone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForEmail)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsPrimary)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForAvatar)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -153,7 +161,7 @@ namespace MasterData.Customer
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 325);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 495);
             this.barDockControlBottom.Manager = this.barManager1;
             this.barDockControlBottom.Size = new System.Drawing.Size(430, 0);
             // 
@@ -163,7 +171,7 @@ namespace MasterData.Customer
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 286);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 456);
             // 
             // barDockControlRight
             // 
@@ -171,7 +179,7 @@ namespace MasterData.Customer
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(430, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 286);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 456);
             // 
             // dxErrorProvider1
             // 
@@ -185,11 +193,13 @@ namespace MasterData.Customer
             this.dataLayoutControl1.Controls.Add(this.PhoneTextEdit);
             this.dataLayoutControl1.Controls.Add(this.EmailTextEdit);
             this.dataLayoutControl1.Controls.Add(this.IsPrimaryCheckEdit);
+            this.dataLayoutControl1.Controls.Add(this.IsActiveToggleSwitch);
+            this.dataLayoutControl1.Controls.Add(this.AvatarThumbnailDataPictureEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(430, 286);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(430, 456);
             this.dataLayoutControl1.TabIndex = 10;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
@@ -209,11 +219,11 @@ namespace MasterData.Customer
             this.PartnerNameSearchLookUpEdit.Properties.ValueMember = "Id";
             this.PartnerNameSearchLookUpEdit.Size = new System.Drawing.Size(320, 28);
             this.PartnerNameSearchLookUpEdit.StyleController = this.dataLayoutControl1;
-            this.PartnerNameSearchLookUpEdit.TabIndex = 4;
+            this.PartnerNameSearchLookUpEdit.TabIndex = 0;
             // 
             // businessPartnerSiteListDtoBindingSource
             // 
-            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(BusinessPartnerSiteListDto);
+            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto);
             // 
             // searchLookUpEdit1View
             // 
@@ -248,6 +258,10 @@ namespace MasterData.Customer
             this.colSiteName.Visible = true;
             this.colSiteName.VisibleIndex = 0;
             // 
+            // repositoryItemMemoEdit1
+            // 
+            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
+            // 
             // colAddress
             // 
             this.colAddress.ColumnEdit = this.repositoryItemMemoEdit1;
@@ -264,7 +278,7 @@ namespace MasterData.Customer
             this.FullNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
             this.FullNameTextEdit.Size = new System.Drawing.Size(320, 28);
             this.FullNameTextEdit.StyleController = this.dataLayoutControl1;
-            this.FullNameTextEdit.TabIndex = 5;
+            this.FullNameTextEdit.TabIndex = 2;
             // 
             // PositionTextEdit
             // 
@@ -273,7 +287,7 @@ namespace MasterData.Customer
             this.PositionTextEdit.Name = "PositionTextEdit";
             this.PositionTextEdit.Size = new System.Drawing.Size(320, 28);
             this.PositionTextEdit.StyleController = this.dataLayoutControl1;
-            this.PositionTextEdit.TabIndex = 6;
+            this.PositionTextEdit.TabIndex = 3;
             // 
             // PhoneTextEdit
             // 
@@ -285,7 +299,7 @@ namespace MasterData.Customer
             this.PhoneTextEdit.Properties.Mask.UseMaskAsDisplayFormat = true;
             this.PhoneTextEdit.Size = new System.Drawing.Size(320, 28);
             this.PhoneTextEdit.StyleController = this.dataLayoutControl1;
-            this.PhoneTextEdit.TabIndex = 7;
+            this.PhoneTextEdit.TabIndex = 4;
             // 
             // EmailTextEdit
             // 
@@ -294,18 +308,42 @@ namespace MasterData.Customer
             this.EmailTextEdit.Name = "EmailTextEdit";
             this.EmailTextEdit.Size = new System.Drawing.Size(320, 28);
             this.EmailTextEdit.StyleController = this.dataLayoutControl1;
-            this.EmailTextEdit.TabIndex = 8;
+            this.EmailTextEdit.TabIndex = 5;
             // 
             // IsPrimaryCheckEdit
             // 
-            this.IsPrimaryCheckEdit.Location = new System.Drawing.Point(16, 186);
+            this.IsPrimaryCheckEdit.Location = new System.Drawing.Point(94, 186);
             this.IsPrimaryCheckEdit.MenuManager = this.barManager1;
             this.IsPrimaryCheckEdit.Name = "IsPrimaryCheckEdit";
             this.IsPrimaryCheckEdit.Properties.Caption = "Liên hệ chính";
             this.IsPrimaryCheckEdit.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
-            this.IsPrimaryCheckEdit.Size = new System.Drawing.Size(398, 22);
+            this.IsPrimaryCheckEdit.Size = new System.Drawing.Size(320, 22);
             this.IsPrimaryCheckEdit.StyleController = this.dataLayoutControl1;
-            this.IsPrimaryCheckEdit.TabIndex = 9;
+            this.IsPrimaryCheckEdit.TabIndex = 6;
+            // 
+            // IsActiveToggleSwitch
+            // 
+            this.IsActiveToggleSwitch.EditValue = true;
+            this.IsActiveToggleSwitch.Location = new System.Drawing.Point(94, 214);
+            this.IsActiveToggleSwitch.MenuManager = this.barManager1;
+            this.IsActiveToggleSwitch.Name = "IsActiveToggleSwitch";
+            this.IsActiveToggleSwitch.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.IsActiveToggleSwitch.Properties.OffText = "<color=\'red\'>Không hoạt động</color>";
+            this.IsActiveToggleSwitch.Properties.OnText = "<color=\'blue\'>Đang hoạt động</color>";
+            this.IsActiveToggleSwitch.Size = new System.Drawing.Size(320, 24);
+            this.IsActiveToggleSwitch.StyleController = this.dataLayoutControl1;
+            this.IsActiveToggleSwitch.TabIndex = 7;
+            // 
+            // AvatarThumbnailDataPictureEdit
+            // 
+            this.AvatarThumbnailDataPictureEdit.Location = new System.Drawing.Point(94, 244);
+            this.AvatarThumbnailDataPictureEdit.MenuManager = this.barManager1;
+            this.AvatarThumbnailDataPictureEdit.Name = "AvatarThumbnailDataPictureEdit";
+            this.AvatarThumbnailDataPictureEdit.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
+            this.AvatarThumbnailDataPictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
+            this.AvatarThumbnailDataPictureEdit.Size = new System.Drawing.Size(320, 196);
+            this.AvatarThumbnailDataPictureEdit.StyleController = this.dataLayoutControl1;
+            this.AvatarThumbnailDataPictureEdit.TabIndex = 8;
             // 
             // Root
             // 
@@ -314,7 +352,7 @@ namespace MasterData.Customer
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlGroup1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(430, 286);
+            this.Root.Size = new System.Drawing.Size(430, 456);
             this.Root.TextVisible = false;
             // 
             // layoutControlGroup1
@@ -327,10 +365,13 @@ namespace MasterData.Customer
             this.ItemForPosition,
             this.ItemForPhone,
             this.ItemForEmail,
-            this.ItemForIsPrimary});
+            this.ItemForIsPrimary,
+            this.ItemForIsActive,
+            this.ItemForAvatar});
             this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(404, 260);
+            this.layoutControlGroup1.Name = "layoutControlGroup1";
+            this.layoutControlGroup1.Size = new System.Drawing.Size(404, 430);
+            this.layoutControlGroup1.Text = "Thông tin liên hệ";
             // 
             // ItemForPartnerName
             // 
@@ -382,19 +423,33 @@ namespace MasterData.Customer
             this.ItemForIsPrimary.Control = this.IsPrimaryCheckEdit;
             this.ItemForIsPrimary.Location = new System.Drawing.Point(0, 170);
             this.ItemForIsPrimary.Name = "ItemForIsPrimary";
-            this.ItemForIsPrimary.Size = new System.Drawing.Size(404, 90);
-            this.ItemForIsPrimary.Text = "Liên hệ chính";
-            this.ItemForIsPrimary.TextVisible = false;
+            this.ItemForIsPrimary.Size = new System.Drawing.Size(404, 28);
+            this.ItemForIsPrimary.Text = "Loại liên hệ";
+            this.ItemForIsPrimary.TextSize = new System.Drawing.Size(62, 13);
             // 
-            // repositoryItemMemoEdit1
+            // ItemForIsActive
             // 
-            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
+            this.ItemForIsActive.Control = this.IsActiveToggleSwitch;
+            this.ItemForIsActive.Location = new System.Drawing.Point(0, 198);
+            this.ItemForIsActive.Name = "ItemForIsActive";
+            this.ItemForIsActive.Size = new System.Drawing.Size(404, 30);
+            this.ItemForIsActive.Text = "Trạng thái";
+            this.ItemForIsActive.TextSize = new System.Drawing.Size(62, 13);
+            // 
+            // ItemForAvatar
+            // 
+            this.ItemForAvatar.Control = this.AvatarThumbnailDataPictureEdit;
+            this.ItemForAvatar.Location = new System.Drawing.Point(0, 228);
+            this.ItemForAvatar.Name = "ItemForAvatar";
+            this.ItemForAvatar.Size = new System.Drawing.Size(404, 202);
+            this.ItemForAvatar.Text = "Ảnh đại diện";
+            this.ItemForAvatar.TextSize = new System.Drawing.Size(62, 13);
             // 
             // FrmBusinessPartnerContactDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(430, 325);
+            this.ClientSize = new System.Drawing.Size(430, 495);
             this.Controls.Add(this.dataLayoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -410,11 +465,14 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.PartnerNameSearchLookUpEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FullNameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PositionTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhoneTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EmailTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsPrimaryCheckEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AvatarThumbnailDataPictureEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPartnerName)).EndInit();
@@ -423,7 +481,8 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPhone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForEmail)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsPrimary)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForAvatar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -456,9 +515,13 @@ namespace MasterData.Customer
         private LayoutControlItem ItemForPhone;
         private LayoutControlItem ItemForEmail;
         private LayoutControlItem ItemForIsPrimary;
+        private ToggleSwitch IsActiveToggleSwitch;
+        private LayoutControlItem ItemForIsActive;
         private BindingSource businessPartnerSiteListDtoBindingSource;
         private GridColumn colSiteName;
         private GridColumn colAddress;
         private RepositoryItemMemoEdit repositoryItemMemoEdit1;
+        private PictureEdit AvatarThumbnailDataPictureEdit;
+        private LayoutControlItem ItemForAvatar;
     }
 }
