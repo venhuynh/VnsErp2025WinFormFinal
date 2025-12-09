@@ -47,12 +47,6 @@ namespace MasterData.Customer
             this.AddressTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.CityTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.CountryTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.ContactPersonTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.ContactPositionTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.BankAccountTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.BankNameTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.CreditLimitTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.PaymentTermTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.IsActiveToggleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -65,12 +59,6 @@ namespace MasterData.Customer
             this.ItemForAddress = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForCity = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForCountry = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForContactPerson = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForContactPosition = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForBankAccount = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForBankName = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForCreditLimit = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForPaymentTerm = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForPartnerTypeName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
@@ -82,6 +70,8 @@ namespace MasterData.Customer
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
+            this.LogoThumbnailDataPictureEdit = new DevExpress.XtraEditors.PictureEdit();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PartnerCodeTextEdit.Properties)).BeginInit();
@@ -94,12 +84,6 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.AddressTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CityTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CountryTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ContactPersonTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ContactPositionTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BankAccountTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BankNameTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CreditLimitTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PaymentTermTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
@@ -112,20 +96,17 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.ItemForAddress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCountry)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForContactPerson)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForContactPosition)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForBankAccount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForBankName)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForCreditLimit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForPaymentTerm)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPartnerTypeName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LogoThumbnailDataPictureEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
             // dataLayoutControl1
             // 
+            this.dataLayoutControl1.Controls.Add(this.LogoThumbnailDataPictureEdit);
             this.dataLayoutControl1.Controls.Add(this.PartnerCodeTextEdit);
             this.dataLayoutControl1.Controls.Add(this.PartnerNameTextEdit);
             this.dataLayoutControl1.Controls.Add(this.PartnerTypeNameComboBoxEdit);
@@ -136,12 +117,6 @@ namespace MasterData.Customer
             this.dataLayoutControl1.Controls.Add(this.AddressTextEdit);
             this.dataLayoutControl1.Controls.Add(this.CityTextEdit);
             this.dataLayoutControl1.Controls.Add(this.CountryTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.ContactPersonTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.ContactPositionTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.BankAccountTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.BankNameTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.CreditLimitTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.PaymentTermTextEdit);
             this.dataLayoutControl1.Controls.Add(this.IsActiveToggleSwitch);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
@@ -153,157 +128,103 @@ namespace MasterData.Customer
             // 
             // PartnerCodeTextEdit
             // 
-            this.PartnerCodeTextEdit.Location = new System.Drawing.Point(152, 50);
+            this.PartnerCodeTextEdit.Location = new System.Drawing.Point(101, 50);
             this.PartnerCodeTextEdit.Name = "PartnerCodeTextEdit";
             this.PartnerCodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.PartnerCodeTextEdit.Size = new System.Drawing.Size(498, 28);
+            this.PartnerCodeTextEdit.Size = new System.Drawing.Size(549, 28);
             this.PartnerCodeTextEdit.StyleController = this.dataLayoutControl1;
-            this.PartnerCodeTextEdit.TabIndex = 4;
+            this.PartnerCodeTextEdit.TabIndex = 2;
             // 
             // PartnerNameTextEdit
             // 
-            this.PartnerNameTextEdit.Location = new System.Drawing.Point(152, 84);
+            this.PartnerNameTextEdit.Location = new System.Drawing.Point(101, 84);
             this.PartnerNameTextEdit.Name = "PartnerNameTextEdit";
             this.PartnerNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.PartnerNameTextEdit.Size = new System.Drawing.Size(498, 28);
+            this.PartnerNameTextEdit.Size = new System.Drawing.Size(549, 28);
             this.PartnerNameTextEdit.StyleController = this.dataLayoutControl1;
-            this.PartnerNameTextEdit.TabIndex = 5;
+            this.PartnerNameTextEdit.TabIndex = 3;
             // 
             // PartnerTypeNameComboBoxEdit
             // 
-            this.PartnerTypeNameComboBoxEdit.Location = new System.Drawing.Point(152, 16);
+            this.PartnerTypeNameComboBoxEdit.Location = new System.Drawing.Point(101, 16);
             this.PartnerTypeNameComboBoxEdit.Name = "PartnerTypeNameComboBoxEdit";
             this.PartnerTypeNameComboBoxEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.PartnerTypeNameComboBoxEdit.Size = new System.Drawing.Size(498, 28);
+            this.PartnerTypeNameComboBoxEdit.Size = new System.Drawing.Size(549, 28);
             this.PartnerTypeNameComboBoxEdit.StyleController = this.dataLayoutControl1;
-            this.PartnerTypeNameComboBoxEdit.TabIndex = 6;
+            this.PartnerTypeNameComboBoxEdit.TabIndex = 0;
             // 
             // TaxCodeTextEdit
             // 
-            this.TaxCodeTextEdit.Location = new System.Drawing.Point(152, 118);
+            this.TaxCodeTextEdit.Location = new System.Drawing.Point(101, 118);
             this.TaxCodeTextEdit.Name = "TaxCodeTextEdit";
-            this.TaxCodeTextEdit.Size = new System.Drawing.Size(498, 28);
+            this.TaxCodeTextEdit.Size = new System.Drawing.Size(549, 28);
             this.TaxCodeTextEdit.StyleController = this.dataLayoutControl1;
-            this.TaxCodeTextEdit.TabIndex = 7;
+            this.TaxCodeTextEdit.TabIndex = 4;
             // 
             // PhoneTextEdit
             // 
-            this.PhoneTextEdit.Location = new System.Drawing.Point(152, 152);
+            this.PhoneTextEdit.Location = new System.Drawing.Point(101, 152);
             this.PhoneTextEdit.Name = "PhoneTextEdit";
             this.PhoneTextEdit.Properties.Mask.EditMask = "(999) 000-0000";
             this.PhoneTextEdit.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Simple;
             this.PhoneTextEdit.Properties.Mask.UseMaskAsDisplayFormat = true;
-            this.PhoneTextEdit.Size = new System.Drawing.Size(498, 28);
+            this.PhoneTextEdit.Size = new System.Drawing.Size(549, 28);
             this.PhoneTextEdit.StyleController = this.dataLayoutControl1;
-            this.PhoneTextEdit.TabIndex = 8;
+            this.PhoneTextEdit.TabIndex = 5;
             // 
             // EmailTextEdit
             // 
-            this.EmailTextEdit.Location = new System.Drawing.Point(152, 186);
+            this.EmailTextEdit.Location = new System.Drawing.Point(101, 186);
             this.EmailTextEdit.Name = "EmailTextEdit";
-            this.EmailTextEdit.Size = new System.Drawing.Size(498, 28);
+            this.EmailTextEdit.Size = new System.Drawing.Size(549, 28);
             this.EmailTextEdit.StyleController = this.dataLayoutControl1;
-            this.EmailTextEdit.TabIndex = 9;
+            this.EmailTextEdit.TabIndex = 6;
             // 
             // WebsiteTextEdit
             // 
-            this.WebsiteTextEdit.Location = new System.Drawing.Point(152, 220);
+            this.WebsiteTextEdit.Location = new System.Drawing.Point(101, 220);
             this.WebsiteTextEdit.Name = "WebsiteTextEdit";
-            this.WebsiteTextEdit.Size = new System.Drawing.Size(498, 28);
+            this.WebsiteTextEdit.Size = new System.Drawing.Size(549, 28);
             this.WebsiteTextEdit.StyleController = this.dataLayoutControl1;
-            this.WebsiteTextEdit.TabIndex = 10;
+            this.WebsiteTextEdit.TabIndex = 7;
             // 
             // AddressTextEdit
             // 
-            this.AddressTextEdit.Location = new System.Drawing.Point(152, 254);
+            this.AddressTextEdit.Location = new System.Drawing.Point(101, 254);
             this.AddressTextEdit.Name = "AddressTextEdit";
-            this.AddressTextEdit.Size = new System.Drawing.Size(498, 28);
+            this.AddressTextEdit.Size = new System.Drawing.Size(549, 28);
             this.AddressTextEdit.StyleController = this.dataLayoutControl1;
-            this.AddressTextEdit.TabIndex = 11;
+            this.AddressTextEdit.TabIndex = 8;
             // 
             // CityTextEdit
             // 
-            this.CityTextEdit.Location = new System.Drawing.Point(152, 288);
+            this.CityTextEdit.Location = new System.Drawing.Point(101, 288);
             this.CityTextEdit.Name = "CityTextEdit";
-            this.CityTextEdit.Size = new System.Drawing.Size(498, 28);
+            this.CityTextEdit.Size = new System.Drawing.Size(549, 28);
             this.CityTextEdit.StyleController = this.dataLayoutControl1;
-            this.CityTextEdit.TabIndex = 12;
+            this.CityTextEdit.TabIndex = 9;
             // 
             // CountryTextEdit
             // 
-            this.CountryTextEdit.Location = new System.Drawing.Point(152, 322);
+            this.CountryTextEdit.Location = new System.Drawing.Point(101, 322);
             this.CountryTextEdit.Name = "CountryTextEdit";
-            this.CountryTextEdit.Size = new System.Drawing.Size(498, 28);
+            this.CountryTextEdit.Size = new System.Drawing.Size(549, 28);
             this.CountryTextEdit.StyleController = this.dataLayoutControl1;
-            this.CountryTextEdit.TabIndex = 13;
-            // 
-            // ContactPersonTextEdit
-            // 
-            this.ContactPersonTextEdit.Location = new System.Drawing.Point(152, 356);
-            this.ContactPersonTextEdit.Name = "ContactPersonTextEdit";
-            this.ContactPersonTextEdit.Size = new System.Drawing.Size(498, 28);
-            this.ContactPersonTextEdit.StyleController = this.dataLayoutControl1;
-            this.ContactPersonTextEdit.TabIndex = 14;
-            // 
-            // ContactPositionTextEdit
-            // 
-            this.ContactPositionTextEdit.Location = new System.Drawing.Point(152, 390);
-            this.ContactPositionTextEdit.Name = "ContactPositionTextEdit";
-            this.ContactPositionTextEdit.Size = new System.Drawing.Size(498, 28);
-            this.ContactPositionTextEdit.StyleController = this.dataLayoutControl1;
-            this.ContactPositionTextEdit.TabIndex = 15;
-            // 
-            // BankAccountTextEdit
-            // 
-            this.BankAccountTextEdit.Location = new System.Drawing.Point(152, 424);
-            this.BankAccountTextEdit.Name = "BankAccountTextEdit";
-            this.BankAccountTextEdit.Size = new System.Drawing.Size(498, 28);
-            this.BankAccountTextEdit.StyleController = this.dataLayoutControl1;
-            this.BankAccountTextEdit.TabIndex = 16;
-            // 
-            // BankNameTextEdit
-            // 
-            this.BankNameTextEdit.Location = new System.Drawing.Point(152, 458);
-            this.BankNameTextEdit.Name = "BankNameTextEdit";
-            this.BankNameTextEdit.Size = new System.Drawing.Size(498, 28);
-            this.BankNameTextEdit.StyleController = this.dataLayoutControl1;
-            this.BankNameTextEdit.TabIndex = 17;
-            // 
-            // CreditLimitTextEdit
-            // 
-            this.CreditLimitTextEdit.Location = new System.Drawing.Point(152, 492);
-            this.CreditLimitTextEdit.Name = "CreditLimitTextEdit";
-            this.CreditLimitTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-            this.CreditLimitTextEdit.Properties.Appearance.Options.UseTextOptions = true;
-            this.CreditLimitTextEdit.Properties.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.CreditLimitTextEdit.Properties.Mask.EditMask = "c";
-            this.CreditLimitTextEdit.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
-            this.CreditLimitTextEdit.Properties.Mask.UseMaskAsDisplayFormat = true;
-            this.CreditLimitTextEdit.Size = new System.Drawing.Size(498, 28);
-            this.CreditLimitTextEdit.StyleController = this.dataLayoutControl1;
-            this.CreditLimitTextEdit.TabIndex = 18;
-            // 
-            // PaymentTermTextEdit
-            // 
-            this.PaymentTermTextEdit.Location = new System.Drawing.Point(152, 526);
-            this.PaymentTermTextEdit.Name = "PaymentTermTextEdit";
-            this.PaymentTermTextEdit.Size = new System.Drawing.Size(498, 28);
-            this.PaymentTermTextEdit.StyleController = this.dataLayoutControl1;
-            this.PaymentTermTextEdit.TabIndex = 19;
+            this.CountryTextEdit.TabIndex = 10;
             // 
             // IsActiveToggleSwitch
             // 
             this.IsActiveToggleSwitch.EditValue = true;
-            this.IsActiveToggleSwitch.Location = new System.Drawing.Point(145, 560);
+            this.IsActiveToggleSwitch.Location = new System.Drawing.Point(94, 356);
             this.IsActiveToggleSwitch.Name = "IsActiveToggleSwitch";
             this.IsActiveToggleSwitch.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.IsActiveToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
             this.IsActiveToggleSwitch.Properties.OffText = "<color=\'red\'>Ngưng hoạt động</color>";
             this.IsActiveToggleSwitch.Properties.OnText = "<color=\'blue\'>Đang hoạt động</color>";
-            this.IsActiveToggleSwitch.Size = new System.Drawing.Size(505, 24);
+            this.IsActiveToggleSwitch.Size = new System.Drawing.Size(556, 24);
             this.IsActiveToggleSwitch.StyleController = this.dataLayoutControl1;
-            this.IsActiveToggleSwitch.TabIndex = 20;
+            this.IsActiveToggleSwitch.TabIndex = 11;
             // 
             // Root
             // 
@@ -329,14 +250,9 @@ namespace MasterData.Customer
             this.ItemForAddress,
             this.ItemForCity,
             this.ItemForCountry,
-            this.ItemForContactPerson,
-            this.ItemForContactPosition,
-            this.ItemForBankAccount,
-            this.ItemForBankName,
-            this.ItemForCreditLimit,
-            this.ItemForPaymentTerm,
             this.ItemForPartnerTypeName,
-            this.ItemForIsActive});
+            this.ItemForIsActive,
+            this.layoutControlItem1});
             this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlGroup1.Name = "autoGeneratedGroup0";
             this.layoutControlGroup1.Size = new System.Drawing.Size(640, 595);
@@ -352,7 +268,7 @@ namespace MasterData.Customer
             this.ItemForPartnerCode.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForPartnerCode.Size = new System.Drawing.Size(640, 34);
             this.ItemForPartnerCode.Text = "Mã đối tác";
-            this.ItemForPartnerCode.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForPartnerCode.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForPartnerName
             // 
@@ -362,7 +278,7 @@ namespace MasterData.Customer
             this.ItemForPartnerName.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForPartnerName.Size = new System.Drawing.Size(640, 34);
             this.ItemForPartnerName.Text = "Tên đối tác";
-            this.ItemForPartnerName.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForPartnerName.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForTaxCode
             // 
@@ -372,7 +288,7 @@ namespace MasterData.Customer
             this.ItemForTaxCode.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForTaxCode.Size = new System.Drawing.Size(640, 34);
             this.ItemForTaxCode.Text = "Mã số thuế";
-            this.ItemForTaxCode.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForTaxCode.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForPhone
             // 
@@ -382,7 +298,7 @@ namespace MasterData.Customer
             this.ItemForPhone.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForPhone.Size = new System.Drawing.Size(640, 34);
             this.ItemForPhone.Text = "Số điện thoại";
-            this.ItemForPhone.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForPhone.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForEmail
             // 
@@ -392,7 +308,7 @@ namespace MasterData.Customer
             this.ItemForEmail.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForEmail.Size = new System.Drawing.Size(640, 34);
             this.ItemForEmail.Text = "Email";
-            this.ItemForEmail.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForEmail.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForWebsite
             // 
@@ -402,7 +318,7 @@ namespace MasterData.Customer
             this.ItemForWebsite.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForWebsite.Size = new System.Drawing.Size(640, 34);
             this.ItemForWebsite.Text = "Website";
-            this.ItemForWebsite.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForWebsite.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForAddress
             // 
@@ -412,7 +328,7 @@ namespace MasterData.Customer
             this.ItemForAddress.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForAddress.Size = new System.Drawing.Size(640, 34);
             this.ItemForAddress.Text = "Địa chỉ";
-            this.ItemForAddress.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForAddress.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForCity
             // 
@@ -422,7 +338,7 @@ namespace MasterData.Customer
             this.ItemForCity.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForCity.Size = new System.Drawing.Size(640, 34);
             this.ItemForCity.Text = "Thành phố";
-            this.ItemForCity.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForCity.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForCountry
             // 
@@ -432,67 +348,7 @@ namespace MasterData.Customer
             this.ItemForCountry.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForCountry.Size = new System.Drawing.Size(640, 34);
             this.ItemForCountry.Text = "Quốc gia";
-            this.ItemForCountry.TextSize = new System.Drawing.Size(113, 13);
-            // 
-            // ItemForContactPerson
-            // 
-            this.ItemForContactPerson.Control = this.ContactPersonTextEdit;
-            this.ItemForContactPerson.Location = new System.Drawing.Point(0, 340);
-            this.ItemForContactPerson.Name = "ItemForContactPerson";
-            this.ItemForContactPerson.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForContactPerson.Size = new System.Drawing.Size(640, 34);
-            this.ItemForContactPerson.Text = "Người liên hệ";
-            this.ItemForContactPerson.TextSize = new System.Drawing.Size(113, 13);
-            // 
-            // ItemForContactPosition
-            // 
-            this.ItemForContactPosition.Control = this.ContactPositionTextEdit;
-            this.ItemForContactPosition.Location = new System.Drawing.Point(0, 374);
-            this.ItemForContactPosition.Name = "ItemForContactPosition";
-            this.ItemForContactPosition.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForContactPosition.Size = new System.Drawing.Size(640, 34);
-            this.ItemForContactPosition.Text = "Chức vụ";
-            this.ItemForContactPosition.TextSize = new System.Drawing.Size(113, 13);
-            // 
-            // ItemForBankAccount
-            // 
-            this.ItemForBankAccount.Control = this.BankAccountTextEdit;
-            this.ItemForBankAccount.Location = new System.Drawing.Point(0, 408);
-            this.ItemForBankAccount.Name = "ItemForBankAccount";
-            this.ItemForBankAccount.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForBankAccount.Size = new System.Drawing.Size(640, 34);
-            this.ItemForBankAccount.Text = "Số tài khoản ngân hàng";
-            this.ItemForBankAccount.TextSize = new System.Drawing.Size(113, 13);
-            // 
-            // ItemForBankName
-            // 
-            this.ItemForBankName.Control = this.BankNameTextEdit;
-            this.ItemForBankName.Location = new System.Drawing.Point(0, 442);
-            this.ItemForBankName.Name = "ItemForBankName";
-            this.ItemForBankName.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForBankName.Size = new System.Drawing.Size(640, 34);
-            this.ItemForBankName.Text = "Tên ngân hàng";
-            this.ItemForBankName.TextSize = new System.Drawing.Size(113, 13);
-            // 
-            // ItemForCreditLimit
-            // 
-            this.ItemForCreditLimit.Control = this.CreditLimitTextEdit;
-            this.ItemForCreditLimit.Location = new System.Drawing.Point(0, 476);
-            this.ItemForCreditLimit.Name = "ItemForCreditLimit";
-            this.ItemForCreditLimit.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForCreditLimit.Size = new System.Drawing.Size(640, 34);
-            this.ItemForCreditLimit.Text = "Hạn mức tín dụng";
-            this.ItemForCreditLimit.TextSize = new System.Drawing.Size(113, 13);
-            // 
-            // ItemForPaymentTerm
-            // 
-            this.ItemForPaymentTerm.Control = this.PaymentTermTextEdit;
-            this.ItemForPaymentTerm.Location = new System.Drawing.Point(0, 510);
-            this.ItemForPaymentTerm.Name = "ItemForPaymentTerm";
-            this.ItemForPaymentTerm.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
-            this.ItemForPaymentTerm.Size = new System.Drawing.Size(640, 34);
-            this.ItemForPaymentTerm.Text = "Điều khoản thanh toán";
-            this.ItemForPaymentTerm.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForCountry.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForPartnerTypeName
             // 
@@ -502,16 +358,16 @@ namespace MasterData.Customer
             this.ItemForPartnerTypeName.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 3, 3, 3);
             this.ItemForPartnerTypeName.Size = new System.Drawing.Size(640, 34);
             this.ItemForPartnerTypeName.Text = "Loại đối tác";
-            this.ItemForPartnerTypeName.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForPartnerTypeName.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForIsActive
             // 
             this.ItemForIsActive.Control = this.IsActiveToggleSwitch;
-            this.ItemForIsActive.Location = new System.Drawing.Point(0, 544);
+            this.ItemForIsActive.Location = new System.Drawing.Point(0, 340);
             this.ItemForIsActive.Name = "ItemForIsActive";
-            this.ItemForIsActive.Size = new System.Drawing.Size(640, 51);
+            this.ItemForIsActive.Size = new System.Drawing.Size(640, 30);
             this.ItemForIsActive.Text = "Trạng thái";
-            this.ItemForIsActive.TextSize = new System.Drawing.Size(113, 13);
+            this.ItemForIsActive.TextSize = new System.Drawing.Size(62, 13);
             // 
             // barManager1
             // 
@@ -596,6 +452,29 @@ namespace MasterData.Customer
             // 
             this.dxErrorProvider1.ContainerControl = this;
             // 
+            // LogoThumbnailDataPictureEdit
+            // 
+            this.LogoThumbnailDataPictureEdit.Location = new System.Drawing.Point(94, 386);
+            this.LogoThumbnailDataPictureEdit.MenuManager = this.barManager1;
+            this.LogoThumbnailDataPictureEdit.Name = "LogoThumbnailDataPictureEdit";
+            this.LogoThumbnailDataPictureEdit.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.LogoThumbnailDataPictureEdit.Properties.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.LogoThumbnailDataPictureEdit.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
+            this.LogoThumbnailDataPictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.LogoThumbnailDataPictureEdit.Size = new System.Drawing.Size(556, 219);
+            this.LogoThumbnailDataPictureEdit.StyleController = this.dataLayoutControl1;
+            this.LogoThumbnailDataPictureEdit.TabIndex = 21;
+            this.LogoThumbnailDataPictureEdit.ImageChanged += new System.EventHandler(this.LogoThumbnailDataPictureEdit_ImageChanged);
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.LogoThumbnailDataPictureEdit;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 370);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(640, 225);
+            this.layoutControlItem1.Text = "Logo";
+            this.layoutControlItem1.TextSize = new System.Drawing.Size(62, 13);
+            // 
             // FrmBusinessPartnerDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -622,12 +501,6 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.AddressTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CityTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CountryTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ContactPersonTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ContactPositionTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BankAccountTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BankNameTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CreditLimitTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PaymentTermTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
@@ -640,16 +513,12 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.ItemForAddress)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCountry)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForContactPerson)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForContactPosition)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForBankAccount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForBankName)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForCreditLimit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForPaymentTerm)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForPartnerTypeName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LogoThumbnailDataPictureEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -668,12 +537,6 @@ namespace MasterData.Customer
         private TextEdit AddressTextEdit;
         private TextEdit CityTextEdit;
         private TextEdit CountryTextEdit;
-        private TextEdit ContactPersonTextEdit;
-        private TextEdit ContactPositionTextEdit;
-        private TextEdit BankAccountTextEdit;
-        private TextEdit BankNameTextEdit;
-        private TextEdit CreditLimitTextEdit;
-        private TextEdit PaymentTermTextEdit;
         private ToggleSwitch IsActiveToggleSwitch;
         private LayoutControlGroup Root;
         private LayoutControlGroup layoutControlGroup1;
@@ -687,12 +550,6 @@ namespace MasterData.Customer
         private LayoutControlItem ItemForAddress;
         private LayoutControlItem ItemForCity;
         private LayoutControlItem ItemForCountry;
-        private LayoutControlItem ItemForContactPerson;
-        private LayoutControlItem ItemForContactPosition;
-        private LayoutControlItem ItemForBankAccount;
-        private LayoutControlItem ItemForBankName;
-        private LayoutControlItem ItemForCreditLimit;
-        private LayoutControlItem ItemForPaymentTerm;
         private LayoutControlItem ItemForIsActive;
         private BarManager barManager1;
         private Bar bar2;
@@ -703,5 +560,7 @@ namespace MasterData.Customer
         private BarDockControl barDockControlLeft;
         private BarDockControl barDockControlRight;
         private DXErrorProvider dxErrorProvider1;
+        private PictureEdit LogoThumbnailDataPictureEdit;
+        private LayoutControlItem layoutControlItem1;
     }
 }
