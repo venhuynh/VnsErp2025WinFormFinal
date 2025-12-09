@@ -61,6 +61,7 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
         // Configure eager loading cho navigation properties
         var loadOptions = new DataLoadOptions();
         loadOptions.LoadWith<BusinessPartnerContact>(c => c.BusinessPartnerSite);
+        loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
         context.LoadOptions = loadOptions;
 
         return context;
@@ -211,7 +212,6 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
                     existingEntity.Phone = entity.Phone;
                     existingEntity.Email = entity.Email;
                     existingEntity.IsPrimary = entity.IsPrimary;
-                    existingEntity.Avatar = entity.Avatar;
                     existingEntity.IsActive = entity.IsActive;
                     
                     // Cập nhật các fields mới
@@ -224,7 +224,18 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
                     existingEntity.Skype = entity.Skype;
                     existingEntity.WeChat = entity.WeChat;
                     existingEntity.Notes = entity.Notes;
-                    existingEntity.AvatarPath = entity.AvatarPath;
+                    
+                    // Copy Avatar fields (metadata only, Avatar binary field not in DataContext)
+                    existingEntity.AvatarFileName = entity.AvatarFileName;
+                    existingEntity.AvatarRelativePath = entity.AvatarRelativePath;
+                    existingEntity.AvatarFullPath = entity.AvatarFullPath;
+                    existingEntity.AvatarStorageType = entity.AvatarStorageType;
+                    existingEntity.AvatarFileSize = entity.AvatarFileSize;
+                    existingEntity.AvatarChecksum = entity.AvatarChecksum;
+                    
+                    // Copy AvatarThumbnailData (binary data stored in database)
+                    existingEntity.AvatarThumbnailData = entity.AvatarThumbnailData;
+                    
                     existingEntity.ModifiedDate = DateTime.Now;
                     
                     context.SubmitChanges();
@@ -405,11 +416,11 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
     }
 
     /// <summary>
-    /// Cập nhật chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
+    /// Cập nhật chỉ avatar thumbnail của BusinessPartnerContact (chỉ xử lý hình ảnh thumbnail)
     /// </summary>
     /// <param name="contactId">ID của liên hệ</param>
-    /// <param name="avatarBytes">Dữ liệu hình ảnh</param>
-    public void UpdateAvatarOnly(Guid contactId, byte[] avatarBytes)
+    /// <param name="avatarThumbnailBytes">Dữ liệu hình ảnh thumbnail</param>
+    public void UpdateAvatarOnly(Guid contactId, byte[] avatarThumbnailBytes)
     {
         try
         {
@@ -422,18 +433,18 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
                 throw new DataAccessException($"Không tìm thấy BusinessPartnerContact với ID: {contactId}");
             }
 
-            // Cập nhật chỉ avatar
-            existingEntity.Avatar = avatarBytes != null ? new Binary(avatarBytes) : null;
+            // Cập nhật chỉ avatar thumbnail
+            existingEntity.AvatarThumbnailData = avatarThumbnailBytes != null ? new Binary(avatarThumbnailBytes) : null;
             
             // Submit changes
             context.SubmitChanges();
             
-            _logger.Info($"Đã cập nhật avatar cho BusinessPartnerContact: {contactId}");
+            _logger.Info($"Đã cập nhật avatar thumbnail cho BusinessPartnerContact: {contactId}");
         }
         catch (SqlException sqlEx)
         {
-            _logger.Error($"Lỗi SQL khi cập nhật avatar: {sqlEx.Message}", sqlEx);
-            throw new DataAccessException($"Lỗi SQL khi cập nhật avatar: {sqlEx.Message}", sqlEx)
+            _logger.Error($"Lỗi SQL khi cập nhật avatar thumbnail: {sqlEx.Message}", sqlEx);
+            throw new DataAccessException($"Lỗi SQL khi cập nhật avatar thumbnail: {sqlEx.Message}", sqlEx)
             {
                 SqlErrorNumber = sqlEx.Number,
                 ThoiGianLoi = DateTime.Now
@@ -441,13 +452,13 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi cập nhật avatar: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi cập nhật avatar: {ex.Message}", ex);
+            _logger.Error($"Lỗi khi cập nhật avatar thumbnail: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi cập nhật avatar thumbnail: {ex.Message}", ex);
         }
     }
 
     /// <summary>
-    /// Xóa chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
+    /// Xóa chỉ avatar của BusinessPartnerContact (xóa cả metadata và thumbnail)
     /// </summary>
     /// <param name="contactId">ID của liên hệ</param>
     public void DeleteAvatarOnly(Guid contactId)
@@ -463,13 +474,19 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
                 throw new DataAccessException($"Không tìm thấy BusinessPartnerContact với ID: {contactId}");
             }
 
-            // Xóa chỉ avatar
-            existingEntity.Avatar = null;
+            // Xóa avatar metadata và thumbnail
+            existingEntity.AvatarFileName = null;
+            existingEntity.AvatarRelativePath = null;
+            existingEntity.AvatarFullPath = null;
+            existingEntity.AvatarStorageType = null;
+            existingEntity.AvatarFileSize = null;
+            existingEntity.AvatarChecksum = null;
+            existingEntity.AvatarThumbnailData = null;
             
             // Submit changes
             context.SubmitChanges();
             
-            _logger.Info($"Đã xóa avatar cho BusinessPartnerContact: {contactId}");
+            _logger.Info($"Đã xóa avatar (metadata và thumbnail) cho BusinessPartnerContact: {contactId}");
         }
         catch (SqlException sqlEx)
         {
