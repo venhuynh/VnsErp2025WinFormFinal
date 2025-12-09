@@ -87,7 +87,8 @@ namespace DTO.MasterData.CustomerPartner
 
         /// <summary>
         /// Thông tin danh mục dưới dạng HTML theo format DevExpress
-        /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+        /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
+        /// Format giống BusinessPartnerListDto.ThongTinHtml (không dùng &lt;size&gt;)
         /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
         /// </summary>
         [DisplayName("Thông tin HTML")]
@@ -98,18 +99,18 @@ namespace DTO.MasterData.CustomerPartner
             {
                 var html = string.Empty;
 
-                // Tên danh mục (màu xanh, đậm, size 12)
+                // Tên danh mục (màu xanh, đậm)
                 if (!string.IsNullOrWhiteSpace(CategoryName))
                 {
-                    html += $"<size=12><b><color='blue'>{CategoryName}</color></b></size>";
+                    html += $"<b><color='blue'>{CategoryName}</color></b>";
                 }
 
-                // Mã danh mục (nếu có, màu xám, size 9)
+                // Mã danh mục (nếu có, màu xám)
                 if (!string.IsNullOrWhiteSpace(CategoryCode))
                 {
                     if (!string.IsNullOrWhiteSpace(html))
                         html += " ";
-                    html += $"<size=9><color='#757575'>({CategoryCode})</color></size>";
+                    html += $"<color='#757575'>({CategoryCode})</color>";
                 }
 
                 html += "<br>";
@@ -121,20 +122,20 @@ namespace DTO.MasterData.CustomerPartner
                 var statusText = IsActive ? "Hoạt động" : "Không hoạt động";
                 var statusColor = IsActive ? "#4CAF50" : "#F44336";
                 additionalInfo.Add(
-                    $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>");
+                    $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>");
 
                 // Số lượng đối tác
                 if (PartnerCount > 0)
                 {
                     additionalInfo.Add(
-                        $"<size=9><color='#757575'>Số đối tác:</color></size> <size=10><color='#212121'><b>{PartnerCount}</b></color></size>");
+                        $"<color='#757575'>Số đối tác:</color> <b>{PartnerCount}</b>");
                 }
 
                 // Thứ tự sắp xếp
                 if (SortOrder.HasValue)
                 {
                     additionalInfo.Add(
-                        $"<size=9><color='#757575'>Thứ tự:</color></size> <size=10><color='#212121'><b>{SortOrder.Value}</b></color></size>");
+                        $"<color='#757575'>Thứ tự:</color> <b>{SortOrder.Value}</b>");
                 }
 
                 if (additionalInfo.Any())
@@ -148,6 +149,7 @@ namespace DTO.MasterData.CustomerPartner
 
         /// <summary>
         /// Đường dẫn đầy đủ dưới dạng HTML theo format DevExpress
+        /// Format giống BusinessPartnerListDto.FullPathHtml (không dùng &lt;size&gt;)
         /// </summary>
         [DisplayName("Đường dẫn HTML")]
         [Description("Đường dẫn đầy đủ từ gốc đến danh mục này dưới dạng HTML")]
@@ -159,26 +161,32 @@ namespace DTO.MasterData.CustomerPartner
                     return string.Empty;
 
                 // Tách đường dẫn và format với màu sắc
-                var parts = FullPath.Split([" > "], StringSplitOptions.None);
+                // Hỗ trợ nhiều format: " > ", ">", " >" hoặc "> "
+                var parts = FullPath.Split(new[] { " > ", ">", " >", "> " }, StringSplitOptions.None)
+                    .Where(p => !string.IsNullOrWhiteSpace(p))
+                    .Select(p => p.Trim())
+                    .ToArray();
+                
                 var htmlParts = new List<string>();
 
                 for (int i = 0; i < parts.Length; i++)
                 {
                     var isLast = i == parts.Length - 1;
                     var color = isLast ? "blue" : "#757575";
-                    var size = isLast ? "12" : "10";
                     var weight = isLast ? "<b>" : "";
                     var weightClose = isLast ? "</b>" : "";
 
-                    htmlParts.Add($"<size={size}>{weight}<color='{color}'>{parts[i]}</color>{weightClose}</size>");
+                    // Format giống BusinessPartnerListDto: không dùng <size>, chỉ dùng <b> và <color>
+                    htmlParts.Add($"{weight}<color='{color}'>{parts[i]}</color>{weightClose}");
                 }
 
-                return string.Join(" <size=9><color='#757575'>></color></size> ", htmlParts);
+                return string.Join(" <color='#757575'>></color> ", htmlParts);
             }
         }
 
         /// <summary>
         /// Thông tin audit (người tạo/sửa) dưới dạng HTML theo format DevExpress
+        /// Format giống BusinessPartnerListDto.AuditInfoHtml (không dùng &lt;size&gt;)
         /// </summary>
         [DisplayName("Thông tin audit HTML")]
         [Description("Thông tin người tạo và cập nhật dưới dạng HTML")]
@@ -192,12 +200,10 @@ namespace DTO.MasterData.CustomerPartner
                 // Người tạo
                 if (CreatedDate != default(DateTime))
                 {
-                    var createdInfo =
-                        $"<size=9><color='#757575'>Tạo:</color></size> <size=10><color='#212121'>{CreatedDate:dd/MM/yyyy HH:mm}</color></size>";
+                    var createdInfo = $"<color='#757575'>Tạo:</color> <b>{CreatedDate:dd/MM/yyyy HH:mm}</b>";
                     if (!string.IsNullOrWhiteSpace(CreatedByName))
                     {
-                        createdInfo +=
-                            $" <size=9><color='#757575'>bởi</color></size> <size=10><color='#212121'><b>{CreatedByName}</b></color></size>";
+                        createdInfo += $" <color='#757575'>bởi</color> <b>{CreatedByName}</b>";
                     }
 
                     infoParts.Add(createdInfo);
@@ -206,12 +212,10 @@ namespace DTO.MasterData.CustomerPartner
                 // Người cập nhật
                 if (ModifiedDate.HasValue)
                 {
-                    var modifiedInfo =
-                        $"<size=9><color='#757575'>Sửa:</color></size> <size=10><color='#212121'>{ModifiedDate.Value:dd/MM/yyyy HH:mm}</color></size>";
+                    var modifiedInfo = $"<color='#757575'>Sửa:</color> <b>{ModifiedDate.Value:dd/MM/yyyy HH:mm}</b>";
                     if (!string.IsNullOrWhiteSpace(ModifiedByName))
                     {
-                        modifiedInfo +=
-                            $" <size=9><color='#757575'>bởi</color></size> <size=10><color='#212121'><b>{ModifiedByName}</b></color></size>";
+                        modifiedInfo += $" <color='#757575'>bởi</color> <b>{ModifiedByName}</b>";
                     }
 
                     infoParts.Add(modifiedInfo);
