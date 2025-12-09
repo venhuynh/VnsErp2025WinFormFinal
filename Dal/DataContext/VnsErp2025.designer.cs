@@ -4592,8 +4592,6 @@ namespace Dal.DataContext
 		
 		private bool _IsPrimary;
 		
-		private System.Data.Linq.Binary _Avatar;
-		
 		private bool _IsActive;
 		
 		private string _Mobile;
@@ -4614,11 +4612,23 @@ namespace Dal.DataContext
 		
 		private string _Notes;
 		
-		private string _AvatarPath;
-		
 		private System.DateTime _CreatedDate;
 		
 		private System.Nullable<System.DateTime> _ModifiedDate;
+		
+		private string _AvatarFileName;
+		
+		private string _AvatarRelativePath;
+		
+		private string _AvatarFullPath;
+		
+		private string _AvatarStorageType;
+		
+		private System.Nullable<long> _AvatarFileSize;
+		
+		private string _AvatarChecksum;
+		
+		private System.Data.Linq.Binary _AvatarThumbnailData;
 		
 		private EntityRef<BusinessPartnerSite> _BusinessPartnerSite;
 		
@@ -4640,8 +4650,6 @@ namespace Dal.DataContext
     partial void OnEmailChanged();
     partial void OnIsPrimaryChanging(bool value);
     partial void OnIsPrimaryChanged();
-    partial void OnAvatarChanging(System.Data.Linq.Binary value);
-    partial void OnAvatarChanged();
     partial void OnIsActiveChanging(bool value);
     partial void OnIsActiveChanged();
     partial void OnMobileChanging(string value);
@@ -4662,12 +4670,24 @@ namespace Dal.DataContext
     partial void OnWeChatChanged();
     partial void OnNotesChanging(string value);
     partial void OnNotesChanged();
-    partial void OnAvatarPathChanging(string value);
-    partial void OnAvatarPathChanged();
     partial void OnCreatedDateChanging(System.DateTime value);
     partial void OnCreatedDateChanged();
     partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
     partial void OnModifiedDateChanged();
+    partial void OnAvatarFileNameChanging(string value);
+    partial void OnAvatarFileNameChanged();
+    partial void OnAvatarRelativePathChanging(string value);
+    partial void OnAvatarRelativePathChanged();
+    partial void OnAvatarFullPathChanging(string value);
+    partial void OnAvatarFullPathChanged();
+    partial void OnAvatarStorageTypeChanging(string value);
+    partial void OnAvatarStorageTypeChanged();
+    partial void OnAvatarFileSizeChanging(System.Nullable<long> value);
+    partial void OnAvatarFileSizeChanged();
+    partial void OnAvatarChecksumChanging(string value);
+    partial void OnAvatarChecksumChanged();
+    partial void OnAvatarThumbnailDataChanging(System.Data.Linq.Binary value);
+    partial void OnAvatarThumbnailDataChanged();
     #endregion
 		
 		public BusinessPartnerContact()
@@ -4816,26 +4836,6 @@ namespace Dal.DataContext
 					this._IsPrimary = value;
 					this.SendPropertyChanged("IsPrimary");
 					this.OnIsPrimaryChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Avatar", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
-		public System.Data.Linq.Binary Avatar
-		{
-			get
-			{
-				return this._Avatar;
-			}
-			set
-			{
-				if ((this._Avatar != value))
-				{
-					this.OnAvatarChanging(value);
-					this.SendPropertyChanging();
-					this._Avatar = value;
-					this.SendPropertyChanged("Avatar");
-					this.OnAvatarChanged();
 				}
 			}
 		}
@@ -5040,26 +5040,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvatarPath", DbType="NVarChar(500)")]
-		public string AvatarPath
-		{
-			get
-			{
-				return this._AvatarPath;
-			}
-			set
-			{
-				if ((this._AvatarPath != value))
-				{
-					this.OnAvatarPathChanging(value);
-					this.SendPropertyChanging();
-					this._AvatarPath = value;
-					this.SendPropertyChanged("AvatarPath");
-					this.OnAvatarPathChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
 		public System.DateTime CreatedDate
 		{
@@ -5096,6 +5076,146 @@ namespace Dal.DataContext
 					this._ModifiedDate = value;
 					this.SendPropertyChanged("ModifiedDate");
 					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvatarFileName", DbType="NVarChar(255)")]
+		public string AvatarFileName
+		{
+			get
+			{
+				return this._AvatarFileName;
+			}
+			set
+			{
+				if ((this._AvatarFileName != value))
+				{
+					this.OnAvatarFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._AvatarFileName = value;
+					this.SendPropertyChanged("AvatarFileName");
+					this.OnAvatarFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvatarRelativePath", DbType="NVarChar(500)")]
+		public string AvatarRelativePath
+		{
+			get
+			{
+				return this._AvatarRelativePath;
+			}
+			set
+			{
+				if ((this._AvatarRelativePath != value))
+				{
+					this.OnAvatarRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._AvatarRelativePath = value;
+					this.SendPropertyChanged("AvatarRelativePath");
+					this.OnAvatarRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvatarFullPath", DbType="NVarChar(1000)")]
+		public string AvatarFullPath
+		{
+			get
+			{
+				return this._AvatarFullPath;
+			}
+			set
+			{
+				if ((this._AvatarFullPath != value))
+				{
+					this.OnAvatarFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._AvatarFullPath = value;
+					this.SendPropertyChanged("AvatarFullPath");
+					this.OnAvatarFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvatarStorageType", DbType="NVarChar(20)")]
+		public string AvatarStorageType
+		{
+			get
+			{
+				return this._AvatarStorageType;
+			}
+			set
+			{
+				if ((this._AvatarStorageType != value))
+				{
+					this.OnAvatarStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._AvatarStorageType = value;
+					this.SendPropertyChanged("AvatarStorageType");
+					this.OnAvatarStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvatarFileSize", DbType="BigInt")]
+		public System.Nullable<long> AvatarFileSize
+		{
+			get
+			{
+				return this._AvatarFileSize;
+			}
+			set
+			{
+				if ((this._AvatarFileSize != value))
+				{
+					this.OnAvatarFileSizeChanging(value);
+					this.SendPropertyChanging();
+					this._AvatarFileSize = value;
+					this.SendPropertyChanged("AvatarFileSize");
+					this.OnAvatarFileSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvatarChecksum", DbType="NVarChar(64)")]
+		public string AvatarChecksum
+		{
+			get
+			{
+				return this._AvatarChecksum;
+			}
+			set
+			{
+				if ((this._AvatarChecksum != value))
+				{
+					this.OnAvatarChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._AvatarChecksum = value;
+					this.SendPropertyChanged("AvatarChecksum");
+					this.OnAvatarChecksumChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvatarThumbnailData", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary AvatarThumbnailData
+		{
+			get
+			{
+				return this._AvatarThumbnailData;
+			}
+			set
+			{
+				if ((this._AvatarThumbnailData != value))
+				{
+					this.OnAvatarThumbnailDataChanging(value);
+					this.SendPropertyChanging();
+					this._AvatarThumbnailData = value;
+					this.SendPropertyChanged("AvatarThumbnailData");
+					this.OnAvatarThumbnailDataChanged();
 				}
 			}
 		}
