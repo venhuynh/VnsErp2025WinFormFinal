@@ -44,6 +44,11 @@ namespace MasterData.Customer
         /// </summary>
         private bool _isLoading;
 
+        /// <summary>
+        /// RowHandle đang được edit (để lấy PartnerId khi upload logo)
+        /// </summary>
+        private int _editingRowHandle = GridControl.InvalidRowHandle;
+
         #endregion
 
         #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
@@ -66,6 +71,11 @@ namespace MasterData.Customer
             BusinessPartnerListGridView.SelectionChanged += BusinessPartnerListGridView_SelectionChanged;
             BusinessPartnerListGridView.CustomDrawRowIndicator += BusinessPartnerListGridView_CustomDrawRowIndicator;
             BusinessPartnerListGridView.RowCellStyle += BusinessPartnerListGridView_RowCellStyle;
+            BusinessPartnerListGridView.ShownEditor += BusinessPartnerListGridView_ShownEditor;
+            BusinessPartnerListGridView.HiddenEditor += BusinessPartnerListGridView_HiddenEditor;
+
+            // RepositoryItemPictureEdit events
+            PartnerLogoRepositoryItemPictureEdit.ImageChanged += PartnerLogoRepositoryItemPictureEdit_ImageChanged;
 
             UpdateButtonStates();
 
