@@ -187,10 +187,20 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
 
             using var context = CreateNewContext();
 
-            if (entity.Id == Guid.Empty)
+            // Kiểm tra xem entity có tồn tại trong DB không (nếu có Id)
+            BusinessPartnerContact existingEntity = null;
+            if (entity.Id != Guid.Empty)
+            {
+                existingEntity = context.BusinessPartnerContacts.FirstOrDefault(c => c.Id == entity.Id);
+            }
+
+            if (existingEntity == null || entity.Id == Guid.Empty)
             {
                 // Thêm mới
-                entity.Id = Guid.NewGuid();
+                if (entity.Id == Guid.Empty)
+                {
+                    entity.Id = Guid.NewGuid();
+                }
                 if (entity.CreatedDate == default(DateTime))
                 {
                     entity.CreatedDate = DateTime.Now;
@@ -203,48 +213,40 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
             else
             {
                 // Cập nhật
-                var existingEntity = context.BusinessPartnerContacts.FirstOrDefault(c => c.Id == entity.Id);
-                if (existingEntity != null)
-                {
-                    existingEntity.SiteId = entity.SiteId;
-                    existingEntity.FullName = entity.FullName;
-                    existingEntity.Position = entity.Position;
-                    existingEntity.Phone = entity.Phone;
-                    existingEntity.Email = entity.Email;
-                    existingEntity.IsPrimary = entity.IsPrimary;
-                    existingEntity.IsActive = entity.IsActive;
-                    
-                    // Cập nhật các fields mới
-                    existingEntity.Mobile = entity.Mobile;
-                    existingEntity.Fax = entity.Fax;
-                    existingEntity.Department = entity.Department;
-                    existingEntity.BirthDate = entity.BirthDate;
-                    existingEntity.Gender = entity.Gender;
-                    existingEntity.LinkedIn = entity.LinkedIn;
-                    existingEntity.Skype = entity.Skype;
-                    existingEntity.WeChat = entity.WeChat;
-                    existingEntity.Notes = entity.Notes;
-                    
-                    // Copy Avatar fields (metadata only, Avatar binary field not in DataContext)
-                    existingEntity.AvatarFileName = entity.AvatarFileName;
-                    existingEntity.AvatarRelativePath = entity.AvatarRelativePath;
-                    existingEntity.AvatarFullPath = entity.AvatarFullPath;
-                    existingEntity.AvatarStorageType = entity.AvatarStorageType;
-                    existingEntity.AvatarFileSize = entity.AvatarFileSize;
-                    existingEntity.AvatarChecksum = entity.AvatarChecksum;
-                    
-                    // Copy AvatarThumbnailData (binary data stored in database)
-                    existingEntity.AvatarThumbnailData = entity.AvatarThumbnailData;
-                    
-                    existingEntity.ModifiedDate = DateTime.Now;
-                    
-                    context.SubmitChanges();
-                    _logger.Info($"Đã cập nhật BusinessPartnerContact: {existingEntity.FullName}");
-                }
-                else
-                {
-                    throw new DataAccessException("Không tìm thấy BusinessPartnerContact để cập nhật");
-                }
+                existingEntity.SiteId = entity.SiteId;
+                existingEntity.FullName = entity.FullName;
+                existingEntity.Position = entity.Position;
+                existingEntity.Phone = entity.Phone;
+                existingEntity.Email = entity.Email;
+                existingEntity.IsPrimary = entity.IsPrimary;
+                existingEntity.IsActive = entity.IsActive;
+                
+                // Cập nhật các fields mới
+                existingEntity.Mobile = entity.Mobile;
+                existingEntity.Fax = entity.Fax;
+                existingEntity.Department = entity.Department;
+                existingEntity.BirthDate = entity.BirthDate;
+                existingEntity.Gender = entity.Gender;
+                existingEntity.LinkedIn = entity.LinkedIn;
+                existingEntity.Skype = entity.Skype;
+                existingEntity.WeChat = entity.WeChat;
+                existingEntity.Notes = entity.Notes;
+                
+                // Copy Avatar fields (metadata only, Avatar binary field not in DataContext)
+                existingEntity.AvatarFileName = entity.AvatarFileName;
+                existingEntity.AvatarRelativePath = entity.AvatarRelativePath;
+                existingEntity.AvatarFullPath = entity.AvatarFullPath;
+                existingEntity.AvatarStorageType = entity.AvatarStorageType;
+                existingEntity.AvatarFileSize = entity.AvatarFileSize;
+                existingEntity.AvatarChecksum = entity.AvatarChecksum;
+                
+                // Copy AvatarThumbnailData (binary data stored in database)
+                existingEntity.AvatarThumbnailData = entity.AvatarThumbnailData;
+                
+                existingEntity.ModifiedDate = DateTime.Now;
+                
+                context.SubmitChanges();
+                _logger.Info($"Đã cập nhật BusinessPartnerContact: {existingEntity.FullName}");
             }
 
             return entity.Id;
