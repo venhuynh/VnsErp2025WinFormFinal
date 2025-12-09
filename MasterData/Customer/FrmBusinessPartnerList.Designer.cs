@@ -333,6 +333,7 @@ namespace MasterData.Customer
             this.PartnerLogoRepositoryItemPictureEdit.Name = "PartnerLogoRepositoryItemPictureEdit";
             this.PartnerLogoRepositoryItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
             this.PartnerLogoRepositoryItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.PartnerLogoRepositoryItemPictureEdit.ImageChanged += new System.EventHandler(this.PartnerLogoRepositoryItemPictureEdit_ImageChanged);
             // 
             // FrmBusinessPartnerList
             // 

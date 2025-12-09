@@ -909,7 +909,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                 existing.LogoThumbnailData = source.LogoThumbnailData;
                 
                 existing.UpdatedDate = DateTime.Now;
-                existing.ModifiedBy = userId;
+                
                 
                 context.SubmitChanges();
                 

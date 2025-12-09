@@ -288,7 +288,7 @@ namespace Bll.MasterData.CustomerBll
                 }
 
                 partner.UpdatedDate = DateTime.Now;
-                partner.ModifiedBy = userId;
+                // Không set ModifiedBy trực tiếp - SaveOrUpdate sẽ tự xử lý để tránh ForeignKeyReferenceAlreadyHasValueException
 
                 // 8. Lưu vào database
                 GetDataAccess().SaveOrUpdate(partner, userId);
@@ -414,12 +414,145 @@ namespace Bll.MasterData.CustomerBll
                 }
 
                 partner.UpdatedDate = DateTime.Now;
-                partner.ModifiedBy = userId;
+                // Không set ModifiedBy trực tiếp - SaveOrUpdate sẽ tự xử lý để tránh ForeignKeyReferenceAlreadyHasValueException
 
                 // 6. Lưu vào database
                 GetDataAccess().SaveOrUpdate(partner, userId);
 
                 _logger.Info($"Đã upload logo và tạo thumbnail cho đối tác (từ bytes), PartnerId={partnerId}, PartnerName={partner.PartnerName}, RelativePath={storageResult.RelativePath}");
+                
+                return partner;
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi upload logo từ bytes cho đối tác {partnerId}: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Upload logo đối tác từ byte array với maxDimension tùy chỉnh cho thumbnail.
+        /// Lưu file gốc trên NAS và thumbnail trong database với kích thước phù hợp với thiết kế cột.
+        /// </summary>
+        /// <param name="partnerId">ID đối tác</param>
+        /// <param name="logoData">Dữ liệu logo (byte array)</param>
+        /// <param name="thumbnailMaxDimension">Kích thước tối đa cho thumbnail (pixels). Mặc định 120px để phù hợp với cột logo trong GridView</param>
+        /// <param name="fileName">Tên file logo (optional, sẽ tự tạo nếu null)</param>
+        /// <param name="userId">ID người dùng thực hiện (optional, sẽ lấy từ GetCurrentUser nếu null)</param>
+        /// <returns>BusinessPartner entity đã được cập nhật</returns>
+        public async Task<BusinessPartner> UploadLogoFromBytesAsync(Guid partnerId, byte[] logoData, int thumbnailMaxDimension, string fileName = null, Guid? userId = null)
+        {
+            try
+            {
+                if (logoData == null || logoData.Length == 0)
+                {
+                    throw new ArgumentException("Dữ liệu logo không được rỗng", nameof(logoData));
+                }
+
+                if (thumbnailMaxDimension <= 0)
+                {
+                    thumbnailMaxDimension = ApplicationConstants.THUMBNAIL_MAX_DIMENSION; // Fallback to default
+                }
+
+                // Tạo tên file nếu chưa có (format tương tự StockInOutImageBll)
+                if (string.IsNullOrWhiteSpace(fileName))
+                {
+                    var fileExtension = ".jpg"; // Mặc định JPEG
+                    // Thử detect extension từ image data
+                    try
+                    {
+                        using (var ms = new MemoryStream(logoData))
+                        using (var img = Image.FromStream(ms))
+                        {
+                            if (img.RawFormat.Equals(ImageFormat.Png))
+                                fileExtension = ".png";
+                            else if (img.RawFormat.Equals(ImageFormat.Gif))
+                                fileExtension = ".gif";
+                        }
+                    }
+                    catch
+                    {
+                        // Nếu không detect được, dùng .jpg mặc định
+                    }
+                    
+                    fileName = $"BP_{partnerId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}.{fileExtension.TrimStart('.')}";
+                }
+
+                // 1. Lưu logo lên NAS
+                var storageResult = await _imageStorage.SaveImageAsync(
+                    imageData: logoData,
+                    fileName: fileName,
+                    category: ImageCategory.Company, // Sử dụng Company category cho BusinessPartner logo
+                    entityId: partnerId,
+                    generateThumbnail: false // Không tạo thumbnail trên NAS, sẽ tạo và lưu vào database
+                );
+
+                if (!storageResult.Success)
+                {
+                    throw new InvalidOperationException(
+                        $"Không thể lưu logo vào storage: {storageResult.ErrorMessage}");
+                }
+
+                // 2. Tạo thumbnail từ logo gốc với kích thước tùy chỉnh để phù hợp với thiết kế cột
+                byte[] thumbnailData = null;
+                try
+                {
+                    thumbnailData = _imageCompression.CompressImage(
+                        imageData: logoData,
+                        targetSize: 50000, // Target size: ~50KB (nhỏ hơn vì thumbnail nhỏ hơn)
+                        maxDimension: thumbnailMaxDimension, // Sử dụng kích thước tùy chỉnh (120px cho cột logo)
+                        format: ImageFormat.Jpeg
+                    );
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warning($"Không thể tạo thumbnail cho logo đối tác {partnerId}: {ex.Message}");
+                    // Tiếp tục lưu logo dù không tạo được thumbnail
+                }
+
+                // 3. Lấy đối tác từ database
+                var partner = GetDataAccess().GetById(partnerId);
+                if (partner == null)
+                {
+                    throw new InvalidOperationException($"Không tìm thấy đối tác với Id: {partnerId}");
+                }
+
+                // 4. Lấy thông tin user hiện tại nếu userId chưa có
+                if (userId == null || userId == Guid.Empty)
+                {
+                    var currentUser = ApplicationSystemUtils.GetCurrentUser();
+                    userId = currentUser?.Id ?? Guid.Empty;
+                }
+
+                // 5. Cập nhật thông tin logo và thumbnail
+                partner.LogoFileName = storageResult.FileName;
+                partner.LogoRelativePath = storageResult.RelativePath;
+                partner.LogoFullPath = storageResult.FullPath;
+                partner.LogoStorageType = "NAS"; // Hoặc từ config
+                partner.LogoFileSize = storageResult.FileSize;
+                partner.LogoChecksum = storageResult.Checksum;
+                
+                // Lưu thumbnail vào database (LogoThumbnailData) với kích thước phù hợp với thiết kế cột
+                if (thumbnailData != null && thumbnailData.Length > 0)
+                {
+                    partner.LogoThumbnailData = new System.Data.Linq.Binary(thumbnailData);
+                }
+
+                partner.UpdatedDate = DateTime.Now;
+                // Không set ModifiedBy trực tiếp - SaveOrUpdate sẽ tự xử lý để tránh ForeignKeyReferenceAlreadyHasValueException
+
+                // 6. Lưu vào database
+                GetDataAccess().SaveOrUpdate(partner, userId);
+
+                _logger.Info($"Đã upload logo và tạo thumbnail ({thumbnailMaxDimension}px) cho đối tác, PartnerId={partnerId}, PartnerName={partner.PartnerName}, RelativePath={storageResult.RelativePath}");
                 
                 return partner;
             }
@@ -571,7 +704,7 @@ namespace Bll.MasterData.CustomerBll
                 partner.LogoChecksum = null;
                 partner.LogoThumbnailData = null;
                 partner.UpdatedDate = DateTime.Now;
-                partner.ModifiedBy = userId;
+                // Không set ModifiedBy trực tiếp - SaveOrUpdate sẽ tự xử lý để tránh ForeignKeyReferenceAlreadyHasValueException
 
                 GetDataAccess().SaveOrUpdate(partner, userId);
 
