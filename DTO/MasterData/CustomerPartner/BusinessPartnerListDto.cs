@@ -137,15 +137,15 @@ namespace DTO.MasterData.CustomerPartner
                     {
                         var isLast = i == parts.Length - 1;
                         var color = isLast ? "blue" : "#757575";
-                        var size = isLast ? "12" : "10";
                         var weight = isLast ? "<b>" : "";
                         var weightClose = isLast ? "</b>" : "";
 
-                        htmlParts.Add($"<size={size}>{weight}<color='{color}'>{parts[i]}</color>{weightClose}</size>");
+                        // Format giống ThongTinHtml: không dùng <size>, chỉ dùng <b> và <color>
+                        htmlParts.Add($"{weight}<color='{color}'>{parts[i]}</color>{weightClose}");
                     }
 
-                    // Kết hợp các phần với dấu " > " (format HTML giống FullPathHtml)
-                    var htmlPath = string.Join(" <size=9><color='#757575'>></color></size> ", htmlParts);
+                    // Kết hợp các phần với dấu " > " (format HTML giống ThongTinHtml)
+                    var htmlPath = string.Join(" <color='#757575'>></color> ", htmlParts);
                     htmlPaths.Add(htmlPath);
                     System.Diagnostics.Debug.WriteLine($"[CategoryPathHtml] HTML path: {htmlPath}");
                 }
@@ -188,14 +188,14 @@ namespace DTO.MasterData.CustomerPartner
                 {
                     var isLast = i == parts.Length - 1;
                     var color = isLast ? "blue" : "#757575";
-                    var size = isLast ? "12" : "10";
                     var weight = isLast ? "<b>" : "";
                     var weightClose = isLast ? "</b>" : "";
 
-                    htmlParts.Add($"<size={size}>{weight}<color='{color}'>{parts[i]}</color>{weightClose}</size>");
+                    // Format giống ThongTinHtml: không dùng <size>, chỉ dùng <b> và <color>
+                    htmlParts.Add($"{weight}<color='{color}'>{parts[i]}</color>{weightClose}");
                 }
 
-                var result = string.Join(" <size=9><color='#757575'>></color></size> ", htmlParts);
+                var result = string.Join(" <color='#757575'>></color> ", htmlParts);
                 System.Diagnostics.Debug.WriteLine($"[FullPathHtml] Result HTML: {result}");
                 return result;
             }

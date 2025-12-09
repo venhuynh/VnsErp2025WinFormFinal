@@ -154,7 +154,6 @@
     <Compile Include="Customer\FrmBusinessPartnerList.Designer.cs">
       <DependentUpon>FrmBusinessPartnerList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\Dto\PartnerCategoryMappingDto.cs" />
     <Compile Include="Customer\FrmBusinessPartnerSite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -335,7 +334,6 @@
     <None Include="Company\FrmCompanyBranch_User_Guide.md" />
     <None Include="Company\FrmCompany_Developer_Guide.md" />
     <None Include="Company\FrmCompany_User_Guide.md" />
-    <None Include="Customer\Dto\DTO_README.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Doc\BusinessPartner_Database_Schema.md" />

@@ -338,44 +338,18 @@ namespace MasterData.Customer
         {
             try
             {
-                var view = sender as GridView;
-                if (view == null) return;
+                if (sender is not GridView view) return;
                 if (e.RowHandle < 0) return;
-                var row = view.GetRow(e.RowHandle) as BusinessPartnerListDto;
-                if (row == null) return;
+                if (view.GetRow(e.RowHandle) is not BusinessPartnerListDto row) return;
                 // Không ghi đè màu khi đang chọn để giữ màu chọn mặc định của DevExpress
                 if (view.IsRowSelected(e.RowHandle)) return;
-                // Nền theo phân loại (PartnerType) với màu tương phản rõ
-                // 1: Khách hàng (xanh), 2: Nhà cung cấp (vàng), 3: Cả hai (xanh lá)
-                Color backColor;
-                switch (row.PartnerType)
-                {
-                    case 1:
-                        backColor = Color.LightSkyBlue; // xanh nổi bật
-                        break;
-                    case 2:
-                        backColor = Color.Moccasin; // vàng nổi bật
-                        break;
-                    case 3:
-                        backColor = Color.MediumAquamarine; // xanh lá nổi bật
-                        break;
-                    default:
-                        backColor = Color.White;
-                        break;
-                }
-
-                e.Appearance.BackColor = backColor;
-                e.Appearance.ForeColor = Color.Black; // chữ đen tương phản tốt trên các màu nền trên
-                e.Appearance.Options.UseBackColor = true;
-                e.Appearance.Options.UseForeColor = true;
-
+                
+                
                 // Nếu đối tác không hoạt động: làm nổi bật rõ ràng hơn
-                if (!row.IsActive)
-                {
-                    e.Appearance.BackColor = Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
-                    e.Appearance.ForeColor = Color.DarkRed;
-                    e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Strikeout);
-                }
+                if (row.IsActive) return;
+                e.Appearance.BackColor = Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
+                e.Appearance.ForeColor = Color.DarkRed;
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Strikeout);
             }
             catch (Exception)
             {

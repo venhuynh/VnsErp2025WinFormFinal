@@ -1,13 +1,7 @@
-﻿using System.ComponentModel;
-using System.Windows.Forms;
-using DevExpress.XtraBars;
+﻿using DevExpress.XtraBars;
 using DevExpress.XtraLayout;
-using DevExpress.XtraGrid;
-using DevExpress.XtraGrid.Views.Grid;
-using DevExpress.XtraGrid.Columns;
-using DevExpress.XtraEditors.Repository;
-using DTO.MasterData.CustomerPartner;
-using MasterData.Customer.Dto;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
