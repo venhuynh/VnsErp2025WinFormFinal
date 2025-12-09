@@ -166,7 +166,6 @@ namespace MasterData.Customer
             CityTextEdit.EditValue = _currentSite.City;
             ProvinceTextEdit.EditValue = _currentSite.Province;
             CountryTextEdit.EditValue = _currentSite.Country;
-            ContactPersonTextEdit.EditValue = _currentSite.ContactPerson;
             PhoneTextEdit.EditValue = _currentSite.Phone;
             EmailTextEdit.EditValue = _currentSite.Email;
             IsActiveCheckEdit.EditValue = _currentSite.IsActive;
@@ -279,7 +278,6 @@ namespace MasterData.Customer
                 City = CityTextEdit.Text?.Trim(),
                 Province = ProvinceTextEdit.Text?.Trim(),
                 Country = CountryTextEdit.Text?.Trim(),
-                ContactPerson = ContactPersonTextEdit.Text?.Trim(),
                 Phone = PhoneTextEdit.Text?.Trim(),
                 Email = EmailTextEdit.Text?.Trim(),
                 IsActive = (bool)IsActiveCheckEdit.EditValue

@@ -44,9 +44,13 @@ public class BusinessPartnerSiteListDto
     [StringLength(100, ErrorMessage = "Quốc gia không được vượt quá 100 ký tự")]
     public string Country { get; set; }
 
-    [DisplayName("Người liên hệ")]
-    [StringLength(100, ErrorMessage = "Người liên hệ không được vượt quá 100 ký tự")]
-    public string ContactPerson { get; set; }
+    [DisplayName("Mã bưu điện")]
+    [StringLength(20, ErrorMessage = "Mã bưu điện không được vượt quá 20 ký tự")]
+    public string PostalCode { get; set; }
+
+    [DisplayName("Quận/Huyện")]
+    [StringLength(100, ErrorMessage = "Quận/Huyện không được vượt quá 100 ký tự")]
+    public string District { get; set; }
 
     [DisplayName("Số điện thoại")]
     [StringLength(50, ErrorMessage = "Số điện thoại không được vượt quá 50 ký tự")]
@@ -62,6 +66,22 @@ public class BusinessPartnerSiteListDto
 
     [DisplayName("Trạng thái")] public bool IsActive { get; set; }
 
+    [DisplayName("Loại địa điểm")]
+    [Description("Loại địa điểm (1: Trụ sở chính, 2: Chi nhánh, 3: Kho hàng, ...)")]
+    public int? SiteType { get; set; }
+
+    [DisplayName("Loại địa điểm")]
+    [Description("Tên loại địa điểm")]
+    public string SiteTypeName { get; set; }
+
+    [DisplayName("Ghi chú")]
+    [StringLength(1000, ErrorMessage = "Ghi chú không được vượt quá 1000 ký tự")]
+    public string Notes { get; set; }
+
+    [DisplayName("Google Map URL")]
+    [StringLength(1000, ErrorMessage = "Google Map URL không được vượt quá 1000 ký tự")]
+    public string GoogleMapUrl { get; set; }
+
     [DisplayName("Ngày tạo")] public DateTime CreatedDate { get; set; }
 
     [DisplayName("Ngày cập nhật")] public DateTime? UpdatedDate { get; set; }
@@ -76,12 +96,16 @@ public class BusinessPartnerSiteListDto
 
             if (!string.IsNullOrEmpty(Address))
                 addressParts.Add(Address);
+            if (!string.IsNullOrEmpty(District))
+                addressParts.Add(District);
             if (!string.IsNullOrEmpty(City))
                 addressParts.Add(City);
             if (!string.IsNullOrEmpty(Province))
                 addressParts.Add(Province);
             if (!string.IsNullOrEmpty(Country))
                 addressParts.Add(Country);
+            if (!string.IsNullOrEmpty(PostalCode))
+                addressParts.Add(PostalCode);
 
             return string.Join(", ", addressParts);
         }
@@ -100,17 +124,12 @@ public class BusinessPartnerSiteListDto
             var siteName = SiteName ?? string.Empty;
             var siteCode = SiteCode ?? string.Empty;
             var partnerName = PartnerName ?? string.Empty;
-            var address = Address ?? string.Empty;
-            var city = City ?? string.Empty;
-            var province = Province ?? string.Empty;
-            var country = Country ?? string.Empty;
-            var contactPerson = ContactPerson ?? string.Empty;
             var phone = Phone ?? string.Empty;
             var email = Email ?? string.Empty;
+            var siteTypeName = SiteTypeName ?? string.Empty;
             var statusText = IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
             var statusColor = IsActive ? "#4CAF50" : "#F44336";
-            var defaultText = IsDefault == true ? "Mặc định" : string.Empty;
-            var defaultColor = "#FF9800"; // Màu cam cho mặc định
+            var defaultText = IsDefault == true ? " (Mặc định)" : string.Empty;
 
             // Format chuyên nghiệp với visual hierarchy rõ ràng
             // - Tên chi nhánh: font lớn, bold, màu xanh đậm (primary)
@@ -118,58 +137,74 @@ public class BusinessPartnerSiteListDto
             // - Tên đối tác: hiển thị nếu có
             // - Thông tin chi tiết: font nhỏ hơn, màu xám cho label, đen cho value
             // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
-            // - Mặc định: highlight với màu cam nếu là chi nhánh mặc định
 
-            var html = $"<size=12><b><color='blue'>{siteName}</color></b></size>";
+            var html = $"<b><color='blue'>{siteName}</color></b>{defaultText}";
 
             if (!string.IsNullOrWhiteSpace(siteCode))
             {
-                html += $" <size=9><color='#757575'>({siteCode})</color></size>";
+                html += $" <color='#757575'>({siteCode})</color>";
             }
 
             html += "<br>";
 
+            var infoParts = new List<string>();
+
             if (!string.IsNullOrWhiteSpace(partnerName))
             {
-                html += $"<size=9><color='#757575'>Đối tác:</color></size> <size=10><color='#212121'><b>{partnerName}</b></color></size><br>";
+                infoParts.Add($"<color='#757575'>Đối tác:</color> <b>{partnerName}</b>");
             }
 
-            // Hiển thị địa chỉ đầy đủ hoặc từng phần
+            if (!string.IsNullOrWhiteSpace(siteTypeName))
+            {
+                var typeColor = SiteType switch
+                {
+                    1 => "#2196F3", // Trụ sở chính: Blue
+                    2 => "#FF9800", // Chi nhánh: Orange
+                    3 => "#9C27B0", // Kho hàng: Purple
+                    _ => "#757575"  // Khác: Gray
+                };
+                infoParts.Add($"<color='#757575'>Loại:</color> <color='{typeColor}'><b>{siteTypeName}</b></color>");
+            }
+
+            if (infoParts.Any())
+            {
+                html += string.Join(" | ", infoParts) + "<br>";
+            }
+
+            // Hiển thị địa chỉ đầy đủ
             var fullAddress = SiteFullAddress;
             if (!string.IsNullOrWhiteSpace(fullAddress))
             {
-                html += $"<size=9><color='#757575'>Địa chỉ:</color></size> <size=10><color='#212121'><b>{fullAddress}</b></color></size><br>";
+                html += $"<color='#757575'>Địa chỉ:</color> <b>{fullAddress}</b><br>";
             }
 
+            var contactParts = new List<string>();
             if (!string.IsNullOrWhiteSpace(phone))
             {
-                html += $"<size=9><color='#757575'>Điện thoại:</color></size> <size=10><color='#212121'><b>{phone}</b></color></size>";
+                contactParts.Add($"<color='#757575'>ĐT:</color> <b>{phone}</b>");
             }
 
             if (!string.IsNullOrWhiteSpace(email))
             {
-                if (!string.IsNullOrWhiteSpace(phone))
-                    html += " | ";
-                html += $"<size=9><color='#757575'>Email:</color></size> <size=10><color='#212121'><b>{email}</b></color></size>";
+                contactParts.Add($"<color='#757575'>Email:</color> <b>{email}</b>");
             }
 
-            if (!string.IsNullOrWhiteSpace(phone) || !string.IsNullOrWhiteSpace(email))
+            if (!string.IsNullOrWhiteSpace(GoogleMapUrl))
             {
-                html += "<br>";
+                contactParts.Add($"<color='#757575'>Map:</color> <b><u>Xem bản đồ</u></b>");
             }
 
-            if (!string.IsNullOrWhiteSpace(contactPerson))
+            if (contactParts.Any())
             {
-                html += $"<size=9><color='#757575'>Người liên hệ:</color></size> <size=10><color='#212121'><b>{contactPerson}</b></color></size><br>";
+                html += string.Join(" | ", contactParts) + "<br>";
             }
 
-            // Hiển thị trạng thái mặc định nếu có
-            if (!string.IsNullOrWhiteSpace(defaultText))
+            if (!string.IsNullOrWhiteSpace(Notes))
             {
-                html += $"<size=9><color='#757575'>Loại:</color></size> <size=10><color='{defaultColor}'><b>{defaultText}</b></color></size> ";
+                html += $"<color='#757575'>Ghi chú:</color> <b>{Notes}</b><br>";
             }
 
-            html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+            html += $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>";
 
             return html;
         }
@@ -180,6 +215,7 @@ public static class BusinessPartnerSiteListDtoConveter
 {
     /// <summary>
     /// Chuyển đổi BusinessPartnerSite Entity sang BusinessPartnerSiteListDto
+    /// Sử dụng navigation properties đã được load trong repository
     /// </summary>
     /// <param name="entity">BusinessPartnerSite Entity</param>
     /// <returns>BusinessPartnerSiteListDto</returns>
@@ -187,24 +223,63 @@ public static class BusinessPartnerSiteListDtoConveter
     {
         if (entity == null) return null;
 
-        return new BusinessPartnerSiteListDto
+        var dto = new BusinessPartnerSiteListDto
         {
             Id = entity.Id,
             PartnerId = entity.PartnerId,
             SiteCode = entity.SiteCode,
-            PartnerName = entity.BusinessPartner?.PartnerName,
             SiteName = entity.SiteName,
             Address = entity.Address,
             City = entity.City,
             Province = entity.Province,
             Country = entity.Country,
-            ContactPerson = entity.ContactPerson,
+            PostalCode = entity.PostalCode,
+            District = entity.District,
             Phone = entity.Phone,
             Email = entity.Email,
             IsDefault = entity.IsDefault,
             IsActive = entity.IsActive,
+            SiteType = entity.SiteType,
+            Notes = entity.Notes,
+            GoogleMapUrl = entity.GoogleMapUrl,
             CreatedDate = entity.CreatedDate,
             UpdatedDate = entity.UpdatedDate
+        };
+
+        // Lấy PartnerName từ navigation property
+        try
+        {
+            var businessPartner = entity.BusinessPartner;
+            dto.PartnerName = businessPartner?.PartnerName;
+        }
+        catch
+        {
+            // Navigation property chưa được load hoặc đã bị dispose
+            dto.PartnerName = null;
+        }
+
+        // Resolve SiteTypeName
+        dto.SiteTypeName = ResolveSiteTypeName(entity.SiteType);
+
+        return dto;
+    }
+
+    /// <summary>
+    /// Resolve tên loại địa điểm từ SiteType
+    /// </summary>
+    /// <param name="siteType">SiteType (int?)</param>
+    /// <returns>Tên loại địa điểm</returns>
+    private static string ResolveSiteTypeName(int? siteType)
+    {
+        if (!siteType.HasValue) return string.Empty;
+
+        return siteType.Value switch
+        {
+            1 => "Trụ sở chính",
+            2 => "Chi nhánh",
+            3 => "Kho hàng",
+            4 => "Văn phòng đại diện",
+            _ => "Khác"
         };
     }
 

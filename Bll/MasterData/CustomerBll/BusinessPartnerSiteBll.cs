@@ -230,7 +230,7 @@ namespace Bll.MasterData.CustomerBll
                     return false;
                 }
 
-                // Cập nhật thông tin
+                // Cập nhật thông tin cơ bản
                 existingEntity.PartnerId = entity.PartnerId;
                 existingEntity.SiteCode = entity.SiteCode;
                 existingEntity.SiteName = entity.SiteName;
@@ -238,20 +238,18 @@ namespace Bll.MasterData.CustomerBll
                 existingEntity.City = entity.City;
                 existingEntity.Province = entity.Province;
                 existingEntity.Country = entity.Country;
-                existingEntity.ContactPerson = entity.ContactPerson;
                 existingEntity.Phone = entity.Phone;
                 existingEntity.Email = entity.Email;
                 existingEntity.IsDefault = entity.IsDefault;
                 existingEntity.IsActive = entity.IsActive;
                 existingEntity.UpdatedDate = DateTime.Now;
                 
-                // Cập nhật các fields mới
+                // Cập nhật các fields mở rộng
                 existingEntity.PostalCode = entity.PostalCode;
                 existingEntity.District = entity.District;
-                existingEntity.Latitude = entity.Latitude;
-                existingEntity.Longitude = entity.Longitude;
                 existingEntity.SiteType = entity.SiteType;
                 existingEntity.Notes = entity.Notes;
+                existingEntity.GoogleMapUrl = entity.GoogleMapUrl;
 
                 // Lưu vào database
                 var result = SaveOrUpdate(existingEntity);

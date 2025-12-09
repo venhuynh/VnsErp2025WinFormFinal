@@ -216,7 +216,6 @@
       <Column Name="City" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Province" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Country" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="ContactPerson" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Phone" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="IsDefault" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
@@ -225,10 +224,9 @@
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="PostalCode" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Column Name="District" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-      <Column Name="Latitude" Type="System.Decimal" DbType="Decimal(10,8)" CanBeNull="true" />
-      <Column Name="Longitude" Type="System.Decimal" DbType="Decimal(11,8)" CanBeNull="true" />
       <Column Name="SiteType" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="GoogleMapUrl" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Association Name="BusinessPartnerSite_BusinessPartnerContact" Member="BusinessPartnerContacts" ThisKey="Id" OtherKey="SiteId" Type="BusinessPartnerContact" />
       <Association Name="BusinessPartnerSite_StockInOutMaster" Member="StockInOutMasters" ThisKey="Id" OtherKey="PartnerSiteId" Type="StockInOutMaster" />
       <Association Name="BusinessPartner_BusinessPartnerSite" Member="BusinessPartner" ThisKey="PartnerId" OtherKey="Id" Type="BusinessPartner" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />

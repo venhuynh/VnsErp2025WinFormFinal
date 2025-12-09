@@ -110,7 +110,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmBusinessPartnerContact());
+            Application.Run(new FormMain());
 
             #endregion
 
