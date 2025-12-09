@@ -1,11 +1,7 @@
-﻿using System.ComponentModel;
-using System.Windows.Forms;
-using DevExpress.XtraBars;
+﻿using DevExpress.XtraBars;
 using DevExpress.XtraLayout;
-using DevExpress.XtraTreeList;
-using DevExpress.XtraTreeList.Columns;
-using DTO.MasterData.CustomerPartner;
-using MasterData.Customer.Dto;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
@@ -51,26 +47,44 @@ namespace MasterData.Customer
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.treeList1 = new DevExpress.XtraTreeList.TreeList();
-            this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colPartnerCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.BusinessPartnerCategoryDtoGridControl = new DevExpress.XtraGrid.GridControl();
+            this.businessPartnerCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.BusinessPartnerCategoryDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colCategoryInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.CategoryInfoHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colDescription = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.DescriptionMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.colFullPathHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.FullPathHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.AuditInfoHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.IsActiveCheckEdit = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.businessPartnerCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.bar1 = new DevExpress.XtraBars.Bar();
+            this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarButtonItem();
+            this.CurrentSelectBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
+            this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
+            this.barHeaderItem2 = new DevExpress.XtraBars.BarHeaderItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.treeList1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerCategoryDtoGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerCategoryDtoGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CategoryInfoHtmlHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DescriptionMemoEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FullPathHtmlHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AuditInfoHtmlHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
             // 
             this.barManager1.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
-            this.bar2});
+            this.bar2,
+            this.bar1});
             this.barManager1.DockControls.Add(this.barDockControlTop);
             this.barManager1.DockControls.Add(this.barDockControlBottom);
             this.barManager1.DockControls.Add(this.barDockControlLeft);
@@ -81,9 +95,14 @@ namespace MasterData.Customer
             this.ListDataBarButtonItem,
             this.EditBarButtonItem,
             this.DeleteBarButtonItem,
-            this.ExportBarButtonItem});
+            this.ExportBarButtonItem,
+            this.DataSummaryBarStaticItem,
+            this.CurrentSelectBarStaticItem,
+            this.barHeaderItem1,
+            this.barHeaderItem2});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 6;
+            this.barManager1.MaxItemId = 10;
+            this.barManager1.StatusBar = this.bar1;
             // 
             // bar2
             // 
@@ -148,15 +167,15 @@ namespace MasterData.Customer
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(1131, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 627);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 532);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1131, 22);
             // 
             // barDockControlLeft
             // 
@@ -164,72 +183,169 @@ namespace MasterData.Customer
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 603);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 508);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(1131, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 603);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 508);
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.treeList1);
+            this.layoutControl1.Controls.Add(this.BusinessPartnerCategoryDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 603);
+            this.layoutControl1.Size = new System.Drawing.Size(1131, 508);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // treeList1
+            // BusinessPartnerCategoryDtoGridControl
             // 
-            this.treeList1.Appearance.Caption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.treeList1.Appearance.Caption.ForeColor = System.Drawing.Color.Blue;
-            this.treeList1.Appearance.Caption.Options.UseFont = true;
-            this.treeList1.Appearance.Caption.Options.UseForeColor = true;
-            this.treeList1.Caption = "BẢNG QUẢN LÝ PHÂN LOẠI ĐỔI TÁC";
-            this.treeList1.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
-            this.colCategoryName,
+            this.BusinessPartnerCategoryDtoGridControl.DataSource = this.businessPartnerCategoryDtoBindingSource;
+            this.BusinessPartnerCategoryDtoGridControl.Location = new System.Drawing.Point(12, 12);
+            this.BusinessPartnerCategoryDtoGridControl.MainView = this.BusinessPartnerCategoryDtoGridView;
+            this.BusinessPartnerCategoryDtoGridControl.MenuManager = this.barManager1;
+            this.BusinessPartnerCategoryDtoGridControl.Name = "BusinessPartnerCategoryDtoGridControl";
+            this.BusinessPartnerCategoryDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.CategoryInfoHtmlHypertextLabel,
+            this.FullPathHtmlHypertextLabel,
+            this.AuditInfoHtmlHypertextLabel,
+            this.DescriptionMemoEdit,
+            this.IsActiveCheckEdit});
+            this.BusinessPartnerCategoryDtoGridControl.Size = new System.Drawing.Size(1107, 484);
+            this.BusinessPartnerCategoryDtoGridControl.TabIndex = 4;
+            this.BusinessPartnerCategoryDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.BusinessPartnerCategoryDtoGridView});
+            // 
+            // businessPartnerCategoryDtoBindingSource
+            // 
+            this.businessPartnerCategoryDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto);
+            // 
+            // BusinessPartnerCategoryDtoGridView
+            // 
+            this.BusinessPartnerCategoryDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.BusinessPartnerCategoryDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.BusinessPartnerCategoryDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.BusinessPartnerCategoryDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.BusinessPartnerCategoryDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colCategoryInfoHtml,
             this.colDescription,
-            this.colPartnerCount});
-            this.treeList1.DataSource = this.businessPartnerCategoryDtoBindingSource;
-            this.treeList1.KeyFieldName = "Id";
-            this.treeList1.Location = new System.Drawing.Point(12, 12);
-            this.treeList1.MenuManager = this.barManager1;
-            this.treeList1.Name = "treeList1";
-            this.treeList1.OptionsBehavior.AllowRecursiveNodeChecking = true;
-            this.treeList1.OptionsSelection.MultiSelect = true;
-            this.treeList1.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check;
-            this.treeList1.OptionsView.ShowCaption = true;
-            this.treeList1.ParentFieldName = "ParentId";
-            this.treeList1.Size = new System.Drawing.Size(1051, 579);
-            this.treeList1.TabIndex = 4;
+            this.colFullPathHtml});
+            this.BusinessPartnerCategoryDtoGridView.GridControl = this.BusinessPartnerCategoryDtoGridControl;
+            this.BusinessPartnerCategoryDtoGridView.IndicatorWidth = 50;
+            this.BusinessPartnerCategoryDtoGridView.Name = "BusinessPartnerCategoryDtoGridView";
+            this.BusinessPartnerCategoryDtoGridView.OptionsSelection.MultiSelect = true;
+            this.BusinessPartnerCategoryDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.BusinessPartnerCategoryDtoGridView.OptionsView.ColumnAutoWidth = false;
+            this.BusinessPartnerCategoryDtoGridView.OptionsView.EnableAppearanceEvenRow = true;
+            this.BusinessPartnerCategoryDtoGridView.OptionsView.EnableAppearanceOddRow = true;
+            this.BusinessPartnerCategoryDtoGridView.OptionsView.RowAutoHeight = true;
+            this.BusinessPartnerCategoryDtoGridView.OptionsView.ShowGroupPanel = false;
+            this.BusinessPartnerCategoryDtoGridView.OptionsView.ShowViewCaption = true;
+            this.BusinessPartnerCategoryDtoGridView.ViewCaption = "BẢNG QUẢN LÝ PHÂN LOẠI DANH MỤC ĐỐI TÁC";
             // 
-            // colCategoryName
+            // colCategoryInfoHtml
             // 
-            this.colCategoryName.FieldName = "CategoryName";
-            this.colCategoryName.Name = "colCategoryName";
-            this.colCategoryName.Visible = true;
-            this.colCategoryName.VisibleIndex = 0;
+            this.colCategoryInfoHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colCategoryInfoHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colCategoryInfoHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colCategoryInfoHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colCategoryInfoHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colCategoryInfoHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colCategoryInfoHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colCategoryInfoHtml.AppearanceHeader.Options.UseFont = true;
+            this.colCategoryInfoHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colCategoryInfoHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colCategoryInfoHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colCategoryInfoHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colCategoryInfoHtml.Caption = "Thông tin danh mục";
+            this.colCategoryInfoHtml.ColumnEdit = this.CategoryInfoHtmlHypertextLabel;
+            this.colCategoryInfoHtml.FieldName = "CategoryInfoHtml";
+            this.colCategoryInfoHtml.MinWidth = 300;
+            this.colCategoryInfoHtml.Name = "colCategoryInfoHtml";
+            this.colCategoryInfoHtml.OptionsColumn.AllowEdit = false;
+            this.colCategoryInfoHtml.OptionsColumn.FixedWidth = true;
+            this.colCategoryInfoHtml.OptionsColumn.ReadOnly = true;
+            this.colCategoryInfoHtml.Visible = true;
+            this.colCategoryInfoHtml.VisibleIndex = 2;
+            this.colCategoryInfoHtml.Width = 500;
+            // 
+            // CategoryInfoHtmlHypertextLabel
+            // 
+            this.CategoryInfoHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.CategoryInfoHtmlHypertextLabel.Name = "CategoryInfoHtmlHypertextLabel";
             // 
             // colDescription
             // 
+            this.colDescription.AppearanceCell.Options.UseTextOptions = true;
+            this.colDescription.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colDescription.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colDescription.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colDescription.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colDescription.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colDescription.AppearanceHeader.Options.UseBackColor = true;
+            this.colDescription.AppearanceHeader.Options.UseFont = true;
+            this.colDescription.AppearanceHeader.Options.UseForeColor = true;
+            this.colDescription.AppearanceHeader.Options.UseTextOptions = true;
+            this.colDescription.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colDescription.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colDescription.Caption = "Mô tả";
+            this.colDescription.ColumnEdit = this.DescriptionMemoEdit;
             this.colDescription.FieldName = "Description";
+            this.colDescription.MinWidth = 200;
             this.colDescription.Name = "colDescription";
             this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 1;
+            this.colDescription.VisibleIndex = 3;
+            this.colDescription.Width = 280;
             // 
-            // colPartnerCount
+            // DescriptionMemoEdit
             // 
-            this.colPartnerCount.Caption = "Số lượng";
-            this.colPartnerCount.FieldName = "PartnerCount";
-            this.colPartnerCount.Name = "colPartnerCount";
-            this.colPartnerCount.Visible = true;
-            this.colPartnerCount.VisibleIndex = 2;
+            this.DescriptionMemoEdit.Name = "DescriptionMemoEdit";
+            // 
+            // colFullPathHtml
+            // 
+            this.colFullPathHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colFullPathHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFullPathHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colFullPathHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colFullPathHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colFullPathHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colFullPathHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colFullPathHtml.AppearanceHeader.Options.UseFont = true;
+            this.colFullPathHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colFullPathHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colFullPathHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colFullPathHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFullPathHtml.Caption = "Đường dẫn";
+            this.colFullPathHtml.ColumnEdit = this.FullPathHtmlHypertextLabel;
+            this.colFullPathHtml.FieldName = "FullPathHtml";
+            this.colFullPathHtml.MinWidth = 200;
+            this.colFullPathHtml.Name = "colFullPathHtml";
+            this.colFullPathHtml.OptionsColumn.AllowEdit = false;
+            this.colFullPathHtml.OptionsColumn.FixedWidth = true;
+            this.colFullPathHtml.OptionsColumn.ReadOnly = true;
+            this.colFullPathHtml.Visible = true;
+            this.colFullPathHtml.VisibleIndex = 1;
+            this.colFullPathHtml.Width = 280;
+            // 
+            // FullPathHtmlHypertextLabel
+            // 
+            this.FullPathHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.FullPathHtmlHypertextLabel.Name = "FullPathHtmlHypertextLabel";
+            // 
+            // AuditInfoHtmlHypertextLabel
+            // 
+            this.AuditInfoHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.AuditInfoHtmlHypertextLabel.Name = "AuditInfoHtmlHypertextLabel";
+            // 
+            // IsActiveCheckEdit
+            // 
+            this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
             // 
             // Root
             // 
@@ -238,26 +354,65 @@ namespace MasterData.Customer
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 603);
+            this.Root.Size = new System.Drawing.Size(1131, 508);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.treeList1;
+            this.layoutControlItem1.Control = this.BusinessPartnerCategoryDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1055, 583);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1111, 488);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // businessPartnerCategoryDtoBindingSource
+            // bar1
             // 
-            this.businessPartnerCategoryDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto);
+            this.bar1.BarName = "Custom 3";
+            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
+            this.bar1.DockCol = 0;
+            this.bar1.DockRow = 0;
+            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
+            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem1),
+            new DevExpress.XtraBars.LinkPersistInfo(this.DataSummaryBarStaticItem),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem2),
+            new DevExpress.XtraBars.LinkPersistInfo(this.CurrentSelectBarStaticItem)});
+            this.bar1.OptionsBar.AllowQuickCustomization = false;
+            this.bar1.OptionsBar.DrawDragBorder = false;
+            this.bar1.OptionsBar.UseWholeRow = true;
+            this.bar1.Text = "Custom 3";
+            // 
+            // DataSummaryBarStaticItem
+            // 
+            this.DataSummaryBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.DataSummaryBarStaticItem.Caption = "Chưa có dữ liệu";
+            this.DataSummaryBarStaticItem.Id = 6;
+            this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
+            // 
+            // CurrentSelectBarStaticItem
+            // 
+            this.CurrentSelectBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.CurrentSelectBarStaticItem.Caption = "Chưa chọn dòng nào";
+            this.CurrentSelectBarStaticItem.Id = 7;
+            this.CurrentSelectBarStaticItem.Name = "CurrentSelectBarStaticItem";
+            // 
+            // barHeaderItem1
+            // 
+            this.barHeaderItem1.Caption = "Tổng kết:";
+            this.barHeaderItem1.Id = 8;
+            this.barHeaderItem1.Name = "barHeaderItem1";
+            // 
+            // barHeaderItem2
+            // 
+            this.barHeaderItem2.Caption = "Đang chọn:";
+            this.barHeaderItem2.Id = 9;
+            this.barHeaderItem2.Name = "barHeaderItem2";
             // 
             // FrmBusinessPartnerCategory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1075, 627);
+            this.ClientSize = new System.Drawing.Size(1131, 554);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -268,10 +423,16 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.treeList1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerCategoryDtoGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerCategoryDtoGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CategoryInfoHtmlHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DescriptionMemoEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FullPathHtmlHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AuditInfoHtmlHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerCategoryDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -292,12 +453,23 @@ namespace MasterData.Customer
         private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
-        private TreeList treeList1;
-        private LayoutControlItem layoutControlItem1;
-        private TreeListColumn colCategoryName;
-        private TreeListColumn colDescription;
-        private TreeListColumn colPartnerCount;
         
         private BindingSource businessPartnerCategoryDtoBindingSource;
+        private DevExpress.XtraGrid.GridControl BusinessPartnerCategoryDtoGridControl;
+        private DevExpress.XtraGrid.Views.Grid.GridView BusinessPartnerCategoryDtoGridView;
+        private LayoutControlItem layoutControlItem1;
+        private DevExpress.XtraGrid.Columns.GridColumn colDescription;
+        private DevExpress.XtraGrid.Columns.GridColumn colCategoryInfoHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel CategoryInfoHtmlHypertextLabel;
+        private DevExpress.XtraGrid.Columns.GridColumn colFullPathHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel FullPathHtmlHypertextLabel;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel AuditInfoHtmlHypertextLabel;
+        private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit DescriptionMemoEdit;
+        private DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit IsActiveCheckEdit;
+        private Bar bar1;
+        private BarHeaderItem barHeaderItem1;
+        private BarButtonItem DataSummaryBarStaticItem;
+        private BarHeaderItem barHeaderItem2;
+        private BarStaticItem CurrentSelectBarStaticItem;
     }
 }

@@ -190,6 +190,10 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
             {
                 // Thêm mới
                 entity.Id = Guid.NewGuid();
+                if (entity.CreatedDate == default(DateTime))
+                {
+                    entity.CreatedDate = DateTime.Now;
+                }
                 context.BusinessPartnerContacts.InsertOnSubmit(entity);
                 context.SubmitChanges();
                 
@@ -209,6 +213,19 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
                     existingEntity.IsPrimary = entity.IsPrimary;
                     existingEntity.Avatar = entity.Avatar;
                     existingEntity.IsActive = entity.IsActive;
+                    
+                    // Cập nhật các fields mới
+                    existingEntity.Mobile = entity.Mobile;
+                    existingEntity.Fax = entity.Fax;
+                    existingEntity.Department = entity.Department;
+                    existingEntity.BirthDate = entity.BirthDate;
+                    existingEntity.Gender = entity.Gender;
+                    existingEntity.LinkedIn = entity.LinkedIn;
+                    existingEntity.Skype = entity.Skype;
+                    existingEntity.WeChat = entity.WeChat;
+                    existingEntity.Notes = entity.Notes;
+                    existingEntity.AvatarPath = entity.AvatarPath;
+                    existingEntity.ModifiedDate = DateTime.Now;
                     
                     context.SubmitChanges();
                     _logger.Info($"Đã cập nhật BusinessPartnerContact: {existingEntity.FullName}");

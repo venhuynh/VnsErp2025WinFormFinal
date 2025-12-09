@@ -2,19 +2,17 @@
 using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
-using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraSplashScreen;
-using DevExpress.XtraTreeList;
-using DevExpress.XtraTreeList.Nodes;
+using DevExpress.XtraGrid.Views.Grid;
 using DTO.MasterData.CustomerPartner;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -33,6 +31,11 @@ namespace MasterData.Customer
         /// Business Logic Layer cho danh mục đối tác
         /// </summary>
         private readonly BusinessPartnerCategoryBll _businessPartnerCategoryBll = new BusinessPartnerCategoryBll();
+
+        /// <summary>
+        /// Logger cho logging
+        /// </summary>
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Danh sách ID danh mục được chọn
@@ -55,6 +58,9 @@ namespace MasterData.Customer
         {
             InitializeComponent();
 
+            // Khởi tạo logger
+            _logger = LoggerFactory.CreateLogger(LogCategory.UI);
+
             // Toolbar events
             ListDataBarButtonItem.ItemClick += ListDataBarButtonItem_ItemClick;
             NewBarButtonItem.ItemClick += NewBarButtonItem_ItemClick;
@@ -62,11 +68,9 @@ namespace MasterData.Customer
             DeleteBarButtonItem.ItemClick += DeleteBarButtonItem_ItemClick;
             ExportBarButtonItem.ItemClick += ExportBarButtonItem_ItemClick;
 
-            // TreeList events
-            treeList1.SelectionChanged += TreeList1_SelectionChanged;
-            treeList1.AfterCheckNode += TreeList1_AfterCheckNode;
-            treeList1.CustomDrawNodeIndicator += TreeList1_CustomDrawNodeIndicator;
-            treeList1.CustomDrawNodeCell += TreeList1_CustomDrawNodeCell;
+            // GridView events
+            BusinessPartnerCategoryDtoGridView.SelectionChanged += BusinessPartnerCategoryDtoGridView_SelectionChanged;
+            BusinessPartnerCategoryDtoGridView.CustomDrawRowIndicator += BusinessPartnerCategoryDtoGridView_CustomDrawRowIndicator;
 
             UpdateButtonStates();
 
@@ -109,24 +113,24 @@ namespace MasterData.Customer
                 var (categories, counts) = 
                     await _businessPartnerCategoryBll.GetCategoriesWithCountsAsync();
 
-                // Debug: Kiểm tra dữ liệu counts
-                Debug.WriteLine("=== LoadDataAsyncWithoutSplash Debug ===");
-                Debug.WriteLine($"Total categories: {categories.Count}");
-                Debug.WriteLine($"Total counts: {counts.Count}");
+                // Log: Kiểm tra dữ liệu counts
+                _logger.Debug("=== LoadDataAsyncWithoutSplash Debug ===");
+                _logger.Debug("Total categories: {0}", categories.Count);
+                _logger.Debug("Total counts: {0}", counts.Count);
 
                 foreach (var count in counts)
                 {
                     var category = categories.FirstOrDefault(c => c.Id == count.Key);
-                    Debug.WriteLine($"Category: {category?.CategoryName ?? "Unknown"}, Count: {count.Value}");
+                    _logger.Debug("Category: {0}, Count: {1}", category?.CategoryName ?? "Unknown", count.Value);
                 }
 
                 // Tạo cấu trúc cây hierarchical
                 var dtoList = categories.ToDtosWithHierarchy(counts).ToList();
 
-                // Debug: Kiểm tra DTOs
+                // Log: Kiểm tra DTOs
                 foreach (var dto in dtoList)
                 {
-                    Debug.WriteLine($"DTO: {dto.CategoryName}, Level: {dto.Level}, PartnerCount: {dto.PartnerCount}");
+                    _logger.Debug("DTO: {0}, Level: {1}, PartnerCount: {2}", dto.CategoryName, dto.Level, dto.PartnerCount);
                 }
 
                 BindGrid(dtoList);
@@ -139,7 +143,7 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Bind danh sách DTO vào TreeList và cấu hình hiển thị.
+        /// Bind danh sách DTO vào GridView và cấu hình hiển thị.
         /// </summary>
         private void BindGrid(List<BusinessPartnerCategoryDto> data)
         {
@@ -147,11 +151,15 @@ namespace MasterData.Customer
             ClearSelectionState();
 
             businessPartnerCategoryDtoBindingSource.DataSource = data;
-            treeList1.BestFitColumns();
+            BusinessPartnerCategoryDtoGridView.BestFitColumns();
             ConfigureMultiLineGridView();
 
             // Đảm bảo selection được clear sau khi bind
             ClearSelectionState();
+            
+            // Cập nhật summary và selection info
+            UpdateDataSummary();
+            UpdateCurrentSelection();
         }
 
         #endregion
@@ -219,13 +227,13 @@ namespace MasterData.Customer
                 }
 
                 var id = _selectedCategoryIds[0];
-                var focusedNode = treeList1.FocusedNode;
+                var focusedRowHandle = BusinessPartnerCategoryDtoGridView.FocusedRowHandle;
                 BusinessPartnerCategoryDto dto = null;
 
-                if (focusedNode != null)
+                if (focusedRowHandle >= 0)
                 {
-                    // Lấy dữ liệu từ focused node
-                    dto = businessPartnerCategoryDtoBindingSource.Current as BusinessPartnerCategoryDto;
+                    // Lấy dữ liệu từ focused row
+                    dto = BusinessPartnerCategoryDtoGridView.GetRow(focusedRowHandle) as BusinessPartnerCategoryDto;
                 }
 
                 if (dto == null || dto.Id != id)
@@ -288,8 +296,8 @@ namespace MasterData.Customer
                     return;
                 }
 
-                // Debug: Kiểm tra danh sách selected IDs
-                Debug.WriteLine($"Selected Category IDs: {string.Join(", ", _selectedCategoryIds)}");
+                // Log: Kiểm tra danh sách selected IDs
+                _logger.Debug("Selected Category IDs: {0}", string.Join(", ", _selectedCategoryIds));
 
                 var confirmMessage = _selectedCategoryIds.Count == 1
                     ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn?"
@@ -324,14 +332,14 @@ namespace MasterData.Customer
         private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Chỉ cho phép xuất khi có dữ liệu hiển thị
-            var rowCount = treeList1.VisibleNodesCount;
+            var rowCount = BusinessPartnerCategoryDtoGridView.RowCount;
             if (rowCount <= 0)
             {
                 ShowInfo("Không có dữ liệu để xuất.");
                 return;
             }
 
-            // Export TreeList data
+            // Export GridView data
             try
             {
                 var saveDialog = new SaveFileDialog
@@ -342,7 +350,7 @@ namespace MasterData.Customer
 
                 if (saveDialog.ShowDialog() == DialogResult.OK)
                 {
-                    treeList1.ExportToXlsx(saveDialog.FileName);
+                    BusinessPartnerCategoryDtoGridView.ExportToXlsx(saveDialog.FileName);
                     ShowInfo("Xuất dữ liệu thành công!");
                 }
             }
@@ -353,15 +361,16 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Xử lý sự kiện thay đổi selection trên TreeList
+        /// Xử lý sự kiện thay đổi selection trên GridView
         /// </summary>
-        private void TreeList1_SelectionChanged(object sender, EventArgs e)
+        private void BusinessPartnerCategoryDtoGridView_SelectionChanged(object sender, EventArgs e)
         {
             try
             {
                 // Cập nhật danh sách selected IDs khi selection thay đổi
                 UpdateSelectedCategoryIds();
                 UpdateButtonStates();
+                UpdateCurrentSelection();
             }
             catch (Exception ex)
             {
@@ -370,70 +379,13 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Xử lý sự kiện thay đổi checkbox trên TreeList
+        /// Xử lý sự kiện vẽ số thứ tự dòng cho GridView
         /// </summary>
-        private void TreeList1_AfterCheckNode(object sender, NodeEventArgs e)
+        private void BusinessPartnerCategoryDtoGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
         {
-            try
+            if (e.Info.IsRowIndicator && e.RowHandle >= 0)
             {
-                // Cập nhật danh sách selected IDs khi checkbox thay đổi
-                UpdateSelectedCategoryIds();
-                UpdateButtonStates();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex);
-            }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện vẽ số thứ tự dòng cho TreeList
-        /// </summary>
-        private void TreeList1_CustomDrawNodeIndicator(object sender, CustomDrawNodeIndicatorEventArgs e)
-        {
-            // Vẽ số thứ tự dòng cho TreeList
-            if (e.Node == null) return;
-
-
-            var index = treeList1.GetVisibleIndexByNode(e.Node);
-            if (index >= 0)
-            {
-                // Vẽ số thứ tự vào indicator
-                e.Cache.DrawString((index + 1).ToString(), e.Appearance.Font,
-                    e.Appearance.GetForeBrush(e.Cache), e.Bounds,
-                    StringFormat.GenericDefault);
-                e.Handled = true;
-            }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện tô màu cell theo số lượng đối tác
-        /// </summary>
-        private void TreeList1_CustomDrawNodeCell(object sender, CustomDrawNodeCellEventArgs e)
-        {
-            try
-            {
-                var treeList = sender as TreeList;
-                if (treeList == null) return;
-                if (e.Node == null) return;
-
-                // Lấy index từ node
-                var index = treeList.GetVisibleIndexByNode(e.Node);
-                if (index < 0 || index >= businessPartnerCategoryDtoBindingSource.Count) return;
-
-                var row = businessPartnerCategoryDtoBindingSource[index] as BusinessPartnerCategoryDto;
-                if (row == null) return;
-
-                // Không ghi đè màu khi đang chọn để giữ màu chọn mặc định của DevExpress
-                if (treeList.Selection.Contains(e.Node)) return;
-
-                e.Appearance.ForeColor = Color.Black;
-                e.Appearance.Options.UseBackColor = true;
-                e.Appearance.Options.UseForeColor = true;
-            }
-            catch (Exception)
-            {
-                // ignore style errors
+                e.Info.DisplayText = (e.RowHandle + 1).ToString();
             }
         }
 
@@ -442,31 +394,21 @@ namespace MasterData.Customer
         #region ========== XỬ LÝ DỮ LIỆU ==========
 
         /// <summary>
-        /// Cấu hình TreeList để hiển thị dữ liệu xuống dòng (word wrap) cho các cột văn bản dài.
+        /// Cấu hình GridView để hiển thị dữ liệu với format chuyên nghiệp.
         /// </summary>
         private void ConfigureMultiLineGridView()
         {
             try
             {
-                // Cấu hình TreeList để hiển thị dạng cây
-                treeList1.OptionsView.ShowButtons = true;
-                treeList1.OptionsView.ShowRoot = true;
-
-                // RepositoryItemMemoEdit cho wrap text
-                var memo = new RepositoryItemMemoEdit
+                // Cấu hình sắp xếp mặc định theo SortOrder, sau đó CategoryName
+                if (BusinessPartnerCategoryDtoGridView.Columns["colSortOrder"] != null)
                 {
-                    WordWrap = true,
-                    AutoHeight = false
-                };
-                memo.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
-
-                // Áp dụng cho các cột có khả năng dài
-                ApplyMemoEditorToColumn("CategoryName", memo);
-                ApplyMemoEditorToColumn("Description", memo);
-
-                // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
-                treeList1.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
-                treeList1.Appearance.HeaderPanel.Options.UseTextOptions = true;
+                    BusinessPartnerCategoryDtoGridView.Columns["colSortOrder"].SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+                }
+                else if (BusinessPartnerCategoryDtoGridView.Columns["colCategoryName"] != null)
+                {
+                    BusinessPartnerCategoryDtoGridView.Columns["colCategoryName"].SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+                }
             }
             catch (Exception ex)
             {
@@ -475,25 +417,8 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Áp dụng RepositoryItemMemoEdit cho cột cụ thể
-        /// </summary>
-        /// <param name="fieldName">Tên field của cột</param>
-        /// <param name="memo">RepositoryItemMemoEdit</param>
-        private void ApplyMemoEditorToColumn(string fieldName, RepositoryItemMemoEdit memo)
-        {
-            var col = treeList1.Columns[fieldName];
-            if (col == null) return;
-            // Thêm repository vào TreeList nếu chưa có
-            if (!treeList1.RepositoryItems.Contains(memo))
-            {
-                treeList1.RepositoryItems.Add(memo);
-            }
-
-            col.ColumnEdit = memo;
-        }
-
-        /// <summary>
         /// Xóa các danh mục theo thứ tự: con trước, cha sau để tránh lỗi foreign key constraint.
+        /// Nếu danh mục có đối tác, sẽ tự động di chuyển các đối tác sang danh mục "Chưa phân loại" trước khi xóa.
         /// </summary>
         private async Task DeleteCategoriesInOrder(List<Guid> categoryIds)
         {
@@ -503,7 +428,7 @@ namespace MasterData.Customer
             var allCategories = await _businessPartnerCategoryBll.GetAllAsync();
             var categoryDict = allCategories.ToDictionary(c => c.Id);
 
-            // Tạo danh sách categories cần xóa với thông tin level
+            // Tạo danh sách categories cần xóa với thông tin level và số lượng đối tác
             var categoriesToDelete = categoryIds.Select(id =>
             {
                 var category = categoryDict.TryGetValue(id, out var value) ? value : null;
@@ -511,21 +436,64 @@ namespace MasterData.Customer
 
                 // Tính level để xác định thứ tự xóa (level cao hơn = xóa trước)
                 var level = CalculateCategoryLevel(category, categoryDict);
-                return new { Category = category, Level = level };
+                
+                // Kiểm tra số lượng đối tác
+                var partnerCount = _businessPartnerCategoryBll.GetPartnerCount(id);
+                
+                return new { Category = category, Level = level, PartnerCount = partnerCount };
             }).Where(x => x != null).OrderByDescending(x => x.Level).ToList();
 
+            // Thông báo cho người dùng về các danh mục có đối tác sẽ được di chuyển
+            var categoriesWithPartners = categoriesToDelete.Where(x => x.PartnerCount > 0).ToList();
+            if (categoriesWithPartners.Any())
+            {
+                var message = "Các danh mục sau đây có đối tác và sẽ được di chuyển sang danh mục 'Chưa phân loại' trước khi xóa:\n\n";
+                foreach (var item in categoriesWithPartners)
+                {
+                    message += $"• {item.Category.CategoryName}: {item.PartnerCount:N0} đối tác\n";
+                }
+                message += "\nBạn có muốn tiếp tục?";
+                
+                if (!MsgBox.ShowYesNo(message))
+                {
+                    return; // Người dùng hủy
+                }
+            }
+
             // Xóa theo thứ tự từ level cao xuống level thấp
+            int totalMovedPartners = 0;
             foreach (var item in categoriesToDelete)
             {
                 try
                 {
+                    // Repository sẽ tự động di chuyển đối tác sang "Chưa phân loại" nếu có
+                    if (item.PartnerCount > 0)
+                    {
+                        _logger.Info("Đang xóa danh mục '{0}' có {1} đối tác. Các đối tác sẽ được di chuyển sang 'Chưa phân loại'", 
+                            item.Category.CategoryName, item.PartnerCount);
+                        totalMovedPartners += item.PartnerCount;
+                    }
+                    
                     _businessPartnerCategoryBll.Delete(item.Category.Id);
+                    
+                    _logger.Info("Đã xóa danh mục: {0}", item.Category.CategoryName);
                 }
                 catch (Exception ex)
                 {
                     // Log lỗi nhưng tiếp tục xóa các item khác
-                    Debug.WriteLine($"Lỗi xóa category {item.Category.CategoryName}: {ex.Message}");
+                    _logger.Error("Lỗi xóa category {0}: {1}", item.Category.CategoryName, ex.Message);
+                    throw; // Re-throw để form có thể hiển thị lỗi
                 }
+            }
+
+            // Thông báo kết quả
+            if (totalMovedPartners > 0)
+            {
+                ShowInfo($"Đã xóa {categoriesToDelete.Count} danh mục. {totalMovedPartners:N0} đối tác đã được di chuyển sang danh mục 'Chưa phân loại'.");
+            }
+            else
+            {
+                ShowInfo($"Đã xóa {categoriesToDelete.Count} danh mục thành công.");
             }
         }
 
@@ -587,7 +555,7 @@ namespace MasterData.Customer
                 if (DeleteBarButtonItem != null)
                     DeleteBarButtonItem.Enabled = selectedCount >= 1;
                 // Export: chỉ khi có dữ liệu hiển thị
-                var rowCount = treeList1.VisibleNodesCount;
+                var rowCount = BusinessPartnerCategoryDtoGridView.RowCount;
                 if (ExportBarButtonItem != null)
                     ExportBarButtonItem.Enabled = rowCount > 0;
             }
@@ -598,120 +566,167 @@ namespace MasterData.Customer
         }
 
         /// <summary>
+        /// Cập nhật thông tin tổng kết dữ liệu với format HTML
+        /// </summary>
+        private void UpdateDataSummary()
+        {
+            try
+            {
+                if (DataSummaryBarStaticItem == null) return;
+
+                var totalRows = BusinessPartnerCategoryDtoGridView.RowCount;
+                var activeCount = 0;
+                var inactiveCount = 0;
+                var totalPartners = 0;
+
+                // Đếm số lượng active/inactive và tổng số đối tác
+                if (businessPartnerCategoryDtoBindingSource.DataSource is IEnumerable<BusinessPartnerCategoryDto> data)
+                {
+                    foreach (var dto in data)
+                    {
+                        if (dto.IsActive)
+                            activeCount++;
+                        else
+                            inactiveCount++;
+                        totalPartners += dto.PartnerCount;
+                    }
+                }
+
+                // Format HTML - font bình thường, chỉ in đậm và làm nổi bật các con số
+                string html;
+                if (totalRows == 0)
+                {
+                    html = "<color='#757575'>Chưa có dữ liệu</color>";
+                }
+                else
+                {
+                    html = "Tổng: <b><color='#1976D2'>{0:N0}</color></b> danh mục";
+                    html = string.Format(html, totalRows);
+                    
+                    if (activeCount > 0 || inactiveCount > 0)
+                    {
+                        html += $" | <b><color='#4CAF50'>{activeCount:N0}</color></b> hoạt động";
+                        if (inactiveCount > 0)
+                        {
+                            html += $" | <b><color='#F44336'>{inactiveCount:N0}</color></b> ngừng";
+                        }
+                    }
+                    
+                    if (totalPartners > 0)
+                    {
+                        html += $" | <b><color='#FF9800'>{totalPartners:N0}</color></b> đối tác";
+                    }
+                }
+
+                DataSummaryBarStaticItem.Caption = html;
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning("Lỗi cập nhật DataSummary: {0}", ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật thông tin selection hiện tại với format HTML
+        /// </summary>
+        private void UpdateCurrentSelection()
+        {
+            try
+            {
+                if (CurrentSelectBarStaticItem == null) return;
+
+                var selectedCount = _selectedCategoryIds?.Count ?? 0;
+                string html;
+
+                if (selectedCount == 0)
+                {
+                    html = "<color='#757575'>Chưa chọn dòng nào</color>";
+                }
+                else if (selectedCount == 1)
+                {
+                    // Hiển thị thông tin chi tiết của dòng được chọn
+                    var selectedId = _selectedCategoryIds[0];
+                    var selectedDto = businessPartnerCategoryDtoBindingSource.Cast<BusinessPartnerCategoryDto>()
+                        .FirstOrDefault(d => d.Id == selectedId);
+
+                    if (selectedDto != null)
+                    {
+                        var statusColor = selectedDto.IsActive ? "#4CAF50" : "#F44336";
+                        var statusText = selectedDto.IsActive ? "Hoạt động" : "Ngừng";
+                        
+                        html = $"<b><color='#1976D2'>{selectedCount:N0}</color></b> dòng: <b><color='blue'>{selectedDto.CategoryName}</color></b>";
+                        
+                        if (!string.IsNullOrWhiteSpace(selectedDto.CategoryCode))
+                        {
+                            html += $" <color='#757575'>({selectedDto.CategoryCode})</color>";
+                        }
+                        
+                        html += $" | Trạng thái: <b><color='{statusColor}'>{statusText}</color></b>";
+                        
+                        if (selectedDto.PartnerCount > 0)
+                        {
+                            html += $" | Đối tác: <b><color='#FF9800'>{selectedDto.PartnerCount:N0}</color></b>";
+                        }
+                    }
+                    else
+                    {
+                        html = $"<b><color='#1976D2'>{selectedCount:N0}</color></b> dòng được chọn";
+                    }
+                }
+                else
+                {
+                    html = $"<b><color='#1976D2'>{selectedCount:N0}</color></b> dòng được chọn";
+                }
+
+                CurrentSelectBarStaticItem.Caption = html;
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning("Lỗi cập nhật CurrentSelection: {0}", ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Cập nhật danh sách selected category IDs.
         /// </summary>
         private void UpdateSelectedCategoryIds()
         {
             _selectedCategoryIds.Clear();
 
-            Debug.WriteLine("=== UpdateSelectedCategoryIds ===");
-            Debug.WriteLine($"Total nodes in TreeList: {treeList1.Nodes.Count}");
+            _logger.Debug("=== UpdateSelectedCategoryIds ===");
+            _logger.Debug("Total rows in GridView: {0}", BusinessPartnerCategoryDtoGridView.RowCount);
 
-            // Lấy tất cả nodes đã được chọn (bao gồm cả checkbox selection)
-            foreach (TreeListNode node in treeList1.Nodes)
+            // Lấy tất cả rows đã được chọn
+            var selectedRows = BusinessPartnerCategoryDtoGridView.GetSelectedRows();
+            foreach (int rowHandle in selectedRows)
             {
-                Debug.WriteLine($"Checking root node: {node.GetDisplayText("CategoryName")}, Checked: {node.Checked}");
-                CheckNodeRecursive(node);
-            }
-
-            Debug.WriteLine($"Final selected IDs: {string.Join(", ", _selectedCategoryIds)}");
-        }
-
-        /// <summary>
-        /// Kiểm tra node và các child nodes một cách đệ quy.
-        /// </summary>
-        private void CheckNodeRecursive(TreeListNode node)
-        {
-            string nodeName = node.GetDisplayText("CategoryName");
-            bool isChecked = node.Checked;
-            bool isSelected = treeList1.Selection.Contains(node);
-
-            Debug.WriteLine($"  Checking node: {nodeName}, Checked: {isChecked}, Selected: {isSelected}");
-
-            if (isChecked || isSelected)
-            {
-                // Lấy dữ liệu từ binding source dựa trên node
-                var index = treeList1.GetVisibleIndexByNode(node);
-                Debug.WriteLine(
-                    $"    Node index: {index}, BindingSource count: {businessPartnerCategoryDtoBindingSource.Count}");
-
-                if (index >= 0 && businessPartnerCategoryDtoBindingSource.Count > index)
+                if (rowHandle >= 0)
                 {
-                    if (businessPartnerCategoryDtoBindingSource[index] is BusinessPartnerCategoryDto dto)
+                    var dto = BusinessPartnerCategoryDtoGridView.GetRow(rowHandle) as BusinessPartnerCategoryDto;
+                    if (dto != null && !_selectedCategoryIds.Contains(dto.Id))
                     {
-                        if (!_selectedCategoryIds.Contains(dto.Id))
-                        {
-                            _selectedCategoryIds.Add(dto.Id);
-                            Debug.WriteLine($"    Added ID: {dto.Id} for {dto.CategoryName}");
-                        }
+                        _selectedCategoryIds.Add(dto.Id);
+                        _logger.Debug("    Added ID: {0} for {1}", dto.Id, dto.CategoryName);
                     }
                 }
             }
 
-            // Kiểm tra các child nodes
-            foreach (TreeListNode childNode in node.Nodes)
-            {
-                CheckNodeRecursive(childNode);
-            }
+            _logger.Debug("Final selected IDs: {0}", string.Join(", ", _selectedCategoryIds));
         }
 
         /// <summary>
-        /// Xóa trạng thái chọn hiện tại trên TreeList.
+        /// Xóa trạng thái chọn hiện tại trên GridView.
         /// </summary>
         private void ClearSelectionState()
         {
             _selectedCategoryIds.Clear();
 
-            // Clear tất cả selection (cả checkbox và regular selection)
-            treeList1.ClearSelection();
-            treeList1.FocusedNode = null;
-
-            // Clear tất cả checkbox states
-            ClearAllCheckBoxes();
+            // Clear tất cả selection
+            BusinessPartnerCategoryDtoGridView.ClearSelection();
+            BusinessPartnerCategoryDtoGridView.FocusedRowHandle = DevExpress.XtraGrid.GridControl.InvalidRowHandle;
 
             UpdateButtonStates();
-        }
-
-        /// <summary>
-        /// Clear tất cả checkbox states trong TreeList.
-        /// </summary>
-        private void ClearAllCheckBoxes()
-        {
-            try
-            {
-                // Disable events tạm thời để tránh trigger UpdateSelectedCategoryIds
-                treeList1.AfterCheckNode -= TreeList1_AfterCheckNode;
-
-                // Clear tất cả checkbox states
-                foreach (TreeListNode node in treeList1.Nodes)
-                {
-                    ClearNodeCheckBoxes(node);
-                }
-
-                // Re-enable events
-                treeList1.AfterCheckNode += TreeList1_AfterCheckNode;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error clearing checkboxes: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Clear checkbox của node và tất cả child nodes.
-        /// </summary>
-        private void ClearNodeCheckBoxes(TreeListNode node)
-        {
-            if (node != null)
-            {
-                node.Checked = false;
-
-                // Clear child nodes recursively
-                foreach (TreeListNode childNode in node.Nodes)
-                {
-                    ClearNodeCheckBoxes(childNode);
-                }
-            }
+            UpdateCurrentSelection();
         }
 
         #endregion
@@ -773,7 +788,7 @@ namespace MasterData.Customer
             catch (Exception ex)
             {
                 // Ignore lỗi setup SuperToolTip để không chặn UserControl
-                System.Diagnostics.Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
+                _logger.Warning("Lỗi setup SuperToolTip: {0}", ex.Message);
             }
         }
 

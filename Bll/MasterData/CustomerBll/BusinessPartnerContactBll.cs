@@ -235,6 +235,18 @@ namespace Bll.MasterData.CustomerBll
                 existingEntity.Email = entity.Email;
                 existingEntity.IsPrimary = entity.IsPrimary;
                 existingEntity.IsActive = entity.IsActive;
+                
+                // Cập nhật các fields mới
+                existingEntity.Mobile = entity.Mobile;
+                existingEntity.Fax = entity.Fax;
+                existingEntity.Department = entity.Department;
+                existingEntity.BirthDate = entity.BirthDate;
+                existingEntity.Gender = entity.Gender;
+                existingEntity.LinkedIn = entity.LinkedIn;
+                existingEntity.Skype = entity.Skype;
+                existingEntity.WeChat = entity.WeChat;
+                existingEntity.Notes = entity.Notes;
+                existingEntity.AvatarPath = entity.AvatarPath;
 
                 // Save changes to the database
                 GetDataAccess().SaveOrUpdate(existingEntity);

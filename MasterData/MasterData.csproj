@@ -154,7 +154,6 @@
     <Compile Include="Customer\FrmBusinessPartnerList.Designer.cs">
       <DependentUpon>FrmBusinessPartnerList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\Dto\PartnerCategoryMappingDto.cs" />
     <Compile Include="Customer\FrmBusinessPartnerSite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -335,9 +334,9 @@
     <None Include="Company\FrmCompanyBranch_User_Guide.md" />
     <None Include="Company\FrmCompany_Developer_Guide.md" />
     <None Include="Company\FrmCompany_User_Guide.md" />
-    <None Include="Customer\Dto\DTO_README.md" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Doc\BusinessPartner_Database_Schema.md" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
@@ -384,6 +383,10 @@
     <ProjectReference Include="..\DTO\DTO.csproj">
       <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>
       <Name>DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{12f9fb39-92bf-45d5-bbb2-5353e33700f0}</Project>
+      <Name>Logger</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

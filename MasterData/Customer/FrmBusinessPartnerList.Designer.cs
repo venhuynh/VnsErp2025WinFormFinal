@@ -1,12 +1,10 @@
-﻿using System.ComponentModel;
-using System.Windows.Forms;
-using DevExpress.XtraBars;
+﻿using DevExpress.XtraBars;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
-using DTO.MasterData.CustomerPartner;
-using MasterData.Customer.Dto;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace MasterData.Customer
 {
@@ -54,25 +52,23 @@ namespace MasterData.Customer
             this.BusinessPartnerListGridControl = new DevExpress.XtraGrid.GridControl();
             this.businessPartnerListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.BusinessPartnerListGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colPartnerCode = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPartnerName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPartnerTypeName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colTaxCode = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPhone = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colEmail = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colCity = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colCreatedDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.HtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colLogoThumbnailData = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colCategoryPathHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.PartnerLogoRepositoryItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PartnerLogoRepositoryItemPictureEdit)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -200,6 +196,9 @@ namespace MasterData.Customer
             this.BusinessPartnerListGridControl.MainView = this.BusinessPartnerListGridView;
             this.BusinessPartnerListGridControl.MenuManager = this.barManager1;
             this.BusinessPartnerListGridControl.Name = "BusinessPartnerListGridControl";
+            this.BusinessPartnerListGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.HtmlHypertextLabel,
+            this.PartnerLogoRepositoryItemPictureEdit});
             this.BusinessPartnerListGridControl.Size = new System.Drawing.Size(1043, 556);
             this.BusinessPartnerListGridControl.TabIndex = 5;
             this.BusinessPartnerListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -207,30 +206,27 @@ namespace MasterData.Customer
             // 
             // businessPartnerListDtoBindingSource
             // 
-            this.businessPartnerListDtoBindingSource.DataSource = typeof(BusinessPartnerListDto);
+            this.businessPartnerListDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerListDto);
             // 
             // BusinessPartnerListGridView
             // 
-            this.BusinessPartnerListGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.BusinessPartnerListGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
+            this.BusinessPartnerListGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.BusinessPartnerListGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
             this.BusinessPartnerListGridView.Appearance.ViewCaption.Options.UseFont = true;
             this.BusinessPartnerListGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.BusinessPartnerListGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colPartnerCode,
-            this.colPartnerName,
-            this.colPartnerTypeName,
-            this.colTaxCode,
-            this.colPhone,
-            this.colEmail,
-            this.colCity,
-            this.colIsActive,
-            this.colCreatedDate});
+            this.colThongTinHtml,
+            this.colLogoThumbnailData,
+            this.colCategoryPathHtml});
             this.BusinessPartnerListGridView.GridControl = this.BusinessPartnerListGridControl;
             this.BusinessPartnerListGridView.IndicatorWidth = 40;
             this.BusinessPartnerListGridView.Name = "BusinessPartnerListGridView";
             this.BusinessPartnerListGridView.OptionsSelection.MultiSelect = true;
             this.BusinessPartnerListGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.BusinessPartnerListGridView.OptionsView.ColumnAutoWidth = false;
+            this.BusinessPartnerListGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.BusinessPartnerListGridView.OptionsView.EnableAppearanceEvenRow = true;
+            this.BusinessPartnerListGridView.OptionsView.EnableAppearanceOddRow = true;
             this.BusinessPartnerListGridView.OptionsView.RowAutoHeight = true;
             this.BusinessPartnerListGridView.OptionsView.ShowAutoFilterRow = true;
             this.BusinessPartnerListGridView.OptionsView.ShowFooter = true;
@@ -238,70 +234,80 @@ namespace MasterData.Customer
             this.BusinessPartnerListGridView.OptionsView.ShowViewCaption = true;
             this.BusinessPartnerListGridView.ViewCaption = "BẢNG DỮ LIỆU ĐỐI TÁC";
             // 
-            // colPartnerCode
+            // colThongTinHtml
             // 
-            this.colPartnerCode.FieldName = "PartnerCode";
-            this.colPartnerCode.Name = "colPartnerCode";
-            this.colPartnerCode.Visible = true;
-            this.colPartnerCode.VisibleIndex = 1;
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin đầy đủ";
+            this.colThongTinHtml.ColumnEdit = this.HtmlHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 300;
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 3;
+            this.colThongTinHtml.Width = 500;
             // 
-            // colPartnerName
+            // HtmlHypertextLabel
             // 
-            this.colPartnerName.FieldName = "PartnerName";
-            this.colPartnerName.Name = "colPartnerName";
-            this.colPartnerName.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
-            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Count, "PartnerName", "Có {0} dòng")});
-            this.colPartnerName.Visible = true;
-            this.colPartnerName.VisibleIndex = 2;
+            this.HtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.HtmlHypertextLabel.Name = "HtmlHypertextLabel";
             // 
-            // colPartnerTypeName
+            // colLogoThumbnailData
             // 
-            this.colPartnerTypeName.FieldName = "PartnerTypeName";
-            this.colPartnerTypeName.Name = "colPartnerTypeName";
-            this.colPartnerTypeName.Visible = true;
-            this.colPartnerTypeName.VisibleIndex = 3;
+            this.colLogoThumbnailData.AppearanceCell.Options.UseTextOptions = true;
+            this.colLogoThumbnailData.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colLogoThumbnailData.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colLogoThumbnailData.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colLogoThumbnailData.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colLogoThumbnailData.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colLogoThumbnailData.AppearanceHeader.Options.UseBackColor = true;
+            this.colLogoThumbnailData.AppearanceHeader.Options.UseFont = true;
+            this.colLogoThumbnailData.AppearanceHeader.Options.UseForeColor = true;
+            this.colLogoThumbnailData.AppearanceHeader.Options.UseTextOptions = true;
+            this.colLogoThumbnailData.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colLogoThumbnailData.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colLogoThumbnailData.Caption = "Logo";
+            this.colLogoThumbnailData.ColumnEdit = this.PartnerLogoRepositoryItemPictureEdit;
+            this.colLogoThumbnailData.FieldName = "LogoThumbnailData";
+            this.colLogoThumbnailData.MinWidth = 100;
+            this.colLogoThumbnailData.Name = "colLogoThumbnailData";
+            this.colLogoThumbnailData.OptionsColumn.FixedWidth = true;
+            this.colLogoThumbnailData.Visible = true;
+            this.colLogoThumbnailData.VisibleIndex = 1;
+            this.colLogoThumbnailData.Width = 120;
             // 
-            // colTaxCode
+            // colCategoryPathHtml
             // 
-            this.colTaxCode.FieldName = "TaxCode";
-            this.colTaxCode.Name = "colTaxCode";
-            this.colTaxCode.Visible = true;
-            this.colTaxCode.VisibleIndex = 4;
-            // 
-            // colPhone
-            // 
-            this.colPhone.FieldName = "Phone";
-            this.colPhone.Name = "colPhone";
-            this.colPhone.Visible = true;
-            this.colPhone.VisibleIndex = 5;
-            // 
-            // colEmail
-            // 
-            this.colEmail.FieldName = "Email";
-            this.colEmail.Name = "colEmail";
-            this.colEmail.Visible = true;
-            this.colEmail.VisibleIndex = 6;
-            // 
-            // colCity
-            // 
-            this.colCity.FieldName = "City";
-            this.colCity.Name = "colCity";
-            this.colCity.Visible = true;
-            this.colCity.VisibleIndex = 7;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 8;
-            // 
-            // colCreatedDate
-            // 
-            this.colCreatedDate.FieldName = "CreatedDate";
-            this.colCreatedDate.Name = "colCreatedDate";
-            this.colCreatedDate.Visible = true;
-            this.colCreatedDate.VisibleIndex = 9;
+            this.colCategoryPathHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colCategoryPathHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colCategoryPathHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colCategoryPathHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colCategoryPathHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colCategoryPathHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colCategoryPathHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colCategoryPathHtml.AppearanceHeader.Options.UseFont = true;
+            this.colCategoryPathHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colCategoryPathHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colCategoryPathHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colCategoryPathHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colCategoryPathHtml.Caption = "Phân loại";
+            this.colCategoryPathHtml.ColumnEdit = this.HtmlHypertextLabel;
+            this.colCategoryPathHtml.FieldName = "CategoryPathHtml";
+            this.colCategoryPathHtml.MinWidth = 200;
+            this.colCategoryPathHtml.Name = "colCategoryPathHtml";
+            this.colCategoryPathHtml.Visible = true;
+            this.colCategoryPathHtml.VisibleIndex = 2;
+            this.colCategoryPathHtml.Width = 280;
             // 
             // Root
             // 
@@ -321,6 +327,14 @@ namespace MasterData.Customer
             this.layoutControlItem1.Size = new System.Drawing.Size(1049, 562);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // PartnerLogoRepositoryItemPictureEdit
+            // 
+            this.PartnerLogoRepositoryItemPictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.PartnerLogoRepositoryItemPictureEdit.Name = "PartnerLogoRepositoryItemPictureEdit";
+            this.PartnerLogoRepositoryItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.PartnerLogoRepositoryItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.PartnerLogoRepositoryItemPictureEdit.ImageChanged += new System.EventHandler(this.PartnerLogoRepositoryItemPictureEdit_ImageChanged);
+            // 
             // FrmBusinessPartnerList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -339,8 +353,10 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PartnerLogoRepositoryItemPictureEdit)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -360,19 +376,15 @@ namespace MasterData.Customer
         private LayoutControlGroup Root;
         private LayoutControlItem layoutControlItem1;
         private BindingSource businessPartnerListDtoBindingSource;
-        private GridColumn colPartnerCode;
-        private GridColumn colPartnerName;
-        private GridColumn colPartnerTypeName;
-        private GridColumn colTaxCode;
-        private GridColumn colPhone;
-        private GridColumn colEmail;
-        private GridColumn colCity;
-        private GridColumn colIsActive;
-        private GridColumn colCreatedDate;
         private BarButtonItem ListDataBarButtonItem;
         private BarButtonItem NewBarButtonItem;
         private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
+        private GridColumn colThongTinHtml;
+        private GridColumn colLogoThumbnailData;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlHypertextLabel;
+        private GridColumn colCategoryPathHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit PartnerLogoRepositoryItemPictureEdit;
     }
 }

@@ -215,6 +215,14 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
                     existingEntity.IsActive = entity.IsActive;
                     existingEntity.UpdatedDate = DateTime.Now;
                     
+                    // Cập nhật các fields mới
+                    existingEntity.PostalCode = entity.PostalCode;
+                    existingEntity.District = entity.District;
+                    existingEntity.Latitude = entity.Latitude;
+                    existingEntity.Longitude = entity.Longitude;
+                    existingEntity.SiteType = entity.SiteType;
+                    existingEntity.Notes = entity.Notes;
+                    
                     context.SubmitChanges();
                     _logger.Info($"Đã cập nhật BusinessPartnerSite: {existingEntity.SiteCode} - {existingEntity.SiteName}");
                 }

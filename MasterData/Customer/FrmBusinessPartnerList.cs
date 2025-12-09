@@ -13,6 +13,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -44,6 +46,11 @@ namespace MasterData.Customer
         /// </summary>
         private bool _isLoading;
 
+        /// <summary>
+        /// RowHandle đang được edit (để lấy PartnerId khi upload logo)
+        /// </summary>
+        private int _editingRowHandle = GridControl.InvalidRowHandle;
+
         #endregion
 
         #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
@@ -66,11 +73,19 @@ namespace MasterData.Customer
             BusinessPartnerListGridView.SelectionChanged += BusinessPartnerListGridView_SelectionChanged;
             BusinessPartnerListGridView.CustomDrawRowIndicator += BusinessPartnerListGridView_CustomDrawRowIndicator;
             BusinessPartnerListGridView.RowCellStyle += BusinessPartnerListGridView_RowCellStyle;
+            BusinessPartnerListGridView.ShownEditor += BusinessPartnerListGridView_ShownEditor;
+            BusinessPartnerListGridView.HiddenEditor += BusinessPartnerListGridView_HiddenEditor;
 
             UpdateButtonStates();
 
             // Setup SuperToolTips
             SetupSuperToolTips();
+
+            // Cấu hình HtmlHypertextLabel để enable HTML rendering
+            if (HtmlHypertextLabel != null)
+            {
+                HtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            }
         }
 
         #endregion
@@ -108,12 +123,26 @@ namespace MasterData.Customer
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu gọi BLL.GetAllAsync()");
                 var entities = await _businessPartnerBll.GetAllAsync();
-                var dtoList = entities.Select(x => x.ToListDto(ResolvePartnerTypeName)).ToList();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã nhận được {entities?.Count ?? 0} entities từ BLL");
+                
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu lấy categoryDict");
+                var categoryDict = await _businessPartnerBll.GetCategoryDictAsync();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã lấy được {categoryDict?.Count ?? 0} categories");
+                
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu convert sang DTO với categoryDict");
+                var dtoList = entities.ToBusinessPartnerListDtos(categoryDict).ToList();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã convert được {dtoList.Count} DTOs");
+                
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu bind vào grid");
                 BindGrid(dtoList);
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Hoàn thành");
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: LỖI: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: StackTrace: {ex.StackTrace}");
                 ShowError(ex, "Lỗi tải dữ liệu");
             }
         }
@@ -127,6 +156,54 @@ namespace MasterData.Customer
             BusinessPartnerListGridView.BestFitColumns();
             ConfigureMultiLineGridView();
             UpdateButtonStates();
+        }
+
+        /// <summary>
+        /// Cập nhật một dòng trong datasource thay vì reload toàn bộ (cải thiện UX)
+        /// </summary>
+        /// <param name="updatedDto">DTO đã được cập nhật</param>
+        private void UpdateSingleRowInDataSource(BusinessPartnerListDto updatedDto)
+        {
+            try
+            {
+                if (updatedDto == null || businessPartnerListDtoBindingSource.DataSource == null)
+                {
+                    return;
+                }
+
+                // Tìm dòng cần update trong datasource
+                if (businessPartnerListDtoBindingSource.DataSource is List<BusinessPartnerListDto> dataList)
+                {
+                    var index = dataList.FindIndex(d => d.Id == updatedDto.Id);
+                    if (index >= 0)
+                    {
+                        // Update dòng hiện có
+                        dataList[index] = updatedDto;
+                        
+                        // Refresh binding source để cập nhật UI
+                        businessPartnerListDtoBindingSource.ResetBindings(false);
+                        
+                        // Refresh grid view để hiển thị thay đổi
+                        var rowHandle = BusinessPartnerListGridView.GetRowHandle(index);
+                        if (rowHandle >= 0)
+                        {
+                            BusinessPartnerListGridView.RefreshRow(rowHandle);
+                        }
+                    }
+                    else
+                    {
+                        // Nếu không tìm thấy (trường hợp thêm mới), thêm vào đầu danh sách
+                        dataList.Insert(0, updatedDto);
+                        businessPartnerListDtoBindingSource.ResetBindings(false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Nếu có lỗi khi update, fallback về reload toàn bộ
+                System.Diagnostics.Debug.WriteLine($"Lỗi update single row: {ex.Message}");
+                _ = LoadDataAsync();
+            }
         }
 
         #endregion
@@ -160,9 +237,21 @@ namespace MasterData.Customer
                     using (var form = new FrmBusinessPartnerDetail(Guid.Empty))
                     {
                         form.StartPosition = FormStartPosition.CenterParent;
+                        
+                        // Subscribe event để nhận DTO đã lưu và update datasource
+                        form.PartnerSaved += (updatedDto) =>
+                        {
+                            UpdateSingleRowInDataSource(updatedDto);
+                        };
+                        
                         form.ShowDialog(this);
 
-                        await LoadDataAsync();
+                        // Chỉ reload nếu form đóng mà không lưu (DialogResult != OK)
+                        if (form.DialogResult != DialogResult.OK)
+                        {
+                            // Không cần reload vì không có thay đổi
+                        }
+                        
                         UpdateButtonStates();
                     }
                 }
@@ -221,9 +310,21 @@ namespace MasterData.Customer
                     using (var form = new FrmBusinessPartnerDetail(dto.Id))
                     {
                         form.StartPosition = FormStartPosition.CenterParent;
+                        
+                        // Subscribe event để nhận DTO đã lưu và update datasource
+                        form.PartnerSaved += (updatedDto) =>
+                        {
+                            UpdateSingleRowInDataSource(updatedDto);
+                        };
+                        
                         form.ShowDialog(this);
                         
-                        await LoadDataAsync();
+                        // Chỉ reload nếu form đóng mà không lưu (DialogResult != OK)
+                        if (form.DialogResult != DialogResult.OK)
+                        {
+                            // Không cần reload vì không có thay đổi
+                        }
+                        
                         UpdateButtonStates();
                     }
                 }
@@ -318,48 +419,132 @@ namespace MasterData.Customer
         {
             try
             {
-                var view = sender as GridView;
-                if (view == null) return;
+                if (sender is not GridView view) return;
                 if (e.RowHandle < 0) return;
-                var row = view.GetRow(e.RowHandle) as BusinessPartnerListDto;
-                if (row == null) return;
+                if (view.GetRow(e.RowHandle) is not BusinessPartnerListDto row) return;
                 // Không ghi đè màu khi đang chọn để giữ màu chọn mặc định của DevExpress
                 if (view.IsRowSelected(e.RowHandle)) return;
-                // Nền theo phân loại (PartnerType) với màu tương phản rõ
-                // 1: Khách hàng (xanh), 2: Nhà cung cấp (vàng), 3: Cả hai (xanh lá)
-                Color backColor;
-                switch (row.PartnerType)
-                {
-                    case 1:
-                        backColor = Color.LightSkyBlue; // xanh nổi bật
-                        break;
-                    case 2:
-                        backColor = Color.Moccasin; // vàng nổi bật
-                        break;
-                    case 3:
-                        backColor = Color.MediumAquamarine; // xanh lá nổi bật
-                        break;
-                    default:
-                        backColor = Color.White;
-                        break;
-                }
-
-                e.Appearance.BackColor = backColor;
-                e.Appearance.ForeColor = Color.Black; // chữ đen tương phản tốt trên các màu nền trên
-                e.Appearance.Options.UseBackColor = true;
-                e.Appearance.Options.UseForeColor = true;
-
+                
+                
                 // Nếu đối tác không hoạt động: làm nổi bật rõ ràng hơn
-                if (!row.IsActive)
-                {
-                    e.Appearance.BackColor = Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
-                    e.Appearance.ForeColor = Color.DarkRed;
-                    e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Strikeout);
-                }
+                if (row.IsActive) return;
+                e.Appearance.BackColor = Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
+                e.Appearance.ForeColor = Color.DarkRed;
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Strikeout);
             }
             catch (Exception)
             {
                 // ignore style errors
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi editor được hiển thị (lưu rowHandle đang edit)
+        /// </summary>
+        private void BusinessPartnerListGridView_ShownEditor(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender is not GridView view) return;
+                _editingRowHandle = view.FocusedRowHandle;
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi editor bị ẩn (clear rowHandle)
+        /// </summary>
+        private void BusinessPartnerListGridView_HiddenEditor(object sender, EventArgs e)
+        {
+            try
+            {
+                _editingRowHandle = GridControl.InvalidRowHandle;
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện ImageChanged của RepositoryItemPictureEdit để cập nhật logo đối tác
+        /// </summary>
+        private async void PartnerLogoRepositoryItemPictureEdit_ImageChanged(object sender, EventArgs e)
+        {
+            if (_isLoading) return;
+
+            try
+            {
+                if (sender is not PictureEdit pictureEdit) return;
+
+                // Lấy row đang được edit
+                if (_editingRowHandle < 0 || _editingRowHandle == GridControl.InvalidRowHandle)
+                {
+                    // Fallback: lấy từ focused row
+                    _editingRowHandle = BusinessPartnerListGridView.FocusedRowHandle;
+                }
+
+                if (_editingRowHandle < 0 || _editingRowHandle == GridControl.InvalidRowHandle)
+                {
+                    return; // Không có row nào đang được edit
+                }
+
+                // Lấy DTO từ row
+                if (BusinessPartnerListGridView.GetRow(_editingRowHandle) is not BusinessPartnerListDto partnerDto)
+                {
+                    return;
+                }
+
+                var partnerId = partnerDto.Id;
+
+                // Xử lý upload logo
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    if (pictureEdit.Image != null)
+                    {
+                        // Trường hợp có hình ảnh mới - UPLOAD
+                        var imageBytes = ImageToByteArray(pictureEdit.Image);
+
+                        // Kiểm tra kích thước hình ảnh (tối đa 10MB)
+                        const int maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+                        if (imageBytes.Length > maxSizeInBytes)
+                        {
+                            MsgBox.ShowWarning("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 10MB.");
+                            return;
+                        }
+
+                        // Kiểm tra format hình ảnh
+                        if (!IsValidImageFormat(imageBytes))
+                        {
+                            MsgBox.ShowWarning(
+                                "Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
+                            return;
+                        }
+
+                        // Upload logo (lưu file gốc trên NAS và thumbnail trong database)
+                        // Sử dụng thumbnailMaxDimension = 120px để phù hợp với Width của cột logo
+                        const int thumbnailMaxDimension = 120;
+                        await _businessPartnerBll.UploadLogoFromBytesAsync(partnerId, imageBytes, thumbnailMaxDimension);
+
+                        ShowInfo("Đã cập nhật logo đối tác thành công!");
+
+                        // Reload data để cập nhật logo mới
+                        await LoadDataAsyncWithoutSplash();
+                    }
+                    else
+                    {
+                        // Trường hợp hình ảnh bị xóa - có thể xóa logo nếu cần
+                        // Hiện tại không xóa, chỉ bỏ qua
+                        System.Diagnostics.Debug.WriteLine($"Logo đã bị xóa cho đối tác {partnerId}");
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi cập nhật logo đối tác");
             }
         }
 
@@ -574,6 +759,44 @@ namespace MasterData.Customer
                 case 3: return "Khách hàng & Nhà cung cấp";
                 default: return "Không xác định";
             }
+        }
+
+        /// <summary>
+        /// Chuyển đổi Image sang byte array
+        /// </summary>
+        private byte[] ImageToByteArray(Image image)
+        {
+            if (image == null) return null;
+
+            using (var ms = new MemoryStream())
+            {
+                // Lưu với format JPEG để giảm kích thước
+                image.Save(ms, ImageFormat.Jpeg);
+                return ms.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Kiểm tra định dạng hình ảnh có hợp lệ không (JPG, PNG, GIF)
+        /// </summary>
+        private bool IsValidImageFormat(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length < 4) return false;
+
+            // Kiểm tra magic bytes
+            // JPEG: FF D8 FF
+            if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8 && imageBytes[2] == 0xFF)
+                return true;
+
+            // PNG: 89 50 4E 47
+            if (imageBytes[0] == 0x89 && imageBytes[1] == 0x50 && imageBytes[2] == 0x4E && imageBytes[3] == 0x47)
+                return true;
+
+            // GIF: 47 49 46 38 (GIF8)
+            if (imageBytes[0] == 0x47 && imageBytes[1] == 0x49 && imageBytes[2] == 0x46 && imageBytes[3] == 0x38)
+                return true;
+
+            return false;
         }
 
         #endregion
