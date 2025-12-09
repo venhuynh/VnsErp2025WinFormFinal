@@ -2,6 +2,7 @@
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraSplashScreen;
 using DTO.MasterData.CustomerPartner;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,15 @@ namespace MasterData.Customer
     /// </summary>
     public partial class FrmBusinessPartnerSiteDetail : XtraForm
     {
+        #region ========== EVENTS ==========
+
+        /// <summary>
+        /// Event được trigger khi lưu thành công, trả về DTO đã được cập nhật
+        /// </summary>
+        public event Action<BusinessPartnerSiteListDto> SiteSaved;
+
+        #endregion
+
         #region ========== KHAI BÁO BIẾN ==========
 
         /// <summary>
@@ -95,6 +105,8 @@ namespace MasterData.Customer
             {
                 // Set default values for new site
                 IsActiveCheckEdit.EditValue = true;
+                IsDefaultCheckEdit.EditValue = false;
+                SiteTypeComboBoxEdit.SelectedIndex = -1; // Không chọn mặc định
             }
 
             // Setup validation
@@ -166,9 +178,29 @@ namespace MasterData.Customer
             CityTextEdit.EditValue = _currentSite.City;
             ProvinceTextEdit.EditValue = _currentSite.Province;
             CountryTextEdit.EditValue = _currentSite.Country;
+            PostalCodeTextEdit.EditValue = _currentSite.PostalCode;
+            DistrictTextEdit.EditValue = _currentSite.District;
             PhoneTextEdit.EditValue = _currentSite.Phone;
             EmailTextEdit.EditValue = _currentSite.Email;
             IsActiveCheckEdit.EditValue = _currentSite.IsActive;
+            IsDefaultCheckEdit.EditValue = _currentSite.IsDefault ?? false;
+            
+            // Bind SiteType - map từ int? sang index của ComboBox
+            if (_currentSite.SiteType.HasValue)
+            {
+                var siteTypeIndex = _currentSite.SiteType.Value - 1; // 1->0, 2->1, 3->2, 4->3
+                if (siteTypeIndex >= 0 && siteTypeIndex < SiteTypeComboBoxEdit.Properties.Items.Count)
+                {
+                    SiteTypeComboBoxEdit.SelectedIndex = siteTypeIndex;
+                }
+            }
+            else
+            {
+                SiteTypeComboBoxEdit.SelectedIndex = -1;
+            }
+            
+            NotesMemoEdit.EditValue = _currentSite.Notes;
+            GoogleMapUrlTextEdit.EditValue = _currentSite.GoogleMapUrl;
         }
 
         #endregion
@@ -185,29 +217,22 @@ namespace MasterData.Customer
                 if (!ValidateForm())
                     return;
 
-                using var splash = new WaitForm1();
-
-                splash.Show();
-                splash.Update();
-
-                var success = await SaveData();
-
-                if (success)
+                // Lưu dữ liệu với waiting form
+                await ExecuteWithWaitingFormAsync(async () =>
                 {
-                    MsgBox.ShowSuccess(_isEditMode
-                        ? "Cập nhật chi nhánh thành công!"
-                        : "Thêm mới chi nhánh thành công!");
-                    DialogResult = DialogResult.OK;
-                    Close();
-                }
-                else
-                {
-                    MsgBox.ShowError("Không thể lưu dữ liệu. Vui lòng thử lại.");
-                }
+                    await SaveBusinessPartnerSiteAsync();
+                });
+
+                // Thông báo thành công và đóng form
+                MsgBox.ShowSuccess(_isEditMode
+                    ? "Cập nhật chi nhánh thành công!"
+                    : "Thêm mới chi nhánh thành công!");
+                DialogResult = DialogResult.OK;
+                Close();
             }
             catch (Exception ex)
             {
-                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
+                ShowError(ex, "Lưu dữ liệu chi nhánh");
             }
         }
 
@@ -268,6 +293,13 @@ namespace MasterData.Customer
         /// </summary>
         private BusinessPartnerSiteDto GetDataFromControls()
         {
+            // Map SiteType từ ComboBox index sang int? (0->1, 1->2, 2->3, 3->4)
+            int? siteType = null;
+            if (SiteTypeComboBoxEdit.SelectedIndex >= 0)
+            {
+                siteType = SiteTypeComboBoxEdit.SelectedIndex + 1;
+            }
+
             return new BusinessPartnerSiteDto
             {
                 Id = _currentSite?.Id ?? Guid.Empty,
@@ -278,35 +310,65 @@ namespace MasterData.Customer
                 City = CityTextEdit.Text?.Trim(),
                 Province = ProvinceTextEdit.Text?.Trim(),
                 Country = CountryTextEdit.Text?.Trim(),
+                PostalCode = PostalCodeTextEdit.Text?.Trim(),
+                District = DistrictTextEdit.Text?.Trim(),
                 Phone = PhoneTextEdit.Text?.Trim(),
                 Email = EmailTextEdit.Text?.Trim(),
-                IsActive = (bool)IsActiveCheckEdit.EditValue
+                IsActive = (bool)IsActiveCheckEdit.EditValue,
+                IsDefault = IsDefaultCheckEdit.EditValue as bool?,
+                SiteType = siteType,
+                Notes = NotesMemoEdit.Text?.Trim(),
+                GoogleMapUrl = GoogleMapUrlTextEdit.Text?.Trim()
             };
         }
 
         /// <summary>
-        /// Lưu dữ liệu (thêm mới/cập nhật) khi người dùng bấm Lưu.
+        /// Lưu dữ liệu chi nhánh và trigger event SiteSaved
         /// </summary>
-        private async Task<bool> SaveData()
+        private async Task SaveBusinessPartnerSiteAsync()
         {
-            try
+            // Bước 1: Thu thập dữ liệu từ form và build DTO
+            var siteDto = GetDataFromControls();
+
+            // Bước 2: Convert DTO -> Entity
+            var existing = _isEditMode ? _businessPartnerSiteBll.GetById(siteDto.Id) : null;
+            var entity = siteDto.ToEntity(existing);
+
+            // Bước 3: Lưu entity qua BLL
+            Guid savedSiteId;
+            if (_isEditMode)
             {
-                var siteDto = GetDataFromControls();
-
-                // Chuyển đổi DTO sang Entity (tuân thủ quy tắc kiến trúc)
-                var entity = siteDto.ToEntity();
-
-                if (_isEditMode)
+                var success = await Task.Run(() => _businessPartnerSiteBll.UpdateSite(entity));
+                if (!success)
                 {
-                    return await Task.Run(() => _businessPartnerSiteBll.UpdateSite(entity));
+                    throw new Exception("Không thể cập nhật chi nhánh. Có thể mã chi nhánh đã tồn tại.");
                 }
-
-                return await Task.Run(() => _businessPartnerSiteBll.CreateSite(entity));
+                savedSiteId = entity.Id;
             }
-            catch (Exception ex)
+            else
             {
-                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
-                return false;
+                var success = await Task.Run(() => _businessPartnerSiteBll.CreateSite(entity));
+                if (!success)
+                {
+                    throw new Exception("Không thể tạo mới chi nhánh. Có thể mã chi nhánh đã tồn tại.");
+                }
+                // Entity.Id đã được set trong SaveOrUpdate (trong CreateSite)
+                savedSiteId = entity.Id;
+            }
+
+            // Bước 4: Lấy lại entity đã lưu và convert sang BusinessPartnerSiteListDto để trigger event
+            var savedEntity = await Task.Run(() => _businessPartnerSiteBll.GetById(savedSiteId));
+            if (savedEntity != null)
+            {
+                // Convert single entity sang ListDto (sử dụng ToSiteListDtos với một phần tử)
+                var listDtos = new[] { savedEntity }.ToSiteListDtos().ToList();
+                var listDto = listDtos.FirstOrDefault();
+                
+                // Trigger event để form cha có thể update datasource
+                if (listDto != null)
+                {
+                    SiteSaved?.Invoke(listDto);
+                }
             }
         }
 
@@ -438,7 +500,42 @@ namespace MasterData.Customer
 
         #endregion
 
+        #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Thực thi async operation với waiting form (hiển thị splash screen)
+        /// </summary>
+        /// <param name="operation">Operation async cần thực thi</param>
+        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
+        {
+            try
+            {
+                // Hiển thị waiting form
+                SplashScreenManager.ShowForm(typeof(WaitForm1));
+
+                // Thực hiện operation
+                await operation();
+            }
+            finally
+            {
+                // Đóng waiting form
+                SplashScreenManager.CloseForm();
+            }
+        }
+
+        #endregion
+
         #region ========== TIỆN ÍCH HỖ TRỢ ==========
+
+        /// <summary>
+        /// Hiển thị lỗi qua XtraMessageBox với thông báo tiếng Việt
+        /// </summary>
+        /// <param name="ex">Exception cần hiển thị</param>
+        /// <param name="action">Tên hành động đang thực hiện khi xảy ra lỗi</param>
+        private void ShowError(Exception ex, string action)
+        {
+            MsgBox.ShowException(ex, $"Lỗi {action}");
+        }
 
         /// <summary>
         /// Thiết lập SuperToolTip cho các controls trong form
@@ -498,6 +595,60 @@ namespace MasterData.Customer
                         EmailTextEdit,
                         title: "<b><color=DarkBlue>📧 Email</color></b>",
                         content: "Nhập địa chỉ email liên hệ của chi nhánh."
+                    );
+                }
+
+                if (PostalCodeTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        PostalCodeTextEdit,
+                        title: "<b><color=DarkBlue>📮 Mã bưu điện</color></b>",
+                        content: "Nhập mã bưu điện của chi nhánh."
+                    );
+                }
+
+                if (DistrictTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        DistrictTextEdit,
+                        title: "<b><color=DarkBlue>🏘️ Quận/Huyện</color></b>",
+                        content: "Nhập quận/huyện của chi nhánh."
+                    );
+                }
+
+                if (IsDefaultCheckEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        IsDefaultCheckEdit,
+                        title: "<b><color=DarkBlue>⭐ Mặc định</color></b>",
+                        content: "Đánh dấu chi nhánh này là địa chỉ mặc định của đối tác."
+                    );
+                }
+
+                if (SiteTypeComboBoxEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        SiteTypeComboBoxEdit,
+                        title: "<b><color=DarkBlue>🏢 Loại địa điểm</color></b>",
+                        content: "Chọn loại địa điểm: Trụ sở chính, Chi nhánh, Kho hàng, hoặc Văn phòng đại diện."
+                    );
+                }
+
+                if (NotesMemoEdit != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        NotesMemoEdit,
+                        title: "<b><color=DarkBlue>📝 Ghi chú</color></b>",
+                        content: "Nhập ghi chú bổ sung về chi nhánh (tối đa 1000 ký tự)."
+                    );
+                }
+
+                if (GoogleMapUrlTextEdit != null)
+                {
+                    SuperToolTipHelper.SetTextEditSuperTip(
+                        GoogleMapUrlTextEdit,
+                        title: "<b><color=DarkBlue>🗺️ Google Map URL</color></b>",
+                        content: "Nhập đường dẫn Google Map của chi nhánh (tối đa 1000 ký tự)."
                     );
                 }
 

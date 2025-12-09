@@ -22,6 +22,34 @@ namespace DTO.MasterData.CustomerPartner
         [Description("Tên đối tác (từ navigation property)")]
         public string PartnerName { get; set; }
 
+        [DisplayName("Mã đối tác")]
+        [Description("Mã đối tác (từ navigation property)")]
+        public string PartnerCode { get; set; }
+
+        [DisplayName("Loại đối tác")]
+        [Description("Loại đối tác (từ navigation property)")]
+        public int? PartnerType { get; set; }
+
+        [DisplayName("Loại đối tác")]
+        [Description("Tên loại đối tác (từ navigation property)")]
+        public string PartnerTypeName { get; set; }
+
+        [DisplayName("Mã số thuế đối tác")]
+        [Description("Mã số thuế đối tác (từ navigation property)")]
+        public string PartnerTaxCode { get; set; }
+
+        [DisplayName("Website đối tác")]
+        [Description("Website đối tác (từ navigation property)")]
+        public string PartnerWebsite { get; set; }
+
+        [DisplayName("Số điện thoại đối tác")]
+        [Description("Số điện thoại đối tác (từ navigation property)")]
+        public string PartnerPhone { get; set; }
+
+        [DisplayName("Email đối tác")]
+        [Description("Email đối tác (từ navigation property)")]
+        public string PartnerEmail { get; set; }
+
         [DisplayName("Mã chi nhánh")]
         [Required(ErrorMessage = "Mã chi nhánh không được để trống")]
         [StringLength(50, ErrorMessage = "Mã chi nhánh không được vượt quá 50 ký tự")]
@@ -215,6 +243,163 @@ namespace DTO.MasterData.CustomerPartner
         }
 
         /// <summary>
+        /// Thông tin về Đối tác dưới dạng HTML theo format DevExpress
+        /// Hiển thị thông tin đối tác liên quan đến chi nhánh này
+        /// </summary>
+        [DisplayName("Thông tin Đối tác HTML")]
+        [Description("Thông tin về đối tác dưới dạng HTML")]
+        public string PartnerInfoHtml
+        {
+            get
+            {
+                var partnerName = PartnerName ?? string.Empty;
+                var partnerCode = PartnerCode ?? string.Empty;
+                var partnerTypeName = PartnerTypeName ?? string.Empty;
+                var partnerTaxCode = PartnerTaxCode ?? string.Empty;
+                var partnerPhone = PartnerPhone ?? string.Empty;
+                var partnerEmail = PartnerEmail ?? string.Empty;
+                var partnerWebsite = PartnerWebsite ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(partnerName))
+                {
+                    return string.Empty;
+                }
+
+                var html = $"<b><color='blue'>{partnerName}</color></b>";
+
+                if (!string.IsNullOrWhiteSpace(partnerCode))
+                {
+                    html += $" <color='#757575'>({partnerCode})</color>";
+                }
+
+                html += "<br>";
+
+                var infoParts = new List<string>();
+
+                if (!string.IsNullOrWhiteSpace(partnerTypeName))
+                {
+                    var typeColor = PartnerType switch
+                    {
+                        1 => "#2196F3", // Khách hàng: Blue
+                        2 => "#FF9800", // Nhà cung cấp: Orange
+                        3 => "#9C27B0", // Cả hai: Purple
+                        _ => "#757575"  // Khác: Gray
+                    };
+                    infoParts.Add($"<color='#757575'>Loại:</color> <color='{typeColor}'><b>{partnerTypeName}</b></color>");
+                }
+
+                if (infoParts.Any())
+                {
+                    html += string.Join(" | ", infoParts) + "<br>";
+                }
+
+                var contactParts = new List<string>();
+                if (!string.IsNullOrWhiteSpace(partnerTaxCode))
+                {
+                    contactParts.Add($"<color='#757575'>MST:</color> <b>{partnerTaxCode}</b>");
+                }
+
+                if (!string.IsNullOrWhiteSpace(partnerPhone))
+                {
+                    contactParts.Add($"<color='#757575'>ĐT:</color> <b>{partnerPhone}</b>");
+                }
+
+                if (!string.IsNullOrWhiteSpace(partnerEmail))
+                {
+                    contactParts.Add($"<color='#757575'>Email:</color> <b>{partnerEmail}</b>");
+                }
+
+                if (!string.IsNullOrWhiteSpace(partnerWebsite))
+                {
+                    contactParts.Add($"<color='#757575'>Web:</color> <b>{partnerWebsite}</b>");
+                }
+
+                if (contactParts.Any())
+                {
+                    html += string.Join(" | ", contactParts);
+                }
+
+                return html;
+            }
+        }
+
+        /// <summary>
+        /// Thông tin về địa chỉ liên hệ dưới dạng HTML theo format DevExpress
+        /// Hiển thị địa chỉ đầy đủ và thông tin liên hệ của chi nhánh
+        /// </summary>
+        [DisplayName("Thông tin Địa chỉ liên hệ HTML")]
+        [Description("Thông tin về địa chỉ liên hệ dưới dạng HTML")]
+        public string ContactAddressHtml
+        {
+            get
+            {
+                var fullAddress = FullAddressName;
+                var phone = Phone ?? string.Empty;
+                var email = Email ?? string.Empty;
+                var googleMapUrl = GoogleMapUrl ?? string.Empty;
+                var siteName = SiteName ?? string.Empty;
+                var siteCode = SiteCode ?? string.Empty;
+                var siteTypeName = SiteTypeName ?? string.Empty;
+
+                var html = string.Empty;
+
+                // Tiêu đề: Tên chi nhánh
+                if (!string.IsNullOrWhiteSpace(siteName))
+                {
+                    html += $"<b><color='blue'>{siteName}</color></b>";
+                    if (!string.IsNullOrWhiteSpace(siteCode))
+                    {
+                        html += $" <color='#757575'>({siteCode})</color>";
+                    }
+                    html += "<br>";
+                }
+
+                // Loại địa điểm
+                if (!string.IsNullOrWhiteSpace(siteTypeName))
+                {
+                    var typeColor = SiteType switch
+                    {
+                        1 => "#2196F3", // Trụ sở chính: Blue
+                        2 => "#FF9800", // Chi nhánh: Orange
+                        3 => "#9C27B0", // Kho hàng: Purple
+                        _ => "#757575"  // Khác: Gray
+                    };
+                    html += $"<color='#757575'>Loại:</color> <color='{typeColor}'><b>{siteTypeName}</b></color><br>";
+                }
+
+                // Địa chỉ đầy đủ
+                if (!string.IsNullOrWhiteSpace(fullAddress))
+                {
+                    html += $"<color='#757575'>📍 Địa chỉ:</color> <b>{fullAddress}</b><br>";
+                }
+
+                // Thông tin liên hệ
+                var contactParts = new List<string>();
+                if (!string.IsNullOrWhiteSpace(phone))
+                {
+                    contactParts.Add($"<color='#757575'>📞 ĐT:</color> <b>{phone}</b>");
+                }
+
+                if (!string.IsNullOrWhiteSpace(email))
+                {
+                    contactParts.Add($"<color='#757575'>✉️ Email:</color> <b>{email}</b>");
+                }
+
+                if (!string.IsNullOrWhiteSpace(googleMapUrl))
+                {
+                    contactParts.Add($"<color='#757575'>🗺️ Map:</color> <b><u>Xem bản đồ</u></b>");
+                }
+
+                if (contactParts.Any())
+                {
+                    html += string.Join(" | ", contactParts);
+                }
+
+                return html;
+            }
+        }
+
+        /// <summary>
         /// Thông tin audit (ngày tạo/cập nhật) dưới dạng HTML theo format DevExpress
         /// </summary>
         [DisplayName("Thông tin audit HTML")]
@@ -288,16 +473,33 @@ namespace DTO.MasterData.CustomerPartner
                 UpdatedDate = entity.UpdatedDate
             };
 
-            // Lấy PartnerName từ navigation property
+            // Lấy thông tin đối tác từ navigation property
             try
             {
                 var businessPartner = entity.BusinessPartner;
-                dto.PartnerName = businessPartner?.PartnerName;
+                if (businessPartner != null)
+                {
+                    dto.PartnerName = businessPartner.PartnerName;
+                    dto.PartnerCode = businessPartner.PartnerCode;
+                    dto.PartnerType = businessPartner.PartnerType;
+                    dto.PartnerTypeName = ResolvePartnerTypeName(businessPartner.PartnerType);
+                    dto.PartnerTaxCode = businessPartner.TaxCode;
+                    dto.PartnerPhone = businessPartner.Phone;
+                    dto.PartnerEmail = businessPartner.Email;
+                    dto.PartnerWebsite = businessPartner.Website;
+                }
             }
             catch
             {
                 // Navigation property chưa được load hoặc đã bị dispose
                 dto.PartnerName = null;
+                dto.PartnerCode = null;
+                dto.PartnerType = null;
+                dto.PartnerTypeName = null;
+                dto.PartnerTaxCode = null;
+                dto.PartnerPhone = null;
+                dto.PartnerEmail = null;
+                dto.PartnerWebsite = null;
             }
 
             // Resolve SiteTypeName
@@ -374,6 +576,22 @@ namespace DTO.MasterData.CustomerPartner
                 3 => "Kho hàng",
                 4 => "Văn phòng đại diện",
                 _ => "Khác"
+            };
+        }
+
+        /// <summary>
+        /// Resolve tên loại đối tác từ PartnerType
+        /// </summary>
+        /// <param name="partnerType">PartnerType (int)</param>
+        /// <returns>Tên loại đối tác</returns>
+        private static string ResolvePartnerTypeName(int partnerType)
+        {
+            return partnerType switch
+            {
+                1 => "Khách hàng",
+                2 => "Nhà cung cấp",
+                3 => "Khách hàng & Nhà cung cấp",
+                _ => "Không xác định"
             };
         }
     }
