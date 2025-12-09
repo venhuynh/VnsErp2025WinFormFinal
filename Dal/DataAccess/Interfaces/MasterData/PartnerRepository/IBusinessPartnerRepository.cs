@@ -73,6 +73,17 @@ public interface IBusinessPartnerRepository
     /// </summary>
     Task<List<BusinessPartner>> GetActivePartnersAsync();
 
+    /// <summary>
+    /// Lấy danh sách đối tác đang hoạt động cho Lookup (chỉ load các trường cần thiết: Id, PartnerCode, PartnerType, PartnerName, LogoThumbnailData).
+    /// Không load navigation properties để tối ưu hiệu năng.
+    /// </summary>
+    List<BusinessPartner> GetActivePartnersForLookup();
+
+    /// <summary>
+    /// Lấy danh sách đối tác đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
+    /// </summary>
+    Task<List<BusinessPartner>> GetActivePartnersForLookupAsync();
+
     #endregion
 
     #region Update

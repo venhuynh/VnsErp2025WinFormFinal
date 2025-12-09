@@ -1142,7 +1142,6 @@ public partial class UcXuatChuyenKhoMaster : DevExpress.XtraEditors.XtraUserCont
                             City = string.Empty, // CompanyBranch không có City, có thể lấy từ Company nếu cần
                             Province = string.Empty,
                             Country = string.Empty,
-                            ContactPerson = branch.ManagerName ?? string.Empty,
                             Phone = branch.Phone ?? string.Empty,
                             Email = branch.Email ?? string.Empty,
                             IsDefault = false,
@@ -1150,6 +1149,7 @@ public partial class UcXuatChuyenKhoMaster : DevExpress.XtraEditors.XtraUserCont
                             CreatedDate = DateTime.Now,
                             UpdatedDate = null
                         };
+                        // Lưu ý: ManagerName nên được lưu trong BusinessPartnerContact thay vì BusinessPartnerSite
 
                         _businessPartnerSiteBll.SaveOrUpdate(newSite);
                     }
@@ -1167,11 +1167,7 @@ public partial class UcXuatChuyenKhoMaster : DevExpress.XtraEditors.XtraUserCont
                             existingSite.Address = branch.Address ?? string.Empty;
                             needsUpdate = true;
                         }
-                        if (existingSite.ContactPerson != (branch.ManagerName ?? string.Empty))
-                        {
-                            existingSite.ContactPerson = branch.ManagerName ?? string.Empty;
-                            needsUpdate = true;
-                        }
+                        // Lưu ý: ManagerName nên được cập nhật trong BusinessPartnerContact thay vì BusinessPartnerSite
                         if (existingSite.Phone != (branch.Phone ?? string.Empty))
                         {
                             existingSite.Phone = branch.Phone ?? string.Empty;

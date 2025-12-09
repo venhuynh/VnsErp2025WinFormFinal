@@ -93,6 +93,7 @@
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerContactDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerDetailDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerListDto.cs" />
+    <Compile Include="MasterData\CustomerPartner\BusinessPartnerLookupDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerSiteDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerSiteListDto.cs" />
     <Compile Include="MasterData\ProductService\AttributeDto.cs" />

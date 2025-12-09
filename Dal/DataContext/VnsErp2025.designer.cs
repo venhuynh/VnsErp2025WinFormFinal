@@ -5297,8 +5297,6 @@ namespace Dal.DataContext
 		
 		private string _Country;
 		
-		private string _ContactPerson;
-		
 		private string _Phone;
 		
 		private string _Email;
@@ -5315,13 +5313,11 @@ namespace Dal.DataContext
 		
 		private string _District;
 		
-		private System.Nullable<decimal> _Latitude;
-		
-		private System.Nullable<decimal> _Longitude;
-		
 		private System.Nullable<int> _SiteType;
 		
 		private string _Notes;
+		
+		private string _GoogleMapUrl;
 		
 		private EntitySet<BusinessPartnerContact> _BusinessPartnerContacts;
 		
@@ -5349,8 +5345,6 @@ namespace Dal.DataContext
     partial void OnProvinceChanged();
     partial void OnCountryChanging(string value);
     partial void OnCountryChanged();
-    partial void OnContactPersonChanging(string value);
-    partial void OnContactPersonChanged();
     partial void OnPhoneChanging(string value);
     partial void OnPhoneChanged();
     partial void OnEmailChanging(string value);
@@ -5367,14 +5361,12 @@ namespace Dal.DataContext
     partial void OnPostalCodeChanged();
     partial void OnDistrictChanging(string value);
     partial void OnDistrictChanged();
-    partial void OnLatitudeChanging(System.Nullable<decimal> value);
-    partial void OnLatitudeChanged();
-    partial void OnLongitudeChanging(System.Nullable<decimal> value);
-    partial void OnLongitudeChanged();
     partial void OnSiteTypeChanging(System.Nullable<int> value);
     partial void OnSiteTypeChanged();
     partial void OnNotesChanging(string value);
     partial void OnNotesChanged();
+    partial void OnGoogleMapUrlChanging(string value);
+    partial void OnGoogleMapUrlChanged();
     #endregion
 		
 		public BusinessPartnerSite()
@@ -5549,26 +5541,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ContactPerson", DbType="NVarChar(100)")]
-		public string ContactPerson
-		{
-			get
-			{
-				return this._ContactPerson;
-			}
-			set
-			{
-				if ((this._ContactPerson != value))
-				{
-					this.OnContactPersonChanging(value);
-					this.SendPropertyChanging();
-					this._ContactPerson = value;
-					this.SendPropertyChanged("ContactPerson");
-					this.OnContactPersonChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Phone", DbType="NVarChar(50)")]
 		public string Phone
 		{
@@ -5729,46 +5701,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Latitude", DbType="Decimal(10,8)")]
-		public System.Nullable<decimal> Latitude
-		{
-			get
-			{
-				return this._Latitude;
-			}
-			set
-			{
-				if ((this._Latitude != value))
-				{
-					this.OnLatitudeChanging(value);
-					this.SendPropertyChanging();
-					this._Latitude = value;
-					this.SendPropertyChanged("Latitude");
-					this.OnLatitudeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Longitude", DbType="Decimal(11,8)")]
-		public System.Nullable<decimal> Longitude
-		{
-			get
-			{
-				return this._Longitude;
-			}
-			set
-			{
-				if ((this._Longitude != value))
-				{
-					this.OnLongitudeChanging(value);
-					this.SendPropertyChanging();
-					this._Longitude = value;
-					this.SendPropertyChanged("Longitude");
-					this.OnLongitudeChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SiteType", DbType="Int")]
 		public System.Nullable<int> SiteType
 		{
@@ -5805,6 +5737,26 @@ namespace Dal.DataContext
 					this._Notes = value;
 					this.SendPropertyChanged("Notes");
 					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GoogleMapUrl", DbType="NVarChar(1000)")]
+		public string GoogleMapUrl
+		{
+			get
+			{
+				return this._GoogleMapUrl;
+			}
+			set
+			{
+				if ((this._GoogleMapUrl != value))
+				{
+					this.OnGoogleMapUrlChanging(value);
+					this.SendPropertyChanging();
+					this._GoogleMapUrl = value;
+					this.SendPropertyChanged("GoogleMapUrl");
+					this.OnGoogleMapUrlChanged();
 				}
 			}
 		}

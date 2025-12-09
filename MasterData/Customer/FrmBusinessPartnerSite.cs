@@ -1,8 +1,14 @@
-﻿using DevExpress.Utils;
+﻿using Bll.MasterData.CustomerBll;
+using Common.Common;
+using Common.Helpers;
+using Common.Utils;
+using DevExpress.Data;
+using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Views.BandedGrid;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData.CustomerPartner;
 using System;
@@ -11,9 +17,6 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.MasterData.CustomerBll;
-using Common.Common;
-using Common.Utils;
 
 namespace MasterData.Customer
 {
@@ -82,8 +85,16 @@ namespace MasterData.Customer
             ExportBarButtonItem.ItemClick += ExportBarButtonItem_ItemClick;
 
             // Grid events
-            BusinessPartnerSiteListDtoAdvBandedGridView.SelectionChanged += AdvBandedGridView1_SelectionChanged;
-            BusinessPartnerSiteListDtoAdvBandedGridView.DoubleClick += AdvBandedGridView1_DoubleClick;
+            BusinessPartnerSiteListDtoGridView.SelectionChanged += BusinessPartnerSiteListDtoGridView_SelectionChanged;
+            BusinessPartnerSiteListDtoGridView.DoubleClick += BusinessPartnerSiteListDtoGridView_DoubleClick;
+            BusinessPartnerSiteListDtoGridView.CustomDrawRowIndicator += BusinessPartnerSiteListDtoGridView_CustomDrawRowIndicator;
+            BusinessPartnerSiteListDtoGridView.RowCellStyle += BusinessPartnerSiteListDtoGridView_RowCellStyle;
+
+            // Cấu hình HtmlHypertextLabel để enable HTML rendering
+            if (HtmlHypertextLabel != null)
+            {
+                HtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            }
         }
 
         #endregion
@@ -137,18 +148,11 @@ namespace MasterData.Customer
         /// </summary>
         private void BindGrid(List<BusinessPartnerSiteListDto> data)
         {
-            // Clear selection trước khi bind data mới
-            ClearSelectionState();
-            
             businessPartnerSiteListDtoBindingSource.DataSource = data;
-            BusinessPartnerSiteListDtoAdvBandedGridView.BestFitColumns();
+            BusinessPartnerSiteListDtoGridView.BestFitColumns();
             ConfigureMultiLineGridView();
-            
-            // Update summary
             UpdateDataSummary();
-            
-            // Đảm bảo selection được clear sau khi bind
-            ClearSelectionState();
+            UpdateButtonStates();
         }
 
         /// <summary>
@@ -160,6 +164,58 @@ namespace MasterData.Customer
             var activeCount = _dataList?.Count(x => x.IsActive) ?? 0;
             
             DataSummaryBarStaticItem.Caption = @$"Tổng: {totalCount} | Hoạt động: {activeCount}";
+        }
+
+        /// <summary>
+        /// Cập nhật một dòng trong datasource thay vì reload toàn bộ (cải thiện UX)
+        /// </summary>
+        /// <param name="updatedDto">DTO đã được cập nhật</param>
+        private void UpdateSingleRowInDataSource(BusinessPartnerSiteListDto updatedDto)
+        {
+            try
+            {
+                if (updatedDto == null || businessPartnerSiteListDtoBindingSource.DataSource == null)
+                {
+                    return;
+                }
+
+                // Tìm dòng cần update trong datasource
+                if (businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> dataList)
+                {
+                    var index = dataList.FindIndex(d => d.Id == updatedDto.Id);
+                    if (index >= 0)
+                    {
+                        // Update dòng hiện có
+                        dataList[index] = updatedDto;
+                        
+                        // Refresh binding source để cập nhật UI
+                        businessPartnerSiteListDtoBindingSource.ResetBindings(false);
+                        
+                        // Refresh grid view để hiển thị thay đổi
+                        var rowHandle = BusinessPartnerSiteListDtoGridView.GetRowHandle(index);
+                        if (rowHandle >= 0)
+                        {
+                            BusinessPartnerSiteListDtoGridView.RefreshRow(rowHandle);
+                        }
+                    }
+                    else
+                    {
+                        // Nếu không tìm thấy (trường hợp thêm mới), thêm vào đầu danh sách
+                        dataList.Insert(0, updatedDto);
+                        businessPartnerSiteListDtoBindingSource.ResetBindings(false);
+                    }
+                    
+                    // Cập nhật summary
+                    _dataList = dataList;
+                    UpdateDataSummary();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Nếu có lỗi khi update, fallback về reload toàn bộ
+                System.Diagnostics.Debug.WriteLine($"Lỗi update single row: {ex.Message}");
+                _ = LoadDataAsync();
+            }
         }
 
         #endregion
@@ -192,10 +248,14 @@ namespace MasterData.Customer
                 {
                     using (var form = new FrmBusinessPartnerSiteDetail(Guid.Empty))
                     {
+                        form.SiteSaved += (updatedDto) =>
+                        {
+                            // Cập nhật datasource với DTO mới (thêm mới)
+                            UpdateSingleRowInDataSource(updatedDto);
+                        };
                         form.StartPosition = FormStartPosition.CenterParent;
                         if (form.ShowDialog(this) == DialogResult.OK)
                         {
-                            await LoadDataAsyncWithoutSplash();
                             UpdateButtonStates();
                         }
                     }
@@ -226,10 +286,14 @@ namespace MasterData.Customer
                     {
                         using (var form = new FrmBusinessPartnerSiteDetail(_selectedItem.Id))
                         {
+                            form.SiteSaved += (updatedDto) =>
+                            {
+                                // Cập nhật datasource với DTO đã được cập nhật
+                                UpdateSingleRowInDataSource(updatedDto);
+                            };
                             form.StartPosition = FormStartPosition.CenterParent;
                             if (form.ShowDialog(this) == DialogResult.OK)
                             {
-                                await LoadDataAsyncWithoutSplash();
                                 UpdateButtonStates();
                             }
                         }
@@ -295,43 +359,24 @@ namespace MasterData.Customer
         private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Chỉ cho phép xuất khi có dữ liệu hiển thị
-            var rowCount = BusinessPartnerSiteListDtoAdvBandedGridView.RowCount;
+            var rowCount = GridViewHelper.GetDisplayRowCount(BusinessPartnerSiteListDtoGridView) ?? 0;
             if (rowCount <= 0)
             {
                 ShowInfo("Không có dữ liệu để xuất.");
                 return;
             }
 
-            // Export GridView data
-            try
-            {
-                var saveDialog = new SaveFileDialog
-                {
-                    Filter = @"Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
-                    FileName = "BusinessPartnerSites.xlsx"
-                };
-
-                if (saveDialog.ShowDialog() == DialogResult.OK)
-                {
-                    BusinessPartnerSiteListDtoAdvBandedGridView.ExportToXlsx(saveDialog.FileName);
-                    ShowInfo("Xuất dữ liệu thành công!");
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi xuất dữ liệu");
-            }
+            GridViewHelper.ExportGridControl(BusinessPartnerSiteListDtoGridView, "BusinessPartnerSites.xlsx");
         }
 
         /// <summary>
         /// Xử lý sự kiện thay đổi selection trên GridView
         /// </summary>
-        private void AdvBandedGridView1_SelectionChanged(object sender, EventArgs e)
+        private void BusinessPartnerSiteListDtoGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                var view = sender as AdvBandedGridView;
-                if (view?.FocusedRowHandle >= 0)
+                if (sender is GridView view && view.FocusedRowHandle >= 0)
                 {
                     _selectedItem = view.GetFocusedRow() as BusinessPartnerSiteListDto;
                     UpdateSelectedRowInfo();
@@ -352,7 +397,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Xử lý sự kiện double click trên GridView
         /// </summary>
-        private async void AdvBandedGridView1_DoubleClick(object sender, EventArgs e)
+        private async void BusinessPartnerSiteListDtoGridView_DoubleClick(object sender, EventArgs e)
         {
             try
             {
@@ -362,10 +407,14 @@ namespace MasterData.Customer
                     {
                         using (var form = new FrmBusinessPartnerSiteDetail(_selectedItem.Id))
                         {
+                            form.SiteSaved += (updatedDto) =>
+                            {
+                                // Cập nhật datasource với DTO đã được cập nhật
+                                UpdateSingleRowInDataSource(updatedDto);
+                            };
                             form.StartPosition = FormStartPosition.CenterParent;
                             if (form.ShowDialog(this) == DialogResult.OK)
                             {
-                                await LoadDataAsyncWithoutSplash();
                                 UpdateButtonStates();
                             }
                         }
@@ -378,44 +427,76 @@ namespace MasterData.Customer
             }
         }
 
+        /// <summary>
+        /// Xử lý sự kiện vẽ số thứ tự dòng
+        /// </summary>
+        private void BusinessPartnerSiteListDtoGridView_CustomDrawRowIndicator(object sender, RowIndicatorCustomDrawEventArgs e)
+        {
+            // Sử dụng helper chung để vẽ số thứ tự dòng
+            GridViewHelper.CustomDrawRowIndicator(BusinessPartnerSiteListDtoGridView, e);
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện tô màu dòng theo trạng thái
+        /// </summary>
+        private void BusinessPartnerSiteListDtoGridView_RowCellStyle(object sender, RowCellStyleEventArgs e)
+        {
+            try
+            {
+                if (sender is not GridView view) return;
+                if (e.RowHandle < 0) return;
+                if (view.GetRow(e.RowHandle) is not BusinessPartnerSiteListDto row) return;
+                // Không ghi đè màu khi đang chọn để giữ màu chọn mặc định của DevExpress
+                if (view.IsRowSelected(e.RowHandle)) return;
+                
+                // Nếu chi nhánh không hoạt động: làm nổi bật rõ ràng hơn
+                if (row.IsActive) return;
+                e.Appearance.BackColor = Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
+                e.Appearance.ForeColor = Color.DarkRed;
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Strikeout);
+            }
+            catch (Exception)
+            {
+                // ignore style errors
+            }
+        }
+
         #endregion
 
         #region ========== XỬ LÝ DỮ LIỆU ==========
 
         /// <summary>
-        /// Cấu hình GridView để hiển thị multi-line và wrap text
+        /// Cấu hình GridView để hiển thị dữ liệu xuống dòng (word wrap) cho các cột văn bản dài.
+        /// Đồng thời bật tự động tính chiều cao dòng để hiển thị đầy đủ nội dung.
         /// </summary>
         private void ConfigureMultiLineGridView()
         {
             try
             {
-                // Cấu hình RepositoryItemMemoEdit cho wrap text
+                // Bật tự động điều chỉnh chiều cao dòng để wrap nội dung
+                BusinessPartnerSiteListDtoGridView.OptionsView.RowAutoHeight = true;
+
+                // RepositoryItemMemoEdit cho wrap text
                 var memo = new RepositoryItemMemoEdit
                 {
                     WordWrap = true,
-                    AutoHeight = true
+                    AutoHeight = false
                 };
                 memo.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
 
                 // Áp dụng cho các cột có khả năng dài
                 ApplyMemoEditorToColumn("SiteName", memo);
                 ApplyMemoEditorToColumn("SiteFullAddress", memo);
-                ApplyMemoEditorToColumn("ContactPerson", memo);
+                ApplyMemoEditorToColumn("Address", memo);
+                ApplyMemoEditorToColumn("Notes", memo);
 
-                // Cấu hình hiển thị: căn giữa tiêu đề cho đẹp
-                BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
-                BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
-
-                // Cấu hình màu sắc cho các dòng
-                BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.EvenRow.BackColor = Color.FromArgb(248, 248, 248);
-                BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.EnableAppearanceEvenRow = true;
-
-                // Cấu hình auto height cho các dòng
-                BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.RowAutoHeight = true;
+                // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
+                BusinessPartnerSiteListDtoGridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
+                BusinessPartnerSiteListDtoGridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
             }
             catch (Exception ex)
             {
-                MsgBox.ShowError($"Lỗi cấu hình grid: {ex.Message}");
+                MsgBox.ShowException(ex);
             }
         }
 
@@ -426,9 +507,8 @@ namespace MasterData.Customer
         /// <param name="memo">RepositoryItemMemoEdit</param>
         private void ApplyMemoEditorToColumn(string fieldName, RepositoryItemMemoEdit memo)
         {
-            var col = BusinessPartnerSiteListDtoAdvBandedGridView.Columns[fieldName];
+            var col = BusinessPartnerSiteListDtoGridView.Columns[fieldName];
             if (col == null) return;
-            
             // Thêm repository vào GridControl nếu chưa có
             if (!BusinessPartnerSiteListDtoGridControl.RepositoryItems.Contains(memo))
             {
@@ -480,7 +560,7 @@ namespace MasterData.Customer
                     DeleteBarButtonItem.Enabled = hasSelection;
                     
                 // Export: chỉ khi có dữ liệu hiển thị
-                var rowCount = BusinessPartnerSiteListDtoAdvBandedGridView.RowCount;
+                var rowCount = GridViewHelper.GetDisplayRowCount(BusinessPartnerSiteListDtoGridView) ?? 0;
                 if (ExportBarButtonItem != null)
                     ExportBarButtonItem.Enabled = rowCount > 0;
             }
@@ -491,13 +571,13 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Xóa trạng thái chọn hiện tại trên GridView.
+        /// Xóa trạng thái chọn hiện tại trên Grid.
         /// </summary>
         private void ClearSelectionState()
         {
             _selectedItem = null;
-            BusinessPartnerSiteListDtoAdvBandedGridView.ClearSelection();
-            BusinessPartnerSiteListDtoAdvBandedGridView.FocusedRowHandle = -1;
+            BusinessPartnerSiteListDtoGridView.ClearSelection();
+            BusinessPartnerSiteListDtoGridView.FocusedRowHandle = GridControl.InvalidRowHandle;
             UpdateSelectedRowInfo();
             UpdateButtonStates();
         }

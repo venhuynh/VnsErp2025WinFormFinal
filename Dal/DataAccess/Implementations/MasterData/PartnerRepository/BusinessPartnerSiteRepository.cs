@@ -184,54 +184,64 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
+            _logger.Debug($"[SaveOrUpdate] Bắt đầu lưu BusinessPartnerSite - Id: {entity.Id}, SiteCode: {entity.SiteCode}, SiteName: {entity.SiteName}");
+            _logger.Debug($"[SaveOrUpdate] Entity.Id == Guid.Empty: {entity.Id == Guid.Empty}, Entity.Id: '{entity.Id}'");
+
             using var context = CreateNewContext();
             
             if (entity.Id == Guid.Empty)
             {
                 // Thêm mới
+                _logger.Debug("[SaveOrUpdate] Chế độ: CREATE (entity.Id == Guid.Empty)");
                 entity.Id = Guid.NewGuid();
                 entity.CreatedDate = DateTime.Now;
+                _logger.Debug($"[SaveOrUpdate] Đã tạo Id mới: {entity.Id}, SiteCode: {entity.SiteCode}");
                 context.BusinessPartnerSites.InsertOnSubmit(entity);
                 context.SubmitChanges();
                 
-                _logger.Info($"Đã thêm mới BusinessPartnerSite: {entity.SiteCode} - {entity.SiteName}");
+                _logger.Info($"Đã thêm mới BusinessPartnerSite: {entity.SiteCode} - {entity.SiteName} (Id: {entity.Id})");
             }
             else
             {
                 // Cập nhật
+                _logger.Debug($"[SaveOrUpdate] Chế độ: UPDATE (entity.Id != Guid.Empty), Id: {entity.Id}");
                 var existingEntity = context.BusinessPartnerSites.FirstOrDefault(s => s.Id == entity.Id);
                 if (existingEntity != null)
                 {
+                    _logger.Debug($"[SaveOrUpdate] Tìm thấy existing entity: {existingEntity.SiteCode} - {existingEntity.SiteName}");
+                    // Cập nhật các field cơ bản
+                    existingEntity.PartnerId = entity.PartnerId;
                     existingEntity.SiteCode = entity.SiteCode;
                     existingEntity.SiteName = entity.SiteName;
                     existingEntity.Address = entity.Address;
                     existingEntity.City = entity.City;
                     existingEntity.Province = entity.Province;
                     existingEntity.Country = entity.Country;
-                    existingEntity.ContactPerson = entity.ContactPerson;
                     existingEntity.Phone = entity.Phone;
                     existingEntity.Email = entity.Email;
                     existingEntity.IsDefault = entity.IsDefault;
                     existingEntity.IsActive = entity.IsActive;
                     existingEntity.UpdatedDate = DateTime.Now;
                     
-                    // Cập nhật các fields mới
+                    // Cập nhật các fields mở rộng
                     existingEntity.PostalCode = entity.PostalCode;
                     existingEntity.District = entity.District;
-                    existingEntity.Latitude = entity.Latitude;
-                    existingEntity.Longitude = entity.Longitude;
                     existingEntity.SiteType = entity.SiteType;
                     existingEntity.Notes = entity.Notes;
+                    existingEntity.GoogleMapUrl = entity.GoogleMapUrl;
                     
                     context.SubmitChanges();
-                    _logger.Info($"Đã cập nhật BusinessPartnerSite: {existingEntity.SiteCode} - {existingEntity.SiteName}");
+                    _logger.Info($"Đã cập nhật BusinessPartnerSite: {existingEntity.SiteCode} - {existingEntity.SiteName} (Id: {existingEntity.Id})");
                 }
                 else
                 {
-                    throw new DataAccessException("Không tìm thấy BusinessPartnerSite để cập nhật");
+                    _logger.Error($"[SaveOrUpdate] LỖI: Không tìm thấy BusinessPartnerSite với Id: {entity.Id}, SiteCode: {entity.SiteCode}, SiteName: {entity.SiteName}");
+                    _logger.Error($"[SaveOrUpdate] Đang cố UPDATE nhưng entity không tồn tại trong database. Có thể đây là lỗi logic - entity nên có Id = Guid.Empty để CREATE.");
+                    throw new DataAccessException($"Không tìm thấy BusinessPartnerSite để cập nhật (Id: {entity.Id}, SiteCode: {entity.SiteCode})");
                 }
             }
             
+            _logger.Debug($"[SaveOrUpdate] Hoàn thành, trả về Id: {entity.Id}");
             return entity.Id;
         }
         catch (SqlException sqlEx)

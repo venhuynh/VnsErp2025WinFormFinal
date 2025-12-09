@@ -583,7 +583,6 @@ namespace Dal.DataContext.SeedData.MasterData.Customer
                     City = provinces[random.Next(provinces.Length)],
                     Province = provinces[random.Next(provinces.Length)],
                     Country = countries[random.Next(countries.Length)],
-                    ContactPerson = GenerateContactPerson(random),
                     Phone = GeneratePhoneNumber(random),
                     Email = GenerateContactEmail(selectedPartner.PartnerCode, i, random),
                     IsDefault = isDefault,

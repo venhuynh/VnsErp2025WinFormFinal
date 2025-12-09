@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
-using System.Windows.Forms;
-using DevExpress.XtraBars;
-using DevExpress.XtraEditors.Repository;
+﻿using DevExpress.XtraBars;
 using DevExpress.XtraGrid;
-using DevExpress.XtraGrid.Views.BandedGrid;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
-using DTO.MasterData.CustomerPartner;
+using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraEditors.Repository;
 
 namespace MasterData.Customer
 {
@@ -61,17 +61,10 @@ namespace MasterData.Customer
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.BusinessPartnerSiteListDtoGridControl = new DevExpress.XtraGrid.GridControl();
             this.businessPartnerSiteListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.BusinessPartnerSiteListDtoAdvBandedGridView = new DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView();
-            this.gridBand1 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.colPartnerName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.gridBand2 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.colSiteCode = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colSiteName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colContactPerson = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colPhone = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colSiteFullAddress = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.BusinessPartnerSiteListDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.HtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
-            this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
@@ -81,9 +74,9 @@ namespace MasterData.Customer
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerSiteListDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerSiteListDtoAdvBandedGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerSiteListDtoGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -221,31 +214,31 @@ namespace MasterData.Customer
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 605);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 592);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 22);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 35);
             // 
             // barDockControlLeft
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 581);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 553);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 581);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 553);
             // 
             // repositoryItemComboBox1
             // 
@@ -265,10 +258,10 @@ namespace MasterData.Customer
             // 
             this.layoutControl1.Controls.Add(this.BusinessPartnerSiteListDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 24);
+            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 581);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 553);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -276,136 +269,77 @@ namespace MasterData.Customer
             // 
             this.BusinessPartnerSiteListDtoGridControl.DataSource = this.businessPartnerSiteListDtoBindingSource;
             this.BusinessPartnerSiteListDtoGridControl.EmbeddedNavigator.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
-            this.BusinessPartnerSiteListDtoGridControl.Location = new System.Drawing.Point(12, 12);
-            this.BusinessPartnerSiteListDtoGridControl.MainView = this.BusinessPartnerSiteListDtoAdvBandedGridView;
+            this.BusinessPartnerSiteListDtoGridControl.Location = new System.Drawing.Point(16, 16);
+            this.BusinessPartnerSiteListDtoGridControl.MainView = this.BusinessPartnerSiteListDtoGridView;
             this.BusinessPartnerSiteListDtoGridControl.MenuManager = this.barManager1;
             this.BusinessPartnerSiteListDtoGridControl.Name = "BusinessPartnerSiteListDtoGridControl";
             this.BusinessPartnerSiteListDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemPictureEdit1,
-            this.repositoryItemHypertextLabel1});
-            this.BusinessPartnerSiteListDtoGridControl.Size = new System.Drawing.Size(1051, 557);
+            this.HtmlHypertextLabel,
+            this.repositoryItemPictureEdit1});
+            this.BusinessPartnerSiteListDtoGridControl.Size = new System.Drawing.Size(1043, 521);
             this.BusinessPartnerSiteListDtoGridControl.TabIndex = 5;
             this.BusinessPartnerSiteListDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.BusinessPartnerSiteListDtoAdvBandedGridView});
+            this.BusinessPartnerSiteListDtoGridView});
             // 
             // businessPartnerSiteListDtoBindingSource
             // 
             this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto);
             // 
-            // BusinessPartnerSiteListDtoAdvBandedGridView
+            // BusinessPartnerSiteListDtoGridView
             // 
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.ViewCaption.Options.UseFont = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.Appearance.ViewCaption.Options.UseForeColor = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.Bands.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.GridBand[] {
-            this.gridBand1,
-            this.gridBand2});
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.Columns.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn[] {
-            this.colPartnerName,
-            this.colSiteCode,
-            this.colSiteName,
-            this.colSiteFullAddress,
-            this.colContactPerson,
-            this.colPhone});
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.GridControl = this.BusinessPartnerSiteListDtoGridControl;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.GroupCount = 1;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.GroupSummary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
-            new DevExpress.XtraGrid.GridGroupSummaryItem(DevExpress.Data.SummaryItemType.Count, "SiteCode", null, " [Có {0} chi nhánh]")});
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.IndicatorWidth = 40;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.Name = "BusinessPartnerSiteListDtoAdvBandedGridView";
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsClipboard.AllowHtmlFormat = DevExpress.Utils.DefaultBoolean.True;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsFind.AlwaysVisible = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsPrint.EnableAppearanceEvenRow = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsSelection.MultiSelect = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.AllowHtmlDrawDetailTabs = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.AllowHtmlDrawHeaders = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.EnableAppearanceEvenRow = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.ShowAutoFilterRow = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.ShowGroupPanel = false;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.OptionsView.ShowViewCaption = true;
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
-            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.colPartnerName, DevExpress.Data.ColumnSortOrder.Ascending)});
-            this.BusinessPartnerSiteListDtoAdvBandedGridView.ViewCaption = "BẢNG DỮ LIỆU CHI NHÁNH ĐỐI TÁC";
+            this.BusinessPartnerSiteListDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.BusinessPartnerSiteListDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.BusinessPartnerSiteListDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.BusinessPartnerSiteListDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.BusinessPartnerSiteListDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colThongTinHtml});
+            this.BusinessPartnerSiteListDtoGridView.GridControl = this.BusinessPartnerSiteListDtoGridControl;
+            this.BusinessPartnerSiteListDtoGridView.IndicatorWidth = 40;
+            this.BusinessPartnerSiteListDtoGridView.Name = "BusinessPartnerSiteListDtoGridView";
+            this.BusinessPartnerSiteListDtoGridView.OptionsSelection.MultiSelect = true;
+            this.BusinessPartnerSiteListDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.BusinessPartnerSiteListDtoGridView.OptionsView.ColumnAutoWidth = false;
+            this.BusinessPartnerSiteListDtoGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.BusinessPartnerSiteListDtoGridView.OptionsView.EnableAppearanceEvenRow = true;
+            this.BusinessPartnerSiteListDtoGridView.OptionsView.EnableAppearanceOddRow = true;
+            this.BusinessPartnerSiteListDtoGridView.OptionsView.RowAutoHeight = true;
+            this.BusinessPartnerSiteListDtoGridView.OptionsView.ShowAutoFilterRow = true;
+            this.BusinessPartnerSiteListDtoGridView.OptionsView.ShowFooter = true;
+            this.BusinessPartnerSiteListDtoGridView.OptionsView.ShowGroupPanel = false;
+            this.BusinessPartnerSiteListDtoGridView.OptionsView.ShowViewCaption = true;
+            this.BusinessPartnerSiteListDtoGridView.ViewCaption = "BẢNG DỮ LIỆU CHI NHÁNH ĐỐI TÁC";
             // 
-            // gridBand1
+            // colThongTinHtml
             // 
-            this.gridBand1.AppearanceHeader.Options.UseTextOptions = true;
-            this.gridBand1.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gridBand1.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.gridBand1.Caption = "Tên đối tác";
-            this.gridBand1.Columns.Add(this.colPartnerName);
-            this.gridBand1.Name = "gridBand1";
-            this.gridBand1.VisibleIndex = 0;
-            this.gridBand1.Width = 199;
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin chi nhánh";
+            this.colThongTinHtml.ColumnEdit = this.HtmlHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 300;
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 1;
+            this.colThongTinHtml.Width = 400;
             // 
-            // colPartnerName
+            // HtmlHypertextLabel
             // 
-            this.colPartnerName.FieldName = "PartnerName";
-            this.colPartnerName.Name = "colPartnerName";
-            this.colPartnerName.Visible = true;
-            this.colPartnerName.Width = 199;
-            // 
-            // gridBand2
-            // 
-            this.gridBand2.AppearanceHeader.Options.UseTextOptions = true;
-            this.gridBand2.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gridBand2.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.gridBand2.Caption = "Thông tin địa chỉ chi nhánh";
-            this.gridBand2.Columns.Add(this.colSiteCode);
-            this.gridBand2.Columns.Add(this.colSiteName);
-            this.gridBand2.Columns.Add(this.colSiteFullAddress);
-            this.gridBand2.Columns.Add(this.colContactPerson);
-            this.gridBand2.Columns.Add(this.colPhone);
-            this.gridBand2.Name = "gridBand2";
-            this.gridBand2.VisibleIndex = 1;
-            this.gridBand2.Width = 1102;
-            // 
-            // colSiteCode
-            // 
-            this.colSiteCode.FieldName = "SiteCode";
-            this.colSiteCode.Name = "colSiteCode";
-            this.colSiteCode.Visible = true;
-            this.colSiteCode.Width = 258;
-            // 
-            // colSiteName
-            // 
-            this.colSiteName.FieldName = "SiteName";
-            this.colSiteName.Name = "colSiteName";
-            this.colSiteName.Visible = true;
-            this.colSiteName.Width = 129;
-            // 
-            // colContactPerson
-            // 
-            this.colContactPerson.FieldName = "ContactPerson";
-            this.colContactPerson.Name = "colContactPerson";
-            this.colContactPerson.Visible = true;
-            this.colContactPerson.Width = 129;
-            // 
-            // colPhone
-            // 
-            this.colPhone.FieldName = "Phone";
-            this.colPhone.Name = "colPhone";
-            this.colPhone.Visible = true;
-            this.colPhone.Width = 35;
-            // 
-            // colSiteFullAddress
-            // 
-            this.colSiteFullAddress.FieldName = "SiteFullAddress";
-            this.colSiteFullAddress.Name = "colSiteFullAddress";
-            this.colSiteFullAddress.Visible = true;
-            this.colSiteFullAddress.Width = 551;
+            this.HtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.HtmlHypertextLabel.Name = "HtmlHypertextLabel";
             // 
             // repositoryItemPictureEdit1
             // 
             this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
-            // 
-            // repositoryItemHypertextLabel1
-            // 
-            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
             // 
             // Root
             // 
@@ -414,7 +348,7 @@ namespace MasterData.Customer
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 581);
+            this.Root.Size = new System.Drawing.Size(1075, 553);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -422,7 +356,7 @@ namespace MasterData.Customer
             this.layoutControlItem1.Control = this.BusinessPartnerSiteListDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1055, 561);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
             // 
             // FrmBusinessPartnerSite
@@ -444,9 +378,9 @@ namespace MasterData.Customer
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerSiteListDtoGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerSiteListDtoAdvBandedGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerSiteListDtoGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
@@ -479,16 +413,9 @@ namespace MasterData.Customer
         private BarStaticItem SelectedRowBarStaticItem;
         private RepositoryItemComboBox repositoryItemComboBox1;
         private RepositoryItemComboBox repositoryItemComboBox2;
-        private RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlHypertextLabel;
         private BindingSource businessPartnerSiteListDtoBindingSource;
-        private AdvBandedGridView BusinessPartnerSiteListDtoAdvBandedGridView;
-        private GridBand gridBand1;
-        private BandedGridColumn colPartnerName;
-        private GridBand gridBand2;
-        private BandedGridColumn colSiteCode;
-        private BandedGridColumn colSiteName;
-        private BandedGridColumn colContactPerson;
-        private BandedGridColumn colPhone;
-        private BandedGridColumn colSiteFullAddress;
+        private GridView BusinessPartnerSiteListDtoGridView;
+        private GridColumn colThongTinHtml;
     }
 }
