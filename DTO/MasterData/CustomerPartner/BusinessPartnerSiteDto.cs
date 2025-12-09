@@ -520,10 +520,17 @@ namespace DTO.MasterData.CustomerPartner
 
             var entity = existingEntity ?? new BusinessPartnerSite();
 
-            // Chỉ set ID nếu là entity mới
-            if (existingEntity == null && dto.Id != Guid.Empty)
+            // Chỉ set ID nếu là entity đã tồn tại (edit mode)
+            // Khi tạo mới (existingEntity == null), không set Id từ dto để đảm bảo Id = Guid.Empty
+            if (existingEntity != null)
             {
-                entity.Id = dto.Id;
+                // Edit mode: giữ nguyên Id của existing entity
+                // Không cần set lại vì entity đã là existingEntity
+            }
+            else
+            {
+                // Create mode: đảm bảo Id = Guid.Empty (default của new BusinessPartnerSite())
+                entity.Id = Guid.Empty;
             }
 
             entity.PartnerId = dto.PartnerId;

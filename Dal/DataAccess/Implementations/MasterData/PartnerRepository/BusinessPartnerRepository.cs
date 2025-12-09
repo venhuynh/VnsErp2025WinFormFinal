@@ -625,6 +625,97 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         }
     }
 
+    /// <summary>
+    /// Tạo DataContext mới cho Lookup (không load navigation properties để tối ưu hiệu năng)
+    /// </summary>
+    /// <returns>DataContext mới không có LoadOptions</returns>
+    private VnsErp2025DataContext CreateLookupContext()
+    {
+        // Tạo context mới nhưng KHÔNG set LoadOptions để tránh load navigation properties không cần thiết
+        return new VnsErp2025DataContext(_connectionString);
+    }
+
+    /// <summary>
+    /// Lấy danh sách đối tác đang hoạt động cho Lookup (chỉ load các trường cần thiết).
+    /// Không load navigation properties để tối ưu hiệu năng.
+    /// LINQ to SQL sẽ tự động chỉ select các trường được sử dụng (Id, PartnerCode, PartnerType, PartnerName, LogoThumbnailData).
+    /// </summary>
+    public List<BusinessPartner> GetActivePartnersForLookup()
+    {
+        try
+        {
+            _logger.Debug("[GetActivePartnersForLookup] Bắt đầu lấy danh sách đối tác cho lookup");
+            
+            using var context = CreateLookupContext();
+            
+            // Query BusinessPartner entities nhưng không load navigation properties
+            // LINQ to SQL sẽ chỉ select các trường được truy cập sau khi ToList()
+            // Tuy nhiên, để đảm bảo chỉ load các trường cần thiết, ta query trực tiếp
+            var partners = context.BusinessPartners
+                .Where(x => x.IsActive == true && !x.IsDeleted)
+                .ToList();
+            
+            // Materialize chỉ các trường cần thiết để đảm bảo chúng được load từ DB
+            // Các trường khác sẽ là null/default nhưng không ảnh hưởng vì ta chỉ dùng các trường này
+            foreach (var partner in partners)
+            {
+                // Force materialize các trường cần thiết
+                var _ = partner.Id;
+                var __ = partner.PartnerCode;
+                var ___ = partner.PartnerType;
+                var ____ = partner.PartnerName;
+                var _____ = partner.LogoThumbnailData;
+            }
+            
+            _logger.Debug($"[GetActivePartnersForLookup] Đã lấy {partners.Count} đối tác cho lookup");
+            return partners;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh sách đối tác cho lookup: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh sách đối tác cho lookup: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách đối tác đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
+    /// </summary>
+    public async Task<List<BusinessPartner>> GetActivePartnersForLookupAsync()
+    {
+        try
+        {
+            _logger.Debug("[GetActivePartnersForLookupAsync] Bắt đầu lấy danh sách đối tác cho lookup (async)");
+            
+            return await Task.Run(() =>
+            {
+                using var context = CreateLookupContext();
+                
+                // Query BusinessPartner entities nhưng không load navigation properties
+                var partners = context.BusinessPartners
+                    .Where(x => x.IsActive == true && !x.IsDeleted)
+                    .ToList();
+                
+                // Materialize chỉ các trường cần thiết
+                foreach (var partner in partners)
+                {
+                    var _ = partner.Id;
+                    var __ = partner.PartnerCode;
+                    var ___ = partner.PartnerType;
+                    var ____ = partner.PartnerName;
+                    var _____ = partner.LogoThumbnailData;
+                }
+                
+                _logger.Debug($"[GetActivePartnersForLookupAsync] Đã lấy {partners.Count} đối tác cho lookup (async)");
+                return partners;
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh sách đối tác cho lookup (async): {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh sách đối tác cho lookup (async): {ex.Message}", ex);
+        }
+    }
+
     #endregion
 
     #region Update

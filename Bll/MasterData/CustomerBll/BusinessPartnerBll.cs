@@ -138,6 +138,45 @@ namespace Bll.MasterData.CustomerBll
         }
 
         /// <summary>
+        /// Lấy danh sách đối tác đang hoạt động cho Lookup (chỉ load các trường cần thiết).
+        /// Tối ưu hiệu năng bằng cách không load navigation properties.
+        /// </summary>
+        public List<BusinessPartner> GetActivePartnersForLookup()
+        {
+            try
+            {
+                _logger.Debug("[BLL] GetActivePartnersForLookup: Bắt đầu gọi repository");
+                var result = GetDataAccess().GetActivePartnersForLookup();
+                _logger.Debug($"[BLL] GetActivePartnersForLookup: Đã nhận được {result?.Count ?? 0} entities từ repository");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"[BLL] GetActivePartnersForLookup: LỖI: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách đối tác đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
+        /// </summary>
+        public async Task<List<BusinessPartner>> GetActivePartnersForLookupAsync()
+        {
+            try
+            {
+                _logger.Debug("[BLL] GetActivePartnersForLookupAsync: Bắt đầu gọi repository");
+                var result = await GetDataAccess().GetActivePartnersForLookupAsync();
+                _logger.Debug($"[BLL] GetActivePartnersForLookupAsync: Đã nhận được {result?.Count ?? 0} entities từ repository");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"[BLL] GetActivePartnersForLookupAsync: LỖI: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Lấy dictionary chứa tất cả BusinessPartnerCategory để tính FullPath
         /// </summary>
         /// <returns>Dictionary với Key là CategoryId, Value là BusinessPartnerCategory</returns>

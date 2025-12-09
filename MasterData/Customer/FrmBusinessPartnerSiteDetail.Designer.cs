@@ -61,12 +61,11 @@ namespace MasterData.Customer
             this.DistrictTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.PhoneTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.EmailTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.PartnerNameTextEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
-            this.businessPartnerListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colPartnerTypeName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPartnerName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colFullAddressName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.PartnerNameSearchLookup = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.businessPartnerLookupDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.BusinessPartnerSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colBusinessPartnerInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.BusinessPartnerInfoHtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.IsActiveCheckEdit = new DevExpress.XtraEditors.ToggleSwitch();
             this.IsDefaultCheckEdit = new DevExpress.XtraEditors.ToggleSwitch();
             this.SiteTypeComboBoxEdit = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -104,9 +103,10 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.DistrictTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhoneTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EmailTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PartnerNameTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PartnerNameSearchLookup.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerLookupDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerSearchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerInfoHtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsDefaultCheckEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SiteTypeComboBoxEdit.Properties)).BeginInit();
@@ -225,7 +225,7 @@ namespace MasterData.Customer
             this.dataLayoutControl1.Controls.Add(this.DistrictTextEdit);
             this.dataLayoutControl1.Controls.Add(this.PhoneTextEdit);
             this.dataLayoutControl1.Controls.Add(this.EmailTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.PartnerNameTextEdit);
+            this.dataLayoutControl1.Controls.Add(this.PartnerNameSearchLookup);
             this.dataLayoutControl1.Controls.Add(this.IsActiveCheckEdit);
             this.dataLayoutControl1.Controls.Add(this.IsDefaultCheckEdit);
             this.dataLayoutControl1.Controls.Add(this.SiteTypeComboBoxEdit);
@@ -334,57 +334,65 @@ namespace MasterData.Customer
             this.EmailTextEdit.StyleController = this.dataLayoutControl1;
             this.EmailTextEdit.TabIndex = 13;
             // 
-            // PartnerNameTextEdit
+            // PartnerNameSearchLookup
             // 
-            this.PartnerNameTextEdit.Location = new System.Drawing.Point(110, 16);
-            this.PartnerNameTextEdit.MenuManager = this.barManager1;
-            this.PartnerNameTextEdit.Name = "PartnerNameTextEdit";
-            this.PartnerNameTextEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            this.PartnerNameSearchLookup.Location = new System.Drawing.Point(110, 16);
+            this.PartnerNameSearchLookup.MenuManager = this.barManager1;
+            this.PartnerNameSearchLookup.Name = "PartnerNameSearchLookup";
+            this.PartnerNameSearchLookup.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.PartnerNameSearchLookup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.PartnerNameTextEdit.Properties.DataSource = this.businessPartnerListDtoBindingSource;
-            this.PartnerNameTextEdit.Properties.DisplayMember = "PartnerName";
-            this.PartnerNameTextEdit.Properties.NullText = "";
-            this.PartnerNameTextEdit.Properties.PopupView = this.searchLookUpEdit1View;
-            this.PartnerNameTextEdit.Properties.ValueMember = "Id";
-            this.PartnerNameTextEdit.Size = new System.Drawing.Size(540, 28);
-            this.PartnerNameTextEdit.StyleController = this.dataLayoutControl1;
-            this.PartnerNameTextEdit.TabIndex = 5;
+            this.PartnerNameSearchLookup.Properties.DataSource = this.businessPartnerLookupDtoBindingSource;
+            this.PartnerNameSearchLookup.Properties.DisplayMember = "BusinessPartnerInfoHtml";
+            this.PartnerNameSearchLookup.Properties.NullText = "";
+            this.PartnerNameSearchLookup.Properties.PopupView = this.BusinessPartnerSearchLookUpEdit1View;
+            this.PartnerNameSearchLookup.Properties.ValueMember = "Id";
+            this.PartnerNameSearchLookup.Size = new System.Drawing.Size(540, 28);
+            this.PartnerNameSearchLookup.StyleController = this.dataLayoutControl1;
+            this.PartnerNameSearchLookup.TabIndex = 5;
             // 
-            // businessPartnerListDtoBindingSource
+            // businessPartnerLookupDtoBindingSource
             // 
-            this.businessPartnerListDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerListDto);
+            this.businessPartnerLookupDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerLookupDto);
             // 
-            // searchLookUpEdit1View
+            // BusinessPartnerSearchLookUpEdit1View
             // 
-            this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colPartnerTypeName,
-            this.colPartnerName,
-            this.colFullAddressName});
-            this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
-            this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            this.BusinessPartnerSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colBusinessPartnerInfoHtml});
+            this.BusinessPartnerSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.BusinessPartnerSearchLookUpEdit1View.Name = "BusinessPartnerSearchLookUpEdit1View";
+            this.BusinessPartnerSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.BusinessPartnerSearchLookUpEdit1View.OptionsView.ColumnAutoWidth = false;
+            this.BusinessPartnerSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
+            this.BusinessPartnerSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
-            // colPartnerTypeName
+            // colBusinessPartnerInfoHtml
             // 
-            this.colPartnerTypeName.FieldName = "PartnerTypeName";
-            this.colPartnerTypeName.Name = "colPartnerTypeName";
-            this.colPartnerTypeName.Visible = true;
-            this.colPartnerTypeName.VisibleIndex = 1;
+            this.colBusinessPartnerInfoHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colBusinessPartnerInfoHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colBusinessPartnerInfoHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colBusinessPartnerInfoHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colBusinessPartnerInfoHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colBusinessPartnerInfoHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colBusinessPartnerInfoHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colBusinessPartnerInfoHtml.AppearanceHeader.Options.UseFont = true;
+            this.colBusinessPartnerInfoHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colBusinessPartnerInfoHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colBusinessPartnerInfoHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colBusinessPartnerInfoHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colBusinessPartnerInfoHtml.Caption = "Thông tin đối tác";
+            this.colBusinessPartnerInfoHtml.ColumnEdit = this.BusinessPartnerInfoHtmlRepositoryItemHypertextLabel;
+            this.colBusinessPartnerInfoHtml.FieldName = "BusinessPartnerInfoHtml";
+            this.colBusinessPartnerInfoHtml.MinWidth = 300;
+            this.colBusinessPartnerInfoHtml.Name = "colBusinessPartnerInfoHtml";
+            this.colBusinessPartnerInfoHtml.Visible = true;
+            this.colBusinessPartnerInfoHtml.VisibleIndex = 0;
+            this.colBusinessPartnerInfoHtml.Width = 500;
             // 
-            // colPartnerName
+            // BusinessPartnerInfoHtmlRepositoryItemHypertextLabel
             // 
-            this.colPartnerName.FieldName = "PartnerName";
-            this.colPartnerName.Name = "colPartnerName";
-            this.colPartnerName.Visible = true;
-            this.colPartnerName.VisibleIndex = 0;
-            // 
-            // colFullAddressName
-            // 
-            this.colFullAddressName.FieldName = "FullAddressName";
-            this.colFullAddressName.Name = "colFullAddressName";
-            this.colFullAddressName.Visible = true;
-            this.colFullAddressName.VisibleIndex = 2;
+            this.BusinessPartnerInfoHtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.BusinessPartnerInfoHtmlRepositoryItemHypertextLabel.Name = "BusinessPartnerInfoHtmlRepositoryItemHypertextLabel";
             // 
             // IsActiveCheckEdit
             // 
@@ -577,7 +585,7 @@ namespace MasterData.Customer
             // 
             // ItemForPartnerName
             // 
-            this.ItemForPartnerName.Control = this.PartnerNameTextEdit;
+            this.ItemForPartnerName.Control = this.PartnerNameSearchLookup;
             this.ItemForPartnerName.Location = new System.Drawing.Point(0, 0);
             this.ItemForPartnerName.Name = "ItemForPartnerName";
             this.ItemForPartnerName.Size = new System.Drawing.Size(640, 34);
@@ -656,9 +664,10 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.DistrictTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhoneTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EmailTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PartnerNameTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PartnerNameSearchLookup.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerLookupDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerSearchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerInfoHtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsDefaultCheckEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SiteTypeComboBoxEdit.Properties)).EndInit();
@@ -726,16 +735,16 @@ namespace MasterData.Customer
         private LayoutControlItem ItemForSiteType;
         private LayoutControlItem ItemForNotes;
         private LayoutControlItem ItemForGoogleMapUrl;
-        private SearchLookUpEdit PartnerNameTextEdit;
-        private GridView searchLookUpEdit1View;
-        private BindingSource businessPartnerListDtoBindingSource;
-        private GridColumn colPartnerTypeName;
-        private GridColumn colPartnerName;
-        private GridColumn colFullAddressName;
+        private SearchLookUpEdit PartnerNameSearchLookup;
+        private GridView BusinessPartnerSearchLookUpEdit1View;
         private ToggleSwitch IsActiveCheckEdit;
         private ToggleSwitch IsDefaultCheckEdit;
         private ComboBoxEdit SiteTypeComboBoxEdit;
         private MemoEdit NotesMemoEdit;
         private TextEdit GoogleMapUrlTextEdit;
+        
+        private BindingSource businessPartnerLookupDtoBindingSource;
+        private GridColumn colBusinessPartnerInfoHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel BusinessPartnerInfoHtmlRepositoryItemHypertextLabel;
     }
 }

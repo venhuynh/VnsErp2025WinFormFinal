@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Common;
 using Common.Utils;
+using Dal.DataContext;
 
 namespace MasterData.Customer
 {
@@ -78,7 +79,7 @@ namespace MasterData.Customer
 
             SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
             CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
-            PartnerNameTextEdit.EditValueChanged += PartnerNameTextEdit_EditValueChanged;
+            PartnerNameSearchLookup.EditValueChanged += PartnerNameTextEdit_EditValueChanged;
         }
 
         #endregion
@@ -127,10 +128,11 @@ namespace MasterData.Customer
         {
             try
             {
-                var partners = await Task.Run(() => _businessPartnerBll.GetAll());
-                var partnerListDtos = partners.ToBusinessPartnerListDtos().ToList();
+                // Sử dụng method tối ưu chỉ load các trường cần thiết cho LookupDto
+                var partners = await _businessPartnerBll.GetActivePartnersForLookupAsync();
+                var partnerLookupDtos = partners.ToLookupDtos().ToList();
 
-                businessPartnerListDtoBindingSource.DataSource = partnerListDtos;
+                businessPartnerLookupDtoBindingSource.DataSource = partnerLookupDtos;
             }
             catch (Exception ex)
             {
@@ -171,7 +173,7 @@ namespace MasterData.Customer
             if (_currentSite == null) return;
 
             // Bind data to controls
-            PartnerNameTextEdit.EditValue = _currentSite.PartnerId;
+            PartnerNameSearchLookup.EditValue = _currentSite.PartnerId;
             SiteCodeTextEdit.EditValue = _currentSite.SiteCode;
             SiteNameTextEdit.EditValue = _currentSite.SiteName;
             AddressTextEdit.EditValue = _currentSite.Address;
@@ -256,10 +258,10 @@ namespace MasterData.Customer
                 if (_isEditMode) return;
 
                 // Lấy đối tác được chọn
-                if (PartnerNameTextEdit?.EditValue == null) return;
+                if (PartnerNameSearchLookup?.EditValue == null) return;
 
-                var selectedPartnerId = (Guid)PartnerNameTextEdit.EditValue;
-                var selectedPartner = businessPartnerListDtoBindingSource.Cast<BusinessPartnerListDto>()
+                var selectedPartnerId = (Guid)PartnerNameSearchLookup.EditValue;
+                var selectedPartner = businessPartnerLookupDtoBindingSource.Cast<BusinessPartnerLookupDto>()
                     .FirstOrDefault(p => p.Id == selectedPartnerId);
 
                 if (selectedPartner == null) return;
@@ -300,10 +302,27 @@ namespace MasterData.Customer
                 siteType = SiteTypeComboBoxEdit.SelectedIndex + 1;
             }
 
+            // Validate và normalize Email theo constraint CK_BusinessPartnerSite_EmailFormat
+            // Constraint yêu cầu: Email IS NULL OR Email LIKE '%@%.%'
+            var email = EmailTextEdit.Text?.Trim();
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                // Kiểm tra format email đơn giản: phải có @ và ít nhất một dấu chấm sau @
+                if (!email.Contains("@") || !email.Contains(".") || email.IndexOf("@") >= email.LastIndexOf("."))
+                {
+                    // Email không hợp lệ, set thành null để tránh vi phạm constraint
+                    email = null;
+                }
+            }
+            else
+            {
+                email = null; // Đảm bảo empty string được convert thành null
+            }
+
             return new BusinessPartnerSiteDto
             {
                 Id = _currentSite?.Id ?? Guid.Empty,
-                PartnerId = (Guid)PartnerNameTextEdit.EditValue,
+                PartnerId = (Guid)PartnerNameSearchLookup.EditValue,
                 SiteCode = SiteCodeTextEdit.Text.Trim(),
                 SiteName = SiteNameTextEdit.Text.Trim(),
                 Address = AddressTextEdit.Text?.Trim(),
@@ -313,7 +332,7 @@ namespace MasterData.Customer
                 PostalCode = PostalCodeTextEdit.Text?.Trim(),
                 District = DistrictTextEdit.Text?.Trim(),
                 Phone = PhoneTextEdit.Text?.Trim(),
-                Email = EmailTextEdit.Text?.Trim(),
+                Email = email, // Đã được validate và normalize
                 IsActive = (bool)IsActiveCheckEdit.EditValue,
                 IsDefault = IsDefaultCheckEdit.EditValue as bool?,
                 SiteType = siteType,
@@ -329,24 +348,48 @@ namespace MasterData.Customer
         {
             // Bước 1: Thu thập dữ liệu từ form và build DTO
             var siteDto = GetDataFromControls();
+            System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] _isEditMode: {_isEditMode}, siteDto.Id: {siteDto.Id}, siteDto.SiteCode: {siteDto.SiteCode}");
 
             // Bước 2: Convert DTO -> Entity
-            var existing = _isEditMode ? _businessPartnerSiteBll.GetById(siteDto.Id) : null;
-            var entity = siteDto.ToEntity(existing);
+            BusinessPartnerSite entity;
+            if (_isEditMode)
+            {
+                // Edit mode: lấy existing entity và update
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] EDIT MODE - Lấy existing entity với Id: {siteDto.Id}");
+                var existing = _businessPartnerSiteBll.GetById(siteDto.Id);
+                if (existing == null)
+                {
+                    throw new Exception("Không tìm thấy chi nhánh để cập nhật.");
+                }
+                entity = siteDto.ToEntity(existing);
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] EDIT MODE - Entity sau ToEntity: Id={entity.Id}, SiteCode={entity.SiteCode}");
+            }
+            else
+            {
+                // Create mode: tạo entity mới, đảm bảo Id = Guid.Empty
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] CREATE MODE - Tạo entity mới, siteDto.Id: {siteDto.Id}");
+                entity = siteDto.ToEntity(null);
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] CREATE MODE - Entity sau ToEntity(null): Id={entity.Id} (IsEmpty: {entity.Id == Guid.Empty})");
+                entity.Id = Guid.Empty; // Đảm bảo Id là Empty để CreateSite biết đây là tạo mới
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] CREATE MODE - Entity sau khi set Guid.Empty: Id={entity.Id} (IsEmpty: {entity.Id == Guid.Empty})");
+            }
 
             // Bước 3: Lưu entity qua BLL
             Guid savedSiteId;
             if (_isEditMode)
             {
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] Gọi UpdateSite với entity.Id: {entity.Id}");
                 var success = await Task.Run(() => _businessPartnerSiteBll.UpdateSite(entity));
                 if (!success)
                 {
                     throw new Exception("Không thể cập nhật chi nhánh. Có thể mã chi nhánh đã tồn tại.");
                 }
                 savedSiteId = entity.Id;
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] UpdateSite thành công, savedSiteId: {savedSiteId}");
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] Gọi CreateSite với entity.Id: {entity.Id} (IsEmpty: {entity.Id == Guid.Empty})");
                 var success = await Task.Run(() => _businessPartnerSiteBll.CreateSite(entity));
                 if (!success)
                 {
@@ -354,6 +397,7 @@ namespace MasterData.Customer
                 }
                 // Entity.Id đã được set trong SaveOrUpdate (trong CreateSite)
                 savedSiteId = entity.Id;
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] CreateSite thành công, savedSiteId: {savedSiteId}");
             }
 
             // Bước 4: Lấy lại entity đã lưu và convert sang BusinessPartnerSiteListDto để trigger event
@@ -398,22 +442,27 @@ namespace MasterData.Customer
             }
 
             // PartnerName bắt buộc
-            if (PartnerNameTextEdit?.EditValue == null)
+            if (PartnerNameSearchLookup?.EditValue == null)
             {
-                dxErrorProvider1.SetError(PartnerNameTextEdit, "Vui lòng chọn đối tác",
+                dxErrorProvider1.SetError(PartnerNameSearchLookup, "Vui lòng chọn đối tác",
                     ErrorType.Critical);
-                PartnerNameTextEdit?.Focus();
+                PartnerNameSearchLookup?.Focus();
                 return false;
             }
 
-            // Email validation
-            if (!string.IsNullOrWhiteSpace(EmailTextEdit?.Text) &&
-                !Regex.IsMatch(EmailTextEdit.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            // Email validation - phải match với constraint CK_BusinessPartnerSite_EmailFormat
+            // Constraint: Email IS NULL OR Email LIKE '%@%.%'
+            var email = EmailTextEdit?.Text?.Trim();
+            if (!string.IsNullOrWhiteSpace(email))
             {
-                dxErrorProvider1.SetError(EmailTextEdit, "Email không đúng định dạng",
-                    ErrorType.Warning);
-                EmailTextEdit?.Focus();
-                return false;
+                // Kiểm tra format email đơn giản: phải có @ và ít nhất một dấu chấm sau @
+                if (!email.Contains("@") || !email.Contains(".") || email.IndexOf("@") >= email.LastIndexOf("."))
+                {
+                    dxErrorProvider1.SetError(EmailTextEdit, "Email không đúng định dạng (phải có @ và dấu chấm)",
+                        ErrorType.Warning);
+                    EmailTextEdit?.Focus();
+                    return false;
+                }
             }
 
             return true;
@@ -544,10 +593,10 @@ namespace MasterData.Customer
         {
             try
             {
-                if (PartnerNameTextEdit != null)
+                if (PartnerNameSearchLookup != null)
                 {
                     SuperToolTipHelper.SetBaseEditSuperTip(
-                        PartnerNameTextEdit,
+                        PartnerNameSearchLookup,
                         title: "<b><color=DarkBlue>🏢 Đối tác</color></b>",
                         content: "Chọn đối tác mà chi nhánh này thuộc về. Trường này là bắt buộc."
                     );
