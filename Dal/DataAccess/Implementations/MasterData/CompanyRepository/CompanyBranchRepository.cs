@@ -268,6 +268,50 @@ public class CompanyBranchRepository : ICompanyBranchRepository
     }
 
     /// <summary>
+    /// Cập nhật chi nhánh công ty.
+    /// </summary>
+    /// <param name="companyBranch">Chi nhánh công ty cần cập nhật</param>
+    public void Update(CompanyBranch companyBranch)
+    {
+        try
+        {
+            if (companyBranch == null)
+                throw new ArgumentNullException(nameof(companyBranch));
+
+            using var context = CreateNewContext();
+            var existingBranch = context.CompanyBranches.FirstOrDefault(x => x.Id == companyBranch.Id);
+            
+            if (existingBranch == null)
+            {
+                throw new DataAccessException("Không tìm thấy chi nhánh công ty để cập nhật");
+            }
+
+            // Cập nhật các thuộc tính
+            existingBranch.CompanyId = companyBranch.CompanyId;
+            existingBranch.BranchCode = companyBranch.BranchCode;
+            existingBranch.BranchName = companyBranch.BranchName;
+            existingBranch.Address = companyBranch.Address;
+            existingBranch.Phone = companyBranch.Phone;
+            existingBranch.Email = companyBranch.Email;
+            existingBranch.ManagerName = companyBranch.ManagerName;
+            existingBranch.IsActive = companyBranch.IsActive;
+
+            context.SubmitChanges();
+            
+            _logger.Info($"Đã cập nhật chi nhánh công ty: {existingBranch.BranchCode} - {existingBranch.BranchName}");
+        }
+        catch (DataAccessException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi cập nhật chi nhánh công ty: {ex.Message}", ex);
+            throw new DataAccessException("Lỗi cập nhật chi nhánh công ty", ex);
+        }
+    }
+
+    /// <summary>
     /// Kiểm tra mã chi nhánh có tồn tại không.
     /// </summary>
     /// <param name="branchCode">Mã chi nhánh cần kiểm tra</param>

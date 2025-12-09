@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Common;
 using Common.Utils;
+using Dal.DataContext;
 
 namespace MasterData.Company
 {
@@ -211,25 +212,46 @@ namespace MasterData.Company
                 if (!ValidateForm())
                     return;
 
-                using var splash = new WaitForm1();
-                splash.Show();
-                splash.Update();
+                // Hiển thị WaitForm
+                DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(typeof(Common.Common.WaitForm1));
 
-                var success = await SaveDataAsync();
-
-                if (success)
+                try
                 {
-                    MsgBox.ShowSuccess(_isEditMode ? "Cập nhật chi nhánh công ty thành công!" : "Thêm mới chi nhánh công ty thành công!");
-                    DialogResult = DialogResult.OK;
-                    Close();
+                    var success = await SaveDataAsync();
+
+                    if (success)
+                    {
+                        MsgBox.ShowSuccess(_isEditMode ? "Cập nhật chi nhánh công ty thành công!" : "Thêm mới chi nhánh công ty thành công!");
+                        DialogResult = DialogResult.OK;
+                        Close();
+                    }
+                    else
+                    {
+                        MsgBox.ShowError(_isEditMode ? "Cập nhật chi nhánh công ty thất bại!" : "Thêm mới chi nhánh công ty thất bại!");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MsgBox.ShowError(_isEditMode ? "Cập nhật chi nhánh công ty thất bại!" : "Thêm mới chi nhánh công ty thất bại!");
+                    // Log chi tiết lỗi
+                    Debug.WriteLine($"Lỗi trong SaveDataAsync: {ex.Message}");
+                    Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                    if (ex.InnerException != null)
+                    {
+                        Debug.WriteLine($"InnerException: {ex.InnerException.Message}");
+                    }
+                    
+                    MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
+                }
+                finally
+                {
+                    // Đóng WaitForm
+                    DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
                 }
             }
             catch (Exception ex)
             {
+                DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
+                Debug.WriteLine($"Lỗi ngoại lệ trong SaveData: {ex.Message}");
                 MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
             }
         }
@@ -245,7 +267,22 @@ namespace MasterData.Company
                 var branchDto = GetDataFromControls();
                 
                 // Chuyển đổi DTO sang Entity (tuân thủ quy tắc Dal -> Bll -> DTO)
-                var branchEntity = branchDto.ToEntity();
+                CompanyBranch branchEntity;
+                if (_isEditMode && _companyBranchDto != null)
+                {
+                    // Update: sử dụng existing entity
+                    var existingEntity = _companyBranchBll.GetById(_companyBranchId);
+                    if (existingEntity == null)
+                    {
+                        throw new InvalidOperationException("Không tìm thấy chi nhánh công ty cần cập nhật.");
+                    }
+                    branchEntity = branchDto.ToEntity(existingEntity);
+                }
+                else
+                {
+                    // Insert: tạo entity mới
+                    branchEntity = branchDto.ToEntity();
+                }
 
                 if (_isEditMode)
                 {
@@ -260,8 +297,9 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
-                return false;
+                Debug.WriteLine($"Lỗi lưu dữ liệu async: {ex.Message}");
+                Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw; // Re-throw để caller có thể xử lý
             }
         }
 
@@ -658,11 +696,8 @@ namespace MasterData.Company
                 
                 if (company != null)
                 {
-                    // Cast về Company entity và lấy Id
-                    if (company is Dal.DataContext.Company companyEntity)
-                    {
-                        return companyEntity.Id;
-                    }
+                    // GetCompany() đã trả về Company entity, không cần cast
+                    return company.Id;
                 }
                 
                 return Guid.Empty;

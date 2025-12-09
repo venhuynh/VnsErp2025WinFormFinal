@@ -249,9 +249,8 @@ namespace Bll.MasterData.CompanyBll
                     throw new Exception($"Mã chi nhánh '{companyBranch.BranchCode}' đã tồn tại trong hệ thống");
                 }
 
-                // TODO: Update method chưa được implement trong repository
-                // Cần thêm Update method vào ICompanyBranchRepository và CompanyBranchRepository
-                throw new NotImplementedException("Phương thức Update chưa được triển khai trong repository");
+                // Gọi repository để cập nhật
+                GetDataAccess().Update(companyBranch);
             }
             catch (Exception ex)
             {

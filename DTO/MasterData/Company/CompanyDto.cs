@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Linq;
+using System.Linq;
 
 namespace DTO.MasterData.Company;
 
@@ -55,6 +57,140 @@ public class CompanyDto
 
     [DisplayName("Logo")]
     public byte[] Logo { get; set; }
+
+    // Logo metadata fields (để hiển thị và load logo từ NAS)
+    [DisplayName("Tên file logo")]
+    [StringLength(255, ErrorMessage = "Tên file logo không được vượt quá 255 ký tự")]
+    public string LogoFileName { get; set; }
+
+    [DisplayName("Đường dẫn tương đối logo")]
+    [StringLength(500, ErrorMessage = "Đường dẫn tương đối logo không được vượt quá 500 ký tự")]
+    public string LogoRelativePath { get; set; }
+
+    [DisplayName("Đường dẫn đầy đủ logo")]
+    [StringLength(1000, ErrorMessage = "Đường dẫn đầy đủ logo không được vượt quá 1000 ký tự")]
+    public string LogoFullPath { get; set; }
+
+    [DisplayName("Loại storage logo")]
+    [StringLength(20, ErrorMessage = "Loại storage logo không được vượt quá 20 ký tự")]
+    public string LogoStorageType { get; set; }
+
+    [DisplayName("Kích thước file logo")]
+    public long? LogoFileSize { get; set; }
+
+    [DisplayName("Checksum logo")]
+    [StringLength(64, ErrorMessage = "Checksum logo không được vượt quá 64 ký tự")]
+    public string LogoChecksum { get; set; }
+
+    /// <summary>
+    /// Địa chỉ đầy đủ được tính từ Address, Country
+    /// </summary>
+    [DisplayName("Địa chỉ đầy đủ")]
+    [Description("Địa chỉ đầy đủ được tính từ Address, Country")]
+    public string FullAddressName
+    {
+        get
+        {
+            var addressParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(Address))
+                addressParts.Add(Address);
+            if (!string.IsNullOrWhiteSpace(Country))
+                addressParts.Add(Country);
+            return string.Join(", ", addressParts);
+        }
+    }
+
+    /// <summary>
+    /// Thông tin công ty dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Thông tin HTML")]
+    [Description("Thông tin công ty dưới dạng HTML")]
+    public string ThongTinHtml
+    {
+        get
+        {
+            var companyName = CompanyName ?? string.Empty;
+            var companyCode = CompanyCode ?? string.Empty;
+            var taxCode = TaxCode ?? string.Empty;
+            var phone = Phone ?? string.Empty;
+            var email = Email ?? string.Empty;
+            var website = Website ?? string.Empty;
+            var fullAddress = FullAddressName;
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - Tên công ty: font lớn, bold, màu xanh đậm (primary)
+            // - Mã công ty: font nhỏ hơn, màu xám
+            // - Thông tin chi tiết: font nhỏ hơn, màu xám cho label, đen cho value
+
+            var html = $"<b><color='blue'>{companyName}</color></b>";
+
+            if (!string.IsNullOrWhiteSpace(companyCode))
+            {
+                html += $" <color='#757575'>({companyCode})</color>";
+            }
+
+            html += "<br>";
+
+            var infoParts = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(taxCode))
+            {
+                infoParts.Add($"<color='#757575'>MST:</color> <b>{taxCode}</b>");
+            }
+
+            if (!string.IsNullOrWhiteSpace(fullAddress))
+            {
+                infoParts.Add($"<color='#757575'>Địa chỉ:</color> <b>{fullAddress}</b>");
+            }
+
+            if (infoParts.Any())
+            {
+                html += string.Join(" | ", infoParts) + "<br>";
+            }
+
+            var contactParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                contactParts.Add($"<color='#757575'>ĐT:</color> <b>{phone}</b>");
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                contactParts.Add($"<color='#757575'>Email:</color> <b>{email}</b>");
+            }
+
+            if (!string.IsNullOrWhiteSpace(website))
+            {
+                contactParts.Add($"<color='#757575'>Web:</color> <b>{website}</b>");
+            }
+
+            if (contactParts.Any())
+            {
+                html += string.Join(" | ", contactParts) + "<br>";
+            }
+
+            // Thông tin ngày tạo/cập nhật
+            var dateParts = new List<string>();
+            if (CreatedDate != default(DateTime))
+            {
+                dateParts.Add($"<color='#757575'>Tạo:</color> <b>{CreatedDate:dd/MM/yyyy}</b>");
+            }
+
+            if (UpdatedDate.HasValue)
+            {
+                dateParts.Add($"<color='#757575'>Cập nhật:</color> <b>{UpdatedDate.Value:dd/MM/yyyy}</b>");
+            }
+
+            if (dateParts.Any())
+            {
+                html += string.Join(" | ", dateParts);
+            }
+
+            return html;
+        }
+    }
 }
 
 /// <summary>
@@ -85,7 +221,14 @@ public static class CompanyConverter
             Country = entity.Country,
             CreatedDate = entity.CreatedDate,
             UpdatedDate = entity.UpdatedDate,
-            Logo = entity.Logo?.ToArray() // Convert Binary sang byte[]
+            Logo = entity.Logo?.ToArray(), // Convert Binary sang byte[]
+            // Logo metadata fields
+            LogoFileName = entity.LogoFileName,
+            LogoRelativePath = entity.LogoRelativePath,
+            LogoFullPath = entity.LogoFullPath,
+            LogoStorageType = entity.LogoStorageType,
+            LogoFileSize = entity.LogoFileSize,
+            LogoChecksum = entity.LogoChecksum
         };
     }
 
@@ -93,26 +236,50 @@ public static class CompanyConverter
     /// Chuyển đổi CompanyDto sang Company Entity
     /// </summary>
     /// <param name="dto">CompanyDto</param>
+    /// <param name="existingEntity">Entity hiện tại (cho update)</param>
     /// <returns>Company entity</returns>
-    public static Dal.DataContext.Company ToEntity(this CompanyDto dto)
+    public static Dal.DataContext.Company ToEntity(this CompanyDto dto, Dal.DataContext.Company existingEntity = null)
     {
         if (dto == null)
             return null;
 
-        return new Dal.DataContext.Company
+        var entity = existingEntity ?? new Dal.DataContext.Company();
+
+        // Chỉ set ID nếu là entity mới
+        if (existingEntity == null && dto.Id != Guid.Empty)
         {
-            Id = dto.Id,
-            CompanyCode = dto.CompanyCode,
-            CompanyName = dto.CompanyName,
-            TaxCode = dto.TaxCode,
-            Phone = dto.Phone,
-            Email = dto.Email,
-            Website = dto.Website,
-            Address = dto.Address,
-            Country = dto.Country,
-            CreatedDate = dto.CreatedDate,
-            UpdatedDate = dto.UpdatedDate,
-            Logo = dto.Logo != null ? new Binary(dto.Logo) : null
-        };
+            entity.Id = dto.Id;
+        }
+
+        entity.CompanyCode = dto.CompanyCode;
+        entity.CompanyName = dto.CompanyName;
+        entity.TaxCode = dto.TaxCode;
+        entity.Phone = dto.Phone;
+        entity.Email = dto.Email;
+        entity.Website = dto.Website;
+        entity.Address = dto.Address;
+        entity.Country = dto.Country;
+        entity.CreatedDate = dto.CreatedDate;
+        entity.UpdatedDate = dto.UpdatedDate;
+
+        // Copy Logo (binary)
+        if (dto.Logo != null && dto.Logo.Length > 0)
+        {
+            entity.Logo = new Binary(dto.Logo);
+        }
+        else
+        {
+            entity.Logo = null;
+        }
+
+        // Copy Logo fields (metadata only)
+        entity.LogoFileName = dto.LogoFileName;
+        entity.LogoRelativePath = dto.LogoRelativePath;
+        entity.LogoFullPath = dto.LogoFullPath;
+        entity.LogoStorageType = dto.LogoStorageType;
+        entity.LogoFileSize = dto.LogoFileSize;
+        entity.LogoChecksum = dto.LogoChecksum;
+
+        return entity;
     }
 }

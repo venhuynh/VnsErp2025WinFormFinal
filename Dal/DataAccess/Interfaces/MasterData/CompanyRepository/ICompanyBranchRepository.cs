@@ -73,6 +73,12 @@ namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
         Guid Insert(CompanyBranch companyBranch);
 
         /// <summary>
+        /// Cập nhật chi nhánh công ty.
+        /// </summary>
+        /// <param name="companyBranch">Chi nhánh công ty cần cập nhật</param>
+        void Update(CompanyBranch companyBranch);
+
+        /// <summary>
         /// Kiểm tra mã chi nhánh có tồn tại không.
         /// </summary>
         /// <param name="branchCode">Mã chi nhánh cần kiểm tra</param>

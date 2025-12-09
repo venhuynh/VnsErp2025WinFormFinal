@@ -254,7 +254,7 @@ namespace MasterData.Customer
             // 
             // businessPartnerContactDtoBindingSource
             // 
-            this.businessPartnerContactDtoBindingSource.DataSource = typeof(BusinessPartnerContactDto);
+            this.businessPartnerContactDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerContactDto);
             // 
             // BusinessPartnerContactGridCardView
             // 
