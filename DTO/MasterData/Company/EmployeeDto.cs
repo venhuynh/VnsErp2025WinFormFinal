@@ -120,6 +120,18 @@ public class EmployeeDto
     [DisplayName("Dữ liệu thumbnail Avatar")]
     public byte[] AvatarThumbnailData { get; set; }
 
+    /// <summary>
+    /// Dữ liệu binary của avatar thumbnail (để hiển thị nhanh trong gridview/cardview)
+    /// Alias cho AvatarThumbnailData để tương thích với BusinessPartnerContact pattern
+    /// </summary>
+    [DisplayName("Ảnh đại diện")]
+    [Description("Ảnh đại diện thumbnail của nhân viên (để hiển thị nhanh)")]
+    public byte[] Avatar
+    {
+        get => AvatarThumbnailData;
+        set => AvatarThumbnailData = value;
+    }
+
     // Navigation properties for display purposes
     [DisplayName("Tên công ty")]
     public string CompanyName { get; set; }

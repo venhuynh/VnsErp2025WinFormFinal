@@ -554,3 +554,5 @@ namespace MasterData.Company
         #endregion
     }
 }
+
+}
