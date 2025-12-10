@@ -1,6 +1,6 @@
 ﻿namespace MasterData.Company
 {
-    partial class FrmEmployee
+    partial class FrmEmployeeDtoDetail
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "FrmEmployee";
+            this.Text = "FrmEmployeeDtoDetail";
         }
 
         #endregion

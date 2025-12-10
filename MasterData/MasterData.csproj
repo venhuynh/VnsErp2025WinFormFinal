@@ -76,11 +76,17 @@
     <Compile Include="Company\FrmDepartmentDetail.Designer.cs">
       <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmEmployee.cs">
+    <Compile Include="Company\FrmEmployeeDto.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Company\FrmEmployee.Designer.cs">
-      <DependentUpon>FrmEmployee.cs</DependentUpon>
+    <Compile Include="Company\FrmEmployeeDto.Designer.cs">
+      <DependentUpon>FrmEmployeeDto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmEmployeeDtoDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmEmployeeDtoDetail.Designer.cs">
+      <DependentUpon>FrmEmployeeDtoDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="Company\FrmPositionDetail.cs">
       <SubType>Form</SubType>

@@ -90,6 +90,7 @@
     <Compile Include="MasterData\Company\CompanyDto.cs" />
     <Compile Include="MasterData\Company\DepartmentDto.cs" />
     <Compile Include="MasterData\Company\DepartmentLookupDto.cs" />
+    <Compile Include="MasterData\Company\EmployeeDto.cs" />
     <Compile Include="MasterData\Company\PositionDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerCategoryDto.cs" />
     <Compile Include="MasterData\CustomerPartner\BusinessPartnerContactDto.cs" />
