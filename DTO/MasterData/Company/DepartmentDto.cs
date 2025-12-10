@@ -18,6 +18,7 @@ public class DepartmentDto
     public Guid CompanyId { get; set; }
 
     [DisplayName("ID chi nhánh")]
+    [Required(ErrorMessage = "Chi nhánh không được để trống")]
     public Guid? BranchId { get; set; }
 
     [DisplayName("Mã phòng ban")]
@@ -194,10 +195,31 @@ public static class DepartmentConverters
         if (entity == null)
             return null;
 
-        // Sử dụng tham số hoặc navigation properties (đã được include)
+        // QUAN TRỌNG: KHÔNG truy cập navigation properties (entity.CompanyBranch, entity.Department1)
+        // vì DataContext đã bị dispose sau khi repository method kết thúc
+        // Chỉ sử dụng tham số truyền vào hoặc departmentDict
 
-        var finalBranchName = branchName ?? entity.CompanyBranch?.BranchName;
-        var finalParentDepartmentName = parentDepartmentName ?? entity.Department1?.DepartmentName ?? "Không xác định";
+        // BranchName: chỉ dùng tham số truyền vào, không truy cập entity.CompanyBranch
+        var finalBranchName = branchName;
+
+        // ParentDepartmentName: ưu tiên tham số, sau đó dùng departmentDict, cuối cùng mới dùng default
+        string finalParentDepartmentName = parentDepartmentName;
+        if (string.IsNullOrEmpty(finalParentDepartmentName) && entity.ParentId.HasValue)
+        {
+            // Thử lấy từ departmentDict nếu có
+            if (departmentDict != null && departmentDict.ContainsKey(entity.ParentId.Value))
+            {
+                finalParentDepartmentName = departmentDict[entity.ParentId.Value].DepartmentName;
+            }
+            else
+            {
+                finalParentDepartmentName = "Không xác định";
+            }
+        }
+        else if (string.IsNullOrEmpty(finalParentDepartmentName))
+        {
+            finalParentDepartmentName = null; // Không có parent
+        }
 
         var dto = new DepartmentDto
         {

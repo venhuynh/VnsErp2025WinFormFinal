@@ -177,8 +177,9 @@ namespace MasterData.Company
                 // Convert sang LookupDto với dictionary để tính FullPath
                 var departmentLookupDtos = departments.ToLookupDtos(departmentDict).ToList();
 
-                // Nếu đang ở chế độ edit, loại trừ department hiện tại khỏi danh sách parent
+                // QUAN TRỌNG: Nếu đang ở chế độ edit, loại trừ department hiện tại khỏi danh sách parent
                 // (để tránh chọn chính nó làm parent - gây circular reference)
+                // Điều này đảm bảo data source của phòng ban cha không có chính nó
                 if (_isEditMode && _departmentId != Guid.Empty)
                 {
                     departmentLookupDtos = departmentLookupDtos
@@ -208,6 +209,7 @@ namespace MasterData.Company
                     return;
                 }
 
+                // Load department từ repository
                 var department = _departmentBll.GetById(_departmentId);
                 if (department == null)
                 {
@@ -216,7 +218,67 @@ namespace MasterData.Company
                     return;
                 }
 
-                _currentDepartment = department.ToDto();
+                // Load tất cả departments để tính FullPath và tạo dictionary
+                var allDepartments = _departmentBll.GetAll();
+                var departmentDict = allDepartments.ToDictionary(d => d.Id);
+
+                // Convert sang DTO với dictionary để tính FullPath
+                _currentDepartment = department.ToDto(departmentDict: departmentDict);
+
+                // QUAN TRỌNG: Đảm bảo branch hiện tại có trong datasource (kể cả khi không active)
+                // Vì khi edit, cần hiển thị branch hiện tại dù nó có active hay không
+                if (_currentDepartment.BranchId.HasValue)
+                {
+                    var branchId = _currentDepartment.BranchId.Value;
+                    var branchExists = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>()
+                        .Any(b => b.Id == branchId);
+                    
+                    if (!branchExists)
+                    {
+                        // Branch không tồn tại trong datasource (có thể đã bị inactive)
+                        // Load branch này và thêm vào datasource
+                        var branch = _companyBranchBll.GetById(branchId);
+                        if (branch != null)
+                        {
+                            var branchDto = branch.ToLookupDto();
+                            var currentList = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>().ToList();
+                            currentList.Add(branchDto);
+                            companyBranchLookupDtoBindingSource.DataSource = currentList;
+                        }
+                    }
+                }
+
+                // QUAN TRỌNG: Đảm bảo parent department hiện tại có trong datasource (nếu có)
+                // Lưu ý: department hiện tại đã bị filter ra khỏi datasource để tránh circular reference
+                if (_currentDepartment.ParentId.HasValue)
+                {
+                    var parentId = _currentDepartment.ParentId.Value;
+                    var parentExists = departmentLookupDtoBindingSource.Cast<DepartmentLookupDto>()
+                        .Any(d => d.Id == parentId);
+                    
+                    if (!parentExists)
+                    {
+                        // Parent department không tồn tại trong datasource
+                        // Load parent department này và thêm vào datasource (nếu không phải chính nó)
+                        if (parentId != _departmentId)
+                        {
+                            var parentDepartment = _departmentBll.GetById(parentId);
+                            if (parentDepartment != null)
+                            {
+                                var parentDto = parentDepartment.ToLookupDto(departmentDict);
+                                var currentList = departmentLookupDtoBindingSource.Cast<DepartmentLookupDto>().ToList();
+                                currentList.Add(parentDto);
+                                departmentLookupDtoBindingSource.DataSource = currentList;
+                            }
+                        }
+                    }
+                }
+
+                // Refresh datasource để đảm bảo dữ liệu mới nhất
+                companyBranchLookupDtoBindingSource.ResetBindings(false);
+                departmentLookupDtoBindingSource.ResetBindings(false);
+
+                // Bind dữ liệu vào controls
                 BindDepartmentToControls();
             }
             catch (Exception ex)
@@ -240,14 +302,36 @@ namespace MasterData.Company
                 DescriptionTextEdit.EditValue = _currentDepartment.Description;
                 IsActiveToogleSwitch.EditValue = _currentDepartment.IsActive;
 
-                // Disable các controls không cho phép thay đổi khi edit
+                // QUAN TRỌNG: Disable các controls không cho phép thay đổi khi edit
+                // Đảm bảo rằng khi ở chế độ edit thì không cho phép thay đổi:
+                // - Mã phòng ban
+                // - Chi nhánh (BranchNameSearchLookupedit)
+                // - Phòng ban cha (ParentDepartmentNameSearchLookup)
                 SetControlsReadOnly(true);
 
                 // Set branch selection và cập nhật biến
+                // QUAN TRỌNG: Kiểm tra giá trị có tồn tại trong datasource trước khi bind
                 if (_currentDepartment.BranchId.HasValue)
                 {
-                    BranchNameSearchLookupedit.EditValue = _currentDepartment.BranchId.Value;
-                    _branchId = _currentDepartment.BranchId.Value;
+                    var branchId = _currentDepartment.BranchId.Value;
+                    
+                    // Kiểm tra branch có tồn tại trong datasource không
+                    var branchExists = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>()
+                        .Any(b => b.Id == branchId);
+                    
+                    if (branchExists)
+                    {
+                        BranchNameSearchLookupedit.EditValue = branchId;
+                        _branchId = branchId;
+                    }
+                    else
+                    {
+                        // Branch không tồn tại trong datasource (có thể đã bị inactive)
+                        // Vẫn set giá trị để hiển thị, nhưng có thể không hiển thị text
+                        BranchNameSearchLookupedit.EditValue = branchId;
+                        _branchId = branchId;
+                        Debug.WriteLine($"Warning: BranchId {branchId} không tồn tại trong datasource (có thể đã bị inactive)");
+                    }
                 }
                 else
                 {
@@ -256,10 +340,30 @@ namespace MasterData.Company
                 }
 
                 // Set parent department selection và cập nhật biến
+                // QUAN TRỌNG: Kiểm tra giá trị có tồn tại trong datasource trước khi bind
                 if (_currentDepartment.ParentId.HasValue)
                 {
-                    ParentDepartmentNameSearchLookup.EditValue = _currentDepartment.ParentId.Value;
-                    _parentId = _currentDepartment.ParentId.Value;
+                    var parentId = _currentDepartment.ParentId.Value;
+                    
+                    // Kiểm tra parent department có tồn tại trong datasource không
+                    // (Lưu ý: department hiện tại đã bị filter ra khỏi datasource)
+                    var parentExists = departmentLookupDtoBindingSource.Cast<DepartmentLookupDto>()
+                        .Any(d => d.Id == parentId);
+                    
+                    if (parentExists)
+                    {
+                        ParentDepartmentNameSearchLookup.EditValue = parentId;
+                        _parentId = parentId;
+                    }
+                    else
+                    {
+                        // Parent department không tồn tại trong datasource
+                        // (có thể đã bị filter ra vì là chính nó, hoặc đã bị xóa)
+                        // Vẫn set giá trị để hiển thị, nhưng có thể không hiển thị text
+                        ParentDepartmentNameSearchLookup.EditValue = parentId;
+                        _parentId = parentId;
+                        Debug.WriteLine($"Warning: ParentId {parentId} không tồn tại trong datasource (có thể đã bị filter hoặc xóa)");
+                    }
                 }
                 else
                 {
@@ -359,11 +463,24 @@ namespace MasterData.Company
 
         /// <summary>
         /// Xử lý sự kiện thay đổi giá trị BranchNameSearchLookupedit
+        /// QUAN TRỌNG: Khi ở chế độ edit, control đã bị disable nên event này sẽ không được trigger
         /// </summary>
         private void BranchNameSearchLookupedit_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
+                // Đảm bảo không cho phép thay đổi khi ở chế độ edit
+                if (_isEditMode)
+                {
+                    // Nếu đang ở chế độ edit, giữ nguyên giá trị cũ
+                    if (_branchId.HasValue)
+                    {
+                        BranchNameSearchLookupedit.EditValue = _branchId.Value;
+                    }
+                    return;
+                }
+
+                // Chỉ cập nhật khi ở chế độ tạo mới
                 if (BranchNameSearchLookupedit.EditValue != null && 
                     Guid.TryParse(BranchNameSearchLookupedit.EditValue.ToString(), out var branchId))
                 {
@@ -382,12 +499,29 @@ namespace MasterData.Company
         }
 
         /// <summary>
-        /// Xử lý sự kiện thay đổi giá trị ParentDepartmentNameTextEdit
+        /// Xử lý sự kiện thay đổi giá trị ParentDepartmentNameSearchLookup
+        /// QUAN TRỌNG: Khi ở chế độ edit, control đã bị disable nên event này sẽ không được trigger
         /// </summary>
         private void ParentDepartmentNameTextEdit_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
+                // Đảm bảo không cho phép thay đổi khi ở chế độ edit
+                if (_isEditMode)
+                {
+                    // Nếu đang ở chế độ edit, giữ nguyên giá trị cũ
+                    if (_parentId.HasValue)
+                    {
+                        ParentDepartmentNameSearchLookup.EditValue = _parentId.Value;
+                    }
+                    else
+                    {
+                        ParentDepartmentNameSearchLookup.EditValue = null;
+                    }
+                    return;
+                }
+
+                // Chỉ cập nhật khi ở chế độ tạo mới
                 if (ParentDepartmentNameSearchLookup.EditValue != null && 
                     Guid.TryParse(ParentDepartmentNameSearchLookup.EditValue.ToString(), out var parentId))
                 {
@@ -572,24 +706,31 @@ namespace MasterData.Company
 
         /// <summary>
         /// Thiết lập trạng thái ReadOnly cho các controls
+        /// QUAN TRỌNG: Khi ở chế độ edit (readOnly = true), các controls này sẽ bị khóa hoàn toàn
         /// </summary>
-        /// <param name="readOnly">True để disable, False để enable</param>
+        /// <param name="readOnly">True để disable (chế độ edit), False để enable (chế độ tạo mới)</param>
         private void SetControlsReadOnly(bool readOnly)
         {
             try
             {
-                // Mã phòng ban
+                // Mã phòng ban - không cho phép thay đổi khi edit
                 DepartmentCodeTextEdit.Properties.ReadOnly = readOnly;
                 DepartmentCodeTextEdit.Properties.AllowNullInput = readOnly 
                     ? DevExpress.Utils.DefaultBoolean.False 
                     : DevExpress.Utils.DefaultBoolean.True;
                 DepartmentCodeTextEdit.Enabled = !readOnly;
 
-                // Chi nhánh SearchLookUpEdit
+                // Chi nhánh SearchLookUpEdit - QUAN TRỌNG: Không cho phép thay đổi khi edit
+                // Đảm bảo rằng khi ở chế độ edit thì không cho phép thay đổi thông tin của chi nhánh
                 BranchNameSearchLookupedit.Properties.ReadOnly = readOnly;
                 BranchNameSearchLookupedit.Enabled = !readOnly;
+                // Thêm AllowNullInput = False để đảm bảo không thể clear giá trị khi edit
+                if (readOnly)
+                {
+                    BranchNameSearchLookupedit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+                }
 
-                // Phòng ban cha SearchLookUpEdit
+                // Phòng ban cha SearchLookUpEdit - không cho phép thay đổi khi edit
                 ParentDepartmentNameSearchLookup.Properties.ReadOnly = readOnly;
                 ParentDepartmentNameSearchLookup.Enabled = !readOnly;
             }
