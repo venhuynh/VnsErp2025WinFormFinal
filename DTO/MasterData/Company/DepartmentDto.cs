@@ -63,6 +63,7 @@ public class DepartmentDto
 
     /// <summary>
     /// Đường dẫn đầy đủ dưới dạng HTML theo format DevExpress
+    /// Format giống BusinessPartnerCategoryDto.FullPathHtml (không dùng &lt;size&gt;)
     /// </summary>
     [DisplayName("Đường dẫn HTML")]
     [Description("Đường dẫn đầy đủ từ gốc đến phòng ban này dưới dạng HTML")]
@@ -71,9 +72,7 @@ public class DepartmentDto
         get
         {
             if (string.IsNullOrWhiteSpace(FullPath))
-            {
                 return string.Empty;
-            }
 
             // Tách đường dẫn và format với màu sắc
             // Hỗ trợ nhiều format: " > ", ">", " >" hoặc "> "
@@ -91,18 +90,18 @@ public class DepartmentDto
                 var weight = isLast ? "<b>" : "";
                 var weightClose = isLast ? "</b>" : "";
 
-                // Format giống ThongTinHtml: không dùng <size>, chỉ dùng <b> và <color>
+                // Format giống BusinessPartnerCategoryDto: không dùng <size>, chỉ dùng <b> và <color>
                 htmlParts.Add($"{weight}<color='{color}'>{parts[i]}</color>{weightClose}");
             }
 
-            var result = string.Join(" <color='#757575'>></color> ", htmlParts);
-            return result;
+            return string.Join(" <color='#757575'>></color> ", htmlParts);
         }
     }
 
     /// <summary>
     /// Thông tin phòng ban dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
+    /// Format giống BusinessPartnerCategoryDto.CategoryInfoHtml (không dùng &lt;size&gt;)
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [DisplayName("Thông tin HTML")]
@@ -111,62 +110,65 @@ public class DepartmentDto
     {
         get
         {
-            var departmentName = DepartmentName ?? string.Empty;
-            var departmentCode = DepartmentCode ?? string.Empty;
-            var branchName = BranchName ?? string.Empty;
-            var parentDepartmentName = ParentDepartmentName ?? string.Empty;
-            var description = Description ?? string.Empty;
-            var statusText = IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
-            var statusColor = IsActive ? "#4CAF50" : "#F44336";
+            var html = string.Empty;
 
-            // Format chuyên nghiệp với visual hierarchy rõ ràng
-            // - Tên phòng ban: font lớn, bold, màu xanh đậm (primary)
-            // - Mã phòng ban: font nhỏ hơn, màu xám
-            // - Thông tin chi tiết: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
-
-            var html = $"<b><color='blue'>{departmentName}</color></b>";
-
-            if (!string.IsNullOrWhiteSpace(departmentCode))
+            // Tên phòng ban (màu xanh, đậm)
+            if (!string.IsNullOrWhiteSpace(DepartmentName))
             {
-                html += $" <color='#757575'>({departmentCode})</color>";
+                html += $"<b><color='blue'>{DepartmentName}</color></b>";
+            }
+
+            // Mã phòng ban (nếu có, màu xám)
+            if (!string.IsNullOrWhiteSpace(DepartmentCode))
+            {
+                if (!string.IsNullOrWhiteSpace(html))
+                    html += " ";
+                html += $"<color='#757575'>({DepartmentCode})</color>";
             }
 
             html += "<br>";
 
-            var infoParts = new List<string>();
+            // Thông tin bổ sung
+            var additionalInfo = new List<string>();
 
-            if (!string.IsNullOrWhiteSpace(branchName))
-            {
-                infoParts.Add($"<color='#757575'>Chi nhánh:</color> <b>{branchName}</b>");
-            }
+            // Trạng thái hoạt động
+            var statusText = IsActive ? "Hoạt động" : "Không hoạt động";
+            var statusColor = IsActive ? "#4CAF50" : "#F44336";
+            additionalInfo.Add(
+                $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>");
 
-            if (!string.IsNullOrWhiteSpace(parentDepartmentName) && parentDepartmentName != "Không xác định")
-            {
-                infoParts.Add($"<color='#757575'>Phòng ban cha:</color> <b>{parentDepartmentName}</b>");
-            }
-
+            // Số nhân viên
             if (EmployeeCount > 0)
             {
-                infoParts.Add($"<color='#757575'>Nhân viên:</color> <b>{EmployeeCount}</b>");
+                additionalInfo.Add(
+                    $"<color='#757575'>Nhân viên:</color> <b>{EmployeeCount}</b>");
             }
 
+            // Số phòng ban con
             if (SubDepartmentCount > 0)
             {
-                infoParts.Add($"<color='#757575'>Phòng ban con:</color> <b>{SubDepartmentCount}</b>");
+                additionalInfo.Add(
+                    $"<color='#757575'>Phòng ban con:</color> <b>{SubDepartmentCount}</b>");
             }
 
-            if (infoParts.Any())
+            // Chi nhánh
+            if (!string.IsNullOrWhiteSpace(BranchName))
             {
-                html += string.Join(" | ", infoParts) + "<br>";
+                additionalInfo.Add(
+                    $"<color='#757575'>Chi nhánh:</color> <b>{BranchName}</b>");
             }
 
-            if (!string.IsNullOrWhiteSpace(description))
+            // Phòng ban cha
+            if (!string.IsNullOrWhiteSpace(ParentDepartmentName) && ParentDepartmentName != "Không xác định")
             {
-                html += $"<color='#757575'>Mô tả:</color> <b>{description}</b><br>";
+                additionalInfo.Add(
+                    $"<color='#757575'>Phòng ban cha:</color> <b>{ParentDepartmentName}</b>");
             }
 
-            html += $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>";
+            if (additionalInfo.Any())
+            {
+                html += string.Join(" | ", additionalInfo);
+            }
 
             return html;
         }

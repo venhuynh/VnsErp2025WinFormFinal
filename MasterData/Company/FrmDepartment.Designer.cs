@@ -53,31 +53,28 @@ namespace MasterData.Company
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repositoryItemComboBox2 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.DepartmentTreeList = new DevExpress.XtraTreeList.TreeList();
-            this.treeListBand1 = new DevExpress.XtraTreeList.Columns.TreeListBand();
-            this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.treeListBand2 = new DevExpress.XtraTreeList.Columns.TreeListBand();
-            this.colBranchName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colParentDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.treeListBand3 = new DevExpress.XtraTreeList.Columns.TreeListBand();
-            this.colIsActive = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.repositoryItemCheckEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
+            this.DepartmentDtoGridControl = new DevExpress.XtraGrid.GridControl();
             this.departmentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
-            this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.DepartmentDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colFullPathHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.FullPathHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ThongTinHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.treeListBand1 = new DevExpress.XtraTreeList.Columns.TreeListBand();
+            this.treeListBand2 = new DevExpress.XtraTreeList.Columns.TreeListBand();
+            this.treeListBand3 = new DevExpress.XtraTreeList.Columns.TreeListBand();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DepartmentTreeList)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DepartmentDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DepartmentDtoGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FullPathHtmlHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinHtmlHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -166,15 +163,15 @@ namespace MasterData.Company
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(834, 39);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 627);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 489);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(834, 0);
             // 
             // barDockControlLeft
             // 
@@ -182,15 +179,15 @@ namespace MasterData.Company
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 588);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 450);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(834, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 588);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 450);
             // 
             // repositoryItemComboBox1
             // 
@@ -208,153 +205,117 @@ namespace MasterData.Company
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.DepartmentTreeList);
+            this.layoutControl1.Controls.Add(this.DepartmentDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 588);
+            this.layoutControl1.Size = new System.Drawing.Size(834, 450);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // DepartmentTreeList
+            // DepartmentDtoGridControl
             // 
-            this.DepartmentTreeList.Appearance.Caption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.DepartmentTreeList.Appearance.Caption.ForeColor = System.Drawing.Color.Blue;
-            this.DepartmentTreeList.Appearance.Caption.Options.UseFont = true;
-            this.DepartmentTreeList.Appearance.Caption.Options.UseForeColor = true;
-            this.DepartmentTreeList.Bands.AddRange(new DevExpress.XtraTreeList.Columns.TreeListBand[] {
-            this.treeListBand1,
-            this.treeListBand2,
-            this.treeListBand3});
-            this.DepartmentTreeList.Caption = "BẢNG QUẢN LÝ PHÒNG BAN";
-            this.DepartmentTreeList.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
-            this.colDepartmentName,
-            this.colDescription,
-            this.colBranchName,
-            this.colParentDepartmentName,
-            this.colIsActive});
-            this.DepartmentTreeList.DataSource = this.departmentDtoBindingSource;
-            this.DepartmentTreeList.KeyFieldName = "Id";
-            this.DepartmentTreeList.Location = new System.Drawing.Point(16, 16);
-            this.DepartmentTreeList.MenuManager = this.barManager1;
-            this.DepartmentTreeList.Name = "DepartmentTreeList";
-            this.DepartmentTreeList.OptionsBehavior.AllowRecursiveNodeChecking = true;
-            this.DepartmentTreeList.OptionsBehavior.Editable = false;
-            this.DepartmentTreeList.OptionsBehavior.PopulateServiceColumns = true;
-            this.DepartmentTreeList.OptionsClipboard.ClipboardMode = DevExpress.Export.ClipboardMode.Formatted;
-            this.DepartmentTreeList.OptionsCustomization.CustomizationFormSnapMode = DevExpress.Utils.Controls.SnapMode.OwnerControl;
-            this.DepartmentTreeList.OptionsFilter.FilterEditorAllowCustomExpressions = DevExpress.Utils.DefaultBoolean.True;
-            this.DepartmentTreeList.OptionsFind.AlwaysVisible = true;
-            this.DepartmentTreeList.OptionsMenu.ShowConditionalFormatFiltersItem = true;
-            this.DepartmentTreeList.OptionsSelection.MultiSelect = true;
-            this.DepartmentTreeList.OptionsView.AllowHtmlDrawHeaders = true;
-            this.DepartmentTreeList.OptionsView.CheckBoxStyle = DevExpress.XtraTreeList.DefaultNodeCheckBoxStyle.Check;
-            this.DepartmentTreeList.OptionsView.FilterCriteriaDisplayStyle = DevExpress.XtraEditors.FilterCriteriaDisplayStyle.Visual;
-            this.DepartmentTreeList.OptionsView.ShowCaption = true;
-            this.DepartmentTreeList.OptionsView.ShowIndentAsRowStyle = true;
-            this.DepartmentTreeList.ParentFieldName = "ParentId";
-            this.DepartmentTreeList.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemPictureEdit1,
-            this.repositoryItemHypertextLabel1,
-            this.repositoryItemCheckEdit1});
-            this.DepartmentTreeList.Size = new System.Drawing.Size(1043, 556);
-            this.DepartmentTreeList.TabIndex = 5;
-            // 
-            // treeListBand1
-            // 
-            this.treeListBand1.Caption = "Thông tin Phòng ban";
-            this.treeListBand1.Columns.Add(this.colDepartmentName);
-            this.treeListBand1.Columns.Add(this.colDescription);
-            this.treeListBand1.Fixed = DevExpress.XtraTreeList.Columns.FixedStyle.Left;
-            this.treeListBand1.Name = "treeListBand1";
-            this.treeListBand1.Width = 300;
-            // 
-            // colDepartmentName
-            // 
-            this.colDepartmentName.FieldName = "DepartmentName";
-            this.colDepartmentName.FieldNameSort = "DepartmentCode";
-            this.colDepartmentName.Name = "colDepartmentName";
-            this.colDepartmentName.OptionsColumn.AllowEdit = false;
-            this.colDepartmentName.OptionsColumn.AllowMove = false;
-            this.colDepartmentName.OptionsFilter.FilterBySortField = DevExpress.Utils.DefaultBoolean.True;
-            this.colDepartmentName.Visible = true;
-            this.colDepartmentName.VisibleIndex = 0;
-            this.colDepartmentName.Width = 120;
-            // 
-            // colDescription
-            // 
-            this.colDescription.FieldName = "Description";
-            this.colDescription.Name = "colDescription";
-            this.colDescription.OptionsColumn.ShowInCustomizationForm = false;
-            this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 1;
-            this.colDescription.Width = 80;
-            // 
-            // treeListBand2
-            // 
-            this.treeListBand2.Caption = "Thông tin Công ty";
-            this.treeListBand2.Columns.Add(this.colBranchName);
-            this.treeListBand2.Columns.Add(this.colParentDepartmentName);
-            this.treeListBand2.Name = "treeListBand2";
-            this.treeListBand2.Width = 400;
-            // 
-            // colBranchName
-            // 
-            this.colBranchName.Caption = "Chi nhánh";
-            this.colBranchName.FieldName = "BranchName";
-            this.colBranchName.Name = "colBranchName";
-            this.colBranchName.OptionsColumn.AllowMove = false;
-            this.colBranchName.OptionsColumn.ShowInCustomizationForm = false;
-            this.colBranchName.Visible = true;
-            this.colBranchName.VisibleIndex = 2;
-            this.colBranchName.Width = 120;
-            // 
-            // colParentDepartmentName
-            // 
-            this.colParentDepartmentName.Caption = "Phòng ban cha";
-            this.colParentDepartmentName.FieldName = "ParentDepartmentName";
-            this.colParentDepartmentName.Name = "colParentDepartmentName";
-            this.colParentDepartmentName.OptionsColumn.AllowMove = false;
-            this.colParentDepartmentName.OptionsColumn.ShowInCustomizationForm = false;
-            this.colParentDepartmentName.Visible = true;
-            this.colParentDepartmentName.VisibleIndex = 3;
-            this.colParentDepartmentName.Width = 150;
-            // 
-            // treeListBand3
-            // 
-            this.treeListBand3.Caption = "Thống kê";
-            this.treeListBand3.Columns.Add(this.colIsActive);
-            this.treeListBand3.Name = "treeListBand3";
-            this.treeListBand3.Width = 300;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.Caption = "Trạng thái";
-            this.colIsActive.ColumnEdit = this.repositoryItemCheckEdit1;
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 4;
-            this.colIsActive.Width = 80;
-            // 
-            // repositoryItemCheckEdit1
-            // 
-            this.repositoryItemCheckEdit1.AutoHeight = false;
-            this.repositoryItemCheckEdit1.Name = "repositoryItemCheckEdit1";
+            this.DepartmentDtoGridControl.DataSource = this.departmentDtoBindingSource;
+            this.DepartmentDtoGridControl.Location = new System.Drawing.Point(16, 16);
+            this.DepartmentDtoGridControl.MainView = this.DepartmentDtoGridView;
+            this.DepartmentDtoGridControl.MenuManager = this.barManager1;
+            this.DepartmentDtoGridControl.Name = "DepartmentDtoGridControl";
+            this.DepartmentDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.ThongTinHtmlHypertextLabel,
+            this.FullPathHtmlHypertextLabel});
+            this.DepartmentDtoGridControl.Size = new System.Drawing.Size(802, 418);
+            this.DepartmentDtoGridControl.TabIndex = 4;
+            this.DepartmentDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.DepartmentDtoGridView});
             // 
             // departmentDtoBindingSource
             // 
-            this.departmentDtoBindingSource.DataSource = typeof(DepartmentDto);
+            this.departmentDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.DepartmentDto);
             // 
-            // repositoryItemPictureEdit1
+            // DepartmentDtoGridView
             // 
-            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
+            this.DepartmentDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.DepartmentDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.DepartmentDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.DepartmentDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.DepartmentDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colFullPathHtml,
+            this.colThongTinHtml});
+            this.DepartmentDtoGridView.GridControl = this.DepartmentDtoGridControl;
+            this.DepartmentDtoGridView.IndicatorWidth = 50;
+            this.DepartmentDtoGridView.Name = "DepartmentDtoGridView";
+            this.DepartmentDtoGridView.OptionsSelection.MultiSelect = true;
+            this.DepartmentDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.DepartmentDtoGridView.OptionsView.ColumnAutoWidth = false;
+            this.DepartmentDtoGridView.OptionsView.EnableAppearanceEvenRow = true;
+            this.DepartmentDtoGridView.OptionsView.EnableAppearanceOddRow = true;
+            this.DepartmentDtoGridView.OptionsView.RowAutoHeight = true;
+            this.DepartmentDtoGridView.OptionsView.ShowGroupPanel = false;
+            this.DepartmentDtoGridView.OptionsView.ShowViewCaption = true;
+            this.DepartmentDtoGridView.ViewCaption = "BẢNG QUẢN LÝ PHÒNG BAN";
             // 
-            // repositoryItemHypertextLabel1
+            // colFullPathHtml
             // 
-            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
+            this.colFullPathHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colFullPathHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFullPathHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colFullPathHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colFullPathHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colFullPathHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colFullPathHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colFullPathHtml.AppearanceHeader.Options.UseFont = true;
+            this.colFullPathHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colFullPathHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colFullPathHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colFullPathHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFullPathHtml.Caption = "Phòng ban cấp trên";
+            this.colFullPathHtml.ColumnEdit = this.FullPathHtmlHypertextLabel;
+            this.colFullPathHtml.FieldName = "FullPathHtml";
+            this.colFullPathHtml.MinWidth = 200;
+            this.colFullPathHtml.Name = "colFullPathHtml";
+            this.colFullPathHtml.OptionsColumn.AllowEdit = false;
+            this.colFullPathHtml.OptionsColumn.FixedWidth = true;
+            this.colFullPathHtml.OptionsColumn.ReadOnly = true;
+            this.colFullPathHtml.Visible = true;
+            this.colFullPathHtml.VisibleIndex = 1;
+            this.colFullPathHtml.Width = 280;
+            // 
+            // FullPathHtmlHypertextLabel
+            // 
+            this.FullPathHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.FullPathHtmlHypertextLabel.Name = "FullPathHtmlHypertextLabel";
+            // 
+            // colThongTinHtml
+            // 
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin phòng ban";
+            this.colThongTinHtml.ColumnEdit = this.ThongTinHtmlHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 300;
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.OptionsColumn.AllowEdit = false;
+            this.colThongTinHtml.OptionsColumn.FixedWidth = true;
+            this.colThongTinHtml.OptionsColumn.ReadOnly = true;
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 2;
+            this.colThongTinHtml.Width = 500;
+            // 
+            // ThongTinHtmlHypertextLabel
+            // 
+            this.ThongTinHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ThongTinHtmlHypertextLabel.Name = "ThongTinHtmlHypertextLabel";
             // 
             // Root
             // 
@@ -363,22 +324,41 @@ namespace MasterData.Company
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 588);
+            this.Root.Size = new System.Drawing.Size(834, 450);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.DepartmentTreeList;
+            this.layoutControlItem1.Control = this.DepartmentDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 562);
+            this.layoutControlItem1.Size = new System.Drawing.Size(808, 424);
             this.layoutControlItem1.TextVisible = false;
+            // 
+            // treeListBand1
+            // 
+            this.treeListBand1.Caption = "Thông tin Phòng ban";
+            this.treeListBand1.Fixed = DevExpress.XtraTreeList.Columns.FixedStyle.Left;
+            this.treeListBand1.Name = "treeListBand1";
+            this.treeListBand1.Width = 300;
+            // 
+            // treeListBand2
+            // 
+            this.treeListBand2.Caption = "Thông tin Công ty";
+            this.treeListBand2.Name = "treeListBand2";
+            this.treeListBand2.Width = 400;
+            // 
+            // treeListBand3
+            // 
+            this.treeListBand3.Caption = "Thống kê";
+            this.treeListBand3.Name = "treeListBand3";
+            this.treeListBand3.Width = 300;
             // 
             // FrmDepartment
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1075, 627);
+            this.ClientSize = new System.Drawing.Size(834, 489);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -391,11 +371,11 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.DepartmentTreeList)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DepartmentDtoGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DepartmentDtoGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FullPathHtmlHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinHtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
@@ -412,27 +392,24 @@ namespace MasterData.Company
         private BarDockControl barDockControlLeft;
         private BarDockControl barDockControlRight;
         private LayoutControl layoutControl1;
-        private DevExpress.XtraTreeList.TreeList DepartmentTreeList;
         private LayoutControlGroup Root;
-        private LayoutControlItem layoutControlItem1;
         private BarButtonItem ListDataBarButtonItem;
         private BarButtonItem NewBarButtonItem;
         private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
-        private RepositoryItemPictureEdit repositoryItemPictureEdit1;
         private RepositoryItemComboBox repositoryItemComboBox1;
         private RepositoryItemComboBox repositoryItemComboBox2;
-        private RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
-        private RepositoryItemCheckEdit repositoryItemCheckEdit1;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colDescription;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colBranchName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colParentDepartmentName;
-        private DevExpress.XtraTreeList.Columns.TreeListColumn colIsActive;
         private DevExpress.XtraTreeList.Columns.TreeListBand treeListBand1;
         private DevExpress.XtraTreeList.Columns.TreeListBand treeListBand2;
         private DevExpress.XtraTreeList.Columns.TreeListBand treeListBand3;
         private BindingSource departmentDtoBindingSource;
+        private DevExpress.XtraGrid.GridControl DepartmentDtoGridControl;
+        private DevExpress.XtraGrid.Views.Grid.GridView DepartmentDtoGridView;
+        private LayoutControlItem layoutControlItem1;
+        private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel ThongTinHtmlHypertextLabel;
+        private DevExpress.XtraGrid.Columns.GridColumn colFullPathHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel FullPathHtmlHypertextLabel;
     }
 }
