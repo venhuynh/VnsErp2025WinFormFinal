@@ -22,6 +22,7 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData.Company;
+using Dal.DataContext;
 
 namespace MasterData.Company
 {
@@ -33,6 +34,16 @@ namespace MasterData.Company
         /// Business Logic Layer cho nhân viên
         /// </summary>
         private readonly EmployeeBll _employeeBll = new();
+
+        /// <summary>
+        /// Business Logic Layer cho phòng ban
+        /// </summary>
+        private readonly DepartmentBll _departmentBll = new();
+
+        /// <summary>
+        /// Business Logic Layer cho chức vụ
+        /// </summary>
+        private readonly PositionBll _positionBll = new();
 
         /// <summary>
         /// Danh sách ID của các nhân viên được chọn
@@ -75,14 +86,7 @@ namespace MasterData.Company
         /// </summary>
         private async void FrmEmployeeDto_Load(object sender, EventArgs e)
         {
-            try
-            {
-                await LoadDataAsync();
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(new Exception("Lỗi tải dữ liệu khi mở form: " + ex.Message, ex));
-            }
+            
         }
 
         /// <summary>
@@ -196,7 +200,24 @@ namespace MasterData.Company
             {
                 // Lấy dữ liệu từ BLL
                 var employees = _employeeBll.GetAll();
-                var employeeDtos = employees.Select(e => e.ToDto()).ToList();
+
+                // Load tất cả departments và positions để có thông tin đầy đủ
+                var departments = _departmentBll.GetAll();
+                var positions = _positionBll.GetAll();
+
+                // Tạo dictionary để lookup nhanh
+                var departmentDict = departments.ToDictionary(d => d.Id, d => d.DepartmentName);
+                var positionDict = positions.ToDictionary(p => p.Id, p => p.PositionName);
+
+                // Convert sang DTO với thông tin đầy đủ
+                var employeeDtos = employees.Select(e => e.ToDto(
+                    departmentName: e.DepartmentId.HasValue && departmentDict.ContainsKey(e.DepartmentId.Value)
+                        ? departmentDict[e.DepartmentId.Value]
+                        : null,
+                    positionName: e.PositionId.HasValue && positionDict.ContainsKey(e.PositionId.Value)
+                        ? positionDict[e.PositionId.Value]
+                        : null
+                )).ToList();
 
                 // Bind dữ liệu vào GridControl
                 BindGrid(employeeDtos);

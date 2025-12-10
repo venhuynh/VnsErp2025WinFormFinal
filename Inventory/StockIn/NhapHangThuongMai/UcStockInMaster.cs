@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Inventory.InventoryManagement;
+﻿using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockIn;
 using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
@@ -14,10 +8,15 @@ using Dal.DataContext;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DTO.Inventory.InventoryManagement;
-using DTO.Inventory.StockIn;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.MasterData.Company;
 using DTO.MasterData.CustomerPartner;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Inventory.StockIn.NhapHangThuongMai
 {

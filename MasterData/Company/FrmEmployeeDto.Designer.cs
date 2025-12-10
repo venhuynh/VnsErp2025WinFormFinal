@@ -390,6 +390,7 @@ namespace MasterData.Company
             this.colAvatar.AppearanceHeader.Options.UseTextOptions = true;
             this.colAvatar.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.colAvatar.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colAvatar.Caption = "Hình ảnh";
             this.colAvatar.ColumnEdit = this.EmployeeAvatarPictureEdit;
             this.colAvatar.FieldName = "AvatarThumbnailData";
             this.colAvatar.Name = "colAvatar";

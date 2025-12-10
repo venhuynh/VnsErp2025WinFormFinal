@@ -261,6 +261,9 @@
     <EmbeddedResource Include="Company\FrmEmployeeDto.resx">
       <DependentUpon>FrmEmployeeDto.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmEmployeeDtoDetail.resx">
+      <DependentUpon>FrmEmployeeDtoDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Company\FrmPositionDetail.resx">
       <DependentUpon>FrmPositionDetail.cs</DependentUpon>
     </EmbeddedResource>
@@ -361,6 +364,7 @@
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.DepartmentLookupDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.EmployeeDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.PositionDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerLookupDto.datasource" />
     <None Include="Resources\list_16x16.png" />
