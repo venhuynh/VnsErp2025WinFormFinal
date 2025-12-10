@@ -350,6 +350,7 @@
     <None Include="Company\FrmDepartmentDetail_User_Guide.md" />
     <None Include="Doc\BusinessPartner_Database_Schema.md" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.DepartmentLookupDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerLookupDto.datasource" />
     <None Include="Resources\list_16x16.png" />

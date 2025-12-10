@@ -51,17 +51,17 @@ namespace MasterData.Company
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
             this.DepartmentCodeTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.DepartmentNameTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.DescriptionTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.BranchNameSearchLookupedit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.companyBranchLookupDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colBranchInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.ParentDepartmentNameTextEdit = new DevExpress.XtraEditors.TreeListLookUpEdit();
-            this.departmentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.treeListLookUpEdit1TreeList = new DevExpress.XtraTreeList.TreeList();
-            this.colParentDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.ChiNhanhInfoHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.IsActiveToogleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
+            this.ParentDepartmentNameSearchLookup = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.departmentLookupDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colFullPathHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.PhongBanInfoHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForDepartmentCode = new DevExpress.XtraLayout.LayoutControlItem();
@@ -70,21 +70,24 @@ namespace MasterData.Company
             this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForBranchName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForParentDepartmentName = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ChiNhanhInfoHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colParentDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colDepartmentName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.DescriptionTextEdit = new DevExpress.XtraEditors.MemoEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DepartmentCodeTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DepartmentNameTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BranchNameSearchLookupedit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBranchLookupDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ParentDepartmentNameTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.treeListLookUpEdit1TreeList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChiNhanhInfoHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveToogleSwitch.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ParentDepartmentNameSearchLookup.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.departmentLookupDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PhongBanInfoHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDepartmentCode)).BeginInit();
@@ -93,7 +96,7 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForBranchName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForParentDepartmentName)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ChiNhanhInfoHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -181,10 +184,10 @@ namespace MasterData.Company
             // 
             this.dataLayoutControl1.Controls.Add(this.DepartmentCodeTextEdit);
             this.dataLayoutControl1.Controls.Add(this.DepartmentNameTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.DescriptionTextEdit);
             this.dataLayoutControl1.Controls.Add(this.BranchNameSearchLookupedit);
-            this.dataLayoutControl1.Controls.Add(this.ParentDepartmentNameTextEdit);
             this.dataLayoutControl1.Controls.Add(this.IsActiveToogleSwitch);
+            this.dataLayoutControl1.Controls.Add(this.ParentDepartmentNameSearchLookup);
+            this.dataLayoutControl1.Controls.Add(this.DescriptionTextEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
@@ -212,15 +215,6 @@ namespace MasterData.Company
             this.DepartmentNameTextEdit.Size = new System.Drawing.Size(356, 28);
             this.DepartmentNameTextEdit.StyleController = this.dataLayoutControl1;
             this.DepartmentNameTextEdit.TabIndex = 5;
-            // 
-            // DescriptionTextEdit
-            // 
-            this.DescriptionTextEdit.Location = new System.Drawing.Point(106, 152);
-            this.DescriptionTextEdit.MenuManager = this.barManager1;
-            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
-            this.DescriptionTextEdit.Size = new System.Drawing.Size(356, 28);
-            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
-            this.DescriptionTextEdit.TabIndex = 6;
             // 
             // BranchNameSearchLookupedit
             // 
@@ -280,54 +274,10 @@ namespace MasterData.Company
             this.colBranchInfoHtml.VisibleIndex = 0;
             this.colBranchInfoHtml.Width = 400;
             // 
-            // ParentDepartmentNameTextEdit
+            // ChiNhanhInfoHypertextLabel
             // 
-            this.ParentDepartmentNameTextEdit.Location = new System.Drawing.Point(106, 50);
-            this.ParentDepartmentNameTextEdit.MenuManager = this.barManager1;
-            this.ParentDepartmentNameTextEdit.Name = "ParentDepartmentNameTextEdit";
-            this.ParentDepartmentNameTextEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.ParentDepartmentNameTextEdit.Properties.DataSource = this.departmentDtoBindingSource;
-            this.ParentDepartmentNameTextEdit.Properties.DisplayMember = "DepartmentName";
-            this.ParentDepartmentNameTextEdit.Properties.NullText = "";
-            this.ParentDepartmentNameTextEdit.Properties.TreeList = this.treeListLookUpEdit1TreeList;
-            this.ParentDepartmentNameTextEdit.Properties.ValueMember = "Id";
-            this.ParentDepartmentNameTextEdit.Size = new System.Drawing.Size(356, 28);
-            this.ParentDepartmentNameTextEdit.StyleController = this.dataLayoutControl1;
-            this.ParentDepartmentNameTextEdit.TabIndex = 2;
-            // 
-            // departmentDtoBindingSource
-            // 
-            this.departmentDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.DepartmentDto);
-            // 
-            // treeListLookUpEdit1TreeList
-            // 
-            this.treeListLookUpEdit1TreeList.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
-            this.colParentDepartmentName,
-            this.colDepartmentName});
-            this.treeListLookUpEdit1TreeList.KeyFieldName = "Id";
-            this.treeListLookUpEdit1TreeList.Location = new System.Drawing.Point(0, 0);
-            this.treeListLookUpEdit1TreeList.Name = "treeListLookUpEdit1TreeList";
-            this.treeListLookUpEdit1TreeList.OptionsView.ShowIndentAsRowStyle = true;
-            this.treeListLookUpEdit1TreeList.ParentFieldName = "ParentId";
-            this.treeListLookUpEdit1TreeList.Size = new System.Drawing.Size(400, 200);
-            this.treeListLookUpEdit1TreeList.TabIndex = 0;
-            // 
-            // colParentDepartmentName
-            // 
-            this.colParentDepartmentName.Caption = "Phòng ban cấp trên";
-            this.colParentDepartmentName.FieldName = "ParentDepartmentName";
-            this.colParentDepartmentName.Name = "colParentDepartmentName";
-            this.colParentDepartmentName.Visible = true;
-            this.colParentDepartmentName.VisibleIndex = 0;
-            // 
-            // colDepartmentName
-            // 
-            this.colDepartmentName.Caption = "Tên phòng ban";
-            this.colDepartmentName.FieldName = "DepartmentName";
-            this.colDepartmentName.Name = "colDepartmentName";
-            this.colDepartmentName.Visible = true;
-            this.colDepartmentName.VisibleIndex = 1;
+            this.ChiNhanhInfoHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ChiNhanhInfoHypertextLabel.Name = "ChiNhanhInfoHypertextLabel";
             // 
             // IsActiveToogleSwitch
             // 
@@ -342,6 +292,69 @@ namespace MasterData.Company
             this.IsActiveToogleSwitch.Size = new System.Drawing.Size(167, 24);
             this.IsActiveToogleSwitch.StyleController = this.dataLayoutControl1;
             this.IsActiveToogleSwitch.TabIndex = 4;
+            // 
+            // ParentDepartmentNameSearchLookup
+            // 
+            this.ParentDepartmentNameSearchLookup.Location = new System.Drawing.Point(106, 50);
+            this.ParentDepartmentNameSearchLookup.MenuManager = this.barManager1;
+            this.ParentDepartmentNameSearchLookup.Name = "ParentDepartmentNameSearchLookup";
+            this.ParentDepartmentNameSearchLookup.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ParentDepartmentNameSearchLookup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.ParentDepartmentNameSearchLookup.Properties.DataSource = this.departmentLookupDtoBindingSource;
+            this.ParentDepartmentNameSearchLookup.Properties.DisplayMember = "FullPathHtml";
+            this.ParentDepartmentNameSearchLookup.Properties.NullText = "";
+            this.ParentDepartmentNameSearchLookup.Properties.PopupView = this.gridView1;
+            this.ParentDepartmentNameSearchLookup.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.PhongBanInfoHypertextLabel});
+            this.ParentDepartmentNameSearchLookup.Properties.ValueMember = "Id";
+            this.ParentDepartmentNameSearchLookup.Size = new System.Drawing.Size(356, 28);
+            this.ParentDepartmentNameSearchLookup.StyleController = this.dataLayoutControl1;
+            this.ParentDepartmentNameSearchLookup.TabIndex = 2;
+            // 
+            // departmentLookupDtoBindingSource
+            // 
+            this.departmentLookupDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.DepartmentLookupDto);
+            // 
+            // gridView1
+            // 
+            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colFullPathHtml});
+            this.gridView1.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.gridView1.OptionsView.RowAutoHeight = true;
+            this.gridView1.OptionsView.ShowGroupPanel = false;
+            // 
+            // colFullPathHtml
+            // 
+            this.colFullPathHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colFullPathHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFullPathHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colFullPathHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colFullPathHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colFullPathHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colFullPathHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colFullPathHtml.AppearanceHeader.Options.UseFont = true;
+            this.colFullPathHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colFullPathHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colFullPathHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colFullPathHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colFullPathHtml.AppearanceHeader.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colFullPathHtml.Caption = "Đường dẫn phòng ban";
+            this.colFullPathHtml.ColumnEdit = this.PhongBanInfoHypertextLabel;
+            this.colFullPathHtml.FieldName = "FullPathHtml";
+            this.colFullPathHtml.Name = "colFullPathHtml";
+            this.colFullPathHtml.OptionsColumn.AllowEdit = false;
+            this.colFullPathHtml.OptionsColumn.ReadOnly = true;
+            this.colFullPathHtml.Visible = true;
+            this.colFullPathHtml.VisibleIndex = 0;
+            this.colFullPathHtml.Width = 400;
+            // 
+            // PhongBanInfoHypertextLabel
+            // 
+            this.PhongBanInfoHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.PhongBanInfoHypertextLabel.Name = "PhongBanInfoHypertextLabel";
             // 
             // Root
             // 
@@ -417,17 +430,37 @@ namespace MasterData.Company
             // 
             // ItemForParentDepartmentName
             // 
-            this.ItemForParentDepartmentName.Control = this.ParentDepartmentNameTextEdit;
+            this.ItemForParentDepartmentName.Control = this.ParentDepartmentNameSearchLookup;
             this.ItemForParentDepartmentName.Location = new System.Drawing.Point(0, 34);
             this.ItemForParentDepartmentName.Name = "ItemForParentDepartmentName";
             this.ItemForParentDepartmentName.Size = new System.Drawing.Size(452, 34);
             this.ItemForParentDepartmentName.Text = "Phòng ban cha";
             this.ItemForParentDepartmentName.TextSize = new System.Drawing.Size(74, 13);
             // 
-            // ChiNhanhInfoHypertextLabel
+            // colParentDepartmentName
             // 
-            this.ChiNhanhInfoHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.ChiNhanhInfoHypertextLabel.Name = "ChiNhanhInfoHypertextLabel";
+            this.colParentDepartmentName.Caption = "Phòng ban cấp trên";
+            this.colParentDepartmentName.FieldName = "ParentDepartmentName";
+            this.colParentDepartmentName.Name = "colParentDepartmentName";
+            this.colParentDepartmentName.Visible = true;
+            this.colParentDepartmentName.VisibleIndex = 0;
+            // 
+            // colDepartmentName
+            // 
+            this.colDepartmentName.Caption = "Tên phòng ban";
+            this.colDepartmentName.FieldName = "DepartmentName";
+            this.colDepartmentName.Name = "colDepartmentName";
+            this.colDepartmentName.Visible = true;
+            this.colDepartmentName.VisibleIndex = 1;
+            // 
+            // DescriptionTextEdit
+            // 
+            this.DescriptionTextEdit.Location = new System.Drawing.Point(106, 152);
+            this.DescriptionTextEdit.MenuManager = this.barManager1;
+            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
+            this.DescriptionTextEdit.Size = new System.Drawing.Size(356, 51);
+            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
+            this.DescriptionTextEdit.TabIndex = 6;
             // 
             // FrmDepartmentDetail
             // 
@@ -448,14 +481,15 @@ namespace MasterData.Company
             this.dataLayoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DepartmentCodeTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DepartmentNameTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BranchNameSearchLookupedit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBranchLookupDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ParentDepartmentNameTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.treeListLookUpEdit1TreeList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChiNhanhInfoHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveToogleSwitch.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ParentDepartmentNameSearchLookup.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.departmentLookupDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PhongBanInfoHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDepartmentCode)).EndInit();
@@ -464,7 +498,7 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForBranchName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForParentDepartmentName)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ChiNhanhInfoHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -483,7 +517,6 @@ namespace MasterData.Company
         private DataLayoutControl dataLayoutControl1;
         private TextEdit DepartmentCodeTextEdit;
         private TextEdit DepartmentNameTextEdit;
-        private TextEdit DescriptionTextEdit;
         private LayoutControlGroup Root;
         private LayoutControlGroup layoutControlGroup1;
         private LayoutControlItem ItemForDepartmentCode;
@@ -494,9 +527,6 @@ namespace MasterData.Company
         private LayoutControlItem ItemForParentDepartmentName;
         private SearchLookUpEdit BranchNameSearchLookupedit;
         private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
-        private TreeListLookUpEdit ParentDepartmentNameTextEdit;
-        private System.Windows.Forms.BindingSource departmentDtoBindingSource;
-        private DevExpress.XtraTreeList.TreeList treeListLookUpEdit1TreeList;
         private ToggleSwitch IsActiveToogleSwitch;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colParentDepartmentName;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentName;
@@ -504,5 +534,12 @@ namespace MasterData.Company
         private System.Windows.Forms.BindingSource companyBranchLookupDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colBranchInfoHtml;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel ChiNhanhInfoHypertextLabel;
+        private SearchLookUpEdit ParentDepartmentNameSearchLookup;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        
+        private System.Windows.Forms.BindingSource departmentLookupDtoBindingSource;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel PhongBanInfoHypertextLabel;
+        private DevExpress.XtraGrid.Columns.GridColumn colFullPathHtml;
+        private MemoEdit DescriptionTextEdit;
     }
 }
