@@ -65,6 +65,16 @@ public class CompanyBranchRepository : ICompanyBranchRepository
         return context;
     }
 
+    /// <summary>
+    /// Tạo DataContext mới cho Lookup (không load navigation properties để tối ưu hiệu năng)
+    /// </summary>
+    /// <returns>DataContext mới không có LoadOptions</returns>
+    private VnsErp2025DataContext CreateLookupContext()
+    {
+        // Tạo context mới nhưng KHÔNG set LoadOptions để tránh load navigation properties không cần thiết
+        return new VnsErp2025DataContext(_connectionString);
+    }
+
     #endregion
 
     #region ========== QUẢN LÝ DỮ LIỆU ==========
@@ -234,6 +244,80 @@ public class CompanyBranchRepository : ICompanyBranchRepository
         catch (Exception ex)
         {
             throw new DataAccessException("Lỗi lấy danh sách chi nhánh công ty đang hoạt động", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách chi nhánh công ty đang hoạt động cho Lookup (chỉ load các trường cần thiết).
+    /// Không load navigation properties để tối ưu hiệu năng.
+    /// LINQ to SQL sẽ tự động chỉ select các trường được sử dụng (Id, CompanyId, BranchCode, BranchName, IsActive).
+    /// </summary>
+    /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
+    public List<CompanyBranch> GetActiveBranchesForLookup()
+    {
+        try
+        {
+            using var context = CreateLookupContext();
+            
+            // Query CompanyBranch entities nhưng không load navigation properties
+            // LINQ to SQL sẽ chỉ select các trường được truy cập sau khi ToList()
+            var branches = context.CompanyBranches
+                .Where(x => x.IsActive)
+                .ToList();
+            
+            // Materialize chỉ các trường cần thiết để đảm bảo chúng được load từ DB
+            // Các trường khác sẽ là null/default nhưng không ảnh hưởng vì ta chỉ dùng các trường này
+            foreach (var branch in branches)
+            {
+                // Force materialize các trường cần thiết cho LookupDto
+                var _ = branch.Id;
+                var __ = branch.CompanyId;
+                var ___ = branch.BranchCode;
+                var ____ = branch.BranchName;
+                var _____ = branch.IsActive;
+            }
+            
+            return branches;
+        }
+        catch (Exception ex)
+        {
+            throw new DataAccessException("Lỗi lấy danh sách chi nhánh công ty cho lookup", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách chi nhánh công ty đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
+    /// </summary>
+    /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
+    public async Task<List<CompanyBranch>> GetActiveBranchesForLookupAsync()
+    {
+        try
+        {
+            return await Task.Run(() =>
+            {
+                using var context = CreateLookupContext();
+                
+                // Query CompanyBranch entities nhưng không load navigation properties
+                var branches = context.CompanyBranches
+                    .Where(x => x.IsActive)
+                    .ToList();
+                
+                // Materialize chỉ các trường cần thiết
+                foreach (var branch in branches)
+                {
+                    var _ = branch.Id;
+                    var __ = branch.CompanyId;
+                    var ___ = branch.BranchCode;
+                    var ____ = branch.BranchName;
+                    var _____ = branch.IsActive;
+                }
+                
+                return branches;
+            });
+        }
+        catch (Exception ex)
+        {
+            throw new DataAccessException("Lỗi lấy danh sách chi nhánh công ty cho lookup (async)", ex);
         }
     }
 

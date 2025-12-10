@@ -102,6 +102,9 @@ namespace MasterData.Company
                 
                 // Load Department data cho ParentDepartmentNameTextEdit
                 LoadDepartments();
+                
+                // Setup SearchLookUpEdit để hiển thị HTML
+                SetupBranchSearchLookUpEdit();
             }
             catch (Exception ex)
             {
@@ -110,16 +113,38 @@ namespace MasterData.Company
         }
 
         /// <summary>
-        /// Load danh sách chi nhánh công ty
+        /// Setup SearchLookUpEdit cho Branch để hiển thị HTML đẹp
+        /// </summary>
+        private void SetupBranchSearchLookUpEdit()
+        {
+            try
+            {
+                // Đảm bảo column BranchInfoHtml được cấu hình đúng
+                if (colBranchInfoHtml != null)
+                {
+                    colBranchInfoHtml.FieldName = "BranchInfoHtml";
+                    colBranchInfoHtml.Visible = true;
+                    colBranchInfoHtml.VisibleIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Lỗi setup Branch SearchLookUpEdit: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Load danh sách chi nhánh công ty cho Lookup (tối ưu hiệu năng)
         /// </summary>
         private void LoadCompanyBranches()
         {
             try
             {
-                var companyBranches = _companyBranchBll.GetActiveBranches();
-                var companyBranchDtos = companyBranches.Select(cb => cb.ToDto()).ToList();
+                // Sử dụng method tối ưu chỉ load các trường cần thiết
+                var companyBranches = _companyBranchBll.GetActiveBranchesForLookup();
+                var companyBranchLookupDtos = companyBranches.ToLookupDtos().ToList();
 
-                companyBranchDtoBindingSource.DataSource = companyBranchDtos;
+                companyBranchLookupDtoBindingSource.DataSource = companyBranchLookupDtos;
             }
             catch (Exception ex)
             {

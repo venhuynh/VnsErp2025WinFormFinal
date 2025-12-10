@@ -53,10 +53,9 @@ namespace MasterData.Company
             this.DepartmentNameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.DescriptionTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.BranchNameSearchLookupedit = new DevExpress.XtraEditors.SearchLookUpEdit();
-            this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.companyBranchLookupDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colBranchName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colFullAddress = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colBranchInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ParentDepartmentNameTextEdit = new DevExpress.XtraEditors.TreeListLookUpEdit();
             this.departmentDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.treeListLookUpEdit1TreeList = new DevExpress.XtraTreeList.TreeList();
@@ -71,6 +70,7 @@ namespace MasterData.Company
             this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForBranchName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForParentDepartmentName = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ChiNhanhInfoHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -79,7 +79,7 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.DepartmentNameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BranchNameSearchLookupedit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchLookupDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ParentDepartmentNameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).BeginInit();
@@ -93,6 +93,7 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForBranchName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForParentDepartmentName)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChiNhanhInfoHypertextLabel)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -194,80 +195,94 @@ namespace MasterData.Company
             // 
             // DepartmentCodeTextEdit
             // 
-            this.DepartmentCodeTextEdit.Location = new System.Drawing.Point(104, 84);
+            this.DepartmentCodeTextEdit.Location = new System.Drawing.Point(106, 84);
             this.DepartmentCodeTextEdit.MenuManager = this.barManager1;
             this.DepartmentCodeTextEdit.Name = "DepartmentCodeTextEdit";
             this.DepartmentCodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.DepartmentCodeTextEdit.Size = new System.Drawing.Size(131, 28);
+            this.DepartmentCodeTextEdit.Size = new System.Drawing.Size(129, 28);
             this.DepartmentCodeTextEdit.StyleController = this.dataLayoutControl1;
             this.DepartmentCodeTextEdit.TabIndex = 3;
             // 
             // DepartmentNameTextEdit
             // 
-            this.DepartmentNameTextEdit.Location = new System.Drawing.Point(104, 118);
+            this.DepartmentNameTextEdit.Location = new System.Drawing.Point(106, 118);
             this.DepartmentNameTextEdit.MenuManager = this.barManager1;
             this.DepartmentNameTextEdit.Name = "DepartmentNameTextEdit";
             this.DepartmentNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.DepartmentNameTextEdit.Size = new System.Drawing.Size(358, 28);
+            this.DepartmentNameTextEdit.Size = new System.Drawing.Size(356, 28);
             this.DepartmentNameTextEdit.StyleController = this.dataLayoutControl1;
             this.DepartmentNameTextEdit.TabIndex = 5;
             // 
             // DescriptionTextEdit
             // 
-            this.DescriptionTextEdit.Location = new System.Drawing.Point(104, 152);
+            this.DescriptionTextEdit.Location = new System.Drawing.Point(106, 152);
             this.DescriptionTextEdit.MenuManager = this.barManager1;
             this.DescriptionTextEdit.Name = "DescriptionTextEdit";
-            this.DescriptionTextEdit.Size = new System.Drawing.Size(358, 28);
+            this.DescriptionTextEdit.Size = new System.Drawing.Size(356, 28);
             this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
             this.DescriptionTextEdit.TabIndex = 6;
             // 
             // BranchNameSearchLookupedit
             // 
-            this.BranchNameSearchLookupedit.Location = new System.Drawing.Point(104, 16);
+            this.BranchNameSearchLookupedit.Location = new System.Drawing.Point(106, 16);
             this.BranchNameSearchLookupedit.MenuManager = this.barManager1;
             this.BranchNameSearchLookupedit.Name = "BranchNameSearchLookupedit";
+            this.BranchNameSearchLookupedit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.BranchNameSearchLookupedit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.BranchNameSearchLookupedit.Properties.DataSource = this.companyBranchDtoBindingSource;
-            this.BranchNameSearchLookupedit.Properties.DisplayMember = "BranchName";
+            this.BranchNameSearchLookupedit.Properties.DataSource = this.companyBranchLookupDtoBindingSource;
+            this.BranchNameSearchLookupedit.Properties.DisplayMember = "BranchInfoHtml";
             this.BranchNameSearchLookupedit.Properties.NullText = "";
             this.BranchNameSearchLookupedit.Properties.PopupView = this.searchLookUpEdit1View;
+            this.BranchNameSearchLookupedit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.ChiNhanhInfoHypertextLabel});
             this.BranchNameSearchLookupedit.Properties.ValueMember = "Id";
-            this.BranchNameSearchLookupedit.Size = new System.Drawing.Size(358, 28);
+            this.BranchNameSearchLookupedit.Size = new System.Drawing.Size(356, 28);
             this.BranchNameSearchLookupedit.StyleController = this.dataLayoutControl1;
             this.BranchNameSearchLookupedit.TabIndex = 0;
             // 
-            // companyBranchDtoBindingSource
+            // companyBranchLookupDtoBindingSource
             // 
-            this.companyBranchDtoBindingSource.DataSource = typeof(CompanyBranchDto);
+            this.companyBranchLookupDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchLookupDto);
             // 
             // searchLookUpEdit1View
             // 
             this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colBranchName,
-            this.colFullAddress});
+            this.colBranchInfoHtml});
             this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
             this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.searchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
-            // colBranchName
+            // colBranchInfoHtml
             // 
-            this.colBranchName.FieldName = "BranchName";
-            this.colBranchName.Name = "colBranchName";
-            this.colBranchName.Visible = true;
-            this.colBranchName.VisibleIndex = 0;
-            // 
-            // colFullAddress
-            // 
-            this.colFullAddress.FieldName = "FullAddress";
-            this.colFullAddress.Name = "colFullAddress";
-            this.colFullAddress.Visible = true;
-            this.colFullAddress.VisibleIndex = 1;
+            this.colBranchInfoHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colBranchInfoHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colBranchInfoHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colBranchInfoHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colBranchInfoHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colBranchInfoHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colBranchInfoHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colBranchInfoHtml.AppearanceHeader.Options.UseFont = true;
+            this.colBranchInfoHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colBranchInfoHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colBranchInfoHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colBranchInfoHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colBranchInfoHtml.AppearanceHeader.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colBranchInfoHtml.Caption = "Thông tin chi nhánh";
+            this.colBranchInfoHtml.ColumnEdit = this.ChiNhanhInfoHypertextLabel;
+            this.colBranchInfoHtml.FieldName = "BranchInfoHtml";
+            this.colBranchInfoHtml.Name = "colBranchInfoHtml";
+            this.colBranchInfoHtml.OptionsColumn.AllowEdit = false;
+            this.colBranchInfoHtml.OptionsColumn.ReadOnly = true;
+            this.colBranchInfoHtml.Visible = true;
+            this.colBranchInfoHtml.VisibleIndex = 0;
+            this.colBranchInfoHtml.Width = 400;
             // 
             // ParentDepartmentNameTextEdit
             // 
-            this.ParentDepartmentNameTextEdit.Location = new System.Drawing.Point(104, 50);
+            this.ParentDepartmentNameTextEdit.Location = new System.Drawing.Point(106, 50);
             this.ParentDepartmentNameTextEdit.MenuManager = this.barManager1;
             this.ParentDepartmentNameTextEdit.Name = "ParentDepartmentNameTextEdit";
             this.ParentDepartmentNameTextEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
@@ -277,13 +292,13 @@ namespace MasterData.Company
             this.ParentDepartmentNameTextEdit.Properties.NullText = "";
             this.ParentDepartmentNameTextEdit.Properties.TreeList = this.treeListLookUpEdit1TreeList;
             this.ParentDepartmentNameTextEdit.Properties.ValueMember = "Id";
-            this.ParentDepartmentNameTextEdit.Size = new System.Drawing.Size(358, 28);
+            this.ParentDepartmentNameTextEdit.Size = new System.Drawing.Size(356, 28);
             this.ParentDepartmentNameTextEdit.StyleController = this.dataLayoutControl1;
             this.ParentDepartmentNameTextEdit.TabIndex = 2;
             // 
             // departmentDtoBindingSource
             // 
-            this.departmentDtoBindingSource.DataSource = typeof(DepartmentDto);
+            this.departmentDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.DepartmentDto);
             // 
             // treeListLookUpEdit1TreeList
             // 
@@ -360,7 +375,7 @@ namespace MasterData.Company
             this.ItemForDepartmentCode.Name = "ItemForDepartmentCode";
             this.ItemForDepartmentCode.Size = new System.Drawing.Size(225, 34);
             this.ItemForDepartmentCode.Text = "Mã phòng ban";
-            this.ItemForDepartmentCode.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForDepartmentCode.TextSize = new System.Drawing.Size(74, 13);
             // 
             // ItemForDepartmentName
             // 
@@ -369,7 +384,7 @@ namespace MasterData.Company
             this.ItemForDepartmentName.Name = "ItemForDepartmentName";
             this.ItemForDepartmentName.Size = new System.Drawing.Size(452, 34);
             this.ItemForDepartmentName.Text = "Tên phòng ban";
-            this.ItemForDepartmentName.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForDepartmentName.TextSize = new System.Drawing.Size(74, 13);
             // 
             // ItemForDescription
             // 
@@ -378,7 +393,7 @@ namespace MasterData.Company
             this.ItemForDescription.Name = "ItemForDescription";
             this.ItemForDescription.Size = new System.Drawing.Size(452, 57);
             this.ItemForDescription.Text = "Mô tả";
-            this.ItemForDescription.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForDescription.TextSize = new System.Drawing.Size(74, 13);
             // 
             // ItemForIsActive
             // 
@@ -397,8 +412,8 @@ namespace MasterData.Company
             this.ItemForBranchName.Location = new System.Drawing.Point(0, 0);
             this.ItemForBranchName.Name = "ItemForBranchName";
             this.ItemForBranchName.Size = new System.Drawing.Size(452, 34);
-            this.ItemForBranchName.Text = "Tên chi nhánh";
-            this.ItemForBranchName.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForBranchName.Text = "Chọn chi nhánh";
+            this.ItemForBranchName.TextSize = new System.Drawing.Size(74, 13);
             // 
             // ItemForParentDepartmentName
             // 
@@ -407,7 +422,12 @@ namespace MasterData.Company
             this.ItemForParentDepartmentName.Name = "ItemForParentDepartmentName";
             this.ItemForParentDepartmentName.Size = new System.Drawing.Size(452, 34);
             this.ItemForParentDepartmentName.Text = "Phòng ban cha";
-            this.ItemForParentDepartmentName.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForParentDepartmentName.TextSize = new System.Drawing.Size(74, 13);
+            // 
+            // ChiNhanhInfoHypertextLabel
+            // 
+            this.ChiNhanhInfoHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ChiNhanhInfoHypertextLabel.Name = "ChiNhanhInfoHypertextLabel";
             // 
             // FrmDepartmentDetail
             // 
@@ -430,7 +450,7 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.DepartmentNameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BranchNameSearchLookupedit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchLookupDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ParentDepartmentNameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.departmentDtoBindingSource)).EndInit();
@@ -444,6 +464,7 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForBranchName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForParentDepartmentName)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChiNhanhInfoHypertextLabel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -472,15 +493,16 @@ namespace MasterData.Company
         private LayoutControlItem ItemForBranchName;
         private LayoutControlItem ItemForParentDepartmentName;
         private SearchLookUpEdit BranchNameSearchLookupedit;
-        private System.Windows.Forms.BindingSource companyBranchDtoBindingSource;
         private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
-        private DevExpress.XtraGrid.Columns.GridColumn colBranchName;
-        private DevExpress.XtraGrid.Columns.GridColumn colFullAddress;
         private TreeListLookUpEdit ParentDepartmentNameTextEdit;
         private System.Windows.Forms.BindingSource departmentDtoBindingSource;
         private DevExpress.XtraTreeList.TreeList treeListLookUpEdit1TreeList;
         private ToggleSwitch IsActiveToogleSwitch;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colParentDepartmentName;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colDepartmentName;
+        
+        private System.Windows.Forms.BindingSource companyBranchLookupDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colBranchInfoHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel ChiNhanhInfoHypertextLabel;
     }
 }
