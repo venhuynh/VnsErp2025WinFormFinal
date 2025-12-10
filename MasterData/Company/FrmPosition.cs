@@ -219,41 +219,90 @@ namespace MasterData.Company
         /// </summary>
         private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (_selectedPositionIds == null || _selectedPositionIds.Count == 0)
-            {
-                ShowInfo("Vui lòng chọn ít nhất một dòng để xóa.");
-                return;
-            }
-
-            // Kiểm tra logic business: không cho phép xóa nếu Company không còn chức vụ nào
-            if (!await ValidateDeleteBusinessRules())
-            {
-                return;
-            }
-
-            var confirmMessage = _selectedPositionIds.Count == 1
-                ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn?"
-                : $"Bạn có chắc muốn xóa {_selectedPositionIds.Count} dòng dữ liệu đã chọn?";
-
-            if (!MsgBox.ShowYesNo(confirmMessage)) return;
-
             try
             {
-                await ExecuteWithWaitingFormAsync(() =>
+                if (_selectedPositionIds == null || _selectedPositionIds.Count == 0)
                 {
-                    foreach (var id in _selectedPositionIds)
+                    ShowInfo("Vui lòng chọn ít nhất một dòng để xóa.");
+                    return;
+                }
+
+                // Kiểm tra logic business: không cho phép xóa nếu Company không còn chức vụ nào
+                if (!await ValidateDeleteBusinessRules())
+                {
+                    return;
+                }
+
+                var confirmMessage = _selectedPositionIds.Count == 1
+                    ? "Bạn có chắc muốn xóa dòng dữ liệu đã chọn?"
+                    : $"Bạn có chắc muốn xóa {_selectedPositionIds.Count} dòng dữ liệu đã chọn?";
+
+                if (!MsgBox.ShowYesNo(confirmMessage)) return;
+
+                try
+                {
+                    var successCount = 0;
+                    var failCount = 0;
+                    var errorMessages = new List<string>();
+
+                    await ExecuteWithWaitingFormAsync(async () =>
                     {
-                        _positionBll.Delete(id);
+                        await Task.Run(() =>
+                        {
+                            foreach (var id in _selectedPositionIds)
+                            {
+                                try
+                                {
+                                    _positionBll.Delete(id);
+                                    successCount++;
+                                }
+                                catch (Exception ex)
+                                {
+                                    failCount++;
+                                    // Lấy thông báo lỗi chi tiết, ưu tiên InnerException nếu có
+                                    var errorDetail = ex.InnerException != null 
+                                        ? ex.InnerException.Message 
+                                        : ex.Message;
+                                    errorMessages.Add(errorDetail);
+                                }
+                            }
+                        });
+                    });
+
+                    // Hiển thị kết quả
+                    if (failCount == 0)
+                    {
+                        // Tất cả đều thành công
+                        var message = successCount == 1
+                            ? "Đã xóa 1 chức vụ thành công."
+                            : $"Đã xóa {successCount} chức vụ thành công.";
+                        ShowInfo(message);
+                    }
+                    else if (successCount == 0)
+                    {
+                        // Tất cả đều thất bại
+                        var errorMsg = string.Join("\n", errorMessages.Distinct());
+                        ShowError(new Exception($"Không thể xóa chức vụ:\n{errorMsg}"), "Lỗi xóa dữ liệu");
+                    }
+                    else
+                    {
+                        // Một phần thành công, một phần thất bại
+                        var message = $"Đã xóa {successCount} chức vụ thành công.\n" +
+                                     $"Không thể xóa {failCount} chức vụ:\n" +
+                                     string.Join("\n", errorMessages.Distinct());
+                        ShowError(new Exception(message), "Lỗi xóa dữ liệu một phần");
                     }
 
-                    return Task.CompletedTask;
-                });
-                
-                await LoadDataAsync();
+                    await LoadDataAsync();
+                }
+                catch (Exception ex)
+                {
+                    ShowError(ex, "Lỗi xóa dữ liệu");
+                }
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi xóa dữ liệu");
+                MsgBox.ShowException(ex);
             }
         }
 

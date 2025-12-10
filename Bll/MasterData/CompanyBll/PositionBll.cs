@@ -286,7 +286,7 @@ namespace Bll.MasterData.CompanyBll
         }
         catch (Exception ex)
         {
-            throw new Exception("Lỗi xóa chức vụ: " + ex.Message, ex);
+            throw;
         }
     }
 

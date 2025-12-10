@@ -59,15 +59,10 @@ namespace MasterData.Company
             this.PositionGridControl = new DevExpress.XtraGrid.GridControl();
             this.positionDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.PositionGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colCompanyName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPositionCode = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPositionName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDescription = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
@@ -76,7 +71,6 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.PositionGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PositionGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
@@ -275,7 +269,6 @@ namespace MasterData.Company
             this.PositionGridControl.MenuManager = this.barManager1;
             this.PositionGridControl.Name = "PositionGridControl";
             this.PositionGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemPictureEdit1,
             this.repositoryItemHypertextLabel1});
             this.PositionGridControl.Size = new System.Drawing.Size(1043, 521);
             this.PositionGridControl.TabIndex = 5;
@@ -284,77 +277,28 @@ namespace MasterData.Company
             // 
             // positionDtoBindingSource
             // 
-            this.positionDtoBindingSource.DataSource = typeof(PositionDto);
+            this.positionDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.PositionDto);
             // 
             // PositionGridView
             // 
-            this.PositionGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.PositionGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
+            this.PositionGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.PositionGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
             this.PositionGridView.Appearance.ViewCaption.Options.UseFont = true;
             this.PositionGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.PositionGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colCompanyName,
-            this.colPositionCode,
-            this.colPositionName,
-            this.colDescription,
-            this.colIsActive});
+            this.colThongTinHtml});
             this.PositionGridView.GridControl = this.PositionGridControl;
-            this.PositionGridView.GroupCount = 1;
-            this.PositionGridView.IndicatorWidth = 40;
+            this.PositionGridView.IndicatorWidth = 50;
             this.PositionGridView.Name = "PositionGridView";
-            this.PositionGridView.OptionsClipboard.AllowHtmlFormat = DevExpress.Utils.DefaultBoolean.True;
-            this.PositionGridView.OptionsFind.AlwaysVisible = true;
-            this.PositionGridView.OptionsPrint.EnableAppearanceEvenRow = true;
             this.PositionGridView.OptionsSelection.MultiSelect = true;
             this.PositionGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.PositionGridView.OptionsView.AllowHtmlDrawDetailTabs = true;
-            this.PositionGridView.OptionsView.AllowHtmlDrawHeaders = true;
+            this.PositionGridView.OptionsView.ColumnAutoWidth = false;
             this.PositionGridView.OptionsView.EnableAppearanceEvenRow = true;
-            this.PositionGridView.OptionsView.ShowAutoFilterRow = true;
+            this.PositionGridView.OptionsView.EnableAppearanceOddRow = true;
+            this.PositionGridView.OptionsView.RowAutoHeight = true;
             this.PositionGridView.OptionsView.ShowGroupPanel = false;
             this.PositionGridView.OptionsView.ShowViewCaption = true;
-            this.PositionGridView.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
-            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.colCompanyName, DevExpress.Data.ColumnSortOrder.Ascending)});
             this.PositionGridView.ViewCaption = "BẢNG DANH SÁCH CÁC CHỨC VỤ";
-            // 
-            // colCompanyName
-            // 
-            this.colCompanyName.FieldName = "CompanyName";
-            this.colCompanyName.Name = "colCompanyName";
-            this.colCompanyName.Visible = true;
-            this.colCompanyName.VisibleIndex = 5;
-            // 
-            // colPositionCode
-            // 
-            this.colPositionCode.FieldName = "PositionCode";
-            this.colPositionCode.Name = "colPositionCode";
-            this.colPositionCode.Visible = true;
-            this.colPositionCode.VisibleIndex = 1;
-            // 
-            // colPositionName
-            // 
-            this.colPositionName.FieldName = "PositionName";
-            this.colPositionName.Name = "colPositionName";
-            this.colPositionName.Visible = true;
-            this.colPositionName.VisibleIndex = 2;
-            // 
-            // colDescription
-            // 
-            this.colDescription.FieldName = "Description";
-            this.colDescription.Name = "colDescription";
-            this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 3;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 4;
-            // 
-            // repositoryItemPictureEdit1
-            // 
-            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
             // 
             // repositoryItemHypertextLabel1
             // 
@@ -379,6 +323,32 @@ namespace MasterData.Company
             this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // colThongTinHtml
+            // 
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin chức vụ";
+            this.colThongTinHtml.ColumnEdit = this.repositoryItemHypertextLabel1;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 300;
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.OptionsColumn.AllowEdit = false;
+            this.colThongTinHtml.OptionsColumn.FixedWidth = true;
+            this.colThongTinHtml.OptionsColumn.ReadOnly = true;
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.Width = 500;
+            // 
             // FrmPosition
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -399,7 +369,6 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.PositionGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.positionDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PositionGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
@@ -425,7 +394,6 @@ namespace MasterData.Company
         private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
-        private RepositoryItemPictureEdit repositoryItemPictureEdit1;
         private Bar bar1;
         private BarHeaderItem barHeaderItem1;
         private BarStaticItem DataSummaryBarStaticItem;
@@ -437,10 +405,6 @@ namespace MasterData.Company
         private DevExpress.XtraGrid.Views.Grid.GridView PositionGridView;
         
         private BindingSource positionDtoBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colCompanyName;
-        private DevExpress.XtraGrid.Columns.GridColumn colPositionCode;
-        private DevExpress.XtraGrid.Columns.GridColumn colPositionName;
-        private DevExpress.XtraGrid.Columns.GridColumn colDescription;
-        private DevExpress.XtraGrid.Columns.GridColumn colIsActive;
+        private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml;
     }
 }
