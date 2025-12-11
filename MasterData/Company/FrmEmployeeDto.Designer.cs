@@ -6,18 +6,18 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraLayout;
-using DTO.MasterData.CustomerPartner;
+using DTO.MasterData.Company;
 
-namespace MasterData.Customer
+namespace MasterData.Company
 {
-    partial class FrmBusinessPartnerContact
+    partial class FrmEmployeeDto
     {
-        /// <summary> 
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private IContainer components = null;
 
-        /// <summary> 
+        /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -44,6 +44,7 @@ namespace MasterData.Customer
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.ListDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.NewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
@@ -56,27 +57,27 @@ namespace MasterData.Customer
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.BusinessPartnerContactGridControl = new DevExpress.XtraGrid.GridControl();
-            this.businessPartnerContactDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.BusinessPartnerContactGridCardView = new DevExpress.XtraGrid.Views.Card.CardView();
+            this.EmployeeGridControl = new DevExpress.XtraGrid.GridControl();
+            this.employeeDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.EmployeeGridCardView = new DevExpress.XtraGrid.Views.Card.CardView();
             this.colFullName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colIsPrimary = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPosition = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colEmployeeCode = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPositionName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDepartmentName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPhone = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colEmail = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colSiteName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colAvatar = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.ContactAvatarPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
+            this.EmployeeAvatarPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerContactGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerContactDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerContactGridCardView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ContactAvatarPictureEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EmployeeGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.employeeDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EmployeeGridCardView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EmployeeAvatarPictureEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -94,6 +95,7 @@ namespace MasterData.Customer
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.NewBarButtonItem,
             this.ListDataBarButtonItem,
+            this.EditBarButtonItem,
             this.DeleteBarButtonItem,
             this.ExportBarButtonItem,
             this.barHeaderItem1,
@@ -101,7 +103,7 @@ namespace MasterData.Customer
             this.barHeaderItem2,
             this.CurrentSelectBarStaticItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 9;
+            this.barManager1.MaxItemId = 13;
             this.barManager1.StatusBar = this.bar1;
             // 
             // bar2
@@ -114,6 +116,7 @@ namespace MasterData.Customer
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ListDataBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NewBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.DeleteBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
@@ -135,6 +138,14 @@ namespace MasterData.Customer
             this.NewBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.addnewdatasource_16x16;
             this.NewBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.addnewdatasource_32x32;
             this.NewBarButtonItem.Name = "NewBarButtonItem";
+            // 
+            // EditBarButtonItem
+            // 
+            this.EditBarButtonItem.Caption = "Điều chỉnh";
+            this.EditBarButtonItem.Id = 2;
+            this.EditBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.edittask_16x16;
+            this.EditBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.edittask_32x32;
+            this.EditBarButtonItem.Name = "EditBarButtonItem";
             // 
             // DeleteBarButtonItem
             // 
@@ -229,7 +240,7 @@ namespace MasterData.Customer
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.BusinessPartnerContactGridControl);
+            this.layoutControl1.Controls.Add(this.EmployeeGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
@@ -238,52 +249,50 @@ namespace MasterData.Customer
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // BusinessPartnerContactGridControl
+            // EmployeeGridControl
             // 
-            this.BusinessPartnerContactGridControl.DataSource = this.businessPartnerContactDtoBindingSource;
-            this.BusinessPartnerContactGridControl.Location = new System.Drawing.Point(16, 16);
-            this.BusinessPartnerContactGridControl.MainView = this.BusinessPartnerContactGridCardView;
-            this.BusinessPartnerContactGridControl.MenuManager = this.barManager1;
-            this.BusinessPartnerContactGridControl.Name = "BusinessPartnerContactGridControl";
-            this.BusinessPartnerContactGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.ContactAvatarPictureEdit});
-            this.BusinessPartnerContactGridControl.Size = new System.Drawing.Size(1043, 521);
-            this.BusinessPartnerContactGridControl.TabIndex = 5;
-            this.BusinessPartnerContactGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.BusinessPartnerContactGridCardView});
+            this.EmployeeGridControl.DataSource = this.employeeDtoBindingSource;
+            this.EmployeeGridControl.Location = new System.Drawing.Point(16, 16);
+            this.EmployeeGridControl.MainView = this.EmployeeGridCardView;
+            this.EmployeeGridControl.MenuManager = this.barManager1;
+            this.EmployeeGridControl.Name = "EmployeeGridControl";
+            this.EmployeeGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.EmployeeAvatarPictureEdit});
+            this.EmployeeGridControl.Size = new System.Drawing.Size(1043, 521);
+            this.EmployeeGridControl.TabIndex = 5;
+            this.EmployeeGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.EmployeeGridCardView});
             // 
-            // businessPartnerContactDtoBindingSource
+            // employeeDtoBindingSource
             // 
-            this.businessPartnerContactDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerContactDto);
+            this.employeeDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.EmployeeDto);
             // 
-            // BusinessPartnerContactGridCardView
+            // EmployeeGridCardView
             // 
-            this.BusinessPartnerContactGridCardView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.BusinessPartnerContactGridCardView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.DarkBlue;
-            this.BusinessPartnerContactGridCardView.Appearance.ViewCaption.Options.UseFont = true;
-            this.BusinessPartnerContactGridCardView.Appearance.ViewCaption.Options.UseForeColor = true;
-            this.BusinessPartnerContactGridCardView.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.BusinessPartnerContactGridCardView.CardWidth = 320;
-            this.BusinessPartnerContactGridCardView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.EmployeeGridCardView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.EmployeeGridCardView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.EmployeeGridCardView.Appearance.ViewCaption.Options.UseFont = true;
+            this.EmployeeGridCardView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.EmployeeGridCardView.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.EmployeeGridCardView.CardWidth = 320;
+            this.EmployeeGridCardView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colFullName,
-            this.colIsPrimary,
-            this.colPosition,
+            this.colEmployeeCode,
+            this.colPositionName,
+            this.colDepartmentName,
             this.colPhone,
             this.colEmail,
-            this.colSiteName,
             this.colIsActive,
             this.colAvatar});
-            this.BusinessPartnerContactGridCardView.GridControl = this.BusinessPartnerContactGridControl;
-            this.BusinessPartnerContactGridCardView.Name = "BusinessPartnerContactGridCardView";
-            this.BusinessPartnerContactGridCardView.OptionsBehavior.FieldAutoHeight = true;
-            this.BusinessPartnerContactGridCardView.OptionsFind.AlwaysVisible = true;
-            this.BusinessPartnerContactGridCardView.OptionsSelection.MultiSelect = true;
-            this.BusinessPartnerContactGridCardView.OptionsView.ShowCardExpandButton = false;
-            this.BusinessPartnerContactGridCardView.OptionsView.ShowViewCaption = true;
-            this.BusinessPartnerContactGridCardView.VertScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Auto;
-            this.BusinessPartnerContactGridCardView.ViewCaption = "DANH SÁCH LIÊN HỆ ĐỐI TÁC";
-            this.BusinessPartnerContactGridCardView.ValidateRow += new DevExpress.XtraGrid.Views.Base.ValidateRowEventHandler(this.BusinessPartnerContactGridCardView_ValidateRow);
-            this.BusinessPartnerContactGridCardView.ValidatingEditor += new DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventHandler(this.BusinessPartnerContactGridCardView_ValidatingEditor);
+            this.EmployeeGridCardView.GridControl = this.EmployeeGridControl;
+            this.EmployeeGridCardView.Name = "EmployeeGridCardView";
+            this.EmployeeGridCardView.OptionsBehavior.FieldAutoHeight = true;
+            this.EmployeeGridCardView.OptionsFind.AlwaysVisible = true;
+            this.EmployeeGridCardView.OptionsSelection.MultiSelect = true;
+            this.EmployeeGridCardView.OptionsView.ShowCardExpandButton = false;
+            this.EmployeeGridCardView.OptionsView.ShowViewCaption = true;
+            this.EmployeeGridCardView.VertScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Auto;
+            this.EmployeeGridCardView.ViewCaption = "DANH SÁCH NHÂN VIÊN";
             // 
             // colFullName
             // 
@@ -297,39 +306,48 @@ namespace MasterData.Customer
             this.colFullName.FieldName = "FullName";
             this.colFullName.Name = "colFullName";
             this.colFullName.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
-            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Count, "FullName", "Có {0} dòng")});
+            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Count, "FullName", "Có {0} nhân viên")});
             this.colFullName.Visible = true;
             this.colFullName.VisibleIndex = 1;
             // 
-            // colIsPrimary
+            // colEmployeeCode
             // 
-            this.colIsPrimary.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.colIsPrimary.AppearanceCell.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Warning;
-            this.colIsPrimary.AppearanceCell.Options.UseFont = true;
-            this.colIsPrimary.AppearanceCell.Options.UseForeColor = true;
-            this.colIsPrimary.AppearanceCell.Options.UseTextOptions = true;
-            this.colIsPrimary.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colIsPrimary.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colIsPrimary.AppearanceHeader.Options.UseTextOptions = true;
-            this.colIsPrimary.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-            this.colIsPrimary.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colIsPrimary.FieldName = "IsPrimary";
-            this.colIsPrimary.Name = "colIsPrimary";
-            this.colIsPrimary.Visible = true;
-            this.colIsPrimary.VisibleIndex = 3;
+            this.colEmployeeCode.AppearanceCell.Options.UseTextOptions = true;
+            this.colEmployeeCode.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colEmployeeCode.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colEmployeeCode.AppearanceHeader.Options.UseTextOptions = true;
+            this.colEmployeeCode.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            this.colEmployeeCode.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colEmployeeCode.FieldName = "EmployeeCode";
+            this.colEmployeeCode.Name = "colEmployeeCode";
+            this.colEmployeeCode.Visible = true;
+            this.colEmployeeCode.VisibleIndex = 2;
             // 
-            // colPosition
+            // colPositionName
             // 
-            this.colPosition.AppearanceCell.Options.UseTextOptions = true;
-            this.colPosition.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colPosition.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colPosition.AppearanceHeader.Options.UseTextOptions = true;
-            this.colPosition.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-            this.colPosition.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colPosition.FieldName = "Position";
-            this.colPosition.Name = "colPosition";
-            this.colPosition.Visible = true;
-            this.colPosition.VisibleIndex = 4;
+            this.colPositionName.AppearanceCell.Options.UseTextOptions = true;
+            this.colPositionName.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colPositionName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colPositionName.AppearanceHeader.Options.UseTextOptions = true;
+            this.colPositionName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            this.colPositionName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colPositionName.FieldName = "PositionName";
+            this.colPositionName.Name = "colPositionName";
+            this.colPositionName.Visible = true;
+            this.colPositionName.VisibleIndex = 3;
+            // 
+            // colDepartmentName
+            // 
+            this.colDepartmentName.AppearanceCell.Options.UseTextOptions = true;
+            this.colDepartmentName.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colDepartmentName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colDepartmentName.AppearanceHeader.Options.UseTextOptions = true;
+            this.colDepartmentName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            this.colDepartmentName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colDepartmentName.FieldName = "DepartmentName";
+            this.colDepartmentName.Name = "colDepartmentName";
+            this.colDepartmentName.Visible = true;
+            this.colDepartmentName.VisibleIndex = 4;
             // 
             // colPhone
             // 
@@ -357,19 +375,6 @@ namespace MasterData.Customer
             this.colEmail.Visible = true;
             this.colEmail.VisibleIndex = 6;
             // 
-            // colSiteName
-            // 
-            this.colSiteName.AppearanceCell.Options.UseTextOptions = true;
-            this.colSiteName.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colSiteName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colSiteName.AppearanceHeader.Options.UseTextOptions = true;
-            this.colSiteName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-            this.colSiteName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colSiteName.FieldName = "SiteName";
-            this.colSiteName.Name = "colSiteName";
-            this.colSiteName.Visible = true;
-            this.colSiteName.VisibleIndex = 0;
-            // 
             // colIsActive
             // 
             this.colIsActive.AppearanceHeader.Options.UseTextOptions = true;
@@ -385,21 +390,21 @@ namespace MasterData.Customer
             this.colAvatar.AppearanceHeader.Options.UseTextOptions = true;
             this.colAvatar.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.colAvatar.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colAvatar.ColumnEdit = this.ContactAvatarPictureEdit;
-            this.colAvatar.FieldName = "Avatar";
+            this.colAvatar.Caption = "Hình ảnh";
+            this.colAvatar.ColumnEdit = this.EmployeeAvatarPictureEdit;
+            this.colAvatar.FieldName = "AvatarThumbnailData";
             this.colAvatar.Name = "colAvatar";
             this.colAvatar.OptionsEditForm.RowSpan = 4;
             this.colAvatar.Visible = true;
-            this.colAvatar.VisibleIndex = 2;
+            this.colAvatar.VisibleIndex = 0;
             this.colAvatar.Width = 120;
             // 
-            // ContactAvatarPictureEdit
+            // EmployeeAvatarPictureEdit
             // 
-            this.ContactAvatarPictureEdit.CustomHeight = 120;
-            this.ContactAvatarPictureEdit.Name = "ContactAvatarPictureEdit";
-            this.ContactAvatarPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.ContactAvatarPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
-            this.ContactAvatarPictureEdit.ImageChanged += new System.EventHandler(this.ContactAvatarPictureEdit_ImageChanged);
+            this.EmployeeAvatarPictureEdit.CustomHeight = 120;
+            this.EmployeeAvatarPictureEdit.Name = "EmployeeAvatarPictureEdit";
+            this.EmployeeAvatarPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.EmployeeAvatarPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
             // 
             // Root
             // 
@@ -413,13 +418,13 @@ namespace MasterData.Customer
             // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.BusinessPartnerContactGridControl;
+            this.layoutControlItem1.Control = this.EmployeeGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // FrmBusinessPartnerContact
+            // FrmEmployeeDto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -429,15 +434,15 @@ namespace MasterData.Customer
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.Name = "FrmBusinessPartnerContact";
-            this.Text = "LIÊN HỆ KHÁCH HÀNG - ĐỐI TÁC";
+            this.Name = "FrmEmployeeDto";
+            this.Text = "QUẢN LÝ NHÂN VIÊN";
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerContactGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerContactDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerContactGridCardView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ContactAvatarPictureEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EmployeeGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.employeeDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EmployeeGridCardView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EmployeeAvatarPictureEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
@@ -454,24 +459,25 @@ namespace MasterData.Customer
         private BarDockControl barDockControlLeft;
         private BarDockControl barDockControlRight;
         private LayoutControl layoutControl1;
-        private GridControl BusinessPartnerContactGridControl;
+        private GridControl EmployeeGridControl;
         private LayoutControlGroup Root;
         private LayoutControlItem layoutControlItem1;
         private BarButtonItem ListDataBarButtonItem;
         private BarButtonItem NewBarButtonItem;
+        private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
-        private BindingSource businessPartnerContactDtoBindingSource;
-        private CardView BusinessPartnerContactGridCardView;
+        private BindingSource employeeDtoBindingSource;
+        private CardView EmployeeGridCardView;
         private GridColumn colFullName;
-        private GridColumn colIsPrimary;
-        private GridColumn colPosition;
+        private GridColumn colEmployeeCode;
+        private GridColumn colPositionName;
+        private GridColumn colDepartmentName;
         private GridColumn colPhone;
         private GridColumn colEmail;
-        private GridColumn colSiteName;
         private GridColumn colIsActive;
         private GridColumn colAvatar;
-        private RepositoryItemPictureEdit ContactAvatarPictureEdit;
+        private RepositoryItemPictureEdit EmployeeAvatarPictureEdit;
         private Bar bar1;
         private BarHeaderItem barHeaderItem1;
         private BarStaticItem DataSummaryBarStaticItem;

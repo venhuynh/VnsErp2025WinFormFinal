@@ -62,17 +62,11 @@ namespace MasterData.Company
             this.CompanyBranchGridControl = new DevExpress.XtraGrid.GridControl();
             this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.CompanyBranchGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colBranchCode = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colBranchName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colAddress = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colPhone = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colEmail = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colManagerName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
@@ -289,86 +283,31 @@ namespace MasterData.Company
             // 
             // companyBranchDtoBindingSource
             // 
-            this.companyBranchDtoBindingSource.DataSource = typeof(CompanyBranchDto);
+            this.companyBranchDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchDto);
             // 
             // CompanyBranchGridView
             // 
-            this.CompanyBranchGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.CompanyBranchGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
+            this.CompanyBranchGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.CompanyBranchGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
             this.CompanyBranchGridView.Appearance.ViewCaption.Options.UseFont = true;
             this.CompanyBranchGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.CompanyBranchGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colBranchCode,
-            this.colBranchName,
-            this.colAddress,
-            this.colPhone,
-            this.colEmail,
-            this.colManagerName,
-            this.colIsActive});
+            this.colThongTinHtml});
             this.CompanyBranchGridView.GridControl = this.CompanyBranchGridControl;
             this.CompanyBranchGridView.IndicatorWidth = 40;
             this.CompanyBranchGridView.Name = "CompanyBranchGridView";
-            this.CompanyBranchGridView.OptionsClipboard.AllowHtmlFormat = DevExpress.Utils.DefaultBoolean.True;
-            this.CompanyBranchGridView.OptionsFind.AlwaysVisible = true;
-            this.CompanyBranchGridView.OptionsPrint.EnableAppearanceEvenRow = true;
             this.CompanyBranchGridView.OptionsSelection.MultiSelect = true;
             this.CompanyBranchGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.CompanyBranchGridView.OptionsView.AllowHtmlDrawDetailTabs = true;
-            this.CompanyBranchGridView.OptionsView.AllowHtmlDrawHeaders = true;
+            this.CompanyBranchGridView.OptionsView.ColumnAutoWidth = false;
+            this.CompanyBranchGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
             this.CompanyBranchGridView.OptionsView.EnableAppearanceEvenRow = true;
+            this.CompanyBranchGridView.OptionsView.EnableAppearanceOddRow = true;
+            this.CompanyBranchGridView.OptionsView.RowAutoHeight = true;
             this.CompanyBranchGridView.OptionsView.ShowAutoFilterRow = true;
+            this.CompanyBranchGridView.OptionsView.ShowFooter = true;
             this.CompanyBranchGridView.OptionsView.ShowGroupPanel = false;
             this.CompanyBranchGridView.OptionsView.ShowViewCaption = true;
             this.CompanyBranchGridView.ViewCaption = "BẢNG DANH SÁCH CÁC CHI NHÁNH";
-            // 
-            // colBranchCode
-            // 
-            this.colBranchCode.FieldName = "BranchCode";
-            this.colBranchCode.Name = "colBranchCode";
-            this.colBranchCode.Visible = true;
-            this.colBranchCode.VisibleIndex = 1;
-            // 
-            // colBranchName
-            // 
-            this.colBranchName.FieldName = "BranchName";
-            this.colBranchName.Name = "colBranchName";
-            this.colBranchName.Visible = true;
-            this.colBranchName.VisibleIndex = 2;
-            // 
-            // colAddress
-            // 
-            this.colAddress.FieldName = "Address";
-            this.colAddress.Name = "colAddress";
-            this.colAddress.Visible = true;
-            this.colAddress.VisibleIndex = 3;
-            // 
-            // colPhone
-            // 
-            this.colPhone.FieldName = "Phone";
-            this.colPhone.Name = "colPhone";
-            this.colPhone.Visible = true;
-            this.colPhone.VisibleIndex = 4;
-            // 
-            // colEmail
-            // 
-            this.colEmail.FieldName = "Email";
-            this.colEmail.Name = "colEmail";
-            this.colEmail.Visible = true;
-            this.colEmail.VisibleIndex = 5;
-            // 
-            // colManagerName
-            // 
-            this.colManagerName.FieldName = "ManagerName";
-            this.colManagerName.Name = "colManagerName";
-            this.colManagerName.Visible = true;
-            this.colManagerName.VisibleIndex = 6;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 7;
             // 
             // repositoryItemPictureEdit1
             // 
@@ -396,6 +335,29 @@ namespace MasterData.Company
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
+            // 
+            // colThongTinHtml
+            // 
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin đầy đủ";
+            this.colThongTinHtml.ColumnEdit = this.repositoryItemHypertextLabel1;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 300;
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.Width = 500;
             // 
             // FrmCompanyBranch
             // 
@@ -453,13 +415,7 @@ namespace MasterData.Company
         private RepositoryItemComboBox repositoryItemComboBox2;
         private RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
         private DevExpress.XtraGrid.Views.Grid.GridView CompanyBranchGridView;
-        private DevExpress.XtraGrid.Columns.GridColumn colBranchCode;
-        private DevExpress.XtraGrid.Columns.GridColumn colBranchName;
-        private DevExpress.XtraGrid.Columns.GridColumn colAddress;
-        private DevExpress.XtraGrid.Columns.GridColumn colPhone;
-        private DevExpress.XtraGrid.Columns.GridColumn colEmail;
-        private DevExpress.XtraGrid.Columns.GridColumn colManagerName;
-        private DevExpress.XtraGrid.Columns.GridColumn colIsActive;
         private BindingSource companyBranchDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml;
     }
 }

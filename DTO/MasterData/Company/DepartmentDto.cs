@@ -1,7 +1,9 @@
 using Dal.DataContext;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace DTO.MasterData.Company;
 
@@ -16,6 +18,7 @@ public class DepartmentDto
     public Guid CompanyId { get; set; }
 
     [DisplayName("ID chi nhánh")]
+    [Required(ErrorMessage = "Chi nhánh không được để trống")]
     public Guid? BranchId { get; set; }
 
     [DisplayName("Mã phòng ban")]
@@ -50,6 +53,127 @@ public class DepartmentDto
 
     [DisplayName("Số phòng ban con")]
     public int SubDepartmentCount { get; set; }
+
+    /// <summary>
+    /// Đường dẫn đầy đủ từ gốc đến phòng ban này
+    /// Ví dụ: "Phòng ban A > Phòng ban A1"
+    /// </summary>
+    [DisplayName("Đường dẫn đầy đủ")]
+    [Description("Đường dẫn đầy đủ từ gốc đến phòng ban này")]
+    public string FullPath { get; set; }
+
+    /// <summary>
+    /// Đường dẫn đầy đủ dưới dạng HTML theo format DevExpress
+    /// Format giống BusinessPartnerCategoryDto.FullPathHtml (không dùng &lt;size&gt;)
+    /// </summary>
+    [DisplayName("Đường dẫn HTML")]
+    [Description("Đường dẫn đầy đủ từ gốc đến phòng ban này dưới dạng HTML")]
+    public string FullPathHtml
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(FullPath))
+                return string.Empty;
+
+            // Tách đường dẫn và format với màu sắc
+            // Hỗ trợ nhiều format: " > ", ">", " >" hoặc "> "
+            var parts = FullPath.Split(new[] { " > ", ">", " >", "> " }, StringSplitOptions.None)
+                .Where(p => !string.IsNullOrWhiteSpace(p))
+                .Select(p => p.Trim())
+                .ToArray();
+            
+            var htmlParts = new List<string>();
+
+            for (int i = 0; i < parts.Length; i++)
+            {
+                var isLast = i == parts.Length - 1;
+                var color = isLast ? "blue" : "#757575";
+                var weight = isLast ? "<b>" : "";
+                var weightClose = isLast ? "</b>" : "";
+
+                // Format giống BusinessPartnerCategoryDto: không dùng <size>, chỉ dùng <b> và <color>
+                htmlParts.Add($"{weight}<color='{color}'>{parts[i]}</color>{weightClose}");
+            }
+
+            return string.Join(" <color='#757575'>></color> ", htmlParts);
+        }
+    }
+
+    /// <summary>
+    /// Thông tin phòng ban dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
+    /// Format giống BusinessPartnerCategoryDto.CategoryInfoHtml (không dùng &lt;size&gt;)
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Thông tin HTML")]
+    [Description("Thông tin phòng ban dưới dạng HTML")]
+    public string ThongTinHtml
+    {
+        get
+        {
+            var html = string.Empty;
+
+            // Tên phòng ban (màu xanh, đậm)
+            if (!string.IsNullOrWhiteSpace(DepartmentName))
+            {
+                html += $"<b><color='blue'>{DepartmentName}</color></b>";
+            }
+
+            // Mã phòng ban (nếu có, màu xám)
+            if (!string.IsNullOrWhiteSpace(DepartmentCode))
+            {
+                if (!string.IsNullOrWhiteSpace(html))
+                    html += " ";
+                html += $"<color='#757575'>({DepartmentCode})</color>";
+            }
+
+            html += "<br>";
+
+            // Thông tin bổ sung
+            var additionalInfo = new List<string>();
+
+            // Trạng thái hoạt động
+            var statusText = IsActive ? "Hoạt động" : "Không hoạt động";
+            var statusColor = IsActive ? "#4CAF50" : "#F44336";
+            additionalInfo.Add(
+                $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>");
+
+            // Số nhân viên
+            if (EmployeeCount > 0)
+            {
+                additionalInfo.Add(
+                    $"<color='#757575'>Nhân viên:</color> <b>{EmployeeCount}</b>");
+            }
+
+            // Số phòng ban con
+            if (SubDepartmentCount > 0)
+            {
+                additionalInfo.Add(
+                    $"<color='#757575'>Phòng ban con:</color> <b>{SubDepartmentCount}</b>");
+            }
+
+            // Chi nhánh
+            if (!string.IsNullOrWhiteSpace(BranchName))
+            {
+                additionalInfo.Add(
+                    $"<color='#757575'>Chi nhánh:</color> <b>{BranchName}</b>");
+            }
+
+            // Phòng ban cha
+            if (!string.IsNullOrWhiteSpace(ParentDepartmentName) && ParentDepartmentName != "Không xác định")
+            {
+                additionalInfo.Add(
+                    $"<color='#757575'>Phòng ban cha:</color> <b>{ParentDepartmentName}</b>");
+            }
+
+            if (additionalInfo.Any())
+            {
+                html += string.Join(" | ", additionalInfo);
+            }
+
+            return html;
+        }
+    }
 }
 
 /// <summary>
@@ -64,18 +188,40 @@ public static class DepartmentConverters
     /// <param name="companyName">Tên công ty (tùy chọn, nếu đã có sẵn)</param>
     /// <param name="branchName">Tên chi nhánh (tùy chọn, nếu đã có sẵn)</param>
     /// <param name="parentDepartmentName">Tên phòng ban cha (tùy chọn, nếu đã có sẵn)</param>
+    /// <param name="departmentDict">Dictionary chứa tất cả Department entities để tính FullPath (optional, chỉ cần khi tính full path)</param>
     /// <returns>DepartmentDto</returns>
-    public static DepartmentDto ToDto(this Department entity, string companyName = null, string branchName = null, string parentDepartmentName = null)
+    public static DepartmentDto ToDto(this Department entity, string companyName = null, string branchName = null, string parentDepartmentName = null, Dictionary<Guid, Department> departmentDict = null)
     {
         if (entity == null)
             return null;
 
-        // Sử dụng tham số hoặc navigation properties (đã được include)
+        // QUAN TRỌNG: KHÔNG truy cập navigation properties (entity.CompanyBranch, entity.Department1)
+        // vì DataContext đã bị dispose sau khi repository method kết thúc
+        // Chỉ sử dụng tham số truyền vào hoặc departmentDict
 
-        var finalBranchName = branchName ?? entity.CompanyBranch?.BranchName;
-        var finalParentDepartmentName = parentDepartmentName ?? entity.Department1?.DepartmentName ?? "Không xác định";
+        // BranchName: chỉ dùng tham số truyền vào, không truy cập entity.CompanyBranch
+        var finalBranchName = branchName;
 
-        return new DepartmentDto
+        // ParentDepartmentName: ưu tiên tham số, sau đó dùng departmentDict, cuối cùng mới dùng default
+        string finalParentDepartmentName = parentDepartmentName;
+        if (string.IsNullOrEmpty(finalParentDepartmentName) && entity.ParentId.HasValue)
+        {
+            // Thử lấy từ departmentDict nếu có
+            if (departmentDict != null && departmentDict.ContainsKey(entity.ParentId.Value))
+            {
+                finalParentDepartmentName = departmentDict[entity.ParentId.Value].DepartmentName;
+            }
+            else
+            {
+                finalParentDepartmentName = "Không xác định";
+            }
+        }
+        else if (string.IsNullOrEmpty(finalParentDepartmentName))
+        {
+            finalParentDepartmentName = null; // Không có parent
+        }
+
+        var dto = new DepartmentDto
         {
             Id = entity.Id,
             CompanyId = entity.CompanyId,
@@ -92,6 +238,36 @@ public static class DepartmentConverters
             EmployeeCount = 0, // Sẽ được tính toán riêng nếu cần
             SubDepartmentCount = 0 // Sẽ được tính toán riêng nếu cần
         };
+
+        // Tính FullPath: chỉ dùng departmentDict nếu có, nếu không chỉ dùng DepartmentName
+        // KHÔNG tính từ navigation properties vì sẽ gây lỗi "Cannot access a disposed object"
+        if (departmentDict != null && departmentDict.ContainsKey(entity.Id))
+        {
+            dto.FullPath = CalculateDepartmentFullPath(entity, departmentDict);
+        }
+        else
+        {
+            // Không có departmentDict, chỉ dùng DepartmentName
+            // KHÔNG cố tính từ navigation properties vì DataContext đã bị dispose
+            dto.FullPath = entity.DepartmentName;
+        }
+
+        return dto;
+    }
+
+    /// <summary>
+    /// Chuyển đổi danh sách Department Entity sang danh sách DepartmentDto
+    /// </summary>
+    /// <param name="entities">Danh sách Department Entity</param>
+    /// <param name="departmentDict">Dictionary chứa tất cả Department entities để tính FullPath (optional)</param>
+    /// <returns>Danh sách DepartmentDto</returns>
+    public static IEnumerable<DepartmentDto> ToDepartmentDtos(
+        this IEnumerable<Department> entities,
+        Dictionary<Guid, Department> departmentDict = null)
+    {
+        if (entities == null) return [];
+
+        return entities.Select(entity => entity.ToDto(departmentDict: departmentDict));
     }
 
     /// <summary>
@@ -115,5 +291,27 @@ public static class DepartmentConverters
         return entity;
     }
 
+    /// <summary>
+    /// Tính toán đường dẫn đầy đủ từ gốc đến department sử dụng departmentDict
+    /// </summary>
+    /// <param name="department">Department entity</param>
+    /// <param name="departmentDict">Dictionary chứa tất cả Department entities</param>
+    /// <returns>Đường dẫn đầy đủ (ví dụ: "Phòng ban A > Phòng ban A1")</returns>
+    private static string CalculateDepartmentFullPath(Department department,
+        Dictionary<Guid, Department> departmentDict)
+    {
+        if (department == null) return string.Empty;
 
+        var pathParts = new List<string> { department.DepartmentName };
+        var current = department;
+
+        while (current.ParentId.HasValue && departmentDict.ContainsKey(current.ParentId.Value))
+        {
+            current = departmentDict[current.ParentId.Value];
+            pathParts.Insert(0, current.DepartmentName);
+            if (pathParts.Count > 10) break; // Tránh infinite loop
+        }
+
+        return string.Join(" > ", pathParts);
+    }
 }

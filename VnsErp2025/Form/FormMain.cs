@@ -1003,7 +1003,7 @@ namespace VnsErp2025.Form
             {
                 SplashScreenHelper.ShowVnsSplashScreen();
 
-                ApplicationSystemUtils.ShowOrActivateForm<FrmEmployee>(this);
+                ApplicationSystemUtils.ShowOrActivateForm<FrmEmployeeDto>(this);
 
                 SplashScreenHelper.CloseSplashScreen();
             }

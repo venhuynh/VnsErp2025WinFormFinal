@@ -76,11 +76,17 @@
     <Compile Include="Company\FrmDepartmentDetail.Designer.cs">
       <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmEmployee.cs">
+    <Compile Include="Company\FrmEmployeeDto.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Company\FrmEmployee.Designer.cs">
-      <DependentUpon>FrmEmployee.cs</DependentUpon>
+    <Compile Include="Company\FrmEmployeeDto.Designer.cs">
+      <DependentUpon>FrmEmployeeDto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmEmployeeDtoDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmEmployeeDtoDetail.Designer.cs">
+      <DependentUpon>FrmEmployeeDtoDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="Company\FrmPositionDetail.cs">
       <SubType>Form</SubType>
@@ -252,6 +258,12 @@
     <EmbeddedResource Include="Company\FrmDepartmentDetail.resx">
       <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmEmployeeDto.resx">
+      <DependentUpon>FrmEmployeeDto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmEmployeeDtoDetail.resx">
+      <DependentUpon>FrmEmployeeDtoDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Company\FrmPositionDetail.resx">
       <DependentUpon>FrmPositionDetail.cs</DependentUpon>
     </EmbeddedResource>
@@ -337,6 +349,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Company\DepartmentTreeList_Implementation.md" />
     <None Include="Company\FrmBusinessPartnerCategory_Developer_Guide.md" />
     <None Include="Company\FrmBusinessPartnerCategory_User_Guide.md" />
     <None Include="Company\FrmCompanyBranch_Developer_Guide.md" />
@@ -345,7 +358,13 @@
     <None Include="Company\FrmCompany_User_Guide.md" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Company\FrmDepartmentDetail_Developer_Guide.md" />
+    <None Include="Company\FrmDepartmentDetail_User_Guide.md" />
     <None Include="Doc\BusinessPartner_Database_Schema.md" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.DepartmentLookupDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.EmployeeDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.PositionDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerLookupDto.datasource" />
     <None Include="Resources\list_16x16.png" />

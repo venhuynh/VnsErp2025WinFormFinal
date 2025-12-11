@@ -151,7 +151,7 @@ namespace MasterData.Company
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(664, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(664, 39);
             // 
             // barDockControlBottom
             // 
@@ -165,17 +165,17 @@ namespace MasterData.Company
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 604);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 589);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(664, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(664, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 604);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 589);
             // 
             // dxErrorProvider1
             // 
@@ -264,91 +264,91 @@ namespace MasterData.Company
             this.dataLayoutControl1.Controls.Add(this.CreatedDateDateEdit);
             this.dataLayoutControl1.Controls.Add(this.LogoPictureEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
+            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(664, 604);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(664, 589);
             this.dataLayoutControl1.TabIndex = 15;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
             // CompanyCodeTextEdit
             // 
-            this.CompanyCodeTextEdit.Location = new System.Drawing.Point(86, 12);
+            this.CompanyCodeTextEdit.Location = new System.Drawing.Point(94, 16);
             this.CompanyCodeTextEdit.MenuManager = this.barManager1;
             this.CompanyCodeTextEdit.Name = "CompanyCodeTextEdit";
             this.CompanyCodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.CompanyCodeTextEdit.Size = new System.Drawing.Size(566, 20);
+            this.CompanyCodeTextEdit.Size = new System.Drawing.Size(554, 28);
             this.CompanyCodeTextEdit.StyleController = this.dataLayoutControl1;
             this.CompanyCodeTextEdit.TabIndex = 5;
             // 
             // CompanyNameTextEdit
             // 
-            this.CompanyNameTextEdit.Location = new System.Drawing.Point(86, 36);
+            this.CompanyNameTextEdit.Location = new System.Drawing.Point(94, 50);
             this.CompanyNameTextEdit.MenuManager = this.barManager1;
             this.CompanyNameTextEdit.Name = "CompanyNameTextEdit";
             this.CompanyNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.CompanyNameTextEdit.Size = new System.Drawing.Size(566, 20);
+            this.CompanyNameTextEdit.Size = new System.Drawing.Size(554, 28);
             this.CompanyNameTextEdit.StyleController = this.dataLayoutControl1;
             this.CompanyNameTextEdit.TabIndex = 6;
             // 
             // TaxCodeTextEdit
             // 
-            this.TaxCodeTextEdit.Location = new System.Drawing.Point(86, 60);
+            this.TaxCodeTextEdit.Location = new System.Drawing.Point(94, 84);
             this.TaxCodeTextEdit.MenuManager = this.barManager1;
             this.TaxCodeTextEdit.Name = "TaxCodeTextEdit";
-            this.TaxCodeTextEdit.Size = new System.Drawing.Size(566, 20);
+            this.TaxCodeTextEdit.Size = new System.Drawing.Size(554, 28);
             this.TaxCodeTextEdit.StyleController = this.dataLayoutControl1;
             this.TaxCodeTextEdit.TabIndex = 7;
             // 
             // PhoneTextEdit
             // 
-            this.PhoneTextEdit.Location = new System.Drawing.Point(86, 84);
+            this.PhoneTextEdit.Location = new System.Drawing.Point(94, 118);
             this.PhoneTextEdit.MenuManager = this.barManager1;
             this.PhoneTextEdit.Name = "PhoneTextEdit";
-            this.PhoneTextEdit.Size = new System.Drawing.Size(566, 20);
+            this.PhoneTextEdit.Size = new System.Drawing.Size(554, 28);
             this.PhoneTextEdit.StyleController = this.dataLayoutControl1;
             this.PhoneTextEdit.TabIndex = 8;
             // 
             // EmailTextEdit
             // 
-            this.EmailTextEdit.Location = new System.Drawing.Point(86, 108);
+            this.EmailTextEdit.Location = new System.Drawing.Point(94, 152);
             this.EmailTextEdit.MenuManager = this.barManager1;
             this.EmailTextEdit.Name = "EmailTextEdit";
-            this.EmailTextEdit.Size = new System.Drawing.Size(566, 20);
+            this.EmailTextEdit.Size = new System.Drawing.Size(554, 28);
             this.EmailTextEdit.StyleController = this.dataLayoutControl1;
             this.EmailTextEdit.TabIndex = 9;
             // 
             // WebsiteTextEdit
             // 
-            this.WebsiteTextEdit.Location = new System.Drawing.Point(86, 132);
+            this.WebsiteTextEdit.Location = new System.Drawing.Point(94, 186);
             this.WebsiteTextEdit.MenuManager = this.barManager1;
             this.WebsiteTextEdit.Name = "WebsiteTextEdit";
-            this.WebsiteTextEdit.Size = new System.Drawing.Size(566, 20);
+            this.WebsiteTextEdit.Size = new System.Drawing.Size(554, 28);
             this.WebsiteTextEdit.StyleController = this.dataLayoutControl1;
             this.WebsiteTextEdit.TabIndex = 10;
             // 
             // AddressTextEdit
             // 
-            this.AddressTextEdit.Location = new System.Drawing.Point(86, 156);
+            this.AddressTextEdit.Location = new System.Drawing.Point(94, 220);
             this.AddressTextEdit.MenuManager = this.barManager1;
             this.AddressTextEdit.Name = "AddressTextEdit";
-            this.AddressTextEdit.Size = new System.Drawing.Size(566, 20);
+            this.AddressTextEdit.Size = new System.Drawing.Size(554, 28);
             this.AddressTextEdit.StyleController = this.dataLayoutControl1;
             this.AddressTextEdit.TabIndex = 11;
             // 
             // CountryTextEdit
             // 
-            this.CountryTextEdit.Location = new System.Drawing.Point(86, 180);
+            this.CountryTextEdit.Location = new System.Drawing.Point(94, 254);
             this.CountryTextEdit.MenuManager = this.barManager1;
             this.CountryTextEdit.Name = "CountryTextEdit";
-            this.CountryTextEdit.Size = new System.Drawing.Size(566, 20);
+            this.CountryTextEdit.Size = new System.Drawing.Size(554, 28);
             this.CountryTextEdit.StyleController = this.dataLayoutControl1;
             this.CountryTextEdit.TabIndex = 12;
             // 
             // CreatedDateDateEdit
             // 
             this.CreatedDateDateEdit.EditValue = null;
-            this.CreatedDateDateEdit.Location = new System.Drawing.Point(86, 204);
+            this.CreatedDateDateEdit.Location = new System.Drawing.Point(94, 288);
             this.CreatedDateDateEdit.MenuManager = this.barManager1;
             this.CreatedDateDateEdit.Name = "CreatedDateDateEdit";
             this.CreatedDateDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
@@ -356,17 +356,17 @@ namespace MasterData.Company
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.CreatedDateDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.CreatedDateDateEdit.Size = new System.Drawing.Size(566, 20);
+            this.CreatedDateDateEdit.Size = new System.Drawing.Size(554, 28);
             this.CreatedDateDateEdit.StyleController = this.dataLayoutControl1;
             this.CreatedDateDateEdit.TabIndex = 13;
             // 
             // LogoPictureEdit
             // 
-            this.LogoPictureEdit.Location = new System.Drawing.Point(12, 244);
+            this.LogoPictureEdit.Location = new System.Drawing.Point(16, 341);
             this.LogoPictureEdit.MenuManager = this.barManager1;
             this.LogoPictureEdit.Name = "LogoPictureEdit";
             this.LogoPictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
-            this.LogoPictureEdit.Size = new System.Drawing.Size(640, 324);
+            this.LogoPictureEdit.Size = new System.Drawing.Size(632, 209);
             this.LogoPictureEdit.StyleController = this.dataLayoutControl1;
             this.LogoPictureEdit.TabIndex = 15;
             // 
@@ -378,7 +378,7 @@ namespace MasterData.Company
             this.layoutControlGroup1,
             this.emptySpaceItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(664, 604);
+            this.Root.Size = new System.Drawing.Size(664, 589);
             this.Root.TextVisible = false;
             // 
             // layoutControlGroup1
@@ -398,95 +398,95 @@ namespace MasterData.Company
             this.ItemForLogo});
             this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(644, 560);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(638, 540);
             // 
             // ItemForCompanyCode
             // 
             this.ItemForCompanyCode.Control = this.CompanyCodeTextEdit;
             this.ItemForCompanyCode.Location = new System.Drawing.Point(0, 0);
             this.ItemForCompanyCode.Name = "ItemForCompanyCode";
-            this.ItemForCompanyCode.Size = new System.Drawing.Size(644, 24);
+            this.ItemForCompanyCode.Size = new System.Drawing.Size(638, 34);
             this.ItemForCompanyCode.Text = "Mã công ty";
             this.ItemForCompanyCode.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForCompanyName
             // 
             this.ItemForCompanyName.Control = this.CompanyNameTextEdit;
-            this.ItemForCompanyName.Location = new System.Drawing.Point(0, 24);
+            this.ItemForCompanyName.Location = new System.Drawing.Point(0, 34);
             this.ItemForCompanyName.Name = "ItemForCompanyName";
-            this.ItemForCompanyName.Size = new System.Drawing.Size(644, 24);
+            this.ItemForCompanyName.Size = new System.Drawing.Size(638, 34);
             this.ItemForCompanyName.Text = "Tên công ty";
             this.ItemForCompanyName.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForTaxCode
             // 
             this.ItemForTaxCode.Control = this.TaxCodeTextEdit;
-            this.ItemForTaxCode.Location = new System.Drawing.Point(0, 48);
+            this.ItemForTaxCode.Location = new System.Drawing.Point(0, 68);
             this.ItemForTaxCode.Name = "ItemForTaxCode";
-            this.ItemForTaxCode.Size = new System.Drawing.Size(644, 24);
+            this.ItemForTaxCode.Size = new System.Drawing.Size(638, 34);
             this.ItemForTaxCode.Text = "Mã số thuế";
             this.ItemForTaxCode.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForPhone
             // 
             this.ItemForPhone.Control = this.PhoneTextEdit;
-            this.ItemForPhone.Location = new System.Drawing.Point(0, 72);
+            this.ItemForPhone.Location = new System.Drawing.Point(0, 102);
             this.ItemForPhone.Name = "ItemForPhone";
-            this.ItemForPhone.Size = new System.Drawing.Size(644, 24);
+            this.ItemForPhone.Size = new System.Drawing.Size(638, 34);
             this.ItemForPhone.Text = "Số điện thoại";
             this.ItemForPhone.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForEmail
             // 
             this.ItemForEmail.Control = this.EmailTextEdit;
-            this.ItemForEmail.Location = new System.Drawing.Point(0, 96);
+            this.ItemForEmail.Location = new System.Drawing.Point(0, 136);
             this.ItemForEmail.Name = "ItemForEmail";
-            this.ItemForEmail.Size = new System.Drawing.Size(644, 24);
+            this.ItemForEmail.Size = new System.Drawing.Size(638, 34);
             this.ItemForEmail.Text = "Email";
             this.ItemForEmail.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForWebsite
             // 
             this.ItemForWebsite.Control = this.WebsiteTextEdit;
-            this.ItemForWebsite.Location = new System.Drawing.Point(0, 120);
+            this.ItemForWebsite.Location = new System.Drawing.Point(0, 170);
             this.ItemForWebsite.Name = "ItemForWebsite";
-            this.ItemForWebsite.Size = new System.Drawing.Size(644, 24);
+            this.ItemForWebsite.Size = new System.Drawing.Size(638, 34);
             this.ItemForWebsite.Text = "Website";
             this.ItemForWebsite.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForAddress
             // 
             this.ItemForAddress.Control = this.AddressTextEdit;
-            this.ItemForAddress.Location = new System.Drawing.Point(0, 144);
+            this.ItemForAddress.Location = new System.Drawing.Point(0, 204);
             this.ItemForAddress.Name = "ItemForAddress";
-            this.ItemForAddress.Size = new System.Drawing.Size(644, 24);
+            this.ItemForAddress.Size = new System.Drawing.Size(638, 34);
             this.ItemForAddress.Text = "Địa chỉ";
             this.ItemForAddress.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForCountry
             // 
             this.ItemForCountry.Control = this.CountryTextEdit;
-            this.ItemForCountry.Location = new System.Drawing.Point(0, 168);
+            this.ItemForCountry.Location = new System.Drawing.Point(0, 238);
             this.ItemForCountry.Name = "ItemForCountry";
-            this.ItemForCountry.Size = new System.Drawing.Size(644, 24);
+            this.ItemForCountry.Size = new System.Drawing.Size(638, 34);
             this.ItemForCountry.Text = "Quốc gia";
             this.ItemForCountry.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForCreatedDate
             // 
             this.ItemForCreatedDate.Control = this.CreatedDateDateEdit;
-            this.ItemForCreatedDate.Location = new System.Drawing.Point(0, 192);
+            this.ItemForCreatedDate.Location = new System.Drawing.Point(0, 272);
             this.ItemForCreatedDate.Name = "ItemForCreatedDate";
-            this.ItemForCreatedDate.Size = new System.Drawing.Size(644, 24);
+            this.ItemForCreatedDate.Size = new System.Drawing.Size(638, 34);
             this.ItemForCreatedDate.Text = "Ngày tạo";
             this.ItemForCreatedDate.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForLogo
             // 
             this.ItemForLogo.Control = this.LogoPictureEdit;
-            this.ItemForLogo.Location = new System.Drawing.Point(0, 216);
+            this.ItemForLogo.Location = new System.Drawing.Point(0, 306);
             this.ItemForLogo.Name = "ItemForLogo";
-            this.ItemForLogo.Size = new System.Drawing.Size(644, 344);
+            this.ItemForLogo.Size = new System.Drawing.Size(638, 234);
             this.ItemForLogo.StartNewLine = true;
             this.ItemForLogo.Text = "Logo";
             this.ItemForLogo.TextLocation = DevExpress.Utils.Locations.Top;
@@ -494,9 +494,9 @@ namespace MasterData.Company
             // 
             // emptySpaceItem1
             // 
-            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 560);
+            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 540);
             this.emptySpaceItem1.Name = "emptySpaceItem1";
-            this.emptySpaceItem1.Size = new System.Drawing.Size(644, 24);
+            this.emptySpaceItem1.Size = new System.Drawing.Size(638, 23);
             // 
             // FrmCompany
             // 

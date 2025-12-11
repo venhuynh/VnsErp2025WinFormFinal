@@ -176,6 +176,39 @@ namespace Bll.MasterData.CompanyBll
         }
 
         /// <summary>
+        /// Lấy danh sách chi nhánh công ty đang hoạt động cho Lookup (chỉ load các trường cần thiết).
+        /// Tối ưu hiệu năng bằng cách không load navigation properties.
+        /// </summary>
+        /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
+        public List<CompanyBranch> GetActiveBranchesForLookup()
+        {
+            try
+            {
+                return GetDataAccess().GetActiveBranchesForLookup();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi lấy danh sách chi nhánh công ty cho lookup: " + ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách chi nhánh công ty đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
+        /// </summary>
+        /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
+        public async Task<List<CompanyBranch>> GetActiveBranchesForLookupAsync()
+        {
+            try
+            {
+                return await GetDataAccess().GetActiveBranchesForLookupAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi lấy danh sách chi nhánh công ty cho lookup (async): " + ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Lấy tất cả chi nhánh của một công ty.
         /// </summary>
         /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
@@ -249,9 +282,8 @@ namespace Bll.MasterData.CompanyBll
                     throw new Exception($"Mã chi nhánh '{companyBranch.BranchCode}' đã tồn tại trong hệ thống");
                 }
 
-                // TODO: Update method chưa được implement trong repository
-                // Cần thêm Update method vào ICompanyBranchRepository và CompanyBranchRepository
-                throw new NotImplementedException("Phương thức Update chưa được triển khai trong repository");
+                // Gọi repository để cập nhật
+                GetDataAccess().Update(companyBranch);
             }
             catch (Exception ex)
             {

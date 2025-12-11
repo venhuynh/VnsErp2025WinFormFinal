@@ -61,6 +61,19 @@ namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
         /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
         List<CompanyBranch> GetActiveBranches();
 
+        /// <summary>
+        /// Lấy danh sách chi nhánh công ty đang hoạt động cho Lookup (chỉ load các trường cần thiết).
+        /// Tối ưu hiệu năng bằng cách không load navigation properties.
+        /// </summary>
+        /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
+        List<CompanyBranch> GetActiveBranchesForLookup();
+
+        /// <summary>
+        /// Lấy danh sách chi nhánh công ty đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
+        /// </summary>
+        /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
+        Task<List<CompanyBranch>> GetActiveBranchesForLookupAsync();
+
         #endregion
 
         #region ========== XỬ LÝ DỮ LIỆU ==========
@@ -71,6 +84,12 @@ namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
         /// <param name="companyBranch">Chi nhánh công ty cần thêm</param>
         /// <returns>ID của chi nhánh công ty vừa thêm</returns>
         Guid Insert(CompanyBranch companyBranch);
+
+        /// <summary>
+        /// Cập nhật chi nhánh công ty.
+        /// </summary>
+        /// <param name="companyBranch">Chi nhánh công ty cần cập nhật</param>
+        void Update(CompanyBranch companyBranch);
 
         /// <summary>
         /// Kiểm tra mã chi nhánh có tồn tại không.

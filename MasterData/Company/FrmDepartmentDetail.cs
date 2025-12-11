@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Utils;
+using static Common.Utils.AlertHelper;
 
 namespace MasterData.Company
 {
@@ -86,7 +87,7 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Lỗi khởi tạo form: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError($"Lỗi khởi tạo form: {ex.Message}", "Lỗi", this);
             }
         }
 
@@ -100,26 +101,59 @@ namespace MasterData.Company
                 // Load CompanyBranch data cho BranchNameSearchLookupedit
                 LoadCompanyBranches();
                 
-                // Load Department data cho ParentDepartmentNameTextEdit
+                // Load Department data cho ParentDepartmentNameSearchLookup
                 LoadDepartments();
+                
+                // Setup SearchLookUpEdit để hiển thị HTML
+                SetupSearchLookUpEdits();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Lỗi load datasource: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError($"Lỗi load datasource: {ex.Message}", "Lỗi", this);
             }
         }
 
         /// <summary>
-        /// Load danh sách chi nhánh công ty
+        /// Setup các SearchLookUpEdit để hiển thị HTML đẹp
+        /// </summary>
+        private void SetupSearchLookUpEdits()
+        {
+            try
+            {
+                // Setup Branch SearchLookUpEdit
+                if (colBranchInfoHtml != null)
+                {
+                    colBranchInfoHtml.FieldName = "BranchInfoHtml";
+                    colBranchInfoHtml.Visible = true;
+                    colBranchInfoHtml.VisibleIndex = 0;
+                }
+
+                // Setup Department SearchLookUpEdit
+                if (colFullPathHtml != null)
+                {
+                    colFullPathHtml.FieldName = "FullPathHtml";
+                    colFullPathHtml.Visible = true;
+                    colFullPathHtml.VisibleIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Lỗi setup SearchLookUpEdit: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Load danh sách chi nhánh công ty cho Lookup (tối ưu hiệu năng)
         /// </summary>
         private void LoadCompanyBranches()
         {
             try
             {
-                var companyBranches = _companyBranchBll.GetActiveBranches();
-                var companyBranchDtos = companyBranches.Select(cb => cb.ToDto()).ToList();
+                // Sử dụng method tối ưu chỉ load các trường cần thiết
+                var companyBranches = _companyBranchBll.GetActiveBranchesForLookup();
+                var companyBranchLookupDtos = companyBranches.ToLookupDtos().ToList();
 
-                companyBranchDtoBindingSource.DataSource = companyBranchDtos;
+                companyBranchLookupDtoBindingSource.DataSource = companyBranchLookupDtos;
             }
             catch (Exception ex)
             {
@@ -128,22 +162,39 @@ namespace MasterData.Company
         }
 
         /// <summary>
-        /// Load danh sách phòng ban cho ParentDepartmentNameTextEdit
+        /// Load danh sách phòng ban cho ParentDepartmentNameSearchLookup (tối ưu hiệu năng)
         /// </summary>
         private void LoadDepartments()
         {
             try
             {
+                // Lấy tất cả departments và convert sang LookupDto để tối ưu hiệu năng
                 var departments = _departmentBll.GetAll();
-                var departmentDtos = departments.Select(d => d.ToDto()).ToList();
+                
+                // Tạo dictionary để tính FullPath
+                var departmentDict = departments.ToDictionary(d => d.Id);
+                
+                // Convert sang LookupDto với dictionary để tính FullPath
+                var departmentLookupDtos = departments.ToLookupDtos(departmentDict).ToList();
 
-                departmentDtoBindingSource.DataSource = departmentDtos;
+                // QUAN TRỌNG: Nếu đang ở chế độ edit, loại trừ department hiện tại khỏi danh sách parent
+                // (để tránh chọn chính nó làm parent - gây circular reference)
+                // Điều này đảm bảo data source của phòng ban cha không có chính nó
+                if (_isEditMode && _departmentId != Guid.Empty)
+                {
+                    departmentLookupDtos = departmentLookupDtos
+                        .Where(d => d.Id != _departmentId)
+                        .ToList();
+                }
+
+                departmentLookupDtoBindingSource.DataSource = departmentLookupDtos;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Lỗi load danh sách phòng ban: {ex.Message}", ex);
             }
         }
+
 
         /// <summary>
         /// Load dữ liệu phòng ban khi edit
@@ -158,20 +209,81 @@ namespace MasterData.Company
                     return;
                 }
 
+                // Load department từ repository
                 var department = _departmentBll.GetById(_departmentId);
                 if (department == null)
                 {
-                    XtraMessageBox.Show("Không tìm thấy phòng ban", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ShowError("Không tìm thấy phòng ban", "Lỗi", this);
                     Close();
                     return;
                 }
 
-                _currentDepartment = department.ToDto();
+                // Load tất cả departments để tính FullPath và tạo dictionary
+                var allDepartments = _departmentBll.GetAll();
+                var departmentDict = allDepartments.ToDictionary(d => d.Id);
+
+                // Convert sang DTO với dictionary để tính FullPath
+                _currentDepartment = department.ToDto(departmentDict: departmentDict);
+
+                // QUAN TRỌNG: Đảm bảo branch hiện tại có trong datasource (kể cả khi không active)
+                // Vì khi edit, cần hiển thị branch hiện tại dù nó có active hay không
+                if (_currentDepartment.BranchId.HasValue)
+                {
+                    var branchId = _currentDepartment.BranchId.Value;
+                    var branchExists = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>()
+                        .Any(b => b.Id == branchId);
+                    
+                    if (!branchExists)
+                    {
+                        // Branch không tồn tại trong datasource (có thể đã bị inactive)
+                        // Load branch này và thêm vào datasource
+                        var branch = _companyBranchBll.GetById(branchId);
+                        if (branch != null)
+                        {
+                            var branchDto = branch.ToLookupDto();
+                            var currentList = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>().ToList();
+                            currentList.Add(branchDto);
+                            companyBranchLookupDtoBindingSource.DataSource = currentList;
+                        }
+                    }
+                }
+
+                // QUAN TRỌNG: Đảm bảo parent department hiện tại có trong datasource (nếu có)
+                // Lưu ý: department hiện tại đã bị filter ra khỏi datasource để tránh circular reference
+                if (_currentDepartment.ParentId.HasValue)
+                {
+                    var parentId = _currentDepartment.ParentId.Value;
+                    var parentExists = departmentLookupDtoBindingSource.Cast<DepartmentLookupDto>()
+                        .Any(d => d.Id == parentId);
+                    
+                    if (!parentExists)
+                    {
+                        // Parent department không tồn tại trong datasource
+                        // Load parent department này và thêm vào datasource (nếu không phải chính nó)
+                        if (parentId != _departmentId)
+                        {
+                            var parentDepartment = _departmentBll.GetById(parentId);
+                            if (parentDepartment != null)
+                            {
+                                var parentDto = parentDepartment.ToLookupDto(departmentDict);
+                                var currentList = departmentLookupDtoBindingSource.Cast<DepartmentLookupDto>().ToList();
+                                currentList.Add(parentDto);
+                                departmentLookupDtoBindingSource.DataSource = currentList;
+                            }
+                        }
+                    }
+                }
+
+                // Refresh datasource để đảm bảo dữ liệu mới nhất
+                companyBranchLookupDtoBindingSource.ResetBindings(false);
+                departmentLookupDtoBindingSource.ResetBindings(false);
+
+                // Bind dữ liệu vào controls
                 BindDepartmentToControls();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Lỗi load dữ liệu phòng ban: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError($"Lỗi load dữ liệu phòng ban: {ex.Message}", "Lỗi", this);
             }
         }
 
@@ -190,16 +302,36 @@ namespace MasterData.Company
                 DescriptionTextEdit.EditValue = _currentDepartment.Description;
                 IsActiveToogleSwitch.EditValue = _currentDepartment.IsActive;
 
-                // Disable mã phòng ban khi edit (không cho phép thay đổi)
-                DepartmentCodeTextEdit.Properties.ReadOnly = true;
-                DepartmentCodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-                DepartmentCodeTextEdit.Enabled = false; // Disable hoàn toàn
+                // QUAN TRỌNG: Disable các controls không cho phép thay đổi khi edit
+                // Đảm bảo rằng khi ở chế độ edit thì không cho phép thay đổi:
+                // - Mã phòng ban
+                // - Chi nhánh (BranchNameSearchLookupedit)
+                // - Phòng ban cha (ParentDepartmentNameSearchLookup)
+                SetControlsReadOnly(true);
 
                 // Set branch selection và cập nhật biến
+                // QUAN TRỌNG: Kiểm tra giá trị có tồn tại trong datasource trước khi bind
                 if (_currentDepartment.BranchId.HasValue)
                 {
-                    BranchNameSearchLookupedit.EditValue = _currentDepartment.BranchId.Value;
-                    _branchId = _currentDepartment.BranchId.Value;
+                    var branchId = _currentDepartment.BranchId.Value;
+                    
+                    // Kiểm tra branch có tồn tại trong datasource không
+                    var branchExists = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>()
+                        .Any(b => b.Id == branchId);
+                    
+                    if (branchExists)
+                    {
+                        BranchNameSearchLookupedit.EditValue = branchId;
+                        _branchId = branchId;
+                    }
+                    else
+                    {
+                        // Branch không tồn tại trong datasource (có thể đã bị inactive)
+                        // Vẫn set giá trị để hiển thị, nhưng có thể không hiển thị text
+                        BranchNameSearchLookupedit.EditValue = branchId;
+                        _branchId = branchId;
+                        Debug.WriteLine($"Warning: BranchId {branchId} không tồn tại trong datasource (có thể đã bị inactive)");
+                    }
                 }
                 else
                 {
@@ -208,14 +340,34 @@ namespace MasterData.Company
                 }
 
                 // Set parent department selection và cập nhật biến
+                // QUAN TRỌNG: Kiểm tra giá trị có tồn tại trong datasource trước khi bind
                 if (_currentDepartment.ParentId.HasValue)
                 {
-                    ParentDepartmentNameTextEdit.EditValue = _currentDepartment.ParentId.Value;
-                    _parentId = _currentDepartment.ParentId.Value;
+                    var parentId = _currentDepartment.ParentId.Value;
+                    
+                    // Kiểm tra parent department có tồn tại trong datasource không
+                    // (Lưu ý: department hiện tại đã bị filter ra khỏi datasource)
+                    var parentExists = departmentLookupDtoBindingSource.Cast<DepartmentLookupDto>()
+                        .Any(d => d.Id == parentId);
+                    
+                    if (parentExists)
+                    {
+                        ParentDepartmentNameSearchLookup.EditValue = parentId;
+                        _parentId = parentId;
+                    }
+                    else
+                    {
+                        // Parent department không tồn tại trong datasource
+                        // (có thể đã bị filter ra vì là chính nó, hoặc đã bị xóa)
+                        // Vẫn set giá trị để hiển thị, nhưng có thể không hiển thị text
+                        ParentDepartmentNameSearchLookup.EditValue = parentId;
+                        _parentId = parentId;
+                        Debug.WriteLine($"Warning: ParentId {parentId} không tồn tại trong datasource (có thể đã bị filter hoặc xóa)");
+                    }
                 }
                 else
                 {
-                    ParentDepartmentNameTextEdit.EditValue = null;
+                    ParentDepartmentNameSearchLookup.EditValue = null;
                     _parentId = null; // ParentId có thể là NULL
                 }
             }
@@ -237,12 +389,10 @@ namespace MasterData.Company
                 DescriptionTextEdit.EditValue = string.Empty;
                 IsActiveToogleSwitch.EditValue = true;
                 BranchNameSearchLookupedit.EditValue = null;
-                ParentDepartmentNameTextEdit.EditValue = null;
+                ParentDepartmentNameSearchLookup.EditValue = null;
                 
-                // Enable mã phòng ban khi tạo mới (cho phép nhập)
-                DepartmentCodeTextEdit.Properties.ReadOnly = false;
-                DepartmentCodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
-                DepartmentCodeTextEdit.Enabled = true; // Enable hoàn toàn
+                // Enable các controls khi tạo mới (cho phép nhập/chọn)
+                SetControlsReadOnly(false);
                 
                 // Khởi tạo các biến ID
                 _branchId = null;
@@ -266,7 +416,7 @@ namespace MasterData.Company
                 
                 // Event handlers cho lookup controls
                 BranchNameSearchLookupedit.EditValueChanged += BranchNameSearchLookupedit_EditValueChanged;
-                ParentDepartmentNameTextEdit.EditValueChanged += ParentDepartmentNameTextEdit_EditValueChanged;
+                ParentDepartmentNameSearchLookup.EditValueChanged += ParentDepartmentNameTextEdit_EditValueChanged;
             }
             catch (Exception ex)
             {
@@ -292,7 +442,7 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Lỗi lưu phòng ban: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError($"Lỗi lưu phòng ban: {ex.Message}", "Lỗi", this);
             }
         }
 
@@ -307,44 +457,73 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Lỗi đóng form: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError($"Lỗi đóng form: {ex.Message}", "Lỗi", this);
             }
         }
 
         /// <summary>
         /// Xử lý sự kiện thay đổi giá trị BranchNameSearchLookupedit
+        /// QUAN TRỌNG: Khi ở chế độ edit, control đã bị disable nên event này sẽ không được trigger
         /// </summary>
         private void BranchNameSearchLookupedit_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
+                // Đảm bảo không cho phép thay đổi khi ở chế độ edit
+                if (_isEditMode)
+                {
+                    // Nếu đang ở chế độ edit, giữ nguyên giá trị cũ
+                    if (_branchId.HasValue)
+                    {
+                        BranchNameSearchLookupedit.EditValue = _branchId.Value;
+                    }
+                    return;
+                }
+
+                // Chỉ cập nhật khi ở chế độ tạo mới
                 if (BranchNameSearchLookupedit.EditValue != null && 
                     Guid.TryParse(BranchNameSearchLookupedit.EditValue.ToString(), out var branchId))
                 {
                     _branchId = branchId;
-                    Debug.WriteLine($"BranchId updated to: {branchId}");
                 }
                 else
                 {
                     _branchId = null;
-                    Debug.WriteLine("BranchId set to null");
                 }
             }
             catch (Exception ex)
             {
+                // Log lỗi nhưng không throw để không làm crash form
                 Debug.WriteLine($"Lỗi cập nhật BranchId: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Xử lý sự kiện thay đổi giá trị ParentDepartmentNameTextEdit
+        /// Xử lý sự kiện thay đổi giá trị ParentDepartmentNameSearchLookup
+        /// QUAN TRỌNG: Khi ở chế độ edit, control đã bị disable nên event này sẽ không được trigger
         /// </summary>
         private void ParentDepartmentNameTextEdit_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
-                if (ParentDepartmentNameTextEdit.EditValue != null && 
-                    Guid.TryParse(ParentDepartmentNameTextEdit.EditValue.ToString(), out var parentId))
+                // Đảm bảo không cho phép thay đổi khi ở chế độ edit
+                if (_isEditMode)
+                {
+                    // Nếu đang ở chế độ edit, giữ nguyên giá trị cũ
+                    if (_parentId.HasValue)
+                    {
+                        ParentDepartmentNameSearchLookup.EditValue = _parentId.Value;
+                    }
+                    else
+                    {
+                        ParentDepartmentNameSearchLookup.EditValue = null;
+                    }
+                    return;
+                }
+
+                // Chỉ cập nhật khi ở chế độ tạo mới
+                if (ParentDepartmentNameSearchLookup.EditValue != null && 
+                    Guid.TryParse(ParentDepartmentNameSearchLookup.EditValue.ToString(), out var parentId))
                 {
                     _parentId = parentId;
                 }
@@ -355,6 +534,7 @@ namespace MasterData.Company
             }
             catch (Exception ex)
             {
+                // Log lỗi nhưng không throw để không làm crash form
                 Debug.WriteLine($"Lỗi cập nhật ParentId: {ex.Message}");
             }
         }
@@ -415,18 +595,13 @@ namespace MasterData.Company
 
                 if (_isEditMode)
                 {
-                    // Debug: Kiểm tra entity trước khi update
-                    Debug.WriteLine($"Before UpdateAsync - Department.BranchId: {department.BranchId}");
-                    Debug.WriteLine($"Before UpdateAsync - Department.ParentId: {department.ParentId}");
-                    Debug.WriteLine($"Before UpdateAsync - Department.Id: {department.Id}");
-                    
                     await _departmentBll.UpdateAsync(department);
-                    XtraMessageBox.Show("Cập nhật phòng ban thành công", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowSuccess("Cập nhật phòng ban thành công", "Thành công", this);
                 }
                 else
                 {
                     await _departmentBll.CreateAsync(department);
-                    XtraMessageBox.Show("Tạo mới phòng ban thành công", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowSuccess("Tạo mới phòng ban thành công", "Thành công", this);
                 }
 
                 DialogResult = DialogResult.OK;
@@ -453,11 +628,7 @@ namespace MasterData.Company
                     throw new Exception("Không tìm thấy thông tin công ty trong hệ thống.");
                 }
 
-                // Debug: Kiểm tra giá trị _branchId
-                Debug.WriteLine($"GetDepartmentFromControls - _branchId: {_branchId}");
-                Debug.WriteLine($"GetDepartmentFromControls - _parentId: {_parentId}");
-
-                // Khởi tạo luôn Entity từ controls và biến đã lưu
+                // Khởi tạo Entity từ controls và biến đã lưu
                 var department = new Department
                 {
                     DepartmentCode = DepartmentCodeTextEdit.Text.Trim(),
@@ -501,20 +672,13 @@ namespace MasterData.Company
                 // Sử dụng CompanyBll để lấy Company duy nhất
                 var companyBll = new CompanyBll();
                 var company = companyBll.GetCompany();
-                
-                if (company != null)
-                {
-                    // Cast về Company entity và lấy Id
-                    if (company is Dal.DataContext.Company companyEntity)
-                    {
-                        return companyEntity.Id;
-                    }
-                }
-                
-                return Guid.Empty;
+
+                // Cast về Company entity và lấy Id
+                return company?.Id ?? Guid.Empty;
             }
             catch (Exception ex)
             {
+                // Log lỗi nhưng không throw để không làm crash form
                 Debug.WriteLine($"Lỗi lấy CompanyId từ database: {ex.Message}");
                 return Guid.Empty;
             }
@@ -537,6 +701,42 @@ namespace MasterData.Company
             catch (Exception ex)
             {
                 Debug.WriteLine($"Lỗi setup advanced validation: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập trạng thái ReadOnly cho các controls
+        /// QUAN TRỌNG: Khi ở chế độ edit (readOnly = true), các controls này sẽ bị khóa hoàn toàn
+        /// </summary>
+        /// <param name="readOnly">True để disable (chế độ edit), False để enable (chế độ tạo mới)</param>
+        private void SetControlsReadOnly(bool readOnly)
+        {
+            try
+            {
+                // Mã phòng ban - không cho phép thay đổi khi edit
+                DepartmentCodeTextEdit.Properties.ReadOnly = readOnly;
+                DepartmentCodeTextEdit.Properties.AllowNullInput = readOnly 
+                    ? DevExpress.Utils.DefaultBoolean.False 
+                    : DevExpress.Utils.DefaultBoolean.True;
+                DepartmentCodeTextEdit.Enabled = !readOnly;
+
+                // Chi nhánh SearchLookUpEdit - QUAN TRỌNG: Không cho phép thay đổi khi edit
+                // Đảm bảo rằng khi ở chế độ edit thì không cho phép thay đổi thông tin của chi nhánh
+                BranchNameSearchLookupedit.Properties.ReadOnly = readOnly;
+                BranchNameSearchLookupedit.Enabled = !readOnly;
+                // Thêm AllowNullInput = False để đảm bảo không thể clear giá trị khi edit
+                if (readOnly)
+                {
+                    BranchNameSearchLookupedit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+                }
+
+                // Phòng ban cha SearchLookUpEdit - không cho phép thay đổi khi edit
+                ParentDepartmentNameSearchLookup.Properties.ReadOnly = readOnly;
+                ParentDepartmentNameSearchLookup.Enabled = !readOnly;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Lỗi set controls read-only: {ex.Message}");
             }
         }
 
@@ -602,7 +802,7 @@ namespace MasterData.Company
 
             // SuperTip cho Phòng ban cha
             SuperToolTipHelper.SetBaseEditSuperTip(
-                ParentDepartmentNameTextEdit,
+                ParentDepartmentNameSearchLookup,
                 title: @"<b><color=DarkBlue>👥 Phòng ban cha</color></b>",
                 content: @"Chọn <b>phòng ban cha</b> (tùy chọn) để tạo cấu trúc phân cấp.<br/><br/><b>Chức năng:</b><br/>• Chọn phòng ban cha từ danh sách dropdown<br/>• Hiển thị tên phòng ban cha đã chọn<br/>• Tạo cấu trúc phân cấp phòng ban<br/><br/><b>Ràng buộc:</b><br/>• <b>Không bắt buộc chọn</b> (có thể để trống)<br/>• Có thể để trống nếu phòng ban không có phòng ban cha<br/>• Phải chọn một phòng ban hợp lệ nếu có chọn<br/><br/><b>Validation:</b><br/>• Không bắt buộc nhập<br/>• Kiểm tra phòng ban có tồn tại không nếu có chọn<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><b>DataAnnotations:</b><br/>• ParentId không có attribute [Required] trong DTO<br/>• Có thể để trống (NULL)<br/><br/><color=Gray>Lưu ý:</color> Phòng ban cha sẽ được lưu vào database khi click nút Lưu. Nếu để trống, phòng ban này sẽ là phòng ban cấp cao nhất. Danh sách phòng ban được load từ database."
             );

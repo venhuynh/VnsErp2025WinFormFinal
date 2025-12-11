@@ -1,6 +1,7 @@
 ﻿using Bll.MasterData.CompanyBll;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraSplashScreen;
 using DTO.MasterData.Company;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Common;
 using Common.Utils;
+using Dal.DataContext;
 
 namespace MasterData.Company
 {
@@ -201,67 +203,43 @@ namespace MasterData.Company
 
 
         /// <summary>
-        /// Lưu dữ liệu (async với WaitForm)
+        /// Lưu dữ liệu chi nhánh công ty
         /// </summary>
-        private async void SaveData()
+        private async Task SaveCompanyBranchAsync()
         {
-            try
+            // Bước 1: Thu thập dữ liệu từ form và build DTO
+            var branchDto = GetDataFromControls();
+
+            // Bước 2: Convert DTO -> Entity
+            CompanyBranch branchEntity;
+            if (_isEditMode)
             {
-                // Validate form
-                if (!ValidateForm())
-                    return;
-
-                using var splash = new WaitForm1();
-                splash.Show();
-                splash.Update();
-
-                var success = await SaveDataAsync();
-
-                if (success)
+                // Edit mode: lấy existing entity và update
+                var existingEntity = _companyBranchBll.GetById(_companyBranchId);
+                if (existingEntity == null)
                 {
-                    MsgBox.ShowSuccess(_isEditMode ? "Cập nhật chi nhánh công ty thành công!" : "Thêm mới chi nhánh công ty thành công!");
-                    DialogResult = DialogResult.OK;
-                    Close();
+                    throw new Exception("Không tìm thấy chi nhánh công ty để cập nhật.");
                 }
-                else
-                {
-                    MsgBox.ShowError(_isEditMode ? "Cập nhật chi nhánh công ty thất bại!" : "Thêm mới chi nhánh công ty thất bại!");
-                }
+                branchEntity = branchDto.ToEntity(existingEntity);
             }
-            catch (Exception ex)
+            else
             {
-                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
+                // Create mode: tạo entity mới
+                branchEntity = branchDto.ToEntity();
             }
-        }
 
-        /// <summary>
-        /// Lưu dữ liệu async
-        /// </summary>
-        private async Task<bool> SaveDataAsync()
-        {
-            try
+            // Bước 3: Lưu entity qua BLL
+            if (_isEditMode)
             {
-                // Lấy dữ liệu từ controls
-                var branchDto = GetDataFromControls();
-                
-                // Chuyển đổi DTO sang Entity (tuân thủ quy tắc Dal -> Bll -> DTO)
-                var branchEntity = branchDto.ToEntity();
-
-                if (_isEditMode)
-                {
-                    await Task.Run(() => _companyBranchBll.Update(branchEntity));
-                    return true;
-                }
-                else
-                {
-                    var newId = await Task.Run(() => _companyBranchBll.Insert(branchEntity));
-                    return newId != Guid.Empty;
-                }
+                await Task.Run(() => _companyBranchBll.Update(branchEntity));
             }
-            catch (Exception ex)
+            else
             {
-                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
-                return false;
+                var newId = await Task.Run(() => _companyBranchBll.Insert(branchEntity));
+                if (newId == Guid.Empty)
+                {
+                    throw new Exception("Không thể tạo mới chi nhánh công ty. Có thể mã chi nhánh đã tồn tại.");
+                }
             }
         }
 
@@ -563,33 +541,35 @@ namespace MasterData.Company
         /// </summary>
         private void FrmCompanyBranchDetail_FormClosing(object sender, FormClosingEventArgs e)
         {
-            try
-            {
-                // Kiểm tra có thay đổi dữ liệu không
-                if (!HasDataChanged()) return;
-                if (!MsgBox.ShowYesNo("Dữ liệu đã thay đổi. Bạn có muốn lưu không?", "Xác nhận")) return;
-                
-                SaveData();
-                e.Cancel = true;
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowError($"Lỗi đóng form: {ex.Message}");
-            }
+            // Không cần kiểm tra DTO phải save trước khi đóng (theo yêu cầu)
         }
 
         /// <summary>
         /// Sự kiện click Save button
         /// </summary>
-        private void SaveBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void SaveBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
-                SaveData();
+                if (!ValidateForm())
+                    return;
+
+                // Lưu dữ liệu với waiting form
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    await SaveCompanyBranchAsync();
+                });
+
+                // Thông báo thành công và đóng form
+                MsgBox.ShowSuccess(_isEditMode
+                    ? "Cập nhật chi nhánh công ty thành công!"
+                    : "Thêm mới chi nhánh công ty thành công!");
+                DialogResult = DialogResult.OK;
+                Close();
             }
             catch (Exception ex)
             {
-                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
+                ShowError(ex, "Lưu dữ liệu chi nhánh công ty");
             }
         }
 
@@ -658,11 +638,8 @@ namespace MasterData.Company
                 
                 if (company != null)
                 {
-                    // Cast về Company entity và lấy Id
-                    if (company is Dal.DataContext.Company companyEntity)
-                    {
-                        return companyEntity.Id;
-                    }
+                    // GetCompany() đã trả về Company entity, không cần cast
+                    return company.Id;
                 }
                 
                 return Guid.Empty;
@@ -827,6 +804,41 @@ namespace MasterData.Company
                 Debug.WriteLine($"Lỗi lấy danh sách mã chi nhánh: {ex.Message}");
                 return new List<string>();
             }
+        }
+
+        #endregion
+
+        #region ========== TIỆN ÍCH ==========
+
+        /// <summary>
+        /// Thực thi async operation với waiting form (hiển thị splash screen)
+        /// </summary>
+        /// <param name="operation">Operation async cần thực thi</param>
+        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
+        {
+            try
+            {
+                // Hiển thị waiting form
+                SplashScreenManager.ShowForm(typeof(WaitForm1));
+
+                // Thực hiện operation
+                await operation();
+            }
+            finally
+            {
+                // Đóng waiting form
+                SplashScreenManager.CloseForm();
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị lỗi qua XtraMessageBox với thông báo tiếng Việt
+        /// </summary>
+        /// <param name="ex">Exception cần hiển thị</param>
+        /// <param name="action">Tên hành động đang thực hiện khi xảy ra lỗi</param>
+        private void ShowError(Exception ex, string action)
+        {
+            MsgBox.ShowException(ex, $"Lỗi {action}");
         }
 
         #endregion

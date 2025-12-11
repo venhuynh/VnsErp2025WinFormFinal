@@ -410,6 +410,21 @@
       <Column Name="ResignDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="AvatarPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Mobile" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Fax" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="LinkedIn" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Skype" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="WeChat" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="AvatarFileName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="AvatarRelativePath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="AvatarFullPath" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="AvatarStorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="AvatarFileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="AvatarChecksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="AvatarThumbnailData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
       <Association Name="Employee_Asset" Member="Assets" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Asset" />
       <Association Name="Employee_Device" Member="Devices" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Device" />
       <Association Name="Employee_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="FromEmployeeId" Type="DeviceTransfer" />

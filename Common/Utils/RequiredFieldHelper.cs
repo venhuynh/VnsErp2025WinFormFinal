@@ -121,12 +121,53 @@ namespace Common.Utils
         {
             if (editor == null) return false;
             var name = editor.Name ?? string.Empty;
-            string[] candidates = new[]
+            
+            // Tạo danh sách candidates để match
+            var candidates = new List<string> { name };
+            
+            // Xử lý các loại control khác nhau
+            // TextEdit: EmployeeCodeTextEdit -> EmployeeCode
+            if (name.EndsWith("TextEdit", StringComparison.OrdinalIgnoreCase))
             {
-                name,
-                name.Replace("txt", string.Empty),
-                name.Replace("TextEdit", string.Empty)
-            };
+                candidates.Add(name.Replace("TextEdit", string.Empty));
+            }
+            
+            // SearchLookUpEdit: BranchIdSearchLookupEdit -> BranchId
+            if (name.EndsWith("SearchLookupEdit", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add(name.Replace("SearchLookupEdit", string.Empty));
+            }
+            
+            // DateEdit: HireDateDateEdit -> HireDate
+            if (name.EndsWith("DateEdit", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add(name.Replace("DateEdit", string.Empty));
+            }
+            
+            // ComboBoxEdit: GenderComboBoxEdit -> Gender
+            if (name.EndsWith("ComboBoxEdit", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add(name.Replace("ComboBoxEdit", string.Empty));
+            }
+            
+            // MemoEdit: NotesTextEdit -> Notes (có thể là TextEdit hoặc MemoEdit)
+            if (name.EndsWith("MemoEdit", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add(name.Replace("MemoEdit", string.Empty));
+            }
+            
+            // ToggleSwitch: IsActiveToggleSwitch -> IsActive
+            if (name.EndsWith("ToggleSwitch", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add(name.Replace("ToggleSwitch", string.Empty));
+            }
+            
+            // Xử lý prefix "txt" (nếu có)
+            if (name.StartsWith("txt", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add(name.Substring(3));
+            }
+            
             return candidates.Any(c => string.Equals(c, propName, StringComparison.OrdinalIgnoreCase));
         }
 

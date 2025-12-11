@@ -51,7 +51,6 @@ namespace MasterData.Company
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
             this.BranchCodeTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.BranchNameTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.AddressTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.PhoneTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.EmailTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.ManagerNameTextEdit = new DevExpress.XtraEditors.TextEdit();
@@ -65,13 +64,13 @@ namespace MasterData.Company
             this.ItemForEmail = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForManagerName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
+            this.AddressTextEdit = new DevExpress.XtraEditors.MemoEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BranchCodeTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BranchNameTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AddressTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhoneTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EmailTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ManagerNameTextEdit.Properties)).BeginInit();
@@ -85,6 +84,7 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.ItemForEmail)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForManagerName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AddressTextEdit.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -144,7 +144,7 @@ namespace MasterData.Company
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 277);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 303);
             this.barDockControlBottom.Manager = this.barManager1;
             this.barDockControlBottom.Size = new System.Drawing.Size(666, 0);
             // 
@@ -154,7 +154,7 @@ namespace MasterData.Company
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 238);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 264);
             // 
             // barDockControlRight
             // 
@@ -162,7 +162,7 @@ namespace MasterData.Company
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(666, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 238);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 264);
             // 
             // dxErrorProvider1
             // 
@@ -172,86 +172,77 @@ namespace MasterData.Company
             // 
             this.dataLayoutControl1.Controls.Add(this.BranchCodeTextEdit);
             this.dataLayoutControl1.Controls.Add(this.BranchNameTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.AddressTextEdit);
             this.dataLayoutControl1.Controls.Add(this.PhoneTextEdit);
             this.dataLayoutControl1.Controls.Add(this.EmailTextEdit);
             this.dataLayoutControl1.Controls.Add(this.ManagerNameTextEdit);
             this.dataLayoutControl1.Controls.Add(this.IsActiveToggleSwitch);
+            this.dataLayoutControl1.Controls.Add(this.AddressTextEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 238);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 264);
             this.dataLayoutControl1.TabIndex = 4;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
             // BranchCodeTextEdit
             // 
-            this.BranchCodeTextEdit.Location = new System.Drawing.Point(104, 16);
+            this.BranchCodeTextEdit.Location = new System.Drawing.Point(133, 16);
             this.BranchCodeTextEdit.MenuManager = this.barManager1;
             this.BranchCodeTextEdit.Name = "BranchCodeTextEdit";
             this.BranchCodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.BranchCodeTextEdit.Size = new System.Drawing.Size(226, 28);
+            this.BranchCodeTextEdit.Size = new System.Drawing.Size(197, 28);
             this.BranchCodeTextEdit.StyleController = this.dataLayoutControl1;
             this.BranchCodeTextEdit.TabIndex = 5;
             // 
             // BranchNameTextEdit
             // 
-            this.BranchNameTextEdit.Location = new System.Drawing.Point(104, 50);
+            this.BranchNameTextEdit.Location = new System.Drawing.Point(133, 50);
             this.BranchNameTextEdit.MenuManager = this.barManager1;
             this.BranchNameTextEdit.Name = "BranchNameTextEdit";
             this.BranchNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.BranchNameTextEdit.Size = new System.Drawing.Size(546, 28);
+            this.BranchNameTextEdit.Size = new System.Drawing.Size(517, 28);
             this.BranchNameTextEdit.StyleController = this.dataLayoutControl1;
             this.BranchNameTextEdit.TabIndex = 6;
             // 
-            // AddressTextEdit
-            // 
-            this.AddressTextEdit.Location = new System.Drawing.Point(104, 84);
-            this.AddressTextEdit.MenuManager = this.barManager1;
-            this.AddressTextEdit.Name = "AddressTextEdit";
-            this.AddressTextEdit.Size = new System.Drawing.Size(546, 28);
-            this.AddressTextEdit.StyleController = this.dataLayoutControl1;
-            this.AddressTextEdit.TabIndex = 7;
-            // 
             // PhoneTextEdit
             // 
-            this.PhoneTextEdit.Location = new System.Drawing.Point(104, 118);
+            this.PhoneTextEdit.Location = new System.Drawing.Point(133, 152);
             this.PhoneTextEdit.MenuManager = this.barManager1;
             this.PhoneTextEdit.Name = "PhoneTextEdit";
-            this.PhoneTextEdit.Size = new System.Drawing.Size(546, 28);
+            this.PhoneTextEdit.Size = new System.Drawing.Size(517, 28);
             this.PhoneTextEdit.StyleController = this.dataLayoutControl1;
             this.PhoneTextEdit.TabIndex = 8;
             // 
             // EmailTextEdit
             // 
-            this.EmailTextEdit.Location = new System.Drawing.Point(104, 152);
+            this.EmailTextEdit.Location = new System.Drawing.Point(133, 186);
             this.EmailTextEdit.MenuManager = this.barManager1;
             this.EmailTextEdit.Name = "EmailTextEdit";
-            this.EmailTextEdit.Size = new System.Drawing.Size(546, 28);
+            this.EmailTextEdit.Size = new System.Drawing.Size(517, 28);
             this.EmailTextEdit.StyleController = this.dataLayoutControl1;
             this.EmailTextEdit.TabIndex = 9;
             // 
             // ManagerNameTextEdit
             // 
-            this.ManagerNameTextEdit.Location = new System.Drawing.Point(104, 186);
+            this.ManagerNameTextEdit.Location = new System.Drawing.Point(133, 220);
             this.ManagerNameTextEdit.MenuManager = this.barManager1;
             this.ManagerNameTextEdit.Name = "ManagerNameTextEdit";
-            this.ManagerNameTextEdit.Size = new System.Drawing.Size(546, 28);
+            this.ManagerNameTextEdit.Size = new System.Drawing.Size(517, 28);
             this.ManagerNameTextEdit.StyleController = this.dataLayoutControl1;
             this.ManagerNameTextEdit.TabIndex = 10;
             // 
             // IsActiveToggleSwitch
             // 
             this.IsActiveToggleSwitch.EditValue = true;
-            this.IsActiveToggleSwitch.Location = new System.Drawing.Point(424, 16);
+            this.IsActiveToggleSwitch.Location = new System.Drawing.Point(453, 16);
             this.IsActiveToggleSwitch.MenuManager = this.barManager1;
             this.IsActiveToggleSwitch.Name = "IsActiveToggleSwitch";
             this.IsActiveToggleSwitch.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.IsActiveToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
             this.IsActiveToggleSwitch.Properties.OffText = "<color=\'red\'>Không hoạt động</color>";
             this.IsActiveToggleSwitch.Properties.OnText = "<color=\'blue\'>Đang hoạt động</color>";
-            this.IsActiveToggleSwitch.Size = new System.Drawing.Size(226, 24);
+            this.IsActiveToggleSwitch.Size = new System.Drawing.Size(197, 24);
             this.IsActiveToggleSwitch.StyleController = this.dataLayoutControl1;
             this.IsActiveToggleSwitch.TabIndex = 11;
             // 
@@ -262,7 +253,7 @@ namespace MasterData.Company
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlGroup1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(666, 238);
+            this.Root.Size = new System.Drawing.Size(666, 264);
             this.Root.TextVisible = false;
             // 
             // layoutControlGroup1
@@ -279,7 +270,7 @@ namespace MasterData.Company
             this.ItemForIsActive});
             this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(640, 212);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(640, 238);
             // 
             // ItemForBranchCode
             // 
@@ -288,7 +279,7 @@ namespace MasterData.Company
             this.ItemForBranchCode.Name = "ItemForBranchCode";
             this.ItemForBranchCode.Size = new System.Drawing.Size(320, 34);
             this.ItemForBranchCode.Text = "Mã chi nhánh";
-            this.ItemForBranchCode.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForBranchCode.TextSize = new System.Drawing.Size(101, 13);
             // 
             // ItemForBranchName
             // 
@@ -297,43 +288,43 @@ namespace MasterData.Company
             this.ItemForBranchName.Name = "ItemForBranchName";
             this.ItemForBranchName.Size = new System.Drawing.Size(640, 34);
             this.ItemForBranchName.Text = "Tên chi nhánh";
-            this.ItemForBranchName.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForBranchName.TextSize = new System.Drawing.Size(101, 13);
             // 
             // ItemForAddress
             // 
             this.ItemForAddress.Control = this.AddressTextEdit;
             this.ItemForAddress.Location = new System.Drawing.Point(0, 68);
             this.ItemForAddress.Name = "ItemForAddress";
-            this.ItemForAddress.Size = new System.Drawing.Size(640, 34);
+            this.ItemForAddress.Size = new System.Drawing.Size(640, 68);
             this.ItemForAddress.Text = "Địa chỉ";
-            this.ItemForAddress.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForAddress.TextSize = new System.Drawing.Size(101, 13);
             // 
             // ItemForPhone
             // 
             this.ItemForPhone.Control = this.PhoneTextEdit;
-            this.ItemForPhone.Location = new System.Drawing.Point(0, 102);
+            this.ItemForPhone.Location = new System.Drawing.Point(0, 136);
             this.ItemForPhone.Name = "ItemForPhone";
             this.ItemForPhone.Size = new System.Drawing.Size(640, 34);
             this.ItemForPhone.Text = "Số điện thoại";
-            this.ItemForPhone.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForPhone.TextSize = new System.Drawing.Size(101, 13);
             // 
             // ItemForEmail
             // 
             this.ItemForEmail.Control = this.EmailTextEdit;
-            this.ItemForEmail.Location = new System.Drawing.Point(0, 136);
+            this.ItemForEmail.Location = new System.Drawing.Point(0, 170);
             this.ItemForEmail.Name = "ItemForEmail";
             this.ItemForEmail.Size = new System.Drawing.Size(640, 34);
             this.ItemForEmail.Text = "Email";
-            this.ItemForEmail.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForEmail.TextSize = new System.Drawing.Size(101, 13);
             // 
             // ItemForManagerName
             // 
             this.ItemForManagerName.Control = this.ManagerNameTextEdit;
-            this.ItemForManagerName.Location = new System.Drawing.Point(0, 170);
+            this.ItemForManagerName.Location = new System.Drawing.Point(0, 204);
             this.ItemForManagerName.Name = "ItemForManagerName";
-            this.ItemForManagerName.Size = new System.Drawing.Size(640, 42);
+            this.ItemForManagerName.Size = new System.Drawing.Size(640, 34);
             this.ItemForManagerName.Text = "Tên người quản lý";
-            this.ItemForManagerName.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForManagerName.TextSize = new System.Drawing.Size(101, 13);
             // 
             // ItemForIsActive
             // 
@@ -342,13 +333,22 @@ namespace MasterData.Company
             this.ItemForIsActive.Name = "ItemForIsActive";
             this.ItemForIsActive.Size = new System.Drawing.Size(320, 34);
             this.ItemForIsActive.Text = "Trạng thái hoạt động";
-            this.ItemForIsActive.TextSize = new System.Drawing.Size(72, 13);
+            this.ItemForIsActive.TextSize = new System.Drawing.Size(101, 13);
+            // 
+            // AddressTextEdit
+            // 
+            this.AddressTextEdit.Location = new System.Drawing.Point(133, 84);
+            this.AddressTextEdit.MenuManager = this.barManager1;
+            this.AddressTextEdit.Name = "AddressTextEdit";
+            this.AddressTextEdit.Size = new System.Drawing.Size(517, 62);
+            this.AddressTextEdit.StyleController = this.dataLayoutControl1;
+            this.AddressTextEdit.TabIndex = 7;
             // 
             // FrmCompanyBranchDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(666, 277);
+            this.ClientSize = new System.Drawing.Size(666, 303);
             this.Controls.Add(this.dataLayoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -363,7 +363,6 @@ namespace MasterData.Company
             this.dataLayoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.BranchCodeTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BranchNameTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AddressTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhoneTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.EmailTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ManagerNameTextEdit.Properties)).EndInit();
@@ -377,6 +376,7 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.ItemForEmail)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForManagerName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AddressTextEdit.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -396,7 +396,6 @@ namespace MasterData.Company
         private LayoutControlGroup Root;
         private TextEdit BranchCodeTextEdit;
         private TextEdit BranchNameTextEdit;
-        private TextEdit AddressTextEdit;
         private TextEdit PhoneTextEdit;
         private TextEdit EmailTextEdit;
         private TextEdit ManagerNameTextEdit;
@@ -409,5 +408,6 @@ namespace MasterData.Company
         private LayoutControlItem ItemForEmail;
         private LayoutControlItem ItemForManagerName;
         private LayoutControlItem ItemForIsActive;
+        private MemoEdit AddressTextEdit;
     }
 }
