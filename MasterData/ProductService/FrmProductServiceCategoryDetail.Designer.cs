@@ -371,7 +371,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.CategoryCodeTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.CategoryNameTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CategoryNameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ParentCategorySearchLookUpEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productServiceCategoryDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.parentCategoryGridView)).EndInit();

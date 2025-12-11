@@ -78,7 +78,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy tất cả danh mục sản phẩm/dịch vụ.
         /// </summary>
         /// <returns>Danh sách ProductServiceCategory</returns>
-        private List<ProductServiceCategory> GetAll()
+        public List<ProductServiceCategory> GetAll()
         {
             return GetDataAccess().GetAll();
         }

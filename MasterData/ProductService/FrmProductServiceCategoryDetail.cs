@@ -36,13 +36,6 @@ namespace MasterData.ProductService
         /// </summary>
         private bool IsEditMode => _categoryId != Guid.Empty;
 
-        /// <summary>
-        /// Track xem user có thực sự chọn parent category hay không
-        /// </summary>
-#pragma warning disable CS0414 // Field is assigned but its value is never used
-        private bool _hasUserSelectedParent;
-#pragma warning restore CS0414 // Field is assigned but its value is never used
-
         #endregion
 
         #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
@@ -79,26 +72,29 @@ namespace MasterData.ProductService
                 // Thiết lập tiêu đề form
                 Text = IsEditMode ? "Điều chỉnh danh mục sản phẩm/dịch vụ" : "Thêm mới danh mục sản phẩm/dịch vụ";
 
+                // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
+                RequiredFieldHelper.MarkRequiredFields(this, typeof(ProductServiceCategoryDto));
+
+                // Load danh sách danh mục cha
+                LoadParentCategories();
+
+                // Thiết lập SuperToolTip cho các controls
+                SetupSuperToolTips();
+
                 // Load dữ liệu nếu đang chỉnh sửa
                 if (IsEditMode)
                 {
                     LoadCategoryData();
                 }
 
-                // Load danh sách danh mục cha
-                LoadParentCategories();
-
                 // Đăng ký event để tự động tạo mã danh mục khi thay đổi tên danh mục
                 CategoryNameTextEdit.TextChanged += CategoryNameTextEdit_TextChanged;
 
-                // Đánh dấu các trường bắt buộc theo DataAnnotations của DTO
-                RequiredFieldHelper.MarkRequiredFields(this, typeof(ProductServiceCategoryDto));
-
-                // Thiết lập SuperToolTip cho các controls
-                SetupSuperToolTips();
+                // Đăng ký event để đảm bảo giá trị được set đúng
+                ParentCategorySearchLookUpEdit.EditValueChanged += ParentCategorySearchLookUpEdit_EditValueChanged;
 
                 // Thiết lập focus cho control đầu tiên
-                CategoryNameTextEdit.Focus();
+                CategoryCodeTextEdit.Focus();
             }
             catch (Exception ex)
             {
@@ -111,71 +107,89 @@ namespace MasterData.ProductService
         #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
-        /// Load danh sách danh mục cha vào TreeListLookUpEdit.
+        /// Load danh sách danh mục cha vào SearchLookUpEdit.
         /// </summary>
         private void LoadParentCategories()
         {
             try
             {
                 var (categories, counts) = _productServiceCategoryBll.GetCategoriesWithCounts();
-                var dtos = categories.Select(c => 
+                
+                // Chuyển đổi sang DTO với hierarchy
+                var dtos = categories.Select(c =>
                 {
-                    var count = counts.ContainsKey(c.Id) ? counts[c.Id] : 0;
+                    var count = counts.TryGetValue(c.Id, out var count1) ? count1 : 0;
                     return c.ToDtoWithCount(count);
                 }).ToList();
-                
-                // Thiết lập TreeListLookUpEdit
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.DataSource = dtos;
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.ValueMember = "Id";
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.DisplayMember = "CategoryName";
-                
-                // Thiết lập TreeList bên trong TreeListLookUpEdit
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.KeyFieldName = "Id";
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.ParentFieldName = "ParentId";
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.RootValue = null;
-                
-                // Thiết lập cột hiển thị
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.Columns.Clear();
-                var nameColumn = ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.Columns.Add();
-                nameColumn.FieldName = "CategoryName";
-                nameColumn.Caption = "Tên danh mục";
-                nameColumn.VisibleIndex = 0;
-                nameColumn.Width = 200;
-                
-                var descColumn = ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.Columns.Add();
-                descColumn.FieldName = "Description";
-                descColumn.Caption = "Mô tả";
-                descColumn.VisibleIndex = 1;
-                descColumn.Width = 150;
-                
-                var countColumn = ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.Columns.Add();
-                countColumn.FieldName = "ProductCount";
-                countColumn.Caption = "Số SP/DV";
-                countColumn.VisibleIndex = 2;
-                countColumn.Width = 80;
-                
-                // Thiết lập TreeList để hiển thị đúng cấu trúc cây
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowIndentAsRowStyle = true;
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowHorzLines = true;
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowVertLines = true;
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowRoot = true;
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowButtons = true;
-                
-                // Mở rộng tất cả các nút
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TreeList.ExpandAll();
-                
-                // Thiết lập các tùy chọn
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.AllowNullInput = DefaultBoolean.True;
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.NullText = @"Chọn danh mục cha (tùy chọn)";
-                
-                // Các tính năng bổ sung theo tài liệu DevExpress
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.AutoComplete = true; // Tự động hoàn thành khi gõ
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.AutoExpandAllNodes = true; // Tự động mở rộng tất cả nodes
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.PopupFilterMode = PopupFilterMode.Contains; // Lọc khi gõ
-                ParentCategoryTreeListTreeListLookUpEdit.Properties.TextEditStyle = TextEditStyles.Standard; // Cho phép chỉnh sửa text
-                
-                // Đăng ký event để track khi user chọn parent category
-                ParentCategoryTreeListTreeListLookUpEdit.EditValueChanged += ParentCategoryTreeListTreeListLookUpEdit_EditValueChanged;
+
+                // Tính toán FullPath và Level cho hierarchical display
+                var entityDict = categories.ToDictionary(e => e.Id);
+                var dtoList = dtos.Select(dto =>
+                {
+                    var entity = categories.FirstOrDefault(e => e.Id == dto.Id);
+                    if (entity != null)
+                    {
+                        // Tính Level
+                        int level = 0;
+                        var current = entity;
+                        while (current.ParentId.HasValue && entityDict.ContainsKey(current.ParentId.Value))
+                        {
+                            level++;
+                            current = entityDict[current.ParentId.Value];
+                            if (level > 10) break; // Tránh infinite loop
+                        }
+                        dto.Level = level;
+
+                        // Tính FullPath
+                        var pathParts = new System.Collections.Generic.List<string> { entity.CategoryName };
+                        current = entity;
+                        while (current.ParentId.HasValue && entityDict.ContainsKey(current.ParentId.Value))
+                        {
+                            current = entityDict[current.ParentId.Value];
+                            pathParts.Insert(0, current.CategoryName);
+                            if (pathParts.Count > 10) break; // Tránh infinite loop
+                        }
+                        dto.FullPath = string.Join(" > ", pathParts);
+
+                        // Lấy tên parent category
+                        if (entity.ParentId.HasValue && entityDict.TryGetValue(entity.ParentId.Value, out var value))
+                        {
+                            dto.ParentCategoryName = value.CategoryName;
+                        }
+                    }
+                    return dto;
+                }).ToList();
+
+                // Loại bỏ category hiện tại khỏi danh sách parent (tránh circular reference)
+                if (IsEditMode)
+                {
+                    dtoList = dtoList.Where(d => d.Id != _categoryId).ToList();
+                }
+
+                // Bind vào BindingSource
+                productServiceCategoryDtoBindingSource.DataSource = dtoList;
+
+                // Thiết lập SearchLookUpEdit
+                ParentCategorySearchLookUpEdit.Properties.DataSource = productServiceCategoryDtoBindingSource;
+                ParentCategorySearchLookUpEdit.Properties.ValueMember = "Id";
+                ParentCategorySearchLookUpEdit.Properties.DisplayMember = "FullPathHtml";
+                ParentCategorySearchLookUpEdit.Properties.PopupView = parentCategoryGridView;
+
+                // Thiết lập GridView
+                parentCategoryGridView.OptionsView.ShowGroupPanel = false;
+                parentCategoryGridView.OptionsView.ShowIndicator = false;
+                parentCategoryGridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+                parentCategoryGridView.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+
+                // Sắp xếp theo Level và CategoryName để hiển thị hierarchical
+                parentCategoryGridView.SortInfo.ClearAndAddRange(new[] {
+                    new DevExpress.XtraGrid.Columns.GridColumnSortInfo(colParentFullPathHtml, DevExpress.Data.ColumnSortOrder.Ascending)
+                }, 0);
+
+                // Thiết lập các tùy chọn SearchLookUpEdit
+                ParentCategorySearchLookUpEdit.Properties.AllowNullInput = DefaultBoolean.True;
+                ParentCategorySearchLookUpEdit.Properties.NullText = @"Chọn danh mục cha (tùy chọn)";
+                ParentCategorySearchLookUpEdit.Properties.TextEditStyle = TextEditStyles.Standard;
             }
             catch (Exception ex)
             {
@@ -216,17 +230,16 @@ namespace MasterData.ProductService
             CategoryCodeTextEdit.Text = dto.CategoryCode;
             CategoryNameTextEdit.Text = dto.CategoryName;
             DescriptionMemoEdit.Text = dto.Description;
+            IsActiveToogleSwitch.IsOn = dto.IsActive;
             
-            // Chọn danh mục cha trong TreeListLookUpEdit
+            // Bind ParentId
             if (dto.ParentId.HasValue)
             {
-                ParentCategoryTreeListTreeListLookUpEdit.EditValue = dto.ParentId.Value;
-                _hasUserSelectedParent = true;
+                ParentCategorySearchLookUpEdit.EditValue = dto.ParentId.Value;
             }
             else
             {
-                ParentCategoryTreeListTreeListLookUpEdit.EditValue = null;
-                _hasUserSelectedParent = false;
+                ParentCategorySearchLookUpEdit.EditValue = null;
             }
         }
 
@@ -236,24 +249,58 @@ namespace MasterData.ProductService
         /// <returns>DTO chứa dữ liệu từ form</returns>
         private ProductServiceCategoryDto GetDataFromControls()
         {
-            Guid? parentId = null;
-            
-            // Lấy giá trị từ TreeListLookUpEdit
-            if (ParentCategoryTreeListTreeListLookUpEdit.EditValue != null && ParentCategoryTreeListTreeListLookUpEdit.EditValue != DBNull.Value)
+            var dto = new ProductServiceCategoryDto
             {
-                parentId = (Guid)ParentCategoryTreeListTreeListLookUpEdit.EditValue;
-            }
-            
-            return new ProductServiceCategoryDto
-            {
-                Id = _categoryId, // Sử dụng _categoryId (Guid.Empty cho thêm mới, ID thực cho edit)
+                Id = _categoryId,
                 CategoryCode = CategoryCodeTextEdit?.Text?.Trim(),
                 CategoryName = CategoryNameTextEdit?.Text?.Trim(),
                 Description = DescriptionMemoEdit?.Text?.Trim(),
-                ParentId = parentId
+                IsActive = IsActiveToogleSwitch.IsOn
             };
+
+            // Lấy ParentId từ SearchLookUpEdit
+            var editValue = ParentCategorySearchLookUpEdit.EditValue;
+            if (editValue != null && editValue != DBNull.Value)
+            {
+                // Nếu EditValue là Guid, sử dụng trực tiếp
+                if (editValue is Guid guidValue)
+                {
+                    dto.ParentId = guidValue;
+                }
+                // Nếu EditValue là string, parse thành Guid
+                else if (editValue is string stringValue && Guid.TryParse(stringValue, out var parsedGuid))
+                {
+                    dto.ParentId = parsedGuid;
+                }
+                // Nếu EditValue là object khác, thử convert
+                else
+                {
+                    try
+                    {
+                        dto.ParentId = (Guid)Convert.ChangeType(editValue, typeof(Guid));
+                    }
+                    catch
+                    {
+                        // Nếu không convert được, thử lấy từ selected row trong GridView
+                        var selectedRow = parentCategoryGridView.GetFocusedRow() as ProductServiceCategoryDto;
+                        if (selectedRow != null)
+                        {
+                            dto.ParentId = selectedRow.Id;
+                        }
+                        else
+                        {
+                            dto.ParentId = null;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                dto.ParentId = null;
+            }
+
+            return dto;
         }
-        
 
         /// <summary>
         /// Validate dữ liệu đầu vào.
@@ -336,15 +383,38 @@ namespace MasterData.ProductService
                 return false;
             }
 
-            // Kiểm tra ParentId không được trỏ đến chính nó (khi edit)
-            if (IsEditMode && ParentCategoryTreeListTreeListLookUpEdit.EditValue != null && ParentCategoryTreeListTreeListLookUpEdit.EditValue != DBNull.Value)
+            // Kiểm tra circular reference (không cho phép chọn chính nó hoặc con của nó làm parent)
+            if (IsEditMode && ParentCategorySearchLookUpEdit.EditValue != null)
             {
-                var selectedParentId = (Guid)ParentCategoryTreeListTreeListLookUpEdit.EditValue;
-                if (selectedParentId == _categoryId)
+                if (Guid.TryParse(ParentCategorySearchLookUpEdit.EditValue.ToString(), out var selectedParentId))
                 {
-                    dxErrorProvider1.SetError(ParentCategoryTreeListTreeListLookUpEdit, "Danh mục không thể là danh mục cha của chính nó", ErrorType.Critical);
-                    ParentCategoryTreeListTreeListLookUpEdit?.Focus();
-                    return false;
+                    if (selectedParentId == _categoryId)
+                    {
+                        dxErrorProvider1.SetError(ParentCategorySearchLookUpEdit, 
+                            "Không thể chọn chính danh mục này làm danh mục cha",
+                            ErrorType.Critical);
+                        ParentCategorySearchLookUpEdit?.Focus();
+                        return false;
+                    }
+
+                    // Kiểm tra xem selectedParentId có phải là con của _categoryId không
+                    var allCategories = _productServiceCategoryBll.GetAll();
+                    var categoryDict = allCategories.ToDictionary(c => c.Id);
+                    var current = allCategories.FirstOrDefault(c => c.Id == selectedParentId);
+                    while (current != null && current.ParentId.HasValue)
+                    {
+                        if (current.ParentId.Value == _categoryId)
+                        {
+                            dxErrorProvider1.SetError(ParentCategorySearchLookUpEdit,
+                                "Không thể chọn danh mục con của danh mục này làm danh mục cha",
+                                ErrorType.Critical);
+                            ParentCategorySearchLookUpEdit?.Focus();
+                            return false;
+                        }
+                        current = categoryDict.ContainsKey(current.ParentId.Value) 
+                            ? categoryDict[current.ParentId.Value] 
+                            : null;
+                    }
                 }
             }
 
@@ -376,6 +446,9 @@ namespace MasterData.ProductService
             }
         }
 
+        #endregion
+
+        #region ========== SỰ KIỆN CONTROLS ==========
 
         /// <summary>
         /// Event handler khi user thay đổi tên danh mục -> tự động tạo mã danh mục.
@@ -393,7 +466,8 @@ namespace MasterData.ProductService
                 var categoryName = CategoryNameTextEdit?.Text?.Trim();
                 if (string.IsNullOrWhiteSpace(categoryName))
                 {
-                    CategoryCodeTextEdit.Text = string.Empty;
+                    if (CategoryCodeTextEdit != null) 
+                        CategoryCodeTextEdit.Text = string.Empty;
                     return;
                 }
 
@@ -401,7 +475,8 @@ namespace MasterData.ProductService
                 var newCode = GenerateCategoryCode(categoryName);
                 if (!string.IsNullOrEmpty(newCode))
                 {
-                    CategoryCodeTextEdit.Text = newCode;
+                    if (CategoryCodeTextEdit != null) 
+                        CategoryCodeTextEdit.Text = newCode;
                 }
             }
             catch (Exception ex)
@@ -411,17 +486,50 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Event handler khi user thay đổi giá trị trong TreeListLookUpEdit.
+        /// Xử lý sự kiện EditValueChanged của ParentCategorySearchLookUpEdit
         /// </summary>
-        private void ParentCategoryTreeListTreeListLookUpEdit_EditValueChanged(object sender, EventArgs e)
+        private void ParentCategorySearchLookUpEdit_EditValueChanged(object sender, EventArgs e)
         {
-            if (ParentCategoryTreeListTreeListLookUpEdit.EditValue != null && ParentCategoryTreeListTreeListLookUpEdit.EditValue != DBNull.Value)
+            try
             {
-                _hasUserSelectedParent = true;
+                // Đảm bảo EditValue được set đúng
+                var editValue = ParentCategorySearchLookUpEdit.EditValue;
+                
+                // Nếu EditValue là null hoặc DBNull, clear selection
+                if (editValue == null || editValue == DBNull.Value)
+                {
+                    // Không cần làm gì, giá trị đã là null
+                    return;
+                }
+
+                // Kiểm tra xem giá trị có hợp lệ không
+                Guid? parentId = null;
+                if (editValue is Guid guidValue)
+                {
+                    parentId = guidValue;
+                }
+                else if (editValue is string stringValue && Guid.TryParse(stringValue, out var parsedGuid))
+                {
+                    parentId = parsedGuid;
+                }
+                else
+                {
+                    // Nếu không parse được, thử lấy từ selected row
+                    if (parentCategoryGridView.GetFocusedRow() is ProductServiceCategoryDto selectedRow)
+                    {
+                        parentId = selectedRow.Id;
+                        // Set lại EditValue để đảm bảo consistency
+                        ParentCategorySearchLookUpEdit.EditValue = parentId.Value;
+                    }
+                }
+
+                // Debug: Log giá trị để kiểm tra
+                System.Diagnostics.Debug.WriteLine($"ParentCategorySearchLookUpEdit_EditValueChanged: EditValue = {editValue}, ParentId = {parentId}");
             }
-            else
+            catch (Exception ex)
             {
-                _hasUserSelectedParent = false;
+                // Log lỗi nhưng không throw để không làm gián đoạn user
+                System.Diagnostics.Debug.WriteLine($"Lỗi trong ParentCategorySearchLookUpEdit_EditValueChanged: {ex.Message}");
             }
         }
 
@@ -507,12 +615,21 @@ namespace MasterData.ProductService
                     );
                 }
 
-                if (ParentCategoryTreeListTreeListLookUpEdit != null)
+                if (ParentCategorySearchLookUpEdit != null)
                 {
                     SuperToolTipHelper.SetBaseEditSuperTip(
-                        ParentCategoryTreeListTreeListLookUpEdit,
+                        ParentCategorySearchLookUpEdit,
                         title: "<b><color=DarkBlue>🌳 Danh mục cha</color></b>",
-                        content: "Chọn danh mục cha (tùy chọn). Để trống nếu đây là danh mục gốc."
+                        content: "Chọn danh mục cha (tùy chọn). Để trống nếu đây là danh mục gốc. Đường dẫn sẽ hiển thị dưới dạng HTML."
+                    );
+                }
+
+                if (IsActiveToogleSwitch != null)
+                {
+                    SuperToolTipHelper.SetBaseEditSuperTip(
+                        IsActiveToogleSwitch,
+                        title: "<b><color=DarkBlue>✅ Trạng thái hoạt động</color></b>",
+                        content: "Bật/tắt trạng thái hoạt động của danh mục. Danh mục không hoạt động sẽ không hiển thị trong một số danh sách."
                     );
                 }
 
@@ -525,11 +642,11 @@ namespace MasterData.ProductService
                     );
                 }
 
-                if (CancelBarButtonItem != null)
+                if (CloseBarButtonItem != null)
                 {
                     SuperToolTipHelper.SetBarButtonSuperTip(
-                        CancelBarButtonItem,
-                        title: "<b><color=Red>❌ Hủy</color></b>",
+                        CloseBarButtonItem,
+                        title: "<b><color=Red>❌ Đóng</color></b>",
                         content: "Đóng form mà không lưu thay đổi."
                     );
                 }
