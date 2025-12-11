@@ -296,44 +296,80 @@ namespace MasterData.Company
         {
             try
             {
-                UpdateDataSummaryStatus();
                 UpdateSelectedRowStatus();
+                UpdateDataSummaryStatus();
             }
-            catch (Exception ex)
+            catch
             {
-                MsgBox.ShowException(new Exception("Lỗi cập nhật status bar: " + ex.Message, ex));
+                // ignore
             }
         }
 
         /// <summary>
-        /// Cập nhật thông tin tổng kết dữ liệu
-        /// </summary>
-        private void UpdateDataSummaryStatus()
-        {
-            try
-            {
-                var rowCount = EmployeeGridCardView.RowCount;
-                DataSummaryBarStaticItem.Caption = $@"Tổng số: {rowCount} nhân viên";
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(new Exception("Lỗi cập nhật data summary: " + ex.Message, ex));
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật thông tin số dòng được chọn
+        /// Cập nhật thông tin số dòng đang được chọn với HTML formatting
         /// </summary>
         private void UpdateSelectedRowStatus()
         {
             try
             {
-                var selectedCount = _selectedEmployeeIds.Count;
-                CurrentSelectBarStaticItem.Caption = $@"Đã chọn: {selectedCount} nhân viên";
+                if (CurrentSelectBarStaticItem == null) return;
+
+                var selectedCount = _selectedEmployeeIds?.Count ?? 0;
+                CurrentSelectBarStaticItem.Caption = selectedCount == 0 ? 
+                    @"<color=gray>Chưa chọn nhân viên nào</color>" : 
+                    $@"Đang chọn <b><color=blue>{selectedCount}</color></b> nhân viên";
+               
             }
-            catch (Exception ex)
+            catch
             {
-                MsgBox.ShowException(new Exception("Lỗi cập nhật selected row status: " + ex.Message, ex));
+                // ignore
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật thông tin tổng kết dữ liệu với HTML formatting
+        /// </summary>
+        private void UpdateDataSummaryStatus()
+        {
+            try
+            {
+                if (DataSummaryBarStaticItem == null) return;
+
+                var currentData = EmployeeGridControl.DataSource as List<EmployeeDto>;
+                if (currentData == null || !currentData.Any())
+                {
+                    DataSummaryBarStaticItem.Caption = @"Chưa có dữ liệu";
+                    return;
+                }
+
+                var totalCount = currentData.Count;
+                var activeCount = currentData.Count(x => x.IsActive);
+                var inactiveCount = currentData.Count(x => !x.IsActive);
+                var hasAvatarCount = currentData.Count(x => x.AvatarThumbnailData != null && x.AvatarThumbnailData.Length > 0);
+                var resignedCount = currentData.Count(x => x.ResignDate.HasValue);
+
+                // Tạo HTML content với màu sắc
+                var summary = $"<b>Tổng số: {totalCount}</b> | " +
+                             $"<color=green>Hoạt động: {activeCount}</color> | " +
+                             $"<color=red>Không hoạt động: {inactiveCount}</color>";
+
+                // Thêm thông tin về nhân viên đã nghỉ việc nếu có
+                if (resignedCount > 0)
+                {
+                    summary += $" | <color=orange>Đã nghỉ việc: {resignedCount}</color>";
+                }
+
+                // Thêm thông tin về avatar nếu có
+                if (hasAvatarCount > 0)
+                {
+                    summary += $" | <color=blue>Có avatar: {hasAvatarCount}</color>";
+                }
+
+                DataSummaryBarStaticItem.Caption = summary;
+            }
+            catch
+            {
+                // ignore
             }
         }
 

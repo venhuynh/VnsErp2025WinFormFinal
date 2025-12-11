@@ -214,23 +214,6 @@ namespace MasterData.Company
             this.barDockControlTop.Manager = this.barManager1;
             this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
             // 
-            // bar1
-            // 
-            this.bar1.BarName = "Custom 3";
-            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
-            this.bar1.DockCol = 0;
-            this.bar1.DockRow = 0;
-            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
-            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem1),
-            new DevExpress.XtraBars.LinkPersistInfo(this.DataSummaryBarStaticItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem2),
-            new DevExpress.XtraBars.LinkPersistInfo(this.CurrentSelectBarStaticItem)});
-            this.bar1.OptionsBar.AllowQuickCustomization = false;
-            this.bar1.OptionsBar.DrawDragBorder = false;
-            this.bar1.OptionsBar.UseWholeRow = true;
-            this.bar1.Text = "Custom 3";
-            // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
