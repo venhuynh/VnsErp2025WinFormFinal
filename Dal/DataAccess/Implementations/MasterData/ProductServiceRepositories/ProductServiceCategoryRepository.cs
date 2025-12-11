@@ -479,5 +479,108 @@ public class ProductServiceCategoryRepository : IProductServiceCategoryRepositor
         }
     }
 
+    /// <summary>
+    /// Lấy tất cả danh mục đang hoạt động (IsActive = true).
+    /// </summary>
+    /// <returns>Danh sách danh mục active sắp xếp theo SortOrder</returns>
+    public List<ProductServiceCategory> GetActiveCategories()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = context.ProductServiceCategories
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList();
+            
+            _logger.Debug($"GetActiveCategories: Found {categories.Count} active categories");
+            return categories;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả danh mục đang hoạt động (Async).
+    /// </summary>
+    /// <returns>Task chứa danh sách danh mục active</returns>
+    public async Task<List<ProductServiceCategory>> GetActiveCategoriesAsync()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = await Task.Run(() => context.ProductServiceCategories
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList());
+            
+            _logger.Debug($"GetActiveCategoriesAsync: Found {categories.Count} active categories");
+            return categories;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh mục con của danh mục cha.
+    /// </summary>
+    /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
+    /// <returns>Danh sách danh mục con sắp xếp theo SortOrder</returns>
+    public List<ProductServiceCategory> GetCategoriesByParent(Guid? parentId)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = context.ProductServiceCategories
+                .Where(x => x.ParentId == parentId)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList();
+            
+            _logger.Debug($"GetCategoriesByParent: Found {categories.Count} categories for ParentId={parentId}");
+            return categories;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh mục con của danh mục cha (Async).
+    /// </summary>
+    /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
+    /// <returns>Task chứa danh sách danh mục con</returns>
+    public async Task<List<ProductServiceCategory>> GetCategoriesByParentAsync(Guid? parentId)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = await Task.Run(() => context.ProductServiceCategories
+                .Where(x => x.ParentId == parentId)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList());
+            
+            _logger.Debug($"GetCategoriesByParentAsync: Found {categories.Count} categories for ParentId={parentId}");
+            return categories;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
+        }
+    }
+
     #endregion
 }
+

@@ -51,6 +51,32 @@ public interface IProductServiceCategoryRepository
     /// <returns>Dictionary với Key là CategoryId, Value là số lượng sản phẩm</returns>
     Task<Dictionary<Guid, int>> GetProductCountByCategoryAsync();
 
+    /// <summary>
+    /// Lấy tất cả ProductServiceCategory đang hoạt động (IsActive = true)
+    /// </summary>
+    /// <returns>Danh sách ProductServiceCategory active</returns>
+    List<ProductServiceCategory> GetActiveCategories();
+
+    /// <summary>
+    /// Lấy tất cả ProductServiceCategory đang hoạt động (Async)
+    /// </summary>
+    /// <returns>Danh sách ProductServiceCategory active</returns>
+    Task<List<ProductServiceCategory>> GetActiveCategoriesAsync();
+
+    /// <summary>
+    /// Lấy danh mục con của một danh mục cha
+    /// </summary>
+    /// <param name="parentId">Id của danh mục cha (null cho danh mục cấp 1)</param>
+    /// <returns>Danh sách danh mục con</returns>
+    List<ProductServiceCategory> GetCategoriesByParent(Guid? parentId);
+
+    /// <summary>
+    /// Lấy danh mục con của một danh mục cha (Async)
+    /// </summary>
+    /// <param name="parentId">Id của danh mục cha (null cho danh mục cấp 1)</param>
+    /// <returns>Danh sách danh mục con</returns>
+    Task<List<ProductServiceCategory>> GetCategoriesByParentAsync(Guid? parentId);
+
     #endregion
 
     #region Create/Update Operations
