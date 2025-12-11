@@ -988,14 +988,14 @@ namespace MasterData.Company
             {
                 if (!MsgBox.ShowYesNo("Bạn có chắc chắn muốn xóa avatar này?")) return;
 
-                await ExecuteWithWaitingFormAsync(() =>
+                await ExecuteWithWaitingFormAsync(async () =>
                 {
+                    // Xóa avatar từ database
                     _employeeBll.DeleteAvatarOnly(employeeDto.Id);
-                    return Task.CompletedTask;
+                    
+                    // Reload dữ liệu từ database để cập nhật UI
+                    await LoadDataAsyncWithoutSplash();
                 });
-
-                // Cập nhật DTO
-                employeeDto.AvatarThumbnailData = null;
 
                 MsgBox.ShowSuccess("Đã xóa avatar thành công!");
             }
