@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData.ProductService;
@@ -74,9 +76,6 @@ namespace MasterData.ProductService
                 ProductServiceGridView_CustomDrawRowIndicator;
             ProductServiceGridView.RowCellStyle += ProductServiceGridView_RowCellStyle;
 
-            // Filter events
-            DataFilterBtn.ItemClick += DataFilterBtn_ItemClick;
-
             UpdateButtonStates();
         }
 
@@ -102,8 +101,6 @@ namespace MasterData.ProductService
         }
 
         #endregion
-
-        #region ========== SỰ KIỆN FORM ==========
 
         #region ========== SỰ KIỆN TOOLBAR ==========
 
@@ -285,534 +282,8 @@ namespace MasterData.ProductService
 
         #endregion
 
-        #region ========== SỰ KIỆN FILTER & SEARCH ==========
-
-        /// <summary>
-        /// Người dùng bấm "Lọc dữ liệu" để tìm kiếm toàn diện
-        /// </summary>
-        private async void DataFilterBtn_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            try
-            {
-                // Hiển thị menu tùy chọn tìm kiếm
-                var searchOption = ShowSearchOptionsDialog();
-
-                if (searchOption == SearchOption.Cancel)
-                {
-                    return;
-                }
-
-                string searchKeyword = "";
-
-                if (searchOption == SearchOption.SimpleSearch)
-                {
-                    // Tìm kiếm đơn giản
-                    searchKeyword = InputBoxHelper.ShowTextInput(
-                        "Nhập từ khóa để tìm kiếm trong tất cả các cột:",
-                        "Tìm Kiếm Toàn Diện"
-                    );
-                }
-                else if (searchOption == SearchOption.AdvancedSearch)
-                {
-                    // Tìm kiếm nâng cao
-                    searchKeyword = ShowAdvancedSearchDialog();
-                }
-
-                // Nếu user không nhập gì hoặc Cancel
-                if (string.IsNullOrWhiteSpace(searchKeyword))
-                {
-                    return;
-                }
-
-                // Thực hiện tìm kiếm với WaitingForm
-                await ExecuteWithWaitingFormAsync(async () =>
-                {
-                    await PerformComprehensiveSearchAsync(searchKeyword.Trim());
-                });
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi thực hiện tìm kiếm toàn diện");
-            }
-        }
-
-        /// <summary>
-        /// Enum cho các tùy chọn tìm kiếm
-        /// </summary>
-        private enum SearchOption
-        {
-            Cancel,
-            SimpleSearch,
-            AdvancedSearch
-        }
-
-        /// <summary>
-        /// Hiển thị dialog chọn tùy chọn tìm kiếm
-        /// </summary>
-        /// <returns>Tùy chọn được chọn</returns>
-        private SearchOption ShowSearchOptionsDialog()
-        {
-            try
-            {
-                var options = new object[] { "Tìm kiếm đơn giản", "Tìm kiếm nâng cao" };
-                var result = InputBoxHelper.ShowComboBoxInput(
-                    "Chọn loại tìm kiếm:",
-                    "Tùy Chọn Tìm Kiếm",
-                    options,
-                    "Tìm kiếm đơn giản"
-                );
-
-                if (result == null) return SearchOption.Cancel;
-
-                var selectedOption = result.ToString();
-                if (selectedOption == "Tìm kiếm đơn giản")
-                    return SearchOption.SimpleSearch;
-                if (selectedOption == "Tìm kiếm nâng cao")
-                    return SearchOption.AdvancedSearch;
-                return SearchOption.Cancel;
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi hiển thị tùy chọn tìm kiếm");
-                return SearchOption.Cancel;
-            }
-        }
-
-        /// <summary>
-        /// Hiển thị dialog tìm kiếm nâng cao
-        /// </summary>
-        /// <returns>Từ khóa tìm kiếm</returns>
-        private string ShowAdvancedSearchDialog()
-        {
-            try
-            {
-                // Tạo MemoEdit cho nhập nhiều từ khóa
-                var memoEdit = new MemoEdit();
-                memoEdit.Properties.MaxLength = 500;
-                memoEdit.Properties.WordWrap = true;
-                memoEdit.Height = 100;
-                memoEdit.Properties.NullText = @"Nhập từ khóa tìm kiếm (mỗi dòng một từ khóa)...";
-
-                var result = InputBoxHelper.ShowCustomInput(
-                    "Nhập từ khóa tìm kiếm (mỗi dòng một từ khóa):",
-                    "Tìm Kiếm Nâng Cao",
-                    memoEdit,
-                    ""
-                );
-
-                return result?.ToString() ?? "";
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi hiển thị dialog tìm kiếm nâng cao");
-                return "";
-            }
-        }
-
-        /// <summary>
-        /// Hiển thị message box với HTML formatting
-        /// </summary>
-        /// <param name="message">Nội dung message (có thể chứa HTML)</param>
-        /// <param name="title">Tiêu đề dialog</param>
-        /// <param name="icon">Icon của dialog</param>
-        private void ShowHtmlMessageBox(string message, string title = "Thông báo",
-            MessageBoxIcon icon = MessageBoxIcon.Information)
-        {
-            try
-            {
-                XtraMessageBox.Show(
-                    message,
-                    title,
-                    MessageBoxButtons.OK,
-                    icon,
-                    DefaultBoolean.True // Enable HTML
-                );
-            }
-            catch (Exception)
-            {
-                // Fallback về MsgBox thông thường nếu có lỗi
-                MsgBox.ShowSuccess(message.Replace("<br/>", "\n").Replace("<b>", "").Replace("</b>", ""));
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region ========== QUẢN LÝ DỮ LIỆU ==========
-
-        /// <summary>
-        /// Thực hiện tìm kiếm toàn diện trong tất cả các cột
-        /// </summary>
-        /// <param name="searchKeyword">Từ khóa tìm kiếm (có thể chứa nhiều từ khóa phân cách bởi dòng mới)</param>
-        private async Task PerformComprehensiveSearchAsync(string searchKeyword)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(searchKeyword))
-                {
-                    await LoadDataAsyncWithoutSplash();
-                    return;
-                }
-
-                // Phân tích từ khóa tìm kiếm
-                var searchKeywords = ParseSearchKeywords(searchKeyword);
-
-                // Tìm kiếm trong database với từ khóa đầu tiên (hoặc từ khóa chính)
-                var primaryKeyword = searchKeywords.FirstOrDefault() ?? searchKeyword.Trim();
-                var searchResults = await _productServiceBll.SearchAsync(primaryKeyword);
-
-                // Convert to DTOs với CategoryFullPath
-                var dtoList = searchResults.ToDtoList(
-                    categoryId => _productServiceBll.GetCategoryName(categoryId),
-                    null,
-                    null,
-                    categoryId => _productServiceBll.GetCategoryFullPath(categoryId)
-                ).ToList();
-
-                // Thực hiện tìm kiếm bổ sung với tất cả từ khóa
-                var filteredResults = PerformAdvancedClientSideFiltering(dtoList, searchKeywords);
-
-                // Highlight từ khóa tìm kiếm trong kết quả
-                var highlightedResults = HighlightSearchKeywords(filteredResults, searchKeywords);
-
-                // Bind kết quả tìm kiếm với highlight
-                BindGridWithHighlight(highlightedResults);
-
-                // Cập nhật status bar
-                UpdateStatusBar();
-
-                // Hiển thị thông báo chi tiết
-                ShowComprehensiveSearchResult(searchKeyword, filteredResults.Count, dtoList.Count,
-                    searchKeywords.Count);
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi thực hiện tìm kiếm toàn diện");
-            }
-        }
-
-        /// <summary>
-        /// Phân tích từ khóa tìm kiếm thành danh sách
-        /// </summary>
-        /// <param name="searchKeyword">Từ khóa gốc</param>
-        /// <returns>Danh sách từ khóa</returns>
-        private List<string> ParseSearchKeywords(string searchKeyword)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(searchKeyword))
-                    return new List<string>();
-
-                // Tách theo dòng mới và loại bỏ khoảng trắng
-                var keywords = searchKeyword
-                    .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(k => k.Trim())
-                    .Where(k => !string.IsNullOrWhiteSpace(k))
-                    .ToList();
-
-                return keywords;
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi phân tích từ khóa tìm kiếm");
-                return new List<string> { searchKeyword?.Trim() };
-            }
-        }
-
-        /// <summary>
-        /// Thực hiện lọc dữ liệu nâng cao với nhiều từ khóa
-        /// </summary>
-        /// <param name="dataList">Danh sách dữ liệu</param>
-        /// <param name="searchKeywords">Danh sách từ khóa</param>
-        /// <returns>Danh sách đã lọc</returns>
-        private List<ProductServiceDto> PerformAdvancedClientSideFiltering(List<ProductServiceDto> dataList,
-            List<string> searchKeywords)
-        {
-            try
-            {
-                if (searchKeywords == null || !searchKeywords.Any() || dataList == null || !dataList.Any())
-                    return dataList;
-
-                // Nếu chỉ có 1 từ khóa, sử dụng method cũ
-                if (searchKeywords.Count == 1)
-                {
-                    return PerformClientSideFiltering(dataList, searchKeywords[0]);
-                }
-
-                // Tìm kiếm với nhiều từ khóa (tất cả từ khóa phải match)
-                return dataList.Where(dto =>
-                    searchKeywords.All(keyword =>
-                        IsKeywordMatch(dto, keyword.ToLower().Trim())
-                    )
-                ).ToList();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi lọc dữ liệu nâng cao");
-                return dataList; // Trả về dữ liệu gốc nếu có lỗi
-            }
-        }
-
-        /// <summary>
-        /// Kiểm tra xem một DTO có match với từ khóa không
-        /// </summary>
-        /// <param name="dto">DTO cần kiểm tra</param>
-        /// <param name="keyword">Từ khóa</param>
-        /// <returns>True nếu match</returns>
-        private bool IsKeywordMatch(ProductServiceDto dto, string keyword)
-        {
-            try
-            {
-                return
-                    // Tìm kiếm trong các trường text
-                    (dto.Code?.ToLower().Contains(keyword) == true) ||
-                    (dto.Name?.ToLower().Contains(keyword) == true) ||
-                    (dto.Description?.ToLower().Contains(keyword) == true) ||
-                    (dto.CategoryName?.ToLower().Contains(keyword) == true) ||
-                    (dto.TypeDisplay?.ToLower().Contains(keyword) == true) ||
-                    (dto.StatusDisplay?.ToLower().Contains(keyword) == true) ||
-
-                    // Tìm kiếm trong các trường số
-                    (dto.VariantCount.ToString().Contains(keyword)) ||
-                    (dto.ImageCount.ToString().Contains(keyword)) ||
-
-                    // Tìm kiếm trong các trường boolean
-                    (dto.IsActive.ToString().ToLower().Contains(keyword)) ||
-                    (dto.IsService.ToString().ToLower().Contains(keyword)) ||
-
-                    // Tìm kiếm trong ID (nếu cần)
-                    (dto.Id.ToString().ToLower().Contains(keyword));
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Highlight từ khóa tìm kiếm trong danh sách DTO
-        /// </summary>
-        /// <param name="dtoList">Danh sách DTO</param>
-        /// <param name="searchKeywords">Danh sách từ khóa tìm kiếm</param>
-        /// <returns>Danh sách DTO với highlight</returns>
-        private List<ProductServiceDto> HighlightSearchKeywords(List<ProductServiceDto> dtoList,
-            List<string> searchKeywords)
-        {
-            try
-            {
-                if (searchKeywords == null || !searchKeywords.Any() || dtoList == null || !dtoList.Any())
-                    return dtoList;
-
-                var highlightedList = new List<ProductServiceDto>();
-
-                foreach (var dto in dtoList)
-                {
-                    // Tạo bản sao để không ảnh hưởng đến dữ liệu gốc
-                    var highlightedDto = new ProductServiceDto
-                    {
-                        Id = dto.Id,
-                        Code = HighlightText(dto.Code, searchKeywords),
-                        Name = HighlightText(dto.Name, searchKeywords),
-                        Description = HighlightText(dto.Description, searchKeywords),
-                        CategoryName = HighlightText(dto.CategoryName, searchKeywords),
-                        // TypeDisplay và StatusDisplay là read-only, không thể assign
-                        VariantCount = dto.VariantCount,
-                        ImageCount = dto.ImageCount,
-                        IsActive = dto.IsActive,
-                        IsService = dto.IsService,
-                        ThumbnailImage = dto.ThumbnailImage
-                    };
-
-                    highlightedList.Add(highlightedDto);
-                }
-
-                return highlightedList;
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi highlight từ khóa tìm kiếm");
-                return dtoList; // Trả về dữ liệu gốc nếu có lỗi
-            }
-        }
-
-        /// <summary>
-        /// Highlight từ khóa trong text sử dụng DevExpress HTML syntax
-        /// </summary>
-        /// <param name="text">Text cần highlight</param>
-        /// <param name="keywords">Danh sách từ khóa</param>
-        /// <returns>Text đã được highlight</returns>
-        private string HighlightText(string text, List<string> keywords)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(text) || keywords == null || !keywords.Any())
-                    return text;
-
-                var highlightedText = text;
-
-                foreach (var keyword in keywords)
-                {
-                    if (string.IsNullOrWhiteSpace(keyword))
-                        continue;
-
-                    // Tìm kiếm case-insensitive
-                    var regex = new Regex(
-                        Regex.Escape(keyword),
-                        RegexOptions.IgnoreCase
-                    );
-
-                    // Thay thế với DevExpress HTML syntax
-                    // Sử dụng <color> và <b> tags theo DevExpress documentation
-                    highlightedText = regex.Replace(highlightedText,
-                        $"<color='red'><b>{keyword}</b></color>");
-                }
-
-                return highlightedText;
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi highlight text");
-                return text; // Trả về text gốc nếu có lỗi
-            }
-        }
-
-        /// <summary>
-        /// Thực hiện lọc dữ liệu phía client (bổ sung cho database search)
-        /// </summary>
-        /// <param name="dataList">Danh sách dữ liệu</param>
-        /// <param name="searchKeyword">Từ khóa tìm kiếm</param>
-        /// <returns>Danh sách đã lọc</returns>
-        private List<ProductServiceDto> PerformClientSideFiltering(List<ProductServiceDto> dataList,
-            string searchKeyword)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(searchKeyword) || dataList == null || !dataList.Any())
-                    return dataList;
-
-                var keyword = searchKeyword.ToLower().Trim();
-
-                return dataList.Where(dto =>
-                    // Tìm kiếm trong các trường text
-                    (dto.Code?.ToLower().Contains(keyword) == true) ||
-                    (dto.Name?.ToLower().Contains(keyword) == true) ||
-                    (dto.Description?.ToLower().Contains(keyword) == true) ||
-                    (dto.CategoryName?.ToLower().Contains(keyword) == true) ||
-                    (dto.TypeDisplay?.ToLower().Contains(keyword) == true) ||
-                    (dto.StatusDisplay?.ToLower().Contains(keyword) == true) ||
-
-                    // Tìm kiếm trong các trường số
-                    (dto.VariantCount.ToString().Contains(keyword)) ||
-                    (dto.ImageCount.ToString().Contains(keyword)) ||
-
-                    // Tìm kiếm trong các trường boolean
-                    (dto.IsActive.ToString().ToLower().Contains(keyword)) ||
-                    (dto.IsService.ToString().ToLower().Contains(keyword)) ||
-
-                    // Tìm kiếm trong ID (nếu cần)
-                    (dto.Id.ToString().ToLower().Contains(keyword))
-                ).ToList();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi lọc dữ liệu phía client");
-                return dataList; // Trả về dữ liệu gốc nếu có lỗi
-            }
-        }
-
-        /// <summary>
-        /// Hiển thị kết quả tìm kiếm toàn diện
-        /// </summary>
-        /// <param name="searchKeyword">Từ khóa tìm kiếm</param>
-        /// <param name="filteredCount">Số kết quả sau khi lọc</param>
-        /// <param name="totalCount">Tổng số kết quả từ database</param>
-        /// <param name="keywordCount">Số lượng từ khóa</param>
-        private void ShowComprehensiveSearchResult(string searchKeyword, int filteredCount, int totalCount,
-            int keywordCount = 1)
-        {
-            try
-            {
-                var message = "🔍 <b>Kết quả tìm kiếm toàn diện</b><br/><br/>" +
-                              $"📝 <b>Từ khóa:</b> '{searchKeyword}'<br/>" +
-                              $"🔢 <b>Số từ khóa:</b> {keywordCount}<br/>" +
-                              $"📊 <b>Kết quả:</b> {filteredCount} dòng<br/>" +
-                              $"🗃️ <b>Từ database:</b> {totalCount} dòng<br/><br/>";
-
-                if (filteredCount == 0)
-                {
-                    message += "❌ <b>Không tìm thấy kết quả nào phù hợp</b><br/><br/>" +
-                               "💡 <b>Gợi ý:</b><br/>" +
-                               "• Kiểm tra lại từ khóa<br/>" +
-                               "• Thử từ khóa ngắn hơn<br/>" +
-                               "• Sử dụng từ khóa tiếng Việt không dấu";
-
-                    if (keywordCount > 1)
-                    {
-                        message += "<br/>• Thử giảm số lượng từ khóa<br/>" +
-                                   "• Đảm bảo tất cả từ khóa đều có trong dữ liệu";
-                    }
-                }
-                else if (filteredCount < totalCount)
-                {
-                    message += $"✅ <b>Tìm thấy {filteredCount} kết quả phù hợp</b><br/><br/>" +
-                               "🔍 <b>Tìm kiếm trong:</b><br/>" +
-                               "• Mã sản phẩm/dịch vụ<br/>" +
-                               "• Tên sản phẩm/dịch vụ<br/>" +
-                               "• Mô tả<br/>" +
-                               "• Tên danh mục<br/>" +
-                               "• Loại (Sản phẩm/Dịch vụ)<br/>" +
-                               "• Trạng thái<br/>" +
-                               "• Số lượng biến thể/hình ảnh";
-
-                    if (keywordCount > 1)
-                    {
-                        message +=
-                            $"<br/><br/>🎯 <b>Tìm kiếm nâng cao:</b> Tất cả {keywordCount} từ khóa phải có trong cùng một dòng";
-                    }
-                }
-                else
-                {
-                    message += $"✅ <b>Tìm thấy {filteredCount} kết quả</b><br/><br/>" +
-                               "🎯 <b>Tất cả kết quả từ database đều phù hợp</b>";
-
-                    if (keywordCount > 1)
-                    {
-                        message +=
-                            $"<br/><br/>🔍 <b>Tìm kiếm nâng cao:</b> Tất cả {keywordCount} từ khóa đều có trong dữ liệu";
-                    }
-                }
-
-                // Sử dụng helper method với HTML support
-                ShowHtmlMessageBox(message, "Kết Quả Tìm Kiếm");
-            }
-            catch (Exception)
-            {
-                // Fallback message nếu có lỗi
-                MsgBox.ShowSuccess($"Tìm thấy {filteredCount} kết quả cho từ khóa: '{searchKeyword}'");
-            }
-        }
-
-        #endregion
-
         #region ========== CẤU HÌNH GRID ==========
 
-        /// <summary>
-        /// Cấu hình GridView để hiển thị dữ liệu xuống dòng (word wrap) cho các cột văn bản dài.
-        /// Đồng thời bật tự động tính chiều cao dòng để hiển thị đầy đủ nội dung.
-        /// </summary>
-        private void ConfigureMultiLineGridView()
-        {
-            try
-            {
-                // GridView đã được cấu hình trong Designer với RowAutoHeight = true
-                // Không cần cấu hình thêm ở đây
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(ex);
-            }
-        }
 
         /// <summary>
         /// Tô màu/định dạng dòng theo trạng thái/loại sản phẩm/dịch vụ
@@ -1018,7 +489,10 @@ namespace MasterData.ProductService
             _isLoading = true;
             try
             {
-                await ExecuteWithWaitingFormAsync(async () => { await LoadDataAsyncWithoutSplash(); });
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    await LoadDataAsyncWithoutSplash();
+                });
             }
             catch (Exception ex)
             {
@@ -1033,26 +507,35 @@ namespace MasterData.ProductService
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, không hiển thị WaitForm).
         /// Load tất cả dữ liệu không phân trang
+        /// Tối ưu hiệu suất bằng cách load categories một lần vào dictionary
         /// </summary>
         private async Task LoadDataAsyncWithoutSplash()
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu gọi BLL.GetAllAsync()");
                 // Get all data
                 var entities = await _productServiceBll.GetAllAsync();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã nhận được {entities?.Count ?? 0} entities từ BLL");
 
-                // Convert to DTOs với CategoryFullPath
-                var dtoList = entities.ToDtoList(
-                    categoryId => _productServiceBll.GetCategoryName(categoryId),
-                    null,
-                    null,
-                    categoryId => _productServiceBll.GetCategoryFullPath(categoryId)
-                ).ToList();
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu lấy categoryDict");
+                // Load tất cả categories một lần vào dictionary để tối ưu hiệu suất
+                var categoryDict = await _productServiceBll.GetCategoryDictAsync();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã lấy được {categoryDict?.Count ?? 0} categories");
 
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu convert sang DTO với categoryDict");
+                // Convert to DTOs với categoryDict (tối ưu hơn resolver functions)
+                var dtoList = entities.ToDtoList(categoryDict).ToList();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã convert được {dtoList.Count} DTOs");
+
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu bind vào grid");
                 BindGrid(dtoList);
+                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Hoàn thành");
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: LỖI: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: StackTrace: {ex.StackTrace}");
                 ShowError(ex, "Lỗi tải dữ liệu");
             }
         }
@@ -1109,33 +592,9 @@ namespace MasterData.ProductService
         {
             productServiceDtoBindingSource.DataSource = data;
             ProductServiceGridView.BestFitColumns();
-            ConfigureMultiLineGridView();
             UpdateButtonStates();
             UpdateStatusBar();
         }
-
-        /// <summary>
-        /// Bind dữ liệu vào grid với HTML formatting support
-        /// </summary>
-        /// <param name="dtoList">Danh sách DTO với HTML highlight</param>
-        private void BindGridWithHighlight(List<ProductServiceDto> dtoList)
-        {
-            try
-            {
-
-                // Bind dữ liệu
-                productServiceDtoBindingSource.DataSource = dtoList;
-                ProductServiceGridView.BestFitColumns();
-                ConfigureMultiLineGridView();
-                UpdateButtonStates();
-                UpdateStatusBar();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi bind dữ liệu với highlight vào grid");
-            }
-        }
-
 
         /// <summary>
         /// Xóa trạng thái chọn hiện tại trên Grid
@@ -1156,35 +615,6 @@ namespace MasterData.ProductService
         // Note: Pagination đã được loại bỏ, chỉ load tất cả dữ liệu
         // Các method GetPagedAsync và GetCountAsync vẫn được giữ lại trong BLL/Repository
         // để có thể sử dụng ở các form khác nếu cần
-
-        /// <summary>
-        /// Parse record number text thành page size
-        /// </summary>
-        /// <param name="recordNumberText">Text từ combo box</param>
-        /// <returns>Page size (0 nếu không hợp lệ)</returns>
-        private int ParseRecordNumber(string recordNumberText)
-        {
-            if (string.IsNullOrWhiteSpace(recordNumberText))
-                return 0;
-
-            switch (recordNumberText.Trim())
-            {
-                case "20":
-                    return 20;
-                case "50":
-                    return 50;
-                case "100":
-                    return 100;
-                case "Tất cả":
-                    return int.MaxValue; // Load tất cả dữ liệu
-                default:
-                    // Thử parse số
-                    if (int.TryParse(recordNumberText, out int number) && number > 0)
-                        return number;
-                    return 0;
-            }
-        }
-
 
         #endregion
 
@@ -1212,3 +642,4 @@ namespace MasterData.ProductService
         #endregion
     }
 }
+

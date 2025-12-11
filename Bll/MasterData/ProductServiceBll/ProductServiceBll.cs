@@ -244,6 +244,62 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
+        /// Lấy dictionary chứa tất cả categories để tối ưu hiệu suất khi convert DTO
+        /// </summary>
+        /// <returns>Dictionary với key là CategoryId và value là ProductServiceCategory entity</returns>
+        public async Task<Dictionary<Guid, ProductServiceCategory>> GetCategoryDictAsync()
+        {
+            try
+            {
+                var categories = await GetCategoryDataAccess().GetAllAsync();
+                return categories.ToDictionary(c => c.Id);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy danh sách categories: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Tính toán đường dẫn đầy đủ của category từ dictionary
+        /// </summary>
+        /// <param name="categoryId">ID danh mục</param>
+        /// <param name="categoryDict">Dictionary chứa tất cả categories</param>
+        /// <returns>Đường dẫn đầy đủ hoặc null nếu không tìm thấy</returns>
+        private string CalculateCategoryFullPath(Guid? categoryId, Dictionary<Guid, ProductServiceCategory> categoryDict)
+        {
+            try
+            {
+                if (categoryId == null || categoryId == Guid.Empty || categoryDict == null)
+                    return null;
+
+                if (!categoryDict.TryGetValue(categoryId.Value, out var category))
+                    return null;
+
+                var pathParts = new List<string> { category.CategoryName };
+                var current = category;
+
+                // Đi ngược lên parent categories
+                while (current.ParentId.HasValue)
+                {
+                    if (!categoryDict.TryGetValue(current.ParentId.Value, out current))
+                        break;
+                    pathParts.Insert(0, current.CategoryName);
+                    
+                    // Tránh infinite loop
+                    if (pathParts.Count > 10)
+                        break;
+                }
+
+                return string.Join(" > ", pathParts);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Lấy đường dẫn đầy đủ của danh mục từ gốc đến danh mục này
         /// </summary>
         /// <param name="categoryId">ID danh mục</param>
