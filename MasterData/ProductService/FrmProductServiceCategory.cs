@@ -1081,6 +1081,292 @@ namespace MasterData.ProductService
 
         #endregion
 
+        #region ========== FILTERING METHODS - HỖ TRỢ TÌM KIẾM VÀ LỌC ==========
+
+        /// <summary>
+        /// Lọc để chỉ hiển thị danh mục đang hoạt động (IsActive = true)
+        /// </summary>
+        private async void FilterActiveCategories()
+        {
+            try
+            {
+                using (OverlayManager.ShowScope(this))
+                {
+                    var activeCategories = await _productServiceCategoryBll.GetActiveCategoriesAsync();
+                    if (activeCategories == null || activeCategories.Count == 0)
+                    {
+                        ShowInfo("Không có danh mục nào đang hoạt động.");
+                        return;
+                    }
+
+                    var (_, counts) = await _productServiceCategoryBll.GetCategoriesWithCountsAsync();
+                    var dtoList = activeCategories.ToDtosWithHierarchy(counts).ToList();
+                    BindGrid(dtoList);
+                    ShowInfo($"Hiển thị {dtoList.Count} danh mục hoạt động.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi lọc danh mục hoạt động");
+            }
+        }
+
+        /// <summary>
+        /// Lọc để chỉ hiển thị danh mục cấp 1 (root categories)
+        /// </summary>
+        private async void FilterRootCategories()
+        {
+            try
+            {
+                using (OverlayManager.ShowScope(this))
+                {
+                    var rootCategories = await _productServiceCategoryBll.GetRootCategoriesAsync();
+                    if (rootCategories == null || rootCategories.Count == 0)
+                    {
+                        ShowInfo("Không có danh mục cấp 1.");
+                        return;
+                    }
+
+                    var (_, counts) = await _productServiceCategoryBll.GetCategoriesWithCountsAsync();
+                    var dtoList = rootCategories.ToDtosWithHierarchy(counts).ToList();
+                    BindGrid(dtoList);
+                    ShowInfo($"Hiển thị {dtoList.Count} danh mục cấp 1.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi lọc danh mục cấp 1");
+            }
+        }
+
+        /// <summary>
+        /// Lọc để chỉ hiển thị danh mục cấp 1 đang hoạt động
+        /// </summary>
+        private async void FilterActiveRootCategories()
+        {
+            try
+            {
+                using (OverlayManager.ShowScope(this))
+                {
+                    var activeRootCategories = await _productServiceCategoryBll.GetActiveRootCategoriesAsync();
+                    if (activeRootCategories == null || activeRootCategories.Count == 0)
+                    {
+                        ShowInfo("Không có danh mục cấp 1 nào đang hoạt động.");
+                        return;
+                    }
+
+                    var (_, counts) = await _productServiceCategoryBll.GetCategoriesWithCountsAsync();
+                    var dtoList = activeRootCategories.ToDtosWithHierarchy(counts).ToList();
+                    BindGrid(dtoList);
+                    ShowInfo($"Hiển thị {dtoList.Count} danh mục cấp 1 hoạt động.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi lọc danh mục cấp 1 hoạt động");
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị cây phân cấp danh mục đầy đủ
+        /// </summary>
+        private async void ShowCategoryHierarchy()
+        {
+            try
+            {
+                using (OverlayManager.ShowScope(this))
+                {
+                    var hierarchy = await _productServiceCategoryBll.GetCategoryHierarchyAsync();
+                    if (hierarchy == null || hierarchy.Count == 0)
+                    {
+                        ShowInfo("Không có cấu trúc phân cấp nào được tìm thấy.");
+                        return;
+                    }
+
+                    ShowInfo($"Cây phân cấp có {hierarchy.Count} danh mục cấp 1 với các danh mục con.");
+                    // Thực hiện reload data sau khi hiển thị info
+                    await LoadDataAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi hiển thị cây phân cấp");
+            }
+        }
+
+        #endregion
+
+        #region ========== STATUS MANAGEMENT METHODS ==========
+
+        /// <summary>
+        /// Thay đổi trạng thái IsActive của danh mục được chọn
+        /// </summary>
+        /// <param name="isActive">Trạng thái mới</param>
+        private async void UpdateSelectedCategoryStatus(bool isActive)
+        {
+            if (_selectedCategoryIds == null || _selectedCategoryIds.Count == 0)
+            {
+                ShowInfo("Vui lòng chọn ít nhất một danh mục.");
+                return;
+            }
+
+            try
+            {
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    foreach (var categoryId in _selectedCategoryIds)
+                    {
+                        _productServiceCategoryBll.UpdateCategoryStatus(categoryId, isActive);
+                    }
+                });
+
+                var statusText = isActive ? "kích hoạt" : "vô hiệu hóa";
+                ShowInfo($"Đã {statusText} thành công {_selectedCategoryIds.Count} danh mục.");
+
+                // Reload dữ liệu để cập nhật giao diện
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi cập nhật trạng thái danh mục");
+            }
+        }
+
+        /// <summary>
+        /// Kích hoạt các danh mục được chọn
+        /// </summary>
+        private void ActivateSelectedCategories()
+        {
+            UpdateSelectedCategoryStatus(true);
+        }
+
+        /// <summary>
+        /// Vô hiệu hóa các danh mục được chọn
+        /// </summary>
+        private void DeactivateSelectedCategories()
+        {
+            UpdateSelectedCategoryStatus(false);
+        }
+
+        #endregion
+
+        #region ========== SORT ORDER MANAGEMENT METHODS ==========
+
+        /// <summary>
+        /// Tăng thứ tự sắp xếp của danh mục (di chuyển lên trên)
+        /// </summary>
+        private async void MoveCategoryUp()
+        {
+            if (_selectedCategoryIds == null || _selectedCategoryIds.Count == 0)
+            {
+                ShowInfo("Vui lòng chọn một danh mục.");
+                return;
+            }
+
+            if (_selectedCategoryIds.Count > 1)
+            {
+                ShowInfo("Chỉ có thể di chuyển 1 danh mục.");
+                return;
+            }
+
+            try
+            {
+                var categoryId = _selectedCategoryIds[0];
+                var category = _productServiceCategoryBll.GetById(categoryId);
+
+                if (category == null)
+                {
+                    ShowInfo("Không tìm thấy danh mục.");
+                    return;
+                }
+
+                var newSortOrder = (category.SortOrder ?? 0) - 1;
+                if (newSortOrder < 0) newSortOrder = 0;
+
+                _productServiceCategoryBll.UpdateCategorySortOrder(categoryId, newSortOrder);
+                ShowInfo("Đã di chuyển danh mục lên trên.");
+
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi di chuyển danh mục");
+            }
+        }
+
+        /// <summary>
+        /// Giảm thứ tự sắp xếp của danh mục (di chuyển xuống dưới)
+        /// </summary>
+        private async void MoveCategoryDown()
+        {
+            if (_selectedCategoryIds == null || _selectedCategoryIds.Count == 0)
+            {
+                ShowInfo("Vui lòng chọn một danh mục.");
+                return;
+            }
+
+            if (_selectedCategoryIds.Count > 1)
+            {
+                ShowInfo("Chỉ có thể di chuyển 1 danh mục.");
+                return;
+            }
+
+            try
+            {
+                var categoryId = _selectedCategoryIds[0];
+                var category = _productServiceCategoryBll.GetById(categoryId);
+
+                if (category == null)
+                {
+                    ShowInfo("Không tìm thấy danh mục.");
+                    return;
+                }
+
+                var newSortOrder = (category.SortOrder ?? 0) + 1;
+                _productServiceCategoryBll.UpdateCategorySortOrder(categoryId, newSortOrder);
+                ShowInfo("Đã di chuyển danh mục xuống dưới.");
+
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi di chuyển danh mục");
+            }
+        }
+
+        /// <summary>
+        /// Sắp xếp lại tất cả danh mục theo tên
+        /// </summary>
+        private async void ReorderCategoriesByName()
+        {
+            try
+            {
+                if (!MsgBox.ShowYesNo("Sắp xếp lại tất cả danh mục theo tên? Hành động này không thể hoàn tác."))
+                    return;
+
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    var allCategories = await _productServiceCategoryBll.GetAllAsync();
+                    int sortOrder = 0;
+
+                    foreach (var category in allCategories.OrderBy(c => c.CategoryName))
+                    {
+                        _productServiceCategoryBll.UpdateCategorySortOrder(category.Id, sortOrder);
+                        sortOrder++;
+                    }
+                });
+
+                ShowInfo("Đã sắp xếp lại tất cả danh mục thành công.");
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi sắp xếp lại danh mục");
+            }
+        }
+
+        #endregion
+
         #region ========== TIỆN ÍCH ==========
 
         /// <summary>

@@ -72,6 +72,8 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
+        #region Retrieval Methods - Basic
+
         /// <summary>
         /// Lấy tất cả danh mục sản phẩm/dịch vụ.
         /// </summary>
@@ -110,6 +112,9 @@ namespace Bll.MasterData.ProductServiceBll
             return GetDataAccess().GetByIdAsync(id);
         }
 
+        #endregion
+
+        #region Retrieval Methods - Aggregation
 
         /// <summary>
         /// Đếm số lượng sản phẩm/dịch vụ theo từng danh mục.
@@ -151,6 +156,150 @@ namespace Bll.MasterData.ProductServiceBll
             return (categories, counts);
         }
 
+        #endregion
+
+        #region Retrieval Methods - Filtering
+
+        /// <summary>
+        /// Lấy danh mục con của danh mục cha.
+        /// </summary>
+        /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
+        /// <returns>Danh sách danh mục con</returns>
+        public List<ProductServiceCategory> GetCategoriesByParent(Guid? parentId)
+        {
+            return GetDataAccess().GetCategoriesByParent(parentId);
+        }
+
+        /// <summary>
+        /// Lấy danh mục con của danh mục cha (Async).
+        /// </summary>
+        /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
+        /// <returns>Task chứa danh sách danh mục con</returns>
+        public Task<List<ProductServiceCategory>> GetCategoriesByParentAsync(Guid? parentId)
+        {
+            return GetDataAccess().GetCategoriesByParentAsync(parentId);
+        }
+
+        /// <summary>
+        /// Lấy tất cả danh mục đang hoạt động (IsActive = true).
+        /// </summary>
+        /// <returns>Danh sách danh mục active</returns>
+        public List<ProductServiceCategory> GetActiveCategories()
+        {
+            return GetDataAccess().GetActiveCategories();
+        }
+
+        /// <summary>
+        /// Lấy tất cả danh mục đang hoạt động (Async).
+        /// </summary>
+        /// <returns>Task chứa danh sách danh mục active</returns>
+        public Task<List<ProductServiceCategory>> GetActiveCategoriesAsync()
+        {
+            return GetDataAccess().GetActiveCategoriesAsync();
+        }
+
+        #endregion
+
+        #region Retrieval Methods - Hierarchy
+
+        /// <summary>
+        /// Lấy danh mục cấp 1 (root categories).
+        /// </summary>
+        /// <returns>Danh sách danh mục root</returns>
+        public List<ProductServiceCategory> GetRootCategories()
+        {
+            return GetCategoriesByParent(null);
+        }
+
+        /// <summary>
+        /// Lấy danh mục cấp 1 (Async).
+        /// </summary>
+        /// <returns>Task chứa danh sách danh mục root</returns>
+        public Task<List<ProductServiceCategory>> GetRootCategoriesAsync()
+        {
+            return GetCategoriesByParentAsync(null);
+        }
+
+        /// <summary>
+        /// Lấy danh mục cấp 1 đang hoạt động.
+        /// </summary>
+        /// <returns>Danh sách danh mục root active</returns>
+        public List<ProductServiceCategory> GetActiveRootCategories()
+        {
+            var active = GetActiveCategories();
+            return active.Where(x => x.ParentId == null)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Lấy danh mục cấp 1 đang hoạt động (Async).
+        /// </summary>
+        /// <returns>Task chứa danh sách danh mục root active</returns>
+        public async Task<List<ProductServiceCategory>> GetActiveRootCategoriesAsync()
+        {
+            var active = await GetActiveCategoriesAsync();
+            return await Task.Run(() => active.Where(x => x.ParentId == null)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList());
+        }
+
+        /// <summary>
+        /// Lấy cây phân cấp danh mục đầy đủ (root + children).
+        /// </summary>
+        /// <returns>Dictionary với Key là danh mục root, Value là danh sách con</returns>
+        public Dictionary<ProductServiceCategory, List<ProductServiceCategory>> GetCategoryHierarchy()
+        {
+            var allCategories = GetAll();
+            var result = new Dictionary<ProductServiceCategory, List<ProductServiceCategory>>();
+            var roots = allCategories.Where(x => x.ParentId == null)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ToList();
+            
+            foreach (var root in roots)
+            {
+                var children = allCategories.Where(x => x.ParentId == root.Id)
+                    .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                    .ThenBy(x => x.CategoryName)
+                    .ToList();
+                result[root] = children;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Lấy cây phân cấp danh mục đầy đủ (Async).
+        /// </summary>
+        /// <returns>Task chứa Dictionary với Key là danh mục root, Value là danh sách con</returns>
+        public async Task<Dictionary<ProductServiceCategory, List<ProductServiceCategory>>> GetCategoryHierarchyAsync()
+        {
+            var allCategories = await GetAllAsync();
+            return await Task.Run(() =>
+            {
+                var result = new Dictionary<ProductServiceCategory, List<ProductServiceCategory>>();
+                var roots = allCategories.Where(x => x.ParentId == null)
+                    .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                    .ToList();
+                
+                foreach (var root in roots)
+                {
+                    var children = allCategories.Where(x => x.ParentId == root.Id)
+                        .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                        .ThenBy(x => x.CategoryName)
+                        .ToList();
+                    result[root] = children;
+                }
+
+                return result;
+            });
+        }
+
+        #endregion
+
+        #region Persistence Methods - Create/Update
 
         /// <summary>
         /// Thêm mới danh mục sản phẩm/dịch vụ.
@@ -179,6 +328,73 @@ namespace Bll.MasterData.ProductServiceBll
             GetDataAccess().SaveOrUpdate(category);
         }
 
+        #endregion
+
+        #region Status Methods
+
+        /// <summary>
+        /// Cập nhật trạng thái IsActive của danh mục.
+        /// </summary>
+        /// <param name="categoryId">ID danh mục</param>
+        /// <param name="isActive">Trạng thái mới</param>
+        public void UpdateCategoryStatus(Guid categoryId, bool isActive)
+        {
+            var category = GetById(categoryId);
+            if (category != null)
+            {
+                category.IsActive = isActive;
+                Update(category);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật trạng thái IsActive của danh mục (Async).
+        /// </summary>
+        /// <param name="categoryId">ID danh mục</param>
+        /// <param name="isActive">Trạng thái mới</param>
+        public async Task UpdateCategoryStatusAsync(Guid categoryId, bool isActive)
+        {
+            var category = await GetByIdAsync(categoryId);
+            if (category != null)
+            {
+                category.IsActive = isActive;
+                Update(category);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật thứ tự sắp xếp (SortOrder) của danh mục.
+        /// </summary>
+        /// <param name="categoryId">ID danh mục</param>
+        /// <param name="sortOrder">Thứ tự mới</param>
+        public void UpdateCategorySortOrder(Guid categoryId, int sortOrder)
+        {
+            var category = GetById(categoryId);
+            if (category != null)
+            {
+                category.SortOrder = sortOrder;
+                Update(category);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật thứ tự sắp xếp (Async).
+        /// </summary>
+        /// <param name="categoryId">ID danh mục</param>
+        /// <param name="sortOrder">Thứ tự mới</param>
+        public async Task UpdateCategorySortOrderAsync(Guid categoryId, int sortOrder)
+        {
+            var category = await GetByIdAsync(categoryId);
+            if (category != null)
+            {
+                category.SortOrder = sortOrder;
+                Update(category);
+            }
+        }
+
+        #endregion
+
+        #region Validation Methods
 
         /// <summary>
         /// Kiểm tra tên danh mục có tồn tại không.
@@ -224,6 +440,10 @@ namespace Bll.MasterData.ProductServiceBll
             return GetDataAccess().IsCategoryCodeExistsAsync(categoryCode, excludeId);
         }
 
+        #endregion
+
+        #region Delete Methods
+
         /// <summary>
         /// Xóa danh mục sản phẩm/dịch vụ theo ID.
         /// </summary>
@@ -242,40 +462,41 @@ namespace Bll.MasterData.ProductServiceBll
         {
             if (categoryIds == null || categoryIds.Count == 0) return;
 
-            // Lấy tất cả categories để xác định thứ tự xóa
             var allCategories = await GetDataAccess().GetAllAsync();
             var categoryDict = allCategories.ToDictionary(c => c.Id);
 
-            // Tạo danh sách categories cần xóa với thông tin level
             var categoriesToDelete = categoryIds.Select(id => 
             {
                 var category = categoryDict.TryGetValue(id, out var value) ? value : null;
                 if (category == null) return null;
                 
-                // Tính level để xác định thứ tự xóa (level cao hơn = xóa trước)
                 var level = CalculateCategoryLevel(category, categoryDict);
                 return new { Category = category, Level = level };
             }).Where(x => x != null).OrderByDescending(x => x.Level).ToList();
 
-            // Xóa theo thứ tự từ level cao xuống level thấp
             foreach (var item in categoriesToDelete)
             {
                 try
                 {
-                    // Xóa danh mục (logic migration đã được xử lý trong DataAccess)
                     Delete(item.Category.Id);
                 }
                 catch (Exception ex)
                 {
-                    // Log lỗi nhưng tiếp tục xóa các item khác
                     throw new Exception($"Lỗi xóa category {item.Category.CategoryName}: {ex.Message}", ex);
                 }
             }
         }
 
+        #endregion
+
+        #region Private Helper Methods
+
         /// <summary>
         /// Tính level của category trong cây phân cấp.
         /// </summary>
+        /// <param name="category">Danh mục cần tính</param>
+        /// <param name="categoryDict">Dictionary các danh mục</param>
+        /// <returns>Level trong cây phân cấp (0 = root)</returns>
         private int CalculateCategoryLevel(ProductServiceCategory category, 
             Dictionary<Guid, ProductServiceCategory> categoryDict)
         {
@@ -290,5 +511,6 @@ namespace Bll.MasterData.ProductServiceBll
             return level;
         }
 
+        #endregion
     }
 }
