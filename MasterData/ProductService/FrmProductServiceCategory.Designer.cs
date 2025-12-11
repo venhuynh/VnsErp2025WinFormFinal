@@ -453,8 +453,6 @@ namespace MasterData.ProductService
         private BarButtonItem EditBarButtonItem;
         private BarButtonItem DeleteBarButtonItem;
         private BarButtonItem ExportBarButtonItem;
-        
-        private BindingSource productServiceCategoryDtoBindingSource;
         private DevExpress.XtraGrid.GridControl ProductServiceCategoryDtoGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView ProductServiceCategoryDtoGridView;
         private LayoutControlItem layoutControlItem1;
@@ -471,5 +469,7 @@ namespace MasterData.ProductService
         private BarButtonItem DataSummaryBarStaticItem;
         private BarHeaderItem barHeaderItem2;
         private BarStaticItem CurrentSelectBarStaticItem;
+        
+        private BindingSource productServiceCategoryDtoBindingSource;
     }
 }
