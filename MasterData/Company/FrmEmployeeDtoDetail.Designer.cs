@@ -549,6 +549,7 @@ namespace MasterData.Company
             this.GenderComboBoxEdit.Name = "GenderComboBoxEdit";
             this.GenderComboBoxEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.GenderComboBoxEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             this.GenderComboBoxEdit.Size = new System.Drawing.Size(301, 28);
             this.GenderComboBoxEdit.StyleController = this.dataLayoutControl1;
             this.GenderComboBoxEdit.TabIndex = 6;

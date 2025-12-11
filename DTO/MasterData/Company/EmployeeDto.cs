@@ -18,12 +18,15 @@ public class EmployeeDto
     public Guid CompanyId { get; set; }
 
     [DisplayName("ID chi nhánh")]
+    [Required(ErrorMessage = "Chi nhánh không được để trống")]
     public Guid? BranchId { get; set; }
 
     [DisplayName("ID phòng ban")]
+    [Required(ErrorMessage = "Phòng ban không được để trống")]
     public Guid? DepartmentId { get; set; }
 
     [DisplayName("ID chức vụ")]
+    [Required(ErrorMessage = "Chức vụ không được để trống")]
     public Guid? PositionId { get; set; }
 
     [DisplayName("Mã nhân viên")]
@@ -38,6 +41,7 @@ public class EmployeeDto
 
     [DisplayName("Giới tính")]
     [StringLength(10, ErrorMessage = "Giới tính không được vượt quá 10 ký tự")]
+    [Required(ErrorMessage = "Giới tính không được để trống")]
     public string Gender { get; set; }
 
     [DisplayName("Ngày sinh")]
@@ -52,6 +56,7 @@ public class EmployeeDto
     public string Email { get; set; }
 
     [DisplayName("Ngày vào làm")]
+    [Required(ErrorMessage = "Ngày vào làm không được để trống")]
     public DateTime? HireDate { get; set; }
 
     [DisplayName("Ngày nghỉ việc")]

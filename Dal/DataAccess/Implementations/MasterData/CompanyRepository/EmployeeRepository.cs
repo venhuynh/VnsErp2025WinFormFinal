@@ -427,7 +427,12 @@ public class EmployeeRepository : IEmployeeRepository
             if (employee == null)
                 throw new ArgumentNullException(nameof(employee));
 
-            using var context = CreateNewContext();
+            using var context = new VnsErp2025DataContext(_connectionString);
+            
+            // Tạo DataLoadOptions mà KHÔNG load navigation properties để tránh lỗi ForeignKeyReferenceAlreadyHasValueException
+            var loadOptions = new DataLoadOptions();
+            context.LoadOptions = loadOptions;
+            
             var existingEmployee = context.Employees.FirstOrDefault(x => x.Id == employee.Id);
             
             if (existingEmployee == null)
@@ -435,7 +440,7 @@ public class EmployeeRepository : IEmployeeRepository
                 throw new DataAccessException("Không tìm thấy nhân viên để cập nhật");
             }
 
-            // Cập nhật các thuộc tính cơ bản
+            // Cập nhật các thuộc tính cơ bản (foreign key có thể set trực tiếp)
             existingEmployee.CompanyId = employee.CompanyId;
             existingEmployee.BranchId = employee.BranchId;
             existingEmployee.DepartmentId = employee.DepartmentId;

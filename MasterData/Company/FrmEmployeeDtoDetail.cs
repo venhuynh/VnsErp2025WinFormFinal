@@ -582,17 +582,7 @@ namespace MasterData.Company
         {
             try
             {
-                // Đảm bảo không cho phép thay đổi khi ở chế độ edit
-                if (_isEditMode)
-                {
-                    if (_branchId.HasValue)
-                    {
-                        BranchIdSearchLookupEdit.EditValue = _branchId.Value;
-                    }
-                    return;
-                }
-
-                // Chỉ cập nhật khi ở chế độ tạo mới
+                // Cập nhật giá trị cho cả chế độ tạo mới và chỉnh sửa
                 if (BranchIdSearchLookupEdit.EditValue != null && 
                     Guid.TryParse(BranchIdSearchLookupEdit.EditValue.ToString(), out var branchId))
                 {
@@ -616,21 +606,7 @@ namespace MasterData.Company
         {
             try
             {
-                // Đảm bảo không cho phép thay đổi khi ở chế độ edit
-                if (_isEditMode)
-                {
-                    if (_departmentId.HasValue)
-                    {
-                        DepartmentIdSearchLookupEdit.EditValue = _departmentId.Value;
-                    }
-                    else
-                    {
-                        DepartmentIdSearchLookupEdit.EditValue = null;
-                    }
-                    return;
-                }
-
-                // Chỉ cập nhật khi ở chế độ tạo mới
+                // Cập nhật giá trị cho cả chế độ tạo mới và chỉnh sửa
                 if (DepartmentIdSearchLookupEdit.EditValue != null && 
                     Guid.TryParse(DepartmentIdSearchLookupEdit.EditValue.ToString(), out var departmentId))
                 {
@@ -654,21 +630,7 @@ namespace MasterData.Company
         {
             try
             {
-                // Đảm bảo không cho phép thay đổi khi ở chế độ edit
-                if (_isEditMode)
-                {
-                    if (_positionId.HasValue)
-                    {
-                        PositionIdSearchLookupEdit.EditValue = _positionId.Value;
-                    }
-                    else
-                    {
-                        PositionIdSearchLookupEdit.EditValue = null;
-                    }
-                    return;
-                }
-
-                // Chỉ cập nhật khi ở chế độ tạo mới
+                // Cập nhật giá trị cho cả chế độ tạo mới và chỉnh sửa
                 if (PositionIdSearchLookupEdit.EditValue != null && 
                     Guid.TryParse(PositionIdSearchLookupEdit.EditValue.ToString(), out var positionId))
                 {
@@ -953,35 +915,22 @@ namespace MasterData.Company
 
         /// <summary>
         /// Thiết lập trạng thái ReadOnly cho các controls
-        /// QUAN TRỌNG: Khi ở chế độ edit (readOnly = true), các controls này sẽ bị khóa hoàn toàn
+        /// QUAN TRỌNG: Chỉ Mã nhân viên bị khóa khi edit, các control khác đều cho phép chỉnh sửa
         /// </summary>
         /// <param name="readOnly">True để disable (chế độ edit), False để enable (chế độ tạo mới)</param>
         private void SetControlsReadOnly(bool readOnly)
         {
             try
             {
-                // Mã nhân viên - không cho phép thay đổi khi edit
+                // Mã nhân viên - không cho phép thay đổi khi edit (duy nhất control bị khóa)
                 EmployeeCodeTextEdit.Properties.ReadOnly = readOnly;
                 EmployeeCodeTextEdit.Properties.AllowNullInput = readOnly 
                     ? DevExpress.Utils.DefaultBoolean.False 
                     : DevExpress.Utils.DefaultBoolean.True;
                 EmployeeCodeTextEdit.Enabled = !readOnly;
 
-                // Chi nhánh SearchLookUpEdit - không cho phép thay đổi khi edit
-                BranchIdSearchLookupEdit.Properties.ReadOnly = readOnly;
-                BranchIdSearchLookupEdit.Enabled = !readOnly;
-                if (readOnly)
-                {
-                    BranchIdSearchLookupEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-                }
-
-                // Phòng ban SearchLookUpEdit - không cho phép thay đổi khi edit
-                DepartmentIdSearchLookupEdit.Properties.ReadOnly = readOnly;
-                DepartmentIdSearchLookupEdit.Enabled = !readOnly;
-
-                // Chức vụ SearchLookUpEdit - không cho phép thay đổi khi edit
-                PositionIdSearchLookupEdit.Properties.ReadOnly = readOnly;
-                PositionIdSearchLookupEdit.Enabled = !readOnly;
+                // Chi nhánh, Phòng ban, Chức vụ - CHO PHÉP chỉnh sửa trong chế độ edit
+                // Không set ReadOnly hoặc Enabled = false cho các controls này
             }
             catch (Exception ex)
             {
