@@ -106,30 +106,6 @@ namespace MasterData.Company
             this.barManager1.MaxItemId = 13;
             this.barManager1.StatusBar = this.bar1;
             // 
-            // barManager1
-            // 
-            this.barManager1.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
-            this.bar2,
-            this.bar1});
-            this.barManager1.DockControls.Add(this.barDockControlTop);
-            this.barManager1.DockControls.Add(this.barDockControlBottom);
-            this.barManager1.DockControls.Add(this.barDockControlLeft);
-            this.barManager1.DockControls.Add(this.barDockControlRight);
-            this.barManager1.Form = this;
-            this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.NewBarButtonItem,
-            this.ListDataBarButtonItem,
-            this.EditBarButtonItem,
-            this.DeleteBarButtonItem,
-            this.ExportBarButtonItem,
-            this.barHeaderItem1,
-            this.DataSummaryBarStaticItem,
-            this.barHeaderItem2,
-            this.CurrentSelectBarStaticItem});
-            this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 13;
-            this.barManager1.StatusBar = this.bar1;
-            // 
             // bar2
             // 
             this.bar2.BarName = "Main menu";
@@ -254,32 +230,6 @@ namespace MasterData.Company
             this.bar1.OptionsBar.DrawDragBorder = false;
             this.bar1.OptionsBar.UseWholeRow = true;
             this.bar1.Text = "Custom 3";
-            // 
-            // barHeaderItem1
-            // 
-            this.barHeaderItem1.Caption = "Tổng kết:";
-            this.barHeaderItem1.Id = 5;
-            this.barHeaderItem1.Name = "barHeaderItem1";
-            // 
-            // DataSummaryBarStaticItem
-            // 
-            this.DataSummaryBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.DataSummaryBarStaticItem.Caption = "Chưa có dữ liệu";
-            this.DataSummaryBarStaticItem.Id = 6;
-            this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
-            // 
-            // barHeaderItem2
-            // 
-            this.barHeaderItem2.Caption = "Đang chọn:";
-            this.barHeaderItem2.Id = 7;
-            this.barHeaderItem2.Name = "barHeaderItem2";
-            // 
-            // CurrentSelectBarStaticItem
-            // 
-            this.CurrentSelectBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.CurrentSelectBarStaticItem.Caption = "Chưa chọn dòng nào";
-            this.CurrentSelectBarStaticItem.Id = 8;
-            this.CurrentSelectBarStaticItem.Name = "CurrentSelectBarStaticItem";
             // 
             // barDockControlBottom
             // 
