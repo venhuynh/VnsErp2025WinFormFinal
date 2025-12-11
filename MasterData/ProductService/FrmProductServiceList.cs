@@ -48,25 +48,6 @@ namespace MasterData.ProductService
         /// </summary>
         private bool _isLoading;
 
-        /// <summary>
-        /// Index trang hiện tại (0-based)
-        /// </summary>
-        private int _currentPageIndex;
-
-        /// <summary>
-        /// Số dòng trên mỗi trang
-        /// </summary>
-        private int _pageSize = 50;
-
-        /// <summary>
-        /// Tổng số dòng dữ liệu
-        /// </summary>
-        private int _totalCount;
-
-        /// <summary>
-        /// Tổng số trang
-        /// </summary>
-        private int _totalPages;
 
         #endregion
 
@@ -93,17 +74,8 @@ namespace MasterData.ProductService
                 ProductServiceGridView_CustomDrawRowIndicator;
             ProductServiceGridView.RowCellStyle += ProductServiceGridView_RowCellStyle;
 
-            // Pagination events
-            PageBarEditItem.EditValueChanged += PageBarEditItem_EditValueChanged;
-            RecordNumberBarEditItem.EditValueChanged += RecordNumberBarEditItem_EditValueChanged;
-
             // Filter events
             DataFilterBtn.ItemClick += DataFilterBtn_ItemClick;
-
-            // Initialize pagination control
-            InitializePaginationControl();
-
-            InitializeRecordNumberControl();
 
             UpdateButtonStates();
         }
@@ -290,34 +262,18 @@ namespace MasterData.ProductService
                     return;
                 }
 
-                var currentPageCount = currentData.Count;
+                var totalCount = currentData.Count;
                 var productCount = currentData.Count(x => !x.IsService);
                 var serviceCount = currentData.Count(x => x.IsService);
                 var activeCount = currentData.Count(x => x.IsActive);
                 var inactiveCount = currentData.Count(x => !x.IsActive);
 
-                // Tạo HTML content với màu sắc và pagination info
-                string summary;
-                if (_pageSize == int.MaxValue)
-                {
-                    // Trường hợp "Tất cả" - không phân trang
-                    summary = "<b>Tất cả dữ liệu</b> | " +
-                              $"<b>Hiển thị: {currentPageCount}/{_totalCount}</b> | " +
+                // Tạo HTML content với màu sắc
+                var summary = $"<b>Tổng số: {totalCount}</b> | " +
                               $"<color=blue>Sản phẩm: {productCount}</color> | " +
                               $"<color=green>Dịch vụ: {serviceCount}</color> | " +
                               $"<color=green>Hoạt động: {activeCount}</color> | " +
                               $"<color=red>Không hoạt động: {inactiveCount}</color>";
-                }
-                else
-                {
-                    // Trường hợp có phân trang
-                    summary = $"<b>Trang {_currentPageIndex + 1}/{_totalPages}</b> | " +
-                              $"<b>Hiển thị: {currentPageCount}/{_totalCount}</b> | " +
-                              $"<color=blue>Sản phẩm: {productCount}</color> | " +
-                              $"<color=green>Dịch vụ: {serviceCount}</color> | " +
-                              $"<color=green>Hoạt động: {activeCount}</color> | " +
-                              $"<color=red>Không hoạt động: {inactiveCount}</color>";
-                }
 
                 DataSummaryBarStaticItem.Caption = summary;
             }
@@ -1076,52 +1032,16 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, không hiển thị WaitForm).
-        /// Sử dụng pagination để tối ưu performance
+        /// Load tất cả dữ liệu không phân trang
         /// </summary>
         private async Task LoadDataAsyncWithoutSplash()
-        {
-            try
-            {
-                // Reset pagination
-                _currentPageIndex = 0;
-
-                // Get total count
-                _totalCount = await _productServiceBll.GetCountAsync();
-
-                // Xử lý trường hợp "Tất cả" (không phân trang)
-                if (_pageSize == int.MaxValue)
-                {
-                    _totalPages = 1; // Chỉ có 1 trang
-                    await LoadAllDataAsync();
-                }
-                else
-                {
-                    _totalPages = (int)Math.Ceiling((double)_totalCount / _pageSize);
-
-                    // Update pagination control first
-                    UpdatePaginationControl();
-
-                    // Load first page
-                    await LoadPageAsync(_currentPageIndex);
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi tải dữ liệu");
-            }
-        }
-
-        /// <summary>
-        /// Load tất cả dữ liệu (không phân trang)
-        /// </summary>
-        private async Task LoadAllDataAsync()
         {
             try
             {
                 // Get all data
                 var entities = await _productServiceBll.GetAllAsync();
 
-                // Convert to DTOs với CategoryFullPath (without counting to improve performance)
+                // Convert to DTOs với CategoryFullPath
                 var dtoList = entities.ToDtoList(
                     categoryId => _productServiceBll.GetCategoryName(categoryId),
                     null,
@@ -1130,47 +1050,10 @@ namespace MasterData.ProductService
                 ).ToList();
 
                 BindGrid(dtoList);
-                _currentPageIndex = 0;
-
-                // Update pagination control (disable pagination)
-                UpdatePaginationControl();
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi tải tất cả dữ liệu");
-            }
-        }
-
-
-        /// <summary>
-        /// Load dữ liệu cho một trang cụ thể
-        /// </summary>
-        /// <param name="pageIndex">Index của trang (0-based)</param>
-        private async Task LoadPageAsync(int pageIndex)
-        {
-            try
-            {
-                // Get paged data using optimization methods
-                var entities = await _productServiceBll.GetPagedAsync(
-                    pageIndex, _pageSize);
-
-                // Convert to DTOs với CategoryFullPath (without counting to improve performance)
-                var dtoList = entities.ToDtoList(
-                    categoryId => _productServiceBll.GetCategoryName(categoryId),
-                    null,
-                    null,
-                    categoryId => _productServiceBll.GetCategoryFullPath(categoryId)
-                ).ToList();
-
-                BindGrid(dtoList);
-                _currentPageIndex = pageIndex;
-
-                // Update pagination control
-                UpdatePaginationControl();
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi tải trang dữ liệu");
+                ShowError(ex, "Lỗi tải dữ liệu");
             }
         }
 
@@ -1270,151 +1153,9 @@ namespace MasterData.ProductService
 
         #region ========== PHÂN TRANG ==========
 
-        /// <summary>
-        /// Khởi tạo pagination control
-        /// </summary>
-        private void InitializePaginationControl()
-        {
-            try
-            {
-                // Cấu hình ComboBox cho pagination
-                repositoryItemComboBox1.Items.Clear();
-                repositoryItemComboBox1.TextEditStyle = TextEditStyles.DisableTextEditor;
-
-                // Set initial value
-                PageBarEditItem.EditValue = "1";
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi khởi tạo pagination control");
-            }
-        }
-
-        /// <summary>
-        /// Khởi tạo record number control
-        /// </summary>
-        private void InitializeRecordNumberControl()
-        {
-            try
-            {
-                // Cấu hình ComboBox cho record number
-                repositoryItemComboBox2.Items.Clear();
-                repositoryItemComboBox2.TextEditStyle = TextEditStyles.DisableTextEditor;
-
-                // Thêm các options: "20", "50", "100", "Tất cả"
-                repositoryItemComboBox2.Items.AddRange(new object[] { "20", "50", "100", "Tất cả" });
-
-                // Set initial value
-                RecordNumberBarEditItem.EditValue = "50";
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi khởi tạo record number control");
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật pagination control với danh sách trang
-        /// </summary>
-        private void UpdatePaginationControl()
-        {
-            try
-            {
-                if (PageBarEditItem?.Edit == null) return;
-
-                // Clear existing items
-                repositoryItemComboBox1.Items.Clear();
-
-                // Xử lý trường hợp "Tất cả" (không phân trang)
-                if (_pageSize == int.MaxValue)
-                {
-                    repositoryItemComboBox1.Items.Add("1");
-                    PageBarEditItem.EditValue = "1";
-                    PageBarEditItem.Enabled = false; // Disable pagination
-                }
-                else
-                {
-                    // Add page numbers
-                    for (int i = 1; i <= _totalPages; i++)
-                    {
-                        repositoryItemComboBox1.Items.Add(i.ToString());
-                    }
-
-                    // Set current page
-                    var currentPageNumber = _currentPageIndex + 1;
-                    PageBarEditItem.EditValue = currentPageNumber.ToString();
-
-                    // Enable/disable based on total pages
-                    PageBarEditItem.Enabled = _totalPages > 1;
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi cập nhật pagination control");
-            }
-        }
-
-        /// <summary>
-        /// Event handler khi user thay đổi trang trong pagination control
-        /// </summary>
-        private async void PageBarEditItem_EditValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (PageBarEditItem.EditValue == null) return;
-
-                var pageNumberText = PageBarEditItem.EditValue.ToString();
-                if (int.TryParse(pageNumberText, out int pageNumber))
-                {
-                    var pageIndex = pageNumber - 1; // Convert to 0-based index
-
-                    if (pageIndex >= 0 && pageIndex < _totalPages && pageIndex != _currentPageIndex)
-                    {
-                        // Hiển thị WaitingForm1 giống như nút List
-                        await ExecuteWithWaitingFormAsync(async () =>
-                        {
-                            await LoadPageAsync(pageIndex);
-                            UpdateStatusBar();
-                        });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi chuyển trang");
-            }
-        }
-
-        /// <summary>
-        /// Event handler khi user thay đổi số dòng trên mỗi trang
-        /// </summary>
-        private async void RecordNumberBarEditItem_EditValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (RecordNumberBarEditItem.EditValue == null) return;
-
-                var recordNumberText = RecordNumberBarEditItem.EditValue.ToString();
-                var newPageSize = ParseRecordNumber(recordNumberText);
-
-                if (newPageSize > 0 && newPageSize != _pageSize)
-                {
-                    _pageSize = newPageSize;
-                    _currentPageIndex = 0; // Reset về trang đầu
-
-                    // Hiển thị WaitingForm1 giống như nút List
-                    await ExecuteWithWaitingFormAsync(async () =>
-                    {
-                        // Reload data với page size mới
-                        await LoadDataAsyncWithoutSplash();
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi thay đổi số dòng trên trang");
-            }
-        }
+        // Note: Pagination đã được loại bỏ, chỉ load tất cả dữ liệu
+        // Các method GetPagedAsync và GetCountAsync vẫn được giữ lại trong BLL/Repository
+        // để có thể sử dụng ở các form khác nếu cần
 
         /// <summary>
         /// Parse record number text thành page size

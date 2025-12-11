@@ -51,9 +51,7 @@ namespace MasterData.ProductService
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
-            this.PageBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
-            this.RecordNumberBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemComboBox2 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.barHeaderItem2 = new DevExpress.XtraBars.BarHeaderItem();
             this.SelectedRowBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -68,24 +66,22 @@ namespace MasterData.ProductService
             this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colThumbnailImage = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ProductThumbnailRepositoryItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.colCategoryFullPathHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ProductThumbnailRepositoryItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-            this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceListGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductThumbnailRepositoryItemPictureEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductThumbnailRepositoryItemPictureEdit)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -109,8 +105,6 @@ namespace MasterData.ProductService
             this.DataSummaryBarStaticItem,
             this.barHeaderItem2,
             this.SelectedRowBarStaticItem,
-            this.PageBarEditItem,
-            this.RecordNumberBarEditItem,
             this.DataFilterBtn});
             this.barManager1.MainMenu = this.bar2;
             this.barManager1.MaxItemId = 13;
@@ -203,8 +197,6 @@ namespace MasterData.ProductService
             this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem1),
             new DevExpress.XtraBars.LinkPersistInfo(this.DataSummaryBarStaticItem),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.PageBarEditItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.RecordNumberBarEditItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem2),
             new DevExpress.XtraBars.LinkPersistInfo(this.SelectedRowBarStaticItem)});
             this.bar1.OptionsBar.AllowQuickCustomization = false;
@@ -225,26 +217,12 @@ namespace MasterData.ProductService
             this.DataSummaryBarStaticItem.Id = 7;
             this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
             // 
-            // PageBarEditItem
-            // 
-            this.PageBarEditItem.Caption = "Trang";
-            this.PageBarEditItem.Edit = this.repositoryItemComboBox1;
-            this.PageBarEditItem.Id = 10;
-            this.PageBarEditItem.Name = "PageBarEditItem";
-            // 
             // repositoryItemComboBox1
             // 
             this.repositoryItemComboBox1.AutoHeight = false;
             this.repositoryItemComboBox1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.repositoryItemComboBox1.Name = "repositoryItemComboBox1";
-            // 
-            // RecordNumberBarEditItem
-            // 
-            this.RecordNumberBarEditItem.Caption = "Số dòng";
-            this.RecordNumberBarEditItem.Edit = this.repositoryItemComboBox2;
-            this.RecordNumberBarEditItem.Id = 11;
-            this.RecordNumberBarEditItem.Name = "RecordNumberBarEditItem";
             // 
             // repositoryItemComboBox2
             // 
@@ -278,9 +256,9 @@ namespace MasterData.ProductService
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 590);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 592);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 37);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 35);
             // 
             // barDockControlLeft
             // 
@@ -288,7 +266,7 @@ namespace MasterData.ProductService
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 551);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 553);
             // 
             // barDockControlRight
             // 
@@ -296,7 +274,7 @@ namespace MasterData.ProductService
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 551);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 553);
             // 
             // layoutControl1
             // 
@@ -305,7 +283,7 @@ namespace MasterData.ProductService
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 551);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 553);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -319,7 +297,7 @@ namespace MasterData.ProductService
             this.ProductServiceListGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlHypertextLabel,
             this.ProductThumbnailRepositoryItemPictureEdit});
-            this.ProductServiceListGridControl.Size = new System.Drawing.Size(1043, 519);
+            this.ProductServiceListGridControl.Size = new System.Drawing.Size(1043, 521);
             this.ProductServiceListGridControl.TabIndex = 5;
             this.ProductServiceListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.ProductServiceGridView});
@@ -406,6 +384,13 @@ namespace MasterData.ProductService
             this.colThumbnailImage.VisibleIndex = 1;
             this.colThumbnailImage.Width = 120;
             // 
+            // ProductThumbnailRepositoryItemPictureEdit
+            // 
+            this.ProductThumbnailRepositoryItemPictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.ProductThumbnailRepositoryItemPictureEdit.Name = "ProductThumbnailRepositoryItemPictureEdit";
+            this.ProductThumbnailRepositoryItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.ProductThumbnailRepositoryItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            // 
             // colCategoryFullPathHtml
             // 
             this.colCategoryFullPathHtml.AppearanceCell.Options.UseTextOptions = true;
@@ -436,7 +421,7 @@ namespace MasterData.ProductService
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 551);
+            this.Root.Size = new System.Drawing.Size(1075, 553);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -444,15 +429,8 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Control = this.ProductServiceListGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 525);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // ProductThumbnailRepositoryItemPictureEdit
-            // 
-            this.ProductThumbnailRepositoryItemPictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.ProductThumbnailRepositoryItemPictureEdit.Name = "ProductThumbnailRepositoryItemPictureEdit";
-            this.ProductThumbnailRepositoryItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.ProductThumbnailRepositoryItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
             // 
             // FrmProductServiceList
             // 
@@ -471,15 +449,13 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-            this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceListGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductThumbnailRepositoryItemPictureEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductThumbnailRepositoryItemPictureEdit)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -511,9 +487,7 @@ namespace MasterData.ProductService
         private BarStaticItem DataSummaryBarStaticItem;
         private BarHeaderItem barHeaderItem2;
         private BarStaticItem SelectedRowBarStaticItem;
-        private BarEditItem PageBarEditItem;
         private RepositoryItemComboBox repositoryItemComboBox1;
-        private BarEditItem RecordNumberBarEditItem;
         private RepositoryItemComboBox repositoryItemComboBox2;
         private BarButtonItem DataFilterBtn;
         private GridView ProductServiceGridView;
