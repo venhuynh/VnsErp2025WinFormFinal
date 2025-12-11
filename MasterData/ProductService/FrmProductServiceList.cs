@@ -19,7 +19,6 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
-using DevExpress.XtraGrid.Views.BandedGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData.ProductService;
@@ -89,10 +88,10 @@ namespace MasterData.ProductService
             CountVariantAndImageBarButtonItem.ItemClick += CountVariantAndImageBarButtonItem_ItemClick;
 
             // Grid events
-            ProductServiceAdvBandedGridView.SelectionChanged += ProductServiceAdvBandedGridView_SelectionChanged;
-            ProductServiceAdvBandedGridView.CustomDrawRowIndicator +=
-                ProductServiceAdvBandedGridView_CustomDrawRowIndicator;
-            ProductServiceAdvBandedGridView.RowCellStyle += ProductServiceAdvBandedGridView_RowCellStyle;
+            ProductServiceGridView.SelectionChanged += ProductServiceGridView_SelectionChanged;
+            ProductServiceGridView.CustomDrawRowIndicator +=
+                ProductServiceGridView_CustomDrawRowIndicator;
+            ProductServiceGridView.RowCellStyle += ProductServiceGridView_RowCellStyle;
 
             // Pagination events
             PageBarEditItem.EditValueChanged += PageBarEditItem_EditValueChanged;
@@ -177,7 +176,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Grid selection thay đổi -> cập nhật danh sách Id đã chọn và trạng thái nút
         /// </summary>
-        private void ProductServiceAdvBandedGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ProductServiceGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
@@ -195,11 +194,11 @@ namespace MasterData.ProductService
         /// <summary>
         /// Vẽ STT dòng cho GridView
         /// </summary>
-        private void ProductServiceAdvBandedGridView_CustomDrawRowIndicator(object sender,
+        private void ProductServiceGridView_CustomDrawRowIndicator(object sender,
             RowIndicatorCustomDrawEventArgs rowIndicatorCustomDrawEventArgs)
         {
             // Sử dụng helper chung để vẽ số thứ tự dòng
-            GridViewHelper.CustomDrawRowIndicator(ProductServiceAdvBandedGridView, rowIndicatorCustomDrawEventArgs);
+            GridViewHelper.CustomDrawRowIndicator(ProductServiceGridView, rowIndicatorCustomDrawEventArgs);
         }
 
         /// <summary>
@@ -220,7 +219,7 @@ namespace MasterData.ProductService
                 if (CountVariantAndImageBarButtonItem != null)
                     CountVariantAndImageBarButtonItem.Enabled = selectedCount >= 1;
                 // Export: chỉ khi có dữ liệu hiển thị
-                var rowCount = GridViewHelper.GetDisplayRowCount(ProductServiceAdvBandedGridView) ?? 0;
+                var rowCount = GridViewHelper.GetDisplayRowCount(ProductServiceGridView) ?? 0;
                 if (ExportBarButtonItem != null)
                     ExportBarButtonItem.Enabled = rowCount > 0;
             }
@@ -507,8 +506,12 @@ namespace MasterData.ProductService
                 var primaryKeyword = searchKeywords.FirstOrDefault() ?? searchKeyword.Trim();
                 var searchResults = await _productServiceBll.SearchAsync(primaryKeyword);
 
-                // Convert to DTOs
-                var dtoList = searchResults.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId)
+                // Convert to DTOs với CategoryFullPath
+                var dtoList = searchResults.ToDtoList(
+                    categoryId => _productServiceBll.GetCategoryName(categoryId),
+                    null,
+                    null,
+                    categoryId => _productServiceBll.GetCategoryFullPath(categoryId)
                 ).ToList();
 
                 // Thực hiện tìm kiếm bổ sung với tất cả từ khóa
@@ -839,177 +842,31 @@ namespace MasterData.ProductService
         #region ========== CẤU HÌNH GRID ==========
 
         /// <summary>
-        /// Cấu hình AdvBandedGridView để hiển thị dữ liệu xuống dòng (word wrap) cho các cột văn bản dài.
+        /// Cấu hình GridView để hiển thị dữ liệu xuống dòng (word wrap) cho các cột văn bản dài.
         /// Đồng thời bật tự động tính chiều cao dòng để hiển thị đầy đủ nội dung.
         /// </summary>
         private void ConfigureMultiLineGridView()
         {
             try
             {
-                // Bật tự động điều chỉnh chiều cao dòng để wrap nội dung
-                ProductServiceAdvBandedGridView.OptionsView.RowAutoHeight = true;
-
-                // RepositoryItemMemoEdit cho wrap text
-                var memo = new RepositoryItemMemoEdit
-                {
-                    WordWrap = true,
-                    AutoHeight = false
-                };
-                memo.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
-
-                // Áp dụng cho các cột có khả năng dài
-                //ApplyMemoEditorToColumn("Name", memo);
-                //ApplyMemoEditorToColumn("Description", memo);
-                //ApplyMemoEditorToColumn("CategoryName", memo);
-
-                // Cấu hình cột ảnh thumbnail
-                ConfigureThumbnailColumn();
-
-                // Cấu hình filter và search
-                ConfigureFilterAndSearch();
-
-                // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
-                ProductServiceAdvBandedGridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
-                ProductServiceAdvBandedGridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
+                // GridView đã được cấu hình trong Designer với RowAutoHeight = true
+                // Không cần cấu hình thêm ở đây
             }
             catch (Exception ex)
             {
                 MsgBox.ShowException(ex);
             }
-        }
-
-        /// <summary>
-        /// Cấu hình cột ảnh thumbnail
-        /// </summary>
-        private void ConfigureThumbnailColumn()
-        {
-            try
-            {
-                // RepositoryItemPictureEdit cho hiển thị ảnh
-                var pictureEdit = new RepositoryItemPictureEdit
-                {
-                    SizeMode = PictureSizeMode.Stretch
-                };
-
-                // Thêm repository vào GridControl
-                if (!ProductServiceListGridControl.RepositoryItems.Contains(pictureEdit))
-                {
-                    ProductServiceListGridControl.RepositoryItems.Add(pictureEdit);
-                }
-
-                // Áp dụng cho cột thumbnail
-                colThumbnail.ColumnEdit = pictureEdit;
-                colThumbnail.OptionsColumn.FixedWidth = true;
-                colThumbnail.Width = 80;
-                colThumbnail.Caption = @"Ảnh đại diện";
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(ex);
-            }
-        }
-
-        /// <summary>
-        /// Cấu hình filter và search cho grid
-        /// </summary>
-        private void ConfigureFilterAndSearch()
-        {
-            try
-            {
-                // Bật filter row
-                ProductServiceAdvBandedGridView.OptionsView.ShowAutoFilterRow = true;
-
-                // Bật search
-                ProductServiceAdvBandedGridView.OptionsFind.AlwaysVisible = true;
-                ProductServiceAdvBandedGridView.OptionsFind.FindMode = FindMode.Always;
-                ProductServiceAdvBandedGridView.OptionsFind.FindNullPrompt = "Tìm kiếm trong tất cả dữ liệu...";
-
-                // Cấu hình filter cho từng cột
-                ConfigureColumnFilters();
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(ex);
-            }
-        }
-
-        /// <summary>
-        /// Cấu hình filter cho từng cột
-        /// </summary>
-        private void ConfigureColumnFilters()
-        {
-            try
-            {
-                // Cột Code - text filter
-                if (colCode != null)
-                {
-                    colCode.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
-                }
-
-                // Cột Name - text filter
-                if (colName != null)
-                {
-                    colName.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
-                }
-
-                // Cột CategoryName - list filter
-                if (colCategoryName != null)
-                {
-                    colCategoryName.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
-                }
-
-                // Cột TypeDisplay - list filter
-                if (colTypeDisplay != null)
-                {
-                    colTypeDisplay.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
-                }
-
-                // Cột StatusDisplay - list filter
-                if (colStatusDisplay != null)
-                {
-                    colStatusDisplay.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
-                }
-
-                // Cột IsActive - checkbox filter
-                if (colIsActive != null)
-                {
-                    colIsActive.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Equals;
-                }
-
-                // Cột Description - text filter
-                if (colDescription != null)
-                {
-                    colDescription.OptionsFilter.AutoFilterCondition = AutoFilterCondition.Contains;
-                }
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(ex);
-            }
-        }
-
-        private void ApplyMemoEditorToColumn(string fieldName, RepositoryItemMemoEdit memo)
-        {
-            var col = ProductServiceAdvBandedGridView.Columns[fieldName];
-            if (col == null) return;
-            // Thêm repository vào GridControl nếu chưa có
-            if (!ProductServiceListGridControl.RepositoryItems.Contains(memo))
-            {
-                ProductServiceListGridControl.RepositoryItems.Add(memo);
-            }
-
-            col.ColumnEdit = memo;
         }
 
         /// <summary>
         /// Tô màu/định dạng dòng theo trạng thái/loại sản phẩm/dịch vụ
         /// </summary>
-        private void ProductServiceAdvBandedGridView_RowCellStyle(object sender,
+        private void ProductServiceGridView_RowCellStyle(object sender,
             RowCellStyleEventArgs rowCellStyleEventArgs)
         {
             try
             {
-                var view = sender as AdvBandedGridView;
+                var view = sender as GridView;
                 if (view == null) return;
                 if (rowCellStyleEventArgs.RowHandle < 0) return;
                 var row = view.GetRow(rowCellStyleEventArgs.RowHandle) as ProductServiceDto;
@@ -1036,7 +893,6 @@ namespace MasterData.ProductService
                 // Nếu sản phẩm/dịch vụ không hoạt động: làm nổi bật rõ ràng hơn
                 if (!row.IsActive)
                 {
-                    //rowCellStyleEventArgs.Appearance.BackColor = System.Drawing.Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
                     rowCellStyleEventArgs.Appearance.ForeColor = Color.DarkRed;
                     rowCellStyleEventArgs.Appearance.Font =
                         new Font(rowCellStyleEventArgs.Appearance.Font, FontStyle.Strikeout);
@@ -1071,7 +927,7 @@ namespace MasterData.ProductService
             }
 
             var id = _selectedProductServiceIds[0];
-            var dto = ProductServiceAdvBandedGridView.GetFocusedRow() as ProductServiceDto;
+            var dto = ProductServiceGridView.GetFocusedRow() as ProductServiceDto;
             if (dto == null || dto.Id != id)
             {
                 // Tìm đúng DTO theo Id trong datasource nếu FocusedRow không khớp selection
@@ -1158,14 +1014,14 @@ namespace MasterData.ProductService
         private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Chỉ cho phép xuất khi có dữ liệu hiển thị
-            var rowCount = GridViewHelper.GetDisplayRowCount(ProductServiceAdvBandedGridView) ?? 0;
+            var rowCount = GridViewHelper.GetDisplayRowCount(ProductServiceGridView) ?? 0;
             if (rowCount <= 0)
             {
                 ShowInfo("Không có dữ liệu để xuất.");
                 return;
             }
 
-            GridViewHelper.ExportGridControl(ProductServiceAdvBandedGridView, "ProductServices.xlsx");
+            GridViewHelper.ExportGridControl(ProductServiceGridView, "ProductServices.xlsx");
         }
 
         /// <summary>
@@ -1265,8 +1121,12 @@ namespace MasterData.ProductService
                 // Get all data
                 var entities = await _productServiceBll.GetAllAsync();
 
-                // Convert to DTOs (without counting to improve performance)
-                var dtoList = entities.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId)
+                // Convert to DTOs với CategoryFullPath (without counting to improve performance)
+                var dtoList = entities.ToDtoList(
+                    categoryId => _productServiceBll.GetCategoryName(categoryId),
+                    null,
+                    null,
+                    categoryId => _productServiceBll.GetCategoryFullPath(categoryId)
                 ).ToList();
 
                 BindGrid(dtoList);
@@ -1294,8 +1154,12 @@ namespace MasterData.ProductService
                 var entities = await _productServiceBll.GetPagedAsync(
                     pageIndex, _pageSize);
 
-                // Convert to DTOs (without counting to improve performance)
-                var dtoList = entities.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId)
+                // Convert to DTOs với CategoryFullPath (without counting to improve performance)
+                var dtoList = entities.ToDtoList(
+                    categoryId => _productServiceBll.GetCategoryName(categoryId),
+                    null,
+                    null,
+                    categoryId => _productServiceBll.GetCategoryFullPath(categoryId)
                 ).ToList();
 
                 BindGrid(dtoList);
@@ -1361,7 +1225,7 @@ namespace MasterData.ProductService
         private void BindGrid(List<ProductServiceDto> data)
         {
             productServiceDtoBindingSource.DataSource = data;
-            ProductServiceAdvBandedGridView.BestFitColumns();
+            ProductServiceGridView.BestFitColumns();
             ConfigureMultiLineGridView();
             UpdateButtonStates();
             UpdateStatusBar();
@@ -1378,7 +1242,7 @@ namespace MasterData.ProductService
 
                 // Bind dữ liệu
                 productServiceDtoBindingSource.DataSource = dtoList;
-                ProductServiceAdvBandedGridView.BestFitColumns();
+                ProductServiceGridView.BestFitColumns();
                 ConfigureMultiLineGridView();
                 UpdateButtonStates();
                 UpdateStatusBar();
@@ -1396,8 +1260,8 @@ namespace MasterData.ProductService
         private void ClearSelectionState()
         {
             _selectedProductServiceIds.Clear();
-            ProductServiceAdvBandedGridView.ClearSelection();
-            ProductServiceAdvBandedGridView.FocusedRowHandle = GridControl.InvalidRowHandle;
+            ProductServiceGridView.ClearSelection();
+            ProductServiceGridView.FocusedRowHandle = GridControl.InvalidRowHandle;
             UpdateButtonStates();
             UpdateStatusBar();
         }

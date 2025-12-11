@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
-using System.Windows.Forms;
-using DevExpress.XtraBars;
-using DevExpress.XtraEditors.Repository;
+﻿using DevExpress.XtraBars;
 using DevExpress.XtraGrid;
-using DevExpress.XtraGrid.Views.BandedGrid;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
-using DTO.MasterData.ProductService;
+using System.ComponentModel;
+using System.Windows.Forms;
+using DevExpress.XtraEditors.Repository;
 
 namespace MasterData.ProductService
 {
@@ -64,37 +64,28 @@ namespace MasterData.ProductService
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.ProductServiceListGridControl = new DevExpress.XtraGrid.GridControl();
             this.productServiceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.ProductServiceAdvBandedGridView = new DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView();
-            this.gridBand1 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.colCode = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
-            this.colTypeDisplay = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colDescription = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.gridBand3 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.colCategoryName = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colStatusDisplay = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colVariantCount = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colImageCount = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colIsActive = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.gridBand2 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.colThumbnail = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
-            this.colId = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.ProductServiceGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.HtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colThumbnailImage = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colCategoryFullPathHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.ProductThumbnailRepositoryItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
+            this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceListGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceAdvBandedGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductThumbnailRepositoryItemPictureEdit)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -321,180 +312,122 @@ namespace MasterData.ProductService
             // ProductServiceListGridControl
             // 
             this.ProductServiceListGridControl.DataSource = this.productServiceDtoBindingSource;
-            this.ProductServiceListGridControl.EmbeddedNavigator.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
             this.ProductServiceListGridControl.Location = new System.Drawing.Point(16, 16);
-            this.ProductServiceListGridControl.MainView = this.ProductServiceAdvBandedGridView;
+            this.ProductServiceListGridControl.MainView = this.ProductServiceGridView;
             this.ProductServiceListGridControl.MenuManager = this.barManager1;
             this.ProductServiceListGridControl.Name = "ProductServiceListGridControl";
             this.ProductServiceListGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemPictureEdit1,
-            this.repositoryItemHypertextLabel1});
+            this.HtmlHypertextLabel,
+            this.ProductThumbnailRepositoryItemPictureEdit});
             this.ProductServiceListGridControl.Size = new System.Drawing.Size(1043, 519);
             this.ProductServiceListGridControl.TabIndex = 5;
             this.ProductServiceListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.ProductServiceAdvBandedGridView});
+            this.ProductServiceGridView});
             // 
             // productServiceDtoBindingSource
             // 
-            this.productServiceDtoBindingSource.DataSource = typeof(ProductServiceDto);
+            this.productServiceDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductServiceDto);
             // 
-            // ProductServiceAdvBandedGridView
+            // ProductServiceGridView
             // 
-            this.ProductServiceAdvBandedGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.ProductServiceAdvBandedGridView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.Blue;
-            this.ProductServiceAdvBandedGridView.Appearance.ViewCaption.Options.UseFont = true;
-            this.ProductServiceAdvBandedGridView.Appearance.ViewCaption.Options.UseForeColor = true;
-            this.ProductServiceAdvBandedGridView.Bands.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.GridBand[] {
-            this.gridBand1,
-            this.gridBand3,
-            this.gridBand2});
-            this.ProductServiceAdvBandedGridView.Columns.AddRange(new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn[] {
-            this.colId,
-            this.colThumbnail,
-            this.colCode,
-            this.colName,
-            this.colCategoryName,
-            this.colTypeDisplay,
-            this.colDescription,
-            this.colIsActive,
-            this.colStatusDisplay,
-            this.colVariantCount,
-            this.colImageCount});
-            this.ProductServiceAdvBandedGridView.GridControl = this.ProductServiceListGridControl;
-            this.ProductServiceAdvBandedGridView.IndicatorWidth = 40;
-            this.ProductServiceAdvBandedGridView.Name = "ProductServiceAdvBandedGridView";
-            this.ProductServiceAdvBandedGridView.OptionsClipboard.AllowHtmlFormat = DevExpress.Utils.DefaultBoolean.True;
-            this.ProductServiceAdvBandedGridView.OptionsFind.AlwaysVisible = true;
-            this.ProductServiceAdvBandedGridView.OptionsPrint.EnableAppearanceEvenRow = true;
-            this.ProductServiceAdvBandedGridView.OptionsSelection.MultiSelect = true;
-            this.ProductServiceAdvBandedGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.ProductServiceAdvBandedGridView.OptionsView.AllowHtmlDrawDetailTabs = true;
-            this.ProductServiceAdvBandedGridView.OptionsView.AllowHtmlDrawHeaders = true;
-            this.ProductServiceAdvBandedGridView.OptionsView.EnableAppearanceEvenRow = true;
-            this.ProductServiceAdvBandedGridView.OptionsView.ShowAutoFilterRow = true;
-            this.ProductServiceAdvBandedGridView.OptionsView.ShowGroupPanel = false;
-            this.ProductServiceAdvBandedGridView.OptionsView.ShowViewCaption = true;
-            this.ProductServiceAdvBandedGridView.ViewCaption = "BẢNG DỮ LIỆU SẢN PHẨM DỊCH VỤ";
+            this.ProductServiceGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.ProductServiceGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.ProductServiceGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.ProductServiceGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.ProductServiceGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colThongTinHtml,
+            this.colThumbnailImage,
+            this.colCategoryFullPathHtml});
+            this.ProductServiceGridView.GridControl = this.ProductServiceListGridControl;
+            this.ProductServiceGridView.IndicatorWidth = 40;
+            this.ProductServiceGridView.Name = "ProductServiceGridView";
+            this.ProductServiceGridView.OptionsSelection.MultiSelect = true;
+            this.ProductServiceGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.ProductServiceGridView.OptionsView.ColumnAutoWidth = false;
+            this.ProductServiceGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.ProductServiceGridView.OptionsView.EnableAppearanceEvenRow = true;
+            this.ProductServiceGridView.OptionsView.EnableAppearanceOddRow = true;
+            this.ProductServiceGridView.OptionsView.RowAutoHeight = true;
+            this.ProductServiceGridView.OptionsView.ShowAutoFilterRow = true;
+            this.ProductServiceGridView.OptionsView.ShowFooter = true;
+            this.ProductServiceGridView.OptionsView.ShowGroupPanel = false;
+            this.ProductServiceGridView.OptionsView.ShowViewCaption = true;
+            this.ProductServiceGridView.ViewCaption = "BẢNG DỮ LIỆU SẢN PHẨM DỊCH VỤ";
             // 
-            // gridBand1
+            // colThongTinHtml
             // 
-            this.gridBand1.Caption = "Thông tin cơ bản";
-            this.gridBand1.Columns.Add(this.colCode);
-            this.gridBand1.Columns.Add(this.colName);
-            this.gridBand1.Columns.Add(this.colTypeDisplay);
-            this.gridBand1.Columns.Add(this.colDescription);
-            this.gridBand1.Name = "gridBand1";
-            this.gridBand1.VisibleIndex = 0;
-            this.gridBand1.Width = 225;
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin đầy đủ";
+            this.colThongTinHtml.ColumnEdit = this.HtmlHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 300;
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 3;
+            this.colThongTinHtml.Width = 500;
             // 
-            // colCode
+            // HtmlHypertextLabel
             // 
-            this.colCode.FieldName = "Code";
-            this.colCode.Name = "colCode";
-            this.colCode.Visible = true;
+            this.HtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.HtmlHypertextLabel.Name = "HtmlHypertextLabel";
             // 
-            // colName
+            // colThumbnailImage
             // 
-            this.colName.ColumnEdit = this.repositoryItemHypertextLabel1;
-            this.colName.FieldName = "Name";
-            this.colName.Name = "colName";
-            this.colName.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
-            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Count, "Name", "Có {0} dòng")});
-            this.colName.Visible = true;
+            this.colThumbnailImage.AppearanceCell.Options.UseTextOptions = true;
+            this.colThumbnailImage.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThumbnailImage.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThumbnailImage.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThumbnailImage.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThumbnailImage.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThumbnailImage.AppearanceHeader.Options.UseBackColor = true;
+            this.colThumbnailImage.AppearanceHeader.Options.UseFont = true;
+            this.colThumbnailImage.AppearanceHeader.Options.UseForeColor = true;
+            this.colThumbnailImage.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThumbnailImage.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThumbnailImage.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThumbnailImage.Caption = "Ảnh đại diện";
+            this.colThumbnailImage.ColumnEdit = this.ProductThumbnailRepositoryItemPictureEdit;
+            this.colThumbnailImage.FieldName = "ThumbnailImage";
+            this.colThumbnailImage.MinWidth = 100;
+            this.colThumbnailImage.Name = "colThumbnailImage";
+            this.colThumbnailImage.OptionsColumn.FixedWidth = true;
+            this.colThumbnailImage.Visible = true;
+            this.colThumbnailImage.VisibleIndex = 1;
+            this.colThumbnailImage.Width = 120;
             // 
-            // repositoryItemHypertextLabel1
+            // colCategoryFullPathHtml
             // 
-            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
-            // 
-            // colTypeDisplay
-            // 
-            this.colTypeDisplay.ColumnEdit = this.repositoryItemHypertextLabel1;
-            this.colTypeDisplay.FieldName = "TypeDisplay";
-            this.colTypeDisplay.Name = "colTypeDisplay";
-            this.colTypeDisplay.Visible = true;
-            // 
-            // colDescription
-            // 
-            this.colDescription.ColumnEdit = this.repositoryItemHypertextLabel1;
-            this.colDescription.FieldName = "Description";
-            this.colDescription.Name = "colDescription";
-            this.colDescription.RowCount = 2;
-            this.colDescription.RowIndex = 1;
-            this.colDescription.Visible = true;
-            // 
-            // gridBand3
-            // 
-            this.gridBand3.Caption = "Phân loại & Trạng thái";
-            this.gridBand3.Columns.Add(this.colCategoryName);
-            this.gridBand3.Columns.Add(this.colStatusDisplay);
-            this.gridBand3.Columns.Add(this.colVariantCount);
-            this.gridBand3.Columns.Add(this.colImageCount);
-            this.gridBand3.Columns.Add(this.colIsActive);
-            this.gridBand3.Name = "gridBand3";
-            this.gridBand3.VisibleIndex = 1;
-            this.gridBand3.Width = 150;
-            // 
-            // colCategoryName
-            // 
-            this.colCategoryName.ColumnEdit = this.repositoryItemHypertextLabel1;
-            this.colCategoryName.FieldName = "CategoryName";
-            this.colCategoryName.Name = "colCategoryName";
-            this.colCategoryName.Visible = true;
-            // 
-            // colStatusDisplay
-            // 
-            this.colStatusDisplay.FieldName = "StatusDisplay";
-            this.colStatusDisplay.Name = "colStatusDisplay";
-            this.colStatusDisplay.Visible = true;
-            // 
-            // colVariantCount
-            // 
-            this.colVariantCount.FieldName = "VariantCount";
-            this.colVariantCount.Name = "colVariantCount";
-            this.colVariantCount.RowIndex = 1;
-            this.colVariantCount.Visible = true;
-            // 
-            // colImageCount
-            // 
-            this.colImageCount.FieldName = "ImageCount";
-            this.colImageCount.Name = "colImageCount";
-            this.colImageCount.RowIndex = 1;
-            this.colImageCount.Visible = true;
-            // 
-            // colIsActive
-            // 
-            this.colIsActive.FieldName = "IsActive";
-            this.colIsActive.Name = "colIsActive";
-            this.colIsActive.RowIndex = 2;
-            this.colIsActive.Visible = true;
-            // 
-            // gridBand2
-            // 
-            this.gridBand2.Caption = "Ảnh & Thời gian";
-            this.gridBand2.Columns.Add(this.colThumbnail);
-            this.gridBand2.Name = "gridBand2";
-            this.gridBand2.VisibleIndex = 2;
-            this.gridBand2.Width = 80;
-            // 
-            // colThumbnail
-            // 
-            this.colThumbnail.ColumnEdit = this.repositoryItemPictureEdit1;
-            this.colThumbnail.FieldName = "ThumbnailImage";
-            this.colThumbnail.Name = "colThumbnail";
-            this.colThumbnail.OptionsEditForm.RowSpan = 3;
-            this.colThumbnail.RowCount = 3;
-            this.colThumbnail.Visible = true;
-            this.colThumbnail.Width = 80;
-            // 
-            // repositoryItemPictureEdit1
-            // 
-            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
-            // 
-            // colId
-            // 
-            this.colId.FieldName = "Id";
-            this.colId.Name = "colId";
+            this.colCategoryFullPathHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colCategoryFullPathHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colCategoryFullPathHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colCategoryFullPathHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colCategoryFullPathHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colCategoryFullPathHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colCategoryFullPathHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colCategoryFullPathHtml.AppearanceHeader.Options.UseFont = true;
+            this.colCategoryFullPathHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colCategoryFullPathHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colCategoryFullPathHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colCategoryFullPathHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colCategoryFullPathHtml.Caption = "Phân loại";
+            this.colCategoryFullPathHtml.ColumnEdit = this.HtmlHypertextLabel;
+            this.colCategoryFullPathHtml.FieldName = "CategoryFullPathHtml";
+            this.colCategoryFullPathHtml.MinWidth = 200;
+            this.colCategoryFullPathHtml.Name = "colCategoryFullPathHtml";
+            this.colCategoryFullPathHtml.Visible = true;
+            this.colCategoryFullPathHtml.VisibleIndex = 2;
+            this.colCategoryFullPathHtml.Width = 280;
             // 
             // Root
             // 
@@ -514,6 +447,13 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Size = new System.Drawing.Size(1049, 525);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // ProductThumbnailRepositoryItemPictureEdit
+            // 
+            this.ProductThumbnailRepositoryItemPictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.ProductThumbnailRepositoryItemPictureEdit.Name = "ProductThumbnailRepositoryItemPictureEdit";
+            this.ProductThumbnailRepositoryItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.ProductThumbnailRepositoryItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            // 
             // FrmProductServiceList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -531,13 +471,15 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
+            this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceListGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceAdvBandedGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductThumbnailRepositoryItemPictureEdit)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -563,22 +505,7 @@ namespace MasterData.ProductService
         private BarButtonItem CountVariantAndImageBarButtonItem;
         
         private BindingSource productServiceDtoBindingSource;
-        private AdvBandedGridView ProductServiceAdvBandedGridView;
-        private BandedGridColumn colId;
-        private BandedGridColumn colThumbnail;
         private RepositoryItemPictureEdit repositoryItemPictureEdit1;
-        private BandedGridColumn colCode;
-        private BandedGridColumn colName;
-        private BandedGridColumn colCategoryName;
-        private BandedGridColumn colTypeDisplay;
-        private BandedGridColumn colDescription;
-        private BandedGridColumn colIsActive;
-        private BandedGridColumn colStatusDisplay;
-        private BandedGridColumn colVariantCount;
-        private BandedGridColumn colImageCount;
-        private GridBand gridBand1;
-        private GridBand gridBand3;
-        private GridBand gridBand2;
         private Bar bar1;
         private BarHeaderItem barHeaderItem1;
         private BarStaticItem DataSummaryBarStaticItem;
@@ -589,6 +516,11 @@ namespace MasterData.ProductService
         private BarEditItem RecordNumberBarEditItem;
         private RepositoryItemComboBox repositoryItemComboBox2;
         private BarButtonItem DataFilterBtn;
-        private RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
+        private GridView ProductServiceGridView;
+        private GridColumn colThongTinHtml;
+        private GridColumn colThumbnailImage;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlHypertextLabel;
+        private GridColumn colCategoryFullPathHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit ProductThumbnailRepositoryItemPictureEdit;
     }
 }

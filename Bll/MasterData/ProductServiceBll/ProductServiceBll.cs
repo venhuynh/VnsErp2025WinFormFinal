@@ -244,6 +244,48 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
+        /// Lấy đường dẫn đầy đủ của danh mục từ gốc đến danh mục này
+        /// </summary>
+        /// <param name="categoryId">ID danh mục</param>
+        /// <returns>Đường dẫn đầy đủ (ví dụ: "Danh mục cha > Danh mục con") hoặc null nếu không tìm thấy</returns>
+        public string GetCategoryFullPath(Guid? categoryId)
+        {
+            try
+            {
+                if (categoryId == null || categoryId == Guid.Empty)
+                    return null;
+
+                var category = GetCategoryDataAccess().GetById(categoryId.Value);
+                if (category == null)
+                    return null;
+
+                var pathParts = new List<string> { category.CategoryName };
+                var current = category;
+
+                // Đi ngược lên parent categories
+                while (current.ParentId.HasValue)
+                {
+                    current = GetCategoryDataAccess().GetById(current.ParentId.Value);
+                    if (current == null)
+                        break;
+                    pathParts.Insert(0, current.CategoryName);
+                    
+                    // Tránh infinite loop
+                    if (pathParts.Count > 10)
+                        break;
+                }
+
+                return string.Join(" > ", pathParts);
+            }
+            catch (Exception)
+            {
+                // Log lỗi nhưng không throw để không ảnh hưởng đến việc hiển thị
+                // Có thể sử dụng logger ở đây nếu cần
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Đếm số lượng biến thể của sản phẩm/dịch vụ
         /// </summary>
         /// <param name="productServiceId">ID sản phẩm/dịch vụ</param>
