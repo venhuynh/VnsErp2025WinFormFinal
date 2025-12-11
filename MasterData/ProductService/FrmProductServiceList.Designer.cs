@@ -302,6 +302,7 @@ namespace MasterData.ProductService
             this.ProductServiceGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
             this.ProductServiceGridView.Appearance.ViewCaption.Options.UseFont = true;
             this.ProductServiceGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.ProductServiceGridView.ColumnPanelRowHeight = 75;
             this.ProductServiceGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colThongTinHtml,
             this.colThumbnailImage,
@@ -315,11 +316,11 @@ namespace MasterData.ProductService
             this.ProductServiceGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
             this.ProductServiceGridView.OptionsView.EnableAppearanceEvenRow = true;
             this.ProductServiceGridView.OptionsView.EnableAppearanceOddRow = true;
-            this.ProductServiceGridView.OptionsView.RowAutoHeight = true;
             this.ProductServiceGridView.OptionsView.ShowAutoFilterRow = true;
             this.ProductServiceGridView.OptionsView.ShowFooter = true;
             this.ProductServiceGridView.OptionsView.ShowGroupPanel = false;
             this.ProductServiceGridView.OptionsView.ShowViewCaption = true;
+            this.ProductServiceGridView.RowHeight = 75;
             this.ProductServiceGridView.ViewCaption = "BẢNG DỮ LIỆU SẢN PHẨM DỊCH VỤ";
             // 
             // colThongTinHtml
@@ -378,6 +379,7 @@ namespace MasterData.ProductService
             // ProductThumbnailRepositoryItemPictureEdit
             // 
             this.ProductThumbnailRepositoryItemPictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.ProductThumbnailRepositoryItemPictureEdit.CustomHeight = 75;
             this.ProductThumbnailRepositoryItemPictureEdit.Name = "ProductThumbnailRepositoryItemPictureEdit";
             this.ProductThumbnailRepositoryItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
             this.ProductThumbnailRepositoryItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
@@ -445,6 +447,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductThumbnailRepositoryItemPictureEdit)).EndInit();
+            this.ProductThumbnailRepositoryItemPictureEdit.ImageChanged += new System.EventHandler(this.ProductThumbnailRepositoryItemPictureEdit_ImageChanged);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);

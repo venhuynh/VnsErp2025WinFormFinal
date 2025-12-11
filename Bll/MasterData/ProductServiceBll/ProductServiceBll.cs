@@ -4,8 +4,18 @@ using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bll.Common.ImageStorage;
+using Bll.Common.ImageService;
+using Bll.Common;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
 
 namespace Bll.MasterData.ProductServiceBll
 {
@@ -21,6 +31,9 @@ namespace Bll.MasterData.ProductServiceBll
         private IProductServiceCategoryRepository _categoryDataAccess;
         private readonly object _lockObject = new object();
         private readonly object _categoryLockObject = new object();
+        private readonly IImageStorageService _imageStorage;
+        private readonly ImageCompressionService _imageCompression;
+        private readonly ILogger _logger;
 
         #endregion
 
@@ -32,6 +45,9 @@ namespace Bll.MasterData.ProductServiceBll
         public ProductServiceBll()
         {
             new ProductImageBll();
+            _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
+            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
+            _imageCompression = new ImageCompressionService();
         }
 
         #endregion
@@ -534,6 +550,157 @@ namespace Bll.MasterData.ProductServiceBll
             catch (Exception ex)
             {
                 throw new BusinessLogicException($"Lỗi khi lấy dữ liệu ảnh thumbnail: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật thumbnail image cho sản phẩm/dịch vụ từ byte array
+        /// Lưu ảnh gốc lên NAS và thumbnail đã resize vào database
+        /// </summary>
+        /// <param name="productId">ID sản phẩm/dịch vụ</param>
+        /// <param name="imageBytes">Byte array của hình ảnh gốc (null để xóa)</param>
+        /// <param name="thumbnailMaxDimension">Kích thước tối đa của thumbnail (mặc định 120px)</param>
+        /// <returns>ProductService entity đã được cập nhật</returns>
+        public async Task<ProductService> UpdateThumbnailImageAsync(Guid productId, byte[] imageBytes, int thumbnailMaxDimension = 120)
+        {
+            try
+            {
+                var productService = GetById(productId);
+                if (productService == null)
+                {
+                    throw new BusinessLogicException($"Không tìm thấy sản phẩm/dịch vụ với ID {productId}");
+                }
+
+                // Xử lý xóa thumbnail
+                if (imageBytes == null || imageBytes.Length == 0)
+                {
+                    // Xóa file trên NAS nếu có
+                    if (!string.IsNullOrWhiteSpace(productService.ThumbnailRelativePath))
+                    {
+                        try
+                        {
+                            await _imageStorage.DeleteImageAsync(productService.ThumbnailRelativePath);
+                            _logger.Info($"Đã xóa file thumbnail từ storage, RelativePath={productService.ThumbnailRelativePath}");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Warning($"Không thể xóa file thumbnail từ storage: {ex.Message}");
+                        }
+                    }
+
+                    // Xóa thông tin trong database
+                    productService.ThumbnailImage = null;
+                    productService.ThumbnailFileName = null;
+                    productService.ThumbnailRelativePath = null;
+                    productService.ThumbnailFullPath = null;
+                    productService.ThumbnailStorageType = null;
+                    productService.ThumbnailFileSize = null;
+                    productService.ThumbnailChecksum = null;
+                }
+                else
+                {
+                    // Xử lý upload thumbnail mới
+                    if (thumbnailMaxDimension <= 0)
+                    {
+                        thumbnailMaxDimension = 120; // Default 120px cho cột thumbnail
+                    }
+
+                    // 1. Tạo tên file
+                    var fileExtension = ".jpg"; // Mặc định JPEG
+                    try
+                    {
+                        using (var ms = new MemoryStream(imageBytes))
+                        using (var img = Image.FromStream(ms))
+                        {
+                            if (img.RawFormat.Equals(ImageFormat.Png))
+                                fileExtension = ".png";
+                            else if (img.RawFormat.Equals(ImageFormat.Gif))
+                                fileExtension = ".gif";
+                        }
+                    }
+                    catch
+                    {
+                        // Nếu không detect được, dùng .jpg mặc định
+                    }
+
+                    var fileName = $"PS_{productId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+
+                    // 2. Lưu ảnh gốc lên NAS
+                    var storageResult = await _imageStorage.SaveImageAsync(
+                        imageData: imageBytes,
+                        fileName: fileName,
+                        category: ImageCategory.Product, // Sử dụng Product category
+                        entityId: productId,
+                        generateThumbnail: false // Không tạo thumbnail trên NAS, sẽ tạo và lưu vào database
+                    );
+
+                    if (!storageResult.Success)
+                    {
+                        throw new InvalidOperationException(
+                            $"Không thể lưu hình ảnh vào storage: {storageResult.ErrorMessage}");
+                    }
+
+                    // 3. Tạo thumbnail từ ảnh gốc với kích thước tùy chỉnh
+                    byte[] thumbnailData = null;
+                    try
+                    {
+                        thumbnailData = _imageCompression.CompressImage(
+                            imageData: imageBytes,
+                            targetSize: 50000, // Target size: ~50KB
+                            maxDimension: thumbnailMaxDimension, // Sử dụng kích thước tùy chỉnh (120px cho cột thumbnail)
+                            format: ImageFormat.Jpeg
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Warning($"Không thể tạo thumbnail cho sản phẩm/dịch vụ {productId}: {ex.Message}");
+                        // Tiếp tục lưu ảnh dù không tạo được thumbnail
+                    }
+
+                    // 4. Xóa file cũ trên NAS nếu có
+                    if (!string.IsNullOrWhiteSpace(productService.ThumbnailRelativePath) && 
+                        productService.ThumbnailRelativePath != storageResult.RelativePath)
+                    {
+                        try
+                        {
+                            await _imageStorage.DeleteImageAsync(productService.ThumbnailRelativePath);
+                            _logger.Info($"Đã xóa file thumbnail cũ từ storage, RelativePath={productService.ThumbnailRelativePath}");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Warning($"Không thể xóa file thumbnail cũ từ storage: {ex.Message}");
+                        }
+                    }
+
+                    // 5. Cập nhật thông tin trong entity
+                    productService.ThumbnailFileName = storageResult.FileName;
+                    productService.ThumbnailRelativePath = storageResult.RelativePath;
+                    productService.ThumbnailFullPath = storageResult.FullPath;
+                    productService.ThumbnailStorageType = "NAS";
+                    productService.ThumbnailFileSize = storageResult.FileSize;
+                    productService.ThumbnailChecksum = storageResult.Checksum;
+
+                    // Lưu thumbnail đã resize vào database
+                    if (thumbnailData != null && thumbnailData.Length > 0)
+                    {
+                        productService.ThumbnailImage = new Binary(thumbnailData);
+                    }
+                    else
+                    {
+                        // Nếu không tạo được thumbnail, lưu ảnh gốc đã resize nhỏ
+                        productService.ThumbnailImage = new Binary(imageBytes);
+                    }
+                }
+
+                // 6. Lưu vào database
+                SaveOrUpdate(productService);
+
+                return productService;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi cập nhật thumbnail image cho sản phẩm/dịch vụ {productId}: {ex.Message}", ex);
+                throw new BusinessLogicException($"Lỗi khi cập nhật thumbnail image: {ex.Message}", ex);
             }
         }
 
