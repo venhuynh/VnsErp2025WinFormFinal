@@ -261,6 +261,23 @@ namespace MasterData.Company
             {
                 // Cấu hình cơ bản cho CardView
                 // Hầu hết cấu hình đã được thực hiện trong Designer
+
+                // Cấu hình tiêu đề card (thay đổi từ "Record N 1...." thành "Nhân viên thứ ...")
+                EmployeeGridCardView.CardCaptionFormat = "Nhân viên thứ {0}: {1}";
+                
+                // Thiết lập separators để hiển thị thông tin nhân viên trong tiêu đề
+                EmployeeGridCardView.CardCaptionFormat = null; // Bỏ format mặc định
+                EmployeeGridCardView.Cards.Clear();
+
+                // Thêm custom card caption format event nếu cần
+                EmployeeGridCardView.CustomCardCaption += (sender, e) =>
+                {
+                    if (sender is CardView view && e.Row is EmployeeDto dto)
+                    {
+                        var recordIndex = view.GetRowHandle(e.RowIndex) + 1;
+                        e.CardCaption = $"Nhân viên thứ {recordIndex}: {dto.FullName}";
+                    }
+                };
             }
             catch (Exception ex)
             {
