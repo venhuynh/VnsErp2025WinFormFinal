@@ -886,7 +886,7 @@ namespace MasterData.Company
 
                 var employeeId = employeeDto.Id;
 
-                // Xử lý upload avatar
+                // Xử lý upload/xóa avatar
                 await ExecuteWithWaitingFormAsync(async () =>
                 {
                     if (pictureEdit.Image != null)
@@ -920,9 +920,21 @@ namespace MasterData.Company
                     }
                     else
                     {
-                        // Trường hợp hình ảnh bị xóa - có thể xóa avatar nếu cần
-                        // Hiện tại không xóa, chỉ bỏ qua
-                        System.Diagnostics.Debug.WriteLine($"Avatar đã bị xóa cho nhân viên {employeeId}");
+                        // Trường hợp hình ảnh bị xóa - DELETE
+                        // Kiểm tra xem có avatar để xóa không
+                        if (employeeDto.AvatarThumbnailData == null || employeeDto.AvatarThumbnailData.Length == 0)
+                        {
+                            ShowInfo("Nhân viên này không có avatar để xóa.");
+                            return;
+                        }
+
+                        // Xóa avatar từ database
+                        _employeeBll.DeleteAvatarOnly(employeeId);
+
+                        // Reload data để cập nhật UI
+                        await LoadDataAsyncWithoutSplash();
+
+                        ShowInfo("Đã xóa avatar nhân viên thành công!");
                     }
                 });
             }
