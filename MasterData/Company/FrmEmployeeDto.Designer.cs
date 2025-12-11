@@ -337,7 +337,7 @@ namespace MasterData.Company
             // EmployeeGridCardView
             // 
             this.EmployeeGridCardView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.EmployeeGridCardView.Appearance.ViewCaption.ForeColor = System.Drawing.Color.DarkBlue;
+            this.EmployeeGridCardView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
             this.EmployeeGridCardView.Appearance.ViewCaption.Options.UseFont = true;
             this.EmployeeGridCardView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.EmployeeGridCardView.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
