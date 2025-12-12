@@ -68,6 +68,32 @@ public class ProductImageRepository : IProductImageRepository
     #region Public Methods
 
     /// <summary>
+    /// Lấy tất cả hình ảnh
+    /// </summary>
+    /// <returns>Danh sách tất cả hình ảnh metadata</returns>
+    public List<ProductImage> GetAll()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            
+            // Load tất cả entities từ database
+            var entities = context.ProductImages
+                .OrderBy(x => x.ProductId)
+                .ThenBy(x => x.CreateDate)
+                .ToList();
+            
+            _logger.Debug($"Đã lấy {entities.Count} hình ảnh từ tất cả sản phẩm");
+            return entities;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy tất cả hình ảnh: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy tất cả hình ảnh: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
     /// Lấy danh sách hình ảnh của sản phẩm/dịch vụ
     /// </summary>
     /// <param name="productId">ID sản phẩm/dịch vụ</param>

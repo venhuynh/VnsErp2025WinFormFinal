@@ -444,8 +444,8 @@ namespace MasterData.ProductService
                 // Lấy thông tin file
                 var fileInfo = new FileInfo(imageFilePath);
                 var fileSize = fileInfo.Length;
-                var fileSizeMB = fileSize / (1024.0 * 1024.0);
-                LogTextBoxHelper.AppendInfo(LogTextBox, $"  Kích thước file: {fileSizeMB:F2} MB");
+                var fileSizeMb = fileSize / (1024.0 * 1024.0);
+                LogTextBoxHelper.AppendInfo(LogTextBox, $"  Kích thước file: {fileSizeMb:F2} MB");
 
                 // Sử dụng BLL để lưu hình ảnh vào NAS/Local storage và metadata vào database
                 // Method này sẽ:

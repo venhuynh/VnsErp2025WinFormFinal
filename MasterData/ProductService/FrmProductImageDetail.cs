@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTO.MasterData.ProductService;
 
@@ -114,10 +115,13 @@ namespace MasterData.ProductService
                     Id = imageEntity.Id,
                     ProductId = imageEntity.ProductId ?? Guid.Empty,
                     VariantId = null, // ProductImage không còn VariantId property
-                    ImagePath = imageEntity.RelativePath ?? imageEntity.FullPath, // Map từ RelativePath hoặc FullPath
+                    // Map RelativePath và FullPath để sử dụng cho việc load từ storage
+                    RelativePath = imageEntity.RelativePath,
+                    FullPath = imageEntity.FullPath,
+                    ImagePath = imageEntity.RelativePath ?? imageEntity.FullPath, // Legacy property
                     SortOrder = 0, // Không có SortOrder property
                     IsPrimary = false, // Không có IsPrimary property
-                    ImageData = imageEntity.ImageData?.ToArray(),
+                    ImageData = imageEntity.ImageData?.ToArray(), // Thumbnail từ database
                     ImageType = imageEntity.FileExtension ?? imageEntity.MimeType, // Map từ FileExtension hoặc MimeType
                     ImageSize = imageEntity.FileSize ?? 0, // Map từ FileSize
                     ImageWidth = 0, // Không có ImageWidth property
@@ -130,7 +134,7 @@ namespace MasterData.ProductService
                     FileName = imageEntity.FileName
                 };
 
-                // Load hình ảnh vào PictureEdit
+                // Load hình ảnh vào PictureEdit (async - kiểm tra file tồn tại trên NAS trước)
                 LoadImageToPictureEdit();
 
                 // Hiển thị thông tin chi tiết
@@ -147,41 +151,107 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Load hình ảnh vào PictureEdit
+        /// Đảm bảo file tồn tại trên NAS trước khi load
         /// </summary>
-        private void LoadImageToPictureEdit()
+        private async void LoadImageToPictureEdit()
         {
             try
             {
-                if (_currentImageDto?.ImageData != null && _currentImageDto.ImageData.Length > 0)
+                // Ưu tiên sử dụng ImageData (thumbnail) từ database nếu có
+                //if (_currentImageDto?.ImageData != null && _currentImageDto.ImageData.Length > 0)
+                //{
+                //    using (var ms = new MemoryStream(_currentImageDto.ImageData))
+                //    {
+                //        ProductImagePictureEdit.Image = Image.FromStream(ms);
+                //    }
+                //    return;
+                //}
+
+                // Nếu không có ImageData, load từ NAS/Local storage
+                if (!string.IsNullOrEmpty(_currentImageDto?.RelativePath))
                 {
-                    // Sử dụng ImageData từ database
-                    using (var ms = new MemoryStream(_currentImageDto.ImageData))
-                    {
-                        ProductImagePictureEdit.Image = Image.FromStream(ms);
-                    }
+                    await LoadImageFromStorageAsync(_currentImageDto.RelativePath);
                 }
-                else if (!string.IsNullOrEmpty(_currentImageDto?.ImagePath) && File.Exists(_currentImageDto.ImagePath))
+                else if (!string.IsNullOrEmpty(_currentImageDto?.ImagePath))
                 {
-                    // Sử dụng ImagePath nếu có
-                    ProductImagePictureEdit.Image = Image.FromFile(_currentImageDto.ImagePath);
+                    // Fallback: thử load từ ImagePath (có thể là FullPath)
+                    // Nhưng trước tiên cần kiểm tra file tồn tại trên NAS
+                    if (_currentImageDto.RelativePath == null && !string.IsNullOrEmpty(_currentImageDto.FullPath))
+                    {
+                        // Nếu có FullPath, thử extract RelativePath hoặc kiểm tra trực tiếp
+                        await LoadImageFromStorageAsync(_currentImageDto.FullPath);
+                    }
+                    else
+                    {
+                        // Hiển thị placeholder nếu không có đường dẫn hợp lệ
+                        ProductImagePictureEdit.Image = CreatePlaceholderImage("Không có đường dẫn file");
+                    }
                 }
                 else
                 {
                     // Hiển thị placeholder nếu không có hình ảnh
-                    ProductImagePictureEdit.Image = CreatePlaceholderImage();
+                    ProductImagePictureEdit.Image = CreatePlaceholderImage("Không có hình ảnh");
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Lỗi khi load hình ảnh: {ex.Message}");
-                ProductImagePictureEdit.Image = CreatePlaceholderImage();
+                ProductImagePictureEdit.Image = CreatePlaceholderImage($"Lỗi: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Load hình ảnh từ storage (NAS/Local) sau khi đảm bảo file tồn tại
+        /// </summary>
+        /// <param name="relativePath">Đường dẫn tương đối hoặc full path</param>
+        private async Task LoadImageFromStorageAsync(string relativePath)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(relativePath))
+                {
+                    ProductImagePictureEdit.Image = CreatePlaceholderImage("Không có đường dẫn file");
+                    return;
+                }
+
+                // Kiểm tra file tồn tại trên NAS/Local storage trước khi load
+                var fileExists = await _productImageBll.CheckImageFileExistsAsync(relativePath);
+                if (!fileExists)
+                {
+                    var errorMessage = $"File không tồn tại trên storage:\n{relativePath}";
+                    Debug.WriteLine(errorMessage);
+                    MsgBox.ShowWarning(errorMessage, "Cảnh báo");
+                    ProductImagePictureEdit.Image = CreatePlaceholderImage("File không tồn tại trên storage");
+                    return;
+                }
+
+                // Load hình ảnh từ storage thông qua BLL
+                var imageData = await _productImageBll.GetImageDataByRelativePathAsync(relativePath);
+                if (imageData == null || imageData.Length == 0)
+                {
+                    ProductImagePictureEdit.Image = CreatePlaceholderImage("Không thể đọc dữ liệu hình ảnh");
+                    return;
+                }
+
+                // Hiển thị hình ảnh
+                using (var ms = new MemoryStream(imageData))
+                {
+                    ProductImagePictureEdit.Image = Image.FromStream(ms);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Lỗi khi load hình ảnh từ storage '{relativePath}': {ex.Message}");
+                MsgBox.ShowError($"Lỗi khi load hình ảnh từ storage: {ex.Message}");
+                ProductImagePictureEdit.Image = CreatePlaceholderImage($"Lỗi: {ex.Message}");
             }
         }
 
         /// <summary>
         /// Tạo placeholder image khi không có hình ảnh
         /// </summary>
-        private Image CreatePlaceholderImage()
+        /// <param name="message">Thông báo hiển thị trên placeholder</param>
+        private Image CreatePlaceholderImage(string message = "Không có hình ảnh")
         {
             try
             {
@@ -189,10 +259,12 @@ namespace MasterData.ProductService
                 using (var g = Graphics.FromImage(bitmap))
                 {
                     g.Clear(Color.LightGray);
-                    g.DrawString("Không có hình ảnh", 
-                                new Font("Arial", 16, FontStyle.Bold), 
-                                Brushes.DarkGray, 
-                                new PointF(150, 140));
+                    
+                    // Vẽ text với word wrap
+                    var font = new Font("Arial", 12, FontStyle.Bold);
+                    var brush = Brushes.DarkGray;
+                    var rect = new RectangleF(10, 10, 380, 280);
+                    g.DrawString(message, font, brush, rect);
                 }
                 return bitmap;
             }

@@ -156,6 +156,51 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// Thông tin đơn vị tính dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Thông tin HTML")]
+    [Description("Thông tin đơn vị tính dưới dạng HTML")]
+    public string DisplayHtml
+    {
+        get
+        {
+            var code = Code ?? string.Empty;
+            var name = Name ?? string.Empty;
+            var description = Description ?? string.Empty;
+            var statusText = IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
+            var statusColor = IsActive ? "#4CAF50" : "#F44336";
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - Tên đơn vị: font lớn, bold, màu xanh đậm (primary)
+            // - Mã đơn vị: font nhỏ hơn, màu xám
+            // - Mô tả: font nhỏ hơn, màu xám
+            // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
+
+            var html = $"<size=12><b><color='blue'>{name}</color></b></size>";
+
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                html += $" <size=9><color='#757575'>({code})</color></size>";
+            }
+
+            html += "<br>";
+
+            // Mô tả - mỗi thông tin trên 1 hàng
+            if (!string.IsNullOrWhiteSpace(description))
+            {
+                html += $"<size=9><color='#757575'>Mô tả:</color></size> <size=10><color='#212121'>{description}</color></size><br>";
+            }
+
+            // Trạng thái - highlight với màu
+            html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+
+            return html;
+        }
+    }
+
     #endregion
 
     #region Helper Methods

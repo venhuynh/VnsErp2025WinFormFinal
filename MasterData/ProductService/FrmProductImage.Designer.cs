@@ -55,8 +55,9 @@ namespace MasterData.ProductService
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.KeywordBarEditItem = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.XemBaoCaoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.XoaPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.TimKiemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.AddProductImagesBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.XoaHinhAnhDuocChonBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XuatFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
@@ -72,7 +73,6 @@ namespace MasterData.ProductService
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.AddProductImagesBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProductImageDtoGridControl)).BeginInit();
@@ -231,11 +231,11 @@ namespace MasterData.ProductService
             this.barManager1.DockControls.Add(this.barDockControlRight);
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.XemBaoCaoBarButtonItem,
+            this.TimKiemHinhAnhBarButtonItem,
             this.barHeaderItem1,
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
-            this.XoaPhieuBarButtonItem,
+            this.XoaHinhAnhDuocChonBarButtonItem,
             this.XuatFileBarButtonItem,
             this.KeywordBarEditItem,
             this.barButtonItem1,
@@ -258,9 +258,9 @@ namespace MasterData.ProductService
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.PaintStyle | DevExpress.XtraBars.BarLinkUserDefines.Width))), this.KeywordBarEditItem, "", false, true, true, 131, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBaoCaoBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.TimKiemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AddProductImagesBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaHinhAnhDuocChonBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XuatFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
@@ -279,20 +279,27 @@ namespace MasterData.ProductService
             this.repositoryItemTextEdit2.AutoHeight = false;
             this.repositoryItemTextEdit2.Name = "repositoryItemTextEdit2";
             // 
-            // XemBaoCaoBarButtonItem
+            // TimKiemHinhAnhBarButtonItem
             // 
-            this.XemBaoCaoBarButtonItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.XemBaoCaoBarButtonItem.Caption = "Xem";
-            this.XemBaoCaoBarButtonItem.Id = 9;
-            this.XemBaoCaoBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.crossdatasourcefiltering__16x16;
-            this.XemBaoCaoBarButtonItem.Name = "XemBaoCaoBarButtonItem";
+            this.TimKiemHinhAnhBarButtonItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.TimKiemHinhAnhBarButtonItem.Caption = "Xem";
+            this.TimKiemHinhAnhBarButtonItem.Id = 9;
+            this.TimKiemHinhAnhBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.crossdatasourcefiltering__16x16;
+            this.TimKiemHinhAnhBarButtonItem.Name = "TimKiemHinhAnhBarButtonItem";
             // 
-            // XoaPhieuBarButtonItem
+            // AddProductImagesBarButtonItem
             // 
-            this.XoaPhieuBarButtonItem.Caption = "Xóa";
-            this.XoaPhieuBarButtonItem.Id = 14;
-            this.XoaPhieuBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.cancel_16x16;
-            this.XoaPhieuBarButtonItem.Name = "XoaPhieuBarButtonItem";
+            this.AddProductImagesBarButtonItem.Caption = "Thêm hình ảnh";
+            this.AddProductImagesBarButtonItem.Id = 20;
+            this.AddProductImagesBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.addnewdatasource_16x16;
+            this.AddProductImagesBarButtonItem.Name = "AddProductImagesBarButtonItem";
+            // 
+            // XoaHinhAnhDuocChonBarButtonItem
+            // 
+            this.XoaHinhAnhDuocChonBarButtonItem.Caption = "Xóa";
+            this.XoaHinhAnhDuocChonBarButtonItem.Id = 14;
+            this.XoaHinhAnhDuocChonBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.cancel_16x16;
+            this.XoaHinhAnhDuocChonBarButtonItem.Name = "XoaHinhAnhDuocChonBarButtonItem";
             // 
             // XuatFileBarButtonItem
             // 
@@ -417,13 +424,6 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Size = new System.Drawing.Size(1009, 389);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // AddProductImagesBarButtonItem
-            // 
-            this.AddProductImagesBarButtonItem.Caption = "Thêm hình ảnh";
-            this.AddProductImagesBarButtonItem.Id = 20;
-            this.AddProductImagesBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.addnewdatasource_16x16;
-            this.AddProductImagesBarButtonItem.Name = "AddProductImagesBarButtonItem";
-            // 
             // FrmProductImage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -469,12 +469,12 @@ namespace MasterData.ProductService
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit1;
         private DevExpress.XtraEditors.Repository.RepositoryItemDateEdit repositoryItemDateEdit2;
-        private DevExpress.XtraBars.BarButtonItem XemBaoCaoBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem TimKiemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.Bar bar1;
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
         private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
-        private DevExpress.XtraBars.BarButtonItem XoaPhieuBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem XoaHinhAnhDuocChonBarButtonItem;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
         private DevExpress.XtraBars.BarButtonItem XuatFileBarButtonItem;
         private DevExpress.XtraGrid.Views.WinExplorer.WinExplorerView ProductImageDtoWinExplorerView;

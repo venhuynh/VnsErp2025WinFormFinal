@@ -12,6 +12,12 @@ public interface IProductImageRepository
     #region Read Operations
 
     /// <summary>
+    /// Lấy tất cả hình ảnh
+    /// </summary>
+    /// <returns>Danh sách tất cả ProductImage</returns>
+    List<ProductImage> GetAll();
+
+    /// <summary>
     /// Lấy danh sách hình ảnh theo ProductId
     /// </summary>
     /// <param name="productId">Id của ProductService</param>

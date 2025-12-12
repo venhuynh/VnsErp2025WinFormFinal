@@ -10,6 +10,7 @@ using Bll.Common;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Utils;
+using Dal.DataContext;
 using DevExpress.Data;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
@@ -33,6 +34,11 @@ namespace MasterData.ProductService
         /// Business Logic Layer cho hình ảnh sản phẩm
         /// </summary>
         private ProductImageBll _productImageBll;
+
+        /// <summary>
+        /// Business Logic Layer cho sản phẩm/dịch vụ
+        /// </summary>
+        private ProductServiceBll _productServiceBll;
 
         /// <summary>
         /// ID sản phẩm hiện tại đang xem hình ảnh
@@ -100,6 +106,7 @@ namespace MasterData.ProductService
             try
             {
                 _productImageBll = new ProductImageBll();
+                _productServiceBll = new ProductServiceBll();
                 _imageList = new List<ProductImageDto>();
             }
             catch (InvalidOperationException ex)
@@ -264,9 +271,9 @@ namespace MasterData.ProductService
             }
             
             // Event cho XemBaoCaoBarButtonItem (nút tìm kiếm)
-            if (XemBaoCaoBarButtonItem != null)
+            if (TimKiemHinhAnhBarButtonItem != null)
             {
-                XemBaoCaoBarButtonItem.ItemClick += XemBaoCaoBarButtonItem_ItemClick;
+                TimKiemHinhAnhBarButtonItem.ItemClick += TimKiemHinhAnhBarButtonItem_ItemClick;
             }
             
             // Event cho KeywordBarEditItem (BarEditItem) - lắng nghe Enter key
@@ -280,6 +287,12 @@ namespace MasterData.ProductService
             {
                 ProductImageDtoWinExplorerView.DoubleClick += ProductImageDtoWinExplorerView_DoubleClick;
                 ProductImageDtoWinExplorerView.SelectionChanged += ProductImageDtoWinExplorerView_SelectionChanged;
+            }
+            
+            // Event cho nút Xóa hình ảnh
+            if (XoaHinhAnhDuocChonBarButtonItem != null)
+            {
+                XoaHinhAnhDuocChonBarButtonItem.ItemClick += XoaPhieuBarButtonItem_ItemClick;
             }
         }
 
@@ -313,40 +326,21 @@ namespace MasterData.ProductService
                 // Reset trước khi load dữ liệu mới
                 ResetImageSelection();
                 
+                List<ProductImage> images;
+                
                 if (!_currentProductId.HasValue)
                 {
-                    _imageList.Clear();
-                    ProductImageDtoGridControl.DataSource = null;
-                    return;
+                    // Nếu không có ProductId, load tất cả hình ảnh
+                    images = _productImageBll.GetAll();
+                }
+                else
+                {
+                    // Nếu có ProductId, chỉ load hình ảnh của sản phẩm đó
+                    images = _productImageBll.GetByProductId(_currentProductId.Value);
                 }
 
-                // Lấy danh sách hình ảnh từ BLL
-                var images = _productImageBll.GetByProductId(_currentProductId.Value);
-                
-                // Convert sang DTO - Tối ưu hóa bằng cách chỉ load ImageData khi cần thiết
-                _imageList = images.Select((img, index) => new ProductImageDto
-                {
-                    Id = img.Id,
-                    ProductId = img.ProductId ?? Guid.Empty,
-                    VariantId = null, // ProductImage không còn VariantId property
-                    ImagePath = img.RelativePath ?? img.FullPath, // Map từ RelativePath hoặc FullPath
-                    SortOrder = index, // Không có SortOrder property, dùng index
-                    IsPrimary = index == 0, // Không có IsPrimary property, coi ảnh đầu tiên là primary
-                    ImageData = img.ImageData?.ToArray(), // Chỉ load khi cần thiết
-                    ImageType = img.FileExtension ?? img.MimeType, // Map từ FileExtension hoặc MimeType
-                    ImageSize = img.FileSize ?? 0, // Map từ FileSize
-                    ImageWidth = 0, // Không có ImageWidth property
-                    ImageHeight = 0, // Không có ImageHeight property
-                    Caption = img.FileName, // Dùng FileName làm Caption
-                    AltText = img.FileName, // Dùng FileName làm AltText
-                    IsActive = true, // Không có IsActive property, mặc định true
-                    CreatedDate = img.CreateDate, // Map từ CreateDate
-                    ModifiedDate = img.ModifiedDate,
-                    FileName = img.FileName
-                }).ToList();
-
-                // Sắp xếp theo sản phẩm để tạo separator tự nhiên
-                _imageList = _imageList.OrderBy(x => x.ProductName).ThenBy(x => x.SortOrder).ToList();
+                // Map entities sang DTOs - ImageData (thumbnail) được load trực tiếp từ entity để tăng tốc độ và UX
+                _imageList = MapEntitiesToDtos(images);
 
                 // Hiển thị thông tin trong DataSummaryBarStaticItem
                 ShowImageSummary();
@@ -378,6 +372,128 @@ namespace MasterData.ProductService
             {
                 SplashScreenManager.CloseForm();
             }
+        }
+
+        /// <summary>
+        /// Map entities sang DTOs
+        /// ImageData (thumbnail) được load trực tiếp từ entity để tăng tốc độ hiển thị và cải thiện UX
+        /// Thumbnail đã được lưu trong database, không cần load từ NAS/Local storage
+        /// </summary>
+        private List<ProductImageDto> MapEntitiesToDtos(List<ProductImage> entities)
+        {
+            if (entities == null)
+                return new List<ProductImageDto>();
+
+            // Load tất cả ProductService để tránh truy cập navigation property sau khi DataContext bị dispose
+            // Tạo dictionary để lookup nhanh theo ProductId
+            var productServiceDict = new Dictionary<Guid, Dal.DataContext.ProductService>();
+            try
+            {
+                if (_productServiceBll != null)
+                {
+                    var productServices = _productServiceBll.GetAll();
+                    foreach (var ps in productServices)
+                    {
+                        if (ps.Id != Guid.Empty)
+                        {
+                            productServiceDict[ps.Id] = ps;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nhưng không throw để không chặn việc load hình ảnh
+                System.Diagnostics.Debug.WriteLine($"Lỗi khi load ProductService: {ex.Message}");
+            }
+
+            // Group theo ProductId để tính số thứ tự hình ảnh trong mỗi sản phẩm
+            var groupedByProduct = entities
+                .GroupBy(e => e.ProductId)
+                .ToList();
+
+            var dtos = new List<ProductImageDto>();
+
+            foreach (var group in groupedByProduct)
+            {
+                // Sắp xếp theo CreateDate để xác định số thứ tự
+                var sortedImages = group.OrderBy(e => e.CreateDate).ToList();
+                
+                for (int i = 0; i < sortedImages.Count; i++)
+                {
+                    var entity = sortedImages[i];
+                    
+                    // Lấy ProductService từ dictionary thay vì navigation property để tránh lỗi DataContext disposed
+                    Dal.DataContext.ProductService productService = null;
+                    if (entity.ProductId.HasValue && productServiceDict.TryGetValue(entity.ProductId.Value, out var value))
+                    {
+                        productService = value;
+                    }
+
+                    // Convert Binary ImageData sang byte[] để hiển thị thumbnail ngay lập tức
+                    // ImageData trong ProductImage chứa thumbnail đã được tối ưu, giúp tăng tốc độ truy vấn và UX
+                    byte[] thumbnailData = null;
+                    if (entity.ImageData != null)
+                    {
+                        try
+                        {
+                            thumbnailData = entity.ImageData.ToArray();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log lỗi nhưng không throw để không chặn việc load các hình ảnh khác
+                            System.Diagnostics.Debug.WriteLine($"Lỗi khi convert ImageData cho hình ảnh {entity.Id}: {ex.Message}");
+                        }
+                    }
+
+                    var dto = new ProductImageDto
+                    {
+                        Id = entity.Id,
+                        ProductId = entity.ProductId ?? Guid.Empty,
+                        // Load thumbnail từ ImageData trong database để hiển thị ngay, không cần load từ storage
+                        // Điều này tăng tốc độ truy vấn và cải thiện UX đáng kể
+                        ImageData = thumbnailData,
+                        FileName = entity.FileName,
+                        RelativePath = entity.RelativePath,
+                        FullPath = entity.FullPath,
+                        StorageType = entity.StorageType,
+                        FileSize = entity.FileSize,
+                        FileExtension = entity.FileExtension,
+                        MimeType = entity.MimeType,
+                        Checksum = entity.Checksum,
+                        FileExists = entity.FileExists,
+                        LastVerified = entity.LastVerified,
+                        MigrationStatus = entity.MigrationStatus,
+                        CreateDate = entity.CreateDate,
+                        CreateBy = entity.CreateBy,
+                        ModifiedDate = entity.ModifiedDate,
+                        ModifiedBy = entity.ModifiedBy,
+                        // Thông tin từ ProductService
+                        ProductCode = productService?.Code,
+                        ProductName = productService?.Name,
+                        // Số thứ tự hình ảnh trong sản phẩm (bắt đầu từ 1)
+                        ImageSequenceNumber = i + 1,
+                        // Legacy properties để backward compatibility
+                        VariantId = null,
+                        ImagePath = entity.RelativePath ?? entity.FullPath,
+                        SortOrder = i,
+                        IsPrimary = i == 0,
+                        ImageType = entity.FileExtension ?? entity.MimeType,
+                        ImageSize = entity.FileSize ?? 0,
+                        ImageWidth = 0,
+                        ImageHeight = 0,
+                        Caption = entity.FileName,
+                        AltText = entity.FileName,
+                        IsActive = true,
+                        CreatedDate = entity.CreateDate
+                    };
+
+                    dtos.Add(dto);
+                }
+            }
+
+            // Sắp xếp theo sản phẩm để tạo separator tự nhiên
+            return dtos.OrderBy(x => x.ProductName ?? "").ThenBy(x => x.ImageSequenceNumber).ToList();
         }
 
         /// <summary>
@@ -761,9 +877,170 @@ namespace MasterData.ProductService
         /// <summary>
         /// Xử lý sự kiện click nút Search (XemBaoCaoBarButtonItem)
         /// </summary>
-        private void XemBaoCaoBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void TimKiemHinhAnhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             PerformSearch();
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Xóa hình ảnh (XoaPhieuBarButtonItem)
+        /// Xóa hình ảnh được chọn trên NAS và trong database
+        /// </summary>
+        private async void XoaPhieuBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Lấy danh sách hình ảnh được chọn
+                var selectedImages = GetSelectedImages();
+                
+                if (selectedImages == null || selectedImages.Count == 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn ít nhất một hình ảnh để xóa.");
+                    return;
+                }
+
+                // Xác nhận xóa
+                var imageCount = selectedImages.Count;
+                var confirmMessage = imageCount == 1
+                    ? $"Bạn có chắc chắn muốn xóa hình ảnh này?\n\n" +
+                      $"• Tên: {selectedImages[0].FileName ?? selectedImages[0].Caption ?? "N/A"}\n" +
+                      $"• Hình ảnh sẽ bị xóa khỏi database và storage (NAS/Local)\n" +
+                      $"• Thao tác này không thể hoàn tác"
+                    : $"Bạn có chắc chắn muốn xóa {imageCount} hình ảnh đã chọn?\n\n" +
+                      $"• Tất cả hình ảnh sẽ bị xóa khỏi database và storage (NAS/Local)\n" +
+                      $"• Thao tác này không thể hoàn tác";
+
+                if (!MsgBox.ShowYesNo(confirmMessage, "Xác nhận xóa"))
+                {
+                    return;
+                }
+
+                // Xóa hình ảnh với WaitingForm
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    await DeleteSelectedImagesAsync(selectedImages);
+                });
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi xóa hình ảnh");
+            }
+        }
+
+        /// <summary>
+        /// Xóa các hình ảnh đã chọn (xóa trên NAS và trong database)
+        /// </summary>
+        /// <param name="selectedImages">Danh sách hình ảnh cần xóa</param>
+        private async Task DeleteSelectedImagesAsync(List<ProductImageDto> selectedImages)
+        {
+            var successCount = 0;
+            var errorCount = 0;
+            var errorMessages = new List<string>();
+            var deletedImageIds = new HashSet<Guid>(); // Lưu danh sách ID đã xóa thành công
+
+            foreach (var imageDto in selectedImages)
+            {
+                try
+                {
+                    // Sử dụng DeleteImageCompleteAsync để xóa cả file trên NAS và record trong database
+                    await _productImageBll.DeleteImageCompleteAsync(imageDto.Id);
+                    deletedImageIds.Add(imageDto.Id);
+                    successCount++;
+                }
+                catch (Exception ex)
+                {
+                    errorCount++;
+                    var fileName = imageDto.FileName ?? imageDto.Caption ?? imageDto.Id.ToString();
+                    errorMessages.Add($"{fileName}: {ex.Message}");
+                }
+            }
+
+            // Hiển thị kết quả
+            ShowDeleteResult(successCount, errorCount, errorMessages, selectedImages.Count);
+
+            // Chỉ remove các DTO đã xóa thành công khỏi datasource (không reload tất cả để tăng UX)
+            if (successCount > 0 && deletedImageIds.Any())
+            {
+                RemoveDeletedImagesFromDataSource(deletedImageIds);
+            }
+        }
+
+        /// <summary>
+        /// Remove các hình ảnh đã xóa khỏi datasource mà không cần reload tất cả (tăng UX)
+        /// </summary>
+        /// <param name="deletedImageIds">Danh sách ID hình ảnh đã xóa thành công</param>
+        private void RemoveDeletedImagesFromDataSource(HashSet<Guid> deletedImageIds)
+        {
+            try
+            {
+                if (_imageList == null || !_imageList.Any())
+                    return;
+
+                // Remove các DTO đã xóa khỏi _imageList
+                var removedCount = _imageList.RemoveAll(dto => dto != null && deletedImageIds.Contains(dto.Id));
+
+                if (removedCount > 0)
+                {
+                    // Refresh datasource
+                    ProductImageDtoGridControl.RefreshDataSource();
+                    
+                    // Clear selection
+                    ProductImageDtoWinExplorerView.ClearSelection();
+                    
+                    // Cập nhật summary
+                    ShowImageSummary();
+                    
+                    // Cập nhật status bar (sau khi xóa, không còn selection nào)
+                    if (SelectedRowBarStaticItem != null)
+                    {
+                        SelectedRowBarStaticItem.Caption = "Đã chọn: 0";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Lỗi khi remove hình ảnh đã xóa khỏi datasource: {ex.Message}");
+                // Nếu có lỗi, fallback về reload toàn bộ
+                // Lưu ý: Không gọi ReloadDataSource() ở đây vì có thể đang trong splash form
+                // Thay vào đó, chỉ log lỗi và để user tự reload nếu cần
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị kết quả xóa hình ảnh
+        /// </summary>
+        private void ShowDeleteResult(int successCount, int errorCount, List<string> errorMessages, int totalCount)
+        {
+            var message = "Kết quả xóa hình ảnh:\n\n";
+            message += $"✅ Đã xóa: {successCount}/{totalCount} hình ảnh\n";
+            
+            if (errorCount > 0)
+            {
+                message += $"❌ Lỗi: {errorCount} hình ảnh\n\n";
+                
+                if (errorMessages.Any())
+                {
+                    message += "Chi tiết lỗi:\n";
+                    foreach (var error in errorMessages.Take(5))
+                    {
+                        message += $"• {error}\n";
+                    }
+                    if (errorMessages.Count > 5)
+                    {
+                        message += $"• ... và {errorMessages.Count - 5} lỗi khác\n";
+                    }
+                }
+            }
+
+            if (successCount > 0)
+            {
+                message += "\n🎉 Đã xóa thành công!";
+                MsgBox.ShowSuccess(message);
+            }
+            else
+            {
+                MsgBox.ShowError(message);
+            }
         }
 
         /// <summary>
@@ -1172,6 +1449,37 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
+        /// Lấy danh sách tất cả hình ảnh được chọn
+        /// </summary>
+        private List<ProductImageDto> GetSelectedImages()
+        {
+            var selectedImages = new List<ProductImageDto>();
+            try
+            {
+                var selectedRowHandles = ProductImageDtoWinExplorerView.GetSelectedRows();
+                if (selectedRowHandles == null || selectedRowHandles.Length == 0)
+                    return selectedImages;
+
+                foreach (int rowHandle in selectedRowHandles)
+                {
+                    if (rowHandle < 0) continue;
+                    
+                    var dto = ProductImageDtoWinExplorerView.GetRow(rowHandle) as ProductImageDto;
+                    if (dto != null)
+                    {
+                        selectedImages.Add(dto);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Lỗi khi lấy danh sách hình ảnh được chọn: {ex.Message}");
+            }
+
+            return selectedImages;
+        }
+
+        /// <summary>
         /// Hiển thị thông tin chi tiết hình ảnh tại debug console
         /// </summary>
         private void ShowImageDetailToConsole(ProductImageDto imageDto)
@@ -1255,10 +1563,10 @@ namespace MasterData.ProductService
                 }
 
                 // SuperToolTip cho nút Xem
-                if (XemBaoCaoBarButtonItem != null)
+                if (TimKiemHinhAnhBarButtonItem != null)
                 {
                     SuperToolTipHelper.SetBarButtonSuperTip(
-                        XemBaoCaoBarButtonItem,
+                        TimKiemHinhAnhBarButtonItem,
                         title: "<b><color=Blue>👁️ Xem</color></b>",
                         content: "Thực hiện tìm kiếm hình ảnh theo từ khóa đã nhập.\n\n" +
                                 "Kết quả sẽ hiển thị tất cả hình ảnh của các sản phẩm/dịch vụ phù hợp."
@@ -1266,10 +1574,10 @@ namespace MasterData.ProductService
                 }
 
                 // SuperToolTip cho nút Xóa
-                if (XoaPhieuBarButtonItem != null)
+                if (XoaHinhAnhDuocChonBarButtonItem != null)
                 {
                     SuperToolTipHelper.SetBarButtonSuperTip(
-                        XoaPhieuBarButtonItem,
+                        XoaHinhAnhDuocChonBarButtonItem,
                         title: "<b><color=Red>🗑️ Xóa</color></b>",
                         content: "Xóa hình ảnh đã chọn.\n\n" +
                                 "• Chọn một hoặc nhiều hình ảnh từ danh sách\n" +

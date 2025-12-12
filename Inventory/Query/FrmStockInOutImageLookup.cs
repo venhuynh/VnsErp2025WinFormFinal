@@ -23,7 +23,7 @@ namespace Inventory.Query
     {
         #region ========== KHAI BÁO BIẾN ==========
 
-        private Guid? _stockInOutMasterId;
+        private readonly Guid? _stockInOutMasterId;
         private List<StockInOutImageDto> _dataSource;
         private StockInOutImageBll _stockInOutImageBll;
 
