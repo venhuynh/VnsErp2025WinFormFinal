@@ -504,39 +504,23 @@
     <Type Name="ProductImage">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="ProductId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="VariantId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="ImagePath" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
-      <Column Name="SortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="IsPrimary" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="ImageData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
-      <Column Name="ImageType" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
-      <Column Name="ImageSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="ImageWidth" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="ImageHeight" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Caption" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="AltText" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreateBy" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="FileName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="RelativePath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Column Name="FullPath" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
-      <Column Name="NASShareName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="StorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
-      <Column Name="StorageProvider" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="FileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="FileExtension" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
       <Column Name="MimeType" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="Checksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
-      <Column Name="HasThumbnail" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="ThumbnailPath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
-      <Column Name="ThumbnailFileName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="IsPublic" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="AccessUrl" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Column Name="FileExists" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="LastVerified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="MigrationStatus" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Association Name="ProductService_ProductImage" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />
-      <Association Name="ProductVariant_ProductImage" Member="ProductVariant" ThisKey="VariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.ProductService" Member="ProductServices">
@@ -600,7 +584,6 @@
       <Association Name="ProductVariant_Asset" Member="Assets" ThisKey="Id" OtherKey="ProductVariantId" Type="Asset" />
       <Association Name="ProductVariant_Device" Member="Devices" ThisKey="Id" OtherKey="ProductVariantId" Type="Device" />
       <Association Name="ProductVariant_InventoryBalance" Member="InventoryBalances" ThisKey="Id" OtherKey="ProductVariantId" Type="InventoryBalance" />
-      <Association Name="ProductVariant_ProductImage" Member="ProductImages" ThisKey="Id" OtherKey="VariantId" Type="ProductImage" />
       <Association Name="ProductVariant_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="ProductVariantId" Type="StockInOutDetail" />
       <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
       <Association Name="ProductService_ProductVariant" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />

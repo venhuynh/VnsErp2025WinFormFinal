@@ -1,4 +1,4 @@
-﻿using Bll.MasterData.ProductServiceBll;
+using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Utils;
 using DevExpress.XtraEditors;
@@ -113,20 +113,21 @@ namespace MasterData.ProductService
                 {
                     Id = imageEntity.Id,
                     ProductId = imageEntity.ProductId ?? Guid.Empty,
-                    VariantId = imageEntity.VariantId,
-                    ImagePath = imageEntity.ImagePath,
-                    SortOrder = imageEntity.SortOrder ?? 0,
-                    IsPrimary = imageEntity.IsPrimary ?? false,
+                    VariantId = null, // ProductImage không còn VariantId property
+                    ImagePath = imageEntity.RelativePath ?? imageEntity.FullPath, // Map từ RelativePath hoặc FullPath
+                    SortOrder = 0, // Không có SortOrder property
+                    IsPrimary = false, // Không có IsPrimary property
                     ImageData = imageEntity.ImageData?.ToArray(),
-                    ImageType = imageEntity.ImageType,
-                    ImageSize = imageEntity.ImageSize ?? 0,
-                    ImageWidth = imageEntity.ImageWidth ?? 0,
-                    ImageHeight = imageEntity.ImageHeight ?? 0,
-                    Caption = imageEntity.Caption,
-                    AltText = imageEntity.AltText,
-                    IsActive = imageEntity.IsActive ?? false,
-                    CreatedDate = imageEntity.CreatedDate ?? DateTime.Now,
-                    ModifiedDate = imageEntity.ModifiedDate
+                    ImageType = imageEntity.FileExtension ?? imageEntity.MimeType, // Map từ FileExtension hoặc MimeType
+                    ImageSize = imageEntity.FileSize ?? 0, // Map từ FileSize
+                    ImageWidth = 0, // Không có ImageWidth property
+                    ImageHeight = 0, // Không có ImageHeight property
+                    Caption = imageEntity.FileName ?? "Hình ảnh", // Dùng FileName làm Caption
+                    AltText = imageEntity.FileName ?? "Hình ảnh", // Dùng FileName làm AltText
+                    IsActive = true, // Không có IsActive property, mặc định true
+                    CreatedDate = imageEntity.CreateDate, // Map từ CreateDate
+                    ModifiedDate = imageEntity.ModifiedDate,
+                    FileName = imageEntity.FileName
                 };
 
                 // Load hình ảnh vào PictureEdit
@@ -359,8 +360,10 @@ namespace MasterData.ProductService
                     saveDialog.Filter = @"Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files|*.*";
                     
                     // Sử dụng tên sản phẩm làm tên file mặc định
-                    var productName = GetProductName(_currentImageDto.ProductId);
-                    var imageCaption = _currentImageDto.Caption ?? "image";
+                    var productName = _currentImageDto.ProductId.HasValue 
+                        ? GetProductName(_currentImageDto.ProductId.Value) 
+                        : "Product";
+                    var imageCaption = _currentImageDto.Caption ?? _currentImageDto.FileName ?? "image";
                     var fileName = $"{productName}_{imageCaption}.jpg";
                     
                     // Làm sạch tên file (loại bỏ ký tự không hợp lệ)

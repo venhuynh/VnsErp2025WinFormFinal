@@ -757,15 +757,11 @@ public class ProductServiceRepository : IProductServiceRepository
         try
         {
             using var context = CreateNewContext();
-            // Đếm cả ảnh của sản phẩm và ảnh của các biến thể
+            // Đếm ảnh của sản phẩm (ProductImage không còn VariantId property)
             var productImages = context.ProductImages.Count(pi => pi.ProductId == productServiceId);
-            var variantImages = context.ProductImages.Count(pi => 
-                pi.VariantId.HasValue && 
-                context.ProductVariants.Any(pv => pv.Id == pi.VariantId && pv.ProductId == productServiceId));
             
-            var totalCount = productImages + variantImages;
-            _logger.Debug($"GetImageCount: ProductServiceId={productServiceId}, ProductImages={productImages}, VariantImages={variantImages}, Total={totalCount}");
-            return totalCount;
+            _logger.Debug($"GetImageCount: ProductServiceId={productServiceId}, ProductImages={productImages}");
+            return productImages;
         }
         catch (Exception ex)
         {
@@ -801,21 +797,13 @@ public class ProductServiceRepository : IProductServiceRepository
                 .GroupBy(pi => pi.ProductId)
                 .ToDictionary(g => g.Key, g => g.Count());
 
-            // Đếm ảnh của biến thể
-            var variantImageCounts = context.ProductImages
-                .Where(pi => pi.VariantId.HasValue && 
-                            context.ProductVariants.Any(pv => pv.Id == pi.VariantId && productServiceIds.Contains(pv.ProductId)))
-                .GroupBy(pi => context.ProductVariants.First(pv => pv.Id == pi.VariantId).ProductId)
-                .ToDictionary(g => g.Key, g => g.Count());
-
-            // Kết hợp kết quả
+            // Kết hợp kết quả (ProductImage không còn VariantId property)
             foreach (var id in productServiceIds)
             {
                 var variantCount = variantCounts.ContainsKey(id) ? variantCounts[id] : 0;
                 var productImageCount = productImageCounts.ContainsKey(id) ? productImageCounts[id] : 0;
-                var variantImageCount = variantImageCounts.ContainsKey(id) ? variantImageCounts[id] : 0;
                 
-                result[id] = (variantCount, productImageCount + variantImageCount);
+                result[id] = (variantCount, productImageCount);
             }
 
             _logger.Debug($"GetCountsForProducts: Processed {result.Count} products");

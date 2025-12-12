@@ -170,10 +170,11 @@ public class ProductVariantDto : INotifyPropertyChanged
 
         /// <summary>
         /// Danh sách hình ảnh của biến thể (từ ProductImages)
+        /// Note: ProductImage không còn VariantId, chỉ có ProductId
         /// </summary>
         [DisplayName("Hình ảnh")]
         [Description("Danh sách hình ảnh của biến thể")]
-        public List<ProductVariantImageDto> Images { get; set; }
+        public List<ProductImageDto> Images { get; set; }
 
         #endregion
 
@@ -186,7 +187,7 @@ public class ProductVariantDto : INotifyPropertyChanged
         {
             Id = Guid.NewGuid();
             Attributes = new List<ProductVariantAttributeDto>();
-            Images = new List<ProductVariantImageDto>();
+            Images = new List<ProductImageDto>();
             IsActive = true;
         }
 

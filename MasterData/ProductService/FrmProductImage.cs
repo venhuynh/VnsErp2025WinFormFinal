@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -222,24 +222,25 @@ namespace MasterData.ProductService
                 var images = _productImageBll.GetByProductId(_currentProductId.Value);
                 
                 // Convert sang DTO - Tối ưu hóa bằng cách chỉ load ImageData khi cần thiết
-                _imageList = images.Select(img => new ProductImageDto
+                _imageList = images.Select((img, index) => new ProductImageDto
                 {
                     Id = img.Id,
                     ProductId = img.ProductId ?? Guid.Empty,
-                    VariantId = img.VariantId,
-                    ImagePath = img.ImagePath,
-                    SortOrder = img.SortOrder ?? 0,
-                    IsPrimary = img.IsPrimary ?? false,
+                    VariantId = null, // ProductImage không còn VariantId property
+                    ImagePath = img.RelativePath ?? img.FullPath, // Map từ RelativePath hoặc FullPath
+                    SortOrder = index, // Không có SortOrder property, dùng index
+                    IsPrimary = index == 0, // Không có IsPrimary property, coi ảnh đầu tiên là primary
                     ImageData = img.ImageData?.ToArray(), // Chỉ load khi cần thiết
-                    ImageType = img.ImageType,
-                    ImageSize = img.ImageSize ?? 0,
-                    ImageWidth = img.ImageWidth ?? 0,
-                    ImageHeight = img.ImageHeight ?? 0,
-                    Caption = img.Caption,
-                    AltText = img.AltText,
-                    IsActive = img.IsActive ?? false,
-                    CreatedDate = img.CreatedDate ?? DateTime.Now,
-                    ModifiedDate = img.ModifiedDate
+                    ImageType = img.FileExtension ?? img.MimeType, // Map từ FileExtension hoặc MimeType
+                    ImageSize = img.FileSize ?? 0, // Map từ FileSize
+                    ImageWidth = 0, // Không có ImageWidth property
+                    ImageHeight = 0, // Không có ImageHeight property
+                    Caption = img.FileName, // Dùng FileName làm Caption
+                    AltText = img.FileName, // Dùng FileName làm AltText
+                    IsActive = true, // Không có IsActive property, mặc định true
+                    CreatedDate = img.CreateDate, // Map từ CreateDate
+                    ModifiedDate = img.ModifiedDate,
+                    FileName = img.FileName
                 }).ToList();
 
                 // Sắp xếp theo sản phẩm để tạo separator tự nhiên
@@ -532,25 +533,26 @@ namespace MasterData.ProductService
                                 Id = img.Id,
                                 ProductId = img.ProductId ?? Guid.Empty,
                                 ProductName = product.Name,
-                                VariantId = img.VariantId,
-                                ImagePath = img.ImagePath,
-                                SortOrder = img.SortOrder ?? 0,
-                                IsPrimary = img.IsPrimary ?? false,
+                                VariantId = null, // ProductImage không còn VariantId property
+                                ImagePath = img.RelativePath ?? img.FullPath, // Map từ RelativePath hoặc FullPath
+                                SortOrder = 0, // Không có SortOrder property
+                                IsPrimary = false, // Không có IsPrimary property
                                 ImageData = img.ImageData?.ToArray(),
-                                ImageType = img.ImageType,
-                                ImageSize = img.ImageSize ?? 0,
-                                ImageWidth = img.ImageWidth ?? 0,
-                                ImageHeight = img.ImageHeight ?? 0,
-                                Caption = img.Caption,
-                                AltText = img.AltText,
-                                IsActive = img.IsActive ?? false,
-                                CreatedDate = img.CreatedDate ?? DateTime.Now,
-                                ModifiedDate = img.ModifiedDate
+                                ImageType = img.FileExtension ?? img.MimeType, // Map từ FileExtension hoặc MimeType
+                                ImageSize = img.FileSize ?? 0, // Map từ FileSize
+                                ImageWidth = 0, // Không có ImageWidth property
+                                ImageHeight = 0, // Không có ImageHeight property
+                                Caption = img.FileName ?? "Hình ảnh", // Dùng FileName làm Caption
+                                AltText = img.FileName ?? "Hình ảnh", // Dùng FileName làm AltText
+                                IsActive = true, // Không có IsActive property, mặc định true
+                                CreatedDate = img.CreateDate, // Map từ CreateDate
+                                ModifiedDate = img.ModifiedDate,
+                                FileName = img.FileName
                             };
 
                             // Thêm thông tin sản phẩm vào caption nếu có
-                            dto.Caption = $"{img.Caption} ({product.Name})";
-                            dto.AltText = $"{img.AltText} - Sản phẩm: {product.Name}";
+                            dto.Caption = $"{dto.Caption} ({product.Name})";
+                            dto.AltText = $"{dto.AltText} - Sản phẩm: {product.Name}";
 
                             return dto;
                         }
@@ -561,13 +563,8 @@ namespace MasterData.ProductService
                     // Filter null items
                     _imageList = _imageList.Where(x => x != null).ToList();
 
-                    // Cập nhật display properties
-                    foreach (var dto in _imageList)
-                    {
-                        dto.UpdateDisplayProperties();
-                        // Set ProductDisplayName để hiển thị
-                        dto.ProductDisplayName = $"Sản phẩm: {dto.ProductName ?? "Không xác định"}";
-                    }
+                    // ProductImageDto không còn UpdateDisplayProperties method
+                    // ProductDisplayName là computed property, không cần set
 
                     // Sắp xếp theo sản phẩm để tạo separator tự nhiên
                     _imageList = _imageList.OrderBy(x => x.ProductName).ThenBy(x => x.SortOrder).ToList();

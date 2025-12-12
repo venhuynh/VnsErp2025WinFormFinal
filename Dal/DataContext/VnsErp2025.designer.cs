@@ -12429,33 +12429,15 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _ProductId;
 		
-		private System.Nullable<System.Guid> _VariantId;
-		
-		private string _ImagePath;
-		
-		private System.Nullable<int> _SortOrder;
-		
-		private System.Nullable<bool> _IsPrimary;
-		
 		private System.Data.Linq.Binary _ImageData;
 		
-		private string _ImageType;
+		private System.DateTime _CreateDate;
 		
-		private System.Nullable<long> _ImageSize;
-		
-		private System.Nullable<int> _ImageWidth;
-		
-		private System.Nullable<int> _ImageHeight;
-		
-		private string _Caption;
-		
-		private string _AltText;
-		
-		private System.Nullable<bool> _IsActive;
-		
-		private System.Nullable<System.DateTime> _CreatedDate;
+		private System.Guid _CreateBy;
 		
 		private System.Nullable<System.DateTime> _ModifiedDate;
+		
+		private System.Guid _ModifiedBy;
 		
 		private string _FileName;
 		
@@ -12463,27 +12445,15 @@ namespace Dal.DataContext
 		
 		private string _FullPath;
 		
-		private string _NASShareName;
-		
 		private string _StorageType;
 		
-		private string _StorageProvider;
+		private System.Nullable<long> _FileSize;
 		
 		private string _FileExtension;
 		
 		private string _MimeType;
 		
 		private string _Checksum;
-		
-		private System.Nullable<bool> _HasThumbnail;
-		
-		private string _ThumbnailPath;
-		
-		private string _ThumbnailFileName;
-		
-		private System.Nullable<bool> _IsPublic;
-		
-		private string _AccessUrl;
 		
 		private System.Nullable<bool> _FileExists;
 		
@@ -12493,8 +12463,6 @@ namespace Dal.DataContext
 		
 		private EntityRef<ProductService> _ProductService;
 		
-		private EntityRef<ProductVariant> _ProductVariant;
-		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -12503,62 +12471,32 @@ namespace Dal.DataContext
     partial void OnIdChanged();
     partial void OnProductIdChanging(System.Nullable<System.Guid> value);
     partial void OnProductIdChanged();
-    partial void OnVariantIdChanging(System.Nullable<System.Guid> value);
-    partial void OnVariantIdChanged();
-    partial void OnImagePathChanging(string value);
-    partial void OnImagePathChanged();
-    partial void OnSortOrderChanging(System.Nullable<int> value);
-    partial void OnSortOrderChanged();
-    partial void OnIsPrimaryChanging(System.Nullable<bool> value);
-    partial void OnIsPrimaryChanged();
     partial void OnImageDataChanging(System.Data.Linq.Binary value);
     partial void OnImageDataChanged();
-    partial void OnImageTypeChanging(string value);
-    partial void OnImageTypeChanged();
-    partial void OnImageSizeChanging(System.Nullable<long> value);
-    partial void OnImageSizeChanged();
-    partial void OnImageWidthChanging(System.Nullable<int> value);
-    partial void OnImageWidthChanged();
-    partial void OnImageHeightChanging(System.Nullable<int> value);
-    partial void OnImageHeightChanged();
-    partial void OnCaptionChanging(string value);
-    partial void OnCaptionChanged();
-    partial void OnAltTextChanging(string value);
-    partial void OnAltTextChanged();
-    partial void OnIsActiveChanging(System.Nullable<bool> value);
-    partial void OnIsActiveChanged();
-    partial void OnCreatedDateChanging(System.Nullable<System.DateTime> value);
-    partial void OnCreatedDateChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnCreateByChanging(System.Guid value);
+    partial void OnCreateByChanged();
     partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
     partial void OnModifiedDateChanged();
+    partial void OnModifiedByChanging(System.Guid value);
+    partial void OnModifiedByChanged();
     partial void OnFileNameChanging(string value);
     partial void OnFileNameChanged();
     partial void OnRelativePathChanging(string value);
     partial void OnRelativePathChanged();
     partial void OnFullPathChanging(string value);
     partial void OnFullPathChanged();
-    partial void OnNASShareNameChanging(string value);
-    partial void OnNASShareNameChanged();
     partial void OnStorageTypeChanging(string value);
     partial void OnStorageTypeChanged();
-    partial void OnStorageProviderChanging(string value);
-    partial void OnStorageProviderChanged();
+    partial void OnFileSizeChanging(System.Nullable<long> value);
+    partial void OnFileSizeChanged();
     partial void OnFileExtensionChanging(string value);
     partial void OnFileExtensionChanged();
     partial void OnMimeTypeChanging(string value);
     partial void OnMimeTypeChanged();
     partial void OnChecksumChanging(string value);
     partial void OnChecksumChanged();
-    partial void OnHasThumbnailChanging(System.Nullable<bool> value);
-    partial void OnHasThumbnailChanged();
-    partial void OnThumbnailPathChanging(string value);
-    partial void OnThumbnailPathChanged();
-    partial void OnThumbnailFileNameChanging(string value);
-    partial void OnThumbnailFileNameChanged();
-    partial void OnIsPublicChanging(System.Nullable<bool> value);
-    partial void OnIsPublicChanged();
-    partial void OnAccessUrlChanging(string value);
-    partial void OnAccessUrlChanged();
     partial void OnFileExistsChanging(System.Nullable<bool> value);
     partial void OnFileExistsChanged();
     partial void OnLastVerifiedChanging(System.Nullable<System.DateTime> value);
@@ -12570,7 +12508,6 @@ namespace Dal.DataContext
 		public ProductImage()
 		{
 			this._ProductService = default(EntityRef<ProductService>);
-			this._ProductVariant = default(EntityRef<ProductVariant>);
 			OnCreated();
 		}
 		
@@ -12618,90 +12555,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VariantId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> VariantId
-		{
-			get
-			{
-				return this._VariantId;
-			}
-			set
-			{
-				if ((this._VariantId != value))
-				{
-					if (this._ProductVariant.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnVariantIdChanging(value);
-					this.SendPropertyChanging();
-					this._VariantId = value;
-					this.SendPropertyChanged("VariantId");
-					this.OnVariantIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImagePath", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
-		public string ImagePath
-		{
-			get
-			{
-				return this._ImagePath;
-			}
-			set
-			{
-				if ((this._ImagePath != value))
-				{
-					this.OnImagePathChanging(value);
-					this.SendPropertyChanging();
-					this._ImagePath = value;
-					this.SendPropertyChanged("ImagePath");
-					this.OnImagePathChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SortOrder", DbType="Int")]
-		public System.Nullable<int> SortOrder
-		{
-			get
-			{
-				return this._SortOrder;
-			}
-			set
-			{
-				if ((this._SortOrder != value))
-				{
-					this.OnSortOrderChanging(value);
-					this.SendPropertyChanging();
-					this._SortOrder = value;
-					this.SendPropertyChanged("SortOrder");
-					this.OnSortOrderChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPrimary", DbType="Bit")]
-		public System.Nullable<bool> IsPrimary
-		{
-			get
-			{
-				return this._IsPrimary;
-			}
-			set
-			{
-				if ((this._IsPrimary != value))
-				{
-					this.OnIsPrimaryChanging(value);
-					this.SendPropertyChanging();
-					this._IsPrimary = value;
-					this.SendPropertyChanged("IsPrimary");
-					this.OnIsPrimaryChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageData", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
 		public System.Data.Linq.Binary ImageData
 		{
@@ -12722,162 +12575,42 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageType", DbType="NVarChar(10)")]
-		public string ImageType
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDate
 		{
 			get
 			{
-				return this._ImageType;
+				return this._CreateDate;
 			}
 			set
 			{
-				if ((this._ImageType != value))
+				if ((this._CreateDate != value))
 				{
-					this.OnImageTypeChanging(value);
+					this.OnCreateDateChanging(value);
 					this.SendPropertyChanging();
-					this._ImageType = value;
-					this.SendPropertyChanged("ImageType");
-					this.OnImageTypeChanged();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageSize", DbType="BigInt")]
-		public System.Nullable<long> ImageSize
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid CreateBy
 		{
 			get
 			{
-				return this._ImageSize;
+				return this._CreateBy;
 			}
 			set
 			{
-				if ((this._ImageSize != value))
+				if ((this._CreateBy != value))
 				{
-					this.OnImageSizeChanging(value);
+					this.OnCreateByChanging(value);
 					this.SendPropertyChanging();
-					this._ImageSize = value;
-					this.SendPropertyChanged("ImageSize");
-					this.OnImageSizeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageWidth", DbType="Int")]
-		public System.Nullable<int> ImageWidth
-		{
-			get
-			{
-				return this._ImageWidth;
-			}
-			set
-			{
-				if ((this._ImageWidth != value))
-				{
-					this.OnImageWidthChanging(value);
-					this.SendPropertyChanging();
-					this._ImageWidth = value;
-					this.SendPropertyChanged("ImageWidth");
-					this.OnImageWidthChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageHeight", DbType="Int")]
-		public System.Nullable<int> ImageHeight
-		{
-			get
-			{
-				return this._ImageHeight;
-			}
-			set
-			{
-				if ((this._ImageHeight != value))
-				{
-					this.OnImageHeightChanging(value);
-					this.SendPropertyChanging();
-					this._ImageHeight = value;
-					this.SendPropertyChanged("ImageHeight");
-					this.OnImageHeightChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Caption", DbType="NVarChar(255)")]
-		public string Caption
-		{
-			get
-			{
-				return this._Caption;
-			}
-			set
-			{
-				if ((this._Caption != value))
-				{
-					this.OnCaptionChanging(value);
-					this.SendPropertyChanging();
-					this._Caption = value;
-					this.SendPropertyChanged("Caption");
-					this.OnCaptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AltText", DbType="NVarChar(255)")]
-		public string AltText
-		{
-			get
-			{
-				return this._AltText;
-			}
-			set
-			{
-				if ((this._AltText != value))
-				{
-					this.OnAltTextChanging(value);
-					this.SendPropertyChanging();
-					this._AltText = value;
-					this.SendPropertyChanged("AltText");
-					this.OnAltTextChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit")]
-		public System.Nullable<bool> IsActive
-		{
-			get
-			{
-				return this._IsActive;
-			}
-			set
-			{
-				if ((this._IsActive != value))
-				{
-					this.OnIsActiveChanging(value);
-					this.SendPropertyChanging();
-					this._IsActive = value;
-					this.SendPropertyChanged("IsActive");
-					this.OnIsActiveChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> CreatedDate
-		{
-			get
-			{
-				return this._CreatedDate;
-			}
-			set
-			{
-				if ((this._CreatedDate != value))
-				{
-					this.OnCreatedDateChanging(value);
-					this.SendPropertyChanging();
-					this._CreatedDate = value;
-					this.SendPropertyChanged("CreatedDate");
-					this.OnCreatedDateChanged();
+					this._CreateBy = value;
+					this.SendPropertyChanged("CreateBy");
+					this.OnCreateByChanged();
 				}
 			}
 		}
@@ -12898,6 +12631,26 @@ namespace Dal.DataContext
 					this._ModifiedDate = value;
 					this.SendPropertyChanged("ModifiedDate");
 					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ModifiedBy
+		{
+			get
+			{
+				return this._ModifiedBy;
+			}
+			set
+			{
+				if ((this._ModifiedBy != value))
+				{
+					this.OnModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
 				}
 			}
 		}
@@ -12962,26 +12715,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NASShareName", DbType="NVarChar(100)")]
-		public string NASShareName
-		{
-			get
-			{
-				return this._NASShareName;
-			}
-			set
-			{
-				if ((this._NASShareName != value))
-				{
-					this.OnNASShareNameChanging(value);
-					this.SendPropertyChanging();
-					this._NASShareName = value;
-					this.SendPropertyChanged("NASShareName");
-					this.OnNASShareNameChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StorageType", DbType="NVarChar(20)")]
 		public string StorageType
 		{
@@ -13002,22 +12735,22 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StorageProvider", DbType="NVarChar(50)")]
-		public string StorageProvider
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileSize", DbType="BigInt")]
+		public System.Nullable<long> FileSize
 		{
 			get
 			{
-				return this._StorageProvider;
+				return this._FileSize;
 			}
 			set
 			{
-				if ((this._StorageProvider != value))
+				if ((this._FileSize != value))
 				{
-					this.OnStorageProviderChanging(value);
+					this.OnFileSizeChanging(value);
 					this.SendPropertyChanging();
-					this._StorageProvider = value;
-					this.SendPropertyChanged("StorageProvider");
-					this.OnStorageProviderChanged();
+					this._FileSize = value;
+					this.SendPropertyChanged("FileSize");
+					this.OnFileSizeChanged();
 				}
 			}
 		}
@@ -13078,106 +12811,6 @@ namespace Dal.DataContext
 					this._Checksum = value;
 					this.SendPropertyChanged("Checksum");
 					this.OnChecksumChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HasThumbnail", DbType="Bit")]
-		public System.Nullable<bool> HasThumbnail
-		{
-			get
-			{
-				return this._HasThumbnail;
-			}
-			set
-			{
-				if ((this._HasThumbnail != value))
-				{
-					this.OnHasThumbnailChanging(value);
-					this.SendPropertyChanging();
-					this._HasThumbnail = value;
-					this.SendPropertyChanged("HasThumbnail");
-					this.OnHasThumbnailChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailPath", DbType="NVarChar(500)")]
-		public string ThumbnailPath
-		{
-			get
-			{
-				return this._ThumbnailPath;
-			}
-			set
-			{
-				if ((this._ThumbnailPath != value))
-				{
-					this.OnThumbnailPathChanging(value);
-					this.SendPropertyChanging();
-					this._ThumbnailPath = value;
-					this.SendPropertyChanged("ThumbnailPath");
-					this.OnThumbnailPathChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ThumbnailFileName", DbType="NVarChar(255)")]
-		public string ThumbnailFileName
-		{
-			get
-			{
-				return this._ThumbnailFileName;
-			}
-			set
-			{
-				if ((this._ThumbnailFileName != value))
-				{
-					this.OnThumbnailFileNameChanging(value);
-					this.SendPropertyChanging();
-					this._ThumbnailFileName = value;
-					this.SendPropertyChanged("ThumbnailFileName");
-					this.OnThumbnailFileNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPublic", DbType="Bit")]
-		public System.Nullable<bool> IsPublic
-		{
-			get
-			{
-				return this._IsPublic;
-			}
-			set
-			{
-				if ((this._IsPublic != value))
-				{
-					this.OnIsPublicChanging(value);
-					this.SendPropertyChanging();
-					this._IsPublic = value;
-					this.SendPropertyChanged("IsPublic");
-					this.OnIsPublicChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AccessUrl", DbType="NVarChar(1000)")]
-		public string AccessUrl
-		{
-			get
-			{
-				return this._AccessUrl;
-			}
-			set
-			{
-				if ((this._AccessUrl != value))
-				{
-					this.OnAccessUrlChanging(value);
-					this.SendPropertyChanging();
-					this._AccessUrl = value;
-					this.SendPropertyChanged("AccessUrl");
-					this.OnAccessUrlChanged();
 				}
 			}
 		}
@@ -13272,40 +12905,6 @@ namespace Dal.DataContext
 						this._ProductId = default(Nullable<System.Guid>);
 					}
 					this.SendPropertyChanged("ProductService");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_ProductImage", Storage="_ProductVariant", ThisKey="VariantId", OtherKey="Id", IsForeignKey=true)]
-		public ProductVariant ProductVariant
-		{
-			get
-			{
-				return this._ProductVariant.Entity;
-			}
-			set
-			{
-				ProductVariant previousValue = this._ProductVariant.Entity;
-				if (((previousValue != value) 
-							|| (this._ProductVariant.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._ProductVariant.Entity = null;
-						previousValue.ProductImages.Remove(this);
-					}
-					this._ProductVariant.Entity = value;
-					if ((value != null))
-					{
-						value.ProductImages.Add(this);
-						this._VariantId = value.Id;
-					}
-					else
-					{
-						this._VariantId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("ProductVariant");
 				}
 			}
 		}
@@ -14325,8 +13924,6 @@ namespace Dal.DataContext
 		
 		private EntitySet<InventoryBalance> _InventoryBalances;
 		
-		private EntitySet<ProductImage> _ProductImages;
-		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
 		
 		private EntitySet<VariantAttribute> _VariantAttributes;
@@ -14376,7 +13973,6 @@ namespace Dal.DataContext
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._InventoryBalances = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances), new Action<InventoryBalance>(this.detach_InventoryBalances));
-			this._ProductImages = new EntitySet<ProductImage>(new Action<ProductImage>(this.attach_ProductImages), new Action<ProductImage>(this.detach_ProductImages));
 			this._StockInOutDetails = new EntitySet<StockInOutDetail>(new Action<StockInOutDetail>(this.attach_StockInOutDetails), new Action<StockInOutDetail>(this.detach_StockInOutDetails));
 			this._VariantAttributes = new EntitySet<VariantAttribute>(new Action<VariantAttribute>(this.attach_VariantAttributes), new Action<VariantAttribute>(this.detach_VariantAttributes));
 			this._ProductService = default(EntityRef<ProductService>);
@@ -14731,19 +14327,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_ProductImage", Storage="_ProductImages", ThisKey="Id", OtherKey="VariantId")]
-		public EntitySet<ProductImage> ProductImages
-		{
-			get
-			{
-				return this._ProductImages;
-			}
-			set
-			{
-				this._ProductImages.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_StockInOutDetail", Storage="_StockInOutDetails", ThisKey="Id", OtherKey="ProductVariantId")]
 		public EntitySet<StockInOutDetail> StockInOutDetails
 		{
@@ -14889,18 +14472,6 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_InventoryBalances(InventoryBalance entity)
-		{
-			this.SendPropertyChanging();
-			entity.ProductVariant = null;
-		}
-		
-		private void attach_ProductImages(ProductImage entity)
-		{
-			this.SendPropertyChanging();
-			entity.ProductVariant = this;
-		}
-		
-		private void detach_ProductImages(ProductImage entity)
 		{
 			this.SendPropertyChanging();
 			entity.ProductVariant = null;

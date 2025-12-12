@@ -615,10 +615,14 @@ namespace Dal.DataContext.SeedData.MasterData.ProductService
                 {
                     Id = Guid.NewGuid(),
                     ProductId = isVariantImage ? null : product.Id,
-                    VariantId = isVariantImage ? variant?.Id : null,
-                    ImagePath = $"/images/products/{product.Code}_{i}.jpg",
-                    SortOrder = random.Next(1, 10),
-                    IsPrimary = random.Next(0, 10) < 2 // 20% là ảnh chính
+                    // ProductImage không còn VariantId, ImagePath, SortOrder, IsPrimary properties
+                    RelativePath = $"/images/products/{product.Code}_{i}.jpg",
+                    FileName = $"{product.Code}_{i}.jpg",
+                    CreateDate = DateTime.Now,
+                    CreateBy = Guid.Empty, // Set from context if available
+                    ModifiedBy = Guid.Empty, // Set from context if available
+                    StorageType = "NAS",
+                    FileExists = true
                 };
 
                 images.Add(image);

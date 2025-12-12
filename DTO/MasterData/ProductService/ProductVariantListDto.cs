@@ -95,7 +95,7 @@ public static class ProductVariantConverters
             IsActive = entity.IsActive,
             ThumbnailImage = entity.ThumbnailImage?.ToArray(),
             AttributeCount = entity.VariantAttributes?.Count ?? 0,
-            ImageCount = entity.ProductImages?.Count ?? 0
+            ImageCount = 0 // ProductVariant không còn ProductImages navigation property, ProductImage không còn VariantId
         };
 
         // Convert attributes
@@ -111,25 +111,9 @@ public static class ProductVariantConverters
             }).ToList();
         }
 
-        // Convert images
-        if (entity.ProductImages != null && entity.ProductImages.Any())
-        {
-            dto.Images = entity.ProductImages.Select(pi => new ProductVariantImageDto
-            {
-                ImageId = pi.Id,
-                ImagePath = pi.ImagePath,
-                ImageData = pi.ImageData?.ToArray(),
-                SortOrder = pi.SortOrder ?? 0,
-                IsPrimary = pi.IsPrimary ?? false,
-                ImageType = pi.ImageType,
-                ImageSize = pi.ImageSize,
-                ImageWidth = pi.ImageWidth,
-                ImageHeight = pi.ImageHeight,
-                Caption = pi.Caption,
-                AltText = pi.AltText,
-                IsActive = pi.IsActive ?? true
-            }).ToList();
-        }
+        // Convert images - ProductVariant không còn ProductImages navigation property
+        // ProductImage không còn VariantId, chỉ có ProductId
+        dto.Images = new List<ProductImageDto>();
 
         return dto;
     }
@@ -301,26 +285,10 @@ public static class ProductVariantConverters
             dto.AttributeCount = dto.Attributes.Count;
         }
 
-        // Convert images
-        if (entity.ProductImages != null && Enumerable.Any(entity.ProductImages))
-        {
-            dto.Images = Enumerable.ToList(Enumerable.Select(entity.ProductImages, pi => new ProductVariantImageDto
-            {
-                ImageId = pi.Id,
-                ImagePath = pi.ImagePath,
-                ImageData = pi.ImageData?.ToArray(),
-                SortOrder = pi.SortOrder ?? 0,
-                IsPrimary = pi.IsPrimary ?? false,
-                ImageType = pi.ImageType,
-                ImageSize = pi.ImageSize,
-                ImageWidth = pi.ImageWidth,
-                ImageHeight = pi.ImageHeight,
-                Caption = pi.Caption,
-                AltText = pi.AltText,
-                IsActive = pi.IsActive ?? true
-            }));
-            dto.ImageCount = dto.Images.Count;
-        }
+        // Convert images - ProductVariant không còn ProductImages navigation property
+        // ProductImage không còn VariantId, chỉ có ProductId
+        dto.Images = new List<ProductImageDto>();
+        dto.ImageCount = 0;
 
         return dto;
     }

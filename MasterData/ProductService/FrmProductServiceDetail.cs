@@ -1,4 +1,4 @@
-﻿using Bll.Common.ImageService;
+using Bll.Common.ImageService;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Utils;
@@ -693,7 +693,7 @@ namespace MasterData.ProductService
 
                         if (savedImage != null)
                         {
-                            ShowInfo($"Đã cập nhật hình ảnh sản phẩm thành công!\n\n✅ Bước 1: Cập nhật thumbnail trong ProductService\n✅ Bước 2: Thêm ảnh chính vào ProductImage\n\nẢnh: {savedImage.Caption}");
+                            ShowInfo($"Đã cập nhật hình ảnh sản phẩm thành công!\n\n✅ Bước 1: Cập nhật thumbnail trong ProductService\n✅ Bước 2: Thêm ảnh chính vào ProductImage\n\nẢnh: {savedImage.FileName ?? "N/A"}");
                         }
                     }
                     finally

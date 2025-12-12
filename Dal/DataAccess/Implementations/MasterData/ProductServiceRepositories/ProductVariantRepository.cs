@@ -64,11 +64,11 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
             loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
             loadOptions.LoadWith<ProductVariant>(pv => pv.VariantAttributes);
-            loadOptions.LoadWith<ProductVariant>(pv => pv.ProductImages);
+            // ProductVariant không còn ProductImages navigation property
 
             // Preload thông tin sản phẩm gốc (không load ProductVariants để tránh vòng lặp)
             loadOptions.LoadWith<ProductService>(ps => ps.ProductServiceCategory);
-            loadOptions.LoadWith<ProductService>(ps => ps.ProductImages);
+            // ProductService có ProductImages nhưng không load để tránh vòng lặp
 
             context.LoadOptions = loadOptions;
 
@@ -340,9 +340,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             {
                 using var context = CreateNewContext();
 
-                // Xóa ProductImages liên quan trước (để tránh foreign key constraint)
-                var productImages = context.ProductImages.Where(x => x.VariantId == id).ToList();
-                context.ProductImages.DeleteAllOnSubmit(productImages);
+                // ProductImage không còn VariantId property, không cần xóa ProductImages
 
                 // Xóa VariantAttributes trước
                 var variantAttributes = context.VariantAttributes.Where(x => x.VariantId == id).ToList();
@@ -989,12 +987,8 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     // Thông tin số lượng và trạng thái
                     var countParts = new List<string>();
 
-                    // Đếm số lượng hình ảnh
-                    var imageCount = variant.ProductImages?.Count ?? 0;
-                    if (imageCount > 0)
-                    {
-                        countParts.Add($"<color='#757575'>Ảnh:</color> <b>{imageCount}</b>");
-                    }
+                    // ProductVariant không còn ProductImages navigation property
+                    // Có thể đếm từ ProductImage table nếu cần, nhưng không có VariantId nữa
 
                     // Trạng thái hoạt động
                     var statusText = variant.IsActive ? "Hoạt động" : "Không hoạt động";
