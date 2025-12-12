@@ -45,6 +45,8 @@ namespace MasterData.ProductService
             this.ProductVariantListGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colVariantFullNameHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.VariantFullNameHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colThumbnailImage = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ThumbnailItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.ListDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -68,12 +70,11 @@ namespace MasterData.ProductService
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colThumbnailImage = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.ThumbnailItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHtmlHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThumbnailItemPictureEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemSpinEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
@@ -81,7 +82,6 @@ namespace MasterData.ProductService
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThumbnailItemPictureEdit)).BeginInit();
             this.SuspendLayout();
             // 
             // ProductVariantListGridControl
@@ -94,7 +94,7 @@ namespace MasterData.ProductService
             this.ProductVariantListGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.VariantFullNameHtmlHypertextLabel,
             this.ThumbnailItemPictureEdit});
-            this.ProductVariantListGridControl.Size = new System.Drawing.Size(1043, 521);
+            this.ProductVariantListGridControl.Size = new System.Drawing.Size(955, 405);
             this.ProductVariantListGridControl.TabIndex = 4;
             this.ProductVariantListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.ProductVariantListGridView});
@@ -123,6 +123,8 @@ namespace MasterData.ProductService
             this.ProductVariantListGridView.OptionsView.ShowGroupPanel = false;
             this.ProductVariantListGridView.OptionsView.ShowGroupPanelColumnsAsSingleRow = true;
             this.ProductVariantListGridView.RowHeight = 60;
+            this.ProductVariantListGridView.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
+            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.colVariantFullNameHtml, DevExpress.Data.ColumnSortOrder.Ascending)});
             // 
             // colVariantFullNameHtml
             // 
@@ -151,6 +153,34 @@ namespace MasterData.ProductService
             // 
             this.VariantFullNameHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.VariantFullNameHtmlHypertextLabel.Name = "VariantFullNameHtmlHypertextLabel";
+            // 
+            // colThumbnailImage
+            // 
+            this.colThumbnailImage.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThumbnailImage.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThumbnailImage.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThumbnailImage.AppearanceHeader.Options.UseBackColor = true;
+            this.colThumbnailImage.AppearanceHeader.Options.UseFont = true;
+            this.colThumbnailImage.AppearanceHeader.Options.UseForeColor = true;
+            this.colThumbnailImage.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThumbnailImage.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThumbnailImage.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThumbnailImage.Caption = "Hình ảnh";
+            this.colThumbnailImage.ColumnEdit = this.ThumbnailItemPictureEdit;
+            this.colThumbnailImage.FieldName = "ThumbnailImage";
+            this.colThumbnailImage.MinWidth = 80;
+            this.colThumbnailImage.Name = "colThumbnailImage";
+            this.colThumbnailImage.OptionsColumn.AllowEdit = false;
+            this.colThumbnailImage.OptionsColumn.FixedWidth = true;
+            this.colThumbnailImage.OptionsColumn.ReadOnly = true;
+            this.colThumbnailImage.Visible = true;
+            this.colThumbnailImage.VisibleIndex = 1;
+            this.colThumbnailImage.Width = 80;
+            // 
+            // ThumbnailItemPictureEdit
+            // 
+            this.ThumbnailItemPictureEdit.Name = "ThumbnailItemPictureEdit";
+            this.ThumbnailItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
             // 
             // barManager1
             // 
@@ -296,15 +326,15 @@ namespace MasterData.ProductService
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(987, 39);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 592);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 476);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 35);
+            this.barDockControlBottom.Size = new System.Drawing.Size(987, 35);
             // 
             // barDockControlLeft
             // 
@@ -312,15 +342,15 @@ namespace MasterData.ProductService
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 553);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 437);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(987, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 553);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 437);
             // 
             // CountVariantAndImageBarButtonItem
             // 
@@ -365,7 +395,7 @@ namespace MasterData.ProductService
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 553);
+            this.layoutControl1.Size = new System.Drawing.Size(987, 437);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -376,7 +406,7 @@ namespace MasterData.ProductService
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 553);
+            this.Root.Size = new System.Drawing.Size(987, 437);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -384,32 +414,14 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Control = this.ProductVariantListGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
+            this.layoutControlItem1.Size = new System.Drawing.Size(961, 411);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // colThumbnailImage
-            // 
-            this.colThumbnailImage.ColumnEdit = this.ThumbnailItemPictureEdit;
-            this.colThumbnailImage.FieldName = "ThumbnailImage";
-            this.colThumbnailImage.MinWidth = 80;
-            this.colThumbnailImage.Name = "colThumbnailImage";
-            this.colThumbnailImage.OptionsColumn.AllowEdit = false;
-            this.colThumbnailImage.OptionsColumn.FixedWidth = true;
-            this.colThumbnailImage.OptionsColumn.ReadOnly = true;
-            this.colThumbnailImage.Visible = true;
-            this.colThumbnailImage.VisibleIndex = 1;
-            this.colThumbnailImage.Width = 80;
-            // 
-            // ThumbnailItemPictureEdit
-            // 
-            this.ThumbnailItemPictureEdit.Name = "ThumbnailItemPictureEdit";
-            this.ThumbnailItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
             // 
             // FrmProductVariant
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1075, 627);
+            this.ClientSize = new System.Drawing.Size(987, 511);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -421,6 +433,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHtmlHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThumbnailItemPictureEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemSpinEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
@@ -428,7 +441,6 @@ namespace MasterData.ProductService
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThumbnailItemPictureEdit)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

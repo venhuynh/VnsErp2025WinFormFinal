@@ -1,4 +1,14 @@
-﻿using System;
+﻿using Bll.Common.ImageService;
+using Bll.MasterData.ProductServiceBll;
+using Common.Common;
+using Common.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraSplashScreen;
+using DTO.MasterData.ProductService;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -6,18 +16,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Common;
-using Bll.Common.ImageService;
-using Bll.MasterData.ProductServiceBll;
-using Common.Common;
-using Common.Utils;
-using DevExpress.Utils;
-using DevExpress.XtraBars;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Controls;
-using DevExpress.XtraEditors.DXErrorProvider;
-using DevExpress.XtraSplashScreen;
-using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {

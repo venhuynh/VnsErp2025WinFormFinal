@@ -1461,7 +1461,7 @@ namespace MasterData.ProductService
 				// Disable các control quan trọng khi edit để tránh thay đổi dữ liệu cốt lõi
 				ProductNameSearchLookupEdit.Enabled = false;
 				VariantCodeTextEdit.Enabled = false;
-				UnitNameSearchLookupEdit.Enabled = false;
+				//UnitNameSearchLookupEdit.Enabled = false;
 
 				// Thay đổi màu nền để người dùng biết các field này không thể chỉnh sửa
 				ProductNameSearchLookupEdit.BackColor = SystemColors.Control;
