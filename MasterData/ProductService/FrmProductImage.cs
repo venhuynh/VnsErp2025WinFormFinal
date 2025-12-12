@@ -296,10 +296,11 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Xử lý sự kiện ItemClick của AddProductImagesBarButtonItem
+        /// Mở form FrmProductImageAdd để thêm hình ảnh mà không cần chọn sản phẩm trước
         /// </summary>
-        private async void AddProductImagesBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void AddProductImagesBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            await BtnAddImage_Click(sender, e);
+            ShowAddImageForm();
         }
 
         /// <summary>
@@ -1222,33 +1223,114 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Thiết lập SuperToolTip cho các controls trong UserControl
+        /// Thiết lập SuperToolTip cho các controls trong form
         /// </summary>
         private void SetupSuperToolTips()
         {
             try
             {
+                // SuperToolTip cho nút Thêm hình ảnh
                 if (AddProductImagesBarButtonItem != null)
                 {
-                    var superTip = SuperToolTipHelper.CreateSuperToolTip(
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        AddProductImagesBarButtonItem,
                         title: "<b><color=Green>➕ Thêm hình ảnh</color></b>",
-                        content: "Chọn một hoặc nhiều hình ảnh để thêm vào sản phẩm/dịch vụ."
+                        content: "Chọn một hoặc nhiều hình ảnh để thêm vào sản phẩm/dịch vụ.\n\n" +
+                                "Hỗ trợ các định dạng: JPG, JPEG, PNG, GIF, BMP.\n" +
+                                "Hình ảnh sẽ được lưu vào NAS/Local storage và metadata vào database."
                     );
-                    AddProductImagesBarButtonItem.SuperTip = superTip;
                 }
 
+                // SuperToolTip cho ô tìm kiếm
                 if (KeywordBarEditItem != null)
                 {
                     var superTip = SuperToolTipHelper.CreateSuperToolTip(
                         title: "<b><color=Blue>🔍 Tìm kiếm</color></b>",
-                        content: "Tìm kiếm hình ảnh theo tên sản phẩm/dịch vụ. Nhấn Enter hoặc click nút Xem để thực hiện."
+                        content: "Tìm kiếm hình ảnh theo tên sản phẩm/dịch vụ.\n\n" +
+                                "• Nhấn Enter hoặc click nút Xem để thực hiện tìm kiếm\n" +
+                                "• Tìm kiếm theo: tên sản phẩm, mã sản phẩm, danh mục\n" +
+                                "• Để trống để hiển thị tất cả hình ảnh"
                     );
                     KeywordBarEditItem.SuperTip = superTip;
+                }
+
+                // SuperToolTip cho nút Xem
+                if (XemBaoCaoBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        XemBaoCaoBarButtonItem,
+                        title: "<b><color=Blue>👁️ Xem</color></b>",
+                        content: "Thực hiện tìm kiếm hình ảnh theo từ khóa đã nhập.\n\n" +
+                                "Kết quả sẽ hiển thị tất cả hình ảnh của các sản phẩm/dịch vụ phù hợp."
+                    );
+                }
+
+                // SuperToolTip cho nút Xóa
+                if (XoaPhieuBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        XoaPhieuBarButtonItem,
+                        title: "<b><color=Red>🗑️ Xóa</color></b>",
+                        content: "Xóa hình ảnh đã chọn.\n\n" +
+                                "• Chọn một hoặc nhiều hình ảnh từ danh sách\n" +
+                                "• Hình ảnh sẽ bị xóa khỏi database và storage\n" +
+                                "• Thao tác này không thể hoàn tác"
+                    );
+                }
+
+                // SuperToolTip cho nút Tải về
+                if (XuatFileBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        XuatFileBarButtonItem,
+                        title: "<b><color=Orange>📥 Tải về</color></b>",
+                        content: "Tải xuống hình ảnh đã chọn.\n\n" +
+                                "• Chọn một hoặc nhiều hình ảnh từ danh sách\n" +
+                                "• Hình ảnh sẽ được tải xuống máy tính\n" +
+                                "• Hỗ trợ tải nhiều hình ảnh cùng lúc"
+                    );
+                }
+
+                // SuperToolTip cho nút Mặc định
+                if (barButtonItem1 != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        barButtonItem1,
+                        title: "<b><color=Gray>⚙️ Mặc định</color></b>",
+                        content: "Khôi phục cài đặt mặc định cho hiển thị hình ảnh.\n\n" +
+                                "• Khôi phục kích thước hình ảnh mặc định\n" +
+                                "• Khôi phục style hiển thị mặc định"
+                    );
+                }
+
+
+                // SuperToolTip cho Status Bar Items
+                if (DataSummaryBarStaticItem != null)
+                {
+                    var summarySuperTip = SuperToolTipHelper.CreateSuperToolTip(
+                        title: "<b><color=Teal>📊 Tổng kết</color></b>",
+                        content: "Hiển thị thông tin tổng quan về hình ảnh.\n\n" +
+                                "• Tổng số sản phẩm có hình ảnh\n" +
+                                "• Tổng số hình ảnh\n" +
+                                "• Kích thước trung bình và tổng dung lượng"
+                    );
+                    DataSummaryBarStaticItem.SuperTip = summarySuperTip;
+                }
+
+                if (SelectedRowBarStaticItem != null)
+                {
+                    var selectedSuperTip = SuperToolTipHelper.CreateSuperToolTip(
+                        title: "<b><color=Teal>👆 Đang chọn</color></b>",
+                        content: "Hiển thị số lượng hình ảnh đang được chọn.\n\n" +
+                                "• Click vào hình ảnh để chọn\n" +
+                                "• Có thể chọn nhiều hình ảnh cùng lúc"
+                    );
+                    SelectedRowBarStaticItem.SuperTip = selectedSuperTip;
                 }
             }
             catch (Exception ex)
             {
-                // Ignore lỗi setup SuperToolTip để không chặn UserControl
+                // Ignore lỗi setup SuperToolTip để không chặn form
                 Debug.WriteLine($"Lỗi setup SuperToolTip: {ex.Message}");
             }
         }

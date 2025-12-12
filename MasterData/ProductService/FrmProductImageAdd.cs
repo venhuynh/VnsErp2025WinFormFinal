@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.MasterData.ProductServiceBll;
+using Common.Common;
+using Common.Helpers;
 using Common.Utils;
 using DevExpress.XtraEditors;
 using DTO.MasterData.ProductService;
@@ -44,6 +46,7 @@ namespace MasterData.ProductService
         public FrmProductImageAdd()
         {
             InitializeComponent();
+            InitializeLogTextBox();
             InitializeBll();
             InitializeEvents();
             
@@ -58,12 +61,80 @@ namespace MasterData.ProductService
         #region ========== KHỞI TẠO FORM ==========
 
         /// <summary>
+        /// Khởi tạo LogTextBox
+        /// </summary>
+        private void InitializeLogTextBox()
+        {
+            try
+            {
+                if (LogTextBox != null)
+                {
+                    LogTextBoxHelper.InitializeLogTextBox(LogTextBox);
+                    LogTextBoxHelper.AppendInfo(LogTextBox, "Form thêm hình ảnh sản phẩm đã được khởi tạo");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi khởi tạo LogTextBox: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Khởi tạo BLL
         /// </summary>
         private void InitializeBll()
         {
-            _productImageBll = new ProductImageBll();
-            _productServiceBll = new ProductServiceBll();
+            try
+            {
+                LogTextBoxHelper.AppendInfo(LogTextBox, "Đang khởi tạo dịch vụ lưu trữ hình ảnh...");
+                _productImageBll = new ProductImageBll();
+                _productServiceBll = new ProductServiceBll();
+                LogTextBoxHelper.AppendSuccess(LogTextBox, "Khởi tạo dịch vụ lưu trữ hình ảnh thành công");
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Lỗi cấu hình Image Storage
+                var errorMessage = "Không thể khởi tạo dịch vụ lưu trữ hình ảnh.\n\n" +
+                                   "Nguyên nhân: " + ex.Message + "\n\n" +
+                                   "Vui lòng kiểm tra cấu hình trong App.config:\n" +
+                                   "- ImageStorage.StorageType (NAS hoặc Local)\n" +
+                                   "- Nếu dùng NAS: ImageStorage.NAS.BasePath hoặc ImageStorage.NAS.ServerName + ImageStorage.NAS.ShareName\n" +
+                                   "- Nếu dùng Local: ImageStorage.Local.BasePath\n\n" +
+                                   "Form sẽ được mở nhưng chức năng upload hình ảnh sẽ bị vô hiệu hóa.";
+
+                LogTextBoxHelper.AppendError(LogTextBox, "Không thể khởi tạo dịch vụ lưu trữ hình ảnh", ex);
+                Common.Utils.MsgBox.ShowWarning(errorMessage, "Cảnh báo cấu hình", this);
+                _productImageBll = null; // Set null để disable các chức năng upload
+                DisableUploadControls(); // Disable các control liên quan
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = "Lỗi khởi tạo dịch vụ lưu trữ hình ảnh: " + ex.Message;
+                LogTextBoxHelper.AppendError(LogTextBox, "Lỗi khởi tạo dịch vụ lưu trữ hình ảnh", ex);
+                Common.Utils.MsgBox.ShowError(errorMessage, "Lỗi", this);
+                _productImageBll = null; // Set null để disable các chức năng upload
+                DisableUploadControls(); // Disable các control liên quan
+            }
+        }
+
+        /// <summary>
+        /// Disable các control liên quan đến upload hình ảnh khi BLL không khởi tạo được
+        /// </summary>
+        private void DisableUploadControls()
+        {
+            try
+            {
+                if (OpenSelectImageHyperlinkLabelControl != null)
+                {
+                    OpenSelectImageHyperlinkLabelControl.Enabled = false;
+                    OpenSelectImageHyperlinkLabelControl.Text = "Chức năng upload hình ảnh đã bị vô hiệu hóa do thiếu cấu hình";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nhưng không throw để form vẫn có thể mở được
+                System.Diagnostics.Debug.WriteLine($"Error disabling upload controls: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -83,13 +154,16 @@ namespace MasterData.ProductService
         #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         /// <summary>
-        /// Thực hiện operation async với WaitingForm1 hiển thị
+        /// Thực hiện operation async với WaitingForm hiển thị
         /// </summary>
         /// <param name="operation">Operation async cần thực hiện</param>
         private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
         {
             try
             {
+                // Hiển thị WaitingForm
+                DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(typeof(WaitForm1));
+
                 // Thực hiện operation
                 await operation();
             }
@@ -97,7 +171,11 @@ namespace MasterData.ProductService
             {
                 MsgBox.ShowException(e);
             }
-           
+            finally
+            {
+                // Đóng WaitingForm
+                DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
+            }
         }
 
         /// <summary>
@@ -118,6 +196,7 @@ namespace MasterData.ProductService
         {
             try
             {
+                LogTextBoxHelper.AppendInfo(LogTextBox, "Đang tải danh sách sản phẩm/dịch vụ...");
 
                 // Get all data
                 var entities = await _productServiceBll.GetAllAsync();
@@ -130,6 +209,8 @@ namespace MasterData.ProductService
                 // Bind trực tiếp vào productServiceDtoBindingSource
                 productServiceDtoBindingSource.DataSource = dtoList;
 
+                LogTextBoxHelper.AppendSuccess(LogTextBox, $"Đã tải {dtoList.Count} sản phẩm/dịch vụ");
+
                 // Nếu có ProductId được set, tự động chọn sản phẩm đó
                 if (ProductId != Guid.Empty)
                 {
@@ -138,6 +219,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
+                LogTextBoxHelper.AppendError(LogTextBox, "Lỗi khi tải danh sách sản phẩm/dịch vụ", ex);
                 ShowError(ex, "Lỗi khi tải danh sách sản phẩm/dịch vụ");
             }
         }
@@ -183,15 +265,23 @@ namespace MasterData.ProductService
                     // Cập nhật ProductId
                     ProductId = productId;
                     
+                    // Lấy tên sản phẩm để hiển thị trong log
+                    var selectedProduct = productServiceDtoBindingSource.Current as ProductServiceDto;
+                    var productDisplay = selectedProduct != null 
+                        ? $"{selectedProduct.Code} - {selectedProduct.Name}" 
+                        : productId.ToString();
+                    LogTextBoxHelper.AppendInfo(LogTextBox, $"Đã chọn sản phẩm: {productDisplay}");
                 }
                 else
                 {
                     // Reset ProductId nếu không có sản phẩm nào được chọn
                     ProductId = Guid.Empty;
+                    LogTextBoxHelper.AppendInfo(LogTextBox, "Đã bỏ chọn sản phẩm");
                 }
             }
             catch (Exception ex)
             {
+                LogTextBoxHelper.AppendError(LogTextBox, "Lỗi khi chọn sản phẩm", ex);
                 ShowError(ex, "Lỗi khi chọn sản phẩm");
             }
         }
@@ -203,10 +293,20 @@ namespace MasterData.ProductService
         {
             try
             {
+                // Kiểm tra BLL đã được khởi tạo chưa
+                if (_productImageBll == null)
+                {
+                    LogTextBoxHelper.AppendError(LogTextBox, "Dịch vụ lưu trữ hình ảnh chưa được cấu hình");
+                    ShowError("Dịch vụ lưu trữ hình ảnh chưa được cấu hình. " +
+                              "Vui lòng kiểm tra lại cấu hình trong App.config và khởi động lại ứng dụng.");
+                    return;
+                }
+
                 // Kiểm tra đã chọn sản phẩm chưa
                 if (ProductId == Guid.Empty)
                 {
-                    ShowInfo("Vui lòng chọn sản phẩm trước khi thêm hình ảnh.");
+                    LogTextBoxHelper.AppendWarning(LogTextBox, "Vui lòng chọn sản phẩm trước khi thêm hình ảnh");
+                    ShowError("Vui lòng chọn sản phẩm trước khi thêm hình ảnh.");
                     return;
                 }
 
@@ -221,12 +321,14 @@ namespace MasterData.ProductService
                     var selectedFiles = xtraOpenFileDialog1.FileNames;
                     if (selectedFiles.Length > 0)
                     {
+                        LogTextBoxHelper.AppendInfo(LogTextBox, $"Đã chọn {selectedFiles.Length} hình ảnh để upload");
                         await ProcessSelectedImagesAsync(selectedFiles);
                     }
                 }
             }
             catch (Exception ex)
             {
+                LogTextBoxHelper.AppendError(LogTextBox, "Lỗi khi chọn hình ảnh", ex);
                 ShowError(ex, "Lỗi khi chọn hình ảnh");
             }
         }
@@ -258,42 +360,114 @@ namespace MasterData.ProductService
         /// Xử lý các hình ảnh đã chọn (không hiển thị WaitingForm)
         /// </summary>
         /// <param name="imagePaths">Danh sách đường dẫn hình ảnh</param>
-        private Task ProcessSelectedImagesWithoutSplashAsync(string[] imagePaths)
+        private async Task ProcessSelectedImagesWithoutSplashAsync(string[] imagePaths)
         {
             var successCount = 0;
             var errorCount = 0;
             var errorMessages = new List<string>();
+            var totalFiles = imagePaths.Length;
 
-            foreach (var imagePath in imagePaths)
+            LogTextBoxHelper.AppendInfo(LogTextBox, $"Bắt đầu xử lý {totalFiles} hình ảnh...");
+            LogTextBoxHelper.AppendLine(LogTextBox, "");
+
+            for (int i = 0; i < imagePaths.Length; i++)
             {
+                var imagePath = imagePaths[i];
+                var fileName = Path.GetFileName(imagePath);
+                var currentIndex = i + 1;
+
                 try
                 {
-                    // Sử dụng BLL để lưu hình ảnh
-                    var productImage = _productImageBll.SaveImageFromFile(ProductId, imagePath);
-                    
-                    if (productImage != null)
+                    LogTextBoxHelper.AppendInfo(LogTextBox, $"[{currentIndex}/{totalFiles}] Đang xử lý: {fileName}");
+
+                    // Lưu hình ảnh sử dụng BLL
+                    var success = await SaveImageFromFileAsync(ProductId, imagePath);
+
+                    if (success)
                     {
                         successCount++;
+                        LogTextBoxHelper.AppendSuccess(LogTextBox, $"[{currentIndex}/{totalFiles}] Đã lưu thành công: {fileName}");
                     }
                     else
                     {
                         errorCount++;
-                        errorMessages.Add($"{Path.GetFileName(imagePath)}: Không thể lưu hình ảnh");
+                        var errorMsg = $"Không thể lưu hình ảnh";
+                        errorMessages.Add($"{fileName}: {errorMsg}");
+                        LogTextBoxHelper.AppendError(LogTextBox, $"[{currentIndex}/{totalFiles}] Lỗi: {fileName} - {errorMsg}");
                     }
                 }
                 catch (Exception ex)
                 {
                     errorCount++;
-                    errorMessages.Add($"{Path.GetFileName(imagePath)}: {ex.Message}");
+                    errorMessages.Add($"{fileName}: {ex.Message}");
+                    LogTextBoxHelper.AppendError(LogTextBox, $"[{currentIndex}/{totalFiles}] Lỗi: {fileName}", ex);
                 }
             }
 
+            // Tóm tắt kết quả
+            LogTextBoxHelper.AppendLine(LogTextBox, "");
+            LogTextBoxHelper.AppendInfo(LogTextBox, $"Hoàn thành xử lý: {successCount} thành công, {errorCount} lỗi");
+
             // Hiển thị kết quả
             ShowImageProcessingResult(successCount, errorCount, errorMessages);
-            
-            //Đóng màn hình 
-            Close();
-            return Task.CompletedTask;
+
+            // Đóng màn hình nếu có ít nhất một hình ảnh thành công
+            if (successCount > 0)
+            {
+                Close();
+            }
+        }
+
+        /// <summary>
+        /// Lưu hình ảnh từ file vào NAS/Local storage và metadata vào database
+        /// </summary>
+        /// <param name="productId">ID sản phẩm</param>
+        /// <param name="imageFilePath">Đường dẫn file ảnh</param>
+        /// <returns>True nếu lưu thành công</returns>
+        private async Task<bool> SaveImageFromFileAsync(Guid productId, string imageFilePath)
+        {
+            try
+            {
+                // Kiểm tra BLL đã được khởi tạo chưa
+                if (_productImageBll == null)
+                {
+                    throw new InvalidOperationException(
+                        "Dịch vụ lưu trữ hình ảnh chưa được cấu hình. " +
+                        "Vui lòng kiểm tra lại cấu hình trong App.config và khởi động lại ứng dụng.");
+                }
+
+                if (!File.Exists(imageFilePath))
+                {
+                    throw new FileNotFoundException($"File ảnh không tồn tại: {imageFilePath}");
+                }
+
+                // Lấy thông tin file
+                var fileInfo = new FileInfo(imageFilePath);
+                var fileSize = fileInfo.Length;
+                var fileSizeMB = fileSize / (1024.0 * 1024.0);
+                LogTextBoxHelper.AppendInfo(LogTextBox, $"  Kích thước file: {fileSizeMB:F2} MB");
+
+                // Sử dụng BLL để lưu hình ảnh vào NAS/Local storage và metadata vào database
+                // Method này sẽ:
+                // 1. Đọc file ảnh
+                // 2. Lưu vào NAS/Local storage thông qua ImageStorageService
+                // 3. Lưu metadata (FileName, RelativePath, FullPath, etc.) vào database
+                var productImage = await _productImageBll.SaveImageFromFileAsync(productId, imageFilePath);
+
+                // Kiểm tra kết quả
+                if (productImage == null)
+                {
+                    throw new InvalidOperationException($"Không thể lưu hình ảnh '{Path.GetFileName(imageFilePath)}'");
+                }
+
+                LogTextBoxHelper.AppendInfo(LogTextBox, $"  Đã lưu vào: {productImage.RelativePath ?? productImage.FullPath}");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lưu hình ảnh '{Path.GetFileName(imageFilePath)}': {ex.Message}", ex);
+            }
         }
 
         /// <summary>
@@ -324,9 +498,12 @@ namespace MasterData.ProductService
             if (successCount > 0)
             {
                 message += "\n🎉 Hình ảnh đã được lưu thành công!";
+                MsgBox.ShowSuccess(message);
             }
-
-            ShowInfo(message);
+            else
+            {
+                MsgBox.ShowError(message);
+            }
         }
 
         #endregion
@@ -366,20 +543,20 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Hiển thị thông tin
-        /// </summary>
-        private void ShowInfo(string message)
-        {
-            MsgBox.ShowSuccess(message);
-        }
-
-        /// <summary>
         /// Hiển thị lỗi với thông tin ngữ cảnh
         /// </summary>
         private void ShowError(Exception ex, string context = null)
         {
             MsgBox.ShowException(
                 string.IsNullOrWhiteSpace(context) ? ex : new Exception($"{context}: {ex.Message}", ex));
+        }
+
+        /// <summary>
+        /// Hiển thị lỗi với thông báo
+        /// </summary>
+        private void ShowError(string message)
+        {
+            MsgBox.ShowError(message);
         }
 
         #endregion

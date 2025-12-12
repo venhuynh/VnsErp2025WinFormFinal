@@ -471,54 +471,6 @@ public class ProductVariantDto : INotifyPropertyChanged
             return errors;
         }
 
-        /// <summary>
-        /// Tạo bản sao của DTO
-        /// </summary>
-        /// <returns>Bản sao mới</returns>
-        public ProductVariantDto Clone()
-        {
-            return new ProductVariantDto
-            {
-                Id = Id,
-                ProductId = ProductId,
-                ProductCode = ProductCode,
-                ProductName = ProductName,
-                VariantCode = VariantCode,
-                UnitId = UnitId,
-                UnitCode = UnitCode,
-                UnitName = UnitName,
-                IsActive = IsActive,
-                ThumbnailImage = ThumbnailImage?.Clone() as byte[],
-                ProductThumbnailImage = ProductThumbnailImage?.Clone() as byte[],
-                AttributeCount = AttributeCount,
-                ImageCount = ImageCount,
-                Attributes = Attributes?.ConvertAll(a => a.Clone()),
-                Images = Images?.ConvertAll(i => i.Clone())
-            };
-        }
-
-        /// <summary>
-        /// Cập nhật thông tin từ DTO khác
-        /// </summary>
-        /// <param name="other">DTO nguồn</param>
-        public void UpdateFrom(ProductVariantDto other)
-        {
-            if (other == null) return;
-
-            ProductId = other.ProductId;
-            ProductCode = other.ProductCode;
-            ProductName = other.ProductName;
-            VariantCode = other.VariantCode;
-            UnitId = other.UnitId;
-            UnitCode = other.UnitCode;
-            UnitName = other.UnitName;
-            IsActive = other.IsActive;
-            ThumbnailImage = other.ThumbnailImage?.Clone() as byte[];
-            ProductThumbnailImage = other.ProductThumbnailImage?.Clone() as byte[];
-            AttributeCount = other.AttributeCount;
-            ImageCount = other.ImageCount;
-        }
-
         #endregion
 
         #region INotifyPropertyChanged Implementation
