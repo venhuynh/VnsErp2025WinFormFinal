@@ -1070,7 +1070,7 @@ namespace Inventory.StockIn.NhapLapRap
                 // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
                 NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
                 NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-                NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullNameHtml}");
+                NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullName}");
                 NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
             }
             else
@@ -1080,7 +1080,7 @@ namespace Inventory.StockIn.NhapLapRap
                 {
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
-                    rowData.ProductVariantName = $"{selectedVariant.VariantFullNameHtml}";
+                    rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
                     rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                     // Refresh grid để hiển thị thay đổi

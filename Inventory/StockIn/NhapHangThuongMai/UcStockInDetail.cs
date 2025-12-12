@@ -975,7 +975,7 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
             StockInDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
             StockInDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            StockInDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullNameHtml}");
+            StockInDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullName}");
             StockInDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
@@ -985,7 +985,7 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.VariantFullNameHtml}";
+                rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                 // Refresh grid để hiển thị thay đổi

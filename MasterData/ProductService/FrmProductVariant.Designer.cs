@@ -48,6 +48,7 @@ namespace MasterData.ProductService
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.ListDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.UpdateProductVariantFullNameBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.NewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -111,10 +112,39 @@ namespace MasterData.ProductService
             this.ProductVariantListGridView.OptionsSelection.MultiSelect = true;
             this.ProductVariantListGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.ProductVariantListGridView.OptionsView.GroupDrawMode = DevExpress.XtraGrid.Views.Grid.GroupDrawMode.Office;
+            this.ProductVariantListGridView.OptionsView.RowAutoHeight = true;
             this.ProductVariantListGridView.OptionsView.ShowChildrenInGroupPanel = true;
             this.ProductVariantListGridView.OptionsView.ShowGroupedColumns = true;
             this.ProductVariantListGridView.OptionsView.ShowGroupPanel = false;
             this.ProductVariantListGridView.OptionsView.ShowGroupPanelColumnsAsSingleRow = true;
+            // 
+            // colVariantFullNameHtml
+            // 
+            this.colVariantFullNameHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colVariantFullNameHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colVariantFullNameHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colVariantFullNameHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colVariantFullNameHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colVariantFullNameHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colVariantFullNameHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colVariantFullNameHtml.AppearanceHeader.Options.UseFont = true;
+            this.colVariantFullNameHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colVariantFullNameHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colVariantFullNameHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colVariantFullNameHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colVariantFullNameHtml.Caption = "Thông tin đầy đủ";
+            this.colVariantFullNameHtml.ColumnEdit = this.VariantFullNameHtmlHypertextLabel;
+            this.colVariantFullNameHtml.FieldName = "VariantFullName";
+            this.colVariantFullNameHtml.MinWidth = 300;
+            this.colVariantFullNameHtml.Name = "colVariantFullNameHtml";
+            this.colVariantFullNameHtml.Visible = true;
+            this.colVariantFullNameHtml.VisibleIndex = 1;
+            this.colVariantFullNameHtml.Width = 500;
+            // 
+            // VariantFullNameHtmlHypertextLabel
+            // 
+            this.VariantFullNameHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.VariantFullNameHtmlHypertextLabel.Name = "VariantFullNameHtmlHypertextLabel";
             // 
             // barManager1
             // 
@@ -136,9 +166,10 @@ namespace MasterData.ProductService
             this.barHeaderItem1,
             this.DataSummaryBarStaticItem,
             this.barHeaderItem2,
-            this.SelectedRowBarStaticItem});
+            this.SelectedRowBarStaticItem,
+            this.UpdateProductVariantFullNameBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 15;
+            this.barManager1.MaxItemId = 16;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemSpinEdit1,
             this.repositoryItemComboBox1});
@@ -153,6 +184,7 @@ namespace MasterData.ProductService
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ListDataBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.UpdateProductVariantFullNameBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NewBarButtonItem, "", true, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.DeleteBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
@@ -168,6 +200,14 @@ namespace MasterData.ProductService
             this.ListDataBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.list_16x16;
             this.ListDataBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.list_32x32;
             this.ListDataBarButtonItem.Name = "ListDataBarButtonItem";
+            // 
+            // UpdateProductVariantFullNameBarButtonItem
+            // 
+            this.UpdateProductVariantFullNameBarButtonItem.Caption = "Cập nhật tên";
+            this.UpdateProductVariantFullNameBarButtonItem.Id = 15;
+            this.UpdateProductVariantFullNameBarButtonItem.ImageOptions.Image = global::MasterData.Properties.Resources.updatetableofcontents_16x16;
+            this.UpdateProductVariantFullNameBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.updatetableofcontents_32x32;
+            this.UpdateProductVariantFullNameBarButtonItem.Name = "UpdateProductVariantFullNameBarButtonItem";
             // 
             // NewBarButtonItem
             // 
@@ -341,34 +381,6 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // colVariantFullNameHtml
-            // 
-            this.colVariantFullNameHtml.AppearanceCell.Options.UseTextOptions = true;
-            this.colVariantFullNameHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colVariantFullNameHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colVariantFullNameHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colVariantFullNameHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colVariantFullNameHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colVariantFullNameHtml.AppearanceHeader.Options.UseBackColor = true;
-            this.colVariantFullNameHtml.AppearanceHeader.Options.UseFont = true;
-            this.colVariantFullNameHtml.AppearanceHeader.Options.UseForeColor = true;
-            this.colVariantFullNameHtml.AppearanceHeader.Options.UseTextOptions = true;
-            this.colVariantFullNameHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colVariantFullNameHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colVariantFullNameHtml.Caption = "Thông tin đầy đủ";
-            this.colVariantFullNameHtml.ColumnEdit = this.VariantFullNameHtmlHypertextLabel;
-            this.colVariantFullNameHtml.FieldName = "VariantFullNameHtml";
-            this.colVariantFullNameHtml.MinWidth = 300;
-            this.colVariantFullNameHtml.Name = "colVariantFullNameHtml";
-            this.colVariantFullNameHtml.Visible = true;
-            this.colVariantFullNameHtml.VisibleIndex = 0;
-            this.colVariantFullNameHtml.Width = 500;
-            // 
-            // VariantFullNameHtmlHypertextLabel
-            // 
-            this.VariantFullNameHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.VariantFullNameHtmlHypertextLabel.Name = "VariantFullNameHtmlHypertextLabel";
-            // 
             // FrmProductVariant
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -426,5 +438,6 @@ namespace MasterData.ProductService
         private BindingSource productVariantListDtoBindingSource;
         private GridColumn colVariantFullNameHtml;
         private RepositoryItemHypertextLabel VariantFullNameHtmlHypertextLabel;
+        private BarButtonItem UpdateProductVariantFullNameBarButtonItem;
     }
 }

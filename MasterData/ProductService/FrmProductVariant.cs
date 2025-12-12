@@ -62,6 +62,7 @@ namespace MasterData.ProductService
             DeleteBarButtonItem.ItemClick += DeleteBarButtonItem_ItemClick;
             CountVariantAndImageBarButtonItem.ItemClick += CountVariantAndImageBarButtonItem_ItemClick;
             ExportBarButtonItem.ItemClick += ExportBarButtonItem_ItemClick;
+            UpdateProductVariantFullNameBarButtonItem.ItemClick += UpdateProductVariantFullNameBarButtonItem_ItemClick;
 
             // Grid events
             ProductVariantListGridView.SelectionChanged += ProductServiceMasterDetailViewGridView_SelectionChanged;
@@ -298,6 +299,49 @@ namespace MasterData.ProductService
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi xuất dữ liệu");
+            }
+        }
+
+        /// <summary>
+        /// Người dùng bấm "Cập nhật tên" để cập nhật VariantFullName cho tất cả biến thể.
+        /// </summary>
+        private async void UpdateProductVariantFullNameBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                // Xác nhận cập nhật
+                if (!MsgBox.ShowYesNo("Bạn có chắc chắn muốn cập nhật tên đầy đủ cho tất cả biến thể?\n\nThao tác này sẽ cập nhật cột VariantFullName với format:\nTên sản phẩm - Đơn vị tính - Mã biến thể - Các thông tin biến thể", "Xác nhận cập nhật"))
+                {
+                    return;
+                }
+
+                // Thực hiện cập nhật
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    var updatedCount = 0;
+                    try
+                    {
+                        // Gọi BLL để cập nhật
+                        await _productVariantBll.UpdateAllVariantFullNamesAsync();
+                        
+                        // Lấy số lượng biến thể đã cập nhật
+                        var allVariants = await _productVariantBll.GetAllAsync();
+                        updatedCount = allVariants.Count;
+
+                        ShowInfo($"Đã cập nhật thành công tên đầy đủ cho {updatedCount} biến thể.");
+                        
+                        // Refresh dữ liệu để hiển thị thay đổi
+                        await LoadDataAsyncWithoutSplash();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Lỗi cập nhật tên đầy đủ: {ex.Message}", ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi cập nhật tên đầy đủ");
             }
         }
 
@@ -556,6 +600,15 @@ namespace MasterData.ProductService
                         ExportBarButtonItem,
                         title: "<b><color=Purple>📤 Xuất</color></b>",
                         content: "Xuất danh sách biến thể sản phẩm ra file Excel."
+                    );
+                }
+
+                if (UpdateProductVariantFullNameBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        UpdateProductVariantFullNameBarButtonItem,
+                        title: "<b><color=Blue>🔄 Cập nhật tên</color></b>",
+                        content: "Cập nhật tên đầy đủ (VariantFullName) cho tất cả biến thể.\nFormat: Tên sản phẩm - Đơn vị tính - Mã biến thể - Các thông tin biến thể"
                     );
                 }
             }

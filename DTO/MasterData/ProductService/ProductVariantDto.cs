@@ -296,8 +296,8 @@ public class ProductVariantDto : INotifyPropertyChanged
                         }
                     }
 
-                    if (Attributes.Count > 3)
-                    {
+                        if (Attributes.Count > 3)
+                        {
                         html += $"<size=9><color='#757575'>Thuộc tính:</color></size> <size=10><color='#757575'>(+{Attributes.Count - 3} thuộc tính khác)</color></size><br>";
                     }
                 }

@@ -423,6 +423,8 @@
   <ItemGroup>
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
     <Content Include="Doc\Prompt cho AI Cursor %28Refactor DTOs với Notation tiếng Việt%29.txt" />
+    <None Include="Resources\updatetableofcontents_32x32.png" />
+    <None Include="Resources\updatetableofcontents_16x16.png" />
     <None Include="Resources\download_16x16.png" />
     <None Include="Resources\loadfrom_16x16.png" />
     <None Include="Resources\apply_16x16.png" />

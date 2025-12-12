@@ -38,6 +38,10 @@ public class ProductVariantListDto
     [Display(Name = "Số hình ảnh")]
     public int ImageCount { get; set; }
 
+    [Display(Name = "Hình ảnh thumbnail")]
+    [Description("Hình ảnh thumbnail của biến thể sản phẩm")]
+    public byte[] ThumbnailImage { get; set; }
+
     [Display(Name = "Tên đầy đủ")]
     public string FullName => $"{VariantCode} - {ProductName} {VariantFullName} ({UnitName})";
 
@@ -51,90 +55,6 @@ public class ProductVariantListDto
     [Display(Name = "Thông tin biến thể đầy đủ")]
     [Description("Thông tin biến thể đầy đủ dưới dạng ProductVariantDto")]
     public ProductVariantDto FullVariantInfo { get; set; }
-
-    /// <summary>
-    /// Thông tin biến thể đầy đủ dưới dạng HTML theo format DevExpress
-    /// Bao gồm thông tin sản phẩm từ ProductService và tổng hợp các thông tin biến thể
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
-    /// Format giống ProductServiceDto.ThongTinHtml (không dùng &lt;size&gt;)
-    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
-    /// </summary>
-    [Display(Name = "Thông tin HTML")]
-    [Description("Thông tin biến thể đầy đủ dưới dạng HTML")]
-    public string VariantFullNameHtml
-    {
-        get
-        {
-            var html = string.Empty;
-
-            // Thông tin sản phẩm từ ProductService (dòng đầu)
-            var productName = ProductName ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(productName))
-            {
-                html += $"<b><color='blue'>{productName}</color></b>";
-            }
-
-            // Mã sản phẩm (nếu có, màu xám)
-            var productCode = ProductCode ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(productCode))
-            {
-                if (!string.IsNullOrWhiteSpace(html))
-                    html += " ";
-                html += $"<color='#757575'>({productCode})</color>";
-            }
-
-            html += "<br>";
-
-            // Tổng hợp các thông tin biến thể
-            var variantParts = new List<string>();
-
-            // Mã biến thể (màu cam)
-            var variantCode = VariantCode ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(variantCode))
-            {
-                variantParts.Add($"<color='#757575'>Mã biến thể:</color> <color='#FF9800'><b>{variantCode}</b></color>");
-            }
-
-            // Tên biến thể đầy đủ (nếu có)
-            var variantFullName = VariantFullName ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(variantFullName))
-            {
-                variantParts.Add($"<color='#757575'>Tên biến thể:</color> <b>{variantFullName}</b>");
-            }
-
-            // Đơn vị tính (nếu có)
-            var unitName = UnitName ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(unitName))
-            {
-                variantParts.Add($"<color='#757575'>Đơn vị tính:</color> <b>{unitName}</b>");
-            }
-
-            if (variantParts.Any())
-            {
-                html += string.Join(" | ", variantParts) + "<br>";
-            }
-
-            // Thông tin số lượng và trạng thái
-            var countParts = new List<string>();
-
-            if (ImageCount > 0)
-            {
-                countParts.Add($"<color='#757575'>Ảnh:</color> <b>{ImageCount}</b>");
-            }
-
-            // Trạng thái hoạt động
-            var statusText = IsActive ? "Hoạt động" : "Không hoạt động";
-            var statusColor = IsActive ? "#4CAF50" : "#F44336";
-            countParts.Add($"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>");
-
-            if (countParts.Any())
-            {
-                html += string.Join(" | ", countParts);
-            }
-
-            return html;
-        }
-    }
 }
 
 /// <summary>
@@ -425,13 +345,14 @@ public static class ProductVariantListConverters
         var dto = new ProductVariantListDto
         {
             Id = entity.Id,
-            ProductCode = entity.ProductService?.Code ?? string.Empty,
-            ProductName = entity.ProductService?.Name ?? string.Empty,
+            //ProductCode = entity.ProductService?.Code ?? string.Empty,
+            //ProductName = entity.ProductService?.Name ?? string.Empty,
             VariantCode = entity.VariantCode ?? string.Empty,
             VariantFullName = entity.VariantFullName ?? string.Empty,
-            UnitName = entity.UnitOfMeasure?.Name ?? string.Empty,
+            //UnitName = entity.UnitOfMeasure?.Name ?? string.Empty,
             IsActive = entity.IsActive,
-            ImageCount = entity.ProductImages?.Count ?? 0
+            //ImageCount = entity.ProductImages?.Count ?? 0,
+            ThumbnailImage = entity.ThumbnailImage?.ToArray()
         };
 
         return dto;

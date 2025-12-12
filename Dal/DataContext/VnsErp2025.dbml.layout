@@ -1,676 +1,676 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 29.25, 65.875" name="VnsErp2025">
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 29.25, 56.625" name="VnsErp2025">
   <DataContextMoniker Name="/VnsErp2025DataContext" />
   <nestedChildShapes>
-    <classShape Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" absoluteBounds="0.75, 39, 2, 1.5785953776041737">
+    <classShape Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" absoluteBounds="0.75, 37.25, 2, 1.5785953776041737">
       <DataClassMoniker Name="/VnsErp2025DataContext/ApplicationUser" />
       <nestedChildShapes>
-        <elementListCompartment Id="8e0bec5a-3bce-4de0-aef7-dd109ce3239e" absoluteBounds="0.765, 39.46, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="30ba6a55-e42d-4046-aa54-ff8e17f5fa07" absoluteBounds="0.765, 37.71, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="70f19d40-abd0-48c2-8f7a-7667b30695ab" absoluteBounds="11.75, 32.625, 2, 1.3862939453125023">
-      <DataClassMoniker Name="/VnsErp2025DataContext/VariantAttribute" />
-      <nestedChildShapes>
-        <elementListCompartment Id="9de1730a-6904-458a-8394-3a1aed7b10b3" absoluteBounds="11.765, 33.085, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="fa83792b-14d7-4931-b53e-835d6d036cfd" absoluteBounds="17.75, 34.25, 2, 8.50144694010416">
-      <DataClassMoniker Name="/VnsErp2025DataContext/Asset" />
-      <nestedChildShapes>
-        <elementListCompartment Id="5a9b75c2-e262-46df-b712-40a430534d94" absoluteBounds="17.765, 34.71, 1.9700000000000002, 7.941446940104167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="423d4ffa-949b-41c2-9037-1e1cc47ffb90" absoluteBounds="9, 33.625, 2, 1.5785953776041595">
-      <DataClassMoniker Name="/VnsErp2025DataContext/Attribute" />
-      <nestedChildShapes>
-        <elementListCompartment Id="b599c6c4-f614-48b1-bd29-53263621268e" absoluteBounds="9.015, 34.085, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="5264b967-ff0b-41ea-b9b4-420a72e05599" absoluteBounds="9, 31.5, 2, 1.3862939453125023">
-      <DataClassMoniker Name="/VnsErp2025DataContext/AttributeValue" />
-      <nestedChildShapes>
-        <elementListCompartment Id="f1461b46-ed45-4c67-920e-5a670b818eee" absoluteBounds="9.015, 31.96, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="0fe72f31-c6d9-4503-9cb1-18161331f5c1" absoluteBounds="3.5, 40.875, 2, 5.8092268880208309">
-      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartner" />
-      <nestedChildShapes>
-        <elementListCompartment Id="5d4af94b-f7b4-4251-80cb-525621b012c1" absoluteBounds="3.515, 41.335, 1.9700000000000002, 5.249226888020833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="18b670b7-24d0-47ea-af36-80c059f4af97" absoluteBounds="6.25, 41, 2, 1.5785953776041737">
-      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartner_BusinessPartnerCategory" />
-      <nestedChildShapes>
-        <elementListCompartment Id="61d10b7d-74c1-4a8a-8f02-0cd8d1771a6a" absoluteBounds="6.265, 41.46, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="1bdb1246-00c9-4515-9d4b-327dff0224b2" absoluteBounds="3.5, 32.875, 2, 2.9247054036458309">
-      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartnerCategory" />
-      <nestedChildShapes>
-        <elementListCompartment Id="0a997ad3-1284-4776-b5eb-e7c29c0f5ef9" absoluteBounds="3.515, 33.335, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="9fe5552e-d5d8-493c-8c34-d8d6fc9aa3c9" absoluteBounds="9, 48.375, 2, 5.8092268880208309">
-      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartnerContact" />
-      <nestedChildShapes>
-        <elementListCompartment Id="aa7995a2-6460-4a56-8725-63782fa84f3c" absoluteBounds="9.015, 48.835, 1.9700000000000002, 5.249226888020833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="87b33bac-f500-44e9-843f-27ba1f04278f" absoluteBounds="6.25, 43.875, 2, 4.4631168619791595">
-      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartnerSite" />
-      <nestedChildShapes>
-        <elementListCompartment Id="141da607-d3e9-435e-b97b-f2c4a711079f" absoluteBounds="6.265, 44.335, 1.9700000000000002, 3.903116861979167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="979752e0-0e00-45c8-ae44-b6c2e265c374" absoluteBounds="15, 47.875, 2, 4.2708154296875023">
-      <DataClassMoniker Name="/VnsErp2025DataContext/Company" />
-      <nestedChildShapes>
-        <elementListCompartment Id="95a1f4eb-0f87-4cea-89ba-dcc718d1145f" absoluteBounds="15.015, 48.335, 1.9700000000000002, 3.7108154296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="29d59903-b5be-439e-bf25-93730b3f3c6b" absoluteBounds="15, 25.625, 2, 2.5401025390625023">
-      <DataClassMoniker Name="/VnsErp2025DataContext/CompanyBranch" />
-      <nestedChildShapes>
-        <elementListCompartment Id="ff980cb1-548e-41ff-87f2-f5c50a73f59f" absoluteBounds="15.015, 26.085, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" absoluteBounds="15, 29.5, 2, 2.3478011067708309">
-      <DataClassMoniker Name="/VnsErp2025DataContext/Department" />
-      <nestedChildShapes>
-        <elementListCompartment Id="689bb86c-0415-4978-b6e0-f982d63394d8" absoluteBounds="15.015, 29.96, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" absoluteBounds="21.25, 43.75, 2, 6.9630354817708309">
-      <DataClassMoniker Name="/VnsErp2025DataContext/Device" />
-      <nestedChildShapes>
-        <elementListCompartment Id="1dded251-c37c-4545-96f5-9cf79d45f8b9" absoluteBounds="21.265, 44.21, 1.9700000000000002, 6.403035481770833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="001c371a-6132-49d9-9602-21d873388d59" absoluteBounds="24, 45.875, 2, 2.7324039713541595">
-      <DataClassMoniker Name="/VnsErp2025DataContext/DeviceHistory" />
-      <nestedChildShapes>
-        <elementListCompartment Id="66f33285-497b-4d48-b08d-70e8e8c9bb60" absoluteBounds="24.015, 46.335, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="fbbefb25-5280-4bc3-bf65-94c457a07a85" absoluteBounds="27, 45, 2, 4.4631168619791595">
-      <DataClassMoniker Name="/VnsErp2025DataContext/DeviceTransfer" />
-      <nestedChildShapes>
-        <elementListCompartment Id="4131cb9e-b392-49d4-958f-58456e519c82" absoluteBounds="27.015, 45.46, 1.9700000000000002, 3.903116861979167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="a2ba1364-9c09-4268-99ab-23477beb12d5" absoluteBounds="15, 59, 2, 6.5784326171874952">
-      <DataClassMoniker Name="/VnsErp2025DataContext/Employee" />
-      <nestedChildShapes>
-        <elementListCompartment Id="583e4534-21d3-482e-a4ca-6b73933380f1" absoluteBounds="15.015, 59.46, 1.9700000000000002, 6.0184326171875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="5c50eb5b-8b18-4631-8f15-95504bf5f15c" absoluteBounds="14.75, 34.375, 2, 8.3091455078125023">
-      <DataClassMoniker Name="/VnsErp2025DataContext/InventoryBalance" />
-      <nestedChildShapes>
-        <elementListCompartment Id="5ef267b0-778f-4405-9b0e-e9a4eb613aba" absoluteBounds="14.765, 34.835, 1.9700000000000002, 7.7491455078125009" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="0b9bc46f-7958-4c54-b857-1fae97588979" absoluteBounds="12.25, 61.125, 2, 2.1554996744791595">
-      <DataClassMoniker Name="/VnsErp2025DataContext/Position" />
-      <nestedChildShapes>
-        <elementListCompartment Id="4148ceb9-f75e-4145-9c11-44d19c10d766" absoluteBounds="12.265, 61.585, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="88abd452-604d-458f-9aa6-9b8d3f1a5614" absoluteBounds="11.75, 34.75, 2, 7.1553369140625023">
-      <DataClassMoniker Name="/VnsErp2025DataContext/ProductImage" />
-      <nestedChildShapes>
-        <elementListCompartment Id="3a0243f9-e2b2-4d70-8325-877fc2fb146f" absoluteBounds="11.765, 35.21, 1.9700000000000002, 6.5953369140625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="c9c32afd-a172-4496-a5d8-ae08ed3c966d" absoluteBounds="6.25, 36.625, 2, 3.5016097005208309">
-      <DataClassMoniker Name="/VnsErp2025DataContext/ProductService" />
-      <nestedChildShapes>
-        <elementListCompartment Id="07ad51ce-8078-4d49-9e48-14b120b71059" absoluteBounds="6.265, 37.085, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="8bb8f3f6-6c0d-47b5-b8b4-fd81bed8da61" absoluteBounds="3.5, 36.875, 2, 2.9247054036458309">
-      <DataClassMoniker Name="/VnsErp2025DataContext/ProductServiceCategory" />
-      <nestedChildShapes>
-        <elementListCompartment Id="bb97d293-94a5-4dfd-9ca1-86c7dbdb6e09" absoluteBounds="3.515, 37.335, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="f8ea7766-5022-469e-a348-e4b377149480" absoluteBounds="9, 36.5, 2, 3.6939111328125023">
-      <DataClassMoniker Name="/VnsErp2025DataContext/ProductVariant" />
-      <nestedChildShapes>
-        <elementListCompartment Id="b3e2a453-605d-46ed-83d9-f3f7a09978fc" absoluteBounds="9.015, 36.96, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="2409bc6f-5a2d-4e32-ac7c-f406decef5dd" absoluteBounds="14.75, 43.5, 2, 2.9247054036458309">
-      <DataClassMoniker Name="/VnsErp2025DataContext/StockInOutDetail" />
-      <nestedChildShapes>
-        <elementListCompartment Id="e856ddc8-5254-4e2a-9f68-12ec4c124fa4" absoluteBounds="14.765, 43.96, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="1ddef51d-0aef-41b9-8cc3-0e6572cbfbea" absoluteBounds="17.75, 43.625, 2, 10.809064127604159">
-      <DataClassMoniker Name="/VnsErp2025DataContext/StockInOutDocument" />
-      <nestedChildShapes>
-        <elementListCompartment Id="cf3abb89-7acd-4733-8124-157f91550aaa" absoluteBounds="17.765, 44.085, 1.9700000000000002, 10.249064127604166" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="a69fcf14-9fc2-48cb-ad1d-f26fea8c6946" absoluteBounds="11.75, 46.625, 2, 4.2708154296875023">
-      <DataClassMoniker Name="/VnsErp2025DataContext/StockInOutImage" />
-      <nestedChildShapes>
-        <elementListCompartment Id="7f9b32e5-19a0-48b2-b7d5-a220439bb84c" absoluteBounds="11.765, 47.085, 1.9700000000000002, 3.7108154296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="d911fa9f-ee78-4df7-bfa6-60994ff8f6d8" absoluteBounds="9, 42.875, 2, 4.4631168619791595">
-      <DataClassMoniker Name="/VnsErp2025DataContext/StockInOutMaster" />
-      <nestedChildShapes>
-        <elementListCompartment Id="37a78910-afa5-40e8-a272-5b3b3267c6cd" absoluteBounds="9.015, 43.335, 1.9700000000000002, 3.903116861979167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="16f7e069-fd2b-49e4-a0aa-29ec3002d492" absoluteBounds="6.25, 33.5, 2, 1.7708968098958309">
-      <DataClassMoniker Name="/VnsErp2025DataContext/UnitOfMeasure" />
-      <nestedChildShapes>
-        <elementListCompartment Id="bb03f839-38bf-4a0c-9a31-936a477c35da" absoluteBounds="6.265, 33.96, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="8d0d1e46-9272-4073-b682-0bf5623f8e78" absoluteBounds="17.5, 55.75, 2, 2.3478011067708309">
+    <classShape Id="47b21b19-f3ad-43c8-a6e0-703f833f886d" absoluteBounds="17.5, 54, 2, 2.3478011067708309">
       <DataClassMoniker Name="/VnsErp2025DataContext/Warranty" />
       <nestedChildShapes>
-        <elementListCompartment Id="aa1bc9b8-788f-4aa1-869f-f64d06a3537e" absoluteBounds="17.515, 56.21, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="be3dc6a8-2492-41b7-ab80-328f3538bf72" absoluteBounds="17.515, 54.46, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(2.75 : 39.7892976888021); (2.79166666666667 : 39.7892976888021 : JumpStart); (3.20833333333333 : 39.7892976888021 : JumpEnd); (3.25 : 39.7892976888021); (3.25 : 40.4439111328125); (3.29166666666667 : 40.4439111328125 : JumpStart); (3.45833333333333 : 40.4439111328125 : JumpEnd); (5.79166666666667 : 40.4439111328125 : JumpStart); (5.95833333333333 : 40.4439111328125 : JumpEnd); (7.16666666666667 : 40.4439111328125 : JumpStart); (7.33333333333333 : 40.4439111328125 : JumpEnd); (9.91666666666667 : 40.4439111328125 : JumpStart); (10.0833333333333 : 40.4439111328125 : JumpEnd); (11.1974368974359 : 40.4439111328125 : JumpStart); (11.4895833333333 : 40.4439111328125 : JumpEnd); (11.5 : 40.4439111328125); (11.5 : 43.0014469401042); (14.2916666666667 : 43.0014469401042 : JumpStart); (14.4583333333333 : 43.0014469401042 : JumpEnd); (14.5416666666667 : 43.0014469401042 : JumpStart); (14.7083333333333 : 43.0014469401042 : JumpEnd); (15.1354146666667 : 43.0014469401042 : JumpStart); (15.3020813333333 : 43.0014469401042 : JumpEnd); (16.8229166666667 : 43.0014469401042 : JumpStart); (16.9895833333333 : 43.0014469401042 : JumpEnd); (17.2916666666667 : 43.0014469401042 : JumpStart); (17.7083333333333 : 43.0014469401042 : JumpEnd); (18.75 : 43.0014469401042); (18.75 : 42.7514469401042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <classShape Id="abfef22d-7d52-4e4a-9a55-140a056563e3" absoluteBounds="17.75, 32.625, 2, 8.50144694010416">
+      <DataClassMoniker Name="/VnsErp2025DataContext/Asset" />
+      <nestedChildShapes>
+        <elementListCompartment Id="dabb01a8-52ed-462a-99c3-1ff7871ca7c3" absoluteBounds="17.765, 33.085, 1.9700000000000002, 7.941446940104167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f404049c-d53f-46f7-964b-955efecca1e4" absoluteBounds="9, 31.875, 2, 1.578595377604163">
+      <DataClassMoniker Name="/VnsErp2025DataContext/Attribute" />
+      <nestedChildShapes>
+        <elementListCompartment Id="dfc12469-8583-478e-ba76-a6fd24fa2819" absoluteBounds="9.015, 32.335, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="12f8bc9f-74b8-446a-9061-aedec1f4254a" absoluteBounds="9, 29.75, 2, 1.3862939453125023">
+      <DataClassMoniker Name="/VnsErp2025DataContext/AttributeValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="cb3424c8-4ada-4306-9b36-0a6726d9cebf" absoluteBounds="9.015, 30.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="6eda9bea-321b-409a-ba0c-26c730fe51a8" absoluteBounds="3.5, 39.125, 2, 5.8092268880208309">
+      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartner" />
+      <nestedChildShapes>
+        <elementListCompartment Id="098613c7-5b72-4339-ad62-99716c47fc87" absoluteBounds="3.515, 39.585, 1.9700000000000002, 5.249226888020833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="5bb829e6-45b8-4fa2-bd71-8175cf7cd1f5" absoluteBounds="6.25, 39.25, 2, 1.5785953776041737">
+      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartner_BusinessPartnerCategory" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b7512f12-face-4bf6-b08f-bbe31116a7a3" absoluteBounds="6.265, 39.71, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9f248602-7688-4336-abf8-12cafbb1e59c" absoluteBounds="3.5, 31.25, 2, 2.9247054036458309">
+      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartnerCategory" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c0c316d1-6fb8-4cd7-b2d9-a6205df63491" absoluteBounds="3.515, 31.71, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="99254f40-4474-40b1-9500-157244f7cac0" absoluteBounds="9, 46.625, 2, 5.8092268880208309">
+      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartnerContact" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fca341bc-94d5-45b0-87cf-67a76fe5d45f" absoluteBounds="9.015, 47.085, 1.9700000000000002, 5.249226888020833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="651bed64-49b3-4f9a-ab6a-9a86823ae004" absoluteBounds="6.25, 42.125, 2, 4.4631168619791595">
+      <DataClassMoniker Name="/VnsErp2025DataContext/BusinessPartnerSite" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0dff4aa9-2ba9-493d-89a3-b51dcdda0049" absoluteBounds="6.265, 42.585, 1.9700000000000002, 3.903116861979167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="c518788b-394d-4d4a-b90d-a064be23f42a" absoluteBounds="3.5, 48.25, 2, 4.2708154296875023">
+      <DataClassMoniker Name="/VnsErp2025DataContext/Company" />
+      <nestedChildShapes>
+        <elementListCompartment Id="be4a58f2-c0e1-431b-b85f-9d93b4fe1e16" absoluteBounds="3.515, 48.71, 1.9700000000000002, 3.7108154296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" absoluteBounds="6.25, 49.125, 2, 2.5401025390625023">
+      <DataClassMoniker Name="/VnsErp2025DataContext/CompanyBranch" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c85ef06b-faa5-435c-9a0f-c1c09c8e737e" absoluteBounds="6.265, 49.585, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" absoluteBounds="15, 29.5, 2, 2.3478011067708309">
+      <DataClassMoniker Name="/VnsErp2025DataContext/Department" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0700b3fb-e59a-4429-bf49-583ee3dd64e8" absoluteBounds="15.015, 29.96, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" absoluteBounds="21.25, 42.125, 2, 6.9630354817708309">
+      <DataClassMoniker Name="/VnsErp2025DataContext/Device" />
+      <nestedChildShapes>
+        <elementListCompartment Id="cd8a47ab-1774-409f-8847-b1f88ca7c7bf" absoluteBounds="21.265, 42.585, 1.9700000000000002, 6.403035481770833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="7c9a9f5b-35cc-438c-81c5-a8a4017e8e84" absoluteBounds="24, 44.25, 2, 2.7324039713541595">
+      <DataClassMoniker Name="/VnsErp2025DataContext/DeviceHistory" />
+      <nestedChildShapes>
+        <elementListCompartment Id="68541c8d-021a-4f92-a63c-6200d6d6bda7" absoluteBounds="24.015, 44.71, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="397de0d3-c433-4279-8a6c-e8b197a7c9d8" absoluteBounds="27, 43.375, 2, 4.4631168619791595">
+      <DataClassMoniker Name="/VnsErp2025DataContext/DeviceTransfer" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ecc9989b-b61b-41aa-8d3c-69a4aede0c38" absoluteBounds="27.015, 43.835, 1.9700000000000002, 3.903116861979167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="be244187-c298-4ea3-9110-4401a4a718b5" absoluteBounds="15, 21.625, 2, 6.5784326171875023">
+      <DataClassMoniker Name="/VnsErp2025DataContext/Employee" />
+      <nestedChildShapes>
+        <elementListCompartment Id="eb107015-8494-45fc-83f9-8d8485600024" absoluteBounds="15.015, 22.085, 1.9700000000000002, 6.0184326171875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="dede3cb7-d4ae-4f73-a471-eefc742a1274" absoluteBounds="14.75, 32.625, 2, 8.3091455078125023">
+      <DataClassMoniker Name="/VnsErp2025DataContext/InventoryBalance" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b4c5b9a8-64b5-4090-b475-114016ce8cb0" absoluteBounds="14.765, 33.085, 1.9700000000000002, 7.7491455078125009" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="644dc1b3-1c66-41de-88c9-30b4ebbd1e55" absoluteBounds="12.25, 23.75, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/VnsErp2025DataContext/Position" />
+      <nestedChildShapes>
+        <elementListCompartment Id="02092eae-4f11-486a-a8e9-4b1abb8296df" absoluteBounds="12.265, 24.21, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="536d13c6-82f3-4706-97df-11a37ff96a5e" absoluteBounds="11.75, 33.125, 2, 7.1553369140625023">
+      <DataClassMoniker Name="/VnsErp2025DataContext/ProductImage" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6291325e-9705-47b8-8c7b-5921a6ebbca5" absoluteBounds="11.765, 33.585, 1.9700000000000002, 6.5953369140625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="35fcd675-d288-4efe-8cc5-3e3b6e605998" absoluteBounds="6.25, 34.875, 2, 3.5016097005208309">
+      <DataClassMoniker Name="/VnsErp2025DataContext/ProductService" />
+      <nestedChildShapes>
+        <elementListCompartment Id="29d8368f-1419-475e-b3ea-413231949256" absoluteBounds="6.265, 35.335, 1.9700000000000002, 2.941609700520833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="52a9e0d2-6e0e-4f8d-8120-b8320c8deeca" absoluteBounds="3.5, 35.125, 2, 2.9247054036458309">
+      <DataClassMoniker Name="/VnsErp2025DataContext/ProductServiceCategory" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6ff4cea5-93a0-49a7-90ae-984a75a8956d" absoluteBounds="3.515, 35.585, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="363c18e9-c3c5-4211-9b01-cf3a0c704843" absoluteBounds="9, 34.75, 2, 3.6939111328125023">
+      <DataClassMoniker Name="/VnsErp2025DataContext/ProductVariant" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0fb851c7-2338-47bc-af56-1cdafa4b82e2" absoluteBounds="9.015, 35.21, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1a5bd192-0a44-4045-a764-23e9368702c2" absoluteBounds="14.75, 41.75, 2, 2.9247054036458309">
+      <DataClassMoniker Name="/VnsErp2025DataContext/StockInOutDetail" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3fc2d571-6825-4b5a-95b7-3bf7c8e915a8" absoluteBounds="14.765, 42.21, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="38f27a01-37e4-403f-be1e-015d77eb66b4" absoluteBounds="17.75, 42, 2, 10.809064127604159">
+      <DataClassMoniker Name="/VnsErp2025DataContext/StockInOutDocument" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ca9ff38c-6596-439a-9ac0-d231198a620f" absoluteBounds="17.765, 42.46, 1.9700000000000002, 10.249064127604166" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="43abb46b-b6a9-4c68-82cb-692e2a6f5b86" absoluteBounds="11.75, 44.875, 2, 4.2708154296875023">
+      <DataClassMoniker Name="/VnsErp2025DataContext/StockInOutImage" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c6111b0e-8654-4554-a91b-504bf2cf26ab" absoluteBounds="11.765, 45.335, 1.9700000000000002, 3.7108154296875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="59eb12d5-b886-44da-822c-4886029aae4b" absoluteBounds="9, 41.125, 2, 4.4631168619791595">
+      <DataClassMoniker Name="/VnsErp2025DataContext/StockInOutMaster" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a6d37e5b-5f03-421a-a3c4-f68cc6c9e0c1" absoluteBounds="9.015, 41.585, 1.9700000000000002, 3.903116861979167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="8d5d1e39-227c-47ed-9307-ebae0ddf2bc9" absoluteBounds="6.25, 31.75, 2, 1.7708968098958309">
+      <DataClassMoniker Name="/VnsErp2025DataContext/UnitOfMeasure" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d63599d9-be25-44be-8e26-05bf6149534b" absoluteBounds="6.265, 32.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="233ae678-a4e8-48fd-a16c-ac33da4fc21a" absoluteBounds="11.75, 31, 2, 1.3862939453125023">
+      <DataClassMoniker Name="/VnsErp2025DataContext/VariantAttribute" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a5f36567-5cd8-4067-8468-281962935024" absoluteBounds="11.765, 31.46, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 38.0392976888021); (3.04166666666667 : 38.0392976888021 : JumpStart); (3.20833333333333 : 38.0392976888021 : JumpEnd); (3.25 : 38.0392976888021); (3.25 : 34.5); (3.29166666666667 : 34.5 : JumpStart); (3.45833333333333 : 34.5 : JumpEnd); (4.12589743589744 : 34.5 : JumpStart); (4.2925641025641 : 34.5 : JumpEnd); (4.72128205128205 : 34.5 : JumpStart); (4.88794871794872 : 34.5 : JumpEnd); (5.66666666666667 : 34.5 : JumpStart); (5.83333333333333 : 34.5 : JumpEnd); (5.97916666666667 : 34.5 : JumpStart); (6.20833333333333 : 34.5 : JumpEnd); (8.41666666666667 : 34.5 : JumpStart); (8.58333333333333 : 34.5 : JumpEnd); (8.63541666666667 : 34.5 : JumpStart); (8.95833333333333 : 34.5 : JumpEnd); (11.0416666666667 : 34.5 : JumpStart); (11.3948707948718 : 34.5 : JumpEnd); (11.5 : 34.5); (11.5 : 32.875); (14.5 : 32.875); (14.5 : 32.375); (15.6666666666667 : 32.375 : JumpStart); (15.8333333333333 : 32.375 : JumpEnd); (16.8229166666667 : 32.375 : JumpStart); (16.9895833333333 : 32.375 : JumpEnd); (17.8697881666667 : 32.375 : JumpStart); (18.0364548333333 : 32.375 : JumpEnd); (18.1354146666667 : 32.375 : JumpStart); (18.3020813333333 : 32.375 : JumpEnd); (18.4010406666667 : 32.375 : JumpStart); (18.5677073333333 : 32.375 : JumpEnd); (18.75 : 32.375); (18.75 : 32.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_Asset" />
       <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="fa83792b-14d7-4931-b53e-835d6d036cfd" />
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="abfef22d-7d52-4e4a-9a55-140a056563e3" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.75 : 39); (1.75 : 38.5007234700521); (2.19791916666667 : 38.5007234700521 : JumpStart); (2.36458583333333 : 38.5007234700521 : JumpEnd); (3 : 38.5007234700521); (3 : 40.5689111328125); (3.29166666666667 : 40.5689111328125 : JumpStart); (3.45833333333333 : 40.5689111328125 : JumpEnd); (5.79166666666667 : 40.5689111328125 : JumpStart); (5.95833333333333 : 40.5689111328125 : JumpEnd); (7.16666666666667 : 40.5689111328125 : JumpStart); (7.33333333333333 : 40.5689111328125 : JumpEnd); (9.91666666666667 : 40.5689111328125 : JumpStart); (10.0833333333333 : 40.5689111328125 : JumpEnd); (11.0416666666667 : 40.5689111328125 : JumpStart); (11.2083333333333 : 40.5689111328125 : JumpEnd); (11.25 : 40.5689111328125); (11.25 : 42.1553369140625); (11.2916666666667 : 42.1553369140625 : JumpStart); (11.7708333333333 : 42.1553369140625 : JumpEnd); (14.0416666666667 : 42.1553369140625 : JumpStart); (14.4583333333333 : 42.1553369140625 : JumpEnd); (14.5 : 42.1553369140625); (14.5 : 34.125); (14.5416666666667 : 34.125 : JumpStart); (14.7083333333333 : 34.125 : JumpEnd); (14.7282041282051 : 34.125 : JumpStart); (14.8948707948718 : 34.125 : JumpEnd); (15.3263431474359 : 34.125 : JumpStart); (15.4930098141026 : 34.125 : JumpEnd); (15.8619771666667 : 34.125 : JumpStart); (16.0286438333333 : 34.125 : JumpEnd); (16.8697916666667 : 34.125 : JumpStart); (17.0364583333333 : 34.125 : JumpEnd); (17.375 : 34.125); (17.375 : 38.5007234700521); (17.4791666666667 : 38.5007234700521 : JumpStart); (17.7083333333333 : 38.5007234700521 : JumpEnd); (17.75 : 38.5007234700521)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 37.613396844401); (2.79166666666667 : 37.613396844401 : JumpStart); (2.95833333333333 : 37.613396844401 : JumpEnd); (3 : 37.613396844401); (3 : 34.625); (3.16666666666667 : 34.625 : JumpStart); (3.45833333333333 : 34.625 : JumpEnd); (4.12589743589744 : 34.625 : JumpStart); (4.2925641025641 : 34.625 : JumpEnd); (4.72128205128205 : 34.625 : JumpStart); (4.88794871794872 : 34.625 : JumpEnd); (5.66666666666667 : 34.625 : JumpStart); (5.83333333333333 : 34.625 : JumpEnd); (5.97916666666667 : 34.625 : JumpStart); (6.20833333333333 : 34.625 : JumpEnd); (8.41666666666667 : 34.625 : JumpStart); (8.58333333333333 : 34.625 : JumpEnd); (8.63541666666667 : 34.625 : JumpStart); (8.95833333333333 : 34.625 : JumpEnd); (11.0416666666667 : 34.625 : JumpStart); (11.2083333333333 : 34.625 : JumpEnd); (11.25 : 34.625); (11.25 : 32.625); (11.3541666666667 : 32.625 : JumpStart); (11.5208333333333 : 32.625 : JumpEnd); (14.0416666666667 : 32.625 : JumpStart); (14.2083333333333 : 32.625 : JumpEnd); (14.25 : 32.625); (14.25 : 32.125); (16.8229166666667 : 32.125 : JumpStart); (16.9895833333333 : 32.125 : JumpEnd); (17.8697881666667 : 32.125 : JumpStart); (18.0364548333333 : 32.125 : JumpEnd); (18.218748 : 32.125); (18.218748 : 32.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_Asset1" />
       <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="fa83792b-14d7-4931-b53e-835d6d036cfd" />
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="abfef22d-7d52-4e4a-9a55-140a056563e3" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 39.363396844401); (2.79166666666667 : 39.363396844401 : JumpStart); (3.20833333333333 : 39.363396844401 : JumpEnd); (3.25 : 39.363396844401); (3.25 : 36.25); (8.54166666666667 : 36.25 : JumpStart); (8.70833333333333 : 36.25 : JumpEnd); (11.1666666666667 : 36.25 : JumpStart); (11.4895833333333 : 36.25 : JumpEnd); (11.5 : 36.25); (11.5 : 34.5); (14.0416666666667 : 34.5 : JumpStart); (14.2083333333333 : 34.5 : JumpEnd); (14.25 : 34.5); (14.25 : 33.75); (14.5416666666667 : 33.75 : JumpStart); (14.7083333333333 : 33.75 : JumpEnd); (14.7282041282051 : 33.75 : JumpStart); (14.8948707948718 : 33.75 : JumpEnd); (15.8619771666667 : 33.75 : JumpStart); (16.0286438333333 : 33.75 : JumpEnd); (16.8697916666667 : 33.75 : JumpStart); (17.0364583333333 : 33.75 : JumpEnd); (17.4791666666667 : 33.75 : JumpStart); (17.7083333333333 : 33.75 : JumpEnd); (18.1354141666667 : 33.75 : JumpStart); (18.3020808333333 : 33.75 : JumpEnd); (18.75 : 33.75); (18.75 : 34.25)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 38.4651985332031); (2.79166666666667 : 38.4651985332031 : JumpStart); (2.95833333333333 : 38.4651985332031 : JumpEnd); (3.04166666666667 : 38.4651985332031 : JumpStart); (3.27083333333333 : 38.4651985332031 : JumpEnd); (3.375 : 38.4651985332031); (3.375 : 34.375); (4.12589743589744 : 34.375 : JumpStart); (4.2925641025641 : 34.375 : JumpEnd); (4.72128205128205 : 34.375 : JumpStart); (4.88794871794872 : 34.375 : JumpEnd); (5.61850072455929 : 34.375 : JumpStart); (5.83333333333333 : 34.375 : JumpEnd); (5.97916666666667 : 34.375 : JumpStart); (6.20833333333333 : 34.375 : JumpEnd); (8.41666666666667 : 34.375 : JumpStart); (8.58333333333333 : 34.375 : JumpEnd); (8.63541666666667 : 34.375 : JumpStart); (8.95833333333333 : 34.375 : JumpEnd); (11.0416666666667 : 34.375 : JumpStart); (11.5833333333333 : 34.375 : JumpEnd); (11.625 : 34.375); (11.625 : 33); (14.625 : 33); (14.625 : 32.5); (15.6666666666667 : 32.5 : JumpStart); (15.8333333333333 : 32.5 : JumpEnd); (16.8229166666667 : 32.5 : JumpStart); (16.9895833333333 : 32.5 : JumpEnd); (17.8697881666667 : 32.5 : JumpStart); (18.0364548333333 : 32.5 : JumpEnd); (18.1354146666667 : 32.5 : JumpStart); (18.3020813333333 : 32.5 : JumpEnd); (18.4010406666667 : 32.5 : JumpStart); (18.5677073333333 : 32.5 : JumpEnd); (18.6666666666667 : 32.5 : JumpStart); (18.8333333333333 : 32.5 : JumpEnd); (19.281252 : 32.5); (19.281252 : 32.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_Asset2" />
       <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="fa83792b-14d7-4931-b53e-835d6d036cfd" />
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="abfef22d-7d52-4e4a-9a55-140a056563e3" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(11 : 33.8181469726563); (11.2916666666667 : 33.8181469726563 : JumpStart); (11.4895833333333 : 33.8181469726563 : JumpEnd); (11.75 : 33.8181469726563)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Attribute/Attribute_VariantAttribute" />
-      <nodes>
-        <classShapeMoniker Id="423d4ffa-949b-41c2-9037-1e1cc47ffb90" />
-        <classShapeMoniker Id="70f19d40-abd0-48c2-8f7a-7667b30695ab" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11 : 32.0624995); (11.3229166666667 : 32.0624995 : JumpStart); (11.4895833333333 : 32.0624995 : JumpEnd); (12.75 : 32.0624995); (12.75 : 32.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/AttributeValue/AttributeValue_VariantAttribute" />
-      <nodes>
-        <classShapeMoniker Id="5264b967-ff0b-41ea-b9b4-420a72e05599" />
-        <classShapeMoniker Id="70f19d40-abd0-48c2-8f7a-7667b30695ab" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(10 : 33.625); (10 : 32.8862939453125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Attribute/Attribute_AttributeValue" />
-      <nodes>
-        <classShapeMoniker Id="423d4ffa-949b-41c2-9037-1e1cc47ffb90" />
-        <classShapeMoniker Id="5264b967-ff0b-41ea-b9b4-420a72e05599" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(1.75 : 40.5785953776042); (1.75 : 43.7796134440104); (3.5 : 43.7796134440104)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartner" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="0fe72f31-c6d9-4503-9cb1-18161331f5c1" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.2812525 : 40.5785953776042); (2.2812525 : 42.2960542220052); (3.5 : 42.2960542220052)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartner1" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="0fe72f31-c6d9-4503-9cb1-18161331f5c1" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(1.2187475 : 40.5785953776042); (1.2187475 : 45.2631726660156); (3.5 : 45.2631726660156)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartner2" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="0fe72f31-c6d9-4503-9cb1-18161331f5c1" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 41.7892976888021); (6.25 : 41.7892976888021)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartner/BusinessPartner_BusinessPartner_BusinessPartnerCategory" />
-      <nodes>
-        <classShapeMoniker Id="0fe72f31-c6d9-4503-9cb1-18161331f5c1" />
-        <classShapeMoniker Id="18b670b7-24d0-47ea-af36-80c059f4af97" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 40.1478569108073); (2.79166666666667 : 40.1478569108073 : JumpStart); (3.45833333333333 : 40.1478569108073 : JumpEnd); (3.5 : 40.1478569108073); (3.5 : 40.2516097005208); (5.79166666666667 : 40.2516097005208 : JumpStart); (5.95833333333333 : 40.2516097005208 : JumpEnd); (7.25 : 40.2516097005208); (7.25 : 41)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartner_BusinessPartnerCategory" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="18b670b7-24d0-47ea-af36-80c059f4af97" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 35.7981659421074); (5.875 : 36.1731659421074); (5.875 : 41.363396844401); (6.25 : 41.363396844401)]" fixedFrom="NotFixed" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartnerCategory/BusinessPartnerCategory_BusinessPartner_BusinessPartnerCategory" />
-      <nodes>
-        <classShapeMoniker Id="1bdb1246-00c9-4515-9d4b-327dff0224b2" />
-        <classShapeMoniker Id="18b670b7-24d0-47ea-af36-80c059f4af97" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.2812525 : 39); (2.2812525 : 34.3373527018229); (3.5 : 34.3373527018229)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartnerCategory" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="1bdb1246-00c9-4515-9d4b-327dff0224b2" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(1.2187475 : 39); (1.2187475 : 35.0997815527344); (2.19791916666667 : 35.0997815527344 : JumpStart); (2.36458583333333 : 35.0997815527344 : JumpEnd); (3.5 : 35.0997815527344)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartnerCategory1" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="1bdb1246-00c9-4515-9d4b-327dff0224b2" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(4.20923076923077 : 35.7997054036458); (4.20923076923077 : 36.0497054036458); (4.80461538461538 : 36.0497054036458); (4.80461538461538 : 35.7997054036458)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartnerCategory/BusinessPartnerCategory_BusinessPartnerCategory" />
-      <nodes>
-        <classShapeMoniker Id="1bdb1246-00c9-4515-9d4b-327dff0224b2" />
-        <classShapeMoniker Id="1bdb1246-00c9-4515-9d4b-327dff0224b2" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(7.25 : 48.3381168619792); (7.25 : 51.2796134440104); (9 : 51.2796134440104)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartnerSite/BusinessPartnerSite_BusinessPartnerContact" />
-      <nodes>
-        <classShapeMoniker Id="87b33bac-f500-44e9-843f-27ba1f04278f" />
-        <classShapeMoniker Id="9fe5552e-d5d8-493c-8c34-d8d6fc9aa3c9" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 45.2796134440104); (6.25 : 45.2796134440104)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartner/BusinessPartner_BusinessPartnerSite" />
-      <nodes>
-        <classShapeMoniker Id="0fe72f31-c6d9-4503-9cb1-18161331f5c1" />
-        <classShapeMoniker Id="87b33bac-f500-44e9-843f-27ba1f04278f" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(16.90625 : 47.875); (16.90625 : 34.28125); (17.2916666666667 : 34.28125 : JumpStart); (17.4583333333333 : 34.28125 : JumpEnd); (17.4791666666667 : 34.28125 : JumpStart); (17.7083333333333 : 34.28125 : JumpEnd); (17.75 : 34.28125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Asset" />
-      <nodes>
-        <classShapeMoniker Id="979752e0-0e00-45c8-ae44-b6c2e265c374" />
-        <classShapeMoniker Id="fa83792b-14d7-4931-b53e-835d6d036cfd" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 26.8950512695313); (18.2187475 : 26.8950512695313); (18.2187475 : 34.25)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_Asset" />
-      <nodes>
-        <classShapeMoniker Id="29d59903-b5be-439e-bf25-93730b3f3c6b" />
-        <classShapeMoniker Id="fa83792b-14d7-4931-b53e-835d6d036cfd" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 47.9088451538462); (17.1910744349011 : 47.717770718945 : JumpStart); (17.3089255650989 : 47.5999195887473 : JumpEnd); (17.3160744349011 : 47.592770718945 : JumpStart); (17.4964255650989 : 47.4124195887473 : JumpEnd); (17.625 : 47.2838451538462); (17.625 : 28.7901025390625); (17 : 28.1651025390625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_CompanyBranch" />
-      <nodes>
-        <classShapeMoniker Id="979752e0-0e00-45c8-ae44-b6c2e265c374" />
-        <classShapeMoniker Id="29d59903-b5be-439e-bf25-93730b3f3c6b" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(16.953125 : 31.8478011067708); (16.953125 : 34.265625); (17.2916666666667 : 34.265625 : JumpStart); (17.4583333333333 : 34.265625 : JumpEnd); (17.4791666666667 : 34.265625 : JumpStart); (17.7083333333333 : 34.265625 : JumpEnd); (17.75 : 34.265625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_Asset" />
-      <nodes>
-        <classShapeMoniker Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" />
-        <classShapeMoniker Id="fa83792b-14d7-4931-b53e-835d6d036cfd" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(15.9687475 : 28.1651025390625); (15.9687475 : 29.5)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_Department" />
-      <nodes>
-        <classShapeMoniker Id="29d59903-b5be-439e-bf25-93730b3f3c6b" />
-        <classShapeMoniker Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 47.9042297692308); (17.1910744349011 : 47.7131553343297 : JumpStart); (17.3089255650989 : 47.5953042041319 : JumpEnd); (17.3160744349011 : 47.5881553343297 : JumpStart); (17.4964255650989 : 47.4078042041319 : JumpEnd); (17.5625 : 47.3417297692308); (17.5625 : 32.4103011067708); (17 : 31.8478011067708)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Department" />
-      <nodes>
-        <classShapeMoniker Id="979752e0-0e00-45c8-ae44-b6c2e265c374" />
-        <classShapeMoniker Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(15 : 30.3269480669071); (14.75 : 30.3269480669071); (14.75 : 31.0373745868389); (15 : 31.0373745868389)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_Department" />
-      <nodes>
-        <classShapeMoniker Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" />
-        <classShapeMoniker Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 50.0585822917668); (17.25 : 50.0585822917668); (17.25 : 43.375); (17.2916666666667 : 43.375 : JumpStart); (17.7083333333333 : 43.375 : JumpEnd); (21.6354141666667 : 43.375 : JumpStart); (21.8020808333333 : 43.375 : JumpEnd); (21.9010404166667 : 43.375 : JumpStart); (22.0677070833333 : 43.375 : JumpEnd); (22.25 : 43.375); (22.25 : 43.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Device" />
-      <nodes>
-        <classShapeMoniker Id="979752e0-0e00-45c8-ae44-b6c2e265c374" />
-        <classShapeMoniker Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 26.2287731347656); (21.7187475 : 26.2287731347656); (21.7187475 : 43.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_Device" />
-      <nodes>
-        <classShapeMoniker Id="29d59903-b5be-439e-bf25-93730b3f3c6b" />
-        <classShapeMoniker Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 30.6426480533854); (17.5416666666667 : 30.6426480533854 : JumpStart); (17.7083333333333 : 30.6426480533854 : JumpEnd); (18.1354141666667 : 30.6426480533854 : JumpStart); (18.3020808333333 : 30.6426480533854 : JumpEnd); (21.6354141666667 : 30.6426480533854 : JumpStart); (21.8020808333333 : 30.6426480533854 : JumpEnd); (22.7812525 : 30.6426480533854); (22.7812525 : 43.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_Device" />
-      <nodes>
-        <classShapeMoniker Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" />
-        <classShapeMoniker Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(23.25 : 47.2412019856771); (24 : 47.2412019856771)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Device/Device_DeviceHistory" />
-      <nodes>
-        <classShapeMoniker Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" />
-        <classShapeMoniker Id="001c371a-6132-49d9-9602-21d873388d59" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(23.25 : 45.40625); (27 : 45.40625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Device/Device_DeviceTransfer" />
-      <nodes>
-        <classShapeMoniker Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" />
-        <classShapeMoniker Id="fbbefb25-5280-4bc3-bf65-94c457a07a85" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 27.5300769042969); (18.1354141666667 : 27.5300769042969 : JumpStart); (18.3020808333333 : 27.5300769042969 : JumpEnd); (21.6354141666667 : 27.5300769042969 : JumpStart); (21.8020808333333 : 27.5300769042969 : JumpEnd); (28 : 27.5300769042969); (28 : 45)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_DeviceTransfer" />
-      <nodes>
-        <classShapeMoniker Id="29d59903-b5be-439e-bf25-93730b3f3c6b" />
-        <classShapeMoniker Id="fbbefb25-5280-4bc3-bf65-94c457a07a85" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 31.2452245800781); (17.5416666666667 : 31.2452245800781 : JumpStart); (17.7083333333333 : 31.2452245800781 : JumpEnd); (18.1354141666667 : 31.2452245800781 : JumpStart); (18.3020808333333 : 31.2452245800781 : JumpEnd); (21.6354141666667 : 31.2452245800781 : JumpStart); (21.8020808333333 : 31.2452245800781 : JumpEnd); (22.6979191666667 : 31.2452245800781 : JumpStart); (22.8645858333333 : 31.2452245800781 : JumpEnd); (27.1197879166667 : 31.2452245800781 : JumpStart); (27.2864545833333 : 31.2452245800781 : JumpEnd); (27.4687475 : 31.2452245800781); (27.4687475 : 45)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_DeviceTransfer" />
-      <nodes>
-        <classShapeMoniker Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" />
-        <classShapeMoniker Id="fbbefb25-5280-4bc3-bf65-94c457a07a85" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 26.5619122021484); (21.6354141666667 : 26.5619122021484 : JumpStart); (21.8020808333333 : 26.5619122021484 : JumpEnd); (28.5312525 : 26.5619122021484); (28.5312525 : 45)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_DeviceTransfer1" />
-      <nodes>
-        <classShapeMoniker Id="29d59903-b5be-439e-bf25-93730b3f3c6b" />
-        <classShapeMoniker Id="fbbefb25-5280-4bc3-bf65-94c457a07a85" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 30.0400715266927); (17.5416666666667 : 30.0400715266927 : JumpStart); (17.7083333333333 : 30.0400715266927 : JumpEnd); (18.1354141666667 : 30.0400715266927 : JumpStart); (18.3020808333333 : 30.0400715266927 : JumpEnd); (21.6354141666667 : 30.0400715266927 : JumpStart); (21.8020808333333 : 30.0400715266927 : JumpEnd); (27.20312125 : 30.0400715266927); (27.20312125 : 45)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_DeviceTransfer1" />
-      <nodes>
-        <classShapeMoniker Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" />
-        <classShapeMoniker Id="fbbefb25-5280-4bc3-bf65-94c457a07a85" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(16 : 59); (16 : 52.3958154296875); (16.4791666666667 : 52.3958154296875 : JumpStart); (16.6458333333333 : 52.3958154296875 : JumpEnd); (17.375 : 52.3958154296875); (17.375 : 40.6573372050781); (17.4791666666667 : 40.6573372050781 : JumpStart); (17.7083333333333 : 40.6573372050781 : JumpEnd); (17.75 : 40.6573372050781)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Employee/Employee_Asset" />
-      <nodes>
-        <classShapeMoniker Id="a2ba1364-9c09-4268-99ab-23477beb12d5" />
-        <classShapeMoniker Id="fa83792b-14d7-4931-b53e-835d6d036cfd" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 62.2892163085938); (22.25 : 62.2892163085938); (22.25 : 50.7130354817708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Employee/Employee_Device" />
-      <nodes>
-        <classShapeMoniker Id="a2ba1364-9c09-4268-99ab-23477beb12d5" />
-        <classShapeMoniker Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 60.6133556542969); (22.1666666666667 : 60.6133556542969 : JumpStart); (22.3333333333333 : 60.6133556542969 : JumpEnd); (27.3854141666667 : 60.6133556542969 : JumpStart); (27.5520808333333 : 60.6133556542969 : JumpEnd); (28 : 60.6133556542969); (28 : 49.4631168619792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Employee/Employee_DeviceTransfer" />
-      <nodes>
-        <classShapeMoniker Id="a2ba1364-9c09-4268-99ab-23477beb12d5" />
-        <classShapeMoniker Id="fbbefb25-5280-4bc3-bf65-94c457a07a85" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17 : 63.9650769628906); (27.4687475 : 63.9650769628906); (27.4687475 : 49.4631168619792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Employee/Employee_DeviceTransfer1" />
-      <nodes>
-        <classShapeMoniker Id="a2ba1364-9c09-4268-99ab-23477beb12d5" />
-        <classShapeMoniker Id="fbbefb25-5280-4bc3-bf65-94c457a07a85" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(16.48437375 : 28.1651025390625); (16.48437375 : 29.25); (16.0520808333333 : 29.25 : JumpStart); (15.8854141666667 : 29.25 : JumpEnd); (14.8948707948718 : 29.25 : JumpStart); (14.7282041282051 : 29.25 : JumpEnd); (14.625 : 29.25); (14.625 : 62.2892163085938); (15 : 62.2892163085938)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_Employee" />
-      <nodes>
-        <classShapeMoniker Id="29d59903-b5be-439e-bf25-93730b3f3c6b" />
-        <classShapeMoniker Id="a2ba1364-9c09-4268-99ab-23477beb12d5" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(16.5625 : 52.1458154296875); (16.5625 : 59)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Employee" />
-      <nodes>
-        <classShapeMoniker Id="979752e0-0e00-45c8-ae44-b6c2e265c374" />
-        <classShapeMoniker Id="a2ba1364-9c09-4268-99ab-23477beb12d5" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(15.9453105 : 31.8478011067708); (15.9453105 : 34.25); (15.4930098141026 : 34.25 : JumpStart); (15.3263431474359 : 34.25 : JumpEnd); (14.8948707948718 : 34.25 : JumpStart); (14.7282041282051 : 34.25 : JumpEnd); (14.7083333333333 : 34.25 : JumpStart); (14.4166666666667 : 34.25 : JumpEnd); (14.375 : 34.25); (14.375 : 60.6133561542969); (14.5416666666667 : 60.6133561542969 : JumpStart); (14.7083333333333 : 60.6133561542969 : JumpEnd); (15 : 60.6133561542969)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_Employee" />
-      <nodes>
-        <classShapeMoniker Id="133eb6ff-70a0-49e9-bcf0-28329da41a20" />
-        <classShapeMoniker Id="a2ba1364-9c09-4268-99ab-23477beb12d5" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 39.5763472666016); (2.79166666666667 : 39.5763472666016 : JumpStart); (3.20833333333333 : 39.5763472666016 : JumpEnd); (3.375 : 39.5763472666016); (3.375 : 40.6939111328125); (5.79166666666667 : 40.6939111328125 : JumpStart); (5.95833333333333 : 40.6939111328125 : JumpEnd); (7.16666666666667 : 40.6939111328125 : JumpStart); (7.33333333333333 : 40.6939111328125 : JumpEnd); (8.54166666666667 : 40.6939111328125 : JumpStart); (8.70833333333333 : 40.6939111328125 : JumpEnd); (9.91666666666667 : 40.6939111328125 : JumpStart); (10.0833333333333 : 40.6939111328125 : JumpEnd); (11.0416666666667 : 40.6939111328125 : JumpStart); (11.5833333333333 : 40.6939111328125 : JumpEnd); (11.625 : 40.6939111328125); (11.625 : 42.8091455078125); (14.2916666666667 : 42.8091455078125 : JumpStart); (14.4583333333333 : 42.8091455078125 : JumpEnd); (14.5416666666667 : 42.8091455078125 : JumpStart); (14.7083333333333 : 42.8091455078125 : JumpEnd); (15.1354146666667 : 42.8091455078125 : JumpStart); (15.3020813333333 : 42.8091455078125 : JumpEnd); (15.75 : 42.8091455078125); (15.75 : 42.6841455078125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="5c50eb5b-8b18-4631-8f15-95504bf5f15c" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(15 : 28.1327948467548); (14.8115374615385 : 28.3212573852163); (14.8115374615385 : 34.375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_InventoryBalance" />
-      <nodes>
-        <classShapeMoniker Id="29d59903-b5be-439e-bf25-93730b3f3c6b" />
-        <classShapeMoniker Id="5c50eb5b-8b18-4631-8f15-95504bf5f15c" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.54687825 : 39); (2.54687825 : 38.6545727539063); (2.91666666666667 : 38.6545727539063 : JumpStart); (3.08333333333333 : 38.6545727539063 : JumpEnd); (3.125 : 38.6545727539063); (3.125 : 40.5064111328125); (3.29166666666667 : 40.5064111328125 : JumpStart); (3.45833333333333 : 40.5064111328125 : JumpEnd); (5.79166666666667 : 40.5064111328125 : JumpStart); (5.95833333333333 : 40.5064111328125 : JumpEnd); (7.16666666666667 : 40.5064111328125 : JumpStart); (7.33333333333333 : 40.5064111328125 : JumpEnd); (9.91666666666667 : 40.5064111328125 : JumpStart); (10.0833333333333 : 40.5064111328125 : JumpEnd); (11.375 : 40.5064111328125); (11.375 : 42.4053369140625); (11.3854166666667 : 42.4053369140625 : JumpStart); (11.7708333333333 : 42.4053369140625 : JumpEnd); (14.125 : 42.4053369140625); (14.125 : 38.2651689570312); (14.2916666666667 : 38.2651689570312 : JumpStart); (14.7083333333333 : 38.2651689570312 : JumpEnd); (14.75 : 38.2651689570312)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance1" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="5c50eb5b-8b18-4631-8f15-95504bf5f15c" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 39.1504464222005); (2.79166666666667 : 39.1504464222005 : JumpStart); (3.33333333333333 : 39.1504464222005 : JumpEnd); (3.375 : 39.1504464222005); (3.375 : 36.375); (5.79166666666667 : 36.375 : JumpStart); (5.95833333333333 : 36.375 : JumpEnd); (8.54166666666667 : 36.375 : JumpStart); (8.70833333333333 : 36.375 : JumpEnd); (11.0416666666667 : 36.375 : JumpStart); (11.2083333333333 : 36.375 : JumpEnd); (11.25 : 36.375); (11.25 : 34.625); (11.2916666666667 : 34.625 : JumpStart); (11.5833333333333 : 34.625 : JumpEnd); (14.125 : 34.625); (14.125 : 34); (14.1666666666667 : 34 : JumpStart); (14.3333333333333 : 34 : JumpEnd); (14.5416666666667 : 34 : JumpStart); (14.7083333333333 : 34 : JumpEnd); (14.7282041282051 : 34 : JumpStart); (14.8948707948718 : 34 : JumpEnd); (15.4096764807692 : 34); (15.4096764807692 : 34.375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance2" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="5c50eb5b-8b18-4631-8f15-95504bf5f15c" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.01562625 : 39); (2.01562625 : 38.7795727539063); (2.19791916666667 : 38.7795727539063 : JumpStart); (2.36458583333333 : 38.7795727539063 : JumpEnd); (2.46354491666667 : 38.7795727539063 : JumpStart); (2.63021158333333 : 38.7795727539063 : JumpEnd); (2.875 : 38.7795727539063); (2.875 : 40.4439111328125); (2.91666666666667 : 40.4439111328125 : JumpStart); (3.08333333333333 : 40.4439111328125 : JumpEnd); (3.29166666666667 : 40.4439111328125 : JumpStart); (3.45833333333333 : 40.4439111328125 : JumpEnd); (5.79166666666667 : 40.4439111328125 : JumpStart); (5.95833333333333 : 40.4439111328125 : JumpEnd); (7.16666666666667 : 40.4439111328125 : JumpStart); (7.33333333333333 : 40.4439111328125 : JumpEnd); (9.91666666666667 : 40.4439111328125 : JumpStart); (10.0833333333333 : 40.4439111328125 : JumpEnd); (11.125 : 40.4439111328125); (11.125 : 42.2803369140625); (11.2916666666667 : 42.2803369140625 : JumpStart); (11.7708333333333 : 42.2803369140625 : JumpEnd); (14.0416666666667 : 42.2803369140625 : JumpStart); (14.2083333333333 : 42.2803369140625 : JumpEnd); (14.25 : 42.2803369140625); (14.25 : 40.2415054355469); (14.2916666666667 : 40.2415054355469 : JumpStart); (14.7083333333333 : 40.2415054355469 : JumpEnd); (14.75 : 40.2415054355469)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance3" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="5c50eb5b-8b18-4631-8f15-95504bf5f15c" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 39.9685772998047); (2.79166666666667 : 39.9685772998047 : JumpStart); (3.20833333333333 : 39.9685772998047 : JumpEnd); (3.3125 : 39.9685772998047); (3.3125 : 40.3814111328125); (5.79166666666667 : 40.3814111328125 : JumpStart); (5.95833333333333 : 40.3814111328125 : JumpEnd); (7.16666666666667 : 40.3814111328125 : JumpStart); (7.33333333333333 : 40.3814111328125 : JumpEnd); (8.42300756049679 : 40.3814111328125 : JumpStart); (8.58967422716346 : 40.3814111328125 : JumpEnd); (9.91666666666667 : 40.3814111328125 : JumpStart); (10.0833333333333 : 40.3814111328125 : JumpEnd); (11.1349368974359 : 40.3814111328125 : JumpStart); (11.4895833333333 : 40.3814111328125 : JumpEnd); (11.5625 : 40.3814111328125); (11.5625 : 43.1841455078125); (14.2916666666667 : 43.1841455078125 : JumpStart); (14.4583333333333 : 43.1841455078125 : JumpEnd); (14.5416666666667 : 43.1841455078125 : JumpStart); (14.7083333333333 : 43.1841455078125 : JumpEnd); (15.218748 : 43.1841455078125); (15.218748 : 42.6841455078125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance4" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="5c50eb5b-8b18-4631-8f15-95504bf5f15c" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(14.25 : 61.6446081542969); (14.5416666666667 : 61.6446081542969 : JumpStart); (14.7083333333333 : 61.6446081542969 : JumpEnd); (15 : 61.6446081542969)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Position/Position_Employee" />
-      <nodes>
-        <classShapeMoniker Id="0b9bc46f-7958-4c54-b857-1fae97588979" />
-        <classShapeMoniker Id="a2ba1364-9c09-4268-99ab-23477beb12d5" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(15 : 51.5520654296875); (14.9270833333333 : 51.5520654296875 : JumpStart); (14.7604166666667 : 51.5520654296875 : JumpEnd); (14.7083333333333 : 51.5520654296875 : JumpStart); (14.5416666666667 : 51.5520654296875 : JumpEnd); (14.4583333333333 : 51.5520654296875 : JumpStart); (14.2916666666667 : 51.5520654296875 : JumpEnd); (14.03125 : 51.5520654296875); (14.03125 : 61.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Position" />
-      <nodes>
-        <classShapeMoniker Id="979752e0-0e00-45c8-ae44-b6c2e265c374" />
-        <classShapeMoniker Id="0b9bc46f-7958-4c54-b857-1fae97588979" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(8.25 : 40.1250702389824); (8.625 : 40.5000702389824); (8.625 : 42.0303369140625); (9.91666666666667 : 42.0303369140625 : JumpStart); (10.0833333333333 : 42.0303369140625 : JumpEnd); (11.0416666666667 : 42.0303369140625 : JumpStart); (11.5833333333333 : 42.0303369140625 : JumpEnd); (11.625 : 42.0303369140625); (11.6285744349011 : 42.0267624791614 : JumpStart); (11.7464255650989 : 41.9089113489636 : JumpEnd); (11.75 : 41.9053369140625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductService/ProductService_ProductImage" />
-      <nodes>
-        <classShapeMoniker Id="c9c32afd-a172-4496-a5d8-ae08ed3c966d" />
-        <classShapeMoniker Id="88abd452-604d-458f-9aa6-9b8d3f1a5614" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 38.3373527018229); (5.79166666666667 : 38.3373527018229 : JumpStart); (5.95833333333333 : 38.3373527018229 : JumpEnd); (6.25 : 38.3373527018229)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductServiceCategory/ProductServiceCategory_ProductService" />
-      <nodes>
-        <classShapeMoniker Id="8bb8f3f6-6c0d-47b5-b8b4-fd81bed8da61" />
-        <classShapeMoniker Id="c9c32afd-a172-4496-a5d8-ae08ed3c966d" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 40.3165104166667); (2.79166666666667 : 40.3165104166667 : JumpStart); (3.45833333333333 : 40.3165104166667 : JumpEnd); (4.5 : 40.3165104166667); (4.5 : 39.7997054036458)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_ProductServiceCategory" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="8bb8f3f6-6c0d-47b5-b8b4-fd81bed8da61" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 39.9998297998047); (2.79166666666667 : 39.9998297998047 : JumpStart); (3.45833333333333 : 39.9998297998047 : JumpEnd); (3.9687475 : 39.9998297998047); (3.9687475 : 39.7997054036458)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_ProductServiceCategory1" />
-      <nodes>
-        <classShapeMoniker Id="3ecbba31-64a3-4942-b3cf-67da1c50a40c" />
-        <classShapeMoniker Id="8bb8f3f6-6c0d-47b5-b8b4-fd81bed8da61" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(4.20923076923077 : 36.875); (4.20923076923077 : 36.625); (4.80461538461538 : 36.625); (4.80461538461538 : 36.875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductServiceCategory/ProductServiceCategory_ProductServiceCategory" />
-      <nodes>
-        <classShapeMoniker Id="8bb8f3f6-6c0d-47b5-b8b4-fd81bed8da61" />
-        <classShapeMoniker Id="8bb8f3f6-6c0d-47b5-b8b4-fd81bed8da61" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11 : 36.5); (11.1910744349011 : 36.3089255650989 : JumpStart); (11.3089255650989 : 36.1910744349011 : JumpEnd); (11.375 : 36.125); (11.375 : 33.1903214863281); (11.75 : 33.1903214863281)]" fixedFrom="NotFixed" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_VariantAttribute" />
-      <nodes>
-        <classShapeMoniker Id="f8ea7766-5022-469e-a348-e4b377149480" />
-        <classShapeMoniker Id="70f19d40-abd0-48c2-8f7a-7667b30695ab" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11 : 40.1277562866587); (11.3473244349011 : 40.4750807215598 : JumpStart); (11.4651755650989 : 40.5929318517575 : JumpEnd); (11.46875 : 40.5965062866587); (11.46875 : 43.0639469401042); (11.4791666666667 : 43.0639469401042 : JumpStart); (11.6458333333333 : 43.0639469401042 : JumpEnd); (14.2916666666667 : 43.0639469401042 : JumpStart); (14.4583333333333 : 43.0639469401042 : JumpEnd); (14.5416666666667 : 43.0639469401042 : JumpStart); (14.7083333333333 : 43.0639469401042 : JumpEnd); (15.1354146666667 : 43.0639469401042 : JumpStart); (15.3020813333333 : 43.0639469401042 : JumpEnd); (16.8229166666667 : 43.0639469401042 : JumpStart); (16.9895833333333 : 43.0639469401042 : JumpEnd); (17.4051923076923 : 43.0639469401042); (17.5035744349011 : 42.9655648128954 : JumpStart); (17.6839255650989 : 42.7852136826976 : JumpEnd); (17.75 : 42.7191392477965)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_Asset" />
-      <nodes>
-        <classShapeMoniker Id="f8ea7766-5022-469e-a348-e4b377149480" />
-        <classShapeMoniker Id="fa83792b-14d7-4931-b53e-835d6d036cfd" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11 : 38.3154166048678); (11.3229166666667 : 38.3154166048678 : JumpStart); (11.4895833333333 : 38.3154166048678 : JumpEnd); (11.6875 : 38.3154166048678); (11.6875 : 42.9389469401042); (14.2916666666667 : 42.9389469401042 : JumpStart); (14.4583333333333 : 42.9389469401042 : JumpEnd); (14.5416666666667 : 42.9389469401042 : JumpStart); (14.7083333333333 : 42.9389469401042 : JumpEnd); (15.1354146666667 : 42.9389469401042 : JumpStart); (15.3020813333333 : 42.9389469401042 : JumpEnd); (16.8229166666667 : 42.9389469401042 : JumpStart); (16.9895833333333 : 42.9389469401042 : JumpEnd); (17.2916666666667 : 42.9389469401042 : JumpStart); (17.7083333333333 : 42.9389469401042 : JumpEnd); (21.6354141666667 : 42.9389469401042 : JumpStart); (21.8020808333333 : 42.9389469401042 : JumpEnd); (21.98437375 : 42.9389469401042); (21.98437375 : 43.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_Device" />
-      <nodes>
-        <classShapeMoniker Id="f8ea7766-5022-469e-a348-e4b377149480" />
-        <classShapeMoniker Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(10 : 40.1939111328125); (10 : 42.5447412109375); (11.2469254557292 : 42.5447412109375 : JumpStart); (11.7708333333333 : 42.5447412109375 : JumpEnd); (14.2916666666667 : 42.5447412109375 : JumpStart); (14.4583333333333 : 42.5447412109375 : JumpEnd); (14.5416666666667 : 42.5447412109375 : JumpStart); (14.7083333333333 : 42.5447412109375 : JumpEnd); (14.75 : 42.5447412109375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_InventoryBalance" />
-      <nodes>
-        <classShapeMoniker Id="f8ea7766-5022-469e-a348-e4b377149480" />
-        <classShapeMoniker Id="5c50eb5b-8b18-4631-8f15-95504bf5f15c" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11 : 39.2543724073017); (11.3229166666667 : 39.2543724073017 : JumpStart); (11.4895833333333 : 39.2543724073017 : JumpEnd); (11.75 : 39.2543724073017)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_ProductImage" />
-      <nodes>
-        <classShapeMoniker Id="f8ea7766-5022-469e-a348-e4b377149480" />
-        <classShapeMoniker Id="88abd452-604d-458f-9aa6-9b8d3f1a5614" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(8.25 : 38.3437826194912); (8.54166666666667 : 38.3437826194912 : JumpStart); (8.70833333333333 : 38.3437826194912 : JumpEnd); (9 : 38.3437826194912)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductService/ProductService_ProductVariant" />
-      <nodes>
-        <classShapeMoniker Id="c9c32afd-a172-4496-a5d8-ae08ed3c966d" />
-        <classShapeMoniker Id="f8ea7766-5022-469e-a348-e4b377149480" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(16.75 : 44.9623527018229); (16.8229166666667 : 44.9623527018229 : JumpStart); (16.9895833333333 : 44.9623527018229 : JumpEnd); (17.125 : 44.9623527018229); (17.125 : 43.5); (17.1666666666667 : 43.5 : JumpStart); (17.7083333333333 : 43.5 : JumpEnd); (21.6354141666667 : 43.5 : JumpStart); (21.8020808333333 : 43.5 : JumpEnd); (21.9010404166667 : 43.5 : JumpStart); (22.0677070833333 : 43.5 : JumpEnd); (22.1666666666667 : 43.5 : JumpStart); (22.3333333333333 : 43.5 : JumpEnd); (22.51562625 : 43.5); (22.51562625 : 43.75)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/StockInOutDetail/StockInOutDetail_Device" />
-      <nodes>
-        <classShapeMoniker Id="2409bc6f-5a2d-4e32-ac7c-f406decef5dd" />
-        <classShapeMoniker Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11 : 40.1631409020433); (11.4375 : 40.6006409020433); (11.4375 : 44.9623527018229); (14.2916666666667 : 44.9623527018229 : JumpStart); (14.4583333333333 : 44.9623527018229 : JumpEnd); (14.5416666666667 : 44.9623527018229 : JumpStart); (14.7083333333333 : 44.9623527018229 : JumpEnd); (14.75 : 44.9623527018229)]" fixedFrom="NotFixed" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_StockInOutDetail" />
-      <nodes>
-        <classShapeMoniker Id="f8ea7766-5022-469e-a348-e4b377149480" />
-        <classShapeMoniker Id="2409bc6f-5a2d-4e32-ac7c-f406decef5dd" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(4.5 : 46.6842268880208); (4.5 : 54.3403955078125); (13.9479166666667 : 54.3403955078125 : JumpStart); (14.1145833333333 : 54.3403955078125 : JumpEnd); (14.2916666666667 : 54.3403955078125 : JumpStart); (14.4583333333333 : 54.3403955078125 : JumpEnd); (14.5416666666667 : 54.3403955078125 : JumpStart); (14.7083333333333 : 54.3403955078125 : JumpEnd); (14.7604166666667 : 54.3403955078125 : JumpStart); (14.9270833333333 : 54.3403955078125 : JumpEnd); (15.9166666666667 : 54.3403955078125 : JumpStart); (16.0833333333333 : 54.3403955078125 : JumpEnd); (16.4791666666667 : 54.3403955078125 : JumpStart); (16.6458333333333 : 54.3403955078125 : JumpEnd); (17.3541666666667 : 54.3403955078125 : JumpStart); (17.5208333333333 : 54.3403955078125 : JumpEnd); (17.75 : 54.3403955078125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartner/BusinessPartner_StockInOutDocument" />
-      <nodes>
-        <classShapeMoniker Id="0fe72f31-c6d9-4503-9cb1-18161331f5c1" />
-        <classShapeMoniker Id="1ddef51d-0aef-41b9-8cc3-0e6572cbfbea" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11 : 44.1686763509115); (11.3541666666667 : 44.1686763509115 : JumpStart); (11.5208333333333 : 44.1686763509115 : JumpEnd); (14.2916666666667 : 44.1686763509115 : JumpStart); (14.4583333333333 : 44.1686763509115 : JumpEnd); (14.5416666666667 : 44.1686763509115 : JumpStart); (14.7083333333333 : 44.1686763509115 : JumpEnd); (14.75 : 44.1686763509115)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/StockInOutMaster/StockInOutMaster_StockInOutDetail" />
-      <nodes>
-        <classShapeMoniker Id="d911fa9f-ee78-4df7-bfa6-60994ff8f6d8" />
-        <classShapeMoniker Id="2409bc6f-5a2d-4e32-ac7c-f406decef5dd" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11 : 46.5248527018229); (14.2916666666667 : 46.5248527018229 : JumpStart); (14.4583333333333 : 46.5248527018229 : JumpEnd); (14.5416666666667 : 46.5248527018229 : JumpStart); (14.7083333333333 : 46.5248527018229 : JumpEnd); (14.7604166666667 : 46.5248527018229 : JumpStart); (14.9270833333333 : 46.5248527018229 : JumpEnd); (16.8229166666667 : 46.5248527018229 : JumpStart); (16.9895833333333 : 46.5248527018229 : JumpEnd); (17.1666666666667 : 46.5248527018229 : JumpStart); (17.7083333333333 : 46.5248527018229 : JumpEnd); (17.75 : 46.5248527018229)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/StockInOutMaster/StockInOutMaster_StockInOutDocument" />
-      <nodes>
-        <classShapeMoniker Id="d911fa9f-ee78-4df7-bfa6-60994ff8f6d8" />
-        <classShapeMoniker Id="1ddef51d-0aef-41b9-8cc3-0e6572cbfbea" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(11 : 46.9815584309896); (11.75 : 46.9815584309896)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/StockInOutMaster/StockInOutMaster_StockInOutImage" />
-      <nodes>
-        <classShapeMoniker Id="d911fa9f-ee78-4df7-bfa6-60994ff8f6d8" />
-        <classShapeMoniker Id="a69fcf14-9fc2-48cb-ad1d-f26fea8c6946" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(8.25 : 45.6065584309896); (9 : 45.6065584309896)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartnerSite/BusinessPartnerSite_StockInOutMaster" />
-      <nodes>
-        <classShapeMoniker Id="87b33bac-f500-44e9-843f-27ba1f04278f" />
-        <classShapeMoniker Id="d911fa9f-ee78-4df7-bfa6-60994ff8f6d8" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(15.0338451538462 : 28.1651025390625); (14.6588451538462 : 28.5401025390625); (11.40625 : 28.5401025390625); (11.40625 : 42.46875); (11 : 42.875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_StockInOutMaster" />
-      <nodes>
-        <classShapeMoniker Id="29d59903-b5be-439e-bf25-93730b3f3c6b" />
-        <classShapeMoniker Id="d911fa9f-ee78-4df7-bfa6-60994ff8f6d8" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(8.25 : 35.2708968098958); (8.625 : 35.6458968098958); (8.625 : 39.3000988761518); (9 : 39.3000988761518)]" fixedFrom="NotFixed" fixedTo="Algorithm">
-      <AssociationMoniker Name="/VnsErp2025DataContext/UnitOfMeasure/UnitOfMeasure_ProductVariant" />
-      <nodes>
-        <classShapeMoniker Id="16f7e069-fd2b-49e4-a0aa-29ec3002d492" />
-        <classShapeMoniker Id="f8ea7766-5022-469e-a348-e4b377149480" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(17.5 : 55.75); (17.125 : 55.375); (17.4375 : 55.375); (17.4375 : 43.0977920939503); (17.5035744349011 : 43.0317176590492 : JumpStart); (17.6839255650989 : 42.8513665288514 : JumpEnd); (17.7838451538462 : 42.7514469401042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(17.5 : 54); (17.125 : 53.625); (17.375 : 53.625); (17.375 : 41.5014469401042); (17.75 : 41.1264469401042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/VnsErp2025DataContext/Warranty/Warranty_Asset" />
       <nodes>
-        <classShapeMoniker Id="8d0d1e46-9272-4073-b682-0bf5623f8e78" />
-        <classShapeMoniker Id="fa83792b-14d7-4931-b53e-835d6d036cfd" />
+        <classShapeMoniker Id="47b21b19-f3ad-43c8-a6e0-703f833f886d" />
+        <classShapeMoniker Id="abfef22d-7d52-4e4a-9a55-140a056563e3" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(19.5 : 56.9239005533854); (21.7187475 : 56.9239005533854); (21.7187475 : 50.7130354817708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(10 : 31.875); (10 : 31.1362939453125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Attribute/Attribute_AttributeValue" />
+      <nodes>
+        <classShapeMoniker Id="f404049c-d53f-46f7-964b-955efecca1e4" />
+        <classShapeMoniker Id="12f8bc9f-74b8-446a-9061-aedec1f4254a" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(1.75 : 38.8285953776042); (1.75 : 42.0296134440104); (3.5 : 42.0296134440104)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartner" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="6eda9bea-321b-409a-ba0c-26c730fe51a8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.2812525 : 38.8285953776042); (2.2812525 : 40.5460542220052); (3.5 : 40.5460542220052)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartner1" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="6eda9bea-321b-409a-ba0c-26c730fe51a8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(1.2187475 : 38.8285953776042); (1.2187475 : 43.5131726660156); (3.5 : 43.5131726660156)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartner2" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="6eda9bea-321b-409a-ba0c-26c730fe51a8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 40.0392976888021); (5.66666666666667 : 40.0392976888021 : JumpStart); (5.83333333333333 : 40.0392976888021 : JumpEnd); (5.97916666666667 : 40.0392976888021 : JumpStart); (6.20833333333333 : 40.0392976888021 : JumpEnd); (6.25 : 40.0392976888021)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartner/BusinessPartner_BusinessPartner_BusinessPartnerCategory" />
+      <nodes>
+        <classShapeMoniker Id="6eda9bea-321b-409a-ba0c-26c730fe51a8" />
+        <classShapeMoniker Id="5bb829e6-45b8-4fa2-bd71-8175cf7cd1f5" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 38.6781489554037); (3 : 38.6781489554037); (3 : 38.8766097005208); (5.66666666666667 : 38.8766097005208 : JumpStart); (5.95833333333333 : 38.8766097005208 : JumpEnd); (5.97916666666667 : 38.8766097005208 : JumpStart); (6.20833333333333 : 38.8766097005208 : JumpEnd); (7.25 : 38.8766097005208); (7.25 : 39.25)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartner_BusinessPartnerCategory" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="5bb829e6-45b8-4fa2-bd71-8175cf7cd1f5" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 34.1731659421074); (5.69107443490112 : 34.3642403770085 : JumpStart); (5.80892556509888 : 34.4820915072063 : JumpEnd); (5.875 : 34.5481659421074); (5.875 : 39.613396844401); (5.97916666666667 : 39.613396844401 : JumpStart); (6.20833333333333 : 39.613396844401 : JumpEnd); (6.25 : 39.613396844401)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartnerCategory/BusinessPartnerCategory_BusinessPartner_BusinessPartnerCategory" />
+      <nodes>
+        <classShapeMoniker Id="9f248602-7688-4336-abf8-12cafbb1e59c" />
+        <classShapeMoniker Id="5bb829e6-45b8-4fa2-bd71-8175cf7cd1f5" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(1.75 : 37.25); (1.75 : 32.7123527018229); (3.5 : 32.7123527018229)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartnerCategory" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="9f248602-7688-4336-abf8-12cafbb1e59c" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.2812525 : 37.25); (2.2812525 : 33.4747815527344); (3.5 : 33.4747815527344)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_BusinessPartnerCategory1" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="9f248602-7688-4336-abf8-12cafbb1e59c" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.20923076923077 : 34.1747054036458); (4.20923076923077 : 34.7997054036458); (4.80461538461538 : 34.7997054036458); (4.80461538461538 : 34.1747054036458)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartnerCategory/BusinessPartnerCategory_BusinessPartnerCategory" />
+      <nodes>
+        <classShapeMoniker Id="9f248602-7688-4336-abf8-12cafbb1e59c" />
+        <classShapeMoniker Id="9f248602-7688-4336-abf8-12cafbb1e59c" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 46.5865774004407); (8.31607443490112 : 46.6526518353418 : JumpStart); (8.43392556509888 : 46.7705029655396 : JumpEnd); (8.625 : 46.9615774004407); (8.625 : 46.25); (8.62857443490112 : 46.2535744349011 : JumpStart); (8.77767556509888 : 46.4026755650989 : JumpEnd); (8.81607443490112 : 46.4410744349011 : JumpStart); (8.93392556509888 : 46.5589255650989 : JumpEnd); (9 : 46.625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartnerSite/BusinessPartnerSite_BusinessPartnerContact" />
+      <nodes>
+        <classShapeMoniker Id="651bed64-49b3-4f9a-ab6a-9a86823ae004" />
+        <classShapeMoniker Id="99254f40-4474-40b1-9500-157244f7cac0" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 43.5296134440104); (5.66666666666667 : 43.5296134440104 : JumpStart); (5.83333333333333 : 43.5296134440104 : JumpEnd); (5.97916666666667 : 43.5296134440104 : JumpStart); (6.20833333333333 : 43.5296134440104 : JumpEnd); (6.25 : 43.5296134440104)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartner/BusinessPartner_BusinessPartnerSite" />
+      <nodes>
+        <classShapeMoniker Id="6eda9bea-321b-409a-ba0c-26c730fe51a8" />
+        <classShapeMoniker Id="651bed64-49b3-4f9a-ab6a-9a86823ae004" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 50.3854077148438); (5.66666666666667 : 50.3854077148438 : JumpStart); (5.95833333333333 : 50.3854077148438 : JumpEnd); (6 : 50.3854077148438); (6 : 48.875); (7.16666666666667 : 48.875 : JumpStart); (7.33333333333333 : 48.875 : JumpEnd); (8.29166666666667 : 48.875 : JumpStart); (8.64794771794872 : 48.875 : JumpEnd); (8.75 : 48.875); (8.75 : 46.375); (8.79166666666667 : 46.375 : JumpStart); (8.95833333333333 : 46.375 : JumpEnd); (11.5 : 46.375); (11.5 : 41.5); (11.5416666666667 : 41.5 : JumpStart); (11.7083333333333 : 41.5 : JumpEnd); (18.1822926666667 : 41.5 : JumpStart); (18.3489593333333 : 41.5 : JumpEnd); (18.781252 : 41.5); (18.781252 : 41.1264469401042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Asset" />
+      <nodes>
+        <classShapeMoniker Id="c518788b-394d-4d4a-b90d-a064be23f42a" />
+        <classShapeMoniker Id="abfef22d-7d52-4e4a-9a55-140a056563e3" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 50.3950512695313); (8.41666666666667 : 50.3950512695313 : JumpStart); (8.70833333333333 : 50.3950512695313 : JumpEnd); (8.875 : 50.3950512695313); (8.875 : 46.125); (11.25 : 46.125); (11.25 : 41.625); (11.3541666666667 : 41.625 : JumpStart); (11.7083333333333 : 41.625 : JumpEnd); (17.2916666666667 : 41.625 : JumpStart); (17.4583333333333 : 41.625 : JumpEnd); (18.265626 : 41.625); (18.265626 : 41.1264469401042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_Asset" />
+      <nodes>
+        <classShapeMoniker Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" />
+        <classShapeMoniker Id="abfef22d-7d52-4e4a-9a55-140a056563e3" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 51.0877551269531); (5.66666666666667 : 51.0877551269531 : JumpStart); (5.95833333333333 : 51.0877551269531 : JumpEnd); (6.25 : 51.0877551269531)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_CompanyBranch" />
+      <nodes>
+        <classShapeMoniker Id="c518788b-394d-4d4a-b90d-a064be23f42a" />
+        <classShapeMoniker Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(16.90625 : 31.8478011067708); (16.90625 : 41.0302937239583); (17.75 : 41.0302937239583)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_Asset" />
+      <nodes>
+        <classShapeMoniker Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" />
+        <classShapeMoniker Id="abfef22d-7d52-4e4a-9a55-140a056563e3" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(7.25 : 49.125); (7.25 : 46.8381168619792); (8.29166666666667 : 46.8381168619792 : JumpStart); (8.45833333333333 : 46.8381168619792 : JumpEnd); (8.5 : 46.8381168619792); (8.5 : 31.3862939453125); (8.63541666666667 : 31.3862939453125 : JumpStart); (8.80208333333333 : 31.3862939453125 : JumpEnd); (9.91666666666667 : 31.3862939453125 : JumpStart); (10.0833333333333 : 31.3862939453125 : JumpEnd); (11.1666666666667 : 31.3862939453125 : JumpStart); (11.3333333333333 : 31.3862939453125 : JumpEnd); (11.5 : 31.3862939453125); (11.5 : 30.2187505); (12.6666666666667 : 30.2187505 : JumpStart); (12.8333333333333 : 30.2187505 : JumpEnd); (15 : 30.2187505)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_Department" />
+      <nodes>
+        <classShapeMoniker Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" />
+        <classShapeMoniker Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.5 : 48.25); (4.5 : 45.1842268880208); (5.75 : 45.1842268880208); (5.75 : 31.5112939453125); (5.97916666666667 : 31.5112939453125 : JumpStart); (6.20833333333333 : 31.5112939453125 : JumpEnd); (8.41666666666667 : 31.5112939453125 : JumpStart); (8.58333333333333 : 31.5112939453125 : JumpEnd); (8.63541666666667 : 31.5112939453125 : JumpStart); (8.80208333333333 : 31.5112939453125 : JumpEnd); (9.91666666666667 : 31.5112939453125 : JumpStart); (10.0833333333333 : 31.5112939453125 : JumpEnd); (11.25 : 31.5112939453125); (11.25 : 30.60937775); (11.4166666666667 : 30.60937775 : JumpStart); (11.5833333333333 : 30.60937775 : JumpEnd); (12.6666666666667 : 30.60937775 : JumpStart); (12.8333333333333 : 30.60937775 : JumpEnd); (15 : 30.60937775)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Department" />
+      <nodes>
+        <classShapeMoniker Id="c518788b-394d-4d4a-b90d-a064be23f42a" />
+        <classShapeMoniker Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(15.7092307692308 : 29.5); (15.7092307692308 : 29.25); (16.3046153846154 : 29.25); (16.3046153846154 : 29.5)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_Department" />
+      <nodes>
+        <classShapeMoniker Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" />
+        <classShapeMoniker Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 49.5989513574219); (5.75 : 49.5989513574219); (5.75 : 53.0590641276042); (8.41666666666667 : 53.0590641276042 : JumpStart); (8.58333333333333 : 53.0590641276042 : JumpEnd); (8.66666666666667 : 53.0590641276042 : JumpStart); (8.83333333333333 : 53.0590641276042 : JumpEnd); (15.6666666666667 : 53.0590641276042 : JumpStart); (15.8333333333333 : 53.0590641276042 : JumpEnd); (17.2916666666667 : 53.0590641276042 : JumpStart); (17.4583333333333 : 53.0590641276042 : JumpEnd); (21.6354146666667 : 53.0590641276042 : JumpStart); (21.8020813333333 : 53.0590641276042 : JumpEnd); (22.25 : 53.0590641276042); (22.25 : 49.0880354817708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Device" />
+      <nodes>
+        <classShapeMoniker Id="c518788b-394d-4d4a-b90d-a064be23f42a" />
+        <classShapeMoniker Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 49.7287736347656); (8.29166666666667 : 49.7287736347656 : JumpStart); (8.45833333333333 : 49.7287736347656 : JumpEnd); (8.5 : 49.7287736347656); (8.5 : 53.3090641276042); (15.6666666666667 : 53.3090641276042 : JumpStart); (15.8333333333333 : 53.3090641276042 : JumpEnd); (17.2916666666667 : 53.3090641276042 : JumpStart); (17.4583333333333 : 53.3090641276042 : JumpEnd); (21.718748 : 53.3090641276042); (21.718748 : 49.0880354817708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_Device" />
+      <nodes>
+        <classShapeMoniker Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" />
+        <classShapeMoniker Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(17 : 30.6739005533854); (17.8697881666667 : 30.6739005533854 : JumpStart); (18.0364548333333 : 30.6739005533854 : JumpEnd); (21.6354141666667 : 30.6739005533854 : JumpStart); (21.8020808333333 : 30.6739005533854 : JumpEnd); (22.25 : 30.6739005533854); (22.25 : 42.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_Device" />
+      <nodes>
+        <classShapeMoniker Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" />
+        <classShapeMoniker Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(19.5 : 55.1739005533854); (22.7812525 : 55.1739005533854); (22.7812525 : 49.0880354817708)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/VnsErp2025DataContext/Warranty/Warranty_Device" />
       <nodes>
-        <classShapeMoniker Id="8d0d1e46-9272-4073-b682-0bf5623f8e78" />
-        <classShapeMoniker Id="f5f6cde6-cd8e-48d2-8c54-7aa79062dd97" />
+        <classShapeMoniker Id="47b21b19-f3ad-43c8-a6e0-703f833f886d" />
+        <classShapeMoniker Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(14.84375 : 46.4247054036458); (14.84375 : 56.9551530533854); (15.9166666666667 : 56.9551530533854 : JumpStart); (16.0833333333333 : 56.9551530533854 : JumpEnd); (16.4791666666667 : 56.9551530533854 : JumpStart); (16.6458333333333 : 56.9551530533854 : JumpEnd); (17.5 : 56.9551530533854)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(23.25 : 45.6162019856771); (24 : 45.6162019856771)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Device/Device_DeviceHistory" />
+      <nodes>
+        <classShapeMoniker Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" />
+        <classShapeMoniker Id="7c9a9f5b-35cc-438c-81c5-a8a4017e8e84" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(23.25 : 43.78125); (27 : 43.78125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Device/Device_DeviceTransfer" />
+      <nodes>
+        <classShapeMoniker Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" />
+        <classShapeMoniker Id="397de0d3-c433-4279-8a6c-e8b197a7c9d8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 51.0613289042969); (8.41666666666667 : 51.0613289042969 : JumpStart); (8.70833333333333 : 51.0613289042969 : JumpEnd); (8.75 : 51.0613289042969); (8.75 : 53.1840641276042); (15.6666666666667 : 53.1840641276042 : JumpStart); (15.8333333333333 : 53.1840641276042 : JumpEnd); (17.2916666666667 : 53.1840641276042 : JumpStart); (17.4583333333333 : 53.1840641276042 : JumpEnd); (21.6354146666667 : 53.1840641276042 : JumpStart); (21.8020813333333 : 53.1840641276042 : JumpEnd); (22.6979191666667 : 53.1840641276042 : JumpStart); (22.8645858333333 : 53.1840641276042 : JumpEnd); (28 : 53.1840641276042); (28 : 47.8381168619792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_DeviceTransfer" />
+      <nodes>
+        <classShapeMoniker Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" />
+        <classShapeMoniker Id="397de0d3-c433-4279-8a6c-e8b197a7c9d8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(17 : 31.2921033300781); (17.8697881666667 : 31.2921033300781 : JumpStart); (18.0364548333333 : 31.2921033300781 : JumpEnd); (21.6354141666667 : 31.2921033300781 : JumpStart); (21.8020808333333 : 31.2921033300781 : JumpEnd); (22.1666666666667 : 31.2921033300781 : JumpStart); (22.3333333333333 : 31.2921033300781 : JumpEnd); (27.1197879166667 : 31.2921033300781 : JumpStart); (27.2864545833333 : 31.2921033300781 : JumpEnd); (27.3854141666667 : 31.2921033300781 : JumpStart); (27.5520808333333 : 31.2921033300781 : JumpEnd); (28 : 31.2921033300781); (28 : 43.375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_DeviceTransfer" />
+      <nodes>
+        <classShapeMoniker Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" />
+        <classShapeMoniker Id="397de0d3-c433-4279-8a6c-e8b197a7c9d8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 49.3956348173828); (8.29166666666667 : 49.3956348173828 : JumpStart); (8.45833333333333 : 49.3956348173828 : JumpEnd); (8.625 : 49.3956348173828); (8.625 : 52.9340641276042); (8.66666666666667 : 52.9340641276042 : JumpStart); (8.83333333333333 : 52.9340641276042 : JumpEnd); (15.6666666666667 : 52.9340641276042 : JumpStart); (15.8333333333333 : 52.9340641276042 : JumpEnd); (17.2916666666667 : 52.9340641276042 : JumpStart); (17.4583333333333 : 52.9340641276042 : JumpEnd); (21.6354146666667 : 52.9340641276042 : JumpStart); (21.8020813333333 : 52.9340641276042 : JumpEnd); (22.1666666666667 : 52.9340641276042 : JumpStart); (22.3333333333333 : 52.9340641276042 : JumpEnd); (22.6979191666667 : 52.9340641276042 : JumpStart); (22.8645858333333 : 52.9340641276042 : JumpEnd); (27.468748 : 52.9340641276042); (27.468748 : 47.8381168619792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_DeviceTransfer1" />
+      <nodes>
+        <classShapeMoniker Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" />
+        <classShapeMoniker Id="397de0d3-c433-4279-8a6c-e8b197a7c9d8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(17 : 30.0556977766927); (17.8697881666667 : 30.0556977766927 : JumpStart); (18.0364548333333 : 30.0556977766927 : JumpEnd); (21.6354141666667 : 30.0556977766927 : JumpStart); (21.8020808333333 : 30.0556977766927 : JumpEnd); (27.1197879166667 : 30.0556977766927 : JumpStart); (27.2864545833333 : 30.0556977766927 : JumpEnd); (27.4687475 : 30.0556977766927); (27.4687475 : 43.375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_DeviceTransfer1" />
+      <nodes>
+        <classShapeMoniker Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" />
+        <classShapeMoniker Id="397de0d3-c433-4279-8a6c-e8b197a7c9d8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(17 : 24.9142163085938); (17.9531215 : 24.9142163085938); (17.9531215 : 32.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Employee/Employee_Asset" />
+      <nodes>
+        <classShapeMoniker Id="be244187-c298-4ea3-9110-4401a4a718b5" />
+        <classShapeMoniker Id="abfef22d-7d52-4e4a-9a55-140a056563e3" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(17 : 26.5900769628906); (17.8697881666667 : 26.5900769628906 : JumpStart); (18.0364548333333 : 26.5900769628906 : JumpEnd); (21.7187475 : 26.5900769628906); (21.7187475 : 42.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Employee/Employee_Device" />
+      <nodes>
+        <classShapeMoniker Id="be244187-c298-4ea3-9110-4401a4a718b5" />
+        <classShapeMoniker Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(17 : 23.2383556542969); (28.5312525 : 23.2383556542969); (28.5312525 : 43.375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Employee/Employee_DeviceTransfer" />
+      <nodes>
+        <classShapeMoniker Id="be244187-c298-4ea3-9110-4401a4a718b5" />
+        <classShapeMoniker Id="397de0d3-c433-4279-8a6c-e8b197a7c9d8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(17 : 27.4280072900391); (17.8697881666667 : 27.4280072900391 : JumpStart); (18.0364548333333 : 27.4280072900391 : JumpEnd); (21.6354141666667 : 27.4280072900391 : JumpStart); (21.8020808333333 : 27.4280072900391 : JumpEnd); (27.20312125 : 27.4280072900391); (27.20312125 : 43.375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Employee/Employee_DeviceTransfer1" />
+      <nodes>
+        <classShapeMoniker Id="be244187-c298-4ea3-9110-4401a4a718b5" />
+        <classShapeMoniker Id="397de0d3-c433-4279-8a6c-e8b197a7c9d8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 49.1896143846154); (8.31607443490112 : 49.1235399497143 : JumpStart); (8.43392556509888 : 49.0056888195165 : JumpEnd); (8.71875 : 48.7208643846154); (8.71875 : 28.8284326171875); (14.4088451538462 : 28.8284326171875); (15.0338451538462 : 28.2034326171875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_Employee" />
+      <nodes>
+        <classShapeMoniker Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" />
+        <classShapeMoniker Id="be244187-c298-4ea3-9110-4401a4a718b5" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 48.2838451538462); (5.81607443490112 : 47.967770718945 : JumpStart); (5.93392556509888 : 47.8499195887473 : JumpEnd); (6.125 : 47.6588451538462); (6.125 : 28.5784326171875); (14.5926923076923 : 28.5784326171875); (15 : 28.1711249248798)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Employee" />
+      <nodes>
+        <classShapeMoniker Id="c518788b-394d-4d4a-b90d-a064be23f42a" />
+        <classShapeMoniker Id="be244187-c298-4ea3-9110-4401a4a718b5" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(16.7148076923077 : 29.5); (16.7148076923077 : 28.2034326171875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Department/Department_Employee" />
+      <nodes>
+        <classShapeMoniker Id="7a1821a8-ef6a-4759-bcc1-f504d2f77bfe" />
+        <classShapeMoniker Id="be244187-c298-4ea3-9110-4401a4a718b5" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(1.218748 : 37.25); (1.218748 : 36.7795727539063); (1.66666666666667 : 36.7795727539063 : JumpStart); (1.83333333333333 : 36.7795727539063 : JumpEnd); (2.19791916666667 : 36.7795727539063 : JumpStart); (2.36458583333333 : 36.7795727539063 : JumpEnd); (2.46354491666667 : 36.7795727539063 : JumpStart); (2.63021158333333 : 36.7795727539063 : JumpEnd); (2.79166666666667 : 36.7795727539063 : JumpStart); (3.08333333333333 : 36.7795727539063 : JumpEnd); (3.125 : 36.7795727539063); (3.125 : 38.7564111328125); (5.66666666666667 : 38.7564111328125 : JumpStart); (5.95833333333333 : 38.7564111328125 : JumpEnd); (5.97916666666667 : 38.7564111328125 : JumpStart); (6.20833333333333 : 38.7564111328125 : JumpEnd); (8.41666666666667 : 38.7564111328125 : JumpStart); (8.80208333333333 : 38.7564111328125 : JumpEnd); (9.91666666666667 : 38.7564111328125 : JumpStart); (10.0833333333333 : 38.7564111328125 : JumpEnd); (11.0416666666667 : 38.7564111328125 : JumpStart); (11.2083333333333 : 38.7564111328125 : JumpEnd); (11.2922445897436 : 38.7564111328125 : JumpStart); (11.4589112564103 : 38.7564111328125 : JumpEnd); (11.5 : 38.7564111328125); (11.5 : 40.5303369140625); (11.5416666666667 : 40.5303369140625 : JumpStart); (11.7083333333333 : 40.5303369140625 : JumpEnd); (14.0416666666667 : 40.5303369140625 : JumpStart); (14.2083333333333 : 40.5303369140625 : JumpEnd); (14.375 : 40.5303369140625); (14.375 : 36.9670722539063); (14.75 : 36.9670722539063)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="dede3cb7-d4ae-4f73-a471-eefc742a1274" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 50.0619124521484); (8.375 : 50.0619124521484); (8.375 : 46.375); (8.41666666666667 : 46.375 : JumpStart); (8.95833333333333 : 46.375 : JumpEnd); (11.625 : 46.375); (11.625 : 41.25); (15.75 : 41.25); (15.75 : 40.9341455078125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_InventoryBalance" />
+      <nodes>
+        <classShapeMoniker Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" />
+        <classShapeMoniker Id="dede3cb7-d4ae-4f73-a471-eefc742a1274" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 37.8263472666016); (2.875 : 37.8263472666016); (2.875 : 34.5625); (3.29166666666667 : 34.5625 : JumpStart); (3.45833333333333 : 34.5625 : JumpEnd); (4.12589743589744 : 34.5625 : JumpStart); (4.2925641025641 : 34.5625 : JumpEnd); (4.72128205128205 : 34.5625 : JumpStart); (4.88794871794872 : 34.5625 : JumpEnd); (5.66666666666667 : 34.5625 : JumpStart); (5.83333333333333 : 34.5625 : JumpEnd); (5.97916666666667 : 34.5625 : JumpStart); (6.20833333333333 : 34.5625 : JumpEnd); (8.41666666666667 : 34.5625 : JumpStart); (8.58333333333333 : 34.5625 : JumpEnd); (8.63541666666667 : 34.5625 : JumpStart); (8.95833333333333 : 34.5625 : JumpEnd); (11.0416666666667 : 34.5625 : JumpStart); (11.3323707948718 : 34.5625 : JumpEnd); (11.375 : 34.5625); (11.375 : 32.75); (14.0416666666667 : 32.75 : JumpStart); (14.2083333333333 : 32.75 : JumpEnd); (14.375 : 32.75); (14.375 : 32.25); (15.75 : 32.25); (15.75 : 32.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance1" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="dede3cb7-d4ae-4f73-a471-eefc742a1274" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.54687825 : 37.25); (2.54687825 : 36.5295727539063); (2.79166666666667 : 36.5295727539063 : JumpStart); (3.08333333333333 : 36.5295727539063 : JumpEnd); (3.3125 : 36.5295727539063); (3.3125 : 38.6939111328125); (5.66666666666667 : 38.6939111328125 : JumpStart); (5.95833333333333 : 38.6939111328125 : JumpEnd); (5.97916666666667 : 38.6939111328125 : JumpStart); (6.20833333333333 : 38.6939111328125 : JumpEnd); (8.41666666666667 : 38.6939111328125 : JumpStart); (8.80208333333333 : 38.6939111328125 : JumpEnd); (9.91666666666667 : 38.6939111328125 : JumpStart); (10.0833333333333 : 38.6939111328125 : JumpEnd); (11.0416666666667 : 38.6939111328125 : JumpStart); (11.2083333333333 : 38.6939111328125 : JumpEnd); (11.25 : 38.6939111328125); (11.25 : 40.7803369140625); (11.2916666666667 : 40.7803369140625 : JumpStart); (11.5208333333333 : 40.7803369140625 : JumpEnd); (14.125 : 40.7803369140625); (14.125 : 34.9522836269531); (14.75 : 34.9522836269531)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance2" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="dede3cb7-d4ae-4f73-a471-eefc742a1274" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 38.2522481110026); (2.875 : 38.2522481110026); (2.875 : 38.6939111328125); (5.66666666666667 : 38.6939111328125 : JumpStart); (5.95833333333333 : 38.6939111328125 : JumpEnd); (5.97916666666667 : 38.6939111328125 : JumpStart); (6.20833333333333 : 38.6939111328125 : JumpEnd); (8.41666666666667 : 38.6939111328125 : JumpStart); (8.80208333333333 : 38.6939111328125 : JumpEnd); (9.91666666666667 : 38.6939111328125 : JumpStart); (10.0833333333333 : 38.6939111328125 : JumpEnd); (11.0416666666667 : 38.6939111328125 : JumpStart); (11.2083333333333 : 38.6939111328125 : JumpEnd); (11.375 : 38.6939111328125); (11.375 : 41.0591455078125); (15.218748 : 41.0591455078125); (15.218748 : 40.9341455078125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance3" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="dede3cb7-d4ae-4f73-a471-eefc742a1274" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.01562625 : 37.25); (2.01562625 : 36.9045727539063); (2.19791916666667 : 36.9045727539063 : JumpStart); (2.36458583333333 : 36.9045727539063 : JumpEnd); (2.46354491666667 : 36.9045727539063 : JumpStart); (2.63021158333333 : 36.9045727539063 : JumpEnd); (2.79166666666667 : 36.9045727539063 : JumpStart); (3.08333333333333 : 36.9045727539063 : JumpEnd); (3.1875 : 36.9045727539063); (3.1875 : 38.5689111328125); (3.22916666666667 : 38.5689111328125 : JumpStart); (3.39583333333333 : 38.5689111328125 : JumpEnd); (5.66666666666667 : 38.5689111328125 : JumpStart); (5.95833333333333 : 38.5689111328125 : JumpEnd); (5.97916666666667 : 38.5689111328125 : JumpStart); (6.20833333333333 : 38.5689111328125 : JumpEnd); (8.36050756049679 : 38.5689111328125 : JumpStart); (8.58333333333333 : 38.5689111328125 : JumpEnd); (8.63541666666667 : 38.5689111328125 : JumpStart); (8.80208333333333 : 38.5689111328125 : JumpEnd); (9.91666666666667 : 38.5689111328125 : JumpStart); (10.0833333333333 : 38.5689111328125 : JumpEnd); (11.0416666666667 : 38.5689111328125 : JumpStart); (11.2714112564103 : 38.5689111328125 : JumpEnd); (11.625 : 38.5689111328125); (11.625 : 40.6553369140625); (14.0416666666667 : 40.6553369140625 : JumpStart); (14.2083333333333 : 40.6553369140625 : JumpEnd); (14.5 : 40.6553369140625); (14.5 : 38.7799570839844); (14.75 : 38.7799570839844)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_InventoryBalance4" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="dede3cb7-d4ae-4f73-a471-eefc742a1274" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(14.25 : 24.8277498372396); (15 : 24.8277498372396)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Position/Position_Employee" />
+      <nodes>
+        <classShapeMoniker Id="644dc1b3-1c66-41de-88c9-30b4ebbd1e55" />
+        <classShapeMoniker Id="be244187-c298-4ea3-9110-4401a4a718b5" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 48.2792297692308); (5.81607443490112 : 47.9631553343297 : JumpStart); (5.93392556509888 : 47.8453042041319 : JumpEnd); (6.0625 : 47.7167297692308); (6.0625 : 24.8277498372396); (12.25 : 24.8277498372396)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Company/Company_Position" />
+      <nodes>
+        <classShapeMoniker Id="c518788b-394d-4d4a-b90d-a064be23f42a" />
+        <classShapeMoniker Id="644dc1b3-1c66-41de-88c9-30b4ebbd1e55" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 38.3750702389824); (8.44107443490112 : 38.5661446738835 : JumpStart); (8.55892556509888 : 38.6839958040813 : JumpEnd); (8.65982443490112 : 38.7848946738835 : JumpStart); (8.77767556509888 : 38.9027458040813 : JumpEnd); (8.875 : 39.0000702389824); (8.875 : 40.6553369140625); (11.0416666666667 : 40.6553369140625 : JumpStart); (11.3333333333333 : 40.6553369140625 : JumpEnd); (11.375 : 40.6553369140625); (11.3785744349011 : 40.6517624791614 : JumpStart); (11.4964255650989 : 40.5339113489636 : JumpEnd); (11.5660744349011 : 40.4642624791614 : JumpStart); (11.6839255650989 : 40.3464113489636 : JumpEnd); (11.75 : 40.2803369140625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductService/ProductService_ProductImage" />
+      <nodes>
+        <classShapeMoniker Id="35fcd675-d288-4efe-8cc5-3e3b6e605998" />
+        <classShapeMoniker Id="536d13c6-82f3-4706-97df-11a37ff96a5e" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 36.5873527018229); (5.66666666666667 : 36.5873527018229 : JumpStart); (5.95833333333333 : 36.5873527018229 : JumpEnd); (5.97916666666667 : 36.5873527018229 : JumpStart); (6.20833333333333 : 36.5873527018229 : JumpEnd); (6.25 : 36.5873527018229)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductServiceCategory/ProductServiceCategory_ProductService" />
+      <nodes>
+        <classShapeMoniker Id="52a9e0d2-6e0e-4f8d-8120-b8320c8deeca" />
+        <classShapeMoniker Id="35fcd675-d288-4efe-8cc5-3e3b6e605998" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 37.3691984222005); (2.79166666666667 : 37.3691984222005 : JumpStart); (3.45833333333333 : 37.3691984222005 : JumpEnd); (3.5 : 37.3691984222005)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_ProductServiceCategory" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="52a9e0d2-6e0e-4f8d-8120-b8320c8deeca" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 38.3587233221029); (2.79166666666667 : 38.3587233221029 : JumpStart); (2.95833333333333 : 38.3587233221029 : JumpEnd); (3.04166666666667 : 38.3587233221029 : JumpStart); (3.45833333333333 : 38.3587233221029 : JumpEnd); (4.5 : 38.3587233221029); (4.5 : 38.0497054036458)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ApplicationUser/ApplicationUser_ProductServiceCategory1" />
+      <nodes>
+        <classShapeMoniker Id="24fd2153-6ce2-4d0e-9d91-b5e741f25099" />
+        <classShapeMoniker Id="52a9e0d2-6e0e-4f8d-8120-b8320c8deeca" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.33384615384615 : 35.125); (4.33384615384615 : 35); (4.92923076923077 : 35); (4.92923076923077 : 35.125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductServiceCategory/ProductServiceCategory_ProductServiceCategory" />
+      <nodes>
+        <classShapeMoniker Id="52a9e0d2-6e0e-4f8d-8120-b8320c8deeca" />
+        <classShapeMoniker Id="52a9e0d2-6e0e-4f8d-8120-b8320c8deeca" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 36.5969555664063); (11.125 : 36.5969555664063); (11.125 : 32.875); (11.1666666666667 : 32.875 : JumpStart); (11.5208333333333 : 32.875 : JumpEnd); (14.125 : 32.875); (14.125 : 32); (16.8229166666667 : 32 : JumpStart); (16.9895833333333 : 32 : JumpEnd); (17.8697881666667 : 32 : JumpStart); (18.0364548333333 : 32 : JumpEnd); (18.484374 : 32); (18.484374 : 32.625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_Asset" />
+      <nodes>
+        <classShapeMoniker Id="363c18e9-c3c5-4211-9b01-cf3a0c704843" />
+        <classShapeMoniker Id="abfef22d-7d52-4e4a-9a55-140a056563e3" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 37.5516853496094); (11.125 : 37.5516853496094); (11.125 : 41.3764469401042); (11.3541666666667 : 41.3764469401042 : JumpStart); (11.5208333333333 : 41.3764469401042 : JumpEnd); (11.5416666666667 : 41.3764469401042 : JumpStart); (11.7083333333333 : 41.3764469401042 : JumpEnd); (17.4166666666667 : 41.3764469401042 : JumpStart); (17.5833333333333 : 41.3764469401042 : JumpEnd); (18.1822926666667 : 41.3764469401042 : JumpStart); (18.3489593333333 : 41.3764469401042 : JumpEnd); (18.6979186666667 : 41.3764469401042 : JumpStart); (18.8645853333333 : 41.3764469401042 : JumpEnd); (21.6354141666667 : 41.3764469401042 : JumpStart); (21.8020808333333 : 41.3764469401042 : JumpEnd); (22.1666666666667 : 41.3764469401042 : JumpStart); (22.3333333333333 : 41.3764469401042 : JumpEnd); (22.781252 : 41.3764469401042); (22.781252 : 42.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_Device" />
+      <nodes>
+        <classShapeMoniker Id="363c18e9-c3c5-4211-9b01-cf3a0c704843" />
+        <classShapeMoniker Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10 : 38.4439111328125); (10 : 40.4365869140625); (11.0416666666667 : 40.4365869140625 : JumpStart); (11.7083333333333 : 40.4365869140625 : JumpEnd); (14.0416666666667 : 40.4365869140625 : JumpStart); (14.2083333333333 : 40.4365869140625 : JumpEnd); (14.2916666666667 : 40.4365869140625 : JumpStart); (14.5833333333333 : 40.4365869140625 : JumpEnd); (14.75 : 40.4365869140625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_InventoryBalance" />
+      <nodes>
+        <classShapeMoniker Id="363c18e9-c3c5-4211-9b01-cf3a0c704843" />
+        <classShapeMoniker Id="dede3cb7-d4ae-4f73-a471-eefc742a1274" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 35.6109777832031); (11.0416666666667 : 35.6109777832031 : JumpStart); (11.2083333333333 : 35.6109777832031 : JumpEnd); (11.75 : 35.6109777832031)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_ProductImage" />
+      <nodes>
+        <classShapeMoniker Id="363c18e9-c3c5-4211-9b01-cf3a0c704843" />
+        <classShapeMoniker Id="536d13c6-82f3-4706-97df-11a37ff96a5e" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 36.5937826194912); (8.41666666666667 : 36.5937826194912 : JumpStart); (8.58333333333333 : 36.5937826194912 : JumpEnd); (8.63541666666667 : 36.5937826194912 : JumpStart); (8.95833333333333 : 36.5937826194912 : JumpEnd); (9 : 36.5937826194912)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductService/ProductService_ProductVariant" />
+      <nodes>
+        <classShapeMoniker Id="35fcd675-d288-4efe-8cc5-3e3b6e605998" />
+        <classShapeMoniker Id="363c18e9-c3c5-4211-9b01-cf3a0c704843" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(15.75 : 44.6747054036458); (15.75 : 55.2051530533854); (17.5 : 55.2051530533854)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/VnsErp2025DataContext/StockInOutDetail/StockInOutDetail_Warranty" />
       <nodes>
-        <classShapeMoniker Id="2409bc6f-5a2d-4e32-ac7c-f406decef5dd" />
-        <classShapeMoniker Id="8d0d1e46-9272-4073-b682-0bf5623f8e78" />
+        <classShapeMoniker Id="1a5bd192-0a44-4045-a764-23e9368702c2" />
+        <classShapeMoniker Id="47b21b19-f3ad-43c8-a6e0-703f833f886d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(16.75 : 41.84375); (17.2916666666667 : 41.84375 : JumpStart); (17.4583333333333 : 41.84375 : JumpEnd); (21.45312125 : 41.84375); (21.45312125 : 42.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/StockInOutDetail/StockInOutDetail_Device" />
+      <nodes>
+        <classShapeMoniker Id="1a5bd192-0a44-4045-a764-23e9368702c2" />
+        <classShapeMoniker Id="dc2e38bb-ef20-4823-a48f-686c1b5bc32f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 38.3808332097356); (11.0660744349011 : 38.4469076446367 : JumpStart); (11.1839255650989 : 38.5647587748345 : JumpEnd); (11.4375 : 38.8183332097356); (11.4375 : 43.2123527018229); (11.5416666666667 : 43.2123527018229 : JumpStart); (11.7083333333333 : 43.2123527018229 : JumpEnd); (14.75 : 43.2123527018229)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_StockInOutDetail" />
+      <nodes>
+        <classShapeMoniker Id="363c18e9-c3c5-4211-9b01-cf3a0c704843" />
+        <classShapeMoniker Id="1a5bd192-0a44-4045-a764-23e9368702c2" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 44.9326874264824); (5.875 : 45.3076874264824); (5.875 : 52.8090641276042); (8.41666666666667 : 52.8090641276042 : JumpStart); (8.83333333333333 : 52.8090641276042 : JumpEnd); (15.6666666666667 : 52.8090641276042 : JumpStart); (15.8333333333333 : 52.8090641276042 : JumpEnd); (17.2916666666667 : 52.8090641276042 : JumpStart); (17.4583333333333 : 52.8090641276042 : JumpEnd); (17.75 : 52.8090641276042)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartner/BusinessPartner_StockInOutDocument" />
+      <nodes>
+        <classShapeMoniker Id="6eda9bea-321b-409a-ba0c-26c730fe51a8" />
+        <classShapeMoniker Id="38f27a01-37e4-403f-be1e-015d77eb66b4" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 42.4186763509115); (11.1666666666667 : 42.4186763509115 : JumpStart); (11.3333333333333 : 42.4186763509115 : JumpEnd); (11.3541666666667 : 42.4186763509115 : JumpStart); (11.7083333333333 : 42.4186763509115 : JumpEnd); (14.75 : 42.4186763509115)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/StockInOutMaster/StockInOutMaster_StockInOutDetail" />
+      <nodes>
+        <classShapeMoniker Id="59eb12d5-b886-44da-822c-4886029aae4b" />
+        <classShapeMoniker Id="1a5bd192-0a44-4045-a764-23e9368702c2" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 44.7748527018229); (11.1666666666667 : 44.7748527018229 : JumpStart); (11.3333333333333 : 44.7748527018229 : JumpEnd); (11.4166666666667 : 44.7748527018229 : JumpStart); (11.7083333333333 : 44.7748527018229 : JumpEnd); (15.6666666666667 : 44.7748527018229 : JumpStart); (15.8333333333333 : 44.7748527018229 : JumpEnd); (17.2916666666667 : 44.7748527018229 : JumpStart); (17.4583333333333 : 44.7748527018229 : JumpEnd); (17.75 : 44.7748527018229)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/StockInOutMaster/StockInOutMaster_StockInOutDocument" />
+      <nodes>
+        <classShapeMoniker Id="59eb12d5-b886-44da-822c-4886029aae4b" />
+        <classShapeMoniker Id="38f27a01-37e4-403f-be1e-015d77eb66b4" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 45.2315584309896); (11.1666666666667 : 45.2315584309896 : JumpStart); (11.3333333333333 : 45.2315584309896 : JumpEnd); (11.4166666666667 : 45.2315584309896 : JumpStart); (11.7083333333333 : 45.2315584309896 : JumpEnd); (11.75 : 45.2315584309896)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/StockInOutMaster/StockInOutMaster_StockInOutImage" />
+      <nodes>
+        <classShapeMoniker Id="59eb12d5-b886-44da-822c-4886029aae4b" />
+        <classShapeMoniker Id="43abb46b-b6a9-4c68-82cb-692e2a6f5b86" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 43.8565584309896); (8.41666666666667 : 43.8565584309896 : JumpStart); (8.58333333333333 : 43.8565584309896 : JumpEnd); (8.60416666666667 : 43.8565584309896 : JumpStart); (8.80208333333333 : 43.8565584309896 : JumpEnd); (9 : 43.8565584309896)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/BusinessPartnerSite/BusinessPartnerSite_StockInOutMaster" />
+      <nodes>
+        <classShapeMoniker Id="651bed64-49b3-4f9a-ab6a-9a86823ae004" />
+        <classShapeMoniker Id="59eb12d5-b886-44da-822c-4886029aae4b" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 49.1542297692308); (8.31607443490112 : 49.0881553343297 : JumpStart); (8.43392556509888 : 48.9703042041319 : JumpEnd); (8.6875 : 48.7167297692308); (8.6875 : 42.4595272154948); (9 : 42.4595272154948)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/CompanyBranch/CompanyBranch_StockInOutMaster" />
+      <nodes>
+        <classShapeMoniker Id="fc6ead91-9a60-41dc-8a71-bfa75ceba860" />
+        <classShapeMoniker Id="59eb12d5-b886-44da-822c-4886029aae4b" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.25 : 33.5208968098958); (8.44107443490112 : 33.7119712447969 : JumpStart); (8.55892556509888 : 33.8298223749947 : JumpEnd); (8.65982443490112 : 33.9307212447969 : JumpStart); (8.77767556509888 : 34.0485723749947 : JumpEnd); (8.875 : 34.1458968098958); (8.875 : 37.5500988761518); (9 : 37.5500988761518)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/UnitOfMeasure/UnitOfMeasure_ProductVariant" />
+      <nodes>
+        <classShapeMoniker Id="8d5d1e39-227c-47ed-9307-ebae0ddf2bc9" />
+        <classShapeMoniker Id="363c18e9-c3c5-4211-9b01-cf3a0c704843" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 32.1306469726563); (11.3541666666667 : 32.1306469726563 : JumpStart); (11.5208333333333 : 32.1306469726563 : JumpEnd); (11.75 : 32.1306469726563)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/Attribute/Attribute_VariantAttribute" />
+      <nodes>
+        <classShapeMoniker Id="f404049c-d53f-46f7-964b-955efecca1e4" />
+        <classShapeMoniker Id="233ae678-a4e8-48fd-a16c-ac33da4fc21a" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 29.98437525); (12.75 : 29.98437525); (12.75 : 31)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/AttributeValue/AttributeValue_VariantAttribute" />
+      <nodes>
+        <classShapeMoniker Id="12f8bc9f-74b8-446a-9061-aedec1f4254a" />
+        <classShapeMoniker Id="233ae678-a4e8-48fd-a16c-ac33da4fc21a" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11 : 34.8115374615385); (11.0660744349011 : 34.7454630266373 : JumpStart); (11.1839255650989 : 34.6276118964396 : JumpEnd); (11.3160744349011 : 34.4954630266373 : JumpStart); (11.4339255650989 : 34.3776118964396 : JumpEnd); (11.4375 : 34.3740374615385); (11.4375 : 31.7272179589844); (11.75 : 31.7272179589844)]" fixedFrom="NotFixed" fixedTo="Algorithm">
+      <AssociationMoniker Name="/VnsErp2025DataContext/ProductVariant/ProductVariant_VariantAttribute" />
+      <nodes>
+        <classShapeMoniker Id="363c18e9-c3c5-4211-9b01-cf3a0c704843" />
+        <classShapeMoniker Id="233ae678-a4e8-48fd-a16c-ac33da4fc21a" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>
