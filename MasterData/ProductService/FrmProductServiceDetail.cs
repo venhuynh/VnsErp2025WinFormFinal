@@ -189,25 +189,12 @@ namespace MasterData.ProductService
             try
             {
                 var (categories, counts) = await _productServiceCategoryBll.GetCategoriesWithCountsAsync();
-                var dtos = categories.Select(c => 
-                {
-                    var count = counts.TryGetValue(c.Id, out var count1) ? count1 : 0;
-                    return c.ToDtoWithCount(count);
-                }).ToList();
+                
+                // Tạo cấu trúc cây hierarchical với FullPath đầy đủ (giống FrmProductServiceCategory)
+                var dtos = categories.ToDtosWithHierarchy(counts).ToList();
                 
                 // Thiết lập BindingSource
                 productServiceCategoryDtoBindingSource.DataSource = dtos;
-                
-                //// Thiết lập SearchLookUpEdit
-                //CategoryIdSearchLookupEdit.Properties.DataSource = productServiceCategoryDtoBindingSource;
-                //CategoryIdSearchLookupEdit.Properties.ValueMember = "Id";
-                //CategoryIdSearchLookupEdit.Properties.DisplayMember = "CategoryInfoHtml";
-                //CategoryIdSearchLookupEdit.Properties.PopupView = ProductServiceCategorySearchLookUpEdit1View;
-                
-                //// Thiết lập các tùy chọn SearchLookUpEdit
-                //CategoryIdSearchLookupEdit.Properties.AllowNullInput = DefaultBoolean.True;
-                //CategoryIdSearchLookupEdit.Properties.NullText = @"Chọn danh mục (tùy chọn)";
-                //CategoryIdSearchLookupEdit.Properties.TextEditStyle = TextEditStyles.Standard;
                 
                 // Đăng ký event để tự động tạo mã sản phẩm khi thay đổi danh mục (chỉ khi thêm mới)
                 CategoryIdSearchLookupEdit.EditValueChanged += CategoryIdSearchLookupEdit_EditValueChanged;

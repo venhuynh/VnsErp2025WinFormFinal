@@ -233,9 +233,9 @@ namespace MasterData.ProductService
             this.ProductServiceCategoryDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
             this.ProductServiceCategoryDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.ProductServiceCategoryDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colFullPathHtml,
             this.colCategoryInfoHtml,
-            this.colDescription,
-            this.colFullPathHtml});
+            this.colDescription});
             this.ProductServiceCategoryDtoGridView.GridControl = this.ProductServiceCategoryDtoGridControl;
             this.ProductServiceCategoryDtoGridView.IndicatorWidth = 50;
             this.ProductServiceCategoryDtoGridView.Name = "ProductServiceCategoryDtoGridView";
@@ -266,14 +266,14 @@ namespace MasterData.ProductService
             this.colCategoryInfoHtml.Caption = "Thông tin danh mục";
             this.colCategoryInfoHtml.ColumnEdit = this.CategoryInfoHtmlHypertextLabel;
             this.colCategoryInfoHtml.FieldName = "CategoryInfoHtml";
-            this.colCategoryInfoHtml.MinWidth = 300;
+            this.colCategoryInfoHtml.MinWidth = 350;
             this.colCategoryInfoHtml.Name = "colCategoryInfoHtml";
             this.colCategoryInfoHtml.OptionsColumn.AllowEdit = false;
             this.colCategoryInfoHtml.OptionsColumn.FixedWidth = true;
             this.colCategoryInfoHtml.OptionsColumn.ReadOnly = true;
             this.colCategoryInfoHtml.Visible = true;
-            this.colCategoryInfoHtml.VisibleIndex = 2;
-            this.colCategoryInfoHtml.Width = 500;
+            this.colCategoryInfoHtml.VisibleIndex = 1;
+            this.colCategoryInfoHtml.Width = 450;
             // 
             // CategoryInfoHtmlHypertextLabel
             // 
@@ -297,11 +297,13 @@ namespace MasterData.ProductService
             this.colDescription.Caption = "Mô tả";
             this.colDescription.ColumnEdit = this.DescriptionMemoEdit;
             this.colDescription.FieldName = "Description";
-            this.colDescription.MinWidth = 200;
+            this.colDescription.MinWidth = 250;
             this.colDescription.Name = "colDescription";
+            this.colDescription.OptionsColumn.AllowEdit = false;
+            this.colDescription.OptionsColumn.ReadOnly = true;
             this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 3;
-            this.colDescription.Width = 280;
+            this.colDescription.VisibleIndex = 2;
+            this.colDescription.Width = 300;
             // 
             // DescriptionMemoEdit
             // 
@@ -324,14 +326,14 @@ namespace MasterData.ProductService
             this.colFullPathHtml.Caption = "Đường dẫn";
             this.colFullPathHtml.ColumnEdit = this.FullPathHtmlHypertextLabel;
             this.colFullPathHtml.FieldName = "FullPathHtml";
-            this.colFullPathHtml.MinWidth = 200;
+            this.colFullPathHtml.MinWidth = 250;
             this.colFullPathHtml.Name = "colFullPathHtml";
             this.colFullPathHtml.OptionsColumn.AllowEdit = false;
             this.colFullPathHtml.OptionsColumn.FixedWidth = true;
             this.colFullPathHtml.OptionsColumn.ReadOnly = true;
             this.colFullPathHtml.Visible = true;
-            this.colFullPathHtml.VisibleIndex = 1;
-            this.colFullPathHtml.Width = 280;
+            this.colFullPathHtml.VisibleIndex = 0;
+            this.colFullPathHtml.Width = 320;
             // 
             // FullPathHtmlHypertextLabel
             // 
