@@ -391,13 +391,19 @@ namespace MasterData.ProductService
             // 
             this.colThumbnailImage.ColumnEdit = this.ThumbnailItemPictureEdit;
             this.colThumbnailImage.FieldName = "ThumbnailImage";
+            this.colThumbnailImage.MinWidth = 80;
             this.colThumbnailImage.Name = "colThumbnailImage";
+            this.colThumbnailImage.OptionsColumn.AllowEdit = false;
+            this.colThumbnailImage.OptionsColumn.FixedWidth = true;
+            this.colThumbnailImage.OptionsColumn.ReadOnly = true;
             this.colThumbnailImage.Visible = true;
             this.colThumbnailImage.VisibleIndex = 1;
+            this.colThumbnailImage.Width = 80;
             // 
             // ThumbnailItemPictureEdit
             // 
             this.ThumbnailItemPictureEdit.Name = "ThumbnailItemPictureEdit";
+            this.ThumbnailItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
             // 
             // FrmProductVariant
             // 

@@ -11,6 +11,9 @@ using DevExpress.XtraSplashScreen;
 using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -493,7 +496,7 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Convert Entity sang ProductVariantListDto (Async)
-        /// Sử dụng converter trong DTO
+        /// Sử dụng converter trong DTO và resize thumbnail images về kích thước cố định
         /// </summary>
         private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
         {
@@ -501,12 +504,103 @@ namespace MasterData.ProductService
             {
                 // Sử dụng converter extension method từ ProductVariantListConverters
                 var result = variants.ToListDtoList();
+                
+                // Resize tất cả thumbnail images về kích thước cố định (60x60 pixels)
+                const int thumbnailSize = 60;
+                foreach (var dto in result)
+                {
+                    if (dto.ThumbnailImage != null && dto.ThumbnailImage.Length > 0)
+                    {
+                        try
+                        {
+                            dto.ThumbnailImage = ResizeThumbnailImage(dto.ThumbnailImage, thumbnailSize, thumbnailSize);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Nếu resize lỗi, giữ nguyên hình ảnh gốc
+                            System.Diagnostics.Debug.WriteLine($"Lỗi resize thumbnail cho variant {dto.Id}: {ex.Message}");
+                        }
+                    }
+                }
+                
                 return Task.FromResult(result);
             }
             catch (Exception ex)
             {
                 throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
             }
+        }
+
+        /// <summary>
+        /// Resize thumbnail image về kích thước cố định
+        /// </summary>
+        /// <param name="imageBytes">Mảng byte của hình ảnh gốc</param>
+        /// <param name="width">Chiều rộng mong muốn</param>
+        /// <param name="height">Chiều cao mong muốn</param>
+        /// <returns>Mảng byte của hình ảnh đã resize</returns>
+        private byte[] ResizeThumbnailImage(byte[] imageBytes, int width, int height)
+        {
+            if (imageBytes == null || imageBytes.Length == 0)
+                return imageBytes;
+
+            try
+            {
+                using (var ms = new MemoryStream(imageBytes))
+                using (var originalImage = Image.FromStream(ms))
+                {
+                    // Tính toán kích thước mới giữ nguyên tỷ lệ
+                    var newSize = CalculateNewSize(originalImage.Width, originalImage.Height, width, height);
+                    
+                    // Tạo bitmap mới với kích thước đã tính
+                    using (var resizedImage = new Bitmap(newSize.Width, newSize.Height))
+                    {
+                        using (var graphics = Graphics.FromImage(resizedImage))
+                        {
+                            // Cấu hình chất lượng vẽ cao
+                            graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                            graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                            graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                            graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                            
+                            // Vẽ hình ảnh gốc lên bitmap mới với kích thước mới
+                            graphics.DrawImage(originalImage, 0, 0, newSize.Width, newSize.Height);
+                        }
+                        
+                        // Chuyển đổi bitmap thành mảng byte
+                        using (var msOutput = new MemoryStream())
+                        {
+                            resizedImage.Save(msOutput, ImageFormat.Png);
+                            return msOutput.ToArray();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Nếu có lỗi, trả về hình ảnh gốc
+                System.Diagnostics.Debug.WriteLine($"Lỗi resize thumbnail: {ex.Message}");
+                return imageBytes;
+            }
+        }
+
+        /// <summary>
+        /// Tính toán kích thước mới giữ nguyên tỷ lệ khung hình
+        /// </summary>
+        private Size CalculateNewSize(int originalWidth, int originalHeight, int maxWidth, int maxHeight)
+        {
+            // Nếu hình ảnh nhỏ hơn kích thước mong muốn, giữ nguyên
+            if (originalWidth <= maxWidth && originalHeight <= maxHeight)
+            {
+                return new Size(originalWidth, originalHeight);
+            }
+
+            // Tính tỷ lệ để giữ nguyên aspect ratio
+            var ratio = Math.Min((double)maxWidth / originalWidth, (double)maxHeight / originalHeight);
+
+            return new Size(
+                (int)(originalWidth * ratio),
+                (int)(originalHeight * ratio)
+            );
         }
 
 
