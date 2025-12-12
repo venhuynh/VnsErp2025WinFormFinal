@@ -407,3 +407,45 @@ public static class ProductVariantConverters
 
     #endregion
 }
+
+/// <summary>
+/// Converter giữa ProductVariant entity và ProductVariantListDto
+/// </summary>
+public static class ProductVariantListConverters
+{
+    /// <summary>
+    /// Chuyển đổi ProductVariant entity thành ProductVariantListDto
+    /// </summary>
+    /// <param name="entity">ProductVariant entity</param>
+    /// <returns>ProductVariantListDto</returns>
+    public static ProductVariantListDto ToListDto(this ProductVariant entity)
+    {
+        if (entity == null) return null;
+
+        var dto = new ProductVariantListDto
+        {
+            Id = entity.Id,
+            ProductCode = entity.ProductService?.Code ?? string.Empty,
+            ProductName = entity.ProductService?.Name ?? string.Empty,
+            VariantCode = entity.VariantCode ?? string.Empty,
+            VariantFullName = entity.VariantFullName ?? string.Empty,
+            UnitName = entity.UnitOfMeasure?.Name ?? string.Empty,
+            IsActive = entity.IsActive,
+            ImageCount = entity.ProductImages?.Count ?? 0
+        };
+
+        return dto;
+    }
+
+    /// <summary>
+    /// Chuyển đổi danh sách ProductVariant entities thành danh sách ProductVariantListDto
+    /// </summary>
+    /// <param name="entities">Danh sách ProductVariant entities</param>
+    /// <returns>Danh sách ProductVariantListDto</returns>
+    public static List<ProductVariantListDto> ToListDtoList(this IEnumerable<ProductVariant> entities)
+    {
+        if (entities == null) return new List<ProductVariantListDto>();
+
+        return entities.Select(entity => entity.ToListDto()).ToList();
+    }
+}

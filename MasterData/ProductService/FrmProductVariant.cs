@@ -1,4 +1,4 @@
-﻿using Bll.MasterData.ProductServiceBll;
+using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
@@ -449,77 +449,19 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Convert Entity sang ProductVariantListDto (Async)
+        /// Sử dụng converter trong DTO
         /// </summary>
-        private async Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
+        private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
         {
             try
             {
-                var result = new List<ProductVariantListDto>();
-                
-                foreach (var variant in variants)
-                {
-                    var dto = new ProductVariantListDto
-                    {
-                        Id = variant.Id,
-                        ProductCode = variant.ProductService?.Code ?? "",
-                        ProductName = variant.ProductService?.Name ?? "",
-                        VariantCode = variant.VariantCode,
-                        VariantFullName = !string.IsNullOrWhiteSpace(variant.VariantFullName) 
-                            ? variant.VariantFullName 
-                            : await BuildVariantFullNameAsync(variant), // Fallback nếu VariantFullName chưa được cập nhật
-                        UnitName = variant.UnitOfMeasure?.Name ?? "",
-                        IsActive = variant.IsActive,
-                        ImageCount = 0 // Tạm thời set 0 vì không load được navigation properties
-                    };
-                    
-                    result.Add(dto);
-                }
-                
-                return result;
+                // Sử dụng converter extension method từ ProductVariantListConverters
+                var result = variants.ToListDtoList();
+                return Task.FromResult(result);
             }
             catch (Exception ex)
             {
                 throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Xây dựng tên đầy đủ của biến thể từ các thuộc tính (Async)
-        /// Format: Attribute1: Value1, Attribute2: Value2, ...
-        /// </summary>
-        private Task<string> BuildVariantFullNameAsync(ProductVariant variant)
-        {
-            try
-            {
-                // Load thông tin thuộc tính từ BLL
-                var attributeValues = _productVariantBll.GetAttributeValues(variant.Id);
-                
-                if (attributeValues == null || !attributeValues.Any())
-                {
-                    return Task.FromResult(variant.VariantCode); // Nếu không có thuộc tính, trả về mã biến thể
-                }
-
-                var attributeParts = new List<string>();
-                
-                foreach (var (_, attributeName, value) in attributeValues)
-                {
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        attributeParts.Add($"{attributeName}: {value}");
-                    }
-                }
-
-                if (attributeParts.Any())
-                {
-                    return Task.FromResult(string.Join(", ", attributeParts));
-                }
-
-                return Task.FromResult(variant.VariantCode); // Fallback về mã biến thể nếu không có giá trị thuộc tính
-            }
-            catch (Exception)
-            {
-                // Nếu có lỗi, trả về mã biến thể
-                return Task.FromResult(variant.VariantCode);
             }
         }
 
