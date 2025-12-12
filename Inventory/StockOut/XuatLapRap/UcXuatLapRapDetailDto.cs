@@ -1,4 +1,4 @@
-﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
@@ -1130,7 +1130,7 @@ namespace Inventory.StockOut.XuatLapRap
                 XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
                 XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
                 XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName",
-                    $"{selectedVariant.FullNameHtml}");
+                    $"{selectedVariant.VariantFullNameHtml}");
                 XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
             }
             else
@@ -1140,7 +1140,7 @@ namespace Inventory.StockOut.XuatLapRap
                 {
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
-                    rowData.ProductVariantName = $"{selectedVariant.FullNameHtml}";
+                    rowData.ProductVariantName = $"{selectedVariant.VariantFullNameHtml}";
                     rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                     // Refresh grid để hiển thị thay đổi

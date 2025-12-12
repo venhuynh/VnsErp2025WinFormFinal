@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -1100,7 +1100,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
             NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
             NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.FullNameHtml}");
+            NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullNameHtml}");
             NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
@@ -1110,7 +1110,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.FullNameHtml}";
+                rowData.ProductVariantName = $"{selectedVariant.VariantFullNameHtml}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                 // Refresh grid để hiển thị thay đổi

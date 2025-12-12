@@ -932,8 +932,8 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                             }
                         }
 
-                        // Cập nhật VariantFullName
-                        variant.VariantFullName = string.Join(", ", fullNameParts);
+                        // Cập nhật VariantFullName - mỗi thuộc tính trên 1 dòng
+                        variant.VariantFullName = string.Join("\n", fullNameParts);
                     }
                     else
                     {

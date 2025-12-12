@@ -1,4 +1,4 @@
-﻿using Bll.Inventory.StockIn;
+using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
@@ -1071,7 +1071,7 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
             XuatNoiBoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
             XuatNoiBoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            XuatNoiBoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.FullNameHtml}");
+            XuatNoiBoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullNameHtml}");
             XuatNoiBoDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
@@ -1081,7 +1081,7 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.FullNameHtml}";
+                rowData.ProductVariantName = $"{selectedVariant.VariantFullNameHtml}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                 // Refresh grid để hiển thị thay đổi

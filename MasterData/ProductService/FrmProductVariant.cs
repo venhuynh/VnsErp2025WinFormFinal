@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Bll.Common;
-using Bll.MasterData.ProductServiceBll;
+﻿using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
@@ -14,6 +9,10 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData.ProductService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MasterData.ProductService
 {
@@ -67,7 +66,6 @@ namespace MasterData.ProductService
             // Grid events
             ProductVariantListGridView.SelectionChanged += ProductServiceMasterDetailViewGridView_SelectionChanged;
             ProductVariantListGridView.CustomDrawRowIndicator += ProductVariantListGridView_CustomDrawRowIndicator;
-            VariantGridView.SelectionChanged += VariantGridView_SelectionChanged;
 
             // Thiết lập SuperToolTip cho các controls
             SetupSuperToolTips();

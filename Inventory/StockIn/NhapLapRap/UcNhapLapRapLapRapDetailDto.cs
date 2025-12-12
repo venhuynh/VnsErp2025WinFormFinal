@@ -1,4 +1,4 @@
-﻿using Bll.Inventory.StockIn;
+using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
@@ -1070,7 +1070,7 @@ namespace Inventory.StockIn.NhapLapRap
                 // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
                 NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
                 NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-                NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.FullNameHtml}");
+                NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullNameHtml}");
                 NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
             }
             else
@@ -1080,7 +1080,7 @@ namespace Inventory.StockIn.NhapLapRap
                 {
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
-                    rowData.ProductVariantName = $"{selectedVariant.FullNameHtml}";
+                    rowData.ProductVariantName = $"{selectedVariant.VariantFullNameHtml}";
                     rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                     // Refresh grid để hiển thị thay đổi

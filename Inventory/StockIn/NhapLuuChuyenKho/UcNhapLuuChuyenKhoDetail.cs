@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -1097,7 +1097,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
             NhapLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
             NhapLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            NhapLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.FullNameHtml}");
+            NhapLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullNameHtml}");
             NhapLuuChuyenKhoDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
@@ -1107,7 +1107,7 @@ public partial class UcNhapLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.FullNameHtml}";
+                rowData.ProductVariantName = $"{selectedVariant.VariantFullNameHtml}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                 // Refresh grid để hiển thị thay đổi

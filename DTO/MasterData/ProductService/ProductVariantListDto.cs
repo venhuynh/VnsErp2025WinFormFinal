@@ -1,6 +1,7 @@
-﻿using Dal.DataContext;
+using Dal.DataContext;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -44,69 +45,92 @@ public class ProductVariantListDto
     public string DisplayText => $"{ProductCode}-{VariantCode} - {ProductName} ({UnitName})";
 
     /// <summary>
-    /// Thông tin biến thể sản phẩm dưới dạng HTML theo format DevExpress
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Thông tin biến thể đầy đủ dưới dạng ProductVariantDto
+    /// Chứa đầy đủ thông tin về biến thể bao gồm thuộc tính, hình ảnh, v.v.
+    /// </summary>
+    [Display(Name = "Thông tin biến thể đầy đủ")]
+    [Description("Thông tin biến thể đầy đủ dưới dạng ProductVariantDto")]
+    public ProductVariantDto FullVariantInfo { get; set; }
+
+    /// <summary>
+    /// Thông tin biến thể đầy đủ dưới dạng HTML theo format DevExpress
+    /// Bao gồm thông tin sản phẩm từ ProductService và tổng hợp các thông tin biến thể
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
+    /// Format giống ProductServiceDto.ThongTinHtml (không dùng &lt;size&gt;)
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [Display(Name = "Thông tin HTML")]
-    public string FullNameHtml
+    [Description("Thông tin biến thể đầy đủ dưới dạng HTML")]
+    public string VariantFullNameHtml
     {
         get
         {
+            var html = string.Empty;
+
+            // Thông tin sản phẩm từ ProductService (dòng đầu)
             var productName = ProductName ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(productName))
+            {
+                html += $"<b><color='blue'>{productName}</color></b>";
+            }
+
+            // Mã sản phẩm (nếu có, màu xám)
             var productCode = ProductCode ?? string.Empty;
-            var variantCode = VariantCode ?? string.Empty;
-            var variantFullName = VariantFullName ?? string.Empty;
-            var unitName = UnitName ?? string.Empty;
-            var statusText = IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
-            var statusColor = IsActive ? "#4CAF50" : "#F44336";
-
-            // Format chuyên nghiệp với visual hierarchy rõ ràng
-            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
-            // - Mã sản phẩm: font nhỏ hơn, màu xám
-            // - Mã biến thể: font nhỏ hơn, màu cam
-            // - Tên biến thể đầy đủ: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
-
-            var html = $"<size=12><b><color='blue'>{productName}</color></b></size>";
-
             if (!string.IsNullOrWhiteSpace(productCode))
             {
-                html += $" <size=9><color='#757575'>({productCode})</color></size>";
+                if (!string.IsNullOrWhiteSpace(html))
+                    html += " ";
+                html += $"<color='#757575'>({productCode})</color>";
             }
 
             html += "<br>";
 
+            // Tổng hợp các thông tin biến thể
+            var variantParts = new List<string>();
+
+            // Mã biến thể (màu cam)
+            var variantCode = VariantCode ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(variantCode))
             {
-                html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size>";
+                variantParts.Add($"<color='#757575'>Mã biến thể:</color> <color='#FF9800'><b>{variantCode}</b></color>");
             }
 
+            // Tên biến thể đầy đủ (nếu có)
+            var variantFullName = VariantFullName ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(variantFullName))
             {
-                if (!string.IsNullOrWhiteSpace(variantCode))
-                    html += "<br/>";
-                html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantFullName}</b></color></size>";
+                variantParts.Add($"<color='#757575'>Tên biến thể:</color> <b>{variantFullName}</b>");
             }
 
-            if (!string.IsNullOrWhiteSpace(variantCode) || !string.IsNullOrWhiteSpace(variantFullName))
-            {
-                html += "<br>";
-            }
-
+            // Đơn vị tính (nếu có)
+            var unitName = UnitName ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(unitName))
             {
-                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitName}</b></color></size><br>";
+                variantParts.Add($"<color='#757575'>Đơn vị tính:</color> <b>{unitName}</b>");
             }
 
-            // Hiển thị số lượng hình ảnh nếu có
+            if (variantParts.Any())
+            {
+                html += string.Join(" | ", variantParts) + "<br>";
+            }
+
+            // Thông tin số lượng và trạng thái
+            var countParts = new List<string>();
+
             if (ImageCount > 0)
             {
-                html += $"<size=9><color='#757575'>Hình ảnh:</color></size> <size=10><color='#212121'><b>{ImageCount} hình</b></color></size><br>";
+                countParts.Add($"<color='#757575'>Ảnh:</color> <b>{ImageCount}</b>");
             }
 
-            html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+            // Trạng thái hoạt động
+            var statusText = IsActive ? "Hoạt động" : "Không hoạt động";
+            var statusColor = IsActive ? "#4CAF50" : "#F44336";
+            countParts.Add($"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>");
+
+            if (countParts.Any())
+            {
+                html += string.Join(" | ", countParts);
+            }
 
             return html;
         }

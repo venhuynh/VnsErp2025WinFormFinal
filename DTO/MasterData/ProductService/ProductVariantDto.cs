@@ -259,23 +259,19 @@ public class ProductVariantDto : INotifyPropertyChanged
 
                 html += "<br>";
 
+                // Mã biến thể - mỗi thông tin trên 1 hàng
                 if (!string.IsNullOrWhiteSpace(variantCode))
                 {
-                    html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size>";
+                    html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size><br>";
                 }
 
+                // Tên biến thể - mỗi thông tin trên 1 hàng
                 if (!string.IsNullOrWhiteSpace(variantName))
                 {
-                    if (!string.IsNullOrWhiteSpace(variantCode))
-                        html += " | ";
-                    html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantName}</b></color></size>";
+                    html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantName}</b></color></size><br>";
                 }
 
-                if (!string.IsNullOrWhiteSpace(variantCode) || !string.IsNullOrWhiteSpace(variantName))
-                {
-                    html += "<br>";
-                }
-
+                // Đơn vị tính - mỗi thông tin trên 1 hàng
                 if (!string.IsNullOrWhiteSpace(unitCode) || !string.IsNullOrWhiteSpace(unitName))
                 {
                     var unitDisplay = string.IsNullOrWhiteSpace(unitCode) 
@@ -287,35 +283,32 @@ public class ProductVariantDto : INotifyPropertyChanged
                     html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitDisplay}</b></color></size><br>";
                 }
 
-                // Hiển thị thuộc tính nếu có
+                // Hiển thị thuộc tính - mỗi thuộc tính trên 1 hàng
                 if (Attributes != null && Attributes.Count > 0)
                 {
-                    var attributeParts = new List<string>();
+                    var displayedCount = 0;
                     foreach (var attr in Attributes.Take(3)) // Chỉ hiển thị 3 thuộc tính đầu tiên
                     {
                         if (!string.IsNullOrWhiteSpace(attr.AttributeName) && !string.IsNullOrWhiteSpace(attr.AttributeValue))
                         {
-                            attributeParts.Add($"<b>{attr.AttributeName}</b>: {attr.AttributeValue}");
+                            html += $"<size=9><color='#757575'>Thuộc tính:</color></size> <size=10><color='#212121'><b>{attr.AttributeName}</b>: {attr.AttributeValue}</color></size><br>";
+                            displayedCount++;
                         }
                     }
 
-                    if (attributeParts.Count > 0)
+                    if (Attributes.Count > 3)
                     {
-                        html += $"<size=9><color='#757575'>Thuộc tính:</color></size> <size=10><color='#212121'>{string.Join(", ", attributeParts)}</color></size>";
-                        if (Attributes.Count > 3)
-                        {
-                            html += $" <size=9><color='#757575'>(+{Attributes.Count - 3} thuộc tính khác)</color></size>";
-                        }
-                        html += "<br>";
+                        html += $"<size=9><color='#757575'>Thuộc tính:</color></size> <size=10><color='#757575'>(+{Attributes.Count - 3} thuộc tính khác)</color></size><br>";
                     }
                 }
 
-                // Hiển thị số lượng hình ảnh nếu có
+                // Hiển thị số lượng hình ảnh - mỗi thông tin trên 1 hàng
                 if (ImageCount > 0)
                 {
                     html += $"<size=9><color='#757575'>Hình ảnh:</color></size> <size=10><color='#212121'><b>{ImageCount} hình</b></color></size><br>";
                 }
 
+                // Trạng thái - mỗi thông tin trên 1 hàng
                 html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
 
                 return html;
@@ -418,7 +411,7 @@ public class ProductVariantDto : INotifyPropertyChanged
                 parts.Add(UnitName);
             }
 
-            // Thêm thông tin thuộc tính
+            // Thêm thông tin thuộc tính - mỗi thuộc tính trên 1 dòng
             if (Attributes != null && Attributes.Count > 0)
             {
                 var attributeParts = new List<string>();
@@ -432,7 +425,8 @@ public class ProductVariantDto : INotifyPropertyChanged
 
                 if (attributeParts.Count > 0)
                 {
-                    parts.Add(string.Join(", ", attributeParts));
+                    // Mỗi thuộc tính trên 1 dòng, không dùng dấu phẩy
+                    parts.Add(string.Join("\n", attributeParts));
                 }
             }
 
