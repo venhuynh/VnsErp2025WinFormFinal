@@ -40,7 +40,8 @@ namespace MasterData.ProductService
         /// </summary>
         private void InitializeComponent()
         {
-            this.barManager1 = new DevExpress.XtraBars.BarManager();
+            this.components = new System.ComponentModel.Container();
+            this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.SaveBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ClearThumbnailBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -49,21 +50,8 @@ namespace MasterData.ProductService
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider();
+            this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
-            this.CategoryIdTreeListLookUpEdit = new DevExpress.XtraEditors.TreeListLookUpEdit();
-            this.productServiceCategoryDtoBindingSource = new System.Windows.Forms.BindingSource();
-            this.treeListLookUpEdit1TreeList = new DevExpress.XtraTreeList.TreeList();
-            this.colId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colCategoryCode = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colParentId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colParentCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colLevel = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colHasChildren = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colFullPath = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.colProductCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.CodeTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.NameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.ThumbnailImagePictureEdit = new DevExpress.XtraEditors.PictureEdit();
@@ -71,6 +59,10 @@ namespace MasterData.ProductService
             this.IsActiveToggleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
             this.ThumbnailPathButtonEdit = new DevExpress.XtraEditors.ButtonEdit();
             this.DescriptionTextEdit = new DevExpress.XtraEditors.MemoEdit();
+            this.CategoryIdSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.productServiceCategoryDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ProductServiceCategorySearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colFullPathHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForCode = new DevExpress.XtraLayout.LayoutControlItem();
@@ -81,14 +73,23 @@ namespace MasterData.ProductService
             this.ItemForThumbnailImage = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
-            this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog();
+            this.CategoryInfoHtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colCategoryCode = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colDescription = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colParentId = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colParentCategoryName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colLevel = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colHasChildren = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colFullPath = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.colProductCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog(this.components);
+            this.FullPathHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.CategoryIdTreeListLookUpEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productServiceCategoryDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.treeListLookUpEdit1TreeList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CodeTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailImagePictureEdit.Properties)).BeginInit();
@@ -96,6 +97,9 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailPathButtonEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CategoryIdSearchLookupEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceCategoryDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceCategorySearchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCode)).BeginInit();
@@ -106,6 +110,8 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ItemForThumbnailImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CategoryInfoHtmlRepositoryItemHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FullPathHtmlHypertextLabel)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -169,7 +175,7 @@ namespace MasterData.ProductService
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(666, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(666, 39);
             // 
             // barDockControlBottom
             // 
@@ -183,17 +189,17 @@ namespace MasterData.ProductService
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 636);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 621);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(666, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(666, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 636);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 621);
             // 
             // dxErrorProvider1
             // 
@@ -201,7 +207,6 @@ namespace MasterData.ProductService
             // 
             // dataLayoutControl1
             // 
-            this.dataLayoutControl1.Controls.Add(this.CategoryIdTreeListLookUpEdit);
             this.dataLayoutControl1.Controls.Add(this.CodeTextEdit);
             this.dataLayoutControl1.Controls.Add(this.NameTextEdit);
             this.dataLayoutControl1.Controls.Add(this.ThumbnailImagePictureEdit);
@@ -209,51 +214,238 @@ namespace MasterData.ProductService
             this.dataLayoutControl1.Controls.Add(this.IsActiveToggleSwitch);
             this.dataLayoutControl1.Controls.Add(this.ThumbnailPathButtonEdit);
             this.dataLayoutControl1.Controls.Add(this.DescriptionTextEdit);
+            this.dataLayoutControl1.Controls.Add(this.CategoryIdSearchLookupEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
+            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 636);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 621);
             this.dataLayoutControl1.TabIndex = 10;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
-            // CategoryIdTreeListLookUpEdit
+            // CodeTextEdit
             // 
-            this.CategoryIdTreeListLookUpEdit.Location = new System.Drawing.Point(129, 12);
-            this.CategoryIdTreeListLookUpEdit.MenuManager = this.barManager1;
-            this.CategoryIdTreeListLookUpEdit.Name = "CategoryIdTreeListLookUpEdit";
-            this.CategoryIdTreeListLookUpEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            this.CodeTextEdit.Location = new System.Drawing.Point(137, 50);
+            this.CodeTextEdit.MenuManager = this.barManager1;
+            this.CodeTextEdit.Name = "CodeTextEdit";
+            this.CodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.CodeTextEdit.Size = new System.Drawing.Size(321, 28);
+            this.CodeTextEdit.StyleController = this.dataLayoutControl1;
+            this.CodeTextEdit.TabIndex = 2;
+            // 
+            // NameTextEdit
+            // 
+            this.NameTextEdit.Location = new System.Drawing.Point(137, 84);
+            this.NameTextEdit.MenuManager = this.barManager1;
+            this.NameTextEdit.Name = "NameTextEdit";
+            this.NameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.NameTextEdit.Size = new System.Drawing.Size(513, 28);
+            this.NameTextEdit.StyleController = this.dataLayoutControl1;
+            this.NameTextEdit.TabIndex = 4;
+            // 
+            // ThumbnailImagePictureEdit
+            // 
+            this.ThumbnailImagePictureEdit.Location = new System.Drawing.Point(137, 292);
+            this.ThumbnailImagePictureEdit.MenuManager = this.barManager1;
+            this.ThumbnailImagePictureEdit.Name = "ThumbnailImagePictureEdit";
+            this.ThumbnailImagePictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.ThumbnailImagePictureEdit.Size = new System.Drawing.Size(513, 313);
+            this.ThumbnailImagePictureEdit.StyleController = this.dataLayoutControl1;
+            this.ThumbnailImagePictureEdit.TabIndex = 1;
+            // 
+            // IsServiceToggleSwitch
+            // 
+            this.IsServiceToggleSwitch.Location = new System.Drawing.Point(137, 118);
+            this.IsServiceToggleSwitch.MenuManager = this.barManager1;
+            this.IsServiceToggleSwitch.Name = "IsServiceToggleSwitch";
+            this.IsServiceToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
+            this.IsServiceToggleSwitch.Properties.OffText = "Sản phẩm";
+            this.IsServiceToggleSwitch.Properties.OnText = "Dịch vụ";
+            this.IsServiceToggleSwitch.Size = new System.Drawing.Size(513, 24);
+            this.IsServiceToggleSwitch.StyleController = this.dataLayoutControl1;
+            this.IsServiceToggleSwitch.TabIndex = 5;
+            // 
+            // IsActiveToggleSwitch
+            // 
+            this.IsActiveToggleSwitch.EditValue = true;
+            this.IsActiveToggleSwitch.Location = new System.Drawing.Point(464, 50);
+            this.IsActiveToggleSwitch.MenuManager = this.barManager1;
+            this.IsActiveToggleSwitch.Name = "IsActiveToggleSwitch";
+            this.IsActiveToggleSwitch.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.IsActiveToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
+            this.IsActiveToggleSwitch.Properties.OffText = "<color=\'red\'>Ngưng hoạt động</color>";
+            this.IsActiveToggleSwitch.Properties.OnText = "<color=\'blue\'>Đang hoạt động</color>";
+            this.IsActiveToggleSwitch.Size = new System.Drawing.Size(186, 24);
+            this.IsActiveToggleSwitch.StyleController = this.dataLayoutControl1;
+            this.IsActiveToggleSwitch.TabIndex = 3;
+            // 
+            // ThumbnailPathButtonEdit
+            // 
+            this.ThumbnailPathButtonEdit.Location = new System.Drawing.Point(137, 258);
+            this.ThumbnailPathButtonEdit.MenuManager = this.barManager1;
+            this.ThumbnailPathButtonEdit.Name = "ThumbnailPathButtonEdit";
+            this.ThumbnailPathButtonEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Plus)});
+            this.ThumbnailPathButtonEdit.Size = new System.Drawing.Size(513, 28);
+            this.ThumbnailPathButtonEdit.StyleController = this.dataLayoutControl1;
+            this.ThumbnailPathButtonEdit.TabIndex = 6;
+            this.ThumbnailPathButtonEdit.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.ThumbnailPathButtonEdit_ButtonClick);
+            // 
+            // DescriptionTextEdit
+            // 
+            this.DescriptionTextEdit.Location = new System.Drawing.Point(137, 148);
+            this.DescriptionTextEdit.MenuManager = this.barManager1;
+            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
+            this.DescriptionTextEdit.Size = new System.Drawing.Size(513, 104);
+            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
+            this.DescriptionTextEdit.TabIndex = 6;
+            // 
+            // CategoryIdSearchLookupEdit
+            // 
+            this.CategoryIdSearchLookupEdit.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
+            this.CategoryIdSearchLookupEdit.Location = new System.Drawing.Point(137, 16);
+            this.CategoryIdSearchLookupEdit.MenuManager = this.barManager1;
+            this.CategoryIdSearchLookupEdit.Name = "CategoryIdSearchLookupEdit";
+            this.CategoryIdSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.CategoryIdSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.CategoryIdTreeListLookUpEdit.Properties.DataSource = this.productServiceCategoryDtoBindingSource;
-            this.CategoryIdTreeListLookUpEdit.Properties.DisplayMember = "CategoryName";
-            this.CategoryIdTreeListLookUpEdit.Properties.TreeList = this.treeListLookUpEdit1TreeList;
-            this.CategoryIdTreeListLookUpEdit.Properties.ValueMember = "Id";
-            this.CategoryIdTreeListLookUpEdit.Size = new System.Drawing.Size(525, 20);
-            this.CategoryIdTreeListLookUpEdit.StyleController = this.dataLayoutControl1;
-            this.CategoryIdTreeListLookUpEdit.TabIndex = 0;
+            this.CategoryIdSearchLookupEdit.Properties.DataSource = this.productServiceCategoryDtoBindingSource;
+            this.CategoryIdSearchLookupEdit.Properties.DisplayMember = "FullPathHtml";
+            this.CategoryIdSearchLookupEdit.Properties.PopupView = this.ProductServiceCategorySearchLookUpEdit1View;
+            this.CategoryIdSearchLookupEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.FullPathHtmlHypertextLabel});
+            this.CategoryIdSearchLookupEdit.Properties.ValueMember = "Id";
+            this.CategoryIdSearchLookupEdit.Size = new System.Drawing.Size(513, 28);
+            this.CategoryIdSearchLookupEdit.StyleController = this.dataLayoutControl1;
+            this.CategoryIdSearchLookupEdit.TabIndex = 0;
             // 
             // productServiceCategoryDtoBindingSource
             // 
             this.productServiceCategoryDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductServiceCategoryDto);
             // 
-            // treeListLookUpEdit1TreeList
+            // ProductServiceCategorySearchLookUpEdit1View
             // 
-            this.treeListLookUpEdit1TreeList.Columns.AddRange(new DevExpress.XtraTreeList.Columns.TreeListColumn[] {
-            this.colId,
-            this.colCategoryCode,
-            this.colCategoryName,
-            this.colDescription,
-            this.colParentId,
-            this.colParentCategoryName,
-            this.colLevel,
-            this.colHasChildren,
-            this.colFullPath,
-            this.colProductCount});
-            this.treeListLookUpEdit1TreeList.Location = new System.Drawing.Point(0, 0);
-            this.treeListLookUpEdit1TreeList.Name = "treeListLookUpEdit1TreeList";
-            this.treeListLookUpEdit1TreeList.OptionsView.ShowIndentAsRowStyle = true;
-            this.treeListLookUpEdit1TreeList.Size = new System.Drawing.Size(400, 200);
-            this.treeListLookUpEdit1TreeList.TabIndex = 0;
+            this.ProductServiceCategorySearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colFullPathHtml});
+            this.ProductServiceCategorySearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.ProductServiceCategorySearchLookUpEdit1View.Name = "ProductServiceCategorySearchLookUpEdit1View";
+            this.ProductServiceCategorySearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.ProductServiceCategorySearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
+            this.ProductServiceCategorySearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            this.ProductServiceCategorySearchLookUpEdit1View.OptionsView.ShowIndicator = false;
+            // 
+            // colFullPathHtml
+            // 
+            this.colFullPathHtml.ColumnEdit = this.FullPathHtmlHypertextLabel;
+            this.colFullPathHtml.FieldName = "FullPathHtml";
+            this.colFullPathHtml.Name = "colFullPathHtml";
+            this.colFullPathHtml.Visible = true;
+            this.colFullPathHtml.VisibleIndex = 0;
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlGroup1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(666, 621);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlGroup1
+            // 
+            this.layoutControlGroup1.AllowDrawBackground = false;
+            this.layoutControlGroup1.GroupBordersVisible = false;
+            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.ItemForCode,
+            this.ItemForName,
+            this.ItemForIsService,
+            this.ItemForDescription,
+            this.ItemForThumbnailPath,
+            this.ItemForThumbnailImage,
+            this.layoutControlItem,
+            this.ItemForIsActive});
+            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlGroup1.Name = "autoGeneratedGroup0";
+            this.layoutControlGroup1.Size = new System.Drawing.Size(640, 595);
+            // 
+            // ItemForCode
+            // 
+            this.ItemForCode.Control = this.CodeTextEdit;
+            this.ItemForCode.Location = new System.Drawing.Point(0, 34);
+            this.ItemForCode.Name = "ItemForCode";
+            this.ItemForCode.Size = new System.Drawing.Size(448, 34);
+            this.ItemForCode.Text = "Mã sản phẩm/dịch vụ";
+            this.ItemForCode.TextSize = new System.Drawing.Size(105, 13);
+            // 
+            // ItemForName
+            // 
+            this.ItemForName.Control = this.NameTextEdit;
+            this.ItemForName.Location = new System.Drawing.Point(0, 68);
+            this.ItemForName.Name = "ItemForName";
+            this.ItemForName.Size = new System.Drawing.Size(640, 34);
+            this.ItemForName.Text = "Tên sản phẩm/dịch vụ";
+            this.ItemForName.TextSize = new System.Drawing.Size(105, 13);
+            // 
+            // ItemForIsService
+            // 
+            this.ItemForIsService.Control = this.IsServiceToggleSwitch;
+            this.ItemForIsService.Location = new System.Drawing.Point(0, 102);
+            this.ItemForIsService.Name = "ItemForIsService";
+            this.ItemForIsService.Size = new System.Drawing.Size(640, 30);
+            this.ItemForIsService.Text = "Loại";
+            this.ItemForIsService.TextSize = new System.Drawing.Size(105, 13);
+            // 
+            // ItemForDescription
+            // 
+            this.ItemForDescription.Control = this.DescriptionTextEdit;
+            this.ItemForDescription.Location = new System.Drawing.Point(0, 132);
+            this.ItemForDescription.Name = "ItemForDescription";
+            this.ItemForDescription.Size = new System.Drawing.Size(640, 110);
+            this.ItemForDescription.Text = "Mô tả";
+            this.ItemForDescription.TextSize = new System.Drawing.Size(105, 13);
+            // 
+            // ItemForThumbnailPath
+            // 
+            this.ItemForThumbnailPath.Control = this.ThumbnailPathButtonEdit;
+            this.ItemForThumbnailPath.Location = new System.Drawing.Point(0, 242);
+            this.ItemForThumbnailPath.Name = "ItemForThumbnailPath";
+            this.ItemForThumbnailPath.Size = new System.Drawing.Size(640, 34);
+            this.ItemForThumbnailPath.Text = "Đường dẫn ảnh";
+            this.ItemForThumbnailPath.TextSize = new System.Drawing.Size(105, 13);
+            // 
+            // ItemForThumbnailImage
+            // 
+            this.ItemForThumbnailImage.Control = this.ThumbnailImagePictureEdit;
+            this.ItemForThumbnailImage.Location = new System.Drawing.Point(0, 276);
+            this.ItemForThumbnailImage.Name = "ItemForThumbnailImage";
+            this.ItemForThumbnailImage.Size = new System.Drawing.Size(640, 319);
+            this.ItemForThumbnailImage.StartNewLine = true;
+            this.ItemForThumbnailImage.Text = "Ảnh đại diện";
+            this.ItemForThumbnailImage.TextSize = new System.Drawing.Size(105, 13);
+            // 
+            // layoutControlItem
+            // 
+            this.layoutControlItem.Control = this.CategoryIdSearchLookupEdit;
+            this.layoutControlItem.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem.Name = "layoutControlItem";
+            this.layoutControlItem.Size = new System.Drawing.Size(640, 34);
+            this.layoutControlItem.Text = "Loại SPDV";
+            this.layoutControlItem.TextSize = new System.Drawing.Size(105, 13);
+            // 
+            // ItemForIsActive
+            // 
+            this.ItemForIsActive.Control = this.IsActiveToggleSwitch;
+            this.ItemForIsActive.Location = new System.Drawing.Point(448, 34);
+            this.ItemForIsActive.Name = "ItemForIsActive";
+            this.ItemForIsActive.Size = new System.Drawing.Size(192, 34);
+            this.ItemForIsActive.Text = "Đang hoạt động";
+            this.ItemForIsActive.TextVisible = false;
+            // 
+            // CategoryInfoHtmlRepositoryItemHypertextLabel
+            // 
+            this.CategoryInfoHtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.CategoryInfoHtmlRepositoryItemHypertextLabel.Name = "CategoryInfoHtmlRepositoryItemHypertextLabel";
             // 
             // colId
             // 
@@ -325,188 +517,16 @@ namespace MasterData.ProductService
             this.colProductCount.Visible = true;
             this.colProductCount.VisibleIndex = 9;
             // 
-            // CodeTextEdit
-            // 
-            this.CodeTextEdit.Location = new System.Drawing.Point(129, 36);
-            this.CodeTextEdit.MenuManager = this.barManager1;
-            this.CodeTextEdit.Name = "CodeTextEdit";
-            this.CodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.CodeTextEdit.Size = new System.Drawing.Size(331, 20);
-            this.CodeTextEdit.StyleController = this.dataLayoutControl1;
-            this.CodeTextEdit.TabIndex = 2;
-            // 
-            // NameTextEdit
-            // 
-            this.NameTextEdit.Location = new System.Drawing.Point(129, 60);
-            this.NameTextEdit.MenuManager = this.barManager1;
-            this.NameTextEdit.Name = "NameTextEdit";
-            this.NameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.NameTextEdit.Size = new System.Drawing.Size(525, 20);
-            this.NameTextEdit.StyleController = this.dataLayoutControl1;
-            this.NameTextEdit.TabIndex = 4;
-            // 
-            // ThumbnailImagePictureEdit
-            // 
-            this.ThumbnailImagePictureEdit.Location = new System.Drawing.Point(129, 291);
-            this.ThumbnailImagePictureEdit.MenuManager = this.barManager1;
-            this.ThumbnailImagePictureEdit.Name = "ThumbnailImagePictureEdit";
-            this.ThumbnailImagePictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
-            this.ThumbnailImagePictureEdit.Size = new System.Drawing.Size(525, 333);
-            this.ThumbnailImagePictureEdit.StyleController = this.dataLayoutControl1;
-            this.ThumbnailImagePictureEdit.TabIndex = 1;
-            // 
-            // IsServiceToggleSwitch
-            // 
-            this.IsServiceToggleSwitch.Location = new System.Drawing.Point(129, 84);
-            this.IsServiceToggleSwitch.MenuManager = this.barManager1;
-            this.IsServiceToggleSwitch.Name = "IsServiceToggleSwitch";
-            this.IsServiceToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
-            this.IsServiceToggleSwitch.Properties.OffText = "Sản phẩm";
-            this.IsServiceToggleSwitch.Properties.OnText = "Dịch vụ";
-            this.IsServiceToggleSwitch.Size = new System.Drawing.Size(525, 18);
-            this.IsServiceToggleSwitch.StyleController = this.dataLayoutControl1;
-            this.IsServiceToggleSwitch.TabIndex = 5;
-            // 
-            // IsActiveToggleSwitch
-            // 
-            this.IsActiveToggleSwitch.EditValue = true;
-            this.IsActiveToggleSwitch.Location = new System.Drawing.Point(464, 36);
-            this.IsActiveToggleSwitch.MenuManager = this.barManager1;
-            this.IsActiveToggleSwitch.Name = "IsActiveToggleSwitch";
-            this.IsActiveToggleSwitch.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.IsActiveToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
-            this.IsActiveToggleSwitch.Properties.OffText = "<color=\'red\'>Ngưng hoạt động</color>";
-            this.IsActiveToggleSwitch.Properties.OnText = "<color=\'blue\'>Đang hoạt động</color>";
-            this.IsActiveToggleSwitch.Size = new System.Drawing.Size(190, 18);
-            this.IsActiveToggleSwitch.StyleController = this.dataLayoutControl1;
-            this.IsActiveToggleSwitch.TabIndex = 3;
-            // 
-            // ThumbnailPathButtonEdit
-            // 
-            this.ThumbnailPathButtonEdit.Location = new System.Drawing.Point(129, 267);
-            this.ThumbnailPathButtonEdit.MenuManager = this.barManager1;
-            this.ThumbnailPathButtonEdit.Name = "ThumbnailPathButtonEdit";
-            this.ThumbnailPathButtonEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Plus)});
-            this.ThumbnailPathButtonEdit.Size = new System.Drawing.Size(525, 20);
-            this.ThumbnailPathButtonEdit.StyleController = this.dataLayoutControl1;
-            this.ThumbnailPathButtonEdit.TabIndex = 6;
-            this.ThumbnailPathButtonEdit.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.ThumbnailPathButtonEdit_ButtonClick);
-            // 
-            // DescriptionTextEdit
-            // 
-            this.DescriptionTextEdit.Location = new System.Drawing.Point(129, 106);
-            this.DescriptionTextEdit.MenuManager = this.barManager1;
-            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
-            this.DescriptionTextEdit.Size = new System.Drawing.Size(525, 157);
-            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
-            this.DescriptionTextEdit.TabIndex = 6;
-            // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlGroup1});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(666, 636);
-            this.Root.TextVisible = false;
-            // 
-            // layoutControlGroup1
-            // 
-            this.layoutControlGroup1.AllowDrawBackground = false;
-            this.layoutControlGroup1.GroupBordersVisible = false;
-            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.ItemForCode,
-            this.ItemForName,
-            this.ItemForIsService,
-            this.ItemForDescription,
-            this.ItemForThumbnailPath,
-            this.ItemForThumbnailImage,
-            this.layoutControlItem,
-            this.ItemForIsActive});
-            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(646, 616);
-            // 
-            // ItemForCode
-            // 
-            this.ItemForCode.Control = this.CodeTextEdit;
-            this.ItemForCode.Location = new System.Drawing.Point(0, 24);
-            this.ItemForCode.Name = "ItemForCode";
-            this.ItemForCode.Size = new System.Drawing.Size(452, 24);
-            this.ItemForCode.Text = "Mã sản phẩm/dịch vụ";
-            this.ItemForCode.TextSize = new System.Drawing.Size(105, 13);
-            // 
-            // ItemForName
-            // 
-            this.ItemForName.Control = this.NameTextEdit;
-            this.ItemForName.Location = new System.Drawing.Point(0, 48);
-            this.ItemForName.Name = "ItemForName";
-            this.ItemForName.Size = new System.Drawing.Size(646, 24);
-            this.ItemForName.Text = "Tên sản phẩm/dịch vụ";
-            this.ItemForName.TextSize = new System.Drawing.Size(105, 13);
-            // 
-            // ItemForIsService
-            // 
-            this.ItemForIsService.Control = this.IsServiceToggleSwitch;
-            this.ItemForIsService.Location = new System.Drawing.Point(0, 72);
-            this.ItemForIsService.Name = "ItemForIsService";
-            this.ItemForIsService.Size = new System.Drawing.Size(646, 22);
-            this.ItemForIsService.Text = "Loại";
-            this.ItemForIsService.TextSize = new System.Drawing.Size(105, 13);
-            // 
-            // ItemForDescription
-            // 
-            this.ItemForDescription.Control = this.DescriptionTextEdit;
-            this.ItemForDescription.Location = new System.Drawing.Point(0, 94);
-            this.ItemForDescription.Name = "ItemForDescription";
-            this.ItemForDescription.Size = new System.Drawing.Size(646, 161);
-            this.ItemForDescription.Text = "Mô tả";
-            this.ItemForDescription.TextSize = new System.Drawing.Size(105, 13);
-            // 
-            // ItemForThumbnailPath
-            // 
-            this.ItemForThumbnailPath.Control = this.ThumbnailPathButtonEdit;
-            this.ItemForThumbnailPath.Location = new System.Drawing.Point(0, 255);
-            this.ItemForThumbnailPath.Name = "ItemForThumbnailPath";
-            this.ItemForThumbnailPath.Size = new System.Drawing.Size(646, 24);
-            this.ItemForThumbnailPath.Text = "Đường dẫn ảnh";
-            this.ItemForThumbnailPath.TextSize = new System.Drawing.Size(105, 13);
-            // 
-            // ItemForThumbnailImage
-            // 
-            this.ItemForThumbnailImage.Control = this.ThumbnailImagePictureEdit;
-            this.ItemForThumbnailImage.Location = new System.Drawing.Point(0, 279);
-            this.ItemForThumbnailImage.Name = "ItemForThumbnailImage";
-            this.ItemForThumbnailImage.Size = new System.Drawing.Size(646, 337);
-            this.ItemForThumbnailImage.StartNewLine = true;
-            this.ItemForThumbnailImage.Text = "Ảnh đại diện";
-            this.ItemForThumbnailImage.TextSize = new System.Drawing.Size(105, 13);
-            // 
-            // layoutControlItem
-            // 
-            this.layoutControlItem.Control = this.CategoryIdTreeListLookUpEdit;
-            this.layoutControlItem.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem.Name = "layoutControlItem";
-            this.layoutControlItem.Size = new System.Drawing.Size(646, 24);
-            this.layoutControlItem.Text = "Loại SPDV";
-            this.layoutControlItem.TextSize = new System.Drawing.Size(105, 13);
-            // 
-            // ItemForIsActive
-            // 
-            this.ItemForIsActive.Control = this.IsActiveToggleSwitch;
-            this.ItemForIsActive.Location = new System.Drawing.Point(452, 24);
-            this.ItemForIsActive.Name = "ItemForIsActive";
-            this.ItemForIsActive.Size = new System.Drawing.Size(194, 24);
-            this.ItemForIsActive.Text = "Đang hoạt động";
-            this.ItemForIsActive.TextVisible = false;
-            // 
             // xtraOpenFileDialog1
             // 
             this.xtraOpenFileDialog1.Filter = "Image Files (*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.webp)|*.jpg;*.jpeg;*.png;*.bmp;*.gi" +
     "f;*.webp|All Files (*.*)|*.*";
             this.xtraOpenFileDialog1.Title = "Chọn hình ảnh cho sản phẩm/dịch vụ";
+            // 
+            // FullPathHtmlHypertextLabel
+            // 
+            this.FullPathHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.FullPathHtmlHypertextLabel.Name = "FullPathHtmlHypertextLabel";
             // 
             // FrmProductServiceDetail
             // 
@@ -527,9 +547,6 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.CategoryIdTreeListLookUpEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productServiceCategoryDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.treeListLookUpEdit1TreeList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CodeTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailImagePictureEdit.Properties)).EndInit();
@@ -537,6 +554,9 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailPathButtonEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CategoryIdSearchLookupEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceCategoryDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceCategorySearchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForCode)).EndInit();
@@ -547,6 +567,8 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ItemForThumbnailImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CategoryInfoHtmlRepositoryItemHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FullPathHtmlHypertextLabel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -576,9 +598,7 @@ namespace MasterData.ProductService
         private LayoutControlItem ItemForIsActive;
         private LayoutControlItem ItemForThumbnailPath;
         private LayoutControlItem ItemForThumbnailImage;
-        private TreeListLookUpEdit CategoryIdTreeListLookUpEdit;
         private BindingSource productServiceCategoryDtoBindingSource;
-        private TreeList treeListLookUpEdit1TreeList;
         private LayoutControlItem layoutControlItem;
         private ToggleSwitch IsServiceToggleSwitch;
         private ToggleSwitch IsActiveToggleSwitch;
@@ -595,5 +615,10 @@ namespace MasterData.ProductService
         private TreeListColumn colFullPath;
         private TreeListColumn colProductCount;
         private XtraOpenFileDialog xtraOpenFileDialog1;
+        private SearchLookUpEdit CategoryIdSearchLookupEdit;
+        private DevExpress.XtraGrid.Views.Grid.GridView ProductServiceCategorySearchLookUpEdit1View;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel CategoryInfoHtmlRepositoryItemHypertextLabel;
+        private DevExpress.XtraGrid.Columns.GridColumn colFullPathHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel FullPathHtmlHypertextLabel;
     }
 }

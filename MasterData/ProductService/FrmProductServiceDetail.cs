@@ -9,12 +9,14 @@ using System.Windows.Forms;
 using Bll.Common;
 using Bll.Common.ImageService;
 using Bll.MasterData.ProductServiceBll;
+using Common.Common;
 using Common.Utils;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.DXErrorProvider;
+using DevExpress.XtraSplashScreen;
 using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
@@ -41,11 +43,6 @@ namespace MasterData.ProductService
         /// Business Logic Layer cho hình ảnh sản phẩm
         /// </summary>
         private readonly ProductImageBll _productImageBll = new ProductImageBll();
-
-        /// <summary>
-        /// Service xử lý hình ảnh
-        /// </summary>
-        private readonly ImageService _imageService = new ImageService();
 
         /// <summary>
         /// Service validation hình ảnh
@@ -106,15 +103,15 @@ namespace MasterData.ProductService
         /// <summary>
         /// Form load event.
         /// </summary>
-        private void FrmProductServiceDetail_Load(object sender, EventArgs e)
+        private async void FrmProductServiceDetail_Load(object sender, EventArgs e)
         {
             try
             {
-                LoadCategories();
+                await LoadCategoriesAsync();
                 
                 if (IsEditMode)
                 {
-                    LoadProductServiceData();
+                    await LoadProductServiceDataAsync();
                 }
                 
                 // Thiết lập focus cho control đầu tiên
@@ -140,16 +137,8 @@ namespace MasterData.ProductService
                 IsActiveToggleSwitch.IsOn = true; // Mặc định là hoạt động
                 IsServiceToggleSwitch.IsOn = false; // Mặc định là sản phẩm
 
-                // Trong EditMode, không cho phép thay đổi mã và phân loại
-                if (IsEditMode)
-                {
-                    CodeTextEdit.Enabled = false;
-                    CategoryIdTreeListLookUpEdit.Enabled = false;
-                    
-                    // Thêm tooltip để giải thích
-                    CodeTextEdit.Properties.NullText = "Mã không thể thay đổi khi chỉnh sửa";
-                    CategoryIdTreeListLookUpEdit.Properties.NullText = "Phân loại không thể thay đổi khi chỉnh sửa";
-                }
+                // Cho phép chỉnh sửa tất cả các trường kể cả khi edit
+                // Validation sẽ đảm bảo mã không trùng lặp
 
                 // Đăng ký event handlers
                 SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
@@ -193,71 +182,35 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Load danh sách danh mục vào CategoryIdTreeListLookUpEdit.
+        /// Load danh sách danh mục vào CategoryIdSearchLookupEdit (async).
         /// </summary>
-        private void LoadCategories()
+        private async Task LoadCategoriesAsync()
         {
             try
             {
-                var (categories, counts) = _productServiceCategoryBll.GetCategoriesWithCounts();
+                var (categories, counts) = await _productServiceCategoryBll.GetCategoriesWithCountsAsync();
                 var dtos = categories.Select(c => 
                 {
-                    var count = counts.ContainsKey(c.Id) ? counts[c.Id] : 0;
+                    var count = counts.TryGetValue(c.Id, out var count1) ? count1 : 0;
                     return c.ToDtoWithCount(count);
                 }).ToList();
                 
-                // Thiết lập TreeListLookUpEdit
-                CategoryIdTreeListLookUpEdit.Properties.DataSource = dtos;
-                CategoryIdTreeListLookUpEdit.Properties.ValueMember = "Id";
-                CategoryIdTreeListLookUpEdit.Properties.DisplayMember = "CategoryName";
+                // Thiết lập BindingSource
+                productServiceCategoryDtoBindingSource.DataSource = dtos;
                 
-                // Thiết lập TreeList bên trong TreeListLookUpEdit
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.KeyFieldName = "Id";
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.ParentFieldName = "ParentId";
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.RootValue = null;
+                //// Thiết lập SearchLookUpEdit
+                //CategoryIdSearchLookupEdit.Properties.DataSource = productServiceCategoryDtoBindingSource;
+                //CategoryIdSearchLookupEdit.Properties.ValueMember = "Id";
+                //CategoryIdSearchLookupEdit.Properties.DisplayMember = "CategoryInfoHtml";
+                //CategoryIdSearchLookupEdit.Properties.PopupView = ProductServiceCategorySearchLookUpEdit1View;
                 
-                // Thiết lập cột hiển thị
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.Columns.Clear();
-                var nameColumn = CategoryIdTreeListLookUpEdit.Properties.TreeList.Columns.Add();
-                nameColumn.FieldName = "CategoryName";
-                nameColumn.Caption = "Tên danh mục";
-                nameColumn.VisibleIndex = 0;
-                nameColumn.Width = 200;
+                //// Thiết lập các tùy chọn SearchLookUpEdit
+                //CategoryIdSearchLookupEdit.Properties.AllowNullInput = DefaultBoolean.True;
+                //CategoryIdSearchLookupEdit.Properties.NullText = @"Chọn danh mục (tùy chọn)";
+                //CategoryIdSearchLookupEdit.Properties.TextEditStyle = TextEditStyles.Standard;
                 
-                var descColumn = CategoryIdTreeListLookUpEdit.Properties.TreeList.Columns.Add();
-                descColumn.FieldName = "Description";
-                descColumn.Caption = "Mô tả";
-                descColumn.VisibleIndex = 1;
-                descColumn.Width = 150;
-                
-                var countColumn = CategoryIdTreeListLookUpEdit.Properties.TreeList.Columns.Add();
-                countColumn.FieldName = "ProductCount";
-                countColumn.Caption = "Số SP/DV";
-                countColumn.VisibleIndex = 2;
-                countColumn.Width = 80;
-                
-                // Thiết lập TreeList để hiển thị đúng cấu trúc cây
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowIndentAsRowStyle = true;
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowHorzLines = true;
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowVertLines = true;
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowRoot = true;
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.OptionsView.ShowButtons = true;
-                
-                // Mở rộng tất cả các nút
-                CategoryIdTreeListLookUpEdit.Properties.TreeList.ExpandAll();
-                
-                // Thiết lập các tùy chọn
-                CategoryIdTreeListLookUpEdit.Properties.AllowNullInput = DefaultBoolean.True;
-                CategoryIdTreeListLookUpEdit.Properties.NullText = @"Chọn danh mục (tùy chọn)";
-                
-                // Các tính năng bổ sung theo tài liệu DevExpress
-                CategoryIdTreeListLookUpEdit.Properties.AutoComplete = true; // Tự động hoàn thành khi gõ
-                CategoryIdTreeListLookUpEdit.Properties.AutoExpandAllNodes = true; // Tự động mở rộng tất cả nodes
-                CategoryIdTreeListLookUpEdit.Properties.PopupFilterMode = PopupFilterMode.Contains; // Lọc khi gõ
-                CategoryIdTreeListLookUpEdit.Properties.TextEditStyle = TextEditStyles.Standard; // Cho phép chỉnh sửa text
-                
-                // Đăng ký event để tự động tạo mã sản phẩm khi thay đổi danh mục
-                CategoryIdTreeListLookUpEdit.EditValueChanged += CategoryIdTreeListLookUpEdit_EditValueChanged;
+                // Đăng ký event để tự động tạo mã sản phẩm khi thay đổi danh mục (chỉ khi thêm mới)
+                CategoryIdSearchLookupEdit.EditValueChanged += CategoryIdSearchLookupEdit_EditValueChanged;
             }
             catch (Exception ex)
             {
@@ -268,7 +221,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Load dữ liệu sản phẩm/dịch vụ để chỉnh sửa.
         /// </summary>
-        private void LoadProductServiceData()
+        private async Task LoadProductServiceDataAsync()
         {
             try
             {
@@ -280,7 +233,9 @@ namespace MasterData.ProductService
                     return;
                 }
 
-                var dto = productService.ToDto(categoryId => _productServiceBll.GetCategoryName(categoryId));
+                // Lấy category dictionary để tối ưu performance
+                var categoryDict = await _productServiceBll.GetCategoryDictAsync();
+                var dto = productService.ToDto(categoryDict);
                 BindDataToControls(dto);
                 
                 // Load hình ảnh từ bảng ProductImage nếu có
@@ -335,14 +290,14 @@ namespace MasterData.ProductService
             IsActiveToggleSwitch.IsOn = dto.IsActive;
             // Không còn sử dụng ThumbnailPathButtonEdit
             
-            // Chọn danh mục trong TreeListLookUpEdit
+            // Chọn danh mục trong SearchLookUpEdit
             if (dto.CategoryId.HasValue)
             {
-                CategoryIdTreeListLookUpEdit.EditValue = dto.CategoryId.Value;
+                CategoryIdSearchLookupEdit.EditValue = dto.CategoryId.Value;
             }
             else
             {
-                CategoryIdTreeListLookUpEdit.EditValue = null;
+                CategoryIdSearchLookupEdit.EditValue = null;
             }
 
             // Load ảnh thumbnail nếu có
@@ -374,10 +329,17 @@ namespace MasterData.ProductService
         {
             Guid? categoryId = null;
             
-            // Lấy giá trị từ TreeListLookUpEdit
-            if (CategoryIdTreeListLookUpEdit.EditValue != null && CategoryIdTreeListLookUpEdit.EditValue != DBNull.Value)
+            // Lấy giá trị từ SearchLookUpEdit
+            if (CategoryIdSearchLookupEdit.EditValue != null && CategoryIdSearchLookupEdit.EditValue != DBNull.Value)
             {
-                categoryId = (Guid)CategoryIdTreeListLookUpEdit.EditValue;
+                if (CategoryIdSearchLookupEdit.EditValue is Guid guidValue)
+                {
+                    categoryId = guidValue;
+                }
+                else if (Guid.TryParse(CategoryIdSearchLookupEdit.EditValue.ToString(), out var parsedGuid))
+                {
+                    categoryId = parsedGuid;
+                }
             }
 
             // Lấy ảnh thumbnail nếu có
@@ -490,30 +452,6 @@ namespace MasterData.ProductService
             }
         }
 
-        /// <summary>
-        /// Lấy JPEG codec để lưu ảnh với chất lượng cao
-        /// </summary>
-        /// <returns>JPEG codec hoặc null</returns>
-        private ImageCodecInfo GetJpegCodec()
-        {
-            try
-            {
-                var codecs = ImageCodecInfo.GetImageEncoders();
-                foreach (var codec in codecs)
-                {
-                    if (codec.FormatID == ImageFormat.Jpeg.Guid)
-                    {
-                        return codec;
-                    }
-                }
-                return null;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         #endregion
 
         #region ========== VALIDATION ==========
@@ -526,7 +464,34 @@ namespace MasterData.ProductService
         {
             dxErrorProvider1.ClearErrors();
 
-            // Code bắt buộc
+            // Validate mã sản phẩm/dịch vụ (bắt buộc và không trùng lặp)
+            if (!ValidateCode())
+            {
+                return false;
+            }
+
+            // Validate tên sản phẩm/dịch vụ (bắt buộc và không trùng lặp)
+            if (!ValidateName())
+            {
+                return false;
+            }
+
+            // Validate mô tả (tùy chọn, nhưng có giới hạn độ dài)
+            if (!ValidateDescription())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Validate mã sản phẩm/dịch vụ (bắt buộc và không trùng lặp)
+        /// </summary>
+        /// <returns>True nếu hợp lệ, False nếu không hợp lệ</returns>
+        private bool ValidateCode()
+        {
+            // Kiểm tra không được để trống
             if (string.IsNullOrWhiteSpace(CodeTextEdit?.Text))
             {
                 dxErrorProvider1.SetError(CodeTextEdit, "Mã sản phẩm/dịch vụ không được để trống", ErrorType.Critical);
@@ -534,8 +499,9 @@ namespace MasterData.ProductService
                 return false;
             }
 
-            // Kiểm tra độ dài Code
             var code = CodeTextEdit.Text.Trim();
+
+            // Kiểm tra độ dài Code
             if (code.Length > 50)
             {
                 dxErrorProvider1.SetError(CodeTextEdit, "Mã sản phẩm/dịch vụ không được vượt quá 50 ký tự", ErrorType.Critical);
@@ -543,15 +509,43 @@ namespace MasterData.ProductService
                 return false;
             }
 
-            // Kiểm tra trùng lặp Code (chỉ kiểm tra khi thêm mới)
-            if (!IsEditMode && _productServiceBll.IsCodeExists(code, _productServiceId))
+            // Kiểm tra trùng lặp Code
+            if (IsEditMode)
             {
-                dxErrorProvider1.SetError(CodeTextEdit, "Mã sản phẩm/dịch vụ đã tồn tại trong hệ thống", ErrorType.Critical);
-                CodeTextEdit?.Focus();
-                return false;
+                // Nếu đang chỉnh sửa, chỉ kiểm tra trùng khi mã đã thay đổi
+                var existingProduct = _productServiceBll.GetById(_productServiceId);
+                if (existingProduct != null && existingProduct.Code != code)
+                {
+                    // Mã đã thay đổi, kiểm tra trùng lặp (loại trừ ID hiện tại)
+                    if (_productServiceBll.IsCodeExists(code, _productServiceId))
+                    {
+                        dxErrorProvider1.SetError(CodeTextEdit, "Mã sản phẩm/dịch vụ đã tồn tại trong hệ thống", ErrorType.Critical);
+                        CodeTextEdit?.Focus();
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                // Nếu thêm mới, luôn kiểm tra trùng
+                if (_productServiceBll.IsCodeExists(code, null))
+                {
+                    dxErrorProvider1.SetError(CodeTextEdit, "Mã sản phẩm/dịch vụ đã tồn tại trong hệ thống", ErrorType.Critical);
+                    CodeTextEdit?.Focus();
+                    return false;
+                }
             }
 
-            // Name bắt buộc
+            return true;
+        }
+
+        /// <summary>
+        /// Validate tên sản phẩm/dịch vụ (bắt buộc và không trùng lặp)
+        /// </summary>
+        /// <returns>True nếu hợp lệ, False nếu không hợp lệ</returns>
+        private bool ValidateName()
+        {
+            // Kiểm tra không được để trống
             if (string.IsNullOrWhiteSpace(NameTextEdit?.Text))
             {
                 dxErrorProvider1.SetError(NameTextEdit, "Tên sản phẩm/dịch vụ không được để trống", ErrorType.Critical);
@@ -559,33 +553,59 @@ namespace MasterData.ProductService
                 return false;
             }
 
+            var name = NameTextEdit.Text.Trim();
+
             // Kiểm tra độ dài Name
-            if (NameTextEdit.Text.Trim().Length > 200)
+            if (name.Length > 200)
             {
                 dxErrorProvider1.SetError(NameTextEdit, "Tên sản phẩm/dịch vụ không được vượt quá 200 ký tự", ErrorType.Critical);
                 NameTextEdit?.Focus();
                 return false;
             }
 
-            // Kiểm tra trùng lặp Name (chỉ kiểm tra khi thêm mới)
-            var name = NameTextEdit.Text.Trim();
-            if (!IsEditMode && _productServiceBll.IsNameExists(name, _productServiceId))
+            // Kiểm tra trùng lặp Name
+            if (IsEditMode)
             {
-                dxErrorProvider1.SetError(NameTextEdit, "Tên sản phẩm/dịch vụ đã tồn tại trong hệ thống", ErrorType.Critical);
-                NameTextEdit?.Focus();
-                return false;
+                // Nếu đang chỉnh sửa, chỉ kiểm tra trùng khi tên đã thay đổi
+                var existingProduct = _productServiceBll.GetById(_productServiceId);
+                if (existingProduct != null && existingProduct.Name != name)
+                {
+                    // Tên đã thay đổi, kiểm tra trùng lặp (loại trừ ID hiện tại)
+                    if (_productServiceBll.IsNameExists(name, _productServiceId))
+                    {
+                        dxErrorProvider1.SetError(NameTextEdit, "Tên sản phẩm/dịch vụ đã tồn tại trong hệ thống", ErrorType.Critical);
+                        NameTextEdit?.Focus();
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                // Nếu thêm mới, luôn kiểm tra trùng
+                if (_productServiceBll.IsNameExists(name, null))
+                {
+                    dxErrorProvider1.SetError(NameTextEdit, "Tên sản phẩm/dịch vụ đã tồn tại trong hệ thống", ErrorType.Critical);
+                    NameTextEdit?.Focus();
+                    return false;
+                }
             }
 
-            // Kiểm tra độ dài Description
+            return true;
+        }
+
+        /// <summary>
+        /// Validate mô tả (tùy chọn, nhưng có giới hạn độ dài)
+        /// </summary>
+        /// <returns>True nếu hợp lệ, False nếu không hợp lệ</returns>
+        private bool ValidateDescription()
+        {
+            // Kiểm tra độ dài Description (nếu có)
             if (!string.IsNullOrWhiteSpace(DescriptionTextEdit?.Text) && DescriptionTextEdit.Text.Trim().Length > 1000)
             {
                 dxErrorProvider1.SetError(DescriptionTextEdit, "Mô tả không được vượt quá 1000 ký tự", ErrorType.Critical);
                 DescriptionTextEdit?.Focus();
                 return false;
             }
-
-            // Kiểm tra độ dài ThumbnailPath
-            // Không còn validate ThumbnailPath vì đã chuyển sang ThumbnailImage
 
             return true;
         }
@@ -595,39 +615,19 @@ namespace MasterData.ProductService
         #region ========== CHỨC NĂNG LƯU DỮ LIỆU ==========
 
         /// <summary>
-        /// Lưu dữ liệu sản phẩm/dịch vụ.
+        /// Lưu dữ liệu sản phẩm/dịch vụ (async với waiting form).
         /// </summary>
-        private void SaveProductService()
+        private async void SaveProductService()
         {
             try
             {
-                var dto = GetDataFromControls();
-                var entity = dto.ToEntity();
-
-                // Bước 1: Lưu sản phẩm/dịch vụ với ảnh thumbnail vào bảng ProductService
-                _productServiceBll.SaveOrUpdate(entity);
-
-                // Nếu có thay đổi ảnh và đã lưu thành công, cập nhật lại ảnh hiển thị
-                if (_hasImageChanged && ThumbnailImagePictureEdit.Image != null)
+                // Lưu dữ liệu với waiting form
+                await ExecuteWithWaitingFormAsync(async () =>
                 {
-                    // Cập nhật lại ảnh hiển thị với ảnh đã lưu từ database
-                    var savedProduct = _productServiceBll.GetById(entity.Id);
-                    if (savedProduct != null && savedProduct.ThumbnailImage != null)
-                    {
-                        var compressedImage = LoadThumbnailImage(savedProduct.ThumbnailImage.ToArray());
-                        if (compressedImage != null)
-                        {
-                            ThumbnailImagePictureEdit.Image = compressedImage;
-                        }
-                    }
-                }
+                    await SaveProductServiceAsync();
+                });
 
-                // Bước 2: Thêm hình ảnh vào bảng ProductImage nếu có thay đổi
-                if (_hasImageChanged)
-                {
-                    SaveProductImages(entity.Id);
-                }
-
+                // Thông báo thành công và đóng form
                 var message = IsEditMode ? "Cập nhật sản phẩm/dịch vụ thành công!" : "Thêm mới sản phẩm/dịch vụ thành công!";
                 ShowInfo(message);
 
@@ -637,6 +637,39 @@ namespace MasterData.ProductService
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi lưu dữ liệu sản phẩm/dịch vụ");
+            }
+        }
+
+        /// <summary>
+        /// Lưu dữ liệu sản phẩm/dịch vụ (async implementation).
+        /// </summary>
+        private async Task SaveProductServiceAsync()
+        {
+            var dto = GetDataFromControls();
+            var entity = dto.ToEntity();
+
+            // Bước 1: Lưu sản phẩm/dịch vụ với ảnh thumbnail vào bảng ProductService
+            _productServiceBll.SaveOrUpdate(entity);
+
+            // Nếu có thay đổi ảnh và đã lưu thành công, cập nhật lại ảnh hiển thị
+            if (_hasImageChanged && ThumbnailImagePictureEdit.Image != null)
+            {
+                // Cập nhật lại ảnh hiển thị với ảnh đã lưu từ database
+                var savedProduct = _productServiceBll.GetById(entity.Id);
+                if (savedProduct != null && savedProduct.ThumbnailImage != null)
+                {
+                    var compressedImage = LoadThumbnailImage(savedProduct.ThumbnailImage.ToArray());
+                    if (compressedImage != null)
+                    {
+                        ThumbnailImagePictureEdit.Image = compressedImage;
+                    }
+                }
+            }
+
+            // Bước 2: Thêm hình ảnh vào bảng ProductImage nếu có thay đổi
+            if (_hasImageChanged)
+            {
+                SaveProductImages(entity.Id);
             }
         }
 
@@ -732,7 +765,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Event handler khi user thay đổi danh mục -> tự động tạo mã sản phẩm.
         /// </summary>
-        private void CategoryIdTreeListLookUpEdit_EditValueChanged(object sender, EventArgs e)
+        private void CategoryIdSearchLookupEdit_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
@@ -741,7 +774,19 @@ namespace MasterData.ProductService
                     return;
 
                 // Lấy danh mục được chọn
-                var selectedCategoryId = CategoryIdTreeListLookUpEdit.EditValue as Guid?;
+                Guid? selectedCategoryId = null;
+                if (CategoryIdSearchLookupEdit.EditValue != null && CategoryIdSearchLookupEdit.EditValue != DBNull.Value)
+                {
+                    if (CategoryIdSearchLookupEdit.EditValue is Guid guidValue)
+                    {
+                        selectedCategoryId = guidValue;
+                    }
+                    else if (Guid.TryParse(CategoryIdSearchLookupEdit.EditValue.ToString(), out var parsedGuid))
+                    {
+                        selectedCategoryId = parsedGuid;
+                    }
+                }
+
                 if (selectedCategoryId == null || selectedCategoryId == Guid.Empty)
                 {
                     // Nếu không chọn danh mục, để trống mã
@@ -920,6 +965,27 @@ namespace MasterData.ProductService
         #region ========== TIỆN ÍCH HIỂN THỊ ==========
 
         /// <summary>
+        /// Thực hiện operation với waiting form (hiển thị splash screen trong khi xử lý)
+        /// </summary>
+        /// <param name="operation">Operation cần thực hiện (async)</param>
+        private async Task ExecuteWithWaitingFormAsync(Func<Task> operation)
+        {
+            try
+            {
+                // Hiển thị waiting form
+                SplashScreenManager.ShowForm(typeof(WaitForm1));
+
+                // Thực hiện operation
+                await operation();
+            }
+            finally
+            {
+                // Đóng waiting form
+                SplashScreenManager.CloseForm();
+            }
+        }
+
+        /// <summary>
         /// Thiết lập SuperToolTip cho các controls trong form
         /// </summary>
         private void SetupSuperToolTips()
@@ -944,12 +1010,12 @@ namespace MasterData.ProductService
                     );
                 }
 
-                if (CategoryIdTreeListLookUpEdit != null)
+                if (CategoryIdSearchLookupEdit != null)
                 {
                     SuperToolTipHelper.SetBaseEditSuperTip(
-                        CategoryIdTreeListLookUpEdit,
+                        CategoryIdSearchLookupEdit,
                         title: "<b><color=DarkBlue>📂 Danh mục</color></b>",
-                        content: "Chọn danh mục sản phẩm/dịch vụ (tùy chọn)."
+                        content: "Chọn danh mục sản phẩm/dịch vụ (tùy chọn). Mã sản phẩm sẽ được tự động tạo khi chọn danh mục (chế độ thêm mới)."
                     );
                 }
 
