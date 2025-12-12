@@ -126,6 +126,11 @@ public interface IProductVariantRepository
     int GetCountByStatus(bool isActive);
 
     /// <summary>
+    /// Đếm số biến thể theo đơn vị tính
+    /// </summary>
+    int GetCountByUnitOfMeasure(Guid unitOfMeasureId);
+
+    /// <summary>
     /// Lấy biến thể theo khoảng thời gian tạo
     /// </summary>
     List<ProductVariant> GetByCreatedDateRange(DateTime fromDate, DateTime toDate);

@@ -1,4 +1,4 @@
-﻿using Dal.Connection;
+using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
@@ -391,6 +391,65 @@ namespace Dal.DataAccess.Implementations
                 : new UnitOfMeasureRepository(globalConnectionString);
         }
 
+        #endregion
+
+        #region ProductVariant Statistics Methods
+
+        /// <summary>
+        /// Đếm tổng số ProductVariant
+        /// </summary>
+        /// <returns>Số lượng ProductVariant</returns>
+        public int GetProductVariantCount()
+        {
+            try
+            {
+                var repository = GetProductVariantRepository();
+                return repository.GetTotalCount();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi đếm tổng số ProductVariant: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Đếm số ProductVariant theo sản phẩm
+        /// </summary>
+        /// <param name="productId">ID sản phẩm</param>
+        /// <returns>Số lượng ProductVariant</returns>
+        public int GetProductVariantCountByProduct(Guid productId)
+        {
+            try
+            {
+                var repository = GetProductVariantRepository();
+                return repository.GetCountByProduct(productId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi đếm số ProductVariant theo sản phẩm {productId}: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Đếm số ProductVariant theo trạng thái hoạt động
+        /// </summary>
+        /// <param name="isActive">Trạng thái hoạt động (true = đang hoạt động, false = không hoạt động)</param>
+        /// <returns>Số lượng ProductVariant</returns>
+        public int GetProductVariantCountByStatus(bool isActive)
+        {
+            try
+            {
+                var repository = GetProductVariantRepository();
+                return repository.GetCountByStatus(isActive);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi đếm số ProductVariant theo trạng thái {isActive}: {ex.Message}", ex);
+                throw;
+            }
+        }
 
         #endregion
 

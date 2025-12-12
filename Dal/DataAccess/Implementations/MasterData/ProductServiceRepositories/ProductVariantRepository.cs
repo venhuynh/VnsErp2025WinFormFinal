@@ -481,6 +481,24 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
         }
 
         /// <summary>
+        /// Đếm số biến thể theo đơn vị tính
+        /// </summary>
+        /// <param name="unitOfMeasureId">ID đơn vị tính</param>
+        /// <returns>Số lượng biến thể</returns>
+        public int GetCountByUnitOfMeasure(Guid unitOfMeasureId)
+        {
+            try
+            {
+                using var context = CreateNewContext();
+                return context.ProductVariants.Count(x => x.UnitId == unitOfMeasureId);
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi đếm số biến thể theo đơn vị tính: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Lấy biến thể theo khoảng thời gian tạo
         /// </summary>
         /// <param name="fromDate">Từ ngày</param>

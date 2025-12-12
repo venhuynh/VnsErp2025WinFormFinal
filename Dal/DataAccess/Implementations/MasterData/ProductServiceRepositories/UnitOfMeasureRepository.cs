@@ -60,6 +60,7 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
 
         // Configure eager loading cho navigation properties
         var loadOptions = new DataLoadOptions();
+        loadOptions.LoadWith<UnitOfMeasure>(b => b.ProductVariants);
         context.LoadOptions = loadOptions;
 
         return context;

@@ -20,6 +20,7 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
     private string _name;
     private string _description;
     private bool _isActive;
+    private int _productVariantCount;
     #endregion
 
     #region Properties
@@ -79,6 +80,18 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
     { 
         get => _isActive;
         set => SetProperty(ref _isActive, value);
+    }
+
+    /// <summary>
+    /// Số lượng ProductVariant sử dụng đơn vị tính này
+    /// </summary>
+    [DisplayName("Số biến thể")]
+    [Display(Order = 5)]
+    [Description("Số lượng biến thể sản phẩm sử dụng đơn vị tính này")]
+    public int ProductVariantCount 
+    { 
+        get => _productVariantCount;
+        set => SetProperty(ref _productVariantCount, value);
     }
 
     #endregion
@@ -157,6 +170,17 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Hiển thị số lượng ProductVariant dạng text
+    /// </summary>
+    [DisplayName("Số biến thể")]
+    [Description("Số lượng biến thể sản phẩm sử dụng đơn vị tính này")]
+    public string ProductVariantCountDisplay => ProductVariantCount == 0 
+        ? "Không có biến thể" 
+        : ProductVariantCount == 1 
+            ? "1 biến thể" 
+            : $"{ProductVariantCount} biến thể";
+
+    /// <summary>
     /// Thông tin đơn vị tính dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
@@ -175,12 +199,14 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
 
             // Format chuyên nghiệp với visual hierarchy rõ ràng
             // - Tên đơn vị: font lớn, bold, màu xanh đậm (primary)
-            // - Mã đơn vị: font nhỏ hơn, màu xám
-            // - Mô tả: font nhỏ hơn, màu xám
+            // - Mã đơn vị: font nhỏ hơn, màu xám, highlight với màu cam
+            // - Mô tả: font nhỏ hơn, màu xám cho label, đen cho value
             // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
 
+            // Dòng đầu: Tên đơn vị (primary) - font lớn, bold, màu xanh
             var html = $"<size=12><b><color='blue'>{name}</color></b></size>";
 
+            // Mã đơn vị - hiển thị cùng dòng với tên, màu xám
             if (!string.IsNullOrWhiteSpace(code))
             {
                 html += $" <size=9><color='#757575'>({code})</color></size>";
@@ -188,14 +214,30 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
 
             html += "<br>";
 
+            // Mã đơn vị - mỗi thông tin trên 1 hàng (nếu có)
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                html += $"<size=9><color='#757575'>Mã đơn vị:</color></size> <size=10><color='#FF9800'><b>{code}</b></color></size><br>";
+            }
+
             // Mô tả - mỗi thông tin trên 1 hàng
             if (!string.IsNullOrWhiteSpace(description))
             {
-                html += $"<size=9><color='#757575'>Mô tả:</color></size> <size=10><color='#212121'>{description}</color></size><br>";
+                html += $"<size=9><color='#757575'>Mô tả:</color></size> <size=10><color='#212121'><b>{description}</b></color></size><br>";
             }
 
             // Trạng thái - highlight với màu
             html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+
+            // Số lượng ProductVariant sử dụng - hiển thị nếu có
+            if (ProductVariantCount > 0)
+            {
+                html += "<br>";
+                var variantCountText = ProductVariantCount == 1 
+                    ? "1 biến thể sản phẩm" 
+                    : $"{ProductVariantCount} biến thể sản phẩm";
+                html += $"<size=9><color='#757575'>Số biến thể:</color></size> <size=10><color='#2196F3'><b>{variantCountText}</b></color></size>";
+            }
 
             return html;
         }
@@ -253,7 +295,8 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
             Code = Code,
             Name = Name,
             Description = Description,
-            IsActive = IsActive
+            IsActive = IsActive,
+            ProductVariantCount = ProductVariantCount
         };
     }
 
@@ -269,6 +312,7 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
         Name = other.Name;
         Description = other.Description;
         IsActive = other.IsActive;
+        ProductVariantCount = other.ProductVariantCount;
     }
 
     /// <summary>
@@ -280,6 +324,7 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
         Name = string.Empty;
         Description = string.Empty;
         IsActive = true;
+        ProductVariantCount = 0;
     }
 
     /// <summary>
@@ -389,8 +434,49 @@ public static class UnitOfMeasureConverters
             Code = entity.Code,
             Name = entity.Name,
             Description = entity.Description,
+            IsActive = entity.IsActive,
+            ProductVariantCount = entity.ProductVariants?.Count ?? 0
+        };
+    }
+
+    /// <summary>
+    /// Chuyển đổi UnitOfMeasure entity thành UnitOfMeasureDto với đếm số lượng ProductVariant
+    /// </summary>
+    /// <param name="entity">UnitOfMeasure entity</param>
+    /// <param name="context">DataContext để đếm ProductVariant</param>
+    /// <returns>UnitOfMeasureDto</returns>
+    public static UnitOfMeasureDto ToDto(this UnitOfMeasure entity, VnsErp2025DataContext context)
+    {
+        if (entity == null) return null;
+
+        var dto = new UnitOfMeasureDto
+        {
+            Id = entity.Id,
+            Code = entity.Code,
+            Name = entity.Name,
+            Description = entity.Description,
             IsActive = entity.IsActive
         };
+
+        // Đếm số lượng ProductVariant sử dụng đơn vị tính này
+        try
+        {
+            if (context != null && entity.Id != Guid.Empty)
+            {
+                dto.ProductVariantCount = context.ProductVariants.Count(x => x.UnitId == entity.Id);
+            }
+            else
+            {
+                dto.ProductVariantCount = 0;
+            }
+        }
+        catch
+        {
+            // Nếu có lỗi khi đếm, set về 0
+            dto.ProductVariantCount = 0;
+        }
+
+        return dto;
     }
 
     /// <summary>
@@ -403,6 +489,68 @@ public static class UnitOfMeasureConverters
         if (entities == null) return new List<UnitOfMeasureDto>();
 
         return entities.Select(entity => entity.ToDto()).ToList();
+    }
+
+    /// <summary>
+    /// Chuyển đổi danh sách UnitOfMeasure entities thành danh sách UnitOfMeasureDto với đếm số lượng ProductVariant
+    /// Tối ưu: Đếm tất cả trong một query thay vì đếm từng entity
+    /// </summary>
+    /// <param name="entities">Danh sách UnitOfMeasure entities</param>
+    /// <param name="context">DataContext để đếm ProductVariant</param>
+    /// <returns>Danh sách UnitOfMeasureDto</returns>
+    public static List<UnitOfMeasureDto> ToDtoList(this IEnumerable<UnitOfMeasure> entities, VnsErp2025DataContext context)
+    {
+        if (entities == null) return new List<UnitOfMeasureDto>();
+
+        var entityList = entities.ToList();
+        if (entityList.Count == 0) return new List<UnitOfMeasureDto>();
+
+        // Tạo dictionary để lưu số lượng ProductVariant theo UnitOfMeasureId
+        var variantCountDict = new Dictionary<Guid, int>();
+
+        try
+        {
+            if (context != null)
+            {
+                // Lấy danh sách UnitOfMeasureId
+                var unitIds = entityList.Where(e => e.Id != Guid.Empty).Select(e => e.Id).ToList();
+                
+                if (unitIds.Any())
+                {
+                    // Đếm tất cả ProductVariant theo UnitId trong một query
+                    var counts = context.ProductVariants
+                        .Where(pv => unitIds.Contains(pv.UnitId))
+                        .GroupBy(pv => pv.UnitId)
+                        .Select(g => new { UnitId = g.Key, Count = g.Count() })
+                        .ToList();
+
+                    // Tạo dictionary để lookup nhanh
+                    foreach (var count in counts)
+                    {
+                        variantCountDict[count.UnitId] = count.Count;
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Nếu có lỗi, tất cả sẽ có count = 0
+        }
+
+        // Convert entities sang DTOs với số lượng đã đếm
+        return entityList.Select(entity =>
+        {
+            var dto = new UnitOfMeasureDto
+            {
+                Id = entity.Id,
+                Code = entity.Code,
+                Name = entity.Name,
+                Description = entity.Description,
+                IsActive = entity.IsActive,
+                ProductVariantCount = variantCountDict.ContainsKey(entity.Id) ? variantCountDict[entity.Id] : 0
+            };
+            return dto;
+        }).ToList();
     }
 
     #endregion
@@ -498,13 +646,19 @@ public static class UnitOfMeasureConverters
     }
 
     /// <summary>
-    /// Tạo UnitOfMeasureDto từ UnitOfMeasure entity với thông tin đầy đủ
+    /// Tạo UnitOfMeasureDto từ UnitOfMeasure entity với thông tin đầy đủ (bao gồm đếm ProductVariant)
     /// </summary>
     /// <param name="entity">UnitOfMeasure entity</param>
+    /// <param name="context">DataContext để đếm ProductVariant (optional)</param>
     /// <returns>UnitOfMeasureDto với thông tin đầy đủ</returns>
-    public static UnitOfMeasureDto ToFullDto(this UnitOfMeasure entity)
+    public static UnitOfMeasureDto ToFullDto(this UnitOfMeasure entity, VnsErp2025DataContext context = null)
     {
         if (entity == null) return null;
+
+        if (context != null)
+        {
+            return entity.ToDto(context);
+        }
 
         return new UnitOfMeasureDto
         {
@@ -512,18 +666,25 @@ public static class UnitOfMeasureConverters
             Code = entity.Code,
             Name = entity.Name,
             Description = entity.Description,
-            IsActive = entity.IsActive
+            IsActive = entity.IsActive,
+            ProductVariantCount = 0 // Mặc định = 0 nếu không có context
         };
     }
 
     /// <summary>
-    /// Tạo danh sách UnitOfMeasureDto từ danh sách UnitOfMeasure entities với thông tin đầy đủ
+    /// Tạo danh sách UnitOfMeasureDto từ danh sách UnitOfMeasure entities với thông tin đầy đủ (bao gồm đếm ProductVariant)
     /// </summary>
     /// <param name="entities">Danh sách UnitOfMeasure entities</param>
+    /// <param name="context">DataContext để đếm ProductVariant (optional)</param>
     /// <returns>Danh sách UnitOfMeasureDto với thông tin đầy đủ</returns>
-    public static List<UnitOfMeasureDto> ToFullDtoList(this IEnumerable<UnitOfMeasure> entities)
+    public static List<UnitOfMeasureDto> ToFullDtoList(this IEnumerable<UnitOfMeasure> entities, VnsErp2025DataContext context = null)
     {
         if (entities == null) return new List<UnitOfMeasureDto>();
+
+        if (context != null)
+        {
+            return entities.ToDtoList(context);
+        }
 
         return entities.Select(entity => entity.ToFullDto()).ToList();
     }
