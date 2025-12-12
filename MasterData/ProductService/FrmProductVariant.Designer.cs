@@ -68,6 +68,8 @@ namespace MasterData.ProductService
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.colThumbnailImage = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ThumbnailItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridView)).BeginInit();
@@ -79,6 +81,7 @@ namespace MasterData.ProductService
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThumbnailItemPictureEdit)).BeginInit();
             this.SuspendLayout();
             // 
             // ProductVariantListGridControl
@@ -89,7 +92,8 @@ namespace MasterData.ProductService
             this.ProductVariantListGridControl.MenuManager = this.barManager1;
             this.ProductVariantListGridControl.Name = "ProductVariantListGridControl";
             this.ProductVariantListGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.VariantFullNameHtmlHypertextLabel});
+            this.VariantFullNameHtmlHypertextLabel,
+            this.ThumbnailItemPictureEdit});
             this.ProductVariantListGridControl.Size = new System.Drawing.Size(1043, 521);
             this.ProductVariantListGridControl.TabIndex = 4;
             this.ProductVariantListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -102,7 +106,8 @@ namespace MasterData.ProductService
             // ProductVariantListGridView
             // 
             this.ProductVariantListGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colVariantFullNameHtml});
+            this.colVariantFullNameHtml,
+            this.colThumbnailImage});
             this.ProductVariantListGridView.GridControl = this.ProductVariantListGridControl;
             this.ProductVariantListGridView.GroupSummary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
             new DevExpress.XtraGrid.GridGroupSummaryItem(DevExpress.Data.SummaryItemType.Count, "VariantCode", null, " [Có {0} biến thể]")});
@@ -117,6 +122,7 @@ namespace MasterData.ProductService
             this.ProductVariantListGridView.OptionsView.ShowGroupedColumns = true;
             this.ProductVariantListGridView.OptionsView.ShowGroupPanel = false;
             this.ProductVariantListGridView.OptionsView.ShowGroupPanelColumnsAsSingleRow = true;
+            this.ProductVariantListGridView.RowHeight = 60;
             // 
             // colVariantFullNameHtml
             // 
@@ -138,7 +144,7 @@ namespace MasterData.ProductService
             this.colVariantFullNameHtml.MinWidth = 300;
             this.colVariantFullNameHtml.Name = "colVariantFullNameHtml";
             this.colVariantFullNameHtml.Visible = true;
-            this.colVariantFullNameHtml.VisibleIndex = 1;
+            this.colVariantFullNameHtml.VisibleIndex = 2;
             this.colVariantFullNameHtml.Width = 500;
             // 
             // VariantFullNameHtmlHypertextLabel
@@ -381,6 +387,18 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // colThumbnailImage
+            // 
+            this.colThumbnailImage.ColumnEdit = this.ThumbnailItemPictureEdit;
+            this.colThumbnailImage.FieldName = "ThumbnailImage";
+            this.colThumbnailImage.Name = "colThumbnailImage";
+            this.colThumbnailImage.Visible = true;
+            this.colThumbnailImage.VisibleIndex = 1;
+            // 
+            // ThumbnailItemPictureEdit
+            // 
+            this.ThumbnailItemPictureEdit.Name = "ThumbnailItemPictureEdit";
+            // 
             // FrmProductVariant
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -404,6 +422,7 @@ namespace MasterData.ProductService
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThumbnailItemPictureEdit)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -439,5 +458,7 @@ namespace MasterData.ProductService
         private GridColumn colVariantFullNameHtml;
         private RepositoryItemHypertextLabel VariantFullNameHtmlHypertextLabel;
         private BarButtonItem UpdateProductVariantFullNameBarButtonItem;
+        private GridColumn colThumbnailImage;
+        private RepositoryItemPictureEdit ThumbnailItemPictureEdit;
     }
 }
