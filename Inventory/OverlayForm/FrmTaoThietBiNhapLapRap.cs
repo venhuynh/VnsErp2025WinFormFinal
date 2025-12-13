@@ -1,4 +1,5 @@
 using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.StockInOut;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
@@ -39,6 +40,11 @@ namespace Inventory.OverlayForm
         private readonly ProductServiceBll _productServiceBll = new ProductServiceBll();
 
         /// <summary>
+        /// Business Logic Layer cho chi tiết nhập xuất kho
+        /// </summary>
+        private readonly StockInOutBll _stockInOutBll = new StockInOutBll();
+
+        /// <summary>
         /// Logger để ghi log các sự kiện
         /// </summary>
         private readonly ILogger _logger = LoggerFactory.CreateLogger(LogCategory.UI);
@@ -51,6 +57,7 @@ namespace Inventory.OverlayForm
         {
             InitializeComponent();
             Load += FrmTaoThietBiNhapLapRap_Load;
+            PhieuXuatLapRapLookupEdit.EditValueChanged += PhieuXuatLapRapLookupEdit_EditValueChanged;
         }
 
         #endregion
@@ -174,6 +181,77 @@ namespace Inventory.OverlayForm
                     MsgBox.ShowError($"Lỗi tải danh sách sản phẩm/dịch vụ: {ex.Message}");
                 }));
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi giá trị của PhieuXuatLapRapLookupEdit thay đổi
+        /// Load chi tiết phiếu nhập lắp ráp từ master id và hiển thị vào XuatLapRapDetailDtoGridControl
+        /// </summary>
+        private async void PhieuXuatLapRapLookupEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Lấy master id từ lookup edit
+                if (PhieuXuatLapRapLookupEdit.EditValue == null || 
+                    !(PhieuXuatLapRapLookupEdit.EditValue is Guid masterId) || 
+                    masterId == Guid.Empty)
+                {
+                    // Clear datasource nếu không có giá trị
+                    xuatLapRapDetailDtoBindingSource.DataSource = new List<NhapLapRapDetailDto>();
+                    xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                    return;
+                }
+
+                _logger.Debug($"PhieuXuatLapRapLookupEdit_EditValueChanged: Bắt đầu load detail cho MasterId={masterId}");
+
+                // Hiển thị SplashScreen
+                SplashScreenHelper.ShowWaitingSplashScreen();
+
+                try
+                {
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            // Lấy detail entities từ BLL
+                            var detailEntities = _stockInOutBll.GetDetailsByMasterId(masterId);
+                            _logger.Debug($"PhieuXuatLapRapLookupEdit_EditValueChanged: Đã lấy được {detailEntities.Count} detail entities");
+
+                            // Convert entities sang NhapLapRapDetailDto
+                            var detailDtos = detailEntities.ToNhapLapRapDetailDtoList();
+                            _logger.Debug($"PhieuXuatLapRapLookupEdit_EditValueChanged: Đã convert được {detailDtos.Count} detail DTOs");
+
+                            // Update UI thread
+                            BeginInvoke(new Action(() =>
+                            {
+                                xuatLapRapDetailDtoBindingSource.DataSource = detailDtos;
+                                xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                                XuatLapRapDetailDtoGridControl.RefreshDataSource();
+                            }));
+
+                            _logger.Info($"PhieuXuatLapRapLookupEdit_EditValueChanged: Đã load {detailDtos.Count} chi tiết phiếu nhập lắp ráp cho MasterId={masterId}");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error($"PhieuXuatLapRapLookupEdit_EditValueChanged: Exception occurred", ex);
+                            BeginInvoke(new Action(() =>
+                            {
+                                MsgBox.ShowError($"Lỗi tải chi tiết phiếu nhập lắp ráp: {ex.Message}");
+                            }));
+                        }
+                    });
+                }
+                finally
+                {
+                    SplashScreenHelper.CloseSplashScreen();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"PhieuXuatLapRapLookupEdit_EditValueChanged: Lỗi xử lý sự kiện: {ex.Message}", ex);
+                SplashScreenHelper.CloseSplashScreen();
+                MsgBox.ShowError($"Lỗi xử lý sự kiện: {ex.Message}");
             }
         }
 
