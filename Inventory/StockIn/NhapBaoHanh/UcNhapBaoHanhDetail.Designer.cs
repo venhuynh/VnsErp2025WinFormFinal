@@ -37,7 +37,6 @@
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colProductVariantName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.StockInDetailProductNameHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -48,6 +47,7 @@
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
+            this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.NhapBaoHanhDetailDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nhapBaoHanhDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NhapBaoHanhDetailDtoGridView)).BeginInit();
@@ -157,7 +157,7 @@
             // ProductVariantDtoSearchLookUpEdit1View
             // 
             this.ProductVariantDtoSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colFullName});
+            this.colVariantFullName});
             this.ProductVariantDtoSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.ProductVariantDtoSearchLookUpEdit1View.Name = "ProductVariantDtoSearchLookUpEdit1View";
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
@@ -165,28 +165,6 @@
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowIndicator = false;
-            // 
-            // colFullName
-            // 
-            this.colFullName.AppearanceCell.Options.UseTextOptions = true;
-            this.colFullName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colFullName.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colFullName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colFullName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colFullName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colFullName.AppearanceHeader.Options.UseBackColor = true;
-            this.colFullName.AppearanceHeader.Options.UseFont = true;
-            this.colFullName.AppearanceHeader.Options.UseForeColor = true;
-            this.colFullName.AppearanceHeader.Options.UseTextOptions = true;
-            this.colFullName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colFullName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colFullName.Caption = "Thông tin sản phẩm";
-            this.colFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
-            this.colFullName.FieldName = "FullNameHtml";
-            this.colFullName.Name = "colFullName";
-            this.colFullName.Visible = true;
-            this.colFullName.VisibleIndex = 0;
-            this.colFullName.Width = 450;
             // 
             // ProductFullNameHypertextLabel
             // 
@@ -325,6 +303,14 @@
             this.VatTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.VatTextEdit.Name = "VatTextEdit";
             // 
+            // colVariantFullName
+            // 
+            this.colVariantFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
+            this.colVariantFullName.FieldName = "VariantFullName";
+            this.colVariantFullName.Name = "colVariantFullName";
+            this.colVariantFullName.Visible = true;
+            this.colVariantFullName.VisibleIndex = 0;
+            // 
             // UcNhapBaoHanhDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -358,7 +344,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn colStockInQty;
         private DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit ProductVariantSearchLookUpEdit;
         private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantDtoSearchLookUpEdit1View;
-        private DevExpress.XtraGrid.Columns.GridColumn colFullName;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel ProductFullNameHypertextLabel;
 
         private System.Windows.Forms.BindingSource productVariantListDtoBindingSource;
@@ -370,5 +355,6 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
         
         private System.Windows.Forms.BindingSource nhapBaoHanhDetailDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
     }
 }

@@ -86,7 +86,14 @@ namespace MasterData.ProductService
         /// </summary>
         private async void ListDataBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
-            await LoadDataAsync();
+            try
+            {
+                await LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex);
+            }
         }
 
         /// <summary>

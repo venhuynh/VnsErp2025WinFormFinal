@@ -157,10 +157,10 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 using var context = new VnsErp2025DataContext(_connectionString);
 
                 //// Cấu hình DataLoadOptions để preload navigation properties
-                //var loadOptions = new DataLoadOptions();
+                var loadOptions = new DataLoadOptions();
                 //loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
-                //loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
-                //context.LoadOptions = loadOptions;
+                loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
+                context.LoadOptions = loadOptions;
 
                 return await Task.Run(() => context.ProductVariants
                     .OrderBy(pv => pv.VariantCode)

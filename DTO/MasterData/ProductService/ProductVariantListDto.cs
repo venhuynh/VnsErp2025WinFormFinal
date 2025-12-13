@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace DTO.MasterData.ProductService;
 
@@ -313,15 +314,35 @@ public static class ProductVariantListConverters
         var dto = new ProductVariantListDto
         {
             Id = entity.Id,
-            //ProductCode = entity.ProductService?.Code ?? string.Empty,
-            //ProductName = entity.ProductService?.Name ?? string.Empty,
             VariantCode = entity.VariantCode ?? string.Empty,
             VariantFullName = entity.VariantFullName ?? string.Empty,
-            //UnitName = entity.UnitOfMeasure?.Name ?? string.Empty,
             IsActive = entity.IsActive,
             //ImageCount = entity.ProductImages?.Count ?? 0,
             ThumbnailImage = entity.ThumbnailImage?.ToArray()
         };
+
+        // Lấy UnitName từ entity.VariantFullName nếu có format (UnitName) ở cuối
+        // Format có thể là: "Attribute1: Value1, Attribute2: Value2 (UnitName)"
+        // Hoặc fallback về navigation property nếu không tìm thấy trong VariantFullName
+        if (!string.IsNullOrWhiteSpace(entity.VariantFullName))
+        {
+            // Tìm pattern (UnitName) ở cuối string
+            var match = Regex.Match(
+                entity.VariantFullName, 
+                @"\s*\(([^)]+)\)\s*$"
+            );
+            
+            if (match.Success && match.Groups.Count > 1)
+            {
+                dto.UnitName = match.Groups[1].Value.Trim();
+            }
+        }
+
+        // Fallback: Lấy từ navigation property nếu không tìm thấy trong VariantFullName
+        if (string.IsNullOrWhiteSpace(dto.UnitName) && entity.UnitOfMeasure != null)
+        {
+            dto.UnitName = entity.UnitOfMeasure.Name ?? string.Empty;
+        }
 
         return dto;
     }

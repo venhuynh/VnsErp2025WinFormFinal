@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
@@ -12,11 +6,16 @@ using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
 using DTO.Inventory.StockIn.NhapBaoHanh;
-using DTO.Inventory.StockIn.NhapNoiBo;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Inventory.StockIn.NhapBaoHanh;
 
@@ -804,7 +803,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
             try
             {
                 // Lấy dữ liệu Entity từ BLL với thông tin đầy đủ
-                var variants = await _productVariantBll.GetAllInUseWithDetailsAsync();
+                var variants = await _productVariantBll.GetAllAsync();
 
                 // Convert Entity sang ProductVariantListDto
                 var variantListDtos = await ConvertToVariantListDtosAsync(variants);
@@ -905,8 +904,9 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
 
     /// <summary>
     /// Convert Entity sang ProductVariantListDto (Async)
+    /// Sử dụng extension method ToListDto() có sẵn trong DTO và bổ sung các field còn thiếu
     /// </summary>
-    private async Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
+    private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
     {
         try
         {
@@ -914,23 +914,14 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
 
             foreach (var variant in variants)
             {
-                var dto = new ProductVariantListDto
-                {
-                    Id = variant.Id,
-                    ProductCode = variant.ProductService?.Code ?? string.Empty,
-                    ProductName = variant.ProductService?.Name ?? string.Empty,
-                    VariantCode = variant.VariantCode ?? string.Empty,
-                    VariantFullName = !string.IsNullOrWhiteSpace(variant.VariantFullName)
-                        ? variant.VariantFullName
-                        : await BuildVariantFullNameAsync(variant), // Fallback nếu VariantFullName chưa được cập nhật
-                    UnitName = variant.UnitOfMeasure?.Name ?? string.Empty,
-                    IsActive = variant.IsActive
-                };
+                // Sử dụng extension method ToListDto() có sẵn trong DTO
+                var dto = variant.ToListDto();
+                if (dto == null) continue;
 
                 result.Add(dto);
             }
 
-            return result;
+            return Task.FromResult(result);
         }
         catch (Exception ex)
         {
