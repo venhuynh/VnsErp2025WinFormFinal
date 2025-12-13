@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockIn.NhapBaoHanh
+namespace Inventory.StockIn.NhapBaoHanh
 {
     partial class UcNhapBaoHanhMaster
     {
@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition1 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition2 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition1 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition5 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition6 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition3 = new DevExpress.XtraLayout.RowDefinition();
             this.HtmlContentRepositoryItemHypertextLabel01 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.CompanyBranchRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
@@ -39,11 +39,14 @@
             this.StockInDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.PurchaseOrderSearchLookupEdit = new DevExpress.XtraEditors.TextEdit();
             this.WarehouseNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.companyBranchLookupDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.CompanyBranchDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.KhoNhapHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.SupplierNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.businessPartnerSiteListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.PartnerSiteGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colThongTinHtml1 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colPartnerInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.PartnerInfoHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.NotesTextEdit = new DevExpress.XtraEditors.MemoEdit();
             this.NguoiNhanHangTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.NguoiGiaoHangTextEdit = new DevExpress.XtraEditors.TextEdit();
@@ -64,8 +67,7 @@
             this.TotalQuantitySimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
             this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
-            this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.businessPartnerSiteListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.colBranchInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel01)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -75,9 +77,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.StockInDateDateEdit.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PurchaseOrderSearchLookupEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameSearchLookupEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchLookupDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchDtoSearchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.KhoNhapHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SupplierNameSearchLookupEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PartnerSiteGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PartnerInfoHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NguoiNhanHangTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NguoiGiaoHangTextEdit.Properties)).BeginInit();
@@ -98,8 +104,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.TotalQuantitySimpleLabelItem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // HtmlContentRepositoryItemHypertextLabel01
@@ -170,19 +174,25 @@
             this.WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.WarehouseNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.WarehouseNameSearchLookupEdit.Properties.DataSource = this.companyBranchDtoBindingSource;
-            this.WarehouseNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
+            this.WarehouseNameSearchLookupEdit.Properties.DataSource = this.companyBranchLookupDtoBindingSource;
+            this.WarehouseNameSearchLookupEdit.Properties.DisplayMember = "BranchInfoHtml";
             this.WarehouseNameSearchLookupEdit.Properties.NullText = "";
             this.WarehouseNameSearchLookupEdit.Properties.PopupView = this.CompanyBranchDtoSearchLookUpEdit1View;
+            this.WarehouseNameSearchLookupEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.KhoNhapHypertextLabel});
             this.WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
             this.WarehouseNameSearchLookupEdit.Size = new System.Drawing.Size(335, 20);
             this.WarehouseNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
             this.WarehouseNameSearchLookupEdit.TabIndex = 15;
             // 
+            // companyBranchLookupDtoBindingSource
+            // 
+            this.companyBranchLookupDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchLookupDto);
+            // 
             // CompanyBranchDtoSearchLookUpEdit1View
             // 
             this.CompanyBranchDtoSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colThongTinHtml});
+            this.colBranchInfoHtml});
             this.CompanyBranchDtoSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.CompanyBranchDtoSearchLookUpEdit1View.Name = "CompanyBranchDtoSearchLookUpEdit1View";
             this.CompanyBranchDtoSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
@@ -190,13 +200,10 @@
             this.CompanyBranchDtoSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.CompanyBranchDtoSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
-            // colThongTinHtml
+            // KhoNhapHypertextLabel
             // 
-            this.colThongTinHtml.ColumnEdit = this.CompanyBranchRepositoryItemHypertextLabel;
-            this.colThongTinHtml.FieldName = "ThongTinHtml";
-            this.colThongTinHtml.Name = "colThongTinHtml";
-            this.colThongTinHtml.Visible = true;
-            this.colThongTinHtml.VisibleIndex = 0;
+            this.KhoNhapHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.KhoNhapHypertextLabel.Name = "KhoNhapHypertextLabel";
             // 
             // SupplierNameSearchLookupEdit
             // 
@@ -208,18 +215,24 @@
             this.SupplierNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.SupplierNameSearchLookupEdit.Properties.DataSource = this.businessPartnerSiteListDtoBindingSource;
-            this.SupplierNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
+            this.SupplierNameSearchLookupEdit.Properties.DisplayMember = "PartnerInfoHtml";
             this.SupplierNameSearchLookupEdit.Properties.NullText = "";
             this.SupplierNameSearchLookupEdit.Properties.PopupView = this.PartnerSiteGridView;
+            this.SupplierNameSearchLookupEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.PartnerInfoHypertextLabel});
             this.SupplierNameSearchLookupEdit.Properties.ValueMember = "Id";
             this.SupplierNameSearchLookupEdit.Size = new System.Drawing.Size(336, 20);
             this.SupplierNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
             this.SupplierNameSearchLookupEdit.TabIndex = 20;
             // 
+            // businessPartnerSiteListDtoBindingSource
+            // 
+            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto);
+            // 
             // PartnerSiteGridView
             // 
             this.PartnerSiteGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colThongTinHtml1});
+            this.colPartnerInfoHtml});
             this.PartnerSiteGridView.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.PartnerSiteGridView.Name = "PartnerSiteGridView";
             this.PartnerSiteGridView.OptionsSelection.EnableAppearanceFocusedCell = false;
@@ -227,13 +240,32 @@
             this.PartnerSiteGridView.OptionsView.RowAutoHeight = true;
             this.PartnerSiteGridView.OptionsView.ShowGroupPanel = false;
             // 
-            // colThongTinHtml1
+            // colPartnerInfoHtml
             // 
-            this.colThongTinHtml1.ColumnEdit = this.HtmlContentRepositoryItemHypertextLabel01;
-            this.colThongTinHtml1.FieldName = "ThongTinHtml";
-            this.colThongTinHtml1.Name = "colThongTinHtml1";
-            this.colThongTinHtml1.Visible = true;
-            this.colThongTinHtml1.VisibleIndex = 0;
+            this.colPartnerInfoHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colPartnerInfoHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colPartnerInfoHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colPartnerInfoHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colPartnerInfoHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colPartnerInfoHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colPartnerInfoHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colPartnerInfoHtml.AppearanceHeader.Options.UseFont = true;
+            this.colPartnerInfoHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colPartnerInfoHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colPartnerInfoHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colPartnerInfoHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colPartnerInfoHtml.Caption = "Thông tin đối tác";
+            this.colPartnerInfoHtml.ColumnEdit = this.PartnerInfoHypertextLabel;
+            this.colPartnerInfoHtml.FieldName = "PartnerInfoHtml";
+            this.colPartnerInfoHtml.Name = "colPartnerInfoHtml";
+            this.colPartnerInfoHtml.Visible = true;
+            this.colPartnerInfoHtml.VisibleIndex = 0;
+            this.colPartnerInfoHtml.Width = 450;
+            // 
+            // PartnerInfoHypertextLabel
+            // 
+            this.PartnerInfoHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.PartnerInfoHypertextLabel.Name = "PartnerInfoHypertextLabel";
             // 
             // NotesTextEdit
             // 
@@ -405,17 +437,17 @@
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.Location = new System.Drawing.Point(0, 374);
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.Name = "TongKetSoLuongPhieuNhapLayoutControlGroup";
-            columnDefinition1.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition1.Width = 100D;
-            columnDefinition2.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition2.Width = 100D;
+            columnDefinition5.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition5.Width = 100D;
+            columnDefinition6.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition6.Width = 100D;
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] {
-            columnDefinition1,
-            columnDefinition2});
-            rowDefinition1.Height = 33D;
-            rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            columnDefinition5,
+            columnDefinition6});
+            rowDefinition3.Height = 33D;
+            rowDefinition3.SizeType = System.Windows.Forms.SizeType.AutoSize;
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
-            rowDefinition1});
+            rowDefinition3});
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.Size = new System.Drawing.Size(466, 78);
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.Text = "Tổng kết số lượng - giá trị phiếu nhập";
             // 
@@ -456,13 +488,13 @@
             // 
             this.dxErrorProvider1.ContainerControl = this;
             // 
-            // companyBranchDtoBindingSource
+            // colBranchInfoHtml
             // 
-            this.companyBranchDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchDto);
-            // 
-            // businessPartnerSiteListDtoBindingSource
-            // 
-            this.businessPartnerSiteListDtoBindingSource.DataSource = typeof(DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto);
+            this.colBranchInfoHtml.ColumnEdit = this.KhoNhapHypertextLabel;
+            this.colBranchInfoHtml.FieldName = "BranchInfoHtml";
+            this.colBranchInfoHtml.Name = "colBranchInfoHtml";
+            this.colBranchInfoHtml.Visible = true;
+            this.colBranchInfoHtml.VisibleIndex = 0;
             // 
             // UcNhapBaoHanhMaster
             // 
@@ -480,9 +512,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.StockInDateDateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PurchaseOrderSearchLookupEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WarehouseNameSearchLookupEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchLookupDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchDtoSearchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.KhoNhapHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SupplierNameSearchLookupEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PartnerSiteGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PartnerInfoHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NguoiNhanHangTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NguoiGiaoHangTextEdit.Properties)).EndInit();
@@ -503,8 +539,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.TotalQuantitySimpleLabelItem)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.businessPartnerSiteListDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -533,11 +567,7 @@
         private DevExpress.XtraLayout.LayoutControlGroup TongKetSoLuongPhieuNhapLayoutControlGroup;
         private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
-        private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel CompanyBranchRepositoryItemHypertextLabel;
-        private System.Windows.Forms.BindingSource companyBranchDtoBindingSource;
-        private System.Windows.Forms.BindingSource businessPartnerSiteListDtoBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml1;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlContentRepositoryItemHypertextLabel01;
         private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem1;
         private DevExpress.XtraLayout.SimpleLabelItem TotalQuantitySimpleLabelItem;
@@ -545,5 +575,11 @@
         private DevExpress.XtraLayout.LayoutControlItem ItemForNguoiNhanHang;
         private DevExpress.XtraEditors.TextEdit NguoiGiaoHangTextEdit;
         private DevExpress.XtraLayout.LayoutControlItem ItemForNguoiGiaoHang;
+        private System.Windows.Forms.BindingSource companyBranchLookupDtoBindingSource;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel KhoNhapHypertextLabel;
+        private System.Windows.Forms.BindingSource businessPartnerSiteListDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colPartnerInfoHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel PartnerInfoHypertextLabel;
+        private DevExpress.XtraGrid.Columns.GridColumn colBranchInfoHtml;
     }
 }

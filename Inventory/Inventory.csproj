@@ -602,6 +602,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatNoiBo.XuatNoiBoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.AttributeDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductServiceDto.datasource" />

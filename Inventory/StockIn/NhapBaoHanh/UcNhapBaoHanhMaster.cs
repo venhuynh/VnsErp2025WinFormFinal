@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -89,7 +89,7 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
 
 
             // Setup SearchLookUpEdit cho Warehouse
-            //SetupLookupEdits();
+            SetupLookupEdits();
 
             // Đánh dấu các trường bắt buộc
             MarkRequiredFields();
@@ -142,18 +142,18 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
         try
         {
             // Setup Warehouse SearchLookUpEdit
-            WarehouseNameSearchLookupEdit.Properties.DataSource = companyBranchDtoBindingSource;
+            WarehouseNameSearchLookupEdit.Properties.DataSource = companyBranchLookupDtoBindingSource;
             WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
-            WarehouseNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
+            WarehouseNameSearchLookupEdit.Properties.DisplayMember = "BranchInfoHtml";
             WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             WarehouseNameSearchLookupEdit.Properties.PopupView = CompanyBranchDtoSearchLookUpEdit1View;
                 
-            // Đảm bảo column ThongTinHtml được cấu hình đúng (đã có sẵn trong Designer)
-            if (colThongTinHtml != null)
+            // Đảm bảo column BranchInfoHtml được cấu hình đúng (đã có sẵn trong Designer)
+            if (colBranchInfoHtml != null)
             {
-                colThongTinHtml.FieldName = "ThongTinHtml";
-                colThongTinHtml.Visible = true;
-                colThongTinHtml.VisibleIndex = 0;
+                colBranchInfoHtml.FieldName = "BranchInfoHtml";
+                colBranchInfoHtml.Visible = true;
+                colBranchInfoHtml.VisibleIndex = 0;
             }
         }
         catch (Exception ex)
@@ -256,8 +256,8 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
         {
             // Chỉ load nếu chưa load hoặc datasource rỗng
             if (!_isWarehouseDataSourceLoaded || 
-                companyBranchDtoBindingSource.DataSource == null ||
-                (companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> list && list.Count == 0))
+                companyBranchLookupDtoBindingSource.DataSource == null ||
+                (companyBranchLookupDtoBindingSource.DataSource is List<CompanyBranchLookupDto> list && list.Count == 0))
             {
                 await LoadWarehouseDataSourceAsync();
                 _isWarehouseDataSourceLoaded = true;
@@ -433,22 +433,22 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
         {
             // Nếu đã load và không force refresh, không load lại
             if (_isWarehouseDataSourceLoaded && !forceRefresh && 
-                companyBranchDtoBindingSource.DataSource != null &&
-                companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> existingList && 
+                companyBranchLookupDtoBindingSource.DataSource != null &&
+                companyBranchLookupDtoBindingSource.DataSource is List<CompanyBranchLookupDto> existingList && 
                 existingList.Count > 0)
             {
                 return;
             }
 
-            // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
+            // Load danh sách CompanyBranchLookupDto từ CompanyBranchBll (dùng làm Warehouse)
             var branches = await Task.Run(() => _companyBranchBll.GetAll());
-            var warehouseDtos = branches
+            var warehouseLookupDtos = branches
                 .Where(b => b.IsActive) // Chỉ lấy các chi nhánh đang hoạt động
-                .Select(b => b.ToDto())
+                .ToLookupDtos()
                 .OrderBy(b => b.BranchName)
                 .ToList();
 
-            companyBranchDtoBindingSource.DataSource = warehouseDtos;
+            companyBranchLookupDtoBindingSource.DataSource = warehouseLookupDtos;
             _isWarehouseDataSourceLoaded = true;
         }
         catch (Exception ex)
@@ -505,7 +505,7 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
             if (warehouseId == Guid.Empty)
             {
                 // Nếu ID rỗng, set datasource rỗng
-                companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
+                companyBranchLookupDtoBindingSource.DataSource = new List<CompanyBranchLookupDto>();
                 // Không đánh dấu đã load vì datasource rỗng
                 _isWarehouseDataSourceLoaded = false;
                 return;
@@ -515,16 +515,16 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
             var branch = await Task.Run(() => _companyBranchBll.GetById(warehouseId));
             if (branch != null)
             {
-                var warehouseDto = branch.ToDto();
+                var warehouseLookupDto = branch.ToLookupDto();
                 // Set datasource chỉ chứa 1 record
-                companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto> { warehouseDto };
+                companyBranchLookupDtoBindingSource.DataSource = new List<CompanyBranchLookupDto> { warehouseLookupDto };
                 // Đánh dấu chưa load full list (khi popup sẽ load full)
                 _isWarehouseDataSourceLoaded = false;
             }
             else
             {
                 // Nếu không tìm thấy, set datasource rỗng
-                companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
+                companyBranchLookupDtoBindingSource.DataSource = new List<CompanyBranchLookupDto>();
                 _isWarehouseDataSourceLoaded = false;
             }
         }
