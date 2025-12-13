@@ -263,11 +263,11 @@
       <DependentUpon>InPhieuNhapKho.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\InPhieu\StockInReportHelper.cs" />
-    <Compile Include="StockIn\NhapHangThuongMai\UcStockInDetail.cs">
+    <Compile Include="StockIn\NhapHangThuongMai\UcNhapHangThuongMaiDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\NhapHangThuongMai\UcStockInDetail.Designer.cs">
-      <DependentUpon>UcStockInDetail.cs</DependentUpon>
+    <Compile Include="StockIn\NhapHangThuongMai\UcNhapHangThuongMaiDetail.Designer.cs">
+      <DependentUpon>UcNhapHangThuongMaiDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\NhapHangThuongMai\UcNhapThuongMaiMaster.cs">
       <SubType>UserControl</SubType>
@@ -465,8 +465,8 @@
     <EmbeddedResource Include="StockIn\InPhieu\InPhieuNhapKho.resx">
       <DependentUpon>InPhieuNhapKho.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcStockInDetail.resx">
-      <DependentUpon>UcStockInDetail.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcNhapHangThuongMaiDetail.resx">
+      <DependentUpon>UcNhapHangThuongMaiDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcNhapThuongMaiMaster.resx">
       <DependentUpon>UcNhapThuongMaiMaster.cs</DependentUpon>

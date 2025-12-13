@@ -20,7 +20,7 @@ using System.Windows.Forms;
 
 namespace Inventory.StockIn.NhapHangThuongMai;
 
-public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
+public partial class UcNhapHangThuongMaiDetail : DevExpress.XtraEditors.XtraUserControl
 {
     #region ========== FIELDS & PROPERTIES ==========
 
@@ -58,7 +58,7 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcStockInDetail()
+    public UcNhapHangThuongMaiDetail()
     {
         InitializeComponent();
         InitializeControl();
@@ -624,8 +624,9 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
     /// <summary>
     /// Convert Entity sang ProductVariantListDto (Async)
+    /// Sử dụng extension method ToListDto() có sẵn trong DTO và bổ sung các field còn thiếu
     /// </summary>
-    private async Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
+    private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
     {
         try
         {
@@ -633,23 +634,14 @@ public partial class UcStockInDetail : DevExpress.XtraEditors.XtraUserControl
 
             foreach (var variant in variants)
             {
-                var dto = new ProductVariantListDto
-                {
-                    Id = variant.Id,
-                    ProductCode = variant.ProductService?.Code ?? string.Empty,
-                    ProductName = variant.ProductService?.Name ?? string.Empty,
-                    VariantCode = variant.VariantCode ?? string.Empty,
-                    VariantFullName = !string.IsNullOrWhiteSpace(variant.VariantFullName)
-                        ? variant.VariantFullName
-                        : await BuildVariantFullNameAsync(variant), // Fallback nếu VariantFullName chưa được cập nhật
-                    UnitName = variant.UnitOfMeasure?.Name ?? string.Empty,
-                    IsActive = variant.IsActive
-                };
+                // Sử dụng extension method ToListDto() có sẵn trong DTO
+                var dto = variant.ToListDto();
+                if (dto == null) continue;
 
                 result.Add(dto);
             }
-            
-            return result;
+
+            return Task.FromResult(result);
         }
         catch (Exception ex)
         {

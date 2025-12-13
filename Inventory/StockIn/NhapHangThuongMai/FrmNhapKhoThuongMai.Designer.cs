@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucStockInDetail1 = new Inventory.StockIn.NhapHangThuongMai.UcStockInDetail();
+            this.ucStockInDetail1 = new Inventory.StockIn.NhapHangThuongMai.UcNhapHangThuongMaiDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
@@ -359,7 +359,7 @@
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
         private DevExpress.XtraBars.BarButtonItem NhapBaoHanhBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
-        private UcStockInDetail ucStockInDetail1;
+        private UcNhapHangThuongMaiDetail ucStockInDetail1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
     }
