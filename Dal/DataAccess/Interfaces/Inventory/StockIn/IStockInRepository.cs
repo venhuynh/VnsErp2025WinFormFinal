@@ -54,4 +54,6 @@ public interface IStockInRepository
     /// <param name="query">Query criteria</param>
     /// <returns>Tổng số bản ghi</returns>
     int CountHistory(StockInHistoryQueryCriteria query);
+
+    List<StockInOutMaster> GetPhieuNhapLapRap(int xuatLinhKienLapRapEnumValue);
 }

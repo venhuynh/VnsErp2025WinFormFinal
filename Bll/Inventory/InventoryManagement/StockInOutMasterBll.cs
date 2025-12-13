@@ -1,4 +1,4 @@
-﻿using Dal.Connection;
+using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
@@ -161,6 +161,23 @@ namespace Bll.Inventory.InventoryManagement
         catch (Exception ex)
         {
             _logger.Error($"CountHistory: Lỗi đếm: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách phiếu nhập lắp ráp theo thứ tự ngày nhập mới nhất
+    /// </summary>
+    /// <returns>Danh sách StockInOutMaster entities (phiếu nhập lắp ráp)</returns>
+    public List<StockInOutMaster> GetPhieuNhapLapRap()
+    {
+        try
+        {
+            return GetStockInRepository().GetPhieuNhapLapRap(16);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetPhieuNhapLapRap: Lỗi lấy danh sách phiếu nhập lắp ráp: {ex.Message}", ex);
             throw;
         }
     }

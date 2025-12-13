@@ -1,4 +1,5 @@
 using DTO.Inventory.InventoryManagement;
+using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -178,6 +179,58 @@ namespace DTO.Inventory.StockIn.NhapLapRap
 
                 return html;
             }
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Converter giữa StockInOutMaster entity và NhapLapRapMasterListDto
+    /// </summary>
+    public static class NhapLapRapMasterConverter
+    {
+        #region Entity to DTO
+
+        /// <summary>
+        /// Chuyển đổi StockInOutMaster entity thành NhapLapRapMasterListDto
+        /// </summary>
+        /// <param name="entity">StockInOutMaster entity</param>
+        /// <returns>NhapLapRapMasterListDto</returns>
+        public static NhapLapRapMasterListDto ToNhapLapRapMasterListDto(this StockInOutMaster entity)
+        {
+            if (entity == null) return null;
+
+            var dto = new NhapLapRapMasterListDto
+            {
+                Id = entity.Id,
+                StockInNumber = entity.VocherNumber ?? string.Empty,
+                StockInDate = entity.StockInOutDate,
+                LoaiNhapXuatKho = (LoaiNhapXuatKhoEnum)entity.StockInOutType,
+                TrangThai = (TrangThaiPhieuNhapEnum)entity.VoucherStatus,
+                WarehouseCode = entity.CompanyBranch?.BranchCode ?? string.Empty,
+                WarehouseName = entity.CompanyBranch?.BranchName ?? string.Empty,
+                TotalQuantity = entity.TotalQuantity,
+                CreatedDate = entity.CreatedDate
+            };
+
+            return dto;
+        }
+
+        /// <summary>
+        /// Chuyển đổi danh sách StockInOutMaster entities thành danh sách NhapLapRapMasterListDto
+        /// </summary>
+        /// <param name="entities">Danh sách StockInOutMaster entities</param>
+        /// <returns>Danh sách NhapLapRapMasterListDto</returns>
+        public static List<NhapLapRapMasterListDto> ToNhapLapRapMasterListDtoList(this IEnumerable<StockInOutMaster> entities)
+        {
+            List<NhapLapRapMasterListDto> list = [];
+            foreach (var entity in entities)
+            {
+                var dto = entity.ToNhapLapRapMasterListDto();
+                if (dto != null) list.Add(dto);
+            }
+
+            return list;
         }
 
         #endregion

@@ -704,5 +704,14 @@ public class StockInRepository : IStockInRepository
         }
     }
 
+    public List<StockInOutMaster> GetPhieuNhapLapRap(int xuatLinhKienLapRapEnumValue)
+    {
+        using var context = CreateNewContext();
+        return (from p in context.StockInOutMasters
+            where p.StockInOutType == xuatLinhKienLapRapEnumValue
+            orderby p.StockInOutDate descending
+            select p).ToList();
+    }
+
     #endregion
 }

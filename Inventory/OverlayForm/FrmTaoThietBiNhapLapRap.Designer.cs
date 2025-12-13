@@ -72,69 +72,54 @@ namespace Inventory.OverlayForm
             this.colHasChildren = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colFullPath = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colProductCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
-            this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog(this.components);
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
             this.AttributeValueGridControl = new DevExpress.XtraGrid.GridControl();
-            this.attributeValueDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeValueGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colValue = new DevExpress.XtraGrid.Columns.GridColumn();
             this.AttributeSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
-            this.attributeDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colFullInfo1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colAttributeName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.PhieuXuatLapRapLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.xuatLapRapMasterListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.VariantCodeTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.IsActiveToggleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
-            this.UnitNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
-            this.unitOfMeasureDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colFullInfo = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colStockOutInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.PhieuNhapLapRapHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.ProductServiceLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.productServiceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ProductServiceGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ProductServiceHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForProductName = new DevExpress.XtraLayout.LayoutControlItem();
             this.simpleLabelItem1 = new DevExpress.XtraLayout.SimpleLabelItem();
-            this.simpleLabelItem2 = new DevExpress.XtraLayout.SimpleLabelItem();
-            this.ItemForVariantCode = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
             this.simpleLabelItem3 = new DevExpress.XtraLayout.SimpleLabelItem();
             this.ItemForUnitName = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.productServiceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.xuatLapRapMasterDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.colStockOutInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.PhieuNhapLapRapHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.attributeValueDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeValueGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attributeValueDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeValueGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeSearchLookUpEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attributeDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeSearchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhieuXuatLapRapLookupEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xuatLapRapMasterListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VariantCodeTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.UnitNameSearchLookupEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.unitOfMeasureDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PhieuNhapLapRapHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceLookupEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForProductName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForVariantCode)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUnitName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatLapRapMasterDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PhieuNhapLapRapHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attributeValueDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -286,19 +271,11 @@ namespace Inventory.OverlayForm
             this.colProductCount.Visible = true;
             this.colProductCount.VisibleIndex = 9;
             // 
-            // xtraOpenFileDialog1
-            // 
-            this.xtraOpenFileDialog1.Filter = "Image Files (*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.webp)|*.jpg;*.jpeg;*.png;*.bmp;*.gi" +
-    "f;*.webp|All Files (*.*)|*.*";
-            this.xtraOpenFileDialog1.Title = "Chọn hình ảnh cho sản phẩm/dịch vụ";
-            // 
             // dataLayoutControl1
             // 
             this.dataLayoutControl1.Controls.Add(this.AttributeValueGridControl);
             this.dataLayoutControl1.Controls.Add(this.PhieuXuatLapRapLookupEdit);
-            this.dataLayoutControl1.Controls.Add(this.VariantCodeTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.IsActiveToggleSwitch);
-            this.dataLayoutControl1.Controls.Add(this.UnitNameSearchLookupEdit);
+            this.dataLayoutControl1.Controls.Add(this.ProductServiceLookupEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
@@ -310,21 +287,17 @@ namespace Inventory.OverlayForm
             // AttributeValueGridControl
             // 
             this.AttributeValueGridControl.DataSource = this.attributeValueDtoBindingSource;
-            this.AttributeValueGridControl.Location = new System.Drawing.Point(12, 104);
+            this.AttributeValueGridControl.Location = new System.Drawing.Point(12, 100);
             this.AttributeValueGridControl.MainView = this.AttributeValueGridView;
             this.AttributeValueGridControl.MenuManager = this.barManager1;
             this.AttributeValueGridControl.Name = "AttributeValueGridControl";
             this.AttributeValueGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.AttributeSearchLookUpEdit});
-            this.AttributeValueGridControl.Size = new System.Drawing.Size(642, 520);
+            this.AttributeValueGridControl.Size = new System.Drawing.Size(642, 524);
             this.AttributeValueGridControl.TabIndex = 5;
             this.AttributeValueGridControl.UseEmbeddedNavigator = true;
             this.AttributeValueGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.AttributeValueGridView});
-            // 
-            // attributeValueDtoBindingSource
-            // 
-            this.attributeValueDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.AttributeValueDto);
             // 
             // AttributeValueGridView
             // 
@@ -356,16 +329,11 @@ namespace Inventory.OverlayForm
             this.AttributeSearchLookUpEdit.AutoHeight = false;
             this.AttributeSearchLookUpEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.AttributeSearchLookUpEdit.DataSource = this.attributeDtoBindingSource;
             this.AttributeSearchLookUpEdit.DisplayMember = "Name";
             this.AttributeSearchLookUpEdit.KeyMember = "Name";
             this.AttributeSearchLookUpEdit.Name = "AttributeSearchLookUpEdit";
             this.AttributeSearchLookUpEdit.PopupView = this.AttributeSearchLookUpEdit1View;
             this.AttributeSearchLookUpEdit.ValueMember = "Name";
-            // 
-            // attributeDtoBindingSource
-            // 
-            this.attributeDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.AttributeDto);
             // 
             // AttributeSearchLookUpEdit1View
             // 
@@ -395,6 +363,7 @@ namespace Inventory.OverlayForm
             this.PhieuXuatLapRapLookupEdit.Location = new System.Drawing.Point(173, 12);
             this.PhieuXuatLapRapLookupEdit.MenuManager = this.barManager1;
             this.PhieuXuatLapRapLookupEdit.Name = "PhieuXuatLapRapLookupEdit";
+            this.PhieuXuatLapRapLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.PhieuXuatLapRapLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.PhieuXuatLapRapLookupEdit.Properties.DataSource = this.xuatLapRapMasterListDtoBindingSource;
@@ -419,69 +388,75 @@ namespace Inventory.OverlayForm
             this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
             this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             this.searchLookUpEdit1View.OptionsView.ColumnAutoWidth = false;
+            this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
-            // VariantCodeTextEdit
+            // colStockOutInfoHtml
             // 
-            this.VariantCodeTextEdit.Location = new System.Drawing.Point(173, 60);
-            this.VariantCodeTextEdit.MenuManager = this.barManager1;
-            this.VariantCodeTextEdit.Name = "VariantCodeTextEdit";
-            this.VariantCodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.VariantCodeTextEdit.Size = new System.Drawing.Size(318, 20);
-            this.VariantCodeTextEdit.StyleController = this.dataLayoutControl1;
-            this.VariantCodeTextEdit.TabIndex = 3;
+            this.colStockOutInfoHtml.Caption = "Thông tin phiếu nhập";
+            this.colStockOutInfoHtml.ColumnEdit = this.PhieuNhapLapRapHypertextLabel;
+            this.colStockOutInfoHtml.FieldName = "StockInInfoHtml";
+            this.colStockOutInfoHtml.Name = "colStockOutInfoHtml";
+            this.colStockOutInfoHtml.OptionsColumn.AllowEdit = false;
+            this.colStockOutInfoHtml.OptionsColumn.ReadOnly = true;
+            this.colStockOutInfoHtml.Visible = true;
+            this.colStockOutInfoHtml.VisibleIndex = 0;
+            this.colStockOutInfoHtml.Width = 600;
             // 
-            // IsActiveToggleSwitch
+            // PhieuNhapLapRapHypertextLabel
             // 
-            this.IsActiveToggleSwitch.EditValue = true;
-            this.IsActiveToggleSwitch.Location = new System.Drawing.Point(495, 61);
-            this.IsActiveToggleSwitch.MenuManager = this.barManager1;
-            this.IsActiveToggleSwitch.Name = "IsActiveToggleSwitch";
-            this.IsActiveToggleSwitch.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.IsActiveToggleSwitch.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
-            this.IsActiveToggleSwitch.Properties.OffText = "<color=\'red\'>Không sử dụng</color>";
-            this.IsActiveToggleSwitch.Properties.OnText = "<color=\'blue\'>Đang sử dụng</color>";
-            this.IsActiveToggleSwitch.Size = new System.Drawing.Size(159, 18);
-            this.IsActiveToggleSwitch.StyleController = this.dataLayoutControl1;
-            this.IsActiveToggleSwitch.TabIndex = 4;
-            this.IsActiveToggleSwitch.ToolTip = "Trạng thái hoạt động của biến thể";
+            this.PhieuNhapLapRapHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.PhieuNhapLapRapHypertextLabel.Name = "PhieuNhapLapRapHypertextLabel";
             // 
-            // UnitNameSearchLookupEdit
+            // ProductServiceLookupEdit
             // 
-            this.UnitNameSearchLookupEdit.Location = new System.Drawing.Point(173, 36);
-            this.UnitNameSearchLookupEdit.MenuManager = this.barManager1;
-            this.UnitNameSearchLookupEdit.Name = "UnitNameSearchLookupEdit";
-            this.UnitNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            this.ProductServiceLookupEdit.Location = new System.Drawing.Point(173, 36);
+            this.ProductServiceLookupEdit.MenuManager = this.barManager1;
+            this.ProductServiceLookupEdit.Name = "ProductServiceLookupEdit";
+            this.ProductServiceLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ProductServiceLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.UnitNameSearchLookupEdit.Properties.DataSource = this.unitOfMeasureDtoBindingSource;
-            this.UnitNameSearchLookupEdit.Properties.DisplayMember = "FullInfo";
-            this.UnitNameSearchLookupEdit.Properties.NullText = "";
-            this.UnitNameSearchLookupEdit.Properties.PopupView = this.gridView1;
-            this.UnitNameSearchLookupEdit.Properties.ValueMember = "Id";
-            this.UnitNameSearchLookupEdit.Size = new System.Drawing.Size(481, 20);
-            this.UnitNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
-            this.UnitNameSearchLookupEdit.TabIndex = 2;
+            this.ProductServiceLookupEdit.Properties.DataSource = this.productServiceDtoBindingSource;
+            this.ProductServiceLookupEdit.Properties.DisplayMember = "ThongTinHtml";
+            this.ProductServiceLookupEdit.Properties.NullText = "";
+            this.ProductServiceLookupEdit.Properties.PopupView = this.ProductServiceGridView;
+            this.ProductServiceLookupEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.ProductServiceHypertextLabel});
+            this.ProductServiceLookupEdit.Properties.ValueMember = "Id";
+            this.ProductServiceLookupEdit.Size = new System.Drawing.Size(481, 20);
+            this.ProductServiceLookupEdit.StyleController = this.dataLayoutControl1;
+            this.ProductServiceLookupEdit.TabIndex = 2;
             // 
-            // unitOfMeasureDtoBindingSource
+            // productServiceDtoBindingSource
             // 
-            this.unitOfMeasureDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.UnitOfMeasureDto);
+            this.productServiceDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductServiceDto);
             // 
-            // gridView1
+            // ProductServiceGridView
             // 
-            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colFullInfo});
-            this.gridView1.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.gridView1.Name = "gridView1";
-            this.gridView1.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.gridView1.OptionsView.ShowGroupPanel = false;
+            this.ProductServiceGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colThongTinHtml});
+            this.ProductServiceGridView.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.ProductServiceGridView.Name = "ProductServiceGridView";
+            this.ProductServiceGridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.ProductServiceGridView.OptionsView.ColumnAutoWidth = false;
+            this.ProductServiceGridView.OptionsView.ShowGroupPanel = false;
             // 
-            // colFullInfo
+            // colThongTinHtml
             // 
-            this.colFullInfo.FieldName = "FullInfo";
-            this.colFullInfo.Name = "colFullInfo";
-            this.colFullInfo.Visible = true;
-            this.colFullInfo.VisibleIndex = 0;
+            this.colThongTinHtml.Caption = "Thông tin sản phẩm";
+            this.colThongTinHtml.ColumnEdit = this.ProductServiceHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.OptionsColumn.AllowEdit = false;
+            this.colThongTinHtml.OptionsColumn.ReadOnly = true;
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.Width = 600;
+            // 
+            // ProductServiceHypertextLabel
+            // 
+            this.ProductServiceHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ProductServiceHypertextLabel.Name = "ProductServiceHypertextLabel";
             // 
             // Root
             // 
@@ -490,9 +465,6 @@ namespace Inventory.OverlayForm
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.ItemForProductName,
             this.simpleLabelItem1,
-            this.simpleLabelItem2,
-            this.ItemForVariantCode,
-            this.ItemForIsActive,
             this.simpleLabelItem3,
             this.ItemForUnitName,
             this.layoutControlItem1});
@@ -515,11 +487,11 @@ namespace Inventory.OverlayForm
             rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
             rowDefinition2.Height = 24D;
             rowDefinition2.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition3.Height = 24D;
+            rowDefinition3.Height = 20D;
             rowDefinition3.SizeType = System.Windows.Forms.SizeType.AutoSize;
             rowDefinition4.Height = 20D;
             rowDefinition4.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            rowDefinition5.Height = 524D;
+            rowDefinition5.Height = 528D;
             rowDefinition5.SizeType = System.Windows.Forms.SizeType.AutoSize;
             this.Root.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
             rowDefinition1,
@@ -549,54 +521,20 @@ namespace Inventory.OverlayForm
             this.simpleLabelItem1.Text = "Phiếu xuất lắp ráp";
             this.simpleLabelItem1.TextSize = new System.Drawing.Size(87, 13);
             // 
-            // simpleLabelItem2
-            // 
-            this.simpleLabelItem2.Location = new System.Drawing.Point(0, 48);
-            this.simpleLabelItem2.Name = "simpleLabelItem2";
-            this.simpleLabelItem2.OptionsTableLayoutItem.RowIndex = 2;
-            this.simpleLabelItem2.Size = new System.Drawing.Size(161, 24);
-            this.simpleLabelItem2.Text = "Mã biến thể";
-            this.simpleLabelItem2.TextSize = new System.Drawing.Size(87, 13);
-            // 
-            // ItemForVariantCode
-            // 
-            this.ItemForVariantCode.Control = this.VariantCodeTextEdit;
-            this.ItemForVariantCode.Location = new System.Drawing.Point(161, 48);
-            this.ItemForVariantCode.Name = "ItemForVariantCode";
-            this.ItemForVariantCode.OptionsTableLayoutItem.ColumnIndex = 1;
-            this.ItemForVariantCode.OptionsTableLayoutItem.ColumnSpan = 2;
-            this.ItemForVariantCode.OptionsTableLayoutItem.RowIndex = 2;
-            this.ItemForVariantCode.Size = new System.Drawing.Size(322, 24);
-            this.ItemForVariantCode.Text = "Mã biến thể";
-            this.ItemForVariantCode.TextVisible = false;
-            // 
-            // ItemForIsActive
-            // 
-            this.ItemForIsActive.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.ItemForIsActive.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.ItemForIsActive.Control = this.IsActiveToggleSwitch;
-            this.ItemForIsActive.Location = new System.Drawing.Point(483, 48);
-            this.ItemForIsActive.Name = "ItemForIsActive";
-            this.ItemForIsActive.OptionsTableLayoutItem.ColumnIndex = 3;
-            this.ItemForIsActive.OptionsTableLayoutItem.RowIndex = 2;
-            this.ItemForIsActive.OptionsToolTip.ToolTip = "Trạng thái hoạt động của biến thể";
-            this.ItemForIsActive.Size = new System.Drawing.Size(163, 24);
-            this.ItemForIsActive.TextVisible = false;
-            // 
             // simpleLabelItem3
             // 
             this.simpleLabelItem3.Location = new System.Drawing.Point(0, 24);
             this.simpleLabelItem3.Name = "simpleLabelItem3";
             this.simpleLabelItem3.OptionsTableLayoutItem.RowIndex = 1;
             this.simpleLabelItem3.Size = new System.Drawing.Size(161, 24);
-            this.simpleLabelItem3.Text = "Đơn vị tính";
+            this.simpleLabelItem3.Text = "Tên sản phẩm";
             this.simpleLabelItem3.TextSize = new System.Drawing.Size(87, 13);
             // 
             // ItemForUnitName
             // 
             this.ItemForUnitName.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.ItemForUnitName.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.ItemForUnitName.Control = this.UnitNameSearchLookupEdit;
+            this.ItemForUnitName.Control = this.ProductServiceLookupEdit;
             this.ItemForUnitName.Location = new System.Drawing.Point(161, 24);
             this.ItemForUnitName.Name = "ItemForUnitName";
             this.ItemForUnitName.OptionsTableLayoutItem.ColumnIndex = 1;
@@ -609,37 +547,16 @@ namespace Inventory.OverlayForm
             // layoutControlItem1
             // 
             this.layoutControlItem1.Control = this.AttributeValueGridControl;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 92);
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 88);
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.OptionsTableLayoutItem.ColumnSpan = 4;
             this.layoutControlItem1.OptionsTableLayoutItem.RowIndex = 4;
-            this.layoutControlItem1.Size = new System.Drawing.Size(646, 524);
+            this.layoutControlItem1.Size = new System.Drawing.Size(646, 528);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // productServiceDtoBindingSource
+            // attributeValueDtoBindingSource
             // 
-            this.productServiceDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductServiceDto);
-            // 
-            // xuatLapRapMasterDtoBindingSource
-            // 
-            this.xuatLapRapMasterDtoBindingSource.DataSource = typeof(DTO.Inventory.StockOut.XuatLapRap.XuatLapRapMasterDto);
-            // 
-            // colStockOutInfoHtml
-            // 
-            this.colStockOutInfoHtml.ColumnEdit = this.PhieuNhapLapRapHypertextLabel;
-            this.colStockOutInfoHtml.FieldName = "StockInInfoHtml";
-            this.colStockOutInfoHtml.Name = "colStockOutInfoHtml";
-            this.colStockOutInfoHtml.Visible = true;
-            this.colStockOutInfoHtml.VisibleIndex = 0;
-            this.colStockOutInfoHtml.Width = 600;
-            this.colStockOutInfoHtml.Caption = "Thông tin phiếu nhập";
-            this.colStockOutInfoHtml.OptionsColumn.AllowEdit = false;
-            this.colStockOutInfoHtml.OptionsColumn.ReadOnly = true;
-            // 
-            // PhieuNhapLapRapHypertextLabel
-            // 
-            this.PhieuNhapLapRapHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.PhieuNhapLapRapHypertextLabel.Name = "PhieuNhapLapRapHypertextLabel";
+            this.attributeValueDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.AttributeValueDto);
             // 
             // FrmTaoThietBiNhapLapRap
             // 
@@ -660,31 +577,24 @@ namespace Inventory.OverlayForm
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.AttributeValueGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attributeValueDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeValueGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeSearchLookUpEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attributeDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeSearchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PhieuXuatLapRapLookupEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xuatLapRapMasterListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.VariantCodeTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.UnitNameSearchLookupEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.unitOfMeasureDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PhieuNhapLapRapHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceLookupEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductServiceHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForProductName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForVariantCode)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUnitName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatLapRapMasterDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PhieuNhapLapRapHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attributeValueDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -710,38 +620,31 @@ namespace Inventory.OverlayForm
         private TreeListColumn colHasChildren;
         private TreeListColumn colFullPath;
         private TreeListColumn colProductCount;
-        private XtraOpenFileDialog xtraOpenFileDialog1;
         private DataLayoutControl dataLayoutControl1;
         private LayoutControlGroup Root;
         private SearchLookUpEdit PhieuXuatLapRapLookupEdit;
         private BindingSource productServiceDtoBindingSource;
         private GridView searchLookUpEdit1View;
-        private TextEdit VariantCodeTextEdit;
-        private ToggleSwitch IsActiveToggleSwitch;
-        private SearchLookUpEdit UnitNameSearchLookupEdit;
-        private BindingSource unitOfMeasureDtoBindingSource;
-        private GridView gridView1;
-        private GridColumn colFullInfo;
+        private SearchLookUpEdit ProductServiceLookupEdit;
+        private GridView ProductServiceGridView;
         private GridControl AttributeValueGridControl;
         private GridView AttributeValueGridView;
         private LayoutControlItem ItemForProductName;
-        private BindingSource attributeValueDtoBindingSource;
         private GridColumn colValue;
         private GridColumn colAttributeName;
         private SimpleLabelItem simpleLabelItem1;
         private RepositoryItemSearchLookUpEdit AttributeSearchLookUpEdit;
-        private BindingSource attributeDtoBindingSource;
         private GridView AttributeSearchLookUpEdit1View;
         private GridColumn colFullInfo1;
-        private SimpleLabelItem simpleLabelItem2;
-        private LayoutControlItem ItemForVariantCode;
-        private LayoutControlItem ItemForIsActive;
         private SimpleLabelItem simpleLabelItem3;
         private LayoutControlItem ItemForUnitName;
         private LayoutControlItem layoutControlItem1;
-        private BindingSource xuatLapRapMasterDtoBindingSource;
         private BindingSource xuatLapRapMasterListDtoBindingSource;
         private GridColumn colStockOutInfoHtml;
         private RepositoryItemHypertextLabel PhieuNhapLapRapHypertextLabel;
+        private GridColumn colThongTinHtml;
+        private RepositoryItemHypertextLabel ProductServiceHypertextLabel;
+        
+        private BindingSource attributeValueDtoBindingSource;
     }
 }

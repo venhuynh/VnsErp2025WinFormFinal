@@ -614,6 +614,7 @@
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.AttributeDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.AttributeValueDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductServiceDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantListDto.datasource" />

@@ -1,10 +1,12 @@
 using Bll.Inventory.InventoryManagement;
+using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataContext;
 using DevExpress.XtraEditors;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn.NhapLapRap;
+using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -32,6 +34,11 @@ namespace Inventory.OverlayForm
         private readonly StockInOutMasterBll _stockInOutMasterBll = new StockInOutMasterBll();
 
         /// <summary>
+        /// Business Logic Layer cho sản phẩm/dịch vụ
+        /// </summary>
+        private readonly ProductServiceBll _productServiceBll = new ProductServiceBll();
+
+        /// <summary>
         /// Logger để ghi log các sự kiện
         /// </summary>
         private readonly ILogger _logger = LoggerFactory.CreateLogger(LogCategory.UI);
@@ -57,12 +64,26 @@ namespace Inventory.OverlayForm
         {
             try
             {
-                await LoadNhapLapRapListAsync();
+                // Hiển thị SplashScreen một lần cho cả 2 operations
+                SplashScreenHelper.ShowWaitingSplashScreen();
+                try
+                {
+                    // Load cả 2 datasource song song
+                    await Task.WhenAll(
+                        LoadNhapLapRapListAsyncWithoutSplash(),
+                        LoadProductServiceListAsyncWithoutSplash()
+                    );
+                }
+                finally
+                {
+                    SplashScreenHelper.CloseSplashScreen();
+                }
             }
             catch (Exception ex)
             {
                 _logger.Error($"FrmTaoThietBiNhapLapRap_Load: Lỗi load dữ liệu: {ex.Message}", ex);
-                MsgBox.ShowError($"Lỗi load danh sách phiếu nhập lắp ráp: {ex.Message}");
+                SplashScreenHelper.CloseSplashScreen();
+                MsgBox.ShowError($"Lỗi load dữ liệu: {ex.Message}");
             }
         }
 
@@ -71,80 +92,88 @@ namespace Inventory.OverlayForm
         #region ========== DATA LOADING ==========
 
         /// <summary>
-        /// Load danh sách các phiếu nhập lắp ráp theo thứ tự ngày nhập mới nhất
+        /// Load danh sách các phiếu nhập lắp ráp theo thứ tự ngày nhập mới nhất (không hiển thị SplashScreen)
         /// </summary>
-        private async Task LoadNhapLapRapListAsync()
+        private async Task LoadNhapLapRapListAsyncWithoutSplash()
         {
             try
             {
-                _logger.Debug("LoadNhapLapRapListAsync: Bắt đầu load danh sách phiếu nhập lắp ráp");
+                _logger.Debug("LoadNhapLapRapListAsyncWithoutSplash: Bắt đầu load danh sách phiếu nhập lắp ráp");
 
-                // Hiển thị SplashScreen để thông báo đang load dữ liệu
-                SplashScreenHelper.ShowWaitingSplashScreen();
-
-                try
+                await Task.Run(() =>
                 {
-                    await Task.Run(() =>
+                    try
                     {
-                        try
+                        // Lấy dữ liệu từ BLL
+                        var entities = _stockInOutMasterBll.GetPhieuNhapLapRap();
+
+                        // Map entities sang DTOs sử dụng converter
+                        var dtos = entities.ToNhapLapRapMasterListDtoList();
+
+                        // Update UI thread
+                        BeginInvoke(new Action(() =>
                         {
-                            // Query dữ liệu từ database
-                            var query = new StockInHistoryQueryCriteria
-                            {
-                                FromDate = DateTime.Now.AddYears(-10), // Lấy dữ liệu 10 năm gần đây
-                                ToDate = DateTime.Now,
-                                LoaiNhapKho = (int)LoaiNhapXuatKhoEnum.NhapSanPhamLapRap,
-                                OrderBy = "StockInDate",
-                                OrderDirection = "DESC" // Sắp xếp theo ngày nhập mới nhất
-                            };
+                            xuatLapRapMasterListDtoBindingSource.DataSource = dtos;
+                            xuatLapRapMasterListDtoBindingSource.ResetBindings(false);
+                        }));
 
-                            // Lấy dữ liệu từ BLL
-                            var entities = _stockInOutMasterBll.QueryHistory(query);
-
-                            // Map entities sang DTOs
-                            var dtos = entities.Select(entity => new NhapLapRapMasterListDto
-                            {
-                                Id = entity.Id,
-                                StockInNumber = entity.VocherNumber ?? string.Empty,
-                                StockInDate = entity.StockInOutDate,
-                                LoaiNhapXuatKho = (LoaiNhapXuatKhoEnum)entity.StockInOutType,
-                                TrangThai = (TrangThaiPhieuNhapEnum)entity.VoucherStatus,
-                                WarehouseCode = entity.CompanyBranch?.BranchCode ?? string.Empty,
-                                WarehouseName = entity.CompanyBranch?.BranchName ?? string.Empty,
-                                TotalQuantity = entity.TotalQuantity,
-                                CreatedDate = entity.CreatedDate
-                            }).ToList();
-
-                            // Update UI thread
-                            BeginInvoke(new Action(() =>
-                            {
-                                xuatLapRapMasterListDtoBindingSource.DataSource = dtos;
-                                xuatLapRapMasterListDtoBindingSource.ResetBindings(false);
-                            }));
-
-                            _logger.Info($"LoadNhapLapRapListAsync: Đã load {dtos.Count} phiếu nhập lắp ráp");
-                        }
-                        catch (Exception ex)
+                        _logger.Info($"LoadNhapLapRapListAsyncWithoutSplash: Đã load {dtos.Count} phiếu nhập lắp ráp");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error("LoadNhapLapRapListAsyncWithoutSplash: Exception occurred", ex);
+                        BeginInvoke(new Action(() =>
                         {
-                            _logger.Error("LoadNhapLapRapListAsync: Exception occurred", ex);
-                            BeginInvoke(new Action(() =>
-                            {
-                                MsgBox.ShowError($"Lỗi tải dữ liệu: {ex.Message}");
-                            }));
-                        }
-                    });
-                }
-                finally
-                {
-                    // Đóng SplashScreen sau khi hoàn thành hoặc có lỗi
-                    SplashScreenHelper.CloseSplashScreen();
-                }
+                            MsgBox.ShowError($"Lỗi tải danh sách phiếu nhập lắp ráp: {ex.Message}");
+                        }));
+                    }
+                });
             }
             catch (Exception ex)
             {
-                _logger.Error($"LoadNhapLapRapListAsync: Lỗi load danh sách phiếu nhập lắp ráp: {ex.Message}", ex);
-                SplashScreenHelper.CloseSplashScreen(); // Đảm bảo đóng SplashScreen khi có lỗi
-                MsgBox.ShowError($"Lỗi load danh sách phiếu nhập lắp ráp: {ex.Message}");
+                _logger.Error($"LoadNhapLapRapListAsyncWithoutSplash: Lỗi load danh sách phiếu nhập lắp ráp: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Load danh sách sản phẩm/dịch vụ tương tự như FrmProductServiceList (không hiển thị SplashScreen)
+        /// </summary>
+        private async Task LoadProductServiceListAsyncWithoutSplash()
+        {
+            try
+            {
+                _logger.Debug("LoadProductServiceListAsyncWithoutSplash: Bắt đầu load danh sách sản phẩm/dịch vụ");
+
+                // Get all data
+                var entities = await _productServiceBll.GetAllAsync();
+                _logger.Debug($"LoadProductServiceListAsyncWithoutSplash: Đã nhận được {entities?.Count ?? 0} entities từ BLL");
+
+                // Load tất cả categories một lần vào dictionary để tối ưu hiệu suất
+                var categoryDict = await _productServiceBll.GetCategoryDictAsync();
+                _logger.Debug($"LoadProductServiceListAsyncWithoutSplash: Đã lấy được {categoryDict?.Count ?? 0} categories");
+
+                // Convert to DTOs với categoryDict (tối ưu hơn resolver functions)
+                var dtoList = entities.ToDtoList(categoryDict).ToList();
+                _logger.Debug($"LoadProductServiceListAsyncWithoutSplash: Đã convert được {dtoList.Count} DTOs");
+
+                // Update UI thread
+                BeginInvoke(new Action(() =>
+                {
+                    productServiceDtoBindingSource.DataSource = dtoList;
+                    productServiceDtoBindingSource.ResetBindings(false);
+                }));
+
+                _logger.Info($"LoadProductServiceListAsyncWithoutSplash: Đã load {dtoList.Count} sản phẩm/dịch vụ");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"LoadProductServiceListAsyncWithoutSplash: Lỗi load danh sách sản phẩm/dịch vụ: {ex.Message}", ex);
+                BeginInvoke(new Action(() =>
+                {
+                    MsgBox.ShowError($"Lỗi tải danh sách sản phẩm/dịch vụ: {ex.Message}");
+                }));
+                throw;
             }
         }
 
