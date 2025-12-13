@@ -269,11 +269,11 @@
     <Compile Include="StockIn\NhapHangThuongMai\UcStockInDetail.Designer.cs">
       <DependentUpon>UcStockInDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\NhapHangThuongMai\UcStockInMaster.cs">
+    <Compile Include="StockIn\NhapHangThuongMai\UcNhapThuongMaiMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\NhapHangThuongMai\UcStockInMaster.Designer.cs">
-      <DependentUpon>UcStockInMaster.cs</DependentUpon>
+    <Compile Include="StockIn\NhapHangThuongMai\UcNhapThuongMaiMaster.Designer.cs">
+      <DependentUpon>UcNhapThuongMaiMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\NhapThietBiMuon\UcNhapThietBiMuonDetail.cs">
       <SubType>UserControl</SubType>
@@ -468,8 +468,8 @@
     <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcStockInDetail.resx">
       <DependentUpon>UcStockInDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcStockInMaster.resx">
-      <DependentUpon>UcStockInMaster.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcNhapThuongMaiMaster.resx">
+      <DependentUpon>UcNhapThuongMaiMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapLapRap\FrmNhapLapRap.resx">
       <DependentUpon>FrmNhapLapRap.cs</DependentUpon>

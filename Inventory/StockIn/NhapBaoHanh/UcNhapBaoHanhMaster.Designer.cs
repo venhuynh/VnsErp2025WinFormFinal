@@ -29,9 +29,9 @@ namespace Inventory.StockIn.NhapBaoHanh
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition5 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition6 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition3 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition1 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition2 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition1 = new DevExpress.XtraLayout.RowDefinition();
             this.HtmlContentRepositoryItemHypertextLabel01 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.CompanyBranchRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
@@ -41,6 +41,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.WarehouseNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.companyBranchLookupDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.CompanyBranchDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colBranchInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.KhoNhapHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.SupplierNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.businessPartnerSiteListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -67,7 +68,6 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.TotalQuantitySimpleLabelItem = new DevExpress.XtraLayout.SimpleLabelItem();
             this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
-            this.colBranchInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel01)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -199,6 +199,14 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.CompanyBranchDtoSearchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
             this.CompanyBranchDtoSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.CompanyBranchDtoSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            // 
+            // colBranchInfoHtml
+            // 
+            this.colBranchInfoHtml.ColumnEdit = this.KhoNhapHypertextLabel;
+            this.colBranchInfoHtml.FieldName = "BranchInfoHtml";
+            this.colBranchInfoHtml.Name = "colBranchInfoHtml";
+            this.colBranchInfoHtml.Visible = true;
+            this.colBranchInfoHtml.VisibleIndex = 0;
             // 
             // KhoNhapHypertextLabel
             // 
@@ -437,17 +445,17 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.Location = new System.Drawing.Point(0, 374);
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.Name = "TongKetSoLuongPhieuNhapLayoutControlGroup";
-            columnDefinition5.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition5.Width = 100D;
-            columnDefinition6.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition6.Width = 100D;
+            columnDefinition1.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition1.Width = 100D;
+            columnDefinition2.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition2.Width = 100D;
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] {
-            columnDefinition5,
-            columnDefinition6});
-            rowDefinition3.Height = 33D;
-            rowDefinition3.SizeType = System.Windows.Forms.SizeType.AutoSize;
+            columnDefinition1,
+            columnDefinition2});
+            rowDefinition1.Height = 33D;
+            rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
-            rowDefinition3});
+            rowDefinition1});
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.Size = new System.Drawing.Size(466, 78);
             this.TongKetSoLuongPhieuNhapLayoutControlGroup.Text = "Tổng kết số lượng - giá trị phiếu nhập";
             // 
@@ -487,14 +495,6 @@ namespace Inventory.StockIn.NhapBaoHanh
             // dxErrorProvider1
             // 
             this.dxErrorProvider1.ContainerControl = this;
-            // 
-            // colBranchInfoHtml
-            // 
-            this.colBranchInfoHtml.ColumnEdit = this.KhoNhapHypertextLabel;
-            this.colBranchInfoHtml.FieldName = "BranchInfoHtml";
-            this.colBranchInfoHtml.Name = "colBranchInfoHtml";
-            this.colBranchInfoHtml.Visible = true;
-            this.colBranchInfoHtml.VisibleIndex = 0;
             // 
             // UcNhapBaoHanhMaster
             // 

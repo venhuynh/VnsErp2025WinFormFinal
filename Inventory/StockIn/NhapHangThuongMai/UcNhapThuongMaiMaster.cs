@@ -1,4 +1,4 @@
-﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockIn;
 using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
@@ -20,7 +20,7 @@ using System.Windows.Forms;
 
 namespace Inventory.StockIn.NhapHangThuongMai
 {
-    public partial class UcStockInMaster : XtraUserControl
+    public partial class UcNhapThuongMaiMaster : XtraUserControl
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -65,7 +65,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
 
         #region ========== CONSTRUCTOR ==========
 
-        public UcStockInMaster()
+        public UcNhapThuongMaiMaster()
         {
             InitializeComponent();
             InitializeControl();
@@ -87,7 +87,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
 
 
                 // Setup SearchLookUpEdit cho Warehouse
-                //SetupLookupEdits();
+                SetupLookupEdits();
 
                 // Đánh dấu các trường bắt buộc
                 MarkRequiredFields();
@@ -140,18 +140,18 @@ namespace Inventory.StockIn.NhapHangThuongMai
             try
             {
                 // Setup Warehouse SearchLookUpEdit
-                WarehouseNameSearchLookupEdit.Properties.DataSource = companyBranchDtoBindingSource;
+                WarehouseNameSearchLookupEdit.Properties.DataSource = companyBranchLookupDtoBindingSource;
                 WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
-                WarehouseNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
+                WarehouseNameSearchLookupEdit.Properties.DisplayMember = "BranchInfoHtml";
                 WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
                 WarehouseNameSearchLookupEdit.Properties.PopupView = CompanyBranchDtoSearchLookUpEdit1View;
 
-                // Đảm bảo column ThongTinHtml được cấu hình đúng (đã có sẵn trong Designer)
-                if (colThongTinHtml != null)
+                // Đảm bảo column BranchInfoHtml được cấu hình đúng (đã có sẵn trong Designer)
+                if (colBranchInfoHtml != null)
                 {
-                    colThongTinHtml.FieldName = "ThongTinHtml";
-                    colThongTinHtml.Visible = true;
-                    colThongTinHtml.VisibleIndex = 0;
+                    colBranchInfoHtml.FieldName = "BranchInfoHtml";
+                    colBranchInfoHtml.Visible = true;
+                    colBranchInfoHtml.VisibleIndex = 0;
                 }
             }
             catch (Exception ex)
@@ -247,8 +247,8 @@ namespace Inventory.StockIn.NhapHangThuongMai
             {
                 // Chỉ load nếu chưa load hoặc datasource rỗng
                 if (!_isWarehouseDataSourceLoaded ||
-                    companyBranchDtoBindingSource.DataSource == null ||
-                    (companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> list && list.Count == 0))
+                    companyBranchLookupDtoBindingSource.DataSource == null ||
+                    (companyBranchLookupDtoBindingSource.DataSource is List<CompanyBranchLookupDto> list && list.Count == 0))
                 {
                     await LoadWarehouseDataSourceAsync();
                     _isWarehouseDataSourceLoaded = true;
@@ -432,22 +432,22 @@ namespace Inventory.StockIn.NhapHangThuongMai
             {
                 // Nếu đã load và không force refresh, không load lại
                 if (_isWarehouseDataSourceLoaded && !forceRefresh &&
-                    companyBranchDtoBindingSource.DataSource != null &&
-                    companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> existingList &&
+                    companyBranchLookupDtoBindingSource.DataSource != null &&
+                    companyBranchLookupDtoBindingSource.DataSource is List<CompanyBranchLookupDto> existingList &&
                     existingList.Count > 0)
                 {
                     return;
                 }
 
-                // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
+                // Load danh sách CompanyBranchLookupDto từ CompanyBranchBll (dùng làm Warehouse)
                 var branches = await Task.Run(() => _companyBranchBll.GetAll());
-                var warehouseDtos = branches
+                var warehouseLookupDtos = branches
                     .Where(b => b.IsActive) // Chỉ lấy các chi nhánh đang hoạt động
-                    .Select(b => b.ToDto())
+                    .ToLookupDtos()
                     .OrderBy(b => b.BranchName)
                     .ToList();
 
-                companyBranchDtoBindingSource.DataSource = warehouseDtos;
+                companyBranchLookupDtoBindingSource.DataSource = warehouseLookupDtos;
                 _isWarehouseDataSourceLoaded = true;
             }
             catch (Exception ex)
@@ -505,7 +505,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 if (warehouseId == Guid.Empty)
                 {
                     // Nếu ID rỗng, set datasource rỗng
-                    companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
+                    companyBranchLookupDtoBindingSource.DataSource = new List<CompanyBranchLookupDto>();
                     // Không đánh dấu đã load vì datasource rỗng
                     _isWarehouseDataSourceLoaded = false;
                     return;
@@ -515,16 +515,16 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 var branch = await Task.Run(() => _companyBranchBll.GetById(warehouseId));
                 if (branch != null)
                 {
-                    var warehouseDto = branch.ToDto();
+                    var warehouseLookupDto = branch.ToLookupDto();
                     // Set datasource chỉ chứa 1 record
-                    companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto> { warehouseDto };
+                    companyBranchLookupDtoBindingSource.DataSource = new List<CompanyBranchLookupDto> { warehouseLookupDto };
                     // Đánh dấu chưa load full list (khi popup sẽ load full)
                     _isWarehouseDataSourceLoaded = false;
                 }
                 else
                 {
                     // Nếu không tìm thấy, set datasource rỗng
-                    companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
+                    companyBranchLookupDtoBindingSource.DataSource = new List<CompanyBranchLookupDto>();
                     _isWarehouseDataSourceLoaded = false;
                 }
             }
@@ -558,7 +558,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 if (site != null)
                 {
                     // Sử dụng ToSiteListDtos() với list chứa 1 phần tử, sau đó lấy phần tử đầu tiên
-                    var siteDtos = new List<Dal.DataContext.BusinessPartnerSite> { site }.ToSiteListDtos().ToList();
+                    var siteDtos = new List<BusinessPartnerSite> { site }.ToSiteListDtos().ToList();
                     // Set datasource chỉ chứa 1 record
                     businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
                     // Đánh dấu đã load (nhưng chỉ có 1 record, khi popup sẽ load full)
