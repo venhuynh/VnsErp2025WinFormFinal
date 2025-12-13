@@ -1,11 +1,11 @@
-﻿using Bll.Inventory.StockIn;
-using Common.Utils;
+﻿using Common.Utils;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using Bll.Inventory.StockInOut;
 
 namespace Inventory.StockIn.InPhieu;
 
@@ -13,7 +13,7 @@ public partial class InPhieuNhapXuatThietBiChoMuon : DevExpress.XtraReports.UI.X
 {
     #region Private Fields
 
-    private readonly StockInBll _stockInBll;
+    private readonly StockInOutBll _stockInBll;
     private readonly ILogger _logger;
 
     #endregion
@@ -23,7 +23,7 @@ public partial class InPhieuNhapXuatThietBiChoMuon : DevExpress.XtraReports.UI.X
     private InPhieuNhapXuatThietBiChoMuon()
     {
         InitializeComponent();
-        _stockInBll = new StockInBll();
+        _stockInBll = new StockInOutBll();
         _logger = LoggerFactory.CreateLogger(LogCategory.UI);
     }
 

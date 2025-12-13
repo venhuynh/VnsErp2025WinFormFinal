@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Bll.Inventory.InventoryManagement;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
@@ -8,17 +12,13 @@ using DTO.Inventory.StockIn.NhapHangThuongMai;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Bll.Inventory.StockIn
+namespace Bll.Inventory.StockInOut
 {
     /// <summary>
     /// Business Logic Layer cho StockIn (Phiếu nhập kho)
     /// </summary>
-    public class StockInBll
+    public class StockInOutBll
     {
         #region Fields
 
@@ -33,7 +33,7 @@ namespace Bll.Inventory.StockIn
         /// <summary>
         /// Constructor mặc định
         /// </summary>
-        public StockInBll()
+        public StockInOutBll()
         {
             _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
         }

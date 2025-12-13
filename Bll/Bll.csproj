@@ -89,7 +89,7 @@
     <Compile Include="Inventory\InventoryManagement\StockInOutDetailBll.cs" />
     <Compile Include="Inventory\InventoryManagement\WarrantyBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutImageBll.cs" />
-    <Compile Include="Inventory\StockIn\StockInBll.cs" />
+    <Compile Include="Inventory\StockInOut\StockInOutBll.cs" />
     <Compile Include="MasterData\CompanyBll\CompanyBll.cs" />
     <Compile Include="MasterData\CompanyBll\CompanyBranchBll.cs" />
     <Compile Include="MasterData\CompanyBll\DepartmentBll.cs" />

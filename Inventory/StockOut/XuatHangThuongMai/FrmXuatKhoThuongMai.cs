@@ -1,5 +1,4 @@
-﻿using Bll.Inventory.StockIn;
-using Common.Common;
+﻿using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.XtraEditors;
@@ -13,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.Inventory.StockInOut;
 using Inventory.OverlayForm;
 
 namespace Inventory.StockOut.XuatHangThuongMai;
@@ -24,7 +24,7 @@ public partial class FrmXuatKhoThuongMai : XtraForm
     /// <summary>
     /// Business Logic Layer cho StockIn (dùng chung cho cả nhập và xuất kho)
     /// </summary>
-    private readonly StockInBll _stockInBll = new StockInBll();
+    private readonly StockInOutBll _stockInBll = new StockInOutBll();
 
     /// <summary>
     /// Logger để ghi log các sự kiện

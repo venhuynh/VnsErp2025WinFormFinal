@@ -1,5 +1,4 @@
-﻿using Bll.Inventory.StockIn;
-using Common.Common;
+﻿using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.XtraReports.UI;
@@ -15,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.Inventory.StockInOut;
 
 namespace Inventory.StockOut.XuatNoiBo;
 
@@ -25,7 +25,7 @@ public partial class FrmXuatNoiBo : DevExpress.XtraEditors.XtraForm
     /// <summary>
     /// Business Logic Layer cho StockIn
     /// </summary>
-    private readonly StockInBll _stockInBll = new();
+    private readonly StockInOutBll _stockInBll = new();
 
     /// <summary>
     /// Logger để ghi log các sự kiện

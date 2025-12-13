@@ -1,4 +1,3 @@
-using Bll.Inventory.StockIn;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
@@ -17,6 +16,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.Inventory.StockInOut;
 
 namespace Inventory.StockIn.NhapHangThuongMai;
 
@@ -804,7 +804,7 @@ public partial class UcNhapHangThuongMaiDetail : DevExpress.XtraEditors.XtraUser
             _stockInMasterId = stockInOutMasterId;
 
             // Lấy detail entities từ BLL
-            var stockInBll = new StockInBll();
+            var stockInBll = new StockInOutBll();
             var detailEntities = stockInBll.GetDetailsByMasterId(stockInOutMasterId);
 
             // Convert detail entities sang DTOs sử dụng extension method ToDto()

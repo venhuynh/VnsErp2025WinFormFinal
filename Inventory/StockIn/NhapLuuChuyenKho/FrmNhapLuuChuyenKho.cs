@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockIn;
+using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
@@ -25,7 +25,7 @@ public partial class FrmNhapLuuChuyenKho : DevExpress.XtraEditors.XtraForm
     /// <summary>
     /// Business Logic Layer cho StockIn
     /// </summary>
-    private readonly StockInBll _stockInBll = new StockInBll();
+    private readonly StockInOutBll _stockInBll = new StockInOutBll();
 
     /// <summary>
     /// Logger để ghi log các sự kiện

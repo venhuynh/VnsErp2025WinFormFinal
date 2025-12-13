@@ -1,5 +1,4 @@
 using Bll.Inventory.InventoryManagement;
-using Bll.Inventory.StockIn;
 using Common.Common;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataContext;

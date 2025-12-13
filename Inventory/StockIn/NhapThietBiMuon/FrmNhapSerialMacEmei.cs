@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.InventoryManagement;
-using Bll.Inventory.StockIn;
+using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Enums;
 using Common.Utils;
@@ -38,7 +38,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
         /// <summary>
         /// Business Logic Layer cho phiếu nhập kho
         /// </summary>
-        private readonly StockInBll _stockInBll = new StockInBll();
+        private readonly StockInOutBll _stockInBll = new StockInOutBll();
 
         /// <summary>
         /// Logger để ghi log các sự kiện

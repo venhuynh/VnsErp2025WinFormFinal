@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockIn;
+using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
 using Inventory.OverlayForm;
@@ -22,7 +22,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
         /// <summary>
         /// Business Logic Layer cho StockIn
         /// </summary>
-        private readonly StockInBll _stockInBll = new StockInBll();
+        private readonly StockInOutBll _stockInBll = new StockInOutBll();
 
         /// <summary>
         /// Logger để ghi log các sự kiện
@@ -865,7 +865,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 // ========== BƯỚC 3: CHUYỂN ĐỔI MASTER DTO SANG ENTITY ==========
                 // Convert Master DTO sang entity để truyền vào BLL
                 // Detail entities đã được trả về trực tiếp từ GetDetails(), không cần convert
-                var masterEntity = StockInBll.MapMasterDtoToEntity(masterDto);
+                var masterEntity = StockInOutBll.MapMasterDtoToEntity(masterDto);
 
                 // ========== BƯỚC 4: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
                 // Tất cả validation đã được thực hiện ở bước 1 và 2

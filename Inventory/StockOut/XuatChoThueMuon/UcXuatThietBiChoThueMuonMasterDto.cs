@@ -1,5 +1,4 @@
 ﻿using Bll.Inventory.InventoryManagement;
-using Bll.Inventory.StockIn;
 using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
 using Common.Utils;
@@ -15,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bll.Inventory.StockInOut;
 using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockOut.XuatChoThueMuon;
@@ -41,7 +41,7 @@ public partial class UcXuatThietBiChoThueMuonMasterDto : DevExpress.XtraEditors.
     /// <summary>
     /// Business Logic Layer cho StockIn (dùng để lấy master entity)
     /// </summary>
-    private readonly StockInBll _stockInBll = new();
+    private readonly StockInOutBll _stockInBll = new();
 
     /// <summary>
     /// Business Logic Layer cho StockInOutMaster (dùng để tạo số phiếu)

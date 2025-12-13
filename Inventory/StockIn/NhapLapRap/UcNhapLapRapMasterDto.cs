@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.InventoryManagement;
-using Bll.Inventory.StockIn;
+using Bll.Inventory.StockInOut;
 using Bll.MasterData.CompanyBll;
 using Common.Utils;
 using Dal.DataContext;
@@ -35,7 +35,7 @@ namespace Inventory.StockIn.NhapLapRap
         /// <summary>
         /// Business Logic Layer cho StockIn (dùng để lấy master entity)
         /// </summary>
-        private readonly StockInBll _stockInBll = new();
+        private readonly StockInOutBll _stockInBll = new();
 
         /// <summary>
         /// Business Logic Layer cho StockInOutMaster (dùng để tạo số phiếu)
