@@ -166,11 +166,11 @@ public class StockInDetailDto
     public decimal TotalAmountIncludedVat => TotalAmount + VatAmount;
 
     /// <summary>
-    /// Tình trạng sản phẩm (dùng cho report)
+    /// Ghi chú tình trạng sản phẩm
     /// </summary>
     [DisplayName("Tình trạng")]
     [Display(Order = 27)]
-    public string TinhTrangSanPham { get; set; } = "Bình thường";
+    public string GhiChu { get; set; } = "Bình thường";
 
     /// <summary>
     /// Danh sách thông tin bảo hành cho sản phẩm này
@@ -308,13 +308,13 @@ public static class StockInDetailDtoConverter
             Id = entity.Id,
             StockInOutMasterId = entity.StockInOutMasterId,
             ProductVariantId = entity.ProductVariantId,
-            ProductVariantCode = entity.ProductVariant.VariantCode,
+            ProductVariantCode = entity.ProductVariant?.VariantCode ?? string.Empty,
             StockInQty = entity.StockInQty,
             StockOutQty = entity.StockOutQty,
             UnitPrice = entity.UnitPrice,
             Vat = entity.Vat,
             LineNumber = 0, // Sẽ được cập nhật sau nếu cần
-            TinhTrangSanPham = "Bình thường" // TODO: Lấy từ trường tương ứng nếu có trong entity
+            GhiChu = entity.GhiChu ?? string.Empty
         };
 
         // Lấy thông tin ProductVariant nếu có

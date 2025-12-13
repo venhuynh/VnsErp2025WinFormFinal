@@ -663,8 +663,12 @@ namespace Inventory.StockIn.NhapHangThuongMai
                     // Cập nhật ngày vào Entity
                     _stockInMaster.StockInOutDate = selectedDate;
 
-                    // Tạo số phiếu nhập tự động
-                    GenerateStockInNumber(selectedDate);
+                    // Chỉ tạo số phiếu nhập tự động nếu đang ở chế độ tạo mới (không phải edit)
+                    // Nếu _stockInOutMasterId != Guid.Empty nghĩa là đang ở chế độ edit, không tạo số phiếu mới
+                    if (_stockInOutMasterId == Guid.Empty)
+                    {
+                        GenerateStockInNumber(selectedDate);
+                    }
 
                     // Xóa lỗi validation nếu có
                     dxErrorProvider1.SetError(StockInDateDateEdit, string.Empty);
@@ -1198,6 +1202,13 @@ namespace Inventory.StockIn.NhapHangThuongMai
         {
             try
             {
+                // Không tạo số phiếu mới nếu đang ở chế độ edit
+                // Nếu _stockInOutMasterId != Guid.Empty nghĩa là đang ở chế độ edit
+                if (_stockInOutMasterId != Guid.Empty)
+                {
+                    return;
+                }
+
                 // Chỉ tạo số phiếu nếu chưa có hoặc đang ở trạng thái tạo mới
                 if (!string.IsNullOrWhiteSpace(_stockInMaster.VocherNumber) &&
                     _stockInMaster.VoucherStatus != (int)TrangThaiPhieuNhapEnum.TaoMoi)

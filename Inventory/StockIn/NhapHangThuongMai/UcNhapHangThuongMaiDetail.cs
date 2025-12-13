@@ -718,7 +718,10 @@ public partial class UcNhapHangThuongMaiDetail : DevExpress.XtraEditors.XtraUser
             // Load ProductVariant datasource chỉ cho các ProductVariantId có trong details
             await LoadProductVariantsByIdsAsync(details);
 
-            // Tính toán lại tất cả
+            // Refresh GridView để hiển thị dữ liệu đã load, đặc biệt là các computed properties
+            StockInDetailDtoGridView.RefreshData();
+
+            // Tính toán lại tất cả (để đảm bảo các computed properties được tính đúng)
             RecalculateAll();
         }
         catch (Exception ex)
@@ -740,7 +743,7 @@ public partial class UcNhapHangThuongMaiDetail : DevExpress.XtraEditors.XtraUser
 
             foreach (var item in stockInDetailDtoBindingSource)
             {
-                if (item is not NhapNoiBoDetailDto detailDto) continue;
+                if (item is not StockInDetailDto detailDto) continue;
 
                 details.Add(new StockInOutDetail
                 {
@@ -749,12 +752,12 @@ public partial class UcNhapHangThuongMaiDetail : DevExpress.XtraEditors.XtraUser
                     ProductVariantId = detailDto.ProductVariantId,
                     StockInQty = detailDto.StockInQty,
                     StockOutQty = 0,
-                    UnitPrice = 0,
-                    Vat = 0,
-                    VatAmount = 0,
-                    TotalAmount = 0,
-                    TotalAmountIncludedVat = 0,
-                    GhiChu = detailDto.GhiChu,
+                    UnitPrice = detailDto.UnitPrice,
+                    Vat = detailDto.Vat,
+                    VatAmount = detailDto.VatAmount,
+                    TotalAmount = detailDto.TotalAmount,
+                    TotalAmountIncludedVat = detailDto.TotalAmountIncludedVat,
+                    GhiChu = detailDto.GhiChu
                 });
             }
             return details;
