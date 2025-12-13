@@ -7,6 +7,7 @@ using Dal.DataContext;
 using DevExpress.XtraEditors;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn.NhapLapRap;
+using DTO.Inventory.StockOut.XuatLapRap;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
@@ -186,19 +187,45 @@ namespace Inventory.OverlayForm
 
         /// <summary>
         /// Event handler khi giá trị của PhieuXuatLapRapLookupEdit thay đổi
-        /// Load chi tiết phiếu nhập lắp ráp từ master id và hiển thị vào XuatLapRapDetailDtoGridControl
+        /// Load chi tiết phiếu xuất lắp ráp từ master id và hiển thị vào XuatLapRapDetailDtoGridControl
         /// </summary>
         private async void PhieuXuatLapRapLookupEdit_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
                 // Lấy master id từ lookup edit
-                if (PhieuXuatLapRapLookupEdit.EditValue == null || 
-                    !(PhieuXuatLapRapLookupEdit.EditValue is Guid masterId) || 
-                    masterId == Guid.Empty)
+                var editValue = PhieuXuatLapRapLookupEdit.EditValue;
+                
+                if (editValue == null)
                 {
-                    // Clear datasource nếu không có giá trị
-                    xuatLapRapDetailDtoBindingSource.DataSource = new List<NhapLapRapDetailDto>();
+                    _logger.Debug("PhieuXuatLapRapLookupEdit_EditValueChanged: EditValue is null, clearing datasource");
+                    xuatLapRapDetailDtoBindingSource.DataSource = new List<XuatLapRapDetailDto>();
+                    xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                    return;
+                }
+
+                // Convert EditValue sang Guid
+                Guid masterId;
+                if (editValue is Guid guidValue)
+                {
+                    masterId = guidValue;
+                }
+                else if (editValue is string stringValue && Guid.TryParse(stringValue, out var parsedGuid))
+                {
+                    masterId = parsedGuid;
+                }
+                else
+                {
+                    _logger.Warning($"PhieuXuatLapRapLookupEdit_EditValueChanged: Cannot convert EditValue to Guid. Type: {editValue.GetType()}, Value: {editValue}");
+                    xuatLapRapDetailDtoBindingSource.DataSource = new List<XuatLapRapDetailDto>();
+                    xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                    return;
+                }
+
+                if (masterId == Guid.Empty)
+                {
+                    _logger.Debug("PhieuXuatLapRapLookupEdit_EditValueChanged: MasterId is Guid.Empty, clearing datasource");
+                    xuatLapRapDetailDtoBindingSource.DataSource = new List<XuatLapRapDetailDto>();
                     xuatLapRapDetailDtoBindingSource.ResetBindings(false);
                     return;
                 }
@@ -218,26 +245,57 @@ namespace Inventory.OverlayForm
                             var detailEntities = _stockInOutBll.GetDetailsByMasterId(masterId);
                             _logger.Debug($"PhieuXuatLapRapLookupEdit_EditValueChanged: Đã lấy được {detailEntities.Count} detail entities");
 
-                            // Convert entities sang NhapLapRapDetailDto
-                            var detailDtos = detailEntities.ToNhapLapRapDetailDtoList();
+                            if (detailEntities.Count == 0)
+                            {
+                                _logger.Warning($"PhieuXuatLapRapLookupEdit_EditValueChanged: Không có detail entities cho MasterId={masterId}");
+                                BeginInvoke(new Action(() =>
+                                {
+                                    xuatLapRapDetailDtoBindingSource.DataSource = new List<XuatLapRapDetailDto>();
+                                    xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                                }));
+                                return;
+                            }
+
+                            // Convert entities sang XuatLapRapDetailDto
+                            var detailDtos = detailEntities.ToXuatLapRapDetailDtoList();
                             _logger.Debug($"PhieuXuatLapRapLookupEdit_EditValueChanged: Đã convert được {detailDtos.Count} detail DTOs");
+
+                            if (detailDtos.Count == 0)
+                            {
+                                _logger.Warning($"PhieuXuatLapRapLookupEdit_EditValueChanged: Không có detail DTOs sau khi convert cho MasterId={masterId}");
+                                BeginInvoke(new Action(() =>
+                                {
+                                    xuatLapRapDetailDtoBindingSource.DataSource = new List<XuatLapRapDetailDto>();
+                                    xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                                }));
+                                return;
+                            }
 
                             // Update UI thread
                             BeginInvoke(new Action(() =>
                             {
-                                xuatLapRapDetailDtoBindingSource.DataSource = detailDtos;
-                                xuatLapRapDetailDtoBindingSource.ResetBindings(false);
-                                XuatLapRapDetailDtoGridControl.RefreshDataSource();
+                                try
+                                {
+                                    xuatLapRapDetailDtoBindingSource.DataSource = detailDtos;
+                                    xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                                    XuatLapRapDetailDtoGridControl.RefreshDataSource();
+                                    _logger.Debug($"PhieuXuatLapRapLookupEdit_EditValueChanged: Đã bind {detailDtos.Count} DTOs vào grid");
+                                }
+                                catch (Exception uiEx)
+                                {
+                                    _logger.Error($"PhieuXuatLapRapLookupEdit_EditValueChanged: Lỗi khi bind vào UI: {uiEx.Message}", uiEx);
+                                    MsgBox.ShowError($"Lỗi hiển thị dữ liệu: {uiEx.Message}");
+                                }
                             }));
 
-                            _logger.Info($"PhieuXuatLapRapLookupEdit_EditValueChanged: Đã load {detailDtos.Count} chi tiết phiếu nhập lắp ráp cho MasterId={masterId}");
+                            _logger.Info($"PhieuXuatLapRapLookupEdit_EditValueChanged: Đã load {detailDtos.Count} chi tiết phiếu xuất lắp ráp cho MasterId={masterId}");
                         }
                         catch (Exception ex)
                         {
                             _logger.Error($"PhieuXuatLapRapLookupEdit_EditValueChanged: Exception occurred", ex);
                             BeginInvoke(new Action(() =>
                             {
-                                MsgBox.ShowError($"Lỗi tải chi tiết phiếu nhập lắp ráp: {ex.Message}");
+                                MsgBox.ShowError($"Lỗi tải chi tiết phiếu xuất lắp ráp: {ex.Message}");
                             }));
                         }
                     });
