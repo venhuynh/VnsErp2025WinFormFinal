@@ -1,9 +1,10 @@
+using Bll.Inventory.InventoryManagement;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
 using Dal.DataContext;
 using DTO.Inventory.InventoryManagement;
-using DTO.Inventory.StockIn;
+using DTO.Inventory.StockIn.NhapHangThuongMai;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -11,8 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Bll.Inventory.InventoryManagement;
-using DTO.Inventory.StockIn.NhapHangThuongMai;
 
 namespace Bll.Inventory.StockIn
 {
@@ -175,8 +174,13 @@ namespace Bll.Inventory.StockIn
             // Validate WarehouseId - không được để trống hoặc Guid.Empty
             if (masterEntity.WarehouseId == Guid.Empty)
             {
-                throw new ArgumentException("Vui lòng chọn kho nhập. WarehouseId không được để trống.");
+                throw new ArgumentException("Vui lòng chọn kho. WarehouseId không được để trống.");
             }
+
+            // Xác định loại phiếu (nhập hay xuất) từ StockInOutType
+            var loaiNhapXuatKho = (LoaiNhapXuatKhoEnum)masterEntity.StockInOutType;
+            var isStockIn = IsStockInType(loaiNhapXuatKho);
+            var isStockOut = IsStockOutType(loaiNhapXuatKho);
 
             // Validate các detail
             for (int i = 0; i < detailEntities.Count; i++)
@@ -189,13 +193,66 @@ namespace Bll.Inventory.StockIn
                     throw new ArgumentException($"Dòng {lineNumber}: Vui lòng chọn hàng hóa. ProductVariantId không được để trống.");
                 }
 
-                if (detail.StockInQty <= 0)
+                // Tùy theo phiếu nhập hoặc phiếu xuất thì kiểm tra xem số lượng nhập hoặc xuất
+                if (isStockIn)
                 {
-                    throw new ArgumentException($"Dòng {lineNumber}: Số lượng nhập phải lớn hơn 0.");
+                    // Phiếu nhập: kiểm tra StockInQty phải lớn hơn 0
+                    if (detail.StockInQty <= 0)
+                    {
+                        throw new ArgumentException($"Dòng {lineNumber}: Số lượng nhập phải lớn hơn 0.");
+                    }
+                }
+                else if (isStockOut)
+                {
+                    // Phiếu xuất: kiểm tra StockOutQty phải lớn hơn 0
+                    if (detail.StockOutQty <= 0)
+                    {
+                        throw new ArgumentException($"Dòng {lineNumber}: Số lượng xuất phải lớn hơn 0.");
+                    }
+                }
+                else
+                {
+                    // Trường hợp Khac hoặc không xác định: kiểm tra cả hai
+                    if (detail.StockInQty <= 0 && detail.StockOutQty <= 0)
+                    {
+                        throw new ArgumentException($"Dòng {lineNumber}: Phải có số lượng nhập hoặc số lượng xuất lớn hơn 0.");
+                    }
                 }
             }
 
             _logger.Debug("ValidateBeforeSave: Validation passed");
+        }
+
+        /// <summary>
+        /// Kiểm tra xem loại nhập xuất kho có phải là loại nhập không
+        /// </summary>
+        /// <param name="loaiNhapXuatKho">Loại nhập xuất kho</param>
+        /// <returns>True nếu là loại nhập, False nếu không</returns>
+        private static bool IsStockInType(LoaiNhapXuatKhoEnum loaiNhapXuatKho)
+        {
+            return loaiNhapXuatKho == LoaiNhapXuatKhoEnum.NhapHangThuongMai ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.NhapThietBiMuonThue ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.NhapNoiBo ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.NhapLuuChuyenKho ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.NhapHangBaoHanh ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.NhapSanPhamLapRap ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.NhapLinhKienPhanRa;
+        }
+
+        /// <summary>
+        /// Kiểm tra xem loại nhập xuất kho có phải là loại xuất không
+        /// </summary>
+        /// <param name="loaiNhapXuatKho">Loại nhập xuất kho</param>
+        /// <returns>True nếu là loại xuất, False nếu không</returns>
+        private static bool IsStockOutType(LoaiNhapXuatKhoEnum loaiNhapXuatKho)
+        {
+            return loaiNhapXuatKho == LoaiNhapXuatKhoEnum.XuatHangThuongMai ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.XuatThietBiMuonThue ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.XuatNoiBo ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.XuatLuuChuyenKho ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.XuatHangBaoHanh ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.XuatLinhKienLapRap ||
+                   loaiNhapXuatKho == LoaiNhapXuatKhoEnum.XuatThanhPhamPhanRa;
         }
 
         #endregion

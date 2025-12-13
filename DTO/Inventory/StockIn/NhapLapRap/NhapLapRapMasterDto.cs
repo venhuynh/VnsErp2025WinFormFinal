@@ -1,4 +1,4 @@
-﻿using DTO.Inventory.InventoryManagement;
+using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -98,6 +98,87 @@ namespace DTO.Inventory.StockIn.NhapLapRap
         [DisplayName("Ngày tạo")]
         [Display(Order = 31)]
         public DateTime? CreatedDate { get; set; }
+
+        #endregion
+
+        #region Properties - HTML Display
+
+        /// <summary>
+        /// Thông tin phiếu nhập dưới dạng HTML theo format DevExpress
+        /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+        /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+        /// Dùng cho SearchLookUpEdit để hiển thị thông tin đầy đủ của phiếu nhập
+        /// </summary>
+        [DisplayName("Thông tin phiếu nhập HTML")]
+        [Description("Thông tin phiếu nhập dưới dạng HTML")]
+        public string StockInInfoHtml
+        {
+            get
+            {
+                var stockInNumber = StockInNumber ?? string.Empty;
+                var stockInDate = StockInDate.ToString("dd/MM/yyyy");
+                var warehouseName = WarehouseName ?? string.Empty;
+                var warehouseCode = WarehouseCode ?? string.Empty;
+                var totalQuantity = TotalQuantity.ToString("N2");
+                var createdByName = CreatedByName ?? string.Empty;
+                var statusText = TrangThai switch
+                {
+                    TrangThaiPhieuNhapEnum.TaoMoi => "Tạo mới",
+                    TrangThaiPhieuNhapEnum.ChoDuyet => "Chờ duyệt",
+                    TrangThaiPhieuNhapEnum.DaDuyet => "Đã duyệt",
+                    TrangThaiPhieuNhapEnum.DangNhapKho => "Đang nhập kho",
+                    TrangThaiPhieuNhapEnum.DaNhapKho => "Đã nhập kho",
+                    _ => "Không xác định"
+                };
+                var statusColor = TrangThai switch
+                {
+                    TrangThaiPhieuNhapEnum.TaoMoi => "#FF9800",      // Orange - Tạo mới
+                    TrangThaiPhieuNhapEnum.ChoDuyet => "#2196F3",   // Blue - Chờ duyệt
+                    TrangThaiPhieuNhapEnum.DaDuyet => "#4CAF50",     // Green - Đã duyệt
+                    TrangThaiPhieuNhapEnum.DangNhapKho => "#9C27B0", // Purple - Đang nhập kho
+                    TrangThaiPhieuNhapEnum.DaNhapKho => "#4CAF50",   // Green - Đã nhập kho
+                    _ => "#757575"                                    // Gray - Khác
+                };
+
+                // Format chuyên nghiệp với visual hierarchy rõ ràng
+                var html = $"<b><color='blue'>{stockInNumber}</color></b>";
+
+                html += $" <color='#757575'>({stockInDate})</color>";
+
+                html += "<br>";
+
+                var infoParts = new List<string>();
+
+                if (!string.IsNullOrWhiteSpace(warehouseName))
+                {
+                    var warehouseInfo = warehouseName;
+                    if (!string.IsNullOrWhiteSpace(warehouseCode))
+                    {
+                        warehouseInfo += $" ({warehouseCode})";
+                    }
+                    infoParts.Add($"<color='#757575'>Kho:</color> <b>{warehouseInfo}</b>");
+                }
+
+                if (TotalQuantity > 0)
+                {
+                    infoParts.Add($"<color='#757575'>SL:</color> <b><color='#2196F3'>{totalQuantity}</color></b>");
+                }
+
+                if (infoParts.Any())
+                {
+                    html += string.Join(" | ", infoParts) + "<br>";
+                }
+
+                html += $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>";
+
+                if (!string.IsNullOrWhiteSpace(createdByName))
+                {
+                    html += $" | <color='#757575'>Người tạo:</color> <b>{createdByName}</b>";
+                }
+
+                return html;
+            }
+        }
 
         #endregion
     }

@@ -1,4 +1,4 @@
-﻿namespace VnsErp2025.Form
+namespace VnsErp2025.Form
 {
     partial class FormMain
     {
@@ -65,7 +65,7 @@
             this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
             this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
+            this.NhapLapRapBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XuatLapRapBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.PartnerRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -126,7 +126,7 @@
             this.barSubItem1,
             this.barButtonItem1,
             this.barButtonItem2,
-            this.barButtonItem3,
+            this.NhapLapRapBarButtonItem,
             this.XuatLapRapBarButtonItem});
             this.ribbon.Location = new System.Drawing.Point(0, 0);
             this.ribbon.MaxItemId = 39;
@@ -445,12 +445,13 @@
             this.barButtonItem2.Id = 36;
             this.barButtonItem2.Name = "barButtonItem2";
             // 
-            // barButtonItem3
+            // NhapLapRapBarButtonItem
             // 
-            this.barButtonItem3.Caption = "Nhập lắp ráp";
-            this.barButtonItem3.Id = 37;
-            this.barButtonItem3.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.dashboard;
-            this.barButtonItem3.Name = "barButtonItem3";
+            this.NhapLapRapBarButtonItem.Caption = "Nhập lắp ráp";
+            this.NhapLapRapBarButtonItem.Id = 37;
+            this.NhapLapRapBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.dashboard;
+            this.NhapLapRapBarButtonItem.Name = "NhapLapRapBarButtonItem";
+            this.NhapLapRapBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.NhapLapRapBarButtonItem_ItemClick);
             // 
             // XuatLapRapBarButtonItem
             // 
@@ -516,7 +517,7 @@
             // 
             this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapHangThuongMaiBarButtonItem);
             this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapThietBiMuonBarButtonItem);
-            this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.barButtonItem3);
+            this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapLapRapBarButtonItem);
             this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapBaoHanhBarButtonItem);
             this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapLuuChuyenKhoBarButtonItem);
             this.NhapKhoRibbonPageGroup.ItemLinks.Add(this.NhapNoiBoBarButtonItem);
@@ -637,7 +638,7 @@
         private DevExpress.XtraBars.BarSubItem barSubItem1;
         private DevExpress.XtraBars.BarButtonItem barButtonItem1;
         private DevExpress.XtraBars.BarButtonItem barButtonItem2;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem3;
+        private DevExpress.XtraBars.BarButtonItem NhapLapRapBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem XuatLapRapBarButtonItem;
     }
 }

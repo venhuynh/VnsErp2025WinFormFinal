@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockOut.XuatLapRap
+namespace Inventory.StockOut.XuatLapRap
 {
     partial class UcXuatLapRapDetailDto
     {
@@ -39,7 +39,6 @@
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colProductVariantName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.StockOutDetailProductNameHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -54,13 +53,14 @@
             this.dockPanel = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.BarCodeTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.AddBarCodeHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.LogTextBox = new System.Windows.Forms.TextBox();
+            this.AddBarCodeHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
+            this.BarCodeTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xuatLapRapDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridView)).BeginInit();
@@ -78,8 +78,8 @@
             this.dockPanel1_Container.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BarCodeTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
@@ -176,7 +176,7 @@
             // ProductVariantDtoSearchLookUpEdit1View
             // 
             this.ProductVariantDtoSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colFullName});
+            this.colVariantFullName});
             this.ProductVariantDtoSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.ProductVariantDtoSearchLookUpEdit1View.Name = "ProductVariantDtoSearchLookUpEdit1View";
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
@@ -184,28 +184,6 @@
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowIndicator = false;
-            // 
-            // colFullName
-            // 
-            this.colFullName.AppearanceCell.Options.UseTextOptions = true;
-            this.colFullName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colFullName.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colFullName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colFullName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colFullName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colFullName.AppearanceHeader.Options.UseBackColor = true;
-            this.colFullName.AppearanceHeader.Options.UseFont = true;
-            this.colFullName.AppearanceHeader.Options.UseForeColor = true;
-            this.colFullName.AppearanceHeader.Options.UseTextOptions = true;
-            this.colFullName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colFullName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colFullName.Caption = "Thông tin sản phẩm";
-            this.colFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
-            this.colFullName.FieldName = "FullNameHtml";
-            this.colFullName.Name = "colFullName";
-            this.colFullName.Visible = true;
-            this.colFullName.VisibleIndex = 0;
-            this.colFullName.Width = 450;
             // 
             // ProductFullNameHypertextLabel
             // 
@@ -397,34 +375,14 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // Root
+            // LogTextBox
             // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
-            this.layoutControlItem2,
-            this.layoutControlItem3});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(336, 675);
-            this.Root.TextVisible = false;
-            // 
-            // BarCodeTextEdit
-            // 
-            this.BarCodeTextEdit.Location = new System.Drawing.Point(64, 12);
-            this.BarCodeTextEdit.Name = "BarCodeTextEdit";
-            this.BarCodeTextEdit.Size = new System.Drawing.Size(172, 20);
-            this.BarCodeTextEdit.StyleController = this.layoutControl1;
-            this.BarCodeTextEdit.TabIndex = 4;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.BarCodeTextEdit;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(228, 24);
-            this.layoutControlItem1.Text = "Mã vạch";
-            this.layoutControlItem1.TextSize = new System.Drawing.Size(40, 13);
+            this.LogTextBox.Location = new System.Drawing.Point(12, 36);
+            this.LogTextBox.Multiline = true;
+            this.LogTextBox.Name = "LogTextBox";
+            this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.LogTextBox.Size = new System.Drawing.Size(312, 627);
+            this.LogTextBox.TabIndex = 6;
             // 
             // AddBarCodeHyperlinkLabelControl
             // 
@@ -437,6 +395,35 @@
             this.AddBarCodeHyperlinkLabelControl.TabIndex = 5;
             this.AddBarCodeHyperlinkLabelControl.Text = "Thêm vào";
             // 
+            // BarCodeTextEdit
+            // 
+            this.BarCodeTextEdit.Location = new System.Drawing.Point(64, 12);
+            this.BarCodeTextEdit.Name = "BarCodeTextEdit";
+            this.BarCodeTextEdit.Size = new System.Drawing.Size(172, 20);
+            this.BarCodeTextEdit.StyleController = this.layoutControl1;
+            this.BarCodeTextEdit.TabIndex = 4;
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1,
+            this.layoutControlItem2,
+            this.layoutControlItem3});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(336, 675);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.BarCodeTextEdit;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(228, 24);
+            this.layoutControlItem1.Text = "Mã vạch";
+            this.layoutControlItem1.TextSize = new System.Drawing.Size(40, 13);
+            // 
             // layoutControlItem2
             // 
             this.layoutControlItem2.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
@@ -448,15 +435,6 @@
             this.layoutControlItem2.Size = new System.Drawing.Size(88, 24);
             this.layoutControlItem2.TextVisible = false;
             // 
-            // LogTextBox
-            // 
-            this.LogTextBox.Location = new System.Drawing.Point(12, 36);
-            this.LogTextBox.Multiline = true;
-            this.LogTextBox.Name = "LogTextBox";
-            this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.LogTextBox.Size = new System.Drawing.Size(312, 627);
-            this.LogTextBox.TabIndex = 6;
-            // 
             // layoutControlItem3
             // 
             this.layoutControlItem3.Control = this.LogTextBox;
@@ -466,6 +444,17 @@
             this.layoutControlItem3.Text = "Xử lý";
             this.layoutControlItem3.TextLocation = DevExpress.Utils.Locations.Top;
             this.layoutControlItem3.TextVisible = false;
+            // 
+            // colVariantFullName
+            // 
+            this.colVariantFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
+            this.colVariantFullName.FieldName = "VariantFullName";
+            this.colVariantFullName.Name = "colVariantFullName";
+            this.colVariantFullName.OptionsColumn.AllowEdit = false;
+            this.colVariantFullName.OptionsColumn.ReadOnly = true;
+            this.colVariantFullName.Visible = true;
+            this.colVariantFullName.VisibleIndex = 0;
+            this.colVariantFullName.Width = 600;
             // 
             // UcXuatLapRapDetailDto
             // 
@@ -492,8 +481,8 @@
             this.dockPanel1_Container.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BarCodeTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
@@ -511,7 +500,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn colStockOutQty;
         private DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit ProductVariantSearchLookUpEdit;
         private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantDtoSearchLookUpEdit1View;
-        private DevExpress.XtraGrid.Columns.GridColumn colFullName;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel ProductFullNameHypertextLabel;
 
         private System.Windows.Forms.BindingSource productVariantListDtoBindingSource;
@@ -533,5 +521,6 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
+        private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
     }
 }

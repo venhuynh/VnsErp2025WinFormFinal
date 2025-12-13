@@ -1,4 +1,4 @@
-﻿using Authentication.Form;
+using Authentication.Form;
 using DevExpress.XtraBars;
 using MasterData.Company;
 using MasterData.Customer;
@@ -13,6 +13,7 @@ using Dal.Connection;
 using Dal.DataContext;
 using Inventory.StockIn.NhapBaoHanh;
 using Inventory.StockIn.NhapHangThuongMai;
+using Inventory.StockIn.NhapLapRap;
 using Inventory.StockIn.NhapLuuChuyenKho;
 using Inventory.StockIn.NhapNoiBo;
 using Inventory.StockIn.NhapThietBiMuon;
@@ -1200,6 +1201,23 @@ namespace VnsErp2025.Form
             catch (Exception ex)
             {
                 MsgBox.ShowException(ex, "Lỗi hiển thị form nhập thiết bị mượn - thuê");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Nhập lắp ráp
+        /// </summary>
+        private void NhapLapRapBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmNhapLapRap>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form nhập lắp ráp");
             }
         }
 

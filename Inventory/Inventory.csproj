@@ -111,6 +111,12 @@
     <Compile Include="OverlayForm\FrmAddStockInOutDocumentDto.Designer.cs">
       <DependentUpon>FrmAddStockInOutDocumentDto.cs</DependentUpon>
     </Compile>
+    <Compile Include="OverlayForm\FrmTaoThietBiNhapLapRap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OverlayForm\FrmTaoThietBiNhapLapRap.Designer.cs">
+      <DependentUpon>FrmTaoThietBiNhapLapRap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Query\FrmStockInOutDocumentDtoLookup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -412,6 +418,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OverlayForm\FrmAddStockInOutDocumentDto.resx">
       <DependentUpon>FrmAddStockInOutDocumentDto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OverlayForm\FrmTaoThietBiNhapLapRap.resx">
+      <DependentUpon>FrmTaoThietBiNhapLapRap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Query\FrmStockInOutDocumentDtoLookup.resx">
       <DependentUpon>FrmStockInOutDocumentDtoLookup.cs</DependentUpon>

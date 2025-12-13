@@ -29,13 +29,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.NhapLapRapDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.nhapLapRapDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.nhapLapRapDetailDtoBindingSource = new System.Windows.Forms.BindingSource();
             this.NhapLapRapDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
-            this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource();
             this.ProductVariantDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -48,16 +47,16 @@
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
+            this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager();
             this.dockPanel = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.BarCodeTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.AddBarCodeHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.LogTextBox = new System.Windows.Forms.TextBox();
+            this.CreateDeviceHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
+            this.SoPhieuLapRapTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.NhapLapRapDetailDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nhapLapRapDetailDtoBindingSource)).BeginInit();
@@ -76,8 +75,8 @@
             this.dockPanel1_Container.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SoPhieuLapRapTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BarCodeTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
@@ -312,6 +311,7 @@
             this.colGhiChu.AppearanceHeader.Options.UseTextOptions = true;
             this.colGhiChu.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colGhiChu.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colGhiChu.Caption = "Ghi chú";
             this.colGhiChu.ColumnEdit = this.GhiChuMemoEdit;
             this.colGhiChu.FieldName = "GhiChu";
             this.colGhiChu.Name = "colGhiChu";
@@ -372,7 +372,7 @@
             this.dockPanel.Options.ShowCloseButton = false;
             this.dockPanel.OriginalSize = new System.Drawing.Size(343, 200);
             this.dockPanel.Size = new System.Drawing.Size(343, 704);
-            this.dockPanel.Text = "Đọc Barcode";
+            this.dockPanel.Text = "Nhập từ phiếu xuất lắp ráp";
             // 
             // dockPanel1_Container
             // 
@@ -385,8 +385,8 @@
             // layoutControl1
             // 
             this.layoutControl1.Controls.Add(this.LogTextBox);
-            this.layoutControl1.Controls.Add(this.AddBarCodeHyperlinkLabelControl);
-            this.layoutControl1.Controls.Add(this.BarCodeTextEdit);
+            this.layoutControl1.Controls.Add(this.CreateDeviceHyperlinkLabelControl);
+            this.layoutControl1.Controls.Add(this.SoPhieuLapRapTextEdit);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
@@ -394,6 +394,34 @@
             this.layoutControl1.Size = new System.Drawing.Size(336, 675);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
+            // 
+            // LogTextBox
+            // 
+            this.LogTextBox.Location = new System.Drawing.Point(12, 36);
+            this.LogTextBox.Multiline = true;
+            this.LogTextBox.Name = "LogTextBox";
+            this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.LogTextBox.Size = new System.Drawing.Size(312, 627);
+            this.LogTextBox.TabIndex = 6;
+            // 
+            // CreateDeviceHyperlinkLabelControl
+            // 
+            this.CreateDeviceHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
+            this.CreateDeviceHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.add_16x16;
+            this.CreateDeviceHyperlinkLabelControl.Location = new System.Drawing.Point(241, 12);
+            this.CreateDeviceHyperlinkLabelControl.Name = "CreateDeviceHyperlinkLabelControl";
+            this.CreateDeviceHyperlinkLabelControl.Size = new System.Drawing.Size(75, 20);
+            this.CreateDeviceHyperlinkLabelControl.StyleController = this.layoutControl1;
+            this.CreateDeviceHyperlinkLabelControl.TabIndex = 5;
+            this.CreateDeviceHyperlinkLabelControl.Text = "Tạo thiết bị";
+            // 
+            // SoPhieuLapRapTextEdit
+            // 
+            this.SoPhieuLapRapTextEdit.Location = new System.Drawing.Point(65, 12);
+            this.SoPhieuLapRapTextEdit.Name = "SoPhieuLapRapTextEdit";
+            this.SoPhieuLapRapTextEdit.Size = new System.Drawing.Size(164, 20);
+            this.SoPhieuLapRapTextEdit.StyleController = this.layoutControl1;
+            this.SoPhieuLapRapTextEdit.TabIndex = 4;
             // 
             // Root
             // 
@@ -407,53 +435,25 @@
             this.Root.Size = new System.Drawing.Size(336, 675);
             this.Root.TextVisible = false;
             // 
-            // BarCodeTextEdit
-            // 
-            this.BarCodeTextEdit.Location = new System.Drawing.Point(64, 12);
-            this.BarCodeTextEdit.Name = "BarCodeTextEdit";
-            this.BarCodeTextEdit.Size = new System.Drawing.Size(172, 20);
-            this.BarCodeTextEdit.StyleController = this.layoutControl1;
-            this.BarCodeTextEdit.TabIndex = 4;
-            // 
             // layoutControlItem1
             // 
-            this.layoutControlItem1.Control = this.BarCodeTextEdit;
+            this.layoutControlItem1.Control = this.SoPhieuLapRapTextEdit;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(228, 24);
-            this.layoutControlItem1.Text = "Mã vạch";
-            this.layoutControlItem1.TextSize = new System.Drawing.Size(40, 13);
-            // 
-            // AddBarCodeHyperlinkLabelControl
-            // 
-            this.AddBarCodeHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
-            this.AddBarCodeHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.add_16x16;
-            this.AddBarCodeHyperlinkLabelControl.Location = new System.Drawing.Point(248, 12);
-            this.AddBarCodeHyperlinkLabelControl.Name = "AddBarCodeHyperlinkLabelControl";
-            this.AddBarCodeHyperlinkLabelControl.Size = new System.Drawing.Size(68, 20);
-            this.AddBarCodeHyperlinkLabelControl.StyleController = this.layoutControl1;
-            this.AddBarCodeHyperlinkLabelControl.TabIndex = 5;
-            this.AddBarCodeHyperlinkLabelControl.Text = "Thêm vào";
+            this.layoutControlItem1.Size = new System.Drawing.Size(221, 24);
+            this.layoutControlItem1.Text = "Số phiếu";
+            this.layoutControlItem1.TextSize = new System.Drawing.Size(41, 13);
             // 
             // layoutControlItem2
             // 
             this.layoutControlItem2.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.layoutControlItem2.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.layoutControlItem2.Control = this.AddBarCodeHyperlinkLabelControl;
-            this.layoutControlItem2.Location = new System.Drawing.Point(228, 0);
+            this.layoutControlItem2.Control = this.CreateDeviceHyperlinkLabelControl;
+            this.layoutControlItem2.Location = new System.Drawing.Point(221, 0);
             this.layoutControlItem2.Name = "layoutControlItem2";
             this.layoutControlItem2.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 2, 2);
-            this.layoutControlItem2.Size = new System.Drawing.Size(88, 24);
+            this.layoutControlItem2.Size = new System.Drawing.Size(95, 24);
             this.layoutControlItem2.TextVisible = false;
-            // 
-            // LogTextBox
-            // 
-            this.LogTextBox.Location = new System.Drawing.Point(12, 36);
-            this.LogTextBox.Multiline = true;
-            this.LogTextBox.Name = "LogTextBox";
-            this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.LogTextBox.Size = new System.Drawing.Size(312, 627);
-            this.LogTextBox.TabIndex = 6;
             // 
             // layoutControlItem3
             // 
@@ -490,8 +490,8 @@
             this.dockPanel1_Container.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.SoPhieuLapRapTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BarCodeTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
@@ -525,8 +525,8 @@
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         protected System.Windows.Forms.TextBox LogTextBox;
-        private DevExpress.XtraEditors.HyperlinkLabelControl AddBarCodeHyperlinkLabelControl;
-        private DevExpress.XtraEditors.TextEdit BarCodeTextEdit;
+        private DevExpress.XtraEditors.HyperlinkLabelControl CreateDeviceHyperlinkLabelControl;
+        private DevExpress.XtraEditors.TextEdit SoPhieuLapRapTextEdit;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
