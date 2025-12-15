@@ -1,4 +1,5 @@
-﻿using Authentication.Form;
+using Authentication.Form;
+using Bll.Common;
 using Common.Utils;
 using Dal.Connection;
 using Inventory.Management;
@@ -91,6 +92,30 @@ namespace VnsErp2025
                 MessageBox.Show(
                     $@"Lỗi khi khởi tạo ApplicationStartupManager: {ex.Message}",
                     @"Lỗi khởi tạo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                Application.Exit();
+                return;
+            }
+
+            // 4) Kiểm tra bảo mật ứng dụng (version và MAC address)
+            try
+            {
+                var securityService = new ApplicationSecurityService();
+                var securityResult = securityService.CheckSecurity();
+
+                if (!securityResult.IsValid)
+                {
+                    securityService.ShowErrorAndExit(securityResult);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $@"Lỗi khi kiểm tra bảo mật ứng dụng: {ex.Message}\n\n" +
+                    @"Vui lòng liên hệ quản trị viên để được hỗ trợ.",
+                    @"Lỗi bảo mật",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 Application.Exit();

@@ -30,12 +30,18 @@ namespace Dal.DataContext
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
-    partial void InsertApplicationUser(ApplicationUser instance);
-    partial void UpdateApplicationUser(ApplicationUser instance);
-    partial void DeleteApplicationUser(ApplicationUser instance);
+    partial void InsertAllowedMacAddress(AllowedMacAddress instance);
+    partial void UpdateAllowedMacAddress(AllowedMacAddress instance);
+    partial void DeleteAllowedMacAddress(AllowedMacAddress instance);
     partial void InsertWarranty(Warranty instance);
     partial void UpdateWarranty(Warranty instance);
     partial void DeleteWarranty(Warranty instance);
+    partial void InsertApplicationUser(ApplicationUser instance);
+    partial void UpdateApplicationUser(ApplicationUser instance);
+    partial void DeleteApplicationUser(ApplicationUser instance);
+    partial void InsertApplicationVersion(ApplicationVersion instance);
+    partial void UpdateApplicationVersion(ApplicationVersion instance);
+    partial void DeleteApplicationVersion(ApplicationVersion instance);
     partial void InsertAsset(Asset instance);
     partial void UpdateAsset(Asset instance);
     partial void DeleteAsset(Asset instance);
@@ -119,6 +125,12 @@ namespace Dal.DataContext
     partial void DeleteVariantAttribute(VariantAttribute instance);
     #endregion
 		
+		public VnsErp2025DataContext() : 
+				base(global::Dal.Properties.Settings.Default.VnsErp2025FinalConnectionString2, mappingSource)
+		{
+			OnCreated();
+		}
+		
 		public VnsErp2025DataContext(string connection) : 
 				base(connection, mappingSource)
 		{
@@ -143,11 +155,11 @@ namespace Dal.DataContext
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<ApplicationUser> ApplicationUsers
+		public System.Data.Linq.Table<AllowedMacAddress> AllowedMacAddresses
 		{
 			get
 			{
-				return this.GetTable<ApplicationUser>();
+				return this.GetTable<AllowedMacAddress>();
 			}
 		}
 		
@@ -156,6 +168,22 @@ namespace Dal.DataContext
 			get
 			{
 				return this.GetTable<Warranty>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ApplicationUser> ApplicationUsers
+		{
+			get
+			{
+				return this.GetTable<ApplicationUser>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ApplicationVersion> ApplicationVersions
+		{
+			get
+			{
+				return this.GetTable<ApplicationVersion>();
 			}
 		}
 		
@@ -373,6 +401,587 @@ namespace Dal.DataContext
 			{
 				return this.GetTable<VariantAttribute>();
 			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.AllowedMacAddress")]
+	public partial class AllowedMacAddress : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private string _MacAddress;
+		
+		private string _ComputerName;
+		
+		private string _Description;
+		
+		private bool _IsActive;
+		
+		private System.DateTime _CreateDate;
+		
+		private System.Nullable<System.Guid> _CreateBy;
+		
+		private System.Nullable<System.DateTime> _ModifiedDate;
+		
+		private System.Nullable<System.Guid> _ModifiedBy;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnMacAddressChanging(string value);
+    partial void OnMacAddressChanged();
+    partial void OnComputerNameChanging(string value);
+    partial void OnComputerNameChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnCreateByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreateByChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
+    partial void OnModifiedByChanging(System.Nullable<System.Guid> value);
+    partial void OnModifiedByChanged();
+    #endregion
+		
+		public AllowedMacAddress()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MacAddress", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string MacAddress
+		{
+			get
+			{
+				return this._MacAddress;
+			}
+			set
+			{
+				if ((this._MacAddress != value))
+				{
+					this.OnMacAddressChanging(value);
+					this.SendPropertyChanging();
+					this._MacAddress = value;
+					this.SendPropertyChanged("MacAddress");
+					this.OnMacAddressChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ComputerName", DbType="NVarChar(255)")]
+		public string ComputerName
+		{
+			get
+			{
+				return this._ComputerName;
+			}
+			set
+			{
+				if ((this._ComputerName != value))
+				{
+					this.OnComputerNameChanging(value);
+					this.SendPropertyChanging();
+					this._ComputerName = value;
+					this.SendPropertyChanged("ComputerName");
+					this.OnComputerNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(500)")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreateBy
+		{
+			get
+			{
+				return this._CreateBy;
+			}
+			set
+			{
+				if ((this._CreateBy != value))
+				{
+					this.OnCreateByChanging(value);
+					this.SendPropertyChanging();
+					this._CreateBy = value;
+					this.SendPropertyChanged("CreateBy");
+					this.OnCreateByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
+		{
+			get
+			{
+				return this._ModifiedDate;
+			}
+			set
+			{
+				if ((this._ModifiedDate != value))
+				{
+					this.OnModifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ModifiedBy
+		{
+			get
+			{
+				return this._ModifiedBy;
+			}
+			set
+			{
+				if ((this._ModifiedBy != value))
+				{
+					this.OnModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Warranty")]
+	public partial class Warranty : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _StockInOutDetailId;
+		
+		private int _WarrantyType;
+		
+		private System.Nullable<System.DateTime> _WarrantyFrom;
+		
+		private int _MonthOfWarranty;
+		
+		private System.Nullable<System.DateTime> _WarrantyUntil;
+		
+		private int _WarrantyStatus;
+		
+		private string _UniqueProductInfo;
+		
+		private EntitySet<Asset> _Assets;
+		
+		private EntitySet<Device> _Devices;
+		
+		private EntityRef<StockInOutDetail> _StockInOutDetail;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnStockInOutDetailIdChanging(System.Guid value);
+    partial void OnStockInOutDetailIdChanged();
+    partial void OnWarrantyTypeChanging(int value);
+    partial void OnWarrantyTypeChanged();
+    partial void OnWarrantyFromChanging(System.Nullable<System.DateTime> value);
+    partial void OnWarrantyFromChanged();
+    partial void OnMonthOfWarrantyChanging(int value);
+    partial void OnMonthOfWarrantyChanged();
+    partial void OnWarrantyUntilChanging(System.Nullable<System.DateTime> value);
+    partial void OnWarrantyUntilChanged();
+    partial void OnWarrantyStatusChanging(int value);
+    partial void OnWarrantyStatusChanged();
+    partial void OnUniqueProductInfoChanging(string value);
+    partial void OnUniqueProductInfoChanged();
+    #endregion
+		
+		public Warranty()
+		{
+			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
+			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
+			this._StockInOutDetail = default(EntityRef<StockInOutDetail>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutDetailId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid StockInOutDetailId
+		{
+			get
+			{
+				return this._StockInOutDetailId;
+			}
+			set
+			{
+				if ((this._StockInOutDetailId != value))
+				{
+					if (this._StockInOutDetail.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnStockInOutDetailIdChanging(value);
+					this.SendPropertyChanging();
+					this._StockInOutDetailId = value;
+					this.SendPropertyChanged("StockInOutDetailId");
+					this.OnStockInOutDetailIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyType", DbType="Int NOT NULL")]
+		public int WarrantyType
+		{
+			get
+			{
+				return this._WarrantyType;
+			}
+			set
+			{
+				if ((this._WarrantyType != value))
+				{
+					this.OnWarrantyTypeChanging(value);
+					this.SendPropertyChanging();
+					this._WarrantyType = value;
+					this.SendPropertyChanged("WarrantyType");
+					this.OnWarrantyTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyFrom", DbType="DateTime")]
+		public System.Nullable<System.DateTime> WarrantyFrom
+		{
+			get
+			{
+				return this._WarrantyFrom;
+			}
+			set
+			{
+				if ((this._WarrantyFrom != value))
+				{
+					this.OnWarrantyFromChanging(value);
+					this.SendPropertyChanging();
+					this._WarrantyFrom = value;
+					this.SendPropertyChanged("WarrantyFrom");
+					this.OnWarrantyFromChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MonthOfWarranty", DbType="Int NOT NULL")]
+		public int MonthOfWarranty
+		{
+			get
+			{
+				return this._MonthOfWarranty;
+			}
+			set
+			{
+				if ((this._MonthOfWarranty != value))
+				{
+					this.OnMonthOfWarrantyChanging(value);
+					this.SendPropertyChanging();
+					this._MonthOfWarranty = value;
+					this.SendPropertyChanged("MonthOfWarranty");
+					this.OnMonthOfWarrantyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyUntil", DbType="DateTime")]
+		public System.Nullable<System.DateTime> WarrantyUntil
+		{
+			get
+			{
+				return this._WarrantyUntil;
+			}
+			set
+			{
+				if ((this._WarrantyUntil != value))
+				{
+					this.OnWarrantyUntilChanging(value);
+					this.SendPropertyChanging();
+					this._WarrantyUntil = value;
+					this.SendPropertyChanged("WarrantyUntil");
+					this.OnWarrantyUntilChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyStatus", DbType="Int NOT NULL")]
+		public int WarrantyStatus
+		{
+			get
+			{
+				return this._WarrantyStatus;
+			}
+			set
+			{
+				if ((this._WarrantyStatus != value))
+				{
+					this.OnWarrantyStatusChanging(value);
+					this.SendPropertyChanging();
+					this._WarrantyStatus = value;
+					this.SendPropertyChanged("WarrantyStatus");
+					this.OnWarrantyStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UniqueProductInfo", DbType="NVarChar(200) NOT NULL", CanBeNull=false)]
+		public string UniqueProductInfo
+		{
+			get
+			{
+				return this._UniqueProductInfo;
+			}
+			set
+			{
+				if ((this._UniqueProductInfo != value))
+				{
+					this.OnUniqueProductInfoChanging(value);
+					this.SendPropertyChanging();
+					this._UniqueProductInfo = value;
+					this.SendPropertyChanged("UniqueProductInfo");
+					this.OnUniqueProductInfoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Asset", Storage="_Assets", ThisKey="Id", OtherKey="WarrantyId")]
+		public EntitySet<Asset> Assets
+		{
+			get
+			{
+				return this._Assets;
+			}
+			set
+			{
+				this._Assets.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Device", Storage="_Devices", ThisKey="Id", OtherKey="WarrantyId")]
+		public EntitySet<Device> Devices
+		{
+			get
+			{
+				return this._Devices;
+			}
+			set
+			{
+				this._Devices.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_StockInOutDetail", ThisKey="StockInOutDetailId", OtherKey="Id", IsForeignKey=true)]
+		public StockInOutDetail StockInOutDetail
+		{
+			get
+			{
+				return this._StockInOutDetail.Entity;
+			}
+			set
+			{
+				StockInOutDetail previousValue = this._StockInOutDetail.Entity;
+				if (((previousValue != value) 
+							|| (this._StockInOutDetail.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._StockInOutDetail.Entity = null;
+						previousValue.Warranties.Remove(this);
+					}
+					this._StockInOutDetail.Entity = value;
+					if ((value != null))
+					{
+						value.Warranties.Add(this);
+						this._StockInOutDetailId = value.Id;
+					}
+					else
+					{
+						this._StockInOutDetailId = default(System.Guid);
+					}
+					this.SendPropertyChanged("StockInOutDetail");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_Assets(Asset entity)
+		{
+			this.SendPropertyChanging();
+			entity.Warranty = this;
+		}
+		
+		private void detach_Assets(Asset entity)
+		{
+			this.SendPropertyChanging();
+			entity.Warranty = null;
+		}
+		
+		private void attach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Warranty = this;
+		}
+		
+		private void detach_Devices(Device entity)
+		{
+			this.SendPropertyChanging();
+			entity.Warranty = null;
 		}
 	}
 	
@@ -958,33 +1567,29 @@ namespace Dal.DataContext
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Warranty")]
-	public partial class Warranty : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ApplicationVersion")]
+	public partial class ApplicationVersion : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		private System.Guid _Id;
 		
-		private System.Guid _StockInOutDetailId;
+		private string _Version;
 		
-		private int _WarrantyType;
+		private System.DateTime _ReleaseDate;
 		
-		private System.Nullable<System.DateTime> _WarrantyFrom;
+		private bool _IsActive;
 		
-		private int _MonthOfWarranty;
+		private string _Description;
 		
-		private System.Nullable<System.DateTime> _WarrantyUntil;
+		private System.DateTime _CreateDate;
 		
-		private int _WarrantyStatus;
+		private System.Nullable<System.Guid> _CreateBy;
 		
-		private string _UniqueProductInfo;
+		private System.Nullable<System.DateTime> _ModifiedDate;
 		
-		private EntitySet<Asset> _Assets;
-		
-		private EntitySet<Device> _Devices;
-		
-		private EntityRef<StockInOutDetail> _StockInOutDetail;
+		private System.Nullable<System.Guid> _ModifiedBy;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -992,27 +1597,26 @@ namespace Dal.DataContext
     partial void OnCreated();
     partial void OnIdChanging(System.Guid value);
     partial void OnIdChanged();
-    partial void OnStockInOutDetailIdChanging(System.Guid value);
-    partial void OnStockInOutDetailIdChanged();
-    partial void OnWarrantyTypeChanging(int value);
-    partial void OnWarrantyTypeChanged();
-    partial void OnWarrantyFromChanging(System.Nullable<System.DateTime> value);
-    partial void OnWarrantyFromChanged();
-    partial void OnMonthOfWarrantyChanging(int value);
-    partial void OnMonthOfWarrantyChanged();
-    partial void OnWarrantyUntilChanging(System.Nullable<System.DateTime> value);
-    partial void OnWarrantyUntilChanged();
-    partial void OnWarrantyStatusChanging(int value);
-    partial void OnWarrantyStatusChanged();
-    partial void OnUniqueProductInfoChanging(string value);
-    partial void OnUniqueProductInfoChanged();
+    partial void OnVersionChanging(string value);
+    partial void OnVersionChanged();
+    partial void OnReleaseDateChanging(System.DateTime value);
+    partial void OnReleaseDateChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnCreateByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreateByChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
+    partial void OnModifiedByChanging(System.Nullable<System.Guid> value);
+    partial void OnModifiedByChanged();
     #endregion
 		
-		public Warranty()
+		public ApplicationVersion()
 		{
-			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
-			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
-			this._StockInOutDetail = default(EntityRef<StockInOutDetail>);
 			OnCreated();
 		}
 		
@@ -1036,206 +1640,162 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutDetailId", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid StockInOutDetailId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Version", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string Version
 		{
 			get
 			{
-				return this._StockInOutDetailId;
+				return this._Version;
 			}
 			set
 			{
-				if ((this._StockInOutDetailId != value))
+				if ((this._Version != value))
 				{
-					if (this._StockInOutDetail.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnStockInOutDetailIdChanging(value);
+					this.OnVersionChanging(value);
 					this.SendPropertyChanging();
-					this._StockInOutDetailId = value;
-					this.SendPropertyChanged("StockInOutDetailId");
-					this.OnStockInOutDetailIdChanged();
+					this._Version = value;
+					this.SendPropertyChanged("Version");
+					this.OnVersionChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyType", DbType="Int NOT NULL")]
-		public int WarrantyType
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReleaseDate", DbType="DateTime NOT NULL")]
+		public System.DateTime ReleaseDate
 		{
 			get
 			{
-				return this._WarrantyType;
+				return this._ReleaseDate;
 			}
 			set
 			{
-				if ((this._WarrantyType != value))
+				if ((this._ReleaseDate != value))
 				{
-					this.OnWarrantyTypeChanging(value);
+					this.OnReleaseDateChanging(value);
 					this.SendPropertyChanging();
-					this._WarrantyType = value;
-					this.SendPropertyChanged("WarrantyType");
-					this.OnWarrantyTypeChanged();
+					this._ReleaseDate = value;
+					this.SendPropertyChanged("ReleaseDate");
+					this.OnReleaseDateChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyFrom", DbType="DateTime")]
-		public System.Nullable<System.DateTime> WarrantyFrom
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
 		{
 			get
 			{
-				return this._WarrantyFrom;
+				return this._IsActive;
 			}
 			set
 			{
-				if ((this._WarrantyFrom != value))
+				if ((this._IsActive != value))
 				{
-					this.OnWarrantyFromChanging(value);
+					this.OnIsActiveChanging(value);
 					this.SendPropertyChanging();
-					this._WarrantyFrom = value;
-					this.SendPropertyChanged("WarrantyFrom");
-					this.OnWarrantyFromChanged();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MonthOfWarranty", DbType="Int NOT NULL")]
-		public int MonthOfWarranty
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(500)")]
+		public string Description
 		{
 			get
 			{
-				return this._MonthOfWarranty;
+				return this._Description;
 			}
 			set
 			{
-				if ((this._MonthOfWarranty != value))
+				if ((this._Description != value))
 				{
-					this.OnMonthOfWarrantyChanging(value);
+					this.OnDescriptionChanging(value);
 					this.SendPropertyChanging();
-					this._MonthOfWarranty = value;
-					this.SendPropertyChanged("MonthOfWarranty");
-					this.OnMonthOfWarrantyChanged();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyUntil", DbType="DateTime")]
-		public System.Nullable<System.DateTime> WarrantyUntil
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDate
 		{
 			get
 			{
-				return this._WarrantyUntil;
+				return this._CreateDate;
 			}
 			set
 			{
-				if ((this._WarrantyUntil != value))
+				if ((this._CreateDate != value))
 				{
-					this.OnWarrantyUntilChanging(value);
+					this.OnCreateDateChanging(value);
 					this.SendPropertyChanging();
-					this._WarrantyUntil = value;
-					this.SendPropertyChanged("WarrantyUntil");
-					this.OnWarrantyUntilChanged();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyStatus", DbType="Int NOT NULL")]
-		public int WarrantyStatus
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreateBy
 		{
 			get
 			{
-				return this._WarrantyStatus;
+				return this._CreateBy;
 			}
 			set
 			{
-				if ((this._WarrantyStatus != value))
+				if ((this._CreateBy != value))
 				{
-					this.OnWarrantyStatusChanging(value);
+					this.OnCreateByChanging(value);
 					this.SendPropertyChanging();
-					this._WarrantyStatus = value;
-					this.SendPropertyChanged("WarrantyStatus");
-					this.OnWarrantyStatusChanged();
+					this._CreateBy = value;
+					this.SendPropertyChanged("CreateBy");
+					this.OnCreateByChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UniqueProductInfo", DbType="NVarChar(200) NOT NULL", CanBeNull=false)]
-		public string UniqueProductInfo
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
 		{
 			get
 			{
-				return this._UniqueProductInfo;
+				return this._ModifiedDate;
 			}
 			set
 			{
-				if ((this._UniqueProductInfo != value))
+				if ((this._ModifiedDate != value))
 				{
-					this.OnUniqueProductInfoChanging(value);
+					this.OnModifiedDateChanging(value);
 					this.SendPropertyChanging();
-					this._UniqueProductInfo = value;
-					this.SendPropertyChanged("UniqueProductInfo");
-					this.OnUniqueProductInfoChanged();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Asset", Storage="_Assets", ThisKey="Id", OtherKey="WarrantyId")]
-		public EntitySet<Asset> Assets
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ModifiedBy
 		{
 			get
 			{
-				return this._Assets;
+				return this._ModifiedBy;
 			}
 			set
 			{
-				this._Assets.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Device", Storage="_Devices", ThisKey="Id", OtherKey="WarrantyId")]
-		public EntitySet<Device> Devices
-		{
-			get
-			{
-				return this._Devices;
-			}
-			set
-			{
-				this._Devices.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_StockInOutDetail", ThisKey="StockInOutDetailId", OtherKey="Id", IsForeignKey=true)]
-		public StockInOutDetail StockInOutDetail
-		{
-			get
-			{
-				return this._StockInOutDetail.Entity;
-			}
-			set
-			{
-				StockInOutDetail previousValue = this._StockInOutDetail.Entity;
-				if (((previousValue != value) 
-							|| (this._StockInOutDetail.HasLoadedOrAssignedValue == false)))
+				if ((this._ModifiedBy != value))
 				{
+					this.OnModifiedByChanging(value);
 					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._StockInOutDetail.Entity = null;
-						previousValue.Warranties.Remove(this);
-					}
-					this._StockInOutDetail.Entity = value;
-					if ((value != null))
-					{
-						value.Warranties.Add(this);
-						this._StockInOutDetailId = value.Id;
-					}
-					else
-					{
-						this._StockInOutDetailId = default(System.Guid);
-					}
-					this.SendPropertyChanged("StockInOutDetail");
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
 				}
 			}
 		}
@@ -1258,30 +1818,6 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_Assets(Asset entity)
-		{
-			this.SendPropertyChanging();
-			entity.Warranty = this;
-		}
-		
-		private void detach_Assets(Asset entity)
-		{
-			this.SendPropertyChanging();
-			entity.Warranty = null;
-		}
-		
-		private void attach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Warranty = this;
-		}
-		
-		private void detach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Warranty = null;
 		}
 	}
 	
