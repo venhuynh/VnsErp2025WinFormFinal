@@ -166,6 +166,10 @@
     <None Include="Resources\pivot_16x16.png" />
     <None Include="Resources\pivot_32x32.png" />
     <None Include="Resources\dashboard.svg" />
+    <None Include="Resources\electronics_desktopmac.svg" />
+    <None Include="Resources\bo_user.svg" />
+    <None Include="Resources\version-control.svg" />
+    <None Include="Resources\datasource.svg" />
     <Content Include="VNS Logo - Website.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

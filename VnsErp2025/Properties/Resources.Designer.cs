@@ -101,6 +101,16 @@ namespace VnsErp2025.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type DevExpress.Utils.Svg.SvgImage.
+        /// </summary>
+        internal static DevExpress.Utils.Svg.SvgImage bo_user {
+            get {
+                object obj = ResourceManager.GetObject("bo_user", resourceCulture);
+                return ((DevExpress.Utils.Svg.SvgImage)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap boproductgroup_16x16 {
@@ -187,6 +197,26 @@ namespace VnsErp2025.Properties {
             get {
                 object obj = ResourceManager.GetObject("database_32x32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type DevExpress.Utils.Svg.SvgImage.
+        /// </summary>
+        internal static DevExpress.Utils.Svg.SvgImage datasource {
+            get {
+                object obj = ResourceManager.GetObject("datasource", resourceCulture);
+                return ((DevExpress.Utils.Svg.SvgImage)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type DevExpress.Utils.Svg.SvgImage.
+        /// </summary>
+        internal static DevExpress.Utils.Svg.SvgImage electronics_desktopmac {
+            get {
+                object obj = ResourceManager.GetObject("electronics_desktopmac", resourceCulture);
+                return ((DevExpress.Utils.Svg.SvgImage)(obj));
             }
         }
         
@@ -446,6 +476,16 @@ namespace VnsErp2025.Properties {
         internal static DevExpress.Utils.Svg.SvgImage variant {
             get {
                 object obj = ResourceManager.GetObject("variant", resourceCulture);
+                return ((DevExpress.Utils.Svg.SvgImage)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type DevExpress.Utils.Svg.SvgImage.
+        /// </summary>
+        internal static DevExpress.Utils.Svg.SvgImage version_control {
+            get {
+                object obj = ResourceManager.GetObject("version-control", resourceCulture);
                 return ((DevExpress.Utils.Svg.SvgImage)(obj));
             }
         }

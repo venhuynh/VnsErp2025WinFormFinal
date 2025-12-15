@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace DTO.VersionAndUserManagementDto;
 
@@ -40,4 +42,93 @@ public class ApplicationVersionDto
 
     [DisplayName("Người cập nhật")]
     public Guid? ModifiedBy { get; set; }
+
+    /// <summary>
+    /// Thông tin phiên bản dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Thông tin HTML")]
+    [Description("Thông tin phiên bản dưới dạng HTML")]
+    public string ThongTinHtml
+    {
+        get
+        {
+            var version = Version ?? string.Empty;
+            var description = Description ?? string.Empty;
+            var releaseDate = ReleaseDate;
+            var statusText = IsActive ? "Đang hoạt động" : "Ngừng hoạt động";
+            var statusColor = IsActive ? "#4CAF50" : "#757575";
+
+            // Format chuyên nghiệp với visual hierarchy rõ ràng
+            // - Phiên bản: font lớn, bold, màu xanh đậm (primary)
+            // - Trạng thái: highlight với màu xanh (active) hoặc xám (inactive)
+            // - Thông tin chi tiết: font nhỏ hơn, màu xám cho label, đen cho value
+
+            var html = $"<b><color='blue'>{version}</color></b>";
+
+            if (IsActive)
+            {
+                html += " <color='#4CAF50'><b>●</b></color>";
+            }
+
+            html += "<br>";
+
+            var infoParts = new List<string>();
+
+            if (releaseDate != default(DateTime))
+            {
+                infoParts.Add($"<color='#757575'>Phát hành:</color> <b>{releaseDate:dd/MM/yyyy}</b>");
+            }
+
+            if (infoParts.Any())
+            {
+                html += string.Join(" | ", infoParts) + "<br>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(description))
+            {
+                html += $"<color='#757575'>Mô tả:</color> <b>{description}</b><br>";
+            }
+
+            html += $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>";
+
+            return html;
+        }
+    }
+
+    /// <summary>
+    /// Thông tin audit (ngày tạo/cập nhật) dưới dạng HTML theo format DevExpress
+    /// </summary>
+    [DisplayName("Thông tin audit HTML")]
+    [Description("Thông tin ngày tạo và cập nhật dưới dạng HTML")]
+    public string AuditInfoHtml
+    {
+        get
+        {
+            var html = string.Empty;
+            var infoParts = new List<string>();
+
+            // Ngày tạo
+            if (CreateDate != default(DateTime))
+            {
+                var createdInfo = $"<color='#757575'>Tạo:</color> <b>{CreateDate:dd/MM/yyyy HH:mm}</b>";
+                infoParts.Add(createdInfo);
+            }
+
+            // Ngày cập nhật
+            if (ModifiedDate.HasValue)
+            {
+                var modifiedInfo = $"<color='#757575'>Sửa:</color> <b>{ModifiedDate.Value:dd/MM/yyyy HH:mm}</b>";
+                infoParts.Add(modifiedInfo);
+            }
+
+            if (infoParts.Any())
+            {
+                html = string.Join("<br>", infoParts);
+            }
+
+            return html;
+        }
+    }
 }

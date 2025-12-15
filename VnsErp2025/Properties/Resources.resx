@@ -235,4 +235,16 @@
   <data name="dashboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\dashboard.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
+  <data name="electronics_desktopmac" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\electronics_desktopmac.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+  </data>
+  <data name="bo_user" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bo_user.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+  </data>
+  <data name="version-control" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\version-control.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+  </data>
+  <data name="datasource" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\datasource.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+  </data>
 </root>
