@@ -1,15 +1,15 @@
+using Dal.Connection;
+using Dal.DataContext;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
-using Dal.Connection;
-using Dal.DataAccess.Implementations.Common;
-using Dal.DataAccess.Interfaces.Common;
-using Dal.DataContext;
-using DTO.Common;
-using Logger;
-using Logger.Configuration;
-using Logger.Interfaces;
+using Dal.DataAccess.Implementations.VersionAndUserManagementDal;
+using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
+using DTO.VersionAndUserManagementDto;
 
 namespace Bll.Common;
 
@@ -89,7 +89,7 @@ public class AllowedMacAddressBll
             foreach (var ni in networkInterfaces)
             {
                 var macAddress = ni.GetPhysicalAddress();
-                if (macAddress != null && macAddress.ToString() != "000000000000")
+                if (macAddress.ToString() != "000000000000")
                 {
                     var macString = FormatMacAddress(macAddress.ToString());
                     _logger?.Debug($"Tìm thấy MAC address: {macString}");

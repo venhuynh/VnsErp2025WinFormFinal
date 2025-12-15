@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace DTO.Common;
+namespace DTO.VersionAndUserManagementDto;
 
 /// <summary>
 /// DTO cho quản lý MAC address được phép sử dụng ứng dụng

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dal.DataContext;
 
-namespace Dal.DataAccess.Interfaces.Common;
+namespace Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 
 /// <summary>
 /// Interface cho Repository quản lý MAC address được phép

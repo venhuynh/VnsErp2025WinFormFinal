@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataAccess.Interfaces.Common;
+using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 using Dal.DataContext;
 using Dal.Exceptions;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess.Implementations.Common;
+namespace Dal.DataAccess.Implementations.VersionAndUserManagementDal;
 
 /// <summary>
 /// Repository quản lý phiên bản ứng dụng

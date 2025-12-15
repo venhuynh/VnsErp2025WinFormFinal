@@ -1,9 +1,9 @@
-using System;
-using System.Windows.Forms;
-using Bll.Common;
+using Common.Utils;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Windows.Forms;
 
 namespace Bll.Common;
 
@@ -120,11 +120,9 @@ public class ApplicationSecurityService
         if (result == null || result.IsValid)
             return;
 
-        MessageBox.Show(
+        MsgBox.ShowError(
             result.ErrorMessage,
-            "Lỗi bảo mật ứng dụng",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error
+            "Lỗi bảo mật ứng dụng"
         );
 
         Application.Exit();
