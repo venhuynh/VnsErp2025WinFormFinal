@@ -198,18 +198,18 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
             var statusColor = IsActive ? "#4CAF50" : "#F44336";
 
             // Format chuyên nghiệp với visual hierarchy rõ ràng
-            // - Tên đơn vị: font lớn, bold, màu xanh đậm (primary)
-            // - Mã đơn vị: font nhỏ hơn, màu xám, highlight với màu cam
-            // - Mô tả: font nhỏ hơn, màu xám cho label, đen cho value
+            // - Tên đơn vị: bold, màu xanh đậm (primary)
+            // - Mã đơn vị: màu xám, highlight với màu cam
+            // - Mô tả: màu xám cho label, đen cho value
             // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
 
-            // Dòng đầu: Tên đơn vị (primary) - font lớn, bold, màu xanh
-            var html = $"<size=12><b><color='blue'>{name}</color></b></size>";
+            // Dòng đầu: Tên đơn vị (primary) - bold, màu xanh
+            var html = $"<b><color='blue'>{name}</color></b>";
 
             // Mã đơn vị - hiển thị cùng dòng với tên, màu xám
             if (!string.IsNullOrWhiteSpace(code))
             {
-                html += $" <size=9><color='#757575'>({code})</color></size>";
+                html += $" <color='#757575'>({code})</color>";
             }
 
             html += "<br>";
@@ -217,17 +217,17 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
             // Mã đơn vị - mỗi thông tin trên 1 hàng (nếu có)
             if (!string.IsNullOrWhiteSpace(code))
             {
-                html += $"<size=9><color='#757575'>Mã đơn vị:</color></size> <size=10><color='#FF9800'><b>{code}</b></color></size><br>";
+                html += $"<color='#757575'>Mã đơn vị:</color> <color='#FF9800'><b>{code}</b></color><br>";
             }
 
             // Mô tả - mỗi thông tin trên 1 hàng
             if (!string.IsNullOrWhiteSpace(description))
             {
-                html += $"<size=9><color='#757575'>Mô tả:</color></size> <size=10><color='#212121'><b>{description}</b></color></size><br>";
+                html += $"<color='#757575'>Mô tả:</color> <color='#212121'><b>{description}</b></color><br>";
             }
 
             // Trạng thái - highlight với màu
-            html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+            html += $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>";
 
             // Số lượng ProductVariant sử dụng - hiển thị nếu có
             if (ProductVariantCount > 0)
@@ -236,7 +236,7 @@ public class UnitOfMeasureDto : INotifyPropertyChanged
                 var variantCountText = ProductVariantCount == 1 
                     ? "1 biến thể sản phẩm" 
                     : $"{ProductVariantCount} biến thể sản phẩm";
-                html += $"<size=9><color='#757575'>Số biến thể:</color></size> <size=10><color='#2196F3'><b>{variantCountText}</b></color></size>";
+                html += $"<color='#757575'>Số biến thể:</color> <color='#2196F3'><b>{variantCountText}</b></color>";
             }
 
             return html;

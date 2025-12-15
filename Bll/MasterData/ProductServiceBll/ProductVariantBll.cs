@@ -213,6 +213,10 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
+        public string GetForNewAttribute(Guid variantId)
+        {
+            return GetDataAccess().GetForNewAttribute(variantId);
+        }
         #endregion
 
         #region ========== WRITE OPERATIONS ==========
@@ -377,5 +381,7 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         #endregion
+
+       
     }
 }

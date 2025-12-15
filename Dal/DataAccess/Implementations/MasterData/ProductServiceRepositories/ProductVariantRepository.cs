@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
@@ -322,10 +323,69 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             }
         }
 
-        #endregion
 
-        #region Update
+        /// <summary>
+        /// Lấy thông tin thuộc tính của biến thể để hiển thị trong cấu hình thiết bị
+        /// Format: ProductService.Name + Environment.NewLine + AttributeName: AttributeValue (mỗi dòng một thuộc tính)
+        /// </summary>
+        /// <param name="variantId">ID của biến thể sản phẩm</param>
+        /// <returns>String chứa thông tin sản phẩm và các thuộc tính</returns>
+        public string GetForNewAttribute(Guid variantId)
+        {
+            try
+            {
+                using var context = CreateNewContext();
 
+                var variant = context.ProductVariants.FirstOrDefault(x => x.Id == variantId);
+                if (variant == null)
+                {
+                    throw new DataAccessException($"Không tìm thấy thông tin biến thể sản phẩm có Id = {variantId}");
+                }
+
+                var result = new StringBuilder();
+
+                // Thêm tên sản phẩm
+                if (variant.ProductService != null && !string.IsNullOrWhiteSpace(variant.ProductService.Name))
+                {
+                    result.Append(variant.ProductService.Name);
+                    result.Append(Environment.NewLine);
+                }
+
+                // Lấy danh sách VariantAttributes với thông tin Attribute và AttributeValue
+                var variantAttributes = (from va in context.VariantAttributes
+                                       join a in context.Attributes on va.AttributeId equals a.Id
+                                       join av in context.AttributeValues on va.AttributeValueId equals av.Id
+                                       where va.VariantId == variantId
+                                       select new { AttributeName = a.Name, AttributeValue = av.Value })
+                                       .OrderBy(x => x.AttributeName)
+                                       .ToList();
+
+                // Thêm các thuộc tính: AttributeName: AttributeValue
+                if (variantAttributes.Any())
+                {
+                    foreach (var item in variantAttributes)
+                    {
+                        if (!string.IsNullOrWhiteSpace(item.AttributeName) && !string.IsNullOrWhiteSpace(item.AttributeValue))
+                        {
+                            result.Append(item.AttributeName);
+                            result.Append(": ");
+                            result.Append(item.AttributeValue);
+                            result.Append(Environment.NewLine);
+                        }
+                    }
+                }
+
+                return result.ToString().TrimEnd();
+            }
+            catch (DataAccessException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi lấy giá trị thuộc tính cho biến thể: {ex.Message}", ex);
+            }
+        }    
         #endregion
 
         #region Delete
@@ -1036,6 +1096,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 throw new DataAccessException($"Lỗi cập nhật VariantFullName: {ex.Message}", ex);
             }
         }
+
 
         #endregion
 

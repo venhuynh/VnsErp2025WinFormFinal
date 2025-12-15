@@ -200,4 +200,6 @@ public interface IProductVariantRepository
     Task UpdateAllVariantFullNamesAsync();
 
     #endregion
+
+    string GetForNewAttribute(Guid variantId);
 }
