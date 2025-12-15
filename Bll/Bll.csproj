@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Authentication\LoginBll.cs" />
     <Compile Include="Common\ApplicationSystemUtils.cs" />
+    <Compile Include="Common\ApplicationVersionBll.cs" />
     <Compile Include="Common\ImageService\ImageCleanupService.cs" />
     <Compile Include="Common\ImageService\ImageCompressionService.cs" />
     <Compile Include="Common\ImageService\IImageService.cs" />

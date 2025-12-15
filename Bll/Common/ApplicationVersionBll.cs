@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Dal.Connection;
-using Dal.DataAccess.Implementations.Common;
-using Dal.DataAccess.Interfaces.Common;
+using Dal.DataAccess.Implementations.VersionAndUserManagementDal;
+using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 using Dal.DataContext;
-using DTO.Common;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Bll.Common;
 
