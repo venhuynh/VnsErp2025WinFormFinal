@@ -11,6 +11,7 @@ using MasterData.Customer;
 using System;
 using System.Windows.Forms;
 using VersionAndUserManagement.AllowedMacAddress;
+using VersionAndUserManagement.UserManagement;
 using VnsErp2025.Form;
 
 
@@ -136,7 +137,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmAllowedMacAddressDto());
+            Application.Run(new FrmApplicationUserDto());
 
             #endregion
 
