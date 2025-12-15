@@ -47,32 +47,44 @@ namespace VersionAndUserManagement.UserManagement
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
+            this.ChangePasswordHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
+            this.RetypePasswordTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.PasswordTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.EmployeeSearchLookUpEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.employeeDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.UserNameTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.ActiveCheckEdit = new DevExpress.XtraEditors.CheckEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.applicationUserDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.UserNameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.ItemForUserName = new DevExpress.XtraLayout.LayoutControlItem();
-            this.HashPasswordTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.ItemForHashPassword = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ActiveCheckEdit = new DevExpress.XtraEditors.CheckEdit();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForActive = new DevExpress.XtraLayout.LayoutControlItem();
-            this.HashPasswordTextEdit1 = new DevExpress.XtraEditors.TextEdit();
-            this.ItemForHashPassword1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RetypePasswordTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PasswordTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EmployeeSearchLookUpEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.employeeDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UserNameTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ActiveCheckEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationUserDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.UserNameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUserName)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HashPasswordTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForHashPassword)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ActiveCheckEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForActive)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HashPasswordTextEdit1.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForHashPassword1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -126,15 +138,15 @@ namespace VersionAndUserManagement.UserManagement
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(599, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(390, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 239);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 214);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(599, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(390, 0);
             // 
             // barDockControlLeft
             // 
@@ -142,15 +154,15 @@ namespace VersionAndUserManagement.UserManagement
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 215);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 190);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(599, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(390, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 215);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 190);
             // 
             // dxErrorProvider1
             // 
@@ -158,28 +170,123 @@ namespace VersionAndUserManagement.UserManagement
             // 
             // dataLayoutControl1
             // 
+            this.dataLayoutControl1.Controls.Add(this.ChangePasswordHyperlinkLabelControl);
+            this.dataLayoutControl1.Controls.Add(this.RetypePasswordTextEdit);
+            this.dataLayoutControl1.Controls.Add(this.PasswordTextEdit);
+            this.dataLayoutControl1.Controls.Add(this.EmployeeSearchLookUpEdit);
             this.dataLayoutControl1.Controls.Add(this.UserNameTextEdit);
-            this.dataLayoutControl1.Controls.Add(this.HashPasswordTextEdit);
             this.dataLayoutControl1.Controls.Add(this.ActiveCheckEdit);
-            this.dataLayoutControl1.Controls.Add(this.HashPasswordTextEdit1);
-            this.dataLayoutControl1.DataSource = this.applicationUserDtoBindingSource;
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(599, 215);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(390, 190);
             this.dataLayoutControl1.TabIndex = 15;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
+            // 
+            // ChangePasswordHyperlinkLabelControl
+            // 
+            this.ChangePasswordHyperlinkLabelControl.Location = new System.Drawing.Point(20, 68);
+            this.ChangePasswordHyperlinkLabelControl.Name = "ChangePasswordHyperlinkLabelControl";
+            this.ChangePasswordHyperlinkLabelControl.Size = new System.Drawing.Size(63, 13);
+            this.ChangePasswordHyperlinkLabelControl.StyleController = this.dataLayoutControl1;
+            this.ChangePasswordHyperlinkLabelControl.TabIndex = 6;
+            this.ChangePasswordHyperlinkLabelControl.Text = "Đổi mật khẩu";
+            // 
+            // RetypePasswordTextEdit
+            // 
+            this.RetypePasswordTextEdit.Location = new System.Drawing.Point(109, 117);
+            this.RetypePasswordTextEdit.MenuManager = this.barManager1;
+            this.RetypePasswordTextEdit.Name = "RetypePasswordTextEdit";
+            this.RetypePasswordTextEdit.Properties.PasswordChar = '*';
+            this.RetypePasswordTextEdit.Properties.UseSystemPasswordChar = true;
+            this.RetypePasswordTextEdit.Size = new System.Drawing.Size(269, 20);
+            this.RetypePasswordTextEdit.StyleController = this.dataLayoutControl1;
+            this.RetypePasswordTextEdit.TabIndex = 5;
+            // 
+            // PasswordTextEdit
+            // 
+            this.PasswordTextEdit.Location = new System.Drawing.Point(109, 93);
+            this.PasswordTextEdit.MenuManager = this.barManager1;
+            this.PasswordTextEdit.Name = "PasswordTextEdit";
+            this.PasswordTextEdit.Properties.PasswordChar = '*';
+            this.PasswordTextEdit.Properties.UseSystemPasswordChar = true;
+            this.PasswordTextEdit.Size = new System.Drawing.Size(269, 20);
+            this.PasswordTextEdit.StyleController = this.dataLayoutControl1;
+            this.PasswordTextEdit.TabIndex = 4;
+            // 
+            // EmployeeSearchLookUpEdit
+            // 
+            this.EmployeeSearchLookUpEdit.Location = new System.Drawing.Point(109, 12);
+            this.EmployeeSearchLookUpEdit.MenuManager = this.barManager1;
+            this.EmployeeSearchLookUpEdit.Name = "EmployeeSearchLookUpEdit";
+            this.EmployeeSearchLookUpEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.EmployeeSearchLookUpEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.EmployeeSearchLookUpEdit.Properties.DataSource = this.employeeDtoBindingSource;
+            this.EmployeeSearchLookUpEdit.Properties.DisplayMember = "ThongTinHtml";
+            this.EmployeeSearchLookUpEdit.Properties.PopupView = this.searchLookUpEdit1View;
+            this.EmployeeSearchLookUpEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemHypertextLabel1});
+            this.EmployeeSearchLookUpEdit.Properties.ValueMember = "Id";
+            this.EmployeeSearchLookUpEdit.Size = new System.Drawing.Size(269, 20);
+            this.EmployeeSearchLookUpEdit.StyleController = this.dataLayoutControl1;
+            this.EmployeeSearchLookUpEdit.TabIndex = 0;
+            // 
+            // employeeDtoBindingSource
+            // 
+            this.employeeDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.EmployeeDto);
+            // 
+            // searchLookUpEdit1View
+            // 
+            this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colThongTinHtml});
+            this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
+            this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            // 
+            // colThongTinHtml
+            // 
+            this.colThongTinHtml.ColumnEdit = this.repositoryItemHypertextLabel1;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 0;
+            // 
+            // repositoryItemHypertextLabel1
+            // 
+            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
+            // 
+            // UserNameTextEdit
+            // 
+            this.UserNameTextEdit.Location = new System.Drawing.Point(109, 36);
+            this.UserNameTextEdit.MenuManager = this.barManager1;
+            this.UserNameTextEdit.Name = "UserNameTextEdit";
+            this.UserNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.UserNameTextEdit.Size = new System.Drawing.Size(164, 20);
+            this.UserNameTextEdit.StyleController = this.dataLayoutControl1;
+            this.UserNameTextEdit.TabIndex = 2;
+            // 
+            // ActiveCheckEdit
+            // 
+            this.ActiveCheckEdit.Location = new System.Drawing.Point(277, 36);
+            this.ActiveCheckEdit.MenuManager = this.barManager1;
+            this.ActiveCheckEdit.Name = "ActiveCheckEdit";
+            this.ActiveCheckEdit.Properties.Caption = "Đang hoạt động";
+            this.ActiveCheckEdit.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
+            this.ActiveCheckEdit.Size = new System.Drawing.Size(101, 20);
+            this.ActiveCheckEdit.StyleController = this.dataLayoutControl1;
+            this.ActiveCheckEdit.TabIndex = 3;
             // 
             // Root
             // 
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlGroup1,
-            this.ItemForHashPassword1});
+            this.layoutControlGroup1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(599, 215);
+            this.Root.Size = new System.Drawing.Size(390, 190);
             this.Root.TextVisible = false;
             // 
             // layoutControlGroup1
@@ -188,102 +295,75 @@ namespace VersionAndUserManagement.UserManagement
             this.layoutControlGroup1.GroupBordersVisible = false;
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.ItemForUserName,
-            this.ItemForHashPassword,
-            this.ItemForActive});
+            this.layoutControlItem1,
+            this.ItemForActive,
+            this.layoutControlItem2,
+            this.layoutControlItem3,
+            this.layoutControlItem4});
             this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(579, 48);
-            // 
-            // applicationUserDtoBindingSource
-            // 
-            this.applicationUserDtoBindingSource.DataSource = typeof(DTO.VersionAndUserManagementDto.ApplicationUserDto);
-            // 
-            // UserNameTextEdit
-            // 
-            this.UserNameTextEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.applicationUserDtoBindingSource, "UserName", true));
-            this.UserNameTextEdit.Location = new System.Drawing.Point(103, 12);
-            this.UserNameTextEdit.MenuManager = this.barManager1;
-            this.UserNameTextEdit.Name = "UserNameTextEdit";
-            this.UserNameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.UserNameTextEdit.Size = new System.Drawing.Size(379, 20);
-            this.UserNameTextEdit.StyleController = this.dataLayoutControl1;
-            this.UserNameTextEdit.TabIndex = 5;
+            this.layoutControlGroup1.Size = new System.Drawing.Size(370, 170);
             // 
             // ItemForUserName
             // 
             this.ItemForUserName.Control = this.UserNameTextEdit;
-            this.ItemForUserName.Location = new System.Drawing.Point(0, 0);
+            this.ItemForUserName.Location = new System.Drawing.Point(0, 24);
             this.ItemForUserName.Name = "ItemForUserName";
-            this.ItemForUserName.Size = new System.Drawing.Size(474, 24);
+            this.ItemForUserName.Size = new System.Drawing.Size(265, 24);
             this.ItemForUserName.Text = "Tên đăng nhập";
-            this.ItemForUserName.TextSize = new System.Drawing.Size(79, 13);
+            this.ItemForUserName.TextSize = new System.Drawing.Size(85, 13);
             // 
-            // HashPasswordTextEdit
+            // layoutControlItem1
             // 
-            this.HashPasswordTextEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.applicationUserDtoBindingSource, "HashPassword", true));
-            this.HashPasswordTextEdit.Location = new System.Drawing.Point(103, 36);
-            this.HashPasswordTextEdit.MenuManager = this.barManager1;
-            this.HashPasswordTextEdit.Name = "HashPasswordTextEdit";
-            this.HashPasswordTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.HashPasswordTextEdit.Size = new System.Drawing.Size(484, 20);
-            this.HashPasswordTextEdit.StyleController = this.dataLayoutControl1;
-            this.HashPasswordTextEdit.TabIndex = 6;
-            // 
-            // ItemForHashPassword
-            // 
-            this.ItemForHashPassword.Control = this.HashPasswordTextEdit;
-            this.ItemForHashPassword.Location = new System.Drawing.Point(0, 24);
-            this.ItemForHashPassword.Name = "ItemForHashPassword";
-            this.ItemForHashPassword.Size = new System.Drawing.Size(579, 24);
-            this.ItemForHashPassword.Text = "Mật khẩu (Hash)";
-            this.ItemForHashPassword.TextSize = new System.Drawing.Size(79, 13);
-            // 
-            // ActiveCheckEdit
-            // 
-            this.ActiveCheckEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.applicationUserDtoBindingSource, "Active", true));
-            this.ActiveCheckEdit.Location = new System.Drawing.Point(486, 12);
-            this.ActiveCheckEdit.MenuManager = this.barManager1;
-            this.ActiveCheckEdit.Name = "ActiveCheckEdit";
-            this.ActiveCheckEdit.Properties.Caption = "Đang hoạt động";
-            this.ActiveCheckEdit.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
-            this.ActiveCheckEdit.Size = new System.Drawing.Size(101, 20);
-            this.ActiveCheckEdit.StyleController = this.dataLayoutControl1;
-            this.ActiveCheckEdit.TabIndex = 7;
+            this.layoutControlItem1.Control = this.EmployeeSearchLookUpEdit;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(370, 24);
+            this.layoutControlItem1.Text = "Nhân viên";
+            this.layoutControlItem1.TextSize = new System.Drawing.Size(85, 13);
             // 
             // ItemForActive
             // 
             this.ItemForActive.Control = this.ActiveCheckEdit;
-            this.ItemForActive.Location = new System.Drawing.Point(474, 0);
+            this.ItemForActive.Location = new System.Drawing.Point(265, 24);
             this.ItemForActive.Name = "ItemForActive";
             this.ItemForActive.Size = new System.Drawing.Size(105, 24);
             this.ItemForActive.Text = "Đang hoạt động";
             this.ItemForActive.TextVisible = false;
             // 
-            // HashPasswordTextEdit1
+            // layoutControlItem2
             // 
-            this.HashPasswordTextEdit1.Location = new System.Drawing.Point(103, 60);
-            this.HashPasswordTextEdit1.Name = "HashPasswordTextEdit1";
-            this.HashPasswordTextEdit1.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.HashPasswordTextEdit1.Size = new System.Drawing.Size(484, 20);
-            this.HashPasswordTextEdit1.StyleController = this.dataLayoutControl1;
-            this.HashPasswordTextEdit1.TabIndex = 6;
+            this.layoutControlItem2.Control = this.PasswordTextEdit;
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 81);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.Size = new System.Drawing.Size(370, 24);
+            this.layoutControlItem2.Text = "Mật khẩu";
+            this.layoutControlItem2.TextSize = new System.Drawing.Size(85, 13);
             // 
-            // ItemForHashPassword1
+            // layoutControlItem3
             // 
-            this.ItemForHashPassword1.Control = this.HashPasswordTextEdit1;
-            this.ItemForHashPassword1.ControlAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.ItemForHashPassword1.CustomizationFormText = "Mật khẩu (Hash)";
-            this.ItemForHashPassword1.Location = new System.Drawing.Point(0, 48);
-            this.ItemForHashPassword1.Name = "ItemForHashPassword1";
-            this.ItemForHashPassword1.Size = new System.Drawing.Size(579, 147);
-            this.ItemForHashPassword1.Text = "Mật khẩu (Hash)";
-            this.ItemForHashPassword1.TextSize = new System.Drawing.Size(79, 13);
+            this.layoutControlItem3.Control = this.RetypePasswordTextEdit;
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 105);
+            this.layoutControlItem3.Name = "layoutControlItem3";
+            this.layoutControlItem3.Size = new System.Drawing.Size(370, 65);
+            this.layoutControlItem3.Text = "Nhập lại mật khẩu";
+            this.layoutControlItem3.TextSize = new System.Drawing.Size(85, 13);
+            // 
+            // layoutControlItem4
+            // 
+            this.layoutControlItem4.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.layoutControlItem4.Control = this.ChangePasswordHyperlinkLabelControl;
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 48);
+            this.layoutControlItem4.Name = "layoutControlItem4";
+            this.layoutControlItem4.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.layoutControlItem4.Size = new System.Drawing.Size(370, 33);
+            this.layoutControlItem4.TextVisible = false;
             // 
             // FrmApplicationUserDtoAddEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(599, 239);
+            this.ClientSize = new System.Drawing.Size(390, 214);
             this.Controls.Add(this.dataLayoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -296,17 +376,22 @@ namespace VersionAndUserManagement.UserManagement
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.RetypePasswordTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PasswordTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EmployeeSearchLookUpEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.employeeDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UserNameTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ActiveCheckEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.applicationUserDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.UserNameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUserName)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HashPasswordTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForHashPassword)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ActiveCheckEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForActive)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HashPasswordTextEdit1.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForHashPassword1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -325,14 +410,21 @@ namespace VersionAndUserManagement.UserManagement
         private DataLayoutControl dataLayoutControl1;
         private LayoutControlGroup Root;
         private LayoutControlGroup layoutControlGroup1;
-        private BindingSource applicationUserDtoBindingSource;
         private TextEdit UserNameTextEdit;
-        private TextEdit HashPasswordTextEdit;
         private CheckEdit ActiveCheckEdit;
         private LayoutControlItem ItemForUserName;
-        private LayoutControlItem ItemForHashPassword;
         private LayoutControlItem ItemForActive;
-        private TextEdit HashPasswordTextEdit1;
-        private LayoutControlItem ItemForHashPassword1;
+        private SearchLookUpEdit EmployeeSearchLookUpEdit;
+        private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
+        private LayoutControlItem layoutControlItem1;
+        private BindingSource employeeDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml;
+        private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
+        private TextEdit RetypePasswordTextEdit;
+        private TextEdit PasswordTextEdit;
+        private LayoutControlItem layoutControlItem2;
+        private LayoutControlItem layoutControlItem3;
+        private HyperlinkLabelControl ChangePasswordHyperlinkLabelControl;
+        private LayoutControlItem layoutControlItem4;
     }
 }

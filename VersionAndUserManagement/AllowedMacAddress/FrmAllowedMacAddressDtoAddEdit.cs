@@ -246,7 +246,7 @@ namespace VersionAndUserManagement.AllowedMacAddress
 
             // Bước 3: Trigger event để form cha có thể update datasource
             if (savedDto != null)
-            {
+                {
                 MacAddressSaved?.Invoke(savedDto);
             }
         }

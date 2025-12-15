@@ -1,5 +1,5 @@
 using Dal.Connection;
-using Dal.DataContext;
+using Dal.DataAccess.Interfaces;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -17,9 +17,9 @@ public class ApplicationUserBll
 {
     #region Fields
 
+    private IApplicationUserRepository _dataAccess;
     private readonly ILogger _logger;
     private readonly object _lockObject = new object();
-    private VnsErp2025DataContext _dataContext;
 
     #endregion
 
@@ -34,13 +34,13 @@ public class ApplicationUserBll
 
     #region Helper Methods
 
-    private VnsErp2025DataContext GetDataContext()
+    private IApplicationUserRepository GetDataAccess()
     {
-        if (_dataContext == null)
+        if (_dataAccess == null)
         {
             lock (_lockObject)
             {
-                if (_dataContext == null)
+                if (_dataAccess == null)
                 {
                     try
                     {
@@ -51,11 +51,11 @@ public class ApplicationUserBll
                                 "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
                         }
 
-                        _dataContext = new VnsErp2025DataContext(globalConnectionString);
+                        _dataAccess = new Dal.DataAccess.Implementations.ApplicationUserRepository(globalConnectionString);
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error($"Lỗi khi khởi tạo VnsErp2025DataContext: {ex.Message}", ex);
+                        _logger.Error($"Lỗi khi khởi tạo ApplicationUserRepository: {ex.Message}", ex);
                         throw new InvalidOperationException(
                             "Không thể khởi tạo kết nối database. Vui lòng kiểm tra cấu hình database.", ex);
                     }
@@ -63,7 +63,7 @@ public class ApplicationUserBll
             }
         }
 
-        return _dataContext;
+        return _dataAccess;
     }
 
     #endregion
@@ -78,13 +78,15 @@ public class ApplicationUserBll
     {
         try
         {
-            var context = GetDataContext();
-            var users = context.ApplicationUsers.ToList();
-            return users.ToDtos();
+            _logger?.Info("Bắt đầu lấy tất cả người dùng");
+            var users = GetDataAccess().GetAll();
+            var dtos = users.ToDtos();
+            _logger?.Info($"Hoàn thành lấy tất cả người dùng: {dtos.Count} user(s)");
+            return dtos;
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi lấy danh sách người dùng: {ex.Message}", ex);
+            _logger?.Error($"Lỗi khi lấy tất cả người dùng: {ex.Message}", ex);
             throw;
         }
     }
@@ -98,13 +100,15 @@ public class ApplicationUserBll
     {
         try
         {
-            var context = GetDataContext();
-            var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
-            return user?.ToDto();
+            _logger?.Info($"Bắt đầu lấy người dùng theo ID: {id}");
+            var user = GetDataAccess().GetById(id);
+            var dto = user?.ToDto();
+            _logger?.Info($"Hoàn thành lấy người dùng theo ID: {(dto != null ? dto.UserName : "not found")}");
+            return dto;
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi lấy người dùng theo ID: {ex.Message}", ex);
+            _logger?.Error($"Lỗi khi lấy người dùng theo ID: {ex.Message}", ex);
             throw;
         }
     }
@@ -118,23 +122,16 @@ public class ApplicationUserBll
     {
         try
         {
-            var context = GetDataContext();
+            _logger?.Info($"Bắt đầu tạo người dùng mới: {dto.UserName}");
             var entity = dto.ToEntity();
-            
-            if (entity.Id == Guid.Empty)
-            {
-                entity.Id = Guid.NewGuid();
-            }
-
-            context.ApplicationUsers.InsertOnSubmit(entity);
-            context.SubmitChanges();
-
-            _logger.Info($"Đã tạo mới người dùng: {entity.UserName} (ID: {entity.Id})");
-            return entity.ToDto();
+            var created = GetDataAccess().Create(entity);
+            var result = created.ToDto();
+            _logger?.Info($"Hoàn thành tạo người dùng mới: {result.UserName}");
+            return result;
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi tạo mới người dùng: {ex.Message}", ex);
+            _logger?.Error($"Lỗi khi tạo người dùng: {ex.Message}", ex);
             throw;
         }
     }
@@ -148,23 +145,16 @@ public class ApplicationUserBll
     {
         try
         {
-            var context = GetDataContext();
-            var existingEntity = context.ApplicationUsers.FirstOrDefault(u => u.Id == dto.Id);
-            
-            if (existingEntity == null)
-            {
-                throw new InvalidOperationException($"Không tìm thấy người dùng với ID: {dto.Id}");
-            }
-
-            var updatedEntity = dto.ToEntity(existingEntity);
-            context.SubmitChanges();
-
-            _logger.Info($"Đã cập nhật người dùng: {updatedEntity.UserName} (ID: {updatedEntity.Id})");
-            return updatedEntity.ToDto();
+            _logger?.Info($"Bắt đầu cập nhật người dùng: {dto.UserName}");
+            var entity = dto.ToEntity();
+            var updated = GetDataAccess().Update(entity);
+            var result = updated.ToDto();
+            _logger?.Info($"Hoàn thành cập nhật người dùng: {result.UserName}");
+            return result;
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi cập nhật người dùng: {ex.Message}", ex);
+            _logger?.Error($"Lỗi khi cập nhật người dùng: {ex.Message}", ex);
             throw;
         }
     }
@@ -177,22 +167,13 @@ public class ApplicationUserBll
     {
         try
         {
-            var context = GetDataContext();
-            var entity = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
-            
-            if (entity == null)
-            {
-                throw new InvalidOperationException($"Không tìm thấy người dùng với ID: {id}");
-            }
-
-            context.ApplicationUsers.DeleteOnSubmit(entity);
-            context.SubmitChanges();
-
-            _logger.Info($"Đã xóa người dùng: {entity.UserName} (ID: {id})");
+            _logger?.Info($"Bắt đầu xóa người dùng: {id}");
+            GetDataAccess().Delete(id);
+            _logger?.Info($"Hoàn thành xóa người dùng: {id}");
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi xóa người dùng: {ex.Message}", ex);
+            _logger?.Error($"Lỗi khi xóa người dùng: {ex.Message}", ex);
             throw;
         }
     }

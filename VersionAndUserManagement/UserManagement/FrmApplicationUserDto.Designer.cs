@@ -4,6 +4,7 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace VersionAndUserManagement.UserManagement
@@ -212,31 +213,31 @@ namespace VersionAndUserManagement.UserManagement
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 605);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 592);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 22);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 35);
             // 
             // barDockControlLeft
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 581);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 553);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 581);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 553);
             // 
             // repositoryItemComboBox1
             // 
@@ -256,10 +257,10 @@ namespace VersionAndUserManagement.UserManagement
             // 
             this.layoutControl1.Controls.Add(this.ApplicationUserDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 24);
+            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 581);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 553);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -267,14 +268,14 @@ namespace VersionAndUserManagement.UserManagement
             // 
             this.ApplicationUserDtoGridControl.DataSource = this.applicationUserDtoBindingSource;
             this.ApplicationUserDtoGridControl.EmbeddedNavigator.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
-            this.ApplicationUserDtoGridControl.Location = new System.Drawing.Point(12, 12);
+            this.ApplicationUserDtoGridControl.Location = new System.Drawing.Point(16, 16);
             this.ApplicationUserDtoGridControl.MainView = this.ApplicationUserDtoGridView;
             this.ApplicationUserDtoGridControl.MenuManager = this.barManager1;
             this.ApplicationUserDtoGridControl.Name = "ApplicationUserDtoGridControl";
             this.ApplicationUserDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlHypertextLabel,
             this.repositoryItemPictureEdit1});
-            this.ApplicationUserDtoGridControl.Size = new System.Drawing.Size(1051, 557);
+            this.ApplicationUserDtoGridControl.Size = new System.Drawing.Size(1043, 521);
             this.ApplicationUserDtoGridControl.TabIndex = 5;
             this.ApplicationUserDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.ApplicationUserDtoGridView});
@@ -323,7 +324,7 @@ namespace VersionAndUserManagement.UserManagement
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 581);
+            this.Root.Size = new System.Drawing.Size(1075, 553);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -331,15 +332,31 @@ namespace VersionAndUserManagement.UserManagement
             this.layoutControlItem1.Control = this.ApplicationUserDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1055, 561);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
             this.layoutControlItem1.TextVisible = false;
             // 
             // colThongTinHtml
             // 
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin người dùng";
+            this.colThongTinHtml.ColumnEdit = this.HtmlHypertextLabel;
             this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 300;
             this.colThongTinHtml.Name = "colThongTinHtml";
             this.colThongTinHtml.Visible = true;
             this.colThongTinHtml.VisibleIndex = 1;
+            this.colThongTinHtml.Width = 400;
             // 
             // FrmApplicationUserDto
             // 

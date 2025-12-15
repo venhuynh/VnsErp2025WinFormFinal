@@ -34,6 +34,7 @@
       <Column Name="UserName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="HashPassword" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
       <Column Name="Active" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="EmployeeId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="ApplicationUser_Asset" Member="Assets" ThisKey="Id" OtherKey="CreateBy" Type="Asset" />
       <Association Name="ApplicationUser_Asset1" Member="Assets1" ThisKey="Id" OtherKey="DeletedBy" Type="Asset" />
       <Association Name="ApplicationUser_Asset2" Member="Assets2" ThisKey="Id" OtherKey="ModifiedBy" Type="Asset" />
@@ -50,6 +51,7 @@
       <Association Name="ApplicationUser_InventoryBalance4" Member="InventoryBalances4" ThisKey="Id" OtherKey="VerifiedBy" Type="InventoryBalance" />
       <Association Name="ApplicationUser_ProductServiceCategory" Member="ProductServiceCategories" ThisKey="Id" OtherKey="CreatedBy" Type="ProductServiceCategory" />
       <Association Name="ApplicationUser_ProductServiceCategory1" Member="ProductServiceCategories1" ThisKey="Id" OtherKey="ModifiedBy" Type="ProductServiceCategory" />
+      <Association Name="Employee_ApplicationUser" Member="Employee" ThisKey="EmployeeId" OtherKey="Id" Type="Employee" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.ApplicationVersion" Member="ApplicationVersions">
@@ -454,6 +456,8 @@
       <Column Name="AvatarFileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="AvatarChecksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
       <Column Name="AvatarThumbnailData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="ApplicationUserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="Employee_ApplicationUser" Member="ApplicationUsers" ThisKey="Id" OtherKey="EmployeeId" Type="ApplicationUser" />
       <Association Name="Employee_Asset" Member="Assets" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Asset" />
       <Association Name="Employee_Device" Member="Devices" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Device" />
       <Association Name="Employee_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="FromEmployeeId" Type="DeviceTransfer" />

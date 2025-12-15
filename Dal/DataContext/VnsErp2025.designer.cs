@@ -999,6 +999,8 @@ namespace Dal.DataContext
 		
 		private bool _Active;
 		
+		private System.Nullable<System.Guid> _EmployeeId;
+		
 		private EntitySet<Asset> _Assets;
 		
 		private EntitySet<Asset> _Assets1;
@@ -1031,6 +1033,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<ProductServiceCategory> _ProductServiceCategories1;
 		
+		private EntityRef<Employee> _Employee;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1043,6 +1047,8 @@ namespace Dal.DataContext
     partial void OnHashPasswordChanged();
     partial void OnActiveChanging(bool value);
     partial void OnActiveChanged();
+    partial void OnEmployeeIdChanging(System.Nullable<System.Guid> value);
+    partial void OnEmployeeIdChanged();
     #endregion
 		
 		public ApplicationUser()
@@ -1063,6 +1069,7 @@ namespace Dal.DataContext
 			this._InventoryBalances4 = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances4), new Action<InventoryBalance>(this.detach_InventoryBalances4));
 			this._ProductServiceCategories = new EntitySet<ProductServiceCategory>(new Action<ProductServiceCategory>(this.attach_ProductServiceCategories), new Action<ProductServiceCategory>(this.detach_ProductServiceCategories));
 			this._ProductServiceCategories1 = new EntitySet<ProductServiceCategory>(new Action<ProductServiceCategory>(this.attach_ProductServiceCategories1), new Action<ProductServiceCategory>(this.detach_ProductServiceCategories1));
+			this._Employee = default(EntityRef<Employee>);
 			OnCreated();
 		}
 		
@@ -1142,6 +1149,30 @@ namespace Dal.DataContext
 					this._Active = value;
 					this.SendPropertyChanged("Active");
 					this.OnActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployeeId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> EmployeeId
+		{
+			get
+			{
+				return this._EmployeeId;
+			}
+			set
+			{
+				if ((this._EmployeeId != value))
+				{
+					if (this._Employee.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnEmployeeIdChanging(value);
+					this.SendPropertyChanging();
+					this._EmployeeId = value;
+					this.SendPropertyChanged("EmployeeId");
+					this.OnEmployeeIdChanged();
 				}
 			}
 		}
@@ -1351,6 +1382,40 @@ namespace Dal.DataContext
 			set
 			{
 				this._ProductServiceCategories1.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_ApplicationUser", Storage="_Employee", ThisKey="EmployeeId", OtherKey="Id", IsForeignKey=true)]
+		public Employee Employee
+		{
+			get
+			{
+				return this._Employee.Entity;
+			}
+			set
+			{
+				Employee previousValue = this._Employee.Entity;
+				if (((previousValue != value) 
+							|| (this._Employee.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Employee.Entity = null;
+						previousValue.ApplicationUsers.Remove(this);
+					}
+					this._Employee.Entity = value;
+					if ((value != null))
+					{
+						value.ApplicationUsers.Add(this);
+						this._EmployeeId = value.Id;
+					}
+					else
+					{
+						this._EmployeeId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Employee");
+				}
 			}
 		}
 		
@@ -10451,6 +10516,10 @@ namespace Dal.DataContext
 		
 		private System.Data.Linq.Binary _AvatarThumbnailData;
 		
+		private System.Nullable<System.Guid> _ApplicationUserId;
+		
+		private EntitySet<ApplicationUser> _ApplicationUsers;
+		
 		private EntitySet<Asset> _Assets;
 		
 		private EntitySet<Device> _Devices;
@@ -10531,10 +10600,13 @@ namespace Dal.DataContext
     partial void OnAvatarChecksumChanged();
     partial void OnAvatarThumbnailDataChanging(System.Data.Linq.Binary value);
     partial void OnAvatarThumbnailDataChanged();
+    partial void OnApplicationUserIdChanging(System.Nullable<System.Guid> value);
+    partial void OnApplicationUserIdChanged();
     #endregion
 		
 		public Employee()
 		{
+			this._ApplicationUsers = new EntitySet<ApplicationUser>(new Action<ApplicationUser>(this.attach_ApplicationUsers), new Action<ApplicationUser>(this.detach_ApplicationUsers));
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
@@ -11162,6 +11234,39 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ApplicationUserId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ApplicationUserId
+		{
+			get
+			{
+				return this._ApplicationUserId;
+			}
+			set
+			{
+				if ((this._ApplicationUserId != value))
+				{
+					this.OnApplicationUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._ApplicationUserId = value;
+					this.SendPropertyChanged("ApplicationUserId");
+					this.OnApplicationUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_ApplicationUser", Storage="_ApplicationUsers", ThisKey="Id", OtherKey="EmployeeId")]
+		public EntitySet<ApplicationUser> ApplicationUsers
+		{
+			get
+			{
+				return this._ApplicationUsers;
+			}
+			set
+			{
+				this._ApplicationUsers.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_Asset", Storage="_Assets", ThisKey="Id", OtherKey="AssignedEmployeeId")]
 		public EntitySet<Asset> Assets
 		{
@@ -11368,6 +11473,18 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_ApplicationUsers(ApplicationUser entity)
+		{
+			this.SendPropertyChanging();
+			entity.Employee = this;
+		}
+		
+		private void detach_ApplicationUsers(ApplicationUser entity)
+		{
+			this.SendPropertyChanging();
+			entity.Employee = null;
 		}
 		
 		private void attach_Assets(Asset entity)

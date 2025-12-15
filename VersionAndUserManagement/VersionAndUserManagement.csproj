@@ -138,6 +138,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\DataSources\DTO.MasterData.Company.EmployeeDto.datasource" />
     <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.AllowedMacAddressDto.datasource" />
     <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.ApplicationUserDto.datasource" />
     <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.ApplicationVersionDto.datasource" />

@@ -29,6 +29,26 @@ namespace DTO.VersionAndUserManagementDto
         [DisplayName("Đang hoạt động")]
         public bool Active { get; set; }
 
+        [DisplayName("ID Nhân viên")]
+        [Description("ID nhân viên liên kết với người dùng này (1-1 relationship)")]
+        public Guid? EmployeeId { get; set; }
+
+        [DisplayName("Mã nhân viên")]
+        [Description("Mã nhân viên (từ Employee)")]
+        public string EmployeeCode { get; set; }
+
+        [DisplayName("Họ tên nhân viên")]
+        [Description("Họ tên nhân viên (từ Employee)")]
+        public string EmployeeFullName { get; set; }
+
+        [DisplayName("Phòng ban")]
+        [Description("Tên phòng ban (từ Employee.Department)")]
+        public string DepartmentName { get; set; }
+
+        [DisplayName("Vị trí")]
+        [Description("Tên vị trí (từ Employee.Position)")]
+        public string PositionName { get; set; }
+
         /// <summary>
         /// Thông tin người dùng dưới dạng HTML theo format DevExpress
         /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
@@ -47,6 +67,7 @@ namespace DTO.VersionAndUserManagementDto
                 // Format chuyên nghiệp với visual hierarchy rõ ràng
                 // - Tên đăng nhập: font lớn, bold, màu xanh đậm (primary)
                 // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
+                // - Thông tin nhân viên: hiển thị EmployeeId nếu có
 
                 var html = $"<b><color='blue'>{userName}</color></b>";
 
@@ -60,6 +81,41 @@ namespace DTO.VersionAndUserManagementDto
                 }
 
                 html += "<br>";
+
+                var infoParts = new List<string>();
+
+                // Hiển thị thông tin nhân viên nếu có
+                if (!string.IsNullOrWhiteSpace(EmployeeCode) || !string.IsNullOrWhiteSpace(EmployeeFullName))
+                {
+                    var employeeInfo = new List<string>();
+                    if (!string.IsNullOrWhiteSpace(EmployeeCode))
+                    {
+                        employeeInfo.Add($"<b>{EmployeeCode}</b>");
+                    }
+                    if (!string.IsNullOrWhiteSpace(EmployeeFullName))
+                    {
+                        employeeInfo.Add(EmployeeFullName);
+                    }
+                    if (employeeInfo.Any())
+                    {
+                        infoParts.Add($"<color='#757575'>Nhân viên:</color> {string.Join(" - ", employeeInfo)}");
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(DepartmentName))
+                {
+                    infoParts.Add($"<color='#757575'>Phòng ban:</color> <b>{DepartmentName}</b>");
+                }
+
+                if (!string.IsNullOrWhiteSpace(PositionName))
+                {
+                    infoParts.Add($"<color='#757575'>Vị trí:</color> <b>{PositionName}</b>");
+                }
+
+                if (infoParts.Any())
+                {
+                    html += string.Join(" | ", infoParts) + "<br>";
+                }
 
                 html += $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>";
 
@@ -95,6 +151,7 @@ namespace DTO.VersionAndUserManagementDto
 
         /// <summary>
         /// Convert ApplicationUser entity to ApplicationUserDto.
+        /// Load Employee navigation property và các thông tin liên quan (Department, Position).
         /// </summary>
         /// <param name="entity">ApplicationUser entity</param>
         /// <returns>ApplicationUserDto</returns>
@@ -103,13 +160,36 @@ namespace DTO.VersionAndUserManagementDto
             if (entity == null)
                 return null;
 
-            return new ApplicationUserDto
+            var dto = new ApplicationUserDto
             {
                 Id = entity.Id,
                 UserName = entity.UserName,
                 HashPassword = entity.HashPassword,
-                Active = entity.Active
+                Active = entity.Active,
+                EmployeeId = entity.EmployeeId
             };
+
+            // Load thông tin Employee nếu có
+            if (entity.EmployeeId.HasValue && entity.Employee != null)
+            {
+                var employee = entity.Employee;
+                dto.EmployeeCode = employee.EmployeeCode;
+                dto.EmployeeFullName = employee.FullName;
+
+                // Load thông tin Department nếu có
+                if (employee.DepartmentId.HasValue && employee.Department != null)
+                {
+                    dto.DepartmentName = employee.Department.DepartmentName;
+                }
+
+                // Load thông tin Position nếu có
+                if (employee.PositionId.HasValue && employee.Position != null)
+                {
+                    dto.PositionName = employee.Position.PositionName;
+                }
+            }
+
+            return dto;
         }
 
         /// <summary>
@@ -143,6 +223,7 @@ namespace DTO.VersionAndUserManagementDto
             entity.UserName = dto.UserName;
             entity.HashPassword = dto.HashPassword;
             entity.Active = dto.Active;
+            entity.EmployeeId = dto.EmployeeId;
 
             return entity;
         }

@@ -247,15 +247,13 @@ namespace VersionAndUserManagement.UserManagement
         {
             try
             {
-                // TODO: Tạo form thêm mới/sửa người dùng
-                // using var form = new FrmApplicationUserDtoAddEdit(Guid.Empty);
-                // form.UserSaved += UpdateSingleRowInDataSource;
-                // form.StartPosition = FormStartPosition.CenterParent;
-                // if (form.ShowDialog(this) == DialogResult.OK)
-                // {
-                //     UpdateButtonStates();
-                // }
-                MsgBox.ShowSuccess("Chức năng thêm mới người dùng sẽ được triển khai sau.");
+                using var form = new FrmApplicationUserDtoAddEdit(Guid.Empty);
+                form.UserSaved += UpdateSingleRowInDataSource;
+                form.StartPosition = FormStartPosition.CenterParent;
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    UpdateButtonStates();
+                }
             }
             catch (Exception ex)
             {
@@ -278,21 +276,19 @@ namespace VersionAndUserManagement.UserManagement
 
                 try
                 {
-                    // TODO: Tạo form thêm mới/sửa người dùng
-                    // using (var form = new FrmApplicationUserDtoAddEdit(_selectedItem.Id))
-                    // {
-                    //     form.UserSaved += (updatedDto) =>
-                    //     {
-                    //         // Cập nhật datasource với DTO đã được cập nhật
-                    //         UpdateSingleRowInDataSource(updatedDto);
-                    //     };
-                    //     form.StartPosition = FormStartPosition.CenterParent;
-                    //     if (form.ShowDialog(this) == DialogResult.OK)
-                    //     {
-                    //         UpdateButtonStates();
-                    //     }
-                    // }
-                    MsgBox.ShowSuccess("Chức năng chỉnh sửa người dùng sẽ được triển khai sau.");
+                    using (var form = new FrmApplicationUserDtoAddEdit(_selectedItem.Id))
+                    {
+                        form.UserSaved += (updatedDto) =>
+                        {
+                            // Cập nhật datasource với DTO đã được cập nhật
+                            UpdateSingleRowInDataSource(updatedDto);
+                        };
+                        form.StartPosition = FormStartPosition.CenterParent;
+                        if (form.ShowDialog(this) == DialogResult.OK)
+                        {
+                            UpdateButtonStates();
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -391,21 +387,19 @@ namespace VersionAndUserManagement.UserManagement
             {
                 if (_selectedItem != null)
                 {
-                    // TODO: Tạo form thêm mới/sửa người dùng
-                    // using (var form = new FrmApplicationUserDtoAddEdit(_selectedItem.Id))
-                    // {
-                    //     form.UserSaved += (updatedDto) =>
-                    //     {
-                    //         // Cập nhật datasource với DTO đã được cập nhật
-                    //         UpdateSingleRowInDataSource(updatedDto);
-                    //     };
-                    //     form.StartPosition = FormStartPosition.CenterParent;
-                    //     if (form.ShowDialog(this) == DialogResult.OK)
-                    //     {
-                    //         UpdateButtonStates();
-                    //     }
-                    // }
-                    MsgBox.ShowSuccess("Chức năng xem chi tiết người dùng sẽ được triển khai sau.");
+                    using (var form = new FrmApplicationUserDtoAddEdit(_selectedItem.Id))
+                    {
+                        form.UserSaved += (updatedDto) =>
+                        {
+                            // Cập nhật datasource với DTO đã được cập nhật
+                            UpdateSingleRowInDataSource(updatedDto);
+                        };
+                        form.StartPosition = FormStartPosition.CenterParent;
+                        if (form.ShowDialog(this) == DialogResult.OK)
+                        {
+                            UpdateButtonStates();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
