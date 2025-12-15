@@ -235,6 +235,7 @@ namespace VersionAndUserManagement.UserManagement
             // 
             // employeeDtoBindingSource
             // 
+            this.employeeDtoBindingSource.AllowNew = true;
             this.employeeDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.EmployeeDto);
             // 
             // searchLookUpEdit1View

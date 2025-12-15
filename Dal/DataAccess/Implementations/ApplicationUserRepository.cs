@@ -91,6 +91,37 @@ namespace Dal.DataAccess.Implementations
                 context.ApplicationUsers.InsertOnSubmit(user);
                 context.SubmitChanges();
                 
+                // Load Employee và navigation properties trước khi dispose DataContext
+                // để tránh ObjectDisposedException khi ToDto() truy cập navigation properties
+                if (user.EmployeeId.HasValue)
+                {
+                    try
+                    {
+                        // Load Employee để trigger eager load
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == user.EmployeeId.Value);
+                        if (employee != null)
+                        {
+                            // Load navigation properties trong cùng context
+                            if (employee.DepartmentId.HasValue)
+                            {
+                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                            }
+                            if (employee.PositionId.HasValue)
+                            {
+                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                            }
+                            
+                            // Gán Employee vào entity để có thể truy cập sau khi context dispose
+                            // LINQ to SQL sẽ giữ reference đến các navigation properties đã được load
+                            user.Employee = employee;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore nếu không thể load Employee
+                    }
+                }
+                
                 return user;
             }
             catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 2627) // Duplicate key
@@ -245,6 +276,33 @@ namespace Dal.DataAccess.Implementations
                     .OrderBy(u => u.UserName)
                     .ToList();
                 
+                // Load Employee và navigation properties cho tất cả users trước khi dispose
+                foreach (var user in users.Where(u => u.EmployeeId.HasValue))
+                {
+                    try
+                    {
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == user.EmployeeId.Value);
+                        if (employee != null)
+                        {
+                            // Load navigation properties
+                            if (employee.DepartmentId.HasValue)
+                            {
+                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                            }
+                            if (employee.PositionId.HasValue)
+                            {
+                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                            }
+                            
+                            user.Employee = employee;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore nếu không thể load Employee cho user này
+                    }
+                }
+                
                 return users;
             }
             catch (Exception ex)
@@ -282,7 +340,36 @@ namespace Dal.DataAccess.Implementations
             try
             {
                 using var context = CreateNewContext();
-                return context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+                var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+                
+                // Load Employee và navigation properties trước khi dispose DataContext
+                if (user != null && user.EmployeeId.HasValue)
+                {
+                    try
+                    {
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == user.EmployeeId.Value);
+                        if (employee != null)
+                        {
+                            // Load navigation properties
+                            if (employee.DepartmentId.HasValue)
+                            {
+                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                            }
+                            if (employee.PositionId.HasValue)
+                            {
+                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                            }
+                            
+                            user.Employee = employee;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore nếu không thể load Employee
+                    }
+                }
+                
+                return user;
             }
             catch (Exception ex)
             {
@@ -488,6 +575,34 @@ namespace Dal.DataAccess.Implementations
                 existing.EmployeeId = user.EmployeeId;
 
                 context.SubmitChanges();
+                
+                // Load Employee và navigation properties trước khi dispose DataContext
+                if (existing.EmployeeId.HasValue)
+                {
+                    try
+                    {
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == existing.EmployeeId.Value);
+                        if (employee != null)
+                        {
+                            // Load navigation properties trong cùng context
+                            if (employee.DepartmentId.HasValue)
+                            {
+                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                            }
+                            if (employee.PositionId.HasValue)
+                            {
+                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                            }
+                            
+                            // Gán Employee vào entity
+                            existing.Employee = employee;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore nếu không thể load Employee
+                    }
+                }
                 
                 return existing;
             }

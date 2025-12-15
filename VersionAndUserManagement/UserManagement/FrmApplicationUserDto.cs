@@ -314,6 +314,13 @@ namespace VersionAndUserManagement.UserManagement
                     return;
                 }
 
+                // Kiểm tra không cho phép xóa tài khoản admin
+                if (IsAdminAccount(_selectedItem.UserName))
+                {
+                    ShowError("Không được phép xóa tài khoản admin!");
+                    return;
+                }
+
                 var confirmMessage = $"Bạn có chắc muốn xóa người dùng '{_selectedItem.UserName}'?";
                 if (!MsgBox.ShowYesNo(confirmMessage)) return;
 
@@ -663,6 +670,20 @@ namespace VersionAndUserManagement.UserManagement
         private void ShowError(string message)
         {
             MsgBox.ShowError(message);
+        }
+
+        /// <summary>
+        /// Kiểm tra xem tài khoản có phải là admin không
+        /// </summary>
+        /// <param name="userName">Tên đăng nhập</param>
+        /// <returns>True nếu là tài khoản admin, False nếu không</returns>
+        private bool IsAdminAccount(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+                return false;
+
+            // Kiểm tra không phân biệt hoa thường
+            return userName.Equals("admin", StringComparison.OrdinalIgnoreCase);
         }
 
         #endregion

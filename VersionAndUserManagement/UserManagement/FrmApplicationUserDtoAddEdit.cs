@@ -1,11 +1,14 @@
 using Bll.Common;
+using Bll.MasterData.CompanyBll;
 using Common.Common;
 using Common.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraSplashScreen;
+using DTO.MasterData.Company;
 using DTO.VersionAndUserManagementDto;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -32,6 +35,11 @@ namespace VersionAndUserManagement.UserManagement
         /// Business Logic Layer cho người dùng ứng dụng
         /// </summary>
         private readonly ApplicationUserBll _applicationUserBll;
+
+        /// <summary>
+        /// Business Logic Layer cho nhân viên
+        /// </summary>
+        private readonly EmployeeBll _employeeBll;
 
         /// <summary>
         /// ID người dùng được chọn
@@ -65,6 +73,7 @@ namespace VersionAndUserManagement.UserManagement
         {
             InitializeComponent();
             _applicationUserBll = new ApplicationUserBll();
+            _employeeBll = new EmployeeBll();
             _userId = userId;
             _isEditMode = userId != Guid.Empty;
             _showPasswordFields = !_isEditMode; // Hiển thị mật khẩu khi tạo mới
@@ -87,6 +96,9 @@ namespace VersionAndUserManagement.UserManagement
         {
             // Cấu hình form
             Text = _isEditMode ? "Chỉnh sửa người dùng" : "Thêm mới người dùng";
+
+            // Load danh sách Employee cho SearchLookUpEdit
+            LoadEmployeeData();
 
             // Load dữ liệu người dùng nếu là edit mode
             if (_isEditMode)
@@ -133,6 +145,36 @@ namespace VersionAndUserManagement.UserManagement
         #endregion
 
         #region ========== QUẢN LÝ DỮ LIỆU ==========
+
+        /// <summary>
+        /// Load danh sách Employee vào binding source cho SearchLookUpEdit
+        /// </summary>
+        private async void LoadEmployeeData()
+        {
+            try
+            {
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    // Load danh sách Employee từ BLL
+                    var employees = await Task.Run(() => _employeeBll.GetAll());
+                    
+                    // Convert sang EmployeeDto
+                    // Lưu ý: Không truy cập navigation properties (Company, Department, Position) 
+                    // vì DataContext có thể đã bị dispose sau khi repository method kết thúc
+                    // Chỉ load thông tin cơ bản, navigation properties sẽ được load khi cần
+                    var employeeDtos = employees.Select(e => e.ToDto()).ToList();
+
+                    // Gán vào binding source
+                    employeeDtoBindingSource.DataSource = employeeDtos;
+                });
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowError($"Lỗi tải danh sách nhân viên: {ex.Message}");
+                // Set empty list nếu có lỗi
+                employeeDtoBindingSource.DataSource = new List<EmployeeDto>();
+            }
+        }
 
         /// <summary>
         /// Load dữ liệu người dùng để chỉnh sửa

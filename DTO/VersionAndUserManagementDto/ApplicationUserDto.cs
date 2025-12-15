@@ -170,22 +170,61 @@ namespace DTO.VersionAndUserManagementDto
             };
 
             // Load thông tin Employee nếu có
-            if (entity.EmployeeId.HasValue && entity.Employee != null)
+            // Lưu ý: Kiểm tra an toàn để tránh ObjectDisposedException khi DataContext đã bị dispose
+            if (entity.EmployeeId.HasValue)
             {
-                var employee = entity.Employee;
-                dto.EmployeeCode = employee.EmployeeCode;
-                dto.EmployeeFullName = employee.FullName;
-
-                // Load thông tin Department nếu có
-                if (employee.DepartmentId.HasValue && employee.Department != null)
+                try
                 {
-                    dto.DepartmentName = employee.Department.DepartmentName;
+                    // Thử truy cập Employee, nếu DataContext đã dispose sẽ throw exception
+                    var employee = entity.Employee;
+                    if (employee != null)
+                    {
+                        dto.EmployeeCode = employee.EmployeeCode;
+                        dto.EmployeeFullName = employee.FullName;
+
+                        // Load thông tin Department nếu có
+                        if (employee.DepartmentId.HasValue)
+                        {
+                            try
+                            {
+                                var department = employee.Department;
+                                if (department != null)
+                                {
+                                    dto.DepartmentName = department.DepartmentName;
+                                }
+                            }
+                            catch
+                            {
+                                // Ignore nếu không thể load Department (DataContext đã dispose)
+                            }
+                        }
+
+                        // Load thông tin Position nếu có
+                        if (employee.PositionId.HasValue)
+                        {
+                            try
+                            {
+                                var position = employee.Position;
+                                if (position != null)
+                                {
+                                    dto.PositionName = position.PositionName;
+                                }
+                            }
+                            catch
+                            {
+                                // Ignore nếu không thể load Position (DataContext đã dispose)
+                            }
+                        }
+                    }
                 }
-
-                // Load thông tin Position nếu có
-                if (employee.PositionId.HasValue && employee.Position != null)
+                catch (System.ObjectDisposedException)
                 {
-                    dto.PositionName = employee.Position.PositionName;
+                    // DataContext đã bị dispose, không thể load Employee
+                    // Chỉ có EmployeeId, không có thông tin Employee
+                }
+                catch
+                {
+                    // Ignore các lỗi khác khi load Employee
                 }
             }
 
