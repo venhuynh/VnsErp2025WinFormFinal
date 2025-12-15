@@ -69,7 +69,6 @@ namespace VersionAndUserManagement.AllowedMacAddress
 
             SaveBarButtonItem.ItemClick += SaveBarButtonItem_ItemClick;
             CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
-            AddCurrentMacButton.ItemClick += AddCurrentMacButton_ItemClick;
         }
 
         #endregion
@@ -100,12 +99,6 @@ namespace VersionAndUserManagement.AllowedMacAddress
 
             // Thiết lập SuperToolTip cho các controls
             SetupSuperToolTips();
-
-            // Disable AddCurrentMacButton khi edit mode
-            if (_isEditMode && AddCurrentMacButton != null)
-            {
-                AddCurrentMacButton.Enabled = false;
-            }
         }
 
         #endregion
@@ -199,40 +192,6 @@ namespace VersionAndUserManagement.AllowedMacAddress
             Close();
         }
 
-        /// <summary>
-        /// Xử lý sự kiện click button Thêm MAC hiện tại
-        /// </summary>
-        private void AddCurrentMacButton_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            try
-            {
-                // Chỉ cho phép khi thêm mới (không phải edit)
-                if (_isEditMode)
-                {
-                    MsgBox.ShowWarning("Không thể thay đổi MAC address khi chỉnh sửa.");
-                    return;
-                }
-
-                var currentMac = _allowedMacAddressBll.GetCurrentMacAddress();
-                if (string.IsNullOrWhiteSpace(currentMac))
-                {
-                    MsgBox.ShowWarning("Không thể lấy MAC address của máy tính hiện tại.");
-                    return;
-                }
-
-                MacAddressTextEdit.EditValue = currentMac;
-
-                // Tự động điền tên máy tính nếu chưa có
-                if (string.IsNullOrWhiteSpace(ComputerNameTextEdit?.Text))
-                {
-                    ComputerNameTextEdit.EditValue = Environment.MachineName;
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi lấy MAC address hiện tại");
-            }
-        }
 
         #endregion
 
@@ -430,19 +389,6 @@ namespace VersionAndUserManagement.AllowedMacAddress
                         IsActiveCheckEdit,
                         title: "<b><color=DarkBlue>✅ Đang hoạt động</color></b>",
                         content: "Đánh dấu MAC address này có đang được phép sử dụng ứng dụng hay không."
-                    );
-                }
-
-                if (AddCurrentMacButton != null)
-                {
-                    var addMacTip = _isEditMode
-                        ? "Nút này không khả dụng khi chỉnh sửa. MAC address không thể thay đổi sau khi đã được tạo."
-                        : "Tự động lấy và điền MAC address của máy tính hiện tại vào form. Nút này chỉ hoạt động khi thêm mới MAC address.";
-                    
-                    SuperToolTipHelper.SetBarButtonSuperTip(
-                        AddCurrentMacButton,
-                        title: "<b><color=Green>➕ Thêm MAC hiện tại</color></b>",
-                        content: addMacTip
                     );
                 }
 
