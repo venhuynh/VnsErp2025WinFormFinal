@@ -1,4 +1,4 @@
-﻿using DevExpress.XtraBars;
+using DevExpress.XtraBars;
 using DevExpress.XtraDataLayout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
@@ -50,32 +50,32 @@ namespace VersionAndUserManagement.AllowedMacAddress
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
             this.dataLayoutControl1 = new DevExpress.XtraDataLayout.DataLayoutControl();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.allowedMacAddressDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.MacAddressTextEdit = new DevExpress.XtraEditors.TextEdit();
-            this.ItemForMacAddress = new DevExpress.XtraLayout.LayoutControlItem();
+            this.allowedMacAddressDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ComputerNameTextEdit = new DevExpress.XtraEditors.TextEdit();
+            this.IsActiveCheckEdit = new DevExpress.XtraEditors.CheckEdit();
+            this.DescriptionTextEdit = new DevExpress.XtraEditors.MemoEdit();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.ItemForMacAddress = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForComputerName = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForDescription = new DevExpress.XtraLayout.LayoutControlItem();
-            this.IsActiveCheckEdit = new DevExpress.XtraEditors.CheckEdit();
             this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
-            this.DescriptionTextEdit = new DevExpress.XtraEditors.MemoEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
             this.dataLayoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.allowedMacAddressDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MacAddressTextEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForMacAddress)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.allowedMacAddressDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ComputerNameTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForMacAddress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForComputerName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDescription)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -91,7 +91,7 @@ namespace VersionAndUserManagement.AllowedMacAddress
             this.SaveBarButtonItem,
             this.CloseBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 2;
+            this.barManager1.MaxItemId = 3;
             // 
             // bar2
             // 
@@ -135,7 +135,7 @@ namespace VersionAndUserManagement.AllowedMacAddress
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 196);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 239);
             this.barDockControlBottom.Manager = this.barManager1;
             this.barDockControlBottom.Size = new System.Drawing.Size(599, 0);
             // 
@@ -145,7 +145,7 @@ namespace VersionAndUserManagement.AllowedMacAddress
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 172);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 215);
             // 
             // barDockControlRight
             // 
@@ -153,7 +153,7 @@ namespace VersionAndUserManagement.AllowedMacAddress
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(599, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 172);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 215);
             // 
             // dxErrorProvider1
             // 
@@ -170,36 +170,9 @@ namespace VersionAndUserManagement.AllowedMacAddress
             this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(599, 172);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(599, 215);
             this.dataLayoutControl1.TabIndex = 15;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
-            // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlGroup1});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(599, 172);
-            this.Root.TextVisible = false;
-            // 
-            // allowedMacAddressDtoBindingSource
-            // 
-            this.allowedMacAddressDtoBindingSource.DataSource = typeof(DTO.VersionAndUserManagementDto.AllowedMacAddressDto);
-            // 
-            // layoutControlGroup1
-            // 
-            this.layoutControlGroup1.AllowDrawBackground = false;
-            this.layoutControlGroup1.GroupBordersVisible = false;
-            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.ItemForMacAddress,
-            this.ItemForComputerName,
-            this.ItemForDescription,
-            this.ItemForIsActive});
-            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(579, 152);
             // 
             // MacAddressTextEdit
             // 
@@ -212,14 +185,9 @@ namespace VersionAndUserManagement.AllowedMacAddress
             this.MacAddressTextEdit.StyleController = this.dataLayoutControl1;
             this.MacAddressTextEdit.TabIndex = 5;
             // 
-            // ItemForMacAddress
+            // allowedMacAddressDtoBindingSource
             // 
-            this.ItemForMacAddress.Control = this.MacAddressTextEdit;
-            this.ItemForMacAddress.Location = new System.Drawing.Point(0, 0);
-            this.ItemForMacAddress.Name = "ItemForMacAddress";
-            this.ItemForMacAddress.Size = new System.Drawing.Size(391, 24);
-            this.ItemForMacAddress.Text = "Địa chỉ MAC";
-            this.ItemForMacAddress.TextSize = new System.Drawing.Size(62, 13);
+            this.allowedMacAddressDtoBindingSource.DataSource = typeof(DTO.VersionAndUserManagementDto.AllowedMacAddressDto);
             // 
             // ComputerNameTextEdit
             // 
@@ -230,6 +198,60 @@ namespace VersionAndUserManagement.AllowedMacAddress
             this.ComputerNameTextEdit.Size = new System.Drawing.Size(501, 20);
             this.ComputerNameTextEdit.StyleController = this.dataLayoutControl1;
             this.ComputerNameTextEdit.TabIndex = 6;
+            // 
+            // IsActiveCheckEdit
+            // 
+            this.IsActiveCheckEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.allowedMacAddressDtoBindingSource, "IsActive", true));
+            this.IsActiveCheckEdit.Location = new System.Drawing.Point(403, 12);
+            this.IsActiveCheckEdit.MenuManager = this.barManager1;
+            this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
+            this.IsActiveCheckEdit.Properties.Caption = "Đang hoạt động";
+            this.IsActiveCheckEdit.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
+            this.IsActiveCheckEdit.Size = new System.Drawing.Size(184, 20);
+            this.IsActiveCheckEdit.StyleController = this.dataLayoutControl1;
+            this.IsActiveCheckEdit.TabIndex = 8;
+            // 
+            // DescriptionTextEdit
+            // 
+            this.DescriptionTextEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.allowedMacAddressDtoBindingSource, "Description", true));
+            this.DescriptionTextEdit.Location = new System.Drawing.Point(86, 60);
+            this.DescriptionTextEdit.MenuManager = this.barManager1;
+            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
+            this.DescriptionTextEdit.Size = new System.Drawing.Size(501, 143);
+            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
+            this.DescriptionTextEdit.TabIndex = 7;
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlGroup1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(599, 215);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlGroup1
+            // 
+            this.layoutControlGroup1.AllowDrawBackground = false;
+            this.layoutControlGroup1.GroupBordersVisible = false;
+            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.ItemForMacAddress,
+            this.ItemForComputerName,
+            this.ItemForDescription,
+            this.ItemForIsActive});
+            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlGroup1.Name = "autoGeneratedGroup0";
+            this.layoutControlGroup1.Size = new System.Drawing.Size(579, 195);
+            // 
+            // ItemForMacAddress
+            // 
+            this.ItemForMacAddress.Control = this.MacAddressTextEdit;
+            this.ItemForMacAddress.Location = new System.Drawing.Point(0, 0);
+            this.ItemForMacAddress.Name = "ItemForMacAddress";
+            this.ItemForMacAddress.Size = new System.Drawing.Size(391, 24);
+            this.ItemForMacAddress.Text = "Địa chỉ MAC";
+            this.ItemForMacAddress.TextSize = new System.Drawing.Size(62, 13);
             // 
             // ItemForComputerName
             // 
@@ -245,21 +267,9 @@ namespace VersionAndUserManagement.AllowedMacAddress
             this.ItemForDescription.Control = this.DescriptionTextEdit;
             this.ItemForDescription.Location = new System.Drawing.Point(0, 48);
             this.ItemForDescription.Name = "ItemForDescription";
-            this.ItemForDescription.Size = new System.Drawing.Size(579, 104);
+            this.ItemForDescription.Size = new System.Drawing.Size(579, 147);
             this.ItemForDescription.Text = "Mô tả";
             this.ItemForDescription.TextSize = new System.Drawing.Size(62, 13);
-            // 
-            // IsActiveCheckEdit
-            // 
-            this.IsActiveCheckEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.allowedMacAddressDtoBindingSource, "IsActive", true));
-            this.IsActiveCheckEdit.Location = new System.Drawing.Point(403, 12);
-            this.IsActiveCheckEdit.MenuManager = this.barManager1;
-            this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
-            this.IsActiveCheckEdit.Properties.Caption = "Đang hoạt động";
-            this.IsActiveCheckEdit.Properties.GlyphAlignment = DevExpress.Utils.HorzAlignment.Default;
-            this.IsActiveCheckEdit.Size = new System.Drawing.Size(184, 20);
-            this.IsActiveCheckEdit.StyleController = this.dataLayoutControl1;
-            this.IsActiveCheckEdit.TabIndex = 8;
             // 
             // ItemForIsActive
             // 
@@ -270,21 +280,11 @@ namespace VersionAndUserManagement.AllowedMacAddress
             this.ItemForIsActive.Text = "Đang hoạt động";
             this.ItemForIsActive.TextVisible = false;
             // 
-            // DescriptionTextEdit
-            // 
-            this.DescriptionTextEdit.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.allowedMacAddressDtoBindingSource, "Description", true));
-            this.DescriptionTextEdit.Location = new System.Drawing.Point(86, 60);
-            this.DescriptionTextEdit.MenuManager = this.barManager1;
-            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
-            this.DescriptionTextEdit.Size = new System.Drawing.Size(501, 100);
-            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
-            this.DescriptionTextEdit.TabIndex = 7;
-            // 
             // FrmAllowedMacAddressDtoAddEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(599, 196);
+            this.ClientSize = new System.Drawing.Size(599, 239);
             this.Controls.Add(this.dataLayoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -297,17 +297,17 @@ namespace VersionAndUserManagement.AllowedMacAddress
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).EndInit();
             this.dataLayoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.allowedMacAddressDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MacAddressTextEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ItemForMacAddress)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.allowedMacAddressDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ComputerNameTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForMacAddress)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForComputerName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDescription)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForIsActive)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

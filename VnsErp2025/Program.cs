@@ -10,6 +10,7 @@ using Inventory.StockOut.XuatNoiBo;
 using MasterData.Customer;
 using System;
 using System.Windows.Forms;
+using VersionAndUserManagement.AllowedMacAddress;
 using VnsErp2025.Form;
 
 
@@ -135,7 +136,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmTaoThietBiNhapLapRap());
+            Application.Run(new FrmAllowedMacAddressDto());
 
             #endregion
 
