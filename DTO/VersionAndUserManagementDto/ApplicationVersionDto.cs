@@ -1,3 +1,4 @@
+using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -131,4 +132,105 @@ public class ApplicationVersionDto
             return html;
         }
     }
+}
+
+/// <summary>
+/// Extension methods cho ApplicationVersion entities và DTOs.
+/// Cung cấp conversion, transformation, và utility methods.
+/// </summary>
+public static class ApplicationVersionDtoExtensions
+{
+    #region ========== CONVERSION METHODS ==========
+
+    /// <summary>
+    /// Convert ApplicationVersion entity to ApplicationVersionDto.
+    /// </summary>
+    /// <param name="entity">ApplicationVersion entity</param>
+    /// <returns>ApplicationVersionDto</returns>
+    public static ApplicationVersionDto ToDto(this ApplicationVersion entity)
+    {
+        if (entity == null)
+            return null;
+
+        return new ApplicationVersionDto
+        {
+            Id = entity.Id,
+            Version = entity.Version,
+            ReleaseDate = entity.ReleaseDate,
+            IsActive = entity.IsActive,
+            Description = entity.Description,
+            CreateDate = entity.CreateDate,
+            CreateBy = entity.CreateBy,
+            ModifiedDate = entity.ModifiedDate,
+            ModifiedBy = entity.ModifiedBy
+        };
+    }
+
+    /// <summary>
+    /// Convert ApplicationVersionDto to ApplicationVersion entity.
+    /// </summary>
+    /// <param name="dto">ApplicationVersionDto</param>
+    /// <param name="existingEntity">Existing entity to update (optional, for edit mode)</param>
+    /// <returns>ApplicationVersion entity</returns>
+    public static ApplicationVersion ToEntity(this ApplicationVersionDto dto, ApplicationVersion existingEntity = null)
+    {
+        if (dto == null)
+            return null;
+
+        ApplicationVersion entity;
+        if (existingEntity != null)
+        {
+            // Update existing entity
+            entity = existingEntity;
+        }
+        else
+        {
+            // Create new entity
+            entity = new ApplicationVersion();
+            if (dto.Id != Guid.Empty)
+            {
+                entity.Id = dto.Id;
+            }
+        }
+
+        // Map properties
+        entity.Version = dto.Version;
+        entity.ReleaseDate = dto.ReleaseDate;
+        entity.IsActive = dto.IsActive;
+        entity.Description = dto.Description;
+        entity.CreateDate = dto.CreateDate;
+        entity.CreateBy = dto.CreateBy;
+        entity.ModifiedDate = dto.ModifiedDate;
+        entity.ModifiedBy = dto.ModifiedBy;
+
+        return entity;
+    }
+
+    /// <summary>
+    /// Convert collection of ApplicationVersion entities to ApplicationVersionDto list.
+    /// </summary>
+    /// <param name="entities">Collection of ApplicationVersion entities</param>
+    /// <returns>List of ApplicationVersionDto</returns>
+    public static List<ApplicationVersionDto> ToDtos(this IEnumerable<ApplicationVersion> entities)
+    {
+        if (entities == null)
+            return new List<ApplicationVersionDto>();
+
+        return entities.Select(ToDto).ToList();
+    }
+
+    /// <summary>
+    /// Convert collection of ApplicationVersionDto to ApplicationVersion entities list.
+    /// </summary>
+    /// <param name="dtos">Collection of ApplicationVersionDto</param>
+    /// <returns>List of ApplicationVersion entities</returns>
+    public static List<ApplicationVersion> ToEntities(this IEnumerable<ApplicationVersionDto> dtos)
+    {
+        if (dtos == null)
+            return new List<ApplicationVersion>();
+
+        return dtos.Select(dto => dto.ToEntity()).ToList();
+    }
+
+    #endregion
 }

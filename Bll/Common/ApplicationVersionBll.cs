@@ -89,7 +89,7 @@ public class ApplicationVersionBll
                 return null;
             }
 
-            var dto = ToDto(version);
+            var dto = version.ToDto();
             _logger?.Info($"Hoàn thành lấy phiên bản đang hoạt động: {dto.Version}");
             return dto;
         }
@@ -167,7 +167,7 @@ public class ApplicationVersionBll
         {
             _logger?.Info("Bắt đầu lấy tất cả phiên bản");
             var versions = GetDataAccess().GetAllVersions();
-            var dtos = versions.ConvertAll(ToDto);
+            var dtos = versions.ToDtos();
             _logger?.Info($"Hoàn thành lấy tất cả phiên bản: {dtos.Count} phiên bản");
             return dtos;
         }
@@ -188,9 +188,9 @@ public class ApplicationVersionBll
         try
         {
             _logger?.Info($"Bắt đầu tạo phiên bản mới: {dto.Version}");
-            var entity = ToEntity(dto);
+            var entity = dto.ToEntity();
             var created = GetDataAccess().Create(entity);
-            var result = ToDto(created);
+            var result = created.ToDto();
             _logger?.Info($"Hoàn thành tạo phiên bản mới: {result.Version}");
             return result;
         }
@@ -211,9 +211,9 @@ public class ApplicationVersionBll
         try
         {
             _logger?.Info($"Bắt đầu cập nhật phiên bản: {dto.Version}");
-            var entity = ToEntity(dto);
+            var entity = dto.ToEntity();
             var updated = GetDataAccess().Update(entity);
-            var result = ToDto(updated);
+            var result = updated.ToDto();
             _logger?.Info($"Hoàn thành cập nhật phiên bản: {result.Version}");
             return result;
         }
@@ -296,48 +296,6 @@ public class ApplicationVersionBll
             _logger?.Error($"Lỗi khi cập nhật phiên bản từ Assembly: {ex.Message}", ex);
             throw;
         }
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private ApplicationVersionDto ToDto(ApplicationVersion entity)
-    {
-        if (entity == null)
-            return null;
-
-        return new ApplicationVersionDto
-        {
-            Id = entity.Id,
-            Version = entity.Version,
-            ReleaseDate = entity.ReleaseDate,
-            IsActive = entity.IsActive,
-            Description = entity.Description,
-            CreateDate = entity.CreateDate,
-            CreateBy = entity.CreateBy,
-            ModifiedDate = entity.ModifiedDate,
-            ModifiedBy = entity.ModifiedBy
-        };
-    }
-
-    private ApplicationVersion ToEntity(ApplicationVersionDto dto)
-    {
-        if (dto == null)
-            return null;
-
-        return new ApplicationVersion
-        {
-            Id = dto.Id,
-            Version = dto.Version,
-            ReleaseDate = dto.ReleaseDate,
-            IsActive = dto.IsActive,
-            Description = dto.Description,
-            CreateDate = dto.CreateDate,
-            CreateBy = dto.CreateBy,
-            ModifiedDate = dto.ModifiedDate,
-            ModifiedBy = dto.ModifiedBy
-        };
     }
 
     #endregion

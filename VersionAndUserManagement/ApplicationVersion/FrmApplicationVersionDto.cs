@@ -1,13 +1,9 @@
 using Bll.Common;
-using Common.Common;
 using Common.Helpers;
 using Common.Utils;
-using DevExpress.Data;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
-using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using DTO.VersionAndUserManagementDto;
@@ -17,31 +13,34 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Common;
+using DevExpress.Data;
+using DevExpress.XtraGrid;
 
-namespace VersionAndUserManagement.UserManagement
+namespace VersionAndUserManagement.ApplicationVersion
 {
     /// <summary>
-    /// Form quản lý danh sách người dùng ứng dụng.
-    /// Cung cấp giao diện hiển thị, tìm kiếm, thêm mới, sửa, xóa và xuất dữ liệu người dùng.
+    /// Form quản lý danh sách phiên bản ứng dụng.
+    /// Cung cấp giao diện hiển thị, tìm kiếm, cập nhật phiên bản từ Assembly và xuất dữ liệu.
     /// </summary>
-    public partial class FrmApplicationUserDto : DevExpress.XtraEditors.XtraForm
+    public partial class FrmApplicationVersionDto : DevExpress.XtraEditors.XtraForm
     {
         #region ========== KHAI BÁO BIẾN ==========
 
         /// <summary>
-        /// Business Logic Layer cho người dùng ứng dụng
+        /// Business Logic Layer cho phiên bản ứng dụng
         /// </summary>
-        private readonly ApplicationUserBll _applicationUserBll;
+        private readonly ApplicationVersionBll _applicationVersionBll;
 
         /// <summary>
-        /// Danh sách dữ liệu người dùng hiện tại
+        /// Danh sách dữ liệu phiên bản hiện tại
         /// </summary>
-        private List<ApplicationUserDto> _dataList;
+        private List<ApplicationVersionDto> _dataList;
 
         /// <summary>
-        /// Người dùng được chọn hiện tại
+        /// Phiên bản được chọn hiện tại
         /// </summary>
-        private ApplicationUserDto _selectedItem;
+        private ApplicationVersionDto _selectedItem;
 
         /// <summary>
         /// Trạng thái đang tải dữ liệu (guard tránh gọi LoadDataAsync song song)
@@ -53,13 +52,13 @@ namespace VersionAndUserManagement.UserManagement
         #region ========== CONSTRUCTOR & PUBLIC METHODS ==========
 
         /// <summary>
-        /// Khởi tạo Form quản lý người dùng ứng dụng.
+        /// Khởi tạo Form quản lý phiên bản ứng dụng.
         /// </summary>
-        public FrmApplicationUserDto()
+        public FrmApplicationVersionDto()
         {
             InitializeComponent();
-            _applicationUserBll = new ApplicationUserBll();
-            _dataList = new List<ApplicationUserDto>();
+            _applicationVersionBll = new ApplicationVersionBll();
+            _dataList = new List<ApplicationVersionDto>();
             InitializeEvents();
             ConfigureMultiLineGridView();
             UpdateButtonStates();
@@ -82,16 +81,14 @@ namespace VersionAndUserManagement.UserManagement
         {
             // Bar button events
             ListDataBarButtonItem.ItemClick += ListDataBarButtonItem_ItemClick;
-            NewBarButtonItem.ItemClick += NewBarButtonItem_ItemClick;
-            EditBarButtonItem.ItemClick += EditBarButtonItem_ItemClick;
-            DeleteBarButtonItem.ItemClick += DeleteBarButtonItem_ItemClick;
+            GetNewVersionButtonItem.ItemClick += GetNewVersionButtonItem_ItemClick;
             ExportBarButtonItem.ItemClick += ExportBarButtonItem_ItemClick;
 
             // Grid events
-            ApplicationUserDtoGridView.SelectionChanged += ApplicationUserDtoGridView_SelectionChanged;
-            ApplicationUserDtoGridView.DoubleClick += ApplicationUserDtoGridView_DoubleClick;
-            ApplicationUserDtoGridView.CustomDrawRowIndicator += ApplicationUserDtoGridView_CustomDrawRowIndicator;
-            ApplicationUserDtoGridView.RowCellStyle += ApplicationUserDtoGridView_RowCellStyle;
+            ApplicationVersionDtoGridView.SelectionChanged += ApplicationVersionDtoGridView_SelectionChanged;
+            ApplicationVersionDtoGridView.DoubleClick += ApplicationVersionDtoGridView_DoubleClick;
+            ApplicationVersionDtoGridView.CustomDrawRowIndicator += ApplicationVersionDtoGridView_CustomDrawRowIndicator;
+            ApplicationVersionDtoGridView.RowCellStyle += ApplicationVersionDtoGridView_RowCellStyle;
 
             // Cấu hình HtmlHypertextLabel để enable HTML rendering
             if (HtmlHypertextLabel != null)
@@ -135,7 +132,7 @@ namespace VersionAndUserManagement.UserManagement
         {
             try
             {
-                var dtos = await Task.Run(() => _applicationUserBll.GetAll());
+                var dtos = await Task.Run(() => _applicationVersionBll.GetAllVersions());
                 _dataList = dtos;
 
                 BindGrid(_dataList);
@@ -149,10 +146,10 @@ namespace VersionAndUserManagement.UserManagement
         /// <summary>
         /// Bind danh sách DTO vào Grid và cấu hình hiển thị.
         /// </summary>
-        private void BindGrid(List<ApplicationUserDto> data)
+        private void BindGrid(List<ApplicationVersionDto> data)
         {
-            applicationUserDtoBindingSource.DataSource = data;
-            ApplicationUserDtoGridView.BestFitColumns();
+            applicationVersionDtoBindingSource.DataSource = data;
+            ApplicationVersionDtoGridView.BestFitColumns();
             ConfigureMultiLineGridView();
             UpdateDataSummary();
             UpdateButtonStates();
@@ -164,7 +161,7 @@ namespace VersionAndUserManagement.UserManagement
         private void UpdateDataSummary()
         {
             var totalCount = _dataList?.Count ?? 0;
-            var activeCount = _dataList?.Count(x => x.Active) ?? 0;
+            var activeCount = _dataList?.Count(x => x.IsActive) ?? 0;
 
             DataSummaryBarStaticItem.Caption = $@"Tổng: {totalCount} | Hoạt động: {activeCount}";
         }
@@ -173,17 +170,17 @@ namespace VersionAndUserManagement.UserManagement
         /// Cập nhật một dòng trong datasource thay vì reload toàn bộ (cải thiện UX)
         /// </summary>
         /// <param name="updatedDto">DTO đã được cập nhật</param>
-        private void UpdateSingleRowInDataSource(ApplicationUserDto updatedDto)
+        private void UpdateSingleRowInDataSource(ApplicationVersionDto updatedDto)
         {
             try
             {
-                if (updatedDto == null || applicationUserDtoBindingSource.DataSource == null)
+                if (updatedDto == null || applicationVersionDtoBindingSource.DataSource == null)
                 {
                     return;
                 }
 
                 // Tìm dòng cần update trong datasource
-                if (applicationUserDtoBindingSource.DataSource is List<ApplicationUserDto> dataList)
+                if (applicationVersionDtoBindingSource.DataSource is List<ApplicationVersionDto> dataList)
                 {
                     var index = dataList.FindIndex(d => d.Id == updatedDto.Id);
                     if (index >= 0)
@@ -192,20 +189,20 @@ namespace VersionAndUserManagement.UserManagement
                         dataList[index] = updatedDto;
 
                         // Refresh binding source để cập nhật UI
-                        applicationUserDtoBindingSource.ResetBindings(false);
+                        applicationVersionDtoBindingSource.ResetBindings(false);
 
                         // Refresh grid view để hiển thị thay đổi
-                        var rowHandle = ApplicationUserDtoGridView.GetRowHandle(index);
+                        var rowHandle = ApplicationVersionDtoGridView.GetRowHandle(index);
                         if (rowHandle >= 0)
                         {
-                            ApplicationUserDtoGridView.RefreshRow(rowHandle);
+                            ApplicationVersionDtoGridView.RefreshRow(rowHandle);
                         }
                     }
                     else
                     {
                         // Nếu không tìm thấy (trường hợp thêm mới), thêm vào đầu danh sách
                         dataList.Insert(0, updatedDto);
-                        applicationUserDtoBindingSource.ResetBindings(false);
+                        applicationVersionDtoBindingSource.ResetBindings(false);
                     }
 
                     // Cập nhật summary
@@ -241,101 +238,29 @@ namespace VersionAndUserManagement.UserManagement
         }
 
         /// <summary>
-        /// Xử lý sự kiện click button Thêm mới
+        /// Xử lý sự kiện click button Tìm phiên bản mới
         /// </summary>
-        private async void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        private async void GetNewVersionButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
-                using var form = new FrmApplicationUserDtoAddEdit(Guid.Empty);
-                form.UserSaved += UpdateSingleRowInDataSource;
-                form.StartPosition = FormStartPosition.CenterParent;
-                if (form.ShowDialog(this) == DialogResult.OK)
-                {
-                    UpdateButtonStates();
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi hiển thị màn hình thêm mới");
-            }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện click button Sửa
-        /// </summary>
-        private async void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            try
-            {
-                if (_selectedItem == null)
-                {
-                    ShowInfo("Vui lòng chọn người dùng cần chỉnh sửa.");
-                    return;
-                }
-
-                try
-                {
-                    using (var form = new FrmApplicationUserDtoAddEdit(_selectedItem.Id))
-                    {
-                        form.UserSaved += (updatedDto) =>
-                        {
-                            // Cập nhật datasource với DTO đã được cập nhật
-                            UpdateSingleRowInDataSource(updatedDto);
-                        };
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        if (form.ShowDialog(this) == DialogResult.OK)
-                        {
-                            UpdateButtonStates();
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ShowError(ex, "Lỗi hiển thị màn hình điều chỉnh");
-                }
-            }
-            catch (Exception ex)
-            {
-                MsgBox.ShowException(ex);
-            }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện click button Xóa
-        /// </summary>
-        private async void DeleteBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            try
-            {
-                if (_selectedItem == null)
-                {
-                    ShowInfo("Vui lòng chọn người dùng cần xóa.");
-                    return;
-                }
-
-                // Kiểm tra không cho phép xóa tài khoản admin
-                if (IsAdminAccount(_selectedItem.UserName))
-                {
-                    ShowError("Không được phép xóa tài khoản admin!");
-                    return;
-                }
-
-                var confirmMessage = $"Bạn có chắc muốn xóa người dùng '{_selectedItem.UserName}'?";
+                var currentVersion = _applicationVersionBll.GetCurrentApplicationVersion();
+                var confirmMessage = $"Bạn có muốn cập nhật phiên bản hiện tại '{currentVersion}' vào database không?";
+                
                 if (!MsgBox.ShowYesNo(confirmMessage)) return;
 
                 try
                 {
                     await ExecuteWithWaitingFormAsync(async () =>
                     {
-                        await Task.Run(() => _applicationUserBll.Delete(_selectedItem.Id));
-                        ShowInfo("Xóa người dùng thành công!");
+                        await Task.Run(() => _applicationVersionBll.UpdateVersionFromAssembly());
+                        ShowInfo($"Đã cập nhật phiên bản '{currentVersion}' vào database thành công!");
                         await LoadDataAsyncWithoutSplash();
                     });
                 }
                 catch (Exception ex)
                 {
-                    ShowError(ex, "Lỗi xóa người dùng");
+                    ShowError(ex, "Lỗi cập nhật phiên bản");
                 }
             }
             catch (Exception ex)
@@ -350,26 +275,26 @@ namespace VersionAndUserManagement.UserManagement
         private void ExportBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Chỉ cho phép xuất khi có dữ liệu hiển thị
-            var rowCount = GridViewHelper.GetDisplayRowCount(ApplicationUserDtoGridView) ?? 0;
+            var rowCount = GridViewHelper.GetDisplayRowCount(ApplicationVersionDtoGridView) ?? 0;
             if (rowCount <= 0)
             {
                 ShowInfo("Không có dữ liệu để xuất.");
                 return;
             }
 
-            GridViewHelper.ExportGridControl(ApplicationUserDtoGridView, "ApplicationUsers.xlsx");
+            GridViewHelper.ExportGridControl(ApplicationVersionDtoGridView, "ApplicationVersions.xlsx");
         }
 
         /// <summary>
         /// Xử lý sự kiện thay đổi selection trên GridView
         /// </summary>
-        private void ApplicationUserDtoGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ApplicationVersionDtoGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
                 if (sender is GridView view && view.FocusedRowHandle >= 0)
                 {
-                    _selectedItem = view.GetFocusedRow() as ApplicationUserDto;
+                    _selectedItem = view.GetFocusedRow() as ApplicationVersionDto;
                     UpdateSelectedRowInfo();
                 }
                 else
@@ -388,57 +313,36 @@ namespace VersionAndUserManagement.UserManagement
         /// <summary>
         /// Xử lý sự kiện double click trên GridView
         /// </summary>
-        private async void ApplicationUserDtoGridView_DoubleClick(object sender, EventArgs e)
+        private void ApplicationVersionDtoGridView_DoubleClick(object sender, EventArgs e)
         {
-            try
-            {
-                if (_selectedItem != null)
-                {
-                    using (var form = new FrmApplicationUserDtoAddEdit(_selectedItem.Id))
-                    {
-                        form.UserSaved += (updatedDto) =>
-                        {
-                            // Cập nhật datasource với DTO đã được cập nhật
-                            UpdateSingleRowInDataSource(updatedDto);
-                        };
-                        form.StartPosition = FormStartPosition.CenterParent;
-                        if (form.ShowDialog(this) == DialogResult.OK)
-                        {
-                            UpdateButtonStates();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi khi xem chi tiết");
-            }
+            // Có thể mở form chi tiết nếu cần trong tương lai
+            // Hiện tại chỉ hiển thị thông tin trong grid
         }
 
         /// <summary>
         /// Xử lý sự kiện vẽ số thứ tự dòng
         /// </summary>
-        private void ApplicationUserDtoGridView_CustomDrawRowIndicator(object sender, RowIndicatorCustomDrawEventArgs e)
+        private void ApplicationVersionDtoGridView_CustomDrawRowIndicator(object sender, RowIndicatorCustomDrawEventArgs e)
         {
             // Sử dụng helper chung để vẽ số thứ tự dòng
-            GridViewHelper.CustomDrawRowIndicator(ApplicationUserDtoGridView, e);
+            GridViewHelper.CustomDrawRowIndicator(ApplicationVersionDtoGridView, e);
         }
 
         /// <summary>
         /// Xử lý sự kiện tô màu dòng theo trạng thái
         /// </summary>
-        private void ApplicationUserDtoGridView_RowCellStyle(object sender, RowCellStyleEventArgs e)
+        private void ApplicationVersionDtoGridView_RowCellStyle(object sender, RowCellStyleEventArgs e)
         {
             try
             {
                 if (sender is not GridView view) return;
                 if (e.RowHandle < 0) return;
-                if (view.GetRow(e.RowHandle) is not ApplicationUserDto row) return;
+                if (view.GetRow(e.RowHandle) is not ApplicationVersionDto row) return;
                 // Không ghi đè màu khi đang chọn để giữ màu chọn mặc định của DevExpress
                 if (view.IsRowSelected(e.RowHandle)) return;
 
-                // Nếu người dùng không hoạt động: làm nổi bật rõ ràng hơn
-                if (row.Active) return;
+                // Nếu phiên bản không hoạt động: làm nổi bật rõ ràng hơn
+                if (row.IsActive) return;
                 e.Appearance.BackColor = Color.FromArgb(255, 205, 210); // đỏ nhạt nhưng đậm hơn (Light Red)
                 e.Appearance.ForeColor = Color.DarkRed;
                 e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Strikeout);
@@ -462,7 +366,7 @@ namespace VersionAndUserManagement.UserManagement
             try
             {
                 // Bật tự động điều chỉnh chiều cao dòng để wrap nội dung
-                ApplicationUserDtoGridView.OptionsView.RowAutoHeight = true;
+                ApplicationVersionDtoGridView.OptionsView.RowAutoHeight = true;
 
                 // RepositoryItemMemoEdit cho wrap text
                 var memo = new RepositoryItemMemoEdit
@@ -473,11 +377,12 @@ namespace VersionAndUserManagement.UserManagement
                 memo.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
 
                 // Áp dụng cho các cột có khả năng dài
-                ApplyMemoEditorToColumn("UserName", memo);
+                ApplyMemoEditorToColumn("Version", memo);
+                ApplyMemoEditorToColumn("Description", memo);
 
                 // Tùy chọn hiển thị: căn giữa tiêu đề cho đẹp
-                ApplicationUserDtoGridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
-                ApplicationUserDtoGridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
+                ApplicationVersionDtoGridView.Appearance.HeaderPanel.TextOptions.HAlignment = HorzAlignment.Center;
+                ApplicationVersionDtoGridView.Appearance.HeaderPanel.Options.UseTextOptions = true;
             }
             catch (Exception ex)
             {
@@ -492,12 +397,12 @@ namespace VersionAndUserManagement.UserManagement
         /// <param name="memo">RepositoryItemMemoEdit</param>
         private void ApplyMemoEditorToColumn(string fieldName, RepositoryItemMemoEdit memo)
         {
-            var col = ApplicationUserDtoGridView.Columns[fieldName];
+            var col = ApplicationVersionDtoGridView.Columns[fieldName];
             if (col == null) return;
             // Thêm repository vào GridControl nếu chưa có
-            if (!ApplicationUserDtoGridControl.RepositoryItems.Contains(memo))
+            if (!ApplicationVersionDtoGridControl.RepositoryItems.Contains(memo))
             {
-                ApplicationUserDtoGridControl.RepositoryItems.Add(memo);
+                ApplicationVersionDtoGridControl.RepositoryItems.Add(memo);
             }
             col.ColumnEdit = memo;
         }
@@ -534,19 +439,8 @@ namespace VersionAndUserManagement.UserManagement
         {
             try
             {
-                var hasSelection = _selectedItem != null;
-                var isAdmin = hasSelection && IsAdminAccount(_selectedItem.UserName);
-
-                // Edit: chỉ khi chọn đúng 1 dòng
-                if (EditBarButtonItem != null)
-                    EditBarButtonItem.Enabled = hasSelection;
-
-                // Delete: khi chọn >= 1 dòng và không phải tài khoản admin
-                if (DeleteBarButtonItem != null)
-                    DeleteBarButtonItem.Enabled = hasSelection && !isAdmin;
-
                 // Export: chỉ khi có dữ liệu hiển thị
-                var rowCount = GridViewHelper.GetDisplayRowCount(ApplicationUserDtoGridView) ?? 0;
+                var rowCount = GridViewHelper.GetDisplayRowCount(ApplicationVersionDtoGridView) ?? 0;
                 if (ExportBarButtonItem != null)
                     ExportBarButtonItem.Enabled = rowCount > 0;
             }
@@ -562,8 +456,8 @@ namespace VersionAndUserManagement.UserManagement
         private void ClearSelectionState()
         {
             _selectedItem = null;
-            ApplicationUserDtoGridView.ClearSelection();
-            ApplicationUserDtoGridView.FocusedRowHandle = GridControl.InvalidRowHandle;
+            ApplicationVersionDtoGridView.ClearSelection();
+            ApplicationVersionDtoGridView.FocusedRowHandle = GridControl.InvalidRowHandle;
             UpdateSelectedRowInfo();
             UpdateButtonStates();
         }
@@ -575,7 +469,7 @@ namespace VersionAndUserManagement.UserManagement
         {
             if (_selectedItem != null)
             {
-                SelectedRowBarStaticItem.Caption = @$"Đang chọn: {_selectedItem.UserName}";
+                SelectedRowBarStaticItem.Caption = @$"Đang chọn: {_selectedItem.Version}";
             }
             else
             {
@@ -599,34 +493,16 @@ namespace VersionAndUserManagement.UserManagement
                     SuperToolTipHelper.SetBarButtonSuperTip(
                         ListDataBarButtonItem,
                         title: "<b><color=Blue>🔄 Tải dữ liệu</color></b>",
-                        content: "Tải lại danh sách người dùng từ hệ thống."
+                        content: "Tải lại danh sách phiên bản ứng dụng từ hệ thống."
                     );
                 }
 
-                if (NewBarButtonItem != null)
+                if (GetNewVersionButtonItem != null)
                 {
                     SuperToolTipHelper.SetBarButtonSuperTip(
-                        NewBarButtonItem,
-                        title: "<b><color=Green>➕ Thêm mới</color></b>",
-                        content: "Thêm mới người dùng vào hệ thống."
-                    );
-                }
-
-                if (EditBarButtonItem != null)
-                {
-                    SuperToolTipHelper.SetBarButtonSuperTip(
-                        EditBarButtonItem,
-                        title: "<b><color=Orange>✏️ Sửa</color></b>",
-                        content: "Chỉnh sửa thông tin người dùng đã chọn."
-                    );
-                }
-
-                if (DeleteBarButtonItem != null)
-                {
-                    SuperToolTipHelper.SetBarButtonSuperTip(
-                        DeleteBarButtonItem,
-                        title: "<b><color=Red>🗑️ Xóa</color></b>",
-                        content: "Xóa người dùng đã chọn khỏi hệ thống."
+                        GetNewVersionButtonItem,
+                        title: "<b><color=Green>🔍 Tìm phiên bản mới</color></b>",
+                        content: "Cập nhật phiên bản hiện tại của ứng dụng vào database."
                     );
                 }
 
@@ -635,7 +511,7 @@ namespace VersionAndUserManagement.UserManagement
                     SuperToolTipHelper.SetBarButtonSuperTip(
                         ExportBarButtonItem,
                         title: "<b><color=Purple>📊 Xuất Excel</color></b>",
-                        content: "Xuất danh sách người dùng ra file Excel."
+                        content: "Xuất danh sách phiên bản ra file Excel."
                     );
                 }
             }
@@ -671,20 +547,6 @@ namespace VersionAndUserManagement.UserManagement
         private void ShowError(string message)
         {
             MsgBox.ShowError(message);
-        }
-
-        /// <summary>
-        /// Kiểm tra xem tài khoản có phải là admin không
-        /// </summary>
-        /// <param name="userName">Tên đăng nhập</param>
-        /// <returns>True nếu là tài khoản admin, False nếu không</returns>
-        private bool IsAdminAccount(string userName)
-        {
-            if (string.IsNullOrWhiteSpace(userName))
-                return false;
-
-            // Kiểm tra không phân biệt hoa thường
-            return userName.Equals("admin", StringComparison.OrdinalIgnoreCase);
         }
 
         #endregion
