@@ -62,9 +62,12 @@ namespace VersionAndUserManagement.ApplicationVersion
             this.ApplicationVersionDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colReleaseNote = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
@@ -77,6 +80,7 @@ namespace VersionAndUserManagement.ApplicationVersion
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -98,7 +102,7 @@ namespace VersionAndUserManagement.ApplicationVersion
             this.barHeaderItem2,
             this.SelectedRowBarStaticItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 13;
+            this.barManager1.MaxItemId = 14;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemComboBox2});
@@ -253,7 +257,8 @@ namespace VersionAndUserManagement.ApplicationVersion
             this.ApplicationVersionDtoGridControl.Name = "ApplicationVersionDtoGridControl";
             this.ApplicationVersionDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlHypertextLabel,
-            this.repositoryItemPictureEdit1});
+            this.repositoryItemPictureEdit1,
+            this.repositoryItemMemoEdit1});
             this.ApplicationVersionDtoGridControl.Size = new System.Drawing.Size(1051, 557);
             this.ApplicationVersionDtoGridControl.TabIndex = 5;
             this.ApplicationVersionDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -270,7 +275,9 @@ namespace VersionAndUserManagement.ApplicationVersion
             this.ApplicationVersionDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
             this.ApplicationVersionDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.ApplicationVersionDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colThongTinHtml});
+            this.colThongTinHtml,
+            this.colIsActive,
+            this.colReleaseNote});
             this.ApplicationVersionDtoGridView.GridControl = this.ApplicationVersionDtoGridControl;
             this.ApplicationVersionDtoGridView.IndicatorWidth = 40;
             this.ApplicationVersionDtoGridView.Name = "ApplicationVersionDtoGridView";
@@ -307,13 +314,57 @@ namespace VersionAndUserManagement.ApplicationVersion
             this.colThongTinHtml.MinWidth = 300;
             this.colThongTinHtml.Name = "colThongTinHtml";
             this.colThongTinHtml.Visible = true;
-            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.VisibleIndex = 1;
             this.colThongTinHtml.Width = 400;
             // 
             // HtmlHypertextLabel
             // 
             this.HtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.HtmlHypertextLabel.Name = "HtmlHypertextLabel";
+            // 
+            // colIsActive
+            // 
+            this.colIsActive.AppearanceCell.Options.UseTextOptions = true;
+            this.colIsActive.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colIsActive.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colIsActive.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colIsActive.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colIsActive.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colIsActive.AppearanceHeader.Options.UseBackColor = true;
+            this.colIsActive.AppearanceHeader.Options.UseFont = true;
+            this.colIsActive.AppearanceHeader.Options.UseForeColor = true;
+            this.colIsActive.AppearanceHeader.Options.UseTextOptions = true;
+            this.colIsActive.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colIsActive.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colIsActive.Caption = "Đang hoạt động";
+            this.colIsActive.FieldName = "IsActive";
+            this.colIsActive.Name = "colIsActive";
+            this.colIsActive.Visible = true;
+            this.colIsActive.VisibleIndex = 2;
+            this.colIsActive.Width = 120;
+            // 
+            // colReleaseNote
+            // 
+            this.colReleaseNote.AppearanceCell.Options.UseTextOptions = true;
+            this.colReleaseNote.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colReleaseNote.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colReleaseNote.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colReleaseNote.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colReleaseNote.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colReleaseNote.AppearanceHeader.Options.UseBackColor = true;
+            this.colReleaseNote.AppearanceHeader.Options.UseFont = true;
+            this.colReleaseNote.AppearanceHeader.Options.UseForeColor = true;
+            this.colReleaseNote.AppearanceHeader.Options.UseTextOptions = true;
+            this.colReleaseNote.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colReleaseNote.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colReleaseNote.Caption = "Ghi chú phát hành";
+            this.colReleaseNote.ColumnEdit = this.repositoryItemMemoEdit1;
+            this.colReleaseNote.FieldName = "ReleaseNote";
+            this.colReleaseNote.MinWidth = 200;
+            this.colReleaseNote.Name = "colReleaseNote";
+            this.colReleaseNote.Visible = true;
+            this.colReleaseNote.VisibleIndex = 3;
+            this.colReleaseNote.Width = 300;
             // 
             // repositoryItemPictureEdit1
             // 
@@ -336,6 +387,10 @@ namespace VersionAndUserManagement.ApplicationVersion
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1055, 561);
             this.layoutControlItem1.TextVisible = false;
+            // 
+            // repositoryItemMemoEdit1
+            // 
+            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
             // 
             // FrmApplicationVersionDto
             // 
@@ -361,6 +416,7 @@ namespace VersionAndUserManagement.ApplicationVersion
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -393,5 +449,8 @@ namespace VersionAndUserManagement.ApplicationVersion
         private GridView ApplicationVersionDtoGridView;
         private BindingSource applicationVersionDtoBindingSource;
         private GridColumn colThongTinHtml;
+        private GridColumn colIsActive;
+        private GridColumn colReleaseNote;
+        private RepositoryItemMemoEdit repositoryItemMemoEdit1;
     }
 }

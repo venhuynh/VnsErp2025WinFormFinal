@@ -44,6 +44,10 @@ public class ApplicationVersionDto
     [DisplayName("Người cập nhật")]
     public Guid? ModifiedBy { get; set; }
 
+    [DisplayName("Ghi chú phát hành")]
+    [StringLength(1000, ErrorMessage = "Ghi chú phát hành không được vượt quá 1000 ký tự")]
+    public string ReleaseNote { get; set; }
+
     /// <summary>
     /// Thông tin phiên bản dưới dạng HTML theo format DevExpress
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
@@ -143,11 +147,11 @@ public static class ApplicationVersionDtoExtensions
     #region ========== CONVERSION METHODS ==========
 
     /// <summary>
-    /// Convert ApplicationVersion entity to ApplicationVersionDto.
+    /// Convert VnsErpApplicationVersion entity to ApplicationVersionDto.
     /// </summary>
-    /// <param name="entity">ApplicationVersion entity</param>
+    /// <param name="entity">VnsErpApplicationVersion entity</param>
     /// <returns>ApplicationVersionDto</returns>
-    public static ApplicationVersionDto ToDto(this ApplicationVersion entity)
+    public static ApplicationVersionDto ToDto(this VnsErpApplicationVersion entity)
     {
         if (entity == null)
             return null;
@@ -162,22 +166,23 @@ public static class ApplicationVersionDtoExtensions
             CreateDate = entity.CreateDate,
             CreateBy = entity.CreateBy,
             ModifiedDate = entity.ModifiedDate,
-            ModifiedBy = entity.ModifiedBy
+            ModifiedBy = entity.ModifiedBy,
+            ReleaseNote = entity.ReleaseNote
         };
     }
 
     /// <summary>
-    /// Convert ApplicationVersionDto to ApplicationVersion entity.
+    /// Convert ApplicationVersionDto to VnsErpApplicationVersion entity.
     /// </summary>
     /// <param name="dto">ApplicationVersionDto</param>
     /// <param name="existingEntity">Existing entity to update (optional, for edit mode)</param>
-    /// <returns>ApplicationVersion entity</returns>
-    public static ApplicationVersion ToEntity(this ApplicationVersionDto dto, ApplicationVersion existingEntity = null)
+    /// <returns>VnsErpApplicationVersion entity</returns>
+    public static VnsErpApplicationVersion ToEntity(this ApplicationVersionDto dto, VnsErpApplicationVersion existingEntity = null)
     {
         if (dto == null)
             return null;
 
-        ApplicationVersion entity;
+        VnsErpApplicationVersion entity;
         if (existingEntity != null)
         {
             // Update existing entity
@@ -186,7 +191,7 @@ public static class ApplicationVersionDtoExtensions
         else
         {
             // Create new entity
-            entity = new ApplicationVersion();
+            entity = new VnsErpApplicationVersion();
             if (dto.Id != Guid.Empty)
             {
                 entity.Id = dto.Id;
@@ -202,16 +207,17 @@ public static class ApplicationVersionDtoExtensions
         entity.CreateBy = dto.CreateBy;
         entity.ModifiedDate = dto.ModifiedDate;
         entity.ModifiedBy = dto.ModifiedBy;
+        entity.ReleaseNote = dto.ReleaseNote;
 
         return entity;
     }
 
     /// <summary>
-    /// Convert collection of ApplicationVersion entities to ApplicationVersionDto list.
+    /// Convert collection of VnsErpApplicationVersion entities to ApplicationVersionDto list.
     /// </summary>
-    /// <param name="entities">Collection of ApplicationVersion entities</param>
+    /// <param name="entities">Collection of VnsErpApplicationVersion entities</param>
     /// <returns>List of ApplicationVersionDto</returns>
-    public static List<ApplicationVersionDto> ToDtos(this IEnumerable<ApplicationVersion> entities)
+    public static List<ApplicationVersionDto> ToDtos(this IEnumerable<VnsErpApplicationVersion> entities)
     {
         if (entities == null)
             return new List<ApplicationVersionDto>();
@@ -220,14 +226,14 @@ public static class ApplicationVersionDtoExtensions
     }
 
     /// <summary>
-    /// Convert collection of ApplicationVersionDto to ApplicationVersion entities list.
+    /// Convert collection of ApplicationVersionDto to VnsErpApplicationVersion entities list.
     /// </summary>
     /// <param name="dtos">Collection of ApplicationVersionDto</param>
-    /// <returns>List of ApplicationVersion entities</returns>
-    public static List<ApplicationVersion> ToEntities(this IEnumerable<ApplicationVersionDto> dtos)
+    /// <returns>List of VnsErpApplicationVersion entities</returns>
+    public static List<VnsErpApplicationVersion> ToEntities(this IEnumerable<ApplicationVersionDto> dtos)
     {
         if (dtos == null)
-            return new List<ApplicationVersion>();
+            return new List<VnsErpApplicationVersion>();
 
         return dtos.Select(dto => dto.ToEntity()).ToList();
     }

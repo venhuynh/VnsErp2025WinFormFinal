@@ -130,12 +130,6 @@
     <Compile Include="Customer\FrmBusinessPartnerContactDetail.Designer.cs">
       <DependentUpon>FrmBusinessPartnerContactDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\NOT_USE_FrmBusinessPartnerContactHtml.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Customer\NOT_USE_FrmBusinessPartnerContactHtml.Designer.cs">
-      <DependentUpon>NOT_USE_FrmBusinessPartnerContactHtml.cs</DependentUpon>
-    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -284,9 +278,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Customer\FrmBusinessPartnerContactDetail.resx">
       <DependentUpon>FrmBusinessPartnerContactDetail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Customer\NOT_USE_FrmBusinessPartnerContactHtml.resx">
-      <DependentUpon>NOT_USE_FrmBusinessPartnerContactHtml.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Customer\FrmBusinessPartnerDetail.resx">
       <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>

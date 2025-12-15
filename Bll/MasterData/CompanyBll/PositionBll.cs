@@ -267,27 +267,20 @@ namespace Bll.MasterData.CompanyBll
     /// <param name="id">ID của chức vụ cần xóa</param>
     public void Delete(Guid id)
     {
-        try
+        // Kiểm tra chức vụ có tồn tại không
+        var existingPosition = GetById(id);
+        if (existingPosition == null)
         {
-            // Kiểm tra chức vụ có tồn tại không
-            var existingPosition = GetById(id);
-            if (existingPosition == null)
-            {
-                throw new Exception("Không tìm thấy chức vụ để xóa");
-            }
-
-            // Kiểm tra ràng buộc dữ liệu (nếu có)
-            if (HasDataConstraints(id))
-            {
-                throw new Exception("Không thể xóa chức vụ do có dữ liệu liên quan");
-            }
-
-            GetDataAccess().Delete(existingPosition);
+            throw new Exception("Không tìm thấy chức vụ để xóa");
         }
-        catch (Exception ex)
+
+        // Kiểm tra ràng buộc dữ liệu (nếu có)
+        if (HasDataConstraints(id))
         {
-            throw;
+            throw new Exception("Không thể xóa chức vụ do có dữ liệu liên quan");
         }
+
+        GetDataAccess().Delete(existingPosition);
     }
 
     /// <summary>

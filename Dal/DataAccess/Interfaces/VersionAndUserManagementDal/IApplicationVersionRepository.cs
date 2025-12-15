@@ -13,68 +13,68 @@ public interface IApplicationVersionRepository
     /// <summary>
     /// Lấy phiên bản đang hoạt động
     /// </summary>
-    /// <returns>ApplicationVersion hoặc null nếu không có</returns>
-    ApplicationVersion GetActiveVersion();
+    /// <returns>VnsErpApplicationVersion hoặc null nếu không có</returns>
+    VnsErpApplicationVersion GetActiveVersion();
 
     /// <summary>
     /// Lấy phiên bản đang hoạt động (async)
     /// </summary>
-    /// <returns>ApplicationVersion hoặc null nếu không có</returns>
-    Task<ApplicationVersion> GetActiveVersionAsync();
+    /// <returns>VnsErpApplicationVersion hoặc null nếu không có</returns>
+    Task<VnsErpApplicationVersion> GetActiveVersionAsync();
 
     /// <summary>
     /// Lấy tất cả phiên bản
     /// </summary>
     /// <returns>Danh sách phiên bản</returns>
-    List<ApplicationVersion> GetAllVersions();
+    List<VnsErpApplicationVersion> GetAllVersions();
 
     /// <summary>
     /// Lấy tất cả phiên bản (async)
     /// </summary>
     /// <returns>Danh sách phiên bản</returns>
-    Task<List<ApplicationVersion>> GetAllVersionsAsync();
+    Task<List<VnsErpApplicationVersion>> GetAllVersionsAsync();
 
     /// <summary>
     /// Lấy phiên bản theo ID
     /// </summary>
     /// <param name="id">ID phiên bản</param>
-    /// <returns>ApplicationVersion hoặc null</returns>
-    ApplicationVersion GetById(Guid id);
+    /// <returns>VnsErpApplicationVersion hoặc null</returns>
+    VnsErpApplicationVersion GetById(Guid id);
 
     /// <summary>
     /// Lấy phiên bản theo ID (async)
     /// </summary>
     /// <param name="id">ID phiên bản</param>
-    /// <returns>ApplicationVersion hoặc null</returns>
-    Task<ApplicationVersion> GetByIdAsync(Guid id);
+    /// <returns>VnsErpApplicationVersion hoặc null</returns>
+    Task<VnsErpApplicationVersion> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Tạo phiên bản mới
     /// </summary>
-    /// <param name="version">ApplicationVersion entity</param>
-    /// <returns>ApplicationVersion đã tạo</returns>
-    ApplicationVersion Create(ApplicationVersion version);
+    /// <param name="version">VnsErpApplicationVersion entity</param>
+    /// <returns>VnsErpApplicationVersion đã tạo</returns>
+    VnsErpApplicationVersion Create(VnsErpApplicationVersion version);
 
     /// <summary>
     /// Tạo phiên bản mới (async)
     /// </summary>
-    /// <param name="version">ApplicationVersion entity</param>
-    /// <returns>ApplicationVersion đã tạo</returns>
-    Task<ApplicationVersion> CreateAsync(ApplicationVersion version);
+    /// <param name="version">VnsErpApplicationVersion entity</param>
+    /// <returns>VnsErpApplicationVersion đã tạo</returns>
+    Task<VnsErpApplicationVersion> CreateAsync(VnsErpApplicationVersion version);
 
     /// <summary>
     /// Cập nhật phiên bản
     /// </summary>
-    /// <param name="version">ApplicationVersion entity</param>
-    /// <returns>ApplicationVersion đã cập nhật</returns>
-    ApplicationVersion Update(ApplicationVersion version);
+    /// <param name="version">VnsErpApplicationVersion entity</param>
+    /// <returns>VnsErpApplicationVersion đã cập nhật</returns>
+    VnsErpApplicationVersion Update(VnsErpApplicationVersion version);
 
     /// <summary>
     /// Cập nhật phiên bản (async)
     /// </summary>
-    /// <param name="version">ApplicationVersion entity</param>
-    /// <returns>ApplicationVersion đã cập nhật</returns>
-    Task<ApplicationVersion> UpdateAsync(ApplicationVersion version);
+    /// <param name="version">VnsErpApplicationVersion entity</param>
+    /// <returns>VnsErpApplicationVersion đã cập nhật</returns>
+    Task<VnsErpApplicationVersion> UpdateAsync(VnsErpApplicationVersion version);
 
     /// <summary>
     /// Đặt một phiên bản làm Active và vô hiệu hóa các phiên bản khác

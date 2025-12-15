@@ -114,22 +114,10 @@ namespace MasterData.ProductService
                 {
                     Id = imageEntity.Id,
                     ProductId = imageEntity.ProductId ?? Guid.Empty,
-                    VariantId = null, // ProductImage không còn VariantId property
                     // Map RelativePath và FullPath để sử dụng cho việc load từ storage
                     RelativePath = imageEntity.RelativePath,
                     FullPath = imageEntity.FullPath,
-                    ImagePath = imageEntity.RelativePath ?? imageEntity.FullPath, // Legacy property
-                    SortOrder = 0, // Không có SortOrder property
-                    IsPrimary = false, // Không có IsPrimary property
                     ImageData = imageEntity.ImageData?.ToArray(), // Thumbnail từ database
-                    ImageType = imageEntity.FileExtension ?? imageEntity.MimeType, // Map từ FileExtension hoặc MimeType
-                    ImageSize = imageEntity.FileSize ?? 0, // Map từ FileSize
-                    ImageWidth = 0, // Không có ImageWidth property
-                    ImageHeight = 0, // Không có ImageHeight property
-                    Caption = imageEntity.FileName ?? "Hình ảnh", // Dùng FileName làm Caption
-                    AltText = imageEntity.FileName ?? "Hình ảnh", // Dùng FileName làm AltText
-                    IsActive = true, // Không có IsActive property, mặc định true
-                    CreatedDate = imageEntity.CreateDate, // Map từ CreateDate
                     ModifiedDate = imageEntity.ModifiedDate,
                     FileName = imageEntity.FileName
                 };
@@ -157,41 +145,23 @@ namespace MasterData.ProductService
         {
             try
             {
-                // Ưu tiên sử dụng ImageData (thumbnail) từ database nếu có
-                //if (_currentImageDto?.ImageData != null && _currentImageDto.ImageData.Length > 0)
-                //{
-                //    using (var ms = new MemoryStream(_currentImageDto.ImageData))
-                //    {
-                //        ProductImagePictureEdit.Image = Image.FromStream(ms);
-                //    }
-                //    return;
-                //}
-
+                
                 // Nếu không có ImageData, load từ NAS/Local storage
                 if (!string.IsNullOrEmpty(_currentImageDto?.RelativePath))
                 {
                     await LoadImageFromStorageAsync(_currentImageDto.RelativePath);
                 }
-                else if (!string.IsNullOrEmpty(_currentImageDto?.ImagePath))
+                if (_currentImageDto.RelativePath == null && !string.IsNullOrEmpty(_currentImageDto.FullPath))
                 {
-                    // Fallback: thử load từ ImagePath (có thể là FullPath)
-                    // Nhưng trước tiên cần kiểm tra file tồn tại trên NAS
-                    if (_currentImageDto.RelativePath == null && !string.IsNullOrEmpty(_currentImageDto.FullPath))
-                    {
-                        // Nếu có FullPath, thử extract RelativePath hoặc kiểm tra trực tiếp
-                        await LoadImageFromStorageAsync(_currentImageDto.FullPath);
-                    }
-                    else
-                    {
-                        // Hiển thị placeholder nếu không có đường dẫn hợp lệ
-                        ProductImagePictureEdit.Image = CreatePlaceholderImage("Không có đường dẫn file");
-                    }
+                    // Nếu có FullPath, thử extract RelativePath hoặc kiểm tra trực tiếp
+                    await LoadImageFromStorageAsync(_currentImageDto.FullPath);
                 }
                 else
                 {
-                    // Hiển thị placeholder nếu không có hình ảnh
-                    ProductImagePictureEdit.Image = CreatePlaceholderImage("Không có hình ảnh");
+                    // Hiển thị placeholder nếu không có đường dẫn hợp lệ
+                    ProductImagePictureEdit.Image = CreatePlaceholderImage("Không có đường dẫn file");
                 }
+               
             }
             catch (Exception ex)
             {
@@ -284,15 +254,8 @@ namespace MasterData.ProductService
                 if (_currentImageDto == null) return;
 
                 var detailText = $"🖼️ THÔNG TIN CHI TIẾT HÌNH ẢNH{Environment.NewLine}{Environment.NewLine}" +
-                               $"📝 Tên: {_currentImageDto.Caption ?? "Không có"}{Environment.NewLine}" +
-                               $"📄 Mô tả: {_currentImageDto.AltText ?? "Không có"}{Environment.NewLine}" +
-                               $"🆔 ID: {_currentImageDto.Id}{Environment.NewLine}" +
-                               $"⭐ Ảnh chính: {(_currentImageDto.IsPrimary ? "Có" : "Không")}{Environment.NewLine}" +
-                               $"📏 Kích thước: {FormatImageDimensions(_currentImageDto.ImageWidth, _currentImageDto.ImageHeight)}{Environment.NewLine}" +
-                               $"💾 Dung lượng: {FormatFileSize(_currentImageDto.ImageSize)}{Environment.NewLine}" +
-                               $"📁 Loại file: {_currentImageDto.ImageType?.ToUpper() ?? "Không xác định"}{Environment.NewLine}" +
-                               $"🔢 Thứ tự: {_currentImageDto.SortOrder}{Environment.NewLine}" +
-                               $"📅 Ngày tạo: {_currentImageDto.CreatedDate:dd/MM/yyyy HH:mm:ss}{Environment.NewLine}";
+                                 $"🆔 ID: {_currentImageDto.Id}{Environment.NewLine}";
+                               
 
                 if (_currentImageDto.ModifiedDate.HasValue)
                 {
@@ -404,10 +367,7 @@ namespace MasterData.ProductService
                     // Set primary image trong database
                     _productImageBll.SetAsPrimary(_currentImageDto.Id);
                     
-                    MsgBox.ShowSuccess($"Đã đặt hình ảnh '{_currentImageDto.Caption}' làm ảnh chính");
                     
-                    // Cập nhật trạng thái local
-                    _currentImageDto.IsPrimary = true;
                     DisplayImageDetail(); // Refresh thông tin
                 }
             }
@@ -427,33 +387,32 @@ namespace MasterData.ProductService
                 if (_currentImageDto == null) return;
 
                 // Mở SaveFileDialog để chọn nơi lưu
-                using (var saveDialog = new SaveFileDialog())
+                using var saveDialog = new SaveFileDialog();
+                
+                saveDialog.Filter = @"Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files|*.*";
+                    
+                // Sử dụng tên sản phẩm làm tên file mặc định
+                var productName = _currentImageDto.ProductId.HasValue 
+                    ? GetProductName(_currentImageDto.ProductId.Value) 
+                    : "Product";
+                var imageCaption = _currentImageDto.FileName;
+                var fileName = $"{productName}_{imageCaption}.jpg";
+                    
+                // Làm sạch tên file (loại bỏ ký tự không hợp lệ)
+                fileName = CleanFileName(fileName);
+                saveDialog.FileName = fileName;
+                    
+                if (saveDialog.ShowDialog() == DialogResult.OK)
                 {
-                    saveDialog.Filter = @"Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All Files|*.*";
-                    
-                    // Sử dụng tên sản phẩm làm tên file mặc định
-                    var productName = _currentImageDto.ProductId.HasValue 
-                        ? GetProductName(_currentImageDto.ProductId.Value) 
-                        : "Product";
-                    var imageCaption = _currentImageDto.Caption ?? _currentImageDto.FileName ?? "image";
-                    var fileName = $"{productName}_{imageCaption}.jpg";
-                    
-                    // Làm sạch tên file (loại bỏ ký tự không hợp lệ)
-                    fileName = CleanFileName(fileName);
-                    saveDialog.FileName = fileName;
-                    
-                    if (saveDialog.ShowDialog() == DialogResult.OK)
+                    // Lưu hình ảnh
+                    if (_currentImageDto.ImageData != null && _currentImageDto.ImageData.Length > 0)
                     {
-                        // Lưu hình ảnh
-                        if (_currentImageDto.ImageData != null && _currentImageDto.ImageData.Length > 0)
-                        {
-                            File.WriteAllBytes(saveDialog.FileName, _currentImageDto.ImageData);
-                            MsgBox.ShowSuccess($"Đã tải hình ảnh thành công: {saveDialog.FileName}");
-                        }
-                        else
-                        {
-                            MsgBox.ShowWarning("Không có dữ liệu hình ảnh để tải xuống.");
-                        }
+                        File.WriteAllBytes(saveDialog.FileName, _currentImageDto.ImageData);
+                        MsgBox.ShowSuccess($"Đã tải hình ảnh thành công: {saveDialog.FileName}");
+                    }
+                    else
+                    {
+                        MsgBox.ShowWarning("Không có dữ liệu hình ảnh để tải xuống.");
                     }
                 }
             }
@@ -466,6 +425,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Xử lý sự kiện click nút "Xóa Ảnh"
         /// </summary>
+        [Obsolete("Obsolete")]
         private void DeleteImageSimpleButton_Click(object sender, EventArgs e)
         {
             try

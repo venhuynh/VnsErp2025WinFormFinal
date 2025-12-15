@@ -86,7 +86,6 @@ namespace VersionAndUserManagement.ApplicationVersion
 
             // Grid events
             ApplicationVersionDtoGridView.SelectionChanged += ApplicationVersionDtoGridView_SelectionChanged;
-            ApplicationVersionDtoGridView.DoubleClick += ApplicationVersionDtoGridView_DoubleClick;
             ApplicationVersionDtoGridView.CustomDrawRowIndicator += ApplicationVersionDtoGridView_CustomDrawRowIndicator;
             ApplicationVersionDtoGridView.RowCellStyle += ApplicationVersionDtoGridView_RowCellStyle;
 
@@ -310,14 +309,6 @@ namespace VersionAndUserManagement.ApplicationVersion
             }
         }
 
-        /// <summary>
-        /// Xử lý sự kiện double click trên GridView
-        /// </summary>
-        private void ApplicationVersionDtoGridView_DoubleClick(object sender, EventArgs e)
-        {
-            // Có thể mở form chi tiết nếu cần trong tương lai
-            // Hiện tại chỉ hiển thị thông tin trong grid
-        }
 
         /// <summary>
         /// Xử lý sự kiện vẽ số thứ tự dòng
@@ -439,6 +430,9 @@ namespace VersionAndUserManagement.ApplicationVersion
         {
             try
             {
+                var hasSelection = _selectedItem != null;
+
+
                 // Export: chỉ khi có dữ liệu hiển thị
                 var rowCount = GridViewHelper.GetDisplayRowCount(ApplicationVersionDtoGridView) ?? 0;
                 if (ExportBarButtonItem != null)
@@ -505,6 +499,7 @@ namespace VersionAndUserManagement.ApplicationVersion
                         content: "Cập nhật phiên bản hiện tại của ứng dụng vào database."
                     );
                 }
+
 
                 if (ExportBarButtonItem != null)
                 {

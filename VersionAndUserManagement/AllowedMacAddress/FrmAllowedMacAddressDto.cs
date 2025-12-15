@@ -243,7 +243,7 @@ namespace VersionAndUserManagement.AllowedMacAddress
         /// <summary>
         /// Xử lý sự kiện click button Thêm mới
         /// </summary>
-        private async void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        private void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
@@ -264,7 +264,7 @@ namespace VersionAndUserManagement.AllowedMacAddress
         /// <summary>
         /// Xử lý sự kiện click button Sửa
         /// </summary>
-        private async void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        private void EditBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {
@@ -381,7 +381,7 @@ namespace VersionAndUserManagement.AllowedMacAddress
         /// <summary>
         /// Xử lý sự kiện double click trên GridView
         /// </summary>
-        private async void AllowedMacAddressDtoGridView_DoubleClick(object sender, EventArgs e)
+        private void AllowedMacAddressDtoGridView_DoubleClick(object sender, EventArgs e)
         {
             try
             {

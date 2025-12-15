@@ -289,21 +289,14 @@ namespace Bll.MasterData.CompanyBll
         /// <param name="id">ID của nhân viên cần xóa</param>
         public void Delete(Guid id)
         {
-            try
+            // Kiểm tra nhân viên có tồn tại không
+            var existingEmployee = GetById(id);
+            if (existingEmployee == null)
             {
-                // Kiểm tra nhân viên có tồn tại không
-                var existingEmployee = GetById(id);
-                if (existingEmployee == null)
-                {
-                    throw new Exception("Không tìm thấy nhân viên để xóa");
-                }
+                throw new Exception("Không tìm thấy nhân viên để xóa");
+            }
 
-                GetDataAccess().Delete(existingEmployee);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            GetDataAccess().Delete(existingEmployee);
         }
 
         /// <summary>
