@@ -64,10 +64,12 @@
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\WarrantyRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\StockIn\StockInHistoryQueryCriteria.cs" />
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\EmployeeRepository.cs" />
+    <Compile Include="DataAccess\Implementations\SettingRepository.cs" />
     <Compile Include="DataAccess\Implementations\UnitOfWork.cs" />
     <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\AllowedMacAddressRepository.cs" />
     <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\ApplicationVersionRepository.cs" />
     <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\PermissionRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\ISettingRepository.cs" />
     <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IAllowedMacAddressRepository.cs" />
     <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IApplicationVersionRepository.cs" />
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Common.Helpers;
+using Bll.Common;
 using Common.Utils;
 using Logger;
 using Logger.Configuration;
@@ -22,6 +22,7 @@ namespace Authentication.Form
         #region Fields
 
         private readonly ILogger _logger;
+        private readonly SettingBll _settingBll;
 
         #endregion
 
@@ -31,6 +32,7 @@ namespace Authentication.Form
         {
             InitializeComponent();
             _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
+            _settingBll = new SettingBll();
             KhoiTaoForm();
         }
 
@@ -45,7 +47,7 @@ namespace Authentication.Form
         {
             try
             {
-                // Load dữ liệu từ App.config
+                // Load dữ liệu từ Database (bảng Setting)
                 TaiDuLieuTuAppConfig();
 
                 // Hiển thị thông tin hiện tại
@@ -59,31 +61,28 @@ namespace Authentication.Form
         }
 
         /// <summary>
-        /// Tải dữ liệu từ App.config
+        /// Tải dữ liệu từ Database (bảng Setting)
         /// </summary>
         private void TaiDuLieuTuAppConfig()
         {
             try
             {
-                _logger.Debug("Bắt đầu tải dữ liệu từ App.config");
+                _logger.Debug("Bắt đầu tải dữ liệu từ Database");
 
-                // Force refresh trước khi đọc
-                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+                // Load các giá trị từ Database
+                var storageType = _settingBll.GetValue("NAS", "StorageType", "NAS");
+                var serverName = _settingBll.GetDecryptedValue("NAS", "ServerName", "");
+                var shareName = _settingBll.GetDecryptedValue("NAS", "ShareName", "ERP_Images");
+                var basePath = _settingBll.GetDecryptedValue("NAS", "BasePath", "");
+                var username = _settingBll.GetDecryptedValue("NAS", "Username", "");
+                var password = _settingBll.GetDecryptedValue("NAS", "Password", "");
+                var protocol = _settingBll.GetValue("NAS", "Protocol", "SMB");
+                var timeout = _settingBll.GetValue("NAS", "ConnectionTimeout", "30");
+                var retry = _settingBll.GetValue("NAS", "RetryAttempts", "3");
+                var enableCache = _settingBll.GetValue("NAS", "EnableCache", "false");
+                var cacheSize = _settingBll.GetValue("NAS", "CacheSize", "500");
 
-                // Load các giá trị từ App.config (đọc trực tiếp từ file config)
-                var storageType = AppConfigHelper.GetAppSetting("ImageStorage.StorageType", "NAS");
-                var serverName = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ServerName", "");
-                var shareName = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ShareName", "ERP_Images");
-                var basePath = AppConfigHelper.GetAppSetting("ImageStorage.NAS.BasePath", "");
-                var username = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Username", "");
-                var password = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Password", "");
-                var protocol = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Protocol", "SMB");
-                var timeout = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ConnectionTimeout", "30");
-                var retry = AppConfigHelper.GetAppSetting("ImageStorage.NAS.RetryAttempts", "3");
-                var enableCache = AppConfigHelper.GetAppSetting("ImageStorage.NAS.EnableNASCache", "false");
-                var cacheSize = AppConfigHelper.GetAppSetting("ImageStorage.NAS.NASCacheSize", "500");
-
-                _logger.Debug($"Đã đọc từ App.config - StorageType={storageType}, ServerName={serverName}, ShareName={shareName}, Username={username}, Password={(string.IsNullOrEmpty(password) ? "(empty)" : "***")}");
+                _logger.Debug($"Đã đọc từ Database - StorageType={storageType}, ServerName={serverName}, ShareName={shareName}, Username={username}, Password={(string.IsNullOrEmpty(password) ? "(empty)" : "***")}");
 
                 // Gán giá trị vào controls
                 StorageTypeComboBoxEdit.EditValue = storageType;
@@ -111,12 +110,12 @@ namespace Authentication.Form
                 else
                     CacheSizeSpinEdit.EditValue = 500;
 
-                _logger.Info($"Đã tải dữ liệu từ App.config thành công - StorageType={storageType}, ServerName={serverName}, ShareName={shareName}, Username={username}");
+                _logger.Info($"Đã tải dữ liệu từ Database thành công - StorageType={storageType}, ServerName={serverName}, ShareName={shareName}, Username={username}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"Lỗi tải dữ liệu từ App.config: {ex.Message}", ex);
-                MsgBox.ShowException(ex, "Lỗi tải dữ liệu từ App.config");
+                _logger.Error($"Lỗi tải dữ liệu từ Database: {ex.Message}", ex);
+                MsgBox.ShowException(ex, "Lỗi tải dữ liệu từ Database");
             }
         }
 
@@ -382,34 +381,38 @@ namespace Authentication.Form
         }
 
         /// <summary>
-        /// Lưu cấu hình vào App.config
+        /// Lưu cấu hình vào Database (bảng Setting)
         /// </summary>
         private void LuuCauHinh()
         {
             try
             {
-                var settings = new Dictionary<string, string>
+                // Lấy username hiện tại (có thể từ ApplicationUser hoặc Environment)
+                var updatedBy = Environment.UserName ?? "System";
+
+                var nasSettings = new Dictionary<string, string>
                 {
-                    { "ImageStorage.StorageType", StorageTypeComboBoxEdit.Text?.Trim() ?? "NAS" },
-                    { "ImageStorage.NAS.ServerName", ServerNameTextEdit.Text?.Trim() ?? "" },
-                    { "ImageStorage.NAS.ShareName", ShareNameTextEdit.Text?.Trim() ?? "ERP_Images" },
-                    { "ImageStorage.NAS.BasePath", BasePathTextEdit.Text?.Trim() ?? "" },
-                    { "ImageStorage.NAS.Username", UsernameTextEdit.Text?.Trim() ?? "" },
-                    { "ImageStorage.NAS.Password", PasswordTextEdit.Text ?? "" },
-                    { "ImageStorage.NAS.Protocol", ProtocolComboBoxEdit.Text?.Trim() ?? "SMB" },
-                    { "ImageStorage.NAS.ConnectionTimeout", ConnectionTimeoutSpinEdit.Value.ToString() },
-                    { "ImageStorage.NAS.RetryAttempts", RetryAttemptsSpinEdit.Value.ToString() },
-                    { "ImageStorage.NAS.EnableNASCache", EnableCacheCheckEdit.Checked.ToString() },
-                    { "ImageStorage.NAS.NASCacheSize", CacheSizeSpinEdit.Value.ToString() }
+                    { "StorageType", StorageTypeComboBoxEdit.Text?.Trim() ?? "NAS" },
+                    { "ServerName", ServerNameTextEdit.Text?.Trim() ?? "" },
+                    { "ShareName", ShareNameTextEdit.Text?.Trim() ?? "ERP_Images" },
+                    { "BasePath", BasePathTextEdit.Text?.Trim() ?? "" },
+                    { "Username", UsernameTextEdit.Text?.Trim() ?? "" },
+                    { "Password", PasswordTextEdit.Text ?? "" },
+                    { "Protocol", ProtocolComboBoxEdit.Text?.Trim() ?? "SMB" },
+                    { "ConnectionTimeout", ConnectionTimeoutSpinEdit.Value.ToString() },
+                    { "RetryAttempts", RetryAttemptsSpinEdit.Value.ToString() },
+                    { "EnableCache", EnableCacheCheckEdit.Checked.ToString() },
+                    { "CacheSize", CacheSizeSpinEdit.Value.ToString() }
                 };
 
-                AppConfigHelper.UpdateAppSettings(settings);
+                // Lưu vào database
+                _settingBll.SaveNASSettings(nasSettings, updatedBy);
 
-                _logger.Info("Đã cập nhật cấu hình NAS vào App.config");
+                _logger.Info("Đã cập nhật cấu hình NAS vào Database");
             }
             catch (Exception ex)
             {
-                _logger.Error($"Lỗi khi lưu cấu hình NAS vào App.config: {ex.Message}", ex);
+                _logger.Error($"Lỗi khi lưu cấu hình NAS vào Database: {ex.Message}", ex);
                 throw new Exception($"Không thể lưu cấu hình: {ex.Message}", ex);
             }
         }

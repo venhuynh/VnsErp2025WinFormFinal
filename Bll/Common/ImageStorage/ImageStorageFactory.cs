@@ -39,13 +39,13 @@ namespace Bll.Common.ImageStorage
                 _ => throw new NotSupportedException(
                     $"Loại storage '{storageType}' không được hỗ trợ. " +
                     $"Các loại được hỗ trợ: NAS, Local. " +
-                    $"Vui lòng kiểm tra lại cấu hình 'ImageStorage.StorageType' trong App.config.")
+                    $"Vui lòng kiểm tra lại cấu hình 'NAS.StorageType' trong bảng Setting.")
             };
         }
 
         /// <summary>
-        /// Tạo Image Storage Service từ App.config
-        /// Tự động load configuration từ App.config và tạo service tương ứng
+        /// Tạo Image Storage Service từ Database (bảng Setting)
+        /// Tự động load configuration từ database và tạo service tương ứng
         /// </summary>
         /// <param name="logger">Logger để ghi log</param>
         /// <returns>IImageStorageService instance</returns>
@@ -66,8 +66,8 @@ namespace Bll.Common.ImageStorage
                 if (config == null)
                 {
                     throw new InvalidOperationException(
-                        "Không thể load cấu hình Image Storage từ App.config. " +
-                        "Vui lòng kiểm tra lại file App.config.");
+                        "Không thể load cấu hình Image Storage từ Database. " +
+                        "Vui lòng kiểm tra lại bảng Setting trong database.");
                 }
 
                 // Kiểm tra config theo StorageType
@@ -80,9 +80,9 @@ namespace Bll.Common.ImageStorage
                         throw new InvalidOperationException(
                             "Cấu hình NAS không đầy đủ. " +
                             "Vui lòng cấu hình một trong các cách sau:\n" +
-                            "1. ImageStorage.NAS.BasePath (ví dụ: \\\\192.168.1.100\\ERP_Images)\n" +
-                            "2. ImageStorage.NAS.ServerName + ImageStorage.NAS.ShareName (ví dụ: \\\\192.168.1.100 + ERP_Images)\n\n" +
-                            "Hoặc thay đổi ImageStorage.StorageType thành 'Local' nếu muốn dùng local storage.");
+                            "1. NAS.BasePath trong bảng Setting (ví dụ: \\\\192.168.1.100\\ERP_Images)\n" +
+                            "2. NAS.ServerName + NAS.ShareName trong bảng Setting (ví dụ: \\\\192.168.1.100 + ERP_Images)\n\n" +
+                            "Hoặc thay đổi NAS.StorageType thành 'Local' nếu muốn dùng local storage.");
                     }
                 }
                 else if (storageType == "LOCAL")
@@ -102,7 +102,7 @@ namespace Bll.Common.ImageStorage
                 logger.Error($"Lỗi khi tạo Image Storage Service từ config: {ex.Message}", ex);
                 throw new InvalidOperationException(
                     "Không thể tạo Image Storage Service từ cấu hình. " +
-                    "Vui lòng kiểm tra lại các settings trong App.config, đặc biệt là 'ImageStorage.StorageType'. " +
+                    "Vui lòng kiểm tra lại các settings trong bảng Setting, đặc biệt là 'NAS.StorageType'. " +
                     $"Chi tiết lỗi: {ex.Message}", ex);
             }
         }

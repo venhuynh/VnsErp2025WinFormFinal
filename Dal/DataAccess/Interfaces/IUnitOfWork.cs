@@ -52,6 +52,19 @@ public interface IUnitOfWork : IDisposable
 
     #endregion
 
+    #region Settings
+
+    /// <summary>
+    /// Lấy repository để quản lý Settings
+    /// </summary>
+    /// <returns>
+    /// Một thể hiện của <see cref="ISettingRepository"/> 
+    /// cung cấp các phương thức truy cập dữ liệu cho Settings.
+    /// </returns>
+    ISettingRepository GetSettingRepository();
+
+    #endregion
+
     #region MasterData
 
     IApplicationUserRepository GetApplicationUserDataAccess();

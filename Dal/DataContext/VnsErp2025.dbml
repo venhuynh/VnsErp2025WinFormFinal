@@ -654,6 +654,25 @@
       <Association Name="Role_RolePermission" Member="Role" ThisKey="RoleId" OtherKey="Id" Type="Role" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
+  <Table Name="dbo.Setting" Member="Settings">
+    <Type Name="Setting">
+      <Column Name="SettingId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Category" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="SettingKey" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="SettingValue" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ValueType" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="IsEncrypted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsSystem" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="GroupName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="DisplayOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedBy" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.StockInOutDetail" Member="StockInOutDetails">
     <Type Name="StockInOutDetail">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -841,47 +860,6 @@
       <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="ReleaseNote" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.VW_ProductImage_Active" Member="VW_ProductImage_Actives">
-    <Type Name="VW_ProductImage_Active">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="ProductId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="VariantId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="ImagePath" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
-      <Column Name="SortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="IsPrimary" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="ImageType" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
-      <Column Name="ImageSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="ImageWidth" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="ImageHeight" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Caption" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="AltText" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.vw_UserPermissions" Member="vw_UserPermissions">
-    <Type Name="vw_UserPermission">
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="EntityName" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="Action" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="IsGranted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="PermissionSource" Type="System.String" DbType="VarChar(4) NOT NULL" CanBeNull="false" />
-      <Column Name="RoleName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.VW_ProductImage_Primary" Member="VW_ProductImage_Primaries">
-    <Type Name="VW_ProductImage_Primary">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="ProductId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="ImagePath" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
-      <Column Name="ImageType" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
-      <Column Name="ImageSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="ImageWidth" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="ImageHeight" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="Caption" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="AltText" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
     </Type>
   </Table>
   <Function Name="dbo.sp_CheckUserPermission" Method="sp_CheckUserPermission">

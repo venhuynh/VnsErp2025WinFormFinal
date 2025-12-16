@@ -1,7 +1,5 @@
 using System;
-using System.Configuration;
-using Common.Helpers;
-using Dal.Configuration;
+using Bll.Common;
 
 namespace Bll.Common.ImageStorage
 {
@@ -191,58 +189,90 @@ namespace Bll.Common.ImageStorage
         #region Static Factory Methods
 
         /// <summary>
-        /// Load configuration từ App.config
+        /// Load configuration từ Database (bảng Setting)
         /// </summary>
         public static ImageStorageConfiguration LoadFromConfig()
         {
             var config = new ImageStorageConfiguration();
+            var settingBll = new SettingBll();
 
             try
             {
-                // Storage Type - Sử dụng AppConfigHelper để đọc từ XML file hoặc App.config
-                config.StorageType = AppConfigHelper.GetAppSetting("ImageStorage.StorageType", "NAS");
+                // Storage Type - Đọc từ database
+                config.StorageType = settingBll.GetValue("NAS", "StorageType", "NAS");
 
-                // NAS Configuration - Sử dụng AppConfigHelper để đọc từ XML file hoặc App.config
-                config.NASServerName = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ServerName", "");
-                config.NASShareName = AppConfigHelper.GetAppSetting("ImageStorage.NAS.ShareName", "ERP_Images");
-                config.NASBasePath = AppConfigHelper.GetAppSetting("ImageStorage.NAS.BasePath", "");
-                config.NASUsername = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Username", "");
-                config.NASPassword = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Password", "");
-                config.NASProtocol = AppConfigHelper.GetAppSetting("ImageStorage.NAS.Protocol", "SMB");
-                config.NASConnectionTimeout = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.NAS.ConnectionTimeout", "30"));
-                config.NASRetryAttempts = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.NAS.RetryAttempts", "3"));
+                // NAS Configuration - Đọc từ database và giải mã nếu cần
+                config.NASServerName = settingBll.GetDecryptedValue("NAS", "ServerName", "");
+                config.NASShareName = settingBll.GetDecryptedValue("NAS", "ShareName", "ERP_Images");
+                config.NASBasePath = settingBll.GetDecryptedValue("NAS", "BasePath", "");
+                config.NASUsername = settingBll.GetDecryptedValue("NAS", "Username", "");
+                config.NASPassword = settingBll.GetDecryptedValue("NAS", "Password", "");
+                config.NASProtocol = settingBll.GetValue("NAS", "Protocol", "SMB");
+                
+                var timeoutStr = settingBll.GetValue("NAS", "ConnectionTimeout", "30");
+                config.NASConnectionTimeout = int.TryParse(timeoutStr, out int timeout) ? timeout : 30;
+                
+                var retryStr = settingBll.GetValue("NAS", "RetryAttempts", "3");
+                config.NASRetryAttempts = int.TryParse(retryStr, out int retry) ? retry : 3;
 
-                // Path Configuration - Sử dụng AppConfigHelper để đọc từ XML file hoặc App.config
-                config.ProductsPath = AppConfigHelper.GetAppSetting("ImageStorage.Path.Products", "Products");
-                config.StockInOutPath = AppConfigHelper.GetAppSetting("ImageStorage.Path.StockInOut", "StockInOut");
-                config.CompanyPath = AppConfigHelper.GetAppSetting("ImageStorage.Path.Company", "Company");
-                config.AvatarsPath = AppConfigHelper.GetAppSetting("ImageStorage.Path.Avatars", "Avatars");
-                config.TempPath = AppConfigHelper.GetAppSetting("ImageStorage.Path.Temp", "Temp");
+                // Path Configuration - Đọc từ database
+                config.ProductsPath = settingBll.GetValue("ImageStorage", "Path.Products", "Products");
+                config.StockInOutPath = settingBll.GetValue("ImageStorage", "Path.StockInOut", "StockInOut");
+                config.CompanyPath = settingBll.GetValue("ImageStorage", "Path.Company", "Company");
+                config.AvatarsPath = settingBll.GetValue("ImageStorage", "Path.Avatars", "Avatars");
+                config.TempPath = settingBll.GetValue("ImageStorage", "Path.Temp", "Temp");
 
-                // Thumbnail Configuration
-                config.EnableThumbnailGeneration = bool.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Thumbnail.Enable", "true"));
-                config.ThumbnailWidth = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Thumbnail.Width", "200"));
-                config.ThumbnailHeight = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Thumbnail.Height", "200"));
-                config.ThumbnailQuality = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Thumbnail.Quality", "80"));
+                // Thumbnail Configuration - Đọc từ database
+                var thumbnailEnableStr = settingBll.GetValue("ImageStorage", "Thumbnail.Enable", "true");
+                config.EnableThumbnailGeneration = bool.TryParse(thumbnailEnableStr, out bool thumbnailEnable) && thumbnailEnable;
+                
+                var thumbnailWidthStr = settingBll.GetValue("ImageStorage", "Thumbnail.Width", "200");
+                config.ThumbnailWidth = int.TryParse(thumbnailWidthStr, out int thumbnailWidth) ? thumbnailWidth : 200;
+                
+                var thumbnailHeightStr = settingBll.GetValue("ImageStorage", "Thumbnail.Height", "200");
+                config.ThumbnailHeight = int.TryParse(thumbnailHeightStr, out int thumbnailHeight) ? thumbnailHeight : 200;
+                
+                var thumbnailQualityStr = settingBll.GetValue("ImageStorage", "Thumbnail.Quality", "80");
+                config.ThumbnailQuality = int.TryParse(thumbnailQualityStr, out int thumbnailQuality) ? thumbnailQuality : 80;
 
-                // Image Processing
-                config.EnableImageCompression = bool.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Compression.Enable", "true"));
-                config.ImageQuality = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Compression.Quality", "80"));
-                config.MaxFileSize = long.Parse(AppConfigHelper.GetAppSetting("ImageStorage.MaxFileSize", "10485760"));
-                var allowedExts = AppConfigHelper.GetAppSetting("ImageStorage.AllowedExtensions", "jpg,jpeg,png,gif,bmp,webp");
+                // Image Processing - Đọc từ database
+                var compressionEnableStr = settingBll.GetValue("ImageStorage", "Compression.Enable", "true");
+                config.EnableImageCompression = bool.TryParse(compressionEnableStr, out bool compressionEnable) && compressionEnable;
+                
+                var imageQualityStr = settingBll.GetValue("ImageStorage", "Compression.Quality", "80");
+                config.ImageQuality = int.TryParse(imageQualityStr, out int imageQuality) ? imageQuality : 80;
+                
+                var maxFileSizeStr = settingBll.GetValue("ImageStorage", "MaxFileSize", "10485760");
+                config.MaxFileSize = long.TryParse(maxFileSizeStr, out long maxFileSize) ? maxFileSize : 10485760;
+                
+                var allowedExts = settingBll.GetValue("ImageStorage", "AllowedExtensions", "jpg,jpeg,png,gif,bmp,webp");
                 config.AllowedExtensions = allowedExts.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                // File Management
-                config.EnableFileVerification = bool.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Verification.Enable", "true"));
-                config.FileVerificationIntervalHours = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Verification.IntervalHours", "24"));
-                config.EnableAutoCleanup = bool.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Cleanup.Enable", "true"));
-                config.OrphanedFileRetentionDays = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Cleanup.OrphanedFileRetentionDays", "30"));
+                // File Management - Đọc từ database
+                var verificationEnableStr = settingBll.GetValue("ImageStorage", "Verification.Enable", "true");
+                config.EnableFileVerification = bool.TryParse(verificationEnableStr, out bool verificationEnable) && verificationEnable;
+                
+                var verificationIntervalStr = settingBll.GetValue("ImageStorage", "Verification.IntervalHours", "24");
+                config.FileVerificationIntervalHours = int.TryParse(verificationIntervalStr, out int verificationInterval) ? verificationInterval : 24;
+                
+                var cleanupEnableStr = settingBll.GetValue("ImageStorage", "Cleanup.Enable", "true");
+                config.EnableAutoCleanup = bool.TryParse(cleanupEnableStr, out bool cleanupEnable) && cleanupEnable;
+                
+                var retentionDaysStr = settingBll.GetValue("ImageStorage", "Cleanup.OrphanedFileRetentionDays", "30");
+                config.OrphanedFileRetentionDays = int.TryParse(retentionDaysStr, out int retentionDays) ? retentionDays : 30;
 
-                // Performance
-                config.EnableCache = bool.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Cache.Enable", "true"));
-                config.CacheSizeMB = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Cache.SizeMB", "500"));
-                config.EnableAsyncProcessing = bool.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Async.Enable", "true"));
-                config.MaxConcurrentOperations = int.Parse(AppConfigHelper.GetAppSetting("ImageStorage.Async.MaxConcurrent", "10"));
+                // Performance - Đọc từ database
+                var cacheEnableStr = settingBll.GetValue("ImageStorage", "Cache.Enable", "true");
+                config.EnableCache = bool.TryParse(cacheEnableStr, out bool cacheEnable) && cacheEnable;
+                
+                var cacheSizeStr = settingBll.GetValue("ImageStorage", "Cache.SizeMB", "500");
+                config.CacheSizeMB = int.TryParse(cacheSizeStr, out int cacheSize) ? cacheSize : 500;
+                
+                var asyncEnableStr = settingBll.GetValue("ImageStorage", "Async.Enable", "true");
+                config.EnableAsyncProcessing = bool.TryParse(asyncEnableStr, out bool asyncEnable) && asyncEnable;
+                
+                var maxConcurrentStr = settingBll.GetValue("ImageStorage", "Async.MaxConcurrent", "10");
+                config.MaxConcurrentOperations = int.TryParse(maxConcurrentStr, out int maxConcurrent) ? maxConcurrent : 10;
 
                 // Build NASBasePath if not provided
                 if (string.IsNullOrEmpty(config.NASBasePath) && !string.IsNullOrEmpty(config.NASServerName))
@@ -253,26 +283,10 @@ namespace Bll.Common.ImageStorage
             catch (Exception ex)
             {
                 // Log error but continue with defaults
-                System.Diagnostics.Debug.WriteLine($"Error loading ImageStorageConfiguration: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error loading ImageStorageConfiguration from database: {ex.Message}");
             }
 
             return config;
-        }
-
-        /// <summary>
-        /// Get app setting với fallback
-        /// </summary>
-        private static string GetAppSetting(string key, string defaultValue = "")
-        {
-            try
-            {
-                var value = System.Configuration.ConfigurationManager.AppSettings[key];
-                return string.IsNullOrEmpty(value) ? defaultValue : value;
-            }
-            catch
-            {
-                return defaultValue;
-            }
         }
 
         #endregion

@@ -111,6 +111,9 @@ namespace Dal.DataContext
     partial void InsertRolePermission(RolePermission instance);
     partial void UpdateRolePermission(RolePermission instance);
     partial void DeleteRolePermission(RolePermission instance);
+    partial void InsertSetting(Setting instance);
+    partial void UpdateSetting(Setting instance);
+    partial void DeleteSetting(Setting instance);
     partial void InsertStockInOutDetail(StockInOutDetail instance);
     partial void UpdateStockInOutDetail(StockInOutDetail instance);
     partial void DeleteStockInOutDetail(StockInOutDetail instance);
@@ -386,6 +389,14 @@ namespace Dal.DataContext
 			}
 		}
 		
+		public System.Data.Linq.Table<Setting> Settings
+		{
+			get
+			{
+				return this.GetTable<Setting>();
+			}
+		}
+		
 		public System.Data.Linq.Table<StockInOutDetail> StockInOutDetails
 		{
 			get
@@ -455,30 +466,6 @@ namespace Dal.DataContext
 			get
 			{
 				return this.GetTable<VnsErpApplicationVersion>();
-			}
-		}
-		
-		public System.Data.Linq.Table<VW_ProductImage_Active> VW_ProductImage_Actives
-		{
-			get
-			{
-				return this.GetTable<VW_ProductImage_Active>();
-			}
-		}
-		
-		public System.Data.Linq.Table<vw_UserPermission> vw_UserPermissions
-		{
-			get
-			{
-				return this.GetTable<vw_UserPermission>();
-			}
-		}
-		
-		public System.Data.Linq.Table<VW_ProductImage_Primary> VW_ProductImage_Primaries
-		{
-			get
-			{
-				return this.GetTable<VW_ProductImage_Primary>();
 			}
 		}
 		
@@ -16025,6 +16012,404 @@ namespace Dal.DataContext
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Setting")]
+	public partial class Setting : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _SettingId;
+		
+		private string _Category;
+		
+		private string _SettingKey;
+		
+		private string _SettingValue;
+		
+		private string _ValueType;
+		
+		private string _Description;
+		
+		private bool _IsEncrypted;
+		
+		private bool _IsSystem;
+		
+		private bool _IsActive;
+		
+		private string _GroupName;
+		
+		private System.Nullable<int> _DisplayOrder;
+		
+		private System.DateTime _CreatedDate;
+		
+		private string _CreatedBy;
+		
+		private System.Nullable<System.DateTime> _UpdatedDate;
+		
+		private string _UpdatedBy;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnSettingIdChanging(int value);
+    partial void OnSettingIdChanged();
+    partial void OnCategoryChanging(string value);
+    partial void OnCategoryChanged();
+    partial void OnSettingKeyChanging(string value);
+    partial void OnSettingKeyChanged();
+    partial void OnSettingValueChanging(string value);
+    partial void OnSettingValueChanged();
+    partial void OnValueTypeChanging(string value);
+    partial void OnValueTypeChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnIsEncryptedChanging(bool value);
+    partial void OnIsEncryptedChanged();
+    partial void OnIsSystemChanging(bool value);
+    partial void OnIsSystemChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnGroupNameChanging(string value);
+    partial void OnGroupNameChanged();
+    partial void OnDisplayOrderChanging(System.Nullable<int> value);
+    partial void OnDisplayOrderChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnCreatedByChanging(string value);
+    partial void OnCreatedByChanged();
+    partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnUpdatedDateChanged();
+    partial void OnUpdatedByChanging(string value);
+    partial void OnUpdatedByChanged();
+    #endregion
+		
+		public Setting()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SettingId", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int SettingId
+		{
+			get
+			{
+				return this._SettingId;
+			}
+			set
+			{
+				if ((this._SettingId != value))
+				{
+					this.OnSettingIdChanging(value);
+					this.SendPropertyChanging();
+					this._SettingId = value;
+					this.SendPropertyChanged("SettingId");
+					this.OnSettingIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Category", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string Category
+		{
+			get
+			{
+				return this._Category;
+			}
+			set
+			{
+				if ((this._Category != value))
+				{
+					this.OnCategoryChanging(value);
+					this.SendPropertyChanging();
+					this._Category = value;
+					this.SendPropertyChanged("Category");
+					this.OnCategoryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SettingKey", DbType="NVarChar(200) NOT NULL", CanBeNull=false)]
+		public string SettingKey
+		{
+			get
+			{
+				return this._SettingKey;
+			}
+			set
+			{
+				if ((this._SettingKey != value))
+				{
+					this.OnSettingKeyChanging(value);
+					this.SendPropertyChanging();
+					this._SettingKey = value;
+					this.SendPropertyChanged("SettingKey");
+					this.OnSettingKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SettingValue", DbType="NVarChar(MAX)")]
+		public string SettingValue
+		{
+			get
+			{
+				return this._SettingValue;
+			}
+			set
+			{
+				if ((this._SettingValue != value))
+				{
+					this.OnSettingValueChanging(value);
+					this.SendPropertyChanging();
+					this._SettingValue = value;
+					this.SendPropertyChanged("SettingValue");
+					this.OnSettingValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ValueType", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string ValueType
+		{
+			get
+			{
+				return this._ValueType;
+			}
+			set
+			{
+				if ((this._ValueType != value))
+				{
+					this.OnValueTypeChanging(value);
+					this.SendPropertyChanging();
+					this._ValueType = value;
+					this.SendPropertyChanged("ValueType");
+					this.OnValueTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(500)")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsEncrypted", DbType="Bit NOT NULL")]
+		public bool IsEncrypted
+		{
+			get
+			{
+				return this._IsEncrypted;
+			}
+			set
+			{
+				if ((this._IsEncrypted != value))
+				{
+					this.OnIsEncryptedChanging(value);
+					this.SendPropertyChanging();
+					this._IsEncrypted = value;
+					this.SendPropertyChanged("IsEncrypted");
+					this.OnIsEncryptedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSystem", DbType="Bit NOT NULL")]
+		public bool IsSystem
+		{
+			get
+			{
+				return this._IsSystem;
+			}
+			set
+			{
+				if ((this._IsSystem != value))
+				{
+					this.OnIsSystemChanging(value);
+					this.SendPropertyChanging();
+					this._IsSystem = value;
+					this.SendPropertyChanged("IsSystem");
+					this.OnIsSystemChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GroupName", DbType="NVarChar(100)")]
+		public string GroupName
+		{
+			get
+			{
+				return this._GroupName;
+			}
+			set
+			{
+				if ((this._GroupName != value))
+				{
+					this.OnGroupNameChanging(value);
+					this.SendPropertyChanging();
+					this._GroupName = value;
+					this.SendPropertyChanged("GroupName");
+					this.OnGroupNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DisplayOrder", DbType="Int")]
+		public System.Nullable<int> DisplayOrder
+		{
+			get
+			{
+				return this._DisplayOrder;
+			}
+			set
+			{
+				if ((this._DisplayOrder != value))
+				{
+					this.OnDisplayOrderChanging(value);
+					this.SendPropertyChanging();
+					this._DisplayOrder = value;
+					this.SendPropertyChanged("DisplayOrder");
+					this.OnDisplayOrderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="NVarChar(100)")]
+		public string CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> UpdatedDate
+		{
+			get
+			{
+				return this._UpdatedDate;
+			}
+			set
+			{
+				if ((this._UpdatedDate != value))
+				{
+					this.OnUpdatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedDate = value;
+					this.SendPropertyChanged("UpdatedDate");
+					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="NVarChar(100)")]
+		public string UpdatedBy
+		{
+			get
+			{
+				return this._UpdatedBy;
+			}
+			set
+			{
+				if ((this._UpdatedBy != value))
+				{
+					this.OnUpdatedByChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedBy = value;
+					this.SendPropertyChanged("UpdatedBy");
+					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.StockInOutDetail")]
 	public partial class StockInOutDetail : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -20331,555 +20716,6 @@ namespace Dal.DataContext
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.VW_ProductImage_Active")]
-	public partial class VW_ProductImage_Active
-	{
-		
-		private System.Guid _Id;
-		
-		private System.Nullable<System.Guid> _ProductId;
-		
-		private System.Nullable<System.Guid> _VariantId;
-		
-		private string _ImagePath;
-		
-		private System.Nullable<int> _SortOrder;
-		
-		private System.Nullable<bool> _IsPrimary;
-		
-		private string _ImageType;
-		
-		private System.Nullable<long> _ImageSize;
-		
-		private System.Nullable<int> _ImageWidth;
-		
-		private System.Nullable<int> _ImageHeight;
-		
-		private string _Caption;
-		
-		private string _AltText;
-		
-		private System.Nullable<System.DateTime> _CreatedDate;
-		
-		private System.Nullable<System.DateTime> _ModifiedDate;
-		
-		public VW_ProductImage_Active()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this._Id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> ProductId
-		{
-			get
-			{
-				return this._ProductId;
-			}
-			set
-			{
-				if ((this._ProductId != value))
-				{
-					this._ProductId = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VariantId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> VariantId
-		{
-			get
-			{
-				return this._VariantId;
-			}
-			set
-			{
-				if ((this._VariantId != value))
-				{
-					this._VariantId = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImagePath", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
-		public string ImagePath
-		{
-			get
-			{
-				return this._ImagePath;
-			}
-			set
-			{
-				if ((this._ImagePath != value))
-				{
-					this._ImagePath = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SortOrder", DbType="Int")]
-		public System.Nullable<int> SortOrder
-		{
-			get
-			{
-				return this._SortOrder;
-			}
-			set
-			{
-				if ((this._SortOrder != value))
-				{
-					this._SortOrder = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPrimary", DbType="Bit")]
-		public System.Nullable<bool> IsPrimary
-		{
-			get
-			{
-				return this._IsPrimary;
-			}
-			set
-			{
-				if ((this._IsPrimary != value))
-				{
-					this._IsPrimary = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageType", DbType="NVarChar(10)")]
-		public string ImageType
-		{
-			get
-			{
-				return this._ImageType;
-			}
-			set
-			{
-				if ((this._ImageType != value))
-				{
-					this._ImageType = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageSize", DbType="BigInt")]
-		public System.Nullable<long> ImageSize
-		{
-			get
-			{
-				return this._ImageSize;
-			}
-			set
-			{
-				if ((this._ImageSize != value))
-				{
-					this._ImageSize = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageWidth", DbType="Int")]
-		public System.Nullable<int> ImageWidth
-		{
-			get
-			{
-				return this._ImageWidth;
-			}
-			set
-			{
-				if ((this._ImageWidth != value))
-				{
-					this._ImageWidth = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageHeight", DbType="Int")]
-		public System.Nullable<int> ImageHeight
-		{
-			get
-			{
-				return this._ImageHeight;
-			}
-			set
-			{
-				if ((this._ImageHeight != value))
-				{
-					this._ImageHeight = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Caption", DbType="NVarChar(255)")]
-		public string Caption
-		{
-			get
-			{
-				return this._Caption;
-			}
-			set
-			{
-				if ((this._Caption != value))
-				{
-					this._Caption = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AltText", DbType="NVarChar(255)")]
-		public string AltText
-		{
-			get
-			{
-				return this._AltText;
-			}
-			set
-			{
-				if ((this._AltText != value))
-				{
-					this._AltText = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> CreatedDate
-		{
-			get
-			{
-				return this._CreatedDate;
-			}
-			set
-			{
-				if ((this._CreatedDate != value))
-				{
-					this._CreatedDate = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> ModifiedDate
-		{
-			get
-			{
-				return this._ModifiedDate;
-			}
-			set
-			{
-				if ((this._ModifiedDate != value))
-				{
-					this._ModifiedDate = value;
-				}
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.vw_UserPermissions")]
-	public partial class vw_UserPermission
-	{
-		
-		private System.Guid _UserId;
-		
-		private string _EntityName;
-		
-		private string _Action;
-		
-		private bool _IsGranted;
-		
-		private string _PermissionSource;
-		
-		private string _RoleName;
-		
-		public vw_UserPermission()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid UserId
-		{
-			get
-			{
-				return this._UserId;
-			}
-			set
-			{
-				if ((this._UserId != value))
-				{
-					this._UserId = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EntityName", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string EntityName
-		{
-			get
-			{
-				return this._EntityName;
-			}
-			set
-			{
-				if ((this._EntityName != value))
-				{
-					this._EntityName = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Action", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string Action
-		{
-			get
-			{
-				return this._Action;
-			}
-			set
-			{
-				if ((this._Action != value))
-				{
-					this._Action = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsGranted", DbType="Bit NOT NULL")]
-		public bool IsGranted
-		{
-			get
-			{
-				return this._IsGranted;
-			}
-			set
-			{
-				if ((this._IsGranted != value))
-				{
-					this._IsGranted = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PermissionSource", DbType="VarChar(4) NOT NULL", CanBeNull=false)]
-		public string PermissionSource
-		{
-			get
-			{
-				return this._PermissionSource;
-			}
-			set
-			{
-				if ((this._PermissionSource != value))
-				{
-					this._PermissionSource = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoleName", DbType="NVarChar(100)")]
-		public string RoleName
-		{
-			get
-			{
-				return this._RoleName;
-			}
-			set
-			{
-				if ((this._RoleName != value))
-				{
-					this._RoleName = value;
-				}
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.VW_ProductImage_Primary")]
-	public partial class VW_ProductImage_Primary
-	{
-		
-		private System.Guid _Id;
-		
-		private System.Nullable<System.Guid> _ProductId;
-		
-		private string _ImagePath;
-		
-		private string _ImageType;
-		
-		private System.Nullable<long> _ImageSize;
-		
-		private System.Nullable<int> _ImageWidth;
-		
-		private System.Nullable<int> _ImageHeight;
-		
-		private string _Caption;
-		
-		private string _AltText;
-		
-		public VW_ProductImage_Primary()
-		{
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this._Id = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> ProductId
-		{
-			get
-			{
-				return this._ProductId;
-			}
-			set
-			{
-				if ((this._ProductId != value))
-				{
-					this._ProductId = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImagePath", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
-		public string ImagePath
-		{
-			get
-			{
-				return this._ImagePath;
-			}
-			set
-			{
-				if ((this._ImagePath != value))
-				{
-					this._ImagePath = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageType", DbType="NVarChar(10)")]
-		public string ImageType
-		{
-			get
-			{
-				return this._ImageType;
-			}
-			set
-			{
-				if ((this._ImageType != value))
-				{
-					this._ImageType = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageSize", DbType="BigInt")]
-		public System.Nullable<long> ImageSize
-		{
-			get
-			{
-				return this._ImageSize;
-			}
-			set
-			{
-				if ((this._ImageSize != value))
-				{
-					this._ImageSize = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageWidth", DbType="Int")]
-		public System.Nullable<int> ImageWidth
-		{
-			get
-			{
-				return this._ImageWidth;
-			}
-			set
-			{
-				if ((this._ImageWidth != value))
-				{
-					this._ImageWidth = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageHeight", DbType="Int")]
-		public System.Nullable<int> ImageHeight
-		{
-			get
-			{
-				return this._ImageHeight;
-			}
-			set
-			{
-				if ((this._ImageHeight != value))
-				{
-					this._ImageHeight = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Caption", DbType="NVarChar(255)")]
-		public string Caption
-		{
-			get
-			{
-				return this._Caption;
-			}
-			set
-			{
-				if ((this._Caption != value))
-				{
-					this._Caption = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AltText", DbType="NVarChar(255)")]
-		public string AltText
-		{
-			get
-			{
-				return this._AltText;
-			}
-			set
-			{
-				if ((this._AltText != value))
-				{
-					this._AltText = value;
-				}
 			}
 		}
 	}
