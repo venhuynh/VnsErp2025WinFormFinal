@@ -113,6 +113,10 @@
     <Compile Include="VersionAndUserManagementDto\AllowedMacAddressDto.cs" />
     <Compile Include="VersionAndUserManagementDto\ApplicationUserDto.cs" />
     <Compile Include="VersionAndUserManagementDto\ApplicationVersionDto.cs" />
+    <Compile Include="VersionAndUserManagementDto\PermissionDto.cs" />
+    <Compile Include="VersionAndUserManagementDto\RoleDto.cs" />
+    <Compile Include="VersionAndUserManagementDto\UserPermissionDto.cs" />
+    <Compile Include="VersionAndUserManagementDto\UserRoleDto.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
