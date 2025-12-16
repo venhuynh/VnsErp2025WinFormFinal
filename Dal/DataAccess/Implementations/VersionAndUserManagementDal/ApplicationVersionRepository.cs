@@ -29,6 +29,9 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
 
     private VnsErp2025DataContext CreateNewContext()
     {
+        // DEBUG: Log connection string để kiểm tra database
+        _logger.Debug($"Creating context with connection string: {_connectionString}");
+        
         var context = new VnsErp2025DataContext(_connectionString);
         var loadOptions = new DataLoadOptions();
         context.LoadOptions = loadOptions;

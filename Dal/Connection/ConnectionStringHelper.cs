@@ -36,11 +36,6 @@ namespace Dal.Connection
         {
             try
             {
-                if (TryGetFromUserSettings(out var csFromSettings))
-                {
-                    return csFromSettings;
-                }
-
                 var connectionString = ConfigurationManager.ConnectionStrings[DEFAULT_CONNECTION_NAME]?.ConnectionString;
                 
                 if (string.IsNullOrEmpty(connectionString))
@@ -48,6 +43,10 @@ namespace Dal.Connection
                     connectionString = BuildDefaultConnectionString();
                 }
 
+                if (TryGetFromUserSettings(out var csFromSettings))
+                {
+                    return csFromSettings;
+                }
                 return connectionString;
             }
             catch (Exception)

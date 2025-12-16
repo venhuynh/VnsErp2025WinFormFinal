@@ -31,7 +31,11 @@ namespace VnsErp2025
 
             // Cấu hình DevExpress Skin
             SkinHelper.KhoiTaoSkin("WXI");
-
+            //using (var configForm = new FrmDatabaseConfig())
+            //{
+            //    configForm.ShowDialog();
+            //}
+            
             // 1) Tải connection string từ Settings (ConnectionManager default sẽ ưu tiên User Settings)
             var connectionManager = new ConnectionManager();
 
