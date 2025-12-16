@@ -56,16 +56,12 @@ namespace VersionAndUserManagement.RoleManagement
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repositoryItemComboBox2 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
-            this.xtraTabPage1 = new DevExpress.XtraTab.XtraTabPage();
-            this.xtraTabPage2 = new DevExpress.XtraTab.XtraTabPage();
+            this.ThongTinRoleXtraTabControl = new DevExpress.XtraTab.XtraTabControl();
+            this.ThongTinRoleXtraTabPage = new DevExpress.XtraTab.XtraTabPage();
+            this.DanhSachUserXtraTabPage = new DevExpress.XtraTab.XtraTabPage();
             this.RoleDtoGridControl = new DevExpress.XtraGrid.GridControl();
             this.roleDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.RoleDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colName = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -76,13 +72,32 @@ namespace VersionAndUserManagement.RoleManagement
             this.colPermissionCount = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colCreatedDate = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colModifiedDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
+            this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.textEdit1 = new DevExpress.XtraEditors.TextEdit();
+            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
+            this.memoEdit1 = new DevExpress.XtraEditors.MemoEdit();
+            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.VaiTroToggleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
+            this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.toggleSwitch2 = new DevExpress.XtraEditors.ToggleSwitch();
+            this.layoutControlItem6 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
-            this.xtraTabControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinRoleXtraTabControl)).BeginInit();
+            this.ThongTinRoleXtraTabControl.SuspendLayout();
+            this.ThongTinRoleXtraTabPage.SuspendLayout();
+            this.DanhSachUserXtraTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RoleDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.roleDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.RoleDtoGridView)).BeginInit();
@@ -91,6 +106,20 @@ namespace VersionAndUserManagement.RoleManagement
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).BeginInit();
+            this.layoutControl2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textEdit1.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.memoEdit1.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VaiTroToggleSwitch.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.toggleSwitch2.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -187,7 +216,7 @@ namespace VersionAndUserManagement.RoleManagement
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 627);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 979);
             this.barDockControlBottom.Manager = this.barManager1;
             this.barDockControlBottom.Size = new System.Drawing.Size(1075, 0);
             // 
@@ -197,7 +226,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 588);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 940);
             // 
             // barDockControlRight
             // 
@@ -205,7 +234,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 588);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 940);
             // 
             // barHeaderItem1
             // 
@@ -249,38 +278,40 @@ namespace VersionAndUserManagement.RoleManagement
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.xtraTabControl1);
+            this.layoutControl1.Controls.Add(this.ThongTinRoleXtraTabControl);
             this.layoutControl1.Controls.Add(this.RoleDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 588);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 940);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // xtraTabControl1
+            // ThongTinRoleXtraTabControl
             // 
-            this.xtraTabControl1.Location = new System.Drawing.Point(16, 298);
-            this.xtraTabControl1.Name = "xtraTabControl1";
-            this.xtraTabControl1.SelectedTabPage = this.xtraTabPage1;
-            this.xtraTabControl1.Size = new System.Drawing.Size(1043, 274);
-            this.xtraTabControl1.TabIndex = 5;
-            this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
-            this.xtraTabPage1,
-            this.xtraTabPage2});
+            this.ThongTinRoleXtraTabControl.Location = new System.Drawing.Point(16, 475);
+            this.ThongTinRoleXtraTabControl.Name = "ThongTinRoleXtraTabControl";
+            this.ThongTinRoleXtraTabControl.SelectedTabPage = this.ThongTinRoleXtraTabPage;
+            this.ThongTinRoleXtraTabControl.Size = new System.Drawing.Size(1043, 449);
+            this.ThongTinRoleXtraTabControl.TabIndex = 5;
+            this.ThongTinRoleXtraTabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.ThongTinRoleXtraTabPage,
+            this.DanhSachUserXtraTabPage});
             // 
-            // xtraTabPage1
+            // ThongTinRoleXtraTabPage
             // 
-            this.xtraTabPage1.Name = "xtraTabPage1";
-            this.xtraTabPage1.Size = new System.Drawing.Size(1041, 243);
-            this.xtraTabPage1.Text = "xtraTabPage1";
+            this.ThongTinRoleXtraTabPage.Controls.Add(this.layoutControl2);
+            this.ThongTinRoleXtraTabPage.Name = "ThongTinRoleXtraTabPage";
+            this.ThongTinRoleXtraTabPage.Size = new System.Drawing.Size(1041, 418);
+            this.ThongTinRoleXtraTabPage.Text = "Thông tin role";
             // 
-            // xtraTabPage2
+            // DanhSachUserXtraTabPage
             // 
-            this.xtraTabPage2.Name = "xtraTabPage2";
-            this.xtraTabPage2.Size = new System.Drawing.Size(1041, 243);
-            this.xtraTabPage2.Text = "xtraTabPage2";
+            this.DanhSachUserXtraTabPage.Controls.Add(this.gridControl1);
+            this.DanhSachUserXtraTabPage.Name = "DanhSachUserXtraTabPage";
+            this.DanhSachUserXtraTabPage.Size = new System.Drawing.Size(1041, 418);
+            this.DanhSachUserXtraTabPage.Text = "Danh sách Users có Role này ";
             // 
             // RoleDtoGridControl
             // 
@@ -292,7 +323,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.RoleDtoGridControl.Name = "RoleDtoGridControl";
             this.RoleDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlHypertextLabel});
-            this.RoleDtoGridControl.Size = new System.Drawing.Size(1011, 223);
+            this.RoleDtoGridControl.Size = new System.Drawing.Size(1011, 400);
             this.RoleDtoGridControl.TabIndex = 4;
             this.RoleDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.RoleDtoGridView});
@@ -333,49 +364,6 @@ namespace VersionAndUserManagement.RoleManagement
             this.RoleDtoGridView.OptionsView.ShowViewCaption = true;
             this.RoleDtoGridView.ViewCaption = "BẢNG DỮ LIỆU VAI TRÒ";
             // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem2,
-            this.layoutControlGroup1});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 588);
-            this.Root.TextVisible = false;
-            // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Control = this.xtraTabControl1;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 282);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(1049, 280);
-            this.layoutControlItem2.TextVisible = false;
-            // 
-            // layoutControlGroup1
-            // 
-            this.layoutControlGroup1.ExpandButtonVisible = true;
-            this.layoutControlGroup1.GroupStyle = DevExpress.Utils.GroupStyle.Light;
-            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
-            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlGroup1.Name = "layoutControlGroup1";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(1049, 282);
-            this.layoutControlGroup1.Text = "Danh sách quyền";
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.RoleDtoGridControl;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1017, 229);
-            this.layoutControlItem1.TextVisible = false;
-            // 
-            // HtmlHypertextLabel
-            // 
-            this.HtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.HtmlHypertextLabel.Name = "HtmlHypertextLabel";
-            // 
             // colThongTinHtml
             // 
             this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
@@ -397,8 +385,13 @@ namespace VersionAndUserManagement.RoleManagement
             this.colThongTinHtml.OptionsColumn.AllowFocus = false;
             this.colThongTinHtml.OptionsColumn.ReadOnly = true;
             this.colThongTinHtml.Visible = true;
-            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.VisibleIndex = 1;
             this.colThongTinHtml.Width = 350;
+            // 
+            // HtmlHypertextLabel
+            // 
+            this.HtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.HtmlHypertextLabel.Name = "HtmlHypertextLabel";
             // 
             // colName
             // 
@@ -412,7 +405,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.colName.OptionsColumn.AllowEdit = false;
             this.colName.OptionsColumn.ReadOnly = true;
             this.colName.Visible = true;
-            this.colName.VisibleIndex = 1;
+            this.colName.VisibleIndex = 2;
             this.colName.Width = 150;
             // 
             // colDescription
@@ -427,7 +420,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.colDescription.OptionsColumn.AllowEdit = false;
             this.colDescription.OptionsColumn.ReadOnly = true;
             this.colDescription.Visible = true;
-            this.colDescription.VisibleIndex = 2;
+            this.colDescription.VisibleIndex = 3;
             this.colDescription.Width = 250;
             // 
             // colIsSystemRole
@@ -444,7 +437,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.colIsSystemRole.OptionsColumn.AllowEdit = false;
             this.colIsSystemRole.OptionsColumn.ReadOnly = true;
             this.colIsSystemRole.Visible = true;
-            this.colIsSystemRole.VisibleIndex = 3;
+            this.colIsSystemRole.VisibleIndex = 4;
             this.colIsSystemRole.Width = 80;
             // 
             // colIsActive
@@ -461,7 +454,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.colIsActive.OptionsColumn.AllowEdit = false;
             this.colIsActive.OptionsColumn.ReadOnly = true;
             this.colIsActive.Visible = true;
-            this.colIsActive.VisibleIndex = 4;
+            this.colIsActive.VisibleIndex = 5;
             this.colIsActive.Width = 80;
             // 
             // colUserCount
@@ -480,7 +473,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.colUserCount.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
             new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "UserCount", "Tổng: {0}")});
             this.colUserCount.Visible = true;
-            this.colUserCount.VisibleIndex = 5;
+            this.colUserCount.VisibleIndex = 6;
             this.colUserCount.Width = 100;
             // 
             // colPermissionCount
@@ -499,7 +492,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.colPermissionCount.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
             new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.Sum, "PermissionCount", "Tổng: {0}")});
             this.colPermissionCount.Visible = true;
-            this.colPermissionCount.VisibleIndex = 6;
+            this.colPermissionCount.VisibleIndex = 7;
             this.colPermissionCount.Width = 100;
             // 
             // colCreatedDate
@@ -518,7 +511,7 @@ namespace VersionAndUserManagement.RoleManagement
             this.colCreatedDate.OptionsColumn.AllowEdit = false;
             this.colCreatedDate.OptionsColumn.ReadOnly = true;
             this.colCreatedDate.Visible = true;
-            this.colCreatedDate.VisibleIndex = 7;
+            this.colCreatedDate.VisibleIndex = 8;
             this.colCreatedDate.Width = 130;
             // 
             // colModifiedDate
@@ -537,14 +530,178 @@ namespace VersionAndUserManagement.RoleManagement
             this.colModifiedDate.OptionsColumn.AllowEdit = false;
             this.colModifiedDate.OptionsColumn.ReadOnly = true;
             this.colModifiedDate.Visible = true;
-            this.colModifiedDate.VisibleIndex = 8;
+            this.colModifiedDate.VisibleIndex = 9;
             this.colModifiedDate.Width = 130;
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem2,
+            this.layoutControlGroup1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(1075, 940);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlItem2
+            // 
+            this.layoutControlItem2.Control = this.ThongTinRoleXtraTabControl;
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 459);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.Size = new System.Drawing.Size(1049, 455);
+            this.layoutControlItem2.TextVisible = false;
+            // 
+            // layoutControlGroup1
+            // 
+            this.layoutControlGroup1.ExpandButtonVisible = true;
+            this.layoutControlGroup1.GroupStyle = DevExpress.Utils.GroupStyle.Light;
+            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
+            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlGroup1.Name = "layoutControlGroup1";
+            this.layoutControlGroup1.Size = new System.Drawing.Size(1049, 459);
+            this.layoutControlGroup1.Text = "Danh sách quyền";
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.RoleDtoGridControl;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(1017, 406);
+            this.layoutControlItem1.TextVisible = false;
+            // 
+            // layoutControl2
+            // 
+            this.layoutControl2.Controls.Add(this.toggleSwitch2);
+            this.layoutControl2.Controls.Add(this.VaiTroToggleSwitch);
+            this.layoutControl2.Controls.Add(this.textEdit1);
+            this.layoutControl2.Controls.Add(this.memoEdit1);
+            this.layoutControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layoutControl2.Location = new System.Drawing.Point(0, 0);
+            this.layoutControl2.Name = "layoutControl2";
+            this.layoutControl2.Root = this.layoutControlGroup2;
+            this.layoutControl2.Size = new System.Drawing.Size(1041, 418);
+            this.layoutControl2.TabIndex = 0;
+            this.layoutControl2.Text = "layoutControl2";
+            // 
+            // layoutControlGroup2
+            // 
+            this.layoutControlGroup2.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.layoutControlGroup2.GroupBordersVisible = false;
+            this.layoutControlGroup2.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem3,
+            this.emptySpaceItem1,
+            this.layoutControlItem4,
+            this.layoutControlItem5,
+            this.layoutControlItem6});
+            this.layoutControlGroup2.Name = "layoutControlGroup2";
+            this.layoutControlGroup2.Size = new System.Drawing.Size(1041, 418);
+            this.layoutControlGroup2.TextVisible = false;
+            // 
+            // textEdit1
+            // 
+            this.textEdit1.Location = new System.Drawing.Point(125, 16);
+            this.textEdit1.MenuManager = this.barManager1;
+            this.textEdit1.Name = "textEdit1";
+            this.textEdit1.Size = new System.Drawing.Size(900, 28);
+            this.textEdit1.StyleController = this.layoutControl2;
+            this.textEdit1.TabIndex = 4;
+            // 
+            // layoutControlItem3
+            // 
+            this.layoutControlItem3.Control = this.textEdit1;
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem3.Name = "layoutControlItem3";
+            this.layoutControlItem3.Size = new System.Drawing.Size(1015, 34);
+            this.layoutControlItem3.TextSize = new System.Drawing.Size(93, 13);
+            // 
+            // emptySpaceItem1
+            // 
+            this.emptySpaceItem1.Location = new System.Drawing.Point(0, 273);
+            this.emptySpaceItem1.Name = "emptySpaceItem1";
+            this.emptySpaceItem1.Size = new System.Drawing.Size(1015, 119);
+            // 
+            // memoEdit1
+            // 
+            this.memoEdit1.Location = new System.Drawing.Point(125, 50);
+            this.memoEdit1.MenuManager = this.barManager1;
+            this.memoEdit1.Name = "memoEdit1";
+            this.memoEdit1.Size = new System.Drawing.Size(900, 173);
+            this.memoEdit1.StyleController = this.layoutControl2;
+            this.memoEdit1.TabIndex = 5;
+            // 
+            // layoutControlItem4
+            // 
+            this.layoutControlItem4.Control = this.memoEdit1;
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 34);
+            this.layoutControlItem4.Name = "layoutControlItem4";
+            this.layoutControlItem4.Size = new System.Drawing.Size(1015, 179);
+            this.layoutControlItem4.Text = "Mô tả";
+            this.layoutControlItem4.TextSize = new System.Drawing.Size(93, 13);
+            // 
+            // VaiTroToggleSwitch
+            // 
+            this.VaiTroToggleSwitch.Location = new System.Drawing.Point(125, 229);
+            this.VaiTroToggleSwitch.MenuManager = this.barManager1;
+            this.VaiTroToggleSwitch.Name = "VaiTroToggleSwitch";
+            this.VaiTroToggleSwitch.Properties.OffText = "Off";
+            this.VaiTroToggleSwitch.Properties.OnText = "On";
+            this.VaiTroToggleSwitch.Size = new System.Drawing.Size(900, 24);
+            this.VaiTroToggleSwitch.StyleController = this.layoutControl2;
+            this.VaiTroToggleSwitch.TabIndex = 6;
+            // 
+            // layoutControlItem5
+            // 
+            this.layoutControlItem5.Control = this.VaiTroToggleSwitch;
+            this.layoutControlItem5.Location = new System.Drawing.Point(0, 213);
+            this.layoutControlItem5.Name = "layoutControlItem5";
+            this.layoutControlItem5.Size = new System.Drawing.Size(1015, 30);
+            this.layoutControlItem5.Text = "Vai trò";
+            this.layoutControlItem5.TextSize = new System.Drawing.Size(93, 13);
+            // 
+            // toggleSwitch2
+            // 
+            this.toggleSwitch2.Location = new System.Drawing.Point(125, 259);
+            this.toggleSwitch2.MenuManager = this.barManager1;
+            this.toggleSwitch2.Name = "toggleSwitch2";
+            this.toggleSwitch2.Properties.OffText = "Off";
+            this.toggleSwitch2.Properties.OnText = "On";
+            this.toggleSwitch2.Size = new System.Drawing.Size(900, 24);
+            this.toggleSwitch2.StyleController = this.layoutControl2;
+            this.toggleSwitch2.TabIndex = 7;
+            // 
+            // layoutControlItem6
+            // 
+            this.layoutControlItem6.Control = this.toggleSwitch2;
+            this.layoutControlItem6.Location = new System.Drawing.Point(0, 243);
+            this.layoutControlItem6.Name = "layoutControlItem6";
+            this.layoutControlItem6.Size = new System.Drawing.Size(1015, 30);
+            this.layoutControlItem6.Text = "Đang hoạt động";
+            this.layoutControlItem6.TextSize = new System.Drawing.Size(93, 13);
+            // 
+            // gridControl1
+            // 
+            this.gridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridControl1.Location = new System.Drawing.Point(0, 0);
+            this.gridControl1.MainView = this.gridView1;
+            this.gridControl1.MenuManager = this.barManager1;
+            this.gridControl1.Name = "gridControl1";
+            this.gridControl1.Size = new System.Drawing.Size(1041, 418);
+            this.gridControl1.TabIndex = 0;
+            this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridView1});
+            // 
+            // gridView1
+            // 
+            this.gridView1.GridControl = this.gridControl1;
+            this.gridView1.Name = "gridView1";
             // 
             // FrmRoleManagement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1075, 627);
+            this.ClientSize = new System.Drawing.Size(1075, 979);
             this.Controls.Add(this.layoutControl1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -557,8 +714,10 @@ namespace VersionAndUserManagement.RoleManagement
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).EndInit();
-            this.xtraTabControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinRoleXtraTabControl)).EndInit();
+            this.ThongTinRoleXtraTabControl.ResumeLayout(false);
+            this.ThongTinRoleXtraTabPage.ResumeLayout(false);
+            this.DanhSachUserXtraTabPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.RoleDtoGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.roleDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.RoleDtoGridView)).EndInit();
@@ -567,6 +726,20 @@ namespace VersionAndUserManagement.RoleManagement
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl2)).EndInit();
+            this.layoutControl2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textEdit1.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.memoEdit1.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VaiTroToggleSwitch.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.toggleSwitch2.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -593,9 +766,9 @@ namespace VersionAndUserManagement.RoleManagement
         private BarStaticItem SelectedRowBarStaticItem;
         private RepositoryItemComboBox repositoryItemComboBox1;
         private RepositoryItemComboBox repositoryItemComboBox2;
-        private DevExpress.XtraTab.XtraTabControl xtraTabControl1;
-        private DevExpress.XtraTab.XtraTabPage xtraTabPage1;
-        private DevExpress.XtraTab.XtraTabPage xtraTabPage2;
+        private DevExpress.XtraTab.XtraTabControl ThongTinRoleXtraTabControl;
+        private DevExpress.XtraTab.XtraTabPage ThongTinRoleXtraTabPage;
+        private DevExpress.XtraTab.XtraTabPage DanhSachUserXtraTabPage;
         private GridControl RoleDtoGridControl;
         private GridView RoleDtoGridView;
         private LayoutControlItem layoutControlItem2;
@@ -613,5 +786,18 @@ namespace VersionAndUserManagement.RoleManagement
         private GridColumn colPermissionCount;
         private GridColumn colCreatedDate;
         private GridColumn colModifiedDate;
+        private LayoutControl layoutControl2;
+        private DevExpress.XtraEditors.TextEdit textEdit1;
+        private LayoutControlGroup layoutControlGroup2;
+        private LayoutControlItem layoutControlItem3;
+        private EmptySpaceItem emptySpaceItem1;
+        private DevExpress.XtraEditors.ToggleSwitch toggleSwitch2;
+        private DevExpress.XtraEditors.ToggleSwitch VaiTroToggleSwitch;
+        private DevExpress.XtraEditors.MemoEdit memoEdit1;
+        private LayoutControlItem layoutControlItem4;
+        private LayoutControlItem layoutControlItem5;
+        private LayoutControlItem layoutControlItem6;
+        private GridControl gridControl1;
+        private GridView gridView1;
     }
 }
