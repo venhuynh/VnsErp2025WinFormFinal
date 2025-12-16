@@ -154,7 +154,7 @@ namespace VnsErp2025.Form
             this.ribbonPage1,
             this.XuatNhapTonKhoRibbonPage});
             this.ribbon.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office365;
-            this.ribbon.Size = new System.Drawing.Size(2606, 308);
+            this.ribbon.Size = new System.Drawing.Size(2301, 308);
             this.ribbon.StatusBar = this.ribbonStatusBar;
             // 
             // DBInfoBarStaticItem
@@ -645,7 +645,7 @@ namespace VnsErp2025.Form
             this.ribbonStatusBar.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbon;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(2606, 48);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(2301, 48);
             // 
             // documentManager1
             // 
@@ -659,7 +659,7 @@ namespace VnsErp2025.Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2606, 1367);
+            this.ClientSize = new System.Drawing.Size(2301, 1367);
             this.Controls.Add(this.ribbonStatusBar);
             this.Controls.Add(this.ribbon);
             this.IsMdiContainer = true;

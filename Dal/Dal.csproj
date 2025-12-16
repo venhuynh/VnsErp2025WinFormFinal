@@ -144,6 +144,8 @@
     </None>
     <None Include="Doc\CompanyEntities_Summary.md" />
     <None Include="Doc\DalFolderStructure.md" />
+    <None Include="Doc\EntityPermissionManagement_Proposal.md" />
+    <None Include="Doc\EntityPermissionMatrix.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
