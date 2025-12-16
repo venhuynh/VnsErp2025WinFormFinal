@@ -8,3 +8,4 @@ Dựa trên đoạn code đang mở, hãy viết tài liệu kỹ thuật cho l�
 5. Lưu ý khi mở rộng hoặc sửa đổi
 
 Output dưới dạng Markdown, dùng được cho GitBook.
+C:\Users\Admin\source\Workspaces\2025\VNS_ERP_2025_FINAL\VnsErp2025\VnsErp2025\Docs\MasterData\Customer
