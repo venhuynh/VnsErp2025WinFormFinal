@@ -15,6 +15,8 @@ using VersionAndUserManagement.ApplicationVersion;
 using VersionAndUserManagement.RoleManagement;
 using VersionAndUserManagement.UserManagement;
 using VnsErp2025.Form;
+using Microsoft.Win32;
+using Common.Appconfig;
 
 
 namespace VnsErp2025
@@ -32,21 +34,61 @@ namespace VnsErp2025
 
             // Cấu hình DevExpress Skin
             SkinHelper.KhoiTaoSkin("WXI");
-            //using (var configForm = new FrmDatabaseConfig())
-            //{
-            //    configForm.ShowDialog();
-            //}
             
-            // 1) Tải connection string từ Settings (ConnectionManager default sẽ ưu tiên User Settings)
-            var connectionManager = new ConnectionManager();
-
-            // 2) Kiểm tra kết nối
-            if (!connectionManager.TestConnection())
+            // 1) Kiểm tra xem có thông tin cấu hình database trong Registry không
+            if (!KiemTraThongTinTuRegistry())
             {
-                // 2a) Không kết nối được -> mở màn hình cấu hình DB
+                // Không có thông tin trong Registry -> hiển thị màn hình cài đặt
+                MessageBox.Show(
+                    @"Chưa có cấu hình cơ sở dữ liệu.\nVui lòng cài đặt thông tin kết nối cơ sở dữ liệu.",
+                    @"Cấu hình cơ sở dữ liệu",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                
                 using (var configForm = new FrmDatabaseConfig())
                 {
-                    configForm.ShowDialog();
+                    if (configForm.ShowDialog() != DialogResult.OK)
+                    {
+                        // Người dùng hủy cấu hình -> thoát ứng dụng
+                        Application.Exit();
+                        return;
+                    }
+                }
+                
+                // Kiểm tra lại sau khi người dùng cấu hình
+                if (!KiemTraThongTinTuRegistry())
+                {
+                    MessageBox.Show(
+                        @"Không thể đọc thông tin cấu hình từ Registry.\nVui lòng kiểm tra lại quyền truy cập Registry.",
+                        @"Lỗi cấu hình",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    Application.Exit();
+                    return;
+                }
+            }
+            
+            // 2) Tải connection string từ Registry
+            var connectionManager = new ConnectionManager();
+
+            // 3) Kiểm tra kết nối
+            if (!connectionManager.TestConnection())
+            {
+                // Không kết nối được -> mở màn hình cấu hình DB để sửa
+                MessageBox.Show(
+                    @"Không thể kết nối đến cơ sở dữ liệu.\nVui lòng kiểm tra lại thông tin kết nối.",
+                    @"Lỗi kết nối",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                
+                using (var configForm = new FrmDatabaseConfig())
+                {
+                    if (configForm.ShowDialog() != DialogResult.OK)
+                    {
+                        // Người dùng hủy -> thoát
+                        Application.Exit();
+                        return;
+                    }
                 }
 
                 // Thử kiểm tra lại sau khi người dùng lưu cấu hình
@@ -54,6 +96,11 @@ namespace VnsErp2025
                 if (!connectionManager.TestConnection())
                 {
                     // Không kết nối được sau cấu hình -> thoát
+                    MessageBox.Show(
+                        @"Vẫn không thể kết nối đến cơ sở dữ liệu sau khi cấu hình.\nVui lòng kiểm tra lại thông tin kết nối.",
+                        @"Lỗi kết nối",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     Application.Exit();
                     return;
                 }
@@ -167,6 +214,67 @@ namespace VnsErp2025
 
             #endregion
 
+        }
+
+        /// <summary>
+        /// Kiểm tra xem có thể đọc được thông tin cấu hình database từ Registry không
+        /// Tất cả thông tin được giải mã khi kiểm tra
+        /// </summary>
+        /// <returns>True nếu đọc được thông tin hợp lệ từ Registry, False nếu không</returns>
+        private static bool KiemTraThongTinTuRegistry()
+        {
+            try
+            {
+                const string registryKey = @"HKEY_CURRENT_USER\Software\Software\VietNhatSolutions\VnsErp2025";
+                
+                // Đọc các giá trị đã mã hóa từ Registry
+                var encryptedDns = (string)Registry.GetValue(registryKey, "dns", null);
+                var encryptedDatabase = (string)Registry.GetValue(registryKey, "database", null);
+                var encryptedUsername = (string)Registry.GetValue(registryKey, "username", null);
+                var encryptedPassword = (string)Registry.GetValue(registryKey, "password", null);
+                
+                // Kiểm tra xem có các giá trị không
+                if (string.IsNullOrEmpty(encryptedDns) || string.IsNullOrEmpty(encryptedDatabase))
+                {
+                    return false;
+                }
+                
+                // Kiểm tra xem có username và password không (bắt buộc vì dùng SQL Authentication)
+                if (string.IsNullOrEmpty(encryptedUsername) || string.IsNullOrEmpty(encryptedPassword))
+                {
+                    return false;
+                }
+                
+                // Thử giải mã tất cả các trường để đảm bảo chúng hợp lệ
+                try
+                {
+                    var decryptedDns = VntaCrypto.Decrypt(encryptedDns);
+                    var decryptedDatabase = VntaCrypto.Decrypt(encryptedDatabase);
+                    var decryptedUsername = VntaCrypto.Decrypt(encryptedUsername);
+                    var decryptedPassword = VntaCrypto.Decrypt(encryptedPassword);
+                    
+                    // Kiểm tra xem sau khi giải mã có giá trị hợp lệ không
+                    if (string.IsNullOrEmpty(decryptedDns) || string.IsNullOrEmpty(decryptedDatabase) ||
+                        string.IsNullOrEmpty(decryptedUsername) || string.IsNullOrEmpty(decryptedPassword))
+                    {
+                        return false;
+                    }
+                }
+                catch
+                {
+                    // Không thể giải mã -> có thể là dữ liệu cũ chưa mã hóa, thử kiểm tra trực tiếp
+                    // Nếu không phải định dạng mã hóa, VntaCrypto.Decrypt sẽ trả về nguyên vẹn
+                    // Nhưng để đảm bảo an toàn, chúng ta yêu cầu tất cả phải được mã hóa
+                    return false;
+                }
+                
+                return true;
+            }
+            catch (Exception)
+            {
+                // Có lỗi khi đọc Registry -> không hợp lệ
+                return false;
+            }
         }
 
     }

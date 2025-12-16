@@ -749,6 +749,9 @@ namespace VnsErp2025.Form
         {
             var builder = new SqlConnectionStringBuilder(connectionString);
             
+            // Lấy connection string an toàn (không có password)
+            var safeConnectionString = ConnectionStringHelper.GetSafeConnectionString(connectionString);
+            
             return $"Thông tin Database:\n\n" +
                    $"Server: {builder.DataSource ?? "Unknown"}\n" +
                    $"Database: {builder.InitialCatalog ?? "Unknown"}\n" +
@@ -757,7 +760,7 @@ namespace VnsErp2025.Form
                    $"Command Timeout: {connectionManager.CommandTimeout} giây\n" +
                    $"Trạng thái: {connectionManager.State}\n" +
                    $"Kết nối hoạt động: {(connectionManager.IsHealthy() ? "Có" : "Không")}\n\n" +
-                   $"Connection String:\n{connectionString}";
+                   $"Connection String:\n{safeConnectionString}";
         }
 
         /// <summary>

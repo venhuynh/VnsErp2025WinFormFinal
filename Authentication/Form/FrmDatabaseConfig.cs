@@ -1,7 +1,9 @@
-﻿using Dal.Connection;
+using Dal.Connection;
 using System;
 using System.Windows.Forms;
 using Common.Utils;
+using Microsoft.Win32;
+using Common.Appconfig;
 
 namespace Authentication.Form
 {
@@ -11,6 +13,7 @@ namespace Authentication.Form
 
         private DatabaseConfig _databaseConfig;
         private ConnectionManager _connectionManager;
+        private const string REGISTRY_KEY = @"HKEY_CURRENT_USER\Software\Software\VietNhatSolutions\VnsErp2025";
 
         #endregion
 
@@ -48,26 +51,37 @@ namespace Authentication.Form
         }
 
         /// <summary>
-        /// Tải dữ liệu từ Settings
+        /// Tải dữ liệu từ Registry
         /// </summary>
         private void TaiDuLieuTuSettings()
         {
             try
             {
-                var settings = Properties.Settings.Default;
+                var dbConfig = GetMsSqlServerInfo();
                 
-                // Cập nhật DatabaseConfig từ Settings
-                _databaseConfig.ServerName = settings.DatabaseServer ?? "localhost";
-                _databaseConfig.DatabaseName = settings.DatabaseName ?? "VnsErp2025";
-                _databaseConfig.UserId = settings.DatabaseUserId ?? string.Empty;
-                // Giải mã mật khẩu trước khi dùng
-                _databaseConfig.Password = Dal.Connection.ConnectionStringHelper.DecodeConnectionString(settings.DatabasePassword ?? string.Empty);
+                if (dbConfig != null)
+                {
+                    // Cập nhật DatabaseConfig từ Registry
+                    _databaseConfig.ServerName = dbConfig.Dns ?? "localhost";
+                    _databaseConfig.DatabaseName = dbConfig.Database ?? "VnsErp2025";
+                    _databaseConfig.UserId = dbConfig.Username ?? string.Empty;
+                    _databaseConfig.Password = dbConfig.Password ?? string.Empty;
+                }
+                else
+                {
+                    // Sử dụng giá trị mặc định nếu không tìm thấy trong Registry
+                    _databaseConfig.ServerName = "localhost";
+                    _databaseConfig.DatabaseName = "VnsErp2025";
+                    _databaseConfig.UserId = string.Empty;
+                    _databaseConfig.Password = string.Empty;
+                }
+                
                 // Luôn dùng SQL Authentication
                 _databaseConfig.UseIntegratedSecurity = false;
             }
             catch (Exception ex)
             {
-                MsgBox.ShowException(ex, "Lỗi tải dữ liệu từ Settings");
+                MsgBox.ShowException(ex, "Lỗi tải dữ liệu từ Registry");
             }
         }
 
@@ -242,16 +256,14 @@ namespace Authentication.Form
         }
 
         /// <summary>
-        /// Lưu cấu hình vào file config
+        /// Lưu cấu hình vào Registry
         /// </summary>
         private void LuuCauHinh()
         {
             try
             {
-                // Cập nhật App.config với thông tin mới
+                // Cập nhật Registry với thông tin mới
                 CapNhatAppConfig();
-                
-                // Có thể thêm logic lưu vào file cấu hình khác nếu cần
             }
             catch (Exception ex)
             {
@@ -261,30 +273,125 @@ namespace Authentication.Form
         }
 
         /// <summary>
-        /// Cập nhật App.config với thông tin mới
+        /// Cập nhật Registry với thông tin mới
         /// </summary>
         private void CapNhatAppConfig()
         {
             try
             {
-                // Lưu vào Settings của project
-                var settings = Properties.Settings.Default;
-                
-                // Cập nhật các giá trị
-                settings.DatabaseServer = _databaseConfig.ServerName;
-                settings.DatabaseName = _databaseConfig.DatabaseName;
-                settings.DatabaseUserId = _databaseConfig.UserId;
-                // Mã hóa mật khẩu trước khi lưu
-                settings.DatabasePassword = Dal.Connection.ConnectionStringHelper.EncodeConnectionString(_databaseConfig.Password);
-                settings.UseIntegratedSecurity = _databaseConfig.UseIntegratedSecurity;
-                
-                // Lưu settings
-                settings.Save();
+                // Sử dụng method từ ConnectionStringHelper để lưu cấu hình
+                Dal.Connection.ConnectionStringHelper.SetDbConfig(
+                    _databaseConfig.ServerName,
+                    _databaseConfig.DatabaseName,
+                    _databaseConfig.UserId,
+                    _databaseConfig.Password
+                );
             }
             catch (Exception ex)
             {
-                throw new Exception($"Không thể lưu cấu hình: {ex.Message}", ex);
+                throw new Exception($"Không thể lưu cấu hình vào Registry: {ex.Message}", ex);
             }
+        }
+
+        /// <summary>
+        /// Đọc thông tin kết nối của MS Sql Server từ Registry
+        /// Tất cả thông tin được giải mã khi đọc từ Registry
+        /// </summary>
+        /// <returns>DbConfigInfo chứa thông tin kết nối, hoặc null nếu không tìm thấy</returns>
+        private DbConfigInfo GetMsSqlServerInfo()
+        {
+            try
+            {
+                // Đọc và giải mã tất cả các trường từ Registry
+                string encryptedDns = (string)Registry.GetValue(REGISTRY_KEY, "dns", "") ?? string.Empty;
+                string encryptedDatabase = (string)Registry.GetValue(REGISTRY_KEY, "database", "") ?? string.Empty;
+                string encryptedUsername = (string)Registry.GetValue(REGISTRY_KEY, "username", "") ?? string.Empty;
+                string encryptedPassword = (string)Registry.GetValue(REGISTRY_KEY, "password", "") ?? string.Empty;
+
+                var model = new DbConfigInfo
+                {
+                    Dns = string.Empty,
+                    Database = string.Empty,
+                    Username = string.Empty,
+                    Password = string.Empty
+                };
+
+                // Giải mã dns
+                if (!string.IsNullOrEmpty(encryptedDns))
+                {
+                    try
+                    {
+                        model.Dns = VntaCrypto.Decrypt(encryptedDns);
+                    }
+                    catch
+                    {
+                        // Nếu không thể giải mã, có thể là dữ liệu cũ chưa mã hóa, thử dùng trực tiếp
+                        model.Dns = encryptedDns;
+                    }
+                }
+
+                // Giải mã database
+                if (!string.IsNullOrEmpty(encryptedDatabase))
+                {
+                    try
+                    {
+                        model.Database = VntaCrypto.Decrypt(encryptedDatabase);
+                    }
+                    catch
+                    {
+                        // Nếu không thể giải mã, có thể là dữ liệu cũ chưa mã hóa, thử dùng trực tiếp
+                        model.Database = encryptedDatabase;
+                    }
+                }
+
+                // Giải mã username
+                if (!string.IsNullOrEmpty(encryptedUsername))
+                {
+                    try
+                    {
+                        model.Username = VntaCrypto.Decrypt(encryptedUsername);
+                    }
+                    catch
+                    {
+                        // Nếu không thể giải mã, có thể là dữ liệu cũ chưa mã hóa, thử dùng trực tiếp
+                        model.Username = encryptedUsername;
+                    }
+                }
+
+                // Giải mã password
+                if (!string.IsNullOrEmpty(encryptedPassword))
+                {
+                    try
+                    {
+                        model.Password = VntaCrypto.Decrypt(encryptedPassword);
+                    }
+                    catch
+                    {
+                        // Nếu không thể giải mã, có thể là dữ liệu cũ chưa mã hóa, thử dùng trực tiếp
+                        model.Password = encryptedPassword;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(model.Dns))
+                    return null;
+
+                return model;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Cấu trúc thông tin database config từ Registry
+        /// </summary>
+        private class DbConfigInfo
+        {
+            public string Dns { get; set; }
+            public string Database { get; set; }
+            public string Username { get; set; }
+            public string Password { get; set; }
         }
 
         #endregion

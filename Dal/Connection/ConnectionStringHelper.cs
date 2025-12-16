@@ -1,18 +1,17 @@
 using System;
-using System.Configuration;
 using System.Data.SqlClient;
 using System.Security;
-using System.Text;
-using System.Linq;
-using System.Reflection;
+using Microsoft.Win32;
+using Common.Appconfig;
 
 namespace Dal.Connection
 {
     /// <summary>
     /// Helper quản lý Connection String cho toàn bộ ứng dụng.
-    /// - Ưu tiên nguồn cấu hình: User Settings (do UI lưu) → ConnectionStrings (App.config) → Mặc định.
+    /// - Đọc cấu hình từ Registry (HKEY_CURRENT_USER\Software\Software\VietNhatSolutions\VnsErp2025).
+    /// - Nếu không tìm thấy trong Registry, sẽ trả về chuỗi mặc định build sẵn.
     /// - Hỗ trợ tạo, phân tích, kiểm tra, mã hóa/giải mã, và ẩn mật khẩu.
-    /// - Đọc User Settings qua reflection để không phụ thuộc dự án UI.
+    /// - Sử dụng VntaCrypto để mã hóa/giải mã tất cả thông tin (dns, database, username, password) khi lưu/đọc từ Registry.
     /// </summary>
     public static class ConnectionStringHelper
     {
@@ -23,68 +22,39 @@ namespace Dal.Connection
         private const string DEFAULT_DATABASE = "VnsErp2025Final";
         private const int DEFAULT_TIMEOUT = 30;
         private const int DEFAULT_CONNECTION_TIMEOUT = 15;
+        private const string REGISTRY_KEY = @"HKEY_CURRENT_USER\Software\Software\VietNhatSolutions\VnsErp2025";
 
         #endregion
 
         #region Public API
 
         /// <summary>
-        /// Lấy Connection String mặc định theo luồng ưu tiên:
-        /// 1) User Settings (UI) → 2) ConnectionStrings trong cấu hình → 3) Chuỗi mặc định build sẵn.
+        /// Lấy Connection String mặc định từ Registry.
+        /// Nếu không tìm thấy trong Registry, sẽ trả về chuỗi mặc định build sẵn.
         /// </summary>
         public static string GetDefaultConnectionString()
         {
             try
             {
-                var connectionString = ConfigurationManager.ConnectionStrings[DEFAULT_CONNECTION_NAME]?.ConnectionString;
-                
-                if (string.IsNullOrEmpty(connectionString))
+                var dbConfig = GetMsSqlServerInfo();
+                if (dbConfig != null && !string.IsNullOrEmpty(dbConfig.Dns))
                 {
-                    connectionString = BuildDefaultConnectionString();
+                    var connectionString = $@"Data Source={dbConfig.Dns};Initial Catalog={dbConfig.Database};Persist Security Info=True;User ID={dbConfig.Username};Password={dbConfig.Password}";
+                    return connectionString;
                 }
-
-                if (TryGetFromUserSettings(out var csFromSettings))
-                {
-                    return csFromSettings;
-                }
-                return connectionString;
             }
             catch (Exception)
             {
-                return BuildDefaultConnectionString();
+                // Fallback to default connection string
             }
-        }
 
-        /// <summary>
-        /// Lấy Connection String theo tên trong ConnectionStrings của cấu hình ứng dụng.
-        /// </summary>
-        /// <param name="connectionName">Tên Connection String trong App.config/Web.config</param>
-        /// <returns>Connection String tương ứng</returns>
-        /// <exception cref="ConfigurationErrorsException">Ném lỗi khi không tìm thấy hoặc cấu hình không hợp lệ</exception>
-        public static string GetConnectionStringByName(string connectionName)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(connectionName))
-                    throw new ArgumentException("Tên connection string không được null hoặc rỗng", nameof(connectionName));
-
-                var connectionString = ConfigurationManager.ConnectionStrings[connectionName]?.ConnectionString;
-                
-                if (string.IsNullOrEmpty(connectionString))
-                    throw new ConfigurationErrorsException($"Không tìm thấy connection string với tên: {connectionName}");
-
-                return connectionString;
-            }
-            catch (Exception ex)
-            {
-                throw new ConfigurationErrorsException($"Lỗi lấy connection string: {ex.Message}", ex);
-            }
+            return BuildDefaultConnectionString();
         }
 
         /// <summary>
         /// Tạo Connection String mặc định (localhost, DB mặc định, Windows Authentication).
         /// </summary>
-        public static string BuildDefaultConnectionString()
+        private static string BuildDefaultConnectionString()
         {
             return BuildConnectionString(DEFAULT_SERVER, DEFAULT_DATABASE, true, null, null);
         }
@@ -97,7 +67,7 @@ namespace Dal.Connection
         /// <param name="integratedSecurity">Sử dụng Windows Authentication</param>
         /// <param name="userId">User ID (nếu không dùng Windows Auth)</param>
         /// <param name="password">Password (nếu không dùng Windows Auth)</param>
-        public static string BuildConnectionString(string server, string database, bool integratedSecurity = true, 
+        private static string BuildConnectionString(string server, string database, bool integratedSecurity = true, 
             string userId = null, string password = null)
         {
             var builder = new SqlConnectionStringBuilder
@@ -150,104 +120,10 @@ namespace Dal.Connection
         }
 
         /// <summary>
-        /// Phân tích Connection String thành cấu trúc thông tin.
-        /// </summary>
-        public static ConnectionStringInfo ParseConnectionString(string connectionString)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(connectionString))
-                    throw new ArgumentException("Connection string không được null hoặc rỗng", nameof(connectionString));
-
-                var builder = new SqlConnectionStringBuilder(connectionString);
-                
-                return new ConnectionStringInfo
-                {
-                    Server = builder.DataSource,
-                    Database = builder.InitialCatalog,
-                    IntegratedSecurity = builder.IntegratedSecurity,
-                    UserId = builder.UserID,
-                    Password = builder.Password,
-                    ConnectionTimeout = builder.ConnectTimeout,
-                    CommandTimeout = DEFAULT_TIMEOUT, // SqlConnectionStringBuilder không có property này
-                    Pooling = builder.Pooling,
-                    MinPoolSize = builder.MinPoolSize,
-                    MaxPoolSize = builder.MaxPoolSize
-                };
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException($"Không thể parse connection string: {ex.Message}", nameof(connectionString), ex);
-            }
-        }
-
-        /// <summary>
-        /// Kiểm tra Connection String có hợp lệ (server/database + thông tin xác thực nếu cần).
-        /// </summary>
-        public static bool IsValidConnectionString(string connectionString)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(connectionString))
-                    return false;
-
-                var builder = new SqlConnectionStringBuilder(connectionString);
-                
-                if (string.IsNullOrEmpty(builder.DataSource) || string.IsNullOrEmpty(builder.InitialCatalog))
-                    return false;
-
-                if (!builder.IntegratedSecurity && string.IsNullOrEmpty(builder.UserID))
-                    return false;
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Mã hóa Connection String (Base64) để lưu trữ an toàn hơn.
-        /// </summary>
-        public static string EncodeConnectionString(string connectionString)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(connectionString))
-                    return string.Empty;
-
-                var bytes = Encoding.UTF8.GetBytes(connectionString);
-                return Convert.ToBase64String(bytes);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Không thể mã hóa connection string: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Giải mã Connection String đã mã hóa bằng Base64.
-        /// </summary>
-        public static string DecodeConnectionString(string encryptedConnectionString)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(encryptedConnectionString))
-                    return string.Empty;
-
-                var bytes = Convert.FromBase64String(encryptedConnectionString);
-                return Encoding.UTF8.GetString(bytes);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Không thể giải mã connection string: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
         /// Ẩn mật khẩu trong Connection String để ghi log/hiển thị an toàn.
         /// </summary>
+        /// <param name="connectionString">Connection string cần ẩn password</param>
+        /// <returns>Connection string với password được thay bằng ***</returns>
         public static string GetSafeConnectionString(string connectionString)
         {
             try
@@ -266,31 +142,42 @@ namespace Dal.Connection
             }
             catch
             {
+                // Nếu không thể parse, trả về connection string gốc (không an toàn nhưng đảm bảo không lỗi)
                 return connectionString;
             }
         }
 
         /// <summary>
-        /// Tạo Connection String theo môi trường (Development/Testing/Production).
+        /// Lưu thông tin kết nối của MS Sql Server vào Registry
+        /// Tất cả thông tin được mã hóa trước khi lưu vào Registry
         /// </summary>
-        public static string BuildByEnvironment(string environment)
+        /// <param name="dns">Tên server/DNS</param>
+        /// <param name="database">Tên database</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        public static void SetDbConfig(string dns, string database, string username, string password)
         {
-            switch (environment?.ToLower())
+            try
             {
-                case "development":
-                case "dev":
-                    return BuildConnectionString("localhost", "VnsErp2025_Dev", true);
-                
-                case "testing":
-                case "test":
-                    return BuildConnectionString("localhost", "VnsErp2025_Test", true);
-                
-                case "production":
-                case "prod":
-                    return GetConnectionStringByName("VnsErp2025_Production");
-                
-                default:
-                    return GetDefaultConnectionString();
+                //dns - mã hóa trước khi lưu
+                var encryptedDns = VntaCrypto.Encrypt(dns ?? string.Empty);
+                Registry.SetValue(REGISTRY_KEY, "dns", encryptedDns);
+
+                //database - mã hóa trước khi lưu
+                var encryptedDatabase = VntaCrypto.Encrypt(database ?? string.Empty);
+                Registry.SetValue(REGISTRY_KEY, "database", encryptedDatabase);
+
+                //username - mã hóa trước khi lưu
+                var encryptedUsername = VntaCrypto.Encrypt(username ?? string.Empty);
+                Registry.SetValue(REGISTRY_KEY, "username", encryptedUsername);
+
+                //password - mã hóa trước khi lưu
+                var encryptedPassword = VntaCrypto.Encrypt(password ?? string.Empty);
+                Registry.SetValue(REGISTRY_KEY, "password", encryptedPassword);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lưu cấu hình vào Registry: {ex.Message}", ex);
             }
         }
 
@@ -299,75 +186,92 @@ namespace Dal.Connection
         #region Internal Helpers
 
         /// <summary>
-        /// Thử lấy Connection String từ User Settings (Properties.Settings) bằng reflection.
-        /// Kỳ vọng các khóa: DatabaseServer, DatabaseName, UseIntegratedSecurity, DatabaseUserId, DatabasePassword.
+        /// Đọc thông tin kết nối của MS Sql Server từ Registry
+        /// Tất cả thông tin được giải mã khi đọc từ Registry
         /// </summary>
-        private static bool TryGetFromUserSettings(out string connectionString)
+        /// <returns>DbConfigInfo chứa thông tin kết nối, hoặc null nếu không tìm thấy</returns>
+        private static DbConfigInfo GetMsSqlServerInfo()
         {
-            connectionString = null;
             try
             {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                foreach (var asm in assemblies)
+                // Đọc và giải mã tất cả các trường từ Registry
+                string encryptedDns = (string)Registry.GetValue(REGISTRY_KEY, "dns", "") ?? string.Empty;
+                string encryptedDatabase = (string)Registry.GetValue(REGISTRY_KEY, "database", "") ?? string.Empty;
+                string encryptedUsername = (string)Registry.GetValue(REGISTRY_KEY, "username", "") ?? string.Empty;
+                string encryptedPassword = (string)Registry.GetValue(REGISTRY_KEY, "password", "") ?? string.Empty;
+
+                var model = new DbConfigInfo
                 {
-                    var settingsType = asm.GetTypes()
-                        .FirstOrDefault(t => t.Name == "Settings" && t.Namespace != null && t.Namespace.EndsWith(".Properties", StringComparison.OrdinalIgnoreCase));
-                    if (settingsType == null) continue;
+                    Dns = string.Empty,
+                    Database = string.Empty,
+                    Username = string.Empty,
+                    Password = string.Empty
+                };
 
-                    var defaultProp = settingsType.GetProperty("Default", BindingFlags.Public | BindingFlags.Static);
-                    if (defaultProp == null) continue;
-                    var settingsInstance = defaultProp.GetValue(null);
-                    if (settingsInstance == null) continue;
-
-                    string server = ReadSetting<string>(settingsInstance, "DatabaseServer");
-                    string database = ReadSetting<string>(settingsInstance, "DatabaseName");
-                    bool? useIntegrated = ReadSetting<bool?>(settingsInstance, "UseIntegratedSecurity");
-                    string userId = ReadSetting<string>(settingsInstance, "DatabaseUserId");
-                    string encPwd = ReadSetting<string>(settingsInstance, "DatabasePassword");
-                    string password = string.IsNullOrEmpty(encPwd) ? null : DecodeConnectionString(encPwd);
-
-                    if (!string.IsNullOrEmpty(server) && !string.IsNullOrEmpty(database))
+                // Giải mã dns
+                if (!string.IsNullOrEmpty(encryptedDns))
+                {
+                    try
                     {
-                        bool integrated = useIntegrated ?? true;
-                        connectionString = BuildDetailedConnectionString(
-                            server,
-                            database,
-                            integrated,
-                            integrated ? null : userId,
-                            integrated ? null : password,
-                            DEFAULT_CONNECTION_TIMEOUT,
-                            DEFAULT_TIMEOUT,
-                            true,
-                            1,
-                            100
-                        );
-                        return true;
+                        model.Dns = VntaCrypto.Decrypt(encryptedDns);
+                    }
+                    catch
+                    {
+                        // Nếu không thể giải mã, có thể là dữ liệu cũ chưa mã hóa, thử dùng trực tiếp
+                        model.Dns = encryptedDns;
                     }
                 }
-            }
-            catch
-            {
-                // Bỏ qua và fallback
-            }
-            return false;
-        }
 
-        /// <summary>
-        /// Đọc một thuộc tính từ đối tượng Settings (Properties.Settings.Default) một cách an toàn.
-        /// </summary>
-        private static T ReadSetting<T>(object settingsInstance, string propertyName)
-        {
-            try
-            {
-                var prop = settingsInstance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
-                if (prop == null) return default;
-                var value = prop.GetValue(settingsInstance);
-                if (value == null) return default;
-                return (T)value;
+                // Giải mã database
+                if (!string.IsNullOrEmpty(encryptedDatabase))
+                {
+                    try
+                    {
+                        model.Database = VntaCrypto.Decrypt(encryptedDatabase);
+                    }
+                    catch
+                    {
+                        // Nếu không thể giải mã, có thể là dữ liệu cũ chưa mã hóa, thử dùng trực tiếp
+                        model.Database = encryptedDatabase;
+                    }
+                }
+
+                // Giải mã username
+                if (!string.IsNullOrEmpty(encryptedUsername))
+                {
+                    try
+                    {
+                        model.Username = VntaCrypto.Decrypt(encryptedUsername);
+                    }
+                    catch
+                    {
+                        // Nếu không thể giải mã, có thể là dữ liệu cũ chưa mã hóa, thử dùng trực tiếp
+                        model.Username = encryptedUsername;
+                    }
+                }
+
+                // Giải mã password
+                if (!string.IsNullOrEmpty(encryptedPassword))
+                {
+                    try
+                    {
+                        model.Password = VntaCrypto.Decrypt(encryptedPassword);
+                    }
+                    catch
+                    {
+                        // Nếu không thể giải mã, có thể là dữ liệu cũ chưa mã hóa, thử dùng trực tiếp
+                        model.Password = encryptedPassword;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(model.Dns))
+                    return null;
+
+                return model;
             }
-            catch
+            catch (Exception)
             {
-                return default;
+                return null;
             }
         }
 
@@ -378,77 +282,14 @@ namespace Dal.Connection
         #region Nested Types
 
         /// <summary>
-        /// Cấu trúc thông tin connection string (để parse/hiển thị).
+        /// Cấu trúc thông tin database config từ Registry
         /// </summary>
-        public class ConnectionStringInfo
+        private class DbConfigInfo
         {
-            #region Fields & Properties
-
-            /// <summary>
-            /// Tên server
-            /// </summary>
-            public string Server { get; set; }
-
-            /// <summary>
-            /// Tên database
-            /// </summary>
+            public string Dns { get; set; }
             public string Database { get; set; }
-
-            /// <summary>
-            /// Sử dụng Windows Authentication
-            /// </summary>
-            public bool IntegratedSecurity { get; set; }
-
-            /// <summary>
-            /// User ID
-            /// </summary>
-            public string UserId { get; set; }
-
-            /// <summary>
-            /// Password
-            /// </summary>
+            public string Username { get; set; }
             public string Password { get; set; }
-
-            /// <summary>
-            /// Connection timeout
-            /// </summary>
-            public int ConnectionTimeout { get; set; }
-
-            /// <summary>
-            /// Command timeout
-            /// </summary>
-            public int CommandTimeout { get; set; }
-
-            /// <summary>
-            /// Enable pooling
-            /// </summary>
-            public bool Pooling { get; set; }
-
-            /// <summary>
-            /// Minimum pool size
-            /// </summary>
-            public int MinPoolSize { get; set; }
-
-            /// <summary>
-            /// Maximum pool size
-            /// </summary>
-            public int MaxPoolSize { get; set; }
-
-            #endregion
-
-            #region Methods
-
-            /// <summary>
-            /// Chuyển đổi thành connection string chi tiết.
-            /// </summary>
-            public override string ToString()
-            {
-                return ConnectionStringHelper.BuildDetailedConnectionString(
-                    Server, Database, IntegratedSecurity, UserId, Password,
-                    ConnectionTimeout, CommandTimeout, Pooling, MinPoolSize, MaxPoolSize);
-            }
-
-            #endregion
         }
 
         #endregion

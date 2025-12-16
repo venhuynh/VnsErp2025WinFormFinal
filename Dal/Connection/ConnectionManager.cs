@@ -8,9 +8,10 @@ namespace Dal.Connection
 {
     /// <summary>
     /// Quản lý vòng đời kết nối SQL Server an toàn (thread-safe) cho DAL.
-    /// - Khởi tạo từ Connection String mặc định (ưu tiên User Settings), hoặc chuỗi truyền vào.
+    /// - Khởi tạo từ Connection String mặc định (đọc từ Registry), hoặc chuỗi truyền vào.
     /// - Cung cấp API mở/đóng, tạo lệnh SQL/stored procedure, test kết nối.
     /// - Phát sự kiện khi kết nối mở/đóng/lỗi để lớp cao hơn theo dõi.
+    /// - Chỉ sử dụng Registry để load thông tin cấu hình database.
     /// </summary>
     public class ConnectionManager : IConnectionManager
     {
@@ -73,7 +74,7 @@ namespace Dal.Connection
         #region Constructors
 
         /// <summary>
-        /// Khởi tạo với Connection String mặc định (ưu tiên Settings/UI, sau đó config).
+        /// Khởi tạo với Connection String mặc định (đọc từ Registry).
         /// </summary>
         public ConnectionManager()
         {
