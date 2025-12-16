@@ -170,6 +170,8 @@
     <None Include="Resources\bo_user.svg" />
     <None Include="Resources\version-control.svg" />
     <None Include="Resources\datasource.svg" />
+    <Content Include="Docs\Promt\Viết document\Prompt 2 – Viết tài liệu HƯỚNG DẪN SỬ DỤNG %28EU%29.txt" />
+    <Content Include="Docs\Promt\Viết document\Prompt 1 – Viết tài liệu DEV %28rất nên dùng%29.txt" />
     <Content Include="VNS Logo - Website.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
