@@ -10,4 +10,4 @@ Yêu cầu:
 Output ở dạng Markdown.
 
 Đường dẫn lưu tài liệu:
-C:\Users\Admin\source\Workspaces\2025\VNS_ERP_2025_FINAL\VnsErp2025\VnsErp2025\Docs\MasterData\Company
+C:\Users\Admin\source\Workspaces\2025\VNS_ERP_2025_FINAL\VnsErp2025\VnsErp2025\Docs\MasterData\ProductService

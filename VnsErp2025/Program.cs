@@ -143,7 +143,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmRoleManagement());
+            Application.Run(new FormMain());
 
             #endregion
 

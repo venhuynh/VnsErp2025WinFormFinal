@@ -108,7 +108,9 @@
     <None Include="Docs\ImageStorageRefactoringArchitecture.md" />
     <None Include="Docs\MasterData\Company\FrmCompany_User_Guide.md" />
     <None Include="Docs\MasterData\Company\FrmDepartmentDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\Company\FrmEmployeeDto_User_Guide.md" />
     <None Include="Docs\MasterData\Company\FrmPosition_User_Guide.md" />
+    <None Include="Docs\MasterData\ProductService\FrmProductServiceCategory_User_Guide.md" />
     <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategoryDetail_Technical_Documentation.md" />
     <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategoryDetail_User_Guide.md" />
     <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategory_Technical_Documentation.md" />
