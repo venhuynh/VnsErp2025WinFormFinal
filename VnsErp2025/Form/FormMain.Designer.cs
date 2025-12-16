@@ -97,7 +97,6 @@ namespace VnsErp2025.Form
             // 
             this.ribbon.CaptionBarItemLinks.Add(this.DBInfoBarStaticItem);
             this.ribbon.CaptionBarItemLinks.Add(this.ConfigSqlServerInfoBarButtonItem);
-            this.ribbon.EmptyAreaImageOptions.ImagePadding = new System.Windows.Forms.Padding(60, 58, 60, 58);
             this.ribbon.ExpandCollapseItem.Id = 0;
             this.ribbon.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.DBInfoBarStaticItem,
@@ -144,17 +143,15 @@ namespace VnsErp2025.Form
             this.DatabaseConfigBarButtonItem,
             this.NasConfigBarButtonItem});
             this.ribbon.Location = new System.Drawing.Point(0, 0);
-            this.ribbon.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.ribbon.MaxItemId = 44;
             this.ribbon.Name = "ribbon";
-            this.ribbon.OptionsMenuMinWidth = 660;
             this.ribbon.PageCategories.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageCategory[] {
             this.ribbonPageCategory1});
             this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1,
             this.XuatNhapTonKhoRibbonPage});
             this.ribbon.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office365;
-            this.ribbon.Size = new System.Drawing.Size(2301, 308);
+            this.ribbon.Size = new System.Drawing.Size(1150, 201);
             this.ribbon.StatusBar = this.ribbonStatusBar;
             // 
             // DBInfoBarStaticItem
@@ -533,6 +530,7 @@ namespace VnsErp2025.Form
             this.ribbonPageGroup1});
             this.VersionAndUserManagementRibbonPage.Name = "VersionAndUserManagementRibbonPage";
             this.VersionAndUserManagementRibbonPage.Text = "Cài đặt bảo mật";
+            this.VersionAndUserManagementRibbonPage.Visible = false;
             // 
             // VersionAndUserManagementRibbonPageGroup
             // 
@@ -598,6 +596,7 @@ namespace VnsErp2025.Form
             this.XuatNhapTonKhoRibbonPage.ImageOptions.SvgImageSize = new System.Drawing.Size(16, 16);
             this.XuatNhapTonKhoRibbonPage.Name = "XuatNhapTonKhoRibbonPage";
             this.XuatNhapTonKhoRibbonPage.Text = "Xuất - Nhập - Tồn kho";
+            this.XuatNhapTonKhoRibbonPage.Visible = false;
             // 
             // NhapKhoRibbonPageGroup
             // 
@@ -641,11 +640,10 @@ namespace VnsErp2025.Form
             // 
             // ribbonStatusBar
             // 
-            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 1319);
-            this.ribbonStatusBar.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 674);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbon;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(2301, 48);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(1150, 37);
             // 
             // documentManager1
             // 
@@ -657,13 +655,12 @@ namespace VnsErp2025.Form
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2301, 1367);
+            this.ClientSize = new System.Drawing.Size(1150, 711);
             this.Controls.Add(this.ribbonStatusBar);
             this.Controls.Add(this.ribbon);
             this.IsMdiContainer = true;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "FormMain";
             this.Ribbon = this.ribbon;
             this.StatusBar = this.ribbonStatusBar;

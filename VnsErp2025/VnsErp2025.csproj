@@ -106,6 +106,28 @@
     <None Include="Docs\DatabaseSchema_Asset_Proposal.md" />
     <None Include="Docs\Icons.xlsx" />
     <None Include="Docs\ImageStorageRefactoringArchitecture.md" />
+    <None Include="Docs\MasterData\Company\FrmCompany_User_Guide.md" />
+    <None Include="Docs\MasterData\Company\FrmDepartmentDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\Company\FrmEmployeeDto_User_Guide.md" />
+    <None Include="Docs\MasterData\Company\FrmPosition_User_Guide.md" />
+    <None Include="Docs\MasterData\ProductService\FrmProductServiceCategory_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategoryDetail_Technical_Documentation.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategoryDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategory_Technical_Documentation.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategory_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerContactDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerContact_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerDetail_Technical_Documentation.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerList_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerSiteDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerSite_Technical_Documentation.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerSite_User_Guide.md" />
+    <None Include="Docs\MasterData\ProductService\FrmProductServiceDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\ProductService\FrmProductServiceList_User_Guide.md" />
+    <None Include="Docs\MasterData\ProductService\FrmProductVariantDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\ProductService\FrmProductVariant_User_Guide.md" />
+    <None Include="Docs\MasterData\ProductService\FrmUnitOfMeasure_User_Guide.md" />
     <None Include="Docs\ProjectProgress_20250115.md" />
     <None Include="Docs\SolutionDescription.md" />
     <None Include="Properties\Settings.settings">
@@ -170,6 +192,8 @@
     <None Include="Resources\bo_user.svg" />
     <None Include="Resources\version-control.svg" />
     <None Include="Resources\datasource.svg" />
+    <Content Include="Docs\Promt\Viết document\Prompt 2 – Viết tài liệu HƯỚNG DẪN SỬ DỤNG %28EU%29.txt" />
+    <Content Include="Docs\Promt\Viết document\Prompt 1 – Viết tài liệu DEV %28rất nên dùng%29.txt" />
     <Content Include="VNS Logo - Website.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

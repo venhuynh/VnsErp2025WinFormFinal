@@ -1,0 +1,13 @@
+﻿Dựa trên logic của đoạn code này, hãy viết tài liệu hướng dẫn sử dụng
+cho End User KHÔNG rành kỹ thuật.
+
+Yêu cầu:
+- Không nhắc đến code, class, method
+- Văn phong đơn giản, từng bước
+- Có các mục: Mục đích, Các bước thao tác, Lưu ý, Lỗi thường gặp
+- Ngôn ngữ: Tiếng Việt
+
+Output ở dạng Markdown.
+
+Đường dẫn lưu tài liệu:
+C:\Users\Admin\source\Workspaces\2025\VNS_ERP_2025_FINAL\VnsErp2025\VnsErp2025\Docs\MasterData\ProductService
