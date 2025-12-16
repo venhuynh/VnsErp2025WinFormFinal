@@ -193,6 +193,8 @@
     <None Include="Resources\bo_user.svg" />
     <None Include="Resources\version-control.svg" />
     <None Include="Resources\datasource.svg" />
+    <Content Include="Docs\Promt\Viết document\Prompt 1 – Viết tài liệu DEV %28rất nên dùng%29.txt" />
+    <Content Include="Docs\Promt\Viết document\Prompt 2 – Viết tài liệu HƯỚNG DẪN SỬ DỤNG %28EU%29.txt" />
     <Content Include="VNS Logo - Website.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -239,6 +241,11 @@
     <!-- Delete .exe files in bin\$(Configuration) -->
     <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -Command &quot;$ErrorActionPreference='SilentlyContinue'; $exePath = '$(ProjectDir)bin\$(Configuration)\VnsErp2025.exe'; if (Test-Path $exePath) { $retry = 0; $maxRetries = 5; while ($retry -lt $maxRetries) { try { $file = Get-Item $exePath -Force -ErrorAction Stop; if ($file.IsReadOnly) { $file.IsReadOnly = $false }; Remove-Item $exePath -Force -ErrorAction Stop; break } catch { $retry++; if ($retry -lt $maxRetries) { Start-Sleep -Milliseconds 300 } } } }&quot;" ContinueOnError="true" IgnoreExitCode="true" />
   </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties Reactor_Output="&lt;AssemblyLocation&gt;\&lt;AssemblyFileName&gt;" Reactor_Configuration="Release" Reactor_Project="" Reactor_Commands="" Reactor_Deploy="0" Reactor_Enabled="1" />
+    </VisualStudio>
+  </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="AfterBuild">
