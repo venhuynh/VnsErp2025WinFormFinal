@@ -125,6 +125,8 @@
     <None Include="Docs\MasterData\Customer\FrmBusinessPartnerSite_User_Guide.md" />
     <None Include="Docs\MasterData\ProductService\FrmProductServiceDetail_User_Guide.md" />
     <None Include="Docs\MasterData\ProductService\FrmProductServiceList_User_Guide.md" />
+    <None Include="Docs\MasterData\ProductService\FrmProductVariantDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\ProductService\FrmProductVariant_User_Guide.md" />
     <None Include="Docs\MasterData\ProductService\FrmUnitOfMeasure_User_Guide.md" />
     <None Include="Docs\ProjectProgress_20250115.md" />
     <None Include="Docs\SolutionDescription.md" />
