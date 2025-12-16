@@ -110,6 +110,9 @@
     <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategoryDetail_User_Guide.md" />
     <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategory_Technical_Documentation.md" />
     <None Include="Docs\MasterData\Customer\FrmBusinessPartnerCategory_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerDetail_Technical_Documentation.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerDetail_User_Guide.md" />
+    <None Include="Docs\MasterData\Customer\FrmBusinessPartnerList_User_Guide.md" />
     <None Include="Docs\ProjectProgress_20250115.md" />
     <None Include="Docs\SolutionDescription.md" />
     <None Include="Properties\Settings.settings">
