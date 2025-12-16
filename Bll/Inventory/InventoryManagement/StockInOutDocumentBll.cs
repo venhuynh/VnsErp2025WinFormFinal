@@ -1,4 +1,4 @@
-﻿using Dal.Connection;
+using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
@@ -25,7 +25,8 @@ namespace Bll.Inventory.InventoryManagement
     #region Fields
 
     private IStockInOutDocumentRepository _dataAccess;
-    private readonly IImageStorageService _imageStorage;
+    private IImageStorageService _imageStorage;
+    private readonly object _imageStorageLock = new object();
     private readonly ILogger _logger;
     private readonly object _lockObject = new();
 
@@ -39,7 +40,6 @@ namespace Bll.Inventory.InventoryManagement
     public StockInOutDocumentBll()
     {
         _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
-        _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
     }
 
     #endregion
@@ -79,6 +79,36 @@ namespace Bll.Inventory.InventoryManagement
         }
 
         return _dataAccess;
+    }
+
+    /// <summary>
+    /// Lấy hoặc khởi tạo ImageStorageService (lazy initialization)
+    /// Chỉ khởi tạo khi thực sự cần dùng (khi upload/delete image)
+    /// </summary>
+    private IImageStorageService GetImageStorage()
+    {
+        if (_imageStorage == null)
+        {
+            lock (_imageStorageLock)
+            {
+                if (_imageStorage == null)
+                {
+                    try
+                    {
+                        _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error($"Lỗi khi khởi tạo ImageStorageService: {ex.Message}", ex);
+                        throw new InvalidOperationException(
+                            "Không thể khởi tạo ImageStorageService. Vui lòng kiểm tra cấu hình NAS trong bảng Setting. " +
+                            "Nếu không sử dụng NAS, hãy đặt NAS.StorageType = 'Local' trong bảng Setting.", ex);
+                    }
+                }
+            }
+        }
+
+        return _imageStorage;
     }
 
     /// <summary>
@@ -479,7 +509,7 @@ namespace Bll.Inventory.InventoryManagement
                     else
                     {
                         // Fallback: sử dụng DeleteImageAsync nếu không có IFileStorageService
-                        var deleted = await _imageStorage.DeleteImageAsync(document.RelativePath);
+                        var deleted = await GetImageStorage().DeleteImageAsync(document.RelativePath);
                         if (deleted)
                         {
                             _logger.Info($"Đã xóa file chứng từ từ storage (fallback), RelativePath={document.RelativePath}");

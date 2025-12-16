@@ -1,4 +1,4 @@
-﻿using Dal.Connection;
+using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Logger;
@@ -20,7 +20,8 @@ namespace Bll.Inventory.InventoryManagement
     #region Fields
 
     private IStockInOutImageRepository _dataAccess;
-    private readonly IImageStorageService _imageStorage;
+    private IImageStorageService _imageStorage;
+    private readonly object _imageStorageLock = new object();
     private readonly ILogger _logger;
     private readonly object _lockObject = new object();
 
@@ -34,7 +35,6 @@ namespace Bll.Inventory.InventoryManagement
     public StockInOutImageBll()
     {
         _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
-        _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
     }
 
     #endregion
@@ -76,6 +76,36 @@ namespace Bll.Inventory.InventoryManagement
         return _dataAccess;
     }
 
+    /// <summary>
+    /// Lấy hoặc khởi tạo ImageStorageService (lazy initialization)
+    /// Chỉ khởi tạo khi thực sự cần dùng (khi upload/delete image)
+    /// </summary>
+    private IImageStorageService GetImageStorage()
+    {
+        if (_imageStorage == null)
+        {
+            lock (_imageStorageLock)
+            {
+                if (_imageStorage == null)
+                {
+                    try
+                    {
+                        _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error($"Lỗi khi khởi tạo ImageStorageService: {ex.Message}", ex);
+                        throw new InvalidOperationException(
+                            "Không thể khởi tạo ImageStorageService. Vui lòng kiểm tra cấu hình NAS trong bảng Setting. " +
+                            "Nếu không sử dụng NAS, hãy đặt NAS.StorageType = 'Local' trong bảng Setting.", ex);
+                    }
+                }
+            }
+        }
+
+        return _imageStorage;
+    }
+
     #endregion
 
     #region Business Methods
@@ -103,7 +133,7 @@ namespace Bll.Inventory.InventoryManagement
             var fileName = $"StockInOut_{stockInOutMasterId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}.{fileExtension.TrimStart('.')}";
 
             // 3. Lưu vào storage (NAS/Local) thông qua ImageStorageService
-            var storageResult = await _imageStorage.SaveImageAsync(
+            var storageResult = await GetImageStorage().SaveImageAsync(
                 imageData: imageData,
                 fileName: fileName,
                 category: ImageCategory.StockInOut,
@@ -182,7 +212,7 @@ namespace Bll.Inventory.InventoryManagement
 
             // Lấy trực tiếp từ storage (NAS/Local) sử dụng RelativePath
             // Logic tương tự SaveImageFromFileAsync: sử dụng ImageStorageService để đọc file
-            var imageData = await _imageStorage.GetImageAsync(relativePath);
+            var imageData = await GetImageStorage().GetImageAsync(relativePath);
             
             if (imageData == null)
             {
@@ -266,7 +296,7 @@ namespace Bll.Inventory.InventoryManagement
             {
                 try
                 {
-                    var deleted = await _imageStorage.DeleteImageAsync(relativePath);
+                    var deleted = await GetImageStorage().DeleteImageAsync(relativePath);
                     if (deleted)
                     {
                         _logger.Info($"Đã xóa file từ storage, RelativePath={relativePath}");

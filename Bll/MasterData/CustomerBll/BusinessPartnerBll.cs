@@ -1,4 +1,4 @@
-﻿using Dal.Connection;
+using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
@@ -29,7 +29,8 @@ namespace Bll.MasterData.CustomerBll
 
         private IBusinessPartnerRepository _dataAccess;
         private readonly object _lockObject = new object();
-        private readonly IImageStorageService _imageStorage;
+        private IImageStorageService _imageStorage;
+        private readonly object _imageStorageLock = new object();
         private readonly ImageCompressionService _imageCompression;
         private readonly ILogger _logger;
 
@@ -43,7 +44,6 @@ namespace Bll.MasterData.CustomerBll
         public BusinessPartnerBll()
         {
             _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
-            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
             _imageCompression = new ImageCompressionService();
         }
 
@@ -84,6 +84,36 @@ namespace Bll.MasterData.CustomerBll
             }
 
             return _dataAccess;
+        }
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo ImageStorageService (lazy initialization)
+        /// Chỉ khởi tạo khi thực sự cần dùng (khi upload/delete image)
+        /// </summary>
+        private IImageStorageService GetImageStorage()
+        {
+            if (_imageStorage == null)
+            {
+                lock (_imageStorageLock)
+                {
+                    if (_imageStorage == null)
+                    {
+                        try
+                        {
+                            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error($"Lỗi khi khởi tạo ImageStorageService: {ex.Message}", ex);
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo ImageStorageService. Vui lòng kiểm tra cấu hình NAS trong bảng Setting. " +
+                                "Nếu không sử dụng NAS, hãy đặt NAS.StorageType = 'Local' trong bảng Setting.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _imageStorage;
         }
 
         #endregion
@@ -267,7 +297,7 @@ namespace Bll.MasterData.CustomerBll
                 var fileName = $"BP_{partnerId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}.{fileExtension.TrimStart('.')}";
 
                 // 3. Lưu logo lên NAS (sử dụng ImageCategory.Company vì tương tự logo công ty)
-                var storageResult = await _imageStorage.SaveImageAsync(
+                var storageResult = await GetImageStorage().SaveImageAsync(
                     imageData: logoData,
                     fileName: fileName,
                     category: ImageCategory.Company, // Sử dụng Company category cho BusinessPartner logo
@@ -393,7 +423,7 @@ namespace Bll.MasterData.CustomerBll
                 }
 
                 // 1. Lưu logo lên NAS
-                var storageResult = await _imageStorage.SaveImageAsync(
+                var storageResult = await GetImageStorage().SaveImageAsync(
                     imageData: logoData,
                     fileName: fileName,
                     category: ImageCategory.Company, // Sử dụng Company category cho BusinessPartner logo
@@ -526,7 +556,7 @@ namespace Bll.MasterData.CustomerBll
                 }
 
                 // 1. Lưu logo lên NAS
-                var storageResult = await _imageStorage.SaveImageAsync(
+                var storageResult = await GetImageStorage().SaveImageAsync(
                     imageData: logoData,
                     fileName: fileName,
                     category: ImageCategory.Company, // Sử dụng Company category cho BusinessPartner logo
@@ -627,7 +657,7 @@ namespace Bll.MasterData.CustomerBll
                 }
 
                 // Lấy trực tiếp từ storage (NAS/Local) sử dụng RelativePath
-                var logoData = await _imageStorage.GetImageAsync(relativePath);
+                var logoData = await GetImageStorage().GetImageAsync(relativePath);
                 
                 if (logoData == null)
                 {
@@ -710,7 +740,7 @@ namespace Bll.MasterData.CustomerBll
                 {
                     try
                     {
-                        var deleted = await _imageStorage.DeleteImageAsync(relativePath);
+                        var deleted = await GetImageStorage().DeleteImageAsync(relativePath);
                         if (deleted)
                         {
                             _logger.Info($"Đã xóa file logo từ storage, RelativePath={relativePath}");

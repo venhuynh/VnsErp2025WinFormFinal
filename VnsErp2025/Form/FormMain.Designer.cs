@@ -530,7 +530,6 @@ namespace VnsErp2025.Form
             this.ribbonPageGroup1});
             this.VersionAndUserManagementRibbonPage.Name = "VersionAndUserManagementRibbonPage";
             this.VersionAndUserManagementRibbonPage.Text = "Cài đặt bảo mật";
-            this.VersionAndUserManagementRibbonPage.Visible = false;
             // 
             // VersionAndUserManagementRibbonPageGroup
             // 

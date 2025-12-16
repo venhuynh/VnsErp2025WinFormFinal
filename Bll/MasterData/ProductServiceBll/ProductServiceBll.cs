@@ -31,7 +31,8 @@ namespace Bll.MasterData.ProductServiceBll
         private IProductServiceCategoryRepository _categoryDataAccess;
         private readonly object _lockObject = new object();
         private readonly object _categoryLockObject = new object();
-        private readonly IImageStorageService _imageStorage;
+        private IImageStorageService _imageStorage;
+        private readonly object _imageStorageLock = new object();
         private readonly ImageCompressionService _imageCompression;
         private readonly ILogger _logger;
 
@@ -46,7 +47,6 @@ namespace Bll.MasterData.ProductServiceBll
         {
             new ProductImageBll();
             _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
-            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
             _imageCompression = new ImageCompressionService();
         }
 
@@ -86,6 +86,36 @@ namespace Bll.MasterData.ProductServiceBll
             }
 
             return _dataAccess;
+        }
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo ImageStorageService (lazy initialization)
+        /// Chỉ khởi tạo khi thực sự cần dùng (khi upload/delete image)
+        /// </summary>
+        private IImageStorageService GetImageStorage()
+        {
+            if (_imageStorage == null)
+            {
+                lock (_imageStorageLock)
+                {
+                    if (_imageStorage == null)
+                    {
+                        try
+                        {
+                            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error($"Lỗi khi khởi tạo ImageStorageService: {ex.Message}", ex);
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo ImageStorageService. Vui lòng kiểm tra cấu hình NAS trong bảng Setting. " +
+                                "Nếu không sử dụng NAS, hãy đặt NAS.StorageType = 'Local' trong bảng Setting.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _imageStorage;
         }
 
         /// <summary>
@@ -579,7 +609,7 @@ namespace Bll.MasterData.ProductServiceBll
                     {
                         try
                         {
-                            await _imageStorage.DeleteImageAsync(productService.ThumbnailRelativePath);
+                            await GetImageStorage().DeleteImageAsync(productService.ThumbnailRelativePath);
                             _logger.Info($"Đã xóa file thumbnail từ storage, RelativePath={productService.ThumbnailRelativePath}");
                         }
                         catch (Exception ex)
@@ -626,7 +656,7 @@ namespace Bll.MasterData.ProductServiceBll
                     var fileName = $"PS_{productId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
 
                     // 2. Lưu ảnh gốc lên NAS
-                    var storageResult = await _imageStorage.SaveImageAsync(
+                    var storageResult = await GetImageStorage().SaveImageAsync(
                         imageData: imageBytes,
                         fileName: fileName,
                         category: ImageCategory.Product, // Sử dụng Product category
@@ -663,7 +693,7 @@ namespace Bll.MasterData.ProductServiceBll
                     {
                         try
                         {
-                            await _imageStorage.DeleteImageAsync(productService.ThumbnailRelativePath);
+                            await GetImageStorage().DeleteImageAsync(productService.ThumbnailRelativePath);
                             _logger.Info($"Đã xóa file thumbnail cũ từ storage, RelativePath={productService.ThumbnailRelativePath}");
                         }
                         catch (Exception ex)

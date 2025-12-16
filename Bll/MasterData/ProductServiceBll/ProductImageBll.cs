@@ -29,7 +29,8 @@ namespace Bll.MasterData.ProductServiceBll
         #region Fields
 
         private IProductImageRepository _dataAccess;
-        private readonly IImageStorageService _imageStorage;
+        private IImageStorageService _imageStorage;
+        private readonly object _imageStorageLock = new object();
         private readonly ImageCompressionService _imageCompression;
         private readonly ILogger _logger;
         private readonly object _lockObject = new object();
@@ -44,7 +45,6 @@ namespace Bll.MasterData.ProductServiceBll
         public ProductImageBll()
         {
             _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
-            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
             _imageCompression = new ImageCompressionService();
         }
 
@@ -84,6 +84,36 @@ namespace Bll.MasterData.ProductServiceBll
             }
 
             return _dataAccess;
+        }
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo ImageStorageService (lazy initialization)
+        /// Chỉ khởi tạo khi thực sự cần dùng (khi upload/delete image)
+        /// </summary>
+        private IImageStorageService GetImageStorage()
+        {
+            if (_imageStorage == null)
+            {
+                lock (_imageStorageLock)
+                {
+                    if (_imageStorage == null)
+                    {
+                        try
+                        {
+                            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error($"Lỗi khi khởi tạo ImageStorageService: {ex.Message}", ex);
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo ImageStorageService. Vui lòng kiểm tra cấu hình NAS trong bảng Setting. " +
+                                "Nếu không sử dụng NAS, hãy đặt NAS.StorageType = 'Local' trong bảng Setting.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _imageStorage;
         }
 
         #endregion
@@ -154,7 +184,7 @@ namespace Bll.MasterData.ProductServiceBll
                     return false;
                 }
 
-                return await _imageStorage.ImageExistsAsync(relativePath);
+                return await GetImageStorage().ImageExistsAsync(relativePath);
             }
             catch (Exception ex)
             {
@@ -179,7 +209,7 @@ namespace Bll.MasterData.ProductServiceBll
                 }
 
                 // Lấy từ storage
-                var imageData = await _imageStorage.GetImageAsync(relativePath);
+                var imageData = await GetImageStorage().GetImageAsync(relativePath);
                 
                 if (imageData == null)
                 {
@@ -249,7 +279,7 @@ namespace Bll.MasterData.ProductServiceBll
                 var relativePath = productImage.RelativePath;
                 if (!string.IsNullOrEmpty(relativePath))
                 {
-                    return await _imageStorage.GetThumbnailAsync(relativePath);
+                    return await GetImageStorage().GetThumbnailAsync(relativePath);
                 }
 
                 return null;
@@ -307,7 +337,7 @@ namespace Bll.MasterData.ProductServiceBll
                     fileExtension);
 
                 // 3. Lưu vào storage (NAS/Local) thông qua ImageStorageService
-                var storageResult = await _imageStorage.SaveImageAsync(
+                var storageResult = await GetImageStorage().SaveImageAsync(
                     imageData: imageData,
                     fileName: fileName,
                     category: ImageCategory.Product,
@@ -419,7 +449,7 @@ namespace Bll.MasterData.ProductServiceBll
                     Guid.NewGuid().ToString("N").Substring(0, 8));
 
                 // 3. Lưu vào storage (NAS/Local)
-                var storageResult = await _imageStorage.SaveImageAsync(
+                var storageResult = await GetImageStorage().SaveImageAsync(
                     imageData: imageData,
                     fileName: fileName,
                     category: ImageCategory.Product,
@@ -447,7 +477,7 @@ namespace Bll.MasterData.ProductServiceBll
                     {
                         try
                         {
-                            await _imageStorage.DeleteImageAsync(existingPrimary.RelativePath);
+                            await GetImageStorage().DeleteImageAsync(existingPrimary.RelativePath);
                         }
                         catch (Exception deleteEx)
                         {
@@ -554,7 +584,7 @@ namespace Bll.MasterData.ProductServiceBll
                 {
                     try
                     {
-                        var deleted = await _imageStorage.DeleteImageAsync(relativePath);
+                        var deleted = await GetImageStorage().DeleteImageAsync(relativePath);
                         if (deleted)
                         {
                             _logger.Info($"Đã xóa file từ storage, RelativePath={relativePath}");
