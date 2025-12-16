@@ -90,6 +90,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RoleManagement\FrmRoleManagement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RoleManagement\FrmRoleManagement.Designer.cs">
+      <DependentUpon>FrmRoleManagement.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserManagement\FrmApplicationUserDto.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,6 +122,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RoleManagement\FrmRoleManagement.resx">
+      <DependentUpon>FrmRoleManagement.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserManagement\FrmApplicationUserDto.resx">
       <DependentUpon>FrmApplicationUserDto.cs</DependentUpon>
@@ -147,10 +156,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="PermissionManagement\UI_Design_Proposal.md" />
+    <None Include="PermissionManagement\UI_Implementation_Guide.md" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.EmployeeDto.datasource" />
     <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.AllowedMacAddressDto.datasource" />
     <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.ApplicationUserDto.datasource" />
     <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.ApplicationVersionDto.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.RoleDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -198,5 +210,6 @@
   <ItemGroup>
     <None Include="Resources\refresh_32x32.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

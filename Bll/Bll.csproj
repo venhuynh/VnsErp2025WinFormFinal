@@ -85,6 +85,8 @@
     <Compile Include="Common\ImageStorage\ImageStorageResult.cs" />
     <Compile Include="Common\ImageStorage\LocalImageStorageService.cs" />
     <Compile Include="Common\ImageStorage\NASImageStorageService.cs" />
+    <Compile Include="Common\PermissionBll.cs" />
+    <Compile Include="Common\PermissionHelper.cs" />
     <Compile Include="Inventory\InventoryManagement\AssetBll.cs" />
     <Compile Include="Inventory\InventoryManagement\DeviceBll.cs" />
     <Compile Include="Inventory\InventoryManagement\InventoryBalanceBll.cs" />
@@ -118,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Common\PermissionSystem_README.md" />
     <None Include="Doc\BllFolderStructure.md" />
   </ItemGroup>
   <ItemGroup>

@@ -67,6 +67,7 @@
     <Compile Include="DataAccess\Implementations\UnitOfWork.cs" />
     <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\AllowedMacAddressRepository.cs" />
     <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\ApplicationVersionRepository.cs" />
+    <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\PermissionRepository.cs" />
     <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IAllowedMacAddressRepository.cs" />
     <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IApplicationVersionRepository.cs" />
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="DataAccess\Interfaces\MasterData\ProductServiceRepositories\IProductServiceRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\ProductServiceRepositories\IProductVariantRepository.cs" />
     <Compile Include="DataAccess\Interfaces\MasterData\ProductServiceRepositories\IUnitOfMeasureRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IPermissionRepository.cs" />
     <Compile Include="DataContext\SeedData\MasterData\Company\SeedData_Master_Company.cs" />
     <Compile Include="DataContext\SeedData\MasterData\Customer\SeedData_Master_Customer.cs" />
     <Compile Include="DataContext\SeedData\MasterData\ProductService\SeedData_Master_ProductService.cs" />

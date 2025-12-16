@@ -12,6 +12,7 @@ using System;
 using System.Windows.Forms;
 using VersionAndUserManagement.AllowedMacAddress;
 using VersionAndUserManagement.ApplicationVersion;
+using VersionAndUserManagement.RoleManagement;
 using VersionAndUserManagement.UserManagement;
 using VnsErp2025.Form;
 
@@ -142,7 +143,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FormMain());
+            Application.Run(new FrmRoleManagement());
 
             #endregion
 
