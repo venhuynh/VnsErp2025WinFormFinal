@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using Common.Common;
 using DevExpress.Data;
 using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Views.Base;
 
 namespace VersionAndUserManagement.ApplicationVersion
 {
@@ -88,6 +89,7 @@ namespace VersionAndUserManagement.ApplicationVersion
             ApplicationVersionDtoGridView.SelectionChanged += ApplicationVersionDtoGridView_SelectionChanged;
             ApplicationVersionDtoGridView.CustomDrawRowIndicator += ApplicationVersionDtoGridView_CustomDrawRowIndicator;
             ApplicationVersionDtoGridView.RowCellStyle += ApplicationVersionDtoGridView_RowCellStyle;
+            ApplicationVersionDtoGridView.CellValueChanged += ApplicationVersionDtoGridView_CellValueChanged;
 
             // Cấu hình HtmlHypertextLabel để enable HTML rendering
             if (HtmlHypertextLabel != null)
@@ -341,6 +343,76 @@ namespace VersionAndUserManagement.ApplicationVersion
             catch (Exception)
             {
                 // ignore style errors
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi giá trị cell thay đổi - cập nhật ngay vào database cho colIsActive và colReleaseNote
+        /// </summary>
+        private async void ApplicationVersionDtoGridView_CellValueChanged(object sender, CellValueChangedEventArgs e)
+        {
+            if (_isLoading) return; // Tránh cập nhật khi đang tải dữ liệu
+
+            try
+            {
+                if (sender is not GridView view) return;
+                if (e.RowHandle < 0) return;
+                if (view.GetRow(e.RowHandle) is not ApplicationVersionDto dto) return;
+
+                // Chỉ xử lý khi thay đổi colIsActive hoặc colReleaseNote
+                if (e.Column?.FieldName != nameof(ApplicationVersionDto.IsActive) && 
+                    e.Column?.FieldName != nameof(ApplicationVersionDto.ReleaseNote))
+                {
+                    return;
+                }
+
+                // Lấy giá trị mới
+                var newValue = e.Value;
+                var fieldName = e.Column.FieldName;
+
+                // Cập nhật giá trị vào DTO
+                if (fieldName == nameof(ApplicationVersionDto.IsActive))
+                {
+                    dto.IsActive = newValue is bool boolValue ? boolValue : Convert.ToBoolean(newValue);
+                }
+                else if (fieldName == nameof(ApplicationVersionDto.ReleaseNote))
+                {
+                    dto.ReleaseNote = newValue?.ToString();
+                }
+
+                // Cập nhật ModifiedDate và ModifiedBy (nếu có)
+                dto.ModifiedDate = DateTime.Now;
+                // TODO: Có thể lấy ModifiedBy từ current user context nếu cần
+
+                // Cập nhật vào database ngay lập tức
+                await ExecuteWithWaitingFormAsync(async () =>
+                {
+                    try
+                    {
+                        // Cập nhật vào database thông qua BLL
+                        var updatedDto = await Task.Run(() => _applicationVersionBll.UpdateVersion(dto));
+
+                        // Cập nhật lại dòng trong datasource để đồng bộ với dữ liệu từ database
+                        UpdateSingleRowInDataSource(updatedDto);
+
+                        // Hiển thị thông báo thành công
+                        var message = fieldName == nameof(ApplicationVersionDto.IsActive)
+                            ? $"Đã cập nhật trạng thái {(updatedDto.IsActive ? "Hoạt động" : "Không hoạt động")} cho phiên bản {updatedDto.Version}"
+                            : $"Đã cập nhật ghi chú phát hành cho phiên bản {updatedDto.Version}";
+                        
+                        ShowInfo(message);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Nếu lỗi, rollback giá trị trong grid về giá trị cũ
+                        view.SetRowCellValue(e.RowHandle, e.Column, e.OldValue);
+                        ShowError(ex, $"Lỗi cập nhật {fieldName}");
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex, "Lỗi khi cập nhật giá trị cell");
             }
         }
 

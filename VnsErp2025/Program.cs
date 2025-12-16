@@ -142,7 +142,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmApplicationVersionDto());
+            Application.Run(new FormMain());
 
             #endregion
 

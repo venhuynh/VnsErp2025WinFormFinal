@@ -25,6 +25,9 @@ using Inventory.StockOut.XuatChoThueMuon;
 using Inventory.StockOut.XuatLapRap;
 using Inventory.Query;
 using Inventory.Management;
+using VersionAndUserManagement.AllowedMacAddress;
+using VersionAndUserManagement.UserManagement;
+using VersionAndUserManagement.ApplicationVersion;
 
 // ReSharper disable InconsistentNaming
 
@@ -162,6 +165,22 @@ namespace VnsErp2025.Form
         {
             ribbonPage1.Text = @"Trang chủ";
             PartnerRibbonPageGroup.Text = @"Hệ thống";
+            
+            // Đăng ký event handlers cho các nút Version and User Management
+            if (AllowedMacAddressBarButtonItem != null)
+                AllowedMacAddressBarButtonItem.ItemClick += AllowedMacAddressBarButtonItem_ItemClick;
+            
+            if (ApplicationUserBarButtonItem != null)
+                ApplicationUserBarButtonItem.ItemClick += ApplicationUserBarButtonItem_ItemClick;
+            
+            if (ApplicationVersionBarButtonItem != null)
+                ApplicationVersionBarButtonItem.ItemClick += ApplicationVersionBarButtonItem_ItemClick;
+            
+            if (DatabaseConfigBarButtonItem != null)
+                DatabaseConfigBarButtonItem.ItemClick += DatabaseConfigBarButtonItem_ItemClick;
+            
+            if (NasConfigBarButtonItem != null)
+                NasConfigBarButtonItem.ItemClick += NasConfigBarButtonItem_ItemClick;
         }
 
         /// <summary>
@@ -585,6 +604,52 @@ namespace VnsErp2025.Form
                         StockInOutDocumentBarButtonItem,
                         title: "<b><color=DarkBlue>📎 Chứng từ</color></b>",
                         content: "Xem và quản lý chứng từ liên quan đến các phiếu nhập/xuất kho.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách chứng từ của phiếu nhập/xuất<br/>• Upload và quản lý chứng từ (PDF, Word, Excel, v.v.)<br/>• Tải xuống và mở chứng từ<br/>• Xóa chứng từ<br/><br/><color=Gray>Lưu ý:</color> Module này giúp lưu trữ và tra cứu các file chứng từ liên quan đến kho."
+                    );
+                }
+
+                // Version and User Management
+                if (AllowedMacAddressBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        AllowedMacAddressBarButtonItem,
+                        title: "<b><color=DarkGreen>🔒 MAC Address được phép</color></b>",
+                        content: "Quản lý danh sách địa chỉ MAC được phép truy cập ứng dụng.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách MAC address được phép<br/>• Thêm, sửa, xóa MAC address<br/>• Kích hoạt/vô hiệu hóa MAC address<br/>• Quản lý tên máy tính và mô tả<br/><br/><color=Gray>Lưu ý:</color> Chỉ các máy tính có MAC address trong danh sách mới được phép sử dụng ứng dụng."
+                    );
+                }
+
+                if (ApplicationUserBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ApplicationUserBarButtonItem,
+                        title: "<b><color=DarkGreen>👤 Người dùng ứng dụng</color></b>",
+                        content: "Quản lý tài khoản người dùng trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách người dùng<br/>• Thêm, sửa, xóa tài khoản người dùng<br/>• Quản lý mật khẩu và quyền truy cập<br/>• Gán nhân viên cho tài khoản<br/>• Kích hoạt/vô hiệu hóa tài khoản<br/><br/><color=Gray>Lưu ý:</color> Tài khoản người dùng được sử dụng để đăng nhập và phân quyền trong hệ thống."
+                    );
+                }
+
+                if (ApplicationVersionBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ApplicationVersionBarButtonItem,
+                        title: "<b><color=DarkGreen>📦 Phiên bản ứng dụng</color></b>",
+                        content: "Quản lý các phiên bản của ứng dụng VNS ERP 2025.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách các phiên bản<br/>• Thêm, sửa, xóa phiên bản<br/>• Đặt phiên bản đang hoạt động<br/>• Cập nhật phiên bản từ Assembly<br/>• Quản lý ghi chú phát hành<br/><br/><color=Gray>Lưu ý:</color> Chỉ có một phiên bản có thể được đặt là Active tại một thời điểm."
+                    );
+                }
+
+                if (DatabaseConfigBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        DatabaseConfigBarButtonItem,
+                        title: "<b><color=DarkBlue>🗄️ Cấu hình Database</color></b>",
+                        content: "Cấu hình kết nối đến SQL Server database.<br/><br/><b>Chức năng:</b><br/>• Thiết lập thông tin server, database<br/>• Cấu hình authentication (Windows/SQL)<br/>• Kiểm tra kết nối database<br/>• Lưu cấu hình vào file config<br/><br/><color=Gray>Lưu ý:</color> Cần khởi động lại ứng dụng sau khi thay đổi cấu hình."
+                    );
+                }
+
+                if (NasConfigBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NasConfigBarButtonItem,
+                        title: "<b><color=DarkBlue>💾 Cấu hình NAS</color></b>",
+                        content: "Cấu hình kết nối đến Network Attached Storage (NAS) để lưu trữ file.<br/><br/><b>Chức năng:</b><br/>• Thiết lập thông tin NAS server<br/>• Cấu hình đường dẫn và quyền truy cập<br/>• Kiểm tra kết nối NAS<br/>• Lưu cấu hình<br/><br/><color=Gray>Lưu ý:</color> NAS được sử dụng để lưu trữ các file lớn như hình ảnh, tài liệu."
                     );
                 }
             }
@@ -1437,6 +1502,92 @@ namespace VnsErp2025.Form
 
         #endregion
 
+        #region Version and User Management
+
+        /// <summary>
+        /// Xử lý sự kiện click nút AllowedMacAddress - hiển thị form quản lý MAC address được phép
+        /// </summary>
+        private void AllowedMacAddressBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmAllowedMacAddressDto>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý MAC address");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút ApplicationUser - hiển thị form quản lý người dùng
+        /// </summary>
+        private void ApplicationUserBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmApplicationUserDto>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý người dùng");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút ApplicationVersion - hiển thị form quản lý phiên bản ứng dụng
+        /// </summary>
+        private void ApplicationVersionBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmApplicationVersionDto>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý phiên bản ứng dụng");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút DatabaseConfig - hiển thị form cấu hình database
+        /// </summary>
+        private void DatabaseConfigBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                ShowDatabaseConfigForm();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form cấu hình database");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút NasConfig - hiển thị form cấu hình NAS
+        /// </summary>
+        private void NasConfigBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmNASConfig>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form cấu hình NAS");
+            }
+        }
+
+        #endregion
 
     }
 }
