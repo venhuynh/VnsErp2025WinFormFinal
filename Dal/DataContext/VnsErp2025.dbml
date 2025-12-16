@@ -1,10 +1,40 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="VnsErp2025Final" Class="VnsErp2025DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+<?xml version="1.0" encoding="utf-8"?><Database Name="VnsErp2025Final" Class="VnsErp2025DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=115.75.187.3,3306;Initial Catalog=VnsErp2025Final;Persist Security Info=True;User ID=vns;Encrypt=True;Trust Server Certificate=True" SettingsObjectName="Dal.Properties.Settings" SettingsPropertyName="VnsErp2025FinalConnectionString2" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.AllowedMacAddress" Member="AllowedMacAddresses">
+    <Type Name="AllowedMacAddress">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MacAddress" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ComputerName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreateBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Warranty" Member="Warranties">
+    <Type Name="Warranty">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="StockInOutDetailId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="WarrantyType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="WarrantyFrom" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="MonthOfWarranty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="WarrantyUntil" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="WarrantyStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UniqueProductInfo" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Association Name="Warranty_Asset" Member="Assets" ThisKey="Id" OtherKey="WarrantyId" Type="Asset" />
+      <Association Name="Warranty_Device" Member="Devices" ThisKey="Id" OtherKey="WarrantyId" Type="Device" />
+      <Association Name="StockInOutDetail_Warranty" Member="StockInOutDetail" ThisKey="StockInOutDetailId" OtherKey="Id" Type="StockInOutDetail" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.ApplicationUser" Member="ApplicationUsers">
     <Type Name="ApplicationUser">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="UserName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="HashPassword" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
       <Column Name="Active" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="EmployeeId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="ApplicationUser_Asset" Member="Assets" ThisKey="Id" OtherKey="CreateBy" Type="Asset" />
       <Association Name="ApplicationUser_Asset1" Member="Assets1" ThisKey="Id" OtherKey="DeletedBy" Type="Asset" />
       <Association Name="ApplicationUser_Asset2" Member="Assets2" ThisKey="Id" OtherKey="ModifiedBy" Type="Asset" />
@@ -21,21 +51,7 @@
       <Association Name="ApplicationUser_InventoryBalance4" Member="InventoryBalances4" ThisKey="Id" OtherKey="VerifiedBy" Type="InventoryBalance" />
       <Association Name="ApplicationUser_ProductServiceCategory" Member="ProductServiceCategories" ThisKey="Id" OtherKey="CreatedBy" Type="ProductServiceCategory" />
       <Association Name="ApplicationUser_ProductServiceCategory1" Member="ProductServiceCategories1" ThisKey="Id" OtherKey="ModifiedBy" Type="ProductServiceCategory" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Warranty" Member="Warranties">
-    <Type Name="Warranty">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="StockInOutDetailId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="WarrantyType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="WarrantyFrom" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="MonthOfWarranty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="WarrantyUntil" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="WarrantyStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="UniqueProductInfo" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
-      <Association Name="Warranty_Asset" Member="Assets" ThisKey="Id" OtherKey="WarrantyId" Type="Asset" />
-      <Association Name="Warranty_Device" Member="Devices" ThisKey="Id" OtherKey="WarrantyId" Type="Device" />
-      <Association Name="StockInOutDetail_Warranty" Member="StockInOutDetail" ThisKey="StockInOutDetailId" OtherKey="Id" Type="StockInOutDetail" IsForeignKey="true" />
+      <Association Name="Employee_ApplicationUser" Member="Employee" ThisKey="EmployeeId" OtherKey="Id" Type="Employee" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Asset" Member="Assets">
@@ -427,6 +443,8 @@
       <Column Name="AvatarFileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="AvatarChecksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
       <Column Name="AvatarThumbnailData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="ApplicationUserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="Employee_ApplicationUser" Member="ApplicationUsers" ThisKey="Id" OtherKey="EmployeeId" Type="ApplicationUser" />
       <Association Name="Employee_Asset" Member="Assets" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Asset" />
       <Association Name="Employee_Device" Member="Devices" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Device" />
       <Association Name="Employee_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="FromEmployeeId" Type="DeviceTransfer" />
@@ -736,6 +754,20 @@
       <Association Name="Attribute_VariantAttribute" Member="Attribute" ThisKey="AttributeId" OtherKey="Id" Type="Attribute" IsForeignKey="true" />
       <Association Name="AttributeValue_VariantAttribute" Member="AttributeValue" ThisKey="AttributeValueId" OtherKey="Id" Type="AttributeValue" IsForeignKey="true" />
       <Association Name="ProductVariant_VariantAttribute" Member="ProductVariant" ThisKey="VariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ApplicationVersion" Member="VnsErpApplicationVersions">
+    <Type Name="VnsErpApplicationVersion">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Version" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ReleaseDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreateBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ReleaseNote" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
     </Type>
   </Table>
 </Database>

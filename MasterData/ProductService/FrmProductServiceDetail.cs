@@ -628,7 +628,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Lưu dữ liệu sản phẩm/dịch vụ (async implementation).
         /// </summary>
-        private async Task SaveProductServiceAsync()
+        private Task SaveProductServiceAsync()
         {
             var dto = GetDataFromControls();
             var entity = dto.ToEntity();
@@ -656,6 +656,8 @@ namespace MasterData.ProductService
             {
                 SaveProductImages(entity.Id);
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>

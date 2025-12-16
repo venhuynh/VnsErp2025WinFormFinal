@@ -143,6 +143,10 @@
       <Project>{A15B1F9F-65D1-4723-A1E2-675F5BDC8641}</Project>
       <Name>MasterData</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VersionAndUserManagement\VersionAndUserManagement.csproj">
+      <Project>{14fed260-4a4d-42ed-9298-b91800d65e36}</Project>
+      <Name>VersionAndUserManagement</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\database_16x16.png" />
@@ -162,6 +166,10 @@
     <None Include="Resources\pivot_16x16.png" />
     <None Include="Resources\pivot_32x32.png" />
     <None Include="Resources\dashboard.svg" />
+    <None Include="Resources\electronics_desktopmac.svg" />
+    <None Include="Resources\bo_user.svg" />
+    <None Include="Resources\version-control.svg" />
+    <None Include="Resources\datasource.svg" />
     <Content Include="VNS Logo - Website.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

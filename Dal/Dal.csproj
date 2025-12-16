@@ -65,6 +65,10 @@
     <Compile Include="DataAccess\Implementations\Inventory\StockIn\StockInHistoryQueryCriteria.cs" />
     <Compile Include="DataAccess\Implementations\MasterData\CompanyRepository\EmployeeRepository.cs" />
     <Compile Include="DataAccess\Implementations\UnitOfWork.cs" />
+    <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\AllowedMacAddressRepository.cs" />
+    <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\ApplicationVersionRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IAllowedMacAddressRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IApplicationVersionRepository.cs" />
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IAssetRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IDeviceRepository.cs" />
@@ -140,6 +144,8 @@
     </None>
     <None Include="Doc\CompanyEntities_Summary.md" />
     <None Include="Doc\DalFolderStructure.md" />
+    <None Include="Doc\EntityPermissionManagement_Proposal.md" />
+    <None Include="Doc\EntityPermissionMatrix.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

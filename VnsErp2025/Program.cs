@@ -1,4 +1,5 @@
-﻿using Authentication.Form;
+using Authentication.Form;
+using Bll.Common;
 using Common.Utils;
 using Dal.Connection;
 using Inventory.Management;
@@ -9,6 +10,9 @@ using Inventory.StockOut.XuatNoiBo;
 using MasterData.Customer;
 using System;
 using System.Windows.Forms;
+using VersionAndUserManagement.AllowedMacAddress;
+using VersionAndUserManagement.ApplicationVersion;
+using VersionAndUserManagement.UserManagement;
 using VnsErp2025.Form;
 
 
@@ -27,7 +31,11 @@ namespace VnsErp2025
 
             // Cấu hình DevExpress Skin
             SkinHelper.KhoiTaoSkin("WXI");
-
+            //using (var configForm = new FrmDatabaseConfig())
+            //{
+            //    configForm.ShowDialog();
+            //}
+            
             // 1) Tải connection string từ Settings (ConnectionManager default sẽ ưu tiên User Settings)
             var connectionManager = new ConnectionManager();
 
@@ -97,6 +105,30 @@ namespace VnsErp2025
                 return;
             }
 
+            // 4) Kiểm tra bảo mật ứng dụng (version và MAC address)
+            try
+            {
+                var securityService = new ApplicationSecurityService();
+                var securityResult = securityService.CheckSecurity();
+
+                if (!securityResult.IsValid)
+                {
+                    securityService.ShowErrorAndExit(securityResult);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $@"Lỗi khi kiểm tra bảo mật ứng dụng: {ex.Message}\n\n" +
+                    @"Vui lòng liên hệ quản trị viên để được hỗ trợ.",
+                    @"Lỗi bảo mật",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                Application.Exit();
+                return;
+            }
+
             #region Dành cho debug
 
             //SeedData_Master_Customer.DeleteAllPartnerData();
@@ -110,7 +142,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmTaoThietBiNhapLapRap());
+            Application.Run(new FormMain());
 
             #endregion
 

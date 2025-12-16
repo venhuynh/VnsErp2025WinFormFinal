@@ -240,7 +240,7 @@ namespace MasterData.Customer
         /// <summary>
         /// Xử lý sự kiện click button Thêm mới
         /// </summary>
-        private async void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        private void NewBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
         {
             try
             {

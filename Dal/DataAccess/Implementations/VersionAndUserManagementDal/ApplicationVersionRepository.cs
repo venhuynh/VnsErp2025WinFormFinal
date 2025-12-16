@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataAccess.Interfaces.Common;
+using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 using Dal.DataContext;
 using Dal.Exceptions;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess.Implementations.Common;
+namespace Dal.DataAccess.Implementations.VersionAndUserManagementDal;
 
 /// <summary>
 /// Repository quản lý phiên bản ứng dụng
@@ -29,19 +29,21 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
 
     private VnsErp2025DataContext CreateNewContext()
     {
+        // DEBUG: Log connection string để kiểm tra database
+        _logger.Debug($"Creating context with connection string: {_connectionString}");
+        
         var context = new VnsErp2025DataContext(_connectionString);
         var loadOptions = new DataLoadOptions();
         context.LoadOptions = loadOptions;
         return context;
     }
 
-    public ApplicationVersion GetActiveVersion()
+    public VnsErpApplicationVersion GetActiveVersion()
     {
         try
         {
             using var context = CreateNewContext();
-            var version = context.GetTable<ApplicationVersion>()
-                .FirstOrDefault(v => v.IsActive);
+            var version = context.VnsErpApplicationVersions.FirstOrDefault(x => x.IsActive);
             
             _logger.Debug($"GetActiveVersion: {(version != null ? $"Found version {version.Version}" : "No active version found")}");
             return version;
@@ -53,13 +55,13 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
         }
     }
 
-    public async Task<ApplicationVersion> GetActiveVersionAsync()
+    public async Task<VnsErpApplicationVersion> GetActiveVersionAsync()
     {
         try
         {
             using var context = CreateNewContext();
             var versions = await Task.Run(() => 
-                context.GetTable<ApplicationVersion>()
+                context.VnsErpApplicationVersions
                     .Where(v => v.IsActive)
                     .ToList());
             
@@ -74,12 +76,12 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
         }
     }
 
-    public List<ApplicationVersion> GetAllVersions()
+    public List<VnsErpApplicationVersion> GetAllVersions()
     {
         try
         {
             using var context = CreateNewContext();
-            var versions = context.GetTable<ApplicationVersion>()
+            var versions = context.VnsErpApplicationVersions
                 .OrderByDescending(v => v.ReleaseDate)
                 .ToList();
             
@@ -93,13 +95,13 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
         }
     }
 
-    public async Task<List<ApplicationVersion>> GetAllVersionsAsync()
+    public async Task<List<VnsErpApplicationVersion>> GetAllVersionsAsync()
     {
         try
         {
             using var context = CreateNewContext();
             var versions = await Task.Run(() => 
-                context.GetTable<ApplicationVersion>()
+                context.VnsErpApplicationVersions
                     .OrderByDescending(v => v.ReleaseDate)
                     .ToList());
             
@@ -113,12 +115,12 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
         }
     }
 
-    public ApplicationVersion GetById(Guid id)
+    public VnsErpApplicationVersion GetById(Guid id)
     {
         try
         {
             using var context = CreateNewContext();
-            var version = context.GetTable<ApplicationVersion>()
+            var version = context.VnsErpApplicationVersions
                 .FirstOrDefault(v => v.Id == id);
             
             _logger.Debug($"GetById: {(version != null ? $"Found version {version.Version}" : "Version not found")}");
@@ -131,13 +133,13 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
         }
     }
 
-    public async Task<ApplicationVersion> GetByIdAsync(Guid id)
+    public async Task<VnsErpApplicationVersion> GetByIdAsync(Guid id)
     {
         try
         {
             using var context = CreateNewContext();
             var versions = await Task.Run(() => 
-                context.GetTable<ApplicationVersion>()
+                context.VnsErpApplicationVersions
                     .Where(v => v.Id == id)
                     .ToList());
             
@@ -152,7 +154,7 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
         }
     }
 
-    public ApplicationVersion Create(ApplicationVersion version)
+    public VnsErpApplicationVersion Create(VnsErpApplicationVersion version)
     {
         try
         {
@@ -166,7 +168,7 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
                 version.CreateDate = DateTime.Now;
 
             using var context = CreateNewContext();
-            context.GetTable<ApplicationVersion>().InsertOnSubmit(version);
+            context.VnsErpApplicationVersions.InsertOnSubmit(version);
             context.SubmitChanges();
             
             _logger.Info($"Đã tạo phiên bản mới: {version.Version} (ID: {version.Id})");
@@ -179,12 +181,12 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
         }
     }
 
-    public async Task<ApplicationVersion> CreateAsync(ApplicationVersion version)
+    public async Task<VnsErpApplicationVersion> CreateAsync(VnsErpApplicationVersion version)
     {
         return await Task.Run(() => Create(version));
     }
 
-    public ApplicationVersion Update(ApplicationVersion version)
+    public VnsErpApplicationVersion Update(VnsErpApplicationVersion version)
     {
         try
         {
@@ -192,7 +194,7 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
                 throw new ArgumentNullException(nameof(version));
 
             using var context = CreateNewContext();
-            var existing = context.GetTable<ApplicationVersion>()
+            var existing = context.VnsErpApplicationVersions
                 .FirstOrDefault(v => v.Id == version.Id);
 
             if (existing == null)
@@ -202,6 +204,7 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
             existing.ReleaseDate = version.ReleaseDate;
             existing.IsActive = version.IsActive;
             existing.Description = version.Description;
+            existing.ReleaseNote = version.ReleaseNote;
             existing.ModifiedDate = DateTime.Now;
             existing.ModifiedBy = version.ModifiedBy;
 
@@ -217,7 +220,7 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
         }
     }
 
-    public async Task<ApplicationVersion> UpdateAsync(ApplicationVersion version)
+    public async Task<VnsErpApplicationVersion> UpdateAsync(VnsErpApplicationVersion version)
     {
         return await Task.Run(() => Update(version));
     }
@@ -229,7 +232,7 @@ public class ApplicationVersionRepository : IApplicationVersionRepository
             using var context = CreateNewContext();
             
             // Vô hiệu hóa tất cả phiên bản
-            var allVersions = context.GetTable<ApplicationVersion>().ToList();
+            var allVersions = context.VnsErpApplicationVersions.ToList();
             foreach (var v in allVersions)
             {
                 v.IsActive = false;

@@ -157,7 +157,7 @@ namespace MasterData.Customer
                     return;
                 }
                 
-                await ExecuteWithWaitingFormAsync(async () =>
+                await ExecuteWithWaitingFormAsync(() =>
                 {
                     var entity = GetDataFromControls();
                     
@@ -189,6 +189,7 @@ namespace MasterData.Customer
                     // Lưu entity (thêm mới) - Id sẽ được tạo tự động trong Add method
                     // Avatar đã được set vào entity, nên sẽ được lưu cùng lúc
                     var savedId = _bll.Add(entity);
+                    return Task.CompletedTask;
                 });
                 
                 ShowInfo("Thêm mới liên hệ đối tác thành công!");

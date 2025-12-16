@@ -56,6 +56,7 @@ CREATE TABLE [dbo].[ApplicationVersion](
     [ReleaseDate] [datetime] NOT NULL,
     [IsActive] [bit] NOT NULL DEFAULT ((1)),
     [Description] [nvarchar](500) NULL,
+    [ReleaseNote] [nvarchar](1000) NULL,
     [CreateDate] [datetime] NOT NULL DEFAULT (GETDATE()),
     [CreateBy] [uniqueidentifier] NULL,
     [ModifiedDate] [datetime] NULL,
@@ -102,6 +103,9 @@ EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ngày phát h�
 GO
 
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Phiên bản có đang hoạt động không (chỉ có một phiên bản Active)', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'ApplicationVersion', @level2type=N'COLUMN',@level2name=N'IsActive';
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Ghi chú phát hành chi tiết về phiên bản (tối đa 1000 ký tự)', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'ApplicationVersion', @level2type=N'COLUMN',@level2name=N'ReleaseNote';
 GO
 
 -- =============================================

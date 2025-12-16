@@ -77,17 +77,8 @@ namespace MasterData.Company
             // Setup SuperToolTips
             SetupSuperToolTips();
 
-            // Tự động load dữ liệu khi form được mở
-            Load += FrmEmployeeDto_Load;
         }
 
-        /// <summary>
-        /// Xử lý sự kiện Load form - tự động tải dữ liệu khi form được mở
-        /// </summary>
-        private async void FrmEmployeeDto_Load(object sender, EventArgs e)
-        {
-            
-        }
 
         /// <summary>
         /// Tải dữ liệu nhân viên

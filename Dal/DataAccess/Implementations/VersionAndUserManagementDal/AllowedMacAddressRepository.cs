@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataAccess.Interfaces.Common;
+using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 using Dal.DataContext;
 using Dal.Exceptions;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
 
-namespace Dal.DataAccess.Implementations.Common;
+namespace Dal.DataAccess.Implementations.VersionAndUserManagementDal;
 
 /// <summary>
 /// Repository quản lý MAC address được phép
@@ -56,8 +56,13 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
             var normalizedMac = NormalizeMacAddress(macAddress);
             
             using var context = CreateNewContext();
-            var allowed = context.GetTable<AllowedMacAddress>()
-                .Any(m => m.IsActive && NormalizeMacAddress(m.MacAddress) == normalizedMac);
+            // Lấy tất cả MAC address đang active từ database trước
+            var allowedMacs = context.GetTable<AllowedMacAddress>()
+                .Where(m => m.IsActive)
+                .ToList();
+            
+            // Sau đó normalize và so sánh trong memory
+            var allowed = allowedMacs.Any(m => NormalizeMacAddress(m.MacAddress) == normalizedMac);
             
             _logger.Debug($"IsMacAddressAllowed: MAC {macAddress} is {(allowed ? "allowed" : "not allowed")}");
             return allowed;

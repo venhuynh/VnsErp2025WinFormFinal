@@ -474,18 +474,6 @@ namespace MasterData.ProductService
                         // Số thứ tự hình ảnh trong sản phẩm (bắt đầu từ 1)
                         ImageSequenceNumber = i + 1,
                         // Legacy properties để backward compatibility
-                        VariantId = null,
-                        ImagePath = entity.RelativePath ?? entity.FullPath,
-                        SortOrder = i,
-                        IsPrimary = i == 0,
-                        ImageType = entity.FileExtension ?? entity.MimeType,
-                        ImageSize = entity.FileSize ?? 0,
-                        ImageWidth = 0,
-                        ImageHeight = 0,
-                        Caption = entity.FileName,
-                        AltText = entity.FileName,
-                        IsActive = true,
-                        CreatedDate = entity.CreateDate
                     };
 
                     dtos.Add(dto);
@@ -1088,26 +1076,11 @@ namespace MasterData.ProductService
                                 Id = img.Id,
                                 ProductId = img.ProductId ?? Guid.Empty,
                                 ProductName = product.Name,
-                                VariantId = null, // ProductImage không còn VariantId property
-                                ImagePath = img.RelativePath ?? img.FullPath, // Map từ RelativePath hoặc FullPath
-                                SortOrder = 0, // Không có SortOrder property
-                                IsPrimary = false, // Không có IsPrimary property
                                 ImageData = img.ImageData?.ToArray(),
-                                ImageType = img.FileExtension ?? img.MimeType, // Map từ FileExtension hoặc MimeType
-                                ImageSize = img.FileSize ?? 0, // Map từ FileSize
-                                ImageWidth = 0, // Không có ImageWidth property
-                                ImageHeight = 0, // Không có ImageHeight property
-                                Caption = img.FileName ?? "Hình ảnh", // Dùng FileName làm Caption
-                                AltText = img.FileName ?? "Hình ảnh", // Dùng FileName làm AltText
-                                IsActive = true, // Không có IsActive property, mặc định true
-                                CreatedDate = img.CreateDate, // Map từ CreateDate
                                 ModifiedDate = img.ModifiedDate,
                                 FileName = img.FileName
                             };
 
-                            // Thêm thông tin sản phẩm vào caption nếu có
-                            dto.Caption = $"{dto.Caption} ({product.Name})";
-                            dto.AltText = $"{dto.AltText} - Sản phẩm: {product.Name}";
 
                             return dto;
                         }

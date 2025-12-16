@@ -54,6 +54,10 @@ namespace Dal.DataAccess.Implementations
 
             // Configure eager loading cho navigation properties
             var loadOptions = new DataLoadOptions();
+            // Load Employee và các navigation properties liên quan
+            loadOptions.LoadWith<ApplicationUser>(u => u.Employee);
+            loadOptions.LoadWith<Employee>(e => e.Department);
+            loadOptions.LoadWith<Employee>(e => e.Position);
             context.LoadOptions = loadOptions;
 
             return context;
@@ -62,6 +66,93 @@ namespace Dal.DataAccess.Implementations
         #endregion
 
         #region CRUD - Create
+
+        /// <summary>
+        /// Tạo user mới
+        /// </summary>
+        public ApplicationUser Create(ApplicationUser user)
+        {
+            try
+            {
+                if (user == null)
+                    throw new ArgumentNullException(nameof(user));
+
+                if (user.Id == Guid.Empty)
+                    user.Id = Guid.NewGuid();
+
+                // Validate UserName
+                if (string.IsNullOrWhiteSpace(user.UserName))
+                    throw new ArgumentException("UserName không được để trống", nameof(user));
+
+                if (IsUserNameExists(user.UserName))
+                    throw new DataAccessException($"UserName '{user.UserName}' đã tồn tại");
+
+                using var context = CreateNewContext();
+                context.ApplicationUsers.InsertOnSubmit(user);
+                context.SubmitChanges();
+                
+                // Load Employee và navigation properties trước khi dispose DataContext
+                // để tránh ObjectDisposedException khi ToDto() truy cập navigation properties
+                if (user.EmployeeId.HasValue)
+                {
+                    try
+                    {
+                        // Load Employee để trigger eager load
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == user.EmployeeId.Value);
+                        if (employee != null)
+                        {
+                            // Load navigation properties trong cùng context
+                            if (employee.DepartmentId.HasValue)
+                            {
+                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                            }
+                            if (employee.PositionId.HasValue)
+                            {
+                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                            }
+                            
+                            // Gán Employee vào entity để có thể truy cập sau khi context dispose
+                            // LINQ to SQL sẽ giữ reference đến các navigation properties đã được load
+                            user.Employee = employee;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore nếu không thể load Employee
+                    }
+                }
+                
+                return user;
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 2627) // Duplicate key
+            {
+                throw new DataAccessException($"UserName '{user.UserName}' đã tồn tại trong hệ thống", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx)
+            {
+                throw new DataAccessException($"Lỗi SQL khi tạo user '{user.UserName}': {sqlEx.Message}", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi tạo user mới: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Tạo user mới (async)
+        /// </summary>
+        public async Task<ApplicationUser> CreateAsync(ApplicationUser user)
+        {
+            return await Task.Run(() => Create(user));
+        }
 
         /// <summary>
         /// Thêm user mới với validation.
@@ -85,7 +176,8 @@ namespace Dal.DataAccess.Implementations
                     Id = Guid.NewGuid(),
                     UserName = userName,
                     HashPassword = password,
-                    Active = active
+                    Active = active,
+                    EmployeeId = null // Có thể set EmployeeId sau
                 };
 
                 context.ApplicationUsers.InsertOnSubmit(user);
@@ -137,7 +229,8 @@ namespace Dal.DataAccess.Implementations
                     Id = Guid.NewGuid(),
                     UserName = userName,
                     HashPassword = password,
-                    Active = active
+                    Active = active,
+                    EmployeeId = null // Có thể set EmployeeId sau
                 };
 
                 context.ApplicationUsers.InsertOnSubmit(user);
@@ -170,6 +263,135 @@ namespace Dal.DataAccess.Implementations
         #endregion
 
         #region CRUD - Read
+
+        /// <summary>
+        /// Lấy tất cả người dùng
+        /// </summary>
+        public List<ApplicationUser> GetAll()
+        {
+            try
+            {
+                using var context = CreateNewContext();
+                var users = context.ApplicationUsers
+                    .OrderBy(u => u.UserName)
+                    .ToList();
+                
+                // Load Employee và navigation properties cho tất cả users trước khi dispose
+                foreach (var user in users.Where(u => u.EmployeeId.HasValue))
+                {
+                    try
+                    {
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == user.EmployeeId.Value);
+                        if (employee != null)
+                        {
+                            // Load navigation properties
+                            if (employee.DepartmentId.HasValue)
+                            {
+                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                            }
+                            if (employee.PositionId.HasValue)
+                            {
+                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                            }
+                            
+                            user.Employee = employee;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore nếu không thể load Employee cho user này
+                    }
+                }
+                
+                return users;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy tất cả người dùng: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả người dùng (async)
+        /// </summary>
+        public async Task<List<ApplicationUser>> GetAllAsync()
+        {
+            try
+            {
+                using var context = CreateNewContext();
+                var users = await Task.Run(() => 
+                    context.ApplicationUsers
+                        .OrderBy(u => u.UserName)
+                        .ToList());
+                
+                return users;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy tất cả người dùng (async): {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy user theo ID
+        /// </summary>
+        public ApplicationUser GetById(Guid id)
+        {
+            try
+            {
+                using var context = CreateNewContext();
+                var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+                
+                // Load Employee và navigation properties trước khi dispose DataContext
+                if (user != null && user.EmployeeId.HasValue)
+                {
+                    try
+                    {
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == user.EmployeeId.Value);
+                        if (employee != null)
+                        {
+                            // Load navigation properties
+                            if (employee.DepartmentId.HasValue)
+                            {
+                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                            }
+                            if (employee.PositionId.HasValue)
+                            {
+                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                            }
+                            
+                            user.Employee = employee;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore nếu không thể load Employee
+                    }
+                }
+                
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy user theo ID: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy user theo ID (async)
+        /// </summary>
+        public async Task<ApplicationUser> GetByIdAsync(Guid id)
+        {
+            try
+            {
+                using var context = CreateNewContext();
+                return await Task.Run(() => context.ApplicationUsers.FirstOrDefault(u => u.Id == id));
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy user theo ID (async): {ex.Message}", ex);
+            }
+        }
 
         /// <summary>
         /// Lấy user theo UserName.
@@ -327,6 +549,94 @@ namespace Dal.DataAccess.Implementations
         #region CRUD - Update
 
         /// <summary>
+        /// Cập nhật user
+        /// </summary>
+        public ApplicationUser Update(ApplicationUser user)
+        {
+            try
+            {
+                if (user == null)
+                    throw new ArgumentNullException(nameof(user));
+
+                using var context = CreateNewContext();
+                var existing = context.ApplicationUsers.FirstOrDefault(u => u.Id == user.Id);
+
+                if (existing == null)
+                    throw new DataAccessException($"Không tìm thấy user với ID: {user.Id}");
+
+                // Validate UserName nếu thay đổi
+                if (existing.UserName != user.UserName && IsUserNameExists(user.UserName))
+                    throw new DataAccessException($"UserName '{user.UserName}' đã tồn tại");
+
+                // Cập nhật các thuộc tính
+                existing.UserName = user.UserName;
+                existing.HashPassword = user.HashPassword;
+                existing.Active = user.Active;
+                existing.EmployeeId = user.EmployeeId;
+
+                context.SubmitChanges();
+                
+                // Load Employee và navigation properties trước khi dispose DataContext
+                if (existing.EmployeeId.HasValue)
+                {
+                    try
+                    {
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == existing.EmployeeId.Value);
+                        if (employee != null)
+                        {
+                            // Load navigation properties trong cùng context
+                            if (employee.DepartmentId.HasValue)
+                            {
+                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                            }
+                            if (employee.PositionId.HasValue)
+                            {
+                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                            }
+                            
+                            // Gán Employee vào entity
+                            existing.Employee = employee;
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore nếu không thể load Employee
+                    }
+                }
+                
+                return existing;
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 2627) // Duplicate key
+            {
+                throw new DataAccessException($"UserName '{user.UserName}' đã tồn tại trong hệ thống", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (System.Data.SqlClient.SqlException sqlEx)
+            {
+                throw new DataAccessException($"Lỗi SQL khi cập nhật user: {sqlEx.Message}", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi cập nhật user: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật user (async)
+        /// </summary>
+        public async Task<ApplicationUser> UpdateAsync(ApplicationUser user)
+        {
+            return await Task.Run(() => Update(user));
+        }
+
+        /// <summary>
         /// Kích hoạt user.
         /// </summary>
         public void ActivateUser(Guid id)
@@ -393,6 +703,40 @@ namespace Dal.DataAccess.Implementations
             {
                 throw new DataAccessException($"Lỗi khi đổi mật khẩu user {id}: {ex.Message}", ex);
             }
+        }
+
+        #endregion
+
+        #region CRUD - Delete
+
+        /// <summary>
+        /// Xóa user
+        /// </summary>
+        public void Delete(Guid id)
+        {
+            try
+            {
+                using var context = CreateNewContext();
+                var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+
+                if (user == null)
+                    throw new DataAccessException($"Không tìm thấy user với ID: {id}");
+
+                context.ApplicationUsers.DeleteOnSubmit(user);
+                context.SubmitChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi xóa user: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Xóa user (async)
+        /// </summary>
+        public async Task DeleteAsync(Guid id)
+        {
+            await Task.Run(() => Delete(id));
         }
 
         #endregion

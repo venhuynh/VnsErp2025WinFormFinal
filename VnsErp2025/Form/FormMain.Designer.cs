@@ -67,6 +67,15 @@ namespace VnsErp2025.Form
             this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             this.NhapLapRapBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XuatLapRapBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.AllowedMacAddressBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ApplicationUserBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ApplicationVersionBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.DatabaseConfigBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.NasConfigBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ribbonPageCategory1 = new DevExpress.XtraBars.Ribbon.RibbonPageCategory();
+            this.VersionAndUserManagementRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.VersionAndUserManagementRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.PartnerRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.CongTyRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -88,6 +97,7 @@ namespace VnsErp2025.Form
             // 
             this.ribbon.CaptionBarItemLinks.Add(this.DBInfoBarStaticItem);
             this.ribbon.CaptionBarItemLinks.Add(this.ConfigSqlServerInfoBarButtonItem);
+            this.ribbon.EmptyAreaImageOptions.ImagePadding = new System.Windows.Forms.Padding(60, 58, 60, 58);
             this.ribbon.ExpandCollapseItem.Id = 0;
             this.ribbon.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.DBInfoBarStaticItem,
@@ -127,15 +137,24 @@ namespace VnsErp2025.Form
             this.barButtonItem1,
             this.barButtonItem2,
             this.NhapLapRapBarButtonItem,
-            this.XuatLapRapBarButtonItem});
+            this.XuatLapRapBarButtonItem,
+            this.AllowedMacAddressBarButtonItem,
+            this.ApplicationUserBarButtonItem,
+            this.ApplicationVersionBarButtonItem,
+            this.DatabaseConfigBarButtonItem,
+            this.NasConfigBarButtonItem});
             this.ribbon.Location = new System.Drawing.Point(0, 0);
-            this.ribbon.MaxItemId = 39;
+            this.ribbon.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.ribbon.MaxItemId = 44;
             this.ribbon.Name = "ribbon";
+            this.ribbon.OptionsMenuMinWidth = 660;
+            this.ribbon.PageCategories.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageCategory[] {
+            this.ribbonPageCategory1});
             this.ribbon.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1,
             this.XuatNhapTonKhoRibbonPage});
             this.ribbon.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office365;
-            this.ribbon.Size = new System.Drawing.Size(1303, 161);
+            this.ribbon.Size = new System.Drawing.Size(2301, 308);
             this.ribbon.StatusBar = this.ribbonStatusBar;
             // 
             // DBInfoBarStaticItem
@@ -463,6 +482,73 @@ namespace VnsErp2025.Form
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
             this.XuatLapRapBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.XuatLapRapBarButtonItem_ItemClick);
             // 
+            // AllowedMacAddressBarButtonItem
+            // 
+            this.AllowedMacAddressBarButtonItem.Caption = "Danh sách thiết bị";
+            this.AllowedMacAddressBarButtonItem.Id = 39;
+            this.AllowedMacAddressBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.electronics_desktopmac;
+            this.AllowedMacAddressBarButtonItem.Name = "AllowedMacAddressBarButtonItem";
+            // 
+            // ApplicationUserBarButtonItem
+            // 
+            this.ApplicationUserBarButtonItem.Caption = "Người sử dụng";
+            this.ApplicationUserBarButtonItem.Id = 40;
+            this.ApplicationUserBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.bo_user;
+            this.ApplicationUserBarButtonItem.Name = "ApplicationUserBarButtonItem";
+            // 
+            // ApplicationVersionBarButtonItem
+            // 
+            this.ApplicationVersionBarButtonItem.Caption = "Phiên bản";
+            this.ApplicationVersionBarButtonItem.Id = 41;
+            this.ApplicationVersionBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.version_control;
+            this.ApplicationVersionBarButtonItem.Name = "ApplicationVersionBarButtonItem";
+            // 
+            // DatabaseConfigBarButtonItem
+            // 
+            this.DatabaseConfigBarButtonItem.Caption = "Cài đặt CSDL";
+            this.DatabaseConfigBarButtonItem.Id = 42;
+            this.DatabaseConfigBarButtonItem.ImageOptions.Image = global::VnsErp2025.Properties.Resources.database_32x32;
+            this.DatabaseConfigBarButtonItem.Name = "DatabaseConfigBarButtonItem";
+            this.DatabaseConfigBarButtonItem.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
+            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
+            // 
+            // NasConfigBarButtonItem
+            // 
+            this.NasConfigBarButtonItem.Caption = "Cài đặt NAS";
+            this.NasConfigBarButtonItem.Id = 43;
+            this.NasConfigBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.datasource;
+            this.NasConfigBarButtonItem.Name = "NasConfigBarButtonItem";
+            // 
+            // ribbonPageCategory1
+            // 
+            this.ribbonPageCategory1.Name = "ribbonPageCategory1";
+            this.ribbonPageCategory1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
+            this.VersionAndUserManagementRibbonPage});
+            this.ribbonPageCategory1.Text = "ribbonPageCategory1";
+            // 
+            // VersionAndUserManagementRibbonPage
+            // 
+            this.VersionAndUserManagementRibbonPage.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+            this.VersionAndUserManagementRibbonPageGroup,
+            this.ribbonPageGroup1});
+            this.VersionAndUserManagementRibbonPage.Name = "VersionAndUserManagementRibbonPage";
+            this.VersionAndUserManagementRibbonPage.Text = "Cài đặt bảo mật";
+            // 
+            // VersionAndUserManagementRibbonPageGroup
+            // 
+            this.VersionAndUserManagementRibbonPageGroup.ItemLinks.Add(this.AllowedMacAddressBarButtonItem);
+            this.VersionAndUserManagementRibbonPageGroup.ItemLinks.Add(this.ApplicationUserBarButtonItem);
+            this.VersionAndUserManagementRibbonPageGroup.ItemLinks.Add(this.ApplicationVersionBarButtonItem);
+            this.VersionAndUserManagementRibbonPageGroup.Name = "VersionAndUserManagementRibbonPageGroup";
+            this.VersionAndUserManagementRibbonPageGroup.Text = "Quản lý bảo mật";
+            // 
+            // ribbonPageGroup1
+            // 
+            this.ribbonPageGroup1.ItemLinks.Add(this.DatabaseConfigBarButtonItem);
+            this.ribbonPageGroup1.ItemLinks.Add(this.NasConfigBarButtonItem);
+            this.ribbonPageGroup1.Name = "ribbonPageGroup1";
+            this.ribbonPageGroup1.Text = "ribbonPageGroup1";
+            // 
             // ribbonPage1
             // 
             this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
@@ -555,10 +641,11 @@ namespace VnsErp2025.Form
             // 
             // ribbonStatusBar
             // 
-            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 687);
+            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 1319);
+            this.ribbonStatusBar.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbon;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(1303, 24);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(2301, 48);
             // 
             // documentManager1
             // 
@@ -570,12 +657,13 @@ namespace VnsErp2025.Form
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1303, 711);
+            this.ClientSize = new System.Drawing.Size(2301, 1367);
             this.Controls.Add(this.ribbonStatusBar);
             this.Controls.Add(this.ribbon);
             this.IsMdiContainer = true;
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "FormMain";
             this.Ribbon = this.ribbon;
             this.StatusBar = this.ribbonStatusBar;
@@ -640,5 +728,14 @@ namespace VnsErp2025.Form
         private DevExpress.XtraBars.BarButtonItem barButtonItem2;
         private DevExpress.XtraBars.BarButtonItem NhapLapRapBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem XuatLapRapBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem AllowedMacAddressBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem ApplicationUserBarButtonItem;
+        private DevExpress.XtraBars.Ribbon.RibbonPageCategory ribbonPageCategory1;
+        private DevExpress.XtraBars.Ribbon.RibbonPage VersionAndUserManagementRibbonPage;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup VersionAndUserManagementRibbonPageGroup;
+        private DevExpress.XtraBars.BarButtonItem ApplicationVersionBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem DatabaseConfigBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem NasConfigBarButtonItem;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
     }
 }

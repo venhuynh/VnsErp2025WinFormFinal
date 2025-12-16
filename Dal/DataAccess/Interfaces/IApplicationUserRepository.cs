@@ -14,6 +14,20 @@ public interface IApplicationUserRepository
     #region CRUD - Create
 
     /// <summary>
+    /// Tạo user mới
+    /// </summary>
+    /// <param name="user">ApplicationUser entity</param>
+    /// <returns>ApplicationUser đã được tạo</returns>
+    ApplicationUser Create(ApplicationUser user);
+
+    /// <summary>
+    /// Tạo user mới (async)
+    /// </summary>
+    /// <param name="user">ApplicationUser entity</param>
+    /// <returns>ApplicationUser đã được tạo</returns>
+    Task<ApplicationUser> CreateAsync(ApplicationUser user);
+
+    /// <summary>
     /// Thêm user mới với validation.
     /// </summary>
     /// <param name="userName">Tên đăng nhập</param>
@@ -34,6 +48,32 @@ public interface IApplicationUserRepository
     #endregion
 
     #region CRUD - Read
+
+    /// <summary>
+    /// Lấy tất cả người dùng
+    /// </summary>
+    /// <returns>Danh sách ApplicationUser</returns>
+    List<ApplicationUser> GetAll();
+
+    /// <summary>
+    /// Lấy tất cả người dùng (async)
+    /// </summary>
+    /// <returns>Danh sách ApplicationUser</returns>
+    Task<List<ApplicationUser>> GetAllAsync();
+
+    /// <summary>
+    /// Lấy user theo ID
+    /// </summary>
+    /// <param name="id">ID người dùng</param>
+    /// <returns>ApplicationUser hoặc null</returns>
+    ApplicationUser GetById(Guid id);
+
+    /// <summary>
+    /// Lấy user theo ID (async)
+    /// </summary>
+    /// <param name="id">ID người dùng</param>
+    /// <returns>ApplicationUser hoặc null</returns>
+    Task<ApplicationUser> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Lấy user theo UserName.
@@ -80,6 +120,20 @@ public interface IApplicationUserRepository
     #region CRUD - Update
 
     /// <summary>
+    /// Cập nhật user
+    /// </summary>
+    /// <param name="user">ApplicationUser entity</param>
+    /// <returns>ApplicationUser đã được cập nhật</returns>
+    ApplicationUser Update(ApplicationUser user);
+
+    /// <summary>
+    /// Cập nhật user (async)
+    /// </summary>
+    /// <param name="user">ApplicationUser entity</param>
+    /// <returns>ApplicationUser đã được cập nhật</returns>
+    Task<ApplicationUser> UpdateAsync(ApplicationUser user);
+
+    /// <summary>
     /// Kích hoạt user.
     /// </summary>
     /// <param name="id">ID của user cần kích hoạt</param>
@@ -97,6 +151,22 @@ public interface IApplicationUserRepository
     /// <param name="id">ID của user</param>
     /// <param name="newPassword">Mật khẩu mới</param>
     void ChangePassword(Guid id, string newPassword);
+
+    #endregion
+
+    #region CRUD - Delete
+
+    /// <summary>
+    /// Xóa user
+    /// </summary>
+    /// <param name="id">ID user cần xóa</param>
+    void Delete(Guid id);
+
+    /// <summary>
+    /// Xóa user (async)
+    /// </summary>
+    /// <param name="id">ID user cần xóa</param>
+    Task DeleteAsync(Guid id);
 
     #endregion
 

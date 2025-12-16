@@ -64,7 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authentication\LoginBll.cs" />
+    <Compile Include="Common\AllowedMacAddressBll.cs" />
+    <Compile Include="Common\ApplicationSecurityService.cs" />
     <Compile Include="Common\ApplicationSystemUtils.cs" />
+    <Compile Include="Common\ApplicationUserBll.cs" />
+    <Compile Include="Common\ApplicationVersionBll.cs" />
     <Compile Include="Common\ImageService\ImageCleanupService.cs" />
     <Compile Include="Common\ImageService\ImageCompressionService.cs" />
     <Compile Include="Common\ImageService\IImageService.cs" />

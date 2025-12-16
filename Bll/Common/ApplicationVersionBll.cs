@@ -1,14 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Dal.Connection;
-using Dal.DataAccess.Implementations.Common;
-using Dal.DataAccess.Interfaces.Common;
+using Dal.DataAccess.Implementations.VersionAndUserManagementDal;
+using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 using Dal.DataContext;
-using DTO.Common;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using DTO.VersionAndUserManagementDto;
 
 namespace Bll.Common;
 
@@ -89,7 +90,7 @@ public class ApplicationVersionBll
                 return null;
             }
 
-            var dto = ToDto(version);
+            var dto = version.ToDto();
             _logger?.Info($"Hoàn thành lấy phiên bản đang hoạt động: {dto.Version}");
             return dto;
         }
@@ -101,16 +102,40 @@ public class ApplicationVersionBll
     }
 
     /// <summary>
-    /// Lấy phiên bản hiện tại của ứng dụng từ Assembly
+    /// Lấy phiên bản hiện tại của ứng dụng từ Assembly của project chính (VnsErp2025)
     /// </summary>
     /// <returns>Phiên bản dạng string (ví dụ: "1.0.0.0")</returns>
     public string GetCurrentApplicationVersion()
     {
         try
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            // Lấy assembly của project chính (VnsErp2025) thay vì assembly của Bll
+            // GetEntryAssembly() trả về assembly của entry point (project chính)
+            var assembly = Assembly.GetEntryAssembly();
+            
+            // Nếu GetEntryAssembly() trả về null (có thể xảy ra trong một số trường hợp),
+            // thử lấy từ assembly của VnsErp2025 bằng cách load trực tiếp
+            if (assembly == null)
+            {
+                // Thử load assembly VnsErp2025 bằng cách tìm trong AppDomain
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                assembly = assemblies.FirstOrDefault(a => 
+                    a.GetName().Name != null && 
+                    a.GetName().Name.Equals("VnsErp2025", StringComparison.OrdinalIgnoreCase));
+            }
+            
+            // Nếu vẫn null, fallback về executing assembly (nhưng log warning)
+            if (assembly == null)
+            {
+                _logger?.Warning("Không thể lấy assembly của project chính VnsErp2025, sử dụng executing assembly");
+                assembly = Assembly.GetExecutingAssembly();
+            }
+            
             var version = assembly.GetName().Version;
-            return version?.ToString() ?? "1.0.0.0";
+            var versionString = version?.ToString() ?? "1.0.0.0";
+            
+            _logger?.Debug($"Lấy phiên bản từ assembly: {assembly.GetName().Name}, Version: {versionString}");
+            return versionString;
         }
         catch (Exception ex)
         {
@@ -167,7 +192,7 @@ public class ApplicationVersionBll
         {
             _logger?.Info("Bắt đầu lấy tất cả phiên bản");
             var versions = GetDataAccess().GetAllVersions();
-            var dtos = versions.ConvertAll(ToDto);
+            var dtos = versions.ToDtos();
             _logger?.Info($"Hoàn thành lấy tất cả phiên bản: {dtos.Count} phiên bản");
             return dtos;
         }
@@ -188,9 +213,9 @@ public class ApplicationVersionBll
         try
         {
             _logger?.Info($"Bắt đầu tạo phiên bản mới: {dto.Version}");
-            var entity = ToEntity(dto);
+            var entity = dto.ToEntity();
             var created = GetDataAccess().Create(entity);
-            var result = ToDto(created);
+            var result = created.ToDto();
             _logger?.Info($"Hoàn thành tạo phiên bản mới: {result.Version}");
             return result;
         }
@@ -211,9 +236,9 @@ public class ApplicationVersionBll
         try
         {
             _logger?.Info($"Bắt đầu cập nhật phiên bản: {dto.Version}");
-            var entity = ToEntity(dto);
+            var entity = dto.ToEntity();
             var updated = GetDataAccess().Update(entity);
-            var result = ToDto(updated);
+            var result = updated.ToDto();
             _logger?.Info($"Hoàn thành cập nhật phiên bản: {result.Version}");
             return result;
         }
@@ -296,48 +321,6 @@ public class ApplicationVersionBll
             _logger?.Error($"Lỗi khi cập nhật phiên bản từ Assembly: {ex.Message}", ex);
             throw;
         }
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private ApplicationVersionDto ToDto(ApplicationVersion entity)
-    {
-        if (entity == null)
-            return null;
-
-        return new ApplicationVersionDto
-        {
-            Id = entity.Id,
-            Version = entity.Version,
-            ReleaseDate = entity.ReleaseDate,
-            IsActive = entity.IsActive,
-            Description = entity.Description,
-            CreateDate = entity.CreateDate,
-            CreateBy = entity.CreateBy,
-            ModifiedDate = entity.ModifiedDate,
-            ModifiedBy = entity.ModifiedBy
-        };
-    }
-
-    private ApplicationVersion ToEntity(ApplicationVersionDto dto)
-    {
-        if (dto == null)
-            return null;
-
-        return new ApplicationVersion
-        {
-            Id = dto.Id,
-            Version = dto.Version,
-            ReleaseDate = dto.ReleaseDate,
-            IsActive = dto.IsActive,
-            Description = dto.Description,
-            CreateDate = dto.CreateDate,
-            CreateBy = dto.CreateBy,
-            ModifiedDate = dto.ModifiedDate,
-            ModifiedBy = dto.ModifiedBy
-        };
     }
 
     #endregion
