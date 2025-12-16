@@ -163,9 +163,6 @@ namespace VnsErp2025.Form
         /// </summary>
         private void SetupRibbon()
         {
-            ribbonPage1.Text = @"Trang chủ";
-            PartnerRibbonPageGroup.Text = @"Hệ thống";
-            
             // Đăng ký event handlers cho các nút Version and User Management
             if (AllowedMacAddressBarButtonItem != null)
                 AllowedMacAddressBarButtonItem.ItemClick += AllowedMacAddressBarButtonItem_ItemClick;
