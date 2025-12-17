@@ -360,7 +360,7 @@ namespace MasterData.ProductService
             this.AttributeSearchLookUpEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.AttributeSearchLookUpEdit.DataSource = this.attributeDtoBindingSource;
-            this.AttributeSearchLookUpEdit.DisplayMember = "Name";
+            this.AttributeSearchLookUpEdit.DisplayMember = "ThongTinHtml";
             this.AttributeSearchLookUpEdit.KeyMember = "Name";
             this.AttributeSearchLookUpEdit.Name = "AttributeSearchLookUpEdit";
             this.AttributeSearchLookUpEdit.PopupView = this.AttributeSearchLookUpEdit1View;
