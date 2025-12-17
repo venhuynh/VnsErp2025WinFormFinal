@@ -243,6 +243,9 @@ namespace Bll.MasterData.ProductServiceBll
                 // Lưu biến thể
                 var savedVariantId = await GetDataAccess().SaveAsync(variant, attributeValues);
 
+                // Cập nhật VariantFullName cho biến thể vừa lưu
+                await UpdateVariantFullNameAsync(savedVariantId);
+
                 return savedVariantId;
             }
             catch (Exception ex)
@@ -283,6 +286,25 @@ namespace Bll.MasterData.ProductServiceBll
             catch (Exception ex)
             {
                 throw new Exception($"Lỗi cập nhật VariantFullName: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật VariantFullName cho một biến thể cụ thể
+        /// Gọi method từ repository (tuân thủ nguyên tắc BLL không sử dụng DataContext trực tiếp)
+        /// </summary>
+        /// <param name="variantId">ID biến thể cần cập nhật</param>
+        private async Task UpdateVariantFullNameAsync(Guid variantId)
+        {
+            try
+            {
+                await GetDataAccess().UpdateVariantFullNameAsync(variantId);
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nhưng không throw để không ảnh hưởng đến quá trình lưu chính
+                // Có thể log vào logger nếu cần
+                System.Diagnostics.Debug.WriteLine($"Lỗi cập nhật VariantFullName cho biến thể {variantId}: {ex.Message}");
             }
         }
 

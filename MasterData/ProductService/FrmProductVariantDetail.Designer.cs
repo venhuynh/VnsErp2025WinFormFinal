@@ -82,6 +82,8 @@ namespace MasterData.ProductService
             this.AttributeSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.attributeDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtml1 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.AttributeHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colAttributeName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.productServiceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -104,8 +106,6 @@ namespace MasterData.ProductService
             this.simpleLabelItem3 = new DevExpress.XtraLayout.SimpleLabelItem();
             this.ItemForUnitName = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colThongTinHtml1 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.AttributeHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -116,6 +116,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.AttributeSearchLookUpEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.attributeDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeSearchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AttributeHtmlHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductNameSearchLookupEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
@@ -135,7 +136,6 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUnitName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AttributeHtmlHypertextLabel)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -382,6 +382,19 @@ namespace MasterData.ProductService
             this.AttributeSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.AttributeSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
+            // colThongTinHtml1
+            // 
+            this.colThongTinHtml1.ColumnEdit = this.AttributeHtmlHypertextLabel;
+            this.colThongTinHtml1.FieldName = "ThongTinHtml";
+            this.colThongTinHtml1.Name = "colThongTinHtml1";
+            this.colThongTinHtml1.Visible = true;
+            this.colThongTinHtml1.VisibleIndex = 0;
+            // 
+            // AttributeHtmlHypertextLabel
+            // 
+            this.AttributeHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.AttributeHtmlHypertextLabel.Name = "AttributeHtmlHypertextLabel";
+            // 
             // colAttributeName
             // 
             this.colAttributeName.FieldName = "Value";
@@ -419,6 +432,8 @@ namespace MasterData.ProductService
             this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
             this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.searchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.searchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
             // colThongTinHtml
@@ -504,6 +519,8 @@ namespace MasterData.ProductService
             this.UnitOfMeasureGridView.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.UnitOfMeasureGridView.Name = "UnitOfMeasureGridView";
             this.UnitOfMeasureGridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.UnitOfMeasureGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.UnitOfMeasureGridView.OptionsView.RowAutoHeight = true;
             this.UnitOfMeasureGridView.OptionsView.ShowGroupPanel = false;
             // 
             // colDisplayHtml
@@ -668,19 +685,6 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Size = new System.Drawing.Size(640, 473);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // colThongTinHtml1
-            // 
-            this.colThongTinHtml1.ColumnEdit = this.AttributeHtmlHypertextLabel;
-            this.colThongTinHtml1.FieldName = "ThongTinHtml";
-            this.colThongTinHtml1.Name = "colThongTinHtml1";
-            this.colThongTinHtml1.Visible = true;
-            this.colThongTinHtml1.VisibleIndex = 0;
-            // 
-            // AttributeHtmlHypertextLabel
-            // 
-            this.AttributeHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.AttributeHtmlHypertextLabel.Name = "AttributeHtmlHypertextLabel";
-            // 
             // FrmProductVariantDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -704,6 +708,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.AttributeSearchLookUpEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.attributeDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeSearchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AttributeHtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductNameSearchLookupEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
@@ -723,7 +728,6 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUnitName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AttributeHtmlHypertextLabel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

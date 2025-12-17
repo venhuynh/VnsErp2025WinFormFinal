@@ -199,6 +199,12 @@ public interface IProductVariantRepository
     /// </summary>
     Task UpdateAllVariantFullNamesAsync();
 
+    /// <summary>
+    /// Cập nhật VariantFullName cho một biến thể cụ thể
+    /// </summary>
+    /// <param name="variantId">ID biến thể cần cập nhật</param>
+    Task UpdateVariantFullNameAsync(Guid variantId);
+
     #endregion
 
     string GetForNewAttribute(Guid variantId);
