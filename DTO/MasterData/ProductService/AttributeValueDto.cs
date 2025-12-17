@@ -74,7 +74,7 @@ public class AttributeValueDto : INotifyPropertyChanged
     /// Format giống ProductServiceCategoryDto.CategoryInfoHtml (không dùng &lt;size&gt;)
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
-    [DisplayName("Thông tin HTML")]
+    [DisplayName("Tên thuộc tính đầy đủ")]
     [Description("Thông tin thuộc tính dưới dạng HTML")]
     public string AttributeInfoHtml
     {

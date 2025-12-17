@@ -348,8 +348,9 @@ namespace MasterData.ProductService
             // 
             // colValue
             // 
+            this.colValue.Caption = "Tên thuộc tính";
             this.colValue.ColumnEdit = this.AttributeSearchLookUpEdit;
-            this.colValue.FieldName = "AttributeName";
+            this.colValue.FieldName = "AttributeInfoHtml";
             this.colValue.Name = "colValue";
             this.colValue.Visible = true;
             this.colValue.VisibleIndex = 0;

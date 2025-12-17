@@ -70,6 +70,7 @@ namespace MasterData.ProductService
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.colProductName = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridView)).BeginInit();
@@ -107,7 +108,8 @@ namespace MasterData.ProductService
             // 
             this.ProductVariantListGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colVariantFullNameHtml,
-            this.colThumbnailImage});
+            this.colThumbnailImage,
+            this.colProductName});
             this.ProductVariantListGridView.GridControl = this.ProductVariantListGridControl;
             this.ProductVariantListGridView.GroupSummary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
             new DevExpress.XtraGrid.GridGroupSummaryItem(DevExpress.Data.SummaryItemType.Count, "VariantCode", null, " [Có {0} biến thể]")});
@@ -146,7 +148,7 @@ namespace MasterData.ProductService
             this.colVariantFullNameHtml.MinWidth = 300;
             this.colVariantFullNameHtml.Name = "colVariantFullNameHtml";
             this.colVariantFullNameHtml.Visible = true;
-            this.colVariantFullNameHtml.VisibleIndex = 2;
+            this.colVariantFullNameHtml.VisibleIndex = 3;
             this.colVariantFullNameHtml.Width = 500;
             // 
             // VariantFullNameHtmlHypertextLabel
@@ -417,6 +419,13 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Size = new System.Drawing.Size(961, 411);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // colProductName
+            // 
+            this.colProductName.FieldName = "ProductName";
+            this.colProductName.Name = "colProductName";
+            this.colProductName.Visible = true;
+            this.colProductName.VisibleIndex = 2;
+            // 
             // FrmProductVariant
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -478,5 +487,6 @@ namespace MasterData.ProductService
         private BarButtonItem UpdateProductVariantFullNameBarButtonItem;
         private GridColumn colThumbnailImage;
         private RepositoryItemPictureEdit ThumbnailItemPictureEdit;
+        private GridColumn colProductName;
     }
 }
