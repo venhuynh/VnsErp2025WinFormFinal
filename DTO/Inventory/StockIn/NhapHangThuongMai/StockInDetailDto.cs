@@ -315,6 +315,9 @@ public static class StockInDetailDtoConverter
             Vat = entity.Vat,
             LineNumber = 0, // Sẽ được cập nhật sau nếu cần
             GhiChu = entity.GhiChu ?? string.Empty
+            // Các trường chiết khấu: DiscountPercentage, DiscountAmount, TotalAmountAfterDiscount
+            // Sẽ được map khi DTO có các property tương ứng
+            // TODO: Thêm các property DiscountPercentage, DiscountAmount, TotalAmountAfterDiscount vào StockInDetailDto
         };
 
         // Lấy thông tin ProductVariant nếu có

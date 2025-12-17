@@ -140,7 +140,10 @@ namespace Bll.Inventory.StockInOut
                 TotalVat = dto.TotalVat,
                 TotalAmountIncludedVat = dto.TotalAmountIncludedVat,
                 NguoiNhanHang = dto.NguoiNhanHang,
-                NguoiGiaoHang = dto.NguoiGiaoHang
+                NguoiGiaoHang = dto.NguoiGiaoHang,
+                // Các trường chiết khấu - sẽ được set từ DTO nếu có, hoặc null nếu chưa có trong DTO
+                DiscountAmount = null, // TODO: Thêm property DiscountAmount vào StockInMasterDto
+                TotalAmountAfterDiscount = null // TODO: Thêm property TotalAmountAfterDiscount vào StockInMasterDto
             };
         }
 
@@ -162,7 +165,10 @@ namespace Bll.Inventory.StockInOut
                 VatAmount = dto.VatAmount, // Computed property value
                 TotalAmount = dto.TotalAmount, // Computed property value
                 TotalAmountIncludedVat = dto.TotalAmountIncludedVat, // Computed property value
-                
+                DiscountPercentage = null, // TODO: Thêm property DiscountPercentage vào StockInDetailDto
+                DiscountAmount = null, // TODO: Thêm property DiscountAmount vào StockInDetailDto
+                TotalAmountAfterDiscount = null, // TODO: Thêm property TotalAmountAfterDiscount vào StockInDetailDto
+                GhiChu = dto.GhiChu ?? string.Empty
             };
         }
 
