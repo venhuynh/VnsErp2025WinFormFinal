@@ -88,45 +88,68 @@ public class AttributeDto : INotifyPropertyChanged
             return info;
         }
     }
-    #endregion
 
-    #region Validation Helpers
-    public bool IsValid()
+    /// <summary>
+    /// Thông tin thuộc tính dưới dạng HTML theo format DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
+    /// Format giống ProductServiceCategoryDto.CategoryInfoHtml (không dùng &lt;size&gt;)
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Thông tin HTML")]
+    [Description("Thông tin thuộc tính dưới dạng HTML")]
+    public string ThongTinHtml
     {
-        return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(DataType);
-    }
-
-    public List<string> GetValidationErrors()
-    {
-        var errors = new List<string>();
-        if (string.IsNullOrWhiteSpace(Name)) errors.Add("Tên thuộc tính không được để trống");
-        if (string.IsNullOrWhiteSpace(DataType)) errors.Add("Kiểu dữ liệu không được để trống");
-        if (Name != null && Name.Length > 100) errors.Add("Tên thuộc tính không được vượt quá 100 ký tự");
-        if (DataType != null && DataType.Length > 50) errors.Add("Kiểu dữ liệu không được vượt quá 50 ký tự");
-        if (Description != null && Description.Length > 255) errors.Add("Mô tả không được vượt quá 255 ký tự");
-        return errors;
-    }
-    #endregion
-
-    #region Clone/Update
-    public AttributeDto Clone()
-    {
-        return new AttributeDto
+        get
         {
-            Id = Id,
-            Name = Name,
-            DataType = DataType,
-            Description = Description,
-            AttributeValues = AttributeValues?.ConvertAll(v => v.Clone())
-        };
-    }
+            var html = string.Empty;
 
-    public void UpdateFrom(AttributeDto other)
-    {
-        if (other == null) return;
-        Name = other.Name;
-        DataType = other.DataType;
-        Description = other.Description;
+            // Tên thuộc tính (màu xanh, đậm)
+            var attributeName = Name ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(attributeName))
+            {
+                html += $"<b><color='blue'>{attributeName}</color></b>";
+            }
+
+            // Kiểu dữ liệu (nếu có, màu xám)
+            var dataType = DataType ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(dataType))
+            {
+                if (!string.IsNullOrWhiteSpace(html))
+                    html += " ";
+                html += $"<color='#757575'>({dataType})</color>";
+            }
+
+            html += "<br>";
+
+            // Thông tin bổ sung
+            var infoParts = new List<string>();
+
+            // Kiểu dữ liệu
+            if (!string.IsNullOrWhiteSpace(dataType))
+            {
+                infoParts.Add($"<color='#757575'>Kiểu dữ liệu:</color> <b>{dataType}</b>");
+            }
+
+            // Số lượng giá trị (nếu có)
+            var valueCount = AttributeValues?.Count ?? 0;
+            if (valueCount > 0)
+            {
+                infoParts.Add($"<color='#757575'>Số giá trị:</color> <b>{valueCount}</b>");
+            }
+
+            if (infoParts.Any())
+            {
+                html += string.Join(" | ", infoParts) + "<br>";
+            }
+
+            // Mô tả (nếu có)
+            if (!string.IsNullOrWhiteSpace(Description))
+            {
+                html += $"<color='#757575'>Mô tả:</color> <b>{Description}</b>";
+            }
+
+            return html;
+        }
     }
     #endregion
 
@@ -233,47 +256,5 @@ public static class AttributeConverters
         };
     }
 
-    public static List<AttributeValueDto> ToDtoList(this IEnumerable<AttributeValue> entities)
-    {
-        if (entities == null) return new List<AttributeValueDto>();
-        return entities.Select(e => e.ToDto()).ToList();
-    }
-
-    public static AttributeValue ToEntity(this AttributeValueDto dto)
-    {
-        if (dto == null) return null;
-        return new AttributeValue
-        {
-            Id = dto.Id,
-            AttributeId = dto.AttributeId,
-            Value = dto.Value
-        };
-    }
-    #endregion
-
-    #region VariantAttribute -> VariantAttributeDto
-    public static VariantAttributeDto ToDto(this VariantAttribute entity)
-    {
-        if (entity == null) return null;
-        return new VariantAttributeDto
-        {
-            VariantId = entity.VariantId,
-            AttributeId = entity.AttributeId,
-            AttributeValueId = entity.AttributeValueId,
-            AttributeName = entity.Attribute?.Name,
-            AttributeValue = entity.AttributeValue?.Value
-        };
-    }
-
-    public static VariantAttribute ToEntity(this VariantAttributeDto dto)
-    {
-        if (dto == null) return null;
-        return new VariantAttribute
-        {
-            VariantId = dto.VariantId,
-            AttributeId = dto.AttributeId,
-            AttributeValueId = dto.AttributeValueId
-        };
-    }
     #endregion
 }

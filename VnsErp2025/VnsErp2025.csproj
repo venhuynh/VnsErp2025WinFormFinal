@@ -200,6 +200,7 @@
     <Content Include="Docs\Promt\Viết document\Prompt 1 – Viết tài liệu DEV %28rất nên dùng%29.txt" />
     <Content Include="Docs\Promt\Viết document\Prompt 2 – Viết tài liệu HƯỚNG DẪN SỬ DỤNG %28EU%29.txt" />
     <None Include="Resources\data-classification.svg" />
+    <Content Include="Docs\Script tạo data mặc định\Insert_New_ApplicationVersion.sql" />
     <Content Include="Docs\Script tạo data mặc định\Insert_Attribute_Default_Data.sql" />
     <Content Include="VNS Logo - Website.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

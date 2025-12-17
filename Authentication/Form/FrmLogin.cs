@@ -1,4 +1,4 @@
-﻿using Bll.Authentication;
+using Bll.Authentication;
 using Bll.Common;
 using Common.Utils;
 using Common.Validation;
@@ -36,7 +36,8 @@ namespace Authentication.Form
             SetupEventHandlers();
             LoadSavedCredentials();
 
-            TaoTaiKhoanAdminPublic();
+            // Không gọi TaoTaiKhoanAdminPublic() trong constructor vì có thể database chưa được cấu hình
+            // Có thể gọi từ bên ngoài nếu cần thiết
         }
         #endregion
 

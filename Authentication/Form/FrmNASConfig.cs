@@ -47,6 +47,26 @@ namespace Authentication.Form
         {
             try
             {
+                // Không load dữ liệu từ database trong constructor để tránh lỗi khi database chưa được cấu hình
+                // Dữ liệu sẽ được load trong Load event
+                
+                // Đăng ký Load event để load dữ liệu khi form hiển thị
+                this.Load += FrmNASConfig_Load;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khởi tạo form FrmNASConfig: {ex.Message}", ex);
+                MsgBox.ShowException(ex, "Lỗi khởi tạo form");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện Load form - Load dữ liệu từ database khi form hiển thị
+        /// </summary>
+        private void FrmNASConfig_Load(object sender, EventArgs e)
+        {
+            try
+            {
                 // Load dữ liệu từ Database (bảng Setting)
                 TaiDuLieuTuAppConfig();
 
@@ -55,8 +75,9 @@ namespace Authentication.Form
             }
             catch (Exception ex)
             {
-                _logger.Error($"Lỗi khởi tạo form FrmNASConfig: {ex.Message}", ex);
-                MsgBox.ShowException(ex, "Lỗi khởi tạo form");
+                _logger.Error($"Lỗi load dữ liệu form FrmNASConfig: {ex.Message}", ex);
+                // Không hiển thị message box để tránh block form, chỉ log lỗi
+                // Form vẫn có thể được sử dụng với giá trị mặc định
             }
         }
 

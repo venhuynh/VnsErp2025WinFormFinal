@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows.Forms;
 using DevExpress.XtraBars;
 using DevExpress.XtraDataLayout;
@@ -70,10 +70,6 @@ namespace MasterData.ProductService
             this.AttributeGridControl = new DevExpress.XtraGrid.GridControl();
             this.attributeDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colId1 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colName = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDataType = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colDescription1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.NameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.DataTypeTextEdit = new DevExpress.XtraEditors.TextEdit();
@@ -84,6 +80,8 @@ namespace MasterData.ProductService
             this.ItemForDataType = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForDescription = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ThongTinHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -101,6 +99,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDataType)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDescription)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinHtmlHypertextLabel)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -304,7 +303,8 @@ namespace MasterData.ProductService
             this.AttributeGridControl.MenuManager = this.barManager1;
             this.AttributeGridControl.Name = "AttributeGridControl";
             this.AttributeGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemMemoEdit1});
+            this.repositoryItemMemoEdit1,
+            this.ThongTinHtmlHypertextLabel});
             this.AttributeGridControl.Size = new System.Drawing.Size(634, 487);
             this.AttributeGridControl.TabIndex = 4;
             this.AttributeGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -312,51 +312,30 @@ namespace MasterData.ProductService
             // 
             // attributeDtoBindingSource
             // 
-            this.attributeDtoBindingSource.DataSource = typeof(AttributeDto);
+            this.attributeDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.AttributeDto);
             // 
             // AttributeGridView
             // 
+            this.AttributeGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.AttributeGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.AttributeGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.AttributeGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.AttributeGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colId1,
-            this.colName,
-            this.colDataType,
-            this.colDescription1});
+            this.colThongTinHtml});
             this.AttributeGridView.GridControl = this.AttributeGridControl;
             this.AttributeGridView.IndicatorWidth = 50;
             this.AttributeGridView.Name = "AttributeGridView";
             this.AttributeGridView.OptionsDetail.EnableMasterViewMode = false;
             this.AttributeGridView.OptionsSelection.MultiSelect = true;
             this.AttributeGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.AttributeGridView.OptionsView.ColumnAutoWidth = false;
+            this.AttributeGridView.OptionsView.EnableAppearanceEvenRow = true;
+            this.AttributeGridView.OptionsView.EnableAppearanceOddRow = true;
             this.AttributeGridView.OptionsView.RowAutoHeight = true;
             this.AttributeGridView.OptionsView.ShowAutoFilterRow = true;
             this.AttributeGridView.OptionsView.ShowGroupPanel = false;
-            // 
-            // colId1
-            // 
-            this.colId1.FieldName = "Id";
-            this.colId1.Name = "colId1";
-            // 
-            // colName
-            // 
-            this.colName.FieldName = "Name";
-            this.colName.Name = "colName";
-            this.colName.Visible = true;
-            this.colName.VisibleIndex = 1;
-            // 
-            // colDataType
-            // 
-            this.colDataType.FieldName = "DataType";
-            this.colDataType.Name = "colDataType";
-            this.colDataType.Visible = true;
-            this.colDataType.VisibleIndex = 2;
-            // 
-            // colDescription1
-            // 
-            this.colDescription1.ColumnEdit = this.repositoryItemMemoEdit1;
-            this.colDescription1.FieldName = "Description";
-            this.colDescription1.Name = "colDescription1";
-            this.colDescription1.Visible = true;
-            this.colDescription1.VisibleIndex = 3;
+            this.AttributeGridView.OptionsView.ShowViewCaption = true;
+            this.AttributeGridView.ViewCaption = "BẢNG QUẢN LÝ THUỘC TÍNH";
             // 
             // repositoryItemMemoEdit1
             // 
@@ -451,6 +430,36 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Size = new System.Drawing.Size(640, 493);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // colThongTinHtml
+            // 
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colThongTinHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin thuộc tính";
+            this.colThongTinHtml.ColumnEdit = this.ThongTinHtmlHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 350;
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.OptionsColumn.AllowEdit = false;
+            this.colThongTinHtml.OptionsColumn.ReadOnly = true;
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.Width = 600;
+            // 
+            // ThongTinHtmlHypertextLabel
+            // 
+            this.ThongTinHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ThongTinHtmlHypertextLabel.Name = "ThongTinHtmlHypertextLabel";
+            // 
             // FrmAttribute
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -482,6 +491,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDataType)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDescription)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinHtmlHypertextLabel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -522,11 +532,9 @@ namespace MasterData.ProductService
         private LayoutControlItem ItemForDescription;
         private LayoutControlItem layoutControlItem1;
         private BindingSource attributeDtoBindingSource;
-        private GridColumn colId1;
-        private GridColumn colName;
-        private GridColumn colDataType;
-        private GridColumn colDescription1;
         private RepositoryItemMemoEdit repositoryItemMemoEdit1;
         private BarButtonItem RefreshBarButtonItem;
+        private GridColumn colThongTinHtml;
+        private RepositoryItemHypertextLabel ThongTinHtmlHypertextLabel;
     }
 }

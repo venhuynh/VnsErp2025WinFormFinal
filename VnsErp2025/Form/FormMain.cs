@@ -217,13 +217,20 @@ namespace VnsErp2025.Form
                 {
                     var version = activeVersion.Version ?? "N/A";
                     var releaseDate = activeVersion.ReleaseDate.ToString("dd/MM/yyyy");
-                    ReleaserVersionAndDateBarStaticItem.Caption = $"Phiên bản: {version} | Ngày phát hành: {releaseDate}";
+                    var statusIcon = activeVersion.IsActive ? "<color=#4CAF50>●</color>" : "<color=#757575>○</color>";
+                    
+                    // Format HTML với màu sắc và bold để làm nổi bật
+                    ReleaserVersionAndDateBarStaticItem.Caption = 
+                        $@"<color=#757575>Phiên bản:</color> <b><color=#2196F3>{version}</color></b> {statusIcon} | " +
+                        $@"<color=#757575>Ngày phát hành:</color> <b><color=#4CAF50>{releaseDate}</color></b>";
                 }
                 else if (ReleaserVersionAndDateBarStaticItem != null)
                 {
                     // Nếu không có phiên bản active, hiển thị phiên bản từ Assembly
                     var currentVersion = _applicationVersionBll?.GetCurrentApplicationVersion() ?? "N/A";
-                    ReleaserVersionAndDateBarStaticItem.Caption = $"Phiên bản: {currentVersion} | Chưa có thông tin phát hành";
+                    ReleaserVersionAndDateBarStaticItem.Caption = 
+                        $@"<color=#757575>Phiên bản:</color> <b><color=#2196F3>{currentVersion}</color></b> | " +
+                        $@"<color=#757575>Chưa có thông tin phát hành</color>";
                 }
             }
             catch (Exception ex)
@@ -232,7 +239,7 @@ namespace VnsErp2025.Form
                 System.Diagnostics.Debug.WriteLine($"Lỗi load thông tin phiên bản: {ex.Message}");
                 if (ReleaserVersionAndDateBarStaticItem != null)
                 {
-                    ReleaserVersionAndDateBarStaticItem.Caption = "Phiên bản: Không xác định";
+                    ReleaserVersionAndDateBarStaticItem.Caption = "@<color=#757575>Phiên bản:</color> <color=#F44336>Không xác định</color>";
                 }
             }
         }
