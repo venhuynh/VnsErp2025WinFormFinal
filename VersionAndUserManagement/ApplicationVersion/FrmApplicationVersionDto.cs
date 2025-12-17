@@ -164,7 +164,7 @@ namespace VersionAndUserManagement.ApplicationVersion
             var totalCount = _dataList?.Count ?? 0;
             var activeCount = _dataList?.Count(x => x.IsActive) ?? 0;
 
-            DataSummaryBarStaticItem.Caption = $@"Tổng: {totalCount} | Hoạt động: {activeCount}";
+            DataSummaryBarStaticItem.Caption = $@"<color=#757575>Tổng:</color> <b><color=#2196F3>{totalCount}</color></b> | <color=#757575>Hoạt động:</color> <b><color=#4CAF50>{activeCount}</color></b>";
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace VersionAndUserManagement.ApplicationVersion
                     await ExecuteWithWaitingFormAsync(async () =>
                     {
                         await Task.Run(() => _applicationVersionBll.UpdateVersionFromAssembly());
-                        ShowInfo($"Đã cập nhật phiên bản '{currentVersion}' vào database thành công!");
+                        ShowInfo($"Đã cập nhật phiên bản <b>'{currentVersion}'</b> vào database thành công!");
                         await LoadDataAsyncWithoutSplash();
                     });
                 }
@@ -301,7 +301,7 @@ namespace VersionAndUserManagement.ApplicationVersion
                 else
                 {
                     _selectedItem = null;
-                    SelectedRowBarStaticItem.Caption = @"Chưa chọn dòng nào";
+                    SelectedRowBarStaticItem.Caption = @"<color=#757575>Chưa chọn dòng nào</color>";
                 }
                 UpdateButtonStates();
             }
@@ -397,8 +397,8 @@ namespace VersionAndUserManagement.ApplicationVersion
 
                         // Hiển thị thông báo thành công
                         var message = fieldName == nameof(ApplicationVersionDto.IsActive)
-                            ? $"Đã cập nhật trạng thái {(updatedDto.IsActive ? "Hoạt động" : "Không hoạt động")} cho phiên bản {updatedDto.Version}"
-                            : $"Đã cập nhật ghi chú phát hành cho phiên bản {updatedDto.Version}";
+                            ? $"Đã cập nhật trạng thái <b>{(updatedDto.IsActive ? "Hoạt động" : "Không hoạt động")}</b> cho phiên bản <b>{updatedDto.Version}</b>"
+                            : $"Đã cập nhật <b>ghi chú phát hành</b> cho phiên bản <b>{updatedDto.Version}</b>";
                         
                         ShowInfo(message);
                     }
@@ -535,11 +535,13 @@ namespace VersionAndUserManagement.ApplicationVersion
         {
             if (_selectedItem != null)
             {
-                SelectedRowBarStaticItem.Caption = @$"Đang chọn: {_selectedItem.Version}";
+                var statusColor = _selectedItem.IsActive ? "#4CAF50" : "#757575";
+                var statusText = _selectedItem.IsActive ? "●" : "○";
+                SelectedRowBarStaticItem.Caption = $@"<color=#757575>Đang chọn:</color> <b><color=#2196F3>{_selectedItem.Version}</color></b> <color={statusColor}>{statusText}</color>";
             }
             else
             {
-                SelectedRowBarStaticItem.Caption = @"Chưa chọn dòng nào";
+                SelectedRowBarStaticItem.Caption = @"<color=#757575>Chưa chọn dòng nào</color>";
             }
         }
 

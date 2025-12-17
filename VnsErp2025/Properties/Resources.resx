@@ -247,4 +247,7 @@
   <data name="datasource" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\datasource.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
+  <data name="data-classification" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\data-classification.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+  </data>
 </root>

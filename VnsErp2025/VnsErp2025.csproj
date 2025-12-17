@@ -158,6 +158,10 @@
       <Project>{2A5A6A1E-6435-45E2-8F3D-62D70CB8FA76}</Project>
       <Name>Dal</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{77B6B4B6-D129-4A78-BD8D-9FCA5F9B4A1C}</Project>
+      <Name>DTO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Inventory\Inventory.csproj">
       <Project>{055c0170-a359-48b9-95d9-7260b17e8e20}</Project>
       <Name>Inventory</Name>
@@ -195,6 +199,8 @@
     <None Include="Resources\datasource.svg" />
     <Content Include="Docs\Promt\Viết document\Prompt 1 – Viết tài liệu DEV %28rất nên dùng%29.txt" />
     <Content Include="Docs\Promt\Viết document\Prompt 2 – Viết tài liệu HƯỚNG DẪN SỬ DỤNG %28EU%29.txt" />
+    <None Include="Resources\data-classification.svg" />
+    <Content Include="Docs\Script tạo data mặc định\Insert_Attribute_Default_Data.sql" />
     <Content Include="VNS Logo - Website.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -243,7 +249,7 @@
   </Target>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties Reactor_Output="&lt;AssemblyLocation&gt;\&lt;AssemblyFileName&gt;" Reactor_Configuration="Release" Reactor_Project="" Reactor_Commands="" Reactor_Deploy="0" Reactor_Enabled="1" />
+      <UserProperties Reactor_Enabled="1" Reactor_Deploy="0" Reactor_Commands="" Reactor_Project="" Reactor_Configuration="Release" Reactor_Output="&lt;AssemblyLocation&gt;\&lt;AssemblyFileName&gt;" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

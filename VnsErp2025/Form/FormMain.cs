@@ -28,6 +28,7 @@ using Inventory.Management;
 using VersionAndUserManagement.AllowedMacAddress;
 using VersionAndUserManagement.UserManagement;
 using VersionAndUserManagement.ApplicationVersion;
+using Bll.Common;
 
 // ReSharper disable InconsistentNaming
 
@@ -65,6 +66,11 @@ namespace VnsErp2025.Form
         /// </summary>
         private UpdateChecker _updateChecker;
 
+        /// <summary>
+        /// Business Logic Layer cho phiên bản ứng dụng
+        /// </summary>
+        private ApplicationVersionBll _applicationVersionBll;
+
         #endregion
 
         #region Constructor
@@ -99,6 +105,7 @@ namespace VnsErp2025.Form
                 SetupSuperToolTips();
                 SetupDatabaseRefreshTimer();
                 SetupUpdateChecker();
+                LoadVersionInfo();
                 //ShowWelcomeMessage();
 
                 SplashScreenHelper.CloseSplashScreen();
@@ -178,6 +185,9 @@ namespace VnsErp2025.Form
             
             if (NasConfigBarButtonItem != null)
                 NasConfigBarButtonItem.ItemClick += NasConfigBarButtonItem_ItemClick;
+
+            if (AttributeBarButtonItem != null)
+                AttributeBarButtonItem.ItemClick += AttributeBarButtonItem_ItemClick;
         }
 
         /// <summary>
@@ -187,6 +197,44 @@ namespace VnsErp2025.Form
         {
             SetupUserInfoInStatusBar();
             SetupDatabaseInfoInStatusBar();
+        }
+
+        /// <summary>
+        /// Tải thông tin phiên bản và ngày phát hành hiện tại vào status bar
+        /// </summary>
+        private void LoadVersionInfo()
+        {
+            try
+            {
+                if (_applicationVersionBll == null)
+                {
+                    _applicationVersionBll = new ApplicationVersionBll();
+                }
+
+                var activeVersion = _applicationVersionBll.GetActiveVersion();
+                
+                if (activeVersion != null && ReleaserVersionAndDateBarStaticItem != null)
+                {
+                    var version = activeVersion.Version ?? "N/A";
+                    var releaseDate = activeVersion.ReleaseDate.ToString("dd/MM/yyyy");
+                    ReleaserVersionAndDateBarStaticItem.Caption = $"Phiên bản: {version} | Ngày phát hành: {releaseDate}";
+                }
+                else if (ReleaserVersionAndDateBarStaticItem != null)
+                {
+                    // Nếu không có phiên bản active, hiển thị phiên bản từ Assembly
+                    var currentVersion = _applicationVersionBll?.GetCurrentApplicationVersion() ?? "N/A";
+                    ReleaserVersionAndDateBarStaticItem.Caption = $"Phiên bản: {currentVersion} | Chưa có thông tin phát hành";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Không block ứng dụng nếu có lỗi khi load phiên bản
+                System.Diagnostics.Debug.WriteLine($"Lỗi load thông tin phiên bản: {ex.Message}");
+                if (ReleaserVersionAndDateBarStaticItem != null)
+                {
+                    ReleaserVersionAndDateBarStaticItem.Caption = "Phiên bản: Không xác định";
+                }
+            }
         }
 
         /// <summary>
@@ -444,6 +492,15 @@ namespace VnsErp2025.Form
                         BienTheSPDVBarButtonItem,
                         title: "<b><color=Purple>🎨 Biến thể sản phẩm - Dịch vụ</color></b>",
                         content: "Quản lý các biến thể của sản phẩm/dịch vụ (ví dụ: Màu sắc, Kích thước, v.v.).<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa biến thể<br/>• Quản lý thuộc tính biến thể (màu, size, v.v.)<br/>• Gán biến thể cho sản phẩm<br/><br/><color=Gray>Lưu ý:</color> Biến thể giúp quản lý các phiên bản khác nhau của cùng một sản phẩm."
+                    );
+                }
+
+                if (AttributeBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        AttributeBarButtonItem,
+                        title: "<b><color=Purple>🏷️ Thuộc tính</color></b>",
+                        content: "Quản lý các thuộc tính của sản phẩm/dịch vụ (ví dụ: Màu sắc, Kích thước, Chất liệu, v.v.).<br/><br/><b>Chức năng:</b><br/>• Thêm, sửa, xóa thuộc tính<br/>• Quản lý kiểu dữ liệu của thuộc tính<br/>• Gán thuộc tính cho sản phẩm/dịch vụ<br/><br/><color=Gray>Lưu ý:</color> Thuộc tính giúp mô tả chi tiết các đặc điểm của sản phẩm/dịch vụ."
                     );
                 }
 
@@ -1174,6 +1231,27 @@ namespace VnsErp2025.Form
                 MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý đối tác");
             }
         }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Attribute - hiển thị form quản lý thuộc tính
+        /// </summary>
+        /// <param name="sender">Đối tượng gửi sự kiện</param>
+        /// <param name="e">Thông tin sự kiện</param>
+        private void AttributeBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+
+                ApplicationSystemUtils.ShowOrActivateForm<FrmAttribute>(this);
+
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý thuộc tính");
+            }
+        }
         #endregion
 
         #endregion
@@ -1577,13 +1655,29 @@ namespace VnsErp2025.Form
         {
             try
             {
-                SplashScreenHelper.ShowVnsSplashScreen();
-                ApplicationSystemUtils.ShowOrActivateForm<FrmNASConfig>(this);
-                SplashScreenHelper.CloseSplashScreen();
+                ShowNASConfigForm();
             }
             catch (Exception ex)
             {
                 MsgBox.ShowException(ex, "Lỗi hiển thị form cấu hình NAS");
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị form cấu hình NAS và xử lý kết quả
+        /// </summary>
+        private void ShowNASConfigForm()
+        {
+            using (OverlayManager.ShowScope(this))
+            {
+                using (var configForm = new FrmNASConfig())
+                {
+                    var result = configForm.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        MsgBox.ShowSuccess("Cấu hình NAS đã được cập nhật.", "Thông báo");
+                    }
+                }
             }
         }
 

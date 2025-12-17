@@ -1,22 +1,12 @@
 using Authentication.Form;
 using Bll.Common;
+using Common.Appconfig;
 using Common.Utils;
 using Dal.Connection;
-using Inventory.Management;
-using Inventory.OverlayForm;
-using Inventory.Query;
-using Inventory.StockOut.XuatLapRap;
-using Inventory.StockOut.XuatNoiBo;
-using MasterData.Customer;
+using Microsoft.Win32;
 using System;
 using System.Windows.Forms;
-using VersionAndUserManagement.AllowedMacAddress;
-using VersionAndUserManagement.ApplicationVersion;
-using VersionAndUserManagement.RoleManagement;
-using VersionAndUserManagement.UserManagement;
 using VnsErp2025.Form;
-using Microsoft.Win32;
-using Common.Appconfig;
 
 
 namespace VnsErp2025

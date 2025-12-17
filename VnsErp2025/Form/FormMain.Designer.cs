@@ -72,6 +72,7 @@ namespace VnsErp2025.Form
             this.ApplicationVersionBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DatabaseConfigBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.NasConfigBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.AttributeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPageCategory1 = new DevExpress.XtraBars.Ribbon.RibbonPageCategory();
             this.VersionAndUserManagementRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.VersionAndUserManagementRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -88,6 +89,7 @@ namespace VnsErp2025.Form
             this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
             this.documentManager1 = new DevExpress.XtraBars.Docking2010.DocumentManager(this.components);
             this.tabbedView1 = new DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView(this.components);
+            this.ReleaserVersionAndDateBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.documentManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).BeginInit();
@@ -141,9 +143,11 @@ namespace VnsErp2025.Form
             this.ApplicationUserBarButtonItem,
             this.ApplicationVersionBarButtonItem,
             this.DatabaseConfigBarButtonItem,
-            this.NasConfigBarButtonItem});
+            this.NasConfigBarButtonItem,
+            this.AttributeBarButtonItem,
+            this.ReleaserVersionAndDateBarStaticItem});
             this.ribbon.Location = new System.Drawing.Point(0, 0);
-            this.ribbon.MaxItemId = 44;
+            this.ribbon.MaxItemId = 46;
             this.ribbon.Name = "ribbon";
             this.ribbon.PageCategories.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageCategory[] {
             this.ribbonPageCategory1});
@@ -516,6 +520,13 @@ namespace VnsErp2025.Form
             this.NasConfigBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.datasource;
             this.NasConfigBarButtonItem.Name = "NasConfigBarButtonItem";
             // 
+            // AttributeBarButtonItem
+            // 
+            this.AttributeBarButtonItem.Caption = "Thuộc tính biến thể";
+            this.AttributeBarButtonItem.Id = 44;
+            this.AttributeBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.data_classification;
+            this.AttributeBarButtonItem.Name = "AttributeBarButtonItem";
+            // 
             // ribbonPageCategory1
             // 
             this.ribbonPageCategory1.Name = "ribbonPageCategory1";
@@ -544,7 +555,7 @@ namespace VnsErp2025.Form
             this.ribbonPageGroup1.ItemLinks.Add(this.DatabaseConfigBarButtonItem);
             this.ribbonPageGroup1.ItemLinks.Add(this.NasConfigBarButtonItem);
             this.ribbonPageGroup1.Name = "ribbonPageGroup1";
-            this.ribbonPageGroup1.Text = "ribbonPageGroup1";
+            this.ribbonPageGroup1.Text = "Cấu hình hệ thống";
             // 
             // ribbonPage1
             // 
@@ -581,6 +592,7 @@ namespace VnsErp2025.Form
             this.SanPhamDichVuRibbonPageGroup.ItemLinks.Add(this.PhanLoaiSPDVBarButtonItem);
             this.SanPhamDichVuRibbonPageGroup.ItemLinks.Add(this.DonViTinhBarButtonItem);
             this.SanPhamDichVuRibbonPageGroup.ItemLinks.Add(this.BienTheSPDVBarButtonItem);
+            this.SanPhamDichVuRibbonPageGroup.ItemLinks.Add(this.AttributeBarButtonItem);
             this.SanPhamDichVuRibbonPageGroup.Name = "SanPhamDichVuRibbonPageGroup";
             this.SanPhamDichVuRibbonPageGroup.Text = "Sản phẩm dịch vụ";
             // 
@@ -639,6 +651,7 @@ namespace VnsErp2025.Form
             // 
             // ribbonStatusBar
             // 
+            this.ribbonStatusBar.ItemLinks.Add(this.ReleaserVersionAndDateBarStaticItem);
             this.ribbonStatusBar.Location = new System.Drawing.Point(0, 674);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbon;
@@ -651,6 +664,14 @@ namespace VnsErp2025.Form
             this.documentManager1.View = this.tabbedView1;
             this.documentManager1.ViewCollection.AddRange(new DevExpress.XtraBars.Docking2010.Views.BaseView[] {
             this.tabbedView1});
+            // 
+            // ReleaserVersionAndDateBarStaticItem
+            // 
+            this.ReleaserVersionAndDateBarStaticItem.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right;
+            this.ReleaserVersionAndDateBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.ReleaserVersionAndDateBarStaticItem.Caption = "Phiên bản và ngày phát hành";
+            this.ReleaserVersionAndDateBarStaticItem.Id = 45;
+            this.ReleaserVersionAndDateBarStaticItem.Name = "ReleaserVersionAndDateBarStaticItem";
             // 
             // FormMain
             // 
@@ -733,5 +754,7 @@ namespace VnsErp2025.Form
         private DevExpress.XtraBars.BarButtonItem DatabaseConfigBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem NasConfigBarButtonItem;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
+        private DevExpress.XtraBars.BarButtonItem AttributeBarButtonItem;
+        private DevExpress.XtraBars.BarStaticItem ReleaserVersionAndDateBarStaticItem;
     }
 }
