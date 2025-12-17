@@ -12,7 +12,7 @@ namespace DTO.Inventory.StockIn.NhapHangThuongMai;
 /// Dùng cho GridControl và truyền dữ liệu giữa Service ↔ WinForms
 /// Map với bảng StockInOutDetail trong database
 /// </summary>
-public class StockInDetailDto
+public class NhapHangThuongMaiDetailDto
 {
     #region Properties - Thông tin cơ bản (map với DB)
 
@@ -166,24 +166,52 @@ public class StockInDetailDto
     public decimal TotalAmountIncludedVat => TotalAmount + VatAmount;
 
     /// <summary>
+    /// % chiết khấu
+    /// Map với: StockInOutDetail.DiscountPercentage
+    /// </summary>
+    [DisplayName("% Chiết khấu")]
+    [Display(Order = 27)]
+    [Range(0, 100, ErrorMessage = "% chiết khấu phải từ 0 đến 100")]
+    public decimal? DiscountPercentage { get; set; }
+
+    /// <summary>
+    /// Số tiền chiết khấu
+    /// Map với: StockInOutDetail.DiscountAmount
+    /// </summary>
+    [DisplayName("Số tiền chiết khấu")]
+    [Display(Order = 28)]
+    [Range(0, double.MaxValue, ErrorMessage = "Số tiền chiết khấu phải lớn hơn hoặc bằng 0")]
+    public decimal? DiscountAmount { get; set; }
+
+    /// <summary>
+    /// Thành tiền sau chiết khấu - Computed property
+    /// Tính toán: TotalAmount - (DiscountAmount ?? 0)
+    /// Map với: StockInOutDetail.TotalAmountAfterDiscount (lưu vào DB khi save)
+    /// </summary>
+    [DisplayName("Thành tiền sau chiết khấu")]
+    [Display(Order = 29)]
+    [Range(0, double.MaxValue, ErrorMessage = "Thành tiền sau chiết khấu phải lớn hơn hoặc bằng 0")]
+    public decimal TotalAmountAfterDiscount => TotalAmount - (DiscountAmount ?? 0);
+
+    /// <summary>
     /// Ghi chú tình trạng sản phẩm
     /// </summary>
     [DisplayName("Tình trạng")]
-    [Display(Order = 27)]
+    [Display(Order = 30)]
     public string GhiChu { get; set; } = "Bình thường";
 
     /// <summary>
     /// Danh sách thông tin bảo hành cho sản phẩm này
     /// </summary>
     [DisplayName("Thông tin bảo hành")]
-    [Display(Order = 28)]
+    [Display(Order = 31)]
     public List<WarrantyDto> Warranties { get; set; } = [];
 
     /// <summary>
     /// Danh sách thông tin định danh thiết bị (Device) cho sản phẩm này
     /// </summary>
     [DisplayName("Thông tin định danh thiết bị")]
-    [Display(Order = 29)]
+    [Display(Order = 32)]
     public List<DeviceDto> Devices { get; set; } = [];
 
     /// <summary>
@@ -192,7 +220,7 @@ public class StockInDetailDto
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [DisplayName("Thông tin HTML")]
-    [Display(Order = 30)]
+    [Display(Order = 33)]
     [Description("Thông tin chi tiết phiếu nhập dưới dạng HTML")]
     public string FullNameHtml
     {
@@ -288,22 +316,22 @@ public class StockInDetailDto
 }
 
 /// <summary>
-/// Converter giữa StockInOutDetail entity và StockInDetailDto
+/// Converter giữa StockInOutDetail entity và NhapHangThuongMaiDetailDto
 /// </summary>
 public static class StockInDetailDtoConverter
 {
     #region Entity to DTO
 
     /// <summary>
-    /// Chuyển đổi StockInOutDetail entity thành StockInDetailDto
+    /// Chuyển đổi StockInOutDetail entity thành NhapHangThuongMaiDetailDto
     /// </summary>
     /// <param name="entity">StockInOutDetail entity</param>
-    /// <returns>StockInDetailDto</returns>
-    public static StockInDetailDto ToDto(this Dal.DataContext.StockInOutDetail entity)
+    /// <returns>NhapHangThuongMaiDetailDto</returns>
+    public static NhapHangThuongMaiDetailDto ToDto(this Dal.DataContext.StockInOutDetail entity)
     {
         if (entity == null) return null;
 
-        var dto = new StockInDetailDto
+        var dto = new NhapHangThuongMaiDetailDto
         {
             Id = entity.Id,
             StockInOutMasterId = entity.StockInOutMasterId,
@@ -314,10 +342,9 @@ public static class StockInDetailDtoConverter
             UnitPrice = entity.UnitPrice,
             Vat = entity.Vat,
             LineNumber = 0, // Sẽ được cập nhật sau nếu cần
+            DiscountPercentage = entity.DiscountPercentage,
+            DiscountAmount = entity.DiscountAmount,
             GhiChu = entity.GhiChu ?? string.Empty
-            // Các trường chiết khấu: DiscountPercentage, DiscountAmount, TotalAmountAfterDiscount
-            // Sẽ được map khi DTO có các property tương ứng
-            // TODO: Thêm các property DiscountPercentage, DiscountAmount, TotalAmountAfterDiscount vào StockInDetailDto
         };
 
         // Lấy thông tin ProductVariant nếu có
@@ -382,11 +409,11 @@ public static class StockInDetailDtoConverter
     }
 
     /// <summary>
-    /// Chuyển đổi danh sách StockInOutDetail entities thành danh sách StockInDetailDto
+    /// Chuyển đổi danh sách StockInOutDetail entities thành danh sách NhapHangThuongMaiDetailDto
     /// </summary>
     /// <param name="entities">Danh sách StockInOutDetail entities</param>
-    /// <returns>Danh sách StockInDetailDto</returns>
-    public static List<StockInDetailDto> ToDtoList(this IEnumerable<Dal.DataContext.StockInOutDetail> entities)
+    /// <returns>Danh sách NhapHangThuongMaiDetailDto</returns>
+    public static List<NhapHangThuongMaiDetailDto> ToDtoList(this IEnumerable<Dal.DataContext.StockInOutDetail> entities)
     {
         if (entities == null) return [];
 

@@ -90,7 +90,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
             // 
             // stockInDetailDtoBindingSource
             // 
-            this.stockInDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapHangThuongMai.StockInDetailDto);
+            this.stockInDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapHangThuongMai.NhapHangThuongMaiDetailDto);
             // 
             // StockInDetailDtoGridView
             // 

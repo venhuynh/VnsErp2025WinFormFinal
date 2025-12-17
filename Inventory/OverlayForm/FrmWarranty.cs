@@ -560,7 +560,7 @@ public partial class FrmWarranty : XtraForm
             }
 
             // Lấy tên sản phẩm từ selected detail
-            if (stockInDetailDtoBindingSource.Current is StockInDetailDto selectedDetail)
+            if (stockInDetailDtoBindingSource.Current is NhapHangThuongMaiDetailDto selectedDetail)
             {
                 warrantyDto.ProductVariantName = selectedDetail.ProductVariantName;
             }

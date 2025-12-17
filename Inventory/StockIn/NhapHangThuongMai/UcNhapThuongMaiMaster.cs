@@ -169,7 +169,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
             {
                 RequiredFieldHelper.MarkRequiredFields(
                     this,
-                    typeof(StockInMasterDto),
+                    typeof(XuatHangThuongMaiMasterDto),
                     logger: (msg, ex) => System.Diagnostics.Debug.WriteLine($"{msg}: {ex?.Message}")
                 );
 
@@ -579,13 +579,13 @@ namespace Inventory.StockIn.NhapHangThuongMai
         }
 
         /// <summary>
-        /// Map StockInOutMaster entity sang StockInMasterDto
+        /// Map StockInOutMaster entity sang XuatHangThuongMaiMasterDto
         /// </summary>
-        private StockInMasterDto MapEntityToDto(StockInOutMaster entity)
+        private XuatHangThuongMaiMasterDto MapEntityToDto(StockInOutMaster entity)
         {
             if (entity == null) return null;
 
-            var dto = new StockInMasterDto
+            var dto = new XuatHangThuongMaiMasterDto
             {
                 Id = entity.Id,
                 StockInNumber = entity.VocherNumber ?? string.Empty,
@@ -928,17 +928,17 @@ namespace Inventory.StockIn.NhapHangThuongMai
         {
             return propertyName switch
             {
-                nameof(StockInMasterDto.StockInNumber) => StockInNumberTextEdit,
-                nameof(StockInMasterDto.StockInDate) => StockInDateDateEdit,
-                nameof(StockInMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
-                nameof(StockInMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
-                nameof(StockInMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
-                nameof(StockInMasterDto.SupplierId) => SupplierNameSearchLookupEdit,
-                nameof(StockInMasterDto.SupplierName) => SupplierNameSearchLookupEdit,
-                nameof(StockInMasterDto.PurchaseOrderNumber) => PurchaseOrderSearchLookupEdit,
-                nameof(StockInMasterDto.Notes) => NotesTextEdit,
-                nameof(StockInMasterDto.NguoiNhanHang) => NguoiNhanHangTextEdit,
-                nameof(StockInMasterDto.NguoiGiaoHang) => NguoiGiaoHangTextEdit,
+                nameof(XuatHangThuongMaiMasterDto.StockInNumber) => StockInNumberTextEdit,
+                nameof(XuatHangThuongMaiMasterDto.StockInDate) => StockInDateDateEdit,
+                nameof(XuatHangThuongMaiMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
+                nameof(XuatHangThuongMaiMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
+                nameof(XuatHangThuongMaiMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
+                nameof(XuatHangThuongMaiMasterDto.SupplierId) => SupplierNameSearchLookupEdit,
+                nameof(XuatHangThuongMaiMasterDto.SupplierName) => SupplierNameSearchLookupEdit,
+                nameof(XuatHangThuongMaiMasterDto.PurchaseOrderNumber) => PurchaseOrderSearchLookupEdit,
+                nameof(XuatHangThuongMaiMasterDto.Notes) => NotesTextEdit,
+                nameof(XuatHangThuongMaiMasterDto.NguoiNhanHang) => NguoiNhanHangTextEdit,
+                nameof(XuatHangThuongMaiMasterDto.NguoiGiaoHang) => NguoiGiaoHangTextEdit,
                 _ => null
             };
         }
@@ -950,8 +950,8 @@ namespace Inventory.StockIn.NhapHangThuongMai
         /// <summary>
         /// Lấy DTO từ Entity sau khi validate các trường bắt buộc
         /// </summary>
-        /// <returns>StockInMasterDto nếu validation thành công, null nếu có lỗi</returns>
-        public StockInMasterDto GetDto()
+        /// <returns>XuatHangThuongMaiMasterDto nếu validation thành công, null nếu có lỗi</returns>
+        public XuatHangThuongMaiMasterDto GetDto()
         {
             try
             {

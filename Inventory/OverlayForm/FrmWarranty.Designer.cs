@@ -488,7 +488,7 @@ namespace Inventory.OverlayForm
             // 
             // stockInDetailDtoBindingSource
             // 
-            this.stockInDetailDtoBindingSource.DataSource = typeof(StockInDetailDto);
+            this.stockInDetailDtoBindingSource.DataSource = typeof(NhapHangThuongMaiDetailDto);
             // 
             // StockInDetailSearchLookUpEdit1View
             // 

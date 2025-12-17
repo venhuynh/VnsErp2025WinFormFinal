@@ -119,10 +119,10 @@ namespace Bll.Inventory.StockInOut
         }
 
         /// <summary>
-        /// Map StockInMasterDto sang StockInOutMaster entity
-        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng StockInMasterDto)
+        /// Map XuatHangThuongMaiMasterDto sang StockInOutMaster entity
+        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng XuatHangThuongMaiMasterDto)
         /// </summary>
-        public static StockInOutMaster MapMasterDtoToEntity(StockInMasterDto dto)
+        public static StockInOutMaster MapMasterDtoToEntity(XuatHangThuongMaiMasterDto dto)
         {
             return new StockInOutMaster
             {
@@ -141,17 +141,16 @@ namespace Bll.Inventory.StockInOut
                 TotalAmountIncludedVat = dto.TotalAmountIncludedVat,
                 NguoiNhanHang = dto.NguoiNhanHang,
                 NguoiGiaoHang = dto.NguoiGiaoHang,
-                // Các trường chiết khấu - sẽ được set từ DTO nếu có, hoặc null nếu chưa có trong DTO
-                DiscountAmount = null, // TODO: Thêm property DiscountAmount vào StockInMasterDto
-                TotalAmountAfterDiscount = null // TODO: Thêm property TotalAmountAfterDiscount vào StockInMasterDto
+                DiscountAmount = dto.DiscountAmount,
+                TotalAmountAfterDiscount = dto.TotalAmountAfterDiscount
             };
         }
 
         /// <summary>
-        /// Map StockInDetailDto sang StockInOutDetail entity
-        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng StockInDetailDto)
+        /// Map NhapHangThuongMaiDetailDto sang StockInOutDetail entity
+        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng NhapHangThuongMaiDetailDto)
         /// </summary>
-        public static StockInOutDetail MapDetailDtoToEntity(StockInDetailDto dto)
+        public static StockInOutDetail MapDetailDtoToEntity(NhapHangThuongMaiDetailDto dto)
         {
             return new StockInOutDetail
             {
@@ -165,9 +164,9 @@ namespace Bll.Inventory.StockInOut
                 VatAmount = dto.VatAmount, // Computed property value
                 TotalAmount = dto.TotalAmount, // Computed property value
                 TotalAmountIncludedVat = dto.TotalAmountIncludedVat, // Computed property value
-                DiscountPercentage = null, // TODO: Thêm property DiscountPercentage vào StockInDetailDto
-                DiscountAmount = null, // TODO: Thêm property DiscountAmount vào StockInDetailDto
-                TotalAmountAfterDiscount = null, // TODO: Thêm property TotalAmountAfterDiscount vào StockInDetailDto
+                DiscountPercentage = dto.DiscountPercentage,
+                DiscountAmount = dto.DiscountAmount,
+                TotalAmountAfterDiscount = dto.TotalAmountAfterDiscount,
                 GhiChu = dto.GhiChu ?? string.Empty
             };
         }
@@ -347,13 +346,13 @@ namespace Bll.Inventory.StockInOut
         }
 
         /// <summary>
-        /// Map StockInOutMaster entity sang StockInMasterDto
+        /// Map StockInOutMaster entity sang XuatHangThuongMaiMasterDto
         /// </summary>
-        private StockInMasterDto MapMasterEntityToDto(StockInOutMaster entity)
+        private XuatHangThuongMaiMasterDto MapMasterEntityToDto(StockInOutMaster entity)
         {
             if (entity == null) return null;
 
-            var dto = new StockInMasterDto
+            var dto = new XuatHangThuongMaiMasterDto
             {
                 Id = entity.Id,
                 StockInNumber = entity.VocherNumber ?? string.Empty,
@@ -380,6 +379,12 @@ namespace Bll.Inventory.StockInOut
                 entity.TotalAmount,
                 entity.TotalVat,
                 entity.TotalAmountIncludedVat
+            );
+
+            // Gán các giá trị chiết khấu từ entity
+            dto.SetDiscountTotals(
+                entity.DiscountAmount,
+                entity.TotalAmountAfterDiscount
             );
 
             return dto;
@@ -416,7 +421,7 @@ namespace Bll.Inventory.StockInOut
                 var deviceEntities = deviceBll.GetByStockInOutMasterId(voucherId);
                 var deviceDtos = deviceEntities.Select(d => d.ToDto()).ToList();
 
-                // 5. Map sang DTO - sử dụng StockInMasterDto và StockInDetailDto
+                // 5. Map sang DTO - sử dụng XuatHangThuongMaiMasterDto và NhapHangThuongMaiDetailDto
                 var masterDto = MapMasterEntityToDto(masterEntity);
                 var detailDtos = detailEntities.Select(d => 
                 {
