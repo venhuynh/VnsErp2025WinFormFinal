@@ -16438,6 +16438,12 @@ namespace Dal.DataContext
 		
 		private string _GhiChu;
 		
+		private System.Nullable<decimal> _DiscountAmount;
+		
+		private System.Nullable<decimal> _TotalAmountAfterDiscount;
+		
+		private System.Nullable<decimal> _DiscountPercentage;
+		
 		private EntitySet<Warranty> _Warranties;
 		
 		private EntitySet<Device> _Devices;
@@ -16472,6 +16478,12 @@ namespace Dal.DataContext
     partial void OnTotalAmountIncludedVatChanged();
     partial void OnGhiChuChanging(string value);
     partial void OnGhiChuChanged();
+    partial void OnDiscountAmountChanging(System.Nullable<decimal> value);
+    partial void OnDiscountAmountChanged();
+    partial void OnTotalAmountAfterDiscountChanging(System.Nullable<decimal> value);
+    partial void OnTotalAmountAfterDiscountChanged();
+    partial void OnDiscountPercentageChanging(System.Nullable<decimal> value);
+    partial void OnDiscountPercentageChanged();
     #endregion
 		
 		public StockInOutDetail()
@@ -16707,6 +16719,66 @@ namespace Dal.DataContext
 					this._GhiChu = value;
 					this.SendPropertyChanged("GhiChu");
 					this.OnGhiChuChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiscountAmount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> DiscountAmount
+		{
+			get
+			{
+				return this._DiscountAmount;
+			}
+			set
+			{
+				if ((this._DiscountAmount != value))
+				{
+					this.OnDiscountAmountChanging(value);
+					this.SendPropertyChanging();
+					this._DiscountAmount = value;
+					this.SendPropertyChanged("DiscountAmount");
+					this.OnDiscountAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalAmountAfterDiscount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalAmountAfterDiscount
+		{
+			get
+			{
+				return this._TotalAmountAfterDiscount;
+			}
+			set
+			{
+				if ((this._TotalAmountAfterDiscount != value))
+				{
+					this.OnTotalAmountAfterDiscountChanging(value);
+					this.SendPropertyChanging();
+					this._TotalAmountAfterDiscount = value;
+					this.SendPropertyChanged("TotalAmountAfterDiscount");
+					this.OnTotalAmountAfterDiscountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiscountPercentage", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> DiscountPercentage
+		{
+			get
+			{
+				return this._DiscountPercentage;
+			}
+			set
+			{
+				if ((this._DiscountPercentage != value))
+				{
+					this.OnDiscountPercentageChanging(value);
+					this.SendPropertyChanging();
+					this._DiscountPercentage = value;
+					this.SendPropertyChanged("DiscountPercentage");
+					this.OnDiscountPercentageChanged();
 				}
 			}
 		}
@@ -18773,6 +18845,10 @@ namespace Dal.DataContext
 		
 		private string _NguoiGiaoHang;
 		
+		private System.Nullable<decimal> _DiscountAmount;
+		
+		private System.Nullable<decimal> _TotalAmountAfterDiscount;
+		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
 		
 		private EntitySet<StockInOutDocument> _StockInOutDocuments;
@@ -18825,6 +18901,10 @@ namespace Dal.DataContext
     partial void OnNguoiNhanHangChanged();
     partial void OnNguoiGiaoHangChanging(string value);
     partial void OnNguoiGiaoHangChanged();
+    partial void OnDiscountAmountChanging(System.Nullable<decimal> value);
+    partial void OnDiscountAmountChanged();
+    partial void OnTotalAmountAfterDiscountChanging(System.Nullable<decimal> value);
+    partial void OnTotalAmountAfterDiscountChanged();
     #endregion
 		
 		public StockInOutMaster()
@@ -19221,6 +19301,46 @@ namespace Dal.DataContext
 					this._NguoiGiaoHang = value;
 					this.SendPropertyChanged("NguoiGiaoHang");
 					this.OnNguoiGiaoHangChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiscountAmount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> DiscountAmount
+		{
+			get
+			{
+				return this._DiscountAmount;
+			}
+			set
+			{
+				if ((this._DiscountAmount != value))
+				{
+					this.OnDiscountAmountChanging(value);
+					this.SendPropertyChanging();
+					this._DiscountAmount = value;
+					this.SendPropertyChanged("DiscountAmount");
+					this.OnDiscountAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalAmountAfterDiscount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalAmountAfterDiscount
+		{
+			get
+			{
+				return this._TotalAmountAfterDiscount;
+			}
+			set
+			{
+				if ((this._TotalAmountAfterDiscount != value))
+				{
+					this.OnTotalAmountAfterDiscountChanging(value);
+					this.SendPropertyChanging();
+					this._TotalAmountAfterDiscount = value;
+					this.SendPropertyChanged("TotalAmountAfterDiscount");
+					this.OnTotalAmountAfterDiscountChanged();
 				}
 			}
 		}

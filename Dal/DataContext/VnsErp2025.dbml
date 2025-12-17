@@ -686,6 +686,9 @@
       <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
       <Column Name="TotalAmountIncludedVat" Type="System.Decimal" DbType="Decimal(18,2) NOT NULL" CanBeNull="false" />
       <Column Name="GhiChu" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="DiscountAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TotalAmountAfterDiscount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="DiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
       <Association Name="StockInOutDetail_Warranty" Member="Warranties" ThisKey="Id" OtherKey="StockInOutDetailId" Type="Warranty" />
       <Association Name="StockInOutDetail_Device" Member="Devices" ThisKey="Id" OtherKey="StockInOutDetailId" Type="Device" />
       <Association Name="ProductVariant_StockInOutDetail" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
@@ -794,6 +797,8 @@
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="NguoiNhanHang" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Column Name="NguoiGiaoHang" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="DiscountAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
+      <Column Name="TotalAmountAfterDiscount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
       <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDetail" />
       <Association Name="StockInOutMaster_StockInOutDocument" Member="StockInOutDocuments" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutDocument" />
       <Association Name="StockInOutMaster_StockInOutImage" Member="StockInOutImages" ThisKey="Id" OtherKey="StockInOutMasterId" Type="StockInOutImage" />
