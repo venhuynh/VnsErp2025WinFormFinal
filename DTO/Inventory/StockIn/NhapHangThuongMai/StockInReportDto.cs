@@ -9,7 +9,7 @@ namespace DTO.Inventory.StockIn.NhapHangThuongMai;
 
 /// <summary>
 /// DTO cho report in phiếu nhập kho
-/// Sử dụng StockInMasterDto và StockInDetailDto để tái sử dụng code
+/// Sử dụng XuatHangThuongMaiMasterDto và NhapHangThuongMaiDetailDto để tái sử dụng code
 /// Chứa master data và detail data với cấu trúc phù hợp cho DevExpress XtraReport
 /// </summary>
 public class StockInReportDto
@@ -18,9 +18,9 @@ public class StockInReportDto
 
     /// <summary>
     /// Thông tin master phiếu nhập kho
-    /// Sử dụng StockInMasterDto để tái sử dụng code
+    /// Sử dụng XuatHangThuongMaiMasterDto để tái sử dụng code
     /// </summary>
-    public StockInMasterDto Master { get; set; }
+    public XuatHangThuongMaiMasterDto Master { get; set; }
 
     #endregion
 
@@ -28,10 +28,10 @@ public class StockInReportDto
 
     /// <summary>
     /// Danh sách chi tiết nhập hàng
-    /// Sử dụng StockInDetailDto để tái sử dụng code
+    /// Sử dụng NhapHangThuongMaiDetailDto để tái sử dụng code
     /// </summary>
     [DisplayName("Chi tiết nhập hàng")]
-    public List<StockInDetailDto> ChiTietNhapHangNoiBos { get; set; } = [];
+    public List<NhapHangThuongMaiDetailDto> ChiTietNhapHangNoiBos { get; set; } = [];
 
     #endregion
 

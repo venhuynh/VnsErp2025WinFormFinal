@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows.Forms;
 using DevExpress.XtraBars;
 using DevExpress.XtraDataLayout;
@@ -82,19 +82,19 @@ namespace MasterData.ProductService
             this.AttributeSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.attributeDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colFullInfo1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colAttributeName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.productServiceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colCategoryName1 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ProductNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.VariantCodeTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.IsActiveToggleSwitch = new DevExpress.XtraEditors.ToggleSwitch();
             this.UnitNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.unitOfMeasureDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colFullInfo = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.UnitOfMeasureGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colDisplayHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.UnitOfMeasureHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.ItemForProductName = new DevExpress.XtraLayout.LayoutControlItem();
             this.simpleLabelItem1 = new DevExpress.XtraLayout.SimpleLabelItem();
@@ -104,6 +104,8 @@ namespace MasterData.ProductService
             this.simpleLabelItem3 = new DevExpress.XtraLayout.SimpleLabelItem();
             this.ItemForUnitName = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.colThongTinHtml1 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.AttributeHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -117,11 +119,13 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ProductNameSearchLookupEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductNameHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantCodeTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitNameSearchLookupEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.unitOfMeasureDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UnitOfMeasureGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UnitOfMeasureHypertextLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForProductName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).BeginInit();
@@ -131,6 +135,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUnitName)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AttributeHtmlHypertextLabel)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -322,7 +327,7 @@ namespace MasterData.ProductService
             // 
             // attributeValueDtoBindingSource
             // 
-            this.attributeValueDtoBindingSource.DataSource = typeof(AttributeValueDto);
+            this.attributeValueDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.AttributeValueDto);
             // 
             // AttributeValueGridView
             // 
@@ -359,27 +364,23 @@ namespace MasterData.ProductService
             this.AttributeSearchLookUpEdit.KeyMember = "Name";
             this.AttributeSearchLookUpEdit.Name = "AttributeSearchLookUpEdit";
             this.AttributeSearchLookUpEdit.PopupView = this.AttributeSearchLookUpEdit1View;
+            this.AttributeSearchLookUpEdit.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.AttributeHtmlHypertextLabel});
             this.AttributeSearchLookUpEdit.ValueMember = "Name";
             // 
             // attributeDtoBindingSource
             // 
-            this.attributeDtoBindingSource.DataSource = typeof(AttributeDto);
+            this.attributeDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.AttributeDto);
             // 
             // AttributeSearchLookUpEdit1View
             // 
             this.AttributeSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colFullInfo1});
+            this.colThongTinHtml1});
             this.AttributeSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.AttributeSearchLookUpEdit1View.Name = "AttributeSearchLookUpEdit1View";
             this.AttributeSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.AttributeSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.AttributeSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
-            // 
-            // colFullInfo1
-            // 
-            this.colFullInfo1.FieldName = "FullInfo";
-            this.colFullInfo1.Name = "colFullInfo1";
-            this.colFullInfo1.Visible = true;
-            this.colFullInfo1.VisibleIndex = 0;
             // 
             // colAttributeName
             // 
@@ -393,12 +394,15 @@ namespace MasterData.ProductService
             this.ProductNameSearchLookupEdit.Location = new System.Drawing.Point(176, 16);
             this.ProductNameSearchLookupEdit.MenuManager = this.barManager1;
             this.ProductNameSearchLookupEdit.Name = "ProductNameSearchLookupEdit";
+            this.ProductNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.ProductNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ProductNameSearchLookupEdit.Properties.DataSource = this.productServiceDtoBindingSource;
-            this.ProductNameSearchLookupEdit.Properties.DisplayMember = "Name";
+            this.ProductNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
             this.ProductNameSearchLookupEdit.Properties.NullText = "";
             this.ProductNameSearchLookupEdit.Properties.PopupView = this.searchLookUpEdit1View;
+            this.ProductNameSearchLookupEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.ProductNameHypertextLabel});
             this.ProductNameSearchLookupEdit.Properties.ValueMember = "Id";
             this.ProductNameSearchLookupEdit.Size = new System.Drawing.Size(474, 28);
             this.ProductNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
@@ -406,31 +410,44 @@ namespace MasterData.ProductService
             // 
             // productServiceDtoBindingSource
             // 
-            this.productServiceDtoBindingSource.DataSource = typeof(ProductServiceDto);
+            this.productServiceDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductServiceDto);
             // 
             // searchLookUpEdit1View
             // 
             this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colCategoryName1,
-            this.colName});
+            this.colThongTinHtml});
             this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
             this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
             this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             // 
-            // colCategoryName1
+            // colThongTinHtml
             // 
-            this.colCategoryName1.FieldName = "CategoryName";
-            this.colCategoryName1.Name = "colCategoryName1";
-            this.colCategoryName1.Visible = true;
-            this.colCategoryName1.VisibleIndex = 0;
+            this.colThongTinHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colThongTinHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colThongTinHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
+            this.colThongTinHtml.AppearanceHeader.Options.UseFont = true;
+            this.colThongTinHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThongTinHtml.Caption = "Thông tin sản phẩm";
+            this.colThongTinHtml.ColumnEdit = this.ProductNameHypertextLabel;
+            this.colThongTinHtml.FieldName = "ThongTinHtml";
+            this.colThongTinHtml.MinWidth = 300;
+            this.colThongTinHtml.Name = "colThongTinHtml";
+            this.colThongTinHtml.OptionsColumn.AllowEdit = false;
+            this.colThongTinHtml.OptionsColumn.AllowFocus = false;
+            this.colThongTinHtml.OptionsColumn.AllowMove = false;
+            this.colThongTinHtml.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
+            this.colThongTinHtml.OptionsFilter.AllowFilter = false;
+            this.colThongTinHtml.ToolTip = "Thông tin chi tiết sản phẩm/dịch vụ dưới dạng HTML";
+            this.colThongTinHtml.Visible = true;
+            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.Width = 400;
             // 
-            // colName
+            // ProductNameHypertextLabel
             // 
-            this.colName.FieldName = "Name";
-            this.colName.Name = "colName";
-            this.colName.Visible = true;
-            this.colName.VisibleIndex = 1;
+            this.ProductNameHypertextLabel.Name = "ProductNameHypertextLabel";
             // 
             // VariantCodeTextEdit
             // 
@@ -462,12 +479,15 @@ namespace MasterData.ProductService
             this.UnitNameSearchLookupEdit.Location = new System.Drawing.Point(176, 50);
             this.UnitNameSearchLookupEdit.MenuManager = this.barManager1;
             this.UnitNameSearchLookupEdit.Name = "UnitNameSearchLookupEdit";
+            this.UnitNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.UnitNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.UnitNameSearchLookupEdit.Properties.DataSource = this.unitOfMeasureDtoBindingSource;
-            this.UnitNameSearchLookupEdit.Properties.DisplayMember = "FullInfo";
+            this.UnitNameSearchLookupEdit.Properties.DisplayMember = "DisplayHtml";
             this.UnitNameSearchLookupEdit.Properties.NullText = "";
-            this.UnitNameSearchLookupEdit.Properties.PopupView = this.gridView1;
+            this.UnitNameSearchLookupEdit.Properties.PopupView = this.UnitOfMeasureGridView;
+            this.UnitNameSearchLookupEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.UnitOfMeasureHypertextLabel1});
             this.UnitNameSearchLookupEdit.Properties.ValueMember = "Id";
             this.UnitNameSearchLookupEdit.Size = new System.Drawing.Size(474, 28);
             this.UnitNameSearchLookupEdit.StyleController = this.dataLayoutControl1;
@@ -475,23 +495,45 @@ namespace MasterData.ProductService
             // 
             // unitOfMeasureDtoBindingSource
             // 
-            this.unitOfMeasureDtoBindingSource.DataSource = typeof(UnitOfMeasureDto);
+            this.unitOfMeasureDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.UnitOfMeasureDto);
             // 
-            // gridView1
+            // UnitOfMeasureGridView
             // 
-            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colFullInfo});
-            this.gridView1.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.gridView1.Name = "gridView1";
-            this.gridView1.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.gridView1.OptionsView.ShowGroupPanel = false;
+            this.UnitOfMeasureGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colDisplayHtml});
+            this.UnitOfMeasureGridView.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.UnitOfMeasureGridView.Name = "UnitOfMeasureGridView";
+            this.UnitOfMeasureGridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.UnitOfMeasureGridView.OptionsView.ShowGroupPanel = false;
             // 
-            // colFullInfo
+            // colDisplayHtml
             // 
-            this.colFullInfo.FieldName = "FullInfo";
-            this.colFullInfo.Name = "colFullInfo";
-            this.colFullInfo.Visible = true;
-            this.colFullInfo.VisibleIndex = 0;
+            this.colDisplayHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colDisplayHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colDisplayHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colDisplayHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
+            this.colDisplayHtml.AppearanceHeader.Options.UseFont = true;
+            this.colDisplayHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colDisplayHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colDisplayHtml.Caption = "Thông tin đơn vị tính";
+            this.colDisplayHtml.ColumnEdit = this.UnitOfMeasureHypertextLabel1;
+            this.colDisplayHtml.FieldName = "DisplayHtml";
+            this.colDisplayHtml.MinWidth = 250;
+            this.colDisplayHtml.Name = "colDisplayHtml";
+            this.colDisplayHtml.OptionsColumn.AllowEdit = false;
+            this.colDisplayHtml.OptionsColumn.AllowFocus = false;
+            this.colDisplayHtml.OptionsColumn.AllowMove = false;
+            this.colDisplayHtml.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
+            this.colDisplayHtml.OptionsFilter.AllowFilter = false;
+            this.colDisplayHtml.ToolTip = "Thông tin chi tiết đơn vị tính dưới dạng HTML";
+            this.colDisplayHtml.Visible = true;
+            this.colDisplayHtml.VisibleIndex = 0;
+            this.colDisplayHtml.Width = 350;
+            // 
+            // UnitOfMeasureHypertextLabel1
+            // 
+            this.UnitOfMeasureHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.UnitOfMeasureHypertextLabel1.Name = "UnitOfMeasureHypertextLabel1";
             // 
             // Root
             // 
@@ -626,6 +668,19 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Size = new System.Drawing.Size(640, 473);
             this.layoutControlItem1.TextVisible = false;
             // 
+            // colThongTinHtml1
+            // 
+            this.colThongTinHtml1.ColumnEdit = this.AttributeHtmlHypertextLabel;
+            this.colThongTinHtml1.FieldName = "ThongTinHtml";
+            this.colThongTinHtml1.Name = "colThongTinHtml1";
+            this.colThongTinHtml1.Visible = true;
+            this.colThongTinHtml1.VisibleIndex = 0;
+            // 
+            // AttributeHtmlHypertextLabel
+            // 
+            this.AttributeHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.AttributeHtmlHypertextLabel.Name = "AttributeHtmlHypertextLabel";
+            // 
             // FrmProductVariantDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -652,11 +707,13 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ProductNameSearchLookupEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductNameHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantCodeTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IsActiveToggleSwitch.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitNameSearchLookupEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.unitOfMeasureDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UnitOfMeasureGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UnitOfMeasureHypertextLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForProductName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem1)).EndInit();
@@ -666,6 +723,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.simpleLabelItem3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForUnitName)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AttributeHtmlHypertextLabel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -697,14 +755,11 @@ namespace MasterData.ProductService
         private SearchLookUpEdit ProductNameSearchLookupEdit;
         private BindingSource productServiceDtoBindingSource;
         private GridView searchLookUpEdit1View;
-        private GridColumn colCategoryName1;
-        private GridColumn colName;
         private TextEdit VariantCodeTextEdit;
         private ToggleSwitch IsActiveToggleSwitch;
         private SearchLookUpEdit UnitNameSearchLookupEdit;
         private BindingSource unitOfMeasureDtoBindingSource;
-        private GridView gridView1;
-        private GridColumn colFullInfo;
+        private GridView UnitOfMeasureGridView;
         private GridControl AttributeValueGridControl;
         private GridView AttributeValueGridView;
         private LayoutControlItem ItemForProductName;
@@ -715,12 +770,17 @@ namespace MasterData.ProductService
         private RepositoryItemSearchLookUpEdit AttributeSearchLookUpEdit;
         private BindingSource attributeDtoBindingSource;
         private GridView AttributeSearchLookUpEdit1View;
-        private GridColumn colFullInfo1;
         private SimpleLabelItem simpleLabelItem2;
         private LayoutControlItem ItemForVariantCode;
         private LayoutControlItem ItemForIsActive;
         private SimpleLabelItem simpleLabelItem3;
         private LayoutControlItem ItemForUnitName;
         private LayoutControlItem layoutControlItem1;
+        private GridColumn colThongTinHtml;
+        private RepositoryItemHypertextLabel ProductNameHypertextLabel;
+        private GridColumn colDisplayHtml;
+        private RepositoryItemHypertextLabel UnitOfMeasureHypertextLabel1;
+        private GridColumn colThongTinHtml1;
+        private RepositoryItemHypertextLabel AttributeHtmlHypertextLabel;
     }
 }
