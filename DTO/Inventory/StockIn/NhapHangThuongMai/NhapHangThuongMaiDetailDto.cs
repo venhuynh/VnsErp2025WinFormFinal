@@ -166,34 +166,6 @@ public class NhapHangThuongMaiDetailDto
     public decimal TotalAmountIncludedVat => TotalAmount + VatAmount;
 
     /// <summary>
-    /// % chiết khấu
-    /// Map với: StockInOutDetail.DiscountPercentage
-    /// </summary>
-    [DisplayName("% Chiết khấu")]
-    [Display(Order = 27)]
-    [Range(0, 100, ErrorMessage = "% chiết khấu phải từ 0 đến 100")]
-    public decimal? DiscountPercentage { get; set; }
-
-    /// <summary>
-    /// Số tiền chiết khấu
-    /// Map với: StockInOutDetail.DiscountAmount
-    /// </summary>
-    [DisplayName("Số tiền chiết khấu")]
-    [Display(Order = 28)]
-    [Range(0, double.MaxValue, ErrorMessage = "Số tiền chiết khấu phải lớn hơn hoặc bằng 0")]
-    public decimal? DiscountAmount { get; set; }
-
-    /// <summary>
-    /// Thành tiền sau chiết khấu - Computed property
-    /// Tính toán: TotalAmount - (DiscountAmount ?? 0)
-    /// Map với: StockInOutDetail.TotalAmountAfterDiscount (lưu vào DB khi save)
-    /// </summary>
-    [DisplayName("Thành tiền sau chiết khấu")]
-    [Display(Order = 29)]
-    [Range(0, double.MaxValue, ErrorMessage = "Thành tiền sau chiết khấu phải lớn hơn hoặc bằng 0")]
-    public decimal TotalAmountAfterDiscount => TotalAmount - (DiscountAmount ?? 0);
-
-    /// <summary>
     /// Ghi chú tình trạng sản phẩm
     /// </summary>
     [DisplayName("Tình trạng")]
@@ -342,8 +314,6 @@ public static class StockInDetailDtoConverter
             UnitPrice = entity.UnitPrice,
             Vat = entity.Vat,
             LineNumber = 0, // Sẽ được cập nhật sau nếu cần
-            DiscountPercentage = entity.DiscountPercentage,
-            DiscountAmount = entity.DiscountAmount,
             GhiChu = entity.GhiChu ?? string.Empty
         };
 

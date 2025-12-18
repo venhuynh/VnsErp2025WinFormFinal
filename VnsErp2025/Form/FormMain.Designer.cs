@@ -73,6 +73,7 @@ namespace VnsErp2025.Form
             this.DatabaseConfigBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.NasConfigBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.AttributeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ReleaserVersionAndDateBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.ribbonPageCategory1 = new DevExpress.XtraBars.Ribbon.RibbonPageCategory();
             this.VersionAndUserManagementRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.VersionAndUserManagementRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -89,7 +90,6 @@ namespace VnsErp2025.Form
             this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
             this.documentManager1 = new DevExpress.XtraBars.Docking2010.DocumentManager(this.components);
             this.tabbedView1 = new DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView(this.components);
-            this.ReleaserVersionAndDateBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.documentManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).BeginInit();
@@ -527,6 +527,14 @@ namespace VnsErp2025.Form
             this.AttributeBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.data_classification;
             this.AttributeBarButtonItem.Name = "AttributeBarButtonItem";
             // 
+            // ReleaserVersionAndDateBarStaticItem
+            // 
+            this.ReleaserVersionAndDateBarStaticItem.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right;
+            this.ReleaserVersionAndDateBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.ReleaserVersionAndDateBarStaticItem.Caption = "Phiên bản và ngày phát hành";
+            this.ReleaserVersionAndDateBarStaticItem.Id = 45;
+            this.ReleaserVersionAndDateBarStaticItem.Name = "ReleaserVersionAndDateBarStaticItem";
+            // 
             // ribbonPageCategory1
             // 
             this.ribbonPageCategory1.Name = "ribbonPageCategory1";
@@ -607,7 +615,6 @@ namespace VnsErp2025.Form
             this.XuatNhapTonKhoRibbonPage.ImageOptions.SvgImageSize = new System.Drawing.Size(16, 16);
             this.XuatNhapTonKhoRibbonPage.Name = "XuatNhapTonKhoRibbonPage";
             this.XuatNhapTonKhoRibbonPage.Text = "Xuất - Nhập - Tồn kho";
-            this.XuatNhapTonKhoRibbonPage.Visible = false;
             // 
             // NhapKhoRibbonPageGroup
             // 
@@ -664,14 +671,6 @@ namespace VnsErp2025.Form
             this.documentManager1.View = this.tabbedView1;
             this.documentManager1.ViewCollection.AddRange(new DevExpress.XtraBars.Docking2010.Views.BaseView[] {
             this.tabbedView1});
-            // 
-            // ReleaserVersionAndDateBarStaticItem
-            // 
-            this.ReleaserVersionAndDateBarStaticItem.Alignment = DevExpress.XtraBars.BarItemLinkAlignment.Right;
-            this.ReleaserVersionAndDateBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.ReleaserVersionAndDateBarStaticItem.Caption = "Phiên bản và ngày phát hành";
-            this.ReleaserVersionAndDateBarStaticItem.Id = 45;
-            this.ReleaserVersionAndDateBarStaticItem.Name = "ReleaserVersionAndDateBarStaticItem";
             // 
             // FormMain
             // 

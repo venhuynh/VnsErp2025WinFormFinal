@@ -147,31 +147,6 @@ namespace Bll.Inventory.StockInOut
         }
 
         /// <summary>
-        /// Map NhapHangThuongMaiDetailDto sang StockInOutDetail entity
-        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng NhapHangThuongMaiDetailDto)
-        /// </summary>
-        public static StockInOutDetail MapDetailDtoToEntity(NhapHangThuongMaiDetailDto dto)
-        {
-            return new StockInOutDetail
-            {
-                Id = dto.Id,
-                StockInOutMasterId = dto.StockInOutMasterId,
-                ProductVariantId = dto.ProductVariantId,
-                StockInQty = dto.StockInQty,
-                StockOutQty = dto.StockOutQty,
-                UnitPrice = dto.UnitPrice,
-                Vat = dto.Vat,
-                VatAmount = dto.VatAmount, // Computed property value
-                TotalAmount = dto.TotalAmount, // Computed property value
-                TotalAmountIncludedVat = dto.TotalAmountIncludedVat, // Computed property value
-                DiscountPercentage = dto.DiscountPercentage,
-                DiscountAmount = dto.DiscountAmount,
-                TotalAmountAfterDiscount = dto.TotalAmountAfterDiscount,
-                GhiChu = dto.GhiChu ?? string.Empty
-            };
-        }
-
-        /// <summary>
         /// Validate dữ liệu trước khi lưu
         /// </summary>
         private void ValidateBeforeSave(StockInOutMaster masterEntity, List<StockInOutDetail> detailEntities)
