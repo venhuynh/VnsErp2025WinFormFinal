@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataContext;
@@ -204,6 +205,27 @@ public interface IProductVariantRepository
     /// </summary>
     /// <param name="variantId">ID biến thể cần cập nhật</param>
     Task UpdateVariantFullNameAsync(Guid variantId);
+
+    /// <summary>
+    /// Chỉ cập nhật/xóa thumbnail image của biến thể, không ảnh hưởng đến các trường khác
+    /// </summary>
+    /// <param name="variantId">ID biến thể cần cập nhật</param>
+    /// <param name="thumbnailImage">Thumbnail image dạng Binary (null để xóa)</param>
+    /// <param name="thumbnailFileName">Tên file thumbnail (null để xóa)</param>
+    /// <param name="thumbnailRelativePath">Đường dẫn tương đối thumbnail (null để xóa)</param>
+    /// <param name="thumbnailFullPath">Đường dẫn đầy đủ thumbnail (null để xóa)</param>
+    /// <param name="thumbnailStorageType">Loại storage (null để xóa)</param>
+    /// <param name="thumbnailFileSize">Kích thước file (null để xóa)</param>
+    /// <param name="thumbnailChecksum">Checksum file (null để xóa)</param>
+    Task UpdateThumbnailOnlyAsync(
+        Guid variantId,
+        Binary thumbnailImage,
+        string thumbnailFileName,
+        string thumbnailRelativePath,
+        string thumbnailFullPath,
+        string thumbnailStorageType,
+        long? thumbnailFileSize,
+        string thumbnailChecksum);
 
     #endregion
 

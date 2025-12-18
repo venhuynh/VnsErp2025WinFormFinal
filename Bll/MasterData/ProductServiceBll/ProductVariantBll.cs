@@ -493,10 +493,167 @@ namespace Bll.MasterData.ProductServiceBll
                     }
                 }
 
-                // 6. Lưu vào database
-                await GetDataAccess().SaveAsync(variant, null);
+                // 6. Lưu vào database - sử dụng SaveOrUpdate để tránh xóa VariantAttribute
+                // Vì chỉ cập nhật thumbnail, không cần thay đổi attribute values
+                await Task.Run(() => GetDataAccess().SaveOrUpdate(variant));
 
                 return variant;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi cập nhật thumbnail image cho biến thể {variantId}: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi cập nhật thumbnail image: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Chỉ cập nhật/xóa thumbnail image của biến thể theo ID, không ảnh hưởng đến các trường khác
+        /// Tự động resize hình ảnh trước khi lưu thumbnail
+        /// </summary>
+        /// <param name="variantId">ID biến thể cần cập nhật</param>
+        /// <param name="imageBytes">Byte array của hình ảnh gốc (null để xóa thumbnail)</param>
+        /// <param name="thumbnailMaxDimension">Kích thước tối đa của thumbnail (mặc định 120px)</param>
+        /// <returns>Task</returns>
+        public async Task UpdateThumbnailImageOnlyAsync(Guid variantId, byte[] imageBytes, int thumbnailMaxDimension = 120)
+        {
+            try
+            {
+                // Kiểm tra variant có tồn tại không
+                var variant = GetById(variantId);
+                if (variant == null)
+                {
+                    throw new Exception($"Không tìm thấy biến thể sản phẩm với ID {variantId}");
+                }
+
+                // Xử lý xóa thumbnail
+                if (imageBytes == null || imageBytes.Length == 0)
+                {
+                    // Xóa file trên NAS nếu có
+                    if (!string.IsNullOrWhiteSpace(variant.ThumbnailRelativePath))
+                    {
+                        try
+                        {
+                            await GetImageStorage().DeleteImageAsync(variant.ThumbnailRelativePath);
+                            _logger.Info($"Đã xóa file thumbnail từ storage, RelativePath={variant.ThumbnailRelativePath}");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Warning($"Không thể xóa file thumbnail từ storage: {ex.Message}");
+                        }
+                    }
+
+                    // Xóa thông tin trong database
+                    await GetDataAccess().UpdateThumbnailOnlyAsync(
+                        variantId: variantId,
+                        thumbnailImage: null,
+                        thumbnailFileName: null,
+                        thumbnailRelativePath: null,
+                        thumbnailFullPath: null,
+                        thumbnailStorageType: null,
+                        thumbnailFileSize: null,
+                        thumbnailChecksum: null);
+
+                    _logger.Info($"Đã xóa thumbnail cho biến thể {variantId}");
+                    return;
+                }
+
+                // Xử lý upload thumbnail mới
+                if (thumbnailMaxDimension <= 0)
+                {
+                    thumbnailMaxDimension = 120; // Default 120px cho cột thumbnail
+                }
+
+                // 1. Tạo tên file
+                var fileExtension = ".jpg"; // Mặc định JPEG
+                try
+                {
+                    using (var ms = new MemoryStream(imageBytes))
+                    using (var img = Image.FromStream(ms))
+                    {
+                        if (img.RawFormat.Equals(ImageFormat.Png))
+                            fileExtension = ".png";
+                        else if (img.RawFormat.Equals(ImageFormat.Gif))
+                            fileExtension = ".gif";
+                    }
+                }
+                catch
+                {
+                    // Nếu không detect được, dùng .jpg mặc định
+                }
+
+                var fileName = $"PV_{variantId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+
+                // 2. Lưu ảnh gốc lên NAS
+                var storageResult = await GetImageStorage().SaveImageAsync(
+                    imageData: imageBytes,
+                    fileName: fileName,
+                    category: ImageCategory.ProductVariant,
+                    entityId: variantId,
+                    generateThumbnail: false // Không tạo thumbnail trên NAS, sẽ tạo và lưu vào database
+                );
+
+                if (!storageResult.Success)
+                {
+                    throw new InvalidOperationException(
+                        $"Không thể lưu hình ảnh vào storage: {storageResult.ErrorMessage}");
+                }
+
+                // 3. Tạo thumbnail từ ảnh gốc với kích thước tùy chỉnh
+                byte[] thumbnailData = null;
+                try
+                {
+                    thumbnailData = _imageCompression.CompressImage(
+                        imageData: imageBytes,
+                        targetSize: 50000, // Target size: ~50KB
+                        maxDimension: thumbnailMaxDimension, // Sử dụng kích thước tùy chỉnh (120px cho cột thumbnail)
+                        format: ImageFormat.Jpeg
+                    );
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warning($"Không thể tạo thumbnail cho biến thể {variantId}: {ex.Message}");
+                    // Tiếp tục lưu ảnh dù không tạo được thumbnail
+                }
+
+                // 4. Xóa file cũ trên NAS nếu có
+                if (!string.IsNullOrWhiteSpace(variant.ThumbnailRelativePath) && 
+                    variant.ThumbnailRelativePath != storageResult.RelativePath)
+                {
+                    try
+                    {
+                        await GetImageStorage().DeleteImageAsync(variant.ThumbnailRelativePath);
+                        _logger.Info($"Đã xóa file thumbnail cũ từ storage, RelativePath={variant.ThumbnailRelativePath}");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Warning($"Không thể xóa file thumbnail cũ từ storage: {ex.Message}");
+                    }
+                }
+
+                // 5. Lưu thumbnail đã resize vào database
+                Binary thumbnailBinary = null;
+                if (thumbnailData != null && thumbnailData.Length > 0)
+                {
+                    thumbnailBinary = new Binary(thumbnailData);
+                }
+                else
+                {
+                    // Nếu không tạo được thumbnail, lưu ảnh gốc đã resize nhỏ
+                    thumbnailBinary = new Binary(imageBytes);
+                }
+
+                // 6. Cập nhật chỉ các field thumbnail trong database
+                await GetDataAccess().UpdateThumbnailOnlyAsync(
+                    variantId: variantId,
+                    thumbnailImage: thumbnailBinary,
+                    thumbnailFileName: storageResult.FileName,
+                    thumbnailRelativePath: storageResult.RelativePath,
+                    thumbnailFullPath: storageResult.FullPath,
+                    thumbnailStorageType: "NAS",
+                    thumbnailFileSize: storageResult.FileSize,
+                    thumbnailChecksum: storageResult.Checksum);
+
+                _logger.Info($"Đã cập nhật thumbnail cho biến thể {variantId}");
             }
             catch (Exception ex)
             {

@@ -182,7 +182,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmProductVariant());
+            Application.Run(new FormMain());
 
             #endregion
 

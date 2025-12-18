@@ -512,8 +512,9 @@ namespace MasterData.ProductService
 
                         // Upload thumbnail (lưu ảnh gốc lên NAS và thumbnail đã resize vào database)
                         // Sử dụng thumbnailMaxDimension = 120px để phù hợp với Width của cột thumbnail
+                        // Sử dụng method mới chỉ cập nhật thumbnail, không ảnh hưởng đến các trường khác
                         const int thumbnailMaxDimension = 120;
-                        await _productVariantBll.UpdateThumbnailImageAsync(variantId, imageBytes, thumbnailMaxDimension);
+                        await _productVariantBll.UpdateThumbnailImageOnlyAsync(variantId, imageBytes, thumbnailMaxDimension);
 
                         ShowInfo("Đã cập nhật ảnh đại diện biến thể sản phẩm thành công!");
 
@@ -523,7 +524,8 @@ namespace MasterData.ProductService
                     else
                     {
                         // Trường hợp hình ảnh bị xóa - XÓA thumbnail
-                        await _productVariantBll.UpdateThumbnailImageAsync(variantId, null);
+                        // Sử dụng method mới chỉ xóa thumbnail, không ảnh hưởng đến các trường khác
+                        await _productVariantBll.UpdateThumbnailImageOnlyAsync(variantId, null);
 
                         ShowInfo("Đã xóa ảnh đại diện biến thể sản phẩm thành công!");
 

@@ -314,6 +314,7 @@ public static class ProductVariantListConverters
         var dto = new ProductVariantListDto
         {
             Id = entity.Id,
+            ProductName = entity.ProductService.Name,
             VariantCode = entity.VariantCode ?? string.Empty,
             VariantFullName = entity.VariantFullName ?? string.Empty,
             IsActive = entity.IsActive,

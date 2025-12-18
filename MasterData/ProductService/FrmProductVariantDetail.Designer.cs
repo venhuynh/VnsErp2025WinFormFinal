@@ -352,8 +352,6 @@ namespace MasterData.ProductService
             this.colAttributeName.ColumnEdit = this.AttributeSearchLookUpEdit;
             this.colAttributeName.FieldName = "AttributeName";
             this.colAttributeName.Name = "colAttributeName";
-            this.colAttributeName.OptionsColumn.AllowEdit = true;
-            this.colAttributeName.OptionsColumn.AllowFocus = true;
             this.colAttributeName.Visible = true;
             this.colAttributeName.VisibleIndex = 0;
             // 
@@ -363,7 +361,7 @@ namespace MasterData.ProductService
             this.AttributeSearchLookUpEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.AttributeSearchLookUpEdit.DataSource = this.attributeDtoBindingSource;
-            this.AttributeSearchLookUpEdit.DisplayMember = "ThongTinHtml";
+            this.AttributeSearchLookUpEdit.DisplayMember = "FullInfo";
             this.AttributeSearchLookUpEdit.KeyMember = "Name";
             this.AttributeSearchLookUpEdit.Name = "AttributeSearchLookUpEdit";
             this.AttributeSearchLookUpEdit.PopupView = this.AttributeSearchLookUpEdit1View;
