@@ -805,6 +805,22 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
     }
 
     /// <summary>
+    /// Reload ProductVariant datasource (public method để gọi từ form)
+    /// </summary>
+    public async Task ReloadProductVariantDataSourceAsync()
+    {
+        try
+        {
+            await LoadProductVariantsAsync(forceRefresh: true);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("ReloadProductVariantDataSourceAsync: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi reload datasource biến thể sản phẩm: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Event handler khi ProductVariantSearchLookUpEdit popup
     /// Chỉ load dữ liệu nếu chưa load hoặc datasource rỗng
     /// </summary>

@@ -1,4 +1,4 @@
-﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.InventoryManagement;
 using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
 using Common.Utils;
@@ -581,6 +581,29 @@ public partial class UcXuatThietBiChoThueMuonMasterDto : DevExpress.XtraEditors.
     #endregion
 
     #region ========== PUBLIC METHODS ==========
+
+    /// <summary>
+    /// Load lookup datasource (Warehouse và Customer) - Public method để gọi từ form
+    /// </summary>
+    public async Task LoadLookupDataAsync()
+    {
+        try
+        {
+            // Reset flags để đảm bảo load lại khi form load
+            _isWarehouseDataSourceLoaded = false;
+            _isCustomerDataSourceLoaded = false;
+
+            // Load cả 2 datasource song song để tối ưu performance
+            await Task.WhenAll(
+                LoadWarehouseDataSourceAsync(),
+                LoadCustomerDataSourceAsync()
+            );
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi tải dữ liệu lookup");
+        }
+    }
 
     public XuatThietBiChoThueMuonMasterDto GetDto()
     {

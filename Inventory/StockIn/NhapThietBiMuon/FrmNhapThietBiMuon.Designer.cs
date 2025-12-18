@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockIn.NhapThietBiMuon
+namespace Inventory.StockIn.NhapThietBiMuon
 {
     partial class FrmNhapThietBiMuon
     {
@@ -44,6 +44,7 @@
             this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
+            this.ReloadDataSourceBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -141,9 +142,10 @@
             this.CloseBarButtonItem,
             this.NhapQuanLyTaiSanBarButtonItem,
             this.ThemHinhAnhBarButtonItem,
-            this.HotKeyBarStaticItem});
+            this.HotKeyBarStaticItem,
+            this.ReloadDataSourceBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 7;
+            this.barManager1.MaxItemId = 8;
             // 
             // bar2
             // 
@@ -154,6 +156,7 @@
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapLaiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ReloadDataSourceBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LuuPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapQuanLyTaiSanBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
@@ -218,6 +221,14 @@
             this.HotKeyBarStaticItem.Caption = "barStaticItem1";
             this.HotKeyBarStaticItem.Id = 6;
             this.HotKeyBarStaticItem.Name = "HotKeyBarStaticItem";
+            // 
+            // ReloadDataSourceBarButtonItem
+            // 
+            this.ReloadDataSourceBarButtonItem.Caption = "Làm mới dữ liệu";
+            this.ReloadDataSourceBarButtonItem.Id = 7;
+            this.ReloadDataSourceBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.refreshpivottable_16x16;
+            this.ReloadDataSourceBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.refreshpivottable_32x32;
+            this.ReloadDataSourceBarButtonItem.Name = "ReloadDataSourceBarButtonItem";
             // 
             // barDockControlTop
             // 
@@ -359,6 +370,7 @@
         private DevExpress.XtraBars.BarButtonItem NhapQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
+        private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;
         private Inventory.StockIn.NhapThietBiMuon.UcNhapThietBiMuonDetail ucNhapThietBiMuonDetail1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private UcNhapThietBiMuonMaster ucNhapThietBiMuonMaster1;

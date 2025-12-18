@@ -103,6 +103,7 @@
     <None Include="Docs\AssemblyManufacturing_Implementation_Steps.md" />
     <None Include="Docs\AssemblyManufacturing_Plan.md" />
     <None Include="Docs\AssemblyManufacturing_UI_Workflow.md" />
+    <None Include="Docs\Blackbox.ai\BAO_CAO_TONG_QUAN_VNS_ERP_2025.md" />
     <None Include="Docs\DatabaseSchema_Asset_Proposal.md" />
     <None Include="Docs\Icons.xlsx" />
     <None Include="Docs\ImageStorageRefactoringArchitecture.md" />

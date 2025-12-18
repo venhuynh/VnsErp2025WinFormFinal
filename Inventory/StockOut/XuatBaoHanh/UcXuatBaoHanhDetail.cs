@@ -281,6 +281,22 @@ public partial class UcXuatBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     }
 
     /// <summary>
+    /// Reload ProductVariant datasource (public method để gọi từ Form)
+    /// </summary>
+    public async Task ReloadProductVariantDataSourceAsync()
+    {
+        try
+        {
+            await LoadProductVariantsAsync(forceRefresh: true);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("ReloadProductVariantDataSourceAsync: Exception occurred", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Validate tất cả các dòng trong grid
     /// </summary>
     public bool ValidateAll()
