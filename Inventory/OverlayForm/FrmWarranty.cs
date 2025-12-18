@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -761,6 +761,50 @@ public partial class FrmWarranty : XtraForm
             {
                 // Giá trị hợp lệ, clear lỗi
                 dxErrorProvider1.SetError(StockInOutDetailIdSearchLookUpEdit, string.Empty);
+
+                // Lấy thông tin ProductVariant từ selected detail
+                if (stockInDetailDtoBindingSource.Current is NhapHangThuongMaiDetailDto selectedDetail)
+                {
+                    // Lấy FullNameHtml từ DTO (đã format sẵn với tên, mã, đơn vị tính)
+                    var fullNameHtml = selectedDetail.FullNameHtml ?? string.Empty;
+
+                    // Thêm thông tin số lượng nhập/xuất
+                    var quantityInfo = string.Empty;
+                    if (selectedDetail.StockInQty > 0)
+                    {
+                        quantityInfo += $"<br/><size=9><color='#757575'>SL nhập: </color><b>{selectedDetail.StockInQty:N0}</b>";
+                        if (!string.IsNullOrWhiteSpace(selectedDetail.UnitOfMeasureName))
+                        {
+                            quantityInfo += $" {selectedDetail.UnitOfMeasureName}";
+                        }
+                        quantityInfo += "</size>";
+                    }
+                    if (selectedDetail.StockOutQty > 0)
+                    {
+                        quantityInfo += $"<br/><size=9><color='#757575'>SL xuất: </color><b>{selectedDetail.StockOutQty:N0}</b>";
+                        if (!string.IsNullOrWhiteSpace(selectedDetail.UnitOfMeasureName))
+                        {
+                            quantityInfo += $" {selectedDetail.UnitOfMeasureName}";
+                        }
+                        quantityInfo += "</size>";
+                    }
+
+                    // Cập nhật ProductVarianFullInfoSimpleLabelItemHtml với thông tin đầy đủ
+                    ProductVarianFullInfoSimpleLabelItemHtml.Text = fullNameHtml + quantityInfo;
+
+                    _logger.Debug("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Updated ProductVarianFullInfoSimpleLabelItemHtml, StockInOutDetailId={0}", stockInOutDetailId);
+                }
+                else
+                {
+                    // Nếu không tìm thấy detail, clear label
+                    ProductVarianFullInfoSimpleLabelItemHtml.Text = "Thông tin đầy đủ của sản phẩm bảo hành";
+                    _logger.Warning("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Selected detail not found, StockInOutDetailId={0}", stockInOutDetailId);
+                }
+            }
+            else
+            {
+                // Nếu không có giá trị, reset về mặc định
+                ProductVarianFullInfoSimpleLabelItemHtml.Text = "Thông tin đầy đủ của sản phẩm bảo hành";
             }
         }
         catch (Exception ex)
