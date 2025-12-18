@@ -78,13 +78,13 @@ namespace MasterData.ProductService
             this.AttributeValueGridControl = new DevExpress.XtraGrid.GridControl();
             this.attributeValueDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeValueGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colValue = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colAttributeName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.AttributeSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.attributeDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colThongTinHtml1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.AttributeHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
-            this.colAttributeName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colValue = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.productServiceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -336,8 +336,8 @@ namespace MasterData.ProductService
             this.AttributeValueGridView.Appearance.ViewCaption.Options.UseFont = true;
             this.AttributeValueGridView.Appearance.ViewCaption.Options.UseForeColor = true;
             this.AttributeValueGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colValue,
-            this.colAttributeName});
+            this.colAttributeName,
+            this.colValue});
             this.AttributeValueGridView.GridControl = this.AttributeValueGridControl;
             this.AttributeValueGridView.Name = "AttributeValueGridView";
             this.AttributeValueGridView.OptionsNavigation.AutoFocusNewRow = true;
@@ -346,14 +346,16 @@ namespace MasterData.ProductService
             this.AttributeValueGridView.OptionsView.ShowViewCaption = true;
             this.AttributeValueGridView.ViewCaption = "DANH SÁCH CÁC THUỘC TÍNH BIẾN THỂ";
             // 
-            // colValue
+            // colAttributeName
             // 
-            this.colValue.Caption = "Tên thuộc tính";
-            this.colValue.ColumnEdit = this.AttributeSearchLookUpEdit;
-            this.colValue.FieldName = "AttributeInfoHtml";
-            this.colValue.Name = "colValue";
-            this.colValue.Visible = true;
-            this.colValue.VisibleIndex = 0;
+            this.colAttributeName.Caption = "Tên thuộc tính";
+            this.colAttributeName.ColumnEdit = this.AttributeSearchLookUpEdit;
+            this.colAttributeName.FieldName = "AttributeName";
+            this.colAttributeName.Name = "colAttributeName";
+            this.colAttributeName.OptionsColumn.AllowEdit = true;
+            this.colAttributeName.OptionsColumn.AllowFocus = true;
+            this.colAttributeName.Visible = true;
+            this.colAttributeName.VisibleIndex = 0;
             // 
             // AttributeSearchLookUpEdit
             // 
@@ -396,12 +398,12 @@ namespace MasterData.ProductService
             this.AttributeHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.AttributeHtmlHypertextLabel.Name = "AttributeHtmlHypertextLabel";
             // 
-            // colAttributeName
+            // colValue
             // 
-            this.colAttributeName.FieldName = "Value";
-            this.colAttributeName.Name = "colAttributeName";
-            this.colAttributeName.Visible = true;
-            this.colAttributeName.VisibleIndex = 1;
+            this.colValue.FieldName = "Value";
+            this.colValue.Name = "colValue";
+            this.colValue.Visible = true;
+            this.colValue.VisibleIndex = 1;
             // 
             // ProductNameSearchLookupEdit
             // 
@@ -769,8 +771,8 @@ namespace MasterData.ProductService
         private GridView AttributeValueGridView;
         private LayoutControlItem ItemForProductName;
         private BindingSource attributeValueDtoBindingSource;
-        private GridColumn colValue;
         private GridColumn colAttributeName;
+        private GridColumn colValue;
         private SimpleLabelItem simpleLabelItem1;
         private RepositoryItemSearchLookUpEdit AttributeSearchLookUpEdit;
         private BindingSource attributeDtoBindingSource;

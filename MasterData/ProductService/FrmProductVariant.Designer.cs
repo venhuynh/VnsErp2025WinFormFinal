@@ -421,10 +421,32 @@ namespace MasterData.ProductService
             // 
             // colProductName
             // 
+            this.colProductName.AppearanceCell.Options.UseTextOptions = true;
+            this.colProductName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colProductName.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colProductName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colProductName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colProductName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colProductName.AppearanceHeader.Options.UseBackColor = true;
+            this.colProductName.AppearanceHeader.Options.UseFont = true;
+            this.colProductName.AppearanceHeader.Options.UseForeColor = true;
+            this.colProductName.AppearanceHeader.Options.UseTextOptions = true;
+            this.colProductName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colProductName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colProductName.Caption = "Tên sản phẩm";
             this.colProductName.FieldName = "ProductName";
+            this.colProductName.MinWidth = 200;
             this.colProductName.Name = "colProductName";
+            this.colProductName.OptionsColumn.AllowEdit = false;
+            this.colProductName.OptionsColumn.AllowFocus = false;
+            this.colProductName.OptionsColumn.AllowMove = false;
+            this.colProductName.OptionsColumn.AllowSize = true;
+            this.colProductName.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.True;
+            this.colProductName.OptionsFilter.AllowFilter = true;
+            this.colProductName.ToolTip = "Tên sản phẩm/dịch vụ";
             this.colProductName.Visible = true;
             this.colProductName.VisibleIndex = 2;
+            this.colProductName.Width = 300;
             // 
             // FrmProductVariant
             // 

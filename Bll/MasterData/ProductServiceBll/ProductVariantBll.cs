@@ -4,8 +4,18 @@ using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bll.Common.ImageStorage;
+using Bll.Common.ImageService;
+using Bll.Common;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
 
 namespace Bll.MasterData.ProductServiceBll
 {
@@ -19,6 +29,10 @@ namespace Bll.MasterData.ProductServiceBll
 
         private IProductVariantRepository _dataAccess;
         private readonly object _lockObject = new object();
+        private IImageStorageService _imageStorage;
+        private readonly object _imageStorageLock = new object();
+        private readonly ImageCompressionService _imageCompression;
+        private readonly ILogger _logger;
 
         #endregion
 
@@ -29,6 +43,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         public ProductVariantBll()
         {
+            _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
+            _imageCompression = new ImageCompressionService();
         }
 
         #endregion
@@ -67,6 +83,36 @@ namespace Bll.MasterData.ProductServiceBll
             }
 
             return _dataAccess;
+        }
+
+        /// <summary>
+        /// Lấy hoặc khởi tạo ImageStorageService (lazy initialization)
+        /// Chỉ khởi tạo khi thực sự cần dùng (khi upload/delete image)
+        /// </summary>
+        private IImageStorageService GetImageStorage()
+        {
+            if (_imageStorage == null)
+            {
+                lock (_imageStorageLock)
+                {
+                    if (_imageStorage == null)
+                    {
+                        try
+                        {
+                            _imageStorage = ImageStorageFactory.CreateFromConfig(_logger);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error($"Lỗi khi khởi tạo ImageStorageService: {ex.Message}", ex);
+                            throw new InvalidOperationException(
+                                "Không thể khởi tạo ImageStorageService. Vui lòng kiểm tra cấu hình NAS trong bảng Setting. " +
+                                "Nếu không sử dụng NAS, hãy đặt NAS.StorageType = 'Local' trong bảng Setting.", ex);
+                        }
+                    }
+                }
+            }
+
+            return _imageStorage;
         }
 
         #endregion
@@ -305,6 +351,157 @@ namespace Bll.MasterData.ProductServiceBll
                 // Log lỗi nhưng không throw để không ảnh hưởng đến quá trình lưu chính
                 // Có thể log vào logger nếu cần
                 System.Diagnostics.Debug.WriteLine($"Lỗi cập nhật VariantFullName cho biến thể {variantId}: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật thumbnail image cho biến thể sản phẩm từ byte array
+        /// Lưu ảnh gốc lên NAS và thumbnail đã resize vào database
+        /// </summary>
+        /// <param name="variantId">ID biến thể sản phẩm</param>
+        /// <param name="imageBytes">Byte array của hình ảnh gốc (null để xóa)</param>
+        /// <param name="thumbnailMaxDimension">Kích thước tối đa của thumbnail (mặc định 120px)</param>
+        /// <returns>ProductVariant entity đã được cập nhật</returns>
+        public async Task<ProductVariant> UpdateThumbnailImageAsync(Guid variantId, byte[] imageBytes, int thumbnailMaxDimension = 120)
+        {
+            try
+            {
+                var variant = GetById(variantId);
+                if (variant == null)
+                {
+                    throw new Exception($"Không tìm thấy biến thể sản phẩm với ID {variantId}");
+                }
+
+                // Xử lý xóa thumbnail
+                if (imageBytes == null || imageBytes.Length == 0)
+                {
+                    // Xóa file trên NAS nếu có
+                    if (!string.IsNullOrWhiteSpace(variant.ThumbnailRelativePath))
+                    {
+                        try
+                        {
+                            await GetImageStorage().DeleteImageAsync(variant.ThumbnailRelativePath);
+                            _logger.Info($"Đã xóa file thumbnail từ storage, RelativePath={variant.ThumbnailRelativePath}");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Warning($"Không thể xóa file thumbnail từ storage: {ex.Message}");
+                        }
+                    }
+
+                    // Xóa thông tin trong database
+                    variant.ThumbnailImage = null;
+                    variant.ThumbnailFileName = null;
+                    variant.ThumbnailRelativePath = null;
+                    variant.ThumbnailFullPath = null;
+                    variant.ThumbnailStorageType = null;
+                    variant.ThumbnailFileSize = null;
+                    variant.ThumbnailChecksum = null;
+                }
+                else
+                {
+                    // Xử lý upload thumbnail mới
+                    if (thumbnailMaxDimension <= 0)
+                    {
+                        thumbnailMaxDimension = 120; // Default 120px cho cột thumbnail
+                    }
+
+                    // 1. Tạo tên file
+                    var fileExtension = ".jpg"; // Mặc định JPEG
+                    try
+                    {
+                        using (var ms = new MemoryStream(imageBytes))
+                        using (var img = Image.FromStream(ms))
+                        {
+                            if (img.RawFormat.Equals(ImageFormat.Png))
+                                fileExtension = ".png";
+                            else if (img.RawFormat.Equals(ImageFormat.Gif))
+                                fileExtension = ".gif";
+                        }
+                    }
+                    catch
+                    {
+                        // Nếu không detect được, dùng .jpg mặc định
+                    }
+
+                    var fileName = $"PV_{variantId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+
+                    // 2. Lưu ảnh gốc lên NAS
+                    var storageResult = await GetImageStorage().SaveImageAsync(
+                        imageData: imageBytes,
+                        fileName: fileName,
+                        category: ImageCategory.ProductVariant, // Sử dụng ProductVariant category
+                        entityId: variantId,
+                        generateThumbnail: false // Không tạo thumbnail trên NAS, sẽ tạo và lưu vào database
+                    );
+
+                    if (!storageResult.Success)
+                    {
+                        throw new InvalidOperationException(
+                            $"Không thể lưu hình ảnh vào storage: {storageResult.ErrorMessage}");
+                    }
+
+                    // 3. Tạo thumbnail từ ảnh gốc với kích thước tùy chỉnh
+                    byte[] thumbnailData = null;
+                    try
+                    {
+                        thumbnailData = _imageCompression.CompressImage(
+                            imageData: imageBytes,
+                            targetSize: 50000, // Target size: ~50KB
+                            maxDimension: thumbnailMaxDimension, // Sử dụng kích thước tùy chỉnh (120px cho cột thumbnail)
+                            format: ImageFormat.Jpeg
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Warning($"Không thể tạo thumbnail cho biến thể {variantId}: {ex.Message}");
+                        // Tiếp tục lưu ảnh dù không tạo được thumbnail
+                    }
+
+                    // 4. Xóa file cũ trên NAS nếu có
+                    if (!string.IsNullOrWhiteSpace(variant.ThumbnailRelativePath) && 
+                        variant.ThumbnailRelativePath != storageResult.RelativePath)
+                    {
+                        try
+                        {
+                            await GetImageStorage().DeleteImageAsync(variant.ThumbnailRelativePath);
+                            _logger.Info($"Đã xóa file thumbnail cũ từ storage, RelativePath={variant.ThumbnailRelativePath}");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Warning($"Không thể xóa file thumbnail cũ từ storage: {ex.Message}");
+                        }
+                    }
+
+                    // 5. Cập nhật thông tin trong entity
+                    variant.ThumbnailFileName = storageResult.FileName;
+                    variant.ThumbnailRelativePath = storageResult.RelativePath;
+                    variant.ThumbnailFullPath = storageResult.FullPath;
+                    variant.ThumbnailStorageType = "NAS";
+                    variant.ThumbnailFileSize = storageResult.FileSize;
+                    variant.ThumbnailChecksum = storageResult.Checksum;
+
+                    // Lưu thumbnail đã resize vào database
+                    if (thumbnailData != null && thumbnailData.Length > 0)
+                    {
+                        variant.ThumbnailImage = new Binary(thumbnailData);
+                    }
+                    else
+                    {
+                        // Nếu không tạo được thumbnail, lưu ảnh gốc đã resize nhỏ
+                        variant.ThumbnailImage = new Binary(imageBytes);
+                    }
+                }
+
+                // 6. Lưu vào database
+                await GetDataAccess().SaveAsync(variant, null);
+
+                return variant;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi cập nhật thumbnail image cho biến thể {variantId}: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi cập nhật thumbnail image: {ex.Message}", ex);
             }
         }
 
