@@ -1,4 +1,4 @@
-﻿-- =============================================
+-- =============================================
 -- Script: Insert phiên bản mới vào bảng VnsErpApplicationVersion
 -- Mục đích: Thêm phiên bản mới và tự động set các phiên bản cũ thành IsActive = false
 -- Lưu ý: Chỉ có một phiên bản Active tại một thời điểm
@@ -34,13 +34,14 @@ GO
 -- CẤU HÌNH PHIÊN BẢN MỚI - THAY ĐỔI CÁC GIÁ TRỊ SAU:
 -- =============================================
 
-DECLARE @NewVersion NVARCHAR(50) = N'1.0.1.1';  -- ⚠️ THAY ĐỔI: Phiên bản mới (ví dụ: 1.0.0.1, 1.0.1.0, 1.1.0.0, 2.0.0.0)
+DECLARE @NewVersion NVARCHAR(50) = N'1.0.1.2';  -- ⚠️ THAY ĐỔI: Phiên bản mới (ví dụ: 1.0.0.1, 1.0.1.0, 1.1.0.0, 2.0.0.0)
 DECLARE @ReleaseDate DATETIME = GETDATE();      -- ⚠️ THAY ĐỔI: Ngày phát hành (hoặc dùng GETDATE() cho ngày hiện tại)
-DECLARE @Description NVARCHAR(500) = N'Phiên bản cập nhật với các tính năng mới và sửa lỗi';  -- ⚠️ THAY ĐỔI: Mô tả ngắn
+DECLARE @Description NVARCHAR(500) = N'cập nhật logic xử lý biến thể sản phẩm';  -- ⚠️ THAY ĐỔI: Mô tả ngắn
 DECLARE @ReleaseNote NVARCHAR(1000) = N'Chi tiết các thay đổi trong phiên bản này:
-- Tính năng mới: Thêm phiên bản và quản lý phiên bản ứng dụng
-- Sửa lỗi: ...
-- Cải thiện: Màn hình hiển thị danh sách thuộc tính';  -- ⚠️ THAY ĐỔI: Ghi chú phát hành chi tiết
+- Cải thiện: Cập nhật logic xử lý biến thể sản phẩm
+- Tính năng mới: Thêm hàm UpdateThumbnailImageOnlyAsync để chỉ cập nhật/xóa hình ảnh biến thể
+- Sửa lỗi: Sửa lỗi tạo record mới khi cập nhật thumbnail image
+- Cải thiện: Tách biệt logic cập nhật thumbnail khỏi các trường khác của biến thể';  -- ⚠️ THAY ĐỔI: Ghi chú phát hành chi tiết
 DECLARE @CreateBy UNIQUEIDENTIFIER = NULL;       -- ⚠️ THAY ĐỔI: ID người tạo (hoặc NULL)
 
 -- =============================================
