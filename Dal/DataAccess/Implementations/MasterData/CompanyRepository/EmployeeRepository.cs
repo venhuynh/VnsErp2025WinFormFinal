@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
@@ -512,12 +512,8 @@ public class EmployeeRepository : IEmployeeRepository
                 throw new DataAccessException($"Không thể xóa nhân viên vì còn {assets.Count} tài sản được gán cho nhân viên này");
             }
 
-            // Kiểm tra xem có Device nào được gán cho nhân viên này không
-            var devices = context.Devices.Where(d => d.AssignedEmployeeId == employee.Id).ToList();
-            if (devices.Any())
-            {
-                throw new DataAccessException($"Không thể xóa nhân viên vì còn {devices.Count} thiết bị được gán cho nhân viên này");
-            }
+            // Lưu ý: Bảng Device đã không còn cột AssignedEmployeeId nữa
+            // Không cần kiểm tra Device khi xóa Employee
 
             context.Employees.DeleteOnSubmit(existingEmployee);
             context.SubmitChanges();

@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockInOut;
+using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Enums;
 using Common.Utils;
 using DevExpress.XtraEditors;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
+using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -39,6 +41,11 @@ public partial class FrmWarranty : XtraForm
     /// Business Logic Layer cho phiếu nhập kho
     /// </summary>
     private readonly StockInOutBll _stockInBll = new StockInOutBll();
+
+    /// <summary>
+    /// Business Logic Layer cho ProductVariant
+    /// </summary>
+    private readonly ProductVariantBll _productVariantBll = new ProductVariantBll();
 
     /// <summary>
     /// Logger để ghi log các sự kiện
@@ -765,46 +772,104 @@ public partial class FrmWarranty : XtraForm
                 // Lấy thông tin ProductVariant từ selected detail
                 if (stockInDetailDtoBindingSource.Current is NhapHangThuongMaiDetailDto selectedDetail)
                 {
-                    // Lấy FullNameHtml từ DTO (đã format sẵn với tên, mã, đơn vị tính)
-                    var fullNameHtml = selectedDetail.FullNameHtml ?? string.Empty;
+                    // Lấy ProductVariantListDto từ ProductVariantId
+                    ProductVariantListDto variantListDto = null;
+                    try
+                    {
+                        if (selectedDetail.ProductVariantId != Guid.Empty)
+                        {
+                            var variantEntity = _productVariantBll.GetById(selectedDetail.ProductVariantId);
+                            if (variantEntity != null)
+                            {
+                                variantListDto = variantEntity.ToListDto();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Warning("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Không thể lấy ProductVariantListDto, ProductVariantId={0}, Error={1}", 
+                            selectedDetail.ProductVariantId, ex.Message);
+                    }
 
-                    // Thêm thông tin số lượng nhập/xuất
-                    var quantityInfo = string.Empty;
+                    // Tạo HTML string từ thông tin ProductVariant (không dùng size và weight)
+                    var html = string.Empty;
+
+                    // Sử dụng VariantFullName từ ProductVariantListDto nếu có, nếu không thì fallback về ProductVariantName
+                    var variantFullName = variantListDto?.VariantFullName ?? selectedDetail.ProductVariantName ?? string.Empty;
+                    var variantCode = variantListDto?.VariantCode ?? selectedDetail.ProductVariantCode ?? string.Empty;
+                    var unitName = variantListDto?.UnitName ?? selectedDetail.UnitOfMeasureName ?? string.Empty;
+
+                    // Hiển thị VariantFullName (nổi bật nhất)
+                    if (!string.IsNullOrWhiteSpace(variantFullName))
+                    {
+                        html += $"<color='blue'>{variantFullName}</color>";
+                    }
+
+                    // Mã biến thể (nếu có và khác với VariantFullName)
+                    if (!string.IsNullOrWhiteSpace(variantCode) && !variantFullName.Contains(variantCode))
+                    {
+                        if (!string.IsNullOrWhiteSpace(variantFullName))
+                        {
+                            html += $" <color='#757575'>({variantCode})</color>";
+                        }
+                        else
+                        {
+                            html += $"<color='blue'>{variantCode}</color>";
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(variantFullName) || !string.IsNullOrWhiteSpace(variantCode))
+                    {
+                        html += "<br>";
+                    }
+
+                    // Đơn vị tính
+                    if (!string.IsNullOrWhiteSpace(unitName))
+                    {
+                        html += $"<color='#757575'>Đơn vị tính:</color> <color='#212121'>{unitName}</color><br>";
+                    }
+
+                    // Số lượng nhập
                     if (selectedDetail.StockInQty > 0)
                     {
-                        quantityInfo += $"<br/><size=9><color='#757575'>SL nhập: </color><b>{selectedDetail.StockInQty:N0}</b>";
-                        if (!string.IsNullOrWhiteSpace(selectedDetail.UnitOfMeasureName))
+                        html += $"<color='#757575'>SL nhập: </color><color='#212121'>{selectedDetail.StockInQty:N0}</color>";
+                        if (!string.IsNullOrWhiteSpace(unitName))
                         {
-                            quantityInfo += $" {selectedDetail.UnitOfMeasureName}";
+                            html += $" {unitName}";
                         }
-                        quantityInfo += "</size>";
                     }
+
+                    // Số lượng xuất
                     if (selectedDetail.StockOutQty > 0)
                     {
-                        quantityInfo += $"<br/><size=9><color='#757575'>SL xuất: </color><b>{selectedDetail.StockOutQty:N0}</b>";
-                        if (!string.IsNullOrWhiteSpace(selectedDetail.UnitOfMeasureName))
+                        if (selectedDetail.StockInQty > 0)
                         {
-                            quantityInfo += $" {selectedDetail.UnitOfMeasureName}";
+                            html += " | ";
                         }
-                        quantityInfo += "</size>";
+                        html += $"<color='#757575'>SL xuất: </color><color='#212121'>{selectedDetail.StockOutQty:N0}</color>";
+                        if (!string.IsNullOrWhiteSpace(unitName))
+                        {
+                            html += $" {unitName}";
+                        }
                     }
 
-                    // Cập nhật ProductVarianFullInfoSimpleLabelItemHtml với thông tin đầy đủ
-                    ProductVarianFullInfoSimpleLabelItemHtml.Text = fullNameHtml + quantityInfo;
+                    // Cập nhật ProductVarianFullInfoHypertextLabel với thông tin đầy đủ
+                    ProductVarianFullInfoHypertextLabel.Text = html;
 
-                    _logger.Debug("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Updated ProductVarianFullInfoSimpleLabelItemHtml, StockInOutDetailId={0}", stockInOutDetailId);
+                    _logger.Debug("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Updated ProductVarianFullInfoHypertextLabel, StockInOutDetailId={0}, VariantFullName={1}", 
+                        stockInOutDetailId, variantFullName);
                 }
                 else
                 {
                     // Nếu không tìm thấy detail, clear label
-                    ProductVarianFullInfoSimpleLabelItemHtml.Text = "Thông tin đầy đủ của sản phẩm bảo hành";
+                    ProductVarianFullInfoHypertextLabel.Text = "Thông tin đầy đủ của sản phẩm bảo hành";
                     _logger.Warning("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Selected detail not found, StockInOutDetailId={0}", stockInOutDetailId);
                 }
             }
             else
             {
                 // Nếu không có giá trị, reset về mặc định
-                ProductVarianFullInfoSimpleLabelItemHtml.Text = "Thông tin đầy đủ của sản phẩm bảo hành";
+                ProductVarianFullInfoHypertextLabel.Text = "Thông tin đầy đủ của sản phẩm bảo hành";
             }
         }
         catch (Exception ex)

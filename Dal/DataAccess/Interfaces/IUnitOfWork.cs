@@ -212,6 +212,8 @@ public interface IUnitOfWork : IDisposable
 
     IDeviceRepository GetDeviceRepository();
 
+    IDeviceTransactionHistoryRepository GetDeviceTransactionHistoryRepository();
+
     IStockInOutDocumentRepository GetStockInOutDocumentRepository();
 
     IInventoryBalanceRepository GetInventoryBalanceRepository();

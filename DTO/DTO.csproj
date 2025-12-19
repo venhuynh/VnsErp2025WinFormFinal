@@ -46,6 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Inventory\InventoryManagement\AssetDto.cs" />
+    <Compile Include="Inventory\InventoryManagement\DeviceOperationTypeEnum.cs" />
+    <Compile Include="Inventory\InventoryManagement\DeviceReferenceTypeEnum.cs" />
+    <Compile Include="Inventory\InventoryManagement\DeviceTransactionHistoryDto.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentAccessLevelEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentCategoryEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentTypeEnum.cs" />

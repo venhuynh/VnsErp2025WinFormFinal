@@ -1,4 +1,4 @@
-﻿using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
+using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
@@ -184,7 +184,10 @@ public class DeviceRepository : IDeviceRepository
                 {
                     device.Id = Guid.NewGuid();
                 }
-                device.CreatedDate = DateTime.Now;
+                if (device.CreatedDate == default(DateTime))
+                {
+                    device.CreatedDate = DateTime.Now;
+                }
                 context.Devices.InsertOnSubmit(device);
                 _logger.Info("SaveOrUpdate: Thêm mới thiết bị, Id={0}", device.Id);
             }
@@ -201,7 +204,12 @@ public class DeviceRepository : IDeviceRepository
                 existingDevice.LicenseKey = device.LicenseKey;
                 existingDevice.HostName = device.HostName;
                 existingDevice.IPAddress = device.IPAddress;
+                existingDevice.Status = device.Status;
+                existingDevice.DeviceType = device.DeviceType;
+                existingDevice.Notes = device.Notes;
+                existingDevice.IsActive = device.IsActive;
                 existingDevice.UpdatedDate = DateTime.Now;
+                existingDevice.UpdatedBy = device.UpdatedBy;
                 _logger.Info("SaveOrUpdate: Cập nhật thiết bị, Id={0}", device.Id);
             }
 

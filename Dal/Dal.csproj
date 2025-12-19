@@ -56,6 +56,7 @@
     <Compile Include="DataAccess\Implementations\ApplicationUserRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\AssetRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\DeviceRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\DeviceTransactionHistoryRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\InventoryBalanceRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutDetailRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutDocumentRepository.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="DataAccess\Interfaces\IDataContextFactory.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IAssetRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IDeviceRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IDeviceTransactionHistoryRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IInventoryBalanceRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStockInOutDetailRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IStockInOutDocumentRepository.cs" />

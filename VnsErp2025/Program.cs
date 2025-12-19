@@ -3,6 +3,7 @@ using Bll.Common;
 using Common.Appconfig;
 using Common.Utils;
 using Dal.Connection;
+using Inventory.OverlayForm;
 using Inventory.StockIn.NhapHangThuongMai;
 using MasterData.ProductService;
 using Microsoft.Win32;
@@ -182,7 +183,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FormMain());
+            Application.Run(new FrmDeviceAddEdit());
 
             #endregion
 

@@ -1,4 +1,4 @@
-﻿using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
+using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
@@ -352,31 +352,6 @@ public class WarrantyRepository : IWarrantyRepository
             // Parse UniqueProductInfo để điền vào các trường tương ứng
             // Format có thể là: "Serial: ABC123", "IMEI: 123456789", "MAC: 00:1B:44:11:3A:B7", hoặc chỉ là giá trị
             ParseUniqueProductInfo(uniqueProductInfo, device);
-
-            // Lấy thông tin từ StockInOutMaster nếu có (Company, Branch, etc.)
-            if (stockInOutDetail.StockInOutMaster != null)
-            {
-                var master = stockInOutDetail.StockInOutMaster;
-                
-                // Lấy CompanyId từ CompanyBranch nếu có
-                if (master.CompanyBranch != null)
-                {
-                    device.BranchId = master.WarehouseId; // WarehouseId là BranchId
-                    
-                    // Load CompanyBranch để lấy CompanyId
-                    var branch = context.CompanyBranches.FirstOrDefault(b => b.Id == master.WarehouseId);
-                    if (branch != null)
-                    {
-                        device.CompanyId = branch.CompanyId;
-                    }
-                }
-            }
-
-            // Lấy PurchaseDate từ WarrantyFrom nếu có
-            if (warranty.WarrantyFrom.HasValue)
-            {
-                device.PurchaseDate = warranty.WarrantyFrom.Value;
-            }
 
             context.Devices.InsertOnSubmit(device);
             context.SubmitChanges();

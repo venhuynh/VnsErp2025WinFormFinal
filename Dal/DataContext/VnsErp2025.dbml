@@ -279,7 +279,6 @@
       <Association Name="Company_Asset" Member="Assets" ThisKey="Id" OtherKey="CompanyId" Type="Asset" />
       <Association Name="Company_CompanyBranch" Member="CompanyBranches" ThisKey="Id" OtherKey="CompanyId" Type="CompanyBranch" />
       <Association Name="Company_Department" Member="Departments" ThisKey="Id" OtherKey="CompanyId" Type="Department" />
-      <Association Name="Company_Device" Member="Devices" ThisKey="Id" OtherKey="CompanyId" Type="Device" />
       <Association Name="Company_Employee" Member="Employees" ThisKey="Id" OtherKey="CompanyId" Type="Employee" />
       <Association Name="Company_Position" Member="Positions" ThisKey="Id" OtherKey="CompanyId" Type="Position" />
     </Type>
@@ -297,7 +296,6 @@
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="CompanyBranch_Asset" Member="Assets" ThisKey="Id" OtherKey="BranchId" Type="Asset" />
       <Association Name="CompanyBranch_Department" Member="Departments" ThisKey="Id" OtherKey="BranchId" Type="Department" />
-      <Association Name="CompanyBranch_Device" Member="Devices" ThisKey="Id" OtherKey="BranchId" Type="Device" />
       <Association Name="CompanyBranch_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="FromBranchId" Type="DeviceTransfer" />
       <Association Name="CompanyBranch_DeviceTransfer1" Member="DeviceTransfers1" ThisKey="Id" OtherKey="ToBranchId" Type="DeviceTransfer" />
       <Association Name="CompanyBranch_Employee" Member="Employees" ThisKey="Id" OtherKey="BranchId" Type="Employee" />
@@ -318,7 +316,6 @@
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="Department_Asset" Member="Assets" ThisKey="Id" OtherKey="DepartmentId" Type="Asset" />
       <Association Name="Department_Department" Member="Departments" ThisKey="Id" OtherKey="ParentId" Type="Department" />
-      <Association Name="Department_Device" Member="Devices" ThisKey="Id" OtherKey="DepartmentId" Type="Device" />
       <Association Name="Department_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="FromDepartmentId" Type="DeviceTransfer" />
       <Association Name="Department_DeviceTransfer1" Member="DeviceTransfers1" ThisKey="Id" OtherKey="ToDepartmentId" Type="DeviceTransfer" />
       <Association Name="Department_Employee" Member="Employees" ThisKey="Id" OtherKey="DepartmentId" Type="Employee" />
@@ -340,21 +337,8 @@
       <Column Name="LicenseKey" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
       <Column Name="HostName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="IPAddress" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="CompanyId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="BranchId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="DepartmentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="AssignedEmployeeId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="Location" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
       <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="DeviceType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PurchaseDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="InstallationDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastMaintenanceDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="NextMaintenanceDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="Manufacturer" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="Model" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
-      <Column Name="Specifications" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
-      <Column Name="Configuration" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
       <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
@@ -362,12 +346,9 @@
       <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="Device_DeviceHistory" Member="DeviceHistories" ThisKey="Id" OtherKey="DeviceId" Type="DeviceHistory" />
+      <Association Name="Device_DeviceTransactionHistory" Member="DeviceTransactionHistories" ThisKey="Id" OtherKey="DeviceId" Type="DeviceTransactionHistory" />
       <Association Name="Device_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="DeviceId" Type="DeviceTransfer" />
-      <Association Name="Company_Device" Member="Company" ThisKey="CompanyId" OtherKey="Id" Type="Company" IsForeignKey="true" />
-      <Association Name="CompanyBranch_Device" Member="CompanyBranch" ThisKey="BranchId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />
-      <Association Name="Department_Device" Member="Department" ThisKey="DepartmentId" OtherKey="Id" Type="Department" IsForeignKey="true" />
       <Association Name="Warranty_Device" Member="Warranty" ThisKey="WarrantyId" OtherKey="Id" Type="Warranty" IsForeignKey="true" />
-      <Association Name="Employee_Device" Member="Employee" ThisKey="AssignedEmployeeId" OtherKey="Id" Type="Employee" IsForeignKey="true" />
       <Association Name="ProductVariant_Device" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
       <Association Name="StockInOutDetail_Device" Member="StockInOutDetail" ThisKey="StockInOutDetailId" OtherKey="Id" Type="StockInOutDetail" IsForeignKey="true" />
     </Type>
@@ -385,6 +366,23 @@
       <Column Name="Description" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Association Name="Device_DeviceHistory" Member="Device" ThisKey="DeviceId" OtherKey="Id" Type="Device" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DeviceTransactionHistory" Member="DeviceTransactionHistories">
+    <Type Name="DeviceTransactionHistory">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DeviceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="OperationType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="OperationDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ReferenceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ReferenceType" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Information" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="HtmlInformation" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="PerformedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="Device_DeviceTransactionHistory" Member="Device" ThisKey="DeviceId" OtherKey="Id" Type="Device" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.DeviceTransfer" Member="DeviceTransfers">
@@ -452,7 +450,6 @@
       <Column Name="ApplicationUserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="Employee_ApplicationUser" Member="ApplicationUsers" ThisKey="Id" OtherKey="EmployeeId" Type="ApplicationUser" />
       <Association Name="Employee_Asset" Member="Assets" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Asset" />
-      <Association Name="Employee_Device" Member="Devices" ThisKey="Id" OtherKey="AssignedEmployeeId" Type="Device" />
       <Association Name="Employee_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="FromEmployeeId" Type="DeviceTransfer" />
       <Association Name="Employee_DeviceTransfer1" Member="DeviceTransfers1" ThisKey="Id" OtherKey="ToEmployeeId" Type="DeviceTransfer" />
       <Association Name="CompanyBranch_Employee" Member="CompanyBranch" ThisKey="BranchId" OtherKey="Id" Type="CompanyBranch" IsForeignKey="true" />

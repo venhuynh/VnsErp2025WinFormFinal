@@ -203,18 +203,18 @@ public class NhapHangThuongMaiDetailDto
             var unitName = UnitOfMeasureName ?? string.Empty;
             var unitCode = UnitOfMeasureCode ?? string.Empty;
 
-            // Format chuyên nghiệp với visual hierarchy rõ ràng
-            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
-            // - Mã sản phẩm: font nhỏ hơn, màu xám
-            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Số lượng và giá: font nhỏ hơn, màu xám cho label, đen cho value
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (chỉ sử dụng color, không dùng size và weight)
+            // - Tên sản phẩm: màu xanh đậm (primary)
+            // - Mã sản phẩm: màu xám
+            // - Đơn vị tính: màu xám cho label, đen cho value
+            // - Số lượng và giá: màu xám cho label, đen cho value
 
             var html = string.Empty;
 
             // Tên sản phẩm (nổi bật nhất)
             if (!string.IsNullOrWhiteSpace(productVariantName))
             {
-                html += $"<size=12><b><color='blue'>{productVariantName}</color></b></size>";
+                html += $"<color='blue'>{productVariantName}</color>";
             }
 
             // Mã sản phẩm (nếu có)
@@ -222,11 +222,11 @@ public class NhapHangThuongMaiDetailDto
             {
                 if (!string.IsNullOrWhiteSpace(productVariantName))
                 {
-                    html += $" <size=9><color='#757575'>({productVariantCode})</color></size>";
+                    html += $" <color='#757575'>({productVariantCode})</color>";
                 }
                 else
                 {
-                    html += $"<size=12><b><color='blue'>{productVariantCode}</color></b></size>";
+                    html += $"<color='blue'>{productVariantCode}</color>";
                 }
             }
 
@@ -244,13 +244,13 @@ public class NhapHangThuongMaiDetailDto
                         ? unitCode
                         : $"{unitCode} - {unitName}";
 
-                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitDisplay}</b></color></size><br>";
+                html += $"<color='#757575'>Đơn vị tính:</color> <color='#212121'>{unitDisplay}</color><br>";
             }
 
             // Số lượng nhập
             if (StockInQty > 0)
             {
-                html += $"<size=9><color='#757575'>Số lượng:</color></size> <size=10><color='#212121'><b>{StockInQty:N2}</b></color></size>";
+                html += $"<color='#757575'>Số lượng:</color> <color='#212121'>{StockInQty:N2}</color>";
             }
 
             // Đơn giá
@@ -258,7 +258,7 @@ public class NhapHangThuongMaiDetailDto
             {
                 if (StockInQty > 0)
                     html += " | ";
-                html += $"<size=9><color='#757575'>Đơn giá:</color></size> <size=10><color='#212121'><b>{UnitPrice:N0}</b></color></size>";
+                html += $"<color='#757575'>Đơn giá:</color> <color='#212121'>{UnitPrice:N0}</color>";
             }
 
             // VAT
@@ -266,7 +266,7 @@ public class NhapHangThuongMaiDetailDto
             {
                 if (StockInQty > 0 || UnitPrice > 0)
                     html += " | ";
-                html += $"<size=9><color='#757575'>VAT:</color></size> <size=10><color='#212121'><b>{Vat}%</b></color></size>";
+                html += $"<color='#757575'>VAT:</color> <color='#212121'>{Vat}%</color>";
             }
 
             if (StockInQty > 0 || UnitPrice > 0 || Vat > 0)
@@ -277,7 +277,7 @@ public class NhapHangThuongMaiDetailDto
             // Tổng tiền
             if (TotalAmountIncludedVat > 0)
             {
-                html += $"<size=9><color='#757575'>Tổng tiền:</color></size> <size=10><color='#2196F3'><b>{TotalAmountIncludedVat:N0}</b></color></size>";
+                html += $"<color='#757575'>Tổng tiền:</color> <color='#2196F3'>{TotalAmountIncludedVat:N0}</color>";
             }
 
             return html;
