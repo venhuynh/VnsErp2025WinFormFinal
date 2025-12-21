@@ -28,6 +28,12 @@ public interface IDeviceRepository
     List<Device> GetByStockInOutDetailId(Guid stockInOutDetailId);
 
     /// <summary>
+    /// Lấy tất cả Device
+    /// </summary>
+    /// <returns>Danh sách tất cả Device entities</returns>
+    List<Device> GetAll();
+
+    /// <summary>
     /// Lưu hoặc cập nhật Device
     /// </summary>
     /// <param name="device">Device entity cần lưu</param>

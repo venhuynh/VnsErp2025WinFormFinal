@@ -8,6 +8,48 @@ using System.Reflection;
 namespace DTO.Inventory.InventoryManagement;
 
 /// <summary>
+/// Enum định nghĩa trạng thái thiết bị
+/// </summary>
+public enum DeviceStatusEnum
+{
+    /// <summary>
+    /// Đang trong kho VNS
+    /// </summary>
+    [Description("Đang trong kho VNS")]
+    Available = 0,
+
+    /// <summary>
+    /// Đang sử dụng tại VNS
+    /// </summary>
+    [Description("Đang sử dụng tại VNS")]
+    InUse = 1,
+
+    /// <summary>
+    /// Đang gửi bảo hành
+    /// </summary>
+    [Description("Đang gửi bảo hành")]
+    Maintenance = 2,
+
+    /// <summary>
+    /// Đã hỏng
+    /// </summary>
+    [Description("Đã hỏng")]
+    Broken = 3,
+
+    /// <summary>
+    /// Đã thanh lý
+    /// </summary>
+    [Description("Đã thanh lý")]
+    Disposed = 4,
+
+    /// <summary>
+    /// Đã giao cho khách hàng
+    /// </summary>
+    [Description("Đã giao cho khách hàng")]
+    Reserved = 5
+}
+
+/// <summary>
 /// Data Transfer Object cho Device entity
 /// Chứa thông tin thiết bị: định danh, trạng thái, ghi chú
 /// </summary>
@@ -200,12 +242,12 @@ public class DeviceDto
     #region Properties - Trạng thái và loại thiết bị
 
     /// <summary>
-    /// Trạng thái thiết bị (0: Available, 1: InUse, 2: Maintenance, 3: Broken, 4: Disposed, 5: Reserved)
+    /// Trạng thái thiết bị
     /// </summary>
     [DisplayName("Trạng thái")]
     [Display(Order = 30)]
     [Required(ErrorMessage = "Trạng thái thiết bị không được để trống")]
-    public int Status { get; set; }
+    public DeviceStatusEnum Status { get; set; }
 
     /// <summary>
     /// Loại thiết bị (0: Hardware, 1: Software, 2: Network, 3: Other)
@@ -356,6 +398,13 @@ public class DeviceDto
                 var statusColor = GetStatusColor(Status);
                 statusParts.Add($"Trạng thái: <color='{statusColor}'><b>{StatusName}</b></color>");
             }
+            else
+            {
+                // Nếu StatusName chưa có, lấy từ enum
+                var statusText = GetStatusText(Status);
+                var statusColor = GetStatusColor(Status);
+                statusParts.Add($"Trạng thái: <color='{statusColor}'><b>{statusText}</b></color>");
+            }
             if (!string.IsNullOrWhiteSpace(DeviceTypeName))
                 statusParts.Add($"Loại: <b>{DeviceTypeName}</b>");
             if (IsActive)
@@ -403,21 +452,35 @@ public class DeviceDto
     }
 
     /// <summary>
+    /// Lấy text tương ứng với trạng thái thiết bị
+    /// </summary>
+    /// <param name="status">Trạng thái thiết bị</param>
+    /// <returns>Text hiển thị</returns>
+    private string GetStatusText(DeviceStatusEnum status)
+    {
+        var field = status.GetType().GetField(status.ToString());
+        if (field == null) return status.ToString();
+
+        var attribute = field.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? status.ToString();
+    }
+
+    /// <summary>
     /// Lấy màu sắc tương ứng với trạng thái thiết bị
     /// </summary>
-    /// <param name="status">Trạng thái thiết bị (0: Available, 1: InUse, 2: Maintenance, 3: Broken, 4: Disposed, 5: Reserved)</param>
+    /// <param name="status">Trạng thái thiết bị</param>
     /// <returns>Mã màu hex</returns>
-    private string GetStatusColor(int status)
+    private string GetStatusColor(DeviceStatusEnum status)
     {
         return status switch
         {
-            0 => "#4CAF50",      // Green - Available
-            1 => "#2196F3",      // Blue - InUse
-            2 => "#FF9800",      // Orange - Maintenance
-            3 => "#F44336",      // Red - Broken
-            4 => "#9E9E9E",      // Grey - Disposed
-            5 => "#9C27B0",      // Purple - Reserved
-            _ => "#212121"       // Default - Black
+            DeviceStatusEnum.Available => "#4CAF50",      // Green - Đang trong kho VNS
+            DeviceStatusEnum.InUse => "#2196F3",            // Blue - Đang sử dụng tại VNS
+            DeviceStatusEnum.Maintenance => "#FF9800",     // Orange - Đang gửi bảo hành
+            DeviceStatusEnum.Broken => "#F44336",            // Red - Đã hỏng
+            DeviceStatusEnum.Disposed => "#9E9E9E",        // Grey - Đã thanh lý
+            DeviceStatusEnum.Reserved => "#9C27B0",         // Purple - Đã giao cho khách hàng
+            _ => "#212121"                                  // Default - Black
         };
     }
 
@@ -453,7 +516,7 @@ public static class DeviceDtoConverter
             LicenseKey = entity.LicenseKey,
             HostName = entity.HostName,
             IPAddress = entity.IPAddress,
-            Status = entity.Status,
+            Status = (DeviceStatusEnum)entity.Status, // Convert int to enum
             DeviceType = entity.DeviceType,
             Notes = entity.Notes,
             IsActive = entity.IsActive,
@@ -510,7 +573,7 @@ public static class DeviceDtoConverter
             LicenseKey = dto.LicenseKey,
             HostName = dto.HostName,
             IPAddress = dto.IPAddress,
-            Status = dto.Status,
+            Status = (int)dto.Status, // Convert enum to int
             DeviceType = dto.DeviceType,
             Notes = dto.Notes,
             IsActive = dto.IsActive,

@@ -156,6 +156,29 @@ public class DeviceRepository : IDeviceRepository
         }
     }
 
+    /// <summary>
+    /// Lấy tất cả Device
+    /// </summary>
+    /// <returns>Danh sách tất cả Device entities</returns>
+    public List<Device> GetAll()
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetAll: Lấy tất cả thiết bị");
+
+            var devices = context.Devices.ToList();
+
+            _logger.Info("GetAll: Lấy được {0} thiết bị", devices.Count);
+            return devices;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetAll: Lỗi lấy danh sách thiết bị: {ex.Message}", ex);
+            throw;
+        }
+    }
+
     #endregion
 
     #region Save Operations

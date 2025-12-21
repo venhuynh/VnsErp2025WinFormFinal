@@ -111,12 +111,6 @@
     <Compile Include="Management\FrmInventoryBalanceDto.Designer.cs">
       <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
     </Compile>
-    <Compile Include="OverlayForm\FrmDeviceAddEdit.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OverlayForm\FrmDeviceAddEdit.Designer.cs">
-      <DependentUpon>FrmDeviceAddEdit.cs</DependentUpon>
-    </Compile>
     <Compile Include="OverlayForm\FrmStockInOutAddImages.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -436,9 +430,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Management\FrmInventoryBalanceDto.resx">
       <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OverlayForm\FrmDeviceAddEdit.resx">
-      <DependentUpon>FrmDeviceAddEdit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>

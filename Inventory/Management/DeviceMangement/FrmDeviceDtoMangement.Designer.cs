@@ -51,6 +51,10 @@
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.dockPanel1 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
+            this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.ucDeviceDtoAddEdit1 = new Inventory.Management.DeviceMangement.UcDeviceDtoAddEdit();
+            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.DeviceDtoGridViewGridControl = new DevExpress.XtraGrid.GridControl();
             this.deviceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.DeviceDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -59,25 +63,21 @@
             this.colStatus = new DevExpress.XtraGrid.Columns.GridColumn();
             this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
-            this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.ucDeviceDtoAddEdit1 = new Inventory.Management.DeviceMangement.UcDeviceDtoAddEdit();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
             this.dockPanel1_Container.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
+            this.layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridViewGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-            this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -226,15 +226,15 @@
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1004, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(1357, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 642);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 661);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1004, 22);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1357, 22);
             // 
             // barDockControlLeft
             // 
@@ -242,15 +242,15 @@
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 618);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 637);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1004, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(1357, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 618);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 637);
             // 
             // dockManager1
             // 
@@ -277,10 +277,10 @@
             this.dockPanel1.Controls.Add(this.dockPanel1_Container);
             this.dockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Right;
             this.dockPanel1.ID = new System.Guid("0c476c5c-6d27-493e-8a8e-c8d2ad65a997");
-            this.dockPanel1.Location = new System.Drawing.Point(561, 24);
+            this.dockPanel1.Location = new System.Drawing.Point(914, 24);
             this.dockPanel1.Name = "dockPanel1";
             this.dockPanel1.OriginalSize = new System.Drawing.Size(443, 200);
-            this.dockPanel1.Size = new System.Drawing.Size(443, 618);
+            this.dockPanel1.Size = new System.Drawing.Size(443, 637);
             this.dockPanel1.Text = "dockPanel1";
             // 
             // dockPanel1_Container
@@ -288,8 +288,44 @@
             this.dockPanel1_Container.Controls.Add(this.layoutControl1);
             this.dockPanel1_Container.Location = new System.Drawing.Point(4, 26);
             this.dockPanel1_Container.Name = "dockPanel1_Container";
-            this.dockPanel1_Container.Size = new System.Drawing.Size(436, 589);
+            this.dockPanel1_Container.Size = new System.Drawing.Size(436, 608);
             this.dockPanel1_Container.TabIndex = 0;
+            // 
+            // layoutControl1
+            // 
+            this.layoutControl1.Controls.Add(this.ucDeviceDtoAddEdit1);
+            this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layoutControl1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControl1.Name = "layoutControl1";
+            this.layoutControl1.Root = this.Root;
+            this.layoutControl1.Size = new System.Drawing.Size(436, 608);
+            this.layoutControl1.TabIndex = 0;
+            this.layoutControl1.Text = "layoutControl1";
+            // 
+            // ucDeviceDtoAddEdit1
+            // 
+            this.ucDeviceDtoAddEdit1.Location = new System.Drawing.Point(12, 12);
+            this.ucDeviceDtoAddEdit1.Name = "ucDeviceDtoAddEdit1";
+            this.ucDeviceDtoAddEdit1.Size = new System.Drawing.Size(412, 584);
+            this.ucDeviceDtoAddEdit1.TabIndex = 4;
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(436, 608);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.ucDeviceDtoAddEdit1;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(416, 588);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // DeviceDtoGridViewGridControl
             // 
@@ -301,9 +337,9 @@
             this.DeviceDtoGridViewGridControl.Name = "DeviceDtoGridViewGridControl";
             this.DeviceDtoGridViewGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlRepositoryItemHypertextLabel,
-            this.repositoryItemMemoEdit1,
+            this.NotesMemoEdit,
             this.StatusComboBox});
-            this.DeviceDtoGridViewGridControl.Size = new System.Drawing.Size(561, 618);
+            this.DeviceDtoGridViewGridControl.Size = new System.Drawing.Size(914, 637);
             this.DeviceDtoGridViewGridControl.TabIndex = 5;
             this.DeviceDtoGridViewGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.DeviceDtoGridView});
@@ -324,7 +360,7 @@
             this.colNotes});
             this.DeviceDtoGridView.GridControl = this.DeviceDtoGridViewGridControl;
             this.DeviceDtoGridView.Name = "DeviceDtoGridView";
-            this.DeviceDtoGridView.OptionsBehavior.Editable = false;
+            this.DeviceDtoGridView.OptionsBehavior.Editable = true;
             this.DeviceDtoGridView.OptionsSelection.MultiSelect = true;
             this.DeviceDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.DeviceDtoGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
@@ -382,6 +418,7 @@
             this.StatusComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.StatusComboBox.Name = "StatusComboBox";
+            this.StatusComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             // 
             // colNotes
             // 
@@ -395,58 +432,22 @@
             this.colNotes.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colNotes.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colNotes.Caption = "Ghi chú";
-            this.colNotes.ColumnEdit = this.repositoryItemMemoEdit1;
+            this.colNotes.ColumnEdit = this.NotesMemoEdit;
             this.colNotes.FieldName = "Notes";
             this.colNotes.Name = "colNotes";
             this.colNotes.Visible = true;
             this.colNotes.VisibleIndex = 3;
             this.colNotes.Width = 200;
             // 
-            // repositoryItemMemoEdit1
+            // NotesMemoEdit
             // 
-            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
-            // 
-            // layoutControl1
-            // 
-            this.layoutControl1.Controls.Add(this.ucDeviceDtoAddEdit1);
-            this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControl1.Name = "layoutControl1";
-            this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(436, 589);
-            this.layoutControl1.TabIndex = 0;
-            this.layoutControl1.Text = "layoutControl1";
-            // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(436, 589);
-            this.Root.TextVisible = false;
-            // 
-            // ucDeviceDtoAddEdit1
-            // 
-            this.ucDeviceDtoAddEdit1.Location = new System.Drawing.Point(12, 12);
-            this.ucDeviceDtoAddEdit1.Name = "ucDeviceDtoAddEdit1";
-            this.ucDeviceDtoAddEdit1.Size = new System.Drawing.Size(412, 565);
-            this.ucDeviceDtoAddEdit1.TabIndex = 4;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.ucDeviceDtoAddEdit1;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(416, 569);
-            this.layoutControlItem1.TextVisible = false;
+            this.NotesMemoEdit.Name = "NotesMemoEdit";
             // 
             // FrmDeviceDtoMangement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1004, 664);
+            this.ClientSize = new System.Drawing.Size(1357, 683);
             this.Controls.Add(this.DeviceDtoGridViewGridControl);
             this.Controls.Add(this.dockPanel1);
             this.Controls.Add(this.barDockControlLeft);
@@ -459,16 +460,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             this.dockPanel1.ResumeLayout(false);
             this.dockPanel1_Container.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
+            this.layoutControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridViewGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-            this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -498,7 +499,7 @@
         private DevExpress.XtraGrid.Columns.GridColumn colStatus;
         private DevExpress.XtraGrid.Columns.GridColumn colNotes;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox StatusComboBox;
-        private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit repositoryItemMemoEdit1;
+        private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit NotesMemoEdit;
         private DevExpress.XtraBars.Docking.DockManager dockManager1;
         private DevExpress.XtraBars.Docking.DockPanel dockPanel1;
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;

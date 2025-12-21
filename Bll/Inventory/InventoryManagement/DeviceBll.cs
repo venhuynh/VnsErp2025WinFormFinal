@@ -153,6 +153,28 @@ namespace Bll.Inventory.InventoryManagement
     }
 
     /// <summary>
+    /// Lấy tất cả Device
+    /// </summary>
+    /// <returns>Danh sách tất cả Device entities</returns>
+    public List<Device> GetAll()
+    {
+        try
+        {
+            _logger.Debug("GetAll: Lấy tất cả thiết bị");
+
+            var devices = GetDeviceRepository().GetAll();
+
+            _logger.Info("GetAll: Lấy được {0} thiết bị", devices.Count);
+            return devices;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetAll: Lỗi lấy danh sách thiết bị: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Tìm Device theo mã BarCode (SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey)
     /// </summary>
     /// <param name="barCode">Mã BarCode cần tìm</param>

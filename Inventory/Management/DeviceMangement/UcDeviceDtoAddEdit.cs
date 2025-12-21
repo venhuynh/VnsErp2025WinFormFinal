@@ -1,4 +1,5 @@
-﻿using Bll.MasterData.ProductServiceBll;
+﻿using Bll.Inventory.InventoryManagement;
+using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
@@ -30,6 +31,11 @@ namespace Inventory.Management.DeviceMangement
         /// Business Logic Layer cho biến thể sản phẩm
         /// </summary>
         private readonly ProductVariantBll _productVariantBll = new ProductVariantBll();
+
+        /// <summary>
+        /// Business Logic Layer cho thiết bị
+        /// </summary>
+        private readonly DeviceBll _deviceBll = new DeviceBll();
 
         /// <summary>
         /// Logger để ghi log các sự kiện
@@ -123,6 +129,9 @@ namespace Inventory.Management.DeviceMangement
 
             // Setup GridView events
             InitializeGridViewEvents();
+
+            // Setup Save button event
+            SaveHyperlinkLabelControl.Click += SaveHyperlinkLabelControl_Click;
         }
 
         /// <summary>
@@ -787,6 +796,260 @@ namespace Inventory.Management.DeviceMangement
                 MsgBox.ShowError($"Lỗi validate: {ex.Message}");
                 return false;
             }
+        }
+
+        #endregion
+
+        #region ========== SAVE OPERATIONS ==========
+
+        /// <summary>
+        /// Event handler khi click nút Lưu
+        /// </summary>
+        private async void SaveHyperlinkLabelControl_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Validate và lưu dữ liệu
+                var success = await SaveDataAsync();
+                if (success)
+                {
+                    MsgBox.ShowSuccess("Lưu thông tin thiết bị thành công!");
+                    // Có thể trigger event để form cha refresh danh sách
+                    OnDeviceSaved();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SaveHyperlinkLabelControl_Click: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi lưu thông tin thiết bị: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Lưu dữ liệu thiết bị vào database
+        /// </summary>
+        private async Task<bool> SaveDataAsync()
+        {
+            try
+            {
+                _logger.Debug("SaveDataAsync: Starting save operation");
+
+                // Validate dữ liệu trước khi lưu
+                var validationErrors = ValidateBeforeSave();
+                if (validationErrors.Any())
+                {
+                    MsgBox.ShowError($"Có lỗi trong dữ liệu:\n\n{string.Join("\n", validationErrors)}", "Lỗi validation");
+                    return false;
+                }
+
+                // Hiển thị SplashScreen
+                SplashScreenHelper.ShowWaitingSplashScreen();
+
+                try
+                {
+                    // Tạo DeviceDto từ dữ liệu đã nhập
+                    var deviceDto = CreateDeviceDtoFromInput();
+
+                    // Convert DTO sang Entity
+                    var device = deviceDto.ToEntity();
+
+                    // Lưu qua BLL
+                    await Task.Run(() =>
+                    {
+                        _deviceBll.SaveOrUpdate(device);
+                    });
+
+                    _logger.Info("SaveDataAsync: Save operation completed successfully");
+                    return true;
+                }
+                finally
+                {
+                    SplashScreenHelper.CloseSplashScreen();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SaveDataAsync: Exception occurred", ex);
+                SplashScreenHelper.CloseSplashScreen();
+                MsgBox.ShowError($"Lỗi lưu dữ liệu: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Validate dữ liệu trước khi lưu
+        /// </summary>
+        private List<string> ValidateBeforeSave()
+        {
+            var validationErrors = new List<string>();
+
+            try
+            {
+                // Validate ProductVariantId
+                var productVariantId = ProductVariantSearchLookUpEdit.EditValue;
+                if (productVariantId == null || productVariantId == DBNull.Value)
+                {
+                    validationErrors.Add("Vui lòng chọn hàng hóa dịch vụ");
+                }
+                else if (!(productVariantId is Guid guidValue) || guidValue == Guid.Empty)
+                {
+                    validationErrors.Add("Hàng hóa dịch vụ không hợp lệ");
+                }
+
+                // Validate DeviceIdentifierItems
+                var identifierItems = GetIdentifierItems();
+                if (identifierItems.Count == 0)
+                {
+                    validationErrors.Add("Vui lòng thêm ít nhất một định danh thiết bị");
+                }
+
+                // Validate mỗi item
+                for (int i = 0; i < identifierItems.Count; i++)
+                {
+                    var item = identifierItems[i];
+                    var rowNumber = i + 1;
+
+                    if (string.IsNullOrWhiteSpace(item.Value))
+                    {
+                        validationErrors.Add($"Dòng {rowNumber}: Vui lòng nhập giá trị định danh");
+                    }
+                }
+
+                // Validate unique: Mỗi DeviceIdentifierEnum chỉ có một giá trị duy nhất
+                var duplicateErrors = ValidateUniqueIdentifiers(identifierItems);
+                validationErrors.AddRange(duplicateErrors);
+
+                // Validate tất cả các dòng trong grid
+                if (!ValidateAll())
+                {
+                    validationErrors.Add("Có lỗi validation trong danh sách định danh");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ValidateBeforeSave: Exception occurred", ex);
+                validationErrors.Add($"Lỗi validate: {ex.Message}");
+            }
+
+            return validationErrors;
+        }
+
+        /// <summary>
+        /// Validate đảm bảo mỗi DeviceIdentifierEnum chỉ có một giá trị duy nhất trong datatable
+        /// </summary>
+        private List<string> ValidateUniqueIdentifiers(List<DeviceIdentifierItem> identifierItems)
+        {
+            var validationErrors = new List<string>();
+
+            try
+            {
+                // Kiểm tra trùng lặp cho từng loại định danh
+                foreach (DeviceIdentifierEnum identifierType in Enum.GetValues(typeof(DeviceIdentifierEnum)))
+                {
+                    var itemsWithType = identifierItems
+                        .Where(item => item.IdentifierType == identifierType && !string.IsNullOrWhiteSpace(item.Value))
+                        .ToList();
+
+                    if (itemsWithType.Count > 1)
+                    {
+                        // Kiểm tra xem có giá trị trùng lặp không (case-insensitive)
+                        var duplicateGroups = itemsWithType
+                            .GroupBy(item => item.Value.Trim(), StringComparer.OrdinalIgnoreCase)
+                            .Where(g => g.Count() > 1)
+                            .ToList();
+
+                        if (duplicateGroups.Any())
+                        {
+                            foreach (var group in duplicateGroups)
+                            {
+                                var duplicateIndices = identifierItems
+                                    .Select((item, index) => new { item, index })
+                                    .Where(x => x.item.IdentifierType == identifierType &&
+                                                string.Equals(x.item.Value?.Trim(), group.Key, StringComparison.OrdinalIgnoreCase))
+                                    .Select(x => x.index + 1)
+                                    .ToList();
+
+                                var identifierTypeName = GetEnumDescription(identifierType);
+                                validationErrors.Add($"{identifierTypeName} '{group.Key}' bị trùng lặp ở các dòng: {string.Join(", ", duplicateIndices)}");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ValidateUniqueIdentifiers: Exception occurred", ex);
+                validationErrors.Add($"Lỗi kiểm tra trùng lặp: {ex.Message}");
+            }
+
+            return validationErrors;
+        }
+
+        /// <summary>
+        /// Tạo DeviceDto từ dữ liệu đã nhập
+        /// </summary>
+        private DeviceDto CreateDeviceDtoFromInput()
+        {
+            try
+            {
+                // Lấy ProductVariantId
+                var productVariantId = ProductVariantSearchLookUpEdit.EditValue;
+                Guid productVariantGuid = Guid.Empty;
+                if (productVariantId is Guid guid)
+                {
+                    productVariantGuid = guid;
+                }
+                else if (productVariantId != null && Guid.TryParse(productVariantId.ToString(), out var parsedGuid))
+                {
+                    productVariantGuid = parsedGuid;
+                }
+
+                if (productVariantGuid == Guid.Empty)
+                {
+                    throw new InvalidOperationException("ProductVariantId không hợp lệ");
+                }
+
+                // Tạo DeviceDto
+                var deviceDto = new DeviceDto
+                {
+                    Id = Guid.NewGuid(), // Tạo ID mới cho thiết bị mới
+                    ProductVariantId = productVariantGuid,
+                    IsActive = true,
+                    CreatedDate = DateTime.Now,
+                    Status = DeviceStatusEnum.Available, // Đang trong kho VNS (mặc định)
+                    DeviceType = 0 // Hardware (mặc định)
+                };
+
+                // Lấy danh sách DeviceIdentifierItem và set vào DeviceDto
+                var identifierItems = GetIdentifierItems();
+                foreach (var item in identifierItems)
+                {
+                    if (!string.IsNullOrWhiteSpace(item.Value))
+                    {
+                        deviceDto.SetIdentifierValue(item.IdentifierType, item.Value.Trim());
+                    }
+                }
+
+                return deviceDto;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("CreateDeviceDtoFromInput: Exception occurred", ex);
+                throw new Exception($"Lỗi tạo DeviceDto: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Event được trigger khi thiết bị được lưu thành công
+        /// </summary>
+        public event EventHandler DeviceSaved;
+
+        /// <summary>
+        /// Trigger event DeviceSaved
+        /// </summary>
+        protected virtual void OnDeviceSaved()
+        {
+            DeviceSaved?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
