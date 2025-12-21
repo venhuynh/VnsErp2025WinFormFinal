@@ -87,6 +87,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.Designer.cs">
+      <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="Management\FrmAssetDtoManagement.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -421,6 +427,9 @@
     </Compile>
     <EmbeddedResource Include="Management\DeviceMangement\FrmDeviceDtoMangement.resx">
       <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddEdit.resx">
+      <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Management\FrmAssetDtoManagement.resx">
       <DependentUpon>FrmAssetDtoManagement.cs</DependentUpon>
