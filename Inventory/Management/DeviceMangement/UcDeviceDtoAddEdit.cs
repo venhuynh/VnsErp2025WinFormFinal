@@ -3,13 +3,16 @@ using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.XtraEditors;
+using DTO.Inventory.InventoryManagement;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -76,7 +79,10 @@ namespace Inventory.Management.DeviceMangement
         private void InitializeEvents()
         {
             // Event khi SearchLookUpEdit popup - load dữ liệu nếu chưa load
-            searchLookUpEdit1.Properties.Popup += SearchLookUpEdit1_Popup;
+            ProductVariantSearchLookUpEdit.Properties.Popup += SearchLookUpEdit1_Popup;
+
+            // Load DeviceIdentifierEnum vào ComboBox
+            LoadDeviceIdentifierEnumComboBox();
         }
 
         #endregion
@@ -204,6 +210,86 @@ namespace Inventory.Management.DeviceMangement
             {
                 _logger.Error("ConvertToVariantListDtosAsync: Exception occurred", ex);
                 throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== DEVICE IDENTIFIER ENUM MANAGEMENT ==========
+
+        /// <summary>
+        /// Load danh sách DeviceIdentifierEnum vào ComboBox
+        /// Sử dụng Description attribute để hiển thị text
+        /// </summary>
+        private void LoadDeviceIdentifierEnumComboBox()
+        {
+            try
+            {
+                DeviceIdentifierEnumComboBox.Items.Clear();
+
+                // Load tất cả các giá trị enum trực tiếp
+                foreach (DeviceIdentifierEnum identifierType in Enum.GetValues(typeof(DeviceIdentifierEnum)))
+                {
+                    DeviceIdentifierEnumComboBox.Items.Add(identifierType);
+                }
+
+                // Cấu hình ComboBox
+                DeviceIdentifierEnumComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+                DeviceIdentifierEnumComboBox.ShowDropDown = DevExpress.XtraEditors.Controls.ShowDropDown.SingleClick;
+
+                // Sử dụng CustomDisplayText để hiển thị Description thay vì tên enum
+                DeviceIdentifierEnumComboBox.CustomDisplayText += DeviceIdentifierEnumComboBox_CustomDisplayText;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("LoadDeviceIdentifierEnumComboBox: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi load danh sách kiểu định danh: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler để hiển thị Description thay vì tên enum trong ComboBox
+        /// </summary>
+        private void DeviceIdentifierEnumComboBox_CustomDisplayText(object sender, DevExpress.XtraEditors.Controls.CustomDisplayTextEventArgs e)
+        {
+            try
+            {
+                if (e.Value is DeviceIdentifierEnum enumValue)
+                {
+                    // Lấy Description từ attribute
+                    e.DisplayText = GetEnumDescription(enumValue);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("DeviceIdentifierEnumComboBox_CustomDisplayText: Exception occurred", ex);
+                // Nếu có lỗi, hiển thị tên enum mặc định
+                if (e.Value is DeviceIdentifierEnum enumValue)
+                {
+                    e.DisplayText = enumValue.ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Lấy Description từ enum value
+        /// </summary>
+        /// <param name="enumValue">Giá trị enum</param>
+        /// <returns>Description hoặc tên enum nếu không có Description</returns>
+        private string GetEnumDescription(DeviceIdentifierEnum enumValue)
+        {
+            try
+            {
+                var fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
+                if (fieldInfo == null) return enumValue.ToString();
+
+                var descriptionAttribute = fieldInfo.GetCustomAttribute<DescriptionAttribute>();
+                return descriptionAttribute?.Description ?? enumValue.ToString();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"GetEnumDescription: Exception occurred for {enumValue}", ex);
+                return enumValue.ToString();
             }
         }
 

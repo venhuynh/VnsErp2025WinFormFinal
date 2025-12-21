@@ -37,9 +37,9 @@
             this.DeviceIdentifierEnumComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.IdentifierValueGridColumn = new DevExpress.XtraGrid.Columns.GridColumn();
             this.XoaHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
-            this.searchLookUpEdit1 = new DevExpress.XtraEditors.SearchLookUpEdit();
+            this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.ProductVariantSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.VariantFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
@@ -55,9 +55,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.IdentifierValueGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IdentifierValueGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceIdentifierEnumComboBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
@@ -73,7 +73,7 @@
             this.layoutControl1.Controls.Add(this.SaveHyperlinkLabelControl);
             this.layoutControl1.Controls.Add(this.IdentifierValueGridControl);
             this.layoutControl1.Controls.Add(this.XoaHyperlinkLabelControl);
-            this.layoutControl1.Controls.Add(this.searchLookUpEdit1);
+            this.layoutControl1.Controls.Add(this.ProductVariantSearchLookUpEdit);
             this.layoutControl1.Controls.Add(this.labelControl1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
@@ -103,6 +103,7 @@
             this.DeviceIdentifierEnumComboBox});
             this.IdentifierValueGridControl.Size = new System.Drawing.Size(427, 510);
             this.IdentifierValueGridControl.TabIndex = 7;
+            this.IdentifierValueGridControl.UseEmbeddedNavigator = true;
             this.IdentifierValueGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.IdentifierValueGridView});
             // 
@@ -113,8 +114,12 @@
             this.IdentifierValueGridColumn});
             this.IdentifierValueGridView.GridControl = this.IdentifierValueGridControl;
             this.IdentifierValueGridView.Name = "IdentifierValueGridView";
+            this.IdentifierValueGridView.NewItemRowText = "Click để thêm dòng mới";
+            this.IdentifierValueGridView.OptionsMenu.ShowAddNewSummaryItem = DevExpress.Utils.DefaultBoolean.True;
+            this.IdentifierValueGridView.OptionsNavigation.AutoFocusNewRow = true;
             this.IdentifierValueGridView.OptionsSelection.MultiSelect = true;
             this.IdentifierValueGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.IdentifierValueGridView.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Bottom;
             this.IdentifierValueGridView.OptionsView.ShowGroupPanel = false;
             this.IdentifierValueGridView.OptionsView.ShowViewCaption = true;
             this.IdentifierValueGridView.ViewCaption = "BẢNG DANH SÁCH ĐỊNH DANH";
@@ -178,38 +183,39 @@
             this.XoaHyperlinkLabelControl.TabIndex = 6;
             this.XoaHyperlinkLabelControl.Text = "Xóa";
             // 
-            // searchLookUpEdit1
+            // ProductVariantSearchLookUpEdit
             // 
-            this.searchLookUpEdit1.Location = new System.Drawing.Point(107, 49);
-            this.searchLookUpEdit1.Name = "searchLookUpEdit1";
-            this.searchLookUpEdit1.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            this.ProductVariantSearchLookUpEdit.Location = new System.Drawing.Point(107, 49);
+            this.ProductVariantSearchLookUpEdit.Name = "ProductVariantSearchLookUpEdit";
+            this.ProductVariantSearchLookUpEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ProductVariantSearchLookUpEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.searchLookUpEdit1.Properties.DataSource = this.productVariantListDtoBindingSource;
-            this.searchLookUpEdit1.Properties.DisplayMember = "VariantFullName";
-            this.searchLookUpEdit1.Properties.NullText = "";
-            this.searchLookUpEdit1.Properties.PopupView = this.searchLookUpEdit1View;
-            this.searchLookUpEdit1.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.ProductVariantSearchLookUpEdit.Properties.DataSource = this.productVariantListDtoBindingSource;
+            this.ProductVariantSearchLookUpEdit.Properties.DisplayMember = "VariantFullName";
+            this.ProductVariantSearchLookUpEdit.Properties.NullText = "";
+            this.ProductVariantSearchLookUpEdit.Properties.PopupView = this.ProductVariantSearchLookUpEdit1View;
+            this.ProductVariantSearchLookUpEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.VariantFullNameHypertextLabel});
-            this.searchLookUpEdit1.Properties.ValueMember = "Id";
-            this.searchLookUpEdit1.Size = new System.Drawing.Size(332, 20);
-            this.searchLookUpEdit1.StyleController = this.layoutControl1;
-            this.searchLookUpEdit1.TabIndex = 5;
+            this.ProductVariantSearchLookUpEdit.Properties.ValueMember = "Id";
+            this.ProductVariantSearchLookUpEdit.Size = new System.Drawing.Size(332, 20);
+            this.ProductVariantSearchLookUpEdit.StyleController = this.layoutControl1;
+            this.ProductVariantSearchLookUpEdit.TabIndex = 5;
             // 
             // productVariantListDtoBindingSource
             // 
             this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantListDto);
             // 
-            // searchLookUpEdit1View
+            // ProductVariantSearchLookUpEdit1View
             // 
-            this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.ProductVariantSearchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colVariantFullName});
-            this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
-            this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.searchLookUpEdit1View.OptionsView.RowAutoHeight = true;
-            this.searchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
-            this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
-            this.searchLookUpEdit1View.OptionsView.ShowIndicator = false;
+            this.ProductVariantSearchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.ProductVariantSearchLookUpEdit1View.Name = "ProductVariantSearchLookUpEdit1View";
+            this.ProductVariantSearchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.ProductVariantSearchLookUpEdit1View.OptionsView.RowAutoHeight = true;
+            this.ProductVariantSearchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
+            this.ProductVariantSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            this.ProductVariantSearchLookUpEdit1View.OptionsView.ShowIndicator = false;
             // 
             // colVariantFullName
             // 
@@ -280,7 +286,7 @@
             // 
             // layoutControlItem2
             // 
-            this.layoutControlItem2.Control = this.searchLookUpEdit1;
+            this.layoutControlItem2.Control = this.ProductVariantSearchLookUpEdit;
             this.layoutControlItem2.Location = new System.Drawing.Point(0, 37);
             this.layoutControlItem2.Name = "layoutControlItem2";
             this.layoutControlItem2.Size = new System.Drawing.Size(431, 24);
@@ -335,9 +341,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.IdentifierValueGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IdentifierValueGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceIdentifierEnumComboBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
@@ -357,8 +363,8 @@
         private DevExpress.XtraGrid.GridControl IdentifierValueGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView IdentifierValueGridView;
         private DevExpress.XtraEditors.HyperlinkLabelControl XoaHyperlinkLabelControl;
-        private DevExpress.XtraEditors.SearchLookUpEdit searchLookUpEdit1;
-        private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;
+        private DevExpress.XtraEditors.SearchLookUpEdit ProductVariantSearchLookUpEdit;
+        private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantSearchLookUpEdit1View;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
