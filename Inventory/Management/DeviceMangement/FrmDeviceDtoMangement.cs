@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using DevExpress.XtraBars.Docking;
 
@@ -52,11 +53,23 @@ namespace Inventory.Management.DeviceMangement
                 int screenWidth = Screen.PrimaryScreen.WorkingArea.Width;
                 int panelWidth = (int)(screenWidth * 2.0 / 3.0);
 
-                // Set độ rộng cho dockPanel1
-                dockPanel1.Width = panelWidth;
+                // Lấy chiều cao hiện tại của panel hoặc tính từ form
+                int panelHeight = dockPanel1.Size.Height > 0 
+                    ? dockPanel1.Size.Height 
+                    : this.ClientSize.Height - barDockControlTop.Height - barDockControlBottom.Height;
 
-                // Hiển thị dockPanel1
+                // Hiển thị dockPanel1 trước
                 dockPanel1.Visibility = DockVisibility.Visible;
+
+                // Set OriginalSize để panel giữ kích thước khi dock
+                dockPanel1.OriginalSize = new Size(panelWidth, 200);
+
+                // Set Size cho dockPanel1 (width mới, giữ nguyên height)
+                dockPanel1.Size = new Size(panelWidth, panelHeight);
+
+                // Force update layout
+                dockPanel1.Update();
+                this.Update();
             }
             catch (Exception ex)
             {

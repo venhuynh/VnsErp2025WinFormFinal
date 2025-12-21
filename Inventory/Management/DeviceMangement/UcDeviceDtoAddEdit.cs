@@ -1,8 +1,10 @@
 ﻿using Bll.MasterData.ProductServiceBll;
 using Common.Common;
+using Common.Helpers;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Views.Grid;
 using DTO.Inventory.InventoryManagement;
 using DTO.MasterData.ProductService;
 using Logger;
@@ -11,10 +13,12 @@ using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DevExpress.Data;
 
 namespace Inventory.Management.DeviceMangement
 {
@@ -44,6 +48,36 @@ namespace Inventory.Management.DeviceMangement
 
         #endregion
 
+        #region ========== DEVICE IDENTIFIER ITEM CLASS ==========
+
+        /// <summary>
+        /// Class đơn giản để bind vào IdentifierValueGridView
+        /// </summary>
+        public class DeviceIdentifierItem
+        {
+            /// <summary>
+            /// ID duy nhất của item
+            /// </summary>
+            public Guid Id { get; set; } = Guid.NewGuid();
+
+            /// <summary>
+            /// Loại định danh (DeviceIdentifierEnum)
+            /// </summary>
+            [DisplayName("Kiểu định danh")]
+            [Required(ErrorMessage = "Vui lòng chọn kiểu định danh")]
+            public DeviceIdentifierEnum IdentifierType { get; set; }
+
+            /// <summary>
+            /// Giá trị định danh
+            /// </summary>
+            [DisplayName("Giá trị")]
+            [Required(ErrorMessage = "Vui lòng nhập giá trị định danh")]
+            [StringLength(255, ErrorMessage = "Giá trị định danh không được vượt quá 255 ký tự")]
+            public string Value { get; set; }
+        }
+
+        #endregion
+
         #region ========== CONSTRUCTOR ==========
 
         public UcDeviceDtoAddEdit()
@@ -63,6 +97,9 @@ namespace Inventory.Management.DeviceMangement
         {
             try
             {
+                // Khởi tạo binding source với danh sách rỗng
+                identifierValueBindingSource.DataSource = new List<DeviceIdentifierItem>();
+
                 // Setup events
                 InitializeEvents();
             }
@@ -83,6 +120,32 @@ namespace Inventory.Management.DeviceMangement
 
             // Load DeviceIdentifierEnum vào ComboBox
             LoadDeviceIdentifierEnumComboBox();
+
+            // Setup GridView events
+            InitializeGridViewEvents();
+        }
+
+        /// <summary>
+        /// Khởi tạo các event handlers cho GridView
+        /// </summary>
+        private void InitializeGridViewEvents()
+        {
+            // Event khi thay đổi cell value
+            IdentifierValueGridView.CellValueChanged += IdentifierValueGridView_CellValueChanged;
+
+            // Event khi thêm/xóa dòng
+            IdentifierValueGridView.InitNewRow += IdentifierValueGridView_InitNewRow;
+            IdentifierValueGridView.RowDeleted += IdentifierValueGridView_RowDeleted;
+
+            // Event khi validate cell và row
+            IdentifierValueGridView.ValidateRow += IdentifierValueGridView_ValidateRow;
+            IdentifierValueGridView.ValidatingEditor += IdentifierValueGridView_ValidatingEditor;
+
+            // Event custom draw row indicator
+            IdentifierValueGridView.CustomDrawRowIndicator += IdentifierValueGridView_CustomDrawRowIndicator;
+
+            // Event xử lý phím tắt cho GridView (Insert, Delete, Enter)
+            IdentifierValueGridView.KeyDown += IdentifierValueGridView_KeyDown;
         }
 
         #endregion
@@ -290,6 +353,439 @@ namespace Inventory.Management.DeviceMangement
             {
                 _logger.Error($"GetEnumDescription: Exception occurred for {enumValue}", ex);
                 return enumValue.ToString();
+            }
+        }
+
+        #endregion
+
+        #region ========== GRIDVIEW EVENT HANDLERS ==========
+
+        /// <summary>
+        /// Custom draw row indicator để hiển thị số thứ tự
+        /// </summary>
+        private void IdentifierValueGridView_CustomDrawRowIndicator(object sender, RowIndicatorCustomDrawEventArgs e)
+        {
+            GridViewHelper.CustomDrawRowIndicator(IdentifierValueGridView, e);
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi giá trị cell thay đổi trong GridView
+        /// </summary>
+        private void IdentifierValueGridView_CellValueChanged(object sender, DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+        {
+            try
+            {
+                var fieldName = e.Column?.FieldName;
+                var rowHandle = e.RowHandle;
+
+                if (rowHandle < 0)
+                {
+                    return; // Bỏ qua new row
+                }
+
+                // Lấy row data từ GridView
+                if (IdentifierValueGridView.GetRow(rowHandle) is not DeviceIdentifierItem rowData)
+                {
+                    _logger.Warning("CellValueChanged: Row data is null, RowHandle={0}", rowHandle);
+                    return;
+                }
+
+                // Refresh grid để hiển thị thay đổi
+                IdentifierValueGridView.RefreshRow(rowHandle);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("CellValueChanged: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi xử lý thay đổi cell: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi thêm dòng mới
+        /// </summary>
+        private void IdentifierValueGridView_InitNewRow(object sender, InitNewRowEventArgs e)
+        {
+            try
+            {
+                var rowData = IdentifierValueGridView.GetRow(e.RowHandle) as DeviceIdentifierItem;
+                if (rowData == null)
+                {
+                    _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
+                    return;
+                }
+
+                // Gán ID mới nếu chưa có
+                if (rowData.Id == Guid.Empty)
+                {
+                    rowData.Id = Guid.NewGuid();
+                }
+
+                // Set mặc định cho IdentifierType
+                if (rowData.IdentifierType == default(DeviceIdentifierEnum))
+                {
+                    rowData.IdentifierType = DeviceIdentifierEnum.SerialNumber;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("InitNewRow: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi thêm dòng: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi xóa dòng
+        /// </summary>
+        private void IdentifierValueGridView_RowDeleted(object sender, RowDeletedEventArgs e)
+        {
+            try
+            {
+                // Có thể thêm logic xử lý khi xóa dòng ở đây
+                _logger.Debug("RowDeleted: Row deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("RowDeleted: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi xóa dòng: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện validate editor (trước khi commit giá trị)
+        /// </summary>
+        private void IdentifierValueGridView_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        {
+            try
+            {
+                var column = IdentifierValueGridView.FocusedColumn;
+                var fieldName = column?.FieldName;
+
+                if (string.IsNullOrEmpty(fieldName)) return;
+
+                switch (fieldName)
+                {
+                    // Validate IdentifierType: Phải chọn loại định danh
+                    case "IdentifierType":
+                        ValidateIdentifierType(e);
+                        break;
+                    // Validate Value: Phải nhập giá trị
+                    case "Value":
+                        ValidateValue(e);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ValidatingEditor: Exception occurred", ex);
+                e.ErrorText = $"Lỗi validate: {ex.Message}";
+                e.Valid = false;
+            }
+        }
+
+        /// <summary>
+        /// Validate row data (sau khi commit giá trị)
+        /// </summary>
+        private void IdentifierValueGridView_ValidateRow(object sender, DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+        {
+            try
+            {
+                var rowData = e.Row as DeviceIdentifierItem;
+                if (rowData == null)
+                {
+                    _logger.Warning("ValidateRow: Row data is null");
+                    e.Valid = false;
+                    e.ErrorText = "Dữ liệu không hợp lệ";
+                    return;
+                }
+
+                // Validate bằng DataAnnotations
+                var validationResults = new List<ValidationResult>();
+                var validationContext = new ValidationContext(rowData);
+                var isValid = Validator.TryValidateObject(rowData, validationContext, validationResults, true);
+
+                if (!isValid)
+                {
+                    var errors = string.Join("\n", validationResults.Select(r => r.ErrorMessage));
+                    _logger.Warning("ValidateRow: DataAnnotations validation failed, Errors={0}", errors);
+                    e.Valid = false;
+                    e.ErrorText = errors;
+                    return;
+                }
+
+                // Validate business rules
+                if (string.IsNullOrWhiteSpace(rowData.Value))
+                {
+                    _logger.Warning("ValidateRow: Value is empty");
+                    e.Valid = false;
+                    e.ErrorText = "Vui lòng nhập giá trị định danh";
+                    return;
+                }
+
+                e.Valid = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ValidateRow: Exception occurred", ex);
+                e.Valid = false;
+                e.ErrorText = $"Lỗi validate: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Event handler xử lý phím tắt trong GridView
+        /// </summary>
+        private void IdentifierValueGridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                var gridView = IdentifierValueGridView;
+                if (gridView == null) return;
+
+                switch (e.KeyCode)
+                {
+                    case Keys.Insert:
+                        // Insert: Thêm dòng mới
+                        if (!e.Control && !e.Shift && !e.Alt)
+                        {
+                            e.Handled = true;
+                            gridView.AddNewRow();
+                            // Focus vào cột IdentifierType
+                            var identifierTypeColumn = gridView.Columns["IdentifierType"];
+                            if (identifierTypeColumn != null)
+                            {
+                                gridView.FocusedColumn = identifierTypeColumn;
+                            }
+                        }
+                        break;
+
+                    case Keys.Delete:
+                        // Delete: Xóa dòng được chọn
+                        if (!e.Control && !e.Shift && !e.Alt)
+                        {
+                            var focusedRowHandle = gridView.FocusedRowHandle;
+                            if (focusedRowHandle >= 0)
+                            {
+                                e.Handled = true;
+                                gridView.DeleteRow(focusedRowHandle);
+                            }
+                        }
+                        break;
+
+                    case Keys.Enter:
+                        // Enter: Hoàn thành nhập dòng (commit row)
+                        if (!e.Control && !e.Shift && !e.Alt)
+                        {
+                            var focusedRowHandle = gridView.FocusedRowHandle;
+
+                            // Nếu đang ở new row (rowHandle < 0), commit row
+                            if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
+                            {
+                                e.Handled = true;
+                                // Validate row trước khi commit
+                                if (gridView.PostEditor())
+                                {
+                                    gridView.UpdateCurrentRow();
+                                }
+                            }
+                            // Nếu đang ở dòng đã có, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
+                            else if (focusedRowHandle >= 0)
+                            {
+                                // Nếu đang ở cột cuối cùng, di chuyển xuống dòng tiếp theo
+                                var focusedColumn = gridView.FocusedColumn;
+                                var lastColumn = gridView.VisibleColumns[gridView.VisibleColumns.Count - 1];
+
+                                if (focusedColumn == lastColumn)
+                                {
+                                    e.Handled = true;
+
+                                    // Di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
+                                    var nextRowHandle = focusedRowHandle + 1;
+                                    if (nextRowHandle < gridView.RowCount)
+                                    {
+                                        gridView.FocusedRowHandle = nextRowHandle;
+                                        gridView.FocusedColumn = gridView.Columns[0]; // Focus vào cột đầu tiên
+                                    }
+                                    else
+                                    {
+                                        // Thêm dòng mới
+                                        gridView.AddNewRow();
+                                        var identifierTypeColumn = gridView.Columns["IdentifierType"];
+                                        if (identifierTypeColumn != null)
+                                        {
+                                            gridView.FocusedColumn = identifierTypeColumn;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("IdentifierValueGridView_KeyDown: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi xử lý phím tắt: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Validate IdentifierType: Phải chọn loại định danh
+        /// </summary>
+        private void ValidateIdentifierType(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        {
+            if (e.Value == null)
+            {
+                e.ErrorText = "Vui lòng chọn kiểu định danh";
+                e.Valid = false;
+                return;
+            }
+
+            if (!(e.Value is DeviceIdentifierEnum))
+            {
+                e.ErrorText = "Kiểu định danh không hợp lệ";
+                e.Valid = false;
+                return;
+            }
+
+            e.Valid = true;
+        }
+
+        /// <summary>
+        /// Validate Value: Phải nhập giá trị
+        /// </summary>
+        private void ValidateValue(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        {
+            if (e.Value == null || string.IsNullOrWhiteSpace(e.Value.ToString()))
+            {
+                e.ErrorText = "Vui lòng nhập giá trị định danh";
+                e.Valid = false;
+                return;
+            }
+
+            var value = e.Value.ToString().Trim();
+            if (value.Length > 255)
+            {
+                e.ErrorText = "Giá trị định danh không được vượt quá 255 ký tự";
+                e.Valid = false;
+                return;
+            }
+
+            e.Valid = true;
+        }
+
+        #endregion
+
+        #region ========== PUBLIC METHODS ==========
+
+        /// <summary>
+        /// Lấy danh sách DeviceIdentifierItem từ grid
+        /// </summary>
+        public List<DeviceIdentifierItem> GetIdentifierItems()
+        {
+            try
+            {
+                var items = new List<DeviceIdentifierItem>();
+
+                foreach (var item in identifierValueBindingSource)
+                {
+                    if (item is DeviceIdentifierItem identifierItem)
+                    {
+                        items.Add(identifierItem);
+                    }
+                }
+
+                return items;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("GetIdentifierItems: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi lấy danh sách định danh: {ex.Message}");
+                return new List<DeviceIdentifierItem>();
+            }
+        }
+
+        /// <summary>
+        /// Load danh sách DeviceIdentifierItem vào grid
+        /// </summary>
+        public void LoadIdentifierItems(List<DeviceIdentifierItem> items)
+        {
+            try
+            {
+                items ??= new List<DeviceIdentifierItem>();
+                identifierValueBindingSource.DataSource = items;
+                identifierValueBindingSource.ResetBindings(false);
+                IdentifierValueGridView.RefreshData();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("LoadIdentifierItems: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi tải danh sách định danh: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Clear dữ liệu và reset về trạng thái ban đầu
+        /// </summary>
+        public void ClearData()
+        {
+            try
+            {
+                identifierValueBindingSource.DataSource = new List<DeviceIdentifierItem>();
+                identifierValueBindingSource.ResetBindings(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ClearData: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi xóa dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Validate tất cả các dòng trong grid
+        /// </summary>
+        public bool ValidateAll()
+        {
+            try
+            {
+                var items = identifierValueBindingSource.Cast<DeviceIdentifierItem>().ToList();
+
+                if (items.Count == 0)
+                {
+                    _logger.Warning("ValidateAll: No items found");
+                    MsgBox.ShowWarning("Vui lòng thêm ít nhất một định danh");
+                    return false;
+                }
+
+                foreach (var item in items)
+                {
+                    var validationResults = new List<ValidationResult>();
+                    var validationContext = new ValidationContext(item);
+                    var isValid = Validator.TryValidateObject(item, validationContext, validationResults, true);
+
+                    if (!isValid)
+                    {
+                        var errors = string.Join("\n", validationResults.Select(r => r.ErrorMessage));
+                        _logger.Warning("ValidateAll: Item validation failed, Errors={0}", errors);
+                        MsgBox.ShowError($"Định danh có lỗi:\n{errors}");
+                        return false;
+                    }
+
+                    // Validate business rules
+                    if (string.IsNullOrWhiteSpace(item.Value))
+                    {
+                        _logger.Warning("ValidateAll: Item has empty Value");
+                        MsgBox.ShowError("Vui lòng nhập giá trị định danh");
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ValidateAll: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi validate: {ex.Message}");
+                return false;
             }
         }
 

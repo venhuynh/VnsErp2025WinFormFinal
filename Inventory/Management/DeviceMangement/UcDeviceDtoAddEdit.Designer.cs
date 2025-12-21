@@ -39,6 +39,7 @@
             this.XoaHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.identifierValueBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.VariantFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -57,6 +58,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.DeviceIdentifierEnumComboBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.identifierValueBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
@@ -96,6 +98,7 @@
             // 
             // IdentifierValueGridControl
             // 
+            this.IdentifierValueGridControl.DataSource = this.identifierValueBindingSource;
             this.IdentifierValueGridControl.Location = new System.Drawing.Point(12, 113);
             this.IdentifierValueGridControl.MainView = this.IdentifierValueGridView;
             this.IdentifierValueGridControl.Name = "IdentifierValueGridControl";
@@ -140,6 +143,7 @@
             this.DeviceIdentifierEnumGridColumn.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.DeviceIdentifierEnumGridColumn.Caption = "Kiểu định danh";
             this.DeviceIdentifierEnumGridColumn.ColumnEdit = this.DeviceIdentifierEnumComboBox;
+            this.DeviceIdentifierEnumGridColumn.FieldName = "IdentifierType";
             this.DeviceIdentifierEnumGridColumn.Name = "DeviceIdentifierEnumGridColumn";
             this.DeviceIdentifierEnumGridColumn.Visible = true;
             this.DeviceIdentifierEnumGridColumn.VisibleIndex = 1;
@@ -167,6 +171,7 @@
             this.IdentifierValueGridColumn.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.IdentifierValueGridColumn.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.IdentifierValueGridColumn.Caption = "Giá trị";
+            this.IdentifierValueGridColumn.FieldName = "Value";
             this.IdentifierValueGridColumn.Name = "IdentifierValueGridColumn";
             this.IdentifierValueGridColumn.Visible = true;
             this.IdentifierValueGridColumn.VisibleIndex = 2;
@@ -343,6 +348,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.DeviceIdentifierEnumComboBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.identifierValueBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
@@ -374,6 +380,7 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
         private System.Windows.Forms.BindingSource productVariantListDtoBindingSource;
+        private System.Windows.Forms.BindingSource identifierValueBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel VariantFullNameHypertextLabel;
         private DevExpress.XtraGrid.Columns.GridColumn DeviceIdentifierEnumGridColumn;
