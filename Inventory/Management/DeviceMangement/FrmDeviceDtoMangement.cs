@@ -86,6 +86,9 @@ namespace Inventory.Management.DeviceMangement
             // Event khi click nút Lịch sử nhập - xuất
             ThemLichSuNhapXuatThietBiBarButtonItem.ItemClick += ThemLichSuNhapXuatThietBiBarButtonItem_ItemClick;
 
+            // Event khi click nút Thêm hình ảnh
+            ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
+
             // Event khi click nút Xem (reload dữ liệu)
             XemBarButtonItem.ItemClick += XemBarButtonItem_ItemClick;
 
@@ -146,28 +149,43 @@ namespace Inventory.Management.DeviceMangement
         /// <summary>
         /// Hiển thị UserControl phù hợp trong dockPanel1
         /// </summary>
-        /// <param name="showAddEdit">True để hiển thị ucDeviceDtoAddEdit1, False để hiển thị ucDeviceDtoAddStockInOutHistory1</param>
-        private void ShowUserControlInDockPanel(bool showAddEdit)
+        /// <param name="controlType">Loại UserControl: "AddEdit", "StockInOutHistory", hoặc "ImageAdd"</param>
+        private void ShowUserControlInDockPanel(string controlType)
         {
             try
             {
-                if (showAddEdit)
+                // Ẩn tất cả UserControls trước
+                ucDeviceDtoAddEdit1.Visible = false;
+                ucDeviceDtoAddStockInOutHistory1.Visible = false;
+                ucDeviceImageAdd1.Visible = false;
+                layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+                layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+                layoutControlItem3.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+
+                // Hiển thị UserControl tương ứng
+                switch (controlType)
                 {
-                    // Hiển thị ucDeviceDtoAddEdit1, ẩn ucDeviceDtoAddStockInOutHistory1
-                    ucDeviceDtoAddEdit1.Visible = true;
-                    ucDeviceDtoAddStockInOutHistory1.Visible = false;
-                    layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
-                    layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
-                    dockPanel1.Text = "Thêm mới thiết bị";
-                }
-                else
-                {
-                    // Hiển thị ucDeviceDtoAddStockInOutHistory1, ẩn ucDeviceDtoAddEdit1
-                    ucDeviceDtoAddEdit1.Visible = false;
-                    ucDeviceDtoAddStockInOutHistory1.Visible = true;
-                    layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
-                    layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
-                    dockPanel1.Text = "Lịch sử nhập - xuất thiết bị";
+                    case "AddEdit":
+                        ucDeviceDtoAddEdit1.Visible = true;
+                        layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+                        dockPanel1.Text = "Thêm mới thiết bị";
+                        break;
+
+                    case "StockInOutHistory":
+                        ucDeviceDtoAddStockInOutHistory1.Visible = true;
+                        layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+                        dockPanel1.Text = "Lịch sử nhập - xuất thiết bị";
+                        break;
+
+                    case "ImageAdd":
+                        ucDeviceImageAdd1.Visible = true;
+                        layoutControlItem3.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+                        dockPanel1.Text = "Thêm hình ảnh thiết bị";
+                        break;
+
+                    default:
+                        _logger.Warning($"ShowUserControlInDockPanel: Unknown controlType '{controlType}'");
+                        break;
                 }
 
                 // Refresh layout
@@ -194,7 +212,7 @@ namespace Inventory.Management.DeviceMangement
                 SetupDockPanelWidth();
 
                 // Hiển thị UserControl thêm mới
-                ShowUserControlInDockPanel(showAddEdit: true);
+                ShowUserControlInDockPanel("AddEdit");
             }
             catch (Exception ex)
             {
@@ -245,7 +263,7 @@ namespace Inventory.Management.DeviceMangement
                 SetupDockPanelWidth();
 
                 // Hiển thị UserControl lịch sử nhập - xuất
-                ShowUserControlInDockPanel(showAddEdit: false);
+                ShowUserControlInDockPanel("StockInOutHistory");
 
                 // Load danh sách thiết bị đã chọn vào SearchLookUpEdit
                 ucDeviceDtoAddStockInOutHistory1.LoadSelectedDevices(selectedDevices);
@@ -254,6 +272,60 @@ namespace Inventory.Management.DeviceMangement
             {
                 _logger.Error("ThemLichSuNhapXuatThietBiBarButtonItem_ItemClick: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi mở màn hình lịch sử nhập - xuất: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi click nút Thêm hình ảnh
+        /// Mở dockPanel1 với độ rộng = 2/3 độ rộng màn hình và hiển thị ucDeviceImageAdd1
+        /// Chỉ thực hiện khi có thiết bị được chọn
+        /// </summary>
+        private void ThemHinhAnhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Kiểm tra xem có thiết bị nào được chọn không
+                var selectedRows = DeviceDtoGridView.GetSelectedRows();
+                if (selectedRows == null || selectedRows.Length == 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn thiết bị để thêm hình ảnh.", "Chưa chọn thiết bị");
+                    return;
+                }
+
+                // Lấy tất cả các thiết bị được chọn
+                var selectedDevices = new List<DeviceDto>();
+                foreach (var rowHandle in selectedRows)
+                {
+                    if (rowHandle < 0) continue;
+
+                    var device = DeviceDtoGridView.GetRow(rowHandle) as DeviceDto;
+                    if (device != null)
+                    {
+                        selectedDevices.Add(device);
+                    }
+                }
+
+                if (selectedDevices.Count == 0)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin thiết bị được chọn.", "Lỗi");
+                    return;
+                }
+
+                _logger.Debug($"ThemHinhAnhBarButtonItem_ItemClick: Selected {selectedDevices.Count} device(s)");
+
+                // Thiết lập độ rộng dock panel
+                SetupDockPanelWidth();
+
+                // Hiển thị UserControl thêm hình ảnh
+                ShowUserControlInDockPanel("ImageAdd");
+
+                // Load danh sách thiết bị đã chọn vào UserControl
+                ucDeviceImageAdd1.LoadSelectedDevices(selectedDevices);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ThemHinhAnhBarButtonItem_ItemClick: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi mở màn hình thêm hình ảnh: {ex.Message}");
             }
         }
 

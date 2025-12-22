@@ -66,6 +66,8 @@
             this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
             this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.ucDeviceImageAdd1 = new Inventory.Management.DeviceMangement.UcDeviceImageAdd();
+            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -81,6 +83,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -296,6 +299,7 @@
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.ucDeviceImageAdd1);
             this.layoutControl1.Controls.Add(this.ucDeviceDtoAddStockInOutHistory1);
             this.layoutControl1.Controls.Add(this.ucDeviceDtoAddEdit1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -310,7 +314,7 @@
             // 
             this.ucDeviceDtoAddStockInOutHistory1.Location = new System.Drawing.Point(12, 306);
             this.ucDeviceDtoAddStockInOutHistory1.Name = "ucDeviceDtoAddStockInOutHistory1";
-            this.ucDeviceDtoAddStockInOutHistory1.Size = new System.Drawing.Size(412, 290);
+            this.ucDeviceDtoAddStockInOutHistory1.Size = new System.Drawing.Size(412, 198);
             this.ucDeviceDtoAddStockInOutHistory1.TabIndex = 5;
             // 
             // ucDeviceDtoAddEdit1
@@ -326,7 +330,8 @@
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1,
-            this.layoutControlItem2});
+            this.layoutControlItem2,
+            this.layoutControlItem3});
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(436, 608);
             this.Root.TextVisible = false;
@@ -344,7 +349,7 @@
             this.layoutControlItem2.Control = this.ucDeviceDtoAddStockInOutHistory1;
             this.layoutControlItem2.Location = new System.Drawing.Point(0, 294);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(416, 294);
+            this.layoutControlItem2.Size = new System.Drawing.Size(416, 202);
             this.layoutControlItem2.TextVisible = false;
             // 
             // DeviceDtoGridViewGridControl
@@ -466,6 +471,21 @@
             // 
             this.NotesMemoEdit.Name = "NotesMemoEdit";
             // 
+            // ucDeviceImageAdd1
+            // 
+            this.ucDeviceImageAdd1.Location = new System.Drawing.Point(12, 508);
+            this.ucDeviceImageAdd1.Name = "ucDeviceImageAdd1";
+            this.ucDeviceImageAdd1.Size = new System.Drawing.Size(412, 88);
+            this.ucDeviceImageAdd1.TabIndex = 6;
+            // 
+            // layoutControlItem3
+            // 
+            this.layoutControlItem3.Control = this.ucDeviceImageAdd1;
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 496);
+            this.layoutControlItem3.Name = "layoutControlItem3";
+            this.layoutControlItem3.Size = new System.Drawing.Size(416, 92);
+            this.layoutControlItem3.TextVisible = false;
+            // 
             // FrmDeviceDtoMangement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -494,6 +514,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -536,5 +557,7 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private UcDeviceDtoAddStockInOutHistory ucDeviceDtoAddStockInOutHistory1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
+        private UcDeviceImageAdd ucDeviceImageAdd1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
     }
 }

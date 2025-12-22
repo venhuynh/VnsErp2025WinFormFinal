@@ -87,6 +87,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.Designer.cs">
+      <DependentUpon>UcDeviceImageAdd.cs</DependentUpon>
+    </Compile>
     <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -427,6 +433,9 @@
     </Compile>
     <EmbeddedResource Include="Management\DeviceMangement\FrmDeviceDtoMangement.resx">
       <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceImageAdd.resx">
+      <DependentUpon>UcDeviceImageAdd.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddEdit.resx">
       <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
