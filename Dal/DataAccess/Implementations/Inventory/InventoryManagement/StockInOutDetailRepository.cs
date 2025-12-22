@@ -209,6 +209,41 @@ namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement
             }
         }
 
+        /// <summary>
+        /// Query StockInOutDetail theo danh sách ProductVariantId
+        /// </summary>
+        /// <param name="productVariantIds">Danh sách ProductVariantId</param>
+        /// <returns>Danh sách StockInOutDetail entities</returns>
+        public List<StockInOutDetail> QueryByProductVariantIds(List<Guid> productVariantIds)
+        {
+            using var context = CreateNewContext();
+            try
+            {
+                if (productVariantIds == null || productVariantIds.Count == 0)
+                {
+                    _logger.Debug("QueryByProductVariantIds: Danh sách ProductVariantId rỗng");
+                    return new List<StockInOutDetail>();
+                }
+
+                _logger.Debug("QueryByProductVariantIds: Bắt đầu query, ProductVariantIds count={0}", productVariantIds.Count);
+
+                // Query StockInOutDetail theo danh sách ProductVariantId
+                var details = context.StockInOutDetails
+                    .Where(d => productVariantIds.Contains(d.ProductVariantId) && d.StockInOutMaster != null)
+                    .OrderByDescending(d => d.StockInOutMaster.StockInOutDate)
+                    .ThenByDescending(d => d.StockInOutMaster.VocherNumber ?? string.Empty)
+                    .ToList();
+
+                _logger.Info("QueryByProductVariantIds: Query thành công, ResultCount={0}", details.Count);
+                return details;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"QueryByProductVariantIds: Lỗi query: {ex.Message}", ex);
+                throw;
+            }
+        }
+
         #endregion
     }
 }

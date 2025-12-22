@@ -206,16 +206,49 @@ namespace Inventory.Management.DeviceMangement
         /// <summary>
         /// Event handler khi click nút Lịch sử nhập - xuất
         /// Mở dockPanel1 với độ rộng = 2/3 độ rộng màn hình và hiển thị ucDeviceDtoAddStockInOutHistory1
+        /// Chỉ thực hiện khi có thiết bị được chọn
         /// </summary>
         private void ThemLichSuNhapXuatThietBiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
+                // Kiểm tra xem có thiết bị nào được chọn không
+                var selectedRows = DeviceDtoGridView.GetSelectedRows();
+                if (selectedRows == null || selectedRows.Length == 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn thiết bị để xem lịch sử nhập - xuất.", "Chưa chọn thiết bị");
+                    return;
+                }
+
+                // Lấy tất cả các thiết bị được chọn
+                var selectedDevices = new List<DeviceDto>();
+                foreach (var rowHandle in selectedRows)
+                {
+                    if (rowHandle < 0) continue;
+
+                    var device = DeviceDtoGridView.GetRow(rowHandle) as DeviceDto;
+                    if (device != null)
+                    {
+                        selectedDevices.Add(device);
+                    }
+                }
+
+                if (selectedDevices.Count == 0)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin thiết bị được chọn.", "Lỗi");
+                    return;
+                }
+
+                _logger.Debug($"ThemLichSuNhapXuatThietBiBarButtonItem_ItemClick: Selected {selectedDevices.Count} device(s)");
+
                 // Thiết lập độ rộng dock panel
                 SetupDockPanelWidth();
 
                 // Hiển thị UserControl lịch sử nhập - xuất
                 ShowUserControlInDockPanel(showAddEdit: false);
+
+                // Load danh sách thiết bị đã chọn vào SearchLookUpEdit
+                ucDeviceDtoAddStockInOutHistory1.LoadSelectedDevices(selectedDevices);
             }
             catch (Exception ex)
             {

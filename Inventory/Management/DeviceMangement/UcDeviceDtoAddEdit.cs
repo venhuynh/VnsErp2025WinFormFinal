@@ -108,6 +108,9 @@ namespace Inventory.Management.DeviceMangement
 
                 // Setup events
                 InitializeEvents();
+
+                // Setup SuperToolTips
+                SetupSuperToolTips();
             }
             catch (Exception ex)
             {
@@ -1050,6 +1053,59 @@ namespace Inventory.Management.DeviceMangement
         protected virtual void OnDeviceSaved()
         {
             DeviceSaved?.Invoke(this, EventArgs.Empty);
+        }
+
+        #endregion
+
+        #region ========== SUPERTOOLTIP ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho tất cả các controls trong UserControl
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                SetupSearchLookUpEditSuperTips();
+
+                SetupHyperlinkLabelControlSuperTips();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+            }
+        }
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho SearchLookUpEdit controls
+        /// </summary>
+        private void SetupSearchLookUpEditSuperTips()
+        {
+            // SuperTip cho ProductVariantSearchLookUpEdit (chọn hàng hóa dịch vụ)
+            if (ProductVariantSearchLookUpEdit != null)
+            {
+                SuperToolTipHelper.SetBaseEditSuperTip(
+                    ProductVariantSearchLookUpEdit,
+                    title: @"<b><color=DarkBlue>📦 Chọn hàng hóa dịch vụ</color></b>",
+                    content: @"Chọn <b>hàng hóa dịch vụ</b> (ProductVariant) cho thiết bị.<br/><br/><b>Chức năng:</b><br/>• Hiển thị danh sách hàng hóa dịch vụ đang sử dụng<br/>• Tự động load dữ liệu khi mở popup (lazy loading)<br/>• Hiển thị thông tin đầy đủ dưới dạng HTML<br/>• Tìm kiếm theo mã, tên, danh mục<br/><br/><b>Hiển thị:</b><br/>• Mã hàng hóa dịch vụ<br/>• Tên đầy đủ (VariantFullName)<br/>• Danh mục, đơn vị tính<br/>• Format HTML với màu sắc và định dạng đẹp<br/><br/><b>Validation:</b><br/>• <b>Bắt buộc chọn</b> trước khi lưu<br/>• Kiểm tra ProductVariantId không được rỗng<br/><br/><color=Gray>Lưu ý:</color> Chỉ hiển thị các hàng hóa dịch vụ đang sử dụng (IsActive = true)."
+                );
+            }
+        }
+         
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho HyperlinkLabelControl controls
+        /// </summary>
+        private void SetupHyperlinkLabelControlSuperTips()
+        {
+            // SuperTip cho nút Lưu
+            if (SaveHyperlinkLabelControl != null)
+            {
+                SaveHyperlinkLabelControl.SuperTip = SuperToolTipHelper.CreateSuperToolTip(
+                    title: @"<b><color=Green>💾 Lưu thiết bị</color></b>",
+                    content: @"Lưu <b>thông tin thiết bị</b> vào database.<br/><br/><b>Chức năng:</b><br/>• Validate toàn bộ dữ liệu trước khi lưu<br/>• Tạo DeviceDto từ dữ liệu đã nhập<br/>• Convert DTO sang Entity<br/>• Lưu vào database qua BLL<br/>• Trigger event DeviceSaved để form cha refresh<br/><br/><b>Validation:</b><br/>• Kiểm tra đã chọn hàng hóa dịch vụ<br/>• Kiểm tra có ít nhất một định danh<br/>• Validate từng định danh (loại và giá trị)<br/>• Kiểm tra tính duy nhất của định danh<br/><br/><b>Dữ liệu lưu:</b><br/>• ProductVariantId<br/>• Các định danh (SerialNumber, IMEI, MAC, v.v.)<br/>• Trạng thái mặc định (Available - Đang trong kho VNS)<br/>• Loại thiết bị mặc định (Hardware)<br/>• Ngày tạo, người tạo<br/><br/><b>Xử lý lỗi:</b><br/>• Hiển thị danh sách lỗi validation nếu có<br/>• Hiển thị thông báo lỗi chi tiết nếu lưu thất bại<br/><br/><color=Gray>Lưu ý:</color> Sau khi lưu thành công, form cha sẽ tự động refresh danh sách thiết bị."
+                );
+            }
         }
 
         #endregion

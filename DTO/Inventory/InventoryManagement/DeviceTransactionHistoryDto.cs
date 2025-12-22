@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Common.Utils;
 
 namespace DTO.Inventory.InventoryManagement;
 
@@ -32,19 +35,25 @@ public class DeviceTransactionHistoryDto
     #region Properties - Thông tin thao tác
 
     /// <summary>
-    /// Loại thao tác (0=Import, 1=Export, 2=Allocation, 3=Recovery, 4=Transfer, 5=Maintenance, 6=StatusChange, 7=Other)
+    /// Loại thao tác (Import, Export, Allocation, Recovery, Transfer, Maintenance, StatusChange, Other)
     /// </summary>
     [DisplayName("Loại thao tác")]
     [Display(Order = 10)]
     [Required(ErrorMessage = "Loại thao tác không được để trống")]
-    public int OperationType { get; set; }
+    public DeviceOperationTypeEnum OperationType { get; set; }
 
     /// <summary>
-    /// Tên loại thao tác (từ enum)
+    /// Tên loại thao tác (từ enum) - tự động lấy từ OperationType
     /// </summary>
     [DisplayName("Tên loại thao tác")]
     [Display(Order = 11)]
-    public string OperationTypeName { get; set; }
+    public string OperationTypeName
+    {
+        get
+        {
+            return DeviceTransactionHistoryDtoHelper.GetOperationTypeName(OperationType);
+        }
+    }
 
     /// <summary>
     /// Ngày giờ thực hiện thao tác
@@ -154,23 +163,147 @@ public class DeviceTransactionHistoryDto
 
     #endregion
 
-    #region Helper Methods
+    #region Properties - Thông tin hiển thị (Display - chỉ đọc, không lưu vào database)
 
     /// <summary>
-    /// Lấy tên loại thao tác từ enum
+    /// Tên thiết bị (lấy từ Device.ProductVariant)
     /// </summary>
-    public void SetOperationTypeName()
+    [DisplayName("Tên thiết bị")]
+    [Display(Order = 200)]
+    public string DeviceName { get; set; }
+
+    /// <summary>
+    /// Mã thiết bị (lấy từ Device.ProductVariant)
+    /// </summary>
+    [DisplayName("Mã thiết bị")]
+    [Display(Order = 201)]
+    public string DeviceCode { get; set; }
+
+    /// <summary>
+    /// Thông tin thiết bị (Serial Number, IMEI, MAC, v.v.)
+    /// </summary>
+    [DisplayName("Thông tin thiết bị")]
+    [Display(Order = 202)]
+    public string DeviceInfo { get; set; }
+
+    /// <summary>
+    /// Nội dung tổng quát lịch sử giao dịch theo định dạng HTML theo chuẩn DevExpress
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Nội dung HTML")]
+    [Display(Order = 250)]
+    [Description("Nội dung tổng quát lịch sử giao dịch dưới dạng HTML")]
+    public string FullContentHtml
     {
-        if (Enum.IsDefined(typeof(DeviceOperationTypeEnum), OperationType))
+        get
         {
-            var enumValue = (DeviceOperationTypeEnum)OperationType;
-            OperationTypeName = GetEnumDescription(enumValue);
-        }
-        else
-        {
-            OperationTypeName = "Không xác định";
+            var html = string.Empty;
+
+            // Loại thao tác (nổi bật nhất)
+            var operationName = OperationTypeName;
+            var operationColor = GetOperationTypeColor();
+            if (!string.IsNullOrWhiteSpace(operationName))
+            {
+                html += $"<b><color='{operationColor}'>{operationName}</color></b>";
+            }
+
+            // Ngày thực hiện
+            if (OperationDate != default(DateTime))
+            {
+                if (!string.IsNullOrWhiteSpace(html))
+                    html += " ";
+                html += $"<color='#757575'>({OperationDate:dd/MM/yyyy HH:mm})</color>";
+            }
+
+            if (!string.IsNullOrWhiteSpace(html))
+                html += "<br>";
+
+            // Thông tin thiết bị
+            if (!string.IsNullOrWhiteSpace(DeviceName))
+            {
+                html += $"<color='blue'><b>{DeviceName}</b></color>";
+                if (!string.IsNullOrWhiteSpace(DeviceCode))
+                {
+                    html += $" <color='#757575'>({DeviceCode})</color>";
+                }
+                html += "<br>";
+            }
+
+            // Thông tin định danh thiết bị
+            if (!string.IsNullOrWhiteSpace(DeviceInfo))
+            {
+                html += $"<color='#757575'>Thiết bị:</color> <color='#212121'>{DeviceInfo}</color><br>";
+            }
+
+            // Thông tin chi tiết (ưu tiên HtmlInformation, fallback về Information)
+            if (!string.IsNullOrWhiteSpace(HtmlInformation))
+            {
+                html += $"{HtmlInformation}<br>";
+            }
+            else if (!string.IsNullOrWhiteSpace(Information))
+            {
+                html += $"<color='#212121'>{Information}</color><br>";
+            }
+
+            // Thông tin tham chiếu
+            if (ReferenceId.HasValue)
+            {
+                var referenceInfo = string.Empty;
+                if (!string.IsNullOrWhiteSpace(ReferenceTypeName))
+                {
+                    referenceInfo = ReferenceTypeName;
+                }
+                else if (ReferenceType.HasValue && Enum.IsDefined(typeof(DeviceReferenceTypeEnum), ReferenceType.Value))
+                {
+                    var enumValue = (DeviceReferenceTypeEnum)ReferenceType.Value;
+                    referenceInfo = ApplicationEnumUtils.GetDescription(enumValue);
+                }
+                else
+                {
+                    referenceInfo = "Tham chiếu";
+                }
+
+                html += $"<color='#757575'>Tham chiếu:</color> <color='#212121'><b>{referenceInfo}</b></color>";
+                html += $" <color='#757575'>({ReferenceId.Value})</color><br>";
+            }
+
+            // Người thực hiện
+            if (!string.IsNullOrWhiteSpace(PerformedByName))
+            {
+                html += $"<color='#757575'>Người thực hiện:</color> <color='#212121'><b>{PerformedByName}</b></color><br>";
+            }
+
+            // Ghi chú
+            if (!string.IsNullOrWhiteSpace(Notes))
+            {
+                html += $"<color='#757575'><i>{Notes}</i></color><br>";
+            }
+
+            // Thông tin audit
+            var auditParts = new List<string>();
+            if (CreatedDate != default(DateTime))
+            {
+                auditParts.Add($"Tạo: {CreatedDate:dd/MM/yyyy HH:mm}");
+            }
+            if (!string.IsNullOrWhiteSpace(CreatedByName))
+            {
+                auditParts.Add($"Bởi: {CreatedByName}");
+            }
+
+            if (auditParts.Any())
+            {
+                html += $"<color='#9E9E9E'>{string.Join(" | ", auditParts)}</color>";
+            }
+
+            return html;
         }
     }
+
+    #endregion
+
+    #region Helper Methods
+
 
     /// <summary>
     /// Lấy tên loại tham chiếu từ enum
@@ -180,7 +313,7 @@ public class DeviceTransactionHistoryDto
         if (ReferenceType.HasValue && Enum.IsDefined(typeof(DeviceReferenceTypeEnum), ReferenceType.Value))
         {
             var enumValue = (DeviceReferenceTypeEnum)ReferenceType.Value;
-            ReferenceTypeName = GetEnumDescription(enumValue);
+            ReferenceTypeName = ApplicationEnumUtils.GetDescription(enumValue);
         }
         else
         {
@@ -189,15 +322,198 @@ public class DeviceTransactionHistoryDto
     }
 
     /// <summary>
-    /// Lấy mô tả từ enum
+    /// Lấy màu sắc tương ứng với loại thao tác (tên màu)
     /// </summary>
-    private string GetEnumDescription(Enum value)
+    /// <returns>Tên màu (green, blue, red, orange, purple, grey, black, v.v.)</returns>
+    private string GetOperationTypeColor()
     {
-        var field = value.GetType().GetField(value.ToString());
-        if (field == null) return value.ToString();
+        return DeviceTransactionHistoryDtoHelper.GetOperationTypeColor(OperationType);
+    }
 
-        var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
-        return attribute?.Description ?? value.ToString();
+    #endregion
+}
+
+/// <summary>
+/// Helper class cho DeviceTransactionHistoryDto
+/// </summary>
+public static class DeviceTransactionHistoryDtoHelper
+{
+    /// <summary>
+    /// Lấy màu sắc tương ứng với loại thao tác (tên màu)
+    /// </summary>
+    /// <param name="operationType">Loại thao tác (int value của DeviceOperationTypeEnum)</param>
+    /// <returns>Tên màu (green, blue, red, orange, purple, grey, black, v.v.)</returns>
+    public static string GetOperationTypeColor(int operationType)
+    {
+        if (!Enum.IsDefined(typeof(DeviceOperationTypeEnum), operationType))
+            return "black";
+
+        var enumValue = (DeviceOperationTypeEnum)operationType;
+        return GetOperationTypeColor(enumValue);
+    }
+
+    /// <summary>
+    /// Lấy màu sắc tương ứng với loại thao tác (tên màu)
+    /// </summary>
+    /// <param name="operationType">Loại thao tác (DeviceOperationTypeEnum)</param>
+    /// <returns>Tên màu (green, blue, red, orange, purple, grey, black, v.v.)</returns>
+    public static string GetOperationTypeColor(DeviceOperationTypeEnum operationType)
+    {
+        return operationType switch
+        {
+            DeviceOperationTypeEnum.Import => "green",        // Green - Nhập kho
+            DeviceOperationTypeEnum.Export => "red",          // Red - Xuất kho
+            DeviceOperationTypeEnum.Allocation => "blue",     // Blue - Cấp phát
+            DeviceOperationTypeEnum.Recovery => "orange",      // Orange - Thu hồi
+            DeviceOperationTypeEnum.Transfer => "purple",     // Purple - Chuyển giao
+            DeviceOperationTypeEnum.Maintenance => "darkorange", // Dark Orange - Bảo trì
+            DeviceOperationTypeEnum.StatusChange => "darkslategray", // Dark Slate Gray - Đổi trạng thái
+            DeviceOperationTypeEnum.Other => "grey",          // Grey - Khác
+            _ => "black"                                      // Default - Black
+        };
+    }
+
+    /// <summary>
+    /// Lấy tên loại thao tác từ enum
+    /// </summary>
+    /// <param name="operationType">Loại thao tác (int value của DeviceOperationTypeEnum)</param>
+    /// <returns>Tên loại thao tác</returns>
+    public static string GetOperationTypeName(int operationType)
+    {
+        if (!Enum.IsDefined(typeof(DeviceOperationTypeEnum), operationType))
+            return "Không xác định";
+
+        var enumValue = (DeviceOperationTypeEnum)operationType;
+        return ApplicationEnumUtils.GetDescription(enumValue);
+    }
+
+    /// <summary>
+    /// Lấy tên loại thao tác từ enum
+    /// </summary>
+    /// <param name="operationType">Loại thao tác (DeviceOperationTypeEnum)</param>
+    /// <returns>Tên loại thao tác</returns>
+    public static string GetOperationTypeName(DeviceOperationTypeEnum operationType)
+    {
+        return ApplicationEnumUtils.GetDescription(operationType);
+    }
+}
+
+/// <summary>
+/// Converter giữa DeviceTransactionHistory entity và DeviceTransactionHistoryDto
+/// </summary>
+public static class DeviceTransactionHistoryDtoConverter
+{
+    #region Entity to DTO
+
+    /// <summary>
+    /// Chuyển đổi DeviceTransactionHistory entity thành DeviceTransactionHistoryDto
+    /// </summary>
+    /// <param name="entity">DeviceTransactionHistory entity</param>
+    /// <returns>DeviceTransactionHistoryDto</returns>
+    public static DeviceTransactionHistoryDto ToDto(this Dal.DataContext.DeviceTransactionHistory entity)
+    {
+        if (entity == null) return null;
+
+        var dto = new DeviceTransactionHistoryDto
+        {
+            Id = entity.Id,
+            DeviceId = entity.DeviceId,
+            OperationType = Enum.IsDefined(typeof(DeviceOperationTypeEnum), entity.OperationType)
+                ? (DeviceOperationTypeEnum)entity.OperationType
+                : DeviceOperationTypeEnum.Other, // Default to Other if invalid
+            OperationDate = entity.OperationDate,
+            ReferenceId = entity.ReferenceId,
+            ReferenceType = entity.ReferenceType,
+            Information = entity.Information,
+            HtmlInformation = entity.HtmlInformation,
+            PerformedBy = entity.PerformedBy,
+            Notes = entity.Notes,
+            CreatedDate = entity.CreatedDate,
+            CreatedBy = entity.CreatedBy
+        };
+
+        // Lấy tên loại tham chiếu từ enum
+        if (entity.ReferenceType.HasValue && Enum.IsDefined(typeof(DeviceReferenceTypeEnum), entity.ReferenceType.Value))
+        {
+            var enumValue = (DeviceReferenceTypeEnum)entity.ReferenceType.Value;
+            dto.ReferenceTypeName = ApplicationEnumUtils.GetDescription(enumValue);
+        }
+
+        // Lấy thông tin thiết bị nếu có
+        if (entity.Device != null)
+        {
+            // Lấy tên và mã sản phẩm từ ProductVariant
+            if (entity.Device.ProductVariant != null)
+            {
+                dto.DeviceName = entity.Device.ProductVariant.VariantFullName;
+                dto.DeviceCode = entity.Device.ProductVariant.VariantCode;
+            }
+
+            // Tạo thông tin định danh thiết bị
+            var deviceInfoParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(entity.Device.SerialNumber))
+                deviceInfoParts.Add($"Serial: {entity.Device.SerialNumber}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.IMEI))
+                deviceInfoParts.Add($"IMEI: {entity.Device.IMEI}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.MACAddress))
+                deviceInfoParts.Add($"MAC: {entity.Device.MACAddress}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.AssetTag))
+                deviceInfoParts.Add($"AssetTag: {entity.Device.AssetTag}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.LicenseKey))
+                deviceInfoParts.Add($"License: {entity.Device.LicenseKey}");
+
+            if (deviceInfoParts.Any())
+            {
+                dto.DeviceInfo = string.Join(" | ", deviceInfoParts);
+            }
+        }
+
+        // TODO: Lấy tên người thực hiện và người tạo từ ApplicationUser hoặc Employee nếu có
+
+        return dto;
+    }
+
+    /// <summary>
+    /// Chuyển đổi danh sách DeviceTransactionHistory entities thành danh sách DeviceTransactionHistoryDto
+    /// </summary>
+    /// <param name="entities">Danh sách DeviceTransactionHistory entities</param>
+    /// <returns>Danh sách DeviceTransactionHistoryDto</returns>
+    public static List<DeviceTransactionHistoryDto> ToDtoList(this IEnumerable<Dal.DataContext.DeviceTransactionHistory> entities)
+    {
+        if (entities == null) return new List<DeviceTransactionHistoryDto>();
+        return entities.Select(entity => entity.ToDto()).Where(dto => dto != null).ToList();
+    }
+
+    #endregion
+
+    #region DTO to Entity
+
+    /// <summary>
+    /// Chuyển đổi DeviceTransactionHistoryDto thành DeviceTransactionHistory entity
+    /// </summary>
+    /// <param name="dto">DeviceTransactionHistoryDto</param>
+    /// <returns>DeviceTransactionHistory entity</returns>
+    public static Dal.DataContext.DeviceTransactionHistory ToEntity(this DeviceTransactionHistoryDto dto)
+    {
+        if (dto == null) return null;
+
+        var entity = new Dal.DataContext.DeviceTransactionHistory
+        {
+            Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
+            DeviceId = dto.DeviceId,
+            OperationType = (int)dto.OperationType, // Convert enum to int for entity
+            OperationDate = dto.OperationDate == default(DateTime) ? DateTime.Now : dto.OperationDate,
+            ReferenceId = dto.ReferenceId,
+            ReferenceType = dto.ReferenceType,
+            Information = dto.Information,
+            HtmlInformation = dto.HtmlInformation,
+            PerformedBy = dto.PerformedBy,
+            Notes = dto.Notes,
+            CreatedDate = dto.CreatedDate == default(DateTime) ? DateTime.Now : dto.CreatedDate,
+            CreatedBy = dto.CreatedBy
+        };
+
+        return entity;
     }
 
     #endregion

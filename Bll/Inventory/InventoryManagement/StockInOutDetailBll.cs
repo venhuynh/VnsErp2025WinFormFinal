@@ -155,6 +155,30 @@ namespace Bll.Inventory.InventoryManagement
             }
         }
 
+        /// <summary>
+        /// Query StockInOutDetail theo danh sách ProductVariantId
+        /// </summary>
+        /// <param name="productVariantIds">Danh sách ProductVariantId</param>
+        /// <returns>Danh sách StockInOutDetail entities</returns>
+        public List<StockInOutDetail> QueryByProductVariantIds(List<Guid> productVariantIds)
+        {
+            try
+            {
+                _logger.Debug("QueryByProductVariantIds: Bắt đầu query, ProductVariantIds count={0}", 
+                    productVariantIds?.Count ?? 0);
+
+                var result = GetStockInOutDetailRepository().QueryByProductVariantIds(productVariantIds);
+
+                _logger.Info("QueryByProductVariantIds: Query thành công, ResultCount={0}", result.Count);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"QueryByProductVariantIds: Lỗi query: {ex.Message}", ex);
+                throw;
+            }
+        }
+
         #endregion
     }
 }

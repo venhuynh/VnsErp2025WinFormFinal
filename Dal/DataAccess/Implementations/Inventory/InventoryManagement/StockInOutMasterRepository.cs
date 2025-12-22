@@ -3,6 +3,7 @@ using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -61,6 +62,24 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
         return context;
     }
 
+    /// <summary>
+    /// Tạo DataContext mới với eager loading cho StockInOutMaster
+    /// </summary>
+    /// <returns>DataContext mới</returns>
+    private VnsErp2025DataContext CreateNewContextForMaster()
+    {
+        var context = new VnsErp2025DataContext(_connectionString);
+
+        // Configure eager loading cho navigation properties của StockInOutMaster
+        var loadOptions = new DataLoadOptions();
+        loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
+        loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
+        loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
+        context.LoadOptions = loadOptions;
+
+        return context;
+    }
+
     #endregion
 
     #region Public Methods
@@ -81,6 +100,40 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
         catch (Exception ex)
         {
             _logger.Error($"GetVocherNumber: Lỗi lấy VocherNumber cho ID={id}: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách StockInOutMaster theo danh sách ID
+    /// </summary>
+    /// <param name="masterIds">Danh sách ID của StockInOutMaster</param>
+    /// <returns>Danh sách StockInOutMaster entities với navigation properties đã load</returns>
+    public List<StockInOutMaster> GetMastersByIds(List<Guid> masterIds)
+    {
+        using var context = CreateNewContextForMaster();
+        try
+        {
+            if (masterIds == null || masterIds.Count == 0)
+            {
+                _logger.Debug("GetMastersByIds: Danh sách MasterIds rỗng");
+                return new List<StockInOutMaster>();
+            }
+
+            _logger.Debug("GetMastersByIds: Bắt đầu query, MasterIds count={0}", masterIds.Count);
+
+            var masters = context.StockInOutMasters
+                .Where(m => masterIds.Contains(m.Id))
+                .OrderByDescending(m => m.StockInOutDate)
+                .ThenByDescending(m => m.VocherNumber ?? string.Empty)
+                .ToList();
+
+            _logger.Info("GetMastersByIds: Query thành công, ResultCount={0}", masters.Count);
+            return masters;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetMastersByIds: Lỗi query: {ex.Message}", ex);
             throw;
         }
     }
