@@ -360,7 +360,6 @@
             this.colNotes});
             this.DeviceDtoGridView.GridControl = this.DeviceDtoGridViewGridControl;
             this.DeviceDtoGridView.Name = "DeviceDtoGridView";
-            this.DeviceDtoGridView.OptionsBehavior.Editable = true;
             this.DeviceDtoGridView.OptionsSelection.MultiSelect = true;
             this.DeviceDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.DeviceDtoGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
@@ -414,9 +413,13 @@
             // 
             // StatusComboBox
             // 
+            this.StatusComboBox.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.StatusComboBox.AutoHeight = false;
             this.StatusComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.StatusComboBox.ContextButtonOptions.AllowHtmlText = true;
+            this.StatusComboBox.Items.AddRange(new object[] {
+            "<color=\'red\'>Test</color>"});
             this.StatusComboBox.Name = "StatusComboBox";
             this.StatusComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             // 

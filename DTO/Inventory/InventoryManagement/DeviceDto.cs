@@ -344,27 +344,27 @@ public class DeviceDto
 
     /// <summary>
     /// Tổng hợp thông tin thiết bị dưới dạng HTML (chỉ đọc)
-    /// Hiển thị đầy đủ thông tin: tên sản phẩm, định danh, trạng thái, ghi chú, audit
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Hiển thị thông tin: tên sản phẩm, định danh, liên kết, audit
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;color&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [DisplayName("Thông tin tổng hợp (HTML)")]
     [Display(Order = 200)]
-    [Description("Tổng hợp đầy đủ thông tin thiết bị dưới dạng HTML")]
+    [Description("Tổng hợp thông tin thiết bị dưới dạng HTML")]
     public string HtmlInfo
     {
         get
         {
             var html = string.Empty;
 
-            // Tên sản phẩm dịch vụ (nổi bật nhất)
+            // Tên sản phẩm dịch vụ
             var productVariantName = ProductVariantName ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(productVariantName))
             {
-                html += $"<size=12><b><color='blue'>{productVariantName}</color></b></size>";
+                html += $"<color='blue'>{productVariantName}</color>";
                 if (!string.IsNullOrWhiteSpace(ProductVariantCode))
                 {
-                    html += $" <size=10><color='#757575'>({ProductVariantCode})</color></size>";
+                    html += $" <color='#757575'>({ProductVariantCode})</color>";
                 }
                 html += "<br>";
             }
@@ -372,67 +372,35 @@ public class DeviceDto
             // Định danh thiết bị (Serial Number, IMEI, MAC, v.v.)
             var identifierParts = new List<string>();
             if (!string.IsNullOrWhiteSpace(SerialNumber))
-                identifierParts.Add($"Serial: <b>{SerialNumber}</b>");
+                identifierParts.Add($"Serial: {SerialNumber}");
             if (!string.IsNullOrWhiteSpace(IMEI))
-                identifierParts.Add($"IMEI: <b>{IMEI}</b>");
+                identifierParts.Add($"IMEI: {IMEI}");
             if (!string.IsNullOrWhiteSpace(MACAddress))
-                identifierParts.Add($"MAC: <b>{MACAddress}</b>");
+                identifierParts.Add($"MAC: {MACAddress}");
             if (!string.IsNullOrWhiteSpace(AssetTag))
-                identifierParts.Add($"AssetTag: <b>{AssetTag}</b>");
+                identifierParts.Add($"AssetTag: {AssetTag}");
             if (!string.IsNullOrWhiteSpace(LicenseKey))
-                identifierParts.Add($"License: <b>{LicenseKey}</b>");
+                identifierParts.Add($"License: {LicenseKey}");
             if (!string.IsNullOrWhiteSpace(HostName))
-                identifierParts.Add($"Host: <b>{HostName}</b>");
+                identifierParts.Add($"Host: {HostName}");
             if (!string.IsNullOrWhiteSpace(IPAddress))
-                identifierParts.Add($"IP: <b>{IPAddress}</b>");
+                identifierParts.Add($"IP: {IPAddress}");
 
             if (identifierParts.Any())
             {
-                html += $"<size=9><color='#757575'>Định danh:</color></size> <size=10><color='#212121'>{string.Join(" | ", identifierParts)}</color></size><br>";
-            }
-
-            // Trạng thái và loại thiết bị
-            var statusParts = new List<string>();
-            if (!string.IsNullOrWhiteSpace(StatusName))
-            {
-                var statusColor = GetStatusColor(Status);
-                statusParts.Add($"Trạng thái: <color='{statusColor}'><b>{StatusName}</b></color>");
-            }
-            else
-            {
-                // Nếu StatusName chưa có, lấy từ enum
-                var statusText = GetStatusText(Status);
-                var statusColor = GetStatusColor(Status);
-                statusParts.Add($"Trạng thái: <color='{statusColor}'><b>{statusText}</b></color>");
-            }
-            if (!string.IsNullOrWhiteSpace(DeviceTypeName))
-                statusParts.Add($"Loại: <b>{DeviceTypeName}</b>");
-            if (IsActive)
-                statusParts.Add($"<color='#4CAF50'><b>Đang hoạt động</b></color>");
-            else
-                statusParts.Add($"<color='#F44336'><b>Không hoạt động</b></color>");
-
-            if (statusParts.Any())
-            {
-                html += $"<size=9><color='#757575'>Thiết bị:</color></size> <size=10><color='#212121'>{string.Join(" | ", statusParts)}</color></size><br>";
+                html += $"<color='#757575'>Định danh:</color> <color='#212121'>{string.Join(" | ", identifierParts)}</color><br>";
             }
 
             // Thông tin liên kết
             var linkParts = new List<string>();
             if (StockInOutDetailId.HasValue)
-                linkParts.Add($"Phiếu: <b>{StockInOutDetailId.Value}</b>");
+                linkParts.Add($"Phiếu: {StockInOutDetailId.Value}");
             if (WarrantyId.HasValue)
-                linkParts.Add($"Bảo hành: <b>{WarrantyId.Value}</b>");
+                linkParts.Add($"Bảo hành: {WarrantyId.Value}");
 
             if (linkParts.Any())
             {
-                html += $"<size=9><color='#757575'>Liên kết:</color></size> <size=10><color='#212121'>{string.Join(" | ", linkParts)}</color></size><br>";
-            }
-
-            // Ghi chú
-            if (!string.IsNullOrWhiteSpace(Notes))
-            {
-                html += $"<size=9><color='#757575'>Ghi chú:</color></size> <size=10><color='#212121'><i>{Notes}</i></color></size><br>";
+                html += $"<color='#757575'>Liên kết:</color> <color='#212121'>{string.Join(" | ", linkParts)}</color><br>";
             }
 
             // Thông tin audit
@@ -444,7 +412,7 @@ public class DeviceDto
 
             if (auditParts.Any())
             {
-                html += $"<size=8><color='#9E9E9E'>{string.Join(" | ", auditParts)}</color></size>";
+                html += $"<color='#9E9E9E'>{string.Join(" | ", auditParts)}</color>";
             }
 
             return html;

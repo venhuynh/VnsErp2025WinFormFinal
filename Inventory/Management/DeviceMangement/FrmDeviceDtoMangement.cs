@@ -1,6 +1,7 @@
 ﻿using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Utils;
+using DevExpress.XtraBars.Docking;
 using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;
@@ -9,10 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DevExpress.XtraBars.Docking;
 
 namespace Inventory.Management.DeviceMangement
 {
@@ -94,6 +94,12 @@ namespace Inventory.Management.DeviceMangement
 
             // Event khi giá trị cell thay đổi (để lưu vào database)
             DeviceDtoGridView.CellValueChanged += DeviceDtoGridView_CellValueChanged;
+
+            // Event để validate và convert giá trị trước khi set vào property
+            DeviceDtoGridView.ValidatingEditor += DeviceDtoGridView_ValidatingEditor;
+
+            // Event để hiển thị HTML với màu sắc cho colStatus
+            DeviceDtoGridView.CustomColumnDisplayText += DeviceDtoGridView_CustomColumnDisplayText;
         }
 
         /// <summary>
@@ -182,23 +188,30 @@ namespace Inventory.Management.DeviceMangement
         {
             try
             {
-                StatusComboBox.Items.Clear();
-
                 // Xóa các items cũ
                 StatusComboBox.Items.Clear();
 
                 // Thêm các tùy chọn xác thực sử dụng ApplicationEnumUtils
+                // Màu sắc được thiết lập trong CustomDrawItem event
                 foreach (DeviceStatusEnum value in Enum.GetValues(typeof(DeviceStatusEnum)))
                 {
                     int index = ApplicationEnumUtils.GetValue(value);
-                    string itemName = ApplicationEnumUtils.GetDescription(value);
+                    //string itemName = ApplicationEnumUtils.GetDescription(value);
+
+                    // Lấy Description và màu sắc
+                    var description = GetStatusDescription(value);
+                    var colorHex = GetStatusColor(value);
+
+                    // Tạo HTML với màu sắc
+                    string itemName = $"<color='{colorHex}'>{description}</color>";
 
                     StatusComboBox.Items.Insert(index, itemName);
                 }
-
                 
+
                 // Sử dụng CustomDisplayText để hiển thị text tương ứng
                 StatusComboBox.CustomDisplayText += StatusComboBox_CustomDisplayText;
+
             }
             catch (Exception ex)
             {
@@ -208,7 +221,7 @@ namespace Inventory.Management.DeviceMangement
         }
 
         /// <summary>
-        /// Event handler để hiển thị Description thay vì tên enum trong StatusComboBox
+        /// Event handler để hiển thị Description với màu sắc HTML trong StatusComboBox
         /// </summary>
         private void StatusComboBox_CustomDisplayText(object sender, DevExpress.XtraEditors.Controls.CustomDisplayTextEventArgs e)
         {
@@ -216,15 +229,20 @@ namespace Inventory.Management.DeviceMangement
             {
                 if (e.Value == null) return;
 
-                // Nếu giá trị là string (Description), giữ nguyên
+                DeviceStatusEnum statusValue;
+
+                // Nếu giá trị là string (Description), convert về enum
                 if (e.Value is string stringValue)
                 {
-                    e.DisplayText = stringValue;
-                    return;
+                    var statusEnum = GetStatusEnumFromDescription(stringValue);
+                    if (!statusEnum.HasValue)
+                    {
+                        e.DisplayText = stringValue;
+                        return;
+                    }
+                    statusValue = statusEnum.Value;
                 }
-
-                DeviceStatusEnum statusValue;
-                if (e.Value is DeviceStatusEnum enumValue)
+                else if (e.Value is DeviceStatusEnum enumValue)
                 {
                     statusValue = enumValue;
                 }
@@ -237,8 +255,12 @@ namespace Inventory.Management.DeviceMangement
                     return;
                 }
 
-                // Lấy Description từ attribute
-                e.DisplayText = GetStatusDescription(statusValue);
+                // Lấy Description và màu sắc
+                var description = GetStatusDescription(statusValue);
+                var colorHex = GetStatusColor(statusValue);
+
+                // Tạo HTML với màu sắc
+                e.DisplayText = $"<color='{colorHex}'>{description}</color>";
             }
             catch (Exception ex)
             {
@@ -267,9 +289,28 @@ namespace Inventory.Management.DeviceMangement
         }
 
         /// <summary>
-        /// Lấy enum value từ Description string
+        /// Lấy màu sắc tương ứng với trạng thái thiết bị
         /// </summary>
-        /// <param name="description">Description string</param>
+        /// <param name="status">Trạng thái thiết bị</param>
+        /// <returns>Tên màu (color name)</returns>
+        private string GetStatusColor(DeviceStatusEnum status)
+        {
+            return status switch
+            {
+                DeviceStatusEnum.Available => "green",         // Green - Đang trong kho VNS
+                DeviceStatusEnum.InUse => "blue",              // Blue - Đang sử dụng tại VNS
+                DeviceStatusEnum.Maintenance => "orange",      // Orange - Đang gửi bảo hành
+                DeviceStatusEnum.Broken => "red",              // Red - Đã hỏng
+                DeviceStatusEnum.Disposed => "gray",           // Grey - Đã thanh lý
+                DeviceStatusEnum.Reserved => "purple",         // Purple - Đã giao cho khách hàng
+                _ => "black"                                   // Default - Black
+            };
+        }
+
+        /// <summary>
+        /// Lấy enum value từ Description string (có thể chứa HTML tags)
+        /// </summary>
+        /// <param name="description">Description string (có thể chứa HTML tags)</param>
         /// <returns>Enum value hoặc null nếu không tìm thấy</returns>
         private DeviceStatusEnum? GetStatusEnumFromDescription(string description)
         {
@@ -278,11 +319,14 @@ namespace Inventory.Management.DeviceMangement
                 if (string.IsNullOrWhiteSpace(description))
                     return null;
 
+                // Strip HTML tags nếu có
+                var cleanDescription = StripHtmlTags(description);
+
                 // Duyệt qua tất cả các giá trị enum để tìm Description khớp
                 foreach (DeviceStatusEnum enumValue in Enum.GetValues(typeof(DeviceStatusEnum)))
                 {
                     var enumDescription = ApplicationEnumUtils.GetDescription(enumValue);
-                    if (string.Equals(enumDescription, description, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(enumDescription, cleanDescription, StringComparison.OrdinalIgnoreCase))
                     {
                         return enumValue;
                     }
@@ -298,6 +342,37 @@ namespace Inventory.Management.DeviceMangement
         }
 
         /// <summary>
+        /// Loại bỏ HTML tags từ string
+        /// </summary>
+        /// <param name="htmlString">String chứa HTML tags</param>
+        /// <returns>String không có HTML tags</returns>
+        private string StripHtmlTags(string htmlString)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(htmlString))
+                    return htmlString;
+
+                // Loại bỏ các HTML tags phổ biến của DevExpress: <color>, <b>, <i>, <size>, etc.
+                var result = htmlString;
+
+                // Loại bỏ <color='...'> và </color>
+                result = Regex.Replace(result, @"<color=['""][^'""]*['""]>", "", RegexOptions.IgnoreCase);
+                result = Regex.Replace(result, @"</color>", "", RegexOptions.IgnoreCase);
+
+                // Loại bỏ các tags khác nếu có
+                result = Regex.Replace(result, @"<[^>]+>", "");
+
+                return result.Trim();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"StripHtmlTags: Exception occurred for '{htmlString}'", ex);
+                return htmlString;
+            }
+        }
+
+        /// <summary>
         /// Cấu hình GridView để cho phép edit colStatus và colNotes
         /// </summary>
         private void ConfigureGridViewEditing()
@@ -307,6 +382,9 @@ namespace Inventory.Management.DeviceMangement
                 // Cho phép edit colStatus và colNotes
                 colStatus.OptionsColumn.AllowEdit = true;
                 colNotes.OptionsColumn.AllowEdit = true;
+
+                // Cho phép hiển thị HTML cho colStatus
+                //colStatus.OptionsColumn.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
 
                 // Các cột khác không cho phép edit
                 colHtmlInfo.OptionsColumn.AllowEdit = false;
@@ -318,9 +396,112 @@ namespace Inventory.Management.DeviceMangement
             }
         }
 
+        /// <summary>
+        /// Event handler để hiển thị HTML với màu sắc cho colStatus trong GridView
+        /// </summary>
+        private void DeviceDtoGridView_CustomColumnDisplayText(object sender, DevExpress.XtraGrid.Views.Base.CustomColumnDisplayTextEventArgs e)
+        {
+            try
+            {
+                // Chỉ xử lý cột Status
+                if (e.Column != colStatus || e.Value == null)
+                    return;
+
+                DeviceStatusEnum statusValue;
+
+                // Convert giá trị về enum
+                if (e.Value is DeviceStatusEnum enumValue)
+                {
+                    statusValue = enumValue;
+                }
+                else if (e.Value is int intValue && Enum.IsDefined(typeof(DeviceStatusEnum), intValue))
+                {
+                    statusValue = (DeviceStatusEnum)intValue;
+                }
+                else if (e.Value is string stringValue)
+                {
+                    // Nếu là string, thử strip HTML và convert
+                    var cleanString = StripHtmlTags(stringValue);
+                    var statusEnum = GetStatusEnumFromDescription(cleanString);
+                    if (!statusEnum.HasValue)
+                    {
+                        return; // Không thể convert, giữ nguyên giá trị
+                    }
+                    statusValue = statusEnum.Value;
+                }
+                else
+                {
+                    return;
+                }
+
+                // Lấy Description và màu sắc
+                var description = GetStatusDescription(statusValue);
+                var colorName = GetStatusColor(statusValue);
+
+                // Tạo HTML với màu sắc
+                e.DisplayText = $"<color='{colorName}'>{description}</color>";
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("DeviceDtoGridView_CustomColumnDisplayText: Exception occurred", ex);
+                // Nếu có lỗi, giữ nguyên giá trị mặc định
+            }
+        }
+
         #endregion
 
         #region ========== GRIDVIEW EVENTS ==========
+
+        /// <summary>
+        /// Event handler để validate và convert giá trị trước khi set vào property
+        /// Xử lý conversion từ string (Description) sang enum
+        /// </summary>
+        private void DeviceDtoGridView_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        {
+            try
+            {
+                var view = sender as DevExpress.XtraGrid.Views.Grid.GridView;
+                if (view == null) return;
+
+                var focusedColumn = view.FocusedColumn;
+                if (focusedColumn != colStatus) return;
+
+                // Nếu giá trị là string (Description), convert về enum
+                if (e.Value is string statusDescription)
+                {
+                    var statusEnum = GetStatusEnumFromDescription(statusDescription);
+                    if (statusEnum.HasValue)
+                    {
+                        // Set lại giá trị là enum để DevExpress có thể bind đúng
+                        e.Value = statusEnum.Value;
+                        e.Valid = true;
+                    }
+                    else
+                    {
+                        _logger.Warning($"DeviceDtoGridView_ValidatingEditor: Cannot convert status description '{statusDescription}' to enum");
+                        e.ErrorText = $"Không thể chuyển đổi trạng thái '{statusDescription}'";
+                        e.Valid = false;
+                    }
+                }
+                // Nếu giá trị đã là enum, giữ nguyên
+                else if (e.Value is DeviceStatusEnum)
+                {
+                    e.Valid = true;
+                }
+                // Nếu giá trị là int, convert về enum
+                else if (e.Value is int intValue && Enum.IsDefined(typeof(DeviceStatusEnum), intValue))
+                {
+                    e.Value = (DeviceStatusEnum)intValue;
+                    e.Valid = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("DeviceDtoGridView_ValidatingEditor: Exception occurred", ex);
+                e.ErrorText = $"Lỗi xử lý giá trị: {ex.Message}";
+                e.Valid = false;
+            }
+        }
 
         /// <summary>
         /// Event handler khi giá trị cell thay đổi trong GridView
@@ -339,22 +520,6 @@ namespace Inventory.Management.DeviceMangement
 
                 var deviceDto = DeviceDtoGridView.GetRow(e.RowHandle) as DeviceDto;
                 if (deviceDto == null) return;
-
-                // Nếu thay đổi colStatus, cần convert string (Description) về enum
-                if (e.Column == colStatus && e.Value is string statusDescription)
-                {
-                    var statusEnum = GetStatusEnumFromDescription(statusDescription);
-                    if (statusEnum.HasValue)
-                    {
-                        deviceDto.Status = statusEnum.Value;
-                    }
-                    else
-                    {
-                        _logger.Warning($"DeviceDtoGridView_CellValueChanged: Cannot convert status description '{statusDescription}' to enum");
-                        MsgBox.ShowWarning($"Không thể chuyển đổi trạng thái '{statusDescription}'");
-                        return;
-                    }
-                }
 
                 _logger.Debug($"DeviceDtoGridView_CellValueChanged: Updating device {deviceDto.Id}, Column: {e.Column.FieldName}");
 
