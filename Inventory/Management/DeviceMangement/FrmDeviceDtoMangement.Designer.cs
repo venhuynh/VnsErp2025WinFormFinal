@@ -33,13 +33,13 @@
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.XemBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
+            this.ThemMoiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ThemLichSuNhapXuatThietBiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             this.SuaBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XoaBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
-            this.ThemMoiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -64,6 +64,8 @@
             this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
             this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.ucDeviceDtoAddStockInOutHistory1 = new Inventory.Management.DeviceMangement.UcDeviceDtoAddStockInOutHistory();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -78,6 +80,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -101,7 +104,7 @@
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
             this.barSubItem1,
-            this.barButtonItem1,
+            this.ThemLichSuNhapXuatThietBiBarButtonItem,
             this.barButtonItem2});
             this.barManager1.MainMenu = this.bar2;
             this.barManager1.MaxItemId = 12;
@@ -116,10 +119,10 @@
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barSubItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SuaBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem1)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -132,6 +135,35 @@
             this.XemBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.listnumbers_16x16;
             this.XemBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.listnumbers_32x32;
             this.XemBarButtonItem.Name = "XemBarButtonItem";
+            // 
+            // barSubItem1
+            // 
+            this.barSubItem1.Caption = "Thêm mới";
+            this.barSubItem1.Id = 9;
+            this.barSubItem1.ImageOptions.Image = global::Inventory.Properties.Resources.add_16x16;
+            this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemMoiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(this.ThemLichSuNhapXuatThietBiBarButtonItem),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem2)});
+            this.barSubItem1.Name = "barSubItem1";
+            // 
+            // ThemMoiBarButtonItem
+            // 
+            this.ThemMoiBarButtonItem.Caption = "Thêm thiết bị";
+            this.ThemMoiBarButtonItem.Id = 2;
+            this.ThemMoiBarButtonItem.Name = "ThemMoiBarButtonItem";
+            // 
+            // ThemLichSuNhapXuatThietBiBarButtonItem
+            // 
+            this.ThemLichSuNhapXuatThietBiBarButtonItem.Caption = "Lịch sử nhập - xuất";
+            this.ThemLichSuNhapXuatThietBiBarButtonItem.Id = 10;
+            this.ThemLichSuNhapXuatThietBiBarButtonItem.Name = "ThemLichSuNhapXuatThietBiBarButtonItem";
+            // 
+            // barButtonItem2
+            // 
+            this.barButtonItem2.Caption = "Thêm hình ảnh";
+            this.barButtonItem2.Id = 11;
+            this.barButtonItem2.Name = "barButtonItem2";
             // 
             // SuaBarButtonItem
             // 
@@ -154,35 +186,6 @@
             this.ExportFileBarButtonItem.Id = 5;
             this.ExportFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.exporttoxps_16x16;
             this.ExportFileBarButtonItem.Name = "ExportFileBarButtonItem";
-            // 
-            // barSubItem1
-            // 
-            this.barSubItem1.Caption = "Thêm mới";
-            this.barSubItem1.Id = 9;
-            this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemMoiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem1),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem2)});
-            this.barSubItem1.Name = "barSubItem1";
-            // 
-            // ThemMoiBarButtonItem
-            // 
-            this.ThemMoiBarButtonItem.Caption = "Thêm thiết bị";
-            this.ThemMoiBarButtonItem.Id = 2;
-            this.ThemMoiBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.add_16x16;
-            this.ThemMoiBarButtonItem.Name = "ThemMoiBarButtonItem";
-            // 
-            // barButtonItem1
-            // 
-            this.barButtonItem1.Caption = "Lịch sử nhập - xuất";
-            this.barButtonItem1.Id = 10;
-            this.barButtonItem1.Name = "barButtonItem1";
-            // 
-            // barButtonItem2
-            // 
-            this.barButtonItem2.Caption = "Thêm hình ảnh";
-            this.barButtonItem2.Id = 11;
-            this.barButtonItem2.Name = "barButtonItem2";
             // 
             // bar1
             // 
@@ -293,6 +296,7 @@
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.ucDeviceDtoAddStockInOutHistory1);
             this.layoutControl1.Controls.Add(this.ucDeviceDtoAddEdit1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
@@ -306,7 +310,7 @@
             // 
             this.ucDeviceDtoAddEdit1.Location = new System.Drawing.Point(12, 12);
             this.ucDeviceDtoAddEdit1.Name = "ucDeviceDtoAddEdit1";
-            this.ucDeviceDtoAddEdit1.Size = new System.Drawing.Size(412, 584);
+            this.ucDeviceDtoAddEdit1.Size = new System.Drawing.Size(412, 290);
             this.ucDeviceDtoAddEdit1.TabIndex = 4;
             // 
             // Root
@@ -314,7 +318,8 @@
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
+            this.layoutControlItem1,
+            this.layoutControlItem2});
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(436, 608);
             this.Root.TextVisible = false;
@@ -324,7 +329,7 @@
             this.layoutControlItem1.Control = this.ucDeviceDtoAddEdit1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(416, 588);
+            this.layoutControlItem1.Size = new System.Drawing.Size(416, 294);
             this.layoutControlItem1.TextVisible = false;
             // 
             // DeviceDtoGridViewGridControl
@@ -446,6 +451,21 @@
             // 
             this.NotesMemoEdit.Name = "NotesMemoEdit";
             // 
+            // ucDeviceDtoAddStockInOutHistory1
+            // 
+            this.ucDeviceDtoAddStockInOutHistory1.Location = new System.Drawing.Point(12, 306);
+            this.ucDeviceDtoAddStockInOutHistory1.Name = "ucDeviceDtoAddStockInOutHistory1";
+            this.ucDeviceDtoAddStockInOutHistory1.Size = new System.Drawing.Size(412, 290);
+            this.ucDeviceDtoAddStockInOutHistory1.TabIndex = 5;
+            // 
+            // layoutControlItem2
+            // 
+            this.layoutControlItem2.Control = this.ucDeviceDtoAddStockInOutHistory1;
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 294);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.Size = new System.Drawing.Size(416, 294);
+            this.layoutControlItem2.TextVisible = false;
+            // 
             // FrmDeviceDtoMangement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -473,6 +493,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -507,11 +528,13 @@
         private DevExpress.XtraBars.Docking.DockPanel dockPanel1;
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
         private DevExpress.XtraBars.BarSubItem barSubItem1;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        private DevExpress.XtraBars.BarButtonItem ThemLichSuNhapXuatThietBiBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem barButtonItem2;
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private UcDeviceDtoAddEdit ucDeviceDtoAddEdit1;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private UcDeviceDtoAddStockInOutHistory ucDeviceDtoAddStockInOutHistory1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
     }
 }

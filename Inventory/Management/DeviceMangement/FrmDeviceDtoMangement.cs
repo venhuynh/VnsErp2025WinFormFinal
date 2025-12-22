@@ -83,6 +83,9 @@ namespace Inventory.Management.DeviceMangement
             // Event khi click nút Thêm mới
             ThemMoiBarButtonItem.ItemClick += ThemMoiBarButtonItem_ItemClick;
 
+            // Event khi click nút Lịch sử nhập - xuất
+            ThemLichSuNhapXuatThietBiBarButtonItem.ItemClick += ThemLichSuNhapXuatThietBiBarButtonItem_ItemClick;
+
             // Event khi click nút Xem (reload dữ liệu)
             XemBarButtonItem.ItemClick += XemBarButtonItem_ItemClick;
 
@@ -102,11 +105,12 @@ namespace Inventory.Management.DeviceMangement
             DeviceDtoGridView.CustomColumnDisplayText += DeviceDtoGridView_CustomColumnDisplayText;
         }
 
+        #region ========== DOCK PANEL MANAGEMENT ==========
+
         /// <summary>
-        /// Event handler khi click nút Thêm mới
-        /// Mở dockPanel1 với độ rộng = 2/3 độ rộng màn hình
+        /// Thiết lập độ rộng cho dockPanel1 = 2/3 độ rộng màn hình
         /// </summary>
-        private void ThemMoiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void SetupDockPanelWidth()
         {
             try
             {
@@ -134,8 +138,89 @@ namespace Inventory.Management.DeviceMangement
             }
             catch (Exception ex)
             {
+                _logger.Error("SetupDockPanelWidth: Exception occurred", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị UserControl phù hợp trong dockPanel1
+        /// </summary>
+        /// <param name="showAddEdit">True để hiển thị ucDeviceDtoAddEdit1, False để hiển thị ucDeviceDtoAddStockInOutHistory1</param>
+        private void ShowUserControlInDockPanel(bool showAddEdit)
+        {
+            try
+            {
+                if (showAddEdit)
+                {
+                    // Hiển thị ucDeviceDtoAddEdit1, ẩn ucDeviceDtoAddStockInOutHistory1
+                    ucDeviceDtoAddEdit1.Visible = true;
+                    ucDeviceDtoAddStockInOutHistory1.Visible = false;
+                    layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+                    layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+                    dockPanel1.Text = "Thêm mới thiết bị";
+                }
+                else
+                {
+                    // Hiển thị ucDeviceDtoAddStockInOutHistory1, ẩn ucDeviceDtoAddEdit1
+                    ucDeviceDtoAddEdit1.Visible = false;
+                    ucDeviceDtoAddStockInOutHistory1.Visible = true;
+                    layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+                    layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+                    dockPanel1.Text = "Lịch sử nhập - xuất thiết bị";
+                }
+
+                // Refresh layout
+                layoutControl1.Refresh();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ShowUserControlInDockPanel: Exception occurred", ex);
+                throw;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Event handler khi click nút Thêm mới
+        /// Mở dockPanel1 với độ rộng = 2/3 độ rộng màn hình và hiển thị ucDeviceDtoAddEdit1
+        /// </summary>
+        private void ThemMoiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Thiết lập độ rộng dock panel
+                SetupDockPanelWidth();
+
+                // Hiển thị UserControl thêm mới
+                ShowUserControlInDockPanel(showAddEdit: true);
+            }
+            catch (Exception ex)
+            {
                 _logger.Error("ThemMoiBarButtonItem_ItemClick: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi mở panel thêm mới: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi click nút Lịch sử nhập - xuất
+        /// Mở dockPanel1 với độ rộng = 2/3 độ rộng màn hình và hiển thị ucDeviceDtoAddStockInOutHistory1
+        /// </summary>
+        private void ThemLichSuNhapXuatThietBiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Thiết lập độ rộng dock panel
+                SetupDockPanelWidth();
+
+                // Hiển thị UserControl lịch sử nhập - xuất
+                ShowUserControlInDockPanel(showAddEdit: false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ThemLichSuNhapXuatThietBiBarButtonItem_ItemClick: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi mở màn hình lịch sử nhập - xuất: {ex.Message}");
             }
         }
 
