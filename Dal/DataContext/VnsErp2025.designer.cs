@@ -761,8 +761,6 @@ namespace Dal.DataContext
 		
 		private System.Guid _Id;
 		
-		private System.Guid _StockInOutDetailId;
-		
 		private int _WarrantyType;
 		
 		private System.Nullable<System.DateTime> _WarrantyFrom;
@@ -775,11 +773,29 @@ namespace Dal.DataContext
 		
 		private string _UniqueProductInfo;
 		
+		private bool _IsActive;
+		
+		private System.DateTime _CreatedDate;
+		
+		private System.Nullable<System.DateTime> _UpdatedDate;
+		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
+		private System.Nullable<System.Guid> _UpdatedBy;
+		
+		private string _Notes;
+		
+		private System.Nullable<System.Guid> _DeviceId;
+		
 		private EntitySet<Asset> _Assets;
 		
 		private EntitySet<Device> _Devices;
 		
-		private EntityRef<StockInOutDetail> _StockInOutDetail;
+		private EntityRef<ApplicationUser> _ApplicationUser;
+		
+		private EntityRef<ApplicationUser> _ApplicationUser1;
+		
+		private EntityRef<Device> _Device;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -787,8 +803,6 @@ namespace Dal.DataContext
     partial void OnCreated();
     partial void OnIdChanging(System.Guid value);
     partial void OnIdChanged();
-    partial void OnStockInOutDetailIdChanging(System.Guid value);
-    partial void OnStockInOutDetailIdChanged();
     partial void OnWarrantyTypeChanging(int value);
     partial void OnWarrantyTypeChanged();
     partial void OnWarrantyFromChanging(System.Nullable<System.DateTime> value);
@@ -801,13 +815,29 @@ namespace Dal.DataContext
     partial void OnWarrantyStatusChanged();
     partial void OnUniqueProductInfoChanging(string value);
     partial void OnUniqueProductInfoChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnUpdatedDateChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
+    partial void OnUpdatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnUpdatedByChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    partial void OnDeviceIdChanging(System.Nullable<System.Guid> value);
+    partial void OnDeviceIdChanged();
     #endregion
 		
 		public Warranty()
 		{
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
-			this._StockInOutDetail = default(EntityRef<StockInOutDetail>);
+			this._ApplicationUser = default(EntityRef<ApplicationUser>);
+			this._ApplicationUser1 = default(EntityRef<ApplicationUser>);
+			this._Device = default(EntityRef<Device>);
 			OnCreated();
 		}
 		
@@ -827,30 +857,6 @@ namespace Dal.DataContext
 					this._Id = value;
 					this.SendPropertyChanged("Id");
 					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutDetailId", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid StockInOutDetailId
-		{
-			get
-			{
-				return this._StockInOutDetailId;
-			}
-			set
-			{
-				if ((this._StockInOutDetailId != value))
-				{
-					if (this._StockInOutDetail.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnStockInOutDetailIdChanging(value);
-					this.SendPropertyChanging();
-					this._StockInOutDetailId = value;
-					this.SendPropertyChanged("StockInOutDetailId");
-					this.OnStockInOutDetailIdChanged();
 				}
 			}
 		}
@@ -975,6 +981,158 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> UpdatedDate
+		{
+			get
+			{
+				return this._UpdatedDate;
+			}
+			set
+			{
+				if ((this._UpdatedDate != value))
+				{
+					this.OnUpdatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedDate = value;
+					this.SendPropertyChanged("UpdatedDate");
+					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					if (this._ApplicationUser.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> UpdatedBy
+		{
+			get
+			{
+				return this._UpdatedBy;
+			}
+			set
+			{
+				if ((this._UpdatedBy != value))
+				{
+					if (this._ApplicationUser1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUpdatedByChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedBy = value;
+					this.SendPropertyChanged("UpdatedBy");
+					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> DeviceId
+		{
+			get
+			{
+				return this._DeviceId;
+			}
+			set
+			{
+				if ((this._DeviceId != value))
+				{
+					if (this._Device.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDeviceIdChanging(value);
+					this.SendPropertyChanging();
+					this._DeviceId = value;
+					this.SendPropertyChanged("DeviceId");
+					this.OnDeviceIdChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Asset", Storage="_Assets", ThisKey="Id", OtherKey="WarrantyId")]
 		public EntitySet<Asset> Assets
 		{
@@ -1001,36 +1159,104 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_StockInOutDetail", ThisKey="StockInOutDetailId", OtherKey="Id", IsForeignKey=true)]
-		public StockInOutDetail StockInOutDetail
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_Warranty", Storage="_ApplicationUser", ThisKey="CreatedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser
 		{
 			get
 			{
-				return this._StockInOutDetail.Entity;
+				return this._ApplicationUser.Entity;
 			}
 			set
 			{
-				StockInOutDetail previousValue = this._StockInOutDetail.Entity;
+				ApplicationUser previousValue = this._ApplicationUser.Entity;
 				if (((previousValue != value) 
-							|| (this._StockInOutDetail.HasLoadedOrAssignedValue == false)))
+							|| (this._ApplicationUser.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._StockInOutDetail.Entity = null;
+						this._ApplicationUser.Entity = null;
 						previousValue.Warranties.Remove(this);
 					}
-					this._StockInOutDetail.Entity = value;
+					this._ApplicationUser.Entity = value;
 					if ((value != null))
 					{
 						value.Warranties.Add(this);
-						this._StockInOutDetailId = value.Id;
+						this._CreatedBy = value.Id;
 					}
 					else
 					{
-						this._StockInOutDetailId = default(System.Guid);
+						this._CreatedBy = default(Nullable<System.Guid>);
 					}
-					this.SendPropertyChanged("StockInOutDetail");
+					this.SendPropertyChanged("ApplicationUser");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_Warranty1", Storage="_ApplicationUser1", ThisKey="UpdatedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser1
+		{
+			get
+			{
+				return this._ApplicationUser1.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser1.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser1.Entity = null;
+						previousValue.Warranties1.Remove(this);
+					}
+					this._ApplicationUser1.Entity = value;
+					if ((value != null))
+					{
+						value.Warranties1.Add(this);
+						this._UpdatedBy = value.Id;
+					}
+					else
+					{
+						this._UpdatedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser1");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_Warranty", Storage="_Device", ThisKey="DeviceId", OtherKey="Id", IsForeignKey=true)]
+		public Device Device
+		{
+			get
+			{
+				return this._Device.Entity;
+			}
+			set
+			{
+				Device previousValue = this._Device.Entity;
+				if (((previousValue != value) 
+							|| (this._Device.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Device.Entity = null;
+						previousValue.Warranties.Remove(this);
+					}
+					this._Device.Entity = value;
+					if ((value != null))
+					{
+						value.Warranties.Add(this);
+						this._DeviceId = value.Id;
+					}
+					else
+					{
+						this._DeviceId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Device");
 				}
 			}
 		}
@@ -1096,6 +1322,10 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _EmployeeId;
 		
+		private EntitySet<Warranty> _Warranties;
+		
+		private EntitySet<Warranty> _Warranties1;
+		
 		private EntitySet<Asset> _Assets;
 		
 		private EntitySet<Asset> _Assets1;
@@ -1160,6 +1390,8 @@ namespace Dal.DataContext
 		
 		public ApplicationUser()
 		{
+			this._Warranties = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties), new Action<Warranty>(this.detach_Warranties));
+			this._Warranties1 = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties1), new Action<Warranty>(this.detach_Warranties1));
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._Assets1 = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets1), new Action<Asset>(this.detach_Assets1));
 			this._Assets2 = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets2), new Action<Asset>(this.detach_Assets2));
@@ -1287,6 +1519,32 @@ namespace Dal.DataContext
 					this.SendPropertyChanged("EmployeeId");
 					this.OnEmployeeIdChanged();
 				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_Warranty", Storage="_Warranties", ThisKey="Id", OtherKey="CreatedBy")]
+		public EntitySet<Warranty> Warranties
+		{
+			get
+			{
+				return this._Warranties;
+			}
+			set
+			{
+				this._Warranties.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_Warranty1", Storage="_Warranties1", ThisKey="Id", OtherKey="UpdatedBy")]
+		public EntitySet<Warranty> Warranties1
+		{
+			get
+			{
+				return this._Warranties1;
+			}
+			set
+			{
+				this._Warranties1.Assign(value);
 			}
 		}
 		
@@ -1628,6 +1886,30 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = this;
+		}
+		
+		private void detach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = null;
+		}
+		
+		private void attach_Warranties1(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = this;
+		}
+		
+		private void detach_Warranties1(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = null;
 		}
 		
 		private void attach_Assets(Asset entity)
@@ -8170,6 +8452,8 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _UpdatedBy;
 		
+		private EntitySet<Warranty> _Warranties;
+		
 		private EntitySet<DeviceHistory> _DeviceHistories;
 		
 		private EntitySet<DeviceImage> _DeviceImages;
@@ -8230,6 +8514,7 @@ namespace Dal.DataContext
 		
 		public Device()
 		{
+			this._Warranties = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties), new Action<Warranty>(this.detach_Warranties));
 			this._DeviceHistories = new EntitySet<DeviceHistory>(new Action<DeviceHistory>(this.attach_DeviceHistories), new Action<DeviceHistory>(this.detach_DeviceHistories));
 			this._DeviceImages = new EntitySet<DeviceImage>(new Action<DeviceImage>(this.attach_DeviceImages), new Action<DeviceImage>(this.detach_DeviceImages));
 			this._DeviceTransactionHistories = new EntitySet<DeviceTransactionHistory>(new Action<DeviceTransactionHistory>(this.attach_DeviceTransactionHistories), new Action<DeviceTransactionHistory>(this.detach_DeviceTransactionHistories));
@@ -8632,6 +8917,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_Warranty", Storage="_Warranties", ThisKey="Id", OtherKey="DeviceId")]
+		public EntitySet<Warranty> Warranties
+		{
+			get
+			{
+				return this._Warranties;
+			}
+			set
+			{
+				this._Warranties.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceHistory", Storage="_DeviceHistories", ThisKey="Id", OtherKey="DeviceId")]
 		public EntitySet<DeviceHistory> DeviceHistories
 		{
@@ -8804,6 +9102,18 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = this;
+		}
+		
+		private void detach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = null;
 		}
 		
 		private void attach_DeviceHistories(DeviceHistory entity)
@@ -16932,8 +17242,6 @@ namespace Dal.DataContext
 		
 		private System.Nullable<decimal> _DiscountPercentage;
 		
-		private EntitySet<Warranty> _Warranties;
-		
 		private EntitySet<Device> _Devices;
 		
 		private EntityRef<ProductVariant> _ProductVariant;
@@ -16976,7 +17284,6 @@ namespace Dal.DataContext
 		
 		public StockInOutDetail()
 		{
-			this._Warranties = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties), new Action<Warranty>(this.detach_Warranties));
 			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._ProductVariant = default(EntityRef<ProductVariant>);
 			this._StockInOutMaster = default(EntityRef<StockInOutMaster>);
@@ -17271,19 +17578,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_Warranties", ThisKey="Id", OtherKey="StockInOutDetailId")]
-		public EntitySet<Warranty> Warranties
-		{
-			get
-			{
-				return this._Warranties;
-			}
-			set
-			{
-				this._Warranties.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Device", Storage="_Devices", ThisKey="Id", OtherKey="StockInOutDetailId")]
 		public EntitySet<Device> Devices
 		{
@@ -17383,18 +17677,6 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_Warranties(Warranty entity)
-		{
-			this.SendPropertyChanging();
-			entity.StockInOutDetail = this;
-		}
-		
-		private void detach_Warranties(Warranty entity)
-		{
-			this.SendPropertyChanging();
-			entity.StockInOutDetail = null;
 		}
 		
 		private void attach_Devices(Device entity)

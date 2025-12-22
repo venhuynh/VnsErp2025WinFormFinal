@@ -354,10 +354,12 @@ namespace Bll.Inventory.InventoryManagement
 
                 // 4. Tạo thumbnail từ ảnh gốc để lưu vào ImageData (tương tự ProductImageBll)
                 // Thumbnail được lưu trong database để tăng tốc độ truy vấn và cải thiện UX
+                // Tương tự ProductImageBll.SaveImageFromFileAsync và EmployeeBll.UpdateAvatarOnly
                 byte[] thumbnailData = null;
                 try
                 {
                     // Tạo thumbnail với kích thước tối đa 300px và target size ~50KB
+                    // Tương tự ProductImageBll và ProductServiceBll.UpdateThumbnailImageAsync
                     thumbnailData = _imageCompression.CompressImage(
                         imageData: imageData,
                         targetSize: 50000, // Target size: ~50KB
@@ -371,11 +373,11 @@ namespace Bll.Inventory.InventoryManagement
                     // Tiếp tục lưu ảnh dù không tạo được thumbnail
                 }
 
-                // 5. Lấy thông tin user hiện tại
+                // 5. Lấy thông tin user hiện tại (DeviceImage có thêm logic này so với ProductImage)
                 var currentUser = Bll.Common.ApplicationSystemUtils.GetCurrentUser();
                 var createBy = currentUser?.Id ?? Guid.Empty;
 
-                // 6. Nếu đặt làm primary, bỏ IsPrimary của các hình ảnh khác
+                // 6. Nếu đặt làm primary, bỏ IsPrimary của các hình ảnh khác (DeviceImage có logic này)
                 if (isPrimary)
                 {
                     var existingImages = GetDataAccess().GetByDeviceId(deviceId);
@@ -391,6 +393,8 @@ namespace Bll.Inventory.InventoryManagement
                 }
 
                 // 7. Tạo DeviceImage entity với thumbnail trong ImageData
+                // Tương tự ProductImageBll: lưu thumbnail vào ImageData để hiển thị ngay trong list view
+                // Convert byte[] sang Binary như ProductImageBll và EmployeeBll.UpdateAvatarOnly
                 var deviceImage = new DeviceImage
                 {
                     Id = Guid.NewGuid(),
@@ -403,12 +407,13 @@ namespace Bll.Inventory.InventoryManagement
                     Checksum = storageResult.Checksum,
                     FileSize = storageResult.FileSize,
                     MimeType = GetMimeTypeFromExtension(fileExtension),
-                    // Lưu thumbnail vào ImageData để hiển thị ngay trong list view
+                    // Lưu thumbnail vào ImageData để hiển thị ngay trong list view (tương tự ProductImageBll)
+                    // Convert byte[] sang Binary như ProductImageBll và EmployeeBll.UpdateAvatarOnly
                     ImageData = thumbnailData != null ? new System.Data.Linq.Binary(thumbnailData) : null,
                     FileExists = true,
                     CreateDate = DateTime.Now,
                     CreateBy = createBy,
-                    ModifiedBy = Guid.Empty,
+                    ModifiedBy = Guid.Empty, // Set from context if available
                     IsPrimary = isPrimary,
                     Caption = caption,
                     AltText = altText,
@@ -417,7 +422,7 @@ namespace Bll.Inventory.InventoryManagement
                     MigrationStatus = "Migrated"
                 };
 
-                // 8. Lưu metadata vào database
+                // 8. Lưu metadata vào database (tương tự ProductImageBll)
                 GetDataAccess().SaveOrUpdate(deviceImage);
 
                 _logger.Info($"Đã lưu hình ảnh thiết bị, DeviceId={deviceId}, ImageId={deviceImage.Id}, RelativePath={storageResult.RelativePath}");

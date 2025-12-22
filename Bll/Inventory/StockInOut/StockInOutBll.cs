@@ -389,21 +389,55 @@ namespace Bll.Inventory.StockInOut
                 // 3. Lấy thông tin bảo hành
                 var warrantyBll = new WarrantyBll();
                 var warrantyEntities = warrantyBll.GetByStockInOutMasterId(voucherId);
-                var warrantyDtos = warrantyEntities.Select(w => w.ToDto()).ToList();
 
                 // 4. Lấy thông tin Device (định danh thiết bị)
                 var deviceBll = new DeviceBll();
                 var deviceEntities = deviceBll.GetByStockInOutMasterId(voucherId);
                 var deviceDtos = deviceEntities.Select(d => d.ToDto()).ToList();
 
+                // Tạo dictionary để map DeviceId -> StockInOutDetailId
+                var deviceToDetailMap = deviceEntities
+                    .Where(d => d.StockInOutDetailId.HasValue)
+                    .ToDictionary(d => d.Id, d => d.StockInOutDetailId.Value);
+
+                // Convert warranties sang DTO và enrich với DeviceInfo
+                var warrantyDtos = warrantyEntities.Select(w =>
+                {
+                    var dto = w.ToDto();
+                    // Enrich với DeviceInfo từ deviceDtos
+                    if (dto.DeviceId.HasValue)
+                    {
+                        var device = deviceDtos.FirstOrDefault(d => d.Id == dto.DeviceId.Value);
+                        if (device != null)
+                        {
+                            var deviceInfoParts = new List<string>();
+                            if (!string.IsNullOrWhiteSpace(device.SerialNumber))
+                                deviceInfoParts.Add($"S/N: {device.SerialNumber}");
+                            if (!string.IsNullOrWhiteSpace(device.IMEI))
+                                deviceInfoParts.Add($"IMEI: {device.IMEI}");
+                            if (!string.IsNullOrWhiteSpace(device.MACAddress))
+                                deviceInfoParts.Add($"MAC: {device.MACAddress}");
+                            if (!string.IsNullOrWhiteSpace(device.AssetTag))
+                                deviceInfoParts.Add($"Asset: {device.AssetTag}");
+                            if (!string.IsNullOrWhiteSpace(device.LicenseKey))
+                                deviceInfoParts.Add($"License: {device.LicenseKey}");
+                            
+                            dto.DeviceInfo = string.Join(" | ", deviceInfoParts);
+                        }
+                    }
+                    return dto;
+                }).ToList();
+
                 // 5. Map sang DTO - sử dụng XuatHangThuongMaiMasterDto và NhapHangThuongMaiDetailDto
                 var masterDto = MapMasterEntityToDto(masterEntity);
                 var detailDtos = detailEntities.Select(d => 
                 {
                     var detailDto = StockInDetailDtoConverter.ToDto(d);
-                    // Gán thông tin bảo hành cho từng detail
+                    // Gán thông tin bảo hành cho từng detail - filter theo Device.StockInOutDetailId
                     detailDto.Warranties = warrantyDtos
-                        .Where(w => w.StockInOutDetailId == d.Id)
+                        .Where(w => w.DeviceId.HasValue && 
+                                   deviceToDetailMap.ContainsKey(w.DeviceId.Value) &&
+                                   deviceToDetailMap[w.DeviceId.Value] == d.Id)
                         .OrderBy(w => w.WarrantyFrom ?? DateTime.MinValue)
                         .ThenBy(w => w.WarrantyUntil ?? DateTime.MaxValue)
                         .ToList();
@@ -486,10 +520,10 @@ namespace Bll.Inventory.StockInOut
                         //    warrantyInfo.Add($"SP: {warranty.ProductVariantName}");
                         //}
 
-                        // Serial/IMEI
-                        if (!string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+                        // DeviceInfo (SerialNumber, IMEI, MACAddress, etc.)
+                        if (!string.IsNullOrWhiteSpace(warranty.DeviceInfo))
                         {
-                            warrantyInfo.Add($"Serial/IMEI: {warranty.UniqueProductInfo}");
+                            warrantyInfo.Add($"Thiết bị: {warranty.DeviceInfo}");
                         }
 
                         //// Kiểu bảo hành
@@ -556,9 +590,10 @@ namespace Bll.Inventory.StockInOut
                     {
                         warrantyInfo.Add($"SP: {warranty.ProductVariantName}");
                     }
-                    if (!string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+                    // DeviceInfo (SerialNumber, IMEI, MACAddress, etc.)
+                    if (!string.IsNullOrWhiteSpace(warranty.DeviceInfo))
                     {
-                        warrantyInfo.Add($"Serial/IMEI: {warranty.UniqueProductInfo}");
+                        warrantyInfo.Add($"Thiết bị: {warranty.DeviceInfo}");
                     }
                     if (warrantyInfo.Any())
                     {

@@ -54,7 +54,8 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
 
         // Configure eager loading cho navigation properties
         var loadOptions = new DataLoadOptions();
-        loadOptions.LoadWith<Warranty>(w => w.StockInOutDetail);
+        loadOptions.LoadWith<Warranty>(w => w.Device);
+        loadOptions.LoadWith<Device>(d => d.StockInOutDetail);
         loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
         loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
         context.LoadOptions = loadOptions;

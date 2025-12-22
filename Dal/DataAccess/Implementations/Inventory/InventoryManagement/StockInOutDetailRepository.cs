@@ -165,7 +165,12 @@ namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement
                 var masterId = detail.StockInOutMasterId;
 
                 // Xóa tất cả Warranty liên quan đến detail này trước
-                var warranties = context.Warranties.Where(w => w.StockInOutDetailId == id).ToList();
+                // Tìm warranties thông qua Device.StockInOutDetailId
+                // Cần join với Device để query
+                var warranties = (from w in context.Warranties
+                                join d in context.Devices on w.DeviceId equals d.Id
+                                where d.StockInOutDetailId.HasValue && d.StockInOutDetailId.Value == id
+                                select w).ToList();
                 if (warranties.Any())
                 {
                     context.Warranties.DeleteAllOnSubmit(warranties);

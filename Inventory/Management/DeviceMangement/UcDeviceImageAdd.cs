@@ -2,16 +2,11 @@
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
-using DevExpress.XtraEditors;
 using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -251,23 +246,51 @@ namespace Inventory.Management.DeviceMangement
         {
             try
             {
-                // Hiển thị WaitingForm
-                DevExpress.XtraSplashScreen.SplashScreenManager.ShowForm(typeof(WaitForm1));
+                // Hiển thị WaitingForm sử dụng SplashScreenHelper để đảm bảo thread safety
+                // Đảm bảo được gọi trên UI thread - sử dụng BeginInvoke để tránh deadlock
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new Action(() => SplashScreenHelper.ShowWaitingSplashScreen()));
+                }
+                else
+                {
+                    SplashScreenHelper.ShowWaitingSplashScreen();
+                }
 
                 try
                 {
-                    await ProcessSelectedImagesWithoutSplashAsync(imagePaths);
+                    // Sử dụng ConfigureAwait(false) để tránh deadlock và COM context issues
+                    await ProcessSelectedImagesWithoutSplashAsync(imagePaths).ConfigureAwait(false);
                 }
                 finally
                 {
-                    // Đóng WaitingForm
-                    DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
+                    // Đóng WaitingForm - đảm bảo được gọi trên UI thread
+                    if (InvokeRequired)
+                    {
+                        BeginInvoke(new Action(() => SplashScreenHelper.CloseSplashScreen()));
+                    }
+                    else
+                    {
+                        SplashScreenHelper.CloseSplashScreen();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                DevExpress.XtraSplashScreen.SplashScreenManager.CloseForm();
-                ShowError(ex, "Lỗi khi xử lý hình ảnh");
+                // Đảm bảo đóng splash screen ngay cả khi có lỗi
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new Action(() =>
+                    {
+                        SplashScreenHelper.CloseSplashScreen();
+                        ShowError(ex, "Lỗi khi xử lý hình ảnh");
+                    }));
+                }
+                else
+                {
+                    SplashScreenHelper.CloseSplashScreen();
+                    ShowError(ex, "Lỗi khi xử lý hình ảnh");
+                }
             }
         }
 
@@ -309,8 +332,8 @@ namespace Inventory.Management.DeviceMangement
                     {
                         LogTextBoxHelper.AppendInfo(LogTextBox, $"  [{currentOperation}/{totalOperations}] Đang xử lý: {fileName}");
 
-                        // Lưu hình ảnh sử dụng BLL
-                        var success = await SaveImageFromFileAsync(device.Id, imagePath);
+                        // Lưu hình ảnh sử dụng BLL - sử dụng ConfigureAwait(false) để tránh deadlock
+                        var success = await SaveImageFromFileAsync(device.Id, imagePath).ConfigureAwait(false);
 
                         if (success)
                         {
@@ -340,8 +363,15 @@ namespace Inventory.Management.DeviceMangement
             LogTextBoxHelper.AppendLine(LogTextBox, "");
             LogTextBoxHelper.AppendInfo(LogTextBox, $"Hoàn thành xử lý: {successCount} thành công, {errorCount} lỗi");
 
-            // Hiển thị kết quả
-            ShowImageProcessingResult(successCount, errorCount, errorMessages);
+            // Hiển thị kết quả - đảm bảo được gọi trên UI thread
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => ShowImageProcessingResult(successCount, errorCount, errorMessages)));
+            }
+            else
+            {
+                ShowImageProcessingResult(successCount, errorCount, errorMessages);
+            }
         }
 
         /// <summary>
@@ -378,7 +408,8 @@ namespace Inventory.Management.DeviceMangement
                 // 1. Đọc file ảnh
                 // 2. Lưu vào NAS/Local storage thông qua ImageStorageService
                 // 3. Lưu metadata (FileName, RelativePath, FullPath, etc.) vào database
-                var deviceImage = await _deviceImageBll.SaveImageFromFileAsync(deviceId, imageFilePath);
+                // Sử dụng ConfigureAwait(false) để tránh deadlock và COM context issues
+                var deviceImage = await _deviceImageBll.SaveImageFromFileAsync(deviceId, imageFilePath).ConfigureAwait(false);
 
                 // Kiểm tra kết quả
                 if (deviceImage == null)

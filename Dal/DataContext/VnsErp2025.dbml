@@ -16,16 +16,24 @@
   <Table Name="dbo.Warranty" Member="Warranties">
     <Type Name="Warranty">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="StockInOutDetailId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="WarrantyType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="WarrantyFrom" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="MonthOfWarranty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="WarrantyUntil" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="WarrantyStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="UniqueProductInfo" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="DeviceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="Warranty_Asset" Member="Assets" ThisKey="Id" OtherKey="WarrantyId" Type="Asset" />
       <Association Name="Warranty_Device" Member="Devices" ThisKey="Id" OtherKey="WarrantyId" Type="Device" />
-      <Association Name="StockInOutDetail_Warranty" Member="StockInOutDetail" ThisKey="StockInOutDetailId" OtherKey="Id" Type="StockInOutDetail" IsForeignKey="true" />
+      <Association Name="ApplicationUser_Warranty" Member="ApplicationUser" ThisKey="CreatedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="ApplicationUser_Warranty1" Member="ApplicationUser1" ThisKey="UpdatedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
+      <Association Name="Device_Warranty" Member="Device" ThisKey="DeviceId" OtherKey="Id" Type="Device" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.ApplicationUser" Member="ApplicationUsers">
@@ -35,6 +43,8 @@
       <Column Name="HashPassword" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
       <Column Name="Active" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="EmployeeId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="ApplicationUser_Warranty" Member="Warranties" ThisKey="Id" OtherKey="CreatedBy" Type="Warranty" />
+      <Association Name="ApplicationUser_Warranty1" Member="Warranties1" ThisKey="Id" OtherKey="UpdatedBy" Type="Warranty" />
       <Association Name="ApplicationUser_Asset" Member="Assets" ThisKey="Id" OtherKey="CreateBy" Type="Asset" />
       <Association Name="ApplicationUser_Asset1" Member="Assets1" ThisKey="Id" OtherKey="DeletedBy" Type="Asset" />
       <Association Name="ApplicationUser_Asset2" Member="Assets2" ThisKey="Id" OtherKey="ModifiedBy" Type="Asset" />
@@ -345,6 +355,7 @@
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="Device_Warranty" Member="Warranties" ThisKey="Id" OtherKey="DeviceId" Type="Warranty" />
       <Association Name="Device_DeviceHistory" Member="DeviceHistories" ThisKey="Id" OtherKey="DeviceId" Type="DeviceHistory" />
       <Association Name="Device_DeviceImage" Member="DeviceImages" ThisKey="Id" OtherKey="DeviceId" Type="DeviceImage" />
       <Association Name="Device_DeviceTransactionHistory" Member="DeviceTransactionHistories" ThisKey="Id" OtherKey="DeviceId" Type="DeviceTransactionHistory" />
@@ -715,7 +726,6 @@
       <Column Name="DiscountAmount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
       <Column Name="TotalAmountAfterDiscount" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
       <Column Name="DiscountPercentage" Type="System.Decimal" DbType="Decimal(18,2)" CanBeNull="true" />
-      <Association Name="StockInOutDetail_Warranty" Member="Warranties" ThisKey="Id" OtherKey="StockInOutDetailId" Type="Warranty" />
       <Association Name="StockInOutDetail_Device" Member="Devices" ThisKey="Id" OtherKey="StockInOutDetailId" Type="Device" />
       <Association Name="ProductVariant_StockInOutDetail" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
       <Association Name="StockInOutMaster_StockInOutDetail" Member="StockInOutMaster" ThisKey="StockInOutMasterId" OtherKey="Id" Type="StockInOutMaster" IsForeignKey="true" />

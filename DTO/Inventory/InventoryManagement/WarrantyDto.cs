@@ -25,12 +25,11 @@ public class WarrantyDto
     public Guid Id { get; set; }
 
     /// <summary>
-    /// ID chi tiết phiếu nhập/xuất kho
+    /// ID của Device (thiết bị) liên kết với bảo hành
     /// </summary>
-    [DisplayName("ID Chi tiết phiếu")]
+    [DisplayName("ID Thiết bị")]
     [Display(Order = 1)]
-    [Required(ErrorMessage = "ID chi tiết phiếu nhập/xuất kho không được để trống")]
-    public Guid StockInOutDetailId { get; set; }
+    public Guid? DeviceId { get; set; }
 
     /// <summary>
     /// Kiểu bảo hành
@@ -72,13 +71,47 @@ public class WarrantyDto
     public TrangThaiBaoHanhEnum WarrantyStatus { get; set; }
 
     /// <summary>
-    /// Thông tin sản phẩm duy nhất (Serial Number, IMEI, v.v.)
+    /// Ghi chú
     /// </summary>
-    [DisplayName("Thông tin SP duy nhất")]
+    [DisplayName("Ghi chú")]
     [Display(Order = 7)]
-    [Required(ErrorMessage = "Thông tin sản phẩm duy nhất không được để trống")]
-    [StringLength(200, ErrorMessage = "Thông tin sản phẩm duy nhất không được vượt quá 200 ký tự")]
-    public string UniqueProductInfo { get; set; }
+    [StringLength(1000, ErrorMessage = "Ghi chú không được vượt quá 1000 ký tự")]
+    public string Notes { get; set; }
+
+    /// <summary>
+    /// Trạng thái hoạt động
+    /// </summary>
+    [DisplayName("Hoạt động")]
+    [Display(Order = 8)]
+    public bool IsActive { get; set; } = true;
+
+    /// <summary>
+    /// Ngày tạo
+    /// </summary>
+    [DisplayName("Ngày tạo")]
+    [Display(Order = 9)]
+    public DateTime CreatedDate { get; set; }
+
+    /// <summary>
+    /// Ngày cập nhật
+    /// </summary>
+    [DisplayName("Ngày cập nhật")]
+    [Display(Order = 10)]
+    public DateTime? UpdatedDate { get; set; }
+
+    /// <summary>
+    /// ID người tạo
+    /// </summary>
+    [DisplayName("Người tạo")]
+    [Display(Order = 11)]
+    public Guid? CreatedBy { get; set; }
+
+    /// <summary>
+    /// ID người cập nhật
+    /// </summary>
+    [DisplayName("Người cập nhật")]
+    [Display(Order = 12)]
+    public Guid? UpdatedBy { get; set; }
 
     #endregion
 
@@ -90,6 +123,13 @@ public class WarrantyDto
     [DisplayName("Tên sản phẩm")]
     [Display(Order = 10)]
     public string ProductVariantName { get; set; }
+
+    /// <summary>
+    /// Thông tin Device (SerialNumber, IMEI, MACAddress, AssetTag, LicenseKey) - chỉ đọc
+    /// </summary>
+    [DisplayName("Thông tin thiết bị")]
+    [Display(Order = 11)]
+    public string DeviceInfo { get; set; }
 
     /// <summary>
     /// Tên kiểu bảo hành (hiển thị)
@@ -161,7 +201,6 @@ public class WarrantyDto
     {
         get
         {
-            var uniqueProductInfo = UniqueProductInfo ?? string.Empty;
             var warrantyStatusName = WarrantyStatusName ?? string.Empty;
             var warrantyStatusText = WarrantyStatusText ?? string.Empty;
 
@@ -185,12 +224,6 @@ public class WarrantyDto
             {
                 html += $"<size=12><b><color='blue'>{productVariantName}</color></b></size>";
                 html += "<br>";
-            }
-
-            // Thông tin sản phẩm duy nhất (Serial Number, IMEI, v.v.)
-            if (!string.IsNullOrWhiteSpace(uniqueProductInfo))
-            {
-                html += $"<size=9><color='blue'>Serial/IMEI:</color></size> <size=10><color='blue'><b>{uniqueProductInfo}</b></color></size><br>";
             }
 
             // Kiểu bảo hành
@@ -275,17 +308,22 @@ public static class WarrantyDtoConverter
         var dto = new WarrantyDto
         {
             Id = entity.Id,
-            StockInOutDetailId = entity.StockInOutDetailId,
+            DeviceId = entity.DeviceId,
             WarrantyFrom = entity.WarrantyFrom,
             MonthOfWarranty = entity.MonthOfWarranty,
             WarrantyUntil = entity.WarrantyUntil,
-            UniqueProductInfo = entity.UniqueProductInfo
+            Notes = entity.Notes,
+            IsActive = entity.IsActive,
+            CreatedDate = entity.CreatedDate,
+            UpdatedDate = entity.UpdatedDate,
+            CreatedBy = entity.CreatedBy,
+            UpdatedBy = entity.UpdatedBy
         };
 
-        // Lấy tên sản phẩm từ ProductVariant thông qua StockInOutDetail
-        if (entity.StockInOutDetail != null && entity.StockInOutDetail.ProductVariant != null)
+        // Lấy tên sản phẩm từ ProductVariant thông qua Device
+        if (entity.Device != null && entity.Device.ProductVariant != null)
         {
-            var productVariant = entity.StockInOutDetail.ProductVariant;
+            var productVariant = entity.Device.ProductVariant;
             // Ưu tiên VariantFullName, nếu không có thì lấy từ ProductService.Name
             if (!string.IsNullOrWhiteSpace(productVariant.VariantFullName))
             {
@@ -356,13 +394,18 @@ public static class WarrantyDtoConverter
         return new Warranty
         {
             Id = dto.Id,
-            StockInOutDetailId = dto.StockInOutDetailId,
+            DeviceId = dto.DeviceId,
             WarrantyType = (int)dto.WarrantyType, // Chuyển đổi enum sang int
             WarrantyFrom = dto.WarrantyFrom,
             MonthOfWarranty = dto.MonthOfWarranty,
             WarrantyUntil = dto.WarrantyUntil,
             WarrantyStatus = (int)dto.WarrantyStatus, // Chuyển đổi enum sang int
-            UniqueProductInfo = dto.UniqueProductInfo
+            Notes = dto.Notes,
+            IsActive = dto.IsActive,
+            CreatedDate = dto.CreatedDate,
+            UpdatedDate = dto.UpdatedDate,
+            CreatedBy = dto.CreatedBy,
+            UpdatedBy = dto.UpdatedBy
         };
     }
 

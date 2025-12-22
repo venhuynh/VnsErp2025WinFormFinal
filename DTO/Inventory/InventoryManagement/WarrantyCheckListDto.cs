@@ -24,12 +24,11 @@ public class WarrantyCheckListDto
     public Guid Id { get; set; }
 
     /// <summary>
-    /// ID chi tiết phiếu nhập/xuất kho
+    /// ID của Device (thiết bị) liên kết với bảo hành
     /// </summary>
-    [DisplayName("ID Chi tiết phiếu")]
+    [DisplayName("ID Thiết bị")]
     [Display(Order = 1)]
-    [Required(ErrorMessage = "ID chi tiết phiếu nhập/xuất kho không được để trống")]
-    public Guid StockInOutDetailId { get; set; }
+    public Guid? DeviceId { get; set; }
 
     /// <summary>
     /// Kiểu bảo hành
@@ -71,13 +70,19 @@ public class WarrantyCheckListDto
     public TrangThaiBaoHanhEnum WarrantyStatus { get; set; }
 
     /// <summary>
-    /// Thông tin sản phẩm duy nhất (Serial Number, IMEI, v.v.)
+    /// Thông tin Device (SerialNumber, IMEI, MACAddress, AssetTag, LicenseKey) - chỉ đọc
     /// </summary>
-    [DisplayName("Thông tin SP duy nhất")]
+    [DisplayName("Thông tin thiết bị")]
     [Display(Order = 7)]
-    [Required(ErrorMessage = "Thông tin sản phẩm duy nhất không được để trống")]
-    [StringLength(200, ErrorMessage = "Thông tin sản phẩm duy nhất không được vượt quá 200 ký tự")]
-    public string UniqueProductInfo { get; set; }
+    public string DeviceInfo { get; set; }
+
+    /// <summary>
+    /// Ghi chú
+    /// </summary>
+    [DisplayName("Ghi chú")]
+    [Display(Order = 8)]
+    [StringLength(1000, ErrorMessage = "Ghi chú không được vượt quá 1000 ký tự")]
+    public string Notes { get; set; }
 
     #endregion
 
@@ -183,13 +188,13 @@ public class WarrantyCheckListDto
         {
             var html = string.Empty;
 
-            // UniqueProductInfo (Serial Number, IMEI, v.v.) - nổi bật nhất
+            // DeviceInfo (SerialNumber, IMEI, MACAddress, v.v.) - nổi bật nhất
             // Format chuyên nghiệp với visual hierarchy rõ ràng
-            // - UniqueProductInfo: font lớn (12), bold, màu xanh đậm (primary)
-            var uniqueProductInfo = UniqueProductInfo ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(uniqueProductInfo))
+            // - DeviceInfo: font lớn (12), bold, màu xanh đậm (primary)
+            var deviceInfo = DeviceInfo ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(deviceInfo))
             {
-                html += $"<size=12><b><color='blue'>{uniqueProductInfo}</color></b></size>";
+                html += $"<size=12><b><color='blue'>{deviceInfo}</color></b></size>";
                 html += "<br>";
             }
 
@@ -259,17 +264,35 @@ public static class WarrantyCheckListDtoConverter
         var dto = new WarrantyCheckListDto
         {
             Id = entity.Id,
-            StockInOutDetailId = entity.StockInOutDetailId,
+            DeviceId = entity.DeviceId,
             WarrantyFrom = entity.WarrantyFrom,
             MonthOfWarranty = entity.MonthOfWarranty,
             WarrantyUntil = entity.WarrantyUntil,
-            UniqueProductInfo = entity.UniqueProductInfo
+            Notes = entity.Notes
         };
 
-        // Lấy thông tin sản phẩm từ ProductVariant thông qua StockInOutDetail
-        if (entity.StockInOutDetail != null && entity.StockInOutDetail.ProductVariant != null)
+        // Lấy thông tin Device (SerialNumber, IMEI, MACAddress, AssetTag, LicenseKey)
+        if (entity.Device != null)
         {
-            var productVariant = entity.StockInOutDetail.ProductVariant;
+            var deviceInfoParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(entity.Device.SerialNumber))
+                deviceInfoParts.Add($"S/N: {entity.Device.SerialNumber}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.IMEI))
+                deviceInfoParts.Add($"IMEI: {entity.Device.IMEI}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.MACAddress))
+                deviceInfoParts.Add($"MAC: {entity.Device.MACAddress}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.AssetTag))
+                deviceInfoParts.Add($"Asset: {entity.Device.AssetTag}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.LicenseKey))
+                deviceInfoParts.Add($"License: {entity.Device.LicenseKey}");
+            
+            dto.DeviceInfo = string.Join(" | ", deviceInfoParts);
+        }
+
+        // Lấy thông tin sản phẩm từ ProductVariant thông qua Device
+        if (entity.Device != null && entity.Device.ProductVariant != null)
+        {
+            var productVariant = entity.Device.ProductVariant;
             
             // Lấy thông tin từ ProductService (sản phẩm/dịch vụ gốc)
             if (productVariant.ProductService != null)
@@ -289,10 +312,10 @@ public static class WarrantyCheckListDtoConverter
             }
         }
 
-        // Lấy thông tin khách hàng từ StockInOutMaster thông qua StockInOutDetail
-        if (entity.StockInOutDetail != null && entity.StockInOutDetail.StockInOutMaster != null)
+        // Lấy thông tin khách hàng từ StockInOutMaster thông qua Device.StockInOutDetail
+        if (entity.Device != null && entity.Device.StockInOutDetail != null && entity.Device.StockInOutDetail.StockInOutMaster != null)
         {
-            var master = entity.StockInOutDetail.StockInOutMaster;
+            var master = entity.Device.StockInOutDetail.StockInOutMaster;
             dto.CustomerName = master.BusinessPartnerSite?.BusinessPartner?.PartnerName ?? 
                               master.BusinessPartnerSite?.SiteName;
         }

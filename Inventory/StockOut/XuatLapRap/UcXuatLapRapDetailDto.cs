@@ -1297,17 +1297,17 @@ namespace Inventory.StockOut.XuatLapRap
                 }
 
                 // Bước 2: Nếu không tìm thấy trong Device, tìm trong Warranty
-                var warranty = _warrantyBll.FindByUniqueProductInfo(barCode);
+                var warranty = _warrantyBll.FindByDeviceInfo(barCode);
                 if (warranty != null)
                 {
-                    _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Warranty, WarrantyId={0}, StockInOutDetailId={1}", 
-                        warranty.Id, warranty.StockInOutDetailId);
+                    _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Warranty, WarrantyId={0}, DeviceId={1}", 
+                        warranty.Id, warranty.DeviceId);
                     
-                    // Lấy ProductVariantId từ StockInOutDetail của Warranty
-                    if (warranty.StockInOutDetail?.ProductVariantId != null)
+                    // Lấy ProductVariantId từ Device của Warranty
+                    if (warranty.DeviceId.HasValue && warranty.Device?.ProductVariantId != null)
                     {
-                        var productVariantId = warranty.StockInOutDetail.ProductVariantId;
-                        AppendLog($"✓ Tìm thấy bảo hành: {warranty.StockInOutDetail.ProductVariant?.ProductService?.Name ?? "N/A"}");
+                        var productVariantId = warranty.Device.ProductVariantId;
+                        AppendLog($"✓ Tìm thấy bảo hành: {warranty.Device.ProductVariant?.ProductService?.Name ?? "N/A"}");
 
                         // Thêm vào grid với ProductVariantId từ Warranty
                         await AddDetailFromDeviceOrWarranty(productVariantId, null, warranty);
