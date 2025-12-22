@@ -36,7 +36,7 @@
             this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
             this.ThemMoiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemLichSuNhapXuatThietBiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
+            this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.SuaBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XoaBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -52,9 +52,11 @@
             this.dockPanel1 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.ucDeviceDtoAddStockInOutHistory1 = new Inventory.Management.DeviceMangement.UcDeviceDtoAddStockInOutHistory();
             this.ucDeviceDtoAddEdit1 = new Inventory.Management.DeviceMangement.UcDeviceDtoAddEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.DeviceDtoGridViewGridControl = new DevExpress.XtraGrid.GridControl();
             this.deviceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.DeviceDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -64,8 +66,6 @@
             this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
             this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
-            this.ucDeviceDtoAddStockInOutHistory1 = new Inventory.Management.DeviceMangement.UcDeviceDtoAddStockInOutHistory();
-            this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -74,13 +74,13 @@
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridViewGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -105,7 +105,7 @@
             this.SelectedRowBarStaticItem,
             this.barSubItem1,
             this.ThemLichSuNhapXuatThietBiBarButtonItem,
-            this.barButtonItem2});
+            this.ThemHinhAnhBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
             this.barManager1.MaxItemId = 12;
             this.barManager1.StatusBar = this.bar1;
@@ -144,7 +144,7 @@
             this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemMoiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(this.ThemLichSuNhapXuatThietBiBarButtonItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem2)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.ThemHinhAnhBarButtonItem)});
             this.barSubItem1.Name = "barSubItem1";
             // 
             // ThemMoiBarButtonItem
@@ -159,11 +159,11 @@
             this.ThemLichSuNhapXuatThietBiBarButtonItem.Id = 10;
             this.ThemLichSuNhapXuatThietBiBarButtonItem.Name = "ThemLichSuNhapXuatThietBiBarButtonItem";
             // 
-            // barButtonItem2
+            // ThemHinhAnhBarButtonItem
             // 
-            this.barButtonItem2.Caption = "Thêm hình ảnh";
-            this.barButtonItem2.Id = 11;
-            this.barButtonItem2.Name = "barButtonItem2";
+            this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
+            this.ThemHinhAnhBarButtonItem.Id = 11;
+            this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
             // 
             // SuaBarButtonItem
             // 
@@ -306,6 +306,13 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
+            // ucDeviceDtoAddStockInOutHistory1
+            // 
+            this.ucDeviceDtoAddStockInOutHistory1.Location = new System.Drawing.Point(12, 306);
+            this.ucDeviceDtoAddStockInOutHistory1.Name = "ucDeviceDtoAddStockInOutHistory1";
+            this.ucDeviceDtoAddStockInOutHistory1.Size = new System.Drawing.Size(412, 290);
+            this.ucDeviceDtoAddStockInOutHistory1.TabIndex = 5;
+            // 
             // ucDeviceDtoAddEdit1
             // 
             this.ucDeviceDtoAddEdit1.Location = new System.Drawing.Point(12, 12);
@@ -331,6 +338,14 @@
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(416, 294);
             this.layoutControlItem1.TextVisible = false;
+            // 
+            // layoutControlItem2
+            // 
+            this.layoutControlItem2.Control = this.ucDeviceDtoAddStockInOutHistory1;
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 294);
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.Size = new System.Drawing.Size(416, 294);
+            this.layoutControlItem2.TextVisible = false;
             // 
             // DeviceDtoGridViewGridControl
             // 
@@ -451,21 +466,6 @@
             // 
             this.NotesMemoEdit.Name = "NotesMemoEdit";
             // 
-            // ucDeviceDtoAddStockInOutHistory1
-            // 
-            this.ucDeviceDtoAddStockInOutHistory1.Location = new System.Drawing.Point(12, 306);
-            this.ucDeviceDtoAddStockInOutHistory1.Name = "ucDeviceDtoAddStockInOutHistory1";
-            this.ucDeviceDtoAddStockInOutHistory1.Size = new System.Drawing.Size(412, 290);
-            this.ucDeviceDtoAddStockInOutHistory1.TabIndex = 5;
-            // 
-            // layoutControlItem2
-            // 
-            this.layoutControlItem2.Control = this.ucDeviceDtoAddStockInOutHistory1;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 294);
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(416, 294);
-            this.layoutControlItem2.TextVisible = false;
-            // 
             // FrmDeviceDtoMangement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -487,13 +487,13 @@
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridViewGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -529,7 +529,7 @@
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
         private DevExpress.XtraBars.BarSubItem barSubItem1;
         private DevExpress.XtraBars.BarButtonItem ThemLichSuNhapXuatThietBiBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem2;
+        private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private UcDeviceDtoAddEdit ucDeviceDtoAddEdit1;
         private DevExpress.XtraLayout.LayoutControlGroup Root;

@@ -346,6 +346,7 @@
       <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="Device_DeviceHistory" Member="DeviceHistories" ThisKey="Id" OtherKey="DeviceId" Type="DeviceHistory" />
+      <Association Name="Device_DeviceImage" Member="DeviceImages" ThisKey="Id" OtherKey="DeviceId" Type="DeviceImage" />
       <Association Name="Device_DeviceTransactionHistory" Member="DeviceTransactionHistories" ThisKey="Id" OtherKey="DeviceId" Type="DeviceTransactionHistory" />
       <Association Name="Device_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="DeviceId" Type="DeviceTransfer" />
       <Association Name="Warranty_Device" Member="Warranty" ThisKey="WarrantyId" OtherKey="Id" Type="Warranty" IsForeignKey="true" />
@@ -366,6 +367,34 @@
       <Column Name="Description" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Association Name="Device_DeviceHistory" Member="Device" ThisKey="DeviceId" OtherKey="Id" Type="Device" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DeviceImage" Member="DeviceImages">
+    <Type Name="DeviceImage">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DeviceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ImageData" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CreateBy" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ModifiedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ModifiedBy" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="FileName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="RelativePath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="FullPath" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="StorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="FileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="FileExtension" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="MimeType" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Checksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="FileExists" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="LastVerified" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="MigrationStatus" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="Caption" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="AltText" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="IsPrimary" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="DisplayOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="Device_DeviceImage" Member="Device" ThisKey="DeviceId" OtherKey="Id" Type="Device" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.DeviceTransactionHistory" Member="DeviceTransactionHistories">

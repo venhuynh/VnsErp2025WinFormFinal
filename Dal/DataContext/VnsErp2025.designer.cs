@@ -78,6 +78,9 @@ namespace Dal.DataContext
     partial void InsertDeviceHistory(DeviceHistory instance);
     partial void UpdateDeviceHistory(DeviceHistory instance);
     partial void DeleteDeviceHistory(DeviceHistory instance);
+    partial void InsertDeviceImage(DeviceImage instance);
+    partial void UpdateDeviceImage(DeviceImage instance);
+    partial void DeleteDeviceImage(DeviceImage instance);
     partial void InsertDeviceTransactionHistory(DeviceTransactionHistory instance);
     partial void UpdateDeviceTransactionHistory(DeviceTransactionHistory instance);
     partial void DeleteDeviceTransactionHistory(DeviceTransactionHistory instance);
@@ -301,6 +304,14 @@ namespace Dal.DataContext
 			get
 			{
 				return this.GetTable<DeviceHistory>();
+			}
+		}
+		
+		public System.Data.Linq.Table<DeviceImage> DeviceImages
+		{
+			get
+			{
+				return this.GetTable<DeviceImage>();
 			}
 		}
 		
@@ -8161,6 +8172,8 @@ namespace Dal.DataContext
 		
 		private EntitySet<DeviceHistory> _DeviceHistories;
 		
+		private EntitySet<DeviceImage> _DeviceImages;
+		
 		private EntitySet<DeviceTransactionHistory> _DeviceTransactionHistories;
 		
 		private EntitySet<DeviceTransfer> _DeviceTransfers;
@@ -8218,6 +8231,7 @@ namespace Dal.DataContext
 		public Device()
 		{
 			this._DeviceHistories = new EntitySet<DeviceHistory>(new Action<DeviceHistory>(this.attach_DeviceHistories), new Action<DeviceHistory>(this.detach_DeviceHistories));
+			this._DeviceImages = new EntitySet<DeviceImage>(new Action<DeviceImage>(this.attach_DeviceImages), new Action<DeviceImage>(this.detach_DeviceImages));
 			this._DeviceTransactionHistories = new EntitySet<DeviceTransactionHistory>(new Action<DeviceTransactionHistory>(this.attach_DeviceTransactionHistories), new Action<DeviceTransactionHistory>(this.detach_DeviceTransactionHistories));
 			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
 			this._Warranty = default(EntityRef<Warranty>);
@@ -8631,6 +8645,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceImage", Storage="_DeviceImages", ThisKey="Id", OtherKey="DeviceId")]
+		public EntitySet<DeviceImage> DeviceImages
+		{
+			get
+			{
+				return this._DeviceImages;
+			}
+			set
+			{
+				this._DeviceImages.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceTransactionHistory", Storage="_DeviceTransactionHistories", ThisKey="Id", OtherKey="DeviceId")]
 		public EntitySet<DeviceTransactionHistory> DeviceTransactionHistories
 		{
@@ -8786,6 +8813,18 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_DeviceHistories(DeviceHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = null;
+		}
+		
+		private void attach_DeviceImages(DeviceImage entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = this;
+		}
+		
+		private void detach_DeviceImages(DeviceImage entity)
 		{
 			this.SendPropertyChanging();
 			entity.Device = null;
@@ -9103,6 +9142,637 @@ namespace Dal.DataContext
 					if ((value != null))
 					{
 						value.DeviceHistories.Add(this);
+						this._DeviceId = value.Id;
+					}
+					else
+					{
+						this._DeviceId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Device");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DeviceImage")]
+	public partial class DeviceImage : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _DeviceId;
+		
+		private System.Data.Linq.Binary _ImageData;
+		
+		private System.DateTime _CreateDate;
+		
+		private System.Guid _CreateBy;
+		
+		private System.Nullable<System.DateTime> _ModifiedDate;
+		
+		private System.Guid _ModifiedBy;
+		
+		private string _FileName;
+		
+		private string _RelativePath;
+		
+		private string _FullPath;
+		
+		private string _StorageType;
+		
+		private System.Nullable<long> _FileSize;
+		
+		private string _FileExtension;
+		
+		private string _MimeType;
+		
+		private string _Checksum;
+		
+		private System.Nullable<bool> _FileExists;
+		
+		private System.Nullable<System.DateTime> _LastVerified;
+		
+		private string _MigrationStatus;
+		
+		private string _Caption;
+		
+		private string _AltText;
+		
+		private System.Nullable<bool> _IsPrimary;
+		
+		private System.Nullable<int> _DisplayOrder;
+		
+		private System.Nullable<bool> _IsActive;
+		
+		private EntityRef<Device> _Device;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnDeviceIdChanging(System.Guid value);
+    partial void OnDeviceIdChanged();
+    partial void OnImageDataChanging(System.Data.Linq.Binary value);
+    partial void OnImageDataChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnCreateByChanging(System.Guid value);
+    partial void OnCreateByChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
+    partial void OnModifiedByChanging(System.Guid value);
+    partial void OnModifiedByChanged();
+    partial void OnFileNameChanging(string value);
+    partial void OnFileNameChanged();
+    partial void OnRelativePathChanging(string value);
+    partial void OnRelativePathChanged();
+    partial void OnFullPathChanging(string value);
+    partial void OnFullPathChanged();
+    partial void OnStorageTypeChanging(string value);
+    partial void OnStorageTypeChanged();
+    partial void OnFileSizeChanging(System.Nullable<long> value);
+    partial void OnFileSizeChanged();
+    partial void OnFileExtensionChanging(string value);
+    partial void OnFileExtensionChanged();
+    partial void OnMimeTypeChanging(string value);
+    partial void OnMimeTypeChanged();
+    partial void OnChecksumChanging(string value);
+    partial void OnChecksumChanged();
+    partial void OnFileExistsChanging(System.Nullable<bool> value);
+    partial void OnFileExistsChanged();
+    partial void OnLastVerifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastVerifiedChanged();
+    partial void OnMigrationStatusChanging(string value);
+    partial void OnMigrationStatusChanged();
+    partial void OnCaptionChanging(string value);
+    partial void OnCaptionChanged();
+    partial void OnAltTextChanging(string value);
+    partial void OnAltTextChanged();
+    partial void OnIsPrimaryChanging(System.Nullable<bool> value);
+    partial void OnIsPrimaryChanged();
+    partial void OnDisplayOrderChanging(System.Nullable<int> value);
+    partial void OnDisplayOrderChanged();
+    partial void OnIsActiveChanging(System.Nullable<bool> value);
+    partial void OnIsActiveChanged();
+    #endregion
+		
+		public DeviceImage()
+		{
+			this._Device = default(EntityRef<Device>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid DeviceId
+		{
+			get
+			{
+				return this._DeviceId;
+			}
+			set
+			{
+				if ((this._DeviceId != value))
+				{
+					if (this._Device.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDeviceIdChanging(value);
+					this.SendPropertyChanging();
+					this._DeviceId = value;
+					this.SendPropertyChanged("DeviceId");
+					this.OnDeviceIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageData", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary ImageData
+		{
+			get
+			{
+				return this._ImageData;
+			}
+			set
+			{
+				if ((this._ImageData != value))
+				{
+					this.OnImageDataChanging(value);
+					this.SendPropertyChanging();
+					this._ImageData = value;
+					this.SendPropertyChanged("ImageData");
+					this.OnImageDataChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid CreateBy
+		{
+			get
+			{
+				return this._CreateBy;
+			}
+			set
+			{
+				if ((this._CreateBy != value))
+				{
+					this.OnCreateByChanging(value);
+					this.SendPropertyChanging();
+					this._CreateBy = value;
+					this.SendPropertyChanged("CreateBy");
+					this.OnCreateByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
+		{
+			get
+			{
+				return this._ModifiedDate;
+			}
+			set
+			{
+				if ((this._ModifiedDate != value))
+				{
+					this.OnModifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ModifiedBy
+		{
+			get
+			{
+				return this._ModifiedBy;
+			}
+			set
+			{
+				if ((this._ModifiedBy != value))
+				{
+					this.OnModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileName", DbType="NVarChar(255)")]
+		public string FileName
+		{
+			get
+			{
+				return this._FileName;
+			}
+			set
+			{
+				if ((this._FileName != value))
+				{
+					this.OnFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._FileName = value;
+					this.SendPropertyChanged("FileName");
+					this.OnFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelativePath", DbType="NVarChar(500)")]
+		public string RelativePath
+		{
+			get
+			{
+				return this._RelativePath;
+			}
+			set
+			{
+				if ((this._RelativePath != value))
+				{
+					this.OnRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._RelativePath = value;
+					this.SendPropertyChanged("RelativePath");
+					this.OnRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FullPath", DbType="NVarChar(1000)")]
+		public string FullPath
+		{
+			get
+			{
+				return this._FullPath;
+			}
+			set
+			{
+				if ((this._FullPath != value))
+				{
+					this.OnFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._FullPath = value;
+					this.SendPropertyChanged("FullPath");
+					this.OnFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StorageType", DbType="NVarChar(20)")]
+		public string StorageType
+		{
+			get
+			{
+				return this._StorageType;
+			}
+			set
+			{
+				if ((this._StorageType != value))
+				{
+					this.OnStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._StorageType = value;
+					this.SendPropertyChanged("StorageType");
+					this.OnStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileSize", DbType="BigInt")]
+		public System.Nullable<long> FileSize
+		{
+			get
+			{
+				return this._FileSize;
+			}
+			set
+			{
+				if ((this._FileSize != value))
+				{
+					this.OnFileSizeChanging(value);
+					this.SendPropertyChanging();
+					this._FileSize = value;
+					this.SendPropertyChanged("FileSize");
+					this.OnFileSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExtension", DbType="NVarChar(10)")]
+		public string FileExtension
+		{
+			get
+			{
+				return this._FileExtension;
+			}
+			set
+			{
+				if ((this._FileExtension != value))
+				{
+					this.OnFileExtensionChanging(value);
+					this.SendPropertyChanging();
+					this._FileExtension = value;
+					this.SendPropertyChanged("FileExtension");
+					this.OnFileExtensionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MimeType", DbType="NVarChar(100)")]
+		public string MimeType
+		{
+			get
+			{
+				return this._MimeType;
+			}
+			set
+			{
+				if ((this._MimeType != value))
+				{
+					this.OnMimeTypeChanging(value);
+					this.SendPropertyChanging();
+					this._MimeType = value;
+					this.SendPropertyChanged("MimeType");
+					this.OnMimeTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Checksum", DbType="NVarChar(64)")]
+		public string Checksum
+		{
+			get
+			{
+				return this._Checksum;
+			}
+			set
+			{
+				if ((this._Checksum != value))
+				{
+					this.OnChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._Checksum = value;
+					this.SendPropertyChanged("Checksum");
+					this.OnChecksumChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExists", DbType="Bit")]
+		public System.Nullable<bool> FileExists
+		{
+			get
+			{
+				return this._FileExists;
+			}
+			set
+			{
+				if ((this._FileExists != value))
+				{
+					this.OnFileExistsChanging(value);
+					this.SendPropertyChanging();
+					this._FileExists = value;
+					this.SendPropertyChanged("FileExists");
+					this.OnFileExistsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastVerified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastVerified
+		{
+			get
+			{
+				return this._LastVerified;
+			}
+			set
+			{
+				if ((this._LastVerified != value))
+				{
+					this.OnLastVerifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastVerified = value;
+					this.SendPropertyChanged("LastVerified");
+					this.OnLastVerifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MigrationStatus", DbType="NVarChar(20)")]
+		public string MigrationStatus
+		{
+			get
+			{
+				return this._MigrationStatus;
+			}
+			set
+			{
+				if ((this._MigrationStatus != value))
+				{
+					this.OnMigrationStatusChanging(value);
+					this.SendPropertyChanging();
+					this._MigrationStatus = value;
+					this.SendPropertyChanged("MigrationStatus");
+					this.OnMigrationStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Caption", DbType="NVarChar(255)")]
+		public string Caption
+		{
+			get
+			{
+				return this._Caption;
+			}
+			set
+			{
+				if ((this._Caption != value))
+				{
+					this.OnCaptionChanging(value);
+					this.SendPropertyChanging();
+					this._Caption = value;
+					this.SendPropertyChanged("Caption");
+					this.OnCaptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AltText", DbType="NVarChar(255)")]
+		public string AltText
+		{
+			get
+			{
+				return this._AltText;
+			}
+			set
+			{
+				if ((this._AltText != value))
+				{
+					this.OnAltTextChanging(value);
+					this.SendPropertyChanging();
+					this._AltText = value;
+					this.SendPropertyChanged("AltText");
+					this.OnAltTextChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPrimary", DbType="Bit")]
+		public System.Nullable<bool> IsPrimary
+		{
+			get
+			{
+				return this._IsPrimary;
+			}
+			set
+			{
+				if ((this._IsPrimary != value))
+				{
+					this.OnIsPrimaryChanging(value);
+					this.SendPropertyChanging();
+					this._IsPrimary = value;
+					this.SendPropertyChanged("IsPrimary");
+					this.OnIsPrimaryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DisplayOrder", DbType="Int")]
+		public System.Nullable<int> DisplayOrder
+		{
+			get
+			{
+				return this._DisplayOrder;
+			}
+			set
+			{
+				if ((this._DisplayOrder != value))
+				{
+					this.OnDisplayOrderChanging(value);
+					this.SendPropertyChanging();
+					this._DisplayOrder = value;
+					this.SendPropertyChanged("DisplayOrder");
+					this.OnDisplayOrderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit")]
+		public System.Nullable<bool> IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceImage", Storage="_Device", ThisKey="DeviceId", OtherKey="Id", IsForeignKey=true)]
+		public Device Device
+		{
+			get
+			{
+				return this._Device.Entity;
+			}
+			set
+			{
+				Device previousValue = this._Device.Entity;
+				if (((previousValue != value) 
+							|| (this._Device.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Device.Entity = null;
+						previousValue.DeviceImages.Remove(this);
+					}
+					this._Device.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceImages.Add(this);
 						this._DeviceId = value.Id;
 					}
 					else
