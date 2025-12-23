@@ -62,6 +62,7 @@ public class DeviceRepository : IDeviceRepository
         loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
         loadOptions.LoadWith<ProductVariant>(v => v.UnitOfMeasure);
         loadOptions.LoadWith<Device>(d => d.ProductVariant);
+        loadOptions.LoadWith<Device>(d => d.Warranties);
         context.LoadOptions = loadOptions;
 
         return context;

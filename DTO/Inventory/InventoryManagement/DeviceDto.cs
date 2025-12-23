@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using Dal.Connection;
+using Common.Enums;
 
 namespace DTO.Inventory.InventoryManagement;
 
@@ -593,8 +594,9 @@ public static class DeviceDtoConverter
 
     /// <summary>
     /// Chuyển đổi Device entity thành DeviceDto
+    /// Sử dụng Warranty đã được eager load từ repository (entity.Warranties)
     /// </summary>
-    /// <param name="entity">Device entity</param>
+    /// <param name="entity">Device entity (đã có Warranties được eager load)</param>
     /// <returns>DeviceDto</returns>
     public static DeviceDto ToDto(this Dal.DataContext.Device entity)
     {
@@ -635,67 +637,47 @@ public static class DeviceDtoConverter
             }
         }
 
-        // Lấy thông tin bảo hành từ quan hệ ngược lại (Warranty.DeviceId -> Device.Id)
-        // Note: Để load thông tin bảo hành, sử dụng overload method ToDto(entity, context)
-        // hoặc populate từ BLL layer thông qua WarrantyBll.FindByDeviceId()
-
-        return dto;
-    }
-
-    /// <summary>
-    /// Chuyển đổi Device entity thành DeviceDto với thông tin bảo hành từ DataContext
-    /// </summary>
-    /// <param name="entity">Device entity</param>
-    /// <param name="context">DataContext để query thông tin bảo hành</param>
-    /// <returns>DeviceDto</returns>
-    public static DeviceDto ToDto(this Dal.DataContext.Device entity, Dal.DataContext.VnsErp2025DataContext context)
-    {
-        var dto = entity.ToDto();
-        
-        if (dto == null || context == null)
-            return dto;
-
-        // Query warranty từ bảng Warranty dựa trên DeviceId
-        try
+        // Lấy thông tin bảo hành từ entity.Warranties (đã được eager load từ repository)
+        if (entity.Warranties != null && entity.Warranties.Any())
         {
-            var warranty = context.Warranties
-                .Where(w => w.DeviceId.HasValue && w.DeviceId.Value == entity.Id && w.IsActive)
-                .OrderByDescending(w => w.WarrantyFrom ?? DateTime.MinValue)
-                .ThenByDescending(w => w.CreatedDate)
-                .FirstOrDefault();
+            // Lấy warranty mới nhất (ưu tiên active, sau đó theo CreatedDate)
+            var latestWarranty = entity.Warranties
+                .Where(w => w.IsActive)
+                .OrderByDescending(w => w.CreatedDate)
+                .FirstOrDefault()
+                ?? entity.Warranties
+                    .OrderByDescending(w => w.CreatedDate)
+                    .FirstOrDefault();
 
-            if (warranty != null)
+            if (latestWarranty != null)
             {
-                dto.WarrantyFrom = warranty.WarrantyFrom;
-                dto.WarrantyUntil = warranty.WarrantyUntil;
+                dto.WarrantyFrom = latestWarranty.WarrantyFrom;
+                dto.WarrantyUntil = latestWarranty.WarrantyUntil;
 
-                // Lấy tên loại bảo hành và trạng thái từ enum
-                if (Enum.IsDefined(typeof(Common.Enums.LoaiBaoHanhEnum), warranty.WarrantyType))
+                // Chuyển đổi WarrantyType từ int sang enum và lấy tên
+                if (Enum.IsDefined(typeof(LoaiBaoHanhEnum), latestWarranty.WarrantyType))
                 {
-                    var warrantyType = (Common.Enums.LoaiBaoHanhEnum)warranty.WarrantyType;
-                    var warrantyTypeField = warrantyType.GetType().GetField(warrantyType.ToString());
+                    var warrantyTypeEnum = (LoaiBaoHanhEnum)latestWarranty.WarrantyType;
+                    var warrantyTypeField = warrantyTypeEnum.GetType().GetField(warrantyTypeEnum.ToString());
                     if (warrantyTypeField != null)
                     {
-                        var descriptionAttr = warrantyTypeField.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
-                        dto.WarrantyTypeName = descriptionAttr?.Description ?? warrantyType.ToString();
+                        var descriptionAttr = warrantyTypeField.GetCustomAttribute<DescriptionAttribute>();
+                        dto.WarrantyTypeName = descriptionAttr?.Description ?? warrantyTypeEnum.ToString();
                     }
                 }
 
-                if (Enum.IsDefined(typeof(Common.Enums.TrangThaiBaoHanhEnum), warranty.WarrantyStatus))
+                // Chuyển đổi WarrantyStatus từ int sang enum và lấy tên
+                if (Enum.IsDefined(typeof(TrangThaiBaoHanhEnum), latestWarranty.WarrantyStatus))
                 {
-                    var warrantyStatus = (Common.Enums.TrangThaiBaoHanhEnum)warranty.WarrantyStatus;
-                    var warrantyStatusField = warrantyStatus.GetType().GetField(warrantyStatus.ToString());
+                    var warrantyStatusEnum = (TrangThaiBaoHanhEnum)latestWarranty.WarrantyStatus;
+                    var warrantyStatusField = warrantyStatusEnum.GetType().GetField(warrantyStatusEnum.ToString());
                     if (warrantyStatusField != null)
                     {
-                        var descriptionAttr = warrantyStatusField.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
-                        dto.WarrantyStatusName = descriptionAttr?.Description ?? warrantyStatus.ToString();
+                        var descriptionAttr = warrantyStatusField.GetCustomAttribute<DescriptionAttribute>();
+                        dto.WarrantyStatusName = descriptionAttr?.Description ?? warrantyStatusEnum.ToString();
                     }
                 }
             }
-        }
-        catch
-        {
-            // Nếu có lỗi khi query, bỏ qua
         }
 
         return dto;
@@ -712,77 +694,6 @@ public static class DeviceDtoConverter
         return entities.Select(entity => entity.ToDto()).ToList();
     }
 
-    /// <summary>
-    /// Chuyển đổi danh sách Device entities thành danh sách DeviceDto với thông tin bảo hành từ DataContext
-    /// </summary>
-    /// <param name="entities">Danh sách Device entities</param>
-    /// <param name="context">DataContext để query thông tin bảo hành</param>
-    /// <returns>Danh sách DeviceDto</returns>
-    public static List<DeviceDto> ToDtoList(this IEnumerable<Dal.DataContext.Device> entities, Dal.DataContext.VnsErp2025DataContext context)
-    {
-        if (entities == null) return new List<DeviceDto>();
-        if (context == null) return entities.Select(entity => entity.ToDto()).ToList();
-        
-        return entities.Select(entity => entity.ToDto(context)).ToList();
-    }
-
-    /// <summary>
-    /// Chuyển đổi danh sách Device entities thành danh sách DeviceDto với thông tin bảo hành
-    /// Tự động tạo DataContext từ global connection string để load warranty
-    /// </summary>
-    /// <param name="entities">Danh sách Device entities</param>
-    /// <returns>Danh sách DeviceDto với warranty information</returns>
-    public static List<DeviceDto> ToDtoListWithWarranty(this IEnumerable<Dal.DataContext.Device> entities)
-    {
-        if (entities == null) return new List<DeviceDto>();
-
-        try
-        {
-            // Lấy global connection string
-            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
-            if (string.IsNullOrEmpty(globalConnectionString))
-            {
-                // Nếu không có connection string, convert không có warranty
-                return entities.Select(entity => entity.ToDto()).Where(dto => dto != null).ToList();
-            }
-
-            // Tạo DataContext để load warranty
-            using (var context = new Dal.DataContext.VnsErp2025DataContext(globalConnectionString))
-            {
-                var validEntities = entities.Where(e => e != null).ToList();
-                return validEntities.ToDtoList(context).Where(dto => dto != null).ToList();
-            }
-        }
-        catch
-        {
-            // Nếu có lỗi khi tạo context, convert không có warranty
-            return entities.Select(entity => entity.ToDto()).Where(dto => dto != null).ToList();
-        }
-    }
-
-    /// <summary>
-    /// Chuyển đổi danh sách Device entities thành danh sách DeviceDto với thông tin bảo hành
-    /// Tự động tạo DataContext từ connection string được cung cấp để load warranty
-    /// </summary>
-    /// <param name="entities">Danh sách Device entities</param>
-    /// <param name="connectionString">Connection string để tạo DataContext</param>
-    /// <returns>Danh sách DeviceDto với warranty information</returns>
-    public static List<DeviceDto> ToDtoListWithWarranty(this IEnumerable<Dal.DataContext.Device> entities, string connectionString)
-    {
-        if (entities == null) return new List<DeviceDto>();
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            // Nếu không có connection string, convert không có warranty
-            return entities.Select(entity => entity.ToDto()).Where(dto => dto != null).ToList();
-        }
-
-        // Tạo DataContext để load warranty
-        using (var context = new Dal.DataContext.VnsErp2025DataContext(connectionString))
-        {
-            var validEntities = entities.Where(e => e != null).ToList();
-            return validEntities.ToDtoList(context).Where(dto => dto != null).ToList();
-        }
-    }
 
     #endregion
 

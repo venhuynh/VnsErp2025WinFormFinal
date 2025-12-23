@@ -844,11 +844,12 @@ namespace Inventory.Management.DeviceMangement
                     await Task.Run(() =>
                     {
                         // Lấy tất cả các entity từ BLL (UI -> BLL -> Repository)
+                        // Repository đã eager load Warranties cho Device
                         var devices = _deviceBll.GetAll();
 
-                        // Convert entities sang DTO với thông tin bảo hành sử dụng DTO converter
-                        // DTO converter tự tạo DataContext để load warranty
-                        var deviceDtos = devices.ToDtoListWithWarranty();
+                        // Convert entities sang DTO với thông tin bảo hành
+                        // Warranty đã được eager load trong repository, converter sẽ sử dụng entity.Warranties
+                        var deviceDtos = devices.ToDtoList();
 
                         // Update UI thread
                         BeginInvoke(new Action(() =>
