@@ -179,6 +179,55 @@ public class DeviceRepository : IDeviceRepository
         }
     }
 
+    /// <summary>
+    /// Tìm Device theo mã BarCode (SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey)
+    /// </summary>
+    /// <param name="barCode">Mã BarCode cần tìm</param>
+    /// <returns>Device entity nếu tìm thấy, null nếu không tìm thấy</returns>
+    public Device FindByBarCode(string barCode)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            if (string.IsNullOrWhiteSpace(barCode))
+            {
+                _logger.Warning("FindByBarCode: BarCode is null or empty");
+                return null;
+            }
+
+            _logger.Debug("FindByBarCode: Tìm thiết bị theo mã vạch, BarCode={0}", barCode);
+
+            var trimmedBarCode = barCode.Trim().ToLower();
+
+            // Tìm Device theo SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey
+            // Sử dụng ToLower() để so sánh không phân biệt hoa thường (LINQ to SQL hỗ trợ)
+            var device = context.Devices.FirstOrDefault(d =>
+                (d.SerialNumber != null && d.SerialNumber.Trim().ToLower() == trimmedBarCode) ||
+                (d.IMEI != null && d.IMEI.Trim().ToLower() == trimmedBarCode) ||
+                (d.MACAddress != null && d.MACAddress.Trim().ToLower() == trimmedBarCode) ||
+                (d.AssetTag != null && d.AssetTag.Trim().ToLower() == trimmedBarCode) ||
+                (d.LicenseKey != null && d.LicenseKey.Trim().ToLower() == trimmedBarCode)
+            );
+
+            if (device == null)
+            {
+                _logger.Warning("FindByBarCode: Không tìm thấy thiết bị với mã vạch, BarCode={0}", barCode);
+            }
+            else
+            {
+                _logger.Info("FindByBarCode: Tìm thấy thiết bị, DeviceId={0}, BarCode={1}", device.Id, barCode);
+            }
+
+            return device;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"FindByBarCode: Lỗi tìm thiết bị theo mã vạch: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+
     #endregion
 
     #region Save Operations

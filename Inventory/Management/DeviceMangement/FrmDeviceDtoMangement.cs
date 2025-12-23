@@ -843,15 +843,12 @@ namespace Inventory.Management.DeviceMangement
                 {
                     await Task.Run(() =>
                     {
-                        // Lấy tất cả Device entities từ BLL
+                        // Lấy tất cả các entity từ BLL (UI -> BLL -> Repository)
                         var devices = _deviceBll.GetAll();
 
-                        // Convert Entity sang DeviceDto
-                        var deviceDtos = devices
-                            .Where(d => d != null)
-                            .Select(entity => entity.ToDto())
-                            .Where(dto => dto != null)
-                            .ToList();
+                        // Convert entities sang DTO với thông tin bảo hành sử dụng DTO converter
+                        // DTO converter tự tạo DataContext để load warranty
+                        var deviceDtos = devices.ToDtoListWithWarranty();
 
                         // Update UI thread
                         BeginInvoke(new Action(() =>

@@ -491,11 +491,32 @@ namespace Bll.Inventory.InventoryManagement
                         $"Không thể lưu hình ảnh chính vào storage: {storageResult.ErrorMessage}");
                 }
 
-                // 4. Lấy thông tin user hiện tại
+                // 4. Tạo thumbnail từ ảnh gốc để lưu vào ImageData (tương tự SaveImageFromFileAsync)
+                // Thumbnail được lưu trong database để tăng tốc độ truy vấn và cải thiện UX
+                // Đảm bảo tính nhất quán với SaveImageFromFileAsync
+                byte[] thumbnailData = null;
+                try
+                {
+                    // Tạo thumbnail với kích thước tối đa 300px và target size ~50KB
+                    // Tương tự SaveImageFromFileAsync và ProductImageBll
+                    thumbnailData = _imageCompression.CompressImage(
+                        imageData: imageData,
+                        targetSize: 50000, // Target size: ~50KB
+                        maxDimension: 300, // Kích thước tối đa 300px cho thumbnail trong list view
+                        format: ImageFormat.Jpeg
+                    );
+                }
+                catch (Exception ex)
+                {
+                    _logger.Warning($"Không thể tạo thumbnail cho hình ảnh chính thiết bị {deviceId}: {ex.Message}");
+                    // Tiếp tục lưu ảnh dù không tạo được thumbnail
+                }
+
+                // 5. Lấy thông tin user hiện tại
                 var currentUser = Bll.Common.ApplicationSystemUtils.GetCurrentUser();
                 var modifiedBy = currentUser?.Id ?? Guid.Empty;
 
-                // 5. Kiểm tra xem đã có hình ảnh chính chưa
+                // 6. Kiểm tra xem đã có hình ảnh chính chưa
                 var existingPrimary = GetDataAccess().GetPrimaryByDeviceId(deviceId);
                 
                 DeviceImage deviceImage;
@@ -524,7 +545,9 @@ namespace Bll.Inventory.InventoryManagement
                     deviceImage.Checksum = storageResult.Checksum;
                     deviceImage.FileSize = storageResult.FileSize;
                     deviceImage.MimeType = "image/jpeg";
-                    deviceImage.ImageData = null; // KHÔNG lưu ImageData
+                    // Lưu thumbnail vào ImageData để hiển thị ngay trong list view (tương tự SaveImageFromFileAsync)
+                    // Convert byte[] sang Binary như SaveImageFromFileAsync và EmployeeBll.UpdateAvatarOnly
+                    deviceImage.ImageData = thumbnailData != null ? new System.Data.Linq.Binary(thumbnailData) : null;
                     deviceImage.ModifiedDate = DateTime.Now;
                     deviceImage.ModifiedBy = modifiedBy;
                     deviceImage.FileExists = true;
@@ -544,7 +567,9 @@ namespace Bll.Inventory.InventoryManagement
                         Checksum = storageResult.Checksum,
                         FileSize = storageResult.FileSize,
                         MimeType = "image/jpeg",
-                        ImageData = null, // KHÔNG lưu ImageData
+                        // Lưu thumbnail vào ImageData để hiển thị ngay trong list view (tương tự SaveImageFromFileAsync)
+                        // Convert byte[] sang Binary như SaveImageFromFileAsync và EmployeeBll.UpdateAvatarOnly
+                        ImageData = thumbnailData != null ? new System.Data.Linq.Binary(thumbnailData) : null,
                         FileExists = true,
                         CreateDate = DateTime.Now,
                         CreateBy = modifiedBy,
