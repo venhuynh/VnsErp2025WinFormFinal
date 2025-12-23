@@ -79,13 +79,6 @@ public class DeviceDto
     [Display(Order = 1)]
     public Guid? StockInOutDetailId { get; set; }
 
-    /// <summary>
-    /// ID bảo hành
-    /// </summary>
-    [DisplayName("ID Bảo hành")]
-    [Display(Order = 2)]
-    public Guid? WarrantyId { get; set; }
-
     #endregion
 
     #region Properties - Định danh thiết bị (Device Identifiers)
@@ -464,8 +457,6 @@ public class DeviceDto
             var linkParts = new List<string>();
             if (StockInOutDetailId.HasValue)
                 linkParts.Add($"Phiếu: {StockInOutDetailId.Value}");
-            if (WarrantyId.HasValue)
-                linkParts.Add($"BH ID: {WarrantyId.Value}");
 
             if (linkParts.Any())
             {
@@ -545,7 +536,6 @@ public static class DeviceDtoConverter
             Id = entity.Id,
             ProductVariantId = entity.ProductVariantId,
             StockInOutDetailId = entity.StockInOutDetailId,
-            WarrantyId = entity.WarrantyId,
             SerialNumber = entity.SerialNumber,
             MACAddress = entity.MACAddress,
             IMEI = entity.IMEI,
@@ -576,36 +566,10 @@ public static class DeviceDtoConverter
             }
         }
 
-        // Lấy thông tin bảo hành nếu có
-        if (entity.Warranty != null)
-        {
-            var warranty = entity.Warranty;
-            dto.WarrantyFrom = warranty.WarrantyFrom;
-            dto.WarrantyUntil = warranty.WarrantyUntil;
-            
-            // Lấy tên loại bảo hành và trạng thái từ enum
-            if (Enum.IsDefined(typeof(Common.Enums.LoaiBaoHanhEnum), warranty.WarrantyType))
-            {
-                var warrantyType = (Common.Enums.LoaiBaoHanhEnum)warranty.WarrantyType;
-                var warrantyTypeField = warrantyType.GetType().GetField(warrantyType.ToString());
-                if (warrantyTypeField != null)
-                {
-                    var descriptionAttr = warrantyTypeField.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
-                    dto.WarrantyTypeName = descriptionAttr?.Description ?? warrantyType.ToString();
-                }
-            }
-            
-            if (Enum.IsDefined(typeof(Common.Enums.TrangThaiBaoHanhEnum), warranty.WarrantyStatus))
-            {
-                var warrantyStatus = (Common.Enums.TrangThaiBaoHanhEnum)warranty.WarrantyStatus;
-                var warrantyStatusField = warrantyStatus.GetType().GetField(warrantyStatus.ToString());
-                if (warrantyStatusField != null)
-                {
-                    var descriptionAttr = warrantyStatusField.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
-                    dto.WarrantyStatusName = descriptionAttr?.Description ?? warrantyStatus.ToString();
-                }
-            }
-        }
+        // Lấy thông tin bảo hành từ quan hệ ngược lại (Warranty.DeviceId -> Device.Id)
+        // Note: Thông tin bảo hành sẽ được load riêng thông qua WarrantyBll.FindByDeviceId()
+        // hoặc có thể query trực tiếp từ context nếu cần
+        // Tạm thời để trống, sẽ được populate từ BLL layer nếu cần
 
         return dto;
     }
@@ -639,7 +603,6 @@ public static class DeviceDtoConverter
             Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
             ProductVariantId = dto.ProductVariantId,
             StockInOutDetailId = dto.StockInOutDetailId,
-            WarrantyId = dto.WarrantyId,
             SerialNumber = dto.SerialNumber,
             MACAddress = dto.MACAddress,
             IMEI = dto.IMEI,

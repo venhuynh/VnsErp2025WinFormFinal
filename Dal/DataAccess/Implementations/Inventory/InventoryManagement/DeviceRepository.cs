@@ -62,7 +62,6 @@ public class DeviceRepository : IDeviceRepository
         loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
         loadOptions.LoadWith<ProductVariant>(v => v.UnitOfMeasure);
         loadOptions.LoadWith<Device>(d => d.ProductVariant);
-        loadOptions.LoadWith<Device>(d => d.Warranty);
         context.LoadOptions = loadOptions;
 
         return context;
@@ -220,7 +219,6 @@ public class DeviceRepository : IDeviceRepository
                 // Cập nhật
                 existingDevice.ProductVariantId = device.ProductVariantId;
                 existingDevice.StockInOutDetailId = device.StockInOutDetailId;
-                existingDevice.WarrantyId = device.WarrantyId;
                 existingDevice.SerialNumber = device.SerialNumber;
                 existingDevice.MACAddress = device.MACAddress;
                 existingDevice.IMEI = device.IMEI;
