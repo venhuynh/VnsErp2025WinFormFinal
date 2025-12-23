@@ -442,9 +442,8 @@ public class DeviceDto
             }
             if (!string.IsNullOrWhiteSpace(WarrantyStatusName))
             {
-                // Lấy màu sắc cho trạng thái bảo hành
-                var warrantyStatusColor = GetWarrantyStatusColorFromName(WarrantyStatusName);
-                warrantyParts.Add($"<color='{warrantyStatusColor}'><b>Trạng thái: {WarrantyStatusName}</b></color>");
+                // WarrantyStatusName đã chứa HTML với màu sắc, chỉ cần thêm prefix "Trạng thái: "
+                warrantyParts.Add($"Trạng thái: {WarrantyStatusName}");
             }
             if (WarrantyFrom.HasValue)
             {
@@ -556,7 +555,15 @@ public class DeviceDto
         if (string.IsNullOrWhiteSpace(warrantyStatusName))
             return "black";
 
-        // Thử parse từ tên về enum để lấy màu chính xác
+        // Xử lý các trạng thái dựa vào WarrantyUntil (tự động tính toán)
+        if (warrantyStatusName == "Còn bảo hành")
+            return "green";      // Green - Còn bảo hành
+        if (warrantyStatusName == "Hết bảo hành")
+            return "red";        // Red - Hết bảo hành
+        if (warrantyStatusName == "Chưa xác định")
+            return "gray";       // Gray - Chưa xác định
+
+        // Thử parse từ tên về enum để lấy màu chính xác (cho các trạng thái từ enum)
         foreach (Common.Enums.TrangThaiBaoHanhEnum enumValue in Enum.GetValues(typeof(Common.Enums.TrangThaiBaoHanhEnum)))
         {
             var field = enumValue.GetType().GetField(enumValue.ToString());
@@ -654,6 +661,42 @@ public static class DeviceDtoConverter
                 dto.WarrantyFrom = latestWarranty.WarrantyFrom;
                 dto.WarrantyUntil = latestWarranty.WarrantyUntil;
 
+                // Xác định trạng thái bảo hành dựa vào WarrantyUntil và thêm màu sắc
+                if (dto.WarrantyUntil.HasValue)
+                {
+                    var today = DateTime.Today;
+                    var warrantyUntilDate = dto.WarrantyUntil.Value.Date;
+                    string statusText;
+                    string statusColor;
+                    
+                    if (warrantyUntilDate > today)
+                    {
+                        // Còn bảo hành
+                        statusText = "Còn bảo hành";
+                        statusColor = "green";
+                    }
+                    else if (warrantyUntilDate == today)
+                    {
+                        // Hết bảo hành hôm nay
+                        statusText = "Hết bảo hành";
+                        statusColor = "red";
+                    }
+                    else
+                    {
+                        // Đã hết bảo hành
+                        statusText = "Hết bảo hành";
+                        statusColor = "red";
+                    }
+                    
+                    // Thêm màu sắc vào WarrantyStatusName với format HTML
+                    dto.WarrantyStatusName = $"<color='{statusColor}'><b>{statusText}</b></color>";
+                }
+                else
+                {
+                    // Chưa có ngày kết thúc bảo hành
+                    dto.WarrantyStatusName = "<color='gray'><b>Chưa xác định</b></color>";
+                }
+
                 // Chuyển đổi WarrantyType từ int sang enum và lấy tên
                 if (Enum.IsDefined(typeof(LoaiBaoHanhEnum), latestWarranty.WarrantyType))
                 {
@@ -663,18 +706,6 @@ public static class DeviceDtoConverter
                     {
                         var descriptionAttr = warrantyTypeField.GetCustomAttribute<DescriptionAttribute>();
                         dto.WarrantyTypeName = descriptionAttr?.Description ?? warrantyTypeEnum.ToString();
-                    }
-                }
-
-                // Chuyển đổi WarrantyStatus từ int sang enum và lấy tên
-                if (Enum.IsDefined(typeof(TrangThaiBaoHanhEnum), latestWarranty.WarrantyStatus))
-                {
-                    var warrantyStatusEnum = (TrangThaiBaoHanhEnum)latestWarranty.WarrantyStatus;
-                    var warrantyStatusField = warrantyStatusEnum.GetType().GetField(warrantyStatusEnum.ToString());
-                    if (warrantyStatusField != null)
-                    {
-                        var descriptionAttr = warrantyStatusField.GetCustomAttribute<DescriptionAttribute>();
-                        dto.WarrantyStatusName = descriptionAttr?.Description ?? warrantyStatusEnum.ToString();
                     }
                 }
             }
