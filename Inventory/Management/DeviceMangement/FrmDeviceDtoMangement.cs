@@ -9,7 +9,6 @@ using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -98,6 +97,16 @@ namespace Inventory.Management.DeviceMangement
             // Đăng ký event DeviceSaved từ ucDeviceDtoAddEdit1
             ucDeviceDtoAddEdit1.DeviceSaved += UcDeviceDtoAddEdit1_DeviceSaved;
 
+            // Đăng ký event WarrantySaved và WarrantyClosed từ ucDeviceWarranty1
+            ucDeviceWarranty1.WarrantySaved += UcDeviceWarranty1_WarrantySaved;
+            ucDeviceWarranty1.WarrantyClosed += UcDeviceWarranty1_WarrantyClosed;
+
+            // Đăng ký event ImageSaved từ ucDeviceImageAdd1
+            ucDeviceImageAdd1.ImageSaved += UcDeviceImageAdd1_ImageSaved;
+
+            // Đăng ký event HistorySaved từ ucDeviceDtoAddStockInOutHistory1
+            ucDeviceDtoAddStockInOutHistory1.HistorySaved += UcDeviceDtoAddStockInOutHistory1_HistorySaved;
+
             // Event khi selection thay đổi trong GridView
             DeviceDtoGridView.SelectionChanged += DeviceDtoGridView_SelectionChanged;
 
@@ -152,7 +161,7 @@ namespace Inventory.Management.DeviceMangement
         /// <summary>
         /// Hiển thị UserControl phù hợp trong dockPanel1
         /// </summary>
-        /// <param name="controlType">Loại UserControl: "AddEdit", "StockInOutHistory", hoặc "ImageAdd"</param>
+        /// <param name="controlType">Loại UserControl: "AddEdit", "StockInOutHistory", "ImageAdd", hoặc "Warranty"</param>
         private void ShowUserControlInDockPanel(string controlType)
         {
             try
@@ -161,9 +170,11 @@ namespace Inventory.Management.DeviceMangement
                 ucDeviceDtoAddEdit1.Visible = false;
                 ucDeviceDtoAddStockInOutHistory1.Visible = false;
                 ucDeviceImageAdd1.Visible = false;
+                ucDeviceWarranty1.Visible = false;
                 layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
                 layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
                 layoutControlItem3.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+                layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
 
                 // Hiển thị UserControl tương ứng
                 switch (controlType)
@@ -183,7 +194,13 @@ namespace Inventory.Management.DeviceMangement
                     case "ImageAdd":
                         ucDeviceImageAdd1.Visible = true;
                         layoutControlItem3.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
-                        dockPanel1.Text = "Thêm hình ảnh thiết bị";
+                        dockPanel1.Text = @"Thêm hình ảnh thiết bị";
+                        break;
+
+                    case "Warranty":
+                        ucDeviceWarranty1.Visible = true;
+                        layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+                        dockPanel1.Text = @"Quản lý bảo hành thiết bị";
                         break;
 
                     default:
@@ -421,6 +438,89 @@ namespace Inventory.Management.DeviceMangement
             catch (Exception ex)
             {
                 _logger.Error("UcDeviceDtoAddEdit1_DeviceSaved: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi refresh dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi bảo hành được lưu thành công từ ucDeviceWarranty1
+        /// Refresh lại dữ liệu trong grid
+        /// </summary>
+        private void UcDeviceWarranty1_WarrantySaved(object sender, EventArgs e)
+        {
+            try
+            {
+                _logger.Debug("UcDeviceWarranty1_WarrantySaved: Warranty saved, refreshing data");
+                
+                // Refresh lại dữ liệu
+                LoadDeviceDataAsync();
+
+                // Đóng dockPanel1 sau khi lưu thành công
+                dockPanel1.Visibility = DockVisibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("UcDeviceWarranty1_WarrantySaved: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi refresh dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi nút Đóng được click từ ucDeviceWarranty1
+        /// Đóng dockPanel1
+        /// </summary>
+        private void UcDeviceWarranty1_WarrantyClosed(object sender, EventArgs e)
+        {
+            try
+            {
+                _logger.Debug("UcDeviceWarranty1_WarrantyClosed: Closing warranty panel");
+                
+                // Đóng dockPanel1
+                dockPanel1.Visibility = DockVisibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("UcDeviceWarranty1_WarrantyClosed: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi đóng panel: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi hình ảnh được lưu thành công từ ucDeviceImageAdd1
+        /// Refresh lại dữ liệu trong grid
+        /// </summary>
+        private void UcDeviceImageAdd1_ImageSaved(object sender, EventArgs e)
+        {
+            try
+            {
+                _logger.Debug("UcDeviceImageAdd1_ImageSaved: Image saved, refreshing data");
+                
+                // Refresh lại dữ liệu
+                LoadDeviceDataAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("UcDeviceImageAdd1_ImageSaved: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi refresh dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi lịch sử nhập xuất được lưu thành công từ ucDeviceDtoAddStockInOutHistory1
+        /// Refresh lại dữ liệu trong grid
+        /// </summary>
+        private void UcDeviceDtoAddStockInOutHistory1_HistorySaved(object sender, EventArgs e)
+        {
+            try
+            {
+                _logger.Debug("UcDeviceDtoAddStockInOutHistory1_HistorySaved: History saved, refreshing data");
+                
+                // Refresh lại dữ liệu
+                LoadDeviceDataAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("UcDeviceDtoAddStockInOutHistory1_HistorySaved: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi refresh dữ liệu: {ex.Message}");
             }
         }
@@ -903,7 +1003,7 @@ namespace Inventory.Management.DeviceMangement
                 var totalCount = deviceDtoBindingSource.Count;
                 var selectedCount = DeviceDtoGridView.SelectedRowsCount;
 
-                DataSummaryBarStaticItem.Caption = $"Tổng số: <b>{totalCount}</b> thiết bị";
+                DataSummaryBarStaticItem.Caption = $@"Tổng số: <b>{totalCount}</b> thiết bị";
                 SelectedRowBarStaticItem.Caption = selectedCount > 0 
                     ? $"Đã chọn: <b>{selectedCount}</b> dòng" 
                     : "Chưa chọn dòng nào";

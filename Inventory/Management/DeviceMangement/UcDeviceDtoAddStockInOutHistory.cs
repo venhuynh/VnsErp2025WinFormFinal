@@ -479,6 +479,12 @@ namespace Inventory.Management.DeviceMangement
 
                         // Load lại lịch sử
                         LoadDeviceTransactionHistory();
+
+                        // Trigger event để form cha refresh dữ liệu
+                        if (successCount > 0)
+                        {
+                            OnHistorySaved();
+                        }
                     }
                     else
                     {
@@ -635,6 +641,12 @@ namespace Inventory.Management.DeviceMangement
 
                         // Load lại lịch sử
                         LoadDeviceTransactionHistory();
+
+                        // Trigger event để form cha refresh dữ liệu
+                        if (successCount > 0)
+                        {
+                            OnHistorySaved();
+                        }
                     }
                     else
                     {
@@ -658,6 +670,19 @@ namespace Inventory.Management.DeviceMangement
                 _logger?.Error($"XoaHyperlinkLabelControl_Click: Exception, Error={ex.Message}", ex);
                 MsgBox.ShowError($"Lỗi: {ex.Message}", "Lỗi");
             }
+        }
+
+        /// <summary>
+        /// Event được trigger khi lịch sử nhập xuất được lưu thành công (thêm hoặc xóa)
+        /// </summary>
+        public event EventHandler HistorySaved;
+
+        /// <summary>
+        /// Trigger event HistorySaved
+        /// </summary>
+        protected virtual void OnHistorySaved()
+        {
+            HistorySaved?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

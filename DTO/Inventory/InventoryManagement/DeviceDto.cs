@@ -1,11 +1,11 @@
+using Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using Dal.Connection;
-using Common.Enums;
+// ReSharper disable InconsistentNaming
 
 namespace DTO.Inventory.InventoryManagement;
 
@@ -528,7 +528,7 @@ public class DeviceDto
             return "black";
 
         // Thử parse từ tên về enum để lấy màu chính xác
-        foreach (Common.Enums.LoaiBaoHanhEnum enumValue in Enum.GetValues(typeof(Common.Enums.LoaiBaoHanhEnum)))
+        foreach (LoaiBaoHanhEnum enumValue in Enum.GetValues(typeof(LoaiBaoHanhEnum)))
         {
             var field = enumValue.GetType().GetField(enumValue.ToString());
             if (field != null)
@@ -564,7 +564,7 @@ public class DeviceDto
             return "gray";       // Gray - Chưa xác định
 
         // Thử parse từ tên về enum để lấy màu chính xác (cho các trạng thái từ enum)
-        foreach (Common.Enums.TrangThaiBaoHanhEnum enumValue in Enum.GetValues(typeof(Common.Enums.TrangThaiBaoHanhEnum)))
+        foreach (TrangThaiBaoHanhEnum enumValue in Enum.GetValues(typeof(TrangThaiBaoHanhEnum)))
         {
             var field = enumValue.GetType().GetField(enumValue.ToString());
             if (field != null)
@@ -574,11 +574,11 @@ public class DeviceDto
                 {
                     return enumValue switch
                     {
-                        Common.Enums.TrangThaiBaoHanhEnum.ChoXuLy => "orange",      // Orange - Chờ xử lý
-                        Common.Enums.TrangThaiBaoHanhEnum.DangBaoHanh => "blue",    // Blue - Đang bảo hành
-                        Common.Enums.TrangThaiBaoHanhEnum.DaHoanThanh => "green",   // Green - Đã hoàn thành
-                        Common.Enums.TrangThaiBaoHanhEnum.DaTuChoi => "red",         // Red - Đã từ chối
-                        Common.Enums.TrangThaiBaoHanhEnum.DaHuy => "gray",           // Gray - Đã hủy
+                        TrangThaiBaoHanhEnum.ChoXuLy => "orange",      // Orange - Chờ xử lý
+                        TrangThaiBaoHanhEnum.DangBaoHanh => "blue",    // Blue - Đang bảo hành
+                        TrangThaiBaoHanhEnum.DaHoanThanh => "green",   // Green - Đã hoàn thành
+                        TrangThaiBaoHanhEnum.DaTuChoi => "red",         // Red - Đã từ chối
+                        TrangThaiBaoHanhEnum.DaHuy => "gray",           // Gray - Đã hủy
                         _ => "black"                                                 // Default - Black
                     };
                 }

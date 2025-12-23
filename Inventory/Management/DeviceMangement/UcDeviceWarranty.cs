@@ -581,6 +581,12 @@ namespace Inventory.Management.DeviceMangement
 
                         // Load lại danh sách từ database
                         LoadSelectedDevices(_selectedDevices);
+
+                        // Trigger event để form cha refresh dữ liệu (khi có ít nhất một bản ghi thành công)
+                        if (successCount > 0)
+                        {
+                            OnWarrantySaved();
+                        }
                     }
                     else
                     {
@@ -613,23 +619,40 @@ namespace Inventory.Management.DeviceMangement
         {
             try
             {
-                // Tìm parent form và đóng
-                var parent = this.Parent;
-                while (parent != null && !(parent is System.Windows.Forms.Form))
-                {
-                    parent = parent.Parent;
-                }
-
-                if (parent is System.Windows.Forms.Form form)
-                {
-                    form.Close();
-                }
+                // Trigger event để form cha xử lý đóng
+                OnWarrantyClosed();
             }
             catch (Exception ex)
             {
                 _logger?.Error($"CloseBarButtonItem_ItemClick: Exception, Error={ex.Message}", ex);
                 MsgBox.ShowError($"Lỗi: {ex.Message}", "Lỗi");
             }
+        }
+
+        /// <summary>
+        /// Event được trigger khi bảo hành được lưu thành công
+        /// </summary>
+        public event EventHandler WarrantySaved;
+
+        /// <summary>
+        /// Trigger event WarrantySaved
+        /// </summary>
+        protected virtual void OnWarrantySaved()
+        {
+            WarrantySaved?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Event được trigger khi nút Đóng được click
+        /// </summary>
+        public event EventHandler WarrantyClosed;
+
+        /// <summary>
+        /// Trigger event WarrantyClosed
+        /// </summary>
+        protected virtual void OnWarrantyClosed()
+        {
+            WarrantyClosed?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

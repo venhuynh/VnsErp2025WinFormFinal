@@ -456,11 +456,27 @@ namespace Inventory.Management.DeviceMangement
             {
                 message += "\n🎉 Hình ảnh đã được lưu thành công!";
                 MsgBox.ShowSuccess(message);
+                
+                // Trigger event để form cha refresh dữ liệu
+                OnImageSaved();
             }
             else
             {
                 MsgBox.ShowError(message);
             }
+        }
+
+        /// <summary>
+        /// Event được trigger khi hình ảnh được lưu thành công
+        /// </summary>
+        public event EventHandler ImageSaved;
+
+        /// <summary>
+        /// Trigger event ImageSaved
+        /// </summary>
+        protected virtual void OnImageSaved()
+        {
+            ImageSaved?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
