@@ -176,31 +176,27 @@ namespace Inventory.Management.DeviceMangement
                 layoutControlItem3.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
                 layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
 
-                // Hiển thị UserControl tương ứng
+                // Hiển thị UserControl tương ứng (text sẽ được cập nhật tùy ngữ cảnh ở handler)
                 switch (controlType)
                 {
                     case "AddEdit":
                         ucDeviceDtoAddEdit1.Visible = true;
                         layoutControlItem1.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
-                        dockPanel1.Text = "Thêm mới thiết bị";
                         break;
 
                     case "StockInOutHistory":
                         ucDeviceDtoAddStockInOutHistory1.Visible = true;
                         layoutControlItem2.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
-                        dockPanel1.Text = "Lịch sử nhập - xuất thiết bị";
                         break;
 
                     case "ImageAdd":
                         ucDeviceImageAdd1.Visible = true;
                         layoutControlItem3.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
-                        dockPanel1.Text = @"Thêm hình ảnh thiết bị";
                         break;
 
                     case "Warranty":
                         ucDeviceWarranty1.Visible = true;
                         layoutControlItem4.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
-                        dockPanel1.Text = @"Quản lý bảo hành thiết bị";
                         break;
 
                     default:
@@ -221,6 +217,23 @@ namespace Inventory.Management.DeviceMangement
         #endregion
 
         /// <summary>
+        /// Cập nhật tiêu đề dockPanel1 theo ngữ cảnh và số lượng thiết bị chọn
+        /// </summary>
+        /// <param name="baseTitle">Tiêu đề cơ bản</param>
+        /// <param name="selectedCount">Số thiết bị được chọn (0 nếu không cần hiển thị)</param>
+        private void SetDockPanelTitle(string baseTitle, int selectedCount = 0)
+        {
+            if (selectedCount > 0)
+            {
+                dockPanel1.Text = $@"{baseTitle} ({selectedCount} thiết bị)";
+            }
+            else
+            {
+                dockPanel1.Text = baseTitle;
+            }
+        }
+
+        /// <summary>
         /// Event handler khi click nút Thêm mới
         /// Mở dockPanel1 với độ rộng = 2/3 độ rộng màn hình và hiển thị ucDeviceDtoAddEdit1
         /// </summary>
@@ -233,6 +246,9 @@ namespace Inventory.Management.DeviceMangement
 
                 // Hiển thị UserControl thêm mới
                 ShowUserControlInDockPanel("AddEdit");
+
+                // Cập nhật tiêu đề theo ngữ cảnh
+                SetDockPanelTitle(@"Thêm mới thiết bị");
             }
             catch (Exception ex)
             {
@@ -284,6 +300,9 @@ namespace Inventory.Management.DeviceMangement
 
                 // Hiển thị UserControl lịch sử nhập - xuất
                 ShowUserControlInDockPanel("StockInOutHistory");
+
+                // Cập nhật tiêu đề theo ngữ cảnh + số lượng
+                SetDockPanelTitle(@"Lịch sử nhập - xuất thiết bị", selectedDevices.Count);
 
                 // Load danh sách thiết bị đã chọn vào SearchLookUpEdit
                 ucDeviceDtoAddStockInOutHistory1.LoadSelectedDevices(selectedDevices);
@@ -339,6 +358,9 @@ namespace Inventory.Management.DeviceMangement
                 // Hiển thị UserControl thêm hình ảnh
                 ShowUserControlInDockPanel("ImageAdd");
 
+                // Cập nhật tiêu đề theo ngữ cảnh + số lượng
+                SetDockPanelTitle(@"Thêm hình ảnh thiết bị", selectedDevices.Count);
+
                 // Load danh sách thiết bị đã chọn vào UserControl
                 ucDeviceImageAdd1.LoadSelectedDevices(selectedDevices);
             }
@@ -392,6 +414,9 @@ namespace Inventory.Management.DeviceMangement
 
                 // Hiển thị UserControl quản lý bảo hành
                 ShowUserControlInDockPanel("Warranty");
+
+                // Cập nhật tiêu đề theo ngữ cảnh + số lượng
+                SetDockPanelTitle(@"Quản lý bảo hành thiết bị", selectedDevices.Count);
 
                 // Load danh sách thiết bị đã chọn vào UserControl
                 ucDeviceWarranty1.LoadSelectedDevices(selectedDevices);

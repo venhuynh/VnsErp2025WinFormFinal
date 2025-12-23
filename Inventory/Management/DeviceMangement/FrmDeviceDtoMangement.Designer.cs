@@ -72,6 +72,7 @@
             this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
             this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.barSubItem2 = new DevExpress.XtraBars.BarSubItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -115,9 +116,10 @@
             this.ThemLichSuNhapXuatThietBiBarButtonItem,
             this.ThemHinhAnhBarButtonItem,
             this.ThemBaoHanhBarButtonItem,
-            this.barButtonItem1});
+            this.barButtonItem1,
+            this.barSubItem2});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 14;
+            this.barManager1.MaxItemId = 15;
             this.barManager1.StatusBar = this.bar1;
             // 
             // bar2
@@ -133,7 +135,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SuaBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem2)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -525,6 +528,12 @@
             // 
             this.NotesMemoEdit.Name = "NotesMemoEdit";
             // 
+            // barSubItem2
+            // 
+            this.barSubItem2.Caption = "Điều chỉnh";
+            this.barSubItem2.Id = 14;
+            this.barSubItem2.Name = "barSubItem2";
+            // 
             // FrmDeviceDtoMangement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -603,5 +612,6 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
         private DevExpress.XtraBars.BarButtonItem ThemBaoHanhBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        private DevExpress.XtraBars.BarSubItem barSubItem2;
     }
 }

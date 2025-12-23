@@ -87,6 +87,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.Designer.cs">
+      <DependentUpon>FrmDeviceQrManagement.cs</DependentUpon>
+    </Compile>
     <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.cs">
       <SubType>UserControl</SubType>
     </Compile>
