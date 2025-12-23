@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -1027,10 +1028,25 @@ public static class AssetDtoConverter
         // Warranty
         if (entity.Warranty != null)
         {
-            // Warranty không có WarrantyName, sử dụng UniqueProductInfo hoặc tạo display string
-            if (!string.IsNullOrWhiteSpace(entity.Warranty.UniqueProductInfo))
+            // Warranty không có WarrantyName, sử dụng DeviceInfo từ Device hoặc tạo display string
+            var warrantyDeviceInfoParts = new List<string>();
+            if (entity.Warranty.Device != null)
             {
-                dto.WarrantyName = entity.Warranty.UniqueProductInfo;
+                if (!string.IsNullOrWhiteSpace(entity.Warranty.Device.SerialNumber))
+                    warrantyDeviceInfoParts.Add($"S/N: {entity.Warranty.Device.SerialNumber}");
+                if (!string.IsNullOrWhiteSpace(entity.Warranty.Device.IMEI))
+                    warrantyDeviceInfoParts.Add($"IMEI: {entity.Warranty.Device.IMEI}");
+                if (!string.IsNullOrWhiteSpace(entity.Warranty.Device.MACAddress))
+                    warrantyDeviceInfoParts.Add($"MAC: {entity.Warranty.Device.MACAddress}");
+                if (!string.IsNullOrWhiteSpace(entity.Warranty.Device.AssetTag))
+                    warrantyDeviceInfoParts.Add($"Asset: {entity.Warranty.Device.AssetTag}");
+                if (!string.IsNullOrWhiteSpace(entity.Warranty.Device.LicenseKey))
+                    warrantyDeviceInfoParts.Add($"License: {entity.Warranty.Device.LicenseKey}");
+            }
+            
+            if (warrantyDeviceInfoParts.Any())
+            {
+                dto.WarrantyName = string.Join(" | ", warrantyDeviceInfoParts);
             }
             else if (entity.Warranty.WarrantyUntil.HasValue)
             {

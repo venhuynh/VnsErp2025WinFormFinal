@@ -37,9 +37,11 @@
             this.ThemMoiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemLichSuNhapXuatThietBiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ThemBaoHanhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.SuaBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XoaBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -52,11 +54,15 @@
             this.dockPanel1 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.ucDeviceWarranty1 = new Inventory.Management.DeviceMangement.UcDeviceWarranty();
+            this.ucDeviceImageAdd1 = new Inventory.Management.DeviceMangement.UcDeviceImageAdd();
             this.ucDeviceDtoAddStockInOutHistory1 = new Inventory.Management.DeviceMangement.UcDeviceDtoAddStockInOutHistory();
             this.ucDeviceDtoAddEdit1 = new Inventory.Management.DeviceMangement.UcDeviceDtoAddEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             this.DeviceDtoGridViewGridControl = new DevExpress.XtraGrid.GridControl();
             this.deviceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.DeviceDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -66,8 +72,6 @@
             this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
             this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
-            this.ucDeviceImageAdd1 = new Inventory.Management.DeviceMangement.UcDeviceImageAdd();
-            this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -77,13 +81,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridViewGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -108,9 +113,11 @@
             this.SelectedRowBarStaticItem,
             this.barSubItem1,
             this.ThemLichSuNhapXuatThietBiBarButtonItem,
-            this.ThemHinhAnhBarButtonItem});
+            this.ThemHinhAnhBarButtonItem,
+            this.ThemBaoHanhBarButtonItem,
+            this.barButtonItem1});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 12;
+            this.barManager1.MaxItemId = 14;
             this.barManager1.StatusBar = this.bar1;
             // 
             // bar2
@@ -125,7 +132,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barSubItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SuaBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.barButtonItem1, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -147,12 +155,13 @@
             this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemMoiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(this.ThemLichSuNhapXuatThietBiBarButtonItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.ThemHinhAnhBarButtonItem)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.ThemHinhAnhBarButtonItem),
+            new DevExpress.XtraBars.LinkPersistInfo(this.ThemBaoHanhBarButtonItem)});
             this.barSubItem1.Name = "barSubItem1";
             // 
             // ThemMoiBarButtonItem
             // 
-            this.ThemMoiBarButtonItem.Caption = "Thêm thiết bị";
+            this.ThemMoiBarButtonItem.Caption = "Tài sản - thiết bị";
             this.ThemMoiBarButtonItem.Id = 2;
             this.ThemMoiBarButtonItem.Name = "ThemMoiBarButtonItem";
             // 
@@ -164,9 +173,15 @@
             // 
             // ThemHinhAnhBarButtonItem
             // 
-            this.ThemHinhAnhBarButtonItem.Caption = "Thêm hình ảnh";
+            this.ThemHinhAnhBarButtonItem.Caption = "Hình ảnh";
             this.ThemHinhAnhBarButtonItem.Id = 11;
             this.ThemHinhAnhBarButtonItem.Name = "ThemHinhAnhBarButtonItem";
+            // 
+            // ThemBaoHanhBarButtonItem
+            // 
+            this.ThemBaoHanhBarButtonItem.Caption = "Bảo hành";
+            this.ThemBaoHanhBarButtonItem.Id = 12;
+            this.ThemBaoHanhBarButtonItem.Name = "ThemBaoHanhBarButtonItem";
             // 
             // SuaBarButtonItem
             // 
@@ -189,6 +204,13 @@
             this.ExportFileBarButtonItem.Id = 5;
             this.ExportFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.exporttoxps_16x16;
             this.ExportFileBarButtonItem.Name = "ExportFileBarButtonItem";
+            // 
+            // barButtonItem1
+            // 
+            this.barButtonItem1.Caption = "Mã quản lý";
+            this.barButtonItem1.Id = 13;
+            this.barButtonItem1.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
+            this.barButtonItem1.Name = "barButtonItem1";
             // 
             // bar1
             // 
@@ -232,31 +254,31 @@
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1357, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(1357, 39);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 661);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 648);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1357, 22);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1357, 35);
             // 
             // barDockControlLeft
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 637);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 609);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1357, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(1357, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 637);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 609);
             // 
             // dockManager1
             // 
@@ -283,22 +305,23 @@
             this.dockPanel1.Controls.Add(this.dockPanel1_Container);
             this.dockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Right;
             this.dockPanel1.ID = new System.Guid("0c476c5c-6d27-493e-8a8e-c8d2ad65a997");
-            this.dockPanel1.Location = new System.Drawing.Point(914, 24);
+            this.dockPanel1.Location = new System.Drawing.Point(914, 39);
             this.dockPanel1.Name = "dockPanel1";
             this.dockPanel1.OriginalSize = new System.Drawing.Size(443, 200);
-            this.dockPanel1.Size = new System.Drawing.Size(443, 637);
+            this.dockPanel1.Size = new System.Drawing.Size(443, 609);
             this.dockPanel1.Text = "dockPanel1";
             // 
             // dockPanel1_Container
             // 
             this.dockPanel1_Container.Controls.Add(this.layoutControl1);
-            this.dockPanel1_Container.Location = new System.Drawing.Point(4, 26);
+            this.dockPanel1_Container.Location = new System.Drawing.Point(4, 38);
             this.dockPanel1_Container.Name = "dockPanel1_Container";
-            this.dockPanel1_Container.Size = new System.Drawing.Size(436, 608);
+            this.dockPanel1_Container.Size = new System.Drawing.Size(436, 568);
             this.dockPanel1_Container.TabIndex = 0;
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.ucDeviceWarranty1);
             this.layoutControl1.Controls.Add(this.ucDeviceImageAdd1);
             this.layoutControl1.Controls.Add(this.ucDeviceDtoAddStockInOutHistory1);
             this.layoutControl1.Controls.Add(this.ucDeviceDtoAddEdit1);
@@ -306,22 +329,36 @@
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(436, 608);
+            this.layoutControl1.Size = new System.Drawing.Size(436, 568);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
+            // ucDeviceWarranty1
+            // 
+            this.ucDeviceWarranty1.Location = new System.Drawing.Point(16, 278);
+            this.ucDeviceWarranty1.Name = "ucDeviceWarranty1";
+            this.ucDeviceWarranty1.Size = new System.Drawing.Size(404, 1);
+            this.ucDeviceWarranty1.TabIndex = 7;
+            // 
+            // ucDeviceImageAdd1
+            // 
+            this.ucDeviceImageAdd1.Location = new System.Drawing.Point(16, 454);
+            this.ucDeviceImageAdd1.Name = "ucDeviceImageAdd1";
+            this.ucDeviceImageAdd1.Size = new System.Drawing.Size(404, 98);
+            this.ucDeviceImageAdd1.TabIndex = 6;
+            // 
             // ucDeviceDtoAddStockInOutHistory1
             // 
-            this.ucDeviceDtoAddStockInOutHistory1.Location = new System.Drawing.Point(12, 306);
+            this.ucDeviceDtoAddStockInOutHistory1.Location = new System.Drawing.Point(16, 285);
             this.ucDeviceDtoAddStockInOutHistory1.Name = "ucDeviceDtoAddStockInOutHistory1";
-            this.ucDeviceDtoAddStockInOutHistory1.Size = new System.Drawing.Size(412, 198);
+            this.ucDeviceDtoAddStockInOutHistory1.Size = new System.Drawing.Size(404, 163);
             this.ucDeviceDtoAddStockInOutHistory1.TabIndex = 5;
             // 
             // ucDeviceDtoAddEdit1
             // 
-            this.ucDeviceDtoAddEdit1.Location = new System.Drawing.Point(12, 12);
+            this.ucDeviceDtoAddEdit1.Location = new System.Drawing.Point(16, 16);
             this.ucDeviceDtoAddEdit1.Name = "ucDeviceDtoAddEdit1";
-            this.ucDeviceDtoAddEdit1.Size = new System.Drawing.Size(412, 290);
+            this.ucDeviceDtoAddEdit1.Size = new System.Drawing.Size(404, 256);
             this.ucDeviceDtoAddEdit1.TabIndex = 4;
             // 
             // Root
@@ -331,9 +368,10 @@
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1,
             this.layoutControlItem2,
-            this.layoutControlItem3});
+            this.layoutControlItem3,
+            this.layoutControlItem4});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(436, 608);
+            this.Root.Size = new System.Drawing.Size(436, 568);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -341,22 +379,38 @@
             this.layoutControlItem1.Control = this.ucDeviceDtoAddEdit1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(416, 294);
+            this.layoutControlItem1.Size = new System.Drawing.Size(410, 262);
             this.layoutControlItem1.TextVisible = false;
             // 
             // layoutControlItem2
             // 
             this.layoutControlItem2.Control = this.ucDeviceDtoAddStockInOutHistory1;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 294);
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 269);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(416, 202);
+            this.layoutControlItem2.Size = new System.Drawing.Size(410, 169);
             this.layoutControlItem2.TextVisible = false;
+            // 
+            // layoutControlItem3
+            // 
+            this.layoutControlItem3.Control = this.ucDeviceImageAdd1;
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 438);
+            this.layoutControlItem3.Name = "layoutControlItem3";
+            this.layoutControlItem3.Size = new System.Drawing.Size(410, 104);
+            this.layoutControlItem3.TextVisible = false;
+            // 
+            // layoutControlItem4
+            // 
+            this.layoutControlItem4.Control = this.ucDeviceWarranty1;
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 262);
+            this.layoutControlItem4.Name = "layoutControlItem4";
+            this.layoutControlItem4.Size = new System.Drawing.Size(410, 7);
+            this.layoutControlItem4.TextVisible = false;
             // 
             // DeviceDtoGridViewGridControl
             // 
             this.DeviceDtoGridViewGridControl.DataSource = this.deviceDtoBindingSource;
             this.DeviceDtoGridViewGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DeviceDtoGridViewGridControl.Location = new System.Drawing.Point(0, 24);
+            this.DeviceDtoGridViewGridControl.Location = new System.Drawing.Point(0, 39);
             this.DeviceDtoGridViewGridControl.MainView = this.DeviceDtoGridView;
             this.DeviceDtoGridViewGridControl.MenuManager = this.barManager1;
             this.DeviceDtoGridViewGridControl.Name = "DeviceDtoGridViewGridControl";
@@ -364,7 +418,7 @@
             this.HtmlRepositoryItemHypertextLabel,
             this.NotesMemoEdit,
             this.StatusComboBox});
-            this.DeviceDtoGridViewGridControl.Size = new System.Drawing.Size(914, 637);
+            this.DeviceDtoGridViewGridControl.Size = new System.Drawing.Size(914, 609);
             this.DeviceDtoGridViewGridControl.TabIndex = 5;
             this.DeviceDtoGridViewGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.DeviceDtoGridView});
@@ -391,7 +445,7 @@
             this.DeviceDtoGridView.OptionsView.RowAutoHeight = true;
             this.DeviceDtoGridView.OptionsView.ShowGroupPanel = false;
             this.DeviceDtoGridView.OptionsView.ShowViewCaption = true;
-            this.DeviceDtoGridView.ViewCaption = "QUẢN LÝ TÀI SẢN";
+            this.DeviceDtoGridView.ViewCaption = "QUẢN LÝ TÀI SẢN - THIẾT BỊ";
             // 
             // colHtmlInfo
             // 
@@ -471,21 +525,6 @@
             // 
             this.NotesMemoEdit.Name = "NotesMemoEdit";
             // 
-            // ucDeviceImageAdd1
-            // 
-            this.ucDeviceImageAdd1.Location = new System.Drawing.Point(12, 508);
-            this.ucDeviceImageAdd1.Name = "ucDeviceImageAdd1";
-            this.ucDeviceImageAdd1.Size = new System.Drawing.Size(412, 88);
-            this.ucDeviceImageAdd1.TabIndex = 6;
-            // 
-            // layoutControlItem3
-            // 
-            this.layoutControlItem3.Control = this.ucDeviceImageAdd1;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 496);
-            this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(416, 92);
-            this.layoutControlItem3.TextVisible = false;
-            // 
             // FrmDeviceDtoMangement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -498,7 +537,7 @@
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
             this.Name = "FrmDeviceDtoMangement";
-            this.Text = "Quản lý tài sản";
+            this.Text = "QUẢN LÝ TÀI SẢN - THIẾT BỊ";
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             this.dockPanel1.ResumeLayout(false);
@@ -508,13 +547,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridViewGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -559,5 +599,9 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private UcDeviceImageAdd ucDeviceImageAdd1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
+        private UcDeviceWarranty ucDeviceWarranty1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
+        private DevExpress.XtraBars.BarButtonItem ThemBaoHanhBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
     }
 }

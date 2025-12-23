@@ -1417,9 +1417,25 @@ namespace Inventory.StockOut.XuatLapRap
                     if (!string.IsNullOrWhiteSpace(device.MACAddress))
                         ghiChuParts.Add($"MAC: {device.MACAddress}");
                 }
-                if (warranty != null && !string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+                // Thêm thông tin bảo hành từ DeviceInfo
+                if (warranty != null && warranty.Device != null)
                 {
-                    ghiChuParts.Add($"Bảo hành: {warranty.UniqueProductInfo}");
+                    var warrantyDeviceInfoParts = new List<string>();
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.SerialNumber))
+                        warrantyDeviceInfoParts.Add($"S/N: {warranty.Device.SerialNumber}");
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.IMEI))
+                        warrantyDeviceInfoParts.Add($"IMEI: {warranty.Device.IMEI}");
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.MACAddress))
+                        warrantyDeviceInfoParts.Add($"MAC: {warranty.Device.MACAddress}");
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.AssetTag))
+                        warrantyDeviceInfoParts.Add($"Asset: {warranty.Device.AssetTag}");
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.LicenseKey))
+                        warrantyDeviceInfoParts.Add($"License: {warranty.Device.LicenseKey}");
+                    
+                    if (warrantyDeviceInfoParts.Any())
+                    {
+                        ghiChuParts.Add($"Bảo hành: {string.Join(" | ", warrantyDeviceInfoParts)}");
+                    }
                 }
                 
                 if (ghiChuParts.Any())

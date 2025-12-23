@@ -771,8 +771,6 @@ namespace Dal.DataContext
 		
 		private int _WarrantyStatus;
 		
-		private string _UniqueProductInfo;
-		
 		private bool _IsActive;
 		
 		private System.DateTime _CreatedDate;
@@ -788,8 +786,6 @@ namespace Dal.DataContext
 		private System.Nullable<System.Guid> _DeviceId;
 		
 		private EntitySet<Asset> _Assets;
-		
-		private EntitySet<Device> _Devices;
 		
 		private EntityRef<ApplicationUser> _ApplicationUser;
 		
@@ -813,8 +809,6 @@ namespace Dal.DataContext
     partial void OnWarrantyUntilChanged();
     partial void OnWarrantyStatusChanging(int value);
     partial void OnWarrantyStatusChanged();
-    partial void OnUniqueProductInfoChanging(string value);
-    partial void OnUniqueProductInfoChanged();
     partial void OnIsActiveChanging(bool value);
     partial void OnIsActiveChanged();
     partial void OnCreatedDateChanging(System.DateTime value);
@@ -834,7 +828,6 @@ namespace Dal.DataContext
 		public Warranty()
 		{
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
-			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._ApplicationUser = default(EntityRef<ApplicationUser>);
 			this._ApplicationUser1 = default(EntityRef<ApplicationUser>);
 			this._Device = default(EntityRef<Device>);
@@ -957,26 +950,6 @@ namespace Dal.DataContext
 					this._WarrantyStatus = value;
 					this.SendPropertyChanged("WarrantyStatus");
 					this.OnWarrantyStatusChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UniqueProductInfo", DbType="NVarChar(200) NOT NULL", CanBeNull=false)]
-		public string UniqueProductInfo
-		{
-			get
-			{
-				return this._UniqueProductInfo;
-			}
-			set
-			{
-				if ((this._UniqueProductInfo != value))
-				{
-					this.OnUniqueProductInfoChanging(value);
-					this.SendPropertyChanging();
-					this._UniqueProductInfo = value;
-					this.SendPropertyChanged("UniqueProductInfo");
-					this.OnUniqueProductInfoChanged();
 				}
 			}
 		}
@@ -1146,19 +1119,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Device", Storage="_Devices", ThisKey="Id", OtherKey="WarrantyId")]
-		public EntitySet<Device> Devices
-		{
-			get
-			{
-				return this._Devices;
-			}
-			set
-			{
-				this._Devices.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_Warranty", Storage="_ApplicationUser", ThisKey="CreatedBy", OtherKey="Id", IsForeignKey=true)]
 		public ApplicationUser ApplicationUser
 		{
@@ -1288,18 +1248,6 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_Assets(Asset entity)
-		{
-			this.SendPropertyChanging();
-			entity.Warranty = null;
-		}
-		
-		private void attach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Warranty = this;
-		}
-		
-		private void detach_Devices(Device entity)
 		{
 			this.SendPropertyChanging();
 			entity.Warranty = null;
@@ -8420,8 +8368,6 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _StockInOutDetailId;
 		
-		private System.Nullable<System.Guid> _WarrantyId;
-		
 		private string _SerialNumber;
 		
 		private string _MACAddress;
@@ -8462,8 +8408,6 @@ namespace Dal.DataContext
 		
 		private EntitySet<DeviceTransfer> _DeviceTransfers;
 		
-		private EntityRef<Warranty> _Warranty;
-		
 		private EntityRef<ProductVariant> _ProductVariant;
 		
 		private EntityRef<StockInOutDetail> _StockInOutDetail;
@@ -8478,8 +8422,6 @@ namespace Dal.DataContext
     partial void OnProductVariantIdChanged();
     partial void OnStockInOutDetailIdChanging(System.Nullable<System.Guid> value);
     partial void OnStockInOutDetailIdChanged();
-    partial void OnWarrantyIdChanging(System.Nullable<System.Guid> value);
-    partial void OnWarrantyIdChanged();
     partial void OnSerialNumberChanging(string value);
     partial void OnSerialNumberChanged();
     partial void OnMACAddressChanging(string value);
@@ -8519,7 +8461,6 @@ namespace Dal.DataContext
 			this._DeviceImages = new EntitySet<DeviceImage>(new Action<DeviceImage>(this.attach_DeviceImages), new Action<DeviceImage>(this.detach_DeviceImages));
 			this._DeviceTransactionHistories = new EntitySet<DeviceTransactionHistory>(new Action<DeviceTransactionHistory>(this.attach_DeviceTransactionHistories), new Action<DeviceTransactionHistory>(this.detach_DeviceTransactionHistories));
 			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
-			this._Warranty = default(EntityRef<Warranty>);
 			this._ProductVariant = default(EntityRef<ProductVariant>);
 			this._StockInOutDetail = default(EntityRef<StockInOutDetail>);
 			OnCreated();
@@ -8589,30 +8530,6 @@ namespace Dal.DataContext
 					this._StockInOutDetailId = value;
 					this.SendPropertyChanged("StockInOutDetailId");
 					this.OnStockInOutDetailIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> WarrantyId
-		{
-			get
-			{
-				return this._WarrantyId;
-			}
-			set
-			{
-				if ((this._WarrantyId != value))
-				{
-					if (this._Warranty.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnWarrantyIdChanging(value);
-					this.SendPropertyChanging();
-					this._WarrantyId = value;
-					this.SendPropertyChanged("WarrantyId");
-					this.OnWarrantyIdChanged();
 				}
 			}
 		}
@@ -8979,40 +8896,6 @@ namespace Dal.DataContext
 			set
 			{
 				this._DeviceTransfers.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Device", Storage="_Warranty", ThisKey="WarrantyId", OtherKey="Id", IsForeignKey=true)]
-		public Warranty Warranty
-		{
-			get
-			{
-				return this._Warranty.Entity;
-			}
-			set
-			{
-				Warranty previousValue = this._Warranty.Entity;
-				if (((previousValue != value) 
-							|| (this._Warranty.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Warranty.Entity = null;
-						previousValue.Devices.Remove(this);
-					}
-					this._Warranty.Entity = value;
-					if ((value != null))
-					{
-						value.Devices.Add(this);
-						this._WarrantyId = value.Id;
-					}
-					else
-					{
-						this._WarrantyId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("Warranty");
-				}
 			}
 		}
 		

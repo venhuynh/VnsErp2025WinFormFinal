@@ -21,7 +21,6 @@
       <Column Name="MonthOfWarranty" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="WarrantyUntil" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="WarrantyStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="UniqueProductInfo" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
       <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
@@ -30,7 +29,6 @@
       <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
       <Column Name="DeviceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="Warranty_Asset" Member="Assets" ThisKey="Id" OtherKey="WarrantyId" Type="Asset" />
-      <Association Name="Warranty_Device" Member="Devices" ThisKey="Id" OtherKey="WarrantyId" Type="Device" />
       <Association Name="ApplicationUser_Warranty" Member="ApplicationUser" ThisKey="CreatedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
       <Association Name="ApplicationUser_Warranty1" Member="ApplicationUser1" ThisKey="UpdatedBy" OtherKey="Id" Type="ApplicationUser" IsForeignKey="true" />
       <Association Name="Device_Warranty" Member="Device" ThisKey="DeviceId" OtherKey="Id" Type="Device" IsForeignKey="true" />
@@ -339,7 +337,6 @@
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="ProductVariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="StockInOutDetailId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="WarrantyId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="SerialNumber" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="MACAddress" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="IMEI" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
@@ -360,7 +357,6 @@
       <Association Name="Device_DeviceImage" Member="DeviceImages" ThisKey="Id" OtherKey="DeviceId" Type="DeviceImage" />
       <Association Name="Device_DeviceTransactionHistory" Member="DeviceTransactionHistories" ThisKey="Id" OtherKey="DeviceId" Type="DeviceTransactionHistory" />
       <Association Name="Device_DeviceTransfer" Member="DeviceTransfers" ThisKey="Id" OtherKey="DeviceId" Type="DeviceTransfer" />
-      <Association Name="Warranty_Device" Member="Warranty" ThisKey="WarrantyId" OtherKey="Id" Type="Warranty" IsForeignKey="true" />
       <Association Name="ProductVariant_Device" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
       <Association Name="StockInOutDetail_Device" Member="StockInOutDetail" ThisKey="StockInOutDetailId" OtherKey="Id" Type="StockInOutDetail" IsForeignKey="true" />
     </Type>

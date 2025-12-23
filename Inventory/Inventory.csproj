@@ -105,6 +105,12 @@
     <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.Designer.cs">
       <DependentUpon>UcDeviceDtoAddStockInOutHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.Designer.cs">
+      <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
+    </Compile>
     <Compile Include="Management\FrmAssetDtoManagement.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -442,6 +448,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.resx">
       <DependentUpon>UcDeviceDtoAddStockInOutHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceWarranty.resx">
+      <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Management\FrmAssetDtoManagement.resx">
       <DependentUpon>FrmAssetDtoManagement.cs</DependentUpon>
@@ -817,6 +826,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\addheader_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\QRCode.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -329,6 +329,13 @@ public class DeviceDto
     public string ProductVariantCode { get; set; }
 
     /// <summary>
+    /// Tên đơn vị tính (lấy từ ProductVariant.UnitOfMeasure.Name)
+    /// </summary>
+    [DisplayName("Đơn vị tính")]
+    [Display(Order = 102)]
+    public string UnitName { get; set; }
+
+    /// <summary>
     /// Tên trạng thái thiết bị (hiển thị)
     /// </summary>
     [DisplayName("Trạng thái thiết bị")]
@@ -341,6 +348,34 @@ public class DeviceDto
     [DisplayName("Loại thiết bị")]
     [Display(Order = 107)]
     public string DeviceTypeName { get; set; }
+
+    /// <summary>
+    /// Thông tin bảo hành - Loại bảo hành (hiển thị)
+    /// </summary>
+    [DisplayName("Loại BH")]
+    [Display(Order = 108)]
+    public string WarrantyTypeName { get; set; }
+
+    /// <summary>
+    /// Thông tin bảo hành - Trạng thái bảo hành (hiển thị)
+    /// </summary>
+    [DisplayName("Trạng thái BH")]
+    [Display(Order = 109)]
+    public string WarrantyStatusName { get; set; }
+
+    /// <summary>
+    /// Thông tin bảo hành - Ngày bắt đầu
+    /// </summary>
+    [DisplayName("Ngày bắt đầu BH")]
+    [Display(Order = 110)]
+    public DateTime? WarrantyFrom { get; set; }
+
+    /// <summary>
+    /// Thông tin bảo hành - Ngày kết thúc
+    /// </summary>
+    [DisplayName("Ngày kết thúc BH")]
+    [Display(Order = 111)]
+    public DateTime? WarrantyUntil { get; set; }
 
     /// <summary>
     /// Tổng hợp thông tin thiết bị dưới dạng HTML (chỉ đọc)
@@ -362,12 +397,23 @@ public class DeviceDto
             if (!string.IsNullOrWhiteSpace(productVariantName))
             {
                 html += $"<color='blue'>{productVariantName}</color>";
-                if (!string.IsNullOrWhiteSpace(ProductVariantCode))
-                {
-                    html += $" <color='#757575'>({ProductVariantCode})</color>";
-                }
                 html += "<br>";
             }
+
+            // Mã biến thể và đơn vị tính
+            //var variantInfoParts = new List<string>();
+            //if (!string.IsNullOrWhiteSpace(ProductVariantCode))
+            //{
+            //    variantInfoParts.Add($"Mã: {ProductVariantCode}");
+            //}
+            //if (!string.IsNullOrWhiteSpace(UnitName))
+            //{
+            //    variantInfoParts.Add($"ĐVT: {UnitName}");
+            //}
+            //if (variantInfoParts.Any())
+            //{
+            //    html += $"<color='#757575'>{string.Join(" | ", variantInfoParts)}</color><br>";
+            //}
 
             // Định danh thiết bị (Serial Number, IMEI, MAC, v.v.)
             var identifierParts = new List<string>();
@@ -388,7 +434,30 @@ public class DeviceDto
 
             if (identifierParts.Any())
             {
-                html += $"<color='#757575'>Định danh:</color> <color='#212121'>{string.Join(" | ", identifierParts)}</color><br>";
+                html += $"<color='#757575'>Định danh:</color> <b><color='blue'>{string.Join(" | ", identifierParts)}</color></b><br>";
+            }
+
+            // Thông tin bảo hành
+            var warrantyParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(WarrantyTypeName))
+            {
+                warrantyParts.Add($"Loại: {WarrantyTypeName}");
+            }
+            if (!string.IsNullOrWhiteSpace(WarrantyStatusName))
+            {
+                warrantyParts.Add($"Trạng thái: {WarrantyStatusName}");
+            }
+            if (WarrantyFrom.HasValue)
+            {
+                warrantyParts.Add($"Từ: {WarrantyFrom.Value:dd/MM/yyyy}");
+            }
+            if (WarrantyUntil.HasValue)
+            {
+                warrantyParts.Add($"Đến: {WarrantyUntil.Value:dd/MM/yyyy}");
+            }
+            if (warrantyParts.Any())
+            {
+                html += $"<color='#757575'>Bảo hành:</color> <color='#212121'>{string.Join(" | ", warrantyParts)}</color><br>";
             }
 
             // Thông tin liên kết
@@ -396,24 +465,24 @@ public class DeviceDto
             if (StockInOutDetailId.HasValue)
                 linkParts.Add($"Phiếu: {StockInOutDetailId.Value}");
             if (WarrantyId.HasValue)
-                linkParts.Add($"Bảo hành: {WarrantyId.Value}");
+                linkParts.Add($"BH ID: {WarrantyId.Value}");
 
             if (linkParts.Any())
             {
                 html += $"<color='#757575'>Liên kết:</color> <color='#212121'>{string.Join(" | ", linkParts)}</color><br>";
             }
 
-            // Thông tin audit
-            var auditParts = new List<string>();
-            if (CreatedDate != default(DateTime))
-                auditParts.Add($"Tạo: {CreatedDate:dd/MM/yyyy HH:mm}");
-            if (UpdatedDate.HasValue)
-                auditParts.Add($"Cập nhật: {UpdatedDate.Value:dd/MM/yyyy HH:mm}");
+            //// Thông tin audit
+            //var auditParts = new List<string>();
+            //if (CreatedDate != default(DateTime))
+            //    auditParts.Add($"Tạo: {CreatedDate:dd/MM/yyyy HH:mm}");
+            //if (UpdatedDate.HasValue)
+            //    auditParts.Add($"Cập nhật: {UpdatedDate.Value:dd/MM/yyyy HH:mm}");
 
-            if (auditParts.Any())
-            {
-                html += $"<color='#9E9E9E'>{string.Join(" | ", auditParts)}</color>";
-            }
+            //if (auditParts.Any())
+            //{
+            //    html += $"<color='#9E9E9E'>{string.Join(" | ", auditParts)}</color>";
+            //}
 
             return html;
         }
@@ -499,6 +568,43 @@ public static class DeviceDtoConverter
         {
             dto.ProductVariantName = entity.ProductVariant.VariantFullName;
             dto.ProductVariantCode = entity.ProductVariant.VariantCode;
+            
+            // Lấy thông tin đơn vị tính
+            if (entity.ProductVariant.UnitOfMeasure != null)
+            {
+                dto.UnitName = entity.ProductVariant.UnitOfMeasure.Name;
+            }
+        }
+
+        // Lấy thông tin bảo hành nếu có
+        if (entity.Warranty != null)
+        {
+            var warranty = entity.Warranty;
+            dto.WarrantyFrom = warranty.WarrantyFrom;
+            dto.WarrantyUntil = warranty.WarrantyUntil;
+            
+            // Lấy tên loại bảo hành và trạng thái từ enum
+            if (Enum.IsDefined(typeof(Common.Enums.LoaiBaoHanhEnum), warranty.WarrantyType))
+            {
+                var warrantyType = (Common.Enums.LoaiBaoHanhEnum)warranty.WarrantyType;
+                var warrantyTypeField = warrantyType.GetType().GetField(warrantyType.ToString());
+                if (warrantyTypeField != null)
+                {
+                    var descriptionAttr = warrantyTypeField.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
+                    dto.WarrantyTypeName = descriptionAttr?.Description ?? warrantyType.ToString();
+                }
+            }
+            
+            if (Enum.IsDefined(typeof(Common.Enums.TrangThaiBaoHanhEnum), warranty.WarrantyStatus))
+            {
+                var warrantyStatus = (Common.Enums.TrangThaiBaoHanhEnum)warranty.WarrantyStatus;
+                var warrantyStatusField = warrantyStatus.GetType().GetField(warrantyStatus.ToString());
+                if (warrantyStatusField != null)
+                {
+                    var descriptionAttr = warrantyStatusField.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>();
+                    dto.WarrantyStatusName = descriptionAttr?.Description ?? warrantyStatus.ToString();
+                }
+            }
         }
 
         return dto;

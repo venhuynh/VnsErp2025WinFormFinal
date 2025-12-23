@@ -37,19 +37,19 @@ namespace Inventory.Management.DeviceMangement
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.deviceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.OpenSelectImageHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog(this.components);
+            this.deviceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -64,24 +64,20 @@ namespace Inventory.Management.DeviceMangement
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
-            // deviceDtoBindingSource
-            // 
-            this.deviceDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.DeviceDto);
-            // 
             // LogTextBox
             // 
-            this.LogTextBox.Location = new System.Drawing.Point(12, 56);
+            this.LogTextBox.Location = new System.Drawing.Point(16, 62);
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.LogTextBox.Size = new System.Drawing.Size(570, 210);
+            this.LogTextBox.Size = new System.Drawing.Size(562, 200);
             this.LogTextBox.TabIndex = 4;
             // 
             // OpenSelectImageHyperlinkLabelControl
             // 
             this.OpenSelectImageHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
             this.OpenSelectImageHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.opendoc_16x16;
-            this.OpenSelectImageHyperlinkLabelControl.Location = new System.Drawing.Point(242, 12);
+            this.OpenSelectImageHyperlinkLabelControl.Location = new System.Drawing.Point(242, 16);
             this.OpenSelectImageHyperlinkLabelControl.Name = "OpenSelectImageHyperlinkLabelControl";
             this.OpenSelectImageHyperlinkLabelControl.Padding = new System.Windows.Forms.Padding(10);
             this.OpenSelectImageHyperlinkLabelControl.Size = new System.Drawing.Size(110, 40);
@@ -107,20 +103,24 @@ namespace Inventory.Management.DeviceMangement
             this.layoutControlItem2.Control = this.OpenSelectImageHyperlinkLabelControl;
             this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(574, 44);
+            this.layoutControlItem2.Size = new System.Drawing.Size(568, 46);
             this.layoutControlItem2.TextVisible = false;
             // 
             // layoutControlItem3
             // 
             this.layoutControlItem3.Control = this.LogTextBox;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 44);
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 46);
             this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(574, 214);
+            this.layoutControlItem3.Size = new System.Drawing.Size(568, 206);
             this.layoutControlItem3.TextVisible = false;
             // 
             // xtraOpenFileDialog1
             // 
             this.xtraOpenFileDialog1.FileName = "xtraOpenFileDialog1";
+            // 
+            // deviceDtoBindingSource
+            // 
+            this.deviceDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.DeviceDto);
             // 
             // UcDeviceImageAdd
             // 
@@ -131,10 +131,11 @@ namespace Inventory.Management.DeviceMangement
             this.Size = new System.Drawing.Size(594, 278);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).EndInit();
+            this.layoutControl1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }

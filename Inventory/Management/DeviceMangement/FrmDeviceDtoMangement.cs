@@ -89,6 +89,9 @@ namespace Inventory.Management.DeviceMangement
             // Event khi click nút Thêm hình ảnh
             ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
 
+            // Event khi click nút Bảo hành
+            ThemBaoHanhBarButtonItem.ItemClick += ThemBaoHanhBarButtonItem_ItemClick;
+
             // Event khi click nút Xem (reload dữ liệu)
             XemBarButtonItem.ItemClick += XemBarButtonItem_ItemClick;
 
@@ -326,6 +329,60 @@ namespace Inventory.Management.DeviceMangement
             {
                 _logger.Error("ThemHinhAnhBarButtonItem_ItemClick: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi mở màn hình thêm hình ảnh: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi click nút Bảo hành
+        /// Mở dockPanel1 với độ rộng = 2/3 độ rộng màn hình và hiển thị ucDeviceWarranty1
+        /// Chỉ thực hiện khi có thiết bị được chọn
+        /// </summary>
+        private void ThemBaoHanhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Kiểm tra xem có thiết bị nào được chọn không
+                var selectedRows = DeviceDtoGridView.GetSelectedRows();
+                if (selectedRows == null || selectedRows.Length == 0)
+                {
+                    MsgBox.ShowWarning("Vui lòng chọn thiết bị để quản lý bảo hành.", "Chưa chọn thiết bị");
+                    return;
+                }
+
+                // Lấy tất cả các thiết bị được chọn
+                var selectedDevices = new List<DeviceDto>();
+                foreach (var rowHandle in selectedRows)
+                {
+                    if (rowHandle < 0) continue;
+
+                    var device = DeviceDtoGridView.GetRow(rowHandle) as DeviceDto;
+                    if (device != null)
+                    {
+                        selectedDevices.Add(device);
+                    }
+                }
+
+                if (selectedDevices.Count == 0)
+                {
+                    MsgBox.ShowWarning("Không thể lấy thông tin thiết bị được chọn.", "Lỗi");
+                    return;
+                }
+
+                _logger.Debug($"ThemBaoHanhBarButtonItem_ItemClick: Selected {selectedDevices.Count} device(s)");
+
+                // Thiết lập độ rộng dock panel
+                SetupDockPanelWidth();
+
+                // Hiển thị UserControl quản lý bảo hành
+                ShowUserControlInDockPanel("Warranty");
+
+                // Load danh sách thiết bị đã chọn vào UserControl
+                ucDeviceWarranty1.LoadSelectedDevices(selectedDevices);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ThemBaoHanhBarButtonItem_ItemClick: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi mở màn hình quản lý bảo hành: {ex.Message}");
             }
         }
 

@@ -140,20 +140,7 @@ namespace Bll.Inventory.InventoryManagement
 
             _logger.Debug("FindByDeviceId: Tìm bảo hành theo DeviceId, DeviceId={0}", deviceId);
 
-            // Sử dụng DataContext trực tiếp để tìm kiếm
-            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
-            if (string.IsNullOrEmpty(globalConnectionString))
-            {
-                throw new InvalidOperationException(
-                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
-            }
-
-            using var context = new VnsErp2025DataContext(globalConnectionString);
-
-            // Tìm Warranty theo DeviceId
-            var warranty = context.Warranties.FirstOrDefault(w =>
-                w.DeviceId.HasValue && w.DeviceId.Value == deviceId
-            );
+            var warranty = GetDataAccess().FindByDeviceId(deviceId);
 
             if (warranty == null)
             {
@@ -190,53 +177,16 @@ namespace Bll.Inventory.InventoryManagement
 
             _logger.Debug("FindByDeviceInfo: Tìm bảo hành theo DeviceInfo, DeviceInfo={0}", deviceInfo);
 
-            // Sử dụng DataContext trực tiếp để tìm kiếm
-            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
-            if (string.IsNullOrEmpty(globalConnectionString))
-            {
-                throw new InvalidOperationException(
-                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
-            }
-
-            using var context = new VnsErp2025DataContext(globalConnectionString);
-            
-            // Configure eager loading cho navigation properties
-            var loadOptions = new System.Data.Linq.DataLoadOptions();
-            loadOptions.LoadWith<Warranty>(w => w.Device);
-            loadOptions.LoadWith<Device>(d => d.ProductVariant);
-            loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
-            context.LoadOptions = loadOptions;
-            
-            var trimmedInfo = deviceInfo.Trim().ToLower();
-
-            // Tìm Warranty thông qua Device properties
-            // Tìm Device trước, sau đó tìm Warranty theo DeviceId
-            var device = context.Devices.FirstOrDefault(d =>
-                (d.SerialNumber != null && d.SerialNumber.Trim().ToLower() == trimmedInfo) ||
-                (d.IMEI != null && d.IMEI.Trim().ToLower() == trimmedInfo) ||
-                (d.MACAddress != null && d.MACAddress.Trim().ToLower() == trimmedInfo) ||
-                (d.AssetTag != null && d.AssetTag.Trim().ToLower() == trimmedInfo) ||
-                (d.LicenseKey != null && d.LicenseKey.Trim().ToLower() == trimmedInfo)
-            );
-
-            if (device == null)
-            {
-                _logger.Warning("FindByDeviceInfo: Không tìm thấy Device với DeviceInfo, DeviceInfo={0}", deviceInfo);
-                return null;
-            }
-
-            // Tìm Warranty theo DeviceId
-            var warranty = context.Warranties.FirstOrDefault(w =>
-                w.DeviceId.HasValue && w.DeviceId.Value == device.Id
-            );
+            var warranty = GetDataAccess().FindByDeviceInfo(deviceInfo);
 
             if (warranty == null)
             {
-                _logger.Warning("FindByDeviceInfo: Không tìm thấy bảo hành với DeviceId, DeviceId={0}, DeviceInfo={1}", device.Id, deviceInfo);
+                _logger.Warning("FindByDeviceInfo: Không tìm thấy bảo hành với DeviceInfo, DeviceInfo={0}", deviceInfo);
             }
             else
             {
-                _logger.Info("FindByDeviceInfo: Tìm thấy bảo hành, WarrantyId={0}, DeviceId={1}, DeviceInfo={2}", warranty.Id, device.Id, deviceInfo);
+                _logger.Info("FindByDeviceInfo: Tìm thấy bảo hành, WarrantyId={0}, DeviceId={1}, DeviceInfo={2}", 
+                    warranty.Id, warranty.DeviceId, deviceInfo);
             }
 
             return warranty;

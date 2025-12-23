@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Common.Enums;
+using Dal.DataContext;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using Dal.DataContext;
-using DTO.Inventory.StockIn;
-using Common.Enums;
 
 namespace DTO.Inventory.InventoryManagement;
 
@@ -189,13 +188,89 @@ public class WarrantyDto
     }
 
     /// <summary>
+    /// Thông tin bảo hành dưới dạng HTML (chỉ đọc)
+    /// Hiển thị: thông tin định danh thiết bị, loại bảo hành, trạng thái bảo hành, từ ngày/đến ngày/thời gian bảo hành, tình trạng bảo hành
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
+    /// </summary>
+    [DisplayName("Thông tin BH HTML")]
+    [Display(Order = 15)]
+    [Description("Thông tin bảo hành dưới dạng HTML")]
+    public string WarrantyInfoHtml
+    {
+        get
+        {
+            var warrantyStatusName = WarrantyStatusName ?? string.Empty;
+            var warrantyStatusText = WarrantyStatusText ?? string.Empty;
+
+            // Xác định màu sắc cho trạng thái bảo hành
+            var statusColor = GetWarrantyStatusColor(WarrantyStatus);
+            
+            // Xác định màu sắc cho loại bảo hành
+            var typeColor = GetWarrantyTypeColor(WarrantyType);
+                
+            // Xác định màu sắc cho tình trạng (còn/hết hạn)
+            var statusTextColor = IsWarrantyExpired ? "red" : "green";
+
+            var html = string.Empty;
+
+            // Thông tin định danh thiết bị (SerialNumber, IMEI, MACAddress, AssetTag, LicenseKey)
+            var deviceInfo = DeviceInfo ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(deviceInfo))
+            {
+                html += $"<size=10><color='#757575'>Thiết bị:</color></size> <size=11><color='blue'><b>{deviceInfo}</b></color></size><br>";
+            }
+
+            // Loại bảo hành với màu sắc tương ứng
+            var warrantyTypeName = WarrantyTypeName ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(warrantyTypeName))
+            {
+                html += $"<size=10><color='#757575'>Loại BH:</color></size> <size=11><color='{typeColor}'><b>{warrantyTypeName}</b></color></size><br>";
+            }
+
+            // Trạng thái bảo hành với màu sắc tương ứng
+            if (!string.IsNullOrWhiteSpace(warrantyStatusName))
+            {
+                html += $"<size=10><color='#757575'>Trạng thái:</color></size> <size=11><color='{statusColor}'><b>{warrantyStatusName}</b></color></size><br>";
+            }
+
+            // Thời gian bảo hành (Từ ngày, đến ngày, số tháng)
+            var timeParts = new List<string>();
+            if (WarrantyFrom.HasValue)
+            {
+                timeParts.Add($"Từ: {WarrantyFrom.Value:dd/MM/yyyy}");
+            }
+            if (WarrantyUntil.HasValue)
+            {
+                timeParts.Add($"Đến: {WarrantyUntil.Value:dd/MM/yyyy}");
+            }
+            if (MonthOfWarranty > 0)
+            {
+                timeParts.Add($"{MonthOfWarranty} tháng");
+            }
+            if (timeParts.Any())
+            {
+                html += $"<size=10><color='#757575'>Thời gian:</color></size> <size=11><color='#212121'><b>{string.Join(" - ", timeParts)}</b></color></size><br>";
+            }
+
+            // Tình trạng bảo hành (còn/hết hạn)
+            if (!string.IsNullOrWhiteSpace(warrantyStatusText))
+            {
+                html += $"<size=10><color='#757575'>Tình trạng:</color></size> <size=11><color='{statusTextColor}'><b>{warrantyStatusText}</b></color></size>";
+            }
+
+            return html;
+        }
+    }
+
+    /// <summary>
     /// Tổng hợp thông tin bảo hành dưới dạng HTML (chỉ đọc)
     /// Hiển thị đầy đủ thông tin: tên sản phẩm, sản phẩm, kiểu bảo hành, trạng thái, thời gian bảo hành, tình trạng
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [DisplayName("Thông tin tổng hợp")]
-    [Display(Order = 15)]
+    [Display(Order = 16)]
     [Description("Tổng hợp đầy đủ thông tin bảo hành dưới dạng HTML")]
     public string FullInfo
     {
@@ -206,12 +281,16 @@ public class WarrantyDto
 
             // Xác định màu sắc cho trạng thái bảo hành
             var statusColor = GetWarrantyStatusColor(WarrantyStatus);
+            
+            // Xác định màu sắc cho loại bảo hành
+            var typeColor = GetWarrantyTypeColor(WarrantyType);
                 
             // Xác định màu sắc cho tình trạng (còn/hết hạn)
-            var statusTextColor = IsWarrantyExpired ? "#F44336" : "#4CAF50";
+            var statusTextColor = IsWarrantyExpired ? "red" : "green";
 
             // Format chuyên nghiệp với visual hierarchy rõ ràng
             // - Thông tin sản phẩm: font lớn, bold, màu xanh đậm (primary)
+            // - Loại bảo hành: highlight với màu tương ứng (Purple/Cyan)
             // - Trạng thái bảo hành: highlight với màu tương ứng
             // - Thời gian bảo hành: font nhỏ hơn, màu xám cho label, đen cho value
             // - Tình trạng: highlight với màu xanh (còn) hoặc đỏ (hết hạn)
@@ -226,11 +305,11 @@ public class WarrantyDto
                 html += "<br>";
             }
 
-            // Kiểu bảo hành
+            // Kiểu bảo hành với màu sắc tương ứng
             var warrantyTypeName = WarrantyTypeName ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(warrantyTypeName))
             {
-                html += $"<size=9><color='#757575'>Kiểu BH:</color></size> <size=10><color='#212121'><b>{warrantyTypeName}</b></color></size><br>";
+                html += $"<size=9><color='#757575'>Kiểu BH:</color></size> <size=10><color='{typeColor}'><b>{warrantyTypeName}</b></color></size><br>";
             }
 
             // Trạng thái bảo hành
@@ -272,17 +351,32 @@ public class WarrantyDto
     /// Lấy màu sắc tương ứng với trạng thái bảo hành
     /// </summary>
     /// <param name="status">Trạng thái bảo hành</param>
-    /// <returns>Mã màu hex</returns>
+    /// <returns>Tên màu (theo chuẩn HTML/CSS)</returns>
     private string GetWarrantyStatusColor(TrangThaiBaoHanhEnum status)
     {
         return status switch
         {
-            TrangThaiBaoHanhEnum.ChoXuLy => "#FF9800",      // Orange - Chờ xử lý
-            TrangThaiBaoHanhEnum.DangBaoHanh => "#2196F3", // Blue - Đang bảo hành
-            TrangThaiBaoHanhEnum.DaHoanThanh => "#4CAF50", // Green - Đã hoàn thành
-            TrangThaiBaoHanhEnum.DaTuChoi => "#F44336",     // Red - Đã từ chối
-            TrangThaiBaoHanhEnum.DaHuy => "#9E9E9E",        // Grey - Đã hủy
-            _ => "#212121"                                   // Default - Black
+            TrangThaiBaoHanhEnum.ChoXuLy => "orange",      // Orange - Chờ xử lý
+            TrangThaiBaoHanhEnum.DangBaoHanh => "blue",    // Blue - Đang bảo hành
+            TrangThaiBaoHanhEnum.DaHoanThanh => "green",   // Green - Đã hoàn thành
+            TrangThaiBaoHanhEnum.DaTuChoi => "red",         // Red - Đã từ chối
+            TrangThaiBaoHanhEnum.DaHuy => "gray",           // Gray - Đã hủy
+            _ => "black"                                     // Default - Black
+        };
+    }
+
+    /// <summary>
+    /// Lấy màu sắc tương ứng với loại bảo hành
+    /// </summary>
+    /// <param name="warrantyType">Loại bảo hành</param>
+    /// <returns>Tên màu (theo chuẩn HTML/CSS)</returns>
+    public static string GetWarrantyTypeColor(LoaiBaoHanhEnum warrantyType)
+    {
+        return warrantyType switch
+        {
+            LoaiBaoHanhEnum.NCCToVNS => "purple",           // Purple - Bảo hành từ NCC -> VNS
+            LoaiBaoHanhEnum.VNSToKhachHang => "cyan",      // Cyan - Bảo hành từ VNS -> Khách hàng
+            _ => "black"                                     // Default - Black
         };
     }
 
@@ -319,6 +413,24 @@ public static class WarrantyDtoConverter
             CreatedBy = entity.CreatedBy,
             UpdatedBy = entity.UpdatedBy
         };
+
+        // Lấy thông tin Device (SerialNumber, IMEI, MACAddress, AssetTag, LicenseKey)
+        if (entity.Device != null)
+        {
+            var deviceInfoParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(entity.Device.SerialNumber))
+                deviceInfoParts.Add($"S/N: {entity.Device.SerialNumber}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.IMEI))
+                deviceInfoParts.Add($"IMEI: {entity.Device.IMEI}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.MACAddress))
+                deviceInfoParts.Add($"MAC: {entity.Device.MACAddress}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.AssetTag))
+                deviceInfoParts.Add($"Asset: {entity.Device.AssetTag}");
+            if (!string.IsNullOrWhiteSpace(entity.Device.LicenseKey))
+                deviceInfoParts.Add($"License: {entity.Device.LicenseKey}");
+            
+            dto.DeviceInfo = string.Join(" | ", deviceInfoParts);
+        }
 
         // Lấy tên sản phẩm từ ProductVariant thông qua Device
         if (entity.Device != null && entity.Device.ProductVariant != null)
