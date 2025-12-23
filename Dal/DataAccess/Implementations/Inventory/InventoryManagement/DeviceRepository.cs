@@ -1,4 +1,4 @@
-﻿using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
+using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
 using Logger;
 using Logger.Configuration;
@@ -62,6 +62,7 @@ public class DeviceRepository : IDeviceRepository
         loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
         loadOptions.LoadWith<ProductVariant>(v => v.UnitOfMeasure);
         loadOptions.LoadWith<Device>(d => d.ProductVariant);
+        loadOptions.LoadWith<Device>(d => d.Warranties);
         context.LoadOptions = loadOptions;
 
         return context;
@@ -156,6 +157,78 @@ public class DeviceRepository : IDeviceRepository
         }
     }
 
+    /// <summary>
+    /// Lấy tất cả Device
+    /// </summary>
+    /// <returns>Danh sách tất cả Device entities</returns>
+    public List<Device> GetAll()
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetAll: Lấy tất cả thiết bị");
+
+            var devices = context.Devices.ToList();
+
+            _logger.Info("GetAll: Lấy được {0} thiết bị", devices.Count);
+            return devices;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetAll: Lỗi lấy danh sách thiết bị: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Tìm Device theo mã BarCode (SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey)
+    /// </summary>
+    /// <param name="barCode">Mã BarCode cần tìm</param>
+    /// <returns>Device entity nếu tìm thấy, null nếu không tìm thấy</returns>
+    public Device FindByBarCode(string barCode)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            if (string.IsNullOrWhiteSpace(barCode))
+            {
+                _logger.Warning("FindByBarCode: BarCode is null or empty");
+                return null;
+            }
+
+            _logger.Debug("FindByBarCode: Tìm thiết bị theo mã vạch, BarCode={0}", barCode);
+
+            var trimmedBarCode = barCode.Trim().ToLower();
+
+            // Tìm Device theo SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey
+            // Sử dụng ToLower() để so sánh không phân biệt hoa thường (LINQ to SQL hỗ trợ)
+            var device = context.Devices.FirstOrDefault(d =>
+                (d.SerialNumber != null && d.SerialNumber.Trim().ToLower() == trimmedBarCode) ||
+                (d.IMEI != null && d.IMEI.Trim().ToLower() == trimmedBarCode) ||
+                (d.MACAddress != null && d.MACAddress.Trim().ToLower() == trimmedBarCode) ||
+                (d.AssetTag != null && d.AssetTag.Trim().ToLower() == trimmedBarCode) ||
+                (d.LicenseKey != null && d.LicenseKey.Trim().ToLower() == trimmedBarCode)
+            );
+
+            if (device == null)
+            {
+                _logger.Warning("FindByBarCode: Không tìm thấy thiết bị với mã vạch, BarCode={0}", barCode);
+            }
+            else
+            {
+                _logger.Info("FindByBarCode: Tìm thấy thiết bị, DeviceId={0}, BarCode={1}", device.Id, barCode);
+            }
+
+            return device;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"FindByBarCode: Lỗi tìm thiết bị theo mã vạch: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+
     #endregion
 
     #region Save Operations
@@ -184,7 +257,10 @@ public class DeviceRepository : IDeviceRepository
                 {
                     device.Id = Guid.NewGuid();
                 }
-                device.CreatedDate = DateTime.Now;
+                if (device.CreatedDate == default(DateTime))
+                {
+                    device.CreatedDate = DateTime.Now;
+                }
                 context.Devices.InsertOnSubmit(device);
                 _logger.Info("SaveOrUpdate: Thêm mới thiết bị, Id={0}", device.Id);
             }
@@ -193,7 +269,6 @@ public class DeviceRepository : IDeviceRepository
                 // Cập nhật
                 existingDevice.ProductVariantId = device.ProductVariantId;
                 existingDevice.StockInOutDetailId = device.StockInOutDetailId;
-                existingDevice.WarrantyId = device.WarrantyId;
                 existingDevice.SerialNumber = device.SerialNumber;
                 existingDevice.MACAddress = device.MACAddress;
                 existingDevice.IMEI = device.IMEI;
@@ -201,7 +276,12 @@ public class DeviceRepository : IDeviceRepository
                 existingDevice.LicenseKey = device.LicenseKey;
                 existingDevice.HostName = device.HostName;
                 existingDevice.IPAddress = device.IPAddress;
+                existingDevice.Status = device.Status;
+                existingDevice.DeviceType = device.DeviceType;
+                existingDevice.Notes = device.Notes;
+                existingDevice.IsActive = device.IsActive;
                 existingDevice.UpdatedDate = DateTime.Now;
+                existingDevice.UpdatedBy = device.UpdatedBy;
                 _logger.Info("SaveOrUpdate: Cập nhật thiết bị, Id={0}", device.Id);
             }
 

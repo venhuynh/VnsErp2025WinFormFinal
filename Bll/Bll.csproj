@@ -90,6 +90,8 @@
     <Compile Include="Common\SettingBll.cs" />
     <Compile Include="Inventory\InventoryManagement\AssetBll.cs" />
     <Compile Include="Inventory\InventoryManagement\DeviceBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\DeviceImageBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\DeviceTransactionHistoryBll.cs" />
     <Compile Include="Inventory\InventoryManagement\InventoryBalanceBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutDocumentBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutMasterBll.cs" />

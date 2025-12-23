@@ -1,16 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockInOut;
+using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Enums;
 using Common.Utils;
 using DevExpress.XtraEditors;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
+using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -39,6 +41,16 @@ public partial class FrmWarranty : XtraForm
     /// Business Logic Layer cho phiếu nhập kho
     /// </summary>
     private readonly StockInOutBll _stockInBll = new StockInOutBll();
+
+    /// <summary>
+    /// Business Logic Layer cho ProductVariant
+    /// </summary>
+    private readonly ProductVariantBll _productVariantBll = new ProductVariantBll();
+
+    /// <summary>
+    /// Business Logic Layer cho Device
+    /// </summary>
+    private readonly DeviceBll _deviceBll = new DeviceBll();
 
     /// <summary>
     /// Logger để ghi log các sự kiện
@@ -538,19 +550,41 @@ public partial class FrmWarranty : XtraForm
             var warrantyFrom = WarrantyFromDateEdit.EditValue as DateTime?;
             var monthOfWarranty = Convert.ToInt32(MonthOfWarrantyTextEdit.EditValue ?? 0);
             var warrantyUntil = WarrantyUntilDateEdit.EditValue as DateTime?;
-            var uniqueProductInfo = UniqueProductInfoTextEdit.EditValue?.ToString() ?? string.Empty;
+            var deviceInfo = UniqueProductInfoTextEdit.EditValue?.ToString() ?? string.Empty;
+
+            // Tìm hoặc tạo Device từ StockInOutDetailId và deviceInfo
+            Guid? deviceId = null;
+            if (!string.IsNullOrWhiteSpace(deviceInfo) && stockInOutDetailId.HasValue)
+            {
+                // Tìm Device theo StockInOutDetailId và deviceInfo (SerialNumber, IMEI, etc.)
+                var devices = _deviceBll.GetByStockInOutDetailId(stockInOutDetailId.Value);
+                var device = devices.FirstOrDefault(d => 
+                    (!string.IsNullOrWhiteSpace(d.SerialNumber) && d.SerialNumber.Equals(deviceInfo, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(d.IMEI) && d.IMEI.Equals(deviceInfo, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(d.MACAddress) && d.MACAddress.Equals(deviceInfo, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(d.AssetTag) && d.AssetTag.Equals(deviceInfo, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(d.LicenseKey) && d.LicenseKey.Equals(deviceInfo, StringComparison.OrdinalIgnoreCase))
+                );
+                
+                if (device != null)
+                {
+                    deviceId = device.Id;
+                }
+                // Nếu không tìm thấy, sẽ tạo Device mới khi save (xử lý trong SaveDataAsync)
+            }
 
             // Tạo WarrantyDto mới
             var warrantyDto = new WarrantyDto
             {
                 Id = Guid.NewGuid(),
-                StockInOutDetailId = stockInOutDetailId.Value,
+                DeviceId = deviceId,
                 WarrantyType = LoaiBaoHanhEnum.NCCToVNS, // Mặc định
                 WarrantyFrom = warrantyFrom,
                 MonthOfWarranty = monthOfWarranty,
                 WarrantyUntil = warrantyUntil,
                 WarrantyStatus = TrangThaiBaoHanhEnum.ChoXuLy, // Mặc định
-                UniqueProductInfo = uniqueProductInfo
+                DeviceInfo = deviceInfo, // Lưu tạm thông tin device
+                Notes = deviceInfo // Lưu vào Notes để backup
             };
 
             // Tính toán WarrantyUntil nếu có WarrantyFrom và MonthOfWarranty
@@ -560,7 +594,7 @@ public partial class FrmWarranty : XtraForm
             }
 
             // Lấy tên sản phẩm từ selected detail
-            if (stockInDetailDtoBindingSource.Current is StockInDetailDto selectedDetail)
+            if (stockInDetailDtoBindingSource.Current is NhapHangThuongMaiDetailDto selectedDetail)
             {
                 warrantyDto.ProductVariantName = selectedDetail.ProductVariantName;
             }
@@ -639,11 +673,21 @@ public partial class FrmWarranty : XtraForm
             if (WarrantyDtoGridView.GetRow(e.RowHandle) is not WarrantyDto selectedRow) return;
                 
             // Load thông tin vào input controls
-            StockInOutDetailIdSearchLookUpEdit.EditValue = selectedRow.StockInOutDetailId;
+            // Lấy StockInOutDetailId từ Device nếu có
+            Guid? stockInOutDetailId = null;
+            if (selectedRow.DeviceId.HasValue)
+            {
+                var device = _deviceBll.GetById(selectedRow.DeviceId.Value);
+                if (device != null && device.StockInOutDetailId.HasValue)
+                {
+                    stockInOutDetailId = device.StockInOutDetailId.Value;
+                }
+            }
+            StockInOutDetailIdSearchLookUpEdit.EditValue = stockInOutDetailId;
             WarrantyFromDateEdit.EditValue = selectedRow.WarrantyFrom ?? DateTime.Now; // Nếu null thì set ngày hiện tại
             MonthOfWarrantyTextEdit.EditValue = selectedRow.MonthOfWarranty;
             WarrantyUntilDateEdit.EditValue = selectedRow.WarrantyUntil;
-            UniqueProductInfoTextEdit.EditValue = selectedRow.UniqueProductInfo;
+            UniqueProductInfoTextEdit.EditValue = selectedRow.DeviceInfo ?? selectedRow.Notes;
         }
         catch (Exception ex)
         {
@@ -761,6 +805,108 @@ public partial class FrmWarranty : XtraForm
             {
                 // Giá trị hợp lệ, clear lỗi
                 dxErrorProvider1.SetError(StockInOutDetailIdSearchLookUpEdit, string.Empty);
+
+                // Lấy thông tin ProductVariant từ selected detail
+                if (stockInDetailDtoBindingSource.Current is NhapHangThuongMaiDetailDto selectedDetail)
+                {
+                    // Lấy ProductVariantListDto từ ProductVariantId
+                    ProductVariantListDto variantListDto = null;
+                    try
+                    {
+                        if (selectedDetail.ProductVariantId != Guid.Empty)
+                        {
+                            var variantEntity = _productVariantBll.GetById(selectedDetail.ProductVariantId);
+                            if (variantEntity != null)
+                            {
+                                variantListDto = variantEntity.ToListDto();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Warning("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Không thể lấy ProductVariantListDto, ProductVariantId={0}, Error={1}", 
+                            selectedDetail.ProductVariantId, ex.Message);
+                    }
+
+                    // Tạo HTML string từ thông tin ProductVariant (không dùng size và weight)
+                    var html = string.Empty;
+
+                    // Sử dụng VariantFullName từ ProductVariantListDto nếu có, nếu không thì fallback về ProductVariantName
+                    var variantFullName = variantListDto?.VariantFullName ?? selectedDetail.ProductVariantName ?? string.Empty;
+                    var variantCode = variantListDto?.VariantCode ?? selectedDetail.ProductVariantCode ?? string.Empty;
+                    var unitName = variantListDto?.UnitName ?? selectedDetail.UnitOfMeasureName ?? string.Empty;
+
+                    // Hiển thị VariantFullName (nổi bật nhất)
+                    if (!string.IsNullOrWhiteSpace(variantFullName))
+                    {
+                        html += $"<color='blue'>{variantFullName}</color>";
+                    }
+
+                    // Mã biến thể (nếu có và khác với VariantFullName)
+                    if (!string.IsNullOrWhiteSpace(variantCode) && !variantFullName.Contains(variantCode))
+                    {
+                        if (!string.IsNullOrWhiteSpace(variantFullName))
+                        {
+                            html += $" <color='#757575'>({variantCode})</color>";
+                        }
+                        else
+                        {
+                            html += $"<color='blue'>{variantCode}</color>";
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(variantFullName) || !string.IsNullOrWhiteSpace(variantCode))
+                    {
+                        html += "<br>";
+                    }
+
+                    // Đơn vị tính
+                    if (!string.IsNullOrWhiteSpace(unitName))
+                    {
+                        html += $"<color='#757575'>Đơn vị tính:</color> <color='#212121'>{unitName}</color><br>";
+                    }
+
+                    // Số lượng nhập
+                    if (selectedDetail.StockInQty > 0)
+                    {
+                        html += $"<color='#757575'>SL nhập: </color><color='#212121'>{selectedDetail.StockInQty:N0}</color>";
+                        if (!string.IsNullOrWhiteSpace(unitName))
+                        {
+                            html += $" {unitName}";
+                        }
+                    }
+
+                    // Số lượng xuất
+                    if (selectedDetail.StockOutQty > 0)
+                    {
+                        if (selectedDetail.StockInQty > 0)
+                        {
+                            html += " | ";
+                        }
+                        html += $"<color='#757575'>SL xuất: </color><color='#212121'>{selectedDetail.StockOutQty:N0}</color>";
+                        if (!string.IsNullOrWhiteSpace(unitName))
+                        {
+                            html += $" {unitName}";
+                        }
+                    }
+
+                    // Cập nhật ProductVarianFullInfoHypertextLabel với thông tin đầy đủ
+                    ProductVarianFullInfoHypertextLabel.Text = html;
+
+                    _logger.Debug("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Updated ProductVarianFullInfoHypertextLabel, StockInOutDetailId={0}, VariantFullName={1}", 
+                        stockInOutDetailId, variantFullName);
+                }
+                else
+                {
+                    // Nếu không tìm thấy detail, clear label
+                    ProductVarianFullInfoHypertextLabel.Text = "Thông tin đầy đủ của sản phẩm bảo hành";
+                    _logger.Warning("StockInOutDetailIdSearchLookUpEdit_EditValueChanged: Selected detail not found, StockInOutDetailId={0}", stockInOutDetailId);
+                }
+            }
+            else
+            {
+                // Nếu không có giá trị, reset về mặc định
+                ProductVarianFullInfoHypertextLabel.Text = "Thông tin đầy đủ của sản phẩm bảo hành";
             }
         }
         catch (Exception ex)
@@ -883,13 +1029,13 @@ public partial class FrmWarranty : XtraForm
                 // Kiểm tra trùng lặp, bỏ qua dòng đang được chọn (nếu đang edit)
                 var isDuplicate = currentList.Any(w => 
                     w != selectedRow && // Bỏ qua dòng đang được chọn nếu đang edit
-                    !string.IsNullOrWhiteSpace(w.UniqueProductInfo) &&
-                    string.Equals(w.UniqueProductInfo.Trim(), uniqueProductInfo, StringComparison.OrdinalIgnoreCase));
+                    !string.IsNullOrWhiteSpace(w.DeviceInfo) &&
+                    string.Equals(w.DeviceInfo.Trim(), uniqueProductInfo, StringComparison.OrdinalIgnoreCase));
                     
                 if (isDuplicate)
                 {
-                    dxErrorProvider1.SetError(UniqueProductInfoTextEdit, "Thông tin sản phẩm duy nhất đã tồn tại trong danh sách. Vui lòng nhập giá trị khác.");
-                    _logger.Warning("ValidateInput: Duplicate UniqueProductInfo detected, value={0}", uniqueProductInfo);
+                    dxErrorProvider1.SetError(UniqueProductInfoTextEdit, "Thông tin thiết bị đã tồn tại trong danh sách. Vui lòng nhập giá trị khác.");
+                    _logger.Warning("ValidateInput: Duplicate DeviceInfo detected, value={0}", uniqueProductInfo);
                     return false;
                 }
             }
@@ -937,13 +1083,10 @@ public partial class FrmWarranty : XtraForm
             for (int i = 0; i < warrantyDtos.Count; i++)
             {
                 var warranty = warrantyDtos[i];
-                if (warranty.StockInOutDetailId == Guid.Empty)
+                // Kiểm tra DeviceId hoặc DeviceInfo (cần có ít nhất một trong hai)
+                if (!warranty.DeviceId.HasValue && string.IsNullOrWhiteSpace(warranty.DeviceInfo))
                 {
-                    validationErrors.Add($"Dòng {i + 1}: Vui lòng chọn sản phẩm bảo hành");
-                }
-                if (string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
-                {
-                    validationErrors.Add($"Dòng {i + 1}: Vui lòng nhập thông tin sản phẩm duy nhất");
+                    validationErrors.Add($"Dòng {i + 1}: Vui lòng chọn sản phẩm bảo hành và nhập thông tin thiết bị");
                 }
                 if (warranty.MonthOfWarranty <= 0)
                 {
@@ -951,10 +1094,10 @@ public partial class FrmWarranty : XtraForm
                 }
             }
 
-            // Kiểm tra trùng lặp UniqueProductInfo (case-insensitive)
+            // Kiểm tra trùng lặp DeviceInfo (case-insensitive)
             var duplicateGroups = warrantyDtos
-                .Where(w => !string.IsNullOrWhiteSpace(w.UniqueProductInfo))
-                .GroupBy(w => w.UniqueProductInfo.Trim(), StringComparer.OrdinalIgnoreCase)
+                .Where(w => !string.IsNullOrWhiteSpace(w.DeviceInfo))
+                .GroupBy(w => w.DeviceInfo.Trim(), StringComparer.OrdinalIgnoreCase)
                 .Where(g => g.Count() > 1)
                 .ToList();
 
@@ -964,14 +1107,14 @@ public partial class FrmWarranty : XtraForm
                 {
                     var duplicateIndices = warrantyDtos
                         .Select((w, index) => new { w, index })
-                        .Where(x => string.Equals(x.w.UniqueProductInfo?.Trim(), group.Key, StringComparison.OrdinalIgnoreCase))
+                        .Where(x => string.Equals(x.w.DeviceInfo?.Trim(), group.Key, StringComparison.OrdinalIgnoreCase))
                         .Select(x => x.index + 1)
                         .ToList();
                         
-                    validationErrors.Add($"Thông tin sản phẩm duy nhất '{group.Key}' bị trùng lặp ở các dòng: {string.Join(", ", duplicateIndices)}");
+                    validationErrors.Add($"Thông tin thiết bị '{group.Key}' bị trùng lặp ở các dòng: {string.Join(", ", duplicateIndices)}");
                 }
                     
-                _logger.Warning("SaveDataAsync: Duplicate UniqueProductInfo detected, count={0}", duplicateGroups.Count);
+                _logger.Warning("SaveDataAsync: Duplicate DeviceInfo detected, count={0}", duplicateGroups.Count);
             }
 
             if (validationErrors.Any())
@@ -980,11 +1123,37 @@ public partial class FrmWarranty : XtraForm
                 return false;
             }
 
-            // Lưu từng bảo hành
+            // Lưu từng bảo hành - tìm hoặc tạo Device trước
             await Task.Run(() =>
             {
                 foreach (var warrantyDto in warrantyDtos)
                 {
+                    // Tìm hoặc tạo Device từ DeviceInfo và StockInOutDetailId
+                    Guid? deviceId = warrantyDto.DeviceId;
+                    
+                    if (!deviceId.HasValue && !string.IsNullOrWhiteSpace(warrantyDto.DeviceInfo))
+                    {
+                        // Tìm Device từ DeviceInfo trong StockInOutMaster
+                        var devices = _deviceBll.GetByStockInOutMasterId(StockInOutMasterId);
+                        var device = devices.FirstOrDefault(d => 
+                            (!string.IsNullOrWhiteSpace(d.SerialNumber) && d.SerialNumber.Equals(warrantyDto.DeviceInfo, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrWhiteSpace(d.IMEI) && d.IMEI.Equals(warrantyDto.DeviceInfo, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrWhiteSpace(d.MACAddress) && d.MACAddress.Equals(warrantyDto.DeviceInfo, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrWhiteSpace(d.AssetTag) && d.AssetTag.Equals(warrantyDto.DeviceInfo, StringComparison.OrdinalIgnoreCase)) ||
+                            (!string.IsNullOrWhiteSpace(d.LicenseKey) && d.LicenseKey.Equals(warrantyDto.DeviceInfo, StringComparison.OrdinalIgnoreCase))
+                        );
+                        
+                        if (device != null)
+                        {
+                            deviceId = device.Id;
+                        }
+                        // Nếu không tìm thấy Device, cần tạo mới (nhưng cần StockInOutDetailId và ProductVariantId)
+                        // Tạm thời bỏ qua, sẽ xử lý sau hoặc yêu cầu người dùng tạo Device trước
+                    }
+                    
+                    // Cập nhật DeviceId vào warrantyDto
+                    warrantyDto.DeviceId = deviceId;
+                    
                     var warranty = warrantyDto.ToEntity();
                     _warrantyBll.SaveOrUpdate(warranty);
                 }

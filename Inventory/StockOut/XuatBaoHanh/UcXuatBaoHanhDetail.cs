@@ -18,7 +18,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bll.Inventory.StockInOut;
 
-namespace Inventory.StockOut.XuatBaoHanh;
+namespace Inventory.StockOut.XuatBaoHanh
+{
 
 public partial class UcXuatBaoHanhDetail : DevExpress.XtraEditors.XtraUserControl
 {
@@ -133,7 +134,8 @@ public partial class UcXuatBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
 
             foreach (var item in xuatBaoHanhDetailDtoBindingSource)
             {
-                if (item is not XuatBaoHanhDetailDto detailDto) continue;
+                var detailDto = item as XuatBaoHanhDetailDto;
+                if (detailDto == null) continue;
 
                 details.Add(new StockInOutDetail
                 {
@@ -281,6 +283,22 @@ public partial class UcXuatBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     }
 
     /// <summary>
+    /// Reload ProductVariant datasource (public method để gọi từ Form)
+    /// </summary>
+    public async Task ReloadProductVariantDataSourceAsync()
+    {
+        try
+        {
+            await LoadProductVariantsAsync(forceRefresh: true);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("ReloadProductVariantDataSourceAsync: Exception occurred", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Validate tất cả các dòng trong grid
     /// </summary>
     public bool ValidateAll()
@@ -381,7 +399,8 @@ public partial class UcXuatBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
             }
 
             // Lấy row data từ GridView
-            if (XuatBaoHanhDetailDtoGridView.GetRow(rowHandle) is not XuatBaoHanhDetailDto rowData)
+            var rowData = XuatBaoHanhDetailDtoGridView.GetRow(rowHandle) as XuatBaoHanhDetailDto;
+            if (rowData == null)
             {
                 _logger.Warning("CellValueChanged: Row data is null, RowHandle={0}", rowHandle);
                 return;
@@ -465,7 +484,8 @@ public partial class UcXuatBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     {
         try
         {
-            if (XuatBaoHanhDetailDtoGridView.GetRow(e.RowHandle) is not XuatBaoHanhDetailDto rowData)
+            var rowData = XuatBaoHanhDetailDtoGridView.GetRow(e.RowHandle) as XuatBaoHanhDetailDto;
+            if (rowData == null)
             {
                 _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
                 return;
@@ -550,7 +570,8 @@ public partial class UcXuatBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     {
         try
         {
-            if (e.Row is not XuatBaoHanhDetailDto rowData)
+            var rowData = e.Row as XuatBaoHanhDetailDto;
+            if (rowData == null)
             {
                 _logger.Warning("ValidateRow: Row data is null");
                 e.Valid = false;
@@ -990,7 +1011,10 @@ public partial class UcXuatBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     {
         try
         {
-            details ??= new List<XuatBaoHanhDetailDto>();
+            if (details == null)
+            {
+                details = new List<XuatBaoHanhDetailDto>();
+            }
 
             // Gán StockInOutMasterId cho các dòng chưa có
             foreach (var detail in details)
@@ -1175,4 +1199,5 @@ public partial class UcXuatBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     }
 
     #endregion
+}
 }

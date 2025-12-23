@@ -32,4 +32,11 @@ public interface IStockInOutDetailRepository
     /// <param name="stockInOutMasterId">ID của StockInOutMaster</param>
     /// <returns>True nếu còn detail, False nếu không còn</returns>
     bool HasRemainingDetails(Guid stockInOutMasterId);
+
+    /// <summary>
+    /// Query StockInOutDetail theo danh sách ProductVariantId
+    /// </summary>
+    /// <param name="productVariantIds">Danh sách ProductVariantId</param>
+    /// <returns>Danh sách StockInOutDetail entities</returns>
+    List<StockInOutDetail> QueryByProductVariantIds(List<Guid> productVariantIds);
 }

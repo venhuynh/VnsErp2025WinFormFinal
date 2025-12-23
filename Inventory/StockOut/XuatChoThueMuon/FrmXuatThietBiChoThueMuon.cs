@@ -130,6 +130,7 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
         {
             // Bar button events
             NhapLaiBarButtonItem.ItemClick += NhapLaiBarButtonItem_ItemClick;
+            ReloadDataSourceBarButtonItem.ItemClick += ReloadDataSourceBarButtonItem_ItemClick;
             LuuPhieuBarButtonItem.ItemClick += LuuPhieuBarButtonItem_ItemClick;
             InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
             NhapQuanLyTaiSanBarButtonItem.ItemClick += NhapQuanLyTaiSanBarButtonItem_ItemClick;
@@ -147,6 +148,9 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
             // Setup phím tắt và hiển thị hướng dẫn
             SetupKeyboardShortcuts();
             UpdateHotKeyBarStaticItem();
+
+            // Setup SuperToolTips
+            SetupSuperToolTips();
 
         }
         catch (Exception ex)
@@ -229,9 +233,74 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
         }
     }
 
+    /// <summary>
+    /// Thiết lập SuperToolTip cho các BarButtonItem
+    /// </summary>
+    private void SetupSuperToolTips()
+    {
+        try
+        {
+            // SuperToolTip cho ReloadDataSourceBarButtonItem
+            if (ReloadDataSourceBarButtonItem != null)
+            {
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    ReloadDataSourceBarButtonItem,
+                    title: "<b><color=Blue>🔄 Làm mới dữ liệu</color></b>",
+                    content: "Làm mới lại các datasource trong form.<br/><br/><b>Chức năng:</b><br/>• Reload danh sách biến thể sản phẩm trong chi tiết<br/>• Reload danh sách kho và khách hàng trong master<br/><br/><color=Gray>Lưu ý:</color> Sử dụng khi dữ liệu lookup đã thay đổi trong database và cần cập nhật lại."
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+        }
+    }
+
     #endregion
 
     #region ========== EVENT HANDLERS ==========
+
+    /// <summary>
+    /// Event handler cho nút Reload DataSource
+    /// </summary>
+    private async void ReloadDataSourceBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    {
+        try
+        {
+            // Disable button để tránh double-click
+            ReloadDataSourceBarButtonItem.Enabled = false;
+
+            try
+            {
+                // Reload datasource cho Master UserControl
+                await ucXuatThietBiChoThueMuonMasterDto1.LoadLookupDataAsync();
+                
+                // Reload datasource cho Detail UserControl nếu có method
+                var detailType = ucXuatThietBiChoThueMuonDetailDto1.GetType();
+                var reloadMethod = detailType.GetMethod("ReloadProductVariantDataSourceAsync");
+                if (reloadMethod != null)
+                {
+                    var task = reloadMethod.Invoke(ucXuatThietBiChoThueMuonDetailDto1, null) as Task;
+                    if (task != null)
+                    {
+                        await task;
+                    }
+                }
+
+                AlertHelper.ShowSuccess("Đã làm mới dữ liệu thành công!", "Thành công", this);
+            }
+            finally
+            {
+                // Re-enable button
+                ReloadDataSourceBarButtonItem.Enabled = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("ReloadDataSourceBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi làm mới dữ liệu: {ex.Message}");
+        }
+    }
 
     /// <summary>
     /// Event handler cho nút Nhập lại

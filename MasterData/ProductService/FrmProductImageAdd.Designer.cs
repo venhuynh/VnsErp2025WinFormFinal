@@ -36,30 +36,31 @@ namespace MasterData.ProductService
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.OpenSelectImageHyperlinkLabelControl = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.ProductServiceSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
-            this.productServiceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.HtmlContentHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog(this.components);
+            this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog();
+            this.productServiceDtoBindingSource = new System.Windows.Forms.BindingSource();
+            this.HtmlContentHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceSearchLookupEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HtmlContentHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(repositoryItemHypertextLabel1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlContentHypertextLabel)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -77,18 +78,18 @@ namespace MasterData.ProductService
             // 
             // LogTextBox
             // 
-            this.LogTextBox.Location = new System.Drawing.Point(16, 62);
+            this.LogTextBox.Location = new System.Drawing.Point(12, 56);
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.LogTextBox.Size = new System.Drawing.Size(562, 200);
+            this.LogTextBox.Size = new System.Drawing.Size(570, 210);
             this.LogTextBox.TabIndex = 4;
             // 
             // OpenSelectImageHyperlinkLabelControl
             // 
             this.OpenSelectImageHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
             this.OpenSelectImageHyperlinkLabelControl.ImageOptions.Image = global::MasterData.Properties.Resources.loadfrom_16x16;
-            this.OpenSelectImageHyperlinkLabelControl.Location = new System.Drawing.Point(468, 16);
+            this.OpenSelectImageHyperlinkLabelControl.Location = new System.Drawing.Point(472, 12);
             this.OpenSelectImageHyperlinkLabelControl.Name = "OpenSelectImageHyperlinkLabelControl";
             this.OpenSelectImageHyperlinkLabelControl.Padding = new System.Windows.Forms.Padding(10);
             this.OpenSelectImageHyperlinkLabelControl.Size = new System.Drawing.Size(110, 40);
@@ -98,7 +99,7 @@ namespace MasterData.ProductService
             // 
             // ProductServiceSearchLookupEdit
             // 
-            this.ProductServiceSearchLookupEdit.Location = new System.Drawing.Point(106, 22);
+            this.ProductServiceSearchLookupEdit.Location = new System.Drawing.Point(98, 22);
             this.ProductServiceSearchLookupEdit.Name = "ProductServiceSearchLookupEdit";
             this.ProductServiceSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.ProductServiceSearchLookupEdit.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
@@ -107,16 +108,10 @@ namespace MasterData.ProductService
             this.ProductServiceSearchLookupEdit.Properties.DataSource = this.productServiceDtoBindingSource;
             this.ProductServiceSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
             this.ProductServiceSearchLookupEdit.Properties.PopupView = this.searchLookUpEdit1View;
-            this.ProductServiceSearchLookupEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.HtmlContentHypertextLabel});
             this.ProductServiceSearchLookupEdit.Properties.ValueMember = "Id";
-            this.ProductServiceSearchLookupEdit.Size = new System.Drawing.Size(356, 28);
+            this.ProductServiceSearchLookupEdit.Size = new System.Drawing.Size(370, 20);
             this.ProductServiceSearchLookupEdit.StyleController = this.layoutControl1;
             this.ProductServiceSearchLookupEdit.TabIndex = 0;
-            // 
-            // productServiceDtoBindingSource
-            // 
-            this.productServiceDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductServiceDto);
             // 
             // searchLookUpEdit1View
             // 
@@ -142,18 +137,15 @@ namespace MasterData.ProductService
             this.colThongTinHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colThongTinHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colThongTinHtml.Caption = "Thông tin sản phẩm";
-            this.colThongTinHtml.ColumnEdit = this.HtmlContentHypertextLabel;
+            repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            repositoryItemHypertextLabel1.Name = "HtmlContentHypertextLabel";
+            this.colThongTinHtml.ColumnEdit = repositoryItemHypertextLabel1;
             this.colThongTinHtml.FieldName = "ThongTinHtml";
             this.colThongTinHtml.MinWidth = 300;
             this.colThongTinHtml.Name = "colThongTinHtml";
             this.colThongTinHtml.Visible = true;
             this.colThongTinHtml.VisibleIndex = 0;
             this.colThongTinHtml.Width = 500;
-            // 
-            // HtmlContentHypertextLabel
-            // 
-            this.HtmlContentHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.HtmlContentHypertextLabel.Name = "HtmlContentHypertextLabel";
             // 
             // Root
             // 
@@ -174,7 +166,7 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Control = this.ProductServiceSearchLookupEdit;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(452, 46);
+            this.layoutControlItem1.Size = new System.Drawing.Size(460, 44);
             this.layoutControlItem1.Text = "Chọn sản phẩm";
             this.layoutControlItem1.TextSize = new System.Drawing.Size(74, 13);
             // 
@@ -183,22 +175,31 @@ namespace MasterData.ProductService
             this.layoutControlItem2.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.layoutControlItem2.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
             this.layoutControlItem2.Control = this.OpenSelectImageHyperlinkLabelControl;
-            this.layoutControlItem2.Location = new System.Drawing.Point(452, 0);
+            this.layoutControlItem2.Location = new System.Drawing.Point(460, 0);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(116, 46);
+            this.layoutControlItem2.Size = new System.Drawing.Size(114, 44);
             this.layoutControlItem2.TextVisible = false;
             // 
             // layoutControlItem3
             // 
             this.layoutControlItem3.Control = this.LogTextBox;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 46);
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 44);
             this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(568, 206);
+            this.layoutControlItem3.Size = new System.Drawing.Size(574, 214);
             this.layoutControlItem3.TextVisible = false;
             // 
             // xtraOpenFileDialog1
             // 
             this.xtraOpenFileDialog1.FileName = "xtraOpenFileDialog1";
+            // 
+            // productServiceDtoBindingSource
+            // 
+            this.productServiceDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductServiceDto);
+            // 
+            // HtmlContentHypertextLabel
+            // 
+            this.HtmlContentHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.HtmlContentHypertextLabel.Name = "HtmlContentHypertextLabel";
             // 
             // FrmProductImageAdd
             // 
@@ -211,14 +212,16 @@ namespace MasterData.ProductService
             this.Text = "Thêm hình ảnh";
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
+            this.layoutControl1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceSearchLookupEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.HtmlContentHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(repositoryItemHypertextLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productServiceDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlContentHypertextLabel)).EndInit();
             this.ResumeLayout(false);
 
         }

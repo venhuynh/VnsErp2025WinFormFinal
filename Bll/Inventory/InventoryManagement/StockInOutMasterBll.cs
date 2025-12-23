@@ -240,6 +240,33 @@ namespace Bll.Inventory.InventoryManagement
 
     #endregion
 
+    #region Query Operations - Get Masters by IDs
+
+    /// <summary>
+    /// Lấy danh sách StockInOutMaster theo danh sách ID
+    /// </summary>
+    /// <param name="masterIds">Danh sách ID của StockInOutMaster</param>
+    /// <returns>Danh sách StockInOutMaster entities với navigation properties đã load</returns>
+    public List<StockInOutMaster> GetMastersByIds(List<Guid> masterIds)
+    {
+        try
+        {
+            _logger.Debug("GetMastersByIds: Bắt đầu query, MasterIds count={0}", masterIds?.Count ?? 0);
+
+            var result = GetDataAccess().GetMastersByIds(masterIds);
+
+            _logger.Info("GetMastersByIds: Query thành công, ResultCount={0}", result.Count);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetMastersByIds: Lỗi query: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
     #region Delete Operations
 
     /// <summary>

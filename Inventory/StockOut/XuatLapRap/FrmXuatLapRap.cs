@@ -1,6 +1,7 @@
-﻿using Common.Common;
+using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
+using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraReports.UI;
 using DTO.Inventory.StockOut.XuatLapRap;
@@ -132,6 +133,7 @@ namespace Inventory.StockOut.XuatLapRap
             {
                 // Bar button events
                 XuatLaiBarButtonItem.ItemClick += XuatLaiBarButtonItem_ItemClick;
+                ReloadDataSourceBarButtonItem.ItemClick += ReloadDataSourceBarButtonItem_ItemClick;
                 LuuPhieuBarButtonItem.ItemClick += LuuPhieuBarButtonItem_ItemClick;
                 InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
                 XuatQuanLyTaiSanBarButtonItem.ItemClick += XuatQuanLyTaiSanBarButtonItem_ItemClick;
@@ -149,6 +151,9 @@ namespace Inventory.StockOut.XuatLapRap
                 // Setup phím tắt và hiển thị hướng dẫn
                 SetupKeyboardShortcuts();
                 UpdateHotKeyBarStaticItem();
+
+                // Setup SuperToolTips
+                SetupSuperToolTips();
 
             }
             catch (Exception ex)
@@ -231,6 +236,29 @@ namespace Inventory.StockOut.XuatLapRap
             }
         }
 
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các BarButtonItem
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                // SuperToolTip cho ReloadDataSourceBarButtonItem
+                if (ReloadDataSourceBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ReloadDataSourceBarButtonItem,
+                        title: "<b><color=Blue>🔄 Làm mới dữ liệu</color></b>",
+                        content: "Làm mới lại các datasource trong form.<br/><br/><b>Chức năng:</b><br/>• Reload danh sách biến thể sản phẩm trong chi tiết<br/>• Reload danh sách kho và nhà cung cấp trong master<br/><br/><color=Gray>Lưu ý:</color> Sử dụng khi dữ liệu lookup đã thay đổi trong database và cần cập nhật lại."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+            }
+        }
+
         #endregion
 
         #region ========== EVENT HANDLERS ==========
@@ -257,18 +285,51 @@ namespace Inventory.StockOut.XuatLapRap
                     }
                 }
 
-                ResetForm();
-            }
-            catch (Exception ex)
+            ResetForm();
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("XuatLaiBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi xuất lại: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Event handler cho nút Reload DataSource
+    /// </summary>
+    private async void ReloadDataSourceBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    {
+        try
+        {
+            // Disable button để tránh double-click
+            ReloadDataSourceBarButtonItem.Enabled = false;
+
+            try
             {
-                _logger.Error("XuatLaiBarButtonItem_ItemClick: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi xuất lại: {ex.Message}");
+                // Reload datasource cho cả 2 UserControl
+                await Task.WhenAll(
+                    ucXuatLapRapMasterDto1.LoadLookupDataAsync(),
+                    ucXuatLapRapDetailDto1.ReloadProductVariantDataSourceAsync()
+                );
+
+                AlertHelper.ShowInfo("Đã làm mới dữ liệu thành công!", "Thành công", this);
+            }
+            finally
+            {
+                // Re-enable button
+                ReloadDataSourceBarButtonItem.Enabled = true;
             }
         }
+        catch (Exception ex)
+        {
+            _logger.Error("ReloadDataSourceBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi làm mới dữ liệu: {ex.Message}");
+        }
+    }
 
-        /// <summary>
-        /// Event handler cho nút Lưu phiếu
-        /// </summary>
+    /// <summary>
+    /// Event handler cho nút Lưu phiếu
+    /// </summary>
         private async void LuuPhieuBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try

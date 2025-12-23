@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Linq;
@@ -191,6 +191,8 @@ public class StockInRepository : IStockInRepository
             masterEntity.TotalAmountIncludedVat = master.TotalAmountIncludedVat;
             masterEntity.NguoiNhanHang = master.NguoiNhanHang;
             masterEntity.NguoiGiaoHang = master.NguoiGiaoHang;
+            masterEntity.DiscountAmount = master.DiscountAmount;
+            masterEntity.TotalAmountAfterDiscount = master.TotalAmountAfterDiscount;
             masterEntity.UpdatedDate = currentTime;
             // UpdatedBy sẽ được set sau khi có authentication
 
@@ -232,7 +234,11 @@ public class StockInRepository : IStockInRepository
                 Vat = detail.Vat,
                 VatAmount = detail.VatAmount,
                 TotalAmount = detail.TotalAmount,
-                TotalAmountIncludedVat = detail.TotalAmountIncludedVat
+                TotalAmountIncludedVat = detail.TotalAmountIncludedVat,
+                DiscountPercentage = detail.DiscountPercentage,
+                DiscountAmount = detail.DiscountAmount,
+                TotalAmountAfterDiscount = detail.TotalAmountAfterDiscount,
+                GhiChu = detail.GhiChu
             };
 
             detailEntities.Add(detailEntity);

@@ -11,13 +11,13 @@ namespace Common.Enums
         /// Bảo hành từ Nhà cung cấp -> VNS
         /// </summary>
         [Description("NCC -> VNS")]
-        NCCToVNS = 1,
+        NCCToVNS = 0,
 
         /// <summary>
         /// Bảo hành từ VNS -> Khách hàng
         /// </summary>
         [Description("VNS -> Khách hàng")]
-        VNSToKhachHang = 2
+        VNSToKhachHang = 1
     }
 }
 

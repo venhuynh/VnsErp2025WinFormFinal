@@ -38,6 +38,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colProductVariantName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.StockInDetailProductNameHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -53,7 +54,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
             this.colTotalAmountIncludedVat = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colGhiChu = new DevExpress.XtraGrid.Columns.GridColumn();
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
-            this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockInDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridView)).BeginInit();
@@ -82,7 +82,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
             this.UnitPriceTextEdit,
             this.VatTextEdit,
             this.GhiChuMemoEdit});
-            this.StockInDetailDtoGridControl.Size = new System.Drawing.Size(1267, 704);
+            this.StockInDetailDtoGridControl.Size = new System.Drawing.Size(1542, 759);
             this.StockInDetailDtoGridControl.TabIndex = 0;
             this.StockInDetailDtoGridControl.UseEmbeddedNavigator = true;
             this.StockInDetailDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -90,7 +90,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
             // 
             // stockInDetailDtoBindingSource
             // 
-            this.stockInDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapHangThuongMai.StockInDetailDto);
+            this.stockInDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapHangThuongMai.NhapHangThuongMaiDetailDto);
             // 
             // StockInDetailDtoGridView
             // 
@@ -176,6 +176,14 @@ namespace Inventory.StockIn.NhapHangThuongMai
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowIndicator = false;
+            // 
+            // colVariantFullName
+            // 
+            this.colVariantFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
+            this.colVariantFullName.FieldName = "VariantFullName";
+            this.colVariantFullName.Name = "colVariantFullName";
+            this.colVariantFullName.Visible = true;
+            this.colVariantFullName.VisibleIndex = 0;
             // 
             // ProductFullNameHypertextLabel
             // 
@@ -444,6 +452,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
             this.colGhiChu.AppearanceHeader.Options.UseTextOptions = true;
             this.colGhiChu.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colGhiChu.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colGhiChu.Caption = "Ghi chú";
             this.colGhiChu.ColumnEdit = this.GhiChuMemoEdit;
             this.colGhiChu.FieldName = "GhiChu";
             this.colGhiChu.Name = "colGhiChu";
@@ -454,21 +463,13 @@ namespace Inventory.StockIn.NhapHangThuongMai
             // 
             this.GhiChuMemoEdit.Name = "GhiChuMemoEdit";
             // 
-            // colVariantFullName
-            // 
-            this.colVariantFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
-            this.colVariantFullName.FieldName = "VariantFullName";
-            this.colVariantFullName.Name = "colVariantFullName";
-            this.colVariantFullName.Visible = true;
-            this.colVariantFullName.VisibleIndex = 0;
-            // 
             // UcNhapHangThuongMaiDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.StockInDetailDtoGridControl);
             this.Name = "UcNhapHangThuongMaiDetail";
-            this.Size = new System.Drawing.Size(1267, 704);
+            this.Size = new System.Drawing.Size(1542, 759);
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockInDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridView)).EndInit();

@@ -205,7 +205,7 @@ public static class AttributeConverters
             Name = entity.Name,
             DataType = entity.DataType,
             Description = entity.Description,
-            AttributeValues = entity.AttributeValues?.Select(v => v.ToDto(entity.Name)).ToList()
+            AttributeValues = entity.AttributeValues?.Select(v => AttributeValueConverters.ToDto(v, entity)).ToList()
         };
     }
 
@@ -226,35 +226,5 @@ public static class AttributeConverters
             Description = dto.Description
         };
     }
-    #endregion
-
-    #region AttributeValue -> AttributeValueDto
-    public static AttributeValueDto ToDto(this AttributeValue entity)
-    {
-        if (entity == null) return null;
-        return new AttributeValueDto
-        {
-            Id = entity.Id,
-            AttributeId = entity.AttributeId,
-            Value = entity.Value,
-            AttributeName = entity.Attribute?.Name
-        };
-    }
-
-    /// <summary>
-    /// Chuyển đổi AttributeValue sang DTO với truyền sẵn AttributeName để tránh lazy-load khi DataContext đã dispose
-    /// </summary>
-    public static AttributeValueDto ToDto(this AttributeValue entity, string attributeName)
-    {
-        if (entity == null) return null;
-        return new AttributeValueDto
-        {
-            Id = entity.Id,
-            AttributeId = entity.AttributeId,
-            Value = entity.Value,
-            AttributeName = attributeName ?? entity.Attribute?.Name
-        };
-    }
-
     #endregion
 }

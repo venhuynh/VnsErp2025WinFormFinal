@@ -179,7 +179,7 @@ public partial class FrmWarrantyCheck : DevExpress.XtraEditors.XtraForm
 
             // Hiển thị confirmation dialog
             var confirmMessage = selectedDtos.Count == 1
-                ? $"Bạn có chắc muốn xóa bảo hành:\n<b>{selectedDtos[0].UniqueProductInfo ?? "N/A"}</b>\n" +
+                ? $"Bạn có chắc muốn xóa bảo hành:\n<b>{selectedDtos[0].DeviceInfo ?? "N/A"}</b>\n" +
                   $"Sản phẩm: <b>{selectedDtos[0].ProductVariantName ?? "N/A"}</b>?\n\n" +
                   "Hành động này không thể hoàn tác!"
                 : $"Bạn có chắc muốn xóa <b>{selectedDtos.Count}</b> bảo hành?\n\n" +

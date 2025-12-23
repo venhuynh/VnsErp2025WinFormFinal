@@ -78,6 +78,12 @@ namespace Dal.DataContext
     partial void InsertDeviceHistory(DeviceHistory instance);
     partial void UpdateDeviceHistory(DeviceHistory instance);
     partial void DeleteDeviceHistory(DeviceHistory instance);
+    partial void InsertDeviceImage(DeviceImage instance);
+    partial void UpdateDeviceImage(DeviceImage instance);
+    partial void DeleteDeviceImage(DeviceImage instance);
+    partial void InsertDeviceTransactionHistory(DeviceTransactionHistory instance);
+    partial void UpdateDeviceTransactionHistory(DeviceTransactionHistory instance);
+    partial void DeleteDeviceTransactionHistory(DeviceTransactionHistory instance);
     partial void InsertDeviceTransfer(DeviceTransfer instance);
     partial void UpdateDeviceTransfer(DeviceTransfer instance);
     partial void DeleteDeviceTransfer(DeviceTransfer instance);
@@ -298,6 +304,22 @@ namespace Dal.DataContext
 			get
 			{
 				return this.GetTable<DeviceHistory>();
+			}
+		}
+		
+		public System.Data.Linq.Table<DeviceImage> DeviceImages
+		{
+			get
+			{
+				return this.GetTable<DeviceImage>();
+			}
+		}
+		
+		public System.Data.Linq.Table<DeviceTransactionHistory> DeviceTransactionHistories
+		{
+			get
+			{
+				return this.GetTable<DeviceTransactionHistory>();
 			}
 		}
 		
@@ -739,8 +761,6 @@ namespace Dal.DataContext
 		
 		private System.Guid _Id;
 		
-		private System.Guid _StockInOutDetailId;
-		
 		private int _WarrantyType;
 		
 		private System.Nullable<System.DateTime> _WarrantyFrom;
@@ -751,13 +771,27 @@ namespace Dal.DataContext
 		
 		private int _WarrantyStatus;
 		
-		private string _UniqueProductInfo;
+		private bool _IsActive;
+		
+		private System.DateTime _CreatedDate;
+		
+		private System.Nullable<System.DateTime> _UpdatedDate;
+		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
+		private System.Nullable<System.Guid> _UpdatedBy;
+		
+		private string _Notes;
+		
+		private System.Nullable<System.Guid> _DeviceId;
 		
 		private EntitySet<Asset> _Assets;
 		
-		private EntitySet<Device> _Devices;
+		private EntityRef<ApplicationUser> _ApplicationUser;
 		
-		private EntityRef<StockInOutDetail> _StockInOutDetail;
+		private EntityRef<ApplicationUser> _ApplicationUser1;
+		
+		private EntityRef<Device> _Device;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -765,8 +799,6 @@ namespace Dal.DataContext
     partial void OnCreated();
     partial void OnIdChanging(System.Guid value);
     partial void OnIdChanged();
-    partial void OnStockInOutDetailIdChanging(System.Guid value);
-    partial void OnStockInOutDetailIdChanged();
     partial void OnWarrantyTypeChanging(int value);
     partial void OnWarrantyTypeChanged();
     partial void OnWarrantyFromChanging(System.Nullable<System.DateTime> value);
@@ -777,15 +809,28 @@ namespace Dal.DataContext
     partial void OnWarrantyUntilChanged();
     partial void OnWarrantyStatusChanging(int value);
     partial void OnWarrantyStatusChanged();
-    partial void OnUniqueProductInfoChanging(string value);
-    partial void OnUniqueProductInfoChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnUpdatedDateChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
+    partial void OnUpdatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnUpdatedByChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    partial void OnDeviceIdChanging(System.Nullable<System.Guid> value);
+    partial void OnDeviceIdChanged();
     #endregion
 		
 		public Warranty()
 		{
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
-			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
-			this._StockInOutDetail = default(EntityRef<StockInOutDetail>);
+			this._ApplicationUser = default(EntityRef<ApplicationUser>);
+			this._ApplicationUser1 = default(EntityRef<ApplicationUser>);
+			this._Device = default(EntityRef<Device>);
 			OnCreated();
 		}
 		
@@ -805,30 +850,6 @@ namespace Dal.DataContext
 					this._Id = value;
 					this.SendPropertyChanged("Id");
 					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockInOutDetailId", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid StockInOutDetailId
-		{
-			get
-			{
-				return this._StockInOutDetailId;
-			}
-			set
-			{
-				if ((this._StockInOutDetailId != value))
-				{
-					if (this._StockInOutDetail.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnStockInOutDetailIdChanging(value);
-					this.SendPropertyChanging();
-					this._StockInOutDetailId = value;
-					this.SendPropertyChanged("StockInOutDetailId");
-					this.OnStockInOutDetailIdChanged();
 				}
 			}
 		}
@@ -933,22 +954,154 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UniqueProductInfo", DbType="NVarChar(200) NOT NULL", CanBeNull=false)]
-		public string UniqueProductInfo
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
 		{
 			get
 			{
-				return this._UniqueProductInfo;
+				return this._IsActive;
 			}
 			set
 			{
-				if ((this._UniqueProductInfo != value))
+				if ((this._IsActive != value))
 				{
-					this.OnUniqueProductInfoChanging(value);
+					this.OnIsActiveChanging(value);
 					this.SendPropertyChanging();
-					this._UniqueProductInfo = value;
-					this.SendPropertyChanged("UniqueProductInfo");
-					this.OnUniqueProductInfoChanged();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> UpdatedDate
+		{
+			get
+			{
+				return this._UpdatedDate;
+			}
+			set
+			{
+				if ((this._UpdatedDate != value))
+				{
+					this.OnUpdatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedDate = value;
+					this.SendPropertyChanged("UpdatedDate");
+					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					if (this._ApplicationUser.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> UpdatedBy
+		{
+			get
+			{
+				return this._UpdatedBy;
+			}
+			set
+			{
+				if ((this._UpdatedBy != value))
+				{
+					if (this._ApplicationUser1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUpdatedByChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedBy = value;
+					this.SendPropertyChanged("UpdatedBy");
+					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> DeviceId
+		{
+			get
+			{
+				return this._DeviceId;
+			}
+			set
+			{
+				if ((this._DeviceId != value))
+				{
+					if (this._Device.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDeviceIdChanging(value);
+					this.SendPropertyChanging();
+					this._DeviceId = value;
+					this.SendPropertyChanged("DeviceId");
+					this.OnDeviceIdChanged();
 				}
 			}
 		}
@@ -966,49 +1119,104 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Device", Storage="_Devices", ThisKey="Id", OtherKey="WarrantyId")]
-		public EntitySet<Device> Devices
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_Warranty", Storage="_ApplicationUser", ThisKey="CreatedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser
 		{
 			get
 			{
-				return this._Devices;
+				return this._ApplicationUser.Entity;
 			}
 			set
 			{
-				this._Devices.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_StockInOutDetail", ThisKey="StockInOutDetailId", OtherKey="Id", IsForeignKey=true)]
-		public StockInOutDetail StockInOutDetail
-		{
-			get
-			{
-				return this._StockInOutDetail.Entity;
-			}
-			set
-			{
-				StockInOutDetail previousValue = this._StockInOutDetail.Entity;
+				ApplicationUser previousValue = this._ApplicationUser.Entity;
 				if (((previousValue != value) 
-							|| (this._StockInOutDetail.HasLoadedOrAssignedValue == false)))
+							|| (this._ApplicationUser.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._StockInOutDetail.Entity = null;
+						this._ApplicationUser.Entity = null;
 						previousValue.Warranties.Remove(this);
 					}
-					this._StockInOutDetail.Entity = value;
+					this._ApplicationUser.Entity = value;
 					if ((value != null))
 					{
 						value.Warranties.Add(this);
-						this._StockInOutDetailId = value.Id;
+						this._CreatedBy = value.Id;
 					}
 					else
 					{
-						this._StockInOutDetailId = default(System.Guid);
+						this._CreatedBy = default(Nullable<System.Guid>);
 					}
-					this.SendPropertyChanged("StockInOutDetail");
+					this.SendPropertyChanged("ApplicationUser");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_Warranty1", Storage="_ApplicationUser1", ThisKey="UpdatedBy", OtherKey="Id", IsForeignKey=true)]
+		public ApplicationUser ApplicationUser1
+		{
+			get
+			{
+				return this._ApplicationUser1.Entity;
+			}
+			set
+			{
+				ApplicationUser previousValue = this._ApplicationUser1.Entity;
+				if (((previousValue != value) 
+							|| (this._ApplicationUser1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ApplicationUser1.Entity = null;
+						previousValue.Warranties1.Remove(this);
+					}
+					this._ApplicationUser1.Entity = value;
+					if ((value != null))
+					{
+						value.Warranties1.Add(this);
+						this._UpdatedBy = value.Id;
+					}
+					else
+					{
+						this._UpdatedBy = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("ApplicationUser1");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_Warranty", Storage="_Device", ThisKey="DeviceId", OtherKey="Id", IsForeignKey=true)]
+		public Device Device
+		{
+			get
+			{
+				return this._Device.Entity;
+			}
+			set
+			{
+				Device previousValue = this._Device.Entity;
+				if (((previousValue != value) 
+							|| (this._Device.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Device.Entity = null;
+						previousValue.Warranties.Remove(this);
+					}
+					this._Device.Entity = value;
+					if ((value != null))
+					{
+						value.Warranties.Add(this);
+						this._DeviceId = value.Id;
+					}
+					else
+					{
+						this._DeviceId = default(Nullable<System.Guid>);
+					}
+					this.SendPropertyChanged("Device");
 				}
 			}
 		}
@@ -1044,18 +1252,6 @@ namespace Dal.DataContext
 			this.SendPropertyChanging();
 			entity.Warranty = null;
 		}
-		
-		private void attach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Warranty = this;
-		}
-		
-		private void detach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Warranty = null;
-		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ApplicationUser")]
@@ -1073,6 +1269,10 @@ namespace Dal.DataContext
 		private bool _Active;
 		
 		private System.Nullable<System.Guid> _EmployeeId;
+		
+		private EntitySet<Warranty> _Warranties;
+		
+		private EntitySet<Warranty> _Warranties1;
 		
 		private EntitySet<Asset> _Assets;
 		
@@ -1138,6 +1338,8 @@ namespace Dal.DataContext
 		
 		public ApplicationUser()
 		{
+			this._Warranties = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties), new Action<Warranty>(this.detach_Warranties));
+			this._Warranties1 = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties1), new Action<Warranty>(this.detach_Warranties1));
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._Assets1 = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets1), new Action<Asset>(this.detach_Assets1));
 			this._Assets2 = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets2), new Action<Asset>(this.detach_Assets2));
@@ -1265,6 +1467,32 @@ namespace Dal.DataContext
 					this.SendPropertyChanged("EmployeeId");
 					this.OnEmployeeIdChanged();
 				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_Warranty", Storage="_Warranties", ThisKey="Id", OtherKey="CreatedBy")]
+		public EntitySet<Warranty> Warranties
+		{
+			get
+			{
+				return this._Warranties;
+			}
+			set
+			{
+				this._Warranties.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ApplicationUser_Warranty1", Storage="_Warranties1", ThisKey="Id", OtherKey="UpdatedBy")]
+		public EntitySet<Warranty> Warranties1
+		{
+			get
+			{
+				return this._Warranties1;
+			}
+			set
+			{
+				this._Warranties1.Assign(value);
 			}
 		}
 		
@@ -1606,6 +1834,30 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = this;
+		}
+		
+		private void detach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser = null;
+		}
+		
+		private void attach_Warranties1(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = this;
+		}
+		
+		private void detach_Warranties1(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.ApplicationUser1 = null;
 		}
 		
 		private void attach_Assets(Asset entity)
@@ -6558,8 +6810,6 @@ namespace Dal.DataContext
 		
 		private EntitySet<Department> _Departments;
 		
-		private EntitySet<Device> _Devices;
-		
 		private EntitySet<Employee> _Employees;
 		
 		private EntitySet<Position> _Positions;
@@ -6611,7 +6861,6 @@ namespace Dal.DataContext
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._CompanyBranches = new EntitySet<CompanyBranch>(new Action<CompanyBranch>(this.attach_CompanyBranches), new Action<CompanyBranch>(this.detach_CompanyBranches));
 			this._Departments = new EntitySet<Department>(new Action<Department>(this.attach_Departments), new Action<Department>(this.detach_Departments));
-			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._Employees = new EntitySet<Employee>(new Action<Employee>(this.attach_Employees), new Action<Employee>(this.detach_Employees));
 			this._Positions = new EntitySet<Position>(new Action<Position>(this.attach_Positions), new Action<Position>(this.detach_Positions));
 			OnCreated();
@@ -7016,19 +7265,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Company_Device", Storage="_Devices", ThisKey="Id", OtherKey="CompanyId")]
-		public EntitySet<Device> Devices
-		{
-			get
-			{
-				return this._Devices;
-			}
-			set
-			{
-				this._Devices.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Company_Employee", Storage="_Employees", ThisKey="Id", OtherKey="CompanyId")]
 		public EntitySet<Employee> Employees
 		{
@@ -7111,18 +7347,6 @@ namespace Dal.DataContext
 			entity.Company = null;
 		}
 		
-		private void attach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Company = this;
-		}
-		
-		private void detach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Company = null;
-		}
-		
 		private void attach_Employees(Employee entity)
 		{
 			this.SendPropertyChanging();
@@ -7176,8 +7400,6 @@ namespace Dal.DataContext
 		
 		private EntitySet<Department> _Departments;
 		
-		private EntitySet<Device> _Devices;
-		
 		private EntitySet<DeviceTransfer> _DeviceTransfers;
 		
 		private EntitySet<DeviceTransfer> _DeviceTransfers1;
@@ -7218,7 +7440,6 @@ namespace Dal.DataContext
 		{
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._Departments = new EntitySet<Department>(new Action<Department>(this.attach_Departments), new Action<Department>(this.detach_Departments));
-			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
 			this._DeviceTransfers1 = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers1), new Action<DeviceTransfer>(this.detach_DeviceTransfers1));
 			this._Employees = new EntitySet<Employee>(new Action<Employee>(this.attach_Employees), new Action<Employee>(this.detach_Employees));
@@ -7438,19 +7659,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_Device", Storage="_Devices", ThisKey="Id", OtherKey="BranchId")]
-		public EntitySet<Device> Devices
-		{
-			get
-			{
-				return this._Devices;
-			}
-			set
-			{
-				this._Devices.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_DeviceTransfer", Storage="_DeviceTransfers", ThisKey="Id", OtherKey="FromBranchId")]
 		public EntitySet<DeviceTransfer> DeviceTransfers
 		{
@@ -7594,18 +7802,6 @@ namespace Dal.DataContext
 			entity.CompanyBranch = null;
 		}
 		
-		private void attach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.CompanyBranch = this;
-		}
-		
-		private void detach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.CompanyBranch = null;
-		}
-		
 		private void attach_DeviceTransfers(DeviceTransfer entity)
 		{
 			this.SendPropertyChanging();
@@ -7693,8 +7889,6 @@ namespace Dal.DataContext
 		
 		private EntitySet<Department> _Departments;
 		
-		private EntitySet<Device> _Devices;
-		
 		private EntitySet<DeviceTransfer> _DeviceTransfers;
 		
 		private EntitySet<DeviceTransfer> _DeviceTransfers1;
@@ -7733,7 +7927,6 @@ namespace Dal.DataContext
 		{
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._Departments = new EntitySet<Department>(new Action<Department>(this.attach_Departments), new Action<Department>(this.detach_Departments));
-			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
 			this._DeviceTransfers1 = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers1), new Action<DeviceTransfer>(this.detach_DeviceTransfers1));
 			this._Employees = new EntitySet<Employee>(new Action<Employee>(this.attach_Employees), new Action<Employee>(this.detach_Employees));
@@ -7941,19 +8134,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_Device", Storage="_Devices", ThisKey="Id", OtherKey="DepartmentId")]
-		public EntitySet<Device> Devices
-		{
-			get
-			{
-				return this._Devices;
-			}
-			set
-			{
-				this._Devices.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_DeviceTransfer", Storage="_DeviceTransfers", ThisKey="Id", OtherKey="FromDepartmentId")]
 		public EntitySet<DeviceTransfer> DeviceTransfers
 		{
@@ -8139,18 +8319,6 @@ namespace Dal.DataContext
 			entity.Department1 = null;
 		}
 		
-		private void attach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Department = this;
-		}
-		
-		private void detach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Department = null;
-		}
-		
 		private void attach_DeviceTransfers(DeviceTransfer entity)
 		{
 			this.SendPropertyChanging();
@@ -8200,8 +8368,6 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _StockInOutDetailId;
 		
-		private System.Nullable<System.Guid> _WarrantyId;
-		
 		private string _SerialNumber;
 		
 		private string _MACAddress;
@@ -8216,35 +8382,9 @@ namespace Dal.DataContext
 		
 		private string _IPAddress;
 		
-		private System.Nullable<System.Guid> _CompanyId;
-		
-		private System.Nullable<System.Guid> _BranchId;
-		
-		private System.Nullable<System.Guid> _DepartmentId;
-		
-		private System.Nullable<System.Guid> _AssignedEmployeeId;
-		
-		private string _Location;
-		
 		private int _Status;
 		
 		private int _DeviceType;
-		
-		private System.Nullable<System.DateTime> _PurchaseDate;
-		
-		private System.Nullable<System.DateTime> _InstallationDate;
-		
-		private System.Nullable<System.DateTime> _LastMaintenanceDate;
-		
-		private System.Nullable<System.DateTime> _NextMaintenanceDate;
-		
-		private string _Manufacturer;
-		
-		private string _Model;
-		
-		private string _Specifications;
-		
-		private string _Configuration;
 		
 		private string _Notes;
 		
@@ -8258,19 +8398,15 @@ namespace Dal.DataContext
 		
 		private System.Nullable<System.Guid> _UpdatedBy;
 		
+		private EntitySet<Warranty> _Warranties;
+		
 		private EntitySet<DeviceHistory> _DeviceHistories;
 		
+		private EntitySet<DeviceImage> _DeviceImages;
+		
+		private EntitySet<DeviceTransactionHistory> _DeviceTransactionHistories;
+		
 		private EntitySet<DeviceTransfer> _DeviceTransfers;
-		
-		private EntityRef<Company> _Company;
-		
-		private EntityRef<CompanyBranch> _CompanyBranch;
-		
-		private EntityRef<Department> _Department;
-		
-		private EntityRef<Warranty> _Warranty;
-		
-		private EntityRef<Employee> _Employee;
 		
 		private EntityRef<ProductVariant> _ProductVariant;
 		
@@ -8286,8 +8422,6 @@ namespace Dal.DataContext
     partial void OnProductVariantIdChanged();
     partial void OnStockInOutDetailIdChanging(System.Nullable<System.Guid> value);
     partial void OnStockInOutDetailIdChanged();
-    partial void OnWarrantyIdChanging(System.Nullable<System.Guid> value);
-    partial void OnWarrantyIdChanged();
     partial void OnSerialNumberChanging(string value);
     partial void OnSerialNumberChanged();
     partial void OnMACAddressChanging(string value);
@@ -8302,36 +8436,10 @@ namespace Dal.DataContext
     partial void OnHostNameChanged();
     partial void OnIPAddressChanging(string value);
     partial void OnIPAddressChanged();
-    partial void OnCompanyIdChanging(System.Nullable<System.Guid> value);
-    partial void OnCompanyIdChanged();
-    partial void OnBranchIdChanging(System.Nullable<System.Guid> value);
-    partial void OnBranchIdChanged();
-    partial void OnDepartmentIdChanging(System.Nullable<System.Guid> value);
-    partial void OnDepartmentIdChanged();
-    partial void OnAssignedEmployeeIdChanging(System.Nullable<System.Guid> value);
-    partial void OnAssignedEmployeeIdChanged();
-    partial void OnLocationChanging(string value);
-    partial void OnLocationChanged();
     partial void OnStatusChanging(int value);
     partial void OnStatusChanged();
     partial void OnDeviceTypeChanging(int value);
     partial void OnDeviceTypeChanged();
-    partial void OnPurchaseDateChanging(System.Nullable<System.DateTime> value);
-    partial void OnPurchaseDateChanged();
-    partial void OnInstallationDateChanging(System.Nullable<System.DateTime> value);
-    partial void OnInstallationDateChanged();
-    partial void OnLastMaintenanceDateChanging(System.Nullable<System.DateTime> value);
-    partial void OnLastMaintenanceDateChanged();
-    partial void OnNextMaintenanceDateChanging(System.Nullable<System.DateTime> value);
-    partial void OnNextMaintenanceDateChanged();
-    partial void OnManufacturerChanging(string value);
-    partial void OnManufacturerChanged();
-    partial void OnModelChanging(string value);
-    partial void OnModelChanged();
-    partial void OnSpecificationsChanging(string value);
-    partial void OnSpecificationsChanged();
-    partial void OnConfigurationChanging(string value);
-    partial void OnConfigurationChanged();
     partial void OnNotesChanging(string value);
     partial void OnNotesChanged();
     partial void OnIsActiveChanging(bool value);
@@ -8348,13 +8456,11 @@ namespace Dal.DataContext
 		
 		public Device()
 		{
+			this._Warranties = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties), new Action<Warranty>(this.detach_Warranties));
 			this._DeviceHistories = new EntitySet<DeviceHistory>(new Action<DeviceHistory>(this.attach_DeviceHistories), new Action<DeviceHistory>(this.detach_DeviceHistories));
+			this._DeviceImages = new EntitySet<DeviceImage>(new Action<DeviceImage>(this.attach_DeviceImages), new Action<DeviceImage>(this.detach_DeviceImages));
+			this._DeviceTransactionHistories = new EntitySet<DeviceTransactionHistory>(new Action<DeviceTransactionHistory>(this.attach_DeviceTransactionHistories), new Action<DeviceTransactionHistory>(this.detach_DeviceTransactionHistories));
 			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
-			this._Company = default(EntityRef<Company>);
-			this._CompanyBranch = default(EntityRef<CompanyBranch>);
-			this._Department = default(EntityRef<Department>);
-			this._Warranty = default(EntityRef<Warranty>);
-			this._Employee = default(EntityRef<Employee>);
 			this._ProductVariant = default(EntityRef<ProductVariant>);
 			this._StockInOutDetail = default(EntityRef<StockInOutDetail>);
 			OnCreated();
@@ -8424,30 +8530,6 @@ namespace Dal.DataContext
 					this._StockInOutDetailId = value;
 					this.SendPropertyChanged("StockInOutDetailId");
 					this.OnStockInOutDetailIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WarrantyId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> WarrantyId
-		{
-			get
-			{
-				return this._WarrantyId;
-			}
-			set
-			{
-				if ((this._WarrantyId != value))
-				{
-					if (this._Warranty.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnWarrantyIdChanging(value);
-					this.SendPropertyChanging();
-					this._WarrantyId = value;
-					this.SendPropertyChanged("WarrantyId");
-					this.OnWarrantyIdChanged();
 				}
 			}
 		}
@@ -8592,122 +8674,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CompanyId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> CompanyId
-		{
-			get
-			{
-				return this._CompanyId;
-			}
-			set
-			{
-				if ((this._CompanyId != value))
-				{
-					if (this._Company.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnCompanyIdChanging(value);
-					this.SendPropertyChanging();
-					this._CompanyId = value;
-					this.SendPropertyChanged("CompanyId");
-					this.OnCompanyIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_BranchId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> BranchId
-		{
-			get
-			{
-				return this._BranchId;
-			}
-			set
-			{
-				if ((this._BranchId != value))
-				{
-					if (this._CompanyBranch.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnBranchIdChanging(value);
-					this.SendPropertyChanging();
-					this._BranchId = value;
-					this.SendPropertyChanged("BranchId");
-					this.OnBranchIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DepartmentId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> DepartmentId
-		{
-			get
-			{
-				return this._DepartmentId;
-			}
-			set
-			{
-				if ((this._DepartmentId != value))
-				{
-					if (this._Department.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnDepartmentIdChanging(value);
-					this.SendPropertyChanging();
-					this._DepartmentId = value;
-					this.SendPropertyChanged("DepartmentId");
-					this.OnDepartmentIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AssignedEmployeeId", DbType="UniqueIdentifier")]
-		public System.Nullable<System.Guid> AssignedEmployeeId
-		{
-			get
-			{
-				return this._AssignedEmployeeId;
-			}
-			set
-			{
-				if ((this._AssignedEmployeeId != value))
-				{
-					if (this._Employee.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnAssignedEmployeeIdChanging(value);
-					this.SendPropertyChanging();
-					this._AssignedEmployeeId = value;
-					this.SendPropertyChanged("AssignedEmployeeId");
-					this.OnAssignedEmployeeIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Location", DbType="NVarChar(500)")]
-		public string Location
-		{
-			get
-			{
-				return this._Location;
-			}
-			set
-			{
-				if ((this._Location != value))
-				{
-					this.OnLocationChanging(value);
-					this.SendPropertyChanging();
-					this._Location = value;
-					this.SendPropertyChanged("Location");
-					this.OnLocationChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="Int NOT NULL")]
 		public int Status
 		{
@@ -8744,166 +8710,6 @@ namespace Dal.DataContext
 					this._DeviceType = value;
 					this.SendPropertyChanged("DeviceType");
 					this.OnDeviceTypeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PurchaseDate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> PurchaseDate
-		{
-			get
-			{
-				return this._PurchaseDate;
-			}
-			set
-			{
-				if ((this._PurchaseDate != value))
-				{
-					this.OnPurchaseDateChanging(value);
-					this.SendPropertyChanging();
-					this._PurchaseDate = value;
-					this.SendPropertyChanged("PurchaseDate");
-					this.OnPurchaseDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InstallationDate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> InstallationDate
-		{
-			get
-			{
-				return this._InstallationDate;
-			}
-			set
-			{
-				if ((this._InstallationDate != value))
-				{
-					this.OnInstallationDateChanging(value);
-					this.SendPropertyChanging();
-					this._InstallationDate = value;
-					this.SendPropertyChanged("InstallationDate");
-					this.OnInstallationDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastMaintenanceDate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> LastMaintenanceDate
-		{
-			get
-			{
-				return this._LastMaintenanceDate;
-			}
-			set
-			{
-				if ((this._LastMaintenanceDate != value))
-				{
-					this.OnLastMaintenanceDateChanging(value);
-					this.SendPropertyChanging();
-					this._LastMaintenanceDate = value;
-					this.SendPropertyChanged("LastMaintenanceDate");
-					this.OnLastMaintenanceDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NextMaintenanceDate", DbType="DateTime")]
-		public System.Nullable<System.DateTime> NextMaintenanceDate
-		{
-			get
-			{
-				return this._NextMaintenanceDate;
-			}
-			set
-			{
-				if ((this._NextMaintenanceDate != value))
-				{
-					this.OnNextMaintenanceDateChanging(value);
-					this.SendPropertyChanging();
-					this._NextMaintenanceDate = value;
-					this.SendPropertyChanged("NextMaintenanceDate");
-					this.OnNextMaintenanceDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Manufacturer", DbType="NVarChar(255)")]
-		public string Manufacturer
-		{
-			get
-			{
-				return this._Manufacturer;
-			}
-			set
-			{
-				if ((this._Manufacturer != value))
-				{
-					this.OnManufacturerChanging(value);
-					this.SendPropertyChanging();
-					this._Manufacturer = value;
-					this.SendPropertyChanged("Manufacturer");
-					this.OnManufacturerChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Model", DbType="NVarChar(255)")]
-		public string Model
-		{
-			get
-			{
-				return this._Model;
-			}
-			set
-			{
-				if ((this._Model != value))
-				{
-					this.OnModelChanging(value);
-					this.SendPropertyChanging();
-					this._Model = value;
-					this.SendPropertyChanged("Model");
-					this.OnModelChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Specifications", DbType="NVarChar(2000)")]
-		public string Specifications
-		{
-			get
-			{
-				return this._Specifications;
-			}
-			set
-			{
-				if ((this._Specifications != value))
-				{
-					this.OnSpecificationsChanging(value);
-					this.SendPropertyChanging();
-					this._Specifications = value;
-					this.SendPropertyChanged("Specifications");
-					this.OnSpecificationsChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Configuration", DbType="NVarChar(2000)")]
-		public string Configuration
-		{
-			get
-			{
-				return this._Configuration;
-			}
-			set
-			{
-				if ((this._Configuration != value))
-				{
-					this.OnConfigurationChanging(value);
-					this.SendPropertyChanging();
-					this._Configuration = value;
-					this.SendPropertyChanged("Configuration");
-					this.OnConfigurationChanged();
 				}
 			}
 		}
@@ -9028,6 +8834,19 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_Warranty", Storage="_Warranties", ThisKey="Id", OtherKey="DeviceId")]
+		public EntitySet<Warranty> Warranties
+		{
+			get
+			{
+				return this._Warranties;
+			}
+			set
+			{
+				this._Warranties.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceHistory", Storage="_DeviceHistories", ThisKey="Id", OtherKey="DeviceId")]
 		public EntitySet<DeviceHistory> DeviceHistories
 		{
@@ -9041,6 +8860,32 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceImage", Storage="_DeviceImages", ThisKey="Id", OtherKey="DeviceId")]
+		public EntitySet<DeviceImage> DeviceImages
+		{
+			get
+			{
+				return this._DeviceImages;
+			}
+			set
+			{
+				this._DeviceImages.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceTransactionHistory", Storage="_DeviceTransactionHistories", ThisKey="Id", OtherKey="DeviceId")]
+		public EntitySet<DeviceTransactionHistory> DeviceTransactionHistories
+		{
+			get
+			{
+				return this._DeviceTransactionHistories;
+			}
+			set
+			{
+				this._DeviceTransactionHistories.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceTransfer", Storage="_DeviceTransfers", ThisKey="Id", OtherKey="DeviceId")]
 		public EntitySet<DeviceTransfer> DeviceTransfers
 		{
@@ -9051,176 +8896,6 @@ namespace Dal.DataContext
 			set
 			{
 				this._DeviceTransfers.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Company_Device", Storage="_Company", ThisKey="CompanyId", OtherKey="Id", IsForeignKey=true)]
-		public Company Company
-		{
-			get
-			{
-				return this._Company.Entity;
-			}
-			set
-			{
-				Company previousValue = this._Company.Entity;
-				if (((previousValue != value) 
-							|| (this._Company.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Company.Entity = null;
-						previousValue.Devices.Remove(this);
-					}
-					this._Company.Entity = value;
-					if ((value != null))
-					{
-						value.Devices.Add(this);
-						this._CompanyId = value.Id;
-					}
-					else
-					{
-						this._CompanyId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("Company");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CompanyBranch_Device", Storage="_CompanyBranch", ThisKey="BranchId", OtherKey="Id", IsForeignKey=true)]
-		public CompanyBranch CompanyBranch
-		{
-			get
-			{
-				return this._CompanyBranch.Entity;
-			}
-			set
-			{
-				CompanyBranch previousValue = this._CompanyBranch.Entity;
-				if (((previousValue != value) 
-							|| (this._CompanyBranch.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._CompanyBranch.Entity = null;
-						previousValue.Devices.Remove(this);
-					}
-					this._CompanyBranch.Entity = value;
-					if ((value != null))
-					{
-						value.Devices.Add(this);
-						this._BranchId = value.Id;
-					}
-					else
-					{
-						this._BranchId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("CompanyBranch");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Department_Device", Storage="_Department", ThisKey="DepartmentId", OtherKey="Id", IsForeignKey=true)]
-		public Department Department
-		{
-			get
-			{
-				return this._Department.Entity;
-			}
-			set
-			{
-				Department previousValue = this._Department.Entity;
-				if (((previousValue != value) 
-							|| (this._Department.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Department.Entity = null;
-						previousValue.Devices.Remove(this);
-					}
-					this._Department.Entity = value;
-					if ((value != null))
-					{
-						value.Devices.Add(this);
-						this._DepartmentId = value.Id;
-					}
-					else
-					{
-						this._DepartmentId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("Department");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Warranty_Device", Storage="_Warranty", ThisKey="WarrantyId", OtherKey="Id", IsForeignKey=true)]
-		public Warranty Warranty
-		{
-			get
-			{
-				return this._Warranty.Entity;
-			}
-			set
-			{
-				Warranty previousValue = this._Warranty.Entity;
-				if (((previousValue != value) 
-							|| (this._Warranty.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Warranty.Entity = null;
-						previousValue.Devices.Remove(this);
-					}
-					this._Warranty.Entity = value;
-					if ((value != null))
-					{
-						value.Devices.Add(this);
-						this._WarrantyId = value.Id;
-					}
-					else
-					{
-						this._WarrantyId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("Warranty");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_Device", Storage="_Employee", ThisKey="AssignedEmployeeId", OtherKey="Id", IsForeignKey=true)]
-		public Employee Employee
-		{
-			get
-			{
-				return this._Employee.Entity;
-			}
-			set
-			{
-				Employee previousValue = this._Employee.Entity;
-				if (((previousValue != value) 
-							|| (this._Employee.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Employee.Entity = null;
-						previousValue.Devices.Remove(this);
-					}
-					this._Employee.Entity = value;
-					if ((value != null))
-					{
-						value.Devices.Add(this);
-						this._AssignedEmployeeId = value.Id;
-					}
-					else
-					{
-						this._AssignedEmployeeId = default(Nullable<System.Guid>);
-					}
-					this.SendPropertyChanged("Employee");
-				}
 			}
 		}
 		
@@ -9312,6 +8987,18 @@ namespace Dal.DataContext
 			}
 		}
 		
+		private void attach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = this;
+		}
+		
+		private void detach_Warranties(Warranty entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = null;
+		}
+		
 		private void attach_DeviceHistories(DeviceHistory entity)
 		{
 			this.SendPropertyChanging();
@@ -9319,6 +9006,30 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_DeviceHistories(DeviceHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = null;
+		}
+		
+		private void attach_DeviceImages(DeviceImage entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = this;
+		}
+		
+		private void detach_DeviceImages(DeviceImage entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = null;
+		}
+		
+		private void attach_DeviceTransactionHistories(DeviceTransactionHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Device = this;
+		}
+		
+		private void detach_DeviceTransactionHistories(DeviceTransactionHistory entity)
 		{
 			this.SendPropertyChanging();
 			entity.Device = null;
@@ -9624,6 +9335,1004 @@ namespace Dal.DataContext
 					if ((value != null))
 					{
 						value.DeviceHistories.Add(this);
+						this._DeviceId = value.Id;
+					}
+					else
+					{
+						this._DeviceId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Device");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DeviceImage")]
+	public partial class DeviceImage : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _DeviceId;
+		
+		private System.Data.Linq.Binary _ImageData;
+		
+		private System.DateTime _CreateDate;
+		
+		private System.Guid _CreateBy;
+		
+		private System.Nullable<System.DateTime> _ModifiedDate;
+		
+		private System.Guid _ModifiedBy;
+		
+		private string _FileName;
+		
+		private string _RelativePath;
+		
+		private string _FullPath;
+		
+		private string _StorageType;
+		
+		private System.Nullable<long> _FileSize;
+		
+		private string _FileExtension;
+		
+		private string _MimeType;
+		
+		private string _Checksum;
+		
+		private System.Nullable<bool> _FileExists;
+		
+		private System.Nullable<System.DateTime> _LastVerified;
+		
+		private string _MigrationStatus;
+		
+		private string _Caption;
+		
+		private string _AltText;
+		
+		private System.Nullable<bool> _IsPrimary;
+		
+		private System.Nullable<int> _DisplayOrder;
+		
+		private System.Nullable<bool> _IsActive;
+		
+		private EntityRef<Device> _Device;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnDeviceIdChanging(System.Guid value);
+    partial void OnDeviceIdChanged();
+    partial void OnImageDataChanging(System.Data.Linq.Binary value);
+    partial void OnImageDataChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnCreateByChanging(System.Guid value);
+    partial void OnCreateByChanged();
+    partial void OnModifiedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnModifiedDateChanged();
+    partial void OnModifiedByChanging(System.Guid value);
+    partial void OnModifiedByChanged();
+    partial void OnFileNameChanging(string value);
+    partial void OnFileNameChanged();
+    partial void OnRelativePathChanging(string value);
+    partial void OnRelativePathChanged();
+    partial void OnFullPathChanging(string value);
+    partial void OnFullPathChanged();
+    partial void OnStorageTypeChanging(string value);
+    partial void OnStorageTypeChanged();
+    partial void OnFileSizeChanging(System.Nullable<long> value);
+    partial void OnFileSizeChanged();
+    partial void OnFileExtensionChanging(string value);
+    partial void OnFileExtensionChanged();
+    partial void OnMimeTypeChanging(string value);
+    partial void OnMimeTypeChanged();
+    partial void OnChecksumChanging(string value);
+    partial void OnChecksumChanged();
+    partial void OnFileExistsChanging(System.Nullable<bool> value);
+    partial void OnFileExistsChanged();
+    partial void OnLastVerifiedChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastVerifiedChanged();
+    partial void OnMigrationStatusChanging(string value);
+    partial void OnMigrationStatusChanged();
+    partial void OnCaptionChanging(string value);
+    partial void OnCaptionChanged();
+    partial void OnAltTextChanging(string value);
+    partial void OnAltTextChanged();
+    partial void OnIsPrimaryChanging(System.Nullable<bool> value);
+    partial void OnIsPrimaryChanged();
+    partial void OnDisplayOrderChanging(System.Nullable<int> value);
+    partial void OnDisplayOrderChanged();
+    partial void OnIsActiveChanging(System.Nullable<bool> value);
+    partial void OnIsActiveChanged();
+    #endregion
+		
+		public DeviceImage()
+		{
+			this._Device = default(EntityRef<Device>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid DeviceId
+		{
+			get
+			{
+				return this._DeviceId;
+			}
+			set
+			{
+				if ((this._DeviceId != value))
+				{
+					if (this._Device.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDeviceIdChanging(value);
+					this.SendPropertyChanging();
+					this._DeviceId = value;
+					this.SendPropertyChanged("DeviceId");
+					this.OnDeviceIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageData", DbType="VarBinary(MAX)", UpdateCheck=UpdateCheck.Never)]
+		public System.Data.Linq.Binary ImageData
+		{
+			get
+			{
+				return this._ImageData;
+			}
+			set
+			{
+				if ((this._ImageData != value))
+				{
+					this.OnImageDataChanging(value);
+					this.SendPropertyChanging();
+					this._ImageData = value;
+					this.SendPropertyChanged("ImageData");
+					this.OnImageDataChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid CreateBy
+		{
+			get
+			{
+				return this._CreateBy;
+			}
+			set
+			{
+				if ((this._CreateBy != value))
+				{
+					this.OnCreateByChanging(value);
+					this.SendPropertyChanging();
+					this._CreateBy = value;
+					this.SendPropertyChanged("CreateBy");
+					this.OnCreateByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ModifiedDate
+		{
+			get
+			{
+				return this._ModifiedDate;
+			}
+			set
+			{
+				if ((this._ModifiedDate != value))
+				{
+					this.OnModifiedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedDate = value;
+					this.SendPropertyChanged("ModifiedDate");
+					this.OnModifiedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ModifiedBy", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ModifiedBy
+		{
+			get
+			{
+				return this._ModifiedBy;
+			}
+			set
+			{
+				if ((this._ModifiedBy != value))
+				{
+					this.OnModifiedByChanging(value);
+					this.SendPropertyChanging();
+					this._ModifiedBy = value;
+					this.SendPropertyChanged("ModifiedBy");
+					this.OnModifiedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileName", DbType="NVarChar(255)")]
+		public string FileName
+		{
+			get
+			{
+				return this._FileName;
+			}
+			set
+			{
+				if ((this._FileName != value))
+				{
+					this.OnFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._FileName = value;
+					this.SendPropertyChanged("FileName");
+					this.OnFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RelativePath", DbType="NVarChar(500)")]
+		public string RelativePath
+		{
+			get
+			{
+				return this._RelativePath;
+			}
+			set
+			{
+				if ((this._RelativePath != value))
+				{
+					this.OnRelativePathChanging(value);
+					this.SendPropertyChanging();
+					this._RelativePath = value;
+					this.SendPropertyChanged("RelativePath");
+					this.OnRelativePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FullPath", DbType="NVarChar(1000)")]
+		public string FullPath
+		{
+			get
+			{
+				return this._FullPath;
+			}
+			set
+			{
+				if ((this._FullPath != value))
+				{
+					this.OnFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._FullPath = value;
+					this.SendPropertyChanged("FullPath");
+					this.OnFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StorageType", DbType="NVarChar(20)")]
+		public string StorageType
+		{
+			get
+			{
+				return this._StorageType;
+			}
+			set
+			{
+				if ((this._StorageType != value))
+				{
+					this.OnStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._StorageType = value;
+					this.SendPropertyChanged("StorageType");
+					this.OnStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileSize", DbType="BigInt")]
+		public System.Nullable<long> FileSize
+		{
+			get
+			{
+				return this._FileSize;
+			}
+			set
+			{
+				if ((this._FileSize != value))
+				{
+					this.OnFileSizeChanging(value);
+					this.SendPropertyChanging();
+					this._FileSize = value;
+					this.SendPropertyChanged("FileSize");
+					this.OnFileSizeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExtension", DbType="NVarChar(10)")]
+		public string FileExtension
+		{
+			get
+			{
+				return this._FileExtension;
+			}
+			set
+			{
+				if ((this._FileExtension != value))
+				{
+					this.OnFileExtensionChanging(value);
+					this.SendPropertyChanging();
+					this._FileExtension = value;
+					this.SendPropertyChanged("FileExtension");
+					this.OnFileExtensionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MimeType", DbType="NVarChar(100)")]
+		public string MimeType
+		{
+			get
+			{
+				return this._MimeType;
+			}
+			set
+			{
+				if ((this._MimeType != value))
+				{
+					this.OnMimeTypeChanging(value);
+					this.SendPropertyChanging();
+					this._MimeType = value;
+					this.SendPropertyChanged("MimeType");
+					this.OnMimeTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Checksum", DbType="NVarChar(64)")]
+		public string Checksum
+		{
+			get
+			{
+				return this._Checksum;
+			}
+			set
+			{
+				if ((this._Checksum != value))
+				{
+					this.OnChecksumChanging(value);
+					this.SendPropertyChanging();
+					this._Checksum = value;
+					this.SendPropertyChanged("Checksum");
+					this.OnChecksumChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FileExists", DbType="Bit")]
+		public System.Nullable<bool> FileExists
+		{
+			get
+			{
+				return this._FileExists;
+			}
+			set
+			{
+				if ((this._FileExists != value))
+				{
+					this.OnFileExistsChanging(value);
+					this.SendPropertyChanging();
+					this._FileExists = value;
+					this.SendPropertyChanged("FileExists");
+					this.OnFileExistsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastVerified", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastVerified
+		{
+			get
+			{
+				return this._LastVerified;
+			}
+			set
+			{
+				if ((this._LastVerified != value))
+				{
+					this.OnLastVerifiedChanging(value);
+					this.SendPropertyChanging();
+					this._LastVerified = value;
+					this.SendPropertyChanged("LastVerified");
+					this.OnLastVerifiedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MigrationStatus", DbType="NVarChar(20)")]
+		public string MigrationStatus
+		{
+			get
+			{
+				return this._MigrationStatus;
+			}
+			set
+			{
+				if ((this._MigrationStatus != value))
+				{
+					this.OnMigrationStatusChanging(value);
+					this.SendPropertyChanging();
+					this._MigrationStatus = value;
+					this.SendPropertyChanged("MigrationStatus");
+					this.OnMigrationStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Caption", DbType="NVarChar(255)")]
+		public string Caption
+		{
+			get
+			{
+				return this._Caption;
+			}
+			set
+			{
+				if ((this._Caption != value))
+				{
+					this.OnCaptionChanging(value);
+					this.SendPropertyChanging();
+					this._Caption = value;
+					this.SendPropertyChanged("Caption");
+					this.OnCaptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AltText", DbType="NVarChar(255)")]
+		public string AltText
+		{
+			get
+			{
+				return this._AltText;
+			}
+			set
+			{
+				if ((this._AltText != value))
+				{
+					this.OnAltTextChanging(value);
+					this.SendPropertyChanging();
+					this._AltText = value;
+					this.SendPropertyChanged("AltText");
+					this.OnAltTextChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPrimary", DbType="Bit")]
+		public System.Nullable<bool> IsPrimary
+		{
+			get
+			{
+				return this._IsPrimary;
+			}
+			set
+			{
+				if ((this._IsPrimary != value))
+				{
+					this.OnIsPrimaryChanging(value);
+					this.SendPropertyChanging();
+					this._IsPrimary = value;
+					this.SendPropertyChanged("IsPrimary");
+					this.OnIsPrimaryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DisplayOrder", DbType="Int")]
+		public System.Nullable<int> DisplayOrder
+		{
+			get
+			{
+				return this._DisplayOrder;
+			}
+			set
+			{
+				if ((this._DisplayOrder != value))
+				{
+					this.OnDisplayOrderChanging(value);
+					this.SendPropertyChanging();
+					this._DisplayOrder = value;
+					this.SendPropertyChanged("DisplayOrder");
+					this.OnDisplayOrderChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit")]
+		public System.Nullable<bool> IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceImage", Storage="_Device", ThisKey="DeviceId", OtherKey="Id", IsForeignKey=true)]
+		public Device Device
+		{
+			get
+			{
+				return this._Device.Entity;
+			}
+			set
+			{
+				Device previousValue = this._Device.Entity;
+				if (((previousValue != value) 
+							|| (this._Device.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Device.Entity = null;
+						previousValue.DeviceImages.Remove(this);
+					}
+					this._Device.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceImages.Add(this);
+						this._DeviceId = value.Id;
+					}
+					else
+					{
+						this._DeviceId = default(System.Guid);
+					}
+					this.SendPropertyChanged("Device");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DeviceTransactionHistory")]
+	public partial class DeviceTransactionHistory : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _DeviceId;
+		
+		private int _OperationType;
+		
+		private System.DateTime _OperationDate;
+		
+		private System.Nullable<System.Guid> _ReferenceId;
+		
+		private System.Nullable<int> _ReferenceType;
+		
+		private string _Information;
+		
+		private string _HtmlInformation;
+		
+		private System.Nullable<System.Guid> _PerformedBy;
+		
+		private string _Notes;
+		
+		private System.DateTime _CreatedDate;
+		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
+		private EntityRef<Device> _Device;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnDeviceIdChanging(System.Guid value);
+    partial void OnDeviceIdChanged();
+    partial void OnOperationTypeChanging(int value);
+    partial void OnOperationTypeChanged();
+    partial void OnOperationDateChanging(System.DateTime value);
+    partial void OnOperationDateChanged();
+    partial void OnReferenceIdChanging(System.Nullable<System.Guid> value);
+    partial void OnReferenceIdChanged();
+    partial void OnReferenceTypeChanging(System.Nullable<int> value);
+    partial void OnReferenceTypeChanged();
+    partial void OnInformationChanging(string value);
+    partial void OnInformationChanged();
+    partial void OnHtmlInformationChanging(string value);
+    partial void OnHtmlInformationChanged();
+    partial void OnPerformedByChanging(System.Nullable<System.Guid> value);
+    partial void OnPerformedByChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
+    #endregion
+		
+		public DeviceTransactionHistory()
+		{
+			this._Device = default(EntityRef<Device>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeviceId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid DeviceId
+		{
+			get
+			{
+				return this._DeviceId;
+			}
+			set
+			{
+				if ((this._DeviceId != value))
+				{
+					if (this._Device.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnDeviceIdChanging(value);
+					this.SendPropertyChanging();
+					this._DeviceId = value;
+					this.SendPropertyChanged("DeviceId");
+					this.OnDeviceIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OperationType", DbType="Int NOT NULL")]
+		public int OperationType
+		{
+			get
+			{
+				return this._OperationType;
+			}
+			set
+			{
+				if ((this._OperationType != value))
+				{
+					this.OnOperationTypeChanging(value);
+					this.SendPropertyChanging();
+					this._OperationType = value;
+					this.SendPropertyChanged("OperationType");
+					this.OnOperationTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OperationDate", DbType="DateTime NOT NULL")]
+		public System.DateTime OperationDate
+		{
+			get
+			{
+				return this._OperationDate;
+			}
+			set
+			{
+				if ((this._OperationDate != value))
+				{
+					this.OnOperationDateChanging(value);
+					this.SendPropertyChanging();
+					this._OperationDate = value;
+					this.SendPropertyChanged("OperationDate");
+					this.OnOperationDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReferenceId", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ReferenceId
+		{
+			get
+			{
+				return this._ReferenceId;
+			}
+			set
+			{
+				if ((this._ReferenceId != value))
+				{
+					this.OnReferenceIdChanging(value);
+					this.SendPropertyChanging();
+					this._ReferenceId = value;
+					this.SendPropertyChanged("ReferenceId");
+					this.OnReferenceIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReferenceType", DbType="Int")]
+		public System.Nullable<int> ReferenceType
+		{
+			get
+			{
+				return this._ReferenceType;
+			}
+			set
+			{
+				if ((this._ReferenceType != value))
+				{
+					this.OnReferenceTypeChanging(value);
+					this.SendPropertyChanging();
+					this._ReferenceType = value;
+					this.SendPropertyChanged("ReferenceType");
+					this.OnReferenceTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Information", DbType="NVarChar(MAX)")]
+		public string Information
+		{
+			get
+			{
+				return this._Information;
+			}
+			set
+			{
+				if ((this._Information != value))
+				{
+					this.OnInformationChanging(value);
+					this.SendPropertyChanging();
+					this._Information = value;
+					this.SendPropertyChanged("Information");
+					this.OnInformationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_HtmlInformation", DbType="NVarChar(MAX)")]
+		public string HtmlInformation
+		{
+			get
+			{
+				return this._HtmlInformation;
+			}
+			set
+			{
+				if ((this._HtmlInformation != value))
+				{
+					this.OnHtmlInformationChanging(value);
+					this.SendPropertyChanging();
+					this._HtmlInformation = value;
+					this.SendPropertyChanged("HtmlInformation");
+					this.OnHtmlInformationChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PerformedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> PerformedBy
+		{
+			get
+			{
+				return this._PerformedBy;
+			}
+			set
+			{
+				if ((this._PerformedBy != value))
+				{
+					this.OnPerformedByChanging(value);
+					this.SendPropertyChanging();
+					this._PerformedBy = value;
+					this.SendPropertyChanged("PerformedBy");
+					this.OnPerformedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Device_DeviceTransactionHistory", Storage="_Device", ThisKey="DeviceId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public Device Device
+		{
+			get
+			{
+				return this._Device.Entity;
+			}
+			set
+			{
+				Device previousValue = this._Device.Entity;
+				if (((previousValue != value) 
+							|| (this._Device.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Device.Entity = null;
+						previousValue.DeviceTransactionHistories.Remove(this);
+					}
+					this._Device.Entity = value;
+					if ((value != null))
+					{
+						value.DeviceTransactionHistories.Add(this);
 						this._DeviceId = value.Id;
 					}
 					else
@@ -10509,8 +11218,6 @@ namespace Dal.DataContext
 		
 		private EntitySet<Asset> _Assets;
 		
-		private EntitySet<Device> _Devices;
-		
 		private EntitySet<DeviceTransfer> _DeviceTransfers;
 		
 		private EntitySet<DeviceTransfer> _DeviceTransfers1;
@@ -10595,7 +11302,6 @@ namespace Dal.DataContext
 		{
 			this._ApplicationUsers = new EntitySet<ApplicationUser>(new Action<ApplicationUser>(this.attach_ApplicationUsers), new Action<ApplicationUser>(this.detach_ApplicationUsers));
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
-			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._DeviceTransfers = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers), new Action<DeviceTransfer>(this.detach_DeviceTransfers));
 			this._DeviceTransfers1 = new EntitySet<DeviceTransfer>(new Action<DeviceTransfer>(this.attach_DeviceTransfers1), new Action<DeviceTransfer>(this.detach_DeviceTransfers1));
 			this._CompanyBranch = default(EntityRef<CompanyBranch>);
@@ -11267,19 +11973,6 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_Device", Storage="_Devices", ThisKey="Id", OtherKey="AssignedEmployeeId")]
-		public EntitySet<Device> Devices
-		{
-			get
-			{
-				return this._Devices;
-			}
-			set
-			{
-				this._Devices.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Employee_DeviceTransfer", Storage="_DeviceTransfers", ThisKey="Id", OtherKey="FromEmployeeId")]
 		public EntitySet<DeviceTransfer> DeviceTransfers
 		{
@@ -11481,18 +12174,6 @@ namespace Dal.DataContext
 		}
 		
 		private void detach_Assets(Asset entity)
-		{
-			this.SendPropertyChanging();
-			entity.Employee = null;
-		}
-		
-		private void attach_Devices(Device entity)
-		{
-			this.SendPropertyChanging();
-			entity.Employee = this;
-		}
-		
-		private void detach_Devices(Device entity)
 		{
 			this.SendPropertyChanging();
 			entity.Employee = null;
@@ -16438,7 +17119,11 @@ namespace Dal.DataContext
 		
 		private string _GhiChu;
 		
-		private EntitySet<Warranty> _Warranties;
+		private System.Nullable<decimal> _DiscountAmount;
+		
+		private System.Nullable<decimal> _TotalAmountAfterDiscount;
+		
+		private System.Nullable<decimal> _DiscountPercentage;
 		
 		private EntitySet<Device> _Devices;
 		
@@ -16472,11 +17157,16 @@ namespace Dal.DataContext
     partial void OnTotalAmountIncludedVatChanged();
     partial void OnGhiChuChanging(string value);
     partial void OnGhiChuChanged();
+    partial void OnDiscountAmountChanging(System.Nullable<decimal> value);
+    partial void OnDiscountAmountChanged();
+    partial void OnTotalAmountAfterDiscountChanging(System.Nullable<decimal> value);
+    partial void OnTotalAmountAfterDiscountChanged();
+    partial void OnDiscountPercentageChanging(System.Nullable<decimal> value);
+    partial void OnDiscountPercentageChanged();
     #endregion
 		
 		public StockInOutDetail()
 		{
-			this._Warranties = new EntitySet<Warranty>(new Action<Warranty>(this.attach_Warranties), new Action<Warranty>(this.detach_Warranties));
 			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._ProductVariant = default(EntityRef<ProductVariant>);
 			this._StockInOutMaster = default(EntityRef<StockInOutMaster>);
@@ -16711,16 +17401,63 @@ namespace Dal.DataContext
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="StockInOutDetail_Warranty", Storage="_Warranties", ThisKey="Id", OtherKey="StockInOutDetailId")]
-		public EntitySet<Warranty> Warranties
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiscountAmount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> DiscountAmount
 		{
 			get
 			{
-				return this._Warranties;
+				return this._DiscountAmount;
 			}
 			set
 			{
-				this._Warranties.Assign(value);
+				if ((this._DiscountAmount != value))
+				{
+					this.OnDiscountAmountChanging(value);
+					this.SendPropertyChanging();
+					this._DiscountAmount = value;
+					this.SendPropertyChanged("DiscountAmount");
+					this.OnDiscountAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalAmountAfterDiscount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalAmountAfterDiscount
+		{
+			get
+			{
+				return this._TotalAmountAfterDiscount;
+			}
+			set
+			{
+				if ((this._TotalAmountAfterDiscount != value))
+				{
+					this.OnTotalAmountAfterDiscountChanging(value);
+					this.SendPropertyChanging();
+					this._TotalAmountAfterDiscount = value;
+					this.SendPropertyChanged("TotalAmountAfterDiscount");
+					this.OnTotalAmountAfterDiscountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiscountPercentage", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> DiscountPercentage
+		{
+			get
+			{
+				return this._DiscountPercentage;
+			}
+			set
+			{
+				if ((this._DiscountPercentage != value))
+				{
+					this.OnDiscountPercentageChanging(value);
+					this.SendPropertyChanging();
+					this._DiscountPercentage = value;
+					this.SendPropertyChanged("DiscountPercentage");
+					this.OnDiscountPercentageChanged();
+				}
 			}
 		}
 		
@@ -16823,18 +17560,6 @@ namespace Dal.DataContext
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_Warranties(Warranty entity)
-		{
-			this.SendPropertyChanging();
-			entity.StockInOutDetail = this;
-		}
-		
-		private void detach_Warranties(Warranty entity)
-		{
-			this.SendPropertyChanging();
-			entity.StockInOutDetail = null;
 		}
 		
 		private void attach_Devices(Device entity)
@@ -18773,6 +19498,10 @@ namespace Dal.DataContext
 		
 		private string _NguoiGiaoHang;
 		
+		private System.Nullable<decimal> _DiscountAmount;
+		
+		private System.Nullable<decimal> _TotalAmountAfterDiscount;
+		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
 		
 		private EntitySet<StockInOutDocument> _StockInOutDocuments;
@@ -18825,6 +19554,10 @@ namespace Dal.DataContext
     partial void OnNguoiNhanHangChanged();
     partial void OnNguoiGiaoHangChanging(string value);
     partial void OnNguoiGiaoHangChanged();
+    partial void OnDiscountAmountChanging(System.Nullable<decimal> value);
+    partial void OnDiscountAmountChanged();
+    partial void OnTotalAmountAfterDiscountChanging(System.Nullable<decimal> value);
+    partial void OnTotalAmountAfterDiscountChanged();
     #endregion
 		
 		public StockInOutMaster()
@@ -19221,6 +19954,46 @@ namespace Dal.DataContext
 					this._NguoiGiaoHang = value;
 					this.SendPropertyChanged("NguoiGiaoHang");
 					this.OnNguoiGiaoHangChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DiscountAmount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> DiscountAmount
+		{
+			get
+			{
+				return this._DiscountAmount;
+			}
+			set
+			{
+				if ((this._DiscountAmount != value))
+				{
+					this.OnDiscountAmountChanging(value);
+					this.SendPropertyChanging();
+					this._DiscountAmount = value;
+					this.SendPropertyChanged("DiscountAmount");
+					this.OnDiscountAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalAmountAfterDiscount", DbType="Decimal(18,2)")]
+		public System.Nullable<decimal> TotalAmountAfterDiscount
+		{
+			get
+			{
+				return this._TotalAmountAfterDiscount;
+			}
+			set
+			{
+				if ((this._TotalAmountAfterDiscount != value))
+				{
+					this.OnTotalAmountAfterDiscountChanging(value);
+					this.SendPropertyChanging();
+					this._TotalAmountAfterDiscount = value;
+					this.SendPropertyChanged("TotalAmountAfterDiscount");
+					this.OnTotalAmountAfterDiscountChanged();
 				}
 			}
 		}

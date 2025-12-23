@@ -159,7 +159,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
 
                 //// Cấu hình DataLoadOptions để preload navigation properties
                 var loadOptions = new DataLoadOptions();
-                //loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
+                loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
                 loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
                 context.LoadOptions = loadOptions;
 
@@ -726,6 +726,15 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     existing.UnitId = variant.UnitId;
                     existing.IsActive = variant.IsActive;
                     existing.ThumbnailImage = variant.ThumbnailImage;
+                    
+                    // Cập nhật các field thumbnail khác (nếu có)
+                    existing.ThumbnailFileName = variant.ThumbnailFileName;
+                    existing.ThumbnailRelativePath = variant.ThumbnailRelativePath;
+                    existing.ThumbnailFullPath = variant.ThumbnailFullPath;
+                    existing.ThumbnailStorageType = variant.ThumbnailStorageType;
+                    existing.ThumbnailFileSize = variant.ThumbnailFileSize;
+                    existing.ThumbnailChecksum = variant.ThumbnailChecksum;
+                    
                     existing.VariantFullName = variant.VariantFullName; // Cập nhật VariantFullName
 
                     // Cập nhật ModifiedDate
@@ -763,13 +772,24 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     existingVariant.UnitId = variant.UnitId;
                     existingVariant.IsActive = variant.IsActive;
                     existingVariant.ThumbnailImage = variant.ThumbnailImage;
+                    
+                    // Cập nhật các field thumbnail khác (nếu có)
+                    existingVariant.ThumbnailFileName = variant.ThumbnailFileName;
+                    existingVariant.ThumbnailRelativePath = variant.ThumbnailRelativePath;
+                    existingVariant.ThumbnailFullPath = variant.ThumbnailFullPath;
+                    existingVariant.ThumbnailStorageType = variant.ThumbnailStorageType;
+                    existingVariant.ThumbnailFileSize = variant.ThumbnailFileSize;
+                    existingVariant.ThumbnailChecksum = variant.ThumbnailChecksum;
 
                     // Cập nhật ModifiedDate
                     existingVariant.ModifiedDate = currentTime;
 
-                    // Xóa các VariantAttribute cũ trước khi thêm mới
-                    var oldVariantAttributes = context.VariantAttributes.Where(x => x.VariantId == variant.Id).ToList();
-                    context.VariantAttributes.DeleteAllOnSubmit(oldVariantAttributes);
+                    // Xóa các VariantAttribute cũ trước khi thêm mới (chỉ khi có attributeValues)
+                    if (attributeValues != null)
+                    {
+                        var oldVariantAttributes = context.VariantAttributes.Where(x => x.VariantId == variant.Id).ToList();
+                        context.VariantAttributes.DeleteAllOnSubmit(oldVariantAttributes);
+                    }
                 }
                 else
                 {
@@ -1097,6 +1117,180 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             }
         }
 
+        /// <summary>
+        /// Cập nhật VariantFullName cho một biến thể cụ thể
+        /// Format: Tên sản phẩm - Đơn vị tính - Mã biến thể - Các thông tin biến thể (mỗi thuộc tính trên 1 dòng)
+        /// </summary>
+        /// <param name="variantId">ID biến thể cần cập nhật</param>
+        public async Task UpdateVariantFullNameAsync(Guid variantId)
+        {
+            try
+            {
+                using var context = CreateNewContext();
+
+                // Lấy biến thể với navigation properties
+                var variant = context.ProductVariants
+                    .FirstOrDefault(v => v.Id == variantId);
+
+                if (variant == null)
+                {
+                    return; // Biến thể không tồn tại, bỏ qua
+                }
+
+                // Force load navigation properties nếu chưa có
+                if (variant.ProductService == null && variant.ProductId != Guid.Empty)
+                {
+                    var productService = context.ProductServices.FirstOrDefault(p => p.Id == variant.ProductId);
+                    if (productService != null)
+                    {
+                        variant.ProductService = productService;
+                    }
+                }
+
+                if (variant.UnitOfMeasure == null && variant.UnitId != Guid.Empty)
+                {
+                    var unitOfMeasure = context.UnitOfMeasures.FirstOrDefault(u => u.Id == variant.UnitId);
+                    if (unitOfMeasure != null)
+                    {
+                        variant.UnitOfMeasure = unitOfMeasure;
+                    }
+                }
+
+                // Format HTML theo pattern VariantFullNameHtml trong ProductVariantListDto
+                var html = string.Empty;
+
+                // Thông tin sản phẩm từ ProductService (dòng đầu)
+                var productName = variant.ProductService?.Name ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(productName))
+                {
+                    html += $"<b><color='blue'>{productName}</color></b>";
+                }
+
+                // Mã sản phẩm (nếu có, màu xám)
+                var productCode = variant.ProductService?.Code ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(productCode))
+                {
+                    if (!string.IsNullOrWhiteSpace(html))
+                        html += " ";
+                    html += $"<color='#757575'>({productCode})</color>";
+                }
+
+                html += "<br/>";
+
+                // Cập nhật luôn hình ảnh ThumbnailImage
+                variant.ThumbnailImage = variant.ProductService?.ThumbnailImage;
+
+                // Tổng hợp các thông tin biến thể
+                var variantParts = new List<string>();
+
+                // Mã biến thể (màu cam)
+                var variantCode = variant.VariantCode ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(variantCode))
+                {
+                    variantParts.Add($"<color='#757575'>Mã biến thể:</color> <color='#FF9800'><b>{variantCode}</b></color>");
+                }
+
+                // Đơn vị tính (nếu có)
+                var unitName = variant.UnitOfMeasure?.Name ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(unitName))
+                {
+                    variantParts.Add($"<color='#757575'>Đơn vị tính:</color> <b>{unitName}</b>");
+                }
+
+                // Các thông tin biến thể (thuộc tính) - mỗi thuộc tính trên 1 dòng
+                var variantAttributes = context.VariantAttributes
+                    .Where(va => va.VariantId == variant.Id)
+                    .ToList();
+
+                var attributeParts = new List<string>();
+                if (variantAttributes.Any())
+                {
+                    foreach (var va in variantAttributes)
+                    {
+                        // Lấy thông tin thuộc tính và giá trị
+                        var attribute = context.Attributes.FirstOrDefault(a => a.Id == va.AttributeId);
+                        var attributeValue = context.AttributeValues.FirstOrDefault(av => av.Id == va.AttributeValueId);
+
+                        if (attribute != null && attributeValue != null)
+                        {
+                            // Mỗi thuộc tính trên 1 dòng
+                            attributeParts.Add($"<color='#757575'>{attribute.Name}:</color> <b>{attributeValue.Value}</b>");
+                        }
+                    }
+                }
+
+                // Thêm các thuộc tính vào variantParts (mỗi thuộc tính là một phần riêng)
+                if (attributeParts.Any())
+                {
+                    variantParts.AddRange(attributeParts);
+                }
+
+                if (variantParts.Any())
+                {
+                    html += string.Join("<br/>", variantParts);
+                }
+
+                // Fallback: nếu không có thông tin gì, sử dụng mã biến thể
+                if (string.IsNullOrWhiteSpace(html))
+                {
+                    html = variant.VariantCode ?? "Biến thể";
+                }
+
+                // Lưu HTML vào VariantFullName
+                variant.VariantFullName = html;
+
+                // Lưu thay đổi
+                await Task.Run(() => context.SubmitChanges());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi cập nhật VariantFullName cho biến thể {variantId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Chỉ cập nhật/xóa thumbnail image của biến thể, không ảnh hưởng đến các trường khác
+        /// </summary>
+        public async Task UpdateThumbnailOnlyAsync(
+            Guid variantId,
+            Binary thumbnailImage,
+            string thumbnailFileName,
+            string thumbnailRelativePath,
+            string thumbnailFullPath,
+            string thumbnailStorageType,
+            long? thumbnailFileSize,
+            string thumbnailChecksum)
+        {
+            try
+            {
+                using var context = CreateNewContext();
+                var variant = context.ProductVariants.FirstOrDefault(x => x.Id == variantId);
+                
+                if (variant == null)
+                {
+                    throw new DataAccessException($"Không tìm thấy biến thể với ID {variantId}");
+                }
+
+                // Chỉ cập nhật các field thumbnail, không ảnh hưởng đến các trường khác
+                variant.ThumbnailImage = thumbnailImage;
+                variant.ThumbnailFileName = thumbnailFileName;
+                variant.ThumbnailRelativePath = thumbnailRelativePath;
+                variant.ThumbnailFullPath = thumbnailFullPath;
+                variant.ThumbnailStorageType = thumbnailStorageType;
+                variant.ThumbnailFileSize = thumbnailFileSize;
+                variant.ThumbnailChecksum = thumbnailChecksum;
+                
+                // Cập nhật ModifiedDate
+                variant.ModifiedDate = DateTime.Now;
+
+                // Lưu thay đổi
+                await Task.Run(() => context.SubmitChanges());
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi cập nhật thumbnail cho biến thể {variantId}: {ex.Message}", ex);
+            }
+        }
 
         #endregion
 

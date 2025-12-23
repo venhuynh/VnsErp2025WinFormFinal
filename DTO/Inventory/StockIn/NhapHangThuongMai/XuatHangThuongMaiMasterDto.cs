@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using DTO.Inventory.InventoryManagement;
@@ -123,7 +123,7 @@ public class StockInListDto
 /// Data Transfer Object cho phiếu nhập kho (chi tiết)
 /// Dùng cho form nhập/sửa phiếu nhập kho
 /// </summary>
-public class StockInMasterDto
+public class XuatHangThuongMaiMasterDto
 {
     #region Properties - Thông tin cơ bản
 
@@ -257,6 +257,8 @@ public class StockInMasterDto
     private decimal _totalAmount;
     private decimal _totalVat;
     private decimal _totalAmountIncludedVat;
+    private decimal? _discountAmount;
+    private decimal? _totalAmountAfterDiscount;
 
     #endregion
 
@@ -298,6 +300,33 @@ public class StockInMasterDto
     [Display(Order = 33)]
     public decimal TotalAmountIncludedVat => _totalAmountIncludedVat;
 
+    /// <summary>
+    /// Số tiền chiết khấu
+    /// Map với: StockInOutMaster.DiscountAmount
+    /// </summary>
+    [DisplayName("Số tiền chiết khấu")]
+    [Display(Order = 34)]
+    [Range(0, double.MaxValue, ErrorMessage = "Số tiền chiết khấu phải lớn hơn hoặc bằng 0")]
+    public decimal? DiscountAmount
+    {
+        get => _discountAmount;
+        set => _discountAmount = value;
+    }
+
+    /// <summary>
+    /// Thành tiền sau chiết khấu
+    /// Tính toán: TotalAmount - (DiscountAmount ?? 0)
+    /// Map với: StockInOutMaster.TotalAmountAfterDiscount (lưu vào DB khi save)
+    /// </summary>
+    [DisplayName("Thành tiền sau chiết khấu")]
+    [Display(Order = 35)]
+    [Range(0, double.MaxValue, ErrorMessage = "Thành tiền sau chiết khấu phải lớn hơn hoặc bằng 0")]
+    public decimal? TotalAmountAfterDiscount
+    {
+        get => _totalAmountAfterDiscount;
+        set => _totalAmountAfterDiscount = value;
+    }
+
     #endregion
 
     #region Public Methods - Cập nhật tổng hợp
@@ -316,6 +345,17 @@ public class StockInMasterDto
         _totalAmount = totalAmount;
         _totalVat = totalVat;
         _totalAmountIncludedVat = totalAmountIncludedVat;
+    }
+
+    /// <summary>
+    /// Cập nhật các giá trị chiết khấu
+    /// </summary>
+    /// <param name="discountAmount">Số tiền chiết khấu</param>
+    /// <param name="totalAmountAfterDiscount">Thành tiền sau chiết khấu</param>
+    public void SetDiscountTotals(decimal? discountAmount, decimal? totalAmountAfterDiscount)
+    {
+        _discountAmount = discountAmount;
+        _totalAmountAfterDiscount = totalAmountAfterDiscount;
     }
 
     #endregion

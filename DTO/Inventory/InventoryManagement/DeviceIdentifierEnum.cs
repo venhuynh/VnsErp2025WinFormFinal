@@ -14,7 +14,7 @@ namespace DTO.Inventory.InventoryManagement
         [Description("IMEI")] IMEI = 2,
 
         //AssetTag
-        [Description("AssetTag")] AssetTag = 3,
+        [Description("Asset Tag")] AssetTag = 3,
 
         //LicenseKey
         [Description("License Key")] LicenseKey = 4

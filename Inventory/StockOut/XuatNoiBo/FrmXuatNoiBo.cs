@@ -1,6 +1,7 @@
-﻿using Common.Common;
+using Common.Common;
 using Common.Utils;
 using Dal.DataContext;
+using DevExpress.XtraBars;
 using DevExpress.XtraReports.UI;
 using DTO.Inventory.StockOut.XuatNoiBo;
 using Inventory.OverlayForm;
@@ -127,6 +128,7 @@ public partial class FrmXuatNoiBo : DevExpress.XtraEditors.XtraForm
         {
             // Bar button events
             XuatLaiBarButtonItem.ItemClick += XuatLaiBarButtonItem_ItemClick;
+            ReloadDataSourceBarButtonItem.ItemClick += ReloadDataSourceBarButtonItem_ItemClick;
             LuuPhieuBarButtonItem.ItemClick += LuuPhieuBarButtonItem_ItemClick;
             InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
             XuatQuanLyTaiSanBarButtonItem.ItemClick += XuatQuanLyTaiSanBarButtonItem_ItemClick;
@@ -144,6 +146,9 @@ public partial class FrmXuatNoiBo : DevExpress.XtraEditors.XtraForm
             // Setup phím tắt và hiển thị hướng dẫn
             SetupKeyboardShortcuts();
             UpdateHotKeyBarStaticItem();
+
+            // Setup SuperToolTips
+            SetupSuperToolTips();
 
         }
         catch (Exception ex)
@@ -226,14 +231,37 @@ public partial class FrmXuatNoiBo : DevExpress.XtraEditors.XtraForm
         }
     }
 
-    #endregion
+        /// <summary>
+        /// Thiết lập SuperToolTip cho các BarButtonItem
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                // SuperToolTip cho ReloadDataSourceBarButtonItem
+                if (ReloadDataSourceBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        ReloadDataSourceBarButtonItem,
+                        title: "<b><color=Blue>🔄 Làm mới dữ liệu</color></b>",
+                        content: "Làm mới lại các datasource trong form.<br/><br/><b>Chức năng:</b><br/>• Reload danh sách biến thể sản phẩm trong chi tiết<br/>• Reload danh sách kho và nhà cung cấp trong master<br/><br/><color=Gray>Lưu ý:</color> Sử dụng khi dữ liệu lookup đã thay đổi trong database và cần cập nhật lại."
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+            }
+        }
 
-    #region ========== EVENT HANDLERS ==========
+        #endregion
 
-    /// <summary>
-    /// Event handler cho nút Xuất lại
-    /// </summary>
-    private void XuatLaiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        #region ========== EVENT HANDLERS ==========
+
+        /// <summary>
+        /// Event handler cho nút Xuất lại
+        /// </summary>
+        private void XuatLaiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
         try
         {
@@ -258,6 +286,39 @@ public partial class FrmXuatNoiBo : DevExpress.XtraEditors.XtraForm
         {
             _logger.Error("XuatLaiBarButtonItem_ItemClick: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi xuất lại: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Event handler cho nút Reload DataSource
+    /// </summary>
+    private async void ReloadDataSourceBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    {
+        try
+        {
+            // Disable button để tránh double-click
+            ReloadDataSourceBarButtonItem.Enabled = false;
+
+            try
+            {
+                // Reload datasource cho cả 2 UserControl
+                await Task.WhenAll(
+                    ucXuatNoiBoMasterDto1.LoadLookupDataAsync(),
+                    ucXuatNoiBoDetailDto1.ReloadProductVariantDataSourceAsync()
+                );
+
+                AlertHelper.ShowInfo("Đã làm mới dữ liệu thành công!", "Thành công", this);
+            }
+            finally
+            {
+                // Re-enable button
+                ReloadDataSourceBarButtonItem.Enabled = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("ReloadDataSourceBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi làm mới dữ liệu: {ex.Message}");
         }
     }
 

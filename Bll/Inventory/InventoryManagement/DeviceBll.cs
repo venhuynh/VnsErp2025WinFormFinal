@@ -1,13 +1,14 @@
-﻿using Dal.Connection;
-using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
+﻿using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
-using Dal.DataContext;
+using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dal.Connection;
+using Dal.DataContext;
 
 
 namespace Bll.Inventory.InventoryManagement
@@ -153,6 +154,29 @@ namespace Bll.Inventory.InventoryManagement
     }
 
     /// <summary>
+    /// Lấy tất cả Device
+    /// </summary>
+    /// <returns>Danh sách tất cả Device entities</returns>
+    public List<Device> GetAll()
+    {
+        try
+        {
+            _logger.Debug("GetAll: Lấy tất cả thiết bị");
+
+            var devices = GetDeviceRepository().GetAll();
+
+            _logger.Info("GetAll: Lấy được {0} thiết bị", devices.Count);
+            return devices;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetAll: Lỗi lấy danh sách thiết bị: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+
+    /// <summary>
     /// Tìm Device theo mã BarCode (SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey)
     /// </summary>
     /// <param name="barCode">Mã BarCode cần tìm</param>
@@ -169,26 +193,8 @@ namespace Bll.Inventory.InventoryManagement
 
             _logger.Debug("FindByBarCode: Tìm thiết bị theo mã vạch, BarCode={0}", barCode);
 
-            // Sử dụng DataContext trực tiếp để tìm kiếm
-            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
-            if (string.IsNullOrEmpty(globalConnectionString))
-            {
-                throw new InvalidOperationException(
-                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
-            }
-
-            using var context = new VnsErp2025DataContext(globalConnectionString);
-            var trimmedBarCode = barCode.Trim().ToLower();
-
-            // Tìm Device theo SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey
-            // Sử dụng ToLower() để so sánh không phân biệt hoa thường (LINQ to SQL hỗ trợ)
-            var device = context.Devices.FirstOrDefault(d =>
-                (d.SerialNumber != null && d.SerialNumber.Trim().ToLower() == trimmedBarCode) ||
-                (d.IMEI != null && d.IMEI.Trim().ToLower() == trimmedBarCode) ||
-                (d.MACAddress != null && d.MACAddress.Trim().ToLower() == trimmedBarCode) ||
-                (d.AssetTag != null && d.AssetTag.Trim().ToLower() == trimmedBarCode) ||
-                (d.LicenseKey != null && d.LicenseKey.Trim().ToLower() == trimmedBarCode)
-            );
+            // Sử dụng Repository để tìm kiếm (BLL -> Repository)
+            var device = GetDeviceRepository().FindByBarCode(barCode);
 
             if (device == null)
             {

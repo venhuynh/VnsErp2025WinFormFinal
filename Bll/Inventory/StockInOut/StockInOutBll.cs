@@ -119,10 +119,10 @@ namespace Bll.Inventory.StockInOut
         }
 
         /// <summary>
-        /// Map StockInMasterDto sang StockInOutMaster entity
-        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng StockInMasterDto)
+        /// Map XuatHangThuongMaiMasterDto sang StockInOutMaster entity
+        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng XuatHangThuongMaiMasterDto)
         /// </summary>
-        public static StockInOutMaster MapMasterDtoToEntity(StockInMasterDto dto)
+        public static StockInOutMaster MapMasterDtoToEntity(XuatHangThuongMaiMasterDto dto)
         {
             return new StockInOutMaster
             {
@@ -140,29 +140,9 @@ namespace Bll.Inventory.StockInOut
                 TotalVat = dto.TotalVat,
                 TotalAmountIncludedVat = dto.TotalAmountIncludedVat,
                 NguoiNhanHang = dto.NguoiNhanHang,
-                NguoiGiaoHang = dto.NguoiGiaoHang
-            };
-        }
-
-        /// <summary>
-        /// Map StockInDetailDto sang StockInOutDetail entity
-        /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng StockInDetailDto)
-        /// </summary>
-        public static StockInOutDetail MapDetailDtoToEntity(StockInDetailDto dto)
-        {
-            return new StockInOutDetail
-            {
-                Id = dto.Id,
-                StockInOutMasterId = dto.StockInOutMasterId,
-                ProductVariantId = dto.ProductVariantId,
-                StockInQty = dto.StockInQty,
-                StockOutQty = dto.StockOutQty,
-                UnitPrice = dto.UnitPrice,
-                Vat = dto.Vat,
-                VatAmount = dto.VatAmount, // Computed property value
-                TotalAmount = dto.TotalAmount, // Computed property value
-                TotalAmountIncludedVat = dto.TotalAmountIncludedVat, // Computed property value
-                
+                NguoiGiaoHang = dto.NguoiGiaoHang,
+                DiscountAmount = dto.DiscountAmount,
+                TotalAmountAfterDiscount = dto.TotalAmountAfterDiscount
             };
         }
 
@@ -341,13 +321,13 @@ namespace Bll.Inventory.StockInOut
         }
 
         /// <summary>
-        /// Map StockInOutMaster entity sang StockInMasterDto
+        /// Map StockInOutMaster entity sang XuatHangThuongMaiMasterDto
         /// </summary>
-        private StockInMasterDto MapMasterEntityToDto(StockInOutMaster entity)
+        private XuatHangThuongMaiMasterDto MapMasterEntityToDto(StockInOutMaster entity)
         {
             if (entity == null) return null;
 
-            var dto = new StockInMasterDto
+            var dto = new XuatHangThuongMaiMasterDto
             {
                 Id = entity.Id,
                 StockInNumber = entity.VocherNumber ?? string.Empty,
@@ -374,6 +354,12 @@ namespace Bll.Inventory.StockInOut
                 entity.TotalAmount,
                 entity.TotalVat,
                 entity.TotalAmountIncludedVat
+            );
+
+            // Gán các giá trị chiết khấu từ entity
+            dto.SetDiscountTotals(
+                entity.DiscountAmount,
+                entity.TotalAmountAfterDiscount
             );
 
             return dto;
@@ -403,21 +389,55 @@ namespace Bll.Inventory.StockInOut
                 // 3. Lấy thông tin bảo hành
                 var warrantyBll = new WarrantyBll();
                 var warrantyEntities = warrantyBll.GetByStockInOutMasterId(voucherId);
-                var warrantyDtos = warrantyEntities.Select(w => w.ToDto()).ToList();
 
                 // 4. Lấy thông tin Device (định danh thiết bị)
                 var deviceBll = new DeviceBll();
                 var deviceEntities = deviceBll.GetByStockInOutMasterId(voucherId);
                 var deviceDtos = deviceEntities.Select(d => d.ToDto()).ToList();
 
-                // 5. Map sang DTO - sử dụng StockInMasterDto và StockInDetailDto
+                // Tạo dictionary để map DeviceId -> StockInOutDetailId
+                var deviceToDetailMap = deviceEntities
+                    .Where(d => d.StockInOutDetailId.HasValue)
+                    .ToDictionary(d => d.Id, d => d.StockInOutDetailId.Value);
+
+                // Convert warranties sang DTO và enrich với DeviceInfo
+                var warrantyDtos = warrantyEntities.Select(w =>
+                {
+                    var dto = w.ToDto();
+                    // Enrich với DeviceInfo từ deviceDtos
+                    if (dto.DeviceId.HasValue)
+                    {
+                        var device = deviceDtos.FirstOrDefault(d => d.Id == dto.DeviceId.Value);
+                        if (device != null)
+                        {
+                            var deviceInfoParts = new List<string>();
+                            if (!string.IsNullOrWhiteSpace(device.SerialNumber))
+                                deviceInfoParts.Add($"S/N: {device.SerialNumber}");
+                            if (!string.IsNullOrWhiteSpace(device.IMEI))
+                                deviceInfoParts.Add($"IMEI: {device.IMEI}");
+                            if (!string.IsNullOrWhiteSpace(device.MACAddress))
+                                deviceInfoParts.Add($"MAC: {device.MACAddress}");
+                            if (!string.IsNullOrWhiteSpace(device.AssetTag))
+                                deviceInfoParts.Add($"Asset: {device.AssetTag}");
+                            if (!string.IsNullOrWhiteSpace(device.LicenseKey))
+                                deviceInfoParts.Add($"License: {device.LicenseKey}");
+                            
+                            dto.DeviceInfo = string.Join(" | ", deviceInfoParts);
+                        }
+                    }
+                    return dto;
+                }).ToList();
+
+                // 5. Map sang DTO - sử dụng XuatHangThuongMaiMasterDto và NhapHangThuongMaiDetailDto
                 var masterDto = MapMasterEntityToDto(masterEntity);
                 var detailDtos = detailEntities.Select(d => 
                 {
                     var detailDto = StockInDetailDtoConverter.ToDto(d);
-                    // Gán thông tin bảo hành cho từng detail
+                    // Gán thông tin bảo hành cho từng detail - filter theo Device.StockInOutDetailId
                     detailDto.Warranties = warrantyDtos
-                        .Where(w => w.StockInOutDetailId == d.Id)
+                        .Where(w => w.DeviceId.HasValue && 
+                                   deviceToDetailMap.ContainsKey(w.DeviceId.Value) &&
+                                   deviceToDetailMap[w.DeviceId.Value] == d.Id)
                         .OrderBy(w => w.WarrantyFrom ?? DateTime.MinValue)
                         .ThenBy(w => w.WarrantyUntil ?? DateTime.MaxValue)
                         .ToList();
@@ -500,10 +520,10 @@ namespace Bll.Inventory.StockInOut
                         //    warrantyInfo.Add($"SP: {warranty.ProductVariantName}");
                         //}
 
-                        // Serial/IMEI
-                        if (!string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+                        // DeviceInfo (SerialNumber, IMEI, MACAddress, etc.)
+                        if (!string.IsNullOrWhiteSpace(warranty.DeviceInfo))
                         {
-                            warrantyInfo.Add($"Serial/IMEI: {warranty.UniqueProductInfo}");
+                            warrantyInfo.Add($"Thiết bị: {warranty.DeviceInfo}");
                         }
 
                         //// Kiểu bảo hành
@@ -570,9 +590,10 @@ namespace Bll.Inventory.StockInOut
                     {
                         warrantyInfo.Add($"SP: {warranty.ProductVariantName}");
                     }
-                    if (!string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+                    // DeviceInfo (SerialNumber, IMEI, MACAddress, etc.)
+                    if (!string.IsNullOrWhiteSpace(warranty.DeviceInfo))
                     {
-                        warrantyInfo.Add($"Serial/IMEI: {warranty.UniqueProductInfo}");
+                        warrantyInfo.Add($"Thiết bị: {warranty.DeviceInfo}");
                     }
                     if (warrantyInfo.Any())
                     {

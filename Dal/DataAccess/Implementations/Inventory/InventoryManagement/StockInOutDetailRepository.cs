@@ -165,7 +165,12 @@ namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement
                 var masterId = detail.StockInOutMasterId;
 
                 // Xóa tất cả Warranty liên quan đến detail này trước
-                var warranties = context.Warranties.Where(w => w.StockInOutDetailId == id).ToList();
+                // Tìm warranties thông qua Device.StockInOutDetailId
+                // Cần join với Device để query
+                var warranties = (from w in context.Warranties
+                                join d in context.Devices on w.DeviceId equals d.Id
+                                where d.StockInOutDetailId.HasValue && d.StockInOutDetailId.Value == id
+                                select w).ToList();
                 if (warranties.Any())
                 {
                     context.Warranties.DeleteAllOnSubmit(warranties);
@@ -205,6 +210,41 @@ namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement
             catch (Exception ex)
             {
                 _logger.Error($"HasRemainingDetails: Lỗi kiểm tra detail: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Query StockInOutDetail theo danh sách ProductVariantId
+        /// </summary>
+        /// <param name="productVariantIds">Danh sách ProductVariantId</param>
+        /// <returns>Danh sách StockInOutDetail entities</returns>
+        public List<StockInOutDetail> QueryByProductVariantIds(List<Guid> productVariantIds)
+        {
+            using var context = CreateNewContext();
+            try
+            {
+                if (productVariantIds == null || productVariantIds.Count == 0)
+                {
+                    _logger.Debug("QueryByProductVariantIds: Danh sách ProductVariantId rỗng");
+                    return new List<StockInOutDetail>();
+                }
+
+                _logger.Debug("QueryByProductVariantIds: Bắt đầu query, ProductVariantIds count={0}", productVariantIds.Count);
+
+                // Query StockInOutDetail theo danh sách ProductVariantId
+                var details = context.StockInOutDetails
+                    .Where(d => productVariantIds.Contains(d.ProductVariantId) && d.StockInOutMaster != null)
+                    .OrderByDescending(d => d.StockInOutMaster.StockInOutDate)
+                    .ThenByDescending(d => d.StockInOutMaster.VocherNumber ?? string.Empty)
+                    .ToList();
+
+                _logger.Info("QueryByProductVariantIds: Query thành công, ResultCount={0}", details.Count);
+                return details;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"QueryByProductVariantIds: Lỗi query: {ex.Message}", ex);
                 throw;
             }
         }

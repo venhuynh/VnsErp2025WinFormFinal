@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dal.DataContext;
+using System;
+using System.Collections.Generic;
 
 namespace Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 
@@ -10,4 +12,11 @@ public interface IStockInOutMasterRepository
     /// <param name="id">ID của StockInOutMaster</param>
     /// <returns>VocherNumber hoặc null nếu không tìm thấy</returns>
     string GetVocherNumber(Guid id);
+
+    /// <summary>
+    /// Lấy danh sách StockInOutMaster theo danh sách ID
+    /// </summary>
+    /// <param name="masterIds">Danh sách ID của StockInOutMaster</param>
+    /// <returns>Danh sách StockInOutMaster entities với navigation properties đã load</returns>
+    List<StockInOutMaster> GetMastersByIds(List<Guid> masterIds);
 }

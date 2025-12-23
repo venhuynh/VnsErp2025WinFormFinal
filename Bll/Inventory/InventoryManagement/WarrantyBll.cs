@@ -102,7 +102,7 @@ namespace Bll.Inventory.InventoryManagement
     /// </summary>
     /// <param name="fromDate">Từ ngày (nullable)</param>
     /// <param name="toDate">Đến ngày (nullable)</param>
-    /// <param name="keyword">Từ khóa tìm kiếm (tìm trong UniqueProductInfo, ProductVariantName, CustomerName)</param>
+    /// <param name="keyword">Từ khóa tìm kiếm (tìm trong Device properties: SerialNumber, IMEI, MACAddress, AssetTag, LicenseKey, ProductVariantName, CustomerName, Notes)</param>
     /// <returns>Danh sách Warranty entities</returns>
     public List<Warranty> Query(DateTime? fromDate, DateTime? toDate, string keyword)
     {
@@ -124,54 +124,76 @@ namespace Bll.Inventory.InventoryManagement
     }
 
     /// <summary>
-    /// Tìm Warranty theo UniqueProductInfo (mã BarCode)
+    /// Tìm Warranty theo DeviceId
     /// </summary>
-    /// <param name="uniqueProductInfo">Mã BarCode hoặc UniqueProductInfo cần tìm</param>
+    /// <param name="deviceId">ID của Device cần tìm</param>
     /// <returns>Warranty entity nếu tìm thấy, null nếu không tìm thấy</returns>
-    public Warranty FindByUniqueProductInfo(string uniqueProductInfo)
+    public Warranty FindByDeviceId(Guid deviceId)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(uniqueProductInfo))
+            if (deviceId == Guid.Empty)
             {
-                _logger.Warning("FindByUniqueProductInfo: UniqueProductInfo is null or empty");
+                _logger.Warning("FindByDeviceId: DeviceId is empty");
                 return null;
             }
 
-            _logger.Debug("FindByUniqueProductInfo: Tìm bảo hành theo UniqueProductInfo, UniqueProductInfo={0}", uniqueProductInfo);
+            _logger.Debug("FindByDeviceId: Tìm bảo hành theo DeviceId, DeviceId={0}", deviceId);
 
-            // Sử dụng DataContext trực tiếp để tìm kiếm
-            var globalConnectionString = ApplicationStartupManager.Instance.GetGlobalConnectionString();
-            if (string.IsNullOrEmpty(globalConnectionString))
-            {
-                throw new InvalidOperationException(
-                    "Không có global connection string. Ứng dụng chưa được khởi tạo hoặc chưa sẵn sàng.");
-            }
-
-            using var context = new VnsErp2025DataContext(globalConnectionString);
-            var trimmedInfo = uniqueProductInfo.Trim().ToLower();
-
-            // Tìm Warranty theo UniqueProductInfo
-            // Sử dụng ToLower() để so sánh không phân biệt hoa thường (LINQ to SQL hỗ trợ)
-            var warranty = context.Warranties.FirstOrDefault(w =>
-                w.UniqueProductInfo != null && 
-                w.UniqueProductInfo.Trim().ToLower() == trimmedInfo
-            );
+            var warranty = GetDataAccess().FindByDeviceId(deviceId);
 
             if (warranty == null)
             {
-                _logger.Warning("FindByUniqueProductInfo: Không tìm thấy bảo hành với UniqueProductInfo, UniqueProductInfo={0}", uniqueProductInfo);
+                _logger.Warning("FindByDeviceId: Không tìm thấy bảo hành với DeviceId, DeviceId={0}", deviceId);
             }
             else
             {
-                _logger.Info("FindByUniqueProductInfo: Tìm thấy bảo hành, WarrantyId={0}, UniqueProductInfo={1}", warranty.Id, uniqueProductInfo);
+                _logger.Info("FindByDeviceId: Tìm thấy bảo hành, WarrantyId={0}, DeviceId={1}", warranty.Id, deviceId);
             }
 
             return warranty;
         }
         catch (Exception ex)
         {
-            _logger.Error($"FindByUniqueProductInfo: Lỗi tìm bảo hành theo UniqueProductInfo: {ex.Message}", ex);
+            _logger.Error($"FindByDeviceId: Lỗi tìm bảo hành theo DeviceId: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Tìm Warranty theo thông tin Device (SerialNumber, IMEI, MACAddress, AssetTag, LicenseKey)
+    /// </summary>
+    /// <param name="deviceInfo">Thông tin Device cần tìm (SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey)</param>
+    /// <returns>Warranty entity nếu tìm thấy, null nếu không tìm thấy</returns>
+    public Warranty FindByDeviceInfo(string deviceInfo)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(deviceInfo))
+            {
+                _logger.Warning("FindByDeviceInfo: DeviceInfo is null or empty");
+                return null;
+            }
+
+            _logger.Debug("FindByDeviceInfo: Tìm bảo hành theo DeviceInfo, DeviceInfo={0}", deviceInfo);
+
+            var warranty = GetDataAccess().FindByDeviceInfo(deviceInfo);
+
+            if (warranty == null)
+            {
+                _logger.Warning("FindByDeviceInfo: Không tìm thấy bảo hành với DeviceInfo, DeviceInfo={0}", deviceInfo);
+            }
+            else
+            {
+                _logger.Info("FindByDeviceInfo: Tìm thấy bảo hành, WarrantyId={0}, DeviceId={1}, DeviceInfo={2}", 
+                    warranty.Id, warranty.DeviceId, deviceInfo);
+            }
+
+            return warranty;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"FindByDeviceInfo: Lỗi tìm bảo hành theo DeviceInfo: {ex.Message}", ex);
             throw;
         }
     }
@@ -191,8 +213,8 @@ namespace Bll.Inventory.InventoryManagement
             if (warranty == null)
                 throw new ArgumentNullException(nameof(warranty));
 
-            _logger.Debug("SaveOrUpdate: Bắt đầu lưu bảo hành, Id={0}, StockInOutDetailId={1}", 
-                warranty.Id, warranty.StockInOutDetailId);
+            _logger.Debug("SaveOrUpdate: Bắt đầu lưu bảo hành, Id={0}, DeviceId={1}", 
+                warranty.Id, warranty.DeviceId);
 
             GetDataAccess().SaveOrUpdate(warranty);
 

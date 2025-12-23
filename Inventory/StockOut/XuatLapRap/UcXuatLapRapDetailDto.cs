@@ -859,6 +859,22 @@ namespace Inventory.StockOut.XuatLapRap
         }
 
         /// <summary>
+        /// Reload ProductVariant datasource (public method để gọi từ form)
+        /// </summary>
+        public async Task ReloadProductVariantDataSourceAsync()
+        {
+            try
+            {
+                await LoadProductVariantsAsync(forceRefresh: true);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ReloadProductVariantDataSourceAsync: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi reload datasource biến thể sản phẩm: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Event handler khi ProductVariantSearchLookUpEdit popup
         /// Chỉ load dữ liệu nếu chưa load hoặc datasource rỗng
         /// </summary>
@@ -1281,17 +1297,17 @@ namespace Inventory.StockOut.XuatLapRap
                 }
 
                 // Bước 2: Nếu không tìm thấy trong Device, tìm trong Warranty
-                var warranty = _warrantyBll.FindByUniqueProductInfo(barCode);
+                var warranty = _warrantyBll.FindByDeviceInfo(barCode);
                 if (warranty != null)
                 {
-                    _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Warranty, WarrantyId={0}, StockInOutDetailId={1}", 
-                        warranty.Id, warranty.StockInOutDetailId);
+                    _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Warranty, WarrantyId={0}, DeviceId={1}", 
+                        warranty.Id, warranty.DeviceId);
                     
-                    // Lấy ProductVariantId từ StockInOutDetail của Warranty
-                    if (warranty.StockInOutDetail?.ProductVariantId != null)
+                    // Lấy ProductVariantId từ Device của Warranty
+                    if (warranty.DeviceId.HasValue && warranty.Device?.ProductVariantId != null)
                     {
-                        var productVariantId = warranty.StockInOutDetail.ProductVariantId;
-                        AppendLog($"✓ Tìm thấy bảo hành: {warranty.StockInOutDetail.ProductVariant?.ProductService?.Name ?? "N/A"}");
+                        var productVariantId = warranty.Device.ProductVariantId;
+                        AppendLog($"✓ Tìm thấy bảo hành: {warranty.Device.ProductVariant?.ProductService?.Name ?? "N/A"}");
 
                         // Thêm vào grid với ProductVariantId từ Warranty
                         await AddDetailFromDeviceOrWarranty(productVariantId, null, warranty);
@@ -1401,9 +1417,25 @@ namespace Inventory.StockOut.XuatLapRap
                     if (!string.IsNullOrWhiteSpace(device.MACAddress))
                         ghiChuParts.Add($"MAC: {device.MACAddress}");
                 }
-                if (warranty != null && !string.IsNullOrWhiteSpace(warranty.UniqueProductInfo))
+                // Thêm thông tin bảo hành từ DeviceInfo
+                if (warranty != null && warranty.Device != null)
                 {
-                    ghiChuParts.Add($"Bảo hành: {warranty.UniqueProductInfo}");
+                    var warrantyDeviceInfoParts = new List<string>();
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.SerialNumber))
+                        warrantyDeviceInfoParts.Add($"S/N: {warranty.Device.SerialNumber}");
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.IMEI))
+                        warrantyDeviceInfoParts.Add($"IMEI: {warranty.Device.IMEI}");
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.MACAddress))
+                        warrantyDeviceInfoParts.Add($"MAC: {warranty.Device.MACAddress}");
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.AssetTag))
+                        warrantyDeviceInfoParts.Add($"Asset: {warranty.Device.AssetTag}");
+                    if (!string.IsNullOrWhiteSpace(warranty.Device.LicenseKey))
+                        warrantyDeviceInfoParts.Add($"License: {warranty.Device.LicenseKey}");
+                    
+                    if (warrantyDeviceInfoParts.Any())
+                    {
+                        ghiChuParts.Add($"Bảo hành: {string.Join(" | ", warrantyDeviceInfoParts)}");
+                    }
                 }
                 
                 if (ghiChuParts.Any())

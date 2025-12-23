@@ -12,7 +12,7 @@ namespace DTO.Inventory.StockIn.NhapHangThuongMai;
 /// Dùng cho GridControl và truyền dữ liệu giữa Service ↔ WinForms
 /// Map với bảng StockInOutDetail trong database
 /// </summary>
-public class StockInDetailDto
+public class NhapHangThuongMaiDetailDto
 {
     #region Properties - Thông tin cơ bản (map với DB)
 
@@ -169,21 +169,21 @@ public class StockInDetailDto
     /// Ghi chú tình trạng sản phẩm
     /// </summary>
     [DisplayName("Tình trạng")]
-    [Display(Order = 27)]
+    [Display(Order = 30)]
     public string GhiChu { get; set; } = "Bình thường";
 
     /// <summary>
     /// Danh sách thông tin bảo hành cho sản phẩm này
     /// </summary>
     [DisplayName("Thông tin bảo hành")]
-    [Display(Order = 28)]
+    [Display(Order = 31)]
     public List<WarrantyDto> Warranties { get; set; } = [];
 
     /// <summary>
     /// Danh sách thông tin định danh thiết bị (Device) cho sản phẩm này
     /// </summary>
     [DisplayName("Thông tin định danh thiết bị")]
-    [Display(Order = 29)]
+    [Display(Order = 32)]
     public List<DeviceDto> Devices { get; set; } = [];
 
     /// <summary>
@@ -192,7 +192,7 @@ public class StockInDetailDto
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [DisplayName("Thông tin HTML")]
-    [Display(Order = 30)]
+    [Display(Order = 33)]
     [Description("Thông tin chi tiết phiếu nhập dưới dạng HTML")]
     public string FullNameHtml
     {
@@ -203,18 +203,18 @@ public class StockInDetailDto
             var unitName = UnitOfMeasureName ?? string.Empty;
             var unitCode = UnitOfMeasureCode ?? string.Empty;
 
-            // Format chuyên nghiệp với visual hierarchy rõ ràng
-            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
-            // - Mã sản phẩm: font nhỏ hơn, màu xám
-            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Số lượng và giá: font nhỏ hơn, màu xám cho label, đen cho value
+            // Format chuyên nghiệp với visual hierarchy rõ ràng (chỉ sử dụng color, không dùng size và weight)
+            // - Tên sản phẩm: màu xanh đậm (primary)
+            // - Mã sản phẩm: màu xám
+            // - Đơn vị tính: màu xám cho label, đen cho value
+            // - Số lượng và giá: màu xám cho label, đen cho value
 
             var html = string.Empty;
 
             // Tên sản phẩm (nổi bật nhất)
             if (!string.IsNullOrWhiteSpace(productVariantName))
             {
-                html += $"<size=12><b><color='blue'>{productVariantName}</color></b></size>";
+                html += $"<color='blue'>{productVariantName}</color>";
             }
 
             // Mã sản phẩm (nếu có)
@@ -222,11 +222,11 @@ public class StockInDetailDto
             {
                 if (!string.IsNullOrWhiteSpace(productVariantName))
                 {
-                    html += $" <size=9><color='#757575'>({productVariantCode})</color></size>";
+                    html += $" <color='#757575'>({productVariantCode})</color>";
                 }
                 else
                 {
-                    html += $"<size=12><b><color='blue'>{productVariantCode}</color></b></size>";
+                    html += $"<color='blue'>{productVariantCode}</color>";
                 }
             }
 
@@ -244,13 +244,13 @@ public class StockInDetailDto
                         ? unitCode
                         : $"{unitCode} - {unitName}";
 
-                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitDisplay}</b></color></size><br>";
+                html += $"<color='#757575'>Đơn vị tính:</color> <color='#212121'>{unitDisplay}</color><br>";
             }
 
             // Số lượng nhập
             if (StockInQty > 0)
             {
-                html += $"<size=9><color='#757575'>Số lượng:</color></size> <size=10><color='#212121'><b>{StockInQty:N2}</b></color></size>";
+                html += $"<color='#757575'>Số lượng:</color> <color='#212121'>{StockInQty:N2}</color>";
             }
 
             // Đơn giá
@@ -258,7 +258,7 @@ public class StockInDetailDto
             {
                 if (StockInQty > 0)
                     html += " | ";
-                html += $"<size=9><color='#757575'>Đơn giá:</color></size> <size=10><color='#212121'><b>{UnitPrice:N0}</b></color></size>";
+                html += $"<color='#757575'>Đơn giá:</color> <color='#212121'>{UnitPrice:N0}</color>";
             }
 
             // VAT
@@ -266,7 +266,7 @@ public class StockInDetailDto
             {
                 if (StockInQty > 0 || UnitPrice > 0)
                     html += " | ";
-                html += $"<size=9><color='#757575'>VAT:</color></size> <size=10><color='#212121'><b>{Vat}%</b></color></size>";
+                html += $"<color='#757575'>VAT:</color> <color='#212121'>{Vat}%</color>";
             }
 
             if (StockInQty > 0 || UnitPrice > 0 || Vat > 0)
@@ -277,7 +277,7 @@ public class StockInDetailDto
             // Tổng tiền
             if (TotalAmountIncludedVat > 0)
             {
-                html += $"<size=9><color='#757575'>Tổng tiền:</color></size> <size=10><color='#2196F3'><b>{TotalAmountIncludedVat:N0}</b></color></size>";
+                html += $"<color='#757575'>Tổng tiền:</color> <color='#2196F3'>{TotalAmountIncludedVat:N0}</color>";
             }
 
             return html;
@@ -288,22 +288,22 @@ public class StockInDetailDto
 }
 
 /// <summary>
-/// Converter giữa StockInOutDetail entity và StockInDetailDto
+/// Converter giữa StockInOutDetail entity và NhapHangThuongMaiDetailDto
 /// </summary>
 public static class StockInDetailDtoConverter
 {
     #region Entity to DTO
 
     /// <summary>
-    /// Chuyển đổi StockInOutDetail entity thành StockInDetailDto
+    /// Chuyển đổi StockInOutDetail entity thành NhapHangThuongMaiDetailDto
     /// </summary>
     /// <param name="entity">StockInOutDetail entity</param>
-    /// <returns>StockInDetailDto</returns>
-    public static StockInDetailDto ToDto(this Dal.DataContext.StockInOutDetail entity)
+    /// <returns>NhapHangThuongMaiDetailDto</returns>
+    public static NhapHangThuongMaiDetailDto ToDto(this Dal.DataContext.StockInOutDetail entity)
     {
         if (entity == null) return null;
 
-        var dto = new StockInDetailDto
+        var dto = new NhapHangThuongMaiDetailDto
         {
             Id = entity.Id,
             StockInOutMasterId = entity.StockInOutMasterId,
@@ -379,11 +379,11 @@ public static class StockInDetailDtoConverter
     }
 
     /// <summary>
-    /// Chuyển đổi danh sách StockInOutDetail entities thành danh sách StockInDetailDto
+    /// Chuyển đổi danh sách StockInOutDetail entities thành danh sách NhapHangThuongMaiDetailDto
     /// </summary>
     /// <param name="entities">Danh sách StockInOutDetail entities</param>
-    /// <returns>Danh sách StockInDetailDto</returns>
-    public static List<StockInDetailDto> ToDtoList(this IEnumerable<Dal.DataContext.StockInOutDetail> entities)
+    /// <returns>Danh sách NhapHangThuongMaiDetailDto</returns>
+    public static List<NhapHangThuongMaiDetailDto> ToDtoList(this IEnumerable<Dal.DataContext.StockInOutDetail> entities)
     {
         if (entities == null) return [];
 

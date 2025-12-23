@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -678,10 +678,17 @@ namespace MasterData.ProductService
 						return;
 					}
 
+					// Cập nhật thông tin thuộc tính
 					focused.AttributeName = selectedName;
 					focused.AttributeId = selectedDto.Id;
-					// Do not touch Value here to avoid type conversion issues
+					focused.AttributeDataType = selectedDto.DataType;
+					focused.AttributeDescription = selectedDto.Description;
+					
+					// Cập nhật cell để trigger refresh
 					AttributeValueGridView.SetFocusedRowCellValue("AttributeName", focused.AttributeName);
+					
+					// Refresh row để hiển thị AttributeInfoHtml đã cập nhật
+					AttributeValueGridView.RefreshRow(AttributeValueGridView.FocusedRowHandle);
 				}
 			}
             catch

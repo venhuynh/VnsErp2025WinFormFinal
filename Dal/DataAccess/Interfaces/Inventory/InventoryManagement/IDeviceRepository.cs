@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Dal.DataContext;
+using System;
 using System.Collections.Generic;
-using Dal.DataContext;
 
 namespace Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 
@@ -26,6 +26,19 @@ public interface IDeviceRepository
     /// <param name="stockInOutDetailId">ID chi tiết phiếu nhập/xuất kho</param>
     /// <returns>Danh sách Device entities</returns>
     List<Device> GetByStockInOutDetailId(Guid stockInOutDetailId);
+
+    /// <summary>
+    /// Lấy tất cả Device
+    /// </summary>
+    /// <returns>Danh sách tất cả Device entities</returns>
+    List<Device> GetAll();
+
+    /// <summary>
+    /// Tìm Device theo mã BarCode (SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey)
+    /// </summary>
+    /// <param name="barCode">Mã BarCode cần tìm</param>
+    /// <returns>Device entity nếu tìm thấy, null nếu không tìm thấy</returns>
+    Device FindByBarCode(string barCode);
 
     /// <summary>
     /// Lưu hoặc cập nhật Device

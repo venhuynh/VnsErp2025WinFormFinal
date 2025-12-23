@@ -1,4 +1,4 @@
-﻿using DevExpress.XtraBars;
+using DevExpress.XtraBars;
 using DevExpress.XtraDataLayout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
@@ -97,6 +97,8 @@ namespace Inventory.OverlayForm
             this.colHasChildren = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colFullPath = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colProductCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.ProductVarianFullInfoHypertextLabel = new DevExpress.XtraEditors.HypertextLabel();
+            this.ItemForProductVarianFullInfoHypertextLabel = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -129,6 +131,7 @@ namespace Inventory.OverlayForm
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForProductVarianFullInfoHypertextLabel)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -190,7 +193,7 @@ namespace Inventory.OverlayForm
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(666, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(666, 39);
             // 
             // barDockControlBottom
             // 
@@ -204,17 +207,17 @@ namespace Inventory.OverlayForm
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 636);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 621);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(666, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(666, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 636);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 621);
             // 
             // dxErrorProvider1
             // 
@@ -224,10 +227,10 @@ namespace Inventory.OverlayForm
             // 
             this.dataLayoutControl1.Controls.Add(this.dataLayoutControl2);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
+            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 636);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 621);
             this.dataLayoutControl1.TabIndex = 10;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
@@ -241,10 +244,11 @@ namespace Inventory.OverlayForm
             this.dataLayoutControl2.Controls.Add(this.WarrantyUntilDateEdit);
             this.dataLayoutControl2.Controls.Add(this.UniqueProductInfoTextEdit);
             this.dataLayoutControl2.Controls.Add(this.StockInOutDetailIdSearchLookUpEdit);
-            this.dataLayoutControl2.Location = new System.Drawing.Point(12, 12);
+            this.dataLayoutControl2.Controls.Add(this.ProductVarianFullInfoHypertextLabel);
+            this.dataLayoutControl2.Location = new System.Drawing.Point(16, 16);
             this.dataLayoutControl2.Name = "dataLayoutControl2";
             this.dataLayoutControl2.Root = this.layoutControlGroup1;
-            this.dataLayoutControl2.Size = new System.Drawing.Size(642, 612);
+            this.dataLayoutControl2.Size = new System.Drawing.Size(634, 589);
             this.dataLayoutControl2.TabIndex = 0;
             this.dataLayoutControl2.Text = "dataLayoutControl2";
             // 
@@ -252,7 +256,7 @@ namespace Inventory.OverlayForm
             // 
             this.ThemVaoHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
             this.ThemVaoHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.add_16x16;
-            this.ThemVaoHyperlinkLabelControl.Location = new System.Drawing.Point(488, 105);
+            this.ThemVaoHyperlinkLabelControl.Location = new System.Drawing.Point(477, 169);
             this.ThemVaoHyperlinkLabelControl.Name = "ThemVaoHyperlinkLabelControl";
             this.ThemVaoHyperlinkLabelControl.Size = new System.Drawing.Size(68, 20);
             this.ThemVaoHyperlinkLabelControl.StyleController = this.dataLayoutControl2;
@@ -263,7 +267,7 @@ namespace Inventory.OverlayForm
             // 
             this.BoRaHyperlinkLabelControl.ImageAlignToText = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
             this.BoRaHyperlinkLabelControl.ImageOptions.Image = global::Inventory.Properties.Resources.clear_16x16;
-            this.BoRaHyperlinkLabelControl.Location = new System.Drawing.Point(576, 105);
+            this.BoRaHyperlinkLabelControl.Location = new System.Drawing.Point(565, 169);
             this.BoRaHyperlinkLabelControl.Name = "BoRaHyperlinkLabelControl";
             this.BoRaHyperlinkLabelControl.Size = new System.Drawing.Size(46, 20);
             this.BoRaHyperlinkLabelControl.StyleController = this.dataLayoutControl2;
@@ -273,11 +277,11 @@ namespace Inventory.OverlayForm
             // WarrantyDtoGridControl
             // 
             this.WarrantyDtoGridControl.DataSource = this.warrantyDtoBindingSource;
-            this.WarrantyDtoGridControl.Location = new System.Drawing.Point(12, 129);
+            this.WarrantyDtoGridControl.Location = new System.Drawing.Point(16, 198);
             this.WarrantyDtoGridControl.MainView = this.WarrantyDtoGridView;
             this.WarrantyDtoGridControl.MenuManager = this.barManager1;
             this.WarrantyDtoGridControl.Name = "WarrantyDtoGridControl";
-            this.WarrantyDtoGridControl.Size = new System.Drawing.Size(618, 471);
+            this.WarrantyDtoGridControl.Size = new System.Drawing.Size(602, 375);
             this.WarrantyDtoGridControl.TabIndex = 10;
             this.WarrantyDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.WarrantyDtoGridView});
@@ -414,7 +418,7 @@ namespace Inventory.OverlayForm
             // WarrantyFromDateEdit
             // 
             this.WarrantyFromDateEdit.EditValue = null;
-            this.WarrantyFromDateEdit.Location = new System.Drawing.Point(77, 69);
+            this.WarrantyFromDateEdit.Location = new System.Drawing.Point(84, 117);
             this.WarrantyFromDateEdit.MenuManager = this.barManager1;
             this.WarrantyFromDateEdit.Name = "WarrantyFromDateEdit";
             this.WarrantyFromDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
@@ -422,13 +426,13 @@ namespace Inventory.OverlayForm
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.WarrantyFromDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.WarrantyFromDateEdit.Size = new System.Drawing.Size(143, 20);
+            this.WarrantyFromDateEdit.Size = new System.Drawing.Size(143, 28);
             this.WarrantyFromDateEdit.StyleController = this.dataLayoutControl2;
             this.WarrantyFromDateEdit.TabIndex = 4;
             // 
             // MonthOfWarrantyTextEdit
             // 
-            this.MonthOfWarrantyTextEdit.Location = new System.Drawing.Point(325, 69);
+            this.MonthOfWarrantyTextEdit.Location = new System.Drawing.Point(332, 117);
             this.MonthOfWarrantyTextEdit.MenuManager = this.barManager1;
             this.MonthOfWarrantyTextEdit.Name = "MonthOfWarrantyTextEdit";
             this.MonthOfWarrantyTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
@@ -437,14 +441,14 @@ namespace Inventory.OverlayForm
             this.MonthOfWarrantyTextEdit.Properties.Mask.EditMask = "N0";
             this.MonthOfWarrantyTextEdit.Properties.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
             this.MonthOfWarrantyTextEdit.Properties.Mask.UseMaskAsDisplayFormat = true;
-            this.MonthOfWarrantyTextEdit.Size = new System.Drawing.Size(45, 20);
+            this.MonthOfWarrantyTextEdit.Size = new System.Drawing.Size(45, 28);
             this.MonthOfWarrantyTextEdit.StyleController = this.dataLayoutControl2;
             this.MonthOfWarrantyTextEdit.TabIndex = 5;
             // 
             // WarrantyUntilDateEdit
             // 
             this.WarrantyUntilDateEdit.EditValue = null;
-            this.WarrantyUntilDateEdit.Location = new System.Drawing.Point(434, 69);
+            this.WarrantyUntilDateEdit.Location = new System.Drawing.Point(441, 117);
             this.WarrantyUntilDateEdit.MenuManager = this.barManager1;
             this.WarrantyUntilDateEdit.Name = "WarrantyUntilDateEdit";
             this.WarrantyUntilDateEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.True;
@@ -452,23 +456,23 @@ namespace Inventory.OverlayForm
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.WarrantyUntilDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.WarrantyUntilDateEdit.Size = new System.Drawing.Size(184, 20);
+            this.WarrantyUntilDateEdit.Size = new System.Drawing.Size(162, 28);
             this.WarrantyUntilDateEdit.StyleController = this.dataLayoutControl2;
             this.WarrantyUntilDateEdit.TabIndex = 6;
             // 
             // UniqueProductInfoTextEdit
             // 
-            this.UniqueProductInfoTextEdit.Location = new System.Drawing.Point(127, 105);
+            this.UniqueProductInfoTextEdit.Location = new System.Drawing.Point(237, 165);
             this.UniqueProductInfoTextEdit.MenuManager = this.barManager1;
             this.UniqueProductInfoTextEdit.Name = "UniqueProductInfoTextEdit";
             this.UniqueProductInfoTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.UniqueProductInfoTextEdit.Size = new System.Drawing.Size(349, 20);
+            this.UniqueProductInfoTextEdit.Size = new System.Drawing.Size(228, 28);
             this.UniqueProductInfoTextEdit.StyleController = this.dataLayoutControl2;
             this.UniqueProductInfoTextEdit.TabIndex = 7;
             // 
             // StockInOutDetailIdSearchLookUpEdit
             // 
-            this.StockInOutDetailIdSearchLookUpEdit.Location = new System.Drawing.Point(127, 12);
+            this.StockInOutDetailIdSearchLookUpEdit.Location = new System.Drawing.Point(123, 15);
             this.StockInOutDetailIdSearchLookUpEdit.MenuManager = this.barManager1;
             this.StockInOutDetailIdSearchLookUpEdit.Name = "StockInOutDetailIdSearchLookUpEdit";
             this.StockInOutDetailIdSearchLookUpEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
@@ -482,13 +486,13 @@ namespace Inventory.OverlayForm
             this.StockInOutDetailIdSearchLookUpEdit.Properties.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemHypertextLabel1});
             this.StockInOutDetailIdSearchLookUpEdit.Properties.ValueMember = "Id";
-            this.StockInOutDetailIdSearchLookUpEdit.Size = new System.Drawing.Size(503, 20);
+            this.StockInOutDetailIdSearchLookUpEdit.Size = new System.Drawing.Size(496, 28);
             this.StockInOutDetailIdSearchLookUpEdit.StyleController = this.dataLayoutControl2;
             this.StockInOutDetailIdSearchLookUpEdit.TabIndex = 9;
             // 
             // stockInDetailDtoBindingSource
             // 
-            this.stockInDetailDtoBindingSource.DataSource = typeof(StockInDetailDto);
+            this.stockInDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapHangThuongMai.NhapHangThuongMaiDetailDto);
             // 
             // StockInDetailSearchLookUpEdit1View
             // 
@@ -521,7 +525,7 @@ namespace Inventory.OverlayForm
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlGroup2});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(642, 612);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(634, 589);
             this.layoutControlGroup1.TextVisible = false;
             // 
             // layoutControlGroup2
@@ -534,20 +538,21 @@ namespace Inventory.OverlayForm
             this.layoutControlItem2,
             this.layoutControlGroup3,
             this.layoutControlItem3,
-            this.layoutControlItem4});
+            this.layoutControlItem4,
+            this.ItemForProductVarianFullInfoHypertextLabel});
             this.layoutControlGroup2.Location = new System.Drawing.Point(0, 0);
             this.layoutControlGroup2.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup2.Size = new System.Drawing.Size(622, 592);
+            this.layoutControlGroup2.Size = new System.Drawing.Size(608, 563);
             // 
             // ItemForUniqueProductInfo
             // 
             this.ItemForUniqueProductInfo.Control = this.UniqueProductInfoTextEdit;
-            this.ItemForUniqueProductInfo.Location = new System.Drawing.Point(0, 93);
+            this.ItemForUniqueProductInfo.Location = new System.Drawing.Point(0, 150);
             this.ItemForUniqueProductInfo.Name = "ItemForUniqueProductInfo";
             this.ItemForUniqueProductInfo.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 2, 2, 2);
-            this.ItemForUniqueProductInfo.Size = new System.Drawing.Size(468, 24);
+            this.ItemForUniqueProductInfo.Size = new System.Drawing.Size(454, 32);
             this.ItemForUniqueProductInfo.Text = "S/N | Mac | Part.No";
-            this.ItemForUniqueProductInfo.TextSize = new System.Drawing.Size(95, 13);
+            this.ItemForUniqueProductInfo.TextSize = new System.Drawing.Size(198, 13);
             // 
             // ItemForStockInOutDetailId
             // 
@@ -555,16 +560,18 @@ namespace Inventory.OverlayForm
             this.ItemForStockInOutDetailId.Location = new System.Drawing.Point(0, 0);
             this.ItemForStockInOutDetailId.Name = "ItemForStockInOutDetailId";
             this.ItemForStockInOutDetailId.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 2, 2, 2);
-            this.ItemForStockInOutDetailId.Size = new System.Drawing.Size(622, 24);
+            this.ItemForStockInOutDetailId.Size = new System.Drawing.Size(608, 32);
             this.ItemForStockInOutDetailId.Text = "Sản phẩm bảo hành";
+            this.ItemForStockInOutDetailId.TextAlignMode = DevExpress.XtraLayout.TextAlignModeItem.AutoSize;
             this.ItemForStockInOutDetailId.TextSize = new System.Drawing.Size(95, 13);
+            this.ItemForStockInOutDetailId.TextToControlDistance = 5;
             // 
             // layoutControlItem2
             // 
             this.layoutControlItem2.Control = this.WarrantyDtoGridControl;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 117);
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 182);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(622, 475);
+            this.layoutControlItem2.Size = new System.Drawing.Size(608, 381);
             this.layoutControlItem2.TextVisible = false;
             // 
             // layoutControlGroup3
@@ -575,23 +582,23 @@ namespace Inventory.OverlayForm
             this.ItemForMonthOfWarranty,
             this.ItemForWarrantyUntil});
             this.layoutControlGroup3.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
-            this.layoutControlGroup3.Location = new System.Drawing.Point(0, 24);
+            this.layoutControlGroup3.Location = new System.Drawing.Point(0, 65);
             this.layoutControlGroup3.Name = "layoutControlGroup3";
             columnDefinition1.SizeType = System.Windows.Forms.SizeType.Absolute;
             columnDefinition1.Width = 200D;
             columnDefinition2.SizeType = System.Windows.Forms.SizeType.Absolute;
             columnDefinition2.Width = 150D;
             columnDefinition3.SizeType = System.Windows.Forms.SizeType.AutoSize;
-            columnDefinition3.Width = 248D;
+            columnDefinition3.Width = 226D;
             this.layoutControlGroup3.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] {
             columnDefinition1,
             columnDefinition2,
             columnDefinition3});
-            rowDefinition1.Height = 24D;
+            rowDefinition1.Height = 32D;
             rowDefinition1.SizeType = System.Windows.Forms.SizeType.AutoSize;
             this.layoutControlGroup3.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] {
             rowDefinition1});
-            this.layoutControlGroup3.Size = new System.Drawing.Size(622, 69);
+            this.layoutControlGroup3.Size = new System.Drawing.Size(608, 85);
             this.layoutControlGroup3.Text = "Thời gian bảo hành";
             // 
             // ItemForWarrantyFrom
@@ -600,7 +607,7 @@ namespace Inventory.OverlayForm
             this.ItemForWarrantyFrom.Location = new System.Drawing.Point(0, 0);
             this.ItemForWarrantyFrom.Name = "ItemForWarrantyFrom";
             this.ItemForWarrantyFrom.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 2, 2, 2);
-            this.ItemForWarrantyFrom.Size = new System.Drawing.Size(200, 24);
+            this.ItemForWarrantyFrom.Size = new System.Drawing.Size(200, 32);
             this.ItemForWarrantyFrom.Text = "Từ ngày";
             this.ItemForWarrantyFrom.TextAlignMode = DevExpress.XtraLayout.TextAlignModeItem.AutoSize;
             this.ItemForWarrantyFrom.TextSize = new System.Drawing.Size(40, 13);
@@ -613,7 +620,7 @@ namespace Inventory.OverlayForm
             this.ItemForMonthOfWarranty.Name = "ItemForMonthOfWarranty";
             this.ItemForMonthOfWarranty.OptionsTableLayoutItem.ColumnIndex = 1;
             this.ItemForMonthOfWarranty.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 2, 2, 2);
-            this.ItemForMonthOfWarranty.Size = new System.Drawing.Size(150, 24);
+            this.ItemForMonthOfWarranty.Size = new System.Drawing.Size(150, 32);
             this.ItemForMonthOfWarranty.Text = "T.Gian BH (Tháng)";
             this.ItemForMonthOfWarranty.TextAlignMode = DevExpress.XtraLayout.TextAlignModeItem.AutoSize;
             this.ItemForMonthOfWarranty.TextSize = new System.Drawing.Size(88, 13);
@@ -626,7 +633,7 @@ namespace Inventory.OverlayForm
             this.ItemForWarrantyUntil.Name = "ItemForWarrantyUntil";
             this.ItemForWarrantyUntil.OptionsTableLayoutItem.ColumnIndex = 2;
             this.ItemForWarrantyUntil.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 2, 2, 2);
-            this.ItemForWarrantyUntil.Size = new System.Drawing.Size(248, 24);
+            this.ItemForWarrantyUntil.Size = new System.Drawing.Size(226, 32);
             this.ItemForWarrantyUntil.Text = "Đến ngày";
             this.ItemForWarrantyUntil.TextAlignMode = DevExpress.XtraLayout.TextAlignModeItem.AutoSize;
             this.ItemForWarrantyUntil.TextSize = new System.Drawing.Size(47, 13);
@@ -637,10 +644,10 @@ namespace Inventory.OverlayForm
             this.layoutControlItem3.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.layoutControlItem3.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
             this.layoutControlItem3.Control = this.BoRaHyperlinkLabelControl;
-            this.layoutControlItem3.Location = new System.Drawing.Point(556, 93);
+            this.layoutControlItem3.Location = new System.Drawing.Point(542, 150);
             this.layoutControlItem3.Name = "layoutControlItem3";
             this.layoutControlItem3.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 2, 2);
-            this.layoutControlItem3.Size = new System.Drawing.Size(66, 24);
+            this.layoutControlItem3.Size = new System.Drawing.Size(66, 32);
             this.layoutControlItem3.TextVisible = false;
             // 
             // layoutControlItem4
@@ -648,10 +655,10 @@ namespace Inventory.OverlayForm
             this.layoutControlItem4.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.layoutControlItem4.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
             this.layoutControlItem4.Control = this.ThemVaoHyperlinkLabelControl;
-            this.layoutControlItem4.Location = new System.Drawing.Point(468, 93);
+            this.layoutControlItem4.Location = new System.Drawing.Point(454, 150);
             this.layoutControlItem4.Name = "layoutControlItem4";
             this.layoutControlItem4.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 2, 2);
-            this.layoutControlItem4.Size = new System.Drawing.Size(88, 24);
+            this.layoutControlItem4.Size = new System.Drawing.Size(88, 32);
             this.layoutControlItem4.TextVisible = false;
             // 
             // Root
@@ -661,7 +668,7 @@ namespace Inventory.OverlayForm
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(666, 636);
+            this.Root.Size = new System.Drawing.Size(666, 621);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -669,7 +676,7 @@ namespace Inventory.OverlayForm
             this.layoutControlItem1.Control = this.dataLayoutControl2;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(646, 616);
+            this.layoutControlItem1.Size = new System.Drawing.Size(640, 595);
             this.layoutControlItem1.TextVisible = false;
             // 
             // colId
@@ -741,6 +748,26 @@ namespace Inventory.OverlayForm
             this.colProductCount.Name = "colProductCount";
             this.colProductCount.Visible = true;
             this.colProductCount.VisibleIndex = 9;
+            //
+            // ProductVarianFullInfoHypertextLabel
+            //
+            this.ProductVarianFullInfoHypertextLabel.Location = new System.Drawing.Point(12, 44);
+            this.ProductVarianFullInfoHypertextLabel.Name = "ProductVarianFullInfoHypertextLabel";
+            this.ProductVarianFullInfoHypertextLabel.Size = new System.Drawing.Size(610, 60);
+            this.ProductVarianFullInfoHypertextLabel.StyleController = this.dataLayoutControl2;
+            this.ProductVarianFullInfoHypertextLabel.TabIndex = 13;
+            this.ProductVarianFullInfoHypertextLabel.Text = "Thông tin đầy đủ của sản phẩm bảo hành";
+            //
+            // ItemForProductVarianFullInfoHypertextLabel
+            //
+            this.ItemForProductVarianFullInfoHypertextLabel.Control = this.ProductVarianFullInfoHypertextLabel;
+            this.ItemForProductVarianFullInfoHypertextLabel.Location = new System.Drawing.Point(0, 32);
+            this.ItemForProductVarianFullInfoHypertextLabel.Name = "ItemForProductVarianFullInfoHypertextLabel";
+            this.ItemForProductVarianFullInfoHypertextLabel.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
+            this.ItemForProductVarianFullInfoHypertextLabel.Size = new System.Drawing.Size(608, 64);
+            this.ItemForProductVarianFullInfoHypertextLabel.Text = "Thông tin sản phẩm";
+            this.ItemForProductVarianFullInfoHypertextLabel.TextSize = new System.Drawing.Size(198, 13);
+            this.ItemForProductVarianFullInfoHypertextLabel.TextVisible = true;
             // 
             // FrmWarranty
             // 
@@ -788,6 +815,7 @@ namespace Inventory.OverlayForm
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemForProductVarianFullInfoHypertextLabel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -848,5 +876,7 @@ namespace Inventory.OverlayForm
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantName;
         private DevExpress.XtraGrid.Columns.GridColumn colFullNameHtml;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel repositoryItemHypertextLabel1;
+        private DevExpress.XtraEditors.HypertextLabel ProductVarianFullInfoHypertextLabel;
+        private DevExpress.XtraLayout.LayoutControlItem ItemForProductVarianFullInfoHypertextLabel;
     }
 }

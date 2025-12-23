@@ -47,6 +47,7 @@ namespace MasterData.ProductService
             this.VariantFullNameHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colThumbnailImage = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ThumbnailItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
+            this.colProductName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.ListDataBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
@@ -107,7 +108,8 @@ namespace MasterData.ProductService
             // 
             this.ProductVariantListGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.colVariantFullNameHtml,
-            this.colThumbnailImage});
+            this.colThumbnailImage,
+            this.colProductName});
             this.ProductVariantListGridView.GridControl = this.ProductVariantListGridControl;
             this.ProductVariantListGridView.GroupSummary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
             new DevExpress.XtraGrid.GridGroupSummaryItem(DevExpress.Data.SummaryItemType.Count, "VariantCode", null, " [Có {0} biến thể]")});
@@ -146,7 +148,7 @@ namespace MasterData.ProductService
             this.colVariantFullNameHtml.MinWidth = 300;
             this.colVariantFullNameHtml.Name = "colVariantFullNameHtml";
             this.colVariantFullNameHtml.Visible = true;
-            this.colVariantFullNameHtml.VisibleIndex = 2;
+            this.colVariantFullNameHtml.VisibleIndex = 3;
             this.colVariantFullNameHtml.Width = 500;
             // 
             // VariantFullNameHtmlHypertextLabel
@@ -156,6 +158,9 @@ namespace MasterData.ProductService
             // 
             // colThumbnailImage
             // 
+            this.colThumbnailImage.AppearanceCell.Options.UseTextOptions = true;
+            this.colThumbnailImage.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colThumbnailImage.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colThumbnailImage.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
             this.colThumbnailImage.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.colThumbnailImage.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
@@ -165,22 +170,55 @@ namespace MasterData.ProductService
             this.colThumbnailImage.AppearanceHeader.Options.UseTextOptions = true;
             this.colThumbnailImage.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colThumbnailImage.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colThumbnailImage.Caption = "Hình ảnh";
+            this.colThumbnailImage.Caption = "Ảnh đại diện";
             this.colThumbnailImage.ColumnEdit = this.ThumbnailItemPictureEdit;
             this.colThumbnailImage.FieldName = "ThumbnailImage";
-            this.colThumbnailImage.MinWidth = 80;
+            this.colThumbnailImage.MaxWidth = 120;
+            this.colThumbnailImage.MinWidth = 120;
             this.colThumbnailImage.Name = "colThumbnailImage";
-            this.colThumbnailImage.OptionsColumn.AllowEdit = false;
             this.colThumbnailImage.OptionsColumn.FixedWidth = true;
-            this.colThumbnailImage.OptionsColumn.ReadOnly = true;
             this.colThumbnailImage.Visible = true;
             this.colThumbnailImage.VisibleIndex = 1;
-            this.colThumbnailImage.Width = 80;
+            this.colThumbnailImage.Width = 120;
             // 
             // ThumbnailItemPictureEdit
             // 
+            this.ThumbnailItemPictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.ThumbnailItemPictureEdit.CustomHeight = 60;
             this.ThumbnailItemPictureEdit.Name = "ThumbnailItemPictureEdit";
-            this.ThumbnailItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
+            this.ThumbnailItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.ThumbnailItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
+            // 
+            // colProductName
+            // 
+            this.colProductName.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.colProductName.AppearanceCell.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.colProductName.AppearanceCell.Options.UseFont = true;
+            this.colProductName.AppearanceCell.Options.UseForeColor = true;
+            this.colProductName.AppearanceCell.Options.UseTextOptions = true;
+            this.colProductName.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colProductName.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colProductName.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colProductName.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colProductName.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colProductName.AppearanceHeader.Options.UseBackColor = true;
+            this.colProductName.AppearanceHeader.Options.UseFont = true;
+            this.colProductName.AppearanceHeader.Options.UseForeColor = true;
+            this.colProductName.AppearanceHeader.Options.UseTextOptions = true;
+            this.colProductName.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colProductName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colProductName.Caption = "Tên sản phẩm";
+            this.colProductName.FieldName = "ProductName";
+            this.colProductName.MinWidth = 200;
+            this.colProductName.Name = "colProductName";
+            this.colProductName.OptionsColumn.AllowEdit = false;
+            this.colProductName.OptionsColumn.AllowFocus = false;
+            this.colProductName.OptionsColumn.AllowMove = false;
+            this.colProductName.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.True;
+            this.colProductName.ToolTip = "Tên sản phẩm/dịch vụ";
+            this.colProductName.Visible = true;
+            this.colProductName.VisibleIndex = 2;
+            this.colProductName.Width = 300;
             // 
             // barManager1
             // 
@@ -434,6 +472,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantListGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VariantFullNameHtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThumbnailItemPictureEdit)).EndInit();
+            
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemSpinEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
@@ -478,5 +517,6 @@ namespace MasterData.ProductService
         private BarButtonItem UpdateProductVariantFullNameBarButtonItem;
         private GridColumn colThumbnailImage;
         private RepositoryItemPictureEdit ThumbnailItemPictureEdit;
+        private GridColumn colProductName;
     }
 }
