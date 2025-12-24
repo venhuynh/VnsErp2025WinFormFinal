@@ -2,6 +2,10 @@
 -- Script: Insert phiên bản mới vào bảng VnsErpApplicationVersion
 -- Mục đích: Thêm phiên bản mới và tự động set các phiên bản cũ thành IsActive = false
 -- Lưu ý: Chỉ có một phiên bản Active tại một thời điểm
+-- 
+-- ⚠️ QUAN TRỌNG: Script này được cập nhật tự động từ AssemblyInfo.cs
+-- Phiên bản hiện tại: 1.0.2.0 (từ AssemblyVersion trong AssemblyInfo.cs)
+-- Vui lòng cập nhật @Description và @ReleaseNote với thông tin chi tiết về các thay đổi
 -- =============================================
 
 USE [VnsErp2025Final];
@@ -31,17 +35,16 @@ END
 GO
 
 -- =============================================
--- CẤU HÌNH PHIÊN BẢN MỚI - THAY ĐỔI CÁC GIÁ TRỊ SAU:
+-- CẤU HÌNH PHIÊN BẢN MỚI - ĐƯỢC CẬP NHẬT TỪ AssemblyInfo.cs
+-- Phiên bản trong AssemblyInfo.cs: 1.0.2.0
 -- =============================================
 
-DECLARE @NewVersion NVARCHAR(50) = N'1.0.1.2';  -- ⚠️ THAY ĐỔI: Phiên bản mới (ví dụ: 1.0.0.1, 1.0.1.0, 1.1.0.0, 2.0.0.0)
+DECLARE @NewVersion NVARCHAR(50) = N'1.0.2.0';  -- ✅ Phiên bản từ AssemblyInfo.cs (AssemblyVersion: 1.0.2.0)
 DECLARE @ReleaseDate DATETIME = GETDATE();      -- ⚠️ THAY ĐỔI: Ngày phát hành (hoặc dùng GETDATE() cho ngày hiện tại)
-DECLARE @Description NVARCHAR(500) = N'cập nhật logic xử lý biến thể sản phẩm';  -- ⚠️ THAY ĐỔI: Mô tả ngắn
-DECLARE @ReleaseNote NVARCHAR(1000) = N'Chi tiết các thay đổi trong phiên bản này:
-- Cải thiện: Cập nhật logic xử lý biến thể sản phẩm
-- Tính năng mới: Thêm hàm UpdateThumbnailImageOnlyAsync để chỉ cập nhật/xóa hình ảnh biến thể
-- Sửa lỗi: Sửa lỗi tạo record mới khi cập nhật thumbnail image
-- Cải thiện: Tách biệt logic cập nhật thumbnail khỏi các trường khác của biến thể';  -- ⚠️ THAY ĐỔI: Ghi chú phát hành chi tiết
+DECLARE @Description NVARCHAR(500) = N'Cập nhật phiên bản 1.0.2.0';  -- ⚠️ THAY ĐỔI: Mô tả ngắn
+DECLARE @ReleaseNote NVARCHAR(1000) = N'Chi tiết các thay đổi trong phiên bản 1.0.2.0:
+- Phiên bản được cập nhật từ AssemblyInfo.cs
+- Vui lòng cập nhật các thay đổi cụ thể trong phiên bản này';  -- ⚠️ THAY ĐỔI: Ghi chú phát hành chi tiết
 DECLARE @CreateBy UNIQUEIDENTIFIER = NULL;       -- ⚠️ THAY ĐỔI: ID người tạo (hoặc NULL)
 
 -- =============================================

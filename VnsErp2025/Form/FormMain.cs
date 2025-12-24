@@ -25,6 +25,7 @@ using Inventory.StockOut.XuatChoThueMuon;
 using Inventory.StockOut.XuatLapRap;
 using Inventory.Query;
 using Inventory.Management;
+using Inventory.Management.DeviceMangement;
 using VersionAndUserManagement.AllowedMacAddress;
 using VersionAndUserManagement.UserManagement;
 using VersionAndUserManagement.ApplicationVersion;
@@ -188,6 +189,9 @@ namespace VnsErp2025.Form
 
             if (AttributeBarButtonItem != null)
                 AttributeBarButtonItem.ItemClick += AttributeBarButtonItem_ItemClick;
+
+            if (DeviceDtoMangementBarButtonItem != null)
+                DeviceDtoMangementBarButtonItem.ItemClick += DeviceDtoMangementBarButtonItem_ItemClick;
         }
 
         /// <summary>
@@ -665,6 +669,15 @@ namespace VnsErp2025.Form
                         StockInOutDocumentBarButtonItem,
                         title: "<b><color=DarkBlue>📎 Chứng từ</color></b>",
                         content: "Xem và quản lý chứng từ liên quan đến các phiếu nhập/xuất kho.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách chứng từ của phiếu nhập/xuất<br/>• Upload và quản lý chứng từ (PDF, Word, Excel, v.v.)<br/>• Tải xuống và mở chứng từ<br/>• Xóa chứng từ<br/><br/><color=Gray>Lưu ý:</color> Module này giúp lưu trữ và tra cứu các file chứng từ liên quan đến kho."
+                    );
+                }
+
+                if (DeviceDtoMangementBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        DeviceDtoMangementBarButtonItem,
+                        title: "<b><color=DarkBlue>📱 Danh sách Thiết bị - Tài sản</color></b>",
+                        content: "Quản lý danh sách thiết bị và tài sản trong hệ thống.<br/><br/><b>Chức năng:</b><br/>• Xem danh sách thiết bị/tài sản<br/>• Thêm, sửa, xóa thông tin thiết bị/tài sản<br/>• Quản lý thông tin chi tiết: mã thiết bị, tên, mô tả<br/>• Quản lý bảo hành và thông tin liên quan<br/>• Tìm kiếm và lọc dữ liệu<br/><br/><color=Gray>Lưu ý:</color> Module này giúp quản lý toàn bộ thiết bị và tài sản trong kho một cách hiệu quả."
                     );
                 }
 
@@ -1580,6 +1593,23 @@ namespace VnsErp2025.Form
             catch (Exception ex)
             {
                 MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý chứng từ");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện click nút Danh sách Thiết bị - Tài sản
+        /// </summary>
+        private void DeviceDtoMangementBarButtonItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            try
+            {
+                SplashScreenHelper.ShowVnsSplashScreen();
+                ApplicationSystemUtils.ShowOrActivateForm<FrmDeviceDtoMangement>(this);
+                SplashScreenHelper.CloseSplashScreen();
+            }
+            catch (Exception ex)
+            {
+                MsgBox.ShowException(ex, "Lỗi hiển thị form quản lý thiết bị - tài sản");
             }
         }
 

@@ -185,7 +185,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmDeviceQrManagement());
+            Application.Run(new FormMain());
 
             #endregion
 

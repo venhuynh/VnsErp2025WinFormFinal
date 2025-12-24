@@ -29,8 +29,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
+            this.barManager1 = new DevExpress.XtraBars.BarManager();
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.XemBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
@@ -42,6 +41,7 @@
             this.XoaBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
+            this.barSubItem2 = new DevExpress.XtraBars.BarSubItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -50,7 +50,7 @@
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
+            this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager();
             this.dockPanel1 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
@@ -64,7 +64,7 @@
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             this.DeviceDtoGridViewGridControl = new DevExpress.XtraGrid.GridControl();
-            this.deviceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.deviceDtoBindingSource = new System.Windows.Forms.BindingSource();
             this.DeviceDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colHtmlInfo = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -72,7 +72,6 @@
             this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
             this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
-            this.barSubItem2 = new DevExpress.XtraBars.BarSubItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -214,6 +213,12 @@
             this.barButtonItem1.Id = 13;
             this.barButtonItem1.ImageOptions.SvgImage = global::Inventory.Properties.Resources.QRCode;
             this.barButtonItem1.Name = "barButtonItem1";
+            // 
+            // barSubItem2
+            // 
+            this.barSubItem2.Caption = "Điều chỉnh";
+            this.barSubItem2.Id = 14;
+            this.barSubItem2.Name = "barSubItem2";
             // 
             // bar1
             // 
@@ -527,12 +532,6 @@
             // NotesMemoEdit
             // 
             this.NotesMemoEdit.Name = "NotesMemoEdit";
-            // 
-            // barSubItem2
-            // 
-            this.barSubItem2.Caption = "Điều chỉnh";
-            this.barSubItem2.Id = 14;
-            this.barSubItem2.Name = "barSubItem2";
             // 
             // FrmDeviceDtoMangement
             // 
