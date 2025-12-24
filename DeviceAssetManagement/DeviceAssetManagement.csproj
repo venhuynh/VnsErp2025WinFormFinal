@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,19 +30,24 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Data.Desktop.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Docs.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Drawing.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraDialogs.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraTreeList.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -54,6 +60,42 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Management\DeviceMangement\FrmDeviceDtoMangement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\FrmDeviceDtoMangement.Designer.cs">
+      <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.Designer.cs">
+      <DependentUpon>FrmDeviceQrManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.Designer.cs">
+      <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.Designer.cs">
+      <DependentUpon>UcDeviceDtoAddStockInOutHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.Designer.cs">
+      <DependentUpon>UcDeviceImageAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.Designer.cs">
+      <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XtraForm1.cs">
       <SubType>Form</SubType>
@@ -63,6 +105,21 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Management\DeviceMangement\FrmDeviceDtoMangement.resx">
+      <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddEdit.resx">
+      <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.resx">
+      <DependentUpon>UcDeviceDtoAddStockInOutHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceImageAdd.resx">
+      <DependentUpon>UcDeviceImageAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceWarranty.resx">
+      <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="XtraForm1.resx">
       <DependentUpon>XtraForm1.cs</DependentUpon>
     </EmbeddedResource>
@@ -89,5 +146,6 @@
       <Name>Logger</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
