@@ -3,14 +3,9 @@ using Bll.Common;
 using Common.Appconfig;
 using Common.Utils;
 using Dal.Connection;
-using Inventory.Management;
-using Inventory.OverlayForm;
-using Inventory.StockIn.NhapHangThuongMai;
-using MasterData.ProductService;
 using Microsoft.Win32;
 using System;
 using System.Windows.Forms;
-using Inventory.Management.DeviceMangement;
 using VnsErp2025.Form;
 
 

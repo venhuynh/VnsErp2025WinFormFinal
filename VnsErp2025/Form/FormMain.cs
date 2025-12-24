@@ -1,16 +1,12 @@
 using Authentication.Form;
-using DevExpress.XtraBars;
-using MasterData.Company;
-using MasterData.Customer;
-using MasterData.ProductService;
-using System;
-using System.Data.SqlClient;
-using System.Windows.Forms;
 using Bll.Common;
 using Common.Common;
 using Common.Utils;
 using Dal.Connection;
 using Dal.DataContext;
+using DevExpress.XtraBars;
+using Inventory.Management;
+using Inventory.Query;
 using Inventory.StockIn.NhapBaoHanh;
 using Inventory.StockIn.NhapHangThuongMai;
 using Inventory.StockIn.NhapLapRap;
@@ -18,18 +14,21 @@ using Inventory.StockIn.NhapLuuChuyenKho;
 using Inventory.StockIn.NhapNoiBo;
 using Inventory.StockIn.NhapThietBiMuon;
 using Inventory.StockOut.XuatBaoHanh;
+using Inventory.StockOut.XuatChoThueMuon;
 using Inventory.StockOut.XuatHangThuongMai;
+using Inventory.StockOut.XuatLapRap;
 using Inventory.StockOut.XuatLuuChuyenKho;
 using Inventory.StockOut.XuatNoiBo;
-using Inventory.StockOut.XuatChoThueMuon;
-using Inventory.StockOut.XuatLapRap;
-using Inventory.Query;
-using Inventory.Management;
-using Inventory.Management.DeviceMangement;
+using MasterData.Company;
+using MasterData.Customer;
+using MasterData.ProductService;
+using System;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+using DeviceAssetManagement.Management.DeviceMangement;
 using VersionAndUserManagement.AllowedMacAddress;
-using VersionAndUserManagement.UserManagement;
 using VersionAndUserManagement.ApplicationVersion;
-using Bll.Common;
+using VersionAndUserManagement.UserManagement;
 
 // ReSharper disable InconsistentNaming
 
