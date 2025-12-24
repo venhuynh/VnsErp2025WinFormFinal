@@ -1,12 +1,8 @@
-﻿using DevExpress.XtraEditors;
+﻿using DevExpress.BarCodes;
+using DevExpress.Drawing.Extensions;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Inventory.Management.DeviceMangement
@@ -16,6 +12,72 @@ namespace Inventory.Management.DeviceMangement
         public FrmDeviceQrManagement()
         {
             InitializeComponent();
+            cboErrorLevel.SelectedIndex = 2; // Q
+            spinModule.EditValue = 2;
+            lblStatus.Text = "Sẵn sàng";
+        }
+
+        private void btnGenerate_Click(object sender, EventArgs e)
+        {
+            RenderQr();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (picPreview.Image == null)
+            {
+                lblStatus.Text = "Chưa có mã để lưu.";
+                return;
+            }
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                picPreview.Image.Save(saveFileDialog1.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                lblStatus.Text = $"Đã lưu: {saveFileDialog1.FileName}";
+            }
+        }
+
+        private void RenderQr()
+        {
+            var payload = memoPayload.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(payload))
+            {
+                lblStatus.Text = "Nội dung trống.";
+                return;
+            }
+
+            var errorLevel = ParseErrorLevel(cboErrorLevel.EditValue?.ToString());
+            var moduleSize = Convert.ToSingle(spinModule.Value);
+
+            using var barCode = new BarCode
+            {
+                Symbology = Symbology.QRCode,
+                BackColor = Color.White,
+                ForeColor = Color.Black,
+                RotationAngle = 0,
+                DpiX = 96,
+                DpiY = 96,
+                Module = moduleSize,
+                CodeBinaryData = Encoding.UTF8.GetBytes(payload)
+            };
+            barCode.Options.QRCode.CompactionMode = QRCodeCompactionMode.Byte;
+            barCode.Options.QRCode.ErrorLevel = errorLevel;
+            barCode.Options.QRCode.ShowCodeText = false;
+
+            picPreview.Image?.Dispose();
+            picPreview.Image = barCode.BarCodeImage.ConvertToGdiPlusImage();
+            lblStatus.Text = $"Đã tạo mã QR ({payload.Length} ký tự, mức {errorLevel}).";
+        }
+
+        private static QRCodeErrorLevel ParseErrorLevel(string? value)
+        {
+            return value?.ToUpperInvariant() switch
+            {
+                "L" => QRCodeErrorLevel.L,
+                "M" => QRCodeErrorLevel.M,
+                "H" => QRCodeErrorLevel.H,
+                _ => QRCodeErrorLevel.Q
+            };
         }
     }
 }
