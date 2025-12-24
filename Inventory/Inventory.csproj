@@ -94,47 +94,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.Designer.cs">
-      <DependentUpon>FrmDeviceQrManagement.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.Designer.cs">
-      <DependentUpon>UcDeviceImageAdd.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.Designer.cs">
-      <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.Designer.cs">
-      <DependentUpon>UcDeviceDtoAddStockInOutHistory.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.Designer.cs">
-      <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
-    </Compile>
     <Compile Include="Management\FrmAssetDtoManagement.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Management\FrmAssetDtoManagement.Designer.cs">
       <DependentUpon>FrmAssetDtoManagement.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\FrmDeviceDtoMangement.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Management\DeviceMangement\FrmDeviceDtoMangement.Designer.cs">
-      <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
     </Compile>
     <Compile Include="Management\FrmInventoryBalanceDto.cs">
       <SubType>Form</SubType>
@@ -450,21 +414,6 @@
     <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.Designer.cs">
       <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Management\DeviceMangement\FrmDeviceDtoMangement.resx">
-      <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceImageAdd.resx">
-      <DependentUpon>UcDeviceImageAdd.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddEdit.resx">
-      <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.resx">
-      <DependentUpon>UcDeviceDtoAddStockInOutHistory.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceWarranty.resx">
-      <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Management\FrmAssetDtoManagement.resx">
       <DependentUpon>FrmAssetDtoManagement.cs</DependentUpon>
     </EmbeddedResource>
