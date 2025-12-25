@@ -8,6 +8,7 @@ using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
+using DTO.DeviceAssetManagement;
 using DTO.Inventory.InventoryManagement;
 
 namespace DeviceAssetManagement.Management.DeviceMangement

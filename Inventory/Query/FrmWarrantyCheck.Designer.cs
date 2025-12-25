@@ -1,4 +1,6 @@
-﻿namespace Inventory.Query
+﻿using DTO.DeviceAssetManagement;
+
+namespace Inventory.Query
 {
     partial class FrmWarrantyCheck
     {
@@ -105,7 +107,7 @@
             // 
             // warrantyCheckListDtoBindingSource
             // 
-            this.warrantyCheckListDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.WarrantyCheckListDto);
+            this.warrantyCheckListDtoBindingSource.DataSource = typeof(WarrantyCheckListDto);
             // 
             // WarrantyCheckListDtoGridView
             // 

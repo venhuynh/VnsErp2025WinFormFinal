@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Common.Utils;
 
-namespace DTO.Inventory.InventoryManagement;
+namespace DTO.DeviceAssetManagement;
 
 /// <summary>
 /// Data Transfer Object cho DeviceTransactionHistory entity

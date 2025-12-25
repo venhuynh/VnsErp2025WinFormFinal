@@ -7,6 +7,7 @@ using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
 using Dal.DataContext;
+using DTO.DeviceAssetManagement;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
 using Logger;

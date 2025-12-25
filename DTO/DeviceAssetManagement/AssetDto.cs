@@ -1,13 +1,13 @@
-using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Dal.DataContext;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace DTO.Inventory.InventoryManagement;
+namespace DTO.DeviceAssetManagement;
 
 /// <summary>
 /// Data Transfer Object cho tài sản

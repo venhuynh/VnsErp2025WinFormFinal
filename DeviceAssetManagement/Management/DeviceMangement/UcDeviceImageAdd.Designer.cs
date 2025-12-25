@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using DevExpress.XtraLayout;
+using DTO.DeviceAssetManagement;
 
 namespace DeviceAssetManagement.Management.DeviceMangement
 {
@@ -117,7 +118,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
             // 
             // deviceDtoBindingSource
             // 
-            this.deviceDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.DeviceDto);
+            this.deviceDtoBindingSource.DataSource = typeof(DeviceDto);
             // 
             // UcDeviceImageAdd
             // 

@@ -8,6 +8,7 @@ using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Utils;
 using DevExpress.XtraBars.Docking;
+using DTO.DeviceAssetManagement;
 using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;

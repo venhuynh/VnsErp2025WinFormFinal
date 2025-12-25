@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace DTO.Inventory.InventoryManagement;
+namespace DTO.DeviceAssetManagement;
 
 /// <summary>
 /// Enum định nghĩa các loại tham chiếu trong bảng DeviceTransactionHistory

@@ -1,13 +1,13 @@
-﻿using Common.Enums;
-using Dal.DataContext;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using Common.Enums;
+using Dal.DataContext;
 
-namespace DTO.Inventory.InventoryManagement;
+namespace DTO.DeviceAssetManagement;
 
 /// <summary>
 /// Data Transfer Object cho thông tin bảo hành

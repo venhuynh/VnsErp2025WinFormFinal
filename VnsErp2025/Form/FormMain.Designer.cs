@@ -74,6 +74,10 @@ namespace VnsErp2025.Form
             this.NasConfigBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.AttributeBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ReleaserVersionAndDateBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
+            this.DeviceDtoMangementBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem6 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPageCategory1 = new DevExpress.XtraBars.Ribbon.RibbonPageCategory();
             this.VersionAndUserManagementRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.VersionAndUserManagementRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -87,15 +91,11 @@ namespace VnsErp2025.Form
             this.XuatKhoRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.QuanLyKhoRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.StockInOutRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.ribbonPage2 = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
             this.documentManager1 = new DevExpress.XtraBars.Docking2010.DocumentManager(this.components);
             this.tabbedView1 = new DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView(this.components);
-            this.ribbonPage2 = new DevExpress.XtraBars.Ribbon.RibbonPage();
-            this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-            this.DeviceDtoMangementBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem6 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.documentManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).BeginInit();
@@ -546,6 +546,30 @@ namespace VnsErp2025.Form
             this.ReleaserVersionAndDateBarStaticItem.Id = 45;
             this.ReleaserVersionAndDateBarStaticItem.Name = "ReleaserVersionAndDateBarStaticItem";
             // 
+            // DeviceDtoMangementBarButtonItem
+            // 
+            this.DeviceDtoMangementBarButtonItem.Caption = "Danh sách";
+            this.DeviceDtoMangementBarButtonItem.Id = 46;
+            this.DeviceDtoMangementBarButtonItem.Name = "DeviceDtoMangementBarButtonItem";
+            // 
+            // barButtonItem4
+            // 
+            this.barButtonItem4.Caption = "Bảo hành";
+            this.barButtonItem4.Id = 47;
+            this.barButtonItem4.Name = "barButtonItem4";
+            // 
+            // barButtonItem6
+            // 
+            this.barButtonItem6.Caption = "QR - RFID";
+            this.barButtonItem6.Id = 49;
+            this.barButtonItem6.Name = "barButtonItem6";
+            // 
+            // barButtonItem3
+            // 
+            this.barButtonItem3.Caption = "Hình ảnh";
+            this.barButtonItem3.Id = 50;
+            this.barButtonItem3.Name = "barButtonItem3";
+            // 
             // ribbonPageCategory1
             // 
             this.ribbonPageCategory1.Name = "ribbonPageCategory1";
@@ -667,22 +691,6 @@ namespace VnsErp2025.Form
             this.StockInOutRibbonPageGroup.Name = "StockInOutRibbonPageGroup";
             this.StockInOutRibbonPageGroup.Text = "Truy vấn";
             // 
-            // ribbonStatusBar
-            // 
-            this.ribbonStatusBar.ItemLinks.Add(this.ReleaserVersionAndDateBarStaticItem);
-            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 674);
-            this.ribbonStatusBar.Name = "ribbonStatusBar";
-            this.ribbonStatusBar.Ribbon = this.ribbon;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(1150, 37);
-            // 
-            // documentManager1
-            // 
-            this.documentManager1.MdiParent = this;
-            this.documentManager1.MenuManager = this.ribbon;
-            this.documentManager1.View = this.tabbedView1;
-            this.documentManager1.ViewCollection.AddRange(new DevExpress.XtraBars.Docking2010.Views.BaseView[] {
-            this.tabbedView1});
-            // 
             // ribbonPage2
             // 
             this.ribbonPage2.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
@@ -699,29 +707,21 @@ namespace VnsErp2025.Form
             this.ribbonPageGroup2.Name = "ribbonPageGroup2";
             this.ribbonPageGroup2.Text = "Quản lý thiết bị - tài sản";
             // 
-            // DeviceDtoMangementBarButtonItem
+            // ribbonStatusBar
             // 
-            this.DeviceDtoMangementBarButtonItem.Caption = "Danh sách";
-            this.DeviceDtoMangementBarButtonItem.Id = 46;
-            this.DeviceDtoMangementBarButtonItem.Name = "DeviceDtoMangementBarButtonItem";
+            this.ribbonStatusBar.ItemLinks.Add(this.ReleaserVersionAndDateBarStaticItem);
+            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 674);
+            this.ribbonStatusBar.Name = "ribbonStatusBar";
+            this.ribbonStatusBar.Ribbon = this.ribbon;
+            this.ribbonStatusBar.Size = new System.Drawing.Size(1150, 37);
             // 
-            // barButtonItem4
+            // documentManager1
             // 
-            this.barButtonItem4.Caption = "Bảo hành";
-            this.barButtonItem4.Id = 47;
-            this.barButtonItem4.Name = "barButtonItem4";
-            // 
-            // barButtonItem6
-            // 
-            this.barButtonItem6.Caption = "QR - RFID";
-            this.barButtonItem6.Id = 49;
-            this.barButtonItem6.Name = "barButtonItem6";
-            // 
-            // barButtonItem3
-            // 
-            this.barButtonItem3.Caption = "Hình ảnh";
-            this.barButtonItem3.Id = 50;
-            this.barButtonItem3.Name = "barButtonItem3";
+            this.documentManager1.MdiParent = this;
+            this.documentManager1.MenuManager = this.ribbon;
+            this.documentManager1.View = this.tabbedView1;
+            this.documentManager1.ViewCollection.AddRange(new DevExpress.XtraBars.Docking2010.Views.BaseView[] {
+            this.tabbedView1});
             // 
             // FormMain
             // 

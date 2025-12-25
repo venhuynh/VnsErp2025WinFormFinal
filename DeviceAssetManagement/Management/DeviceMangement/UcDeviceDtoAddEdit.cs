@@ -14,6 +14,7 @@ using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
 using DevExpress.XtraGrid.Views.Grid;
+using DTO.DeviceAssetManagement;
 using DTO.Inventory.InventoryManagement;
 using DTO.MasterData.ProductService;
 using Logger;

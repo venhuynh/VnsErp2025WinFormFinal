@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTO.DeviceAssetManagement;
 using DTO.Inventory.InventoryManagement;
 
 namespace DTO.Inventory.StockOut.XuatHangThuongMai;

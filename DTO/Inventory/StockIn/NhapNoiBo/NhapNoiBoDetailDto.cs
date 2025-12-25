@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dal.DataContext;
+using DTO.DeviceAssetManagement;
 
 namespace DTO.Inventory.StockIn.NhapNoiBo;
 
@@ -119,7 +120,7 @@ public class NhapNoiBoDetailDto
     /// </summary>
     [DisplayName("Thông tin bảo hành")]
     [Display(Order = 28)]
-    public List<InventoryManagement.WarrantyDto> Warranties { get; set; } = [];
+    public List<WarrantyDto> Warranties { get; set; } = [];
 
     /// <summary>
     /// Thông tin chi tiết phiếu nhập dưới dạng HTML theo format DevExpress

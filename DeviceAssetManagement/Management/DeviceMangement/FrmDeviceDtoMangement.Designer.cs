@@ -1,4 +1,6 @@
-﻿namespace DeviceAssetManagement.Management.DeviceMangement
+﻿using DTO.DeviceAssetManagement;
+
+namespace DeviceAssetManagement.Management.DeviceMangement
 {
     partial class FrmDeviceDtoMangement
     {
@@ -425,7 +427,7 @@
             // 
             // deviceDtoBindingSource
             // 
-            this.deviceDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.DeviceDto);
+            this.deviceDtoBindingSource.DataSource = typeof(DeviceDto);
             // 
             // DeviceDtoGridView
             // 

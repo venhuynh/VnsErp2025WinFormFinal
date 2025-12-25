@@ -4,6 +4,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
 using DevExpress.XtraTreeList.Columns;
+using DTO.DeviceAssetManagement;
 
 namespace DeviceAssetManagement.Management.DeviceMangement
 {
@@ -272,7 +273,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
             // 
             // warrantyDtoBindingSource
             // 
-            this.warrantyDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.WarrantyDto);
+            this.warrantyDtoBindingSource.DataSource = typeof(WarrantyDto);
             // 
             // WarrantyDtoGridView
             // 

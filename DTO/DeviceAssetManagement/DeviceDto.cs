@@ -1,13 +1,15 @@
-using Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using Common.Enums;
+using DTO.Inventory.InventoryManagement;
+
 // ReSharper disable InconsistentNaming
 
-namespace DTO.Inventory.InventoryManagement;
+namespace DTO.DeviceAssetManagement;
 
 /// <summary>
 /// Enum định nghĩa trạng thái thiết bị

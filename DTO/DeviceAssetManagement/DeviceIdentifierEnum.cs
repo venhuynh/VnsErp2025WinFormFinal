@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace DTO.Inventory.InventoryManagement
+namespace DTO.DeviceAssetManagement
 {
     public enum DeviceIdentifierEnum
     {
