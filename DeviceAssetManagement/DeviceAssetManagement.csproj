@@ -96,7 +96,18 @@
     <Compile Include="Management\DeviceMangement\UcDeviceWarranty.Designer.cs">
       <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
     </Compile>
+    <Compile Include="Management\DeviceWarranty\FrmDeviceWarranty.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceWarranty\FrmDeviceWarranty.Designer.cs">
+      <DependentUpon>FrmDeviceWarranty.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="XtraForm1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +118,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Management\DeviceMangement\FrmDeviceDtoMangement.resx">
       <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\FrmDeviceQrManagement.resx">
+      <DependentUpon>FrmDeviceQrManagement.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddEdit.resx">
       <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
@@ -119,6 +133,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Management\DeviceMangement\UcDeviceWarranty.resx">
       <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceWarranty\FrmDeviceWarranty.resx">
+      <DependentUpon>FrmDeviceWarranty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="XtraForm1.resx">
       <DependentUpon>XtraForm1.cs</DependentUpon>
@@ -146,6 +167,29 @@
       <Name>Logger</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\listnumbers_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\listnumbers_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clear_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clear_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxls_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxls_32x32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

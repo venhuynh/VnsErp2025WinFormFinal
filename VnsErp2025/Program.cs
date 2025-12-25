@@ -3,6 +3,7 @@ using Bll.Common;
 using Common.Appconfig;
 using Common.Utils;
 using Dal.Connection;
+using DeviceAssetManagement.Management.DeviceWarranty;
 using Microsoft.Win32;
 using System;
 using System.Windows.Forms;
@@ -180,7 +181,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FormMain());
+            Application.Run(new FrmDeviceWarranty());
 
             #endregion
 
