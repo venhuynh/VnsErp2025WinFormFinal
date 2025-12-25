@@ -168,6 +168,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.AssetDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.AssetDtoConverter.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceDtoConverter.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceTransactionHistoryDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceTransactionHistoryDtoConverter.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceTransactionHistoryDtoHelper.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.WarrantyCheckListDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.WarrantyCheckListDtoConverter.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.WarrantyDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.WarrantyDtoConverter.datasource" />
     <None Include="Resources\listnumbers_16x16.png" />
   </ItemGroup>
   <ItemGroup>

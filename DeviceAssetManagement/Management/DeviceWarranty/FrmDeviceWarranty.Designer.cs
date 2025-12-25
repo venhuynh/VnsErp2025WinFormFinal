@@ -56,15 +56,14 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.barSubItem2 = new DevExpress.XtraBars.BarSubItem();
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.bar1 = new DevExpress.XtraBars.Bar();
-            this.DeviceDtoGridViewGridControl = new DevExpress.XtraGrid.GridControl();
-            this.deviceDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.DeviceDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colHtmlInfo = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.DeviceWarrantyGridViewGridControl = new DevExpress.XtraGrid.GridControl();
+            this.warrantyDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.DeviceWarrantyDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colWarrantyInfoHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
-            this.colStatus = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
-            this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colDeviceHtmlInfo = new DevExpress.XtraGrid.Columns.GridColumn();
             this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -73,12 +72,12 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridViewGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DeviceWarrantyGridViewGridControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.warrantyDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DeviceWarrantyDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -154,15 +153,15 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(897, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1030, 39);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 427);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 503);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(897, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1030, 0);
             // 
             // barDockControlLeft
             // 
@@ -170,15 +169,15 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 388);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 464);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(897, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1030, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 388);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 464);
             // 
             // dockManager1
             // 
@@ -205,10 +204,10 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.dockPanel1.Controls.Add(this.dockPanel1_Container);
             this.dockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Right;
             this.dockPanel1.ID = new System.Guid("0c476c5c-6d27-493e-8a8e-c8d2ad65a997");
-            this.dockPanel1.Location = new System.Drawing.Point(454, 39);
+            this.dockPanel1.Location = new System.Drawing.Point(587, 39);
             this.dockPanel1.Name = "dockPanel1";
             this.dockPanel1.OriginalSize = new System.Drawing.Size(443, 200);
-            this.dockPanel1.Size = new System.Drawing.Size(443, 388);
+            this.dockPanel1.Size = new System.Drawing.Size(443, 464);
             this.dockPanel1.Text = "dockPanel1";
             // 
             // dockPanel1_Container
@@ -216,7 +215,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.dockPanel1_Container.Controls.Add(this.layoutControl1);
             this.dockPanel1_Container.Location = new System.Drawing.Point(4, 38);
             this.dockPanel1_Container.Name = "dockPanel1_Container";
-            this.dockPanel1_Container.Size = new System.Drawing.Size(436, 347);
+            this.dockPanel1_Container.Size = new System.Drawing.Size(436, 423);
             this.dockPanel1_Container.TabIndex = 0;
             // 
             // layoutControl1
@@ -226,7 +225,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(436, 347);
+            this.layoutControl1.Size = new System.Drawing.Size(436, 423);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -234,7 +233,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             // 
             this.ucDeviceWarranty1.Location = new System.Drawing.Point(16, 16);
             this.ucDeviceWarranty1.Name = "ucDeviceWarranty1";
-            this.ucDeviceWarranty1.Size = new System.Drawing.Size(404, 315);
+            this.ucDeviceWarranty1.Size = new System.Drawing.Size(404, 391);
             this.ucDeviceWarranty1.TabIndex = 7;
             // 
             // Root
@@ -244,7 +243,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem4});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(436, 347);
+            this.Root.Size = new System.Drawing.Size(436, 423);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem4
@@ -252,7 +251,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.layoutControlItem4.Control = this.ucDeviceWarranty1;
             this.layoutControlItem4.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.Size = new System.Drawing.Size(410, 321);
+            this.layoutControlItem4.Size = new System.Drawing.Size(410, 397);
             this.layoutControlItem4.TextVisible = false;
             // 
             // barHeaderItem1
@@ -313,89 +312,84 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.bar1.OptionsBar.UseWholeRow = true;
             this.bar1.Text = "Custom 3";
             // 
-            // DeviceDtoGridViewGridControl
+            // DeviceWarrantyGridViewGridControl
             // 
-            this.DeviceDtoGridViewGridControl.DataSource = this.deviceDtoBindingSource;
-            this.DeviceDtoGridViewGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DeviceDtoGridViewGridControl.Location = new System.Drawing.Point(0, 39);
-            this.DeviceDtoGridViewGridControl.MainView = this.DeviceDtoGridView;
-            this.DeviceDtoGridViewGridControl.MenuManager = this.barManager1;
-            this.DeviceDtoGridViewGridControl.Name = "DeviceDtoGridViewGridControl";
-            this.DeviceDtoGridViewGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.DeviceWarrantyGridViewGridControl.DataSource = this.warrantyDtoBindingSource;
+            this.DeviceWarrantyGridViewGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DeviceWarrantyGridViewGridControl.Location = new System.Drawing.Point(0, 39);
+            this.DeviceWarrantyGridViewGridControl.MainView = this.DeviceWarrantyDtoGridView;
+            this.DeviceWarrantyGridViewGridControl.MenuManager = this.barManager1;
+            this.DeviceWarrantyGridViewGridControl.Name = "DeviceWarrantyGridViewGridControl";
+            this.DeviceWarrantyGridViewGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlRepositoryItemHypertextLabel,
             this.NotesMemoEdit,
             this.StatusComboBox});
-            this.DeviceDtoGridViewGridControl.Size = new System.Drawing.Size(454, 388);
-            this.DeviceDtoGridViewGridControl.TabIndex = 5;
-            this.DeviceDtoGridViewGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.DeviceDtoGridView});
+            this.DeviceWarrantyGridViewGridControl.Size = new System.Drawing.Size(587, 464);
+            this.DeviceWarrantyGridViewGridControl.TabIndex = 5;
+            this.DeviceWarrantyGridViewGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.DeviceWarrantyDtoGridView});
             // 
-            // deviceDtoBindingSource
+            // warrantyDtoBindingSource
             // 
-            this.deviceDtoBindingSource.DataSource = typeof(DTO.DeviceAssetManagement.DeviceDto);
+            this.warrantyDtoBindingSource.DataSource = typeof(DTO.DeviceAssetManagement.WarrantyDto);
             // 
-            // DeviceDtoGridView
+            // DeviceWarrantyDtoGridView
             // 
-            this.DeviceDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.DeviceDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
-            this.DeviceDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
-            this.DeviceDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
-            this.DeviceDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colHtmlInfo,
-            this.colStatus,
-            this.colNotes});
-            this.DeviceDtoGridView.GridControl = this.DeviceDtoGridViewGridControl;
-            this.DeviceDtoGridView.Name = "DeviceDtoGridView";
-            this.DeviceDtoGridView.OptionsSelection.MultiSelect = true;
-            this.DeviceDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.DeviceDtoGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
-            this.DeviceDtoGridView.OptionsView.RowAutoHeight = true;
-            this.DeviceDtoGridView.OptionsView.ShowGroupPanel = false;
-            this.DeviceDtoGridView.OptionsView.ShowViewCaption = true;
-            this.DeviceDtoGridView.ViewCaption = "QUẢN LÝ TÀI SẢN - THIẾT BỊ";
+            this.DeviceWarrantyDtoGridView.Appearance.ViewCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.DeviceWarrantyDtoGridView.Appearance.ViewCaption.ForeColor = DevExpress.LookAndFeel.DXSkinColors.ForeColors.Information;
+            this.DeviceWarrantyDtoGridView.Appearance.ViewCaption.Options.UseFont = true;
+            this.DeviceWarrantyDtoGridView.Appearance.ViewCaption.Options.UseForeColor = true;
+            this.DeviceWarrantyDtoGridView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colWarrantyInfoHtml,
+            this.colDeviceHtmlInfo});
+            this.DeviceWarrantyDtoGridView.GridControl = this.DeviceWarrantyGridViewGridControl;
+            this.DeviceWarrantyDtoGridView.Name = "DeviceWarrantyDtoGridView";
+            this.DeviceWarrantyDtoGridView.OptionsSelection.MultiSelect = true;
+            this.DeviceWarrantyDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            this.DeviceWarrantyDtoGridView.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.DeviceWarrantyDtoGridView.OptionsView.RowAutoHeight = true;
+            this.DeviceWarrantyDtoGridView.OptionsView.ShowGroupPanel = false;
+            this.DeviceWarrantyDtoGridView.OptionsView.ShowViewCaption = true;
+            this.DeviceWarrantyDtoGridView.ViewCaption = "QUẢN LÝ TÀI SẢN - THIẾT BỊ";
             // 
-            // colHtmlInfo
+            // colWarrantyInfoHtml
             // 
-            this.colHtmlInfo.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colHtmlInfo.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colHtmlInfo.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colHtmlInfo.AppearanceHeader.Options.UseBackColor = true;
-            this.colHtmlInfo.AppearanceHeader.Options.UseFont = true;
-            this.colHtmlInfo.AppearanceHeader.Options.UseForeColor = true;
-            this.colHtmlInfo.AppearanceHeader.Options.UseTextOptions = true;
-            this.colHtmlInfo.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colHtmlInfo.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colHtmlInfo.Caption = "Thông tin thiết bị";
-            this.colHtmlInfo.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
-            this.colHtmlInfo.FieldName = "HtmlInfo";
-            this.colHtmlInfo.Name = "colHtmlInfo";
-            this.colHtmlInfo.Visible = true;
-            this.colHtmlInfo.VisibleIndex = 1;
-            this.colHtmlInfo.Width = 600;
+            this.colWarrantyInfoHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarrantyInfoHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyInfoHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colWarrantyInfoHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarrantyInfoHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarrantyInfoHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarrantyInfoHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarrantyInfoHtml.AppearanceHeader.Options.UseFont = true;
+            this.colWarrantyInfoHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarrantyInfoHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarrantyInfoHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyInfoHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyInfoHtml.Caption = "Thông tin bảo hành";
+            this.colWarrantyInfoHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colWarrantyInfoHtml.FieldName = "WarrantyInfoHtml";
+            this.colWarrantyInfoHtml.Name = "colWarrantyInfoHtml";
+            this.colWarrantyInfoHtml.Visible = true;
+            this.colWarrantyInfoHtml.VisibleIndex = 2;
+            this.colWarrantyInfoHtml.Width = 400;
             // 
             // HtmlRepositoryItemHypertextLabel
             // 
             this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
             // 
-            // colStatus
+            // colDeviceHtmlInfo
             // 
-            this.colStatus.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colStatus.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colStatus.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colStatus.AppearanceHeader.Options.UseBackColor = true;
-            this.colStatus.AppearanceHeader.Options.UseFont = true;
-            this.colStatus.AppearanceHeader.Options.UseForeColor = true;
-            this.colStatus.AppearanceHeader.Options.UseTextOptions = true;
-            this.colStatus.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colStatus.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colStatus.Caption = "Trạng thái";
-            this.colStatus.ColumnEdit = this.StatusComboBox;
-            this.colStatus.FieldName = "Status";
-            this.colStatus.Name = "colStatus";
-            this.colStatus.Visible = true;
-            this.colStatus.VisibleIndex = 2;
-            this.colStatus.Width = 100;
+            this.colDeviceHtmlInfo.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colDeviceHtmlInfo.FieldName = "ProductVariantName";
+            this.colDeviceHtmlInfo.Name = "colDeviceHtmlInfo";
+            this.colDeviceHtmlInfo.Visible = true;
+            this.colDeviceHtmlInfo.VisibleIndex = 1;
+            // 
+            // NotesMemoEdit
+            // 
+            this.NotesMemoEdit.Name = "NotesMemoEdit";
             // 
             // StatusComboBox
             // 
@@ -409,35 +403,12 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.StatusComboBox.Name = "StatusComboBox";
             this.StatusComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             // 
-            // colNotes
-            // 
-            this.colNotes.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colNotes.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colNotes.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colNotes.AppearanceHeader.Options.UseBackColor = true;
-            this.colNotes.AppearanceHeader.Options.UseFont = true;
-            this.colNotes.AppearanceHeader.Options.UseForeColor = true;
-            this.colNotes.AppearanceHeader.Options.UseTextOptions = true;
-            this.colNotes.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colNotes.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colNotes.Caption = "Ghi chú";
-            this.colNotes.ColumnEdit = this.NotesMemoEdit;
-            this.colNotes.FieldName = "Notes";
-            this.colNotes.Name = "colNotes";
-            this.colNotes.Visible = true;
-            this.colNotes.VisibleIndex = 3;
-            this.colNotes.Width = 200;
-            // 
-            // NotesMemoEdit
-            // 
-            this.NotesMemoEdit.Name = "NotesMemoEdit";
-            // 
             // FrmDeviceWarranty
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(897, 427);
-            this.Controls.Add(this.DeviceDtoGridViewGridControl);
+            this.ClientSize = new System.Drawing.Size(1030, 503);
+            this.Controls.Add(this.DeviceWarrantyGridViewGridControl);
             this.Controls.Add(this.dockPanel1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -453,12 +424,12 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridViewGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.deviceDtoBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DeviceDtoGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DeviceWarrantyGridViewGridControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.warrantyDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DeviceWarrantyDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StatusComboBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -479,13 +450,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
         private DevExpress.XtraBars.BarStaticItem SelectedRowBarStaticItem;
-        private DevExpress.XtraGrid.GridControl DeviceDtoGridViewGridControl;
-        private DevExpress.XtraGrid.Views.Grid.GridView DeviceDtoGridView;
+        private DevExpress.XtraGrid.GridControl DeviceWarrantyGridViewGridControl;
+        private DevExpress.XtraGrid.Views.Grid.GridView DeviceWarrantyDtoGridView;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlRepositoryItemHypertextLabel;
-        private System.Windows.Forms.BindingSource deviceDtoBindingSource;
-        private DevExpress.XtraGrid.Columns.GridColumn colHtmlInfo;
-        private DevExpress.XtraGrid.Columns.GridColumn colStatus;
-        private DevExpress.XtraGrid.Columns.GridColumn colNotes;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox StatusComboBox;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit NotesMemoEdit;
         private DevExpress.XtraBars.Docking.DockManager dockManager1;
@@ -497,5 +464,8 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
         private DevExpress.XtraBars.BarSubItem barSubItem2;
         private DevExpress.XtraBars.Bar bar3;
+        private System.Windows.Forms.BindingSource warrantyDtoBindingSource;
+        private DevExpress.XtraGrid.Columns.GridColumn colWarrantyInfoHtml;
+        private DevExpress.XtraGrid.Columns.GridColumn colDeviceHtmlInfo;
     }
 }
