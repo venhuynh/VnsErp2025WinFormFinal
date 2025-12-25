@@ -1,5 +1,4 @@
 ﻿using DevExpress.XtraEditors;
-using DevExpress.XtraBars.Docking;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,9 +57,6 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
         {
             try
             {
-                // Ẩn dockPanel1 khi khởi tạo
-                dockPanel1.Visibility = DockVisibility.Hidden;
-
                 // Khởi tạo binding source với danh sách rỗng
                 warrantyDtoBindingSource.DataSource = new List<WarrantyDto>();
 
@@ -83,7 +79,10 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             XemBarButtonItem.ItemClick += XemBarButtonItem_ItemClick;
 
             // GridView events
-            DeviceWarrantyDtoGridView.SelectionChanged += DeviceWarrantyDtoGridView_SelectionChanged;
+            if (advBandedGridView1 != null)
+            {
+                advBandedGridView1.SelectionChanged += DeviceWarrantyDtoGridView_SelectionChanged;
+            }
         }
 
 
@@ -274,7 +273,10 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
 
                 warrantyDtoBindingSource.DataSource = warrantyDtos;
                 warrantyDtoBindingSource.ResetBindings(false);
-                DeviceWarrantyDtoGridView.RefreshData();
+                if (advBandedGridView1 != null)
+                {
+                    advBandedGridView1.RefreshData();
+                }
                 UpdateStatusBar();
 
                 _logger.Debug($"BindWarrantyDataToGrid: Bind {warrantyDtos.Count} WarrantyDto vào grid");
@@ -295,7 +297,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             try
             {
                 var totalCount = warrantyDtoBindingSource.Count;
-                var selectedCount = DeviceWarrantyDtoGridView.SelectedRowsCount;
+                var selectedCount = advBandedGridView1 != null ? advBandedGridView1.SelectedRowsCount : 0;
 
                 DataSummaryBarStaticItem.Caption = $@"Tổng số: <b>{totalCount}</b> thiết bị";
                 SelectedRowBarStaticItem.Caption = selectedCount > 0 

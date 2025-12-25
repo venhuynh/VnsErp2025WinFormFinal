@@ -507,6 +507,90 @@ public class WarrantyDto
     }
 
     /// <summary>
+    /// Ngày tháng bắt đầu bảo hành của NCC -> VNS
+    /// Chỉ trả về giá trị khi WarrantyType == NCCToVNS
+    /// Khi set, sẽ cập nhật WarrantyFrom và đặt WarrantyType = NCCToVNS
+    /// </summary>
+    [DisplayName("Ngày bắt đầu BH NCC -> VNS")]
+    [Display(Order = 201)]
+    [Description("Ngày tháng bắt đầu bảo hành của NCC cho VNS")]
+    public DateTime? WarrantyNccToVnsFrom
+    {
+        get
+        {
+            return WarrantyType == LoaiBaoHanhEnum.NCCToVNS ? WarrantyFrom : null;
+        }
+        set
+        {
+            if (value.HasValue)
+            {
+                WarrantyType = LoaiBaoHanhEnum.NCCToVNS;
+                WarrantyFrom = value;
+            }
+            else if (WarrantyType == LoaiBaoHanhEnum.NCCToVNS)
+            {
+                WarrantyFrom = null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Thời gian bảo hành (Tháng) của NCC -> VNS
+    /// Chỉ trả về giá trị khi WarrantyType == NCCToVNS
+    /// Khi set, sẽ cập nhật MonthOfWarranty và đặt WarrantyType = NCCToVNS
+    /// </summary>
+    [DisplayName("Thời gian BH (Tháng) NCC -> VNS")]
+    [Display(Order = 202)]
+    [Description("Thời gian bảo hành (số tháng) của NCC cho VNS")]
+    public int? WarrantyNccToVnsMonthOfWarranty
+    {
+        get
+        {
+            return WarrantyType == LoaiBaoHanhEnum.NCCToVNS ? MonthOfWarranty : (int?)null;
+        }
+        set
+        {
+            if (value.HasValue)
+            {
+                WarrantyType = LoaiBaoHanhEnum.NCCToVNS;
+                MonthOfWarranty = value.Value;
+            }
+            else if (WarrantyType == LoaiBaoHanhEnum.NCCToVNS)
+            {
+                MonthOfWarranty = 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Ngày tháng hết hạn bảo hành của NCC -> VNS
+    /// Chỉ trả về giá trị khi WarrantyType == NCCToVNS
+    /// Khi set, sẽ cập nhật WarrantyUntil và đặt WarrantyType = NCCToVNS
+    /// </summary>
+    [DisplayName("Ngày hết hạn BH NCC -> VNS")]
+    [Display(Order = 203)]
+    [Description("Ngày tháng hết hạn bảo hành của NCC cho VNS")]
+    public DateTime? WarrantyNccToVnsUntil
+    {
+        get
+        {
+            return WarrantyType == LoaiBaoHanhEnum.NCCToVNS ? WarrantyUntil : null;
+        }
+        set
+        {
+            if (value.HasValue)
+            {
+                WarrantyType = LoaiBaoHanhEnum.NCCToVNS;
+                WarrantyUntil = value;
+            }
+            else if (WarrantyType == LoaiBaoHanhEnum.NCCToVNS)
+            {
+                WarrantyUntil = null;
+            }
+        }
+    }
+
+    /// <summary>
     /// Thông tin bảo hành NCC -> VNS dưới dạng HTML (chỉ đọc)
     /// Chỉ hiển thị khi WarrantyType == NCCToVNS
     /// Hiển thị: tên sản phẩm, thông tin thiết bị, trạng thái, thời gian, tình trạng
@@ -514,7 +598,7 @@ public class WarrantyDto
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [DisplayName("Bảo hành NCC -> VNS")]
-    [Display(Order = 201)]
+    [Display(Order = 204)]
     [Description("Thông tin bảo hành của NCC cho VNS dưới dạng HTML")]
     public string WarrantyNccToVnsHtml
     {
@@ -531,6 +615,90 @@ public class WarrantyDto
     }
 
     /// <summary>
+    /// Ngày tháng bắt đầu bảo hành của VNS -> Khách hàng
+    /// Chỉ trả về giá trị khi WarrantyType == VNSToKhachHang
+    /// Khi set, sẽ cập nhật WarrantyFrom và đặt WarrantyType = VNSToKhachHang
+    /// </summary>
+    [DisplayName("Ngày bắt đầu BH VNS -> Khách hàng")]
+    [Display(Order = 205)]
+    [Description("Ngày tháng bắt đầu bảo hành của VNS cho khách hàng")]
+    public DateTime? WarrantyVnsToKhachHangFrom
+    {
+        get
+        {
+            return WarrantyType == LoaiBaoHanhEnum.VNSToKhachHang ? WarrantyFrom : null;
+        }
+        set
+        {
+            if (value.HasValue)
+            {
+                WarrantyType = LoaiBaoHanhEnum.VNSToKhachHang;
+                WarrantyFrom = value;
+            }
+            else if (WarrantyType == LoaiBaoHanhEnum.VNSToKhachHang)
+            {
+                WarrantyFrom = null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Thời gian bảo hành (Tháng) của VNS -> Khách hàng
+    /// Chỉ trả về giá trị khi WarrantyType == VNSToKhachHang
+    /// Khi set, sẽ cập nhật MonthOfWarranty và đặt WarrantyType = VNSToKhachHang
+    /// </summary>
+    [DisplayName("Thời gian BH (Tháng) VNS -> Khách hàng")]
+    [Display(Order = 206)]
+    [Description("Thời gian bảo hành (số tháng) của VNS cho khách hàng")]
+    public int? WarrantyVnsToKhachHangMonthOfWarranty
+    {
+        get
+        {
+            return WarrantyType == LoaiBaoHanhEnum.VNSToKhachHang ? MonthOfWarranty : (int?)null;
+        }
+        set
+        {
+            if (value.HasValue)
+            {
+                WarrantyType = LoaiBaoHanhEnum.VNSToKhachHang;
+                MonthOfWarranty = value.Value;
+            }
+            else if (WarrantyType == LoaiBaoHanhEnum.VNSToKhachHang)
+            {
+                MonthOfWarranty = 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Ngày tháng hết hạn bảo hành của VNS -> Khách hàng
+    /// Chỉ trả về giá trị khi WarrantyType == VNSToKhachHang
+    /// Khi set, sẽ cập nhật WarrantyUntil và đặt WarrantyType = VNSToKhachHang
+    /// </summary>
+    [DisplayName("Ngày hết hạn BH VNS -> Khách hàng")]
+    [Display(Order = 207)]
+    [Description("Ngày tháng hết hạn bảo hành của VNS cho khách hàng")]
+    public DateTime? WarrantyVnsToKhachHangUntil
+    {
+        get
+        {
+            return WarrantyType == LoaiBaoHanhEnum.VNSToKhachHang ? WarrantyUntil : null;
+        }
+        set
+        {
+            if (value.HasValue)
+            {
+                WarrantyType = LoaiBaoHanhEnum.VNSToKhachHang;
+                WarrantyUntil = value;
+            }
+            else if (WarrantyType == LoaiBaoHanhEnum.VNSToKhachHang)
+            {
+                WarrantyUntil = null;
+            }
+        }
+    }
+
+    /// <summary>
     /// Thông tin bảo hành VNS -> Khách hàng dưới dạng HTML (chỉ đọc)
     /// Chỉ hiển thị khi WarrantyType == VNSToKhachHang
     /// Hiển thị: tên sản phẩm, thông tin thiết bị, trạng thái, thời gian, tình trạng
@@ -538,7 +706,7 @@ public class WarrantyDto
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [DisplayName("Bảo hành VNS -> Khách hàng")]
-    [Display(Order = 202)]
+    [Display(Order = 208)]
     [Description("Thông tin bảo hành của VNS cho khách hàng dưới dạng HTML")]
     public string WarrantyVnsToKhachHangHtml
     {
@@ -563,20 +731,20 @@ public class WarrantyDto
     {
         var html = string.Empty;
 
-        // Tên sản phẩm dịch vụ
-        var productName = ProductName ?? string.Empty;
-        if (!string.IsNullOrWhiteSpace(productName))
-        {
-            html += $"<color='blue'><b>{productName}</b></color>";
-            html += "<br>";
-        }
+        //// Tên sản phẩm dịch vụ
+        //var productName = ProductName ?? string.Empty;
+        //if (!string.IsNullOrWhiteSpace(productName))
+        //{
+        //    html += $"<color='blue'><b>{productName}</b></color>";
+        //    html += "<br>";
+        //}
 
-        // Thông tin thiết bị (DeviceInfo)
-        var deviceInfo = DeviceInfo ?? string.Empty;
-        if (!string.IsNullOrWhiteSpace(deviceInfo))
-        {
-            html += $"<color='#757575'>Thiết bị:</color> <b><color='blue'>{deviceInfo}</color></b><br>";
-        }
+        //// Thông tin thiết bị (DeviceInfo)
+        //var deviceInfo = DeviceInfo ?? string.Empty;
+        //if (!string.IsNullOrWhiteSpace(deviceInfo))
+        //{
+        //    html += $"<color='#757575'>Thiết bị:</color> <b><color='blue'>{deviceInfo}</color></b><br>";
+        //}
 
         // Loại bảo hành với màu sắc tương ứng
         var warrantyTypeName = WarrantyTypeName ?? string.Empty;
