@@ -150,7 +150,7 @@ public class WarrantyDto
     [DisplayName("Hết hạn BH")]
     [Display(Order = 13)]
     [Description("True nếu bảo hành đã hết hạn, False nếu còn bảo hành")]
-    public bool IsWarrantyExpired
+    private bool IsWarrantyExpired
     {
         get
         {
@@ -172,7 +172,7 @@ public class WarrantyDto
     [DisplayName("Tình trạng BH")]
     [Display(Order = 14)]
     [Description("Tình trạng bảo hành hiện tại")]
-    public string WarrantyStatusText
+    private string WarrantyStatusText
     {
         get
         {

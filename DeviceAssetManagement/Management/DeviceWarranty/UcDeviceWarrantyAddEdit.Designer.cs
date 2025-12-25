@@ -40,9 +40,6 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
         {
             this.components = new System.ComponentModel.Container();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
-            this.bar2 = new DevExpress.XtraBars.Bar();
-            this.SaveBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -75,6 +72,10 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.colHasChildren = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colFullPath = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.colProductCount = new DevExpress.XtraTreeList.Columns.TreeListColumn();
+            this.bar2 = new DevExpress.XtraBars.Bar();
+            this.bar1 = new DevExpress.XtraBars.Bar();
+            this.SaveBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -98,7 +99,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             // barManager1
             // 
             this.barManager1.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
-            this.bar2});
+            this.bar1});
             this.barManager1.DockControls.Add(this.barDockControlTop);
             this.barManager1.DockControls.Add(this.barDockControlBottom);
             this.barManager1.DockControls.Add(this.barDockControlLeft);
@@ -107,38 +108,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.SaveBarButtonItem,
             this.CloseBarButtonItem});
-            this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 4;
-            // 
-            // bar2
-            // 
-            this.bar2.BarName = "Main menu";
-            this.bar2.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Top;
-            this.bar2.DockCol = 0;
-            this.bar2.DockRow = 0;
-            this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
-            this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SaveBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
-            this.bar2.OptionsBar.MultiLine = true;
-            this.bar2.OptionsBar.UseWholeRow = true;
-            this.bar2.Text = "Main menu";
-            // 
-            // SaveBarButtonItem
-            // 
-            this.SaveBarButtonItem.Caption = "Lưu";
-            this.SaveBarButtonItem.Id = 0;
-            this.SaveBarButtonItem.ImageOptions.Image = global::DeviceAssetManagement.Properties.Resources.save_16x16;
-            this.SaveBarButtonItem.ImageOptions.LargeImage = global::DeviceAssetManagement.Properties.Resources.save_32x32;
-            this.SaveBarButtonItem.Name = "SaveBarButtonItem";
-            // 
-            // CloseBarButtonItem
-            // 
-            this.CloseBarButtonItem.Caption = "Đóng";
-            this.CloseBarButtonItem.Id = 1;
-            this.CloseBarButtonItem.ImageOptions.Image = global::DeviceAssetManagement.Properties.Resources.cancel_16x16;
-            this.CloseBarButtonItem.ImageOptions.LargeImage = global::DeviceAssetManagement.Properties.Resources.cancel_32x32;
-            this.CloseBarButtonItem.Name = "CloseBarButtonItem";
+            this.barManager1.MaxItemId = 6;
             // 
             // barDockControlTop
             // 
@@ -241,9 +211,6 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             // 
             // colWarrantyType
             // 
-            this.colWarrantyType.AppearanceCell.Options.UseTextOptions = true;
-            this.colWarrantyType.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colWarrantyType.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colWarrantyType.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
             this.colWarrantyType.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.colWarrantyType.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
@@ -267,7 +234,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.LoaiBaoHanhEnumComboBox.AutoHeight = false;
             this.LoaiBaoHanhEnumComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.LoaiBaoHanhEnumComboBox.ContextButtonOptions.AllowHtmlText = true;
             this.LoaiBaoHanhEnumComboBox.Name = "LoaiBaoHanhEnumComboBox";
+            this.LoaiBaoHanhEnumComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             // 
             // colWarrantyFrom
             // 
@@ -469,6 +438,43 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.colProductCount.Visible = true;
             this.colProductCount.VisibleIndex = 9;
             // 
+            // bar2
+            // 
+            this.bar2.BarName = "Main menu";
+            this.bar2.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Top;
+            this.bar2.DockCol = 0;
+            this.bar2.DockRow = 0;
+            this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
+            this.bar2.OptionsBar.MultiLine = true;
+            this.bar2.OptionsBar.UseWholeRow = true;
+            this.bar2.Text = "Main menu";
+            // 
+            // bar1
+            // 
+            this.bar1.BarName = "Custom 2";
+            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Top;
+            this.bar1.DockCol = 0;
+            this.bar1.DockRow = 0;
+            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
+            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.SaveBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            this.bar1.Text = "Custom 2";
+            // 
+            // SaveBarButtonItem
+            // 
+            this.SaveBarButtonItem.Caption = "Lưu";
+            this.SaveBarButtonItem.Id = 4;
+            this.SaveBarButtonItem.ImageOptions.Image = global::DeviceAssetManagement.Properties.Resources.save_16x16;
+            this.SaveBarButtonItem.Name = "SaveBarButtonItem";
+            // 
+            // CloseBarButtonItem
+            // 
+            this.CloseBarButtonItem.Caption = "Đóng";
+            this.CloseBarButtonItem.Id = 5;
+            this.CloseBarButtonItem.ImageOptions.Image = global::DeviceAssetManagement.Properties.Resources.cancel_16x16;
+            this.CloseBarButtonItem.Name = "CloseBarButtonItem";
+            // 
             // UcDeviceWarrantyAddEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,9 +511,6 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
 
         #endregion
         private BarManager barManager1;
-        private Bar bar2;
-        private BarButtonItem SaveBarButtonItem;
-        private BarButtonItem CloseBarButtonItem;
         private BarDockControl barDockControlTop;
         private BarDockControl barDockControlBottom;
         private BarDockControl barDockControlLeft;
@@ -540,5 +543,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
         private DevExpress.XtraGrid.Columns.GridColumn colMonthOfWarranty;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox LoaiBaoHanhEnumComboBox;
         private DevExpress.XtraEditors.Repository.RepositoryItemDateEdit NgayThangBaoHanhDateEdit;
+        private Bar bar1;
+        private BarButtonItem SaveBarButtonItem;
+        private BarButtonItem CloseBarButtonItem;
+        private Bar bar2;
     }
 }

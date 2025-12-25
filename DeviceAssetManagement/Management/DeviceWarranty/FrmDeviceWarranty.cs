@@ -174,8 +174,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
                     {
                         if (rowHandle < 0) continue;
 
-                        var warrantyDto = DeviceWarrantyDtoGridView.GetRow(rowHandle) as WarrantyDto;
-                        if (warrantyDto != null && warrantyDto.DeviceId.HasValue)
+                        if (DeviceWarrantyDtoGridView.GetRow(rowHandle) is WarrantyDto warrantyDto && warrantyDto.DeviceId.HasValue)
                         {
                             _selectedWarrantyDtos.Add(warrantyDto);
                         }
