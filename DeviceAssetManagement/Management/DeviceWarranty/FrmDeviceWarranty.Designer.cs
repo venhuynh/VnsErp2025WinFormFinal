@@ -37,6 +37,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.bar3 = new DevExpress.XtraBars.Bar();
             this.XemBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemMoiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.DieuChinhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.XoaBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
@@ -44,6 +45,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
+            this.dockPanel1 = new DevExpress.XtraBars.Docking.DockPanel();
+            this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
+            this.ucDeviceWarrantyAddEdit1 = new DeviceAssetManagement.Management.DeviceWarranty.UcDeviceWarrantyAddEdit();
             this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
             this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.SelectedRowBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
@@ -61,6 +65,8 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.repositoryItemDateEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
+            this.dockPanel1.SuspendLayout();
+            this.dockPanel1_Container.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceWarrantyGridViewGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.warrantyDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceWarrantyDtoGridView)).BeginInit();
@@ -89,8 +95,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.barHeaderItem1,
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
-            this.barSubItem2});
-            this.barManager1.MaxItemId = 15;
+            this.barSubItem2,
+            this.DieuChinhBarButtonItem});
+            this.barManager1.MaxItemId = 16;
             // 
             // bar3
             // 
@@ -101,6 +108,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.bar3.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XemBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemMoiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.DieuChinhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.XoaBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar3.Text = "Custom 2";
@@ -121,6 +129,14 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.ThemMoiBarButtonItem.ImageOptions.Image = global::DeviceAssetManagement.Properties.Resources.add_16x16;
             this.ThemMoiBarButtonItem.ImageOptions.LargeImage = global::DeviceAssetManagement.Properties.Resources.add_32x32;
             this.ThemMoiBarButtonItem.Name = "ThemMoiBarButtonItem";
+            // 
+            // DieuChinhBarButtonItem
+            // 
+            this.DieuChinhBarButtonItem.Caption = "Điều chỉnh";
+            this.DieuChinhBarButtonItem.Id = 15;
+            this.DieuChinhBarButtonItem.ImageOptions.Image = global::DeviceAssetManagement.Properties.Resources.edit_16x16;
+            this.DieuChinhBarButtonItem.ImageOptions.LargeImage = global::DeviceAssetManagement.Properties.Resources.edit_32x32;
+            this.DieuChinhBarButtonItem.Name = "DieuChinhBarButtonItem";
             // 
             // XoaBarButtonItem
             // 
@@ -144,7 +160,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1030, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1287, 39);
             // 
             // barDockControlBottom
             // 
@@ -152,7 +168,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.barDockControlBottom.Location = new System.Drawing.Point(0, 503);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1030, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1287, 0);
             // 
             // barDockControlLeft
             // 
@@ -166,7 +182,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1030, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1287, 39);
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 464);
             // 
@@ -174,6 +190,8 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             // 
             this.dockManager1.Form = this;
             this.dockManager1.MenuManager = this.barManager1;
+            this.dockManager1.RootPanels.AddRange(new DevExpress.XtraBars.Docking.DockPanel[] {
+            this.dockPanel1});
             this.dockManager1.TopZIndexControls.AddRange(new string[] {
             "DevExpress.XtraBars.BarDockControl",
             "DevExpress.XtraBars.StandaloneBarDockControl",
@@ -187,6 +205,33 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             "DevExpress.XtraBars.TabFormControl",
             "DevExpress.XtraBars.FluentDesignSystem.FluentDesignFormControl",
             "DevExpress.XtraBars.ToolbarForm.ToolbarFormControl"});
+            // 
+            // dockPanel1
+            // 
+            this.dockPanel1.Controls.Add(this.dockPanel1_Container);
+            this.dockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Right;
+            this.dockPanel1.ID = new System.Guid("5c99de02-4c71-4fda-8287-6cf2bebcc7db");
+            this.dockPanel1.Location = new System.Drawing.Point(929, 39);
+            this.dockPanel1.Name = "dockPanel1";
+            this.dockPanel1.OriginalSize = new System.Drawing.Size(358, 200);
+            this.dockPanel1.Size = new System.Drawing.Size(358, 464);
+            this.dockPanel1.Text = "dockPanel1";
+            // 
+            // dockPanel1_Container
+            // 
+            this.dockPanel1_Container.Controls.Add(this.ucDeviceWarrantyAddEdit1);
+            this.dockPanel1_Container.Location = new System.Drawing.Point(4, 38);
+            this.dockPanel1_Container.Name = "dockPanel1_Container";
+            this.dockPanel1_Container.Size = new System.Drawing.Size(351, 423);
+            this.dockPanel1_Container.TabIndex = 0;
+            // 
+            // ucDeviceWarrantyAddEdit1
+            // 
+            this.ucDeviceWarrantyAddEdit1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ucDeviceWarrantyAddEdit1.Location = new System.Drawing.Point(0, 0);
+            this.ucDeviceWarrantyAddEdit1.Name = "ucDeviceWarrantyAddEdit1";
+            this.ucDeviceWarrantyAddEdit1.Size = new System.Drawing.Size(351, 423);
+            this.ucDeviceWarrantyAddEdit1.TabIndex = 0;
             // 
             // barHeaderItem1
             // 
@@ -259,7 +304,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.NotesMemoEdit,
             this.StatusComboBox,
             this.repositoryItemDateEdit1});
-            this.DeviceWarrantyGridViewGridControl.Size = new System.Drawing.Size(1030, 464);
+            this.DeviceWarrantyGridViewGridControl.Size = new System.Drawing.Size(929, 464);
             this.DeviceWarrantyGridViewGridControl.TabIndex = 5;
             this.DeviceWarrantyGridViewGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.DeviceWarrantyDtoGridView});
@@ -371,8 +416,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1030, 503);
+            this.ClientSize = new System.Drawing.Size(1287, 503);
             this.Controls.Add(this.DeviceWarrantyGridViewGridControl);
+            this.Controls.Add(this.dockPanel1);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
@@ -381,6 +427,8 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.Text = "QUẢN LÝ BẢO HÀNH";
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
+            this.dockPanel1.ResumeLayout(false);
+            this.dockPanel1_Container.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DeviceWarrantyGridViewGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.warrantyDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceWarrantyDtoGridView)).EndInit();
@@ -421,5 +469,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
         private DevExpress.XtraGrid.Views.Grid.GridView DeviceWarrantyDtoGridView;
         private DevExpress.XtraGrid.Columns.GridColumn colWarrantyInfoHtml;
         private DevExpress.XtraGrid.Columns.GridColumn colWarrantyInfoHtml1;
+        private DevExpress.XtraBars.Docking.DockPanel dockPanel1;
+        private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
+        private UcDeviceWarrantyAddEdit ucDeviceWarrantyAddEdit1;
+        private DevExpress.XtraBars.BarButtonItem DieuChinhBarButtonItem;
     }
 }
