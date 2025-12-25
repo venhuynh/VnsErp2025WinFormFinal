@@ -79,9 +79,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             XemBarButtonItem.ItemClick += XemBarButtonItem_ItemClick;
 
             // GridView events
-            if (advBandedGridView1 != null)
+            if (DeviceWarrantyDtoGridView != null)
             {
-                advBandedGridView1.SelectionChanged += DeviceWarrantyDtoGridView_SelectionChanged;
+                DeviceWarrantyDtoGridView.SelectionChanged += DeviceWarrantyDtoGridView_SelectionChanged;
             }
         }
 
@@ -273,9 +273,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
 
                 warrantyDtoBindingSource.DataSource = warrantyDtos;
                 warrantyDtoBindingSource.ResetBindings(false);
-                if (advBandedGridView1 != null)
+                if (DeviceWarrantyDtoGridView != null)
                 {
-                    advBandedGridView1.RefreshData();
+                    DeviceWarrantyDtoGridView.RefreshData();
                 }
                 UpdateStatusBar();
 
@@ -297,7 +297,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             try
             {
                 var totalCount = warrantyDtoBindingSource.Count;
-                var selectedCount = advBandedGridView1 != null ? advBandedGridView1.SelectedRowsCount : 0;
+                var selectedCount = DeviceWarrantyDtoGridView != null ? DeviceWarrantyDtoGridView.SelectedRowsCount : 0;
 
                 DataSummaryBarStaticItem.Caption = $@"Tổng số: <b>{totalCount}</b> thiết bị";
                 SelectedRowBarStaticItem.Caption = selectedCount > 0 
