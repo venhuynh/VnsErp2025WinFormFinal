@@ -53,22 +53,24 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.DeviceWarrantyGridViewGridControl = new DevExpress.XtraGrid.GridControl();
             this.warrantyDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.advBandedGridView1 = new DevExpress.XtraGrid.Views.BandedGrid.AdvBandedGridView();
+            this.gridBand1 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
             this.colWarrantyInfoHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.colWarrantyVnsToKhachHangHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.gridBand2 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
             this.colWarrantyNccToVnsFrom = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.repositoryItemDateEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.colWarrantyNccToVnsMonthOfWarranty = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.colWarrantyNccToVnsUntil = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colWarrantyVnsToKhachHangStatusText = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.gridBand3 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
             this.colWarrantyVnsToKhachHangFrom = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.colWarrantyVnsToKhachHangMonthOfWarranty = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.colWarrantyVnsToKhachHangUntil = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
-            this.colWarrantyVnsToKhachHangHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
+            this.colWarrantyNccToVnsStatusText = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.colWarrantyNccToVnsHtml = new DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn();
             this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.StatusComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
-            this.gridBand1 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.gridBand2 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
-            this.gridBand3 = new DevExpress.XtraGrid.Views.BandedGrid.GridBand();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DeviceWarrantyGridViewGridControl)).BeginInit();
@@ -297,7 +299,9 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.colWarrantyNccToVnsFrom,
             this.colWarrantyNccToVnsHtml,
             this.colWarrantyNccToVnsMonthOfWarranty,
-            this.colWarrantyNccToVnsUntil});
+            this.colWarrantyNccToVnsUntil,
+            this.colWarrantyNccToVnsStatusText,
+            this.colWarrantyVnsToKhachHangStatusText});
             this.advBandedGridView1.GridControl = this.DeviceWarrantyGridViewGridControl;
             this.advBandedGridView1.Name = "advBandedGridView1";
             this.advBandedGridView1.OptionsSelection.MultiSelect = true;
@@ -306,6 +310,26 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.advBandedGridView1.OptionsView.ShowGroupPanel = false;
             this.advBandedGridView1.OptionsView.ShowViewCaption = true;
             this.advBandedGridView1.ViewCaption = "QUẢN LÝ TÀI SẢN - THIẾT BỊ";
+            // 
+            // gridBand1
+            // 
+            this.gridBand1.AppearanceHeader.BackColor = System.Drawing.Color.SteelBlue;
+            this.gridBand1.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.gridBand1.AppearanceHeader.ForeColor = System.Drawing.Color.White;
+            this.gridBand1.AppearanceHeader.Options.UseBackColor = true;
+            this.gridBand1.AppearanceHeader.Options.UseFont = true;
+            this.gridBand1.AppearanceHeader.Options.UseForeColor = true;
+            this.gridBand1.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridBand1.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridBand1.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.gridBand1.AppearanceHeader.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.gridBand1.Caption = "THÔNG TIN THIẾT BỊ";
+            this.gridBand1.Columns.Add(this.colWarrantyInfoHtml);
+            this.gridBand1.Columns.Add(this.colWarrantyVnsToKhachHangHtml);
+            this.gridBand1.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
+            this.gridBand1.Name = "gridBand1";
+            this.gridBand1.VisibleIndex = 0;
+            this.gridBand1.Width = 400;
             // 
             // colWarrantyInfoHtml
             // 
@@ -327,7 +351,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.colWarrantyInfoHtml.Name = "colWarrantyInfoHtml";
             this.colWarrantyInfoHtml.OptionsColumn.AllowMerge = DevExpress.Utils.DefaultBoolean.True;
             this.colWarrantyInfoHtml.OptionsEditForm.RowSpan = 3;
-            this.colWarrantyInfoHtml.RowCount = 3;
+            this.colWarrantyInfoHtml.RowCount = 4;
             this.colWarrantyInfoHtml.Visible = true;
             this.colWarrantyInfoHtml.Width = 400;
             // 
@@ -335,6 +359,48 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             // 
             this.HtmlRepositoryItemHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.HtmlRepositoryItemHypertextLabel.Name = "HtmlRepositoryItemHypertextLabel";
+            // 
+            // colWarrantyVnsToKhachHangHtml
+            // 
+            this.colWarrantyVnsToKhachHangHtml.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Options.UseFont = true;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyVnsToKhachHangHtml.Caption = "Thông tin BH";
+            this.colWarrantyVnsToKhachHangHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colWarrantyVnsToKhachHangHtml.FieldName = "WarrantyVnsToKhachHangHtml";
+            this.colWarrantyVnsToKhachHangHtml.Name = "colWarrantyVnsToKhachHangHtml";
+            this.colWarrantyVnsToKhachHangHtml.RowIndex = 1;
+            this.colWarrantyVnsToKhachHangHtml.Width = 300;
+            // 
+            // gridBand2
+            // 
+            this.gridBand2.AppearanceHeader.BackColor = System.Drawing.Color.MediumPurple;
+            this.gridBand2.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.gridBand2.AppearanceHeader.ForeColor = System.Drawing.Color.White;
+            this.gridBand2.AppearanceHeader.Options.UseBackColor = true;
+            this.gridBand2.AppearanceHeader.Options.UseFont = true;
+            this.gridBand2.AppearanceHeader.Options.UseForeColor = true;
+            this.gridBand2.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridBand2.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridBand2.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.gridBand2.AppearanceHeader.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.gridBand2.Caption = "BẢO HÀNH NCC → VNS";
+            this.gridBand2.Columns.Add(this.colWarrantyNccToVnsFrom);
+            this.gridBand2.Columns.Add(this.colWarrantyNccToVnsMonthOfWarranty);
+            this.gridBand2.Columns.Add(this.colWarrantyNccToVnsUntil);
+            this.gridBand2.Columns.Add(this.colWarrantyNccToVnsStatusText);
+            this.gridBand2.Name = "gridBand2";
+            this.gridBand2.VisibleIndex = 1;
+            this.gridBand2.Width = 229;
             // 
             // colWarrantyNccToVnsFrom
             // 
@@ -414,6 +480,49 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.colWarrantyNccToVnsUntil.Visible = true;
             this.colWarrantyNccToVnsUntil.Width = 229;
             // 
+            // colWarrantyVnsToKhachHangStatusText
+            // 
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceHeader.Options.UseFont = true;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyVnsToKhachHangStatusText.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyVnsToKhachHangStatusText.Caption = "Tình trạng";
+            this.colWarrantyVnsToKhachHangStatusText.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colWarrantyVnsToKhachHangStatusText.FieldName = "WarrantyVnsToKhachHangStatusText";
+            this.colWarrantyVnsToKhachHangStatusText.Name = "colWarrantyVnsToKhachHangStatusText";
+            this.colWarrantyVnsToKhachHangStatusText.RowIndex = 3;
+            this.colWarrantyVnsToKhachHangStatusText.Visible = true;
+            this.colWarrantyVnsToKhachHangStatusText.Width = 237;
+            // 
+            // gridBand3
+            // 
+            this.gridBand3.AppearanceHeader.BackColor = System.Drawing.Color.DarkCyan;
+            this.gridBand3.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
+            this.gridBand3.AppearanceHeader.ForeColor = System.Drawing.Color.White;
+            this.gridBand3.AppearanceHeader.Options.UseBackColor = true;
+            this.gridBand3.AppearanceHeader.Options.UseFont = true;
+            this.gridBand3.AppearanceHeader.Options.UseForeColor = true;
+            this.gridBand3.AppearanceHeader.Options.UseTextOptions = true;
+            this.gridBand3.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.gridBand3.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.gridBand3.AppearanceHeader.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.gridBand3.Caption = "BẢO HÀNH VNS → KHÁCH HÀNG";
+            this.gridBand3.Columns.Add(this.colWarrantyVnsToKhachHangFrom);
+            this.gridBand3.Columns.Add(this.colWarrantyVnsToKhachHangMonthOfWarranty);
+            this.gridBand3.Columns.Add(this.colWarrantyVnsToKhachHangUntil);
+            this.gridBand3.Columns.Add(this.colWarrantyVnsToKhachHangStatusText);
+            this.gridBand3.Name = "gridBand3";
+            this.gridBand3.VisibleIndex = 2;
+            this.gridBand3.Width = 237;
+            // 
             // colWarrantyVnsToKhachHangFrom
             // 
             this.colWarrantyVnsToKhachHangFrom.AppearanceCell.Options.UseTextOptions = true;
@@ -478,26 +587,27 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.colWarrantyVnsToKhachHangUntil.Visible = true;
             this.colWarrantyVnsToKhachHangUntil.Width = 237;
             // 
-            // colWarrantyVnsToKhachHangHtml
+            // colWarrantyNccToVnsStatusText
             // 
-            this.colWarrantyVnsToKhachHangHtml.AppearanceCell.Options.UseTextOptions = true;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Options.UseBackColor = true;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Options.UseFont = true;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Options.UseForeColor = true;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.Options.UseTextOptions = true;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.colWarrantyVnsToKhachHangHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colWarrantyVnsToKhachHangHtml.Caption = "Thông tin BH";
-            this.colWarrantyVnsToKhachHangHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
-            this.colWarrantyVnsToKhachHangHtml.FieldName = "WarrantyVnsToKhachHangHtml";
-            this.colWarrantyVnsToKhachHangHtml.Name = "colWarrantyVnsToKhachHangHtml";
-            this.colWarrantyVnsToKhachHangHtml.RowIndex = 1;
-            this.colWarrantyVnsToKhachHangHtml.Width = 300;
+            this.colWarrantyNccToVnsStatusText.AppearanceCell.Options.UseTextOptions = true;
+            this.colWarrantyNccToVnsStatusText.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyNccToVnsStatusText.AppearanceCell.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyNccToVnsStatusText.AppearanceHeader.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.colWarrantyNccToVnsStatusText.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.colWarrantyNccToVnsStatusText.AppearanceHeader.ForeColor = System.Drawing.Color.DarkBlue;
+            this.colWarrantyNccToVnsStatusText.AppearanceHeader.Options.UseBackColor = true;
+            this.colWarrantyNccToVnsStatusText.AppearanceHeader.Options.UseFont = true;
+            this.colWarrantyNccToVnsStatusText.AppearanceHeader.Options.UseForeColor = true;
+            this.colWarrantyNccToVnsStatusText.AppearanceHeader.Options.UseTextOptions = true;
+            this.colWarrantyNccToVnsStatusText.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.colWarrantyNccToVnsStatusText.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.colWarrantyNccToVnsStatusText.Caption = "Tình trạng";
+            this.colWarrantyNccToVnsStatusText.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
+            this.colWarrantyNccToVnsStatusText.FieldName = "WarrantyNccToVnsStatusText";
+            this.colWarrantyNccToVnsStatusText.Name = "colWarrantyNccToVnsStatusText";
+            this.colWarrantyNccToVnsStatusText.RowIndex = 3;
+            this.colWarrantyNccToVnsStatusText.Visible = true;
+            this.colWarrantyNccToVnsStatusText.Width = 229;
             // 
             // colWarrantyNccToVnsHtml
             // 
@@ -535,66 +645,6 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             "<color=\'red\'>Test</color>"});
             this.StatusComboBox.Name = "StatusComboBox";
             this.StatusComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            // 
-            // gridBand1
-            // 
-            this.gridBand1.AppearanceHeader.BackColor = System.Drawing.Color.SteelBlue;
-            this.gridBand1.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.gridBand1.AppearanceHeader.ForeColor = System.Drawing.Color.White;
-            this.gridBand1.AppearanceHeader.Options.UseBackColor = true;
-            this.gridBand1.AppearanceHeader.Options.UseFont = true;
-            this.gridBand1.AppearanceHeader.Options.UseForeColor = true;
-            this.gridBand1.AppearanceHeader.Options.UseTextOptions = true;
-            this.gridBand1.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gridBand1.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.gridBand1.AppearanceHeader.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.gridBand1.Caption = "THÔNG TIN THIẾT BỊ";
-            this.gridBand1.Columns.Add(this.colWarrantyInfoHtml);
-            this.gridBand1.Columns.Add(this.colWarrantyVnsToKhachHangHtml);
-            this.gridBand1.Fixed = DevExpress.XtraGrid.Columns.FixedStyle.Left;
-            this.gridBand1.Name = "gridBand1";
-            this.gridBand1.VisibleIndex = 0;
-            this.gridBand1.Width = 400;
-            // 
-            // gridBand2
-            // 
-            this.gridBand2.AppearanceHeader.BackColor = System.Drawing.Color.MediumPurple;
-            this.gridBand2.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.gridBand2.AppearanceHeader.ForeColor = System.Drawing.Color.White;
-            this.gridBand2.AppearanceHeader.Options.UseBackColor = true;
-            this.gridBand2.AppearanceHeader.Options.UseFont = true;
-            this.gridBand2.AppearanceHeader.Options.UseForeColor = true;
-            this.gridBand2.AppearanceHeader.Options.UseTextOptions = true;
-            this.gridBand2.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gridBand2.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.gridBand2.AppearanceHeader.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.gridBand2.Caption = "BẢO HÀNH NCC → VNS";
-            this.gridBand2.Columns.Add(this.colWarrantyNccToVnsFrom);
-            this.gridBand2.Columns.Add(this.colWarrantyNccToVnsMonthOfWarranty);
-            this.gridBand2.Columns.Add(this.colWarrantyNccToVnsUntil);
-            this.gridBand2.Name = "gridBand2";
-            this.gridBand2.VisibleIndex = 1;
-            this.gridBand2.Width = 229;
-            // 
-            // gridBand3
-            // 
-            this.gridBand3.AppearanceHeader.BackColor = System.Drawing.Color.DarkCyan;
-            this.gridBand3.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
-            this.gridBand3.AppearanceHeader.ForeColor = System.Drawing.Color.White;
-            this.gridBand3.AppearanceHeader.Options.UseBackColor = true;
-            this.gridBand3.AppearanceHeader.Options.UseFont = true;
-            this.gridBand3.AppearanceHeader.Options.UseForeColor = true;
-            this.gridBand3.AppearanceHeader.Options.UseTextOptions = true;
-            this.gridBand3.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.gridBand3.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.gridBand3.AppearanceHeader.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.gridBand3.Caption = "BẢO HÀNH VNS → KHÁCH HÀNG";
-            this.gridBand3.Columns.Add(this.colWarrantyVnsToKhachHangFrom);
-            this.gridBand3.Columns.Add(this.colWarrantyVnsToKhachHangMonthOfWarranty);
-            this.gridBand3.Columns.Add(this.colWarrantyVnsToKhachHangUntil);
-            this.gridBand3.Name = "gridBand3";
-            this.gridBand3.VisibleIndex = 2;
-            this.gridBand3.Width = 237;
             // 
             // FrmDeviceWarranty
             // 
@@ -659,6 +709,8 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
         private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colWarrantyNccToVnsHtml;
         private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand1;
         private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand2;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colWarrantyVnsToKhachHangStatusText;
         private DevExpress.XtraGrid.Views.BandedGrid.GridBand gridBand3;
+        private DevExpress.XtraGrid.Views.BandedGrid.BandedGridColumn colWarrantyNccToVnsStatusText;
     }
 }

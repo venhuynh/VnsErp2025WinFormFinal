@@ -591,6 +591,46 @@ public class WarrantyDto
     }
 
     /// <summary>
+    /// Tình trạng bảo hành NCC -> VNS (chỉ đọc) - HTML với màu sắc
+    /// Màu xanh nếu còn bảo hành, màu đỏ nếu hết bảo hành
+    /// </summary>
+    [DisplayName("Tình trạng BH NCC -> VNS")]
+    [Display(Order = 203)]
+    [Description("Tình trạng bảo hành NCC -> VNS với màu sắc (xanh: còn, đỏ: hết)")]
+    public string WarrantyNccToVnsStatusText
+    {
+        get
+        {
+            // Chỉ hiển thị nếu WarrantyType là NCCToVNS
+            if (WarrantyType != LoaiBaoHanhEnum.NCCToVNS)
+            {
+                return string.Empty;
+            }
+
+            // Nếu không có ngày hết hạn, không thể xác định
+            if (!WarrantyUntil.HasValue)
+            {
+                return "<color='gray'>Chưa xác định</color>";
+            }
+
+            // So sánh với ngày hiện tại (chỉ so sánh ngày, không so sánh giờ)
+            var today = DateTime.Now.Date;
+            var warrantyUntilDate = WarrantyUntil.Value.Date;
+
+            if (warrantyUntilDate < today)
+            {
+                // Hết hạn bảo hành - màu đỏ
+                return "<color='red'><b>Hết hạn bảo hành</b></color>";
+            }
+            else
+            {
+                // Còn bảo hành - màu xanh
+                return "<color='green'><b>Còn bảo hành</b></color>";
+            }
+        }
+    }
+
+    /// <summary>
     /// Thông tin bảo hành NCC -> VNS dưới dạng HTML (chỉ đọc)
     /// Chỉ hiển thị khi WarrantyType == NCCToVNS
     /// Hiển thị: tên sản phẩm, thông tin thiết bị, trạng thái, thời gian, tình trạng
@@ -694,6 +734,46 @@ public class WarrantyDto
             else if (WarrantyType == LoaiBaoHanhEnum.VNSToKhachHang)
             {
                 WarrantyUntil = null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Tình trạng bảo hành VNS -> Khách hàng (chỉ đọc) - HTML với màu sắc
+    /// Màu xanh nếu còn bảo hành, màu đỏ nếu hết bảo hành
+    /// </summary>
+    [DisplayName("Tình trạng BH VNS -> Khách hàng")]
+    [Display(Order = 207)]
+    [Description("Tình trạng bảo hành VNS -> Khách hàng với màu sắc (xanh: còn, đỏ: hết)")]
+    public string WarrantyVnsToKhachHangStatusText
+    {
+        get
+        {
+            // Chỉ hiển thị nếu WarrantyType là VNSToKhachHang
+            if (WarrantyType != LoaiBaoHanhEnum.VNSToKhachHang)
+            {
+                return string.Empty;
+            }
+
+            // Nếu không có ngày hết hạn, không thể xác định
+            if (!WarrantyUntil.HasValue)
+            {
+                return "<color='gray'>Chưa xác định</color>";
+            }
+
+            // So sánh với ngày hiện tại (chỉ so sánh ngày, không so sánh giờ)
+            var today = DateTime.Now.Date;
+            var warrantyUntilDate = WarrantyUntil.Value.Date;
+
+            if (warrantyUntilDate < today)
+            {
+                // Hết hạn bảo hành - màu đỏ
+                return "<color='red'><b>Hết hạn bảo hành</b></color>";
+            }
+            else
+            {
+                // Còn bảo hành - màu xanh
+                return "<color='green'><b>Còn bảo hành</b></color>";
             }
         }
     }
