@@ -4,7 +4,7 @@
 -- Lưu ý: Chỉ có một phiên bản Active tại một thời điểm
 -- 
 -- ⚠️ QUAN TRỌNG: Script này được cập nhật tự động từ AssemblyInfo.cs
--- Phiên bản hiện tại: 1.0.2.0 (từ AssemblyVersion trong AssemblyInfo.cs)
+-- Phiên bản hiện tại: 1.0.2.1 (từ AssemblyVersion trong AssemblyInfo.cs)
 -- Vui lòng cập nhật @Description và @ReleaseNote với thông tin chi tiết về các thay đổi
 -- =============================================
 
@@ -36,15 +36,16 @@ GO
 
 -- =============================================
 -- CẤU HÌNH PHIÊN BẢN MỚI - ĐƯỢC CẬP NHẬT TỪ AssemblyInfo.cs
--- Phiên bản trong AssemblyInfo.cs: 1.0.2.0
+-- Phiên bản trong AssemblyInfo.cs: 1.0.2.1
 -- =============================================
 
-DECLARE @NewVersion NVARCHAR(50) = N'1.0.2.0';  -- ✅ Phiên bản từ AssemblyInfo.cs (AssemblyVersion: 1.0.2.0)
+DECLARE @NewVersion NVARCHAR(50) = N'1.0.2.1';  -- ✅ Phiên bản từ AssemblyInfo.cs (AssemblyVersion: 1.0.2.1)
 DECLARE @ReleaseDate DATETIME = GETDATE();      -- ⚠️ THAY ĐỔI: Ngày phát hành (hoặc dùng GETDATE() cho ngày hiện tại)
-DECLARE @Description NVARCHAR(500) = N'Cập nhật phiên bản 1.0.2.0';  -- ⚠️ THAY ĐỔI: Mô tả ngắn
-DECLARE @ReleaseNote NVARCHAR(1000) = N'Chi tiết các thay đổi trong phiên bản 1.0.2.0:
-- Phiên bản được cập nhật từ AssemblyInfo.cs
-- Vui lòng cập nhật các thay đổi cụ thể trong phiên bản này';  -- ⚠️ THAY ĐỔI: Ghi chú phát hành chi tiết
+DECLARE @Description NVARCHAR(500) = N'Sửa lỗi nhập xuất';  -- ⚠️ THAY ĐỔI: Mô tả ngắn
+DECLARE @ReleaseNote NVARCHAR(1000) = N'Chi tiết các thay đổi trong phiên bản 1.0.2.1:
+- Sửa lỗi nhập xuất
+- Cập nhật validation đơn giá cho phép = 0 trong nhập xuất hàng thương mại
+- Cải thiện load datasource ProductVariant trong xuất hàng thương mại';  -- ⚠️ THAY ĐỔI: Ghi chú phát hành chi tiết
 DECLARE @CreateBy UNIQUEIDENTIFIER = NULL;       -- ⚠️ THAY ĐỔI: ID người tạo (hoặc NULL)
 
 -- =============================================

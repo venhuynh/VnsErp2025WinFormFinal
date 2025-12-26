@@ -1,0 +1,4 @@
+﻿hãy đọc file C:\Users\Admin\source\Workspaces\2025\VNS_ERP_2025_FINAL\VnsErp2025\VnsErp2025\Properties\AssemblyInfo.cs 
+ và cập nhật lại nội dung của script @VnsErp2025/VnsErp2025/Docs/Script 
+tạo data mặc định/Insert_New_ApplicationVersion.sql  để cập nhật phiên bản mới vào database
+Nội dung thay đổi là "Sửa lỗi nhập xuất"
