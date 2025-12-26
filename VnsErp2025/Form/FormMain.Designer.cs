@@ -411,7 +411,7 @@ namespace VnsErp2025.Form
             // 
             // StockInOutMasterHistoryBarButtonItem
             // 
-            this.StockInOutMasterHistoryBarButtonItem.Caption = "Phiếu xuất kho";
+            this.StockInOutMasterHistoryBarButtonItem.Caption = "Phiếu nhập xuất";
             this.StockInOutMasterHistoryBarButtonItem.Id = 29;
             this.StockInOutMasterHistoryBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.invoice;
             this.StockInOutMasterHistoryBarButtonItem.Name = "StockInOutMasterHistoryBarButtonItem";

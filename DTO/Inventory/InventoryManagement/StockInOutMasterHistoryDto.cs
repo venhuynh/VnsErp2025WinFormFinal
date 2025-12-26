@@ -201,7 +201,7 @@ public class StockInOutMasterHistoryDto
 
     /// <summary>
     /// Nội dung tổng quát phiếu nhập xuất theo định dạng HTML theo chuẩn DevExpress
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
     [DisplayName("Nội dung HTML")]
@@ -215,17 +215,17 @@ public class StockInOutMasterHistoryDto
             var notes = Notes ?? string.Empty;
 
             // Format chuyên nghiệp với visual hierarchy rõ ràng
-            // - Số phiếu: font lớn, bold, màu xanh đậm (primary)
-            // - Ngày nhập xuất: font nhỏ hơn, màu xám
-            // - Loại và trạng thái: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Tổng hợp: font nhỏ hơn, màu xám cho label, đen/xanh cho value
+            // - Số phiếu: bold, màu xanh đậm (primary)
+            // - Ngày nhập xuất: màu xám
+            // - Loại và trạng thái: màu xám cho label, đen cho value
+            // - Tổng hợp: màu xám cho label, đen/xanh cho value
 
             var html = string.Empty;
 
             // Số phiếu (nổi bật nhất)
             if (!string.IsNullOrWhiteSpace(vocherNumber))
             {
-                html += $"<size=12><b><color='blue'>{vocherNumber}</color></b></size>";
+                html += $"<b><color='blue'>{vocherNumber}</color></b>";
             }
 
             // Ngày nhập xuất
@@ -233,27 +233,27 @@ public class StockInOutMasterHistoryDto
             {
                 if (!string.IsNullOrWhiteSpace(vocherNumber))
                 {
-                    html += $" <size=9><color='#757575'>({StockInOutDate:dd/MM/yyyy})</color></size>";
+                    html += $" <color='#blue'>({StockInOutDate:dd/MM/yyyy})</color>";
                 }
                 else
                 {
-                    html += $"<size=12><b><color='blue'>{StockInOutDate:dd/MM/yyyy}</color></b></size>";
+                    html += $"<b><color='blue'>{StockInOutDate:dd/MM/yyyy}</color></b>";
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(vocherNumber) || StockInOutDate != default(DateTime))
-            {
-                html += "<br>";
-            }
+            //if (!string.IsNullOrWhiteSpace(vocherNumber) || StockInOutDate != default(DateTime))
+            //{
+            //    html += "<br>";
+            //}
 
             // Loại nhập xuất (sử dụng LoaiNhapXuatKhoName nếu có, fallback về StockInOutType)
             if (!string.IsNullOrWhiteSpace(LoaiNhapXuatKhoName))
             {
-                html += $"<size=9><color='#757575'>Loại:</color></size> <size=10><color='#212121'><b>{LoaiNhapXuatKhoName}</b></color></size>";
+                html += $"<color='#757575'> | Loại:</color> <color='#blue'><b>{LoaiNhapXuatKhoName}</b></color>";
             }
             else if (StockInOutType != 0)
             {
-                html += $"<size=9><color='#757575'>Loại:</color></size> <size=10><color='#212121'><b>{StockInOutType}</b></color></size>";
+                html += $"<color='#757575'>Loại:</color> <color='#blue'><b>{StockInOutType}</b></color>";
             }
 
             if (!string.IsNullOrWhiteSpace(LoaiNhapXuatKhoName) || StockInOutType != 0)
@@ -264,7 +264,7 @@ public class StockInOutMasterHistoryDto
             // Kho nhập xuất
             if (!string.IsNullOrWhiteSpace(WarehouseName))
             {
-                html += $"<size=9><color='#757575'>Kho:</color></size> <size=10><color='#212121'><b>{WarehouseName}</b></color></size>";
+                html += $"<color='#757575'>Kho:</color> <color='#212121'><b>{WarehouseName}</b></color>";
             }
 
             // Tên khách hàng
@@ -272,7 +272,7 @@ public class StockInOutMasterHistoryDto
             {
                 if (!string.IsNullOrWhiteSpace(WarehouseName))
                     html += " | ";
-                html += $"<size=9><color='#757575'>Khách hàng:</color></size> <size=10><color='#212121'><b>{CustomerName}</b></color></size>";
+                html += $"<color='#757575'>Khách hàng:</color> <color='#blue'><b>{CustomerName}</b></color>";
             }
 
             if (!string.IsNullOrWhiteSpace(WarehouseName) || !string.IsNullOrWhiteSpace(CustomerName))
@@ -283,42 +283,42 @@ public class StockInOutMasterHistoryDto
             // Mô tả chi tiết
             if (!string.IsNullOrWhiteSpace(DetailsSummary))
             {
-                html += $"<size=9><color='#757575'><i>{DetailsSummary}</i></color></size>";
+                html += $"<color='#blue'><i>{DetailsSummary}</i></color>";
                 html += "<br>";
             }
 
-            // Tổng số lượng
-            if (TotalQuantity > 0)
-            {
-                html += $"<size=9><color='#757575'>Tổng số lượng:</color></size> <size=10><color='#212121'><b>{TotalQuantity:N2}</b></color></size>";
-            }
+            //// Tổng số lượng
+            //if (TotalQuantity > 0)
+            //{
+            //    html += $"<color='#757575'>Tổng số lượng:</color> <color='#212121'><b>{TotalQuantity:N2}</b></color>";
+            //}
 
-            // Tổng tiền chưa VAT
-            if (TotalAmount > 0)
-            {
-                if (TotalQuantity > 0)
-                    html += " | ";
-                html += $"<size=9><color='#757575'>Tổng tiền:</color></size> <size=10><color='#212121'><b>{TotalAmount:N0}</b></color></size>";
-            }
+            //// Tổng tiền chưa VAT
+            //if (TotalAmount > 0)
+            //{
+            //    if (TotalQuantity > 0)
+            //        html += " | ";
+            //    html += $"<color='#757575'>Tổng tiền:</color> <color='#212121'><b>{TotalAmount:N0}</b></color>";
+            //}
 
-            // VAT
-            if (TotalVat > 0)
-            {
-                if (TotalQuantity > 0 || TotalAmount > 0)
-                    html += " | ";
-                html += $"<size=9><color='#757575'>VAT:</color></size> <size=10><color='#212121'><b>{TotalVat:N0}</b></color></size>";
-            }
+            //// VAT
+            //if (TotalVat > 0)
+            //{
+            //    if (TotalQuantity > 0 || TotalAmount > 0)
+            //        html += " | ";
+            //    html += $"<color='#757575'>VAT:</color> <color='#212121'><b>{TotalVat:N0}</b></color>";
+            //}
 
-            if (TotalQuantity > 0 || TotalAmount > 0 || TotalVat > 0)
-            {
-                html += "<br>";
-            }
+            //if (TotalQuantity > 0 || TotalAmount > 0 || TotalVat > 0)
+            //{
+            //    html += "<br>";
+            //}
 
-            // Tổng tiền bao gồm VAT (nổi bật)
-            if (TotalAmountIncludedVat > 0)
-            {
-                html += $"<size=9><color='#757575'>Tổng tiền gồm VAT:</color></size> <size=10><color='#2196F3'><b>{TotalAmountIncludedVat:N0}</b></color></size>";
-            }
+            //// Tổng tiền bao gồm VAT (nổi bật)
+            //if (TotalAmountIncludedVat > 0)
+            //{
+            //    html += $"<color='#757575'>Tổng tiền gồm VAT:</color> <color='#2196F3'><b>{TotalAmountIncludedVat:N0}</b></color>";
+            //}
 
             // Người nhận hàng và người giao hàng
             var nguoiNhanHang = NguoiNhanHang ?? string.Empty;
@@ -326,21 +326,21 @@ public class StockInOutMasterHistoryDto
             
             if (!string.IsNullOrWhiteSpace(nguoiNhanHang) || !string.IsNullOrWhiteSpace(nguoiGiaoHang))
             {
-                if (TotalQuantity > 0 || TotalAmount > 0 || TotalVat > 0 || TotalAmountIncludedVat > 0 || !string.IsNullOrWhiteSpace(notes))
-                {
-                    html += "<br>";
-                }
+                //if (TotalQuantity > 0 || TotalAmount > 0 || TotalVat > 0 || TotalAmountIncludedVat > 0 || !string.IsNullOrWhiteSpace(notes))
+                //{
+                //    html += "<br>";
+                //}
                 
                 if (!string.IsNullOrWhiteSpace(nguoiNhanHang))
                 {
-                    html += $"<size=9><color='#757575'>Người nhận:</color></size> <size=10><color='#212121'><b>{nguoiNhanHang}</b></color></size>";
+                    html += $"<color='#757575'>Người nhận:</color> <color='#212121'><b>{nguoiNhanHang}</b></color>";
                 }
                 
                 if (!string.IsNullOrWhiteSpace(nguoiGiaoHang))
                 {
                     if (!string.IsNullOrWhiteSpace(nguoiNhanHang))
                         html += " | ";
-                    html += $"<size=9><color='#757575'>Người giao:</color></size> <size=10><color='#212121'><b>{nguoiGiaoHang}</b></color></size>";
+                    html += $"<color='#757575'>Người giao:</color> <color='#212121'><b>{nguoiGiaoHang}</b></color>";
                 }
             }
 
@@ -352,7 +352,7 @@ public class StockInOutMasterHistoryDto
                 {
                     html += "<br>";
                 }
-                html += $"<size=9><color='#757575'><i>{notes}</i></color></size>";
+                html += $"<color='#757575'><i>{notes}</i></color>";
             }
 
             return html;

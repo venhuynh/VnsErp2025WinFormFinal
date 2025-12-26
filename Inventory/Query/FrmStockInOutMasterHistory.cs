@@ -797,7 +797,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
 
     /// <summary>
     /// Cập nhật thông tin tổng kết dữ liệu với HTML formatting chuyên nghiệp
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
     /// </summary>
     private void UpdateDataSummary()
     {
@@ -806,24 +806,76 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             var totalRows = StockInOutMasterHistoryDtoGridView.RowCount;
             var selectedRows = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
 
+            // Tính tổng riêng cho phiếu nhập và phiếu xuất
+            int countNhap = 0; // Số lượng phiếu nhập
+            int countXuat = 0; // Số lượng phiếu xuất
+            
+            // Tổng cho phiếu nhập
+            decimal nhapQuantity = 0;
+            decimal nhapAmount = 0;
+            decimal nhapVat = 0;
+            decimal nhapAmountIncludedVat = 0;
+            
+            // Tổng cho phiếu xuất
+            decimal xuatQuantity = 0;
+            decimal xuatAmount = 0;
+            decimal xuatVat = 0;
+            decimal xuatAmountIncludedVat = 0;
+
+            for (int i = 0; i < totalRows; i++)
+            {
+                if (StockInOutMasterHistoryDtoGridView.GetRow(i) is StockInOutMasterHistoryDto dto)
+                {
+                    // Đếm số phiếu nhập và xuất dựa vào tên enum
+                    var enumName = dto.LoaiNhapXuatKho.ToString();
+                    if (enumName.StartsWith("Nhap"))
+                    {
+                        countNhap++;
+                        nhapQuantity += dto.TotalQuantity;
+                        nhapAmount += dto.TotalAmount;
+                        nhapVat += dto.TotalVat;
+                        nhapAmountIncludedVat += dto.TotalAmountIncludedVat;
+                    }
+                    else if (enumName.StartsWith("Xuat"))
+                    {
+                        countXuat++;
+                        xuatQuantity += dto.TotalQuantity;
+                        xuatAmount += dto.TotalAmount;
+                        xuatVat += dto.TotalVat;
+                        xuatAmountIncludedVat += dto.TotalAmountIncludedVat;
+                    }
+                }
+            }
+
             // Cập nhật tổng số phiếu nhập xuất với HTML formatting
             if (DataSummaryBarStaticItem != null)
             {
                 if (totalRows == 0)
                 {
                     // Không có dữ liệu - hiển thị màu xám, italic
-                    DataSummaryBarStaticItem.Caption = @"<color=#757575><i>Chưa có dữ liệu</i></color>";
+                    DataSummaryBarStaticItem.Caption = @"<color=gray><i>Chưa có dữ liệu</i></color>";
                 }
                 else
                 {
-                    // Có dữ liệu - format chuyên nghiệp:
-                    // Label "Tổng:" màu xám, size nhỏ
-                    // Số lượng màu xanh đậm, bold
-                    // Text "phiếu nhập xuất" màu xám
-                    DataSummaryBarStaticItem.Caption = 
-                        $@"<size=9><color=#757575>Tổng:</color></size> " +
-                        $@"<b><color=blue>{totalRows:N0}</color></b> " +
-                        $@"<size=9><color=#757575>phiếu nhập xuất</color></size>";
+                    // Có dữ liệu - format chuyên nghiệp theo cấu trúc mới
+                    // Dòng 1: Tổng số lượng phiếu nhập xuất
+                    var summary = $@"<color=gray>Tổng:</color> <b><color=blue>{totalRows:N0}</color></b> <color=gray>phiếu nhập xuất</color>";
+                    
+                    // Dòng 2: Thông tin phiếu xuất
+                    summary += $@"<color=gray> | Phiếu Xuất:</color> <b><color=blue>{countXuat:N0}</color></b> <color=gray>phiếu</color>";
+                    summary += $@" - <color=gray>SL:</color> <b><color=blue>{xuatQuantity:N2}</color></b>";
+                    summary += $@" - <color=gray>Trước VAT:</color> <b><color=blue>{xuatAmount:N0}</color></b>";
+                    summary += $@" - <color=gray>VAT:</color> <b><color=blue>{xuatVat:N0}</color></b>";
+                    summary += $@" - <color=gray>Sau VAT:</color> <b><color=blue>{xuatAmountIncludedVat:N0}</color></b>";
+                    
+                    // Dòng 3: Thông tin phiếu nhập
+                    summary += $@"<color=gray> | Phiếu Nhập:</color> <b><color=blue>{countNhap:N0}</color></b> <color=gray>phiếu</color>";
+                    summary += $@" - <color=gray>SL:</color> <b><color=blue>{nhapQuantity:N2}</color></b>";
+                    summary += $@" - <color=gray>Trước VAT:</color> <b><color=blue>{nhapAmount:N0}</color></b>";
+                    summary += $@" - <color=gray>VAT:</color> <b><color=blue>{nhapVat:N0}</color></b>";
+                    summary += $@" - <color=gray>Sau VAT:</color> <b><color=blue>{nhapAmountIncludedVat:N0}</color></b>";
+                    
+                    DataSummaryBarStaticItem.Caption = summary;
                 }
             }
 
@@ -832,19 +884,14 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             {
                 if (selectedRows > 0)
                 {
-                    // Có chọn dòng - format chuyên nghiệp:
-                    // Label "Đã chọn:" màu xám, size nhỏ
-                    // Số lượng màu xanh đậm, bold
-                    // Text "dòng" màu xám
+                    // Có chọn dòng - format chuyên nghiệp
                     SelectedRowBarStaticItem.Caption = 
-                        $@"<size=9><color=#757575>Đã chọn:</color></size> " +
-                        $@"<b><color=blue>{selectedRows:N0}</color></b> " +
-                        $@"<size=9><color=#757575>dòng</color></size>";
+                        $@"<color=gray>Đã chọn:</color> <b><color=blue>{selectedRows:N0}</color></b> <color=gray>dòng</color>";
                 }
                 else
                 {
                     // Không chọn dòng - hiển thị màu xám, italic
-                    SelectedRowBarStaticItem.Caption = @"<color=#757575><i>Chưa chọn dòng nào</i></color>";
+                    SelectedRowBarStaticItem.Caption = @"<color=gray><i>Chưa chọn dòng nào</i></color>";
                 }
             }
         }
