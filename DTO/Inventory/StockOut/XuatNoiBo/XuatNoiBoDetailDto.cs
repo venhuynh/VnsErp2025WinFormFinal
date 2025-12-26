@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DTO.DeviceAssetManagement;
 
 namespace DTO.Inventory.StockOut.XuatNoiBo;
 
@@ -119,7 +120,7 @@ public class XuatNoiBoDetailDto
     /// </summary>
     [DisplayName("Thông tin bảo hành")]
     [Display(Order = 28)]
-    public List<InventoryManagement.WarrantyDto> Warranties { get; set; } = [];
+    public List<WarrantyDto> Warranties { get; set; } = [];
 
     /// <summary>
     /// Thông tin chi tiết phiếu xuất dưới dạng HTML theo format DevExpress

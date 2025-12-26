@@ -10,6 +10,7 @@ using Common.Common;
 using Common.Enums;
 using Common.Utils;
 using DevExpress.XtraEditors;
+using DTO.DeviceAssetManagement;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.MasterData.ProductService;

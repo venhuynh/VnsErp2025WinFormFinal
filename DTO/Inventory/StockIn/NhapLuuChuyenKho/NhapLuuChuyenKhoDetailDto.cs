@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dal.DataContext;
+using DTO.DeviceAssetManagement;
 
 namespace DTO.Inventory.StockIn.NhapLuuChuyenKho;
 
@@ -119,7 +120,7 @@ public class NhapLuuChuyenKhoDetailDto
     /// </summary>
     [DisplayName("Thông tin bảo hành")]
     [Display(Order = 28)]
-    public List<DTO.Inventory.InventoryManagement.WarrantyDto> Warranties { get; set; } = new List<DTO.Inventory.InventoryManagement.WarrantyDto>();
+    public List<WarrantyDto> Warranties { get; set; } = new List<WarrantyDto>();
 
     /// <summary>
     /// Thông tin chi tiết phiếu nhập dưới dạng HTML theo format DevExpress

@@ -4,6 +4,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
 using DevExpress.XtraTreeList.Columns;
+using DTO.DeviceAssetManagement;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
 
 namespace Inventory.OverlayForm
@@ -288,7 +289,7 @@ namespace Inventory.OverlayForm
             // 
             // warrantyDtoBindingSource
             // 
-            this.warrantyDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.WarrantyDto);
+            this.warrantyDtoBindingSource.DataSource = typeof(WarrantyDto);
             // 
             // WarrantyDtoGridView
             // 

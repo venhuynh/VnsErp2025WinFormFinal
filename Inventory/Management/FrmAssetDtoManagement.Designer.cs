@@ -1,4 +1,6 @@
-﻿namespace Inventory.Management
+﻿using DTO.DeviceAssetManagement;
+
+namespace Inventory.Management
 {
     partial class FrmAssetDtoManagement
     {
@@ -61,7 +63,7 @@
             // 
             // assetDtoBindingSource
             // 
-            this.assetDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.AssetDto);
+            this.assetDtoBindingSource.DataSource = typeof(AssetDto);
             // 
             // barManager1
             // 

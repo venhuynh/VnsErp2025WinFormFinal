@@ -6,6 +6,7 @@ using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using DevExpress.XtraGrid.Views.Base;
+using DTO.DeviceAssetManagement;
 using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;

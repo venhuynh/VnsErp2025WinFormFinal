@@ -4,6 +4,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraLayout;
 using DevExpress.XtraTreeList.Columns;
+using DTO.DeviceAssetManagement;
 using DTO.Inventory.StockIn.NhapHangThuongMai;
 using DTO.Inventory.StockIn.NhapThietBiMuon;
 
@@ -266,7 +267,7 @@ namespace Inventory.StockIn.NhapThietBiMuon
             // 
             // deviceDtoBindingSource
             // 
-            this.deviceDtoBindingSource.DataSource = typeof(DTO.Inventory.InventoryManagement.DeviceDto);
+            this.deviceDtoBindingSource.DataSource = typeof(DeviceDto);
             // 
             // WarrantyDtoGridView
             // 

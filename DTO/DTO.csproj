@@ -45,10 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Inventory\InventoryManagement\AssetDto.cs" />
-    <Compile Include="Inventory\InventoryManagement\DeviceOperationTypeEnum.cs" />
-    <Compile Include="Inventory\InventoryManagement\DeviceReferenceTypeEnum.cs" />
-    <Compile Include="Inventory\InventoryManagement\DeviceTransactionHistoryDto.cs" />
+    <Compile Include="DeviceAssetManagement\AssetDto.cs" />
+    <Compile Include="DeviceAssetManagement\DeviceOperationTypeEnum.cs" />
+    <Compile Include="DeviceAssetManagement\DeviceReferenceTypeEnum.cs" />
+    <Compile Include="DeviceAssetManagement\DeviceTransactionHistoryDto.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentAccessLevelEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentCategoryEnum.cs" />
     <Compile Include="Inventory\InventoryManagement\DocumentTypeEnum.cs" />
@@ -56,14 +56,14 @@
     <Compile Include="Inventory\InventoryManagement\StockInOutDocumentDto.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutMasterHistoryDto.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutProductHistoryDto.cs" />
-    <Compile Include="Inventory\InventoryManagement\WarrantyCheckListDto.cs" />
-    <Compile Include="Inventory\InventoryManagement\WarrantyDto.cs" />
+    <Compile Include="DeviceAssetManagement\WarrantyCheckListDto.cs" />
+    <Compile Include="DeviceAssetManagement\WarrantyDto.cs" />
     <Compile Include="Inventory\Query\StockInOutImageDto.cs" />
     <Compile Include="Inventory\StockIn\NhapBaoHanh\NhapBaoHanhDetailDto.cs" />
     <Compile Include="Inventory\StockIn\NhapBaoHanh\NhapBaoHanhMasterDto.cs" />
     <Compile Include="Inventory\StockIn\NhapHangThuongMai\NhapHangThuongMaiDetailDto.cs" />
-    <Compile Include="Inventory\InventoryManagement\DeviceIdentifierEnum.cs" />
-    <Compile Include="Inventory\InventoryManagement\DeviceDto.cs" />
+    <Compile Include="DeviceAssetManagement\DeviceIdentifierEnum.cs" />
+    <Compile Include="DeviceAssetManagement\DeviceDto.cs" />
     <Compile Include="Inventory\StockIn\NhapLapRap\NhapLapRapDetailDto.cs" />
     <Compile Include="Inventory\StockIn\NhapLapRap\NhapLapRapMasterDto.cs" />
     <Compile Include="Inventory\StockIn\NhapLuuChuyenKho\NhapLuuChuyenKhoDetailDto.cs" />
