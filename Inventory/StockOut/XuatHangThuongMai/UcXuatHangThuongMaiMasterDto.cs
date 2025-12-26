@@ -604,9 +604,9 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
             }
 
             // Validate bằng DataAnnotations trên DTO
-            var context = new ValidationContext(dto, serviceProvider: null, items: null);
+            var context = new ValidationContext(_stockOutMaster, serviceProvider: null, items: null);
             var results = new List<ValidationResult>();
-            bool isValid = Validator.TryValidateObject(dto, context, results, validateAllProperties: true);
+            bool isValid = Validator.TryValidateObject(_stockOutMaster, context, results, validateAllProperties: true);
 
             if (!isValid)
             {

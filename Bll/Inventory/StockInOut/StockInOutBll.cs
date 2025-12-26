@@ -431,6 +431,7 @@ namespace Bll.Inventory.StockInOut
 
                 // 5. Map sang DTO - sử dụng XuatHangThuongMaiMasterDto và NhapHangThuongMaiDetailDto
                 var masterDto = MapMasterEntityToDto(masterEntity);
+                
                 var detailDtos = detailEntities.Select(d => 
                 {
                     var detailDto = StockInDetailDtoConverter.ToDto(d);

@@ -1019,15 +1019,15 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     }
 
                     // Mã sản phẩm (nếu có, màu xám)
-                    var productCode = variant.ProductService?.Code ?? string.Empty;
-                    if (!string.IsNullOrWhiteSpace(productCode))
-                    {
-                        if (!string.IsNullOrWhiteSpace(html))
-                            html += " ";
-                        html += $"<color='#757575'>({productCode})</color>";
-                    }
+                    //var productCode = variant.ProductService?.Code ?? string.Empty;
+                    //if (!string.IsNullOrWhiteSpace(productCode))
+                    //{
+                    //    if (!string.IsNullOrWhiteSpace(html))
+                    //        html += " ";
+                    //    html += $"<color='#757575'>({productCode})</color>";
+                    //}
 
-                    html += "<br/>";
+                    //html += "<br/>";
 
                     //Cập nhật luôn hình ảnh ThumbnailImage
                     variant.ThumbnailImage = variant.ProductService?.ThumbnailImage;
@@ -1036,17 +1036,17 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     var variantParts = new List<string>();
 
                     // Mã biến thể (màu cam)
-                    var variantCode = variant.VariantCode ?? string.Empty;
-                    if (!string.IsNullOrWhiteSpace(variantCode))
-                    {
-                        variantParts.Add($"<color='#757575'>Mã biến thể:</color> <color='#FF9800'><b>{variantCode}</b></color>");
-                    }
+                    //var variantCode = variant.VariantCode ?? string.Empty;
+                    //if (!string.IsNullOrWhiteSpace(variantCode))
+                    //{
+                    //    variantParts.Add($"<color='#757575'>Mã biến thể:</color> <color='#FF9800'><b>{variantCode}</b></color>");
+                    //}
 
                     // Đơn vị tính (nếu có)
                     var unitName = variant.UnitOfMeasure?.Name ?? string.Empty;
                     if (!string.IsNullOrWhiteSpace(unitName))
                     {
-                        variantParts.Add($"<color='#757575'>Đơn vị tính:</color> <b>{unitName}</b>");
+                        variantParts.Add($"<br/><color='#757575'>Đơn vị tính:</color> <b>{unitName}</b>");
                     }
 
                     // Các thông tin biến thể (thuộc tính) - mỗi thuộc tính trên 1 dòng
@@ -1083,26 +1083,26 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     }
 
                     // Thông tin số lượng và trạng thái
-                    var countParts = new List<string>();
+                    //var countParts = new List<string>();
 
                     // ProductVariant không còn ProductImages navigation property
                     // Có thể đếm từ ProductImage table nếu cần, nhưng không có VariantId nữa
 
                     // Trạng thái hoạt động
-                    var statusText = variant.IsActive ? "Hoạt động" : "Không hoạt động";
-                    var statusColor = variant.IsActive ? "#4CAF50" : "#F44336";
-                    countParts.Add($"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>");
+                    //var statusText = variant.IsActive ? "Hoạt động" : "Không hoạt động";
+                    //var statusColor = variant.IsActive ? "#4CAF50" : "#F44336";
+                    //countParts.Add($"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>");
 
-                    if (countParts.Any())
-                    {
-                        //html += string.Join(" | ", countParts);
-                    }
+                    //if (countParts.Any())
+                    //{
+                    //    //html += string.Join(" | ", countParts);
+                    //}
 
-                    // Fallback: nếu không có thông tin gì, sử dụng mã biến thể
-                    if (string.IsNullOrWhiteSpace(html))
-                    {
-                        html = variant.VariantCode ?? "Biến thể";
-                    }
+                    //// Fallback: nếu không có thông tin gì, sử dụng mã biến thể
+                    //if (string.IsNullOrWhiteSpace(html))
+                    //{
+                    //    html = variant.VariantCode ?? "Biến thể";
+                    //}
 
                     // Lưu HTML vào VariantFullName
                     variant.VariantFullName = html;
@@ -1167,34 +1167,34 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 }
 
                 // Mã sản phẩm (nếu có, màu xám)
-                var productCode = variant.ProductService?.Code ?? string.Empty;
-                if (!string.IsNullOrWhiteSpace(productCode))
-                {
-                    if (!string.IsNullOrWhiteSpace(html))
-                        html += " ";
-                    html += $"<color='#757575'>({productCode})</color>";
-                }
+                //var productCode = variant.ProductService?.Code ?? string.Empty;
+                //if (!string.IsNullOrWhiteSpace(productCode))
+                //{
+                //    if (!string.IsNullOrWhiteSpace(html))
+                //        html += " ";
+                //    html += $"<color='#757575'>({productCode})</color>";
+                //}
 
-                html += "<br/>";
+                //html += "<br/>";
 
-                // Cập nhật luôn hình ảnh ThumbnailImage
+                //Cập nhật luôn hình ảnh ThumbnailImage
                 variant.ThumbnailImage = variant.ProductService?.ThumbnailImage;
 
                 // Tổng hợp các thông tin biến thể
                 var variantParts = new List<string>();
 
                 // Mã biến thể (màu cam)
-                var variantCode = variant.VariantCode ?? string.Empty;
-                if (!string.IsNullOrWhiteSpace(variantCode))
-                {
-                    variantParts.Add($"<color='#757575'>Mã biến thể:</color> <color='#FF9800'><b>{variantCode}</b></color>");
-                }
+                //var variantCode = variant.VariantCode ?? string.Empty;
+                //if (!string.IsNullOrWhiteSpace(variantCode))
+                //{
+                //    variantParts.Add($"<color='#757575'>Mã biến thể:</color> <color='#FF9800'><b>{variantCode}</b></color>");
+                //}
 
                 // Đơn vị tính (nếu có)
                 var unitName = variant.UnitOfMeasure?.Name ?? string.Empty;
                 if (!string.IsNullOrWhiteSpace(unitName))
                 {
-                    variantParts.Add($"<color='#757575'>Đơn vị tính:</color> <b>{unitName}</b>");
+                    variantParts.Add($"<br/><color='#757575'>Đơn vị tính:</color> <b>{unitName}</b>");
                 }
 
                 // Các thông tin biến thể (thuộc tính) - mỗi thuộc tính trên 1 dòng
@@ -1230,11 +1230,27 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     html += string.Join("<br/>", variantParts);
                 }
 
-                // Fallback: nếu không có thông tin gì, sử dụng mã biến thể
-                if (string.IsNullOrWhiteSpace(html))
-                {
-                    html = variant.VariantCode ?? "Biến thể";
-                }
+                // Thông tin số lượng và trạng thái
+                //var countParts = new List<string>();
+
+                // ProductVariant không còn ProductImages navigation property
+                // Có thể đếm từ ProductImage table nếu cần, nhưng không có VariantId nữa
+
+                // Trạng thái hoạt động
+                //var statusText = variant.IsActive ? "Hoạt động" : "Không hoạt động";
+                //var statusColor = variant.IsActive ? "#4CAF50" : "#F44336";
+                //countParts.Add($"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>");
+
+                //if (countParts.Any())
+                //{
+                //    //html += string.Join(" | ", countParts);
+                //}
+
+                //// Fallback: nếu không có thông tin gì, sử dụng mã biến thể
+                //if (string.IsNullOrWhiteSpace(html))
+                //{
+                //    html = variant.VariantCode ?? "Biến thể";
+                //}
 
                 // Lưu HTML vào VariantFullName
                 variant.VariantFullName = html;

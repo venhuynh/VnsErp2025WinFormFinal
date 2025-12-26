@@ -175,7 +175,7 @@ public class XuatHangThuongMaiMasterDto
     /// </summary>
     [DisplayName("ID Kho")]
     [Display(Order = 10)]
-    [Required(ErrorMessage = "Kho nhập không được để trống")]
+    [Required(ErrorMessage = "Kho xuất không được để trống")]
     public Guid WarehouseId { get; set; }
 
     /// <summary>
