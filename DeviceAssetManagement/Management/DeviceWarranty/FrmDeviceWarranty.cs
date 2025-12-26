@@ -75,7 +75,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             catch (Exception ex)
             {
                 _logger.Error("InitializeForm: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi khởi tạo form: {ex.Message}");
+                AlertHelper.ShowError($"Lỗi khởi tạo form: {ex.Message}", "Lỗi", this);
             }
         }
 
@@ -90,11 +90,18 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             // Event khi click nút Thêm mới
             ThemMoiBarButtonItem.ItemClick += ThemMoiBarButtonItem_ItemClick;
 
+            // Event khi click nút Điều chỉnh
+            DieuChinhBarButtonItem.ItemClick += DieuChinhBarButtonItem_ItemClick;
+
             // GridView events
             if (DeviceWarrantyDtoGridView != null)
             {
                 DeviceWarrantyDtoGridView.SelectionChanged += DeviceWarrantyDtoGridView_SelectionChanged;
             }
+
+            // Đăng ký events từ ucDeviceWarrantyAddEdit1
+            ucDeviceWarrantyAddEdit1.WarrantySaved += UcDeviceWarrantyAddEdit1_WarrantySaved;
+            ucDeviceWarrantyAddEdit1.WarrantyClosed += UcDeviceWarrantyAddEdit1_WarrantyClosed;
         }
 
 
@@ -112,7 +119,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             catch (Exception ex)
             {
                 _logger.Error("XemBarButtonItem_ItemClick: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi tải dữ liệu: {ex.Message}");
+                AlertHelper.ShowError($"Lỗi tải dữ liệu: {ex.Message}", "Lỗi", this);
             }
         }
 
@@ -128,11 +135,24 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
                 // Kiểm tra xem có thiết bị nào được chọn không
                 if (_selectedWarrantyDtos == null || _selectedWarrantyDtos.Count == 0)
                 {
-                    MsgBox.ShowWarning("Vui lòng chọn thiết bị để thêm mới bảo hành.", "Chưa chọn thiết bị");
+                    AlertHelper.ShowWarning("Vui lòng chọn thiết bị để thêm mới bảo hành.", "Chưa chọn thiết bị", this);
                     return;
                 }
 
-                _logger.Debug($"ThemMoiBarButtonItem_ItemClick: Selected {_selectedWarrantyDtos.Count} device(s)");
+                // Lấy danh sách DeviceId từ các WarrantyDto được chọn
+                var selectedDeviceIds = _selectedWarrantyDtos
+                    .Where(dto => dto.DeviceId.HasValue && dto.DeviceId != Guid.Empty)
+                    .Select(dto => dto.DeviceId.Value)
+                    .Distinct()
+                    .ToList();
+
+                if (selectedDeviceIds.Count == 0)
+                {
+                    AlertHelper.ShowWarning("Không có thiết bị hợp lệ được chọn.", "Chưa chọn thiết bị", this);
+                    return;
+                }
+
+                _logger.Debug($"ThemMoiBarButtonItem_ItemClick: Selected {selectedDeviceIds.Count} device(s)");
 
                 // Thiết lập độ rộng dock panel
                 SetupDockPanelWidth();
@@ -141,15 +161,75 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
                 ShowUserControlInDockPanel();
 
                 // Cập nhật tiêu đề theo ngữ cảnh + số lượng
-                SetDockPanelTitle(@"Thêm mới bảo hành", _selectedWarrantyDtos.Count);
+                SetDockPanelTitle(@"Thêm mới bảo hành", selectedDeviceIds.Count);
 
-                // TODO: Load danh sách thiết bị đã chọn vào UserControl (nếu UserControl có method LoadSelectedDevices)
-                // ucDeviceWarrantyAddEdit1.LoadSelectedDevices(_selectedWarrantyDtos);
+                // Load danh sách DeviceId đã chọn vào UserControl (không load datasource)
+                ucDeviceWarrantyAddEdit1.LoadSelectedDeviceIds(selectedDeviceIds);
             }
             catch (Exception ex)
             {
                 _logger.Error("ThemMoiBarButtonItem_ItemClick: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi mở panel thêm mới: {ex.Message}");
+                AlertHelper.ShowError($"Lỗi mở panel thêm mới: {ex.Message}", "Lỗi", this);
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi click nút Điều chỉnh
+        /// Mở dockPanel1 với độ rộng = 2/3 độ rộng màn hình và hiển thị ucDeviceWarrantyAddEdit1
+        /// Chỉ thực hiện khi có đúng 1 dòng được chọn
+        /// </summary>
+        private void DieuChinhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                // Kiểm tra xem có đúng 1 dòng được chọn không
+                var selectedRows = DeviceWarrantyDtoGridView.GetSelectedRows();
+                if (selectedRows == null || selectedRows.Length != 1)
+                {
+                    AlertHelper.ShowWarning("Vui lòng chọn đúng 1 dòng để điều chỉnh.", "Chưa chọn dòng", this);
+                    return;
+                }
+
+                // Lấy WarrantyDto được chọn
+                var rowHandle = selectedRows[0];
+                if (rowHandle < 0)
+                {
+                    AlertHelper.ShowWarning("Vui lòng chọn đúng 1 dòng để điều chỉnh.", "Chưa chọn dòng", this);
+                    return;
+                }
+
+                var selectedWarrantyDto = DeviceWarrantyDtoGridView.GetRow(rowHandle) as WarrantyDto;
+                if (selectedWarrantyDto == null)
+                {
+                    AlertHelper.ShowWarning("Không thể lấy thông tin bảo hành được chọn.", "Lỗi", this);
+                    return;
+                }
+
+                // Kiểm tra xem có DeviceId hợp lệ không
+                if (selectedWarrantyDto.DeviceId == null || selectedWarrantyDto.DeviceId == Guid.Empty)
+                {
+                    AlertHelper.ShowWarning("Thiết bị được chọn không có DeviceId hợp lệ.", "Lỗi", this);
+                    return;
+                }
+
+                _logger.Debug($"DieuChinhBarButtonItem_ItemClick: Editing warranty for DeviceId={selectedWarrantyDto.DeviceId}");
+
+                // Thiết lập độ rộng dock panel
+                SetupDockPanelWidth();
+
+                // Hiển thị UserControl điều chỉnh
+                ShowUserControlInDockPanel();
+
+                // Cập nhật tiêu đề theo ngữ cảnh
+                SetDockPanelTitle(@"Điều chỉnh bảo hành");
+
+                // Load WarrantyDto vào UserControl để điều chỉnh
+                ucDeviceWarrantyAddEdit1.LoadWarrantyForEdit(selectedWarrantyDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("DieuChinhBarButtonItem_ItemClick: Exception occurred", ex);
+                AlertHelper.ShowError($"Lỗi mở panel điều chỉnh: {ex.Message}", "Lỗi", this);
             }
         }
 
@@ -189,6 +269,49 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             catch (Exception ex)
             {
                 _logger.Error("DeviceWarrantyDtoGridView_SelectionChanged: Exception occurred", ex);
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi bảo hành được lưu thành công từ ucDeviceWarrantyAddEdit1
+        /// Refresh lại dữ liệu trong grid
+        /// </summary>
+        private void UcDeviceWarrantyAddEdit1_WarrantySaved(object sender, EventArgs e)
+        {
+            try
+            {
+                _logger.Debug("UcDeviceWarrantyAddEdit1_WarrantySaved: Warranty saved, refreshing data");
+
+                // Refresh lại dữ liệu
+                LoadWarrantyDataAsync();
+
+                // Đóng dockPanel1 sau khi lưu thành công
+                dockPanel1.Visibility = DockVisibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("UcDeviceWarrantyAddEdit1_WarrantySaved: Exception occurred", ex);
+                AlertHelper.ShowError($"Lỗi refresh dữ liệu: {ex.Message}", "Lỗi", this);
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi nút Đóng được click từ ucDeviceWarrantyAddEdit1
+        /// Đóng dockPanel1
+        /// </summary>
+        private void UcDeviceWarrantyAddEdit1_WarrantyClosed(object sender, EventArgs e)
+        {
+            try
+            {
+                _logger.Debug("UcDeviceWarrantyAddEdit1_WarrantyClosed: Closing warranty panel");
+
+                // Đóng dockPanel1
+                dockPanel1.Visibility = DockVisibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("UcDeviceWarrantyAddEdit1_WarrantyClosed: Exception occurred", ex);
+                AlertHelper.ShowError($"Lỗi đóng panel: {ex.Message}", "Lỗi", this);
             }
         }
 
@@ -304,7 +427,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             catch (Exception ex)
             {
                 _logger.Error("LoadWarrantyDataAsync: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi tải dữ liệu bảo hành: {ex.Message}");
+                AlertHelper.ShowError($"Lỗi tải dữ liệu bảo hành: {ex.Message}", "Lỗi", this);
             }
             finally
             {

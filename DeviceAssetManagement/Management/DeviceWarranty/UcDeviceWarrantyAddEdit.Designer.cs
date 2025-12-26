@@ -226,7 +226,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.colWarrantyType.Name = "colWarrantyType";
             this.colWarrantyType.Visible = true;
             this.colWarrantyType.VisibleIndex = 1;
-            this.colWarrantyType.Width = 150;
+            this.colWarrantyType.Width = 94;
             // 
             // LoaiBaoHanhEnumComboBox
             // 
@@ -258,7 +258,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.colWarrantyFrom.Name = "colWarrantyFrom";
             this.colWarrantyFrom.Visible = true;
             this.colWarrantyFrom.VisibleIndex = 2;
-            this.colWarrantyFrom.Width = 120;
+            this.colWarrantyFrom.Width = 141;
             // 
             // NgayThangBaoHanhDateEdit
             // 
@@ -294,7 +294,7 @@ namespace DeviceAssetManagement.Management.DeviceWarranty
             this.colWarrantyUntil.Name = "colWarrantyUntil";
             this.colWarrantyUntil.Visible = true;
             this.colWarrantyUntil.VisibleIndex = 4;
-            this.colWarrantyUntil.Width = 120;
+            this.colWarrantyUntil.Width = 143;
             // 
             // colMonthOfWarranty
             // 

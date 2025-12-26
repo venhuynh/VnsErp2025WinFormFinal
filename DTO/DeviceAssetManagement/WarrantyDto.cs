@@ -274,7 +274,7 @@ public class WarrantyDto
         return warrantyType switch
         {
             LoaiBaoHanhEnum.NCCToVNS => "purple",           // Purple - Bảo hành từ NCC -> VNS
-            LoaiBaoHanhEnum.VNSToKhachHang => "cyan",      // Cyan - Bảo hành từ VNS -> Khách hàng
+            LoaiBaoHanhEnum.VNSToKhachHang => "blue",      // Cyan - Bảo hành từ VNS -> Khách hàng
             _ => "black"                                     // Default - Black
         };
     }

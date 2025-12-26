@@ -38,6 +38,11 @@ namespace DeviceAssetManagement.Management.DeviceMangement
         /// </summary>
         private List<DeviceDto> _selectedDevices;
 
+        /// <summary>
+        /// Trạng thái đang cập nhật giá trị trong GridView (guard tránh recursive call)
+        /// </summary>
+        private bool _isUpdatingGridView;
+
         #endregion
 
         #region ========== CONSTRUCTOR ==========
@@ -110,6 +115,9 @@ namespace DeviceAssetManagement.Management.DeviceMangement
 
             // Đăng ký event handler cho WarrantyFromDateEdit để tự động tính ngày hết hạn
             WarrantyFromDateEdit.EditValueChanged += WarrantyFromDateEdit_EditValueChanged;
+
+            // Đăng ký event handler cho GridView để xử lý tính toán WarrantyUntil khi thay đổi cell value
+            WarrantyDtoGridView.CellValueChanged += WarrantyDtoGridView_CellValueChanged;
         }
 
         #endregion
@@ -723,6 +731,150 @@ namespace DeviceAssetManagement.Management.DeviceMangement
             catch (Exception ex)
             {
                 _logger?.Error($"CalculateWarrantyUntil: Exception, Error={ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== GRIDVIEW EVENT HANDLERS ==========
+
+        /// <summary>
+        /// Event handler khi giá trị cell thay đổi trong GridView
+        /// Tự động tính toán WarrantyUntil khi thay đổi WarrantyFrom hoặc MonthOfWarranty
+        /// Xử lý cả trường hợp new row (rowHandle < 0) và existing row
+        /// </summary>
+        private void WarrantyDtoGridView_CellValueChanged(object sender, DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+        {
+            try
+            {
+                if (_isUpdatingGridView) return; // Tránh recursive call
+
+                var fieldName = e.Column?.FieldName;
+                var rowHandle = e.RowHandle;
+
+                // Chỉ xử lý khi thay đổi WarrantyFrom hoặc MonthOfWarranty
+                if (fieldName != "WarrantyFrom" && fieldName != "MonthOfWarranty")
+                    return;
+
+                // Tính toán và cập nhật WarrantyUntil
+                CalculateAndUpdateWarrantyUntilInGridView(rowHandle);
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"WarrantyDtoGridView_CellValueChanged: Exception, Error={ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Tính toán và cập nhật WarrantyUntil trong GridView từ WarrantyFrom và MonthOfWarranty
+        /// Xử lý cả trường hợp new row (rowHandle < 0) và existing row
+        /// </summary>
+        /// <param name="rowHandle">Row handle của row cần tính toán</param>
+        private void CalculateAndUpdateWarrantyUntilInGridView(int rowHandle)
+        {
+            try
+            {
+                // Đảm bảo giá trị đã được cập nhật vào DTO trước khi tính toán
+                WarrantyDtoGridView.PostEditor();
+                WarrantyDtoGridView.UpdateCurrentRow();
+
+                WarrantyDto warrantyDto = null;
+
+                // Xử lý cả trường hợp new row (rowHandle < 0) và existing row
+                if (rowHandle >= 0)
+                {
+                    warrantyDto = WarrantyDtoGridView.GetRow(rowHandle) as WarrantyDto;
+                }
+                else
+                {
+                    // New row: lấy từ focused row
+                    var focusedRowHandle = WarrantyDtoGridView.FocusedRowHandle;
+                    if (focusedRowHandle >= 0)
+                    {
+                        warrantyDto = WarrantyDtoGridView.GetRow(focusedRowHandle) as WarrantyDto;
+                        rowHandle = focusedRowHandle; // Sử dụng focused row handle
+                    }
+                    else
+                    {
+                        // Lấy từ datasource nếu có
+                        var dataSource = warrantyDtoBindingSource.DataSource as List<WarrantyDto>;
+                        if (dataSource != null && dataSource.Any())
+                        {
+                            warrantyDto = dataSource.LastOrDefault();
+                            // Tìm row handle của warrantyDto này
+                            for (int i = 0; i < WarrantyDtoGridView.RowCount; i++)
+                            {
+                                var row = WarrantyDtoGridView.GetRow(i) as WarrantyDto;
+                                if (row == warrantyDto)
+                                {
+                                    rowHandle = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (warrantyDto == null) return;
+
+                DateTime? newWarrantyUntil = null;
+
+                // Tính toán WarrantyUntil nếu có đủ thông tin
+                if (warrantyDto.WarrantyFrom.HasValue && warrantyDto.MonthOfWarranty > 0)
+                {
+                    newWarrantyUntil = warrantyDto.WarrantyFrom.Value.AddMonths(warrantyDto.MonthOfWarranty);
+                }
+
+                // Chỉ cập nhật nếu giá trị thay đổi
+                if (warrantyDto.WarrantyUntil != newWarrantyUntil)
+                {
+                    // Tạm thời set _isUpdatingGridView = true để tránh trigger CellValueChanged khi SetRowCellValue
+                    var wasUpdating = _isUpdatingGridView;
+                    _isUpdatingGridView = true;
+
+                    try
+                    {
+                        // Tìm cột WarrantyUntil trong GridView
+                        var warrantyUntilColumn = WarrantyDtoGridView.Columns["WarrantyUntil"];
+                        if (warrantyUntilColumn != null && rowHandle >= 0)
+                        {
+                            // Sử dụng SetRowCellValue để cập nhật giá trị trong GridView
+                            WarrantyDtoGridView.SetRowCellValue(rowHandle, warrantyUntilColumn, newWarrantyUntil);
+                        }
+                        else
+                        {
+                            // Nếu không có cột hoặc không có row handle hợp lệ, cập nhật trực tiếp vào DTO
+                            warrantyDto.WarrantyUntil = newWarrantyUntil;
+                        }
+
+                        // Cập nhật property trong DTO để đồng bộ
+                        warrantyDto.WarrantyUntil = newWarrantyUntil;
+
+                        // Refresh row để hiển thị giá trị mới
+                        if (rowHandle >= 0)
+                        {
+                            WarrantyDtoGridView.RefreshRow(rowHandle);
+                        }
+                    }
+                    finally
+                    {
+                        // Khôi phục lại trạng thái _isUpdatingGridView
+                        _isUpdatingGridView = wasUpdating;
+                    }
+
+                    if (newWarrantyUntil.HasValue)
+                    {
+                        _logger?.Debug($"CalculateAndUpdateWarrantyUntilInGridView: Updated WarrantyUntil to {newWarrantyUntil.Value:dd/MM/yyyy} for DeviceId={warrantyDto.DeviceId}");
+                    }
+                    else
+                    {
+                        _logger?.Debug($"CalculateAndUpdateWarrantyUntilInGridView: Cleared WarrantyUntil for DeviceId={warrantyDto.DeviceId}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"CalculateAndUpdateWarrantyUntilInGridView: Exception, Error={ex.Message}", ex);
             }
         }
 
