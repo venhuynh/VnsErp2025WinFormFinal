@@ -185,7 +185,6 @@ public class XuatHangThuongMaiMasterDto
     /// </summary>
     [DisplayName("Mã kho")]
     [Display(Order = 11)]
-    [Required(ErrorMessage = "Kho xuất không được để trống")]
     public string WarehouseCode { get; set; }
 
     /// <summary>
@@ -193,7 +192,6 @@ public class XuatHangThuongMaiMasterDto
     /// </summary>
     [DisplayName("Tên kho")]
     [Display(Order = 12)]
-    [Required(ErrorMessage = "Kho xuất không được để trống")]
     public string WarehouseName { get; set; }
 
     /// <summary>

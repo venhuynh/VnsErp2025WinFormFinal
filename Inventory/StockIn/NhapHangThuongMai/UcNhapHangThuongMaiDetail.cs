@@ -1039,14 +1039,14 @@ public partial class UcNhapHangThuongMaiDetail : DevExpress.XtraEditors.XtraUser
     }
 
     /// <summary>
-    /// Validate UnitPrice: Phải >= 0
+    /// Validate UnitPrice: Cho phép >= 0, chỉ từ chối khi < 0
     /// </summary>
     private void ValidateUnitPrice(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
     {
         if (e.Value == null)
         {
-            e.ErrorText = "Đơn giá không được để trống";
-            e.Valid = false;
+            // Đơn giá có thể để trống (mặc định = 0)
+            e.Valid = true;
             return;
         }
 
@@ -1059,15 +1059,15 @@ public partial class UcNhapHangThuongMaiDetail : DevExpress.XtraEditors.XtraUser
                 e.Valid = false;
                 return;
             }
+            // Cho phép đơn giá = 0 và > 0
+            e.Valid = true;
         }
         else
         {
             _logger.Warning("ValidateUnitPrice: Invalid number format, value={0}", e.Value);
             e.ErrorText = "Đơn giá phải là số hợp lệ";
             e.Valid = false;
-            return;
         }
-        e.Valid = true;
     }
 
     /// <summary>
