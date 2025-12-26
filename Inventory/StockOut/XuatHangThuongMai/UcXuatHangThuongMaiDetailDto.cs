@@ -579,6 +579,22 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     }
 
     /// <summary>
+    /// Reload ProductVariant datasource (public method để gọi từ form)
+    /// </summary>
+    public async Task ReloadProductVariantDataSourceAsync()
+    {
+        try
+        {
+            await LoadProductVariantsAsync(forceRefresh: true);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("ReloadProductVariantDataSourceAsync: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi reload datasource biến thể sản phẩm: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Event handler khi ProductVariantSearchLookUpEdit popup
     /// Chỉ load dữ liệu nếu chưa load hoặc datasource rỗng
     /// </summary>
@@ -651,8 +667,9 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
 
     /// <summary>
     /// Convert Entity sang ProductVariantListDto (Async)
+    /// Sử dụng extension method ToListDto() có sẵn trong DTO và bổ sung các field còn thiếu
     /// </summary>
-    private async Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
+    private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
     {
         try
         {
@@ -660,23 +677,14 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
 
             foreach (var variant in variants)
             {
-                var dto = new ProductVariantListDto
-                {
-                    Id = variant.Id,
-                    ProductCode = variant.ProductService?.Code ?? string.Empty,
-                    ProductName = variant.ProductService?.Name ?? string.Empty,
-                    VariantCode = variant.VariantCode ?? string.Empty,
-                    VariantFullName = !string.IsNullOrWhiteSpace(variant.VariantFullName)
-                        ? variant.VariantFullName
-                        : await BuildVariantFullNameAsync(variant), // Fallback nếu VariantFullName chưa được cập nhật
-                    UnitName = variant.UnitOfMeasure?.Name ?? string.Empty,
-                    IsActive = variant.IsActive
-                };
+                // Sử dụng extension method ToListDto() có sẵn trong DTO
+                var dto = variant.ToListDto();
+                if (dto == null) continue;
 
                 result.Add(dto);
             }
 
-            return result;
+            return Task.FromResult(result);
         }
         catch (Exception ex)
         {
@@ -1055,14 +1063,14 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     }
 
     /// <summary>
-    /// Validate UnitPrice: Phải >= 0
+    /// Validate UnitPrice: Cho phép >= 0, chỉ từ chối khi < 0
     /// </summary>
     private void ValidateUnitPrice(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
     {
         if (e.Value == null)
         {
-            e.ErrorText = "Đơn giá không được để trống";
-            e.Valid = false;
+            // Đơn giá có thể để trống (mặc định = 0)
+            e.Valid = true;
             return;
         }
 
@@ -1075,15 +1083,15 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
                 e.Valid = false;
                 return;
             }
+            // Cho phép đơn giá = 0 và > 0
+            e.Valid = true;
         }
         else
         {
             _logger.Warning("ValidateUnitPrice: Invalid number format, value={0}", e.Value);
             e.ErrorText = "Đơn giá phải là số hợp lệ";
             e.Valid = false;
-            return;
         }
-        e.Valid = true;
     }
 
     /// <summary>

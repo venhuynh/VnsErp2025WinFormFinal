@@ -119,7 +119,7 @@ public class CompanyBranchDto
     /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// </summary>
-    [DisplayName("Thông tin HTML")]
+    [DisplayName("Thông tin chi nhánh công ty")]
     public string ThongTinHtml
     {
         get
@@ -134,35 +134,35 @@ public class CompanyBranchDto
             var statusColor = IsActive ? "#4CAF50" : "#F44336";
 
             // Format chuyên nghiệp với visual hierarchy rõ ràng
-            // - Tên chi nhánh: font lớn, bold, màu xanh đậm (primary)
-            // - Mã chi nhánh: font nhỏ hơn, màu xám
-            // - Thông tin chi tiết: font nhỏ hơn, màu xám cho label, đen cho value
+            // - Tên chi nhánh: bold, màu xanh đậm (primary)
+            // - Mã chi nhánh: màu xám
+            // - Thông tin chi tiết: màu xám cho label, đen cho value
             // - Trạng thái: highlight với màu xanh (active) hoặc đỏ (inactive)
 
-            var html = $"<size=12><b><color='blue'>{branchName}</color></b></size>";
+            var html = $"<b><color='blue'>{branchName}</color></b>";
 
             if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                html += $" <size=9><color='#757575'>({branchCode})</color></size>";
+                html += $" <color='#757575'>({branchCode})</color>";
             }
 
             html += "<br>";
 
             if (!string.IsNullOrWhiteSpace(address))
             {
-                html += $"<size=9><color='#757575'>Địa chỉ:</color></size> <size=10><color='#212121'><b>{address}</b></color></size><br>";
+                html += $"<color='#757575'>Địa chỉ:</color> <color='#212121'><b>{address}</b></color><br>";
             }
 
             if (!string.IsNullOrWhiteSpace(phone))
             {
-                html += $"<size=9><color='#757575'>Điện thoại:</color></size> <size=10><color='#212121'><b>{phone}</b></color></size>";
+                html += $"<color='#757575'>Điện thoại:</color> <color='#212121'><b>{phone}</b></color>";
             }
 
             if (!string.IsNullOrWhiteSpace(email))
             {
                 if (!string.IsNullOrWhiteSpace(phone))
                     html += " | ";
-                html += $"<size=9><color='#757575'>Email:</color></size> <size=10><color='#212121'><b>{email}</b></color></size>";
+                html += $"<color='#757575'>Email:</color> <color='#212121'><b>{email}</b></color>";
             }
 
             if (!string.IsNullOrWhiteSpace(phone) || !string.IsNullOrWhiteSpace(email))
@@ -172,10 +172,10 @@ public class CompanyBranchDto
 
             if (!string.IsNullOrWhiteSpace(managerName))
             {
-                html += $"<size=9><color='#757575'>Quản lý:</color></size> <size=10><color='#212121'><b>{managerName}</b></color></size><br>";
+                html += $"<color='#757575'>Quản lý:</color> <color='#212121'><b>{managerName}</b></color><br>";
             }
 
-            html += $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
+            html += $"<color='#757575'>Trạng thái:</color> <color='{statusColor}'><b>{statusText}</b></color>";
 
             return html;
         }

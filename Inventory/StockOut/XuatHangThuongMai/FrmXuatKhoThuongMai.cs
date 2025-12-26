@@ -269,20 +269,11 @@ public partial class FrmXuatKhoThuongMai : XtraForm
 
             try
             {
-                // Reload datasource cho Master UserControl
-                await ucXuatHangThuongMaiMasterDto1.LoadLookupDataAsync();
-                
-                // Reload datasource cho Detail UserControl nếu có method
-                var detailType = ucXuatHangThuongMaiDetailDto1.GetType();
-                var reloadMethod = detailType.GetMethod("ReloadProductVariantDataSourceAsync");
-                if (reloadMethod != null)
-                {
-                    var task = reloadMethod.Invoke(ucXuatHangThuongMaiDetailDto1, null) as Task;
-                    if (task != null)
-                    {
-                        await task;
-                    }
-                }
+                // Reload datasource cho cả 2 UserControl
+                await Task.WhenAll(
+                    ucXuatHangThuongMaiMasterDto1.LoadLookupDataAsync(),
+                    ucXuatHangThuongMaiDetailDto1.ReloadProductVariantDataSourceAsync()
+                );
 
                 AlertHelper.ShowSuccess("Đã làm mới dữ liệu thành công!", "Thành công", this);
             }

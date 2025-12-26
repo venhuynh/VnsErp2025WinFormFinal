@@ -181,7 +181,7 @@ namespace VnsErp2025
             
 
 
-            Application.Run(new FrmDeviceWarranty());
+            Application.Run(new FormMain());
 
             #endregion
 
