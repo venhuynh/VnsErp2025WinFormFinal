@@ -650,6 +650,7 @@
       <Column Name="ThumbnailStorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Column Name="ThumbnailFileSize" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="ThumbnailChecksum" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="VariantNameForReport" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Association Name="ProductVariant_Asset" Member="Assets" ThisKey="Id" OtherKey="ProductVariantId" Type="Asset" />
       <Association Name="ProductVariant_Device" Member="Devices" ThisKey="Id" OtherKey="ProductVariantId" Type="Device" />
       <Association Name="ProductVariant_InventoryBalance" Member="InventoryBalances" ThisKey="Id" OtherKey="ProductVariantId" Type="InventoryBalance" />

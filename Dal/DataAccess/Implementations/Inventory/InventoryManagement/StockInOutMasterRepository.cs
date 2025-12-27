@@ -81,6 +81,33 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
         return context;
     }
 
+    /// <summary>
+    /// Tạo DataContext mới với eager loading cho StockInOutMaster và StockInOutDetail
+    /// </summary>
+    /// <returns>DataContext mới</returns>
+    private VnsErp2025DataContext CreateNewContextForMasterWithDetails()
+    {
+        var context = new VnsErp2025DataContext(_connectionString);
+
+        // Configure eager loading cho navigation properties
+        var loadOptions = new DataLoadOptions();
+        
+        // Load navigation properties cho StockInOutMaster
+        loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
+        loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
+        loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
+        loadOptions.LoadWith<StockInOutMaster>(m => m.StockInOutDetails);
+        
+        // Load navigation properties cho StockInOutDetail
+        loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
+        loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
+        loadOptions.LoadWith<ProductVariant>(v => v.UnitOfMeasure);
+        
+        context.LoadOptions = loadOptions;
+
+        return context;
+    }
+
     #endregion
 
     #region Public Methods
@@ -135,6 +162,37 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
         catch (Exception ex)
         {
             _logger.Error($"GetMastersByIds: Lỗi query: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy StockInOutMaster theo ID với tất cả navigation properties bao gồm cả details
+    /// </summary>
+    /// <param name="id">ID của StockInOutMaster</param>
+    /// <returns>StockInOutMaster entity với tất cả navigation properties đã load hoặc null nếu không tìm thấy</returns>
+    public StockInOutMaster GetMasterByIdWithDetails(Guid id)
+    {
+        using var context = CreateNewContextForMasterWithDetails();
+        try
+        {
+            _logger.Debug("GetMasterByIdWithDetails: Bắt đầu query, Id={0}", id);
+
+            var master = context.StockInOutMasters.FirstOrDefault(m => m.Id == id);
+
+            if (master == null)
+            {
+                _logger.Warning("GetMasterByIdWithDetails: Không tìm thấy StockInOutMaster với Id={0}", id);
+                return null;
+            }
+
+            _logger.Info("GetMasterByIdWithDetails: Query thành công, Id={0}, DetailCount={1}", 
+                id, master.StockInOutDetails?.Count ?? 0);
+            return master;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetMasterByIdWithDetails: Lỗi query: {ex.Message}", ex);
             throw;
         }
     }

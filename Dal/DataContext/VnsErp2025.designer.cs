@@ -15477,6 +15477,8 @@ namespace Dal.DataContext
 		
 		private string _ThumbnailChecksum;
 		
+		private string _VariantNameForReport;
+		
 		private EntitySet<Asset> _Assets;
 		
 		private EntitySet<Device> _Devices;
@@ -15525,6 +15527,8 @@ namespace Dal.DataContext
     partial void OnThumbnailFileSizeChanged();
     partial void OnThumbnailChecksumChanging(string value);
     partial void OnThumbnailChecksumChanged();
+    partial void OnVariantNameForReportChanging(string value);
+    partial void OnVariantNameForReportChanged();
     #endregion
 		
 		public ProductVariant()
@@ -15843,6 +15847,26 @@ namespace Dal.DataContext
 					this._ThumbnailChecksum = value;
 					this.SendPropertyChanged("ThumbnailChecksum");
 					this.OnThumbnailChecksumChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_VariantNameForReport", DbType="NVarChar(MAX)")]
+		public string VariantNameForReport
+		{
+			get
+			{
+				return this._VariantNameForReport;
+			}
+			set
+			{
+				if ((this._VariantNameForReport != value))
+				{
+					this.OnVariantNameForReportChanging(value);
+					this.SendPropertyChanging();
+					this._VariantNameForReport = value;
+					this.SendPropertyChanged("VariantNameForReport");
+					this.OnVariantNameForReportChanged();
 				}
 			}
 		}

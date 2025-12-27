@@ -161,6 +161,12 @@
       <DependentUpon>FrmWarrantyCheck.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report\PhieuXuat\RpPhieuGiaoHang.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\PhieuXuat\RpPhieuGiaoHang.Designer.cs">
+      <DependentUpon>RpPhieuGiaoHang.cs</DependentUpon>
+    </Compile>
     <Compile Include="StockIn\InPhieu\InPhieuBaoHanh.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -457,6 +463,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Report\PhieuXuat\RpPhieuGiaoHang.resx">
+      <DependentUpon>RpPhieuGiaoHang.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="StockIn\InPhieu\InPhieuBaoHanh.resx">
       <DependentUpon>InPhieuBaoHanh.cs</DependentUpon>
     </EmbeddedResource>
@@ -595,6 +604,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyCheckListDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.WarrantyDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.Query.StockInOutImageDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.Report.StockInOutReportDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapBaoHanh.NhapBaoHanhDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapHangThuongMai.StockInReportDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.NhapLapRap.NhapLapRapDetailDto.datasource" />
@@ -639,7 +649,7 @@
     <None Include="StockIn\InPhieu\README_IN_PHIEU_NHAP_KHO.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Report\" />
+    <Folder Include="Report\PhieuNhap\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">

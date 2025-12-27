@@ -18,6 +18,7 @@ using Inventory.StockIn.NhapHangThuongMai;
 using Inventory.StockIn.NhapLuuChuyenKho;
 using Inventory.StockIn.NhapNoiBo;
 using Inventory.StockIn.NhapThietBiMuon;
+using Inventory.Report.PhieuXuat;
 using Inventory.StockOut.XuatBaoHanh;
 using Inventory.StockOut.XuatChoThueMuon;
 using Inventory.StockOut.XuatHangThuongMai;
@@ -117,7 +118,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             XemBaoCaoBarButtonItem.ItemClick += XemBaoCaoBarButtonItem_ItemClick;
             ChiTietPhieuNhapXuatBarButtonItem.ItemClick += ChiTietPhieuNhapXuatBarButtonItem_ItemClick;
             InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
-            NhapBaoHanhBarButtonItem.ItemClick += NhapBaoHanhBarButtonItem_ItemClick;
+            InPhieuGiaoHangBarButtonItem.ItemClick += InPhieuGiaoHangBarButtonItem_ItemClick;
             ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
             AttachFileBarButtonItem.ItemClick += AttachFileBarButtonItem_ItemClick;
             XoaPhieuBarButtonItem.ItemClick += XoaPhieuBarButtonItem_ItemClick;
@@ -340,10 +341,10 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
     }
 
     /// <summary>
-    /// Event handler cho nút Nhập bảo hành
-    /// Chỉ mở màn hình cho 1 phiếu được chọn, sử dụng OverlayManager
+    /// Event handler cho nút In phiếu giao hàng
+    /// Chỉ mở màn hình cho 1 phiếu xuất được chọn, sử dụng OverlayManager
     /// </summary>
-    private void NhapBaoHanhBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    private void InPhieuGiaoHangBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
         try
         {
@@ -351,36 +352,67 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             var selectedCount = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
             if (selectedCount == 0)
             {
-                MsgBox.ShowWarning("Vui lòng chọn một phiếu nhập xuất kho để nhập bảo hành.");
+                MsgBox.ShowWarning("Vui lòng chọn một phiếu xuất kho để in phiếu giao hàng.");
                 return;
             }
 
             if (selectedCount > 1)
             {
-                MsgBox.ShowWarning("Chỉ cho phép nhập bảo hành cho 1 phiếu. Vui lòng bỏ chọn bớt.");
+                MsgBox.ShowWarning("Chỉ cho phép in phiếu giao hàng cho 1 phiếu. Vui lòng bỏ chọn bớt.");
                 return;
             }
 
             // Kiểm tra ID phiếu được chọn
             if (!_selectedStockInOutMasterId.HasValue || _selectedStockInOutMasterId.Value == Guid.Empty)
             {
-                MsgBox.ShowWarning("Vui lòng chọn phiếu nhập xuất kho để nhập bảo hành.");
+                MsgBox.ShowWarning("Vui lòng chọn phiếu xuất kho để in phiếu giao hàng.");
                 return;
             }
 
-            // Mở form nhập bảo hành với OverlayManager
+            // Lấy DTO từ row được chọn để xác định loại nhập xuất
+            var focusedRowHandle = StockInOutMasterHistoryDtoGridView.FocusedRowHandle;
+            if (focusedRowHandle < 0)
+            {
+                MsgBox.ShowWarning("Vui lòng chọn phiếu xuất kho để in phiếu giao hàng.");
+                return;
+            }
+
+            if (StockInOutMasterHistoryDtoGridView.GetRow(focusedRowHandle) is not StockInOutMasterHistoryDto selectedDto)
+            {
+                MsgBox.ShowWarning("Không thể lấy thông tin phiếu được chọn.");
+                return;
+            }
+
+            // Kiểm tra phiếu được chọn có phải là phiếu xuất không
+            var enumName = selectedDto.LoaiNhapXuatKho.ToString();
+            if (!enumName.StartsWith("Xuat"))
+            {
+                MsgBox.ShowWarning("Chỉ có thể in phiếu giao hàng cho các phiếu xuất kho. Phiếu được chọn không phải là phiếu xuất.");
+                return;
+            }
+
+            // Tạo report phiếu giao hàng
             using (OverlayManager.ShowScope(this))
             {
-                using var form = new FrmWarranty(_selectedStockInOutMasterId.Value);
-                    
-                form.StartPosition = FormStartPosition.CenterParent;
-                form.ShowDialog(this);
+                try
+                {
+                    var report = new RpPhieuGiaoHang(_selectedStockInOutMasterId.Value);
+
+                    // Hiển thị preview bằng ReportPrintTool
+                    using var printTool = new DevExpress.XtraReports.UI.ReportPrintTool(report);
+                    printTool.ShowPreviewDialog();
+                }
+                catch (Exception printEx)
+                {
+                    _logger.Error($"InPhieuGiaoHangBarButtonItem_ItemClick: Lỗi in phiếu giao hàng: {printEx.Message}", printEx);
+                    MsgBox.ShowError($"Lỗi in phiếu giao hàng: {printEx.Message}");
+                }
             }
         }
         catch (Exception ex)
         {
-            _logger.Error("NhapBaoHanhBarButtonItem_ItemClick: Exception occurred", ex);
-            MsgBox.ShowError($"Lỗi mở form bảo hành: {ex.Message}");
+            _logger.Error("InPhieuGiaoHangBarButtonItem_ItemClick: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi in phiếu giao hàng: {ex.Message}");
         }
     }
 
@@ -781,10 +813,25 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             // Lấy số lượng dòng được chọn
             var selectedCount = StockInOutMasterHistoryDtoGridView.SelectedRowsCount;
 
+            // Kiểm tra phiếu được chọn có phải là phiếu xuất không (cho nút In phiếu giao hàng)
+            bool isStockOut = false;
+            if (hasSelection && selectedCount == 1)
+            {
+                var focusedRowHandle = StockInOutMasterHistoryDtoGridView.FocusedRowHandle;
+                if (focusedRowHandle >= 0)
+                {
+                    if (StockInOutMasterHistoryDtoGridView.GetRow(focusedRowHandle) is StockInOutMasterHistoryDto dto)
+                    {
+                        var enumName = dto.LoaiNhapXuatKho.ToString();
+                        isStockOut = enumName.StartsWith("Xuat");
+                    }
+                }
+            }
+
             // Tất cả các nút: chỉ khi chọn đúng 1 dòng
             ChiTietPhieuNhapXuatBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             InPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;
-            NhapBaoHanhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
+            InPhieuGiaoHangBarButtonItem.Enabled = hasSelection && selectedCount == 1 && isStockOut;
             ThemHinhAnhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             AttachFileBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             XoaPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;

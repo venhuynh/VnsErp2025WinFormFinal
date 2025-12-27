@@ -233,7 +233,7 @@ public class StockInOutMasterHistoryDto
             {
                 if (!string.IsNullOrWhiteSpace(vocherNumber))
                 {
-                    html += $" <color='#blue'>({StockInOutDate:dd/MM/yyyy})</color>";
+                    html += $" <color='blue'>({StockInOutDate:dd/MM/yyyy})</color>";
                 }
                 else
                 {
@@ -249,11 +249,11 @@ public class StockInOutMasterHistoryDto
             // Loại nhập xuất (sử dụng LoaiNhapXuatKhoName nếu có, fallback về StockInOutType)
             if (!string.IsNullOrWhiteSpace(LoaiNhapXuatKhoName))
             {
-                html += $"<color='#757575'> | Loại:</color> <color='#blue'><b>{LoaiNhapXuatKhoName}</b></color>";
+                html += $"<color='#757575'> | Loại:</color> <color='blue'><b>{LoaiNhapXuatKhoName}</b></color>";
             }
             else if (StockInOutType != 0)
             {
-                html += $"<color='#757575'>Loại:</color> <color='#blue'><b>{StockInOutType}</b></color>";
+                html += $"<color='#757575'>Loại:</color> <color='blue'><b>{StockInOutType}</b></color>";
             }
 
             if (!string.IsNullOrWhiteSpace(LoaiNhapXuatKhoName) || StockInOutType != 0)
@@ -272,7 +272,7 @@ public class StockInOutMasterHistoryDto
             {
                 if (!string.IsNullOrWhiteSpace(WarehouseName))
                     html += " | ";
-                html += $"<color='#757575'>Khách hàng:</color> <color='#blue'><b>{CustomerName}</b></color>";
+                html += $"<color='#757575'>Khách hàng:</color> <color='blue'><b>{CustomerName}</b></color>";
             }
 
             if (!string.IsNullOrWhiteSpace(WarehouseName) || !string.IsNullOrWhiteSpace(CustomerName))
@@ -283,7 +283,7 @@ public class StockInOutMasterHistoryDto
             // Mô tả chi tiết
             if (!string.IsNullOrWhiteSpace(DetailsSummary))
             {
-                html += $"<color='#blue'><i>{DetailsSummary}</i></color>";
+                html += $"<color='blue'><i>{DetailsSummary}</i></color>";
                 html += "<br>";
             }
 
