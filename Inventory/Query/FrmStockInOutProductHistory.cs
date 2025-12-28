@@ -363,13 +363,8 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
                 return;
             }
 
-            // Mở form nhập định danh thiết bị với OverlayManager
-            using (OverlayManager.ShowScope(this))
-            {
-                using var form = new FrmNhapSerialMacEmei(_selectedStockInOutMasterId.Value);
-                form.StartPosition = FormStartPosition.CenterParent;
-                form.ShowDialog(this);
-            }
+            // TODO: Form FrmNhapSerialMacEmei đã bị xóa, cần thay thế bằng form mới
+            MsgBox.ShowWarning("Chức năng này đang được phát triển.");
         }
         catch (Exception ex)
         {

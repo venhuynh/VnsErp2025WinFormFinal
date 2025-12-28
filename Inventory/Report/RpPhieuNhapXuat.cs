@@ -3,18 +3,17 @@ using Common.Utils;
 using DevExpress.XtraReports.UI;
 using DTO.Inventory.Report;
 using Logger;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using Logger.Configuration;
 using Logger.Interfaces;
-using System;
-using System.Collections.Generic;
 
-namespace Inventory.Report.PhieuXuat
+namespace Inventory.Report
 {
-    /// <summary>
-    /// Report phiếu giao hàng (phiếu nhập xuất kho)
-    /// Sử dụng StockInOutReportDto để hiển thị thông tin đầy đủ của phiếu nhập xuất
-    /// </summary>
-    public partial class RpPhieuGiaoHang : DevExpress.XtraReports.UI.XtraReport
+    public partial class RpPhieuNhapXuat : DevExpress.XtraReports.UI.XtraReport
     {
         #region Private Fields
 
@@ -28,7 +27,7 @@ namespace Inventory.Report.PhieuXuat
         /// <summary>
         /// Constructor mặc định (private để tránh khởi tạo trực tiếp)
         /// </summary>
-        private RpPhieuGiaoHang()
+        private RpPhieuNhapXuat()
         {
             InitializeComponent();
             _stockInOutReportBll = new StockInOutReportBll();
@@ -39,7 +38,7 @@ namespace Inventory.Report.PhieuXuat
         /// Constructor với VoucherId để tự động load dữ liệu
         /// </summary>
         /// <param name="voucherId">ID phiếu nhập xuất kho (StockInOutMaster.Id)</param>
-        public RpPhieuGiaoHang(Guid voucherId) : this()
+        public RpPhieuNhapXuat(Guid voucherId) : this()
         {
             LoadData(voucherId);
         }
@@ -90,5 +89,6 @@ namespace Inventory.Report.PhieuXuat
         }
 
         #endregion
+
     }
 }

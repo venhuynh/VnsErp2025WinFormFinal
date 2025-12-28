@@ -161,11 +161,17 @@
       <DependentUpon>FrmWarrantyCheck.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Report\PhieuXuat\RpPhieuGiaoHang.cs">
+    <Compile Include="Report\RpPhieuGiaoHang.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Report\PhieuXuat\RpPhieuGiaoHang.Designer.cs">
+    <Compile Include="Report\RpPhieuGiaoHang.Designer.cs">
       <DependentUpon>RpPhieuGiaoHang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\RpPhieuNhapXuat.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\RpPhieuNhapXuat.Designer.cs">
+      <DependentUpon>RpPhieuNhapXuat.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\InPhieu\InPhieuBaoHanh.cs">
       <SubType>Component</SubType>
@@ -262,12 +268,6 @@
     </Compile>
     <Compile Include="StockIn\NhapNoiBo\UcNhapNoiBoMaster.Designer.cs">
       <DependentUpon>UcNhapNoiBoMaster.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StockIn\NhapThietBiMuon\FrmNhapSerialMacEmei.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="StockIn\NhapThietBiMuon\FrmNhapSerialMacEmei.Designer.cs">
-      <DependentUpon>FrmNhapSerialMacEmei.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\NhapThietBiMuon\FrmNhapThietBiMuon.cs">
       <SubType>Form</SubType>
@@ -463,8 +463,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Report\PhieuXuat\RpPhieuGiaoHang.resx">
+    <EmbeddedResource Include="Report\RpPhieuGiaoHang.resx">
       <DependentUpon>RpPhieuGiaoHang.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RpPhieuNhapXuat.resx">
+      <DependentUpon>RpPhieuNhapXuat.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\InPhieu\InPhieuBaoHanh.resx">
       <DependentUpon>InPhieuBaoHanh.cs</DependentUpon>
@@ -522,9 +525,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapNoiBo\UcNhapNoiBoMaster.resx">
       <DependentUpon>UcNhapNoiBoMaster.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapThietBiMuon\FrmNhapSerialMacEmei.resx">
-      <DependentUpon>FrmNhapSerialMacEmei.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapThietBiMuon\FrmNhapThietBiMuon.resx">
       <DependentUpon>FrmNhapThietBiMuon.cs</DependentUpon>
@@ -648,9 +648,7 @@
     </Compile>
     <None Include="StockIn\InPhieu\README_IN_PHIEU_NHAP_KHO.md" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Report\PhieuNhap\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
       <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>

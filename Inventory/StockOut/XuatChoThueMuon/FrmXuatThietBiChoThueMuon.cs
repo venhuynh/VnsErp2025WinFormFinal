@@ -560,13 +560,8 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
                 return;
             }
 
-            // Mở form nhập bảo hành với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
-            using (OverlayManager.ShowScope(this))
-            {
-                using var frmDeviceIdentifierInput = new FrmNhapSerialMacEmei(stockInOutMasterId);
-                frmDeviceIdentifierInput.StartPosition = FormStartPosition.CenterParent;
-                frmDeviceIdentifierInput.ShowDialog(this);
-            }
+            // TODO: Form FrmNhapSerialMacEmei đã bị xóa, cần thay thế bằng form mới
+            MsgBox.ShowWarning("Chức năng này đang được phát triển.");
         }
         catch (Exception ex)
         {

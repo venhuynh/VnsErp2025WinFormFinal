@@ -31,18 +31,18 @@ namespace Inventory.StockIn.NhapNoiBo
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.ucNhapNoiBoDetail1 = new Inventory.StockIn.NhapNoiBo.UcNhapNoiBoDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
             this.NhapLaiBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.ReloadDataSourceBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.LuuPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.InPhieuBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.NhapQuanLyTaiSanBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ThemHinhAnhBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.CloseBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.HotKeyBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
-            this.ReloadDataSourceBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -53,11 +53,10 @@ namespace Inventory.StockIn.NhapNoiBo
             this.ucNhapNoiBoMaster1 = new Inventory.StockIn.NhapNoiBo.UcNhapNoiBoMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ucNhapNoiBoDetail1 = new UcNhapNoiBoDetail();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
@@ -66,19 +65,25 @@ namespace Inventory.StockIn.NhapNoiBo
             this.layoutControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
             // 
             this.layoutControl1.Controls.Add(this.ucNhapNoiBoDetail1);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(483, 24);
+            this.layoutControl1.Location = new System.Drawing.Point(483, 39);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(888, 768);
+            this.layoutControl1.Size = new System.Drawing.Size(888, 753);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
+            // 
+            // ucNhapNoiBoDetail1
+            // 
+            this.ucNhapNoiBoDetail1.Location = new System.Drawing.Point(16, 16);
+            this.ucNhapNoiBoDetail1.Name = "ucNhapNoiBoDetail1";
+            this.ucNhapNoiBoDetail1.Size = new System.Drawing.Size(856, 721);
+            this.ucNhapNoiBoDetail1.TabIndex = 4;
             // 
             // Root
             // 
@@ -87,8 +92,16 @@ namespace Inventory.StockIn.NhapNoiBo
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(888, 768);
+            this.Root.Size = new System.Drawing.Size(888, 753);
             this.Root.TextVisible = false;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.ucNhapNoiBoDetail1;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(862, 727);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // dockManager1
             // 
@@ -123,9 +136,7 @@ namespace Inventory.StockIn.NhapNoiBo
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.NhapLaiBarButtonItem,
             this.LuuPhieuBarButtonItem,
-            this.InPhieuBarButtonItem,
             this.CloseBarButtonItem,
-            this.NhapQuanLyTaiSanBarButtonItem,
             this.ThemHinhAnhBarButtonItem,
             this.HotKeyBarStaticItem,
             this.ReloadDataSourceBarButtonItem});
@@ -143,8 +154,6 @@ namespace Inventory.StockIn.NhapNoiBo
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapLaiBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ReloadDataSourceBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LuuPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.InPhieuBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.NhapQuanLyTaiSanBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ThemHinhAnhBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.CloseBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.HotKeyBarStaticItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
@@ -160,28 +169,20 @@ namespace Inventory.StockIn.NhapNoiBo
             this.NhapLaiBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.reset2_32x32;
             this.NhapLaiBarButtonItem.Name = "NhapLaiBarButtonItem";
             // 
+            // ReloadDataSourceBarButtonItem
+            // 
+            this.ReloadDataSourceBarButtonItem.Caption = "Làm mới dữ liệu";
+            this.ReloadDataSourceBarButtonItem.Id = 7;
+            this.ReloadDataSourceBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.refreshpivottable_16x16;
+            this.ReloadDataSourceBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.refreshpivottable_32x32;
+            this.ReloadDataSourceBarButtonItem.Name = "ReloadDataSourceBarButtonItem";
+            // 
             // LuuPhieuBarButtonItem
             // 
             this.LuuPhieuBarButtonItem.Caption = "Lưu phiếu";
             this.LuuPhieuBarButtonItem.Id = 1;
             this.LuuPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.save_16x16;
             this.LuuPhieuBarButtonItem.Name = "LuuPhieuBarButtonItem";
-            // 
-            // InPhieuBarButtonItem
-            // 
-            this.InPhieuBarButtonItem.Caption = "In phiếu";
-            this.InPhieuBarButtonItem.Id = 2;
-            this.InPhieuBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.print_16x16;
-            this.InPhieuBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.print_32x32;
-            this.InPhieuBarButtonItem.Name = "InPhieuBarButtonItem";
-            // 
-            // NhapQuanLyTaiSanBarButtonItem
-            // 
-            this.NhapQuanLyTaiSanBarButtonItem.Caption = "Nhập quản lý tài sản";
-            this.NhapQuanLyTaiSanBarButtonItem.Id = 4;
-            this.NhapQuanLyTaiSanBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.barcode_16x16;
-            this.NhapQuanLyTaiSanBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.barcode_32x32;
-            this.NhapQuanLyTaiSanBarButtonItem.Name = "NhapQuanLyTaiSanBarButtonItem";
             // 
             // ThemHinhAnhBarButtonItem
             // 
@@ -207,21 +208,13 @@ namespace Inventory.StockIn.NhapNoiBo
             this.HotKeyBarStaticItem.Id = 6;
             this.HotKeyBarStaticItem.Name = "HotKeyBarStaticItem";
             // 
-            // ReloadDataSourceBarButtonItem
-            // 
-            this.ReloadDataSourceBarButtonItem.Caption = "Làm mới dữ liệu";
-            this.ReloadDataSourceBarButtonItem.Id = 7;
-            this.ReloadDataSourceBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.refreshpivottable_16x16;
-            this.ReloadDataSourceBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.refreshpivottable_32x32;
-            this.ReloadDataSourceBarButtonItem.Name = "ReloadDataSourceBarButtonItem";
-            // 
             // barDockControlTop
             // 
             this.barDockControlTop.CausesValidation = false;
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1371, 24);
+            this.barDockControlTop.Size = new System.Drawing.Size(1371, 39);
             // 
             // barDockControlBottom
             // 
@@ -235,36 +228,36 @@ namespace Inventory.StockIn.NhapNoiBo
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 768);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 753);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1371, 24);
+            this.barDockControlRight.Location = new System.Drawing.Point(1371, 39);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 768);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 753);
             // 
             // dockPanel2
             // 
             this.dockPanel2.Controls.Add(this.dockPanel2_Container);
             this.dockPanel2.Dock = DevExpress.XtraBars.Docking.DockingStyle.Left;
             this.dockPanel2.ID = new System.Guid("54f2f597-37f8-4f4b-8a0d-e5c712426dc2");
-            this.dockPanel2.Location = new System.Drawing.Point(0, 24);
+            this.dockPanel2.Location = new System.Drawing.Point(0, 39);
             this.dockPanel2.Name = "dockPanel2";
             this.dockPanel2.Options.ShowCloseButton = false;
             this.dockPanel2.OriginalSize = new System.Drawing.Size(483, 200);
-            this.dockPanel2.Size = new System.Drawing.Size(483, 768);
+            this.dockPanel2.Size = new System.Drawing.Size(483, 753);
             this.dockPanel2.Text = "THÔNG TIN PHIẾU NHẬP HÀNG NỘI BỘ";
             // 
             // dockPanel2_Container
             // 
             this.dockPanel2_Container.Controls.Add(this.layoutControl2);
-            this.dockPanel2_Container.Location = new System.Drawing.Point(3, 26);
+            this.dockPanel2_Container.Location = new System.Drawing.Point(3, 38);
             this.dockPanel2_Container.Name = "dockPanel2_Container";
-            this.dockPanel2_Container.Size = new System.Drawing.Size(476, 739);
+            this.dockPanel2_Container.Size = new System.Drawing.Size(476, 712);
             this.dockPanel2_Container.TabIndex = 0;
             // 
             // layoutControl2
@@ -274,15 +267,15 @@ namespace Inventory.StockIn.NhapNoiBo
             this.layoutControl2.Location = new System.Drawing.Point(0, 0);
             this.layoutControl2.Name = "layoutControl2";
             this.layoutControl2.Root = this.layoutControlGroup1;
-            this.layoutControl2.Size = new System.Drawing.Size(476, 739);
+            this.layoutControl2.Size = new System.Drawing.Size(476, 712);
             this.layoutControl2.TabIndex = 0;
             this.layoutControl2.Text = "layoutControl2";
             // 
             // ucNhapNoiBoMaster1
             // 
-            this.ucNhapNoiBoMaster1.Location = new System.Drawing.Point(12, 12);
+            this.ucNhapNoiBoMaster1.Location = new System.Drawing.Point(16, 16);
             this.ucNhapNoiBoMaster1.Name = "ucNhapNoiBoMaster1";
-            this.ucNhapNoiBoMaster1.Size = new System.Drawing.Size(452, 715);
+            this.ucNhapNoiBoMaster1.Size = new System.Drawing.Size(444, 680);
             this.ucNhapNoiBoMaster1.TabIndex = 4;
             // 
             // layoutControlGroup1
@@ -292,7 +285,7 @@ namespace Inventory.StockIn.NhapNoiBo
             this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem3});
             this.layoutControlGroup1.Name = "layoutControlGroup1";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(476, 739);
+            this.layoutControlGroup1.Size = new System.Drawing.Size(476, 712);
             this.layoutControlGroup1.TextVisible = false;
             // 
             // layoutControlItem3
@@ -300,23 +293,8 @@ namespace Inventory.StockIn.NhapNoiBo
             this.layoutControlItem3.Control = this.ucNhapNoiBoMaster1;
             this.layoutControlItem3.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(456, 719);
+            this.layoutControlItem3.Size = new System.Drawing.Size(450, 686);
             this.layoutControlItem3.TextVisible = false;
-            // 
-            // ucNhapNoiBoDetail1
-            // 
-            this.ucNhapNoiBoDetail1.Location = new System.Drawing.Point(12, 12);
-            this.ucNhapNoiBoDetail1.Name = "ucNhapNoiBoDetail1";
-            this.ucNhapNoiBoDetail1.Size = new System.Drawing.Size(864, 744);
-            this.ucNhapNoiBoDetail1.TabIndex = 4;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.ucNhapNoiBoDetail1;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(868, 748);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // FrmNhapNoiBo
             // 
@@ -334,6 +312,7 @@ namespace Inventory.StockIn.NhapNoiBo
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.dockPanel2.ResumeLayout(false);
@@ -342,7 +321,6 @@ namespace Inventory.StockIn.NhapNoiBo
             this.layoutControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -362,12 +340,10 @@ namespace Inventory.StockIn.NhapNoiBo
         private DevExpress.XtraBars.Bar bar2;
         private DevExpress.XtraBars.BarButtonItem NhapLaiBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem LuuPhieuBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem InPhieuBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem CloseBarButtonItem;
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraBars.BarButtonItem NhapQuanLyTaiSanBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;

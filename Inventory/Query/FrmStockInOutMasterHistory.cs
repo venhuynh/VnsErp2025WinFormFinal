@@ -12,13 +12,13 @@ using DevExpress.XtraReports.UI;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn;
 using Inventory.OverlayForm;
+using Inventory.Report;
 using Inventory.StockIn.InPhieu;
 using Inventory.StockIn.NhapBaoHanh;
 using Inventory.StockIn.NhapHangThuongMai;
 using Inventory.StockIn.NhapLuuChuyenKho;
 using Inventory.StockIn.NhapNoiBo;
 using Inventory.StockIn.NhapThietBiMuon;
-using Inventory.Report.PhieuXuat;
 using Inventory.StockOut.XuatBaoHanh;
 using Inventory.StockOut.XuatChoThueMuon;
 using Inventory.StockOut.XuatHangThuongMai;
@@ -117,7 +117,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             // Bar button events
             XemBaoCaoBarButtonItem.ItemClick += XemBaoCaoBarButtonItem_ItemClick;
             ChiTietPhieuNhapXuatBarButtonItem.ItemClick += ChiTietPhieuNhapXuatBarButtonItem_ItemClick;
-            InPhieuBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
+            InPhieuNhapXuatBarButtonItem.ItemClick += InPhieuBarButtonItem_ItemClick;
             InPhieuGiaoHangBarButtonItem.ItemClick += InPhieuGiaoHangBarButtonItem_ItemClick;
             ThemHinhAnhBarButtonItem.ItemClick += ThemHinhAnhBarButtonItem_ItemClick;
             AttachFileBarButtonItem.ItemClick += AttachFileBarButtonItem_ItemClick;
@@ -257,8 +257,9 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
     }
 
     /// <summary>
-    /// Event handler cho nút In phiếu
+    /// Event handler cho nút In phiếu nhập xuất
     /// Chỉ mở màn hình cho 1 phiếu được chọn, sử dụng OverlayManager
+    /// Sử dụng RpPhieuNhapXuat cho tất cả các loại phiếu nhập xuất
     /// </summary>
     private void InPhieuBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
@@ -285,42 +286,12 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
                 return;
             }
 
-            // Lấy DTO từ row được chọn để xác định loại nhập xuất
-            var focusedRowHandle = StockInOutMasterHistoryDtoGridView.FocusedRowHandle;
-            if (focusedRowHandle < 0)
-            {
-                MsgBox.ShowWarning("Vui lòng chọn phiếu nhập xuất kho để in.");
-                return;
-            }
-
-            if (StockInOutMasterHistoryDtoGridView.GetRow(focusedRowHandle) is not StockInOutMasterHistoryDto selectedDto)
-            {
-                MsgBox.ShowWarning("Không thể lấy thông tin phiếu được chọn.");
-                return;
-            }
-
-            // Tạo report dựa vào loại nhập xuất
+            // Tạo report phiếu nhập xuất (sử dụng report chung cho tất cả các loại)
             using (OverlayManager.ShowScope(this))
             {
                 try
                 {
-                    XtraReport report = selectedDto.LoaiNhapXuatKho switch
-                    {
-                        // Các trường hợp Nhập
-                        LoaiNhapXuatKhoEnum.NhapHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.NhapNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.NhapHangBaoHanh => new InPhieuBaoHanh(_selectedStockInOutMasterId.Value),
-                        
-                        // Các trường hợp Xuất - sử dụng report chung cho cả nhập và xuất
-                        LoaiNhapXuatKhoEnum.XuatHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value), // Report nhập cũng dùng được cho xuất
-                        LoaiNhapXuatKhoEnum.XuatThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.XuatNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.XuatHangBaoHanh => new InPhieuBaoHanh(_selectedStockInOutMasterId.Value),
-                        
-                        // Trường hợp mặc định
-                        _ => new InPhieuNhapKho(_selectedStockInOutMasterId.Value) // Default: dùng InPhieuNhapKho cho NhapLuuChuyenKho, XuatLuuChuyenKho và các loại khác
-                    };
+                    var report = new RpPhieuNhapXuat(_selectedStockInOutMasterId.Value);
 
                     // Hiển thị preview bằng ReportPrintTool
                     using var printTool = new DevExpress.XtraReports.UI.ReportPrintTool(report);
@@ -830,7 +801,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
 
             // Tất cả các nút: chỉ khi chọn đúng 1 dòng
             ChiTietPhieuNhapXuatBarButtonItem.Enabled = hasSelection && selectedCount == 1;
-            InPhieuBarButtonItem.Enabled = hasSelection && selectedCount == 1;
+            InPhieuNhapXuatBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             InPhieuGiaoHangBarButtonItem.Enabled = hasSelection && selectedCount == 1 && isStockOut;
             ThemHinhAnhBarButtonItem.Enabled = hasSelection && selectedCount == 1;
             AttachFileBarButtonItem.Enabled = hasSelection && selectedCount == 1;
