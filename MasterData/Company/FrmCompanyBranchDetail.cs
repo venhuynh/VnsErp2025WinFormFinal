@@ -210,32 +210,25 @@ namespace MasterData.Company
             // Bước 1: Thu thập dữ liệu từ form và build DTO
             var branchDto = GetDataFromControls();
 
-            // Bước 2: Convert DTO -> Entity
-            CompanyBranch branchEntity;
+            // Bước 2: Lưu DTO qua BLL (BLL methods expect DTOs, not entities)
             if (_isEditMode)
             {
-                // Edit mode: lấy existing entity và update
-                var existingEntity = _companyBranchBll.GetById(_companyBranchId);
-                if (existingEntity == null)
+                // Edit mode: cập nhật với DTO
+                var existingDto = _companyBranchBll.GetById(_companyBranchId);
+                if (existingDto == null)
                 {
                     throw new Exception("Không tìm thấy chi nhánh công ty để cập nhật.");
                 }
-                branchEntity = branchDto.ToEntity(existingEntity);
+                
+                // Đảm bảo ID được giữ nguyên
+                branchDto.Id = _companyBranchId;
+                
+                await Task.Run(() => _companyBranchBll.Update(branchDto));
             }
             else
             {
-                // Create mode: tạo entity mới
-                branchEntity = branchDto.ToEntity();
-            }
-
-            // Bước 3: Lưu entity qua BLL
-            if (_isEditMode)
-            {
-                await Task.Run(() => _companyBranchBll.Update(branchEntity));
-            }
-            else
-            {
-                var newId = await Task.Run(() => _companyBranchBll.Insert(branchEntity));
+                // Create mode: tạo mới với DTO
+                var newId = await Task.Run(() => _companyBranchBll.Insert(branchDto));
                 if (newId == Guid.Empty)
                 {
                     throw new Exception("Không thể tạo mới chi nhánh công ty. Có thể mã chi nhánh đã tồn tại.");
