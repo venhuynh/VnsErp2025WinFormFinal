@@ -137,6 +137,7 @@
     <Compile Include="DtoConverter\EmployeeConverters.cs" />
     <Compile Include="DtoConverter\PositionConverter.cs" />
     <Compile Include="DtoConverter\ProductServiceCategoryConverters.cs" />
+    <Compile Include="DtoConverter\ProductServiceConverters.cs" />
     <Compile Include="Exceptions\ConnectionException.cs" />
     <Compile Include="Exceptions\DataAccessException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

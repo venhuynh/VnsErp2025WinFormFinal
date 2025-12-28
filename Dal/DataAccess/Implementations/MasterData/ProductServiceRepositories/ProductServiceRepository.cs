@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -48,7 +50,7 @@ public class ProductServiceRepository : IProductServiceRepository
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -147,12 +149,67 @@ public class ProductServiceRepository : IProductServiceRepository
 
     #endregion
 
-    #region Read
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật sản phẩm/dịch vụ.
+    /// </summary>
+    /// <param name="dto">ProductServiceDto</param>
+    public void SaveOrUpdate(ProductServiceDto dto)
+    {
+        try
+        {
+            if (dto == null) 
+                throw new ArgumentNullException(nameof(dto));
+            
+            using var context = CreateNewContext();
+            var existing = dto.Id != Guid.Empty 
+                ? context.ProductServices.FirstOrDefault(x => x.Id == dto.Id) 
+                : null;
+            
+            if (existing == null)
+            {
+                // Thêm mới
+                var entity = dto.ToEntity();
+                if (entity.Id == Guid.Empty)
+                    entity.Id = Guid.NewGuid();
+                    
+                context.ProductServices.InsertOnSubmit(entity);
+                context.SubmitChanges();
+                
+                _logger.Info($"Đã thêm mới sản phẩm/dịch vụ: {entity.Name} (ID: {entity.Id})");
+            }
+            else
+            {
+                // Cập nhật - Sử dụng converter để cập nhật entity từ DTO
+                existing.Code = dto.Code;
+                existing.Name = dto.Name;
+                existing.CategoryId = dto.CategoryId;
+                existing.IsService = dto.IsService;
+                existing.Description = dto.Description;
+                existing.IsActive = dto.IsActive;
+                existing.ThumbnailImage = dto.ThumbnailImage != null ? new Binary(dto.ThumbnailImage) : null;
+                
+                context.SubmitChanges();
+                
+                _logger.Info($"Đã cập nhật sản phẩm/dịch vụ: {existing.Name} (ID: {existing.Id})");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lưu/cập nhật sản phẩm/dịch vụ '{dto?.Name}': {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lưu/cập nhật sản phẩm/dịch vụ '{dto?.Name}': {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy sản phẩm/dịch vụ theo Id.
     /// </summary>
-    public ProductService GetById(Guid id)
+    public ProductServiceDto GetById(Guid id)
     {
         try
         {
@@ -162,13 +219,13 @@ public class ProductServiceRepository : IProductServiceRepository
             if (productService != null)
             {
                 _logger.Debug($"Đã lấy sản phẩm/dịch vụ theo ID: {id} - {productService.Name}");
+                return productService.ToDto();
             }
             else
             {
                 _logger.Debug($"Không tìm thấy sản phẩm/dịch vụ với ID: {id}");
+                return null;
             }
-            
-            return productService;
         }
         catch (Exception ex)
         {
@@ -180,7 +237,7 @@ public class ProductServiceRepository : IProductServiceRepository
     /// <summary>
     /// Lấy sản phẩm/dịch vụ theo Id (Async).
     /// </summary>
-    public async Task<ProductService> GetByIdAsync(Guid id)
+    public async Task<ProductServiceDto> GetByIdAsync(Guid id)
     {
         try
         {
@@ -190,13 +247,13 @@ public class ProductServiceRepository : IProductServiceRepository
             if (productService != null)
             {
                 _logger.Debug($"Đã lấy sản phẩm/dịch vụ theo ID (async): {id} - {productService.Name}");
+                return productService.ToDto();
             }
             else
             {
                 _logger.Debug($"Không tìm thấy sản phẩm/dịch vụ với ID (async): {id}");
+                return null;
             }
-            
-            return productService;
         }
         catch (Exception ex)
         {
@@ -208,7 +265,7 @@ public class ProductServiceRepository : IProductServiceRepository
     /// <summary>
     /// Lấy tất cả sản phẩm/dịch vụ.
     /// </summary>
-    public List<ProductService> GetAll()
+    public List<ProductServiceDto> GetAll()
     {
         try
         {
@@ -217,8 +274,11 @@ public class ProductServiceRepository : IProductServiceRepository
                 .OrderBy(ps => ps.Code)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {products.Count} sản phẩm/dịch vụ");
-            return products;
+            // Chuyển đổi sang DTO
+            var dtos = products.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} sản phẩm/dịch vụ");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -230,7 +290,7 @@ public class ProductServiceRepository : IProductServiceRepository
     /// <summary>
     /// Lấy tất cả sản phẩm/dịch vụ (Async).
     /// </summary>
-    public async Task<List<ProductService>> GetAllAsync()
+    public async Task<List<ProductServiceDto>> GetAllAsync()
     {
         try
         {
@@ -239,8 +299,11 @@ public class ProductServiceRepository : IProductServiceRepository
                 .OrderBy(ps => ps.Code)
                 .ToList());
             
-            _logger.Debug($"Đã lấy {products.Count} sản phẩm/dịch vụ (async)");
-            return products;
+            // Chuyển đổi sang DTO
+            var dtos = products.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} sản phẩm/dịch vụ (async)");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -250,140 +313,9 @@ public class ProductServiceRepository : IProductServiceRepository
     }
 
     /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo mã.
-    /// </summary>
-    public ProductService GetByCode(string code)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(code))
-                return null;
-
-            using var context = CreateNewContext();
-            var productService = context.ProductServices.FirstOrDefault(x => x.Code == code.Trim());
-            
-            if (productService != null)
-            {
-                _logger.Debug($"Đã lấy sản phẩm/dịch vụ theo mã: '{code}' - {productService.Name}");
-            }
-            else
-            {
-                _logger.Debug($"Không tìm thấy sản phẩm/dịch vụ với mã: '{code}'");
-            }
-            
-            return productService;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy sản phẩm/dịch vụ theo mã '{code}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy sản phẩm/dịch vụ theo mã '{code}': {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo tên.
-    /// </summary>
-    public ProductService GetByName(string name)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return null;
-
-            using var context = CreateNewContext();
-            var productService = context.ProductServices.FirstOrDefault(x => x.Name == name.Trim());
-            
-            if (productService != null)
-            {
-                _logger.Debug($"Đã lấy sản phẩm/dịch vụ theo tên: '{name}'");
-            }
-            else
-            {
-                _logger.Debug($"Không tìm thấy sản phẩm/dịch vụ với tên: '{name}'");
-            }
-            
-            return productService;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy sản phẩm/dịch vụ theo tên '{name}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy sản phẩm/dịch vụ theo tên '{name}': {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo danh mục.
-    /// </summary>
-    public List<ProductService> GetByCategory(Guid categoryId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var products = context.ProductServices
-                .Where(ps => ps.CategoryId == categoryId)
-                .OrderBy(ps => ps.Code)
-                .ToList();
-            
-            _logger.Debug($"Đã lấy {products.Count} sản phẩm/dịch vụ theo danh mục: {categoryId}");
-            return products;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy sản phẩm/dịch vụ theo danh mục {categoryId}: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy sản phẩm/dịch vụ theo danh mục {categoryId}: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo loại (sản phẩm hoặc dịch vụ).
-    /// </summary>
-    public List<ProductService> GetByType(bool isService)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var products = context.ProductServices
-                .Where(ps => ps.IsService == isService)
-                .OrderBy(ps => ps.Code)
-                .ToList();
-            
-            _logger.Debug($"Đã lấy {products.Count} {(isService ? "dịch vụ" : "sản phẩm")}");
-            return products;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy sản phẩm/dịch vụ theo loại {(isService ? "dịch vụ" : "sản phẩm")}: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy sản phẩm/dịch vụ theo loại {(isService ? "dịch vụ" : "sản phẩm")}: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo trạng thái hoạt động.
-    /// </summary>
-    public List<ProductService> GetByStatus(bool isActive)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var products = context.ProductServices
-                .Where(ps => ps.IsActive == isActive)
-                .OrderBy(ps => ps.Code)
-                .ToList();
-            
-            _logger.Debug($"Đã lấy {products.Count} sản phẩm/dịch vụ {(isActive ? "hoạt động" : "không hoạt động")}");
-            return products;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy sản phẩm/dịch vụ theo trạng thái {(isActive ? "hoạt động" : "không hoạt động")}: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy sản phẩm/dịch vụ theo trạng thái {(isActive ? "hoạt động" : "không hoạt động")}: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
     /// Tìm kiếm sản phẩm/dịch vụ theo từ khóa.
     /// </summary>
-    public List<ProductService> Search(string keyword)
+    public List<ProductServiceDto> Search(string keyword)
     {
         try
         {
@@ -401,8 +333,11 @@ public class ProductServiceRepository : IProductServiceRepository
                 .OrderBy(ps => ps.Name)
                 .ToList();
             
-            _logger.Debug($"Tìm kiếm với từ khóa '{keyword}': tìm thấy {results.Count} kết quả");
-            return results;
+            // Chuyển đổi sang DTO
+            var dtos = results.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"Tìm kiếm với từ khóa '{keyword}': tìm thấy {dtos.Count} kết quả");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -411,63 +346,400 @@ public class ProductServiceRepository : IProductServiceRepository
         }
     }
 
-    #endregion
-
-    #region Create/Update
-
     /// <summary>
-    /// Lưu hoặc cập nhật sản phẩm/dịch vụ.
+    /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database (Async)
     /// </summary>
-    /// <param name="productService">Sản phẩm/dịch vụ cần lưu hoặc cập nhật</param>
-    public void SaveOrUpdate(ProductService productService)
+    public async Task<List<ProductServiceDto>> SearchAsync(string searchText)
     {
         try
         {
-            if (productService == null) 
-                throw new ArgumentNullException(nameof(productService));
-            
+            if (string.IsNullOrWhiteSpace(searchText))
+                return new List<ProductServiceDto>();
+
             using var context = CreateNewContext();
-            var existing = productService.Id != Guid.Empty 
-                ? context.ProductServices.FirstOrDefault(x => x.Id == productService.Id) 
-                : null;
             
-            if (existing == null)
-            {
-                // Thêm mới
-                if (productService.Id == Guid.Empty)
-                    productService.Id = Guid.NewGuid();
-                    
-                context.ProductServices.InsertOnSubmit(productService);
-                context.SubmitChanges();
-                
-                _logger.Info($"Đã thêm mới sản phẩm/dịch vụ: {productService.Name} (ID: {productService.Id})");
-            }
-            else
-            {
-                // Cập nhật
-                existing.Code = productService.Code;
-                existing.Name = productService.Name;
-                existing.CategoryId = productService.CategoryId;
-                existing.IsService = productService.IsService;
-                existing.Description = productService.Description;
-                existing.IsActive = productService.IsActive;
-                existing.ThumbnailImage = productService.ThumbnailImage;
-                
-                context.SubmitChanges();
-                
-                _logger.Info($"Đã cập nhật sản phẩm/dịch vụ: {existing.Name} (ID: {existing.Id})");
-            }
+            var searchTerm = searchText.Trim().ToLower();
+            
+            var query = context.ProductServices
+                .Where(x => x.Code.ToLower().Contains(searchTerm) ||
+                           x.Name.ToLower().Contains(searchTerm) ||
+                           (x.Description != null && x.Description.ToLower().Contains(searchTerm)) ||
+                           context.ProductServiceCategories.Any(c => c.Id == x.CategoryId && c.CategoryName.ToLower().Contains(searchTerm)))
+                .OrderBy(x => x.Name);
+
+            var results = await Task.FromResult(query.ToList());
+            
+            // Chuyển đổi sang DTO
+            var dtos = results.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"SearchAsync: SearchText='{searchText}', ResultCount={dtos.Count}");
+            return dtos;
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi lưu/cập nhật sản phẩm/dịch vụ '{productService?.Name}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lưu/cập nhật sản phẩm/dịch vụ '{productService?.Name}': {ex.Message}", ex);
+            _logger.Error($"Lỗi tìm kiếm sản phẩm/dịch vụ: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi tìm kiếm sản phẩm/dịch vụ: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy số lượng tổng cộng với filter
+    /// </summary>
+    public async Task<int> GetCountAsync(
+        string searchText = null,
+        Guid? categoryId = null,
+        bool? isService = null,
+        bool? isActive = null)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            
+            var query = context.ProductServices.AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                query = query.Where(x => 
+                    x.Code.Contains(searchText) || 
+                    x.Name.Contains(searchText) || 
+                    x.Description.Contains(searchText));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(x => x.CategoryId == categoryId.Value);
+            }
+
+            if (isService.HasValue)
+            {
+                query = query.Where(x => x.IsService == isService.Value);
+            }
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(x => x.IsActive == isActive.Value);
+            }
+
+            var count = await Task.FromResult(query.Count());
+            _logger.Debug($"GetCountAsync: Count={count}, SearchText='{searchText}', CategoryId={categoryId}, IsService={isService}, IsActive={isActive}");
+            return count;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi đếm số lượng sản phẩm/dịch vụ: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi đếm số lượng sản phẩm/dịch vụ: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy dữ liệu phân trang
+    /// </summary>
+    public async Task<List<ProductServiceDto>> GetPagedAsync(
+        int pageIndex,
+        int pageSize,
+        string searchText = null,
+        Guid? categoryId = null,
+        bool? isService = null,
+        bool? isActive = null)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            
+            var query = context.ProductServices.AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                query = query.Where(x => 
+                    x.Code.Contains(searchText) || 
+                    x.Name.Contains(searchText) || 
+                    x.Description.Contains(searchText));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(x => x.CategoryId == categoryId.Value);
+            }
+
+            if (isService.HasValue)
+            {
+                query = query.Where(x => x.IsService == isService.Value);
+            }
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(x => x.IsActive == isActive.Value);
+            }
+
+            // Apply pagination
+            var skip = pageIndex * pageSize;
+            var results = query
+                .OrderBy(x => x.Name)
+                .Skip(skip)
+                .Take(pageSize)
+                .ToList();
+
+            // Chuyển đổi sang DTO
+            var dtos = results.Select(p => p.ToDto()).ToList();
+
+            _logger.Debug($"GetPagedAsync: PageIndex={pageIndex}, PageSize={pageSize}, ResultCount={dtos.Count}");
+            return await Task.FromResult(dtos);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy dữ liệu phân trang: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy dữ liệu phân trang: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy dữ liệu thumbnail image cho lazy loading
+    /// </summary>
+    public byte[] GetThumbnailImageData(Guid productId)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var imageData = context.ProductServices
+                .Where(x => x.Id == productId)
+                .Select(x => x.ThumbnailImage.ToArray())
+                .FirstOrDefault();
+            
+            if (imageData != null)
+            {
+                _logger.Debug($"GetThumbnailImageData: ProductId={productId}, ImageSize={imageData.Length} bytes");
+            }
+            else
+            {
+                _logger.Debug($"GetThumbnailImageData: ProductId={productId}, No image found");
+            }
+            
+            return imageData;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy dữ liệu ảnh thumbnail: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy dữ liệu ảnh thumbnail: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách sản phẩm với search và filter (optimized)
+    /// </summary>
+    public async Task<List<ProductServiceDto>> GetFilteredAsync(
+        string searchText = null,
+        Guid? categoryId = null,
+        bool? isService = null,
+        bool? isActive = null,
+        string orderBy = "Name",
+        string orderDirection = "ASC")
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            
+            var query = context.ProductServices.AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                query = query.Where(x => 
+                    x.Code.Contains(searchText) || 
+                    x.Name.Contains(searchText) || 
+                    x.Description.Contains(searchText));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(x => x.CategoryId == categoryId.Value);
+            }
+
+            if (isService.HasValue)
+            {
+                query = query.Where(x => x.IsService == isService.Value);
+            }
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(x => x.IsActive == isActive.Value);
+            }
+
+            // Apply ordering
+            switch (orderBy.ToLower())
+            {
+                case "code":
+                    query = orderDirection.ToUpper() == "DESC" 
+                        ? query.OrderByDescending(x => x.Code)
+                        : query.OrderBy(x => x.Code);
+                    break;
+                case "name":
+                    query = orderDirection.ToUpper() == "DESC" 
+                        ? query.OrderByDescending(x => x.Name)
+                        : query.OrderBy(x => x.Name);
+                    break;
+                case "category":
+                    query = orderDirection.ToUpper() == "DESC" 
+                        ? query.OrderByDescending(x => x.CategoryId)
+                        : query.OrderBy(x => x.CategoryId);
+                    break;
+                default:
+                    query = query.OrderBy(x => x.Name);
+                    break;
+            }
+
+            var results = await Task.FromResult(query.ToList());
+            
+            // Chuyển đổi sang DTO
+            var dtos = results.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"GetFilteredAsync: ResultCount={dtos.Count}, OrderBy={orderBy}, OrderDirection={orderDirection}");
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy dữ liệu với filter: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy dữ liệu với filter: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách mã code unique
+    /// </summary>
+    public async Task<List<object>> GetUniqueCodesAsync()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            
+            var codes = context.ProductServices
+                .Where(x => !string.IsNullOrEmpty(x.Code))
+                .Select(x => x.Code)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            var result = await Task.FromResult(codes.Cast<object>().ToList());
+            _logger.Debug($"GetUniqueCodesAsync: Count={result.Count}");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi lấy danh sách mã code unique: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi lấy danh sách mã code unique: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách tên unique
+    /// </summary>
+    public async Task<List<object>> GetUniqueNamesAsync()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            
+            var names = context.ProductServices
+                .Where(x => !string.IsNullOrEmpty(x.Name))
+                .Select(x => x.Name)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            var result = await Task.FromResult(names.Cast<object>().ToList());
+            _logger.Debug($"GetUniqueNamesAsync: Count={result.Count}");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi lấy danh sách tên unique: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi lấy danh sách tên unique: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách tên danh mục unique
+    /// </summary>
+    public async Task<List<object>> GetUniqueCategoryNamesAsync()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            
+            var categoryNames = context.ProductServiceCategories
+                .Where(x => !string.IsNullOrEmpty(x.CategoryName))
+                .Select(x => x.CategoryName)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            var result = await Task.FromResult(categoryNames.Cast<object>().ToList());
+            _logger.Debug($"GetUniqueCategoryNamesAsync: Count={result.Count}");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi lấy danh sách tên danh mục unique: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi lấy danh sách tên danh mục unique: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách loại hiển thị unique
+    /// </summary>
+    public async Task<List<object>> GetUniqueTypeDisplaysAsync()
+    {
+        try
+        {
+            var typeDisplays = new List<object>
+            {
+                "Sản phẩm",
+                "Dịch vụ"
+            };
+
+            var result = await Task.FromResult(typeDisplays);
+            _logger.Debug($"GetUniqueTypeDisplaysAsync: Count={result.Count}");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi lấy danh sách loại hiển thị unique: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi lấy danh sách loại hiển thị unique: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách trạng thái hiển thị unique
+    /// </summary>
+    public async Task<List<object>> GetUniqueStatusDisplaysAsync()
+    {
+        try
+        {
+            var statusDisplays = new List<object>
+            {
+                "Hoạt động",
+                "Không hoạt động"
+            };
+
+            var result = await Task.FromResult(statusDisplays);
+            _logger.Debug($"GetUniqueStatusDisplaysAsync: Count={result.Count}");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi lấy danh sách trạng thái hiển thị unique: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi lấy danh sách trạng thái hiển thị unique: {ex.Message}", ex);
         }
     }
 
     #endregion
 
-    #region Delete
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa sản phẩm/dịch vụ theo ID.
@@ -519,7 +791,7 @@ public class ProductServiceRepository : IProductServiceRepository
 
     #endregion
 
-    #region Validation & Business Rules
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra mã sản phẩm/dịch vụ có tồn tại không.
@@ -643,88 +915,7 @@ public class ProductServiceRepository : IProductServiceRepository
 
     #endregion
 
-    #region Statistics Methods
-
-    /// <summary>
-    /// Đếm tổng số sản phẩm/dịch vụ.
-    /// </summary>
-    /// <returns>Số lượng sản phẩm/dịch vụ</returns>
-    public int GetTotalCount()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var count = context.ProductServices.Count();
-            _logger.Debug($"GetTotalCount: {count}");
-            return count;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi đếm tổng số sản phẩm/dịch vụ: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi đếm tổng số sản phẩm/dịch vụ: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Đếm số sản phẩm.
-    /// </summary>
-    /// <returns>Số lượng sản phẩm</returns>
-    public int GetProductCount()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var count = context.ProductServices.Count(ps => !ps.IsService);
-            _logger.Debug($"GetProductCount: {count}");
-            return count;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi đếm số sản phẩm: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi đếm số sản phẩm: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Đếm số dịch vụ.
-    /// </summary>
-    /// <returns>Số lượng dịch vụ</returns>
-    public int GetServiceCount()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var count = context.ProductServices.Count(ps => ps.IsService);
-            _logger.Debug($"GetServiceCount: {count}");
-            return count;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi đếm số dịch vụ: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi đếm số dịch vụ: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Đếm số sản phẩm/dịch vụ theo danh mục.
-    /// </summary>
-    /// <param name="categoryId">ID danh mục</param>
-    /// <returns>Số lượng sản phẩm/dịch vụ</returns>
-    public int GetCountByCategory(Guid categoryId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var count = context.ProductServices.Count(ps => ps.CategoryId == categoryId);
-            _logger.Debug($"GetCountByCategory: CategoryId={categoryId}, Count={count}");
-            return count;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi đếm số sản phẩm/dịch vụ theo danh mục {categoryId}: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi đếm số sản phẩm/dịch vụ theo danh mục {categoryId}: {ex.Message}", ex);
-        }
-    }
+    #region ========== BUSINESS LOGIC METHODS ==========
 
     /// <summary>
     /// Đếm số lượng biến thể của sản phẩm/dịch vụ
@@ -816,225 +1007,6 @@ public class ProductServiceRepository : IProductServiceRepository
         }
     }
 
-    #endregion
-
-    #region Pagination & Optimization Methods
-
-    /// <summary>
-    /// Lấy số lượng tổng cộng với filter
-    /// </summary>
-    public async Task<int> GetCountAsync(
-        string searchText = null,
-        Guid? categoryId = null,
-        bool? isService = null,
-        bool? isActive = null)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            
-            var query = context.ProductServices.AsQueryable();
-
-            // Apply filters
-            if (!string.IsNullOrWhiteSpace(searchText))
-            {
-                query = query.Where(x => 
-                    x.Code.Contains(searchText) || 
-                    x.Name.Contains(searchText) || 
-                    x.Description.Contains(searchText));
-            }
-
-            if (categoryId.HasValue)
-            {
-                query = query.Where(x => x.CategoryId == categoryId.Value);
-            }
-
-            if (isService.HasValue)
-            {
-                query = query.Where(x => x.IsService == isService.Value);
-            }
-
-            if (isActive.HasValue)
-            {
-                query = query.Where(x => x.IsActive == isActive.Value);
-            }
-
-            var count = await Task.FromResult(query.Count());
-            _logger.Debug($"GetCountAsync: Count={count}, SearchText='{searchText}', CategoryId={categoryId}, IsService={isService}, IsActive={isActive}");
-            return count;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi đếm số lượng sản phẩm/dịch vụ: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi đếm số lượng sản phẩm/dịch vụ: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy dữ liệu phân trang
-    /// </summary>
-    public async Task<List<ProductService>> GetPagedAsync(
-        int pageIndex,
-        int pageSize,
-        string searchText = null,
-        Guid? categoryId = null,
-        bool? isService = null,
-        bool? isActive = null)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            
-            var query = context.ProductServices.AsQueryable();
-
-            // Apply filters
-            if (!string.IsNullOrWhiteSpace(searchText))
-            {
-                query = query.Where(x => 
-                    x.Code.Contains(searchText) || 
-                    x.Name.Contains(searchText) || 
-                    x.Description.Contains(searchText));
-            }
-
-            if (categoryId.HasValue)
-            {
-                query = query.Where(x => x.CategoryId == categoryId.Value);
-            }
-
-            if (isService.HasValue)
-            {
-                query = query.Where(x => x.IsService == isService.Value);
-            }
-
-            if (isActive.HasValue)
-            {
-                query = query.Where(x => x.IsActive == isActive.Value);
-            }
-
-            // Apply pagination
-            var skip = pageIndex * pageSize;
-            var result = query
-                .OrderBy(x => x.Name)
-                .Skip(skip)
-                .Take(pageSize)
-                .ToList();
-
-            _logger.Debug($"GetPagedAsync: PageIndex={pageIndex}, PageSize={pageSize}, ResultCount={result.Count}");
-            return await Task.FromResult(result);
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy dữ liệu phân trang: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy dữ liệu phân trang: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy dữ liệu thumbnail image cho lazy loading
-    /// </summary>
-    public byte[] GetThumbnailImageData(Guid productId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var imageData = context.ProductServices
-                .Where(x => x.Id == productId)
-                .Select(x => x.ThumbnailImage.ToArray())
-                .FirstOrDefault();
-            
-            if (imageData != null)
-            {
-                _logger.Debug($"GetThumbnailImageData: ProductId={productId}, ImageSize={imageData.Length} bytes");
-            }
-            else
-            {
-                _logger.Debug($"GetThumbnailImageData: ProductId={productId}, No image found");
-            }
-            
-            return imageData;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy dữ liệu ảnh thumbnail: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy dữ liệu ảnh thumbnail: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách sản phẩm với search và filter (optimized)
-    /// </summary>
-    public async Task<List<ProductService>> GetFilteredAsync(
-        string searchText = null,
-        Guid? categoryId = null,
-        bool? isService = null,
-        bool? isActive = null,
-        string orderBy = "Name",
-        string orderDirection = "ASC")
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            
-            var query = context.ProductServices.AsQueryable();
-
-            // Apply filters
-            if (!string.IsNullOrWhiteSpace(searchText))
-            {
-                query = query.Where(x => 
-                    x.Code.Contains(searchText) || 
-                    x.Name.Contains(searchText) || 
-                    x.Description.Contains(searchText));
-            }
-
-            if (categoryId.HasValue)
-            {
-                query = query.Where(x => x.CategoryId == categoryId.Value);
-            }
-
-            if (isService.HasValue)
-            {
-                query = query.Where(x => x.IsService == isService.Value);
-            }
-
-            if (isActive.HasValue)
-            {
-                query = query.Where(x => x.IsActive == isActive.Value);
-            }
-
-            // Apply ordering
-            switch (orderBy.ToLower())
-            {
-                case "code":
-                    query = orderDirection.ToUpper() == "DESC" 
-                        ? query.OrderByDescending(x => x.Code)
-                        : query.OrderBy(x => x.Code);
-                    break;
-                case "name":
-                    query = orderDirection.ToUpper() == "DESC" 
-                        ? query.OrderByDescending(x => x.Name)
-                        : query.OrderBy(x => x.Name);
-                    break;
-                case "category":
-                    query = orderDirection.ToUpper() == "DESC" 
-                        ? query.OrderByDescending(x => x.CategoryId)
-                        : query.OrderBy(x => x.CategoryId);
-                    break;
-                default:
-                    query = query.OrderBy(x => x.Name);
-                    break;
-            }
-
-            var result = await Task.FromResult(query.ToList());
-            _logger.Debug($"GetFilteredAsync: ResultCount={result.Count}, OrderBy={orderBy}, OrderDirection={orderDirection}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy dữ liệu với filter: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy dữ liệu với filter: {ex.Message}", ex);
-        }
-    }
-
     /// <summary>
     /// Lấy counts cho nhiều sản phẩm cùng lúc (optimized async version)
     /// </summary>
@@ -1079,178 +1051,6 @@ public class ProductServiceRepository : IProductServiceRepository
         {
             _logger.Error($"Lỗi khi đếm số lượng cho nhiều sản phẩm: {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi đếm số lượng cho nhiều sản phẩm: {ex.Message}", ex);
-        }
-    }
-
-    #endregion
-
-    #region Search and Filter Methods
-
-    /// <summary>
-    /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database
-    /// </summary>
-    /// <param name="searchText">Text tìm kiếm</param>
-    /// <returns>Danh sách kết quả tìm kiếm</returns>
-    public async Task<List<ProductService>> SearchAsync(string searchText)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(searchText))
-                return new List<ProductService>();
-
-            using var context = CreateNewContext();
-            
-            var searchTerm = searchText.Trim().ToLower();
-            
-            var query = context.ProductServices
-                .Where(x => x.Code.ToLower().Contains(searchTerm) ||
-                           x.Name.ToLower().Contains(searchTerm) ||
-                           (x.Description != null && x.Description.ToLower().Contains(searchTerm)) ||
-                           context.ProductServiceCategories.Any(c => c.Id == x.CategoryId && c.CategoryName.ToLower().Contains(searchTerm)))
-                .OrderBy(x => x.Name);
-
-            var result = await Task.FromResult(query.ToList());
-            _logger.Debug($"SearchAsync: SearchText='{searchText}', ResultCount={result.Count}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi tìm kiếm sản phẩm/dịch vụ: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi tìm kiếm sản phẩm/dịch vụ: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách mã code unique
-    /// </summary>
-    /// <returns>Danh sách mã code unique</returns>
-    public async Task<List<object>> GetUniqueCodesAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            
-            var codes = context.ProductServices
-                .Where(x => !string.IsNullOrEmpty(x.Code))
-                .Select(x => x.Code)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
-
-            var result = await Task.FromResult(codes.Cast<object>().ToList());
-            _logger.Debug($"GetUniqueCodesAsync: Count={result.Count}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi lấy danh sách mã code unique: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi lấy danh sách mã code unique: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách tên unique
-    /// </summary>
-    /// <returns>Danh sách tên unique</returns>
-    public async Task<List<object>> GetUniqueNamesAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            
-            var names = context.ProductServices
-                .Where(x => !string.IsNullOrEmpty(x.Name))
-                .Select(x => x.Name)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
-
-            var result = await Task.FromResult(names.Cast<object>().ToList());
-            _logger.Debug($"GetUniqueNamesAsync: Count={result.Count}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi lấy danh sách tên unique: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi lấy danh sách tên unique: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách tên danh mục unique
-    /// </summary>
-    /// <returns>Danh sách tên danh mục unique</returns>
-    public async Task<List<object>> GetUniqueCategoryNamesAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            
-            var categoryNames = context.ProductServiceCategories
-                .Where(x => !string.IsNullOrEmpty(x.CategoryName))
-                .Select(x => x.CategoryName)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
-
-            var result = await Task.FromResult(categoryNames.Cast<object>().ToList());
-            _logger.Debug($"GetUniqueCategoryNamesAsync: Count={result.Count}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi lấy danh sách tên danh mục unique: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi lấy danh sách tên danh mục unique: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách loại hiển thị unique
-    /// </summary>
-    /// <returns>Danh sách loại hiển thị unique</returns>
-    public async Task<List<object>> GetUniqueTypeDisplaysAsync()
-    {
-        try
-        {
-            var typeDisplays = new List<object>
-            {
-                "Sản phẩm",
-                "Dịch vụ"
-            };
-
-            var result = await Task.FromResult(typeDisplays);
-            _logger.Debug($"GetUniqueTypeDisplaysAsync: Count={result.Count}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi lấy danh sách loại hiển thị unique: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi lấy danh sách loại hiển thị unique: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách trạng thái hiển thị unique
-    /// </summary>
-    /// <returns>Danh sách trạng thái hiển thị unique</returns>
-    public async Task<List<object>> GetUniqueStatusDisplaysAsync()
-    {
-        try
-        {
-            var statusDisplays = new List<object>
-            {
-                "Hoạt động",
-                "Không hoạt động"
-            };
-
-            var result = await Task.FromResult(statusDisplays);
-            _logger.Debug($"GetUniqueStatusDisplaysAsync: Count={result.Count}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi lấy danh sách trạng thái hiển thị unique: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi lấy danh sách trạng thái hiển thị unique: {ex.Message}", ex);
         }
     }
 

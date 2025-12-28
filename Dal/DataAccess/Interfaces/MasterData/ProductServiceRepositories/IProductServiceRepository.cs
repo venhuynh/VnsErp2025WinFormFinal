@@ -1,153 +1,66 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.MasterData.ProductService;
 
 namespace Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 
 /// <summary>
-/// Data Access cho thực thể ProductService (LINQ to SQL trên VnsErp2025DataContext).
-/// Cung cấp CRUD đầy đủ, phương thức đặc thù và phiên bản đồng bộ/bất đồng bộ.
+/// Interface cho Data Access Layer của ProductService
 /// </summary>
 public interface IProductServiceRepository
 {
-    #region Read Operations
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo Id.
-    /// </summary>
-    ProductService GetById(Guid id);
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo Id (Async).
-    /// </summary>
-    Task<ProductService> GetByIdAsync(Guid id);
-
-    /// <summary>
-    /// Lấy tất cả sản phẩm/dịch vụ.
-    /// </summary>
-    List<ProductService> GetAll();
-
-    /// <summary>
-    /// Lấy tất cả sản phẩm/dịch vụ (Async).
-    /// </summary>
-    Task<List<ProductService>> GetAllAsync();
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo mã.
-    /// </summary>
-    ProductService GetByCode(string code);
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo tên.
-    /// </summary>
-    ProductService GetByName(string name);
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo danh mục.
-    /// </summary>
-    List<ProductService> GetByCategory(Guid categoryId);
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo loại (sản phẩm hoặc dịch vụ).
-    /// </summary>
-    List<ProductService> GetByType(bool isService);
-
-    /// <summary>
-    /// Lấy sản phẩm/dịch vụ theo trạng thái hoạt động.
-    /// </summary>
-    List<ProductService> GetByStatus(bool isActive);
-
-    /// <summary>
-    /// Tìm kiếm sản phẩm/dịch vụ theo từ khóa.
-    /// </summary>
-    List<ProductService> Search(string keyword);
-
-    #endregion
-
-    #region Create/Update Operations
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
     /// Lưu hoặc cập nhật sản phẩm/dịch vụ.
     /// </summary>
-    void SaveOrUpdate(ProductService productService);
+    /// <param name="dto">ProductServiceDto</param>
+    void SaveOrUpdate(ProductServiceDto dto);
 
     #endregion
 
-    #region Delete Operations
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
-    /// Xóa sản phẩm/dịch vụ theo ID.
+    /// Lấy sản phẩm/dịch vụ theo Id.
     /// </summary>
-    /// <returns>True nếu xóa thành công</returns>
-    bool DeleteProductService(Guid id);
-
-    #endregion
-
-    #region Validation & Business Rules
+    /// <param name="id">Id của sản phẩm/dịch vụ</param>
+    /// <returns>ProductServiceDto hoặc null nếu không tìm thấy</returns>
+    ProductServiceDto GetById(Guid id);
 
     /// <summary>
-    /// Kiểm tra mã sản phẩm/dịch vụ có tồn tại không.
+    /// Lấy sản phẩm/dịch vụ theo Id (Async).
     /// </summary>
-    bool IsCodeExists(string code, Guid? excludeId = null);
+    /// <param name="id">Id của sản phẩm/dịch vụ</param>
+    /// <returns>ProductServiceDto hoặc null nếu không tìm thấy</returns>
+    Task<ProductServiceDto> GetByIdAsync(Guid id);
 
     /// <summary>
-    /// Kiểm tra mã sản phẩm/dịch vụ có tồn tại không (Async).
+    /// Lấy tất cả sản phẩm/dịch vụ.
     /// </summary>
-    Task<bool> IsCodeExistsAsync(string code, Guid? excludeId = null);
+    /// <returns>Danh sách tất cả ProductServiceDto</returns>
+    List<ProductServiceDto> GetAll();
 
     /// <summary>
-    /// Kiểm tra tên sản phẩm/dịch vụ có tồn tại không.
+    /// Lấy tất cả sản phẩm/dịch vụ (Async).
     /// </summary>
-    bool IsNameExists(string name, Guid? excludeId = null);
+    /// <returns>Danh sách tất cả ProductServiceDto</returns>
+    Task<List<ProductServiceDto>> GetAllAsync();
 
     /// <summary>
-    /// Kiểm tra tên sản phẩm/dịch vụ có tồn tại không (Async).
+    /// Tìm kiếm sản phẩm/dịch vụ theo từ khóa.
     /// </summary>
-    Task<bool> IsNameExistsAsync(string name, Guid? excludeId = null);
-
-    #endregion
-
-    #region Statistics Methods
+    /// <param name="keyword">Từ khóa tìm kiếm</param>
+    /// <returns>Danh sách ProductServiceDto</returns>
+    List<ProductServiceDto> Search(string keyword);
 
     /// <summary>
-    /// Đếm tổng số sản phẩm/dịch vụ.
+    /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database (Async)
     /// </summary>
-    int GetTotalCount();
-
-    /// <summary>
-    /// Đếm số sản phẩm.
-    /// </summary>
-    int GetProductCount();
-
-    /// <summary>
-    /// Đếm số dịch vụ.
-    /// </summary>
-    int GetServiceCount();
-
-    /// <summary>
-    /// Đếm số sản phẩm/dịch vụ theo danh mục.
-    /// </summary>
-    int GetCountByCategory(Guid categoryId);
-
-    /// <summary>
-    /// Đếm số lượng biến thể của sản phẩm/dịch vụ
-    /// </summary>
-    int GetVariantCount(Guid productServiceId);
-
-    /// <summary>
-    /// Đếm số lượng hình ảnh của sản phẩm/dịch vụ
-    /// </summary>
-    int GetImageCount(Guid productServiceId);
-
-    /// <summary>
-    /// Đếm số lượng biến thể và hình ảnh cho nhiều sản phẩm/dịch vụ
-    /// </summary>
-    Dictionary<Guid, (int VariantCount, int ImageCount)> GetCountsForProducts(List<Guid> productServiceIds);
-
-    #endregion
-
-    #region Pagination & Optimization Methods
+    /// <param name="searchText">Text tìm kiếm</param>
+    /// <returns>Danh sách kết quả tìm kiếm</returns>
+    Task<List<ProductServiceDto>> SearchAsync(string searchText);
 
     /// <summary>
     /// Lấy số lượng tổng cộng với filter
@@ -161,7 +74,7 @@ public interface IProductServiceRepository
     /// <summary>
     /// Lấy dữ liệu phân trang
     /// </summary>
-    Task<List<ProductService>> GetPagedAsync(
+    Task<List<ProductServiceDto>> GetPagedAsync(
         int pageIndex,
         int pageSize,
         string searchText = null,
@@ -172,12 +85,14 @@ public interface IProductServiceRepository
     /// <summary>
     /// Lấy dữ liệu thumbnail image cho lazy loading
     /// </summary>
+    /// <param name="productId">ID sản phẩm</param>
+    /// <returns>Dữ liệu ảnh thumbnail</returns>
     byte[] GetThumbnailImageData(Guid productId);
 
     /// <summary>
     /// Lấy danh sách sản phẩm với search và filter (optimized)
     /// </summary>
-    Task<List<ProductService>> GetFilteredAsync(
+    Task<List<ProductServiceDto>> GetFilteredAsync(
         string searchText = null,
         Guid? categoryId = null,
         bool? isService = null,
@@ -186,56 +101,135 @@ public interface IProductServiceRepository
         string orderDirection = "ASC");
 
     /// <summary>
-    /// Lấy counts cho nhiều sản phẩm cùng lúc (optimized async version)
-    /// </summary>
-    Task<Dictionary<Guid, (int VariantCount, int ImageCount)>> GetCountsForProductsAsync(List<Guid> productIds);
-
-    #endregion
-
-    #region Search and Filter Methods
-
-    /// <summary>
-    /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database
-    /// </summary>
-    Task<List<ProductService>> SearchAsync(string searchText);
-
-    /// <summary>
     /// Lấy danh sách mã code unique
     /// </summary>
+    /// <returns>Danh sách mã code unique</returns>
     Task<List<object>> GetUniqueCodesAsync();
 
     /// <summary>
     /// Lấy danh sách tên unique
     /// </summary>
+    /// <returns>Danh sách tên unique</returns>
     Task<List<object>> GetUniqueNamesAsync();
 
     /// <summary>
     /// Lấy danh sách tên danh mục unique
     /// </summary>
+    /// <returns>Danh sách tên danh mục unique</returns>
     Task<List<object>> GetUniqueCategoryNamesAsync();
 
     /// <summary>
     /// Lấy danh sách loại hiển thị unique
     /// </summary>
+    /// <returns>Danh sách loại hiển thị unique</returns>
     Task<List<object>> GetUniqueTypeDisplaysAsync();
 
     /// <summary>
     /// Lấy danh sách trạng thái hiển thị unique
     /// </summary>
+    /// <returns>Danh sách trạng thái hiển thị unique</returns>
     Task<List<object>> GetUniqueStatusDisplaysAsync();
 
     #endregion
 
-    #region Helper Methods
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
+
+    /// <summary>
+    /// Xóa sản phẩm/dịch vụ theo ID.
+    /// </summary>
+    /// <param name="id">ID sản phẩm/dịch vụ cần xóa</param>
+    /// <returns>True nếu xóa thành công</returns>
+    bool DeleteProductService(Guid id);
+
+    #endregion
+
+    #region ========== VALIDATION & EXISTS CHECKS ==========
+
+    /// <summary>
+    /// Kiểm tra mã sản phẩm/dịch vụ có tồn tại không.
+    /// </summary>
+    /// <param name="code">Mã sản phẩm/dịch vụ</param>
+    /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
+    /// <returns>True nếu tồn tại</returns>
+    bool IsCodeExists(string code, Guid? excludeId = null);
+
+    /// <summary>
+    /// Kiểm tra mã sản phẩm/dịch vụ có tồn tại không (Async).
+    /// </summary>
+    /// <param name="code">Mã sản phẩm/dịch vụ</param>
+    /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
+    /// <returns>True nếu tồn tại</returns>
+    Task<bool> IsCodeExistsAsync(string code, Guid? excludeId = null);
+
+    /// <summary>
+    /// Kiểm tra tên sản phẩm/dịch vụ có tồn tại không.
+    /// </summary>
+    /// <param name="name">Tên sản phẩm/dịch vụ</param>
+    /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
+    /// <returns>True nếu tồn tại</returns>
+    bool IsNameExists(string name, Guid? excludeId = null);
+
+    /// <summary>
+    /// Kiểm tra tên sản phẩm/dịch vụ có tồn tại không (Async).
+    /// </summary>
+    /// <param name="name">Tên sản phẩm/dịch vụ</param>
+    /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
+    /// <returns>True nếu tồn tại</returns>
+    Task<bool> IsNameExistsAsync(string name, Guid? excludeId = null);
+
+    #endregion
+
+    #region ========== BUSINESS LOGIC METHODS ==========
+
+    /// <summary>
+    /// Đếm số lượng biến thể của sản phẩm/dịch vụ
+    /// </summary>
+    /// <param name="productServiceId">ID sản phẩm/dịch vụ</param>
+    /// <returns>Số lượng biến thể</returns>
+    int GetVariantCount(Guid productServiceId);
+
+    /// <summary>
+    /// Đếm số lượng hình ảnh của sản phẩm/dịch vụ
+    /// </summary>
+    /// <param name="productServiceId">ID sản phẩm/dịch vụ</param>
+    /// <returns>Số lượng hình ảnh</returns>
+    int GetImageCount(Guid productServiceId);
+
+    /// <summary>
+    /// Đếm số lượng biến thể và hình ảnh cho nhiều sản phẩm/dịch vụ
+    /// </summary>
+    /// <param name="productServiceIds">Danh sách ID sản phẩm/dịch vụ</param>
+    /// <returns>Dictionary với key là ProductServiceId và value là (VariantCount, ImageCount)</returns>
+    Dictionary<Guid, (int VariantCount, int ImageCount)> GetCountsForProducts(List<Guid> productServiceIds);
+
+    /// <summary>
+    /// Lấy counts cho nhiều sản phẩm cùng lúc (optimized async version)
+    /// </summary>
+    /// <param name="productIds">Danh sách ID sản phẩm</param>
+    /// <returns>Dictionary chứa counts</returns>
+    Task<Dictionary<Guid, (int VariantCount, int ImageCount)>> GetCountsForProductsAsync(List<Guid> productIds);
+
+    #endregion
+
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Lấy số tiếp theo cho mã sản phẩm trong danh mục.
     /// </summary>
+    /// <param name="categoryId">ID danh mục</param>
+    /// <param name="prefix">Prefix chữ cái đầu</param>
+    /// <returns>Số tiếp theo (1-9999)</returns>
     int GetNextProductNumber(Guid categoryId, string prefix);
 
     /// <summary>
     /// Lấy mã danh mục từ ID danh mục.
     /// </summary>
+    /// <param name="categoryId">ID của danh mục</param>
+    /// <returns>Mã danh mục</returns>
     string GetCategoryCode(Guid categoryId);
 
     #endregion

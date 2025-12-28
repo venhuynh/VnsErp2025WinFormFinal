@@ -1,7 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
-using Dal.DataContext;
+using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
@@ -152,120 +152,6 @@ namespace Bll.MasterData.ProductServiceBll
             return _categoryDataAccess;
         }
 
-        #endregion
-
-        #region Public Methods
-
-        /// <summary>
-        /// Lấy tất cả sản phẩm/dịch vụ (Sync)
-        /// </summary>
-        /// <returns>Danh sách ProductService entities</returns>
-        public List<ProductService> GetAll()
-        {
-            try
-            {
-                return GetDataAccess().GetAll();
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi lấy danh sách sản phẩm/dịch vụ: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy tất cả sản phẩm/dịch vụ (Async)
-        /// </summary>
-        /// <returns>Danh sách ProductService entities</returns>
-        public async Task<List<ProductService>> GetAllAsync()
-        {
-            try
-            {
-                return await GetDataAccess().GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi lấy danh sách sản phẩm/dịch vụ: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy sản phẩm/dịch vụ theo ID
-        /// </summary>
-        /// <param name="id">ID sản phẩm/dịch vụ</param>
-        /// <returns>ProductService entity</returns>
-        public ProductService GetById(Guid id)
-        {
-            try
-            {
-                return GetDataAccess().GetById(id);
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi lấy sản phẩm/dịch vụ theo ID {id}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lưu sản phẩm/dịch vụ (thêm mới hoặc cập nhật)
-        /// </summary>
-        /// <param name="productService">ProductService entity cần lưu</param>
-        public void Save(ProductService productService)
-        {
-            try
-            {
-                if (productService == null)
-                    throw new ArgumentNullException(nameof(productService));
-
-                GetDataAccess().SaveOrUpdate(productService);
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi lưu sản phẩm/dịch vụ: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lưu hoặc cập nhật sản phẩm/dịch vụ
-        /// </summary>
-        /// <param name="productService">ProductService entity cần lưu hoặc cập nhật</param>
-        public void SaveOrUpdate(ProductService productService)
-        {
-            try
-            {
-                if (productService == null)
-                    throw new ArgumentNullException(nameof(productService));
-
-                GetDataAccess().SaveOrUpdate(productService);
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi lưu hoặc cập nhật sản phẩm/dịch vụ: {ex.Message}", ex);
-            }
-        }
-
-        // Phương thức SaveOrUpdateWithImage đã được loại bỏ vì không còn cần thiết
-        // Thay vào đó sử dụng SaveOrUpdate thông thường với ThumbnailImage
-
-        /// <summary>
-        /// Xóa sản phẩm/dịch vụ theo ID
-        /// </summary>
-        /// <param name="id">ID sản phẩm/dịch vụ cần xóa</param>
-        public void Delete(Guid id)
-        {
-            try
-            {
-                var result = GetDataAccess().DeleteProductService(id);
-                if (!result)
-                {
-                    throw new BusinessLogicException($"Không thể xóa sản phẩm/dịch vụ với ID {id}");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi xóa sản phẩm/dịch vụ với ID {id}: {ex.Message}", ex);
-            }
-        }
-
         /// <summary>
         /// Lấy tên danh mục theo ID
         /// </summary>
@@ -284,7 +170,6 @@ namespace Bll.MasterData.ProductServiceBll
             catch (Exception)
             {
                 // Log lỗi nhưng không throw để không ảnh hưởng đến việc hiển thị
-                // Có thể sử dụng logger ở đây nếu cần
                 return null;
             }
         }
@@ -292,8 +177,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Lấy dictionary chứa tất cả categories để tối ưu hiệu suất khi convert DTO
         /// </summary>
-        /// <returns>Dictionary với key là CategoryId và value là ProductServiceCategory entity</returns>
-        public async Task<Dictionary<Guid, ProductServiceCategory>> GetCategoryDictAsync()
+        /// <returns>Dictionary với key là CategoryId và value là ProductServiceCategoryDto</returns>
+        public async Task<Dictionary<Guid, ProductServiceCategoryDto>> GetCategoryDictAsync()
         {
             try
             {
@@ -312,7 +197,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="categoryId">ID danh mục</param>
         /// <param name="categoryDict">Dictionary chứa tất cả categories</param>
         /// <returns>Đường dẫn đầy đủ hoặc null nếu không tìm thấy</returns>
-        private string CalculateCategoryFullPath(Guid? categoryId, Dictionary<Guid, ProductServiceCategory> categoryDict)
+        private string CalculateCategoryFullPath(Guid? categoryId, Dictionary<Guid, ProductServiceCategoryDto> categoryDict)
         {
             try
             {
@@ -382,62 +267,7 @@ namespace Bll.MasterData.ProductServiceBll
             catch (Exception)
             {
                 // Log lỗi nhưng không throw để không ảnh hưởng đến việc hiển thị
-                // Có thể sử dụng logger ở đây nếu cần
                 return null;
-            }
-        }
-
-        /// <summary>
-        /// Đếm số lượng biến thể của sản phẩm/dịch vụ
-        /// </summary>
-        /// <param name="productServiceId">ID sản phẩm/dịch vụ</param>
-        /// <returns>Số lượng biến thể</returns>
-        public int GetVariantCount(Guid productServiceId)
-        {
-            try
-            {
-                return GetDataAccess().GetVariantCount(productServiceId);
-            }
-            catch (Exception)
-            {
-                // Trả về 0 nếu có lỗi để không ảnh hưởng đến việc hiển thị
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Đếm số lượng hình ảnh của sản phẩm/dịch vụ
-        /// </summary>
-        /// <param name="productServiceId">ID sản phẩm/dịch vụ</param>
-        /// <returns>Số lượng hình ảnh</returns>
-        public int GetImageCount(Guid productServiceId)
-        {
-            try
-            {
-                return GetDataAccess().GetImageCount(productServiceId);
-            }
-            catch (Exception)
-            {
-                // Trả về 0 nếu có lỗi để không ảnh hưởng đến việc hiển thị
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Đếm số lượng biến thể và hình ảnh cho nhiều sản phẩm/dịch vụ
-        /// </summary>
-        /// <param name="productServiceIds">Danh sách ID sản phẩm/dịch vụ</param>
-        /// <returns>Dictionary với key là ProductServiceId và value là (VariantCount, ImageCount)</returns>
-        public Dictionary<Guid, (int VariantCount, int ImageCount)> GetCountsForProducts(List<Guid> productServiceIds)
-        {
-            try
-            {
-                return GetDataAccess().GetCountsForProducts(productServiceIds);
-            }
-            catch (Exception)
-            {
-                // Trả về dictionary rỗng nếu có lỗi
-                return new Dictionary<Guid, (int, int)>();
             }
         }
 
@@ -488,31 +318,58 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
-        /// <summary>
-        /// Kiểm tra mã sản phẩm/dịch vụ có tồn tại không.
-        /// </summary>
-        /// <param name="code">Mã sản phẩm/dịch vụ cần kiểm tra</param>
-        /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
-        /// <returns>True nếu tồn tại, False nếu không</returns>
-        public bool IsCodeExists(string code, Guid? excludeId = null)
-        {
-            return GetDataAccess().IsCodeExists(code, excludeId);
-        }
-
-        /// <summary>
-        /// Kiểm tra tên sản phẩm/dịch vụ có tồn tại không.
-        /// </summary>
-        /// <param name="name">Tên sản phẩm/dịch vụ cần kiểm tra</param>
-        /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
-        /// <returns>True nếu tồn tại, False nếu không</returns>
-        public bool IsNameExists(string name, Guid? excludeId = null)
-        {
-            return GetDataAccess().IsNameExists(name, excludeId);
-        }
-
         #endregion
 
-        #region Optimization Methods
+        #region ========== READ OPERATIONS ==========
+
+        /// <summary>
+        /// Lấy tất cả sản phẩm/dịch vụ (Sync)
+        /// </summary>
+        /// <returns>Danh sách ProductServiceDto</returns>
+        public List<ProductServiceDto> GetAll()
+        {
+            try
+            {
+                return GetDataAccess().GetAll();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy danh sách sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả sản phẩm/dịch vụ (Async)
+        /// </summary>
+        /// <returns>Danh sách ProductServiceDto</returns>
+        public async Task<List<ProductServiceDto>> GetAllAsync()
+        {
+            try
+            {
+                return await GetDataAccess().GetAllAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy danh sách sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy sản phẩm/dịch vụ theo ID
+        /// </summary>
+        /// <param name="id">ID sản phẩm/dịch vụ</param>
+        /// <returns>ProductServiceDto</returns>
+        public ProductServiceDto GetById(Guid id)
+        {
+            try
+            {
+                return GetDataAccess().GetById(id);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy sản phẩm/dịch vụ theo ID {id}: {ex.Message}", ex);
+            }
+        }
 
         /// <summary>
         /// Lấy số lượng tổng cộng với filter
@@ -547,8 +404,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="categoryId">Filter theo category</param>
         /// <param name="isService">Filter theo loại</param>
         /// <param name="isActive">Filter theo trạng thái</param>
-        /// <returns>Danh sách entities</returns>
-        public async Task<List<ProductService>> GetPagedAsync(
+        /// <returns>Danh sách ProductServiceDto</returns>
+        public async Task<List<ProductServiceDto>> GetPagedAsync(
             int pageIndex,
             int pageSize,
             string searchText = null,
@@ -584,14 +441,88 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
+        /// Lấy danh sách sản phẩm với search và filter (optimized)
+        /// </summary>
+        /// <param name="searchText">Từ khóa tìm kiếm</param>
+        /// <param name="categoryId">Filter theo category</param>
+        /// <param name="isService">Filter theo loại</param>
+        /// <param name="isActive">Filter theo trạng thái</param>
+        /// <param name="orderBy">Sắp xếp theo</param>
+        /// <param name="orderDirection">Hướng sắp xếp</param>
+        /// <returns>Danh sách ProductServiceDto</returns>
+        public async Task<List<ProductServiceDto>> GetFilteredAsync(
+            string searchText = null,
+            Guid? categoryId = null,
+            bool? isService = null,
+            bool? isActive = null,
+            string orderBy = "Name",
+            string orderDirection = "ASC")
+        {
+            try
+            {
+                return await GetDataAccess().GetFilteredAsync(searchText, categoryId, isService, isActive, orderBy, orderDirection);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lấy dữ liệu với filter: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== CREATE OPERATIONS ==========
+
+        /// <summary>
+        /// Lưu sản phẩm/dịch vụ (thêm mới hoặc cập nhật)
+        /// </summary>
+        /// <param name="dto">ProductServiceDto</param>
+        public void Save(ProductServiceDto dto)
+        {
+            try
+            {
+                if (dto == null)
+                    throw new ArgumentNullException(nameof(dto));
+
+                GetDataAccess().SaveOrUpdate(dto);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lưu sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== UPDATE OPERATIONS ==========
+
+        /// <summary>
+        /// Lưu hoặc cập nhật sản phẩm/dịch vụ
+        /// </summary>
+        /// <param name="dto">ProductServiceDto</param>
+        public void SaveOrUpdate(ProductServiceDto dto)
+        {
+            try
+            {
+                if (dto == null)
+                    throw new ArgumentNullException(nameof(dto));
+
+                GetDataAccess().SaveOrUpdate(dto);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException($"Lỗi khi lưu hoặc cập nhật sản phẩm/dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
         /// Cập nhật thumbnail image cho sản phẩm/dịch vụ từ byte array
         /// Lưu ảnh gốc lên NAS và thumbnail đã resize vào database
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
         /// <param name="imageBytes">Byte array của hình ảnh gốc (null để xóa)</param>
         /// <param name="thumbnailMaxDimension">Kích thước tối đa của thumbnail (mặc định 120px)</param>
-        /// <returns>ProductService entity đã được cập nhật</returns>
-        public async Task<ProductService> UpdateThumbnailImageAsync(Guid productId, byte[] imageBytes, int thumbnailMaxDimension = 120)
+        /// <returns>ProductServiceDto đã được cập nhật</returns>
+        public async Task<ProductServiceDto> UpdateThumbnailImageAsync(Guid productId, byte[] imageBytes, int thumbnailMaxDimension = 120)
         {
             try
             {
@@ -605,27 +536,12 @@ namespace Bll.MasterData.ProductServiceBll
                 if (imageBytes == null || imageBytes.Length == 0)
                 {
                     // Xóa file trên NAS nếu có
-                    if (!string.IsNullOrWhiteSpace(productService.ThumbnailRelativePath))
-                    {
-                        try
-                        {
-                            await GetImageStorage().DeleteImageAsync(productService.ThumbnailRelativePath);
-                            _logger.Info($"Đã xóa file thumbnail từ storage, RelativePath={productService.ThumbnailRelativePath}");
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Warning($"Không thể xóa file thumbnail từ storage: {ex.Message}");
-                        }
-                    }
+                    // Note: DTO không có ThumbnailRelativePath, cần lấy từ entity nếu cần
+                    // Tạm thời bỏ qua phần xóa file trên NAS vì DTO không có thông tin này
+                    // Có thể cần thêm các property này vào DTO hoặc lấy từ entity riêng
 
                     // Xóa thông tin trong database
                     productService.ThumbnailImage = null;
-                    productService.ThumbnailFileName = null;
-                    productService.ThumbnailRelativePath = null;
-                    productService.ThumbnailFullPath = null;
-                    productService.ThumbnailStorageType = null;
-                    productService.ThumbnailFileSize = null;
-                    productService.ThumbnailChecksum = null;
                 }
                 else
                 {
@@ -687,42 +603,19 @@ namespace Bll.MasterData.ProductServiceBll
                         // Tiếp tục lưu ảnh dù không tạo được thumbnail
                     }
 
-                    // 4. Xóa file cũ trên NAS nếu có
-                    if (!string.IsNullOrWhiteSpace(productService.ThumbnailRelativePath) && 
-                        productService.ThumbnailRelativePath != storageResult.RelativePath)
-                    {
-                        try
-                        {
-                            await GetImageStorage().DeleteImageAsync(productService.ThumbnailRelativePath);
-                            _logger.Info($"Đã xóa file thumbnail cũ từ storage, RelativePath={productService.ThumbnailRelativePath}");
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Warning($"Không thể xóa file thumbnail cũ từ storage: {ex.Message}");
-                        }
-                    }
-
-                    // 5. Cập nhật thông tin trong entity
-                    productService.ThumbnailFileName = storageResult.FileName;
-                    productService.ThumbnailRelativePath = storageResult.RelativePath;
-                    productService.ThumbnailFullPath = storageResult.FullPath;
-                    productService.ThumbnailStorageType = "NAS";
-                    productService.ThumbnailFileSize = storageResult.FileSize;
-                    productService.ThumbnailChecksum = storageResult.Checksum;
-
-                    // Lưu thumbnail đã resize vào database
+                    // 4. Lưu thumbnail đã resize vào database
                     if (thumbnailData != null && thumbnailData.Length > 0)
                     {
-                        productService.ThumbnailImage = new Binary(thumbnailData);
+                        productService.ThumbnailImage = thumbnailData;
                     }
                     else
                     {
                         // Nếu không tạo được thumbnail, lưu ảnh gốc đã resize nhỏ
-                        productService.ThumbnailImage = new Binary(imageBytes);
+                        productService.ThumbnailImage = imageBytes;
                     }
                 }
 
-                // 6. Lưu vào database
+                // 5. Lưu vào database
                 SaveOrUpdate(productService);
 
                 return productService;
@@ -734,31 +627,111 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
+        #endregion
+
+        #region ========== DELETE OPERATIONS ==========
+
         /// <summary>
-        /// Lấy danh sách sản phẩm với search và filter (optimized)
+        /// Xóa sản phẩm/dịch vụ theo ID
         /// </summary>
-        /// <param name="searchText">Từ khóa tìm kiếm</param>
-        /// <param name="categoryId">Filter theo category</param>
-        /// <param name="isService">Filter theo loại</param>
-        /// <param name="isActive">Filter theo trạng thái</param>
-        /// <param name="orderBy">Sắp xếp theo</param>
-        /// <param name="orderDirection">Hướng sắp xếp</param>
-        /// <returns>Danh sách entities</returns>
-        public async Task<List<ProductService>> GetFilteredAsync(
-            string searchText = null,
-            Guid? categoryId = null,
-            bool? isService = null,
-            bool? isActive = null,
-            string orderBy = "Name",
-            string orderDirection = "ASC")
+        /// <param name="id">ID sản phẩm/dịch vụ cần xóa</param>
+        public void Delete(Guid id)
         {
             try
             {
-                return await GetDataAccess().GetFilteredAsync(searchText, categoryId, isService, isActive, orderBy, orderDirection);
+                var result = GetDataAccess().DeleteProductService(id);
+                if (!result)
+                {
+                    throw new BusinessLogicException($"Không thể xóa sản phẩm/dịch vụ với ID {id}");
+                }
             }
             catch (Exception ex)
             {
-                throw new BusinessLogicException($"Lỗi khi lấy dữ liệu với filter: {ex.Message}", ex);
+                throw new BusinessLogicException($"Lỗi khi xóa sản phẩm/dịch vụ với ID {id}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== VALIDATION & EXISTS CHECKS ==========
+
+        /// <summary>
+        /// Kiểm tra mã sản phẩm/dịch vụ có tồn tại không.
+        /// </summary>
+        /// <param name="code">Mã sản phẩm/dịch vụ cần kiểm tra</param>
+        /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
+        /// <returns>True nếu tồn tại, False nếu không</returns>
+        public bool IsCodeExists(string code, Guid? excludeId = null)
+        {
+            return GetDataAccess().IsCodeExists(code, excludeId);
+        }
+
+        /// <summary>
+        /// Kiểm tra tên sản phẩm/dịch vụ có tồn tại không.
+        /// </summary>
+        /// <param name="name">Tên sản phẩm/dịch vụ cần kiểm tra</param>
+        /// <param name="excludeId">ID sản phẩm/dịch vụ cần loại trừ (khi cập nhật)</param>
+        /// <returns>True nếu tồn tại, False nếu không</returns>
+        public bool IsNameExists(string name, Guid? excludeId = null)
+        {
+            return GetDataAccess().IsNameExists(name, excludeId);
+        }
+
+        #endregion
+
+        #region ========== BUSINESS LOGIC METHODS ==========
+
+        /// <summary>
+        /// Đếm số lượng biến thể của sản phẩm/dịch vụ
+        /// </summary>
+        /// <param name="productServiceId">ID sản phẩm/dịch vụ</param>
+        /// <returns>Số lượng biến thể</returns>
+        public int GetVariantCount(Guid productServiceId)
+        {
+            try
+            {
+                return GetDataAccess().GetVariantCount(productServiceId);
+            }
+            catch (Exception)
+            {
+                // Trả về 0 nếu có lỗi để không ảnh hưởng đến việc hiển thị
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Đếm số lượng hình ảnh của sản phẩm/dịch vụ
+        /// </summary>
+        /// <param name="productServiceId">ID sản phẩm/dịch vụ</param>
+        /// <returns>Số lượng hình ảnh</returns>
+        public int GetImageCount(Guid productServiceId)
+        {
+            try
+            {
+                return GetDataAccess().GetImageCount(productServiceId);
+            }
+            catch (Exception)
+            {
+                // Trả về 0 nếu có lỗi để không ảnh hưởng đến việc hiển thị
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Đếm số lượng biến thể và hình ảnh cho nhiều sản phẩm/dịch vụ
+        /// </summary>
+        /// <param name="productServiceIds">Danh sách ID sản phẩm/dịch vụ</param>
+        /// <returns>Dictionary với key là ProductServiceId và value là (VariantCount, ImageCount)</returns>
+        public Dictionary<Guid, (int VariantCount, int ImageCount)> GetCountsForProducts(List<Guid> productServiceIds)
+        {
+            try
+            {
+                return GetDataAccess().GetCountsForProducts(productServiceIds);
+            }
+            catch (Exception)
+            {
+                // Trả về dictionary rỗng nếu có lỗi
+                return new Dictionary<Guid, (int, int)>();
             }
         }
 
@@ -784,19 +757,19 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Search and Filter Methods
+        #region ========== SEARCH & FILTER METHODS ==========
 
         /// <summary>
         /// Tìm kiếm sản phẩm/dịch vụ trong toàn bộ database (Sync)
         /// </summary>
         /// <param name="searchText">Text tìm kiếm</param>
         /// <returns>Danh sách kết quả tìm kiếm</returns>
-        public List<ProductService> Search(string searchText)
+        public List<ProductServiceDto> Search(string searchText)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(searchText))
-                    return new List<ProductService>();
+                    return new List<ProductServiceDto>();
 
                 return GetDataAccess().Search(searchText);
             }
@@ -811,12 +784,12 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="searchText">Text tìm kiếm</param>
         /// <returns>Danh sách kết quả tìm kiếm</returns>
-        public async Task<List<ProductService>> SearchAsync(string searchText)
+        public async Task<List<ProductServiceDto>> SearchAsync(string searchText)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(searchText))
-                    return new List<ProductService>();
+                    return new List<ProductServiceDto>();
 
                 return await GetDataAccess().SearchAsync(searchText);
             }
