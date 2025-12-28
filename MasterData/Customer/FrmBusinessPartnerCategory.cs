@@ -1,7 +1,6 @@
 ﻿using Bll.MasterData.CustomerBll;
 using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraSplashScreen;
