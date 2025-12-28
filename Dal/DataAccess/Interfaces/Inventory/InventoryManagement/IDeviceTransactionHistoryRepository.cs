@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Dal.DataContext;
+using DTO.DeviceAssetManagement;
 
 namespace Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 
@@ -10,26 +10,28 @@ namespace Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 /// </summary>
 public interface IDeviceTransactionHistoryRepository
 {
+    #region ========== READ OPERATIONS ==========
+
     /// <summary>
     /// Lấy DeviceTransactionHistory theo ID
     /// </summary>
     /// <param name="id">ID của bản ghi lịch sử</param>
-    /// <returns>DeviceTransactionHistory entity hoặc null</returns>
-    DeviceTransactionHistory GetById(Guid id);
+    /// <returns>DeviceTransactionHistoryDto hoặc null</returns>
+    DeviceTransactionHistoryDto GetById(Guid id);
 
     /// <summary>
     /// Lấy danh sách lịch sử giao dịch theo DeviceId
     /// </summary>
     /// <param name="deviceId">ID thiết bị</param>
-    /// <returns>Danh sách DeviceTransactionHistory entities, sắp xếp theo ngày mới nhất</returns>
-    List<DeviceTransactionHistory> GetByDeviceId(Guid deviceId);
+    /// <returns>Danh sách DeviceTransactionHistoryDto, sắp xếp theo ngày mới nhất</returns>
+    List<DeviceTransactionHistoryDto> GetByDeviceId(Guid deviceId);
 
     /// <summary>
     /// Lấy danh sách lịch sử giao dịch theo loại thao tác
     /// </summary>
     /// <param name="operationType">Loại thao tác (0=Import, 1=Export, 2=Allocation, 3=Recovery, 4=Transfer, 5=Maintenance, 6=StatusChange, 7=Other)</param>
-    /// <returns>Danh sách DeviceTransactionHistory entities</returns>
-    List<DeviceTransactionHistory> GetByOperationType(int operationType);
+    /// <returns>Danh sách DeviceTransactionHistoryDto</returns>
+    List<DeviceTransactionHistoryDto> GetByOperationType(int operationType);
 
     /// <summary>
     /// Query lịch sử giao dịch với các filter
@@ -42,8 +44,8 @@ public interface IDeviceTransactionHistoryRepository
     /// <param name="referenceType">Loại tham chiếu (nullable)</param>
     /// <param name="performedBy">Người thực hiện (nullable)</param>
     /// <param name="keyword">Từ khóa tìm kiếm trong Information (nullable)</param>
-    /// <returns>Danh sách DeviceTransactionHistory entities, sắp xếp theo ngày mới nhất</returns>
-    List<DeviceTransactionHistory> Query(
+    /// <returns>Danh sách DeviceTransactionHistoryDto, sắp xếp theo ngày mới nhất</returns>
+    List<DeviceTransactionHistoryDto> Query(
         Guid? deviceId = null,
         int? operationType = null,
         DateTime? fromDate = null,
@@ -53,15 +55,26 @@ public interface IDeviceTransactionHistoryRepository
         Guid? performedBy = null,
         string keyword = null);
 
+    #endregion
+
+    #region ========== CREATE/UPDATE OPERATIONS ==========
+
     /// <summary>
     /// Lưu hoặc cập nhật DeviceTransactionHistory
     /// </summary>
-    /// <param name="history">DeviceTransactionHistory entity cần lưu</param>
-    void SaveOrUpdate(DeviceTransactionHistory history);
+    /// <param name="dto">DeviceTransactionHistoryDto cần lưu</param>
+    /// <returns>DeviceTransactionHistoryDto đã được lưu</returns>
+    DeviceTransactionHistoryDto SaveOrUpdate(DeviceTransactionHistoryDto dto);
+
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa DeviceTransactionHistory
     /// </summary>
     /// <param name="id">ID của bản ghi cần xóa</param>
     void Delete(Guid id);
+
+    #endregion
 }

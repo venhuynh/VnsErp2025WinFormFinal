@@ -83,10 +83,24 @@ namespace Dal.DtoConverter
         /// Chuyển đổi DeviceTransactionHistory entity thành DeviceTransactionHistoryDto
         /// </summary>
         /// <param name="entity">DeviceTransactionHistory entity</param>
+        /// <param name="deviceName">Tên thiết bị (tùy chọn, để tránh DataContext disposed errors)</param>
+        /// <param name="deviceCode">Mã thiết bị (tùy chọn, để tránh DataContext disposed errors)</param>
+        /// <param name="deviceInfo">Thông tin thiết bị (tùy chọn, để tránh DataContext disposed errors)</param>
+        /// <param name="performedByName">Tên người thực hiện (tùy chọn, để tránh DataContext disposed errors)</param>
+        /// <param name="createdByName">Tên người tạo (tùy chọn, để tránh DataContext disposed errors)</param>
         /// <returns>DeviceTransactionHistoryDto</returns>
-        public static DeviceTransactionHistoryDto ToDto(this Dal.DataContext.DeviceTransactionHistory entity)
+        public static DeviceTransactionHistoryDto ToDto(this Dal.DataContext.DeviceTransactionHistory entity,
+            string deviceName = null,
+            string deviceCode = null,
+            string deviceInfo = null,
+            string performedByName = null,
+            string createdByName = null)
         {
             if (entity == null) return null;
+
+            // QUAN TRỌNG: KHÔNG truy cập navigation properties (entity.Device, entity.Device.ProductVariant)
+            // vì DataContext đã bị dispose sau khi repository method kết thúc
+            // Chỉ sử dụng tham số truyền vào
 
             var dto = new DeviceTransactionHistoryDto
             {
@@ -103,7 +117,13 @@ namespace Dal.DtoConverter
                 PerformedBy = entity.PerformedBy,
                 Notes = entity.Notes,
                 CreatedDate = entity.CreatedDate,
-                CreatedBy = entity.CreatedBy
+                CreatedBy = entity.CreatedBy,
+                // Navigation properties - sử dụng giá trị từ tham số truyền vào
+                DeviceName = deviceName,
+                DeviceCode = deviceCode,
+                DeviceInfo = deviceInfo,
+                PerformedByName = performedByName,
+                CreatedByName = createdByName
             };
 
             // Lấy tên loại tham chiếu từ enum
@@ -113,37 +133,6 @@ namespace Dal.DtoConverter
                 dto.ReferenceTypeName = ApplicationEnumUtils.GetDescription(enumValue);
             }
 
-            // Lấy thông tin thiết bị nếu có
-            if (entity.Device != null)
-            {
-                // Lấy tên và mã sản phẩm từ ProductVariant
-                if (entity.Device.ProductVariant != null)
-                {
-                    dto.DeviceName = entity.Device.ProductVariant.VariantFullName;
-                    dto.DeviceCode = entity.Device.ProductVariant.VariantCode;
-                }
-
-                // Tạo thông tin định danh thiết bị
-                var deviceInfoParts = new List<string>();
-                if (!string.IsNullOrWhiteSpace(entity.Device.SerialNumber))
-                    deviceInfoParts.Add($"Serial: {entity.Device.SerialNumber}");
-                if (!string.IsNullOrWhiteSpace(entity.Device.IMEI))
-                    deviceInfoParts.Add($"IMEI: {entity.Device.IMEI}");
-                if (!string.IsNullOrWhiteSpace(entity.Device.MACAddress))
-                    deviceInfoParts.Add($"MAC: {entity.Device.MACAddress}");
-                if (!string.IsNullOrWhiteSpace(entity.Device.AssetTag))
-                    deviceInfoParts.Add($"AssetTag: {entity.Device.AssetTag}");
-                if (!string.IsNullOrWhiteSpace(entity.Device.LicenseKey))
-                    deviceInfoParts.Add($"License: {entity.Device.LicenseKey}");
-
-                if (deviceInfoParts.Any())
-                {
-                    dto.DeviceInfo = string.Join(" | ", deviceInfoParts);
-                }
-            }
-
-            // TODO: Lấy tên người thực hiện và người tạo từ ApplicationUser hoặc Employee nếu có
-
             return dto;
         }
 
@@ -151,11 +140,46 @@ namespace Dal.DtoConverter
         /// Chuyển đổi danh sách DeviceTransactionHistory entities thành danh sách DeviceTransactionHistoryDto
         /// </summary>
         /// <param name="entities">Danh sách DeviceTransactionHistory entities</param>
+        /// <param name="deviceDict">Dictionary chứa thông tin Device (key: DeviceId, value: (DeviceName, DeviceCode, DeviceInfo))</param>
+        /// <param name="performedByDict">Dictionary chứa tên người thực hiện (key: PerformedBy, value: PerformedByName)</param>
+        /// <param name="createdByDict">Dictionary chứa tên người tạo (key: CreatedBy, value: CreatedByName)</param>
         /// <returns>Danh sách DeviceTransactionHistoryDto</returns>
-        public static List<DeviceTransactionHistoryDto> ToDtoList(this IEnumerable<Dal.DataContext.DeviceTransactionHistory> entities)
+        public static List<DeviceTransactionHistoryDto> ToDtoList(this IEnumerable<Dal.DataContext.DeviceTransactionHistory> entities,
+            Dictionary<Guid, (string DeviceName, string DeviceCode, string DeviceInfo)> deviceDict = null,
+            Dictionary<Guid, string> performedByDict = null,
+            Dictionary<Guid, string> createdByDict = null)
         {
             if (entities == null) return new List<DeviceTransactionHistoryDto>();
-            return entities.Select(entity => entity.ToDto()).Where(dto => dto != null).ToList();
+
+            return entities.Select(entity =>
+            {
+                string deviceName = null;
+                string deviceCode = null;
+                string deviceInfo = null;
+                string performedByName = null;
+                string createdByName = null;
+
+                if (deviceDict != null && deviceDict.TryGetValue(entity.DeviceId, out var deviceInfoTuple))
+                {
+                    deviceName = deviceInfoTuple.DeviceName;
+                    deviceCode = deviceInfoTuple.DeviceCode;
+                    deviceInfo = deviceInfoTuple.DeviceInfo;
+                }
+
+                if (performedByDict != null && entity.PerformedBy.HasValue && 
+                    performedByDict.TryGetValue(entity.PerformedBy.Value, out var performedName))
+                {
+                    performedByName = performedName;
+                }
+
+                if (createdByDict != null && entity.CreatedBy.HasValue && 
+                    createdByDict.TryGetValue(entity.CreatedBy.Value, out var createdName))
+                {
+                    createdByName = createdName;
+                }
+
+                return entity.ToDto(deviceName, deviceCode, deviceInfo, performedByName, createdByName);
+            }).Where(dto => dto != null).ToList();
         }
 
         #endregion
@@ -166,26 +190,45 @@ namespace Dal.DtoConverter
         /// Chuyển đổi DeviceTransactionHistoryDto thành DeviceTransactionHistory entity
         /// </summary>
         /// <param name="dto">DeviceTransactionHistoryDto</param>
+        /// <param name="existingEntity">Existing entity to update (optional, for edit mode)</param>
         /// <returns>DeviceTransactionHistory entity</returns>
-        public static Dal.DataContext.DeviceTransactionHistory ToEntity(this DeviceTransactionHistoryDto dto)
+        public static Dal.DataContext.DeviceTransactionHistory ToEntity(this DeviceTransactionHistoryDto dto, Dal.DataContext.DeviceTransactionHistory existingEntity = null)
         {
             if (dto == null) return null;
 
-            var entity = new Dal.DataContext.DeviceTransactionHistory
+            Dal.DataContext.DeviceTransactionHistory entity;
+            if (existingEntity != null)
             {
-                Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
-                DeviceId = dto.DeviceId,
-                OperationType = (int)dto.OperationType, // Convert enum to int for entity
-                OperationDate = dto.OperationDate == default(DateTime) ? DateTime.Now : dto.OperationDate,
-                ReferenceId = dto.ReferenceId,
-                ReferenceType = dto.ReferenceType,
-                Information = dto.Information,
-                HtmlInformation = dto.HtmlInformation,
-                PerformedBy = dto.PerformedBy,
-                Notes = dto.Notes,
-                CreatedDate = dto.CreatedDate == default(DateTime) ? DateTime.Now : dto.CreatedDate,
-                CreatedBy = dto.CreatedBy
-            };
+                // Update existing entity
+                entity = existingEntity;
+            }
+            else
+            {
+                // Create new entity
+                entity = new Dal.DataContext.DeviceTransactionHistory();
+                if (dto.Id != Guid.Empty)
+                {
+                    entity.Id = dto.Id;
+                }
+            }
+
+            // Map properties
+            entity.DeviceId = dto.DeviceId;
+            entity.OperationType = (int)dto.OperationType; // Convert enum to int for entity
+            entity.OperationDate = dto.OperationDate == default(DateTime) ? DateTime.Now : dto.OperationDate;
+            entity.ReferenceId = dto.ReferenceId;
+            entity.ReferenceType = dto.ReferenceType;
+            entity.Information = dto.Information;
+            entity.HtmlInformation = dto.HtmlInformation;
+            entity.PerformedBy = dto.PerformedBy;
+            entity.Notes = dto.Notes;
+
+            if (existingEntity == null)
+            {
+                // Chỉ set CreatedDate và CreatedBy khi tạo mới
+                entity.CreatedDate = dto.CreatedDate == default(DateTime) ? DateTime.Now : dto.CreatedDate;
+                entity.CreatedBy = dto.CreatedBy;
+            }
 
             return entity;
         }

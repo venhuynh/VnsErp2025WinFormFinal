@@ -1,4 +1,4 @@
-using Dal.DataContext;
+using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 
@@ -10,18 +10,25 @@ namespace Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 /// </summary>
 public interface IInventoryBalanceRepository
 {
+    #region Create
+
     /// <summary>
-    /// Lưu hoặc cập nhật tồn kho
+    /// Thêm mới tồn kho
     /// </summary>
-    /// <param name="inventoryBalance">Entity tồn kho cần lưu</param>
-    void SaveOrUpdate(InventoryBalance inventoryBalance);
+    /// <param name="inventoryBalance">DTO tồn kho cần thêm</param>
+    /// <returns>ID của tồn kho vừa thêm</returns>
+    Guid Insert(InventoryBalanceDto inventoryBalance);
+
+    #endregion
+
+    #region Retrieve
 
     /// <summary>
     /// Lấy tồn kho theo ID
     /// </summary>
     /// <param name="id">ID tồn kho</param>
-    /// <returns>InventoryBalance hoặc null</returns>
-    InventoryBalance GetById(Guid id);
+    /// <returns>InventoryBalanceDto hoặc null</returns>
+    InventoryBalanceDto GetById(Guid id);
 
     /// <summary>
     /// Lấy tồn kho theo kho, sản phẩm và kỳ
@@ -30,22 +37,22 @@ public interface IInventoryBalanceRepository
     /// <param name="productVariantId">ID biến thể sản phẩm</param>
     /// <param name="periodYear">Năm</param>
     /// <param name="periodMonth">Tháng (1-12)</param>
-    /// <returns>InventoryBalance hoặc null</returns>
-    InventoryBalance GetByPeriod(Guid warehouseId, Guid productVariantId, int periodYear, int periodMonth);
+    /// <returns>InventoryBalanceDto hoặc null</returns>
+    InventoryBalanceDto GetByPeriod(Guid warehouseId, Guid productVariantId, int periodYear, int periodMonth);
 
     /// <summary>
     /// Lấy danh sách tồn kho theo kho
     /// </summary>
     /// <param name="warehouseId">ID kho</param>
     /// <returns>Danh sách tồn kho</returns>
-    List<InventoryBalance> GetByWarehouseId(Guid warehouseId);
+    List<InventoryBalanceDto> GetByWarehouseId(Guid warehouseId);
 
     /// <summary>
     /// Lấy danh sách tồn kho theo sản phẩm
     /// </summary>
     /// <param name="productVariantId">ID biến thể sản phẩm</param>
     /// <returns>Danh sách tồn kho</returns>
-    List<InventoryBalance> GetByProductVariantId(Guid productVariantId);
+    List<InventoryBalanceDto> GetByProductVariantId(Guid productVariantId);
 
     /// <summary>
     /// Lấy danh sách tồn kho theo kỳ
@@ -53,7 +60,7 @@ public interface IInventoryBalanceRepository
     /// <param name="periodYear">Năm</param>
     /// <param name="periodMonth">Tháng (1-12)</param>
     /// <returns>Danh sách tồn kho</returns>
-    List<InventoryBalance> GetByPeriod(int periodYear, int periodMonth);
+    List<InventoryBalanceDto> GetByPeriod(int periodYear, int periodMonth);
 
     /// <summary>
     /// Query tồn kho theo nhiều tiêu chí
@@ -69,7 +76,7 @@ public interface IInventoryBalanceRepository
     /// <param name="isApproved">Đã phê duyệt (null = tất cả)</param>
     /// <param name="status">Trạng thái (null = tất cả)</param>
     /// <returns>Danh sách tồn kho</returns>
-    List<InventoryBalance> QueryBalances(
+    List<InventoryBalanceDto> QueryBalances(
         Guid? warehouseId = null,
         Guid? productVariantId = null,
         int? periodYear = null,
@@ -85,13 +92,23 @@ public interface IInventoryBalanceRepository
     /// Lấy danh sách tồn kho cần xác thực (IsVerified = false)
     /// </summary>
     /// <returns>Danh sách tồn kho cần xác thực</returns>
-    List<InventoryBalance> GetUnverifiedBalances();
+    List<InventoryBalanceDto> GetUnverifiedBalances();
 
     /// <summary>
     /// Lấy danh sách tồn kho cần phê duyệt (IsVerified = true, IsApproved = false)
     /// </summary>
     /// <returns>Danh sách tồn kho cần phê duyệt</returns>
-    List<InventoryBalance> GetUnapprovedBalances();
+    List<InventoryBalanceDto> GetUnapprovedBalances();
+
+    #endregion
+
+    #region Update
+
+    /// <summary>
+    /// Cập nhật tồn kho
+    /// </summary>
+    /// <param name="inventoryBalance">DTO tồn kho cần cập nhật</param>
+    void Update(InventoryBalanceDto inventoryBalance);
 
     /// <summary>
     /// Cập nhật trạng thái khóa của tồn kho
@@ -120,16 +137,24 @@ public interface IInventoryBalanceRepository
     /// <param name="approvalNotes">Ghi chú phê duyệt</param>
     void UpdateApprovalStatus(Guid id, bool isApproved, Guid approvedBy, string approvalNotes = null);
 
+    #endregion
+
+    #region Delete
+
     /// <summary>
     /// Xóa tồn kho theo ID
     /// </summary>
     /// <param name="id">ID tồn kho cần xóa</param>
-    /// <param name="deletedBy">ID người xóa (optional, để tương thích với BLL)</param>
-    void Delete(Guid id, Guid deletedBy = default);
+    void Delete(Guid id);
+
+    #endregion
+
+    #region Business Operations
 
     /// <summary>
     /// Tính lại tổng kết tồn kho cho kỳ được chỉ định
     /// Tính toán từ StockInOutDetail và cập nhật lại InventoryBalance
+    /// Đảm bảo các mặt hàng của tháng trước nếu không có nhập xuất thì vẫn tồn tại trong tháng này
     /// </summary>
     /// <param name="periodYear">Năm kỳ</param>
     /// <param name="periodMonth">Tháng kỳ (1-12)</param>
@@ -145,5 +170,6 @@ public interface IInventoryBalanceRepository
     /// <param name="overwriteExisting">Nếu true, ghi đè dữ liệu đã tồn tại ở kỳ đích. Nếu false, báo lỗi nếu đã có dữ liệu</param>
     /// <returns>Số lượng tồn kho đã được kết chuyển</returns>
     int ForwardBalance(int fromPeriodYear, int fromPeriodMonth, bool overwriteExisting = false);
-}
 
+    #endregion
+}

@@ -136,6 +136,7 @@
     <Compile Include="DtoConverter\BusinessPartnerSiteConverters.cs" />
     <Compile Include="DtoConverter\DeviceDtoConverter.cs" />
     <Compile Include="DtoConverter\DeviceTransactionHistoryConverter.cs" />
+    <Compile Include="DtoConverter\InventoryBalanceDtoConverter.cs" />
     <Compile Include="DtoConverter\PermissionDtoExtensions.cs" />
     <Compile Include="DtoConverter\UnitOfMeasureConverters.cs" />
     <Compile Include="DtoConverter\CompanyBranchConverters.cs" />

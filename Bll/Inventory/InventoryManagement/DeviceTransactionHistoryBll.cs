@@ -1,7 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
-using Dal.DataContext;
+using DTO.DeviceAssetManagement;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -74,14 +74,14 @@ namespace Bll.Inventory.InventoryManagement
 
         #endregion
 
-        #region Query Operations
+        #region ========== READ OPERATIONS ==========
 
         /// <summary>
         /// Lấy DeviceTransactionHistory theo ID
         /// </summary>
         /// <param name="id">ID của bản ghi lịch sử</param>
-        /// <returns>DeviceTransactionHistory entity hoặc null</returns>
-        public DeviceTransactionHistory GetById(Guid id)
+        /// <returns>DeviceTransactionHistoryDto hoặc null</returns>
+        public DeviceTransactionHistoryDto GetById(Guid id)
         {
             try
             {
@@ -111,8 +111,8 @@ namespace Bll.Inventory.InventoryManagement
         /// Lấy danh sách lịch sử giao dịch theo DeviceId
         /// </summary>
         /// <param name="deviceId">ID thiết bị</param>
-        /// <returns>Danh sách DeviceTransactionHistory entities, sắp xếp theo ngày mới nhất</returns>
-        public List<DeviceTransactionHistory> GetByDeviceId(Guid deviceId)
+        /// <returns>Danh sách DeviceTransactionHistoryDto, sắp xếp theo ngày mới nhất</returns>
+        public List<DeviceTransactionHistoryDto> GetByDeviceId(Guid deviceId)
         {
             try
             {
@@ -134,8 +134,8 @@ namespace Bll.Inventory.InventoryManagement
         /// Lấy danh sách lịch sử giao dịch theo loại thao tác
         /// </summary>
         /// <param name="operationType">Loại thao tác (0=Import, 1=Export, 2=Allocation, 3=Recovery, 4=Transfer, 5=Maintenance, 6=StatusChange, 7=Other)</param>
-        /// <returns>Danh sách DeviceTransactionHistory entities</returns>
-        public List<DeviceTransactionHistory> GetByOperationType(int operationType)
+        /// <returns>Danh sách DeviceTransactionHistoryDto</returns>
+        public List<DeviceTransactionHistoryDto> GetByOperationType(int operationType)
         {
             try
             {
@@ -164,8 +164,8 @@ namespace Bll.Inventory.InventoryManagement
         /// <param name="referenceType">Loại tham chiếu (nullable)</param>
         /// <param name="performedBy">Người thực hiện (nullable)</param>
         /// <param name="keyword">Từ khóa tìm kiếm trong Information (nullable)</param>
-        /// <returns>Danh sách DeviceTransactionHistory entities, sắp xếp theo ngày mới nhất</returns>
-        public List<DeviceTransactionHistory> Query(
+        /// <returns>Danh sách DeviceTransactionHistoryDto, sắp xếp theo ngày mới nhất</returns>
+        public List<DeviceTransactionHistoryDto> Query(
             Guid? deviceId = null,
             int? operationType = null,
             DateTime? fromDate = null,
@@ -195,25 +195,27 @@ namespace Bll.Inventory.InventoryManagement
 
         #endregion
 
-        #region Save Operations
+        #region ========== CREATE/UPDATE OPERATIONS ==========
 
         /// <summary>
         /// Lưu hoặc cập nhật DeviceTransactionHistory
         /// </summary>
-        /// <param name="history">DeviceTransactionHistory entity cần lưu</param>
-        public void SaveOrUpdate(DeviceTransactionHistory history)
+        /// <param name="dto">DeviceTransactionHistoryDto cần lưu</param>
+        /// <returns>DeviceTransactionHistoryDto đã được lưu</returns>
+        public DeviceTransactionHistoryDto SaveOrUpdate(DeviceTransactionHistoryDto dto)
         {
             try
             {
-                if (history == null)
-                    throw new ArgumentNullException(nameof(history));
+                if (dto == null)
+                    throw new ArgumentNullException(nameof(dto));
 
                 _logger.Debug("SaveOrUpdate: Bắt đầu lưu lịch sử giao dịch, Id={0}, DeviceId={1}, OperationType={2}",
-                    history.Id, history.DeviceId, history.OperationType);
+                    dto.Id, dto.DeviceId, dto.OperationType);
 
-                GetDeviceTransactionHistoryRepository().SaveOrUpdate(history);
+                var result = GetDeviceTransactionHistoryRepository().SaveOrUpdate(dto);
 
-                _logger.Info("SaveOrUpdate: Lưu lịch sử giao dịch thành công, Id={0}", history.Id);
+                _logger.Info("SaveOrUpdate: Lưu lịch sử giao dịch thành công, Id={0}", result?.Id ?? dto.Id);
+                return result;
             }
             catch (Exception ex)
             {
@@ -224,7 +226,7 @@ namespace Bll.Inventory.InventoryManagement
 
         #endregion
 
-        #region Delete Operations
+        #region ========== DELETE OPERATIONS ==========
 
         /// <summary>
         /// Xóa DeviceTransactionHistory
