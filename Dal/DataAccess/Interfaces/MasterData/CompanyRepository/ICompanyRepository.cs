@@ -1,4 +1,4 @@
-﻿using Dal.DataContext;
+﻿using DTO.MasterData.Company;
 
 namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 
@@ -16,13 +16,13 @@ public interface ICompanyRepository
     /// <summary>
     /// Lấy thông tin công ty từ database
     /// </summary>
-    /// <returns>Company entity</returns>
-    Company GetCompany();
+    /// <returns>CompanyDto</returns>
+    CompanyDto GetCompany();
 
     /// <summary>
     /// Cập nhật thông tin công ty
     /// </summary>
-    /// <param name="company">Company entity cần cập nhật</param>
-    void UpdateCompany(Company company);
+    /// <param name="company">CompanyDto cần cập nhật</param>
+    void UpdateCompany(CompanyDto company);
 
 }

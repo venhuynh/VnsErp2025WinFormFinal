@@ -2,8 +2,9 @@
 using System.Data.Linq;
 using System.Linq;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
-using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.Company;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -137,8 +138,8 @@ public class CompanyRepository : ICompanyRepository
     /// <summary>
     /// Lấy thông tin công ty từ database
     /// </summary>
-    /// <returns>Company entity</returns>
-    public Company GetCompany()
+    /// <returns>CompanyDto</returns>
+    public CompanyDto GetCompany()
     {
         try
         {
@@ -148,13 +149,13 @@ public class CompanyRepository : ICompanyRepository
             if (company != null)
             {
                 _logger.Debug($"Đã lấy thông tin công ty: {company.CompanyCode} - {company.CompanyName}");
+                return company.ToDto();
             }
             else
             {
                 _logger.Warning("Không tìm thấy công ty nào trong database");
+                return null;
             }
-            
-            return company;
         }
         catch (System.Data.SqlClient.SqlException sqlEx)
         {
@@ -175,8 +176,8 @@ public class CompanyRepository : ICompanyRepository
     /// <summary>
     /// Cập nhật thông tin công ty
     /// </summary>
-    /// <param name="company">Company entity cần cập nhật</param>
-    public void UpdateCompany(Company company)
+    /// <param name="company">CompanyDto cần cập nhật</param>
+    public void UpdateCompany(CompanyDto company)
     {
         try
         {
@@ -186,7 +187,7 @@ public class CompanyRepository : ICompanyRepository
             using var context = CreateNewContext();
             
             // Tìm công ty theo ID để đảm bảo cập nhật đúng công ty
-            Company existingCompany;
+            Dal.DataContext.Company existingCompany;
             if (company.Id != Guid.Empty)
             {
                 existingCompany = context.Companies.FirstOrDefault(c => c.Id == company.Id);
@@ -199,16 +200,8 @@ public class CompanyRepository : ICompanyRepository
             
             if (existingCompany != null)
             {
-                // Cập nhật thông tin
-                existingCompany.CompanyCode = company.CompanyCode;
-                existingCompany.CompanyName = company.CompanyName;
-                existingCompany.TaxCode = company.TaxCode;
-                existingCompany.Phone = company.Phone;
-                existingCompany.Email = company.Email;
-                existingCompany.Website = company.Website;
-                existingCompany.Address = company.Address;
-                existingCompany.Country = company.Country;
-                existingCompany.Logo = company.Logo;
+                // Sử dụng converter để cập nhật entity từ DTO
+                company.ToEntity(existingCompany);
                 existingCompany.UpdatedDate = DateTime.Now;
                 
                 context.SubmitChanges();

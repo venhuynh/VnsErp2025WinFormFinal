@@ -2,6 +2,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using DTO.MasterData.Company;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -96,8 +97,8 @@ namespace Bll.MasterData.CompanyBll
     /// <summary>
     /// Lấy thông tin công ty từ database
     /// </summary>
-    /// <returns>Company entity</returns>
-    public Dal.DataContext.Company GetCompany()
+    /// <returns>CompanyDto</returns>
+    public CompanyDto GetCompany()
     {
         try
         {
@@ -118,8 +119,8 @@ namespace Bll.MasterData.CompanyBll
     /// <summary>
     /// Cập nhật thông tin công ty
     /// </summary>
-    /// <param name="company">Company entity cần cập nhật</param>
-    public void UpdateCompany(Dal.DataContext.Company company)
+    /// <param name="company">CompanyDto cần cập nhật</param>
+    public void UpdateCompany(CompanyDto company)
     {
         try
         {
