@@ -149,9 +149,17 @@ namespace MasterData.Company
         {
             try
             {
-                // Sử dụng method tối ưu chỉ load các trường cần thiết
+                // GetActiveBranchesForLookup() already returns List<CompanyBranchDto>
+                // Convert to CompanyBranchLookupDto
                 var companyBranches = _companyBranchBll.GetActiveBranchesForLookup();
-                var companyBranchLookupDtos = companyBranches.ToLookupDtos().ToList();
+                var companyBranchLookupDtos = companyBranches.Select(b => new CompanyBranchLookupDto
+                {
+                    Id = b.Id,
+                    CompanyId = b.CompanyId,
+                    BranchCode = b.BranchCode,
+                    BranchName = b.BranchName,
+                    IsActive = b.IsActive
+                }).ToList();
 
                 companyBranchLookupDtoBindingSource.DataSource = companyBranchLookupDtos;
             }
@@ -168,14 +176,25 @@ namespace MasterData.Company
         {
             try
             {
-                // Lấy tất cả departments và convert sang LookupDto để tối ưu hiệu năng
+                // GetAll() already returns List<DepartmentDto>
+                // Convert to DepartmentLookupDto with FullPath calculation
                 var departments = _departmentBll.GetAll();
                 
-                // Tạo dictionary để tính FullPath
+                // Create dictionary for FullPath calculation
                 var departmentDict = departments.ToDictionary(d => d.Id);
                 
-                // Convert sang LookupDto với dictionary để tính FullPath
-                var departmentLookupDtos = departments.ToLookupDtos(departmentDict).ToList();
+                // Convert to LookupDto with FullPath
+                var departmentLookupDtos = departments.Select(d => new DepartmentLookupDto
+                {
+                    Id = d.Id,
+                    CompanyId = d.CompanyId,
+                    BranchId = d.BranchId,
+                    DepartmentCode = d.DepartmentCode,
+                    DepartmentName = d.DepartmentName,
+                    ParentId = d.ParentId,
+                    IsActive = d.IsActive,
+                    FullPath = d.FullPath ?? d.DepartmentName // Use FullPath from DTO if available
+                }).ToList();
 
                 // QUAN TRỌNG: Nếu đang ở chế độ edit, loại trừ department hiện tại khỏi danh sách parent
                 // (để tránh chọn chính nó làm parent - gây circular reference)
@@ -218,12 +237,12 @@ namespace MasterData.Company
                     return;
                 }
 
-                // Load tất cả departments để tính FullPath và tạo dictionary
+                // GetById() already returns DepartmentDto
+                // Load all departments to calculate FullPath if needed
                 var allDepartments = _departmentBll.GetAll();
-                var departmentDict = allDepartments.ToDictionary(d => d.Id);
-
-                // Convert sang DTO với dictionary để tính FullPath
-                _currentDepartment = department.ToDto(departmentDict: departmentDict);
+                
+                // Use the DTO directly (it should already have FullPath calculated)
+                _currentDepartment = department;
 
                 // QUAN TRỌNG: Đảm bảo branch hiện tại có trong datasource (kể cả khi không active)
                 // Vì khi edit, cần hiển thị branch hiện tại dù nó có active hay không
@@ -240,9 +259,17 @@ namespace MasterData.Company
                         var branch = _companyBranchBll.GetById(branchId);
                         if (branch != null)
                         {
-                            var branchDto = branch.ToLookupDto();
+                            // Convert CompanyBranchDto to CompanyBranchLookupDto
+                            var branchLookupDto = new CompanyBranchLookupDto
+                            {
+                                Id = branch.Id,
+                                CompanyId = branch.CompanyId,
+                                BranchCode = branch.BranchCode,
+                                BranchName = branch.BranchName,
+                                IsActive = branch.IsActive
+                            };
                             var currentList = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>().ToList();
-                            currentList.Add(branchDto);
+                            currentList.Add(branchLookupDto);
                             companyBranchLookupDtoBindingSource.DataSource = currentList;
                         }
                     }
@@ -265,9 +292,20 @@ namespace MasterData.Company
                             var parentDepartment = _departmentBll.GetById(parentId);
                             if (parentDepartment != null)
                             {
-                                var parentDto = parentDepartment.ToLookupDto(departmentDict);
+                                // Convert DepartmentDto to DepartmentLookupDto
+                                var parentLookupDto = new DepartmentLookupDto
+                                {
+                                    Id = parentDepartment.Id,
+                                    CompanyId = parentDepartment.CompanyId,
+                                    BranchId = parentDepartment.BranchId,
+                                    DepartmentCode = parentDepartment.DepartmentCode,
+                                    DepartmentName = parentDepartment.DepartmentName,
+                                    ParentId = parentDepartment.ParentId,
+                                    IsActive = parentDepartment.IsActive,
+                                    FullPath = parentDepartment.FullPath ?? parentDepartment.DepartmentName
+                                };
                                 var currentList = departmentLookupDtoBindingSource.Cast<DepartmentLookupDto>().ToList();
-                                currentList.Add(parentDto);
+                                currentList.Add(parentLookupDto);
                                 departmentLookupDtoBindingSource.DataSource = currentList;
                             }
                         }
@@ -616,8 +654,8 @@ namespace MasterData.Company
         /// <summary>
         /// Get department data from controls
         /// </summary>
-        /// <returns>Department entity</returns>
-        private Department GetDepartmentFromControls()
+        /// <returns>DepartmentDto</returns>
+        private DepartmentDto GetDepartmentFromControls()
         {
             try
             {
@@ -628,8 +666,8 @@ namespace MasterData.Company
                     throw new Exception("Không tìm thấy thông tin công ty trong hệ thống.");
                 }
 
-                // Khởi tạo Entity từ controls và biến đã lưu
-                var department = new Department
+                // Create DTO from controls and saved variables
+                var department = new DepartmentDto
                 {
                     DepartmentCode = DepartmentCodeTextEdit.Text.Trim(),
                     DepartmentName = DepartmentNameTextEdit.Text.Trim(),

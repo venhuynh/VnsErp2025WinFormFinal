@@ -124,8 +124,8 @@ namespace MasterData.Customer
                     _logger.Debug("Category: {0}, Count: {1}", category?.CategoryName ?? "Unknown", count.Value);
                 }
 
-                // Tạo cấu trúc cây hierarchical
-                var dtoList = categories.ToDtosWithHierarchy(counts).ToList();
+                // Calculate hierarchy properties for DTOs (Level, FullPath, HasChildren, PartnerCount)
+                var dtoList = CalculateHierarchyProperties(categories, counts).ToList();
 
                 // Log: Kiểm tra DTOs
                 foreach (var dto in dtoList)
@@ -435,6 +435,7 @@ namespace MasterData.Customer
                 if (category == null) return null;
 
                 // Tính level để xác định thứ tự xóa (level cao hơn = xóa trước)
+                // Use DTO version of CalculateCategoryLevel
                 var level = CalculateCategoryLevel(category, categoryDict);
                 
                 // Kiểm tra số lượng đối tác
@@ -498,10 +499,47 @@ namespace MasterData.Customer
         }
 
         /// <summary>
-        /// Tính level của category trong cây phân cấp.
+        /// Tính toán các thuộc tính hierarchical cho DTOs (Level, FullPath, HasChildren, PartnerCount)
         /// </summary>
-        private int CalculateCategoryLevel(BusinessPartnerCategory category,
-            Dictionary<Guid, BusinessPartnerCategory> categoryDict)
+        private IEnumerable<BusinessPartnerCategoryDto> CalculateHierarchyProperties(
+            List<BusinessPartnerCategoryDto> categories,
+            Dictionary<Guid, int> counts)
+        {
+            if (categories == null || !categories.Any()) return [];
+
+            var categoryDict = categories.ToDictionary(c => c.Id);
+
+            // Calculate hierarchy properties for each DTO
+            foreach (var category in categories)
+            {
+                // Set PartnerCount from counts dictionary
+                category.PartnerCount = counts.TryGetValue(category.Id, out var count) ? count : 0;
+
+                // Calculate Level
+                category.Level = CalculateCategoryLevel(category, categoryDict);
+
+                // Calculate HasChildren
+                category.HasChildren = categories.Any(c => c.ParentId == category.Id);
+
+                // Calculate FullPath
+                category.FullPath = CalculateFullPath(category, categoryDict);
+
+                // Set ParentCategoryName
+                if (category.ParentId.HasValue && categoryDict.TryGetValue(category.ParentId.Value, out var parent))
+                {
+                    category.ParentCategoryName = parent.CategoryName;
+                }
+            }
+
+            // Sort hierarchically: parent before children
+            return SortHierarchical(categories);
+        }
+
+        /// <summary>
+        /// Tính level của category trong cây phân cấp (works with DTOs).
+        /// </summary>
+        private int CalculateCategoryLevel(BusinessPartnerCategoryDto category,
+            Dictionary<Guid, BusinessPartnerCategoryDto> categoryDict)
         {
             int level = 0;
             var current = category;
@@ -513,6 +551,63 @@ namespace MasterData.Customer
             }
 
             return level;
+        }
+
+        /// <summary>
+        /// Tính toán đường dẫn đầy đủ từ gốc đến category (works with DTOs).
+        /// </summary>
+        private string CalculateFullPath(BusinessPartnerCategoryDto category,
+            Dictionary<Guid, BusinessPartnerCategoryDto> categoryDict)
+        {
+            var pathParts = new List<string> { category.CategoryName };
+            var current = category;
+
+            while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
+            {
+                current = categoryDict[current.ParentId.Value];
+                pathParts.Insert(0, current.CategoryName);
+                if (pathParts.Count > 10) break; // Tránh infinite loop
+            }
+
+            return string.Join(" > ", pathParts);
+        }
+
+        /// <summary>
+        /// Sắp xếp danh sách DTO theo cấu trúc cây (parent trước, children sau).
+        /// </summary>
+        private IEnumerable<BusinessPartnerCategoryDto> SortHierarchical(
+            List<BusinessPartnerCategoryDto> dtoList)
+        {
+            var result = new List<BusinessPartnerCategoryDto>();
+            var dtoDict = dtoList.ToDictionary(d => d.Id);
+
+            // Add root categories first (ParentId = null)
+            var rootCategories = dtoList.Where(d => !d.ParentId.HasValue).OrderBy(d => d.CategoryName);
+
+            foreach (var root in rootCategories)
+            {
+                result.Add(root);
+                AddChildrenRecursive(root, dtoDict, result);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Thêm children một cách đệ quy.
+        /// </summary>
+        private void AddChildrenRecursive(BusinessPartnerCategoryDto parent,
+            Dictionary<Guid, BusinessPartnerCategoryDto> dtoDict, List<BusinessPartnerCategoryDto> result)
+        {
+            var children = dtoDict.Values
+                .Where(d => d.ParentId == parent.Id)
+                .OrderBy(d => d.CategoryName);
+
+            foreach (var child in children)
+            {
+                result.Add(child);
+                AddChildrenRecursive(child, dtoDict, result);
+            }
         }
 
         #endregion

@@ -218,6 +218,7 @@ namespace MasterData.Company
         {
             try
             {
+                // GetById() already returns PositionDto
                 var position = _positionBll.GetById(_positionId);
                 if (position == null)
                 {
@@ -226,7 +227,7 @@ namespace MasterData.Company
                     return;
                 }
 
-                _positionDto = position.ToDto();
+                _positionDto = position;
                 
                 // Disable mã chức vụ khi edit (không cho phép thay đổi)
                 PositionCodeTextEdit.Properties.ReadOnly = true;
@@ -440,17 +441,14 @@ namespace MasterData.Company
                     _positionDto.CompanyId = companyId;
                 }
 
-                // Convert DTO to Entity
-                var position = _positionDto.ToEntity();
-
-                // Lưu dữ liệu
+                // Insert and Update expect PositionDto, not Entity
                 if (_isEditMode)
                 {
-                    _positionBll.Update(position);
+                    _positionBll.Update(_positionDto);
                 }
                 else
                 {
-                    _positionBll.Insert(position);
+                    _positionBll.Insert(_positionDto);
                 }
 
                 ShowInfo(_isEditMode ? "Cập nhật chức vụ thành công!" : "Thêm mới chức vụ thành công!");
@@ -505,13 +503,10 @@ namespace MasterData.Company
                 var companyBll = new CompanyBll();
                 var company = companyBll.GetCompany();
                 
+                // GetCompany() returns CompanyDto, not Company entity
                 if (company != null)
                 {
-                    // Cast về Company entity và lấy Id
-                    if (company is Dal.DataContext.Company companyEntity)
-                    {
-                        return companyEntity.Id;
-                    }
+                    return company.Id;
                 }
                 
                 return Guid.Empty;

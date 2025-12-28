@@ -98,14 +98,8 @@ namespace MasterData.Company
         {
             try
             {
-                // Lấy entities từ BLL (async method)
-                var departmentEntities = await _departmentBll.GetAllAsync();
-
-                // Tạo dictionary để tính FullPath
-                var departmentDict = departmentEntities.ToDictionary(d => d.Id);
-
-                // Convert entities to DTOs với departmentDict để tính FullPath
-                var dtoList = departmentEntities.ToDepartmentDtos(departmentDict).ToList();
+                // GetAllAsync() already returns List<DepartmentDto>
+                var dtoList = await _departmentBll.GetAllAsync();
 
                 BindGrid(dtoList);
             }

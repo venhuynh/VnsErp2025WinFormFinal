@@ -104,8 +104,8 @@ namespace MasterData.Company
         {
             try
             {
-                var positions = await _positionBll.GetAllAsync();
-                var dtoList = positions.Select(p => p.ToDto()).ToList();
+                // GetAllAsync() already returns List<PositionDto>
+                var dtoList = await _positionBll.GetAllAsync();
                 
                 BindGrid(dtoList);
                 UpdateDataSummary();

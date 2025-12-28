@@ -189,7 +189,7 @@ namespace MasterData.Company
         {
             try
             {
-                // Lấy dữ liệu từ BLL
+                // GetAll() already returns List<EmployeeDto>
                 var employees = _employeeBll.GetAll();
 
                 // Load tất cả departments và positions để có thông tin đầy đủ
@@ -200,15 +200,20 @@ namespace MasterData.Company
                 var departmentDict = departments.ToDictionary(d => d.Id, d => d.DepartmentName);
                 var positionDict = positions.ToDictionary(p => p.Id, p => p.PositionName);
 
-                // Convert sang DTO với thông tin đầy đủ
-                var employeeDtos = employees.Select(e => e.ToDto(
-                    departmentName: e.DepartmentId.HasValue && departmentDict.ContainsKey(e.DepartmentId.Value)
-                        ? departmentDict[e.DepartmentId.Value]
-                        : null,
-                    positionName: e.PositionId.HasValue && positionDict.ContainsKey(e.PositionId.Value)
-                        ? positionDict[e.PositionId.Value]
-                        : null
-                )).ToList();
+                // Update DTOs with department and position names
+                foreach (var employee in employees)
+                {
+                    if (employee.DepartmentId.HasValue && departmentDict.ContainsKey(employee.DepartmentId.Value))
+                    {
+                        employee.DepartmentName = departmentDict[employee.DepartmentId.Value];
+                    }
+                    if (employee.PositionId.HasValue && positionDict.ContainsKey(employee.PositionId.Value))
+                    {
+                        employee.PositionName = positionDict[employee.PositionId.Value];
+                    }
+                }
+
+                var employeeDtos = employees;
 
                 // Bind dữ liệu vào GridControl
                 BindGrid(employeeDtos);
@@ -637,9 +642,8 @@ namespace MasterData.Company
                     {
                         _ = ExecuteWithWaitingFormAsync(async () =>
                         {
-                            // Convert DTO to Entity và cập nhật
-                            var entity = dto.ToEntity();
-                            _employeeBll.SaveOrUpdate(entity);
+                            // SaveOrUpdate expects EmployeeDto, not Entity
+                            _employeeBll.SaveOrUpdate(dto);
 
                             // Refresh data để đảm bảo đồng bộ
                             await LoadDataAsync();
