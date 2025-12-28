@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
-using Dal.DataContext;
+using DTO.MasterData.Company;
 using Logger;
 using Logger.Configuration;
 
@@ -81,7 +81,7 @@ namespace Bll.MasterData.CompanyBll
     /// Lấy tất cả chức vụ (Async).
     /// </summary>
     /// <returns>Danh sách tất cả chức vụ</returns>
-    public async Task<List<Position>> GetAllAsync()
+    public async Task<List<PositionDto>> GetAllAsync()
     {
         try
         {
@@ -97,7 +97,7 @@ namespace Bll.MasterData.CompanyBll
     /// Lấy tất cả chức vụ (Sync).
     /// </summary>
     /// <returns>Danh sách tất cả chức vụ</returns>
-    public List<Position> GetAll()
+    public List<PositionDto> GetAll()
     {
         try
         {
@@ -113,8 +113,8 @@ namespace Bll.MasterData.CompanyBll
     /// Lấy chức vụ theo ID.
     /// </summary>
     /// <param name="id">ID của chức vụ</param>
-    /// <returns>Chức vụ hoặc null nếu không tìm thấy</returns>
-    public Position GetById(Guid id)
+    /// <returns>PositionDto hoặc null nếu không tìm thấy</returns>
+    public PositionDto GetById(Guid id)
     {
         try
         {
@@ -130,8 +130,8 @@ namespace Bll.MasterData.CompanyBll
     /// Lấy chức vụ theo mã chức vụ (trong Company duy nhất).
     /// </summary>
     /// <param name="positionCode">Mã chức vụ</param>
-    /// <returns>Chức vụ hoặc null nếu không tìm thấy</returns>
-    public Position GetByPositionCode(string positionCode)
+    /// <returns>PositionDto hoặc null nếu không tìm thấy</returns>
+    public PositionDto GetByPositionCode(string positionCode)
     {
         try
         {
@@ -151,7 +151,7 @@ namespace Bll.MasterData.CompanyBll
     /// Lấy danh sách chức vụ đang hoạt động.
     /// </summary>
     /// <returns>Danh sách chức vụ đang hoạt động</returns>
-    public async Task<List<Position>> GetActivePositionsAsync()
+    public async Task<List<PositionDto>> GetActivePositionsAsync()
     {
         try
         {
@@ -167,7 +167,7 @@ namespace Bll.MasterData.CompanyBll
     /// Lấy danh sách chức vụ đang hoạt động (Sync).
     /// </summary>
     /// <returns>Danh sách chức vụ đang hoạt động</returns>
-    public List<Position> GetActivePositions()
+    public List<PositionDto> GetActivePositions()
     {
         try
         {
@@ -184,7 +184,7 @@ namespace Bll.MasterData.CompanyBll
     /// </summary>
     /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
     /// <returns>Danh sách chức vụ của công ty</returns>
-    public List<Position> GetByCompanyId(Guid companyId)
+    public List<PositionDto> GetByCompanyId(Guid companyId)
     {
         try
         {
@@ -203,9 +203,9 @@ namespace Bll.MasterData.CompanyBll
     /// <summary>
     /// Thêm mới chức vụ.
     /// </summary>
-    /// <param name="position">Chức vụ cần thêm</param>
+    /// <param name="position">PositionDto cần thêm</param>
     /// <returns>ID của chức vụ vừa thêm</returns>
-    public Guid Insert(Position position)
+    public Guid Insert(PositionDto position)
     {
         try
         {
@@ -232,8 +232,8 @@ namespace Bll.MasterData.CompanyBll
     /// <summary>
     /// Cập nhật chức vụ.
     /// </summary>
-    /// <param name="position">Chức vụ cần cập nhật</param>
-    public void Update(Position position)
+    /// <param name="position">PositionDto cần cập nhật</param>
+    public void Update(PositionDto position)
     {
         try
         {
@@ -372,8 +372,8 @@ namespace Bll.MasterData.CompanyBll
     /// <summary>
     /// Validate dữ liệu chức vụ.
     /// </summary>
-    /// <param name="position">Chức vụ cần validate</param>
-    private void ValidatePosition(Position position)
+    /// <param name="position">PositionDto cần validate</param>
+    private void ValidatePosition(PositionDto position)
     {
         if (position == null)
             throw new Exception("Thông tin chức vụ không được để trống");

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.MasterData.Company;
 
 namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
 {
@@ -17,54 +17,54 @@ namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
         /// Lấy chức vụ theo ID.
         /// </summary>
         /// <param name="id">ID của chức vụ</param>
-        /// <returns>Chức vụ hoặc null nếu không tìm thấy</returns>
-        Position GetById(Guid id);
+        /// <returns>PositionDto hoặc null nếu không tìm thấy</returns>
+        PositionDto GetById(Guid id);
 
         /// <summary>
         /// Lấy chức vụ theo mã chức vụ.
         /// </summary>
         /// <param name="positionCode">Mã chức vụ</param>
-        /// <returns>Chức vụ hoặc null nếu không tìm thấy</returns>
-        Position GetByPositionCode(string positionCode);
+        /// <returns>PositionDto hoặc null nếu không tìm thấy</returns>
+        PositionDto GetByPositionCode(string positionCode);
 
         /// <summary>
         /// Lấy chức vụ theo mã chức vụ và CompanyId.
         /// </summary>
         /// <param name="positionCode">Mã chức vụ</param>
         /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
-        /// <returns>Chức vụ hoặc null nếu không tìm thấy</returns>
-        Position GetByPositionCodeAndCompany(string positionCode, Guid companyId);
+        /// <returns>PositionDto hoặc null nếu không tìm thấy</returns>
+        PositionDto GetByPositionCodeAndCompany(string positionCode, Guid companyId);
 
         /// <summary>
         /// Lấy tất cả chức vụ (Async).
         /// </summary>
         /// <returns>Danh sách tất cả chức vụ</returns>
-        Task<List<Position>> GetAllAsync();
+        Task<List<PositionDto>> GetAllAsync();
 
         /// <summary>
         /// Lấy tất cả chức vụ (Sync).
         /// </summary>
         /// <returns>Danh sách tất cả chức vụ</returns>
-        List<Position> GetAll();
+        List<PositionDto> GetAll();
 
         /// <summary>
         /// Lấy danh sách chức vụ đang hoạt động (Async).
         /// </summary>
         /// <returns>Danh sách chức vụ đang hoạt động</returns>
-        Task<List<Position>> GetActivePositionsAsync();
+        Task<List<PositionDto>> GetActivePositionsAsync();
 
         /// <summary>
         /// Lấy danh sách chức vụ đang hoạt động (Sync).
         /// </summary>
         /// <returns>Danh sách chức vụ đang hoạt động</returns>
-        List<Position> GetActivePositions();
+        List<PositionDto> GetActivePositions();
 
         /// <summary>
         /// Lấy tất cả chức vụ của một công ty.
         /// </summary>
         /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
         /// <returns>Danh sách chức vụ của công ty</returns>
-        List<Position> GetByCompanyId(Guid companyId);
+        List<PositionDto> GetByCompanyId(Guid companyId);
 
         #endregion
 
@@ -73,21 +73,21 @@ namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
         /// <summary>
         /// Thêm mới chức vụ.
         /// </summary>
-        /// <param name="position">Chức vụ cần thêm</param>
+        /// <param name="position">PositionDto cần thêm</param>
         /// <returns>ID của chức vụ vừa thêm</returns>
-        Guid Insert(Position position);
+        Guid Insert(PositionDto position);
 
         /// <summary>
         /// Cập nhật chức vụ.
         /// </summary>
-        /// <param name="position">Chức vụ cần cập nhật</param>
-        void Update(Position position);
+        /// <param name="position">PositionDto cần cập nhật</param>
+        void Update(PositionDto position);
 
         /// <summary>
         /// Xóa chức vụ.
         /// </summary>
-        /// <param name="position">Chức vụ cần xóa</param>
-        void Delete(Position position);
+        /// <param name="position">PositionDto cần xóa</param>
+        void Delete(PositionDto position);
 
         #endregion
 

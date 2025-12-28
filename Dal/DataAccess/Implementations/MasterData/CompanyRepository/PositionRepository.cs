@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.Company;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -74,8 +76,8 @@ public class PositionRepository : IPositionRepository
     /// Lấy chức vụ theo ID.
     /// </summary>
     /// <param name="id">ID của chức vụ</param>
-    /// <returns>Chức vụ hoặc null nếu không tìm thấy</returns>
-    public Position GetById(Guid id)
+    /// <returns>PositionDto hoặc null nếu không tìm thấy</returns>
+    public PositionDto GetById(Guid id)
     {
         try
         {
@@ -85,9 +87,10 @@ public class PositionRepository : IPositionRepository
             if (position != null)
             {
                 _logger.Debug($"Đã lấy chức vụ theo ID: {id} - {position.PositionName}");
+                return position.ToDto();
             }
             
-            return position;
+            return null;
         }
         catch (Exception ex)
         {
@@ -100,8 +103,8 @@ public class PositionRepository : IPositionRepository
     /// Lấy chức vụ theo mã chức vụ.
     /// </summary>
     /// <param name="positionCode">Mã chức vụ</param>
-    /// <returns>Chức vụ hoặc null nếu không tìm thấy</returns>
-    public Position GetByPositionCode(string positionCode)
+    /// <returns>PositionDto hoặc null nếu không tìm thấy</returns>
+    public PositionDto GetByPositionCode(string positionCode)
     {
         try
         {
@@ -114,9 +117,10 @@ public class PositionRepository : IPositionRepository
             if (position != null)
             {
                 _logger.Debug($"Đã lấy chức vụ theo mã: {positionCode} - {position.PositionName}");
+                return position.ToDto();
             }
             
-            return position;
+            return null;
         }
         catch (Exception ex)
         {
@@ -130,8 +134,8 @@ public class PositionRepository : IPositionRepository
     /// </summary>
     /// <param name="positionCode">Mã chức vụ</param>
     /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
-    /// <returns>Chức vụ hoặc null nếu không tìm thấy</returns>
-    public Position GetByPositionCodeAndCompany(string positionCode, Guid companyId)
+    /// <returns>PositionDto hoặc null nếu không tìm thấy</returns>
+    public PositionDto GetByPositionCodeAndCompany(string positionCode, Guid companyId)
     {
         try
         {
@@ -154,9 +158,10 @@ public class PositionRepository : IPositionRepository
             if (position != null)
             {
                 _logger.Debug($"Đã lấy chức vụ theo mã và công ty: {positionCode} - {position.PositionName}");
+                return position.ToDto();
             }
             
-            return position;
+            return null;
         }
         catch (Exception ex)
         {
@@ -169,7 +174,7 @@ public class PositionRepository : IPositionRepository
     /// Lấy tất cả chức vụ (Async).
     /// </summary>
     /// <returns>Danh sách tất cả chức vụ</returns>
-    public async Task<List<Position>> GetAllAsync()
+    public async Task<List<PositionDto>> GetAllAsync()
     {
         try
         {
@@ -179,8 +184,11 @@ public class PositionRepository : IPositionRepository
                 .OrderBy(p => p.PositionName)
                 .ToList());
             
-            _logger.Debug($"Đã lấy {positions.Count} chức vụ (async)");
-            return positions;
+            // Chuyển đổi sang DTO
+            var dtos = positions.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} chức vụ (async)");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -193,7 +201,7 @@ public class PositionRepository : IPositionRepository
     /// Lấy tất cả chức vụ (Sync).
     /// </summary>
     /// <returns>Danh sách tất cả chức vụ</returns>
-    public List<Position> GetAll()
+    public List<PositionDto> GetAll()
     {
         try
         {
@@ -203,8 +211,11 @@ public class PositionRepository : IPositionRepository
                 .OrderBy(p => p.PositionName)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {positions.Count} chức vụ");
-            return positions;
+            // Chuyển đổi sang DTO
+            var dtos = positions.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} chức vụ");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -217,7 +228,7 @@ public class PositionRepository : IPositionRepository
     /// Lấy danh sách chức vụ đang hoạt động (Async).
     /// </summary>
     /// <returns>Danh sách chức vụ đang hoạt động</returns>
-    public async Task<List<Position>> GetActivePositionsAsync()
+    public async Task<List<PositionDto>> GetActivePositionsAsync()
     {
         try
         {
@@ -228,8 +239,11 @@ public class PositionRepository : IPositionRepository
                 .OrderBy(p => p.PositionName)
                 .ToList());
             
-            _logger.Debug($"Đã lấy {positions.Count} chức vụ đang hoạt động (async)");
-            return positions;
+            // Chuyển đổi sang DTO
+            var dtos = positions.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} chức vụ đang hoạt động (async)");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -242,7 +256,7 @@ public class PositionRepository : IPositionRepository
     /// Lấy danh sách chức vụ đang hoạt động (Sync).
     /// </summary>
     /// <returns>Danh sách chức vụ đang hoạt động</returns>
-    public List<Position> GetActivePositions()
+    public List<PositionDto> GetActivePositions()
     {
         try
         {
@@ -253,8 +267,11 @@ public class PositionRepository : IPositionRepository
                 .OrderBy(p => p.PositionName)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {positions.Count} chức vụ đang hoạt động");
-            return positions;
+            // Chuyển đổi sang DTO
+            var dtos = positions.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} chức vụ đang hoạt động");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -268,7 +285,7 @@ public class PositionRepository : IPositionRepository
     /// </summary>
     /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
     /// <returns>Danh sách chức vụ của công ty</returns>
-    public List<Position> GetByCompanyId(Guid companyId)
+    public List<PositionDto> GetByCompanyId(Guid companyId)
     {
         try
         {
@@ -279,7 +296,7 @@ public class PositionRepository : IPositionRepository
             {
                 var company = context.Companies.FirstOrDefault();
                 if (company == null)
-                    return new List<Position>();
+                    return new List<PositionDto>();
                 companyId = company.Id;
             }
 
@@ -288,8 +305,11 @@ public class PositionRepository : IPositionRepository
                 .OrderBy(p => p.PositionName)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {positions.Count} chức vụ theo công ty: {companyId}");
-            return positions;
+            // Chuyển đổi sang DTO
+            var dtos = positions.Select(p => p.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} chức vụ theo công ty: {companyId}");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -305,21 +325,24 @@ public class PositionRepository : IPositionRepository
     /// <summary>
     /// Thêm mới chức vụ.
     /// </summary>
-    /// <param name="position">Chức vụ cần thêm</param>
+    /// <param name="position">PositionDto cần thêm</param>
     /// <returns>ID của chức vụ vừa thêm</returns>
-    public Guid Insert(Position position)
+    public Guid Insert(PositionDto position)
     {
         try
         {
             if (position == null)
                 throw new ArgumentNullException(nameof(position));
 
+            // Chuyển đổi DTO sang Entity
+            var entity = position.ToEntity();
+
             using var context = CreateNewContext();
-            context.Positions.InsertOnSubmit(position);
+            context.Positions.InsertOnSubmit(entity);
             context.SubmitChanges();
             
-            _logger.Info($"Đã thêm mới chức vụ: {position.PositionCode} - {position.PositionName}");
-            return position.Id;
+            _logger.Info($"Đã thêm mới chức vụ: {entity.PositionCode} - {entity.PositionName}");
+            return entity.Id;
         }
         catch (Exception ex)
         {
@@ -331,8 +354,8 @@ public class PositionRepository : IPositionRepository
     /// <summary>
     /// Cập nhật chức vụ.
     /// </summary>
-    /// <param name="position">Chức vụ cần cập nhật</param>
-    public void Update(Position position)
+    /// <param name="position">PositionDto cần cập nhật</param>
+    public void Update(PositionDto position)
     {
         try
         {
@@ -347,13 +370,8 @@ public class PositionRepository : IPositionRepository
                 throw new DataAccessException("Không tìm thấy chức vụ để cập nhật");
             }
 
-            // Cập nhật các thuộc tính
-            existingPosition.CompanyId = position.CompanyId;
-            existingPosition.PositionCode = position.PositionCode;
-            existingPosition.PositionName = position.PositionName;
-            existingPosition.Description = position.Description;
-            existingPosition.IsManagerLevel = position.IsManagerLevel;
-            existingPosition.IsActive = position.IsActive;
+            // Sử dụng converter để cập nhật entity từ DTO
+            position.ToEntity(existingPosition);
 
             context.SubmitChanges();
             
@@ -369,8 +387,8 @@ public class PositionRepository : IPositionRepository
     /// <summary>
     /// Xóa chức vụ.
     /// </summary>
-    /// <param name="position">Chức vụ cần xóa</param>
-    public void Delete(Position position)
+    /// <param name="position">PositionDto cần xóa</param>
+    public void Delete(PositionDto position)
     {
         try
         {
