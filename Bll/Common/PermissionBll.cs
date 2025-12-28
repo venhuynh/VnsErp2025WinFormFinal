@@ -1,6 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
-using Dal.DataContext;
+using Dal.DtoConverter;
+using DTO.VersionAndUserManagementDto;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -68,7 +69,7 @@ public class PermissionBll
 
     #endregion
 
-    #region Permission Management
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Kiểm tra user có quyền thực hiện action trên entity không
@@ -111,38 +112,38 @@ public class PermissionBll
     /// <summary>
     /// Lấy tất cả quyền của user
     /// </summary>
-    public List<Permission> GetUserPermissions(Guid userId)
+    public List<PermissionDto> GetUserPermissions(Guid userId)
     {
         try
         {
             if (userId == Guid.Empty)
-                return new List<Permission>();
+                return new List<PermissionDto>();
 
             return GetDataAccess().GetUserPermissions(userId);
         }
         catch (Exception ex)
         {
             _logger?.Error($"Lỗi khi lấy quyền của user: {ex.Message}", ex);
-            return new List<Permission>();
+            return new List<PermissionDto>();
         }
     }
 
     /// <summary>
     /// Lấy quyền của user theo entity
     /// </summary>
-    public List<Permission> GetUserPermissionsByEntity(Guid userId, string entityName)
+    public List<PermissionDto> GetUserPermissionsByEntity(Guid userId, string entityName)
     {
         try
         {
             if (userId == Guid.Empty || string.IsNullOrWhiteSpace(entityName))
-                return new List<Permission>();
+                return new List<PermissionDto>();
 
             return GetDataAccess().GetUserPermissionsByEntity(userId, entityName);
         }
         catch (Exception ex)
         {
             _logger?.Error($"Lỗi khi lấy quyền theo entity: {ex.Message}", ex);
-            return new List<Permission>();
+            return new List<PermissionDto>();
         }
     }
 
@@ -186,14 +187,10 @@ public class PermissionBll
         return HasPermission(userId, entityName, "Approve");
     }
 
-    #endregion
-
-    #region Role Management
-
     /// <summary>
     /// Lấy tất cả roles
     /// </summary>
-    public List<Role> GetAllRoles()
+    public List<RoleDto> GetAllRoles()
     {
         try
         {
@@ -202,14 +199,14 @@ public class PermissionBll
         catch (Exception ex)
         {
             _logger?.Error($"Lỗi khi lấy tất cả roles: {ex.Message}", ex);
-            return new List<Role>();
+            return new List<RoleDto>();
         }
     }
 
     /// <summary>
     /// Lấy role theo ID
     /// </summary>
-    public Role GetRoleById(Guid id)
+    public RoleDto GetRoleById(Guid id)
     {
         try
         {
@@ -225,7 +222,7 @@ public class PermissionBll
     /// <summary>
     /// Lấy role theo tên
     /// </summary>
-    public Role GetRoleByName(string name)
+    public RoleDto GetRoleByName(string name)
     {
         try
         {
@@ -242,9 +239,105 @@ public class PermissionBll
     }
 
     /// <summary>
+    /// Lấy tất cả roles của user
+    /// </summary>
+    public List<RoleDto> GetUserRoles(Guid userId)
+    {
+        try
+        {
+            if (userId == Guid.Empty)
+                return new List<RoleDto>();
+
+            return GetDataAccess().GetUserRoles(userId);
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi lấy roles của user: {ex.Message}", ex);
+            return new List<RoleDto>();
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả permissions của role
+    /// </summary>
+    public List<PermissionDto> GetRolePermissions(Guid roleId)
+    {
+        try
+        {
+            if (roleId == Guid.Empty)
+                return new List<PermissionDto>();
+
+            return GetDataAccess().GetRolePermissions(roleId);
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi lấy permissions của role: {ex.Message}", ex);
+            return new List<PermissionDto>();
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả permissions
+    /// </summary>
+    public List<PermissionDto> GetAllPermissions()
+    {
+        try
+        {
+            return GetDataAccess().GetAllPermissions();
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi lấy tất cả permissions: {ex.Message}", ex);
+            return new List<PermissionDto>();
+        }
+    }
+
+    /// <summary>
+    /// Lấy permissions theo entity
+    /// </summary>
+    public List<PermissionDto> GetPermissionsByEntity(string entityName)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(entityName))
+                return new List<PermissionDto>();
+
+            return GetDataAccess().GetPermissionsByEntity(entityName);
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi lấy permissions theo entity: {ex.Message}", ex);
+            return new List<PermissionDto>();
+        }
+    }
+
+    /// <summary>
+    /// Lấy permission theo EntityName và Action
+    /// </summary>
+    public PermissionDto GetPermission(string entityName, string action)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(entityName) || string.IsNullOrWhiteSpace(action))
+                return null;
+
+            return GetDataAccess().GetPermission(entityName, action);
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi lấy permission: {ex.Message}", ex);
+            return null;
+        }
+    }
+
+    #endregion
+
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
     /// Tạo role mới
     /// </summary>
-    public Role CreateRole(Role role)
+    public RoleDto CreateRole(RoleDto role)
     {
         try
         {
@@ -261,10 +354,14 @@ public class PermissionBll
         }
     }
 
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
+
     /// <summary>
     /// Cập nhật role
     /// </summary>
-    public Role UpdateRole(Role role)
+    public RoleDto UpdateRole(RoleDto role)
     {
         try
         {
@@ -280,27 +377,6 @@ public class PermissionBll
             throw;
         }
     }
-
-    /// <summary>
-    /// Xóa role
-    /// </summary>
-    public void DeleteRole(Guid id)
-    {
-        try
-        {
-            _logger?.Info($"Xóa role: {id}");
-            GetDataAccess().DeleteRole(id);
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi xóa role: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    #endregion
-
-    #region UserRole Management
 
     /// <summary>
     /// Gán role cho user
@@ -337,23 +413,80 @@ public class PermissionBll
     }
 
     /// <summary>
-    /// Lấy tất cả roles của user
+    /// Gán permission cho role
     /// </summary>
-    public List<Role> GetUserRoles(Guid userId)
+    public void AssignPermissionToRole(Guid roleId, Guid permissionId, bool isGranted = true)
     {
         try
         {
-            if (userId == Guid.Empty)
-                return new List<Role>();
-
-            return GetDataAccess().GetUserRoles(userId);
+            _logger?.Info($"Gán permission {permissionId} cho role {roleId}");
+            GetDataAccess().AssignPermissionToRole(roleId, permissionId, isGranted);
         }
         catch (Exception ex)
         {
-            _logger?.Error($"Lỗi khi lấy roles của user: {ex.Message}", ex);
-            return new List<Role>();
+            _logger?.Error($"Lỗi khi gán permission cho role: {ex.Message}", ex);
+            throw;
         }
     }
+
+    /// <summary>
+    /// Gỡ permission khỏi role
+    /// </summary>
+    public void RemovePermissionFromRole(Guid roleId, Guid permissionId)
+    {
+        try
+        {
+            _logger?.Info($"Gỡ permission {permissionId} khỏi role {roleId}");
+            GetDataAccess().RemovePermissionFromRole(roleId, permissionId);
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi gỡ permission khỏi role: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Gán nhiều permissions cho role
+    /// </summary>
+    public void AssignPermissionsToRole(Guid roleId, List<Guid> permissionIds, bool isGranted = true)
+    {
+        try
+        {
+            _logger?.Info($"Gán {permissionIds.Count} permissions cho role {roleId}");
+            GetDataAccess().AssignPermissionsToRole(roleId, permissionIds, isGranted);
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi gán permissions cho role: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
+
+    /// <summary>
+    /// Xóa role
+    /// </summary>
+    public void DeleteRole(Guid id)
+    {
+        try
+        {
+            _logger?.Info($"Xóa role: {id}");
+            GetDataAccess().DeleteRole(id);
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi xóa role: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region ========== BUSINESS LOGIC METHODS ==========
 
     /// <summary>
     /// Kiểm tra user có role không
@@ -394,138 +527,6 @@ public class PermissionBll
         {
             _logger?.Error($"Lỗi khi kiểm tra user có role: {ex.Message}", ex);
             return false;
-        }
-    }
-
-    #endregion
-
-    #region RolePermission Management
-
-    /// <summary>
-    /// Gán permission cho role
-    /// </summary>
-    public void AssignPermissionToRole(Guid roleId, Guid permissionId, bool isGranted = true)
-    {
-        try
-        {
-            _logger?.Info($"Gán permission {permissionId} cho role {roleId}");
-            GetDataAccess().AssignPermissionToRole(roleId, permissionId, isGranted);
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi gán permission cho role: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Gỡ permission khỏi role
-    /// </summary>
-    public void RemovePermissionFromRole(Guid roleId, Guid permissionId)
-    {
-        try
-        {
-            _logger?.Info($"Gỡ permission {permissionId} khỏi role {roleId}");
-            GetDataAccess().RemovePermissionFromRole(roleId, permissionId);
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi gỡ permission khỏi role: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Lấy tất cả permissions của role
-    /// </summary>
-    public List<Permission> GetRolePermissions(Guid roleId)
-    {
-        try
-        {
-            if (roleId == Guid.Empty)
-                return new List<Permission>();
-
-            return GetDataAccess().GetRolePermissions(roleId);
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi lấy permissions của role: {ex.Message}", ex);
-            return new List<Permission>();
-        }
-    }
-
-    /// <summary>
-    /// Gán nhiều permissions cho role
-    /// </summary>
-    public void AssignPermissionsToRole(Guid roleId, List<Guid> permissionIds, bool isGranted = true)
-    {
-        try
-        {
-            _logger?.Info($"Gán {permissionIds.Count} permissions cho role {roleId}");
-            GetDataAccess().AssignPermissionsToRole(roleId, permissionIds, isGranted);
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi gán permissions cho role: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    #endregion
-
-    #region Permission CRUD
-
-    /// <summary>
-    /// Lấy tất cả permissions
-    /// </summary>
-    public List<Permission> GetAllPermissions()
-    {
-        try
-        {
-            return GetDataAccess().GetAllPermissions();
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi lấy tất cả permissions: {ex.Message}", ex);
-            return new List<Permission>();
-        }
-    }
-
-    /// <summary>
-    /// Lấy permissions theo entity
-    /// </summary>
-    public List<Permission> GetPermissionsByEntity(string entityName)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(entityName))
-                return new List<Permission>();
-
-            return GetDataAccess().GetPermissionsByEntity(entityName);
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi lấy permissions theo entity: {ex.Message}", ex);
-            return new List<Permission>();
-        }
-    }
-
-    /// <summary>
-    /// Lấy permission theo EntityName và Action
-    /// </summary>
-    public Permission GetPermission(string entityName, string action)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(entityName) || string.IsNullOrWhiteSpace(action))
-                return null;
-
-            return GetDataAccess().GetPermission(entityName, action);
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi lấy permission: {ex.Message}", ex);
-            return null;
         }
     }
 

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.VersionAndUserManagementDto;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -17,8 +19,14 @@ namespace Dal.DataAccess.Implementations.VersionAndUserManagementDal;
 /// </summary>
 public class PermissionRepository : IPermissionRepository
 {
+    #region Private Fields
+
     private readonly string _connectionString;
     private readonly CustomLogger _logger;
+
+    #endregion
+
+    #region Constructor
 
     public PermissionRepository(string connectionString)
     {
@@ -27,6 +35,14 @@ public class PermissionRepository : IPermissionRepository
         _logger.Info("PermissionRepository được khởi tạo");
     }
 
+    #endregion
+
+    #region ========== HELPER METHODS ==========
+
+    /// <summary>
+    /// Tạo DataContext mới cho mỗi operation
+    /// </summary>
+    /// <returns>DataContext mới</returns>
     private VnsErp2025DataContext CreateNewContext()
     {
         var context = new VnsErp2025DataContext(_connectionString);
@@ -36,68 +52,14 @@ public class PermissionRepository : IPermissionRepository
         return context;
     }
 
-    #region Permission CRUD
+    #endregion
 
-    public Permission Create(Permission permission)
-    {
-        try
-        {
-            if (permission == null)
-                throw new ArgumentNullException(nameof(permission));
+    #region ========== READ OPERATIONS ==========
 
-            if (permission.Id == Guid.Empty)
-                permission.Id = Guid.NewGuid();
-
-            // Validate
-            if (string.IsNullOrWhiteSpace(permission.EntityName))
-                throw new ArgumentException("EntityName không được để trống", nameof(permission));
-
-            if (string.IsNullOrWhiteSpace(permission.Action))
-                throw new ArgumentException("Action không được để trống", nameof(permission));
-
-            // Kiểm tra duplicate
-            if (GetPermission(permission.EntityName, permission.Action) != null)
-                throw new DataAccessException($"Permission '{permission.EntityName}.{permission.Action}' đã tồn tại");
-
-            using var context = CreateNewContext();
-            context.Permissions.InsertOnSubmit(permission);
-            context.SubmitChanges();
-
-            _logger.Info($"Đã tạo Permission: {permission.EntityName}.{permission.Action}");
-            return permission;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi tạo Permission: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi tạo Permission: {ex.Message}", ex);
-        }
-    }
-
-    public async Task<Permission> CreateAsync(Permission permission)
-    {
-        return await Task.Run(() => Create(permission));
-    }
-
-    public Permission GetPermissionById(Guid id)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            return context.Permissions.FirstOrDefault(p => p.Id == id);
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy Permission theo ID: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy Permission: {ex.Message}", ex);
-        }
-    }
-
-    public async Task<Permission> GetPermissionByIdAsync(Guid id)
-    {
-        return await Task.Run(() => GetPermissionById(id));
-    }
-
-    public Permission GetPermission(string entityName, string action)
+    /// <summary>
+    /// Lấy permission theo EntityName và Action
+    /// </summary>
+    public PermissionDto GetPermission(string entityName, string action)
     {
         try
         {
@@ -105,10 +67,12 @@ public class PermissionRepository : IPermissionRepository
                 return null;
 
             using var context = CreateNewContext();
-            return context.Permissions.FirstOrDefault(p => 
+            var entity = context.Permissions.FirstOrDefault(p => 
                 p.EntityName == entityName && 
                 p.Action == action && 
                 p.IsActive);
+            
+            return entity?.ToDto();
         }
         catch (Exception ex)
         {
@@ -117,16 +81,21 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public List<Permission> GetAllPermissions()
+    /// <summary>
+    /// Lấy tất cả permissions
+    /// </summary>
+    public List<PermissionDto> GetAllPermissions()
     {
         try
         {
             using var context = CreateNewContext();
-            return context.Permissions
+            var entities = context.Permissions
                 .Where(p => p.IsActive)
                 .OrderBy(p => p.EntityName)
                 .ThenBy(p => p.Action)
                 .ToList();
+            
+            return entities.ToDtos();
         }
         catch (Exception ex)
         {
@@ -135,23 +104,23 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task<List<Permission>> GetAllPermissionsAsync()
-    {
-        return await Task.Run(() => GetAllPermissions());
-    }
-
-    public List<Permission> GetPermissionsByEntity(string entityName)
+    /// <summary>
+    /// Lấy permissions theo EntityName
+    /// </summary>
+    public List<PermissionDto> GetPermissionsByEntity(string entityName)
     {
         try
         {
             if (string.IsNullOrWhiteSpace(entityName))
-                return new List<Permission>();
+                return new List<PermissionDto>();
 
             using var context = CreateNewContext();
-            return context.Permissions
+            var entities = context.Permissions
                 .Where(p => p.EntityName == entityName && p.IsActive)
                 .OrderBy(p => p.Action)
                 .ToList();
+            
+            return entities.ToDtos();
         }
         catch (Exception ex)
         {
@@ -160,117 +129,16 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task<List<Permission>> GetPermissionsByEntityAsync(string entityName)
-    {
-        return await Task.Run(() => GetPermissionsByEntity(entityName));
-    }
-
-    public Permission UpdatePermission(Permission permission)
-    {
-        try
-        {
-            if (permission == null)
-                throw new ArgumentNullException(nameof(permission));
-
-            using var context = CreateNewContext();
-            var existing = context.Permissions.FirstOrDefault(p => p.Id == permission.Id);
-
-            if (existing == null)
-                throw new DataAccessException($"Không tìm thấy Permission với ID: {permission.Id}");
-
-            existing.Description = permission.Description;
-            existing.IsActive = permission.IsActive;
-
-            context.SubmitChanges();
-            _logger.Info($"Đã cập nhật Permission: {existing.EntityName}.{existing.Action}");
-            return existing;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi cập nhật Permission: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi cập nhật Permission: {ex.Message}", ex);
-        }
-    }
-
-    public async Task<Permission> UpdatePermissionAsync(Permission permission)
-    {
-        return await Task.Run(() => UpdatePermission(permission));
-    }
-
-    public void DeletePermission(Guid id)
+    /// <summary>
+    /// Lấy role theo ID
+    /// </summary>
+    public RoleDto GetRoleById(Guid id)
     {
         try
         {
             using var context = CreateNewContext();
-            var permission = context.Permissions.FirstOrDefault(p => p.Id == id);
-
-            if (permission == null)
-                throw new DataAccessException($"Không tìm thấy Permission với ID: {id}");
-
-            // Soft delete
-            permission.IsActive = false;
-            context.SubmitChanges();
-
-            _logger.Info($"Đã xóa Permission: {permission.EntityName}.{permission.Action}");
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi xóa Permission: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi xóa Permission: {ex.Message}", ex);
-        }
-    }
-
-    public async Task DeletePermissionAsync(Guid id)
-    {
-        await Task.Run(() => DeletePermission(id));
-    }
-
-    #endregion
-
-    #region Role CRUD
-
-    public Role CreateRole(Role role)
-    {
-        try
-        {
-            if (role == null)
-                throw new ArgumentNullException(nameof(role));
-
-            if (role.Id == Guid.Empty)
-                role.Id = Guid.NewGuid();
-
-            if (string.IsNullOrWhiteSpace(role.Name))
-                throw new ArgumentException("Name không được để trống", nameof(role));
-
-            // Kiểm tra duplicate
-            if (GetRoleByName(role.Name) != null)
-                throw new DataAccessException($"Role '{role.Name}' đã tồn tại");
-
-            using var context = CreateNewContext();
-            context.Roles.InsertOnSubmit(role);
-            context.SubmitChanges();
-
-            _logger.Info($"Đã tạo Role: {role.Name}");
-            return role;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi tạo Role: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi tạo Role: {ex.Message}", ex);
-        }
-    }
-
-    public async Task<Role> CreateRoleAsync(Role role)
-    {
-        return await Task.Run(() => CreateRole(role));
-    }
-
-    public Role GetRoleById(Guid id)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            return context.Roles.FirstOrDefault(r => r.Id == id);
+            var entity = context.Roles.FirstOrDefault(r => r.Id == id);
+            return entity?.ToDto();
         }
         catch (Exception ex)
         {
@@ -279,12 +147,10 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task<Role> GetRoleByIdAsync(Guid id)
-    {
-        return await Task.Run(() => GetRoleById(id));
-    }
-
-    public Role GetRoleByName(string name)
+    /// <summary>
+    /// Lấy role theo tên
+    /// </summary>
+    public RoleDto GetRoleByName(string name)
     {
         try
         {
@@ -292,7 +158,8 @@ public class PermissionRepository : IPermissionRepository
                 return null;
 
             using var context = CreateNewContext();
-            return context.Roles.FirstOrDefault(r => r.Name == name);
+            var entity = context.Roles.FirstOrDefault(r => r.Name == name);
+            return entity?.ToDto();
         }
         catch (Exception ex)
         {
@@ -301,14 +168,19 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public List<Role> GetAllRoles()
+    /// <summary>
+    /// Lấy tất cả roles
+    /// </summary>
+    public List<RoleDto> GetAllRoles()
     {
         try
         {
             using var context = CreateNewContext();
-            return context.Roles
+            var entities = context.Roles
                 .OrderBy(r => r.Name)
                 .ToList();
+            
+            return entities.ToDtos();
         }
         catch (Exception ex)
         {
@@ -317,54 +189,79 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task<List<Role>> GetAllRolesAsync()
-    {
-        return await Task.Run(() => GetAllRoles());
-    }
+    #endregion
 
-    public List<Role> GetActiveRoles()
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Tạo role mới
+    /// </summary>
+    public RoleDto CreateRole(RoleDto dto)
     {
         try
         {
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                throw new ArgumentException("Name không được để trống", nameof(dto));
+
+            // Kiểm tra duplicate
+            if (GetRoleByName(dto.Name) != null)
+                throw new DataAccessException($"Role '{dto.Name}' đã tồn tại");
+
             using var context = CreateNewContext();
-            return context.Roles
-                .Where(r => r.IsActive)
-                .OrderBy(r => r.Name)
-                .ToList();
+            
+            // Convert DTO to Entity
+            var entity = dto.ToEntity();
+            
+            if (entity.Id == Guid.Empty)
+                entity.Id = Guid.NewGuid();
+
+            context.Roles.InsertOnSubmit(entity);
+            context.SubmitChanges();
+
+            _logger.Info($"Đã tạo Role: {entity.Name}");
+            return entity.ToDto();
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi lấy Active Roles: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy Roles: {ex.Message}", ex);
+            _logger.Error($"Lỗi khi tạo Role: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi tạo Role: {ex.Message}", ex);
         }
     }
 
-    public Role UpdateRole(Role role)
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
+
+    /// <summary>
+    /// Cập nhật role
+    /// </summary>
+    public RoleDto UpdateRole(RoleDto dto)
     {
         try
         {
-            if (role == null)
-                throw new ArgumentNullException(nameof(role));
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
 
             using var context = CreateNewContext();
-            var existing = context.Roles.FirstOrDefault(r => r.Id == role.Id);
+            var existing = context.Roles.FirstOrDefault(r => r.Id == dto.Id);
 
             if (existing == null)
-                throw new DataAccessException($"Không tìm thấy Role với ID: {role.Id}");
+                throw new DataAccessException($"Không tìm thấy Role với ID: {dto.Id}");
 
             // Không cho phép đổi tên nếu là system role
-            if (existing.IsSystemRole && existing.Name != role.Name)
+            if (existing.IsSystemRole && existing.Name != dto.Name)
                 throw new DataAccessException("Không thể đổi tên System Role");
 
-            existing.Name = role.Name;
-            existing.Description = role.Description;
-            existing.IsActive = role.IsActive;
+            // Convert DTO to Entity (update existing)
+            dto.ToEntity(existing);
             existing.ModifiedDate = DateTime.Now;
-            existing.ModifiedBy = role.ModifiedBy;
 
             context.SubmitChanges();
             _logger.Info($"Đã cập nhật Role: {existing.Name}");
-            return existing;
+            return existing.ToDto();
         }
         catch (Exception ex)
         {
@@ -373,46 +270,9 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task<Role> UpdateRoleAsync(Role role)
-    {
-        return await Task.Run(() => UpdateRole(role));
-    }
-
-    public void DeleteRole(Guid id)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var role = context.Roles.FirstOrDefault(r => r.Id == id);
-
-            if (role == null)
-                throw new DataAccessException($"Không tìm thấy Role với ID: {id}");
-
-            if (role.IsSystemRole)
-                throw new DataAccessException("Không thể xóa System Role");
-
-            // Soft delete
-            role.IsActive = false;
-            context.SubmitChanges();
-
-            _logger.Info($"Đã xóa Role: {role.Name}");
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi xóa Role: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi xóa Role: {ex.Message}", ex);
-        }
-    }
-
-    public async Task DeleteRoleAsync(Guid id)
-    {
-        await Task.Run(() => DeleteRole(id));
-    }
-
-    #endregion
-
-    #region UserRole Management
-
+    /// <summary>
+    /// Gán role cho user
+    /// </summary>
     public void AssignRoleToUser(Guid userId, Guid roleId, Guid? assignedBy = null)
     {
         try
@@ -455,11 +315,9 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task AssignRoleToUserAsync(Guid userId, Guid roleId, Guid? assignedBy = null)
-    {
-        await Task.Run(() => AssignRoleToUser(userId, roleId, assignedBy));
-    }
-
+    /// <summary>
+    /// Gỡ role khỏi user
+    /// </summary>
     public void RemoveRoleFromUser(Guid userId, Guid roleId)
     {
         try
@@ -483,21 +341,21 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task RemoveRoleFromUserAsync(Guid userId, Guid roleId)
-    {
-        await Task.Run(() => RemoveRoleFromUser(userId, roleId));
-    }
-
-    public List<Role> GetUserRoles(Guid userId)
+    /// <summary>
+    /// Lấy tất cả roles của user
+    /// </summary>
+    public List<RoleDto> GetUserRoles(Guid userId)
     {
         try
         {
             using var context = CreateNewContext();
-            return context.UserRoles
+            var entities = context.UserRoles
                 .Where(ur => ur.UserId == userId && ur.IsActive)
                 .Select(ur => ur.Role)
                 .Where(r => r.IsActive)
                 .ToList();
+            
+            return entities.ToDtos();
         }
         catch (Exception ex)
         {
@@ -506,29 +364,9 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task<List<Role>> GetUserRolesAsync(Guid userId)
-    {
-        return await Task.Run(() => GetUserRoles(userId));
-    }
-
-    public List<ApplicationUser> GetRoleUsers(Guid roleId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            return context.UserRoles
-                .Where(ur => ur.RoleId == roleId && ur.IsActive)
-                .Select(ur => ur.ApplicationUser)
-                .Where(u => u.Active)
-                .ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy Users của Role: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy Users: {ex.Message}", ex);
-        }
-    }
-
+    /// <summary>
+    /// Kiểm tra user có role không
+    /// </summary>
     public bool UserHasRole(Guid userId, Guid roleId)
     {
         try
@@ -544,15 +382,9 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task<bool> UserHasRoleAsync(Guid userId, Guid roleId)
-    {
-        return await Task.Run(() => UserHasRole(userId, roleId));
-    }
-
-    #endregion
-
-    #region RolePermission Management
-
+    /// <summary>
+    /// Gán permission cho role
+    /// </summary>
     public void AssignPermissionToRole(Guid roleId, Guid permissionId, bool isGranted = true)
     {
         try
@@ -587,11 +419,9 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task AssignPermissionToRoleAsync(Guid roleId, Guid permissionId, bool isGranted = true)
-    {
-        await Task.Run(() => AssignPermissionToRole(roleId, permissionId, isGranted));
-    }
-
+    /// <summary>
+    /// Gỡ permission khỏi role
+    /// </summary>
     public void RemovePermissionFromRole(Guid roleId, Guid permissionId)
     {
         try
@@ -613,21 +443,21 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task RemovePermissionFromRoleAsync(Guid roleId, Guid permissionId)
-    {
-        await Task.Run(() => RemovePermissionFromRole(roleId, permissionId));
-    }
-
-    public List<Permission> GetRolePermissions(Guid roleId)
+    /// <summary>
+    /// Lấy tất cả permissions của role
+    /// </summary>
+    public List<PermissionDto> GetRolePermissions(Guid roleId)
     {
         try
         {
             using var context = CreateNewContext();
-            return context.RolePermissions
+            var entities = context.RolePermissions
                 .Where(rp => rp.RoleId == roleId && rp.IsGranted)
                 .Select(rp => rp.Permission)
                 .Where(p => p.IsActive)
                 .ToList();
+            
+            return entities.ToDtos();
         }
         catch (Exception ex)
         {
@@ -636,11 +466,9 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task<List<Permission>> GetRolePermissionsAsync(Guid roleId)
-    {
-        return await Task.Run(() => GetRolePermissions(roleId));
-    }
-
+    /// <summary>
+    /// Gán nhiều permissions cho role
+    /// </summary>
     public void AssignPermissionsToRole(Guid roleId, List<Guid> permissionIds, bool isGranted = true)
     {
         try
@@ -689,77 +517,45 @@ public class PermissionRepository : IPermissionRepository
 
     #endregion
 
-    #region UserPermission Management
+    #region ========== DELETE OPERATIONS ==========
 
-    public void AssignPermissionToUser(Guid userId, Guid permissionId, bool isGranted = true, Guid? createdBy = null)
+    /// <summary>
+    /// Xóa role (chỉ xóa được nếu không phải system role)
+    /// </summary>
+    public void DeleteRole(Guid id)
     {
         try
         {
             using var context = CreateNewContext();
-            
-            var existing = context.UserPermissions.FirstOrDefault(up => up.UserId == userId && up.PermissionId == permissionId);
-            if (existing != null)
-            {
-                existing.IsGranted = isGranted;
-                existing.IsOverride = true;
-                context.SubmitChanges();
-                return;
-            }
+            var role = context.Roles.FirstOrDefault(r => r.Id == id);
 
-            var userPermission = new UserPermission
-            {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                PermissionId = permissionId,
-                IsGranted = isGranted,
-                IsOverride = true,
-                CreatedBy = createdBy
-            };
+            if (role == null)
+                throw new DataAccessException($"Không tìm thấy Role với ID: {id}");
 
-            context.UserPermissions.InsertOnSubmit(userPermission);
+            if (role.IsSystemRole)
+                throw new DataAccessException("Không thể xóa System Role");
+
+            // Soft delete
+            role.IsActive = false;
             context.SubmitChanges();
 
-            _logger.Info($"Đã gán Permission {permissionId} cho User {userId}");
+            _logger.Info($"Đã xóa Role: {role.Name}");
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi gán Permission cho User: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi gán Permission: {ex.Message}", ex);
+            _logger.Error($"Lỗi khi xóa Role: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi xóa Role: {ex.Message}", ex);
         }
     }
 
-    public async Task AssignPermissionToUserAsync(Guid userId, Guid permissionId, bool isGranted = true, Guid? createdBy = null)
-    {
-        await Task.Run(() => AssignPermissionToUser(userId, permissionId, isGranted, createdBy));
-    }
+    #endregion
 
-    public void RemovePermissionFromUser(Guid userId, Guid permissionId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var userPermission = context.UserPermissions.FirstOrDefault(up => up.UserId == userId && up.PermissionId == permissionId);
+    #region ========== PERMISSION CHECKING ==========
 
-            if (userPermission != null)
-            {
-                context.UserPermissions.DeleteOnSubmit(userPermission);
-                context.SubmitChanges();
-                _logger.Info($"Đã gỡ Permission {permissionId} khỏi User {userId}");
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi gỡ Permission khỏi User: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi gỡ Permission: {ex.Message}", ex);
-        }
-    }
-
-    public async Task RemovePermissionFromUserAsync(Guid userId, Guid permissionId)
-    {
-        await Task.Run(() => RemovePermissionFromUser(userId, permissionId));
-    }
-
-    public List<Permission> GetUserPermissions(Guid userId)
+    /// <summary>
+    /// Lấy tất cả permissions của user (từ role + override)
+    /// </summary>
+    public List<PermissionDto> GetUserPermissions(Guid userId)
     {
         try
         {
@@ -786,7 +582,7 @@ public class PermissionRepository : IPermissionRepository
                 .Union(rolePermissions.Where(rp => !userPermissions.Any(up => up.Id == rp.Id)))
                 .ToList();
 
-            return allPermissions;
+            return allPermissions.ToDtos();
         }
         catch (Exception ex)
         {
@@ -795,15 +591,28 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
-    public async Task<List<Permission>> GetUserPermissionsAsync(Guid userId)
+    /// <summary>
+    /// Lấy danh sách quyền của user theo entity
+    /// </summary>
+    public List<PermissionDto> GetUserPermissionsByEntity(Guid userId, string entityName)
     {
-        return await Task.Run(() => GetUserPermissions(userId));
+        try
+        {
+            var allPermissions = GetUserPermissions(userId);
+            return allPermissions
+                .Where(p => p.EntityName == entityName)
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy Permissions theo Entity: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy Permissions: {ex.Message}", ex);
+        }
     }
 
-    #endregion
-
-    #region Permission Checking
-
+    /// <summary>
+    /// Kiểm tra user có quyền thực hiện action trên entity không
+    /// </summary>
     public bool HasPermission(Guid userId, string entityName, string action)
     {
         try
@@ -834,54 +643,6 @@ public class PermissionRepository : IPermissionRepository
             _logger.Error($"Lỗi khi kiểm tra quyền: {ex.Message}", ex);
             return false; // Deny by default
         }
-    }
-
-    public async Task<bool> HasPermissionAsync(Guid userId, string entityName, string action)
-    {
-        return await Task.Run(() => HasPermission(userId, entityName, action));
-    }
-
-    public bool HasPermissionUsingSp(Guid userId, string entityName, string action)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var result = context.ExecuteQuery<PermissionCheckResult>(
-                "EXEC sp_CheckUserPermission @p0, @p1, @p2",
-                userId, entityName, action).FirstOrDefault();
-
-            return result?.HasPermission ?? false;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi kiểm tra quyền bằng SP: {ex.Message}", ex);
-            return false;
-        }
-    }
-
-    public List<Permission> GetUserPermissionsByEntity(Guid userId, string entityName)
-    {
-        try
-        {
-            var allPermissions = GetUserPermissions(userId);
-            return allPermissions
-                .Where(p => p.EntityName == entityName)
-                .ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy Permissions theo Entity: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy Permissions: {ex.Message}", ex);
-        }
-    }
-
-    #endregion
-
-    #region Helper Classes
-
-    private class PermissionCheckResult
-    {
-        public bool HasPermission { get; set; }
     }
 
     #endregion

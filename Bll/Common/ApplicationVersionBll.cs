@@ -1,7 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.VersionAndUserManagementDal;
 using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
-using Dal.DataContext;
+using Dal.DtoConverter;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -71,35 +71,7 @@ public class ApplicationVersionBll
 
     #endregion
 
-    #region Public Methods
-
-    /// <summary>
-    /// Lấy phiên bản đang hoạt động từ database
-    /// </summary>
-    /// <returns>ApplicationVersionDto hoặc null</returns>
-    public ApplicationVersionDto GetActiveVersion()
-    {
-        try
-        {
-            _logger?.Info("Bắt đầu lấy phiên bản đang hoạt động");
-            var version = GetDataAccess().GetActiveVersion();
-            
-            if (version == null)
-            {
-                _logger?.Warning("Không tìm thấy phiên bản đang hoạt động trong database");
-                return null;
-            }
-
-            var dto = version.ToDto();
-            _logger?.Info($"Hoàn thành lấy phiên bản đang hoạt động: {dto.Version}");
-            return dto;
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi lấy phiên bản đang hoạt động: {ex.Message}", ex);
-            throw;
-        }
-    }
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Lấy phiên bản hiện tại của ứng dụng từ Assembly của project chính (VnsErp2025)
@@ -144,6 +116,130 @@ public class ApplicationVersionBll
         }
     }
 
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
+
+    /// <summary>
+    /// Lấy phiên bản đang hoạt động từ database
+    /// </summary>
+    /// <returns>ApplicationVersionDto hoặc null</returns>
+    public ApplicationVersionDto GetActiveVersion()
+    {
+        try
+        {
+            _logger?.Info("Bắt đầu lấy phiên bản đang hoạt động");
+            var dto = GetDataAccess().GetActiveVersion();
+            
+            if (dto == null)
+            {
+                _logger?.Warning("Không tìm thấy phiên bản đang hoạt động trong database");
+                return null;
+            }
+
+            _logger?.Info($"Hoàn thành lấy phiên bản đang hoạt động: {dto.Version}");
+            return dto;
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi lấy phiên bản đang hoạt động: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả phiên bản
+    /// </summary>
+    /// <returns>Danh sách ApplicationVersionDto</returns>
+    public List<ApplicationVersionDto> GetAllVersions()
+    {
+        try
+        {
+            _logger?.Info("Bắt đầu lấy tất cả phiên bản");
+            var dtos = GetDataAccess().GetAllVersions();
+            _logger?.Info($"Hoàn thành lấy tất cả phiên bản: {dtos.Count} phiên bản");
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi lấy tất cả phiên bản: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Tạo phiên bản mới
+    /// </summary>
+    /// <param name="dto">ApplicationVersionDto</param>
+    /// <returns>ApplicationVersionDto đã tạo</returns>
+    public ApplicationVersionDto CreateVersion(ApplicationVersionDto dto)
+    {
+        try
+        {
+            _logger?.Info($"Bắt đầu tạo phiên bản mới: {dto.Version}");
+            var result = GetDataAccess().Create(dto);
+            _logger?.Info($"Hoàn thành tạo phiên bản mới: {result.Version}");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi tạo phiên bản: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
+
+    /// <summary>
+    /// Cập nhật phiên bản
+    /// </summary>
+    /// <param name="dto">ApplicationVersionDto</param>
+    /// <returns>ApplicationVersionDto đã cập nhật</returns>
+    public ApplicationVersionDto UpdateVersion(ApplicationVersionDto dto)
+    {
+        try
+        {
+            _logger?.Info($"Bắt đầu cập nhật phiên bản: {dto.Version}");
+            var result = GetDataAccess().Update(dto);
+            _logger?.Info($"Hoàn thành cập nhật phiên bản: {result.Version}");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi cập nhật phiên bản: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Đặt một phiên bản làm Active
+    /// </summary>
+    /// <param name="versionId">ID phiên bản</param>
+    public void SetActiveVersion(Guid versionId)
+    {
+        try
+        {
+            _logger?.Info($"Bắt đầu đặt phiên bản làm Active: {versionId}");
+            GetDataAccess().SetActiveVersion(versionId);
+            _logger?.Info($"Hoàn thành đặt phiên bản làm Active: {versionId}");
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi đặt phiên bản Active: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region ========== BUSINESS LOGIC METHODS ==========
+
     /// <summary>
     /// Kiểm tra phiên bản ứng dụng có khớp với phiên bản trong database không
     /// </summary>
@@ -179,92 +275,6 @@ public class ApplicationVersionBll
             _logger?.Error($"Lỗi khi kiểm tra phiên bản: {ex.Message}", ex);
             // Trong trường hợp lỗi, cho phép sử dụng để tránh block ứng dụng
             return true;
-        }
-    }
-
-    /// <summary>
-    /// Lấy tất cả phiên bản
-    /// </summary>
-    /// <returns>Danh sách phiên bản</returns>
-    public List<ApplicationVersionDto> GetAllVersions()
-    {
-        try
-        {
-            _logger?.Info("Bắt đầu lấy tất cả phiên bản");
-            var versions = GetDataAccess().GetAllVersions();
-            var dtos = versions.ToDtos();
-            _logger?.Info($"Hoàn thành lấy tất cả phiên bản: {dtos.Count} phiên bản");
-            return dtos;
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi lấy tất cả phiên bản: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Tạo phiên bản mới
-    /// </summary>
-    /// <param name="dto">ApplicationVersionDto</param>
-    /// <returns>ApplicationVersionDto đã tạo</returns>
-    public ApplicationVersionDto CreateVersion(ApplicationVersionDto dto)
-    {
-        try
-        {
-            _logger?.Info($"Bắt đầu tạo phiên bản mới: {dto.Version}");
-            var entity = dto.ToEntity();
-            var created = GetDataAccess().Create(entity);
-            var result = created.ToDto();
-            _logger?.Info($"Hoàn thành tạo phiên bản mới: {result.Version}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi tạo phiên bản: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Cập nhật phiên bản
-    /// </summary>
-    /// <param name="dto">ApplicationVersionDto</param>
-    /// <returns>ApplicationVersionDto đã cập nhật</returns>
-    public ApplicationVersionDto UpdateVersion(ApplicationVersionDto dto)
-    {
-        try
-        {
-            _logger?.Info($"Bắt đầu cập nhật phiên bản: {dto.Version}");
-            var entity = dto.ToEntity();
-            var updated = GetDataAccess().Update(entity);
-            var result = updated.ToDto();
-            _logger?.Info($"Hoàn thành cập nhật phiên bản: {result.Version}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi cập nhật phiên bản: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Đặt một phiên bản làm Active
-    /// </summary>
-    /// <param name="versionId">ID phiên bản</param>
-    public void SetActiveVersion(Guid versionId)
-    {
-        try
-        {
-            _logger?.Info($"Bắt đầu đặt phiên bản làm Active: {versionId}");
-            GetDataAccess().SetActiveVersion(versionId);
-            _logger?.Info($"Hoàn thành đặt phiên bản làm Active: {versionId}");
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi đặt phiên bản Active: {ex.Message}", ex);
-            throw;
         }
     }
 

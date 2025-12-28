@@ -126,11 +126,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VnsErp2025.dbml</DependentUpon>
     </Compile>
+    <Compile Include="DtoConverter\ApplicationVersionDtoConverter.cs" />
     <Compile Include="DtoConverter\AttributeConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerContactConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerSiteConverters.cs" />
+    <Compile Include="DtoConverter\PermissionDtoExtensions.cs" />
     <Compile Include="DtoConverter\UnitOfMeasureConverters.cs" />
     <Compile Include="DtoConverter\CompanyBranchConverters.cs" />
     <Compile Include="DtoConverter\CompanyConverter.cs" />

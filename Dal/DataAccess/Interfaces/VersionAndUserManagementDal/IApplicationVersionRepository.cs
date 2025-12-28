@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.VersionAndUserManagementDto;
 
 namespace Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 
@@ -10,71 +9,41 @@ namespace Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 /// </summary>
 public interface IApplicationVersionRepository
 {
+    #region ========== READ OPERATIONS ==========
+
     /// <summary>
     /// Lấy phiên bản đang hoạt động
     /// </summary>
-    /// <returns>VnsErpApplicationVersion hoặc null nếu không có</returns>
-    VnsErpApplicationVersion GetActiveVersion();
-
-    /// <summary>
-    /// Lấy phiên bản đang hoạt động (async)
-    /// </summary>
-    /// <returns>VnsErpApplicationVersion hoặc null nếu không có</returns>
-    Task<VnsErpApplicationVersion> GetActiveVersionAsync();
+    /// <returns>ApplicationVersionDto hoặc null nếu không có</returns>
+    ApplicationVersionDto GetActiveVersion();
 
     /// <summary>
     /// Lấy tất cả phiên bản
     /// </summary>
-    /// <returns>Danh sách phiên bản</returns>
-    List<VnsErpApplicationVersion> GetAllVersions();
+    /// <returns>Danh sách ApplicationVersionDto</returns>
+    List<ApplicationVersionDto> GetAllVersions();
 
-    /// <summary>
-    /// Lấy tất cả phiên bản (async)
-    /// </summary>
-    /// <returns>Danh sách phiên bản</returns>
-    Task<List<VnsErpApplicationVersion>> GetAllVersionsAsync();
+    #endregion
 
-    /// <summary>
-    /// Lấy phiên bản theo ID
-    /// </summary>
-    /// <param name="id">ID phiên bản</param>
-    /// <returns>VnsErpApplicationVersion hoặc null</returns>
-    VnsErpApplicationVersion GetById(Guid id);
-
-    /// <summary>
-    /// Lấy phiên bản theo ID (async)
-    /// </summary>
-    /// <param name="id">ID phiên bản</param>
-    /// <returns>VnsErpApplicationVersion hoặc null</returns>
-    Task<VnsErpApplicationVersion> GetByIdAsync(Guid id);
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
     /// Tạo phiên bản mới
     /// </summary>
-    /// <param name="version">VnsErpApplicationVersion entity</param>
-    /// <returns>VnsErpApplicationVersion đã tạo</returns>
-    VnsErpApplicationVersion Create(VnsErpApplicationVersion version);
+    /// <param name="dto">ApplicationVersionDto</param>
+    /// <returns>ApplicationVersionDto đã tạo</returns>
+    ApplicationVersionDto Create(ApplicationVersionDto dto);
 
-    /// <summary>
-    /// Tạo phiên bản mới (async)
-    /// </summary>
-    /// <param name="version">VnsErpApplicationVersion entity</param>
-    /// <returns>VnsErpApplicationVersion đã tạo</returns>
-    Task<VnsErpApplicationVersion> CreateAsync(VnsErpApplicationVersion version);
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Cập nhật phiên bản
     /// </summary>
-    /// <param name="version">VnsErpApplicationVersion entity</param>
-    /// <returns>VnsErpApplicationVersion đã cập nhật</returns>
-    VnsErpApplicationVersion Update(VnsErpApplicationVersion version);
-
-    /// <summary>
-    /// Cập nhật phiên bản (async)
-    /// </summary>
-    /// <param name="version">VnsErpApplicationVersion entity</param>
-    /// <returns>VnsErpApplicationVersion đã cập nhật</returns>
-    Task<VnsErpApplicationVersion> UpdateAsync(VnsErpApplicationVersion version);
+    /// <param name="dto">ApplicationVersionDto</param>
+    /// <returns>ApplicationVersionDto đã cập nhật</returns>
+    ApplicationVersionDto Update(ApplicationVersionDto dto);
 
     /// <summary>
     /// Đặt một phiên bản làm Active và vô hiệu hóa các phiên bản khác
@@ -82,9 +51,5 @@ public interface IApplicationVersionRepository
     /// <param name="versionId">ID phiên bản cần đặt làm Active</param>
     void SetActiveVersion(Guid versionId);
 
-    /// <summary>
-    /// Đặt một phiên bản làm Active và vô hiệu hóa các phiên bản khác (async)
-    /// </summary>
-    /// <param name="versionId">ID phiên bản cần đặt làm Active</param>
-    Task SetActiveVersionAsync(Guid versionId);
+    #endregion
 }

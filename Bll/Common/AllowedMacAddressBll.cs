@@ -1,5 +1,6 @@
 using Dal.Connection;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -71,7 +72,7 @@ public class AllowedMacAddressBll
 
     #endregion
 
-    #region Public Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Lấy địa chỉ MAC của máy tính hiện tại
@@ -142,6 +143,30 @@ public class AllowedMacAddressBll
     }
 
     /// <summary>
+    /// Format MAC address thành dạng XX-XX-XX-XX-XX-XX
+    /// </summary>
+    private string FormatMacAddress(string macAddress)
+    {
+        if (string.IsNullOrWhiteSpace(macAddress))
+            return string.Empty;
+
+        // Loại bỏ dấu gạch ngang và khoảng trắng
+        macAddress = macAddress.Replace("-", "").Replace(":", "").Replace(" ", "").ToUpperInvariant();
+
+        // Thêm dấu gạch ngang mỗi 2 ký tự
+        if (macAddress.Length == 12)
+        {
+            return $"{macAddress.Substring(0, 2)}-{macAddress.Substring(2, 2)}-{macAddress.Substring(4, 2)}-{macAddress.Substring(6, 2)}-{macAddress.Substring(8, 2)}-{macAddress.Substring(10, 2)}";
+        }
+
+        return macAddress;
+    }
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
+
+    /// <summary>
     /// Kiểm tra MAC address hiện tại có được phép không
     /// </summary>
     /// <returns>True nếu được phép, False nếu không</returns>
@@ -201,14 +226,13 @@ public class AllowedMacAddressBll
     /// <summary>
     /// Lấy tất cả MAC address được phép
     /// </summary>
-    /// <returns>Danh sách MAC address</returns>
+    /// <returns>Danh sách AllowedMacAddressDto</returns>
     public List<AllowedMacAddressDto> GetAll()
     {
         try
         {
             _logger?.Info("Bắt đầu lấy tất cả MAC address được phép");
-            var macAddresses = GetDataAccess().GetAll();
-            var dtos = macAddresses.ConvertAll(ToDto);
+            var dtos = GetDataAccess().GetAll();
             _logger?.Info($"Hoàn thành lấy tất cả MAC address: {dtos.Count} MAC address(es)");
             return dtos;
         }
@@ -218,6 +242,10 @@ public class AllowedMacAddressBll
             throw;
         }
     }
+
+    #endregion
+
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
     /// Tạo MAC address mới
@@ -229,9 +257,7 @@ public class AllowedMacAddressBll
         try
         {
             _logger?.Info($"Bắt đầu tạo MAC address mới: {dto.MacAddress}");
-            var entity = ToEntity(dto);
-            var created = GetDataAccess().Create(entity);
-            var result = ToDto(created);
+            var result = GetDataAccess().Create(dto);
             _logger?.Info($"Hoàn thành tạo MAC address mới: {result.MacAddress}");
             return result;
         }
@@ -241,6 +267,10 @@ public class AllowedMacAddressBll
             throw;
         }
     }
+
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Cập nhật MAC address
@@ -252,9 +282,7 @@ public class AllowedMacAddressBll
         try
         {
             _logger?.Info($"Bắt đầu cập nhật MAC address: {dto.MacAddress}");
-            var entity = ToEntity(dto);
-            var updated = GetDataAccess().Update(entity);
-            var result = ToDto(updated);
+            var result = GetDataAccess().Update(dto);
             _logger?.Info($"Hoàn thành cập nhật MAC address: {result.MacAddress}");
             return result;
         }
@@ -264,6 +292,10 @@ public class AllowedMacAddressBll
             throw;
         }
     }
+
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa MAC address
@@ -283,6 +315,10 @@ public class AllowedMacAddressBll
             throw;
         }
     }
+
+    #endregion
+
+    #region ========== BUSINESS LOGIC METHODS ==========
 
     /// <summary>
     /// Thêm MAC address hiện tại vào danh sách được phép
@@ -324,68 +360,6 @@ public class AllowedMacAddressBll
             _logger?.Error($"Lỗi khi thêm MAC address hiện tại: {ex.Message}", ex);
             throw;
         }
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    /// <summary>
-    /// Format MAC address thành dạng XX-XX-XX-XX-XX-XX
-    /// </summary>
-    private string FormatMacAddress(string macAddress)
-    {
-        if (string.IsNullOrWhiteSpace(macAddress))
-            return string.Empty;
-
-        // Loại bỏ dấu gạch ngang và khoảng trắng
-        macAddress = macAddress.Replace("-", "").Replace(":", "").Replace(" ", "").ToUpperInvariant();
-
-        // Thêm dấu gạch ngang mỗi 2 ký tự
-        if (macAddress.Length == 12)
-        {
-            return $"{macAddress.Substring(0, 2)}-{macAddress.Substring(2, 2)}-{macAddress.Substring(4, 2)}-{macAddress.Substring(6, 2)}-{macAddress.Substring(8, 2)}-{macAddress.Substring(10, 2)}";
-        }
-
-        return macAddress;
-    }
-
-    private AllowedMacAddressDto ToDto(AllowedMacAddress entity)
-    {
-        if (entity == null)
-            return null;
-
-        return new AllowedMacAddressDto
-        {
-            Id = entity.Id,
-            MacAddress = entity.MacAddress,
-            ComputerName = entity.ComputerName,
-            Description = entity.Description,
-            IsActive = entity.IsActive,
-            CreateDate = entity.CreateDate,
-            CreateBy = entity.CreateBy,
-            ModifiedDate = entity.ModifiedDate,
-            ModifiedBy = entity.ModifiedBy
-        };
-    }
-
-    private AllowedMacAddress ToEntity(AllowedMacAddressDto dto)
-    {
-        if (dto == null)
-            return null;
-
-        return new AllowedMacAddress
-        {
-            Id = dto.Id,
-            MacAddress = dto.MacAddress,
-            ComputerName = dto.ComputerName,
-            Description = dto.Description,
-            IsActive = dto.IsActive,
-            CreateDate = dto.CreateDate,
-            CreateBy = dto.CreateBy,
-            ModifiedDate = dto.ModifiedDate,
-            ModifiedBy = dto.ModifiedBy
-        };
     }
 
     #endregion

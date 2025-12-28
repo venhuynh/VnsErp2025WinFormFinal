@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.VersionAndUserManagementDto;
 
 namespace Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 
@@ -11,140 +10,85 @@ namespace Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 /// </summary>
 public interface IPermissionRepository
 {
-    #region Permission CRUD
-
-    /// <summary>
-    /// Tạo permission mới
-    /// </summary>
-    Permission Create(Permission permission);
-
-    /// <summary>
-    /// Tạo permission mới (async)
-    /// </summary>
-    Task<Permission> CreateAsync(Permission permission);
-
-    /// <summary>
-    /// Lấy permission theo ID
-    /// </summary>
-    Permission GetPermissionById(Guid id);
-
-    /// <summary>
-    /// Lấy permission theo ID (async)
-    /// </summary>
-    Task<Permission> GetPermissionByIdAsync(Guid id);
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy permission theo EntityName và Action
     /// </summary>
-    Permission GetPermission(string entityName, string action);
+    PermissionDto GetPermission(string entityName, string action);
 
     /// <summary>
     /// Lấy tất cả permissions
     /// </summary>
-    List<Permission> GetAllPermissions();
-
-    /// <summary>
-    /// Lấy tất cả permissions (async)
-    /// </summary>
-    Task<List<Permission>> GetAllPermissionsAsync();
+    List<PermissionDto> GetAllPermissions();
 
     /// <summary>
     /// Lấy permissions theo EntityName
     /// </summary>
-    List<Permission> GetPermissionsByEntity(string entityName);
-
-    /// <summary>
-    /// Lấy permissions theo EntityName (async)
-    /// </summary>
-    Task<List<Permission>> GetPermissionsByEntityAsync(string entityName);
-
-    /// <summary>
-    /// Cập nhật permission
-    /// </summary>
-    Permission UpdatePermission(Permission permission);
-
-    /// <summary>
-    /// Cập nhật permission (async)
-    /// </summary>
-    Task<Permission> UpdatePermissionAsync(Permission permission);
-
-    /// <summary>
-    /// Xóa permission
-    /// </summary>
-    void DeletePermission(Guid id);
-
-    /// <summary>
-    /// Xóa permission (async)
-    /// </summary>
-    Task DeletePermissionAsync(Guid id);
-
-    #endregion
-
-    #region Role CRUD
-
-    /// <summary>
-    /// Tạo role mới
-    /// </summary>
-    Role CreateRole(Role role);
-
-    /// <summary>
-    /// Tạo role mới (async)
-    /// </summary>
-    Task<Role> CreateRoleAsync(Role role);
+    List<PermissionDto> GetPermissionsByEntity(string entityName);
 
     /// <summary>
     /// Lấy role theo ID
     /// </summary>
-    Role GetRoleById(Guid id);
-
-    /// <summary>
-    /// Lấy role theo ID (async)
-    /// </summary>
-    Task<Role> GetRoleByIdAsync(Guid id);
+    RoleDto GetRoleById(Guid id);
 
     /// <summary>
     /// Lấy role theo tên
     /// </summary>
-    Role GetRoleByName(string name);
+    RoleDto GetRoleByName(string name);
 
     /// <summary>
     /// Lấy tất cả roles
     /// </summary>
-    List<Role> GetAllRoles();
+    List<RoleDto> GetAllRoles();
 
     /// <summary>
-    /// Lấy tất cả roles (async)
+    /// Lấy tất cả roles của user
     /// </summary>
-    Task<List<Role>> GetAllRolesAsync();
+    List<RoleDto> GetUserRoles(Guid userId);
 
     /// <summary>
-    /// Lấy các roles đang active
+    /// Lấy tất cả permissions của role
     /// </summary>
-    List<Role> GetActiveRoles();
+    List<PermissionDto> GetRolePermissions(Guid roleId);
+
+    /// <summary>
+    /// Lấy tất cả permissions của user (từ role + override)
+    /// </summary>
+    List<PermissionDto> GetUserPermissions(Guid userId);
+
+    /// <summary>
+    /// Lấy danh sách quyền của user theo entity
+    /// </summary>
+    List<PermissionDto> GetUserPermissionsByEntity(Guid userId, string entityName);
+
+    /// <summary>
+    /// Kiểm tra user có quyền thực hiện action trên entity không
+    /// </summary>
+    bool HasPermission(Guid userId, string entityName, string action);
+
+    /// <summary>
+    /// Kiểm tra user có role không
+    /// </summary>
+    bool UserHasRole(Guid userId, Guid roleId);
+
+    #endregion
+
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Tạo role mới
+    /// </summary>
+    RoleDto CreateRole(RoleDto role);
+
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Cập nhật role
     /// </summary>
-    Role UpdateRole(Role role);
-
-    /// <summary>
-    /// Cập nhật role (async)
-    /// </summary>
-    Task<Role> UpdateRoleAsync(Role role);
-
-    /// <summary>
-    /// Xóa role (chỉ xóa được nếu không phải system role)
-    /// </summary>
-    void DeleteRole(Guid id);
-
-    /// <summary>
-    /// Xóa role (async)
-    /// </summary>
-    Task DeleteRoleAsync(Guid id);
-
-    #endregion
-
-    #region UserRole Management
+    RoleDto UpdateRole(RoleDto role);
 
     /// <summary>
     /// Gán role cho user
@@ -152,48 +96,9 @@ public interface IPermissionRepository
     void AssignRoleToUser(Guid userId, Guid roleId, Guid? assignedBy = null);
 
     /// <summary>
-    /// Gán role cho user (async)
-    /// </summary>
-    Task AssignRoleToUserAsync(Guid userId, Guid roleId, Guid? assignedBy = null);
-
-    /// <summary>
     /// Gỡ role khỏi user
     /// </summary>
     void RemoveRoleFromUser(Guid userId, Guid roleId);
-
-    /// <summary>
-    /// Gỡ role khỏi user (async)
-    /// </summary>
-    Task RemoveRoleFromUserAsync(Guid userId, Guid roleId);
-
-    /// <summary>
-    /// Lấy tất cả roles của user
-    /// </summary>
-    List<Role> GetUserRoles(Guid userId);
-
-    /// <summary>
-    /// Lấy tất cả roles của user (async)
-    /// </summary>
-    Task<List<Role>> GetUserRolesAsync(Guid userId);
-
-    /// <summary>
-    /// Lấy tất cả users của role
-    /// </summary>
-    List<ApplicationUser> GetRoleUsers(Guid roleId);
-
-    /// <summary>
-    /// Kiểm tra user có role không
-    /// </summary>
-    bool UserHasRole(Guid userId, Guid roleId);
-
-    /// <summary>
-    /// Kiểm tra user có role không (async)
-    /// </summary>
-    Task<bool> UserHasRoleAsync(Guid userId, Guid roleId);
-
-    #endregion
-
-    #region RolePermission Management
 
     /// <summary>
     /// Gán permission cho role
@@ -201,29 +106,9 @@ public interface IPermissionRepository
     void AssignPermissionToRole(Guid roleId, Guid permissionId, bool isGranted = true);
 
     /// <summary>
-    /// Gán permission cho role (async)
-    /// </summary>
-    Task AssignPermissionToRoleAsync(Guid roleId, Guid permissionId, bool isGranted = true);
-
-    /// <summary>
     /// Gỡ permission khỏi role
     /// </summary>
     void RemovePermissionFromRole(Guid roleId, Guid permissionId);
-
-    /// <summary>
-    /// Gỡ permission khỏi role (async)
-    /// </summary>
-    Task RemovePermissionFromRoleAsync(Guid roleId, Guid permissionId);
-
-    /// <summary>
-    /// Lấy tất cả permissions của role
-    /// </summary>
-    List<Permission> GetRolePermissions(Guid roleId);
-
-    /// <summary>
-    /// Lấy tất cả permissions của role (async)
-    /// </summary>
-    Task<List<Permission>> GetRolePermissionsAsync(Guid roleId);
 
     /// <summary>
     /// Gán nhiều permissions cho role
@@ -232,61 +117,12 @@ public interface IPermissionRepository
 
     #endregion
 
-    #region UserPermission Management
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
-    /// Gán permission trực tiếp cho user (override)
+    /// Xóa role (chỉ xóa được nếu không phải system role)
     /// </summary>
-    void AssignPermissionToUser(Guid userId, Guid permissionId, bool isGranted = true, Guid? createdBy = null);
-
-    /// <summary>
-    /// Gán permission trực tiếp cho user (async)
-    /// </summary>
-    Task AssignPermissionToUserAsync(Guid userId, Guid permissionId, bool isGranted = true, Guid? createdBy = null);
-
-    /// <summary>
-    /// Gỡ permission khỏi user
-    /// </summary>
-    void RemovePermissionFromUser(Guid userId, Guid permissionId);
-
-    /// <summary>
-    /// Gỡ permission khỏi user (async)
-    /// </summary>
-    Task RemovePermissionFromUserAsync(Guid userId, Guid permissionId);
-
-    /// <summary>
-    /// Lấy tất cả permissions của user (từ role + override)
-    /// </summary>
-    List<Permission> GetUserPermissions(Guid userId);
-
-    /// <summary>
-    /// Lấy tất cả permissions của user (async)
-    /// </summary>
-    Task<List<Permission>> GetUserPermissionsAsync(Guid userId);
-
-    #endregion
-
-    #region Permission Checking
-
-    /// <summary>
-    /// Kiểm tra user có quyền thực hiện action trên entity không
-    /// </summary>
-    bool HasPermission(Guid userId, string entityName, string action);
-
-    /// <summary>
-    /// Kiểm tra user có quyền thực hiện action trên entity không (async)
-    /// </summary>
-    Task<bool> HasPermissionAsync(Guid userId, string entityName, string action);
-
-    /// <summary>
-    /// Kiểm tra user có quyền thực hiện action trên entity không (sử dụng stored procedure)
-    /// </summary>
-    bool HasPermissionUsingSp(Guid userId, string entityName, string action);
-
-    /// <summary>
-    /// Lấy danh sách quyền của user theo entity
-    /// </summary>
-    List<Permission> GetUserPermissionsByEntity(Guid userId, string entityName);
+    void DeleteRole(Guid id);
 
     #endregion
 }

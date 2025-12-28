@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.VersionAndUserManagementDto;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -17,8 +19,14 @@ namespace Dal.DataAccess.Implementations.VersionAndUserManagementDal;
 /// </summary>
 public class AllowedMacAddressRepository : IAllowedMacAddressRepository
 {
+    #region Private Fields
+
     private readonly string _connectionString;
     private readonly CustomLogger _logger;
+
+    #endregion
+
+    #region Constructor
 
     public AllowedMacAddressRepository(string connectionString)
     {
@@ -27,6 +35,14 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
         _logger.Info("AllowedMacAddressRepository được khởi tạo");
     }
 
+    #endregion
+
+    #region ========== HELPER METHODS ==========
+
+    /// <summary>
+    /// Tạo DataContext mới cho mỗi operation
+    /// </summary>
+    /// <returns>DataContext mới</returns>
     private VnsErp2025DataContext CreateNewContext()
     {
         var context = new VnsErp2025DataContext(_connectionString);
@@ -46,6 +62,13 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
         return macAddress.Replace("-", "").Replace(":", "").ToUpperInvariant();
     }
 
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
+
+    /// <summary>
+    /// Kiểm tra MAC address có được phép không
+    /// </summary>
     public bool IsMacAddressAllowed(string macAddress)
     {
         try
@@ -74,43 +97,20 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
         }
     }
 
-    public async Task<bool> IsMacAddressAllowedAsync(string macAddress)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(macAddress))
-                return false;
-
-            var normalizedMac = NormalizeMacAddress(macAddress);
-            
-            using var context = CreateNewContext();
-            var allowedMacs = await Task.Run(() => 
-                context.GetTable<AllowedMacAddress>()
-                    .Where(m => m.IsActive)
-                    .ToList());
-            
-            var allowed = allowedMacs.Any(m => NormalizeMacAddress(m.MacAddress) == normalizedMac);
-            _logger.Debug($"IsMacAddressAllowedAsync: MAC {macAddress} is {(allowed ? "allowed" : "not allowed")}");
-            return allowed;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi kiểm tra MAC address (async): {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi kiểm tra MAC address: {ex.Message}", ex);
-        }
-    }
-
-    public List<AllowedMacAddress> GetAll()
+    /// <summary>
+    /// Lấy tất cả MAC address được phép
+    /// </summary>
+    public List<AllowedMacAddressDto> GetAll()
     {
         try
         {
             using var context = CreateNewContext();
-            var macAddresses = context.GetTable<AllowedMacAddress>()
+            var entities = context.GetTable<AllowedMacAddress>()
                 .OrderBy(m => m.MacAddress)
                 .ToList();
             
-            _logger.Debug($"GetAll: Found {macAddresses.Count} MAC addresses");
-            return macAddresses;
+            _logger.Debug($"GetAll: Found {entities.Count} MAC addresses");
+            return entities.ToDtos();
         }
         catch (Exception ex)
         {
@@ -119,84 +119,36 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
         }
     }
 
-    public async Task<List<AllowedMacAddress>> GetAllAsync()
+    #endregion
+
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Tạo MAC address mới
+    /// </summary>
+    public AllowedMacAddressDto Create(AllowedMacAddressDto dto)
     {
         try
         {
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
             using var context = CreateNewContext();
-            var macAddresses = await Task.Run(() => 
-                context.GetTable<AllowedMacAddress>()
-                    .OrderBy(m => m.MacAddress)
-                    .ToList());
             
-            _logger.Debug($"GetAllAsync: Found {macAddresses.Count} MAC addresses");
-            return macAddresses;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy tất cả MAC address (async): {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy tất cả MAC address: {ex.Message}", ex);
-        }
-    }
-
-    public AllowedMacAddress GetById(Guid id)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var macAddress = context.GetTable<AllowedMacAddress>()
-                .FirstOrDefault(m => m.Id == id);
+            // Convert DTO to Entity
+            var entity = dto.ToEntity();
             
-            _logger.Debug($"GetById: {(macAddress != null ? $"Found MAC {macAddress.MacAddress}" : "MAC address not found")}");
-            return macAddress;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy MAC address theo ID: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy MAC address theo ID: {ex.Message}", ex);
-        }
-    }
+            if (entity.Id == Guid.Empty)
+                entity.Id = Guid.NewGuid();
 
-    public async Task<AllowedMacAddress> GetByIdAsync(Guid id)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var macAddresses = await Task.Run(() => 
-                context.GetTable<AllowedMacAddress>()
-                    .Where(m => m.Id == id)
-                    .ToList());
-            
-            var macAddress = macAddresses.FirstOrDefault();
-            _logger.Debug($"GetByIdAsync: {(macAddress != null ? $"Found MAC {macAddress.MacAddress}" : "MAC address not found")}");
-            return macAddress;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy MAC address theo ID (async): {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy MAC address theo ID: {ex.Message}", ex);
-        }
-    }
+            if (entity.CreateDate == default(DateTime))
+                entity.CreateDate = DateTime.Now;
 
-    public AllowedMacAddress Create(AllowedMacAddress macAddress)
-    {
-        try
-        {
-            if (macAddress == null)
-                throw new ArgumentNullException(nameof(macAddress));
-
-            if (macAddress.Id == Guid.Empty)
-                macAddress.Id = Guid.NewGuid();
-
-            if (macAddress.CreateDate == default(DateTime))
-                macAddress.CreateDate = DateTime.Now;
-
-            using var context = CreateNewContext();
-            context.GetTable<AllowedMacAddress>().InsertOnSubmit(macAddress);
+            context.GetTable<AllowedMacAddress>().InsertOnSubmit(entity);
             context.SubmitChanges();
             
-            _logger.Info($"Đã tạo MAC address mới: {macAddress.MacAddress} (ID: {macAddress.Id})");
-            return macAddress;
+            _logger.Info($"Đã tạo MAC address mới: {entity.MacAddress} (ID: {entity.Id})");
+            return entity.ToDto();
         }
         catch (Exception ex)
         {
@@ -205,36 +157,34 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
         }
     }
 
-    public async Task<AllowedMacAddress> CreateAsync(AllowedMacAddress macAddress)
-    {
-        return await Task.Run(() => Create(macAddress));
-    }
+    #endregion
 
-    public AllowedMacAddress Update(AllowedMacAddress macAddress)
+    #region ========== UPDATE OPERATIONS ==========
+
+    /// <summary>
+    /// Cập nhật MAC address
+    /// </summary>
+    public AllowedMacAddressDto Update(AllowedMacAddressDto dto)
     {
         try
         {
-            if (macAddress == null)
-                throw new ArgumentNullException(nameof(macAddress));
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
 
             using var context = CreateNewContext();
             var existing = context.GetTable<AllowedMacAddress>()
-                .FirstOrDefault(m => m.Id == macAddress.Id);
+                .FirstOrDefault(m => m.Id == dto.Id);
 
             if (existing == null)
-                throw new DataAccessException($"Không tìm thấy MAC address với ID: {macAddress.Id}");
+                throw new DataAccessException($"Không tìm thấy MAC address với ID: {dto.Id}");
 
-            existing.MacAddress = macAddress.MacAddress;
-            existing.ComputerName = macAddress.ComputerName;
-            existing.Description = macAddress.Description;
-            existing.IsActive = macAddress.IsActive;
-            existing.ModifiedDate = DateTime.Now;
-            existing.ModifiedBy = macAddress.ModifiedBy;
+            // Convert DTO to Entity (update existing)
+            dto.ToEntity(existing);
 
             context.SubmitChanges();
             
-            _logger.Info($"Đã cập nhật MAC address: {macAddress.MacAddress} (ID: {macAddress.Id})");
-            return existing;
+            _logger.Info($"Đã cập nhật MAC address: {dto.MacAddress} (ID: {dto.Id})");
+            return existing.ToDto();
         }
         catch (Exception ex)
         {
@@ -243,11 +193,13 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
         }
     }
 
-    public async Task<AllowedMacAddress> UpdateAsync(AllowedMacAddress macAddress)
-    {
-        return await Task.Run(() => Update(macAddress));
-    }
+    #endregion
 
+    #region ========== DELETE OPERATIONS ==========
+
+    /// <summary>
+    /// Xóa MAC address
+    /// </summary>
     public void Delete(Guid id)
     {
         try
@@ -271,8 +223,5 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
         }
     }
 
-    public async Task DeleteAsync(Guid id)
-    {
-        await Task.Run(() => Delete(id));
-    }
+    #endregion
 }
