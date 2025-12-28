@@ -129,6 +129,7 @@
     <Compile Include="DtoConverter\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerContactConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerConverters.cs" />
+    <Compile Include="DtoConverter\BusinessPartnerSiteConverters.cs" />
     <Compile Include="DtoConverter\CompanyBranchConverters.cs" />
     <Compile Include="DtoConverter\CompanyConverter.cs" />
     <Compile Include="DtoConverter\DepartmentConverters.cs" />

@@ -1,40 +1,54 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 
 namespace Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 
 /// <summary>
-/// Data Access Layer cho BusinessPartnerSite
+/// Interface cho Data Access Layer của BusinessPartnerSite
 /// </summary>
 public interface IBusinessPartnerSiteRepository
 {
-    /// <summary>
-    /// Lấy tất cả BusinessPartnerSite với thông tin đầy đủ bao gồm PartnerName
-    /// </summary>
-    /// <returns>Danh sách BusinessPartnerSite</returns>
-    List<BusinessPartnerSite> GetAll();
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
-    /// Lấy tất cả BusinessPartnerSite với thông tin đầy đủ bao gồm PartnerName (Async)
+    /// Lưu hoặc cập nhật BusinessPartnerSite
     /// </summary>
-    /// <returns>Danh sách BusinessPartnerSite</returns>
-    Task<List<BusinessPartnerSite>> GetAllAsync();
+    /// <param name="dto">BusinessPartnerSiteDto</param>
+    /// <returns>ID của entity đã lưu</returns>
+    Guid SaveOrUpdate(BusinessPartnerSiteDto dto);
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
+
+    /// <summary>
+    /// Lấy tất cả BusinessPartnerSite
+    /// </summary>
+    /// <returns>Danh sách BusinessPartnerSiteDto</returns>
+    List<BusinessPartnerSiteDto> GetAll();
+
+    /// <summary>
+    /// Lấy tất cả BusinessPartnerSite (Async)
+    /// </summary>
+    /// <returns>Danh sách BusinessPartnerSiteDto</returns>
+    Task<List<BusinessPartnerSiteDto>> GetAllAsync();
 
     /// <summary>
     /// Lấy BusinessPartnerSite theo ID
     /// </summary>
     /// <param name="id">ID của BusinessPartnerSite</param>
-    /// <returns>BusinessPartnerSite hoặc null</returns>
-    BusinessPartnerSite GetById(Guid id);
+    /// <returns>BusinessPartnerSiteDto hoặc null</returns>
+    BusinessPartnerSiteDto GetById(Guid id);
 
-    /// <summary>
-    /// Lưu hoặc cập nhật BusinessPartnerSite
-    /// </summary>
-    /// <param name="entity">BusinessPartnerSite entity</param>
-    /// <returns>ID của entity đã lưu</returns>
-    Guid SaveOrUpdate(BusinessPartnerSite entity);
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa BusinessPartnerSite theo ID
@@ -43,6 +57,10 @@ public interface IBusinessPartnerSiteRepository
     /// <returns>True nếu xóa thành công</returns>
     bool Delete(Guid id);
 
+    #endregion
+
+    #region ========== VALIDATION & EXISTS CHECKS ==========
+
     /// <summary>
     /// Kiểm tra SiteCode có tồn tại không
     /// </summary>
@@ -50,4 +68,6 @@ public interface IBusinessPartnerSiteRepository
     /// <param name="excludeId">ID cần loại trừ (cho trường hợp update)</param>
     /// <returns>True nếu đã tồn tại</returns>
     bool IsSiteCodeExists(string siteCode, Guid? excludeId = null);
+
+    #endregion
 }

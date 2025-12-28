@@ -264,7 +264,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                 context.BusinessPartners.InsertOnSubmit(entity);
                 
                 // Tạo BusinessPartnerSite là trụ sở chính
-                var mainSite = new BusinessPartnerSite
+                var mainSite = new Dal.DataContext.BusinessPartnerSite
                 {
                     Id = Guid.NewGuid(),
                     PartnerId = entity.Id,

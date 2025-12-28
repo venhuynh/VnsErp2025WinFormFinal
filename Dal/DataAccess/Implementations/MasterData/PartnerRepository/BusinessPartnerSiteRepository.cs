@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.CustomerPartner;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -48,7 +50,7 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -68,13 +70,88 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
 
     #endregion
 
-    #region Public Methods
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật BusinessPartnerSite
+    /// </summary>
+    /// <param name="dto">BusinessPartnerSiteDto</param>
+    /// <returns>ID của entity đã lưu</returns>
+    public Guid SaveOrUpdate(BusinessPartnerSiteDto dto)
+    {
+        try
+        {
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
+            _logger.Debug($"[SaveOrUpdate] Bắt đầu lưu BusinessPartnerSite - Id: {dto.Id}, SiteCode: {dto.SiteCode}, SiteName: {dto.SiteName}");
+            _logger.Debug($"[SaveOrUpdate] DTO.Id == Guid.Empty: {dto.Id == Guid.Empty}, DTO.Id: '{dto.Id}'");
+
+            using var context = CreateNewContext();
+            
+            if (dto.Id == Guid.Empty)
+            {
+                // Thêm mới
+                _logger.Debug("[SaveOrUpdate] Chế độ: CREATE (dto.Id == Guid.Empty)");
+                var entity = dto.ToEntity();
+                entity.Id = Guid.NewGuid();
+                entity.CreatedDate = DateTime.Now;
+                _logger.Debug($"[SaveOrUpdate] Đã tạo Id mới: {entity.Id}, SiteCode: {entity.SiteCode}");
+                context.BusinessPartnerSites.InsertOnSubmit(entity);
+                context.SubmitChanges();
+                
+                _logger.Info($"Đã thêm mới BusinessPartnerSite: {entity.SiteCode} - {entity.SiteName} (Id: {entity.Id})");
+                return entity.Id;
+            }
+            else
+            {
+                // Cập nhật
+                _logger.Debug($"[SaveOrUpdate] Chế độ: UPDATE (dto.Id != Guid.Empty), Id: {dto.Id}");
+                var existingEntity = context.BusinessPartnerSites.FirstOrDefault(s => s.Id == dto.Id);
+                if (existingEntity != null)
+                {
+                    _logger.Debug($"[SaveOrUpdate] Tìm thấy existing entity: {existingEntity.SiteCode} - {existingEntity.SiteName}");
+                    // Cập nhật entity từ DTO
+                    dto.ToEntity(existingEntity);
+                    existingEntity.UpdatedDate = DateTime.Now;
+                    
+                    context.SubmitChanges();
+                    _logger.Info($"Đã cập nhật BusinessPartnerSite: {existingEntity.SiteCode} - {existingEntity.SiteName} (Id: {existingEntity.Id})");
+                    return existingEntity.Id;
+                }
+                else
+                {
+                    _logger.Error($"[SaveOrUpdate] LỖI: Không tìm thấy BusinessPartnerSite với Id: {dto.Id}, SiteCode: {dto.SiteCode}, SiteName: {dto.SiteName}");
+                    _logger.Error($"[SaveOrUpdate] Đang cố UPDATE nhưng entity không tồn tại trong database. Có thể đây là lỗi logic - dto nên có Id = Guid.Empty để CREATE.");
+                    throw new DataAccessException($"Không tìm thấy BusinessPartnerSite để cập nhật (Id: {dto.Id}, SiteCode: {dto.SiteCode})");
+                }
+            }
+        }
+        catch (SqlException sqlEx)
+        {
+            _logger.Error($"Lỗi SQL khi lưu BusinessPartnerSite: {sqlEx.Message}", sqlEx);
+            throw new DataAccessException($"Lỗi SQL khi lưu BusinessPartnerSite: {sqlEx.Message}", sqlEx)
+            {
+                SqlErrorNumber = sqlEx.Number,
+                ThoiGianLoi = DateTime.Now
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lưu BusinessPartnerSite: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lưu BusinessPartnerSite: {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy tất cả BusinessPartnerSite với thông tin đầy đủ bao gồm PartnerName
     /// </summary>
-    /// <returns>Danh sách BusinessPartnerSite</returns>
-    public List<BusinessPartnerSite> GetAll()
+    /// <returns>Danh sách BusinessPartnerSiteDto</returns>
+    public List<BusinessPartnerSiteDto> GetAll()
     {
         try
         {
@@ -85,8 +162,41 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
                 .OrderBy(s => s.SiteName)
                 .ToList();
 
-            _logger.Debug($"Đã lấy {sites.Count} BusinessPartnerSite");
-            return sites;
+            // Chuyển đổi sang DTO, lấy thông tin partner từ eager-loaded navigation properties
+            var dtos = sites.Select(site =>
+            {
+                string partnerName = null;
+                string partnerCode = null;
+                int? partnerType = null;
+                string partnerTaxCode = null;
+                string partnerPhone = null;
+                string partnerEmail = null;
+                string partnerWebsite = null;
+
+                try
+                {
+                    var businessPartner = site.BusinessPartner;
+                    if (businessPartner != null)
+                    {
+                        partnerName = businessPartner.PartnerName;
+                        partnerCode = businessPartner.PartnerCode;
+                        partnerType = businessPartner.PartnerType;
+                        partnerTaxCode = businessPartner.TaxCode;
+                        partnerPhone = businessPartner.Phone;
+                        partnerEmail = businessPartner.Email;
+                        partnerWebsite = businessPartner.Website;
+                    }
+                }
+                catch
+                {
+                    // Navigation property chưa được load hoặc đã bị dispose
+                }
+
+                return site.ToSiteDto(partnerName, partnerCode, partnerType, partnerTaxCode, partnerPhone, partnerEmail, partnerWebsite);
+            }).ToList();
+
+            _logger.Debug($"Đã lấy {dtos.Count} BusinessPartnerSite");
+            return dtos;
         }
         catch (SqlException sqlEx)
         {
@@ -107,8 +217,8 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
     /// <summary>
     /// Lấy tất cả BusinessPartnerSite với thông tin đầy đủ bao gồm PartnerName (Async)
     /// </summary>
-    /// <returns>Danh sách BusinessPartnerSite</returns>
-    public async Task<List<BusinessPartnerSite>> GetAllAsync()
+    /// <returns>Danh sách BusinessPartnerSiteDto</returns>
+    public async Task<List<BusinessPartnerSiteDto>> GetAllAsync()
     {
         try
         {
@@ -118,8 +228,41 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
                 .OrderBy(s => s.SiteName)
                 .ToList());
             
-            _logger.Debug($"Đã lấy {sites.Count} BusinessPartnerSite (async)");
-            return sites;
+            // Chuyển đổi sang DTO, lấy thông tin partner từ eager-loaded navigation properties
+            var dtos = sites.Select(site =>
+            {
+                string partnerName = null;
+                string partnerCode = null;
+                int? partnerType = null;
+                string partnerTaxCode = null;
+                string partnerPhone = null;
+                string partnerEmail = null;
+                string partnerWebsite = null;
+
+                try
+                {
+                    var businessPartner = site.BusinessPartner;
+                    if (businessPartner != null)
+                    {
+                        partnerName = businessPartner.PartnerName;
+                        partnerCode = businessPartner.PartnerCode;
+                        partnerType = businessPartner.PartnerType;
+                        partnerTaxCode = businessPartner.TaxCode;
+                        partnerPhone = businessPartner.Phone;
+                        partnerEmail = businessPartner.Email;
+                        partnerWebsite = businessPartner.Website;
+                    }
+                }
+                catch
+                {
+                    // Navigation property chưa được load hoặc đã bị dispose
+                }
+
+                return site.ToSiteDto(partnerName, partnerCode, partnerType, partnerTaxCode, partnerPhone, partnerEmail, partnerWebsite);
+            }).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} BusinessPartnerSite (async)");
+            return dtos;
         }
         catch (SqlException sqlEx)
         {
@@ -141,8 +284,8 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
     /// Lấy BusinessPartnerSite theo ID
     /// </summary>
     /// <param name="id">ID của BusinessPartnerSite</param>
-    /// <returns>BusinessPartnerSite hoặc null</returns>
-    public BusinessPartnerSite GetById(Guid id)
+    /// <returns>BusinessPartnerSiteDto hoặc null</returns>
+    public BusinessPartnerSiteDto GetById(Guid id)
     {
         try
         {
@@ -152,9 +295,39 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
             if (site != null)
             {
                 _logger.Debug($"Đã lấy BusinessPartnerSite theo ID: {id} - {site.SiteName}");
+                
+                // Lấy thông tin partner từ eager-loaded navigation property
+                string partnerName = null;
+                string partnerCode = null;
+                int? partnerType = null;
+                string partnerTaxCode = null;
+                string partnerPhone = null;
+                string partnerEmail = null;
+                string partnerWebsite = null;
+
+                try
+                {
+                    var businessPartner = site.BusinessPartner;
+                    if (businessPartner != null)
+                    {
+                        partnerName = businessPartner.PartnerName;
+                        partnerCode = businessPartner.PartnerCode;
+                        partnerType = businessPartner.PartnerType;
+                        partnerTaxCode = businessPartner.TaxCode;
+                        partnerPhone = businessPartner.Phone;
+                        partnerEmail = businessPartner.Email;
+                        partnerWebsite = businessPartner.Website;
+                    }
+                }
+                catch
+                {
+                    // Navigation property chưa được load hoặc đã bị dispose
+                }
+
+                return site.ToSiteDto(partnerName, partnerCode, partnerType, partnerTaxCode, partnerPhone, partnerEmail, partnerWebsite);
             }
             
-            return site;
+            return null;
         }
         catch (SqlException sqlEx)
         {
@@ -172,93 +345,13 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
         }
     }
 
-    /// <summary>
-    /// Lưu hoặc cập nhật BusinessPartnerSite
-    /// </summary>
-    /// <param name="entity">BusinessPartnerSite entity</param>
-    /// <returns>ID của entity đã lưu</returns>
-    public Guid SaveOrUpdate(BusinessPartnerSite entity)
-    {
-        try
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
+    #endregion
 
-            _logger.Debug($"[SaveOrUpdate] Bắt đầu lưu BusinessPartnerSite - Id: {entity.Id}, SiteCode: {entity.SiteCode}, SiteName: {entity.SiteName}");
-            _logger.Debug($"[SaveOrUpdate] Entity.Id == Guid.Empty: {entity.Id == Guid.Empty}, Entity.Id: '{entity.Id}'");
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
+    #endregion
 
-            using var context = CreateNewContext();
-            
-            if (entity.Id == Guid.Empty)
-            {
-                // Thêm mới
-                _logger.Debug("[SaveOrUpdate] Chế độ: CREATE (entity.Id == Guid.Empty)");
-                entity.Id = Guid.NewGuid();
-                entity.CreatedDate = DateTime.Now;
-                _logger.Debug($"[SaveOrUpdate] Đã tạo Id mới: {entity.Id}, SiteCode: {entity.SiteCode}");
-                context.BusinessPartnerSites.InsertOnSubmit(entity);
-                context.SubmitChanges();
-                
-                _logger.Info($"Đã thêm mới BusinessPartnerSite: {entity.SiteCode} - {entity.SiteName} (Id: {entity.Id})");
-            }
-            else
-            {
-                // Cập nhật
-                _logger.Debug($"[SaveOrUpdate] Chế độ: UPDATE (entity.Id != Guid.Empty), Id: {entity.Id}");
-                var existingEntity = context.BusinessPartnerSites.FirstOrDefault(s => s.Id == entity.Id);
-                if (existingEntity != null)
-                {
-                    _logger.Debug($"[SaveOrUpdate] Tìm thấy existing entity: {existingEntity.SiteCode} - {existingEntity.SiteName}");
-                    // Cập nhật các field cơ bản
-                    existingEntity.PartnerId = entity.PartnerId;
-                    existingEntity.SiteCode = entity.SiteCode;
-                    existingEntity.SiteName = entity.SiteName;
-                    existingEntity.Address = entity.Address;
-                    existingEntity.City = entity.City;
-                    existingEntity.Province = entity.Province;
-                    existingEntity.Country = entity.Country;
-                    existingEntity.Phone = entity.Phone;
-                    existingEntity.Email = entity.Email;
-                    existingEntity.IsDefault = entity.IsDefault;
-                    existingEntity.IsActive = entity.IsActive;
-                    existingEntity.UpdatedDate = DateTime.Now;
-                    
-                    // Cập nhật các fields mở rộng
-                    existingEntity.PostalCode = entity.PostalCode;
-                    existingEntity.District = entity.District;
-                    existingEntity.SiteType = entity.SiteType;
-                    existingEntity.Notes = entity.Notes;
-                    existingEntity.GoogleMapUrl = entity.GoogleMapUrl;
-                    
-                    context.SubmitChanges();
-                    _logger.Info($"Đã cập nhật BusinessPartnerSite: {existingEntity.SiteCode} - {existingEntity.SiteName} (Id: {existingEntity.Id})");
-                }
-                else
-                {
-                    _logger.Error($"[SaveOrUpdate] LỖI: Không tìm thấy BusinessPartnerSite với Id: {entity.Id}, SiteCode: {entity.SiteCode}, SiteName: {entity.SiteName}");
-                    _logger.Error($"[SaveOrUpdate] Đang cố UPDATE nhưng entity không tồn tại trong database. Có thể đây là lỗi logic - entity nên có Id = Guid.Empty để CREATE.");
-                    throw new DataAccessException($"Không tìm thấy BusinessPartnerSite để cập nhật (Id: {entity.Id}, SiteCode: {entity.SiteCode})");
-                }
-            }
-            
-            _logger.Debug($"[SaveOrUpdate] Hoàn thành, trả về Id: {entity.Id}");
-            return entity.Id;
-        }
-        catch (SqlException sqlEx)
-        {
-            _logger.Error($"Lỗi SQL khi lưu BusinessPartnerSite: {sqlEx.Message}", sqlEx);
-            throw new DataAccessException($"Lỗi SQL khi lưu BusinessPartnerSite: {sqlEx.Message}", sqlEx)
-            {
-                SqlErrorNumber = sqlEx.Number,
-                ThoiGianLoi = DateTime.Now
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lưu BusinessPartnerSite: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lưu BusinessPartnerSite: {ex.Message}", ex);
-        }
-    }
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa BusinessPartnerSite theo ID
@@ -298,6 +391,10 @@ public class BusinessPartnerSiteRepository : IBusinessPartnerSiteRepository
             throw new DataAccessException($"Lỗi khi xóa BusinessPartnerSite: {ex.Message}", ex);
         }
     }
+
+    #endregion
+
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra SiteCode có tồn tại không

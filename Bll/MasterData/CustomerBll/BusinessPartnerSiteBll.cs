@@ -1,7 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
-using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 using System;
 using System.Collections.Generic;
 using Logger;
@@ -100,11 +100,100 @@ namespace Bll.MasterData.CustomerBll
 
         #endregion
 
+        #region ========== CREATE OPERATIONS ==========
+
+        /// <summary>
+        /// Tạo mới BusinessPartnerSite từ DTO
+        /// </summary>
+        /// <param name="dto">BusinessPartnerSiteDto</param>
+        /// <returns>True nếu tạo thành công</returns>
+        public bool CreateSite(BusinessPartnerSiteDto dto)
+        {
+            try
+            {
+                _logger.Debug($"[CreateSite] Bắt đầu tạo mới BusinessPartnerSite - SiteCode: {dto?.SiteCode}, SiteName: {dto?.SiteName}");
+                _logger.Debug($"[CreateSite] DTO.Id TRƯỚC KHI tạo entity mới: {dto?.Id} (IsEmpty: {dto?.Id == Guid.Empty})");
+
+                if (dto == null)
+                {
+                    throw new ArgumentNullException(nameof(dto));
+                }
+
+                // Kiểm tra SiteCode đã tồn tại chưa
+                if (IsSiteCodeExists(dto.SiteCode))
+                {
+                    _logger.Warning($"[CreateSite] SiteCode đã tồn tại: {dto.SiteCode}");
+                    return false;
+                }
+
+                // Normalize Email để đảm bảo match với constraint CK_BusinessPartnerSite_EmailFormat
+                dto.Email = NormalizeEmail(dto.Email);
+
+                // Đảm bảo Id = Guid.Empty để DAL biết đây là tạo mới
+                dto.Id = Guid.Empty;
+                dto.CreatedDate = DateTime.Now;
+                dto.UpdatedDate = null;
+                
+                _logger.Debug($"[CreateSite] Gọi SaveOrUpdate với dto.Id = {dto.Id} (IsEmpty: {dto.Id == Guid.Empty})");
+
+                // Lưu vào database
+                var result = GetDataAccess().SaveOrUpdate(dto);
+                _logger.Debug($"[CreateSite] SaveOrUpdate trả về Id: {result}");
+                return result != Guid.Empty;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"[CreateSite] LỖI khi tạo mới BusinessPartnerSite: {ex.Message}", ex);
+                _logger.Error($"[CreateSite] DTO.Id tại thời điểm lỗi: {dto?.Id}");
+                throw new Exception($"Lỗi khi tạo mới BusinessPartnerSite: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lưu hoặc cập nhật BusinessPartnerSite
+        /// </summary>
+        /// <param name="dto">BusinessPartnerSiteDto</param>
+        /// <returns>ID của entity đã lưu</returns>
+        public Guid SaveOrUpdate(BusinessPartnerSiteDto dto)
+        {
+            try
+            {
+                if (dto == null)
+                {
+                    throw new ArgumentNullException(nameof(dto));
+                }
+
+                // Normalize Email để đảm bảo match với constraint CK_BusinessPartnerSite_EmailFormat
+                dto.Email = NormalizeEmail(dto.Email);
+
+                // Set UpdatedDate nếu đang update
+                if (dto.Id != Guid.Empty)
+                {
+                    dto.UpdatedDate = DateTime.Now;
+                }
+                else
+                {
+                    dto.CreatedDate = DateTime.Now;
+                    dto.UpdatedDate = null;
+                }
+
+                return GetDataAccess().SaveOrUpdate(dto);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lưu BusinessPartnerSite: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== READ OPERATIONS ==========
+
         /// <summary>
         /// Lấy tất cả BusinessPartnerSite
         /// </summary>
-        /// <returns>Danh sách BusinessPartnerSite</returns>
-        public List<BusinessPartnerSite> GetAll()
+        /// <returns>Danh sách BusinessPartnerSiteDto</returns>
+        public List<BusinessPartnerSiteDto> GetAll()
         {
             try
             {
@@ -119,8 +208,8 @@ namespace Bll.MasterData.CustomerBll
         /// <summary>
         /// Lấy tất cả BusinessPartnerSite (alias cho GetAll)
         /// </summary>
-        /// <returns>Danh sách BusinessPartnerSite</returns>
-        public List<BusinessPartnerSite> GetAllSites()
+        /// <returns>Danh sách BusinessPartnerSiteDto</returns>
+        public List<BusinessPartnerSiteDto> GetAllSites()
         {
             return GetAll();
         }
@@ -129,8 +218,8 @@ namespace Bll.MasterData.CustomerBll
         /// Lấy BusinessPartnerSite theo ID
         /// </summary>
         /// <param name="id">ID của BusinessPartnerSite</param>
-        /// <returns>BusinessPartnerSite hoặc null</returns>
-        public BusinessPartnerSite GetById(Guid id)
+        /// <returns>BusinessPartnerSiteDto hoặc null</returns>
+        public BusinessPartnerSiteDto GetById(Guid id)
         {
             try
             {
@@ -142,25 +231,57 @@ namespace Bll.MasterData.CustomerBll
             }
         }
 
+        #endregion
+
+        #region ========== UPDATE OPERATIONS ==========
+
         /// <summary>
-        /// Lưu hoặc cập nhật BusinessPartnerSite
+        /// Cập nhật BusinessPartnerSite từ DTO
         /// </summary>
-        /// <param name="entity">BusinessPartnerSite entity</param>
-        /// <returns>ID của entity đã lưu</returns>
-        public Guid SaveOrUpdate(BusinessPartnerSite entity)
+        /// <param name="dto">BusinessPartnerSiteDto</param>
+        /// <returns>True nếu cập nhật thành công</returns>
+        public bool UpdateSite(BusinessPartnerSiteDto dto)
         {
             try
             {
-                // KHÔNG set Id ở đây - để DAL tự xử lý
-                // Nếu entity.Id == Guid.Empty, DAL sẽ tự tạo Id mới
-                // Nếu entity.Id != Guid.Empty, DAL sẽ cập nhật entity hiện có
-                return GetDataAccess().SaveOrUpdate(entity);
+                if (dto == null)
+                {
+                    throw new ArgumentNullException(nameof(dto));
+                }
+
+                // Kiểm tra SiteCode đã tồn tại chưa (loại trừ chính nó)
+                if (IsSiteCodeExists(dto.SiteCode, dto.Id))
+                {
+                    return false;
+                }
+
+                // Lấy entity hiện tại
+                var existingDto = GetById(dto.Id);
+                if (existingDto == null)
+                {
+                    return false;
+                }
+
+                // Normalize Email để đảm bảo match với constraint CK_BusinessPartnerSite_EmailFormat
+                dto.Email = NormalizeEmail(dto.Email);
+
+                // Set UpdatedDate
+                dto.UpdatedDate = DateTime.Now;
+                dto.CreatedDate = existingDto.CreatedDate; // Giữ nguyên CreatedDate
+
+                // Lưu vào database
+                var result = SaveOrUpdate(dto);
+                return result != Guid.Empty;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Lỗi khi lưu BusinessPartnerSite: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi cập nhật BusinessPartnerSite: {ex.Message}", ex);
             }
         }
+
+        #endregion
+
+        #region ========== DELETE OPERATIONS ==========
 
         /// <summary>
         /// Xóa BusinessPartnerSite theo ID
@@ -189,6 +310,10 @@ namespace Bll.MasterData.CustomerBll
             return Delete(id);
         }
 
+        #endregion
+
+        #region ========== VALIDATION & EXISTS CHECKS ==========
+
         /// <summary>
         /// Kiểm tra SiteCode có tồn tại không
         /// </summary>
@@ -207,132 +332,6 @@ namespace Bll.MasterData.CustomerBll
             }
         }
 
-        /// <summary>
-        /// Tạo mới BusinessPartnerSite từ Entity
-        /// </summary>
-        /// <param name="entity">BusinessPartnerSite entity</param>
-        /// <returns>True nếu tạo thành công</returns>
-        public bool CreateSite(BusinessPartnerSite entity)
-        {
-            try
-            {
-                _logger.Debug($"[CreateSite] Bắt đầu tạo mới BusinessPartnerSite - SiteCode: {entity?.SiteCode}, SiteName: {entity?.SiteName}");
-                _logger.Debug($"[CreateSite] Entity.Id TRƯỚC KHI tạo entity mới: {entity?.Id} (IsEmpty: {entity?.Id == Guid.Empty})");
-
-                // Kiểm tra SiteCode đã tồn tại chưa
-                if (IsSiteCodeExists(entity.SiteCode))
-                {
-                    _logger.Warning($"[CreateSite] SiteCode đã tồn tại: {entity.SiteCode}");
-                    return false;
-                }
-
-                // Normalize Email để đảm bảo match với constraint CK_BusinessPartnerSite_EmailFormat
-                // Constraint: Email IS NULL OR Email LIKE '%@%.%'
-                var normalizedEmail = NormalizeEmail(entity.Email);
-
-                // Tạo entity mới hoàn toàn (detached) để tránh vấn đề với DataContext tracking
-                // Copy tất cả properties từ entity được pass vào, nhưng đảm bảo Id = Guid.Empty
-                var newEntity = new BusinessPartnerSite
-                {
-                    Id = Guid.Empty, // Đảm bảo Id là Empty để DAL biết đây là tạo mới
-                    PartnerId = entity.PartnerId,
-                    SiteCode = entity.SiteCode,
-                    SiteName = entity.SiteName,
-                    Address = entity.Address,
-                    City = entity.City,
-                    Province = entity.Province,
-                    Country = entity.Country,
-                    PostalCode = entity.PostalCode,
-                    District = entity.District,
-                    Phone = entity.Phone,
-                    Email = normalizedEmail, // Email đã được normalize
-                    IsDefault = entity.IsDefault,
-                    IsActive = entity.IsActive,
-                    SiteType = entity.SiteType,
-                    Notes = entity.Notes,
-                    GoogleMapUrl = entity.GoogleMapUrl,
-                    CreatedDate = DateTime.Now,
-                    UpdatedDate = null
-                };
-
-                _logger.Debug($"[CreateSite] Entity mới được tạo với Id: {newEntity.Id} (IsEmpty: {newEntity.Id == Guid.Empty})");
-                
-                // Kiểm tra lại Id trước khi gọi SaveOrUpdate để đảm bảo không bị thay đổi
-                if (newEntity.Id != Guid.Empty)
-                {
-                    _logger.Warning($"[CreateSite] CẢNH BÁO: Entity.Id đã bị thay đổi từ Guid.Empty thành {newEntity.Id}. Đặt lại về Guid.Empty.");
-                    newEntity.Id = Guid.Empty;
-                }
-                
-                _logger.Debug($"[CreateSite] Gọi SaveOrUpdate với newEntity.Id = {newEntity.Id} (IsEmpty: {newEntity.Id == Guid.Empty})");
-
-                // Lưu vào database - truyền trực tiếp vào DAL để tránh BLL layer can thiệp
-                var result = GetDataAccess().SaveOrUpdate(newEntity);
-                _logger.Debug($"[CreateSite] SaveOrUpdate trả về Id: {result}");
-                return result != Guid.Empty;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"[CreateSite] LỖI khi tạo mới BusinessPartnerSite: {ex.Message}", ex);
-                _logger.Error($"[CreateSite] Entity.Id tại thời điểm lỗi: {entity?.Id}");
-                throw new Exception($"Lỗi khi tạo mới BusinessPartnerSite: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật BusinessPartnerSite từ Entity
-        /// </summary>
-        /// <param name="entity">BusinessPartnerSite entity</param>
-        /// <returns>True nếu cập nhật thành công</returns>
-        public bool UpdateSite(BusinessPartnerSite entity)
-        {
-            try
-            {
-                // Kiểm tra SiteCode đã tồn tại chưa (loại trừ chính nó)
-                if (IsSiteCodeExists(entity.SiteCode, entity.Id))
-                {
-                    return false;
-                }
-
-                // Lấy entity hiện tại
-                var existingEntity = GetById(entity.Id);
-                if (existingEntity == null)
-                {
-                    return false;
-                }
-
-                // Normalize Email để đảm bảo match với constraint CK_BusinessPartnerSite_EmailFormat
-                var normalizedEmail = NormalizeEmail(entity.Email);
-
-                // Cập nhật thông tin cơ bản
-                existingEntity.PartnerId = entity.PartnerId;
-                existingEntity.SiteCode = entity.SiteCode;
-                existingEntity.SiteName = entity.SiteName;
-                existingEntity.Address = entity.Address;
-                existingEntity.City = entity.City;
-                existingEntity.Province = entity.Province;
-                existingEntity.Country = entity.Country;
-                existingEntity.Phone = entity.Phone;
-                existingEntity.Email = normalizedEmail; // Email đã được normalize
-                existingEntity.IsDefault = entity.IsDefault;
-                existingEntity.IsActive = entity.IsActive;
-                existingEntity.UpdatedDate = DateTime.Now;
-                
-                // Cập nhật các fields mở rộng
-                existingEntity.PostalCode = entity.PostalCode;
-                existingEntity.District = entity.District;
-                existingEntity.SiteType = entity.SiteType;
-                existingEntity.Notes = entity.Notes;
-                existingEntity.GoogleMapUrl = entity.GoogleMapUrl;
-
-                // Lưu vào database
-                var result = SaveOrUpdate(existingEntity);
-                return result != Guid.Empty;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi khi cập nhật BusinessPartnerSite: {ex.Message}", ex);
-            }
-        }
+        #endregion
     }
 }
