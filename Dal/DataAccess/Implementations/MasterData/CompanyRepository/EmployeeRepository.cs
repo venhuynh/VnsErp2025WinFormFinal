@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.Company;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -77,8 +79,8 @@ public class EmployeeRepository : IEmployeeRepository
     /// Lấy nhân viên theo ID.
     /// </summary>
     /// <param name="id">ID của nhân viên</param>
-    /// <returns>Nhân viên hoặc null nếu không tìm thấy</returns>
-    public Employee GetById(Guid id)
+    /// <returns>EmployeeDto hoặc null nếu không tìm thấy</returns>
+    public EmployeeDto GetById(Guid id)
     {
         try
         {
@@ -88,9 +90,10 @@ public class EmployeeRepository : IEmployeeRepository
             if (employee != null)
             {
                 _logger.Debug($"Đã lấy nhân viên theo ID: {id} - {employee.FullName}");
+                return employee.ToDto();
             }
             
-            return employee;
+            return null;
         }
         catch (Exception ex)
         {
@@ -103,8 +106,8 @@ public class EmployeeRepository : IEmployeeRepository
     /// Lấy nhân viên theo mã nhân viên.
     /// </summary>
     /// <param name="employeeCode">Mã nhân viên</param>
-    /// <returns>Nhân viên hoặc null nếu không tìm thấy</returns>
-    public Employee GetByEmployeeCode(string employeeCode)
+    /// <returns>EmployeeDto hoặc null nếu không tìm thấy</returns>
+    public EmployeeDto GetByEmployeeCode(string employeeCode)
     {
         try
         {
@@ -117,9 +120,10 @@ public class EmployeeRepository : IEmployeeRepository
             if (employee != null)
             {
                 _logger.Debug($"Đã lấy nhân viên theo mã: {employeeCode} - {employee.FullName}");
+                return employee.ToDto();
             }
             
-            return employee;
+            return null;
         }
         catch (Exception ex)
         {
@@ -133,8 +137,8 @@ public class EmployeeRepository : IEmployeeRepository
     /// </summary>
     /// <param name="employeeCode">Mã nhân viên</param>
     /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
-    /// <returns>Nhân viên hoặc null nếu không tìm thấy</returns>
-    public Employee GetByEmployeeCodeAndCompany(string employeeCode, Guid companyId)
+    /// <returns>EmployeeDto hoặc null nếu không tìm thấy</returns>
+    public EmployeeDto GetByEmployeeCodeAndCompany(string employeeCode, Guid companyId)
     {
         try
         {
@@ -157,9 +161,10 @@ public class EmployeeRepository : IEmployeeRepository
             if (employee != null)
             {
                 _logger.Debug($"Đã lấy nhân viên theo mã và công ty: {employeeCode} - {employee.FullName}");
+                return employee.ToDto();
             }
             
-            return employee;
+            return null;
         }
         catch (Exception ex)
         {
@@ -172,7 +177,7 @@ public class EmployeeRepository : IEmployeeRepository
     /// Lấy tất cả nhân viên (Async).
     /// </summary>
     /// <returns>Danh sách tất cả nhân viên</returns>
-    public async Task<List<Employee>> GetAllAsync()
+    public async Task<List<EmployeeDto>> GetAllAsync()
     {
         try
         {
@@ -182,8 +187,11 @@ public class EmployeeRepository : IEmployeeRepository
                 .OrderBy(e => e.FullName)
                 .ToList());
             
-            _logger.Debug($"Đã lấy {employees.Count} nhân viên (async)");
-            return employees;
+            // Chuyển đổi sang DTO
+            var dtos = employees.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} nhân viên (async)");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -196,7 +204,7 @@ public class EmployeeRepository : IEmployeeRepository
     /// Lấy tất cả nhân viên (Sync).
     /// </summary>
     /// <returns>Danh sách tất cả nhân viên</returns>
-    public List<Employee> GetAll()
+    public List<EmployeeDto> GetAll()
     {
         try
         {
@@ -206,8 +214,11 @@ public class EmployeeRepository : IEmployeeRepository
                 .OrderBy(e => e.FullName)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {employees.Count} nhân viên");
-            return employees;
+            // Chuyển đổi sang DTO
+            var dtos = employees.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} nhân viên");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -220,7 +231,7 @@ public class EmployeeRepository : IEmployeeRepository
     /// Lấy danh sách nhân viên đang hoạt động (Async).
     /// </summary>
     /// <returns>Danh sách nhân viên đang hoạt động</returns>
-    public async Task<List<Employee>> GetActiveEmployeesAsync()
+    public async Task<List<EmployeeDto>> GetActiveEmployeesAsync()
     {
         try
         {
@@ -231,8 +242,11 @@ public class EmployeeRepository : IEmployeeRepository
                 .OrderBy(e => e.FullName)
                 .ToList());
             
-            _logger.Debug($"Đã lấy {employees.Count} nhân viên đang hoạt động (async)");
-            return employees;
+            // Chuyển đổi sang DTO
+            var dtos = employees.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} nhân viên đang hoạt động (async)");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -245,7 +259,7 @@ public class EmployeeRepository : IEmployeeRepository
     /// Lấy danh sách nhân viên đang hoạt động (Sync).
     /// </summary>
     /// <returns>Danh sách nhân viên đang hoạt động</returns>
-    public List<Employee> GetActiveEmployees()
+    public List<EmployeeDto> GetActiveEmployees()
     {
         try
         {
@@ -256,8 +270,11 @@ public class EmployeeRepository : IEmployeeRepository
                 .OrderBy(e => e.FullName)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {employees.Count} nhân viên đang hoạt động");
-            return employees;
+            // Chuyển đổi sang DTO
+            var dtos = employees.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} nhân viên đang hoạt động");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -271,7 +288,7 @@ public class EmployeeRepository : IEmployeeRepository
     /// </summary>
     /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
     /// <returns>Danh sách nhân viên của công ty</returns>
-    public List<Employee> GetByCompanyId(Guid companyId)
+    public List<EmployeeDto> GetByCompanyId(Guid companyId)
     {
         try
         {
@@ -282,7 +299,7 @@ public class EmployeeRepository : IEmployeeRepository
             {
                 var company = context.Companies.FirstOrDefault();
                 if (company == null)
-                    return new List<Employee>();
+                    return new List<EmployeeDto>();
                 companyId = company.Id;
             }
 
@@ -291,8 +308,11 @@ public class EmployeeRepository : IEmployeeRepository
                 .OrderBy(e => e.FullName)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {employees.Count} nhân viên theo công ty: {companyId}");
-            return employees;
+            // Chuyển đổi sang DTO
+            var dtos = employees.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} nhân viên theo công ty: {companyId}");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -306,7 +326,7 @@ public class EmployeeRepository : IEmployeeRepository
     /// </summary>
     /// <param name="branchId">ID chi nhánh</param>
     /// <returns>Danh sách nhân viên của chi nhánh</returns>
-    public List<Employee> GetByBranchId(Guid branchId)
+    public List<EmployeeDto> GetByBranchId(Guid branchId)
     {
         try
         {
@@ -317,8 +337,11 @@ public class EmployeeRepository : IEmployeeRepository
                 .OrderBy(e => e.FullName)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {employees.Count} nhân viên theo chi nhánh: {branchId}");
-            return employees;
+            // Chuyển đổi sang DTO
+            var dtos = employees.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} nhân viên theo chi nhánh: {branchId}");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -332,7 +355,7 @@ public class EmployeeRepository : IEmployeeRepository
     /// </summary>
     /// <param name="departmentId">ID phòng ban</param>
     /// <returns>Danh sách nhân viên của phòng ban</returns>
-    public List<Employee> GetByDepartmentId(Guid departmentId)
+    public List<EmployeeDto> GetByDepartmentId(Guid departmentId)
     {
         try
         {
@@ -343,8 +366,11 @@ public class EmployeeRepository : IEmployeeRepository
                 .OrderBy(e => e.FullName)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {employees.Count} nhân viên theo phòng ban: {departmentId}");
-            return employees;
+            // Chuyển đổi sang DTO
+            var dtos = employees.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} nhân viên theo phòng ban: {departmentId}");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -358,7 +384,7 @@ public class EmployeeRepository : IEmployeeRepository
     /// </summary>
     /// <param name="positionId">ID chức vụ</param>
     /// <returns>Danh sách nhân viên có chức vụ</returns>
-    public List<Employee> GetByPositionId(Guid positionId)
+    public List<EmployeeDto> GetByPositionId(Guid positionId)
     {
         try
         {
@@ -369,8 +395,11 @@ public class EmployeeRepository : IEmployeeRepository
                 .OrderBy(e => e.FullName)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {employees.Count} nhân viên theo chức vụ: {positionId}");
-            return employees;
+            // Chuyển đổi sang DTO
+            var dtos = employees.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} nhân viên theo chức vụ: {positionId}");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -386,28 +415,31 @@ public class EmployeeRepository : IEmployeeRepository
     /// <summary>
     /// Thêm mới nhân viên.
     /// </summary>
-    /// <param name="employee">Nhân viên cần thêm</param>
+    /// <param name="employee">EmployeeDto cần thêm</param>
     /// <returns>ID của nhân viên vừa thêm</returns>
-    public Guid Insert(Employee employee)
+    public Guid Insert(EmployeeDto employee)
     {
         try
         {
             if (employee == null)
                 throw new ArgumentNullException(nameof(employee));
 
-            using var context = CreateNewContext();
+            // Chuyển đổi DTO sang Entity
+            var entity = employee.ToEntity();
             
             // Set CreatedDate nếu chưa có
-            if (employee.CreatedDate == default(DateTime))
+            if (entity.CreatedDate == default(DateTime))
             {
-                employee.CreatedDate = DateTime.Now;
+                entity.CreatedDate = DateTime.Now;
+                employee.CreatedDate = entity.CreatedDate;
             }
 
-            context.Employees.InsertOnSubmit(employee);
+            using var context = CreateNewContext();
+            context.Employees.InsertOnSubmit(entity);
             context.SubmitChanges();
             
-            _logger.Info($"Đã thêm mới nhân viên: {employee.EmployeeCode} - {employee.FullName}");
-            return employee.Id;
+            _logger.Info($"Đã thêm mới nhân viên: {entity.EmployeeCode} - {entity.FullName}");
+            return entity.Id;
         }
         catch (Exception ex)
         {
@@ -419,8 +451,8 @@ public class EmployeeRepository : IEmployeeRepository
     /// <summary>
     /// Cập nhật nhân viên.
     /// </summary>
-    /// <param name="employee">Nhân viên cần cập nhật</param>
-    public void Update(Employee employee)
+    /// <param name="employee">EmployeeDto cần cập nhật</param>
+    public void Update(EmployeeDto employee)
     {
         try
         {
@@ -440,39 +472,11 @@ public class EmployeeRepository : IEmployeeRepository
                 throw new DataAccessException("Không tìm thấy nhân viên để cập nhật");
             }
 
-            // Cập nhật các thuộc tính cơ bản (foreign key có thể set trực tiếp)
-            existingEmployee.CompanyId = employee.CompanyId;
-            existingEmployee.BranchId = employee.BranchId;
-            existingEmployee.DepartmentId = employee.DepartmentId;
-            existingEmployee.PositionId = employee.PositionId;
-            existingEmployee.EmployeeCode = employee.EmployeeCode;
-            existingEmployee.FullName = employee.FullName;
-            existingEmployee.Gender = employee.Gender;
-            existingEmployee.BirthDate = employee.BirthDate;
-            existingEmployee.Phone = employee.Phone;
-            existingEmployee.Email = employee.Email;
-            existingEmployee.HireDate = employee.HireDate;
-            existingEmployee.ResignDate = employee.ResignDate;
-            existingEmployee.AvatarPath = employee.AvatarPath;
-            existingEmployee.IsActive = employee.IsActive;
-
-            // Cập nhật các thuộc tính từ BusinessPartnerContact
-            existingEmployee.Mobile = employee.Mobile;
-            existingEmployee.Fax = employee.Fax;
-            existingEmployee.LinkedIn = employee.LinkedIn;
-            existingEmployee.Skype = employee.Skype;
-            existingEmployee.WeChat = employee.WeChat;
-            existingEmployee.Notes = employee.Notes;
+            // Sử dụng converter để cập nhật entity từ DTO
+            employee.ToEntity(existingEmployee);
+            
+            // Cập nhật ModifiedDate
             existingEmployee.ModifiedDate = DateTime.Now;
-
-            // Cập nhật các thuộc tính Avatar
-            existingEmployee.AvatarFileName = employee.AvatarFileName;
-            existingEmployee.AvatarRelativePath = employee.AvatarRelativePath;
-            existingEmployee.AvatarFullPath = employee.AvatarFullPath;
-            existingEmployee.AvatarStorageType = employee.AvatarStorageType;
-            existingEmployee.AvatarFileSize = employee.AvatarFileSize;
-            existingEmployee.AvatarChecksum = employee.AvatarChecksum;
-            existingEmployee.AvatarThumbnailData = employee.AvatarThumbnailData;
 
             context.SubmitChanges();
             
@@ -488,8 +492,8 @@ public class EmployeeRepository : IEmployeeRepository
     /// <summary>
     /// Xóa nhân viên.
     /// </summary>
-    /// <param name="employee">Nhân viên cần xóa</param>
-    public void Delete(Employee employee)
+    /// <param name="employee">EmployeeDto cần xóa</param>
+    public void Delete(EmployeeDto employee)
     {
         try
         {

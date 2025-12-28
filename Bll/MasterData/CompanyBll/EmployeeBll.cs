@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
-using Dal.DataContext;
+using DTO.MasterData.Company;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -85,7 +85,7 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy tất cả nhân viên (Async).
         /// </summary>
         /// <returns>Danh sách tất cả nhân viên</returns>
-        public async Task<List<Employee>> GetAllAsync()
+        public async Task<List<EmployeeDto>> GetAllAsync()
         {
             try
             {
@@ -101,7 +101,7 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy tất cả nhân viên (Sync).
         /// </summary>
         /// <returns>Danh sách tất cả nhân viên</returns>
-        public List<Employee> GetAll()
+        public List<EmployeeDto> GetAll()
         {
             try
             {
@@ -117,8 +117,8 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy nhân viên theo ID.
         /// </summary>
         /// <param name="id">ID của nhân viên</param>
-        /// <returns>Nhân viên hoặc null nếu không tìm thấy</returns>
-        public Employee GetById(Guid id)
+        /// <returns>EmployeeDto hoặc null nếu không tìm thấy</returns>
+        public EmployeeDto GetById(Guid id)
         {
             try
             {
@@ -134,8 +134,8 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy nhân viên theo mã nhân viên.
         /// </summary>
         /// <param name="employeeCode">Mã nhân viên</param>
-        /// <returns>Nhân viên hoặc null nếu không tìm thấy</returns>
-        public Employee GetByEmployeeCode(string employeeCode)
+        /// <returns>EmployeeDto hoặc null nếu không tìm thấy</returns>
+        public EmployeeDto GetByEmployeeCode(string employeeCode)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy danh sách nhân viên đang hoạt động.
         /// </summary>
         /// <returns>Danh sách nhân viên đang hoạt động</returns>
-        public async Task<List<Employee>> GetActiveEmployeesAsync()
+        public async Task<List<EmployeeDto>> GetActiveEmployeesAsync()
         {
             try
             {
@@ -170,7 +170,7 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy danh sách nhân viên đang hoạt động (Sync).
         /// </summary>
         /// <returns>Danh sách nhân viên đang hoạt động</returns>
-        public List<Employee> GetActiveEmployees()
+        public List<EmployeeDto> GetActiveEmployees()
         {
             try
             {
@@ -189,9 +189,9 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Thêm mới nhân viên.
         /// </summary>
-        /// <param name="employee">Nhân viên cần thêm</param>
+        /// <param name="employee">EmployeeDto cần thêm</param>
         /// <returns>ID của nhân viên vừa thêm</returns>
-        public Guid Insert(Employee employee)
+        public Guid Insert(EmployeeDto employee)
         {
             try
             {
@@ -226,8 +226,8 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Cập nhật nhân viên.
         /// </summary>
-        /// <param name="employee">Nhân viên cần cập nhật</param>
-        public void Update(Employee employee)
+        /// <param name="employee">EmployeeDto cần cập nhật</param>
+        public void Update(EmployeeDto employee)
         {
             try
             {
@@ -261,9 +261,9 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Lưu hoặc cập nhật nhân viên.
         /// </summary>
-        /// <param name="employee">Nhân viên cần lưu</param>
+        /// <param name="employee">EmployeeDto cần lưu</param>
         /// <returns>ID của nhân viên đã lưu</returns>
-        public Guid SaveOrUpdate(Employee employee)
+        public Guid SaveOrUpdate(EmployeeDto employee)
         {
             try
             {
@@ -355,9 +355,7 @@ namespace Bll.MasterData.CompanyBll
                     throw new Exception("Không tìm thấy nhân viên để cập nhật avatar");
                 }
 
-                employee.AvatarThumbnailData = avatarThumbnailBytes != null 
-                    ? new System.Data.Linq.Binary(avatarThumbnailBytes) 
-                    : null;
+                employee.AvatarThumbnailData = avatarThumbnailBytes;
                 employee.ModifiedDate = DateTime.Now;
 
                 GetDataAccess().Update(employee);
@@ -391,8 +389,8 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Validate dữ liệu nhân viên.
         /// </summary>
-        /// <param name="employee">Nhân viên cần validate</param>
-        private void ValidateEmployee(Employee employee)
+        /// <param name="employee">EmployeeDto cần validate</param>
+        private void ValidateEmployee(EmployeeDto employee)
         {
             if (employee == null)
                 throw new Exception("Thông tin nhân viên không được để trống");

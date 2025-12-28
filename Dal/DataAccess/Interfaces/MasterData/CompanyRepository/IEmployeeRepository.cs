@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.MasterData.Company;
 
 namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 
@@ -17,75 +17,75 @@ public interface IEmployeeRepository
     /// Lấy nhân viên theo ID.
     /// </summary>
     /// <param name="id">ID của nhân viên</param>
-    /// <returns>Nhân viên hoặc null nếu không tìm thấy</returns>
-    Employee GetById(Guid id);
+    /// <returns>EmployeeDto hoặc null nếu không tìm thấy</returns>
+    EmployeeDto GetById(Guid id);
 
     /// <summary>
     /// Lấy nhân viên theo mã nhân viên.
     /// </summary>
     /// <param name="employeeCode">Mã nhân viên</param>
-    /// <returns>Nhân viên hoặc null nếu không tìm thấy</returns>
-    Employee GetByEmployeeCode(string employeeCode);
+    /// <returns>EmployeeDto hoặc null nếu không tìm thấy</returns>
+    EmployeeDto GetByEmployeeCode(string employeeCode);
 
     /// <summary>
     /// Lấy nhân viên theo mã nhân viên và CompanyId.
     /// </summary>
     /// <param name="employeeCode">Mã nhân viên</param>
     /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
-    /// <returns>Nhân viên hoặc null nếu không tìm thấy</returns>
-    Employee GetByEmployeeCodeAndCompany(string employeeCode, Guid companyId);
+    /// <returns>EmployeeDto hoặc null nếu không tìm thấy</returns>
+    EmployeeDto GetByEmployeeCodeAndCompany(string employeeCode, Guid companyId);
 
     /// <summary>
     /// Lấy tất cả nhân viên (Async).
     /// </summary>
     /// <returns>Danh sách tất cả nhân viên</returns>
-    Task<List<Employee>> GetAllAsync();
+    Task<List<EmployeeDto>> GetAllAsync();
 
     /// <summary>
     /// Lấy tất cả nhân viên (Sync).
     /// </summary>
     /// <returns>Danh sách tất cả nhân viên</returns>
-    List<Employee> GetAll();
+    List<EmployeeDto> GetAll();
 
     /// <summary>
     /// Lấy danh sách nhân viên đang hoạt động (Async).
     /// </summary>
     /// <returns>Danh sách nhân viên đang hoạt động</returns>
-    Task<List<Employee>> GetActiveEmployeesAsync();
+    Task<List<EmployeeDto>> GetActiveEmployeesAsync();
 
     /// <summary>
     /// Lấy danh sách nhân viên đang hoạt động (Sync).
     /// </summary>
     /// <returns>Danh sách nhân viên đang hoạt động</returns>
-    List<Employee> GetActiveEmployees();
+    List<EmployeeDto> GetActiveEmployees();
 
     /// <summary>
     /// Lấy tất cả nhân viên của một công ty.
     /// </summary>
     /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
     /// <returns>Danh sách nhân viên của công ty</returns>
-    List<Employee> GetByCompanyId(Guid companyId);
+    List<EmployeeDto> GetByCompanyId(Guid companyId);
 
     /// <summary>
     /// Lấy danh sách nhân viên theo chi nhánh.
     /// </summary>
     /// <param name="branchId">ID chi nhánh</param>
     /// <returns>Danh sách nhân viên của chi nhánh</returns>
-    List<Employee> GetByBranchId(Guid branchId);
+    List<EmployeeDto> GetByBranchId(Guid branchId);
 
     /// <summary>
     /// Lấy danh sách nhân viên theo phòng ban.
     /// </summary>
     /// <param name="departmentId">ID phòng ban</param>
     /// <returns>Danh sách nhân viên của phòng ban</returns>
-    List<Employee> GetByDepartmentId(Guid departmentId);
+    List<EmployeeDto> GetByDepartmentId(Guid departmentId);
 
     /// <summary>
     /// Lấy danh sách nhân viên theo chức vụ.
     /// </summary>
     /// <param name="positionId">ID chức vụ</param>
     /// <returns>Danh sách nhân viên có chức vụ</returns>
-    List<Employee> GetByPositionId(Guid positionId);
+    List<EmployeeDto> GetByPositionId(Guid positionId);
 
     #endregion
 
@@ -94,21 +94,21 @@ public interface IEmployeeRepository
     /// <summary>
     /// Thêm mới nhân viên.
     /// </summary>
-    /// <param name="employee">Nhân viên cần thêm</param>
+    /// <param name="employee">EmployeeDto cần thêm</param>
     /// <returns>ID của nhân viên vừa thêm</returns>
-    Guid Insert(Employee employee);
+    Guid Insert(EmployeeDto employee);
 
     /// <summary>
     /// Cập nhật nhân viên.
     /// </summary>
-    /// <param name="employee">Nhân viên cần cập nhật</param>
-    public void Update(Employee employee);
+    /// <param name="employee">EmployeeDto cần cập nhật</param>
+    public void Update(EmployeeDto employee);
 
     /// <summary>
     /// Xóa nhân viên.
     /// </summary>
-    /// <param name="employee">Nhân viên cần xóa</param>
-    void Delete(Employee employee);
+    /// <param name="employee">EmployeeDto cần xóa</param>
+    void Delete(EmployeeDto employee);
 
     #endregion
 
