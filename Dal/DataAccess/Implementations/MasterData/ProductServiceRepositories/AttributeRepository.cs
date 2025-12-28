@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
-using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using Attribute = Dal.DataContext.Attribute;
@@ -49,7 +50,7 @@ public class AttributeRepository : IAttributeRepository
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -69,158 +70,28 @@ public class AttributeRepository : IAttributeRepository
 
     #endregion
 
-    #region Read
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
-    /// Lấy Attribute theo Id.
+    /// Lưu hoặc cập nhật Attribute
     /// </summary>
-    public Attribute GetById(Guid id)
+    /// <param name="dto">AttributeDto</param>
+    public void SaveOrUpdate(AttributeDto dto)
     {
         try
         {
-            using var context = CreateNewContext();
-            var attribute = context.Attributes.FirstOrDefault(x => x.Id == id);
-            
-            if (attribute != null)
-            {
-                _logger.Debug($"Đã lấy Attribute theo ID: {id} - {attribute.Name}");
-            }
-            
-            return attribute;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy Attribute theo Id {id}: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy Attribute theo Id {id}: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy tất cả Attribute.
-    /// </summary>
-    public List<Attribute> GetAll()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var attributes = context.Attributes
-                .OrderBy(x => x.Name)
-                .ToList();
-            
-            _logger.Debug($"Đã lấy {attributes.Count} Attribute");
-            return attributes;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy tất cả Attribute (Async).
-    /// </summary>
-    public async Task<List<Attribute>> GetAllAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var attributes = await Task.Run(() => context.Attributes
-                .OrderBy(x => x.Name)
-                .ToList());
-            
-            _logger.Debug($"Đã lấy {attributes.Count} Attribute (async)");
-            return attributes;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy Attribute theo tên.
-    /// </summary>
-    public Attribute GetByName(string name)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(name)) return null;
-            
-            using var context = CreateNewContext();
-            var attribute = context.Attributes.FirstOrDefault(x => x.Name == name.Trim());
-            
-            if (attribute != null)
-            {
-                _logger.Debug($"Đã lấy Attribute theo tên: {name} - {attribute.Name}");
-            }
-            
-            return attribute;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy Attribute theo tên '{name}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy Attribute theo tên '{name}': {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Tìm kiếm Attribute theo từ khóa (Name/DataType/Description).
-    /// </summary>
-    public List<Attribute> Search(string keyword)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            if (string.IsNullOrWhiteSpace(keyword))
-            {
-                var all = context.Attributes.OrderBy(x => x.Name).ToList();
-                _logger.Debug($"Đã tìm kiếm Attribute (không có keyword): {all.Count} kết quả");
-                return all;
-            }
-
-            var term = keyword.Trim().ToLower();
-            var results = context.Attributes
-                .Where(x =>
-                    x.Name.ToLower().Contains(term) ||
-                    x.DataType.ToLower().Contains(term) ||
-                    (x.Description != null && x.Description.ToLower().Contains(term)))
-                .OrderBy(x => x.Name)
-                .ToList();
-            
-            _logger.Debug($"Đã tìm kiếm Attribute theo keyword '{keyword}': {results.Count} kết quả");
-            return results;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi tìm kiếm Attribute với từ khóa '{keyword}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi tìm kiếm Attribute với từ khóa '{keyword}': {ex.Message}", ex);
-        }
-    }
-
-    #endregion
-
-    #region Create/Update
-
-    /// <summary>
-    /// Lưu hoặc cập nhật Attribute.
-    /// </summary>
-    public void SaveOrUpdate(Attribute entity)
-    {
-        try
-        {
-            if (entity == null) 
-                throw new ArgumentNullException(nameof(entity));
+            if (dto == null) 
+                throw new ArgumentNullException(nameof(dto));
 
             using var context = CreateNewContext();
-            var existing = entity.Id != Guid.Empty 
-                ? context.Attributes.FirstOrDefault(x => x.Id == entity.Id) 
+            var existing = dto.Id != Guid.Empty 
+                ? context.Attributes.FirstOrDefault(x => x.Id == dto.Id) 
                 : null;
 
             if (existing == null)
             {
                 // Thêm mới
+                var entity = dto.ToEntity();
                 if (entity.Id == Guid.Empty)
                     entity.Id = Guid.NewGuid();
                     
@@ -231,10 +102,8 @@ public class AttributeRepository : IAttributeRepository
             }
             else
             {
-                // Cập nhật
-                existing.Name = entity.Name;
-                existing.DataType = entity.DataType;
-                existing.Description = entity.Description;
+                // Cập nhật - Sử dụng converter để cập nhật entity từ DTO
+                dto.ToEntity(existing);
                 
                 context.SubmitChanges();
                 
@@ -243,19 +112,80 @@ public class AttributeRepository : IAttributeRepository
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi lưu/cập nhật Attribute '{entity?.Name}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lưu/cập nhật Attribute '{entity?.Name}': {ex.Message}", ex);
+            _logger.Error($"Lỗi khi lưu/cập nhật Attribute '{dto?.Name}': {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lưu/cập nhật Attribute '{dto?.Name}': {ex.Message}", ex);
         }
     }
 
     #endregion
 
-    #region Delete
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
-    /// Xóa Attribute theo Id (kèm xóa AttributeValue/VariantAttribute liên quan).
+    /// Lấy Attribute theo Id
     /// </summary>
-    public bool DeleteAttribute(Guid id)
+    /// <param name="id">Id của Attribute</param>
+    /// <returns>AttributeDto hoặc null</returns>
+    public AttributeDto GetById(Guid id)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var attribute = context.Attributes.FirstOrDefault(x => x.Id == id);
+            
+            if (attribute != null)
+            {
+                _logger.Debug($"Đã lấy Attribute theo ID: {id} - {attribute.Name}");
+                return attribute.ToDto();
+            }
+            
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy Attribute theo Id {id}: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy Attribute theo Id {id}: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả Attribute
+    /// </summary>
+    /// <returns>Danh sách AttributeDto</returns>
+    public List<AttributeDto> GetAll()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var attributes = context.Attributes
+                .OrderBy(x => x.Name)
+                .ToList();
+            
+            var dtos = attributes.Select(a => a.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} Attribute");
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
+
+    /// <summary>
+    /// Xóa Attribute theo Id (kèm xóa AttributeValue/VariantAttribute liên quan)
+    /// </summary>
+    /// <param name="id">Id của Attribute cần xóa</param>
+    public void Delete(Guid id)
     {
         try
         {
@@ -264,7 +194,7 @@ public class AttributeRepository : IAttributeRepository
             if (attr == null)
             {
                 _logger.Warning($"Không tìm thấy Attribute để xóa: {id}");
-                return false;
+                return;
             }
 
             // Nếu còn phụ thuộc thì ngăn không cho xóa (an toàn theo yêu cầu)
@@ -280,7 +210,6 @@ public class AttributeRepository : IAttributeRepository
             context.SubmitChanges();
             
             _logger.Info($"Đã xóa Attribute: {id} - {attr.Name}");
-            return true;
         }
         catch (Exception ex)
         {
@@ -289,21 +218,16 @@ public class AttributeRepository : IAttributeRepository
         }
     }
 
-    /// <summary>
-    /// Xóa Attribute theo Id (alias method).
-    /// </summary>
-    public void Delete(Guid id)
-    {
-        DeleteAttribute(id);
-    }
-
     #endregion
 
-    #region Validation & Utilities
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
-    /// Kiểm tra tên thuộc tính đã tồn tại chưa (loại trừ Id khi cập nhật).
+    /// Kiểm tra tên thuộc tính đã tồn tại chưa (loại trừ Id khi cập nhật)
     /// </summary>
+    /// <param name="name">Tên cần kiểm tra</param>
+    /// <param name="excludeId">Id cần loại trừ khỏi kiểm tra (dùng khi update)</param>
+    /// <returns>True nếu tên đã tồn tại</returns>
     public bool IsNameExists(string name, Guid? excludeId = null)
     {
         try
@@ -329,6 +253,8 @@ public class AttributeRepository : IAttributeRepository
     /// <summary>
     /// Kiểm tra thuộc tính có phụ thuộc hay không (AttributeValue/VariantAttribute)
     /// </summary>
+    /// <param name="id">Id của Attribute</param>
+    /// <returns>True nếu có phụ thuộc</returns>
     public bool HasDependencies(Guid id)
     {
         try
@@ -344,32 +270,6 @@ public class AttributeRepository : IAttributeRepository
         {
             _logger.Error($"Lỗi khi kiểm tra phụ thuộc của Attribute {id}: {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi kiểm tra phụ thuộc của Attribute {id}: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách tên Attribute (unique) - Async.
-    /// </summary>
-    public async Task<List<object>> GetUniqueNamesAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var names = context.Attributes
-                .Where(x => !string.IsNullOrEmpty(x.Name))
-                .Select(x => x.Name)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
-            
-            var result = await Task.FromResult(names.Cast<object>().ToList());
-            _logger.Debug($"Đã lấy {result.Count} tên Attribute unique (async)");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy danh sách tên Attribute unique: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy danh sách tên Attribute unique: {ex.Message}", ex);
         }
     }
 

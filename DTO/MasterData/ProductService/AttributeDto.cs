@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Attribute = Dal.DataContext.Attribute;
 
 namespace DTO.MasterData.ProductService;
 
@@ -185,45 +184,6 @@ public class AttributeDto : INotifyPropertyChanged
     public override string ToString()
     {
         return FullInfo;
-    }
-    #endregion
-}
-
-/// <summary>
-/// Converter giữa Attribute/AttributeValue/VariantAttribute (Dal) và DTO tương ứng
-/// </summary>
-public static class AttributeConverters
-{
-    #region Attribute -> AttributeDto
-    public static AttributeDto ToDto(this Attribute entity)
-    {
-        if (entity == null) return null;
-        return new AttributeDto
-        {
-            Id = entity.Id,
-            Name = entity.Name,
-            DataType = entity.DataType,
-            Description = entity.Description,
-            AttributeValues = entity.AttributeValues?.Select(v => AttributeValueConverters.ToDto(v, entity)).ToList()
-        };
-    }
-
-    public static List<AttributeDto> ToDtoList(this IEnumerable<Attribute> entities)
-    {
-        if (entities == null) return new List<AttributeDto>();
-        return entities.Select(e => e.ToDto()).ToList();
-    }
-
-    public static Attribute ToEntity(this AttributeDto dto)
-    {
-        if (dto == null) return null;
-        return new Attribute
-        {
-            Id = dto.Id,
-            Name = dto.Name,
-            DataType = dto.DataType,
-            Description = dto.Description
-        };
     }
     #endregion
 }

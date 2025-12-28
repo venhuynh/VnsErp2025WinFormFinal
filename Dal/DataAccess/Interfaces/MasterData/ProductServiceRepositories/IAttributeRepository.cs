@@ -1,84 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Attribute = Dal.DataContext.Attribute;
+using DTO.MasterData.ProductService;
 
 namespace Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 
 /// <summary>
-/// Data Access cho thực thể Attribute (LINQ to SQL trên VnsErp2025DataContext).
-/// Cung cấp CRUD, tìm kiếm, kiểm tra unique và phiên bản đồng bộ/bất đồng bộ.
+/// Interface cho Data Access Layer của Attribute
 /// </summary>
 public interface IAttributeRepository
 {
-    #region Read
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
-    /// Lấy Attribute theo Id.
+    /// Lưu hoặc cập nhật Attribute
+    /// </summary>
+    /// <param name="dto">AttributeDto</param>
+    void SaveOrUpdate(AttributeDto dto);
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
+
+    /// <summary>
+    /// Lấy Attribute theo Id
     /// </summary>
     /// <param name="id">Id của Attribute</param>
-    /// <returns>Attribute hoặc null nếu không tìm thấy</returns>
-    Attribute GetById(Guid id);
+    /// <returns>AttributeDto hoặc null nếu không tìm thấy</returns>
+    AttributeDto GetById(Guid id);
 
     /// <summary>
-    /// Lấy tất cả Attribute.
+    /// Lấy tất cả Attribute
     /// </summary>
-    /// <returns>Danh sách tất cả Attribute</returns>
-    List<Attribute> GetAll();
-
-    /// <summary>
-    /// Lấy tất cả Attribute (Async).
-    /// </summary>
-    /// <returns>Danh sách tất cả Attribute</returns>
-    Task<List<Attribute>> GetAllAsync();
-
-    /// <summary>
-    /// Lấy Attribute theo tên.
-    /// </summary>
-    /// <param name="name">Tên Attribute</param>
-    /// <returns>Attribute hoặc null nếu không tìm thấy</returns>
-    Attribute GetByName(string name);
-
-    /// <summary>
-    /// Tìm kiếm Attribute theo từ khóa (Name/DataType/Description).
-    /// </summary>
-    /// <param name="keyword">Từ khóa tìm kiếm</param>
-    /// <returns>Danh sách Attribute phù hợp</returns>
-    List<Attribute> Search(string keyword);
+    /// <returns>Danh sách tất cả AttributeDto</returns>
+    List<AttributeDto> GetAll();
 
     #endregion
 
-    #region Create/Update
-
-    /// <summary>
-    /// Lưu hoặc cập nhật Attribute.
-    /// </summary>
-    /// <param name="entity">Attribute cần lưu hoặc cập nhật</param>
-    void SaveOrUpdate(Attribute entity);
-
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
     #endregion
 
-    #region Delete
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
-    /// Xóa Attribute theo Id (kèm xóa AttributeValue/VariantAttribute liên quan).
-    /// </summary>
-    /// <param name="id">Id của Attribute cần xóa</param>
-    /// <returns>True nếu xóa thành công, False nếu không tìm thấy</returns>
-    bool DeleteAttribute(Guid id);
-
-    /// <summary>
-    /// Xóa Attribute theo Id (alias method).
+    /// Xóa Attribute theo Id (kèm xóa AttributeValue/VariantAttribute liên quan)
     /// </summary>
     /// <param name="id">Id của Attribute cần xóa</param>
     void Delete(Guid id);
 
     #endregion
 
-    #region Validation & Utilities
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
-    /// Kiểm tra tên thuộc tính đã tồn tại chưa (loại trừ Id khi cập nhật).
+    /// Kiểm tra tên thuộc tính đã tồn tại chưa (loại trừ Id khi cập nhật)
     /// </summary>
     /// <param name="name">Tên cần kiểm tra</param>
     /// <param name="excludeId">Id cần loại trừ khỏi kiểm tra (dùng khi update)</param>
@@ -91,12 +66,6 @@ public interface IAttributeRepository
     /// <param name="id">Id của Attribute</param>
     /// <returns>True nếu có phụ thuộc</returns>
     bool HasDependencies(Guid id);
-
-    /// <summary>
-    /// Lấy danh sách tên Attribute (unique) - Async.
-    /// </summary>
-    /// <returns>Danh sách tên unique</returns>
-    Task<List<object>> GetUniqueNamesAsync();
 
     #endregion
 }

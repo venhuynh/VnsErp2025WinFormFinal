@@ -1,25 +1,36 @@
 ﻿using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
+using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
-using Attribute = Dal.DataContext.Attribute;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
 
 namespace Bll.MasterData.ProductServiceBll
 {
+    /// <summary>
+    /// Business Logic Layer cho Attribute
+    /// </summary>
     public class AttributeBll
     {
         #region Fields
 
         private IAttributeRepository _dataAccess;
         private readonly object _lockObject = new object();
+        private readonly ILogger _logger;
 
         #endregion
 
         #region Constructors
 
+        /// <summary>
+        /// Constructor mặc định
+        /// </summary>
         public AttributeBll()
         {
+            _logger = LoggerFactory.CreateLogger(LogCategory.BLL);
         }
 
         #endregion
@@ -62,34 +73,135 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        public List<Attribute> GetAll()
+        #region ========== CREATE OPERATIONS ==========
+
+        /// <summary>
+        /// Lưu hoặc cập nhật Attribute
+        /// </summary>
+        /// <param name="dto">AttributeDto</param>
+        public void SaveOrUpdate(AttributeDto dto)
         {
-            return GetDataAccess().GetAll();
+            try
+            {
+                if (dto == null)
+                {
+                    throw new ArgumentNullException(nameof(dto));
+                }
+
+                GetDataAccess().SaveOrUpdate(dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lưu/cập nhật Attribute: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi lưu/cập nhật Attribute: {ex.Message}", ex);
+            }
         }
 
-        public Attribute GetById(Guid id)
+        #endregion
+
+        #region ========== READ OPERATIONS ==========
+
+        /// <summary>
+        /// Lấy tất cả Attribute
+        /// </summary>
+        /// <returns>Danh sách AttributeDto</returns>
+        public List<AttributeDto> GetAll()
         {
-            return GetDataAccess().GetById(id);
+            try
+            {
+                return GetDataAccess().GetAll();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
+            }
         }
 
-        public void SaveOrUpdate(Attribute entity)
+        /// <summary>
+        /// Lấy Attribute theo Id
+        /// </summary>
+        /// <param name="id">Id của Attribute</param>
+        /// <returns>AttributeDto hoặc null</returns>
+        public AttributeDto GetById(Guid id)
         {
-            GetDataAccess().SaveOrUpdate(entity);
+            try
+            {
+                return GetDataAccess().GetById(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lấy Attribute theo Id: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi lấy Attribute theo Id: {ex.Message}", ex);
+            }
         }
 
+        #endregion
+
+        #region ========== UPDATE OPERATIONS ==========
+        // Update operations are handled by SaveOrUpdate method
+        #endregion
+
+        #region ========== DELETE OPERATIONS ==========
+
+        /// <summary>
+        /// Xóa Attribute theo Id
+        /// </summary>
+        /// <param name="id">Id của Attribute cần xóa</param>
         public void Delete(Guid id)
         {
-            GetDataAccess().Delete(id);
+            try
+            {
+                GetDataAccess().Delete(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi xóa Attribute: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi xóa Attribute: {ex.Message}", ex);
+            }
         }
 
+        #endregion
+
+        #region ========== VALIDATION & EXISTS CHECKS ==========
+
+        /// <summary>
+        /// Kiểm tra tên thuộc tính đã tồn tại chưa (loại trừ Id khi cập nhật)
+        /// </summary>
+        /// <param name="name">Tên cần kiểm tra</param>
+        /// <param name="excludeId">Id cần loại trừ khỏi kiểm tra (dùng khi update)</param>
+        /// <returns>True nếu tên đã tồn tại</returns>
         public bool IsNameExists(string name, Guid? excludeId = null)
         {
-            return GetDataAccess().IsNameExists(name, excludeId);
+            try
+            {
+                return GetDataAccess().IsNameExists(name, excludeId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi kiểm tra tên Attribute: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi kiểm tra tên Attribute: {ex.Message}", ex);
+            }
         }
 
+        /// <summary>
+        /// Kiểm tra thuộc tính có phụ thuộc hay không (AttributeValue/VariantAttribute)
+        /// </summary>
+        /// <param name="id">Id của Attribute</param>
+        /// <returns>True nếu có phụ thuộc</returns>
         public bool HasDependencies(Guid id)
         {
-            return GetDataAccess().HasDependencies(id);
+            try
+            {
+                return GetDataAccess().HasDependencies(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi kiểm tra phụ thuộc của Attribute: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi kiểm tra phụ thuộc của Attribute: {ex.Message}", ex);
+            }
         }
+
+        #endregion
     }
 }
