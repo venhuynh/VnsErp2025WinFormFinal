@@ -4,7 +4,7 @@ using System.Linq;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
-using UnitOfMeasure = Dal.DataContext.UnitOfMeasure;
+using DTO.MasterData.ProductService;
 
 namespace Bll.MasterData.ProductServiceBll
 {
@@ -59,13 +59,13 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Public Methods
+        #region ========== READ OPERATIONS ==========
 
         /// <summary>
         /// Lấy tất cả đơn vị tính
         /// </summary>
-        /// <returns>Danh sách UnitOfMeasure entities</returns>
-        public List<UnitOfMeasure> GetAll()
+        /// <returns>Danh sách UnitOfMeasureDto</returns>
+        public List<UnitOfMeasureDto> GetAll()
         {
             try
             {
@@ -81,8 +81,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy đơn vị tính theo ID
         /// </summary>
         /// <param name="id">ID đơn vị tính</param>
-        /// <returns>UnitOfMeasure entity hoặc null</returns>
-        public UnitOfMeasure GetById(Guid id)
+        /// <returns>UnitOfMeasureDto hoặc null</returns>
+        public UnitOfMeasureDto GetById(Guid id)
         {
             try
             {
@@ -98,8 +98,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy đơn vị tính theo mã
         /// </summary>
         /// <param name="code">Mã đơn vị tính</param>
-        /// <returns>UnitOfMeasure entity hoặc null</returns>
-        public UnitOfMeasure GetByCode(string code)
+        /// <returns>UnitOfMeasureDto hoặc null</returns>
+        public UnitOfMeasureDto GetByCode(string code)
         {
             try
             {
@@ -115,8 +115,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy đơn vị tính theo tên
         /// </summary>
         /// <param name="name">Tên đơn vị tính</param>
-        /// <returns>UnitOfMeasure entity hoặc null</returns>
-        public UnitOfMeasure GetByName(string name)
+        /// <returns>UnitOfMeasureDto hoặc null</returns>
+        public UnitOfMeasureDto GetByName(string name)
         {
             try
             {
@@ -132,8 +132,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Tìm kiếm đơn vị tính theo từ khóa
         /// </summary>
         /// <param name="keyword">Từ khóa tìm kiếm</param>
-        /// <returns>Danh sách UnitOfMeasure entities</returns>
-        public List<UnitOfMeasure> Search(string keyword)
+        /// <returns>Danh sách UnitOfMeasureDto</returns>
+        public List<UnitOfMeasureDto> Search(string keyword)
         {
             try
             {
@@ -149,8 +149,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy đơn vị tính theo trạng thái hoạt động
         /// </summary>
         /// <param name="isActive">Trạng thái hoạt động</param>
-        /// <returns>Danh sách UnitOfMeasure entities</returns>
-        public List<UnitOfMeasure> GetByStatus(bool isActive)
+        /// <returns>Danh sách UnitOfMeasureDto</returns>
+        public List<UnitOfMeasureDto> GetByStatus(bool isActive)
         {
             try
             {
@@ -162,24 +162,32 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
+        #endregion
+
+        #region ========== UPDATE OPERATIONS ==========
+
         /// <summary>
         /// Lưu hoặc cập nhật đơn vị tính
         /// </summary>
-        /// <param name="entity">UnitOfMeasure entity cần lưu</param>
-        public void SaveOrUpdate(UnitOfMeasure entity)
+        /// <param name="dto">UnitOfMeasureDto cần lưu</param>
+        public void SaveOrUpdate(UnitOfMeasureDto dto)
         {
             try
             {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity));
+                if (dto == null)
+                    throw new ArgumentNullException(nameof(dto));
 
-                GetDataAccess().SaveOrUpdate(entity);
+                GetDataAccess().SaveOrUpdate(dto);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Lỗi khi lưu đơn vị tính '{entity?.Code}': {ex.Message}", ex);
+                throw new Exception($"Lỗi khi lưu đơn vị tính '{dto?.Code}': {ex.Message}", ex);
             }
         }
+
+        #endregion
+
+        #region ========== DELETE OPERATIONS ==========
 
         /// <summary>
         /// Xóa đơn vị tính theo ID
@@ -207,17 +215,21 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                var entity = GetDataAccess().GetByCode(code);
-                if (entity == null)
+                var dto = GetDataAccess().GetByCode(code);
+                if (dto == null)
                     return false;
 
-                return GetDataAccess().DeleteUnitOfMeasure(entity.Id);
+                return GetDataAccess().DeleteUnitOfMeasure(dto.Id);
             }
             catch (Exception ex)
             {
                 throw new Exception($"Lỗi khi xóa đơn vị tính theo mã '{code}': {ex.Message}", ex);
             }
         }
+
+        #endregion
+
+        #region ========== VALIDATION & EXISTS CHECKS ==========
 
         /// <summary>
         /// Kiểm tra mã đơn vị có tồn tại không
@@ -272,6 +284,10 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
+        #endregion
+
+        #region ========== HELPER METHODS ==========
+
         /// <summary>
         /// Đếm số lượng đơn vị tính
         /// </summary>
@@ -313,12 +329,12 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                var entities = GetAll();
-                return entities.Select(entity => entity.Code)
-                              .Where(code => !string.IsNullOrWhiteSpace(code))
-                              .Distinct()
-                              .OrderBy(code => code)
-                              .ToList();
+                var dtos = GetAll();
+                return dtos.Select(dto => dto.Code)
+                          .Where(code => !string.IsNullOrWhiteSpace(code))
+                          .Distinct()
+                          .OrderBy(code => code)
+                          .ToList();
             }
             catch (Exception ex)
             {
@@ -334,12 +350,12 @@ namespace Bll.MasterData.ProductServiceBll
         {
             try
             {
-                var entities = GetAll();
-                return entities.Select(entity => entity.Name)
-                              .Where(name => !string.IsNullOrWhiteSpace(name))
-                              .Distinct()
-                              .OrderBy(name => name)
-                              .ToList();
+                var dtos = GetAll();
+                return dtos.Select(dto => dto.Name)
+                          .Where(name => !string.IsNullOrWhiteSpace(name))
+                          .Distinct()
+                          .OrderBy(name => name)
+                          .ToList();
             }
             catch (Exception ex)
             {

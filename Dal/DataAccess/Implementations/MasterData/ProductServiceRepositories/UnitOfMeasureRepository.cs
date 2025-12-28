@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -48,7 +50,7 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -58,27 +60,52 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
     {
         var context = new VnsErp2025DataContext(_connectionString);
 
-        // Configure eager loading cho navigation properties
-        var loadOptions = new DataLoadOptions();
-        loadOptions.LoadWith<UnitOfMeasure>(b => b.ProductVariants);
-        context.LoadOptions = loadOptions;
+        // Configure eager loading cho navigation properties (không cần vì dùng dictionary)
+        // var loadOptions = new DataLoadOptions();
+        // loadOptions.LoadWith<UnitOfMeasure>(b => b.ProductVariants);
+        // context.LoadOptions = loadOptions;
 
         return context;
     }
 
+    /// <summary>
+    /// Lấy dictionary chứa số lượng ProductVariant theo UnitId
+    /// </summary>
+    /// <param name="context">DataContext</param>
+    /// <param name="unitIds">Danh sách UnitId cần đếm</param>
+    /// <returns>Dictionary với key = UnitId, value = Count</returns>
+    private Dictionary<Guid, int> GetVariantCountDict(VnsErp2025DataContext context, List<Guid> unitIds)
+    {
+        if (unitIds == null || !unitIds.Any()) return new Dictionary<Guid, int>();
+
+        var counts = context.ProductVariants
+            .Where(pv => unitIds.Contains(pv.UnitId))
+            .GroupBy(pv => pv.UnitId)
+            .Select(g => new { UnitId = g.Key, Count = g.Count() })
+            .ToList();
+
+        return counts.ToDictionary(c => c.UnitId, c => c.Count);
+    }
+
     #endregion
 
-    #region Read
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy UnitOfMeasure theo Id.
     /// </summary>
-    public UnitOfMeasure GetById(Guid id)
+    public UnitOfMeasureDto GetById(Guid id)
     {
         try
         {
             using var context = CreateNewContext();
-            return context.UnitOfMeasures.FirstOrDefault(x => x.Id == id);
+            var entity = context.UnitOfMeasures.FirstOrDefault(x => x.Id == id);
+            if (entity == null) return null;
+
+            // Đếm số lượng ProductVariant
+            var variantCount = context.ProductVariants.Count(pv => pv.UnitId == id);
+
+            return entity.ToDto(variantCount);
         }
         catch (Exception ex)
         {
@@ -86,41 +113,21 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
         }
     }
 
-    protected UnitOfMeasure GetById(object id)
-    {
-        if (id is Guid guid) return GetById(guid);
-        return null;
-    }
-
     /// <summary>
     /// Lấy tất cả UnitOfMeasure.
     /// </summary>
-    public List<UnitOfMeasure> GetAll()
+    public List<UnitOfMeasureDto> GetAll()
     {
         try
         {
             using var context = CreateNewContext();
-            return context.UnitOfMeasures.OrderBy(x => x.Code).ToList();
-        }
-        catch (Exception ex)
-        {
-            throw new DataAccessException($"Lỗi khi lấy tất cả UnitOfMeasure: {ex.Message}", ex);
-        }
-    }
+            var entities = context.UnitOfMeasures.OrderBy(x => x.Code).ToList();
 
-    /// <summary>
-    /// Lấy tất cả UnitOfMeasure (Async).
-    /// </summary>
-    public async Task<List<UnitOfMeasure>> GetAllAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            return await Task.FromResult(
-                context.UnitOfMeasures
-                    .OrderBy(x => x.Code)
-                    .ToList()
-            );
+            // Tạo dictionary chứa số lượng ProductVariant
+            var unitIds = entities.Select(e => e.Id).ToList();
+            var variantCountDict = GetVariantCountDict(context, unitIds);
+
+            return entities.ToDtos(variantCountDict);
         }
         catch (Exception ex)
         {
@@ -131,13 +138,19 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
     /// <summary>
     /// Lấy UnitOfMeasure theo mã.
     /// </summary>
-    public UnitOfMeasure GetByCode(string code)
+    public UnitOfMeasureDto GetByCode(string code)
     {
         try
         {
             if (string.IsNullOrWhiteSpace(code)) return null;
             using var context = CreateNewContext();
-            return context.UnitOfMeasures.FirstOrDefault(x => x.Code == code.Trim());
+            var entity = context.UnitOfMeasures.FirstOrDefault(x => x.Code == code.Trim());
+            if (entity == null) return null;
+
+            // Đếm số lượng ProductVariant
+            var variantCount = context.ProductVariants.Count(pv => pv.UnitId == entity.Id);
+
+            return entity.ToDto(variantCount);
         }
         catch (Exception ex)
         {
@@ -148,13 +161,19 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
     /// <summary>
     /// Lấy UnitOfMeasure theo tên.
     /// </summary>
-    public UnitOfMeasure GetByName(string name)
+    public UnitOfMeasureDto GetByName(string name)
     {
         try
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
             using var context = CreateNewContext();
-            return context.UnitOfMeasures.FirstOrDefault(x => x.Name == name.Trim());
+            var entity = context.UnitOfMeasures.FirstOrDefault(x => x.Name == name.Trim());
+            if (entity == null) return null;
+
+            // Đếm số lượng ProductVariant
+            var variantCount = context.ProductVariants.Count(pv => pv.UnitId == entity.Id);
+
+            return entity.ToDto(variantCount);
         }
         catch (Exception ex)
         {
@@ -165,18 +184,25 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
     /// <summary>
     /// Tìm kiếm UnitOfMeasure theo từ khóa (Code/Name/Description).
     /// </summary>
-    public List<UnitOfMeasure> Search(string keyword)
+    public List<UnitOfMeasureDto> Search(string keyword)
     {
         try
         {
             if (string.IsNullOrWhiteSpace(keyword)) return GetAll();
             using var context = CreateNewContext();
             var lowerKeyword = keyword.ToLower();
-            return context.UnitOfMeasures
+            var entities = context.UnitOfMeasures
                 .Where(x => x.Code.ToLower().Contains(lowerKeyword) ||
                             x.Name.ToLower().Contains(lowerKeyword) ||
                             (x.Description != null && x.Description.ToLower().Contains(lowerKeyword)))
-                .OrderBy(x => x.Code).ToList();
+                .OrderBy(x => x.Code)
+                .ToList();
+
+            // Tạo dictionary chứa số lượng ProductVariant
+            var unitIds = entities.Select(e => e.Id).ToList();
+            var variantCountDict = GetVariantCountDict(context, unitIds);
+
+            return entities.ToDtos(variantCountDict);
         }
         catch (Exception ex)
         {
@@ -187,14 +213,21 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
     /// <summary>
     /// Lấy UnitOfMeasure theo trạng thái hoạt động.
     /// </summary>
-    public List<UnitOfMeasure> GetByStatus(bool isActive)
+    public List<UnitOfMeasureDto> GetByStatus(bool isActive)
     {
         try
         {
             using var context = CreateNewContext();
-            return context.UnitOfMeasures
+            var entities = context.UnitOfMeasures
                 .Where(x => x.IsActive == isActive)
-                .OrderBy(x => x.Code).ToList();
+                .OrderBy(x => x.Code)
+                .ToList();
+
+            // Tạo dictionary chứa số lượng ProductVariant
+            var unitIds = entities.Select(e => e.Id).ToList();
+            var variantCountDict = GetVariantCountDict(context, unitIds);
+
+            return entities.ToDtos(variantCountDict);
         }
         catch (Exception ex)
         {
@@ -204,45 +237,42 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
 
     #endregion
 
-    #region Create/Update
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Lưu hoặc cập nhật UnitOfMeasure.
     /// </summary>
-    public void SaveOrUpdate(UnitOfMeasure entity)
+    public void SaveOrUpdate(UnitOfMeasureDto dto)
     {
         try
         {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            if (dto == null) throw new ArgumentNullException(nameof(dto));
 
             using var context = CreateNewContext();
-            var existing = entity.Id != Guid.Empty ? context.UnitOfMeasures.FirstOrDefault(x => x.Id == entity.Id) : null;
+            var existing = dto.Id != Guid.Empty ? context.UnitOfMeasures.FirstOrDefault(x => x.Id == dto.Id) : null;
+
+            // Convert DTO to Entity
+            var entity = dto.ToEntity(existing);
 
             if (existing == null)
             {
+                // Tạo mới
                 if (entity.Id == Guid.Empty)
                     entity.Id = Guid.NewGuid();
                 context.UnitOfMeasures.InsertOnSubmit(entity);
-            }
-            else
-            {
-                existing.Code = entity.Code;
-                existing.Name = entity.Name;
-                existing.Description = entity.Description;
-                existing.IsActive = entity.IsActive;
             }
 
             context.SubmitChanges();
         }
         catch (Exception ex)
         {
-            throw new DataAccessException($"Lỗi khi lưu/cập nhật UnitOfMeasure '{entity?.Code}': {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lưu/cập nhật UnitOfMeasure '{dto?.Code}': {ex.Message}", ex);
         }
     }
 
     #endregion
 
-    #region Delete
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa UnitOfMeasure theo Id (kèm kiểm tra phụ thuộc).
@@ -269,17 +299,9 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
         }
     }
 
-    /// <summary>
-    /// Xóa UnitOfMeasure theo Id (Async).
-    /// </summary>
-    public async Task<bool> DeleteUnitOfMeasureAsync(Guid id)
-    {
-        return await Task.FromResult(DeleteUnitOfMeasure(id));
-    }
-
     #endregion
 
-    #region Validation
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra mã UnitOfMeasure có tồn tại không.
@@ -339,51 +361,7 @@ public class UnitOfMeasureRepository : IUnitOfMeasureRepository
 
     #endregion
 
-    #region Helper Methods
-
-    /// <summary>
-    /// Lấy danh sách mã UnitOfMeasure (unique) - Async.
-    /// </summary>
-    public async Task<List<object>> GetUniqueCodesAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var codes = context.UnitOfMeasures
-                .Where(x => !string.IsNullOrEmpty(x.Code))
-                .Select(x => x.Code)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
-            return await Task.FromResult(codes.Cast<object>().ToList());
-        }
-        catch (Exception ex)
-        {
-            throw new DataAccessException($"Lỗi khi lấy danh sách mã UnitOfMeasure unique: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách tên UnitOfMeasure (unique) - Async.
-    /// </summary>
-    public async Task<List<object>> GetUniqueNamesAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var names = context.UnitOfMeasures
-                .Where(x => !string.IsNullOrEmpty(x.Name))
-                .Select(x => x.Name)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
-            return await Task.FromResult(names.Cast<object>().ToList());
-        }
-        catch (Exception ex)
-        {
-            throw new DataAccessException($"Lỗi khi lấy danh sách tên UnitOfMeasure unique: {ex.Message}", ex);
-        }
-    }
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Đếm số lượng UnitOfMeasure.

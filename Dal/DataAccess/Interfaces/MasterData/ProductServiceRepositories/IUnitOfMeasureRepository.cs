@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.MasterData.ProductService;
 
 namespace Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 
@@ -11,69 +10,63 @@ namespace Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 /// </summary>
 public interface IUnitOfMeasureRepository
 {
-    #region Read Operations
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy UnitOfMeasure theo Id.
     /// </summary>
-    UnitOfMeasure GetById(Guid id);
+    UnitOfMeasureDto GetById(Guid id);
 
     /// <summary>
     /// Lấy tất cả UnitOfMeasure.
     /// </summary>
-    List<UnitOfMeasure> GetAll();
-
-    /// <summary>
-    /// Lấy tất cả UnitOfMeasure (Async).
-    /// </summary>
-    Task<List<UnitOfMeasure>> GetAllAsync();
+    List<UnitOfMeasureDto> GetAll();
 
     /// <summary>
     /// Lấy UnitOfMeasure theo mã.
     /// </summary>
-    UnitOfMeasure GetByCode(string code);
+    UnitOfMeasureDto GetByCode(string code);
 
     /// <summary>
     /// Lấy UnitOfMeasure theo tên.
     /// </summary>
-    UnitOfMeasure GetByName(string name);
+    UnitOfMeasureDto GetByName(string name);
 
     /// <summary>
     /// Tìm kiếm UnitOfMeasure theo từ khóa (Code/Name/Description).
     /// </summary>
-    List<UnitOfMeasure> Search(string keyword);
+    List<UnitOfMeasureDto> Search(string keyword);
 
     /// <summary>
     /// Lấy UnitOfMeasure theo trạng thái hoạt động.
     /// </summary>
-    List<UnitOfMeasure> GetByStatus(bool isActive);
+    List<UnitOfMeasureDto> GetByStatus(bool isActive);
 
     #endregion
 
-    #region Create/Update Operations
+    #region ========== CREATE OPERATIONS ==========
+
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Lưu hoặc cập nhật UnitOfMeasure.
     /// </summary>
-    void SaveOrUpdate(UnitOfMeasure entity);
+    void SaveOrUpdate(UnitOfMeasureDto dto);
 
     #endregion
 
-    #region Delete Operations
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa UnitOfMeasure theo Id (kèm kiểm tra phụ thuộc).
     /// </summary>
     bool DeleteUnitOfMeasure(Guid id);
 
-    /// <summary>
-    /// Xóa UnitOfMeasure theo Id (Async).
-    /// </summary>
-    Task<bool> DeleteUnitOfMeasureAsync(Guid id);
-
     #endregion
 
-    #region Validation Operations
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra mã UnitOfMeasure có tồn tại không.
@@ -92,17 +85,7 @@ public interface IUnitOfMeasureRepository
 
     #endregion
 
-    #region Helper Methods
-
-    /// <summary>
-    /// Lấy danh sách mã UnitOfMeasure (unique) - Async.
-    /// </summary>
-    Task<List<object>> GetUniqueCodesAsync();
-
-    /// <summary>
-    /// Lấy danh sách tên UnitOfMeasure (unique) - Async.
-    /// </summary>
-    Task<List<object>> GetUniqueNamesAsync();
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Đếm số lượng UnitOfMeasure.
