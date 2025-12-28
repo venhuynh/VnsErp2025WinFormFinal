@@ -128,6 +128,7 @@
     </Compile>
     <Compile Include="DtoConverter\CompanyBranchConverters.cs" />
     <Compile Include="DtoConverter\CompanyConverter.cs" />
+    <Compile Include="DtoConverter\DepartmentConverters.cs" />
     <Compile Include="Exceptions\ConnectionException.cs" />
     <Compile Include="Exceptions\DataAccessException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

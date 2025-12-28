@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.Company;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -76,7 +78,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// Lấy tất cả departments với thông tin chi nhánh
     /// </summary>
     /// <returns>Danh sách tất cả departments</returns>
-    public List<Department> GetAll()
+    public List<DepartmentDto> GetAll()
     {
         try
         {
@@ -87,8 +89,14 @@ public class DepartmentRepository : IDepartmentRepository
                 .OrderBy(d => d.DepartmentName)
                 .ToList();
 
-            _logger.Debug($"Đã lấy {departments.Count} departments");
-            return departments;
+            // Tạo dictionary để tính FullPath
+            var departmentDict = departments.ToDictionary(d => d.Id);
+
+            // Chuyển đổi sang DTO
+            var dtos = departments.Select(d => d.ToDto(departmentDict: departmentDict)).ToList();
+
+            _logger.Debug($"Đã lấy {dtos.Count} departments");
+            return dtos;
         }
         catch (SqlException sqlEx)
         {
@@ -110,7 +118,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// Lấy tất cả departments với thông tin chi nhánh (Async)
     /// </summary>
     /// <returns>Danh sách tất cả departments</returns>
-    public async Task<List<Department>> GetAllAsync()
+    public async Task<List<DepartmentDto>> GetAllAsync()
     {
         return await Task.Run(GetAll);
     }
@@ -119,8 +127,8 @@ public class DepartmentRepository : IDepartmentRepository
     /// Lấy department theo ID với thông tin chi nhánh (synchronous)
     /// </summary>
     /// <param name="id">ID của department</param>
-    /// <returns>Department hoặc null nếu không tìm thấy</returns>
-    public Department GetById(Guid id)
+    /// <returns>DepartmentDto hoặc null nếu không tìm thấy</returns>
+    public DepartmentDto GetById(Guid id)
     {
         try
         {
@@ -132,9 +140,10 @@ public class DepartmentRepository : IDepartmentRepository
             if (department != null)
             {
                 _logger.Debug($"Đã lấy department theo ID: {id} - {department.DepartmentName}");
+                return department.ToDto();
             }
             
-            return department;
+            return null;
         }
         catch (SqlException sqlEx)
         {
@@ -156,8 +165,8 @@ public class DepartmentRepository : IDepartmentRepository
     /// Lấy department theo ID với thông tin chi nhánh (async)
     /// </summary>
     /// <param name="id">ID của department</param>
-    /// <returns>Department hoặc null nếu không tìm thấy</returns>
-    public async Task<Department> GetByIdAsync(Guid id)
+    /// <returns>DepartmentDto hoặc null nếu không tìm thấy</returns>
+    public async Task<DepartmentDto> GetByIdAsync(Guid id)
     {
         return await Task.Run(() => GetById(id));
     }
@@ -165,26 +174,30 @@ public class DepartmentRepository : IDepartmentRepository
     /// <summary>
     /// Tạo mới department
     /// </summary>
-    /// <param name="department">Department cần tạo</param>
-    /// <returns>Department đã được tạo</returns>
-    public async Task<Department> CreateAsync(Department department)
+    /// <param name="department">DepartmentDto cần tạo</param>
+    /// <returns>DepartmentDto đã được tạo</returns>
+    public async Task<DepartmentDto> CreateAsync(DepartmentDto department)
     {
         try
         {
             if (department == null)
                 throw new ArgumentNullException(nameof(department));
 
+            // Chuyển đổi DTO sang Entity
+            var entity = department.ToEntity();
+
             // Set default values
-            if (department.Id == Guid.Empty)
+            if (entity.Id == Guid.Empty)
             {
-                department.Id = Guid.NewGuid();
+                entity.Id = Guid.NewGuid();
+                department.Id = entity.Id;
             }
 
             using var context = CreateNewContext();
-            context.Departments.InsertOnSubmit(department);
+            context.Departments.InsertOnSubmit(entity);
             await Task.Run(() => context.SubmitChanges());
             
-            _logger.Info($"Đã tạo mới department: {department.DepartmentCode} - {department.DepartmentName}");
+            _logger.Info($"Đã tạo mới department: {entity.DepartmentCode} - {entity.DepartmentName}");
             return department;
         }
         catch (Exception ex)
@@ -197,9 +210,9 @@ public class DepartmentRepository : IDepartmentRepository
     /// <summary>
     /// Cập nhật department (synchronous)
     /// </summary>
-    /// <param name="department">Department cần cập nhật</param>
-    /// <returns>Department đã được cập nhật</returns>
-    public Department UpdateDepartment(Department department)
+    /// <param name="department">DepartmentDto cần cập nhật</param>
+    /// <returns>DepartmentDto đã được cập nhật</returns>
+    public DepartmentDto UpdateDepartment(DepartmentDto department)
     {
         try
         {
@@ -214,19 +227,13 @@ public class DepartmentRepository : IDepartmentRepository
                 throw new DataAccessException($"Không tìm thấy department với ID {department.Id} để cập nhật");
             }
 
-            // Cập nhật các thuộc tính
-            existingDepartment.CompanyId = department.CompanyId;
-            existingDepartment.BranchId = department.BranchId;
-            existingDepartment.ParentId = department.ParentId;
-            existingDepartment.DepartmentCode = department.DepartmentCode;
-            existingDepartment.DepartmentName = department.DepartmentName;
-            existingDepartment.Description = department.Description;
-            existingDepartment.IsActive = department.IsActive;
+            // Sử dụng converter để cập nhật entity từ DTO
+            department.ToEntity(existingDepartment);
 
             context.SubmitChanges();
             
             _logger.Info($"Đã cập nhật department: {existingDepartment.DepartmentCode} - {existingDepartment.DepartmentName}");
-            return existingDepartment;
+            return department;
         }
         catch (SqlException sqlEx)
         {
@@ -247,9 +254,9 @@ public class DepartmentRepository : IDepartmentRepository
     /// <summary>
     /// Cập nhật department (async) - Sử dụng logic update riêng
     /// </summary>
-    /// <param name="department">Department cần cập nhật</param>
-    /// <returns>Department đã được cập nhật</returns>
-    public async Task<Department> UpdateDepartmentAsync(Department department)
+    /// <param name="department">DepartmentDto cần cập nhật</param>
+    /// <returns>DepartmentDto đã được cập nhật</returns>
+    public async Task<DepartmentDto> UpdateDepartmentAsync(DepartmentDto department)
     {
         try
         {
@@ -279,21 +286,15 @@ public class DepartmentRepository : IDepartmentRepository
                     }
                 }
                 
-                // Cập nhật các thuộc tính
-                existingDepartment.CompanyId = department.CompanyId;
-                existingDepartment.BranchId = department.BranchId;
-                existingDepartment.ParentId = department.ParentId;
-                existingDepartment.DepartmentCode = department.DepartmentCode;
-                existingDepartment.DepartmentName = department.DepartmentName;
-                existingDepartment.Description = department.Description;
-                existingDepartment.IsActive = department.IsActive;
+                // Sử dụng converter để cập nhật entity từ DTO
+                department.ToEntity(existingDepartment);
                 
                 await Task.Run(() => context.SubmitChanges());
                 
                 _logger.Info($"Đã cập nhật department (async): {existingDepartment.DepartmentCode} - {existingDepartment.DepartmentName}");
                 
-                // Trả về department đã được cập nhật
-                return existingDepartment;
+                // Trả về DTO đã được cập nhật
+                return department;
             }
             else
             {
@@ -428,7 +429,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// </summary>
     /// <param name="companyId">ID của company</param>
     /// <returns>Danh sách departments thuộc company</returns>
-    public List<Department> GetByCompanyId(Guid companyId)
+    public List<DepartmentDto> GetByCompanyId(Guid companyId)
     {
         try
         {
@@ -439,8 +440,14 @@ public class DepartmentRepository : IDepartmentRepository
                 .OrderBy(d => d.DepartmentName)
                 .ToList();
 
-            _logger.Debug($"Đã lấy {departments.Count} departments theo company ID: {companyId}");
-            return departments;
+            // Tạo dictionary để tính FullPath
+            var departmentDict = departments.ToDictionary(d => d.Id);
+
+            // Chuyển đổi sang DTO
+            var dtos = departments.Select(d => d.ToDto(departmentDict: departmentDict)).ToList();
+
+            _logger.Debug($"Đã lấy {dtos.Count} departments theo company ID: {companyId}");
+            return dtos;
         }
         catch (SqlException sqlEx)
         {
@@ -463,7 +470,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// </summary>
     /// <param name="companyId">ID của company</param>
     /// <returns>Danh sách departments thuộc company</returns>
-    public async Task<List<Department>> GetByCompanyIdAsync(Guid companyId)
+    public async Task<List<DepartmentDto>> GetByCompanyIdAsync(Guid companyId)
     {
         return await Task.Run(() => GetByCompanyId(companyId));
     }
@@ -473,7 +480,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// </summary>
     /// <param name="branchId">ID của branch</param>
     /// <returns>Danh sách departments thuộc branch</returns>
-    public List<Department> GetByBranchId(Guid branchId)
+    public List<DepartmentDto> GetByBranchId(Guid branchId)
     {
         try
         {
@@ -484,8 +491,14 @@ public class DepartmentRepository : IDepartmentRepository
                 .OrderBy(d => d.DepartmentName)
                 .ToList();
 
-            _logger.Debug($"Đã lấy {departments.Count} departments theo branch ID: {branchId}");
-            return departments;
+            // Tạo dictionary để tính FullPath
+            var departmentDict = departments.ToDictionary(d => d.Id);
+
+            // Chuyển đổi sang DTO
+            var dtos = departments.Select(d => d.ToDto(departmentDict: departmentDict)).ToList();
+
+            _logger.Debug($"Đã lấy {dtos.Count} departments theo branch ID: {branchId}");
+            return dtos;
         }
         catch (SqlException sqlEx)
         {
@@ -508,7 +521,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// </summary>
     /// <param name="branchId">ID của branch</param>
     /// <returns>Danh sách departments thuộc branch</returns>
-    public async Task<List<Department>> GetByBranchIdAsync(Guid branchId)
+    public async Task<List<DepartmentDto>> GetByBranchIdAsync(Guid branchId)
     {
         return await Task.Run(() => GetByBranchId(branchId));
     }
@@ -518,7 +531,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// </summary>
     /// <param name="parentId">ID của parent department</param>
     /// <returns>Danh sách departments con</returns>
-    public List<Department> GetByParentId(Guid parentId)
+    public List<DepartmentDto> GetByParentId(Guid parentId)
     {
         try
         {
@@ -529,8 +542,14 @@ public class DepartmentRepository : IDepartmentRepository
                 .OrderBy(d => d.DepartmentName)
                 .ToList();
 
-            _logger.Debug($"Đã lấy {departments.Count} departments con theo parent ID: {parentId}");
-            return departments;
+            // Tạo dictionary để tính FullPath
+            var departmentDict = departments.ToDictionary(d => d.Id);
+
+            // Chuyển đổi sang DTO
+            var dtos = departments.Select(d => d.ToDto(departmentDict: departmentDict)).ToList();
+
+            _logger.Debug($"Đã lấy {dtos.Count} departments con theo parent ID: {parentId}");
+            return dtos;
         }
         catch (SqlException sqlEx)
         {
@@ -553,7 +572,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// </summary>
     /// <param name="parentId">ID của parent department</param>
     /// <returns>Danh sách departments con</returns>
-    public async Task<List<Department>> GetByParentIdAsync(Guid parentId)
+    public async Task<List<DepartmentDto>> GetByParentIdAsync(Guid parentId)
     {
         return await Task.Run(() => GetByParentId(parentId));
     }
@@ -562,7 +581,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// Lấy root departments (không có parent) với thông tin chi nhánh
     /// </summary>
     /// <returns>Danh sách root departments</returns>
-    public List<Department> GetRootDepartments()
+    public List<DepartmentDto> GetRootDepartments()
     {
         try
         {
@@ -573,8 +592,14 @@ public class DepartmentRepository : IDepartmentRepository
                 .OrderBy(d => d.DepartmentName)
                 .ToList();
 
-            _logger.Debug($"Đã lấy {departments.Count} root departments");
-            return departments;
+            // Tạo dictionary để tính FullPath
+            var departmentDict = departments.ToDictionary(d => d.Id);
+
+            // Chuyển đổi sang DTO
+            var dtos = departments.Select(d => d.ToDto(departmentDict: departmentDict)).ToList();
+
+            _logger.Debug($"Đã lấy {dtos.Count} root departments");
+            return dtos;
         }
         catch (SqlException sqlEx)
         {
@@ -596,7 +621,7 @@ public class DepartmentRepository : IDepartmentRepository
     /// Lấy root departments (không có parent) với thông tin chi nhánh (Async)
     /// </summary>
     /// <returns>Danh sách root departments</returns>
-    public async Task<List<Department>> GetRootDepartmentsAsync()
+    public async Task<List<DepartmentDto>> GetRootDepartmentsAsync()
     {
         return await Task.Run(() => GetRootDepartments());
     }

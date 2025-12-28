@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
-using Dal.DataContext;
+using DTO.MasterData.Company;
 
 namespace Bll.MasterData.CompanyBll
 {
@@ -74,8 +74,8 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Lấy tất cả departments (synchronous)
         /// </summary>
-        /// <returns>Danh sách Department</returns>
-        public List<Department> GetAll()
+        /// <returns>Danh sách DepartmentDto</returns>
+        public List<DepartmentDto> GetAll()
         {
             try
             {
@@ -91,8 +91,8 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Lấy tất cả departments (async)
         /// </summary>
-        /// <returns>Danh sách Department</returns>
-        public async Task<List<Department>> GetAllAsync()
+        /// <returns>Danh sách DepartmentDto</returns>
+        public async Task<List<DepartmentDto>> GetAllAsync()
         {
             try
             {
@@ -109,8 +109,8 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy department theo ID (synchronous)
         /// </summary>
         /// <param name="id">ID của department</param>
-        /// <returns>Department hoặc null nếu không tìm thấy</returns>
-        public Department GetById(Guid id)
+        /// <returns>DepartmentDto hoặc null nếu không tìm thấy</returns>
+        public DepartmentDto GetById(Guid id)
         {
             try
             {
@@ -126,8 +126,8 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy department theo ID (async)
         /// </summary>
         /// <param name="id">ID của department</param>
-        /// <returns>Department hoặc null nếu không tìm thấy</returns>
-        public async Task<Department> GetByIdAsync(Guid id)
+        /// <returns>DepartmentDto hoặc null nếu không tìm thấy</returns>
+        public async Task<DepartmentDto> GetByIdAsync(Guid id)
         {
             try
             {
@@ -142,9 +142,9 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Tạo mới department
         /// </summary>
-        /// <param name="department">Department cần tạo</param>
-        /// <returns>Department đã được tạo</returns>
-        public async Task<Department> CreateAsync(Department department)
+        /// <param name="department">DepartmentDto cần tạo</param>
+        /// <returns>DepartmentDto đã được tạo</returns>
+        public async Task<DepartmentDto> CreateAsync(DepartmentDto department)
         {
             try
             {
@@ -162,9 +162,9 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Cập nhật department (synchronous)
         /// </summary>
-        /// <param name="department">Department cần cập nhật</param>
-        /// <returns>Department đã được cập nhật</returns>
-        public Department Update(Department department)
+        /// <param name="department">DepartmentDto cần cập nhật</param>
+        /// <returns>DepartmentDto đã được cập nhật</returns>
+        public DepartmentDto Update(DepartmentDto department)
         {
             try
             {
@@ -179,9 +179,9 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Cập nhật department (async)
         /// </summary>
-        /// <param name="department">Department cần cập nhật</param>
-        /// <returns>Department đã được cập nhật</returns>
-        public async Task<Department> UpdateAsync(Department department)
+        /// <param name="department">DepartmentDto cần cập nhật</param>
+        /// <returns>DepartmentDto đã được cập nhật</returns>
+        public async Task<DepartmentDto> UpdateAsync(DepartmentDto department)
         {
             try
             {
@@ -261,9 +261,9 @@ namespace Bll.MasterData.CompanyBll
         /// <summary>
         /// Validate department trước khi lưu
         /// </summary>
-        /// <param name="department">Department cần validate</param>
+        /// <param name="department">DepartmentDto cần validate</param>
         /// <param name="excludeId">ID cần loại trừ (cho update)</param>
-        private async Task ValidateDepartmentAsync(Department department, Guid? excludeId = null)
+        private async Task ValidateDepartmentAsync(DepartmentDto department, Guid? excludeId = null)
         {
             if (department == null)
                 throw new ArgumentException("Department không được null");
