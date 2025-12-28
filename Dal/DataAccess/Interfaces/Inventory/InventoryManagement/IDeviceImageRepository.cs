@@ -9,7 +9,7 @@ namespace Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 /// </summary>
 public interface IDeviceImageRepository
 {
-    #region Read Operations
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy tất cả hình ảnh
@@ -32,13 +32,6 @@ public interface IDeviceImageRepository
     DeviceImage GetById(Guid imageId);
 
     /// <summary>
-    /// Lấy dữ liệu hình ảnh (byte array) theo imageId
-    /// </summary>
-    /// <param name="imageId">Id của DeviceImage</param>
-    /// <returns>Byte array của hình ảnh hoặc null</returns>
-    byte[] GetImageData(Guid imageId);
-
-    /// <summary>
     /// Lấy hình ảnh chính (primary) của Device
     /// </summary>
     /// <param name="deviceId">Id của Device</param>
@@ -54,7 +47,7 @@ public interface IDeviceImageRepository
 
     #endregion
 
-    #region Create/Update Operations
+    #region ========== CREATE/UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Lưu hoặc cập nhật DeviceImage
@@ -62,9 +55,15 @@ public interface IDeviceImageRepository
     /// <param name="deviceImage">DeviceImage cần lưu hoặc cập nhật</param>
     void SaveOrUpdate(DeviceImage deviceImage);
 
+    /// <summary>
+    /// Đặt hình ảnh làm hình chính cho Device
+    /// </summary>
+    /// <param name="imageId">Id của DeviceImage cần đặt làm chính</param>
+    void SetAsPrimary(Guid imageId);
+
     #endregion
 
-    #region Delete Operations
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa DeviceImage (soft delete - đánh dấu IsActive = false nếu có, hoặc hard delete)
@@ -79,22 +78,4 @@ public interface IDeviceImageRepository
     void DeletePermanent(Guid imageId);
 
     #endregion
-
-    #region Utility Operations
-
-    /// <summary>
-    /// Kiểm tra Device có hình ảnh chính hay chưa
-    /// </summary>
-    /// <param name="deviceId">Id của Device</param>
-    /// <returns>True nếu có hình ảnh chính</returns>
-    bool HasPrimaryImage(Guid deviceId);
-
-    /// <summary>
-    /// Đặt hình ảnh làm hình chính cho Device
-    /// </summary>
-    /// <param name="imageId">Id của DeviceImage cần đặt làm chính</param>
-    void SetAsPrimary(Guid imageId);
-
-    #endregion
 }
-

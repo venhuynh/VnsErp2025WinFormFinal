@@ -66,7 +66,7 @@ public class DeviceImageRepository : IDeviceImageRepository
 
     #endregion
 
-    #region Public Methods
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy tất cả hình ảnh
@@ -154,39 +154,6 @@ public class DeviceImageRepository : IDeviceImageRepository
     }
 
     /// <summary>
-    /// Lấy ImageData của một hình ảnh cụ thể (lazy loading)
-    /// </summary>
-    /// <param name="imageId">ID hình ảnh</param>
-    /// <returns>ImageData binary</returns>
-    public byte[] GetImageData(Guid imageId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var imageData = context.DeviceImages
-                .Where(x => x.Id == imageId)
-                .Select(x => x.ImageData != null ? x.ImageData.ToArray() : null)
-                .FirstOrDefault();
-            
-            if (imageData != null)
-            {
-                _logger.Debug($"Đã lấy ImageData cho hình ảnh: {imageId} ({imageData.Length} bytes)");
-            }
-            else
-            {
-                _logger.Debug($"Không tìm thấy ImageData cho hình ảnh: {imageId}");
-            }
-            
-            return imageData;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy ImageData cho hình ảnh '{imageId}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy ImageData cho hình ảnh '{imageId}': {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
     /// Lấy hình ảnh chính của thiết bị
     /// </summary>
     /// <param name="deviceId">ID thiết bị</param>
@@ -220,6 +187,45 @@ public class DeviceImageRepository : IDeviceImageRepository
             throw new DataAccessException($"Lỗi khi lấy hình ảnh chính cho thiết bị '{deviceId}': {ex.Message}", ex);
         }
     }
+
+    /// <summary>
+    /// Tìm kiếm hình ảnh theo danh sách DeviceId
+    /// </summary>
+    /// <param name="deviceIds">Danh sách ID thiết bị</param>
+    /// <returns>Danh sách hình ảnh phù hợp</returns>
+    public List<DeviceImage> SearchByDeviceIds(List<Guid> deviceIds)
+    {
+        try
+        {
+            if (deviceIds == null || !deviceIds.Any())
+            {
+                _logger.Debug("SearchByDeviceIds: Danh sách deviceIds rỗng");
+                return new List<DeviceImage>();
+            }
+
+            using var context = CreateNewContext();
+            
+            // Load entities trực tiếp từ database
+            var entities = context.DeviceImages
+                .Where(x => deviceIds.Contains(x.DeviceId))
+                .OrderBy(x => x.DeviceId)
+                .ThenBy(x => x.DisplayOrder)
+                .ThenBy(x => x.CreateDate)
+                .ToList();
+            
+            _logger.Debug($"Đã tìm kiếm {entities.Count} hình ảnh cho {deviceIds.Count} thiết bị");
+            return entities;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi tìm kiếm hình ảnh theo thiết bị: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi tìm kiếm hình ảnh theo thiết bị: {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== CREATE/UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Lưu hoặc cập nhật hình ảnh
@@ -293,6 +299,52 @@ public class DeviceImageRepository : IDeviceImageRepository
     }
 
     /// <summary>
+    /// Đặt hình ảnh làm hình ảnh chính
+    /// </summary>
+    /// <param name="imageId">ID hình ảnh</param>
+    public void SetAsPrimary(Guid imageId)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var image = context.DeviceImages.FirstOrDefault(x => x.Id == imageId);
+            if (image != null)
+            {
+                // Bỏ IsPrimary của tất cả hình ảnh khác của cùng thiết bị
+                var otherImages = context.DeviceImages
+                    .Where(x => x.DeviceId == image.DeviceId && x.Id != imageId)
+                    .ToList();
+                
+                foreach (var otherImage in otherImages)
+                {
+                    otherImage.IsPrimary = false;
+                }
+                
+                // Đặt hình ảnh này làm chính
+                image.IsPrimary = true;
+                image.ModifiedDate = DateTime.Now;
+                
+                context.SubmitChanges();
+                
+                _logger.Info($"Đã đánh dấu hình ảnh làm chính: {imageId} - {image.FileName ?? image.RelativePath ?? "N/A"}");
+            }
+            else
+            {
+                _logger.Warning($"Không tìm thấy hình ảnh để đặt làm chính: {imageId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi đặt hình ảnh làm chính '{imageId}': {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi đặt hình ảnh làm chính '{imageId}': {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
+
+    /// <summary>
     /// Xóa hình ảnh (soft delete nếu có IsActive, hoặc hard delete)
     /// </summary>
     /// <param name="imageId">ID hình ảnh</param>
@@ -357,106 +409,6 @@ public class DeviceImageRepository : IDeviceImageRepository
         {
             _logger.Error($"Lỗi khi xóa vĩnh viễn hình ảnh '{imageId}': {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi xóa vĩnh viễn hình ảnh '{imageId}': {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Kiểm tra xem thiết bị có hình ảnh chính chưa
-    /// </summary>
-    /// <param name="deviceId">ID thiết bị</param>
-    /// <returns>True nếu đã có hình ảnh chính</returns>
-    public bool HasPrimaryImage(Guid deviceId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var result = context.DeviceImages
-                .Any(x => x.DeviceId == deviceId && x.IsPrimary == true);
-            
-            _logger.Debug($"HasPrimaryImage check cho deviceId {deviceId}: {result}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi kiểm tra hình ảnh chính cho thiết bị '{deviceId}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi kiểm tra hình ảnh chính cho thiết bị '{deviceId}': {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Đặt hình ảnh làm hình ảnh chính
-    /// </summary>
-    /// <param name="imageId">ID hình ảnh</param>
-    public void SetAsPrimary(Guid imageId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var image = context.DeviceImages.FirstOrDefault(x => x.Id == imageId);
-            if (image != null)
-            {
-                // Bỏ IsPrimary của tất cả hình ảnh khác của cùng thiết bị
-                var otherImages = context.DeviceImages
-                    .Where(x => x.DeviceId == image.DeviceId && x.Id != imageId)
-                    .ToList();
-                
-                foreach (var otherImage in otherImages)
-                {
-                    otherImage.IsPrimary = false;
-                }
-                
-                // Đặt hình ảnh này làm chính
-                image.IsPrimary = true;
-                image.ModifiedDate = DateTime.Now;
-                
-                context.SubmitChanges();
-                
-                _logger.Info($"Đã đánh dấu hình ảnh làm chính: {imageId} - {image.FileName ?? image.RelativePath ?? "N/A"}");
-            }
-            else
-            {
-                _logger.Warning($"Không tìm thấy hình ảnh để đặt làm chính: {imageId}");
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi đặt hình ảnh làm chính '{imageId}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi đặt hình ảnh làm chính '{imageId}': {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Tìm kiếm hình ảnh theo danh sách DeviceId
-    /// </summary>
-    /// <param name="deviceIds">Danh sách ID thiết bị</param>
-    /// <returns>Danh sách hình ảnh phù hợp</returns>
-    public List<DeviceImage> SearchByDeviceIds(List<Guid> deviceIds)
-    {
-        try
-        {
-            if (deviceIds == null || !deviceIds.Any())
-            {
-                _logger.Debug("SearchByDeviceIds: Danh sách deviceIds rỗng");
-                return new List<DeviceImage>();
-            }
-
-            using var context = CreateNewContext();
-            
-            // Load entities trực tiếp từ database
-            var entities = context.DeviceImages
-                .Where(x => deviceIds.Contains(x.DeviceId))
-                .OrderBy(x => x.DeviceId)
-                .ThenBy(x => x.DisplayOrder)
-                .ThenBy(x => x.CreateDate)
-                .ToList();
-            
-            _logger.Debug($"Đã tìm kiếm {entities.Count} hình ảnh cho {deviceIds.Count} thiết bị");
-            return entities;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi tìm kiếm hình ảnh theo thiết bị: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi tìm kiếm hình ảnh theo thiết bị: {ex.Message}", ex);
         }
     }
 

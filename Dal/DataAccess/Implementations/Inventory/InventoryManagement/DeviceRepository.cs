@@ -1,5 +1,7 @@
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
+using Dal.DtoConverter;
+using DTO.DeviceAssetManagement;
 using Logger;
 using Logger.Configuration;
 using System;
@@ -54,124 +56,99 @@ public class DeviceRepository : IDeviceRepository
 
         // Configure eager loading cho navigation properties
         var loadOptions = new DataLoadOptions();
-        loadOptions.LoadWith<StockInOutDetail>(d => d.StockInOutMaster);
-        loadOptions.LoadWith<StockInOutMaster>(m => m.CompanyBranch);
-        loadOptions.LoadWith<StockInOutMaster>(m => m.BusinessPartnerSite);
-        loadOptions.LoadWith<BusinessPartnerSite>(s => s.BusinessPartner);
-        loadOptions.LoadWith<StockInOutDetail>(d => d.ProductVariant);
+        // Load ProductVariant và các navigation properties liên quan
+        loadOptions.LoadWith<Device>(d => d.ProductVariant);
         loadOptions.LoadWith<ProductVariant>(v => v.ProductService);
         loadOptions.LoadWith<ProductVariant>(v => v.UnitOfMeasure);
-        loadOptions.LoadWith<Device>(d => d.ProductVariant);
+        // Load Warranties cho Device
         loadOptions.LoadWith<Device>(d => d.Warranties);
         context.LoadOptions = loadOptions;
 
         return context;
     }
 
+    /// <summary>
+    /// Lấy dictionary thông tin ProductVariant cho danh sách Device
+    /// </summary>
+    private Dictionary<Guid, (string ProductVariantName, string ProductVariantCode, string UnitName)> GetProductVariantDict(VnsErp2025DataContext context, IEnumerable<Device> devices)
+    {
+        var productVariantIds = devices
+            .Where(d => d.ProductVariantId != Guid.Empty)
+            .Select(d => d.ProductVariantId)
+            .Distinct()
+            .ToList();
+
+        if (!productVariantIds.Any())
+            return new Dictionary<Guid, (string, string, string)>();
+
+        var productVariants = context.ProductVariants
+            .Where(pv => productVariantIds.Contains(pv.Id))
+            .Select(pv => new
+            {
+                pv.Id,
+                pv.VariantFullName,
+                pv.VariantCode,
+                UnitName = pv.UnitOfMeasure != null ? pv.UnitOfMeasure.Name : null
+            })
+            .ToList();
+
+        return productVariants.ToDictionary(
+            pv => pv.Id,
+            pv => (pv.VariantFullName, pv.VariantCode, pv.UnitName)
+        );
+    }
+
+    /// <summary>
+    /// Lấy dictionary thông tin Warranty cho danh sách Device
+    /// </summary>
+    private Dictionary<Guid, (DateTime? WarrantyFrom, DateTime? WarrantyUntil, int? WarrantyType)> GetWarrantyDict(VnsErp2025DataContext context, IEnumerable<Device> devices)
+    {
+        var deviceIds = devices.Select(d => d.Id).Distinct().ToList();
+
+        if (!deviceIds.Any())
+            return new Dictionary<Guid, (DateTime?, DateTime?, int?)>();
+
+        var warranties = context.Warranties
+            .Where(w => deviceIds.Contains(w.DeviceId) && w.IsActive)
+            .GroupBy(w => w.DeviceId)
+            .Select(g => new
+            {
+                DeviceId = g.Key,
+                LatestWarranty = g.OrderByDescending(w => w.CreatedDate).FirstOrDefault()
+            })
+            .ToList();
+
+        return warranties
+            .Where(w => w.LatestWarranty != null)
+            .ToDictionary(
+                w => w.DeviceId,
+                w => (w.LatestWarranty.WarrantyFrom, w.LatestWarranty.WarrantyUntil, (int?)w.LatestWarranty.WarrantyType)
+            );
+    }
+
     #endregion
 
-    #region Query Operations
-
-    /// <summary>
-    /// Lấy danh sách Device theo StockInOutMasterId
-    /// </summary>
-    /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
-    /// <returns>Danh sách Device entities</returns>
-    public List<Device> GetByStockInOutMasterId(Guid stockInOutMasterId)
-    {
-        using var context = CreateNewContext();
-        try
-        {
-            _logger.Debug("GetByStockInOutMasterId: Lấy danh sách thiết bị, StockInOutMasterId={0}", stockInOutMasterId);
-
-            var devices = (from d in context.Devices
-                          join detail in context.StockInOutDetails on d.StockInOutDetailId equals detail.Id
-                          where detail.StockInOutMasterId == stockInOutMasterId
-                          select d).ToList();
-
-            _logger.Info("GetByStockInOutMasterId: Lấy được {0} thiết bị", devices.Count);
-            return devices;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"GetByStockInOutMasterId: Lỗi lấy danh sách thiết bị: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Lấy Device theo ID
-    /// </summary>
-    /// <param name="id">ID của Device</param>
-    /// <returns>Device entity hoặc null</returns>
-    public Device GetById(Guid id)
-    {
-        using var context = CreateNewContext();
-        try
-        {
-            _logger.Debug("GetById: Lấy thiết bị, Id={0}", id);
-
-            var device = context.Devices.FirstOrDefault(d => d.Id == id);
-
-            if (device == null)
-            {
-                _logger.Warning("GetById: Không tìm thấy thiết bị, Id={0}", id);
-            }
-            else
-            {
-                _logger.Info("GetById: Lấy thiết bị thành công, Id={0}", id);
-            }
-
-            return device;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"GetById: Lỗi lấy thiết bị: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách Device theo StockInOutDetailId
-    /// </summary>
-    /// <param name="stockInOutDetailId">ID chi tiết phiếu nhập/xuất kho</param>
-    /// <returns>Danh sách Device entities</returns>
-    public List<Device> GetByStockInOutDetailId(Guid stockInOutDetailId)
-    {
-        using var context = CreateNewContext();
-        try
-        {
-            _logger.Debug("GetByStockInOutDetailId: Lấy danh sách thiết bị, StockInOutDetailId={0}", stockInOutDetailId);
-
-            var devices = context.Devices
-                .Where(d => d.StockInOutDetailId.HasValue && d.StockInOutDetailId.Value == stockInOutDetailId)
-                .ToList();
-
-            _logger.Info("GetByStockInOutDetailId: Lấy được {0} thiết bị", devices.Count);
-            return devices;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"GetByStockInOutDetailId: Lỗi lấy danh sách thiết bị: {ex.Message}", ex);
-            throw;
-        }
-    }
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy tất cả Device
     /// </summary>
-    /// <returns>Danh sách tất cả Device entities</returns>
-    public List<Device> GetAll()
+    /// <returns>Danh sách tất cả DeviceDto</returns>
+    public List<DeviceDto> GetAll()
     {
         using var context = CreateNewContext();
         try
         {
             _logger.Debug("GetAll: Lấy tất cả thiết bị");
 
-            var devices = context.Devices.ToList();
+            var entities = context.Devices.ToList();
 
-            _logger.Info("GetAll: Lấy được {0} thiết bị", devices.Count);
-            return devices;
+            // Fetch related data trước khi convert để tránh DataContext disposed errors
+            var productVariantDict = GetProductVariantDict(context, entities);
+            var warrantyDict = GetWarrantyDict(context, entities);
+
+            _logger.Info("GetAll: Lấy được {0} thiết bị", entities.Count);
+            return entities.ToDtoList(productVariantDict, warrantyDict);
         }
         catch (Exception ex)
         {
@@ -181,11 +158,134 @@ public class DeviceRepository : IDeviceRepository
     }
 
     /// <summary>
+    /// Lấy Device theo ID
+    /// </summary>
+    /// <param name="id">ID của Device</param>
+    /// <returns>DeviceDto hoặc null</returns>
+    public DeviceDto GetById(Guid id)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetById: Lấy thiết bị, Id={0}", id);
+
+            var entity = context.Devices.FirstOrDefault(d => d.Id == id);
+
+            if (entity == null)
+            {
+                _logger.Warning("GetById: Không tìm thấy thiết bị, Id={0}", id);
+                return null;
+            }
+
+            // Fetch related data trước khi convert để tránh DataContext disposed errors
+            string productVariantName = null;
+            string productVariantCode = null;
+            string unitName = null;
+            if (entity.ProductVariantId != Guid.Empty)
+            {
+                var productVariant = context.ProductVariants.FirstOrDefault(pv => pv.Id == entity.ProductVariantId);
+                if (productVariant != null)
+                {
+                    productVariantName = productVariant.VariantFullName;
+                    productVariantCode = productVariant.VariantCode;
+                    if (productVariant.UnitOfMeasure != null)
+                    {
+                        unitName = productVariant.UnitOfMeasure.Name;
+                    }
+                }
+            }
+
+            DateTime? warrantyFrom = null;
+            DateTime? warrantyUntil = null;
+            int? warrantyType = null;
+            var latestWarranty = context.Warranties
+                .Where(w => w.DeviceId == entity.Id && w.IsActive)
+                .OrderByDescending(w => w.CreatedDate)
+                .FirstOrDefault();
+            if (latestWarranty != null)
+            {
+                warrantyFrom = latestWarranty.WarrantyFrom;
+                warrantyUntil = latestWarranty.WarrantyUntil;
+                warrantyType = latestWarranty.WarrantyType;
+            }
+
+            _logger.Info("GetById: Lấy thiết bị thành công, Id={0}", id);
+            return entity.ToDto(productVariantName, productVariantCode, unitName, warrantyFrom, warrantyUntil, warrantyType);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetById: Lỗi lấy thiết bị: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách Device theo StockInOutMasterId
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+    /// <returns>Danh sách DeviceDto</returns>
+    public List<DeviceDto> GetByStockInOutMasterId(Guid stockInOutMasterId)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetByStockInOutMasterId: Lấy danh sách thiết bị, StockInOutMasterId={0}", stockInOutMasterId);
+
+            var entities = (from d in context.Devices
+                          join detail in context.StockInOutDetails on d.StockInOutDetailId equals detail.Id
+                          where detail.StockInOutMasterId == stockInOutMasterId
+                          select d).ToList();
+
+            // Fetch related data trước khi convert để tránh DataContext disposed errors
+            var productVariantDict = GetProductVariantDict(context, entities);
+            var warrantyDict = GetWarrantyDict(context, entities);
+
+            _logger.Info("GetByStockInOutMasterId: Lấy được {0} thiết bị", entities.Count);
+            return entities.ToDtoList(productVariantDict, warrantyDict);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetByStockInOutMasterId: Lỗi lấy danh sách thiết bị: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách Device theo StockInOutDetailId
+    /// </summary>
+    /// <param name="stockInOutDetailId">ID chi tiết phiếu nhập/xuất kho</param>
+    /// <returns>Danh sách DeviceDto</returns>
+    public List<DeviceDto> GetByStockInOutDetailId(Guid stockInOutDetailId)
+    {
+        using var context = CreateNewContext();
+        try
+        {
+            _logger.Debug("GetByStockInOutDetailId: Lấy danh sách thiết bị, StockInOutDetailId={0}", stockInOutDetailId);
+
+            var entities = context.Devices
+                .Where(d => d.StockInOutDetailId.HasValue && d.StockInOutDetailId.Value == stockInOutDetailId)
+                .ToList();
+
+            // Fetch related data trước khi convert để tránh DataContext disposed errors
+            var productVariantDict = GetProductVariantDict(context, entities);
+            var warrantyDict = GetWarrantyDict(context, entities);
+
+            _logger.Info("GetByStockInOutDetailId: Lấy được {0} thiết bị", entities.Count);
+            return entities.ToDtoList(productVariantDict, warrantyDict);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetByStockInOutDetailId: Lỗi lấy danh sách thiết bị: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Tìm Device theo mã BarCode (SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey)
     /// </summary>
     /// <param name="barCode">Mã BarCode cần tìm</param>
-    /// <returns>Device entity nếu tìm thấy, null nếu không tìm thấy</returns>
-    public Device FindByBarCode(string barCode)
+    /// <returns>DeviceDto nếu tìm thấy, null nếu không tìm thấy</returns>
+    public DeviceDto FindByBarCode(string barCode)
     {
         using var context = CreateNewContext();
         try
@@ -202,7 +302,7 @@ public class DeviceRepository : IDeviceRepository
 
             // Tìm Device theo SerialNumber, IMEI, MACAddress, AssetTag, hoặc LicenseKey
             // Sử dụng ToLower() để so sánh không phân biệt hoa thường (LINQ to SQL hỗ trợ)
-            var device = context.Devices.FirstOrDefault(d =>
+            var entity = context.Devices.FirstOrDefault(d =>
                 (d.SerialNumber != null && d.SerialNumber.Trim().ToLower() == trimmedBarCode) ||
                 (d.IMEI != null && d.IMEI.Trim().ToLower() == trimmedBarCode) ||
                 (d.MACAddress != null && d.MACAddress.Trim().ToLower() == trimmedBarCode) ||
@@ -210,16 +310,46 @@ public class DeviceRepository : IDeviceRepository
                 (d.LicenseKey != null && d.LicenseKey.Trim().ToLower() == trimmedBarCode)
             );
 
-            if (device == null)
+            if (entity == null)
             {
                 _logger.Warning("FindByBarCode: Không tìm thấy thiết bị với mã vạch, BarCode={0}", barCode);
-            }
-            else
-            {
-                _logger.Info("FindByBarCode: Tìm thấy thiết bị, DeviceId={0}, BarCode={1}", device.Id, barCode);
+                return null;
             }
 
-            return device;
+            // Fetch related data trước khi convert để tránh DataContext disposed errors
+            string productVariantName = null;
+            string productVariantCode = null;
+            string unitName = null;
+            if (entity.ProductVariantId != Guid.Empty)
+            {
+                var productVariant = context.ProductVariants.FirstOrDefault(pv => pv.Id == entity.ProductVariantId);
+                if (productVariant != null)
+                {
+                    productVariantName = productVariant.VariantFullName;
+                    productVariantCode = productVariant.VariantCode;
+                    if (productVariant.UnitOfMeasure != null)
+                    {
+                        unitName = productVariant.UnitOfMeasure.Name;
+                    }
+                }
+            }
+
+            DateTime? warrantyFrom = null;
+            DateTime? warrantyUntil = null;
+            int? warrantyType = null;
+            var latestWarranty = context.Warranties
+                .Where(w => w.DeviceId == entity.Id && w.IsActive)
+                .OrderByDescending(w => w.CreatedDate)
+                .FirstOrDefault();
+            if (latestWarranty != null)
+            {
+                warrantyFrom = latestWarranty.WarrantyFrom;
+                warrantyUntil = latestWarranty.WarrantyUntil;
+                warrantyType = latestWarranty.WarrantyType;
+            }
+
+            _logger.Info("FindByBarCode: Tìm thấy thiết bị, DeviceId={0}, BarCode={1}", entity.Id, barCode);
+            return entity.ToDto(productVariantName, productVariantCode, unitName, warrantyFrom, warrantyUntil, warrantyType);
         }
         catch (Exception ex)
         {
@@ -228,65 +358,97 @@ public class DeviceRepository : IDeviceRepository
         }
     }
 
-
     #endregion
 
-    #region Save Operations
+    #region ========== CREATE/UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Lưu hoặc cập nhật Device
     /// </summary>
-    /// <param name="device">Device entity cần lưu</param>
-    public void SaveOrUpdate(Device device)
+    /// <param name="dto">DeviceDto cần lưu</param>
+    /// <returns>DeviceDto đã được lưu</returns>
+    public DeviceDto SaveOrUpdate(DeviceDto dto)
     {
         using var context = CreateNewContext();
         try
         {
-            if (device == null)
-                throw new ArgumentNullException(nameof(device));
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
 
             _logger.Debug("SaveOrUpdate: Bắt đầu lưu thiết bị, Id={0}, StockInOutDetailId={1}",
-                device.Id, device.StockInOutDetailId);
+                dto.Id, dto.StockInOutDetailId);
 
-            var existingDevice = context.Devices.FirstOrDefault(d => d.Id == device.Id);
+            var existingEntity = dto.Id != Guid.Empty ? 
+                context.Devices.FirstOrDefault(d => d.Id == dto.Id) : null;
 
-            if (existingDevice == null)
+            Device entity;
+            if (existingEntity == null)
             {
                 // Thêm mới
-                if (device.Id == Guid.Empty)
+                entity = dto.ToEntity();
+                if (entity.Id == Guid.Empty)
                 {
-                    device.Id = Guid.NewGuid();
+                    entity.Id = Guid.NewGuid();
+                    dto.Id = entity.Id;
                 }
-                if (device.CreatedDate == default(DateTime))
+                if (entity.CreatedDate == default(DateTime))
                 {
-                    device.CreatedDate = DateTime.Now;
+                    entity.CreatedDate = DateTime.Now;
+                    dto.CreatedDate = entity.CreatedDate;
                 }
-                context.Devices.InsertOnSubmit(device);
-                _logger.Info("SaveOrUpdate: Thêm mới thiết bị, Id={0}", device.Id);
+                context.Devices.InsertOnSubmit(entity);
+                _logger.Info("SaveOrUpdate: Thêm mới thiết bị, Id={0}", entity.Id);
             }
             else
             {
                 // Cập nhật
-                existingDevice.ProductVariantId = device.ProductVariantId;
-                existingDevice.StockInOutDetailId = device.StockInOutDetailId;
-                existingDevice.SerialNumber = device.SerialNumber;
-                existingDevice.MACAddress = device.MACAddress;
-                existingDevice.IMEI = device.IMEI;
-                existingDevice.AssetTag = device.AssetTag;
-                existingDevice.LicenseKey = device.LicenseKey;
-                existingDevice.HostName = device.HostName;
-                existingDevice.IPAddress = device.IPAddress;
-                existingDevice.Status = device.Status;
-                existingDevice.DeviceType = device.DeviceType;
-                existingDevice.Notes = device.Notes;
-                existingDevice.IsActive = device.IsActive;
-                existingDevice.UpdatedDate = DateTime.Now;
-                existingDevice.UpdatedBy = device.UpdatedBy;
-                _logger.Info("SaveOrUpdate: Cập nhật thiết bị, Id={0}", device.Id);
+                dto.ToEntity(existingEntity);
+                existingEntity.UpdatedDate = DateTime.Now;
+                entity = existingEntity;
+                _logger.Info("SaveOrUpdate: Cập nhật thiết bị, Id={0}", entity.Id);
             }
 
             context.SubmitChanges();
-            _logger.Info("SaveOrUpdate: Lưu thiết bị thành công, Id={0}", device.Id);
+            _logger.Info("SaveOrUpdate: Lưu thiết bị thành công, Id={0}", entity.Id);
+            
+            // Load lại entity và fetch related data để convert sang DTO
+            var savedEntity = context.Devices.FirstOrDefault(d => d.Id == entity.Id);
+            if (savedEntity == null)
+                return null;
+
+            // Fetch related data trước khi convert để tránh DataContext disposed errors
+            string productVariantName = null;
+            string productVariantCode = null;
+            string unitName = null;
+            if (savedEntity.ProductVariantId != Guid.Empty)
+            {
+                var productVariant = context.ProductVariants.FirstOrDefault(pv => pv.Id == savedEntity.ProductVariantId);
+                if (productVariant != null)
+                {
+                    productVariantName = productVariant.VariantFullName;
+                    productVariantCode = productVariant.VariantCode;
+                    if (productVariant.UnitOfMeasure != null)
+                    {
+                        unitName = productVariant.UnitOfMeasure.Name;
+                    }
+                }
+            }
+
+            DateTime? warrantyFrom = null;
+            DateTime? warrantyUntil = null;
+            int? warrantyType = null;
+            var latestWarranty = context.Warranties
+                .Where(w => w.DeviceId == savedEntity.Id && w.IsActive)
+                .OrderByDescending(w => w.CreatedDate)
+                .FirstOrDefault();
+            if (latestWarranty != null)
+            {
+                warrantyFrom = latestWarranty.WarrantyFrom;
+                warrantyUntil = latestWarranty.WarrantyUntil;
+                warrantyType = latestWarranty.WarrantyType;
+            }
+
+            return savedEntity.ToDto(productVariantName, productVariantCode, unitName, warrantyFrom, warrantyUntil, warrantyType);
         }
         catch (Exception ex)
         {

@@ -115,15 +115,15 @@ namespace Bll.Inventory.InventoryManagement
             return _imageStorage;
         }
 
-        #endregion
+    #endregion
 
-        #region Public Methods
+    #region ========== READ OPERATIONS ==========
 
-        /// <summary>
-        /// Lấy tất cả hình ảnh
-        /// </summary>
-        /// <returns>Danh sách tất cả hình ảnh</returns>
-        public List<DeviceImage> GetAll()
+    /// <summary>
+    /// Lấy tất cả hình ảnh
+    /// </summary>
+    /// <returns>Danh sách tất cả hình ảnh</returns>
+    public List<DeviceImage> GetAll()
         {
             try
             {
@@ -166,15 +166,63 @@ namespace Bll.Inventory.InventoryManagement
             catch (Exception ex)
             {
                 throw new BusinessLogicException($"Lỗi khi lấy hình ảnh '{imageId}': {ex.Message}", ex);
-            }
         }
+    }
 
-        /// <summary>
-        /// Kiểm tra file hình ảnh có tồn tại trên storage (NAS/Local) không
-        /// </summary>
-        /// <param name="relativePath">Đường dẫn tương đối</param>
-        /// <returns>True nếu file tồn tại</returns>
-        public async Task<bool> CheckImageFileExistsAsync(string relativePath)
+    /// <summary>
+    /// Tìm kiếm hình ảnh theo danh sách DeviceId
+    /// </summary>
+    /// <param name="deviceIds">Danh sách ID thiết bị</param>
+    /// <returns>Danh sách hình ảnh phù hợp</returns>
+    public List<DeviceImage> SearchByDeviceIds(List<Guid> deviceIds)
+    {
+        try
+        {
+            if (deviceIds == null || !deviceIds.Any())
+            {
+                return new List<DeviceImage>();
+            }
+
+            return GetDataAccess().SearchByDeviceIds(deviceIds);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Lỗi tìm kiếm hình ảnh theo thiết bị: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Tìm kiếm hình ảnh theo danh sách DeviceId (Async)
+    /// </summary>
+    /// <param name="deviceIds">Danh sách ID thiết bị</param>
+    /// <returns>Danh sách hình ảnh phù hợp</returns>
+    public async Task<List<DeviceImage>> SearchByDeviceIdsAsync(List<Guid> deviceIds)
+    {
+        try
+        {
+            if (deviceIds == null || !deviceIds.Any())
+            {
+                return new List<DeviceImage>();
+            }
+
+            return await Task.Run(() => GetDataAccess().SearchByDeviceIds(deviceIds));
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Lỗi tìm kiếm hình ảnh theo thiết bị: {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== BUSINESS LOGIC METHODS ==========
+
+    /// <summary>
+    /// Kiểm tra file hình ảnh có tồn tại trên storage (NAS/Local) không
+    /// </summary>
+    /// <param name="relativePath">Đường dẫn tương đối</param>
+    /// <returns>True nếu file tồn tại</returns>
+    public async Task<bool> CheckImageFileExistsAsync(string relativePath)
         {
             try
             {
@@ -304,21 +352,25 @@ namespace Bll.Inventory.InventoryManagement
             catch (Exception ex)
             {
                 throw new BusinessLogicException($"Lỗi khi lấy hình ảnh chính cho thiết bị '{deviceId}': {ex.Message}", ex);
-            }
         }
+    }
 
-        /// <summary>
-        /// Lưu hình ảnh từ file và thông tin metadata
-        /// Sử dụng ImageStorageService để lưu trên NAS/Local, chỉ lưu metadata vào database
-        /// </summary>
-        /// <param name="deviceId">ID thiết bị</param>
-        /// <param name="imageFilePath">Đường dẫn file ảnh</param>
-        /// <param name="isPrimary">Có phải hình ảnh chính không</param>
-        /// <param name="caption">Chú thích</param>
-        /// <param name="altText">Alt text</param>
-        /// <param name="displayOrder">Thứ tự hiển thị</param>
-        /// <returns>DeviceImage đã lưu</returns>
-        public async Task<DeviceImage> SaveImageFromFileAsync(Guid deviceId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null, int? displayOrder = null)
+    #endregion
+
+    #region ========== CREATE/UPDATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hình ảnh từ file và thông tin metadata
+    /// Sử dụng ImageStorageService để lưu trên NAS/Local, chỉ lưu metadata vào database
+    /// </summary>
+    /// <param name="deviceId">ID thiết bị</param>
+    /// <param name="imageFilePath">Đường dẫn file ảnh</param>
+    /// <param name="isPrimary">Có phải hình ảnh chính không</param>
+    /// <param name="caption">Chú thích</param>
+    /// <param name="altText">Alt text</param>
+    /// <param name="displayOrder">Thứ tự hiển thị</param>
+    /// <returns>DeviceImage đã lưu</returns>
+    public async Task<DeviceImage> SaveImageFromFileAsync(Guid deviceId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null, int? displayOrder = null)
         {
             try
             {
@@ -707,69 +759,9 @@ namespace Bll.Inventory.InventoryManagement
             DeleteImage(imageId);
         }
 
-        /// <summary>
-        /// Đặt hình ảnh làm hình ảnh chính
-        /// </summary>
-        /// <param name="imageId">ID hình ảnh</param>
-        public void SetAsPrimary(Guid imageId)
-        {
-            try
-            {
-                GetDataAccess().SetAsPrimary(imageId);
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi đặt hình ảnh làm chính '{imageId}': {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Tìm kiếm hình ảnh theo danh sách DeviceId
-        /// </summary>
-        /// <param name="deviceIds">Danh sách ID thiết bị</param>
-        /// <returns>Danh sách hình ảnh phù hợp</returns>
-        public List<DeviceImage> SearchByDeviceIds(List<Guid> deviceIds)
-        {
-            try
-            {
-                if (deviceIds == null || !deviceIds.Any())
-                {
-                    return new List<DeviceImage>();
-                }
-
-                return GetDataAccess().SearchByDeviceIds(deviceIds);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi tìm kiếm hình ảnh theo thiết bị: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Tìm kiếm hình ảnh theo danh sách DeviceId (Async)
-        /// </summary>
-        /// <param name="deviceIds">Danh sách ID thiết bị</param>
-        /// <returns>Danh sách hình ảnh phù hợp</returns>
-        public async Task<List<DeviceImage>> SearchByDeviceIdsAsync(List<Guid> deviceIds)
-        {
-            try
-            {
-                if (deviceIds == null || !deviceIds.Any())
-                {
-                    return new List<DeviceImage>();
-                }
-
-                return await Task.Run(() => GetDataAccess().SearchByDeviceIds(deviceIds));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi tìm kiếm hình ảnh theo thiết bị: {ex.Message}", ex);
-            }
-        }
-
         #endregion
 
-        #region Private Methods
+        #region ========== HELPER METHODS ==========
 
         /// <summary>
         /// Nén hình ảnh mà không thay đổi kích thước (dimensions)

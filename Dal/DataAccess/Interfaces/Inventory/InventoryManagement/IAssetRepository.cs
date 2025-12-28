@@ -10,11 +10,7 @@ namespace Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 /// </summary>
 public interface IAssetRepository
 {
-    /// <summary>
-    /// Lưu hoặc cập nhật tài sản
-    /// </summary>
-    /// <param name="asset">Entity tài sản cần lưu</param>
-    void SaveOrUpdate(Asset asset);
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy tài sản theo ID
@@ -95,11 +91,26 @@ public interface IAssetRepository
         DateTime? toDate = null,
         bool? isActive = null);
 
+    #endregion
+
+    #region ========== CREATE/UPDATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật tài sản
+    /// </summary>
+    /// <param name="asset">Entity tài sản cần lưu</param>
+    void SaveOrUpdate(Asset asset);
+
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
+
     /// <summary>
     /// Xóa tài sản theo ID
     /// </summary>
     /// <param name="id">ID tài sản cần xóa</param>
     /// <param name="deletedBy">ID người xóa (optional, để tương thích với BLL)</param>
     void Delete(Guid id, Guid deletedBy = default);
-}
 
+    #endregion
+}

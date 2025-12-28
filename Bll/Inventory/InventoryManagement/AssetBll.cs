@@ -143,63 +143,7 @@ namespace Bll.Inventory.InventoryManagement
 
     #endregion
 
-    #region Business Methods
-
-    /// <summary>
-    /// Lưu hoặc cập nhật tài sản
-    /// Tự động tính toán CurrentValue từ PurchasePrice và AccumulatedDepreciation
-    /// </summary>
-    public Asset SaveOrUpdate(Asset asset)
-    {
-        try
-        {
-            if (asset == null)
-                throw new ArgumentNullException(nameof(asset));
-
-            _logger.Debug("SaveOrUpdate: Bắt đầu lưu tài sản, AssetCode={0}, AssetName={1}",
-                asset.AssetCode, asset.AssetName);
-
-            // Tính toán CurrentValue tự động
-            asset.CurrentValue = CalculateCurrentValue(asset.PurchasePrice, asset.AccumulatedDepreciation);
-
-            // Validate
-            ValidateAsset(asset);
-
-            // Lấy thông tin user hiện tại
-            var currentUser = Common.ApplicationSystemUtils.GetCurrentUser();
-            var currentUserId = currentUser?.Id;
-
-            // Thiết lập audit fields
-            if (asset.Id == Guid.Empty)
-            {
-                // Thêm mới
-                asset.Id = Guid.NewGuid();
-                asset.CreateDate = DateTime.Now;
-                asset.CreateBy = currentUserId;
-                asset.IsActive = true;
-                asset.IsDeleted = false;
-            }
-            else
-            {
-                // Cập nhật
-                asset.ModifiedDate = DateTime.Now;
-                asset.ModifiedBy = currentUserId;
-            }
-
-            // Lưu vào database
-            GetDataAccess().SaveOrUpdate(asset);
-
-            _logger.Info("SaveOrUpdate: Đã lưu tài sản, Id={0}, AssetCode={1}, AssetName={2}",
-                asset.Id, asset.AssetCode, asset.AssetName);
-
-            return asset;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lưu tài sản: {ex.Message}", ex);
-            throw;
-        }
-    }
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy tài sản theo ID
@@ -298,6 +242,70 @@ namespace Bll.Inventory.InventoryManagement
             fromDate, toDate, isActive);
     }
 
+    #endregion
+
+    #region ========== CREATE/UPDATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật tài sản
+    /// Tự động tính toán CurrentValue từ PurchasePrice và AccumulatedDepreciation
+    /// </summary>
+    public Asset SaveOrUpdate(Asset asset)
+    {
+        try
+        {
+            if (asset == null)
+                throw new ArgumentNullException(nameof(asset));
+
+            _logger.Debug("SaveOrUpdate: Bắt đầu lưu tài sản, AssetCode={0}, AssetName={1}",
+                asset.AssetCode, asset.AssetName);
+
+            // Tính toán CurrentValue tự động
+            asset.CurrentValue = CalculateCurrentValue(asset.PurchasePrice, asset.AccumulatedDepreciation);
+
+            // Validate
+            ValidateAsset(asset);
+
+            // Lấy thông tin user hiện tại
+            var currentUser = Common.ApplicationSystemUtils.GetCurrentUser();
+            var currentUserId = currentUser?.Id;
+
+            // Thiết lập audit fields
+            if (asset.Id == Guid.Empty)
+            {
+                // Thêm mới
+                asset.Id = Guid.NewGuid();
+                asset.CreateDate = DateTime.Now;
+                asset.CreateBy = currentUserId;
+                asset.IsActive = true;
+                asset.IsDeleted = false;
+            }
+            else
+            {
+                // Cập nhật
+                asset.ModifiedDate = DateTime.Now;
+                asset.ModifiedBy = currentUserId;
+            }
+
+            // Lưu vào database
+            GetDataAccess().SaveOrUpdate(asset);
+
+            _logger.Info("SaveOrUpdate: Đã lưu tài sản, Id={0}, AssetCode={1}, AssetName={2}",
+                asset.Id, asset.AssetCode, asset.AssetName);
+
+            return asset;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lưu tài sản: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
+
     /// <summary>
     /// Xóa tài sản
     /// </summary>
@@ -329,6 +337,10 @@ namespace Bll.Inventory.InventoryManagement
             throw;
         }
     }
+
+    #endregion
+
+    #region ========== BUSINESS LOGIC METHODS ==========
 
     /// <summary>
     /// Cập nhật khấu hao lũy kế cho tài sản

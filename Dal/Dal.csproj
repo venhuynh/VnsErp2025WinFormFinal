@@ -134,6 +134,8 @@
     <Compile Include="DtoConverter\BusinessPartnerContactConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerSiteConverters.cs" />
+    <Compile Include="DtoConverter\DeviceDtoConverter.cs" />
+    <Compile Include="DtoConverter\DeviceTransactionHistoryConverter.cs" />
     <Compile Include="DtoConverter\PermissionDtoExtensions.cs" />
     <Compile Include="DtoConverter\UnitOfMeasureConverters.cs" />
     <Compile Include="DtoConverter\CompanyBranchConverters.cs" />

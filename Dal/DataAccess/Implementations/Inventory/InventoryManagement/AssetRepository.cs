@@ -74,15 +74,250 @@ public class AssetRepository : IAssetRepository
         return context;
     }
 
+    /// <summary>
+    /// Load navigation properties cho danh sách tài sản
+    /// </summary>
+    private void LoadNavigationProperties(VnsErp2025DataContext context, List<Asset> assets)
+    {
+        if (assets == null || !assets.Any())
+            return;
+
+        // Load Company
+        var companyIds = assets.Select(x => x.CompanyId).Distinct().ToList();
+        if (companyIds.Any())
+        {
+            var companies = context.Companies
+                .Where(c => companyIds.Contains(c.Id))
+                .ToDictionary(c => c.Id);
+
+            foreach (var asset in assets)
+            {
+                if (asset.Company == null && companies.TryGetValue(asset.CompanyId, out var company))
+                {
+                    asset.Company = company;
+                }
+            }
+        }
+
+        // Load CompanyBranch
+        var branchIds = assets
+            .Where(x => x.BranchId.HasValue)
+            .Select(x => x.BranchId.Value)
+            .Distinct()
+            .ToList();
+        if (branchIds.Any())
+        {
+            var branches = context.CompanyBranches
+                .Where(b => branchIds.Contains(b.Id))
+                .ToDictionary(b => b.Id);
+
+            foreach (var asset in assets)
+            {
+                if (asset.BranchId.HasValue && asset.CompanyBranch == null && 
+                    branches.TryGetValue(asset.BranchId.Value, out var branch))
+                {
+                    asset.CompanyBranch = branch;
+                }
+            }
+        }
+
+        // Load Department
+        var departmentIds = assets
+            .Where(x => x.DepartmentId.HasValue)
+            .Select(x => x.DepartmentId.Value)
+            .Distinct()
+            .ToList();
+        if (departmentIds.Any())
+        {
+            var departments = context.Departments
+                .Where(d => departmentIds.Contains(d.Id))
+                .ToDictionary(d => d.Id);
+
+            foreach (var asset in assets)
+            {
+                if (asset.DepartmentId.HasValue && asset.Department == null && 
+                    departments.TryGetValue(asset.DepartmentId.Value, out var department))
+                {
+                    asset.Department = department;
+                }
+            }
+        }
+
+        // Load Employee
+        var employeeIds = assets
+            .Where(x => x.AssignedEmployeeId.HasValue)
+            .Select(x => x.AssignedEmployeeId.Value)
+            .Distinct()
+            .ToList();
+        if (employeeIds.Any())
+        {
+            var employees = context.Employees
+                .Where(e => employeeIds.Contains(e.Id))
+                .ToDictionary(e => e.Id);
+
+            foreach (var asset in assets)
+            {
+                if (asset.AssignedEmployeeId.HasValue && asset.Employee == null && 
+                    employees.TryGetValue(asset.AssignedEmployeeId.Value, out var employee))
+                {
+                    asset.Employee = employee;
+                }
+            }
+        }
+
+        // Load ProductVariant với ProductService và UnitOfMeasure
+        var productVariantIds = assets
+            .Where(x => x.ProductVariantId.HasValue)
+            .Select(x => x.ProductVariantId.Value)
+            .Distinct()
+            .ToList();
+        if (productVariantIds.Any())
+        {
+            // Load ProductVariants với navigation properties
+            var productVariants = context.ProductVariants
+                .Where(pv => productVariantIds.Contains(pv.Id))
+                .ToList();
+
+            // Load ProductService cho các ProductVariants
+            var productIds = productVariants
+                .Where(pv => pv.ProductId != Guid.Empty)
+                .Select(pv => pv.ProductId)
+                .Distinct()
+                .ToList();
+            
+            if (productIds.Any())
+            {
+                var productServices = context.ProductServices
+                    .Where(ps => productIds.Contains(ps.Id))
+                    .ToDictionary(ps => ps.Id);
+
+                foreach (var productVariant in productVariants)
+                {
+                    if (productVariant.ProductService == null && 
+                        productVariant.ProductId != Guid.Empty &&
+                        productServices.TryGetValue(productVariant.ProductId, out var productService))
+                    {
+                        productVariant.ProductService = productService;
+                    }
+                }
+            }
+
+            // Load UnitOfMeasure cho các ProductVariants
+            var unitIds = productVariants
+                .Where(pv => pv.UnitId != Guid.Empty)
+                .Select(pv => pv.UnitId)
+                .Distinct()
+                .ToList();
+
+            if (unitIds.Any())
+            {
+                var unitOfMeasures = context.UnitOfMeasures
+                    .Where(u => unitIds.Contains(u.Id))
+                    .ToDictionary(u => u.Id);
+
+                foreach (var productVariant in productVariants)
+                {
+                    if (productVariant.UnitOfMeasure == null && 
+                        productVariant.UnitId != Guid.Empty &&
+                        unitOfMeasures.TryGetValue(productVariant.UnitId, out var unitOfMeasure))
+                    {
+                        productVariant.UnitOfMeasure = unitOfMeasure;
+                    }
+                }
+            }
+
+            // Gán ProductVariant vào Asset và materialize navigation properties
+            var productVariantsDict = productVariants.ToDictionary(pv => pv.Id);
+            foreach (var asset in assets)
+            {
+                if (asset.ProductVariantId.HasValue && asset.ProductVariant == null && 
+                    productVariantsDict.TryGetValue(asset.ProductVariantId.Value, out var productVariant))
+                {
+                    asset.ProductVariant = productVariant;
+                    
+                    // Materialize navigation properties để tránh lazy loading sau khi context dispose
+                    _ = productVariant.ProductService?.Name; // Materialize ProductService
+                    _ = productVariant.UnitOfMeasure?.Name; // Materialize UnitOfMeasure
+                }
+            }
+        }
+
+        // Load Warranty
+        var warrantyIds = assets
+            .Where(x => x.WarrantyId.HasValue)
+            .Select(x => x.WarrantyId.Value)
+            .Distinct()
+            .ToList();
+        if (warrantyIds.Any())
+        {
+            var warranties = context.Warranties
+                .Where(w => warrantyIds.Contains(w.Id))
+                .ToDictionary(w => w.Id);
+
+            foreach (var asset in assets)
+            {
+                if (asset.WarrantyId.HasValue && asset.Warranty == null && 
+                    warranties.TryGetValue(asset.WarrantyId.Value, out var warranty))
+                {
+                    asset.Warranty = warranty;
+                }
+            }
+        }
+
+        // Load ApplicationUser (CreateBy, ModifiedBy, DeletedBy)
+        var userIds = assets
+            .SelectMany(x => new[] { 
+                x.CreateBy, 
+                x.ModifiedBy, 
+                x.DeletedBy
+            })
+            .Where(id => id.HasValue)
+            .Select(id => id.Value)
+            .Distinct()
+            .ToList();
+
+        if (userIds.Any())
+        {
+            var users = context.ApplicationUsers
+                .Where(u => userIds.Contains(u.Id))
+                .ToDictionary(u => u.Id);
+
+            foreach (var asset in assets)
+            {
+                // CreateBy (Guid?, nullable)
+                if (asset.CreateBy.HasValue && asset.ApplicationUser == null && 
+                    users.TryGetValue(asset.CreateBy.Value, out var createUser))
+                {
+                    asset.ApplicationUser = createUser;
+                }
+
+                // ModifiedBy (Guid?, nullable)
+                if (asset.ModifiedBy.HasValue && asset.ApplicationUser2 == null && 
+                    users.TryGetValue(asset.ModifiedBy.Value, out var modifiedUser))
+                {
+                    asset.ApplicationUser2 = modifiedUser;
+                }
+
+                // DeletedBy (Guid?, nullable)
+                if (asset.DeletedBy.HasValue && asset.ApplicationUser1 == null && 
+                    users.TryGetValue(asset.DeletedBy.Value, out var deletedUser))
+                {
+                    asset.ApplicationUser1 = deletedUser;
+                }
+            }
+        }
+    }
+
     #endregion
 
-    #region Save Operations
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
-    /// Lưu hoặc cập nhật tài sản
+    /// Lấy tài sản theo ID
     /// </summary>
-    /// <param name="asset">Entity tài sản cần lưu</param>
-    public void SaveOrUpdate(Asset asset)
+    /// <param name="id">ID tài sản</param>
+    /// <returns>Asset hoặc null</returns>
+    public Asset GetById(Guid id)
     {
         if (asset == null)
             throw new ArgumentNullException(nameof(asset));
@@ -159,17 +394,6 @@ public class AssetRepository : IAssetRepository
             throw;
         }
     }
-
-    #endregion
-
-    #region Query Operations
-
-    /// <summary>
-    /// Lấy tài sản theo ID
-    /// </summary>
-    /// <param name="id">ID tài sản</param>
-    /// <returns>Asset hoặc null</returns>
-    public Asset GetById(Guid id)
     {
         using var context = CreateNewContext();
         try
@@ -512,243 +736,95 @@ public class AssetRepository : IAssetRepository
         }
     }
 
+    #endregion
+
+    #region ========== CREATE/UPDATE OPERATIONS ==========
+
     /// <summary>
-    /// Load navigation properties cho danh sách tài sản
+    /// Lưu hoặc cập nhật tài sản
     /// </summary>
-    private void LoadNavigationProperties(VnsErp2025DataContext context, List<Asset> assets)
+    /// <param name="asset">Entity tài sản cần lưu</param>
+    public void SaveOrUpdate(Asset asset)
     {
-        if (assets == null || !assets.Any())
-            return;
+        if (asset == null)
+            throw new ArgumentNullException(nameof(asset));
 
-        // Load Company
-        var companyIds = assets.Select(x => x.CompanyId).Distinct().ToList();
-        if (companyIds.Any())
+        using var context = CreateNewContext();
+        try
         {
-            var companies = context.Companies
-                .Where(c => companyIds.Contains(c.Id))
-                .ToDictionary(c => c.Id);
+            _logger.Debug("SaveOrUpdate: Bắt đầu lưu tài sản, Id={0}, AssetCode={1}, AssetName={2}", 
+                asset.Id, asset.AssetCode, asset.AssetName);
 
-            foreach (var asset in assets)
+            var existing = asset.Id != Guid.Empty ? 
+                context.Assets.FirstOrDefault(x => x.Id == asset.Id) : null;
+
+            if (existing == null)
             {
-                if (asset.Company == null && companies.TryGetValue(asset.CompanyId, out var company))
-                {
-                    asset.Company = company;
-                }
+                // Thêm mới
+                if (asset.Id == Guid.Empty)
+                    asset.Id = Guid.NewGuid();
+                
+                // Thiết lập giá trị mặc định
+                asset.CreateDate = DateTime.Now;
+
+                context.Assets.InsertOnSubmit(asset);
+                context.SubmitChanges();
+                
+                _logger.Info("SaveOrUpdate: Đã thêm mới tài sản, Id={0}, AssetCode={1}", asset.Id, asset.AssetCode);
+            }
+            else
+            {
+                // Cập nhật
+                existing.AssetCode = asset.AssetCode;
+                existing.AssetName = asset.AssetName;
+                existing.AssetType = asset.AssetType;
+                existing.AssetCategory = asset.AssetCategory;
+                existing.Description = asset.Description;
+                existing.ProductVariantId = asset.ProductVariantId;
+                existing.CompanyId = asset.CompanyId;
+                existing.BranchId = asset.BranchId;
+                existing.DepartmentId = asset.DepartmentId;
+                existing.AssignedEmployeeId = asset.AssignedEmployeeId;
+                existing.Location = asset.Location;
+                existing.PurchasePrice = asset.PurchasePrice;
+                existing.PurchaseDate = asset.PurchaseDate;
+                existing.SupplierName = asset.SupplierName;
+                existing.InvoiceNumber = asset.InvoiceNumber;
+                existing.InvoiceDate = asset.InvoiceDate;
+                existing.DepreciationMethod = asset.DepreciationMethod;
+                existing.DepreciationRate = asset.DepreciationRate;
+                existing.UsefulLife = asset.UsefulLife;
+                existing.DepreciationStartDate = asset.DepreciationStartDate;
+                existing.AccumulatedDepreciation = asset.AccumulatedDepreciation;
+                existing.CurrentValue = asset.CurrentValue;
+                existing.Status = asset.Status;
+                existing.Condition = asset.Condition;
+                existing.IsActive = asset.IsActive;
+                existing.WarrantyId = asset.WarrantyId;
+                existing.WarrantyExpiryDate = asset.WarrantyExpiryDate;
+                existing.SerialNumber = asset.SerialNumber;
+                existing.Manufacturer = asset.Manufacturer;
+                existing.Model = asset.Model;
+                existing.Specifications = asset.Specifications;
+                existing.Notes = asset.Notes;
+                existing.ModifiedDate = DateTime.Now;
+                existing.ModifiedBy = asset.ModifiedBy;
+                
+                context.SubmitChanges();
+                
+                _logger.Info("SaveOrUpdate: Đã cập nhật tài sản, Id={0}, AssetCode={1}", existing.Id, existing.AssetCode);
             }
         }
-
-        // Load CompanyBranch
-        var branchIds = assets
-            .Where(x => x.BranchId.HasValue)
-            .Select(x => x.BranchId.Value)
-            .Distinct()
-            .ToList();
-        if (branchIds.Any())
+        catch (Exception ex)
         {
-            var branches = context.CompanyBranches
-                .Where(b => branchIds.Contains(b.Id))
-                .ToDictionary(b => b.Id);
-
-            foreach (var asset in assets)
-            {
-                if (asset.BranchId.HasValue && asset.CompanyBranch == null && 
-                    branches.TryGetValue(asset.BranchId.Value, out var branch))
-                {
-                    asset.CompanyBranch = branch;
-                }
-            }
-        }
-
-        // Load Department
-        var departmentIds = assets
-            .Where(x => x.DepartmentId.HasValue)
-            .Select(x => x.DepartmentId.Value)
-            .Distinct()
-            .ToList();
-        if (departmentIds.Any())
-        {
-            var departments = context.Departments
-                .Where(d => departmentIds.Contains(d.Id))
-                .ToDictionary(d => d.Id);
-
-            foreach (var asset in assets)
-            {
-                if (asset.DepartmentId.HasValue && asset.Department == null && 
-                    departments.TryGetValue(asset.DepartmentId.Value, out var department))
-                {
-                    asset.Department = department;
-                }
-            }
-        }
-
-        // Load Employee
-        var employeeIds = assets
-            .Where(x => x.AssignedEmployeeId.HasValue)
-            .Select(x => x.AssignedEmployeeId.Value)
-            .Distinct()
-            .ToList();
-        if (employeeIds.Any())
-        {
-            var employees = context.Employees
-                .Where(e => employeeIds.Contains(e.Id))
-                .ToDictionary(e => e.Id);
-
-            foreach (var asset in assets)
-            {
-                if (asset.AssignedEmployeeId.HasValue && asset.Employee == null && 
-                    employees.TryGetValue(asset.AssignedEmployeeId.Value, out var employee))
-                {
-                    asset.Employee = employee;
-                }
-            }
-        }
-
-        // Load ProductVariant với ProductService và UnitOfMeasure
-        var productVariantIds = assets
-            .Where(x => x.ProductVariantId.HasValue)
-            .Select(x => x.ProductVariantId.Value)
-            .Distinct()
-            .ToList();
-        if (productVariantIds.Any())
-        {
-            // Load ProductVariants với navigation properties
-            var productVariants = context.ProductVariants
-                .Where(pv => productVariantIds.Contains(pv.Id))
-                .ToList();
-
-            // Load ProductService cho các ProductVariants
-            var productIds = productVariants
-                .Where(pv => pv.ProductId != Guid.Empty)
-                .Select(pv => pv.ProductId)
-                .Distinct()
-                .ToList();
-            
-            if (productIds.Any())
-            {
-                var productServices = context.ProductServices
-                    .Where(ps => productIds.Contains(ps.Id))
-                    .ToDictionary(ps => ps.Id);
-
-                foreach (var productVariant in productVariants)
-                {
-                    if (productVariant.ProductService == null && 
-                        productVariant.ProductId != Guid.Empty &&
-                        productServices.TryGetValue(productVariant.ProductId, out var productService))
-                    {
-                        productVariant.ProductService = productService;
-                    }
-                }
-            }
-
-            // Load UnitOfMeasure cho các ProductVariants
-            var unitIds = productVariants
-                .Where(pv => pv.UnitId != Guid.Empty)
-                .Select(pv => pv.UnitId)
-                .Distinct()
-                .ToList();
-
-            if (unitIds.Any())
-            {
-                var unitOfMeasures = context.UnitOfMeasures
-                    .Where(u => unitIds.Contains(u.Id))
-                    .ToDictionary(u => u.Id);
-
-                foreach (var productVariant in productVariants)
-                {
-                    if (productVariant.UnitOfMeasure == null && 
-                        productVariant.UnitId != Guid.Empty &&
-                        unitOfMeasures.TryGetValue(productVariant.UnitId, out var unitOfMeasure))
-                    {
-                        productVariant.UnitOfMeasure = unitOfMeasure;
-                    }
-                }
-            }
-
-            // Gán ProductVariant vào Asset và materialize navigation properties
-            var productVariantsDict = productVariants.ToDictionary(pv => pv.Id);
-            foreach (var asset in assets)
-            {
-                if (asset.ProductVariantId.HasValue && asset.ProductVariant == null && 
-                    productVariantsDict.TryGetValue(asset.ProductVariantId.Value, out var productVariant))
-                {
-                    asset.ProductVariant = productVariant;
-                    
-                    // Materialize navigation properties để tránh lazy loading sau khi context dispose
-                    _ = productVariant.ProductService?.Name; // Materialize ProductService
-                    _ = productVariant.UnitOfMeasure?.Name; // Materialize UnitOfMeasure
-                }
-            }
-        }
-
-        // Load Warranty
-        var warrantyIds = assets
-            .Where(x => x.WarrantyId.HasValue)
-            .Select(x => x.WarrantyId.Value)
-            .Distinct()
-            .ToList();
-        if (warrantyIds.Any())
-        {
-            var warranties = context.Warranties
-                .Where(w => warrantyIds.Contains(w.Id))
-                .ToDictionary(w => w.Id);
-
-            foreach (var asset in assets)
-            {
-                if (asset.WarrantyId.HasValue && asset.Warranty == null && 
-                    warranties.TryGetValue(asset.WarrantyId.Value, out var warranty))
-                {
-                    asset.Warranty = warranty;
-                }
-            }
-        }
-
-        // Load ApplicationUser (CreateBy, ModifiedBy, DeletedBy)
-        var userIds = assets
-            .SelectMany(x => new[] { 
-                x.CreateBy, 
-                x.ModifiedBy, 
-                x.DeletedBy
-            })
-            .Where(id => id.HasValue)
-            .Select(id => id.Value)
-            .Distinct()
-            .ToList();
-
-        if (userIds.Any())
-        {
-            var users = context.ApplicationUsers
-                .Where(u => userIds.Contains(u.Id))
-                .ToDictionary(u => u.Id);
-
-            foreach (var asset in assets)
-            {
-                // CreateBy (Guid?, nullable)
-                if (asset.CreateBy.HasValue && asset.ApplicationUser == null && 
-                    users.TryGetValue(asset.CreateBy.Value, out var createUser))
-                {
-                    asset.ApplicationUser = createUser;
-                }
-
-                // ModifiedBy (Guid?, nullable)
-                if (asset.ModifiedBy.HasValue && asset.ApplicationUser2 == null && 
-                    users.TryGetValue(asset.ModifiedBy.Value, out var modifiedUser))
-                {
-                    asset.ApplicationUser2 = modifiedUser;
-                }
-
-                // DeletedBy (Guid?, nullable)
-                if (asset.DeletedBy.HasValue && asset.ApplicationUser1 == null && 
-                    users.TryGetValue(asset.DeletedBy.Value, out var deletedUser))
-                {
-                    asset.ApplicationUser1 = deletedUser;
-                }
-            }
+            _logger.Error($"SaveOrUpdate: Lỗi lưu tài sản: {ex.Message}", ex);
+            throw;
         }
     }
 
     #endregion
 
-    #region Delete Operations
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa tài sản theo ID
