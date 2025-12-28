@@ -104,8 +104,8 @@ namespace MasterData.Company
         {
             try
             {
-                var branches = await _companyBranchBll.GetAllAsync();
-                var dtoList = branches.Select(b => b.ToDto()).ToList();
+                // GetAllAsync() already returns List<CompanyBranchDto>
+                var dtoList = await _companyBranchBll.GetAllAsync();
                 
                 BindGrid(dtoList);
                 UpdateDataSummary();

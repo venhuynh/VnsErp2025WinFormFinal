@@ -78,12 +78,10 @@ namespace MasterData.Company
         {
             try
             {
-                // Lấy thông tin công ty Entity từ database thông qua BLL
+                // Lấy thông tin công ty DTO từ database thông qua BLL
 
-                if (_companyBll.GetCompany() is { } company)
+                if (_companyBll.GetCompany() is { } companyDto)
                 {
-                    // Convert Entity sang DTO trong UI layer
-                    var companyDto = company.ToDto();
                     
                     // Hiển thị thông tin công ty DTO lên các control
                     CompanyCodeTextEdit.Text = companyDto.CompanyCode ?? "";
@@ -205,8 +203,8 @@ namespace MasterData.Company
                 // Lấy thông tin công ty hiện tại
                 if (_companyBll.GetCompany() is { } company)
                 {
-                    // Cập nhật logo
-                    company.Logo = logoBytes != null ? new System.Data.Linq.Binary(logoBytes) : null;
+                    // Cập nhật logo (CompanyDto.Logo is byte[], not Binary)
+                    company.Logo = logoBytes;
                     company.UpdatedDate = DateTime.Now;
                     
                     // Lưu vào database thông qua BLL

@@ -183,8 +183,8 @@ namespace MasterData.Company
                 if (_companyBranchId == Guid.Empty)
                     return;
 
-                var companyBranchEntity = _companyBranchBll.GetById(_companyBranchId);
-                _companyBranchDto = companyBranchEntity?.ToDto();
+                // GetById() already returns CompanyBranchDto
+                _companyBranchDto = _companyBranchBll.GetById(_companyBranchId);
                 if (_companyBranchDto == null)
                 {
                     MsgBox.ShowWarning("Không tìm thấy thông tin chi nhánh công ty.");
