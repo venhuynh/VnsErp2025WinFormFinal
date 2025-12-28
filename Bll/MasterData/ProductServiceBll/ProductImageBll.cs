@@ -2,7 +2,8 @@ using Common;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
-using Dal.DataContext;
+using Dal.DtoConverter;
+using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,6 +17,7 @@ using Bll.Common.ImageService;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using ProductImage = Dal.DataContext.ProductImage;
 
 namespace Bll.MasterData.ProductServiceBll
 {
@@ -118,13 +120,13 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Public Methods
+        #region ========== READ OPERATIONS ==========
 
         /// <summary>
         /// Lấy tất cả hình ảnh
         /// </summary>
         /// <returns>Danh sách tất cả hình ảnh</returns>
-        public List<ProductImage> GetAll()
+        public List<ProductImageDto> GetAll()
         {
             try
             {
@@ -141,7 +143,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
         /// <returns>Danh sách hình ảnh</returns>
-        public List<ProductImage> GetByProductId(Guid productId)
+        public List<ProductImageDto> GetByProductId(Guid productId)
         {
             try
             {
@@ -158,7 +160,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="imageId">ID hình ảnh</param>
         /// <returns>Hình ảnh hoặc null</returns>
-        public ProductImage GetById(Guid imageId)
+        public ProductImageDto GetById(Guid imageId)
         {
             try
             {
@@ -296,7 +298,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
         /// <returns>Hình ảnh chính hoặc null</returns>
-        public ProductImage GetPrimaryByProductId(Guid productId)
+        public ProductImageDto GetPrimaryByProductId(Guid productId)
         {
             try
             {
@@ -308,6 +310,8 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
+        #region ========== CREATE OPERATIONS ==========
+
         /// <summary>
         /// Lưu hình ảnh từ file và thông tin metadata
         /// Sử dụng ImageStorageService để lưu trên NAS/Local, chỉ lưu metadata vào database
@@ -317,8 +321,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="isPrimary">Có phải hình ảnh chính không</param>
         /// <param name="caption">Chú thích</param>
         /// <param name="altText">Alt text</param>
-        /// <returns>ProductImage đã lưu</returns>
-        public async Task<ProductImage> SaveImageFromFileAsync(Guid productId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null)
+        /// <returns>ProductImageDto đã lưu</returns>
+        public async Task<ProductImageDto> SaveImageFromFileAsync(Guid productId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null)
         {
             try
             {
@@ -371,8 +375,8 @@ namespace Bll.MasterData.ProductServiceBll
                     // Tiếp tục lưu ảnh dù không tạo được thumbnail
                 }
 
-                // 5. Tạo ProductImage entity với thumbnail trong ImageData
-                var productImage = new ProductImage
+                // 5. Tạo ProductImageDto với thumbnail trong ImageData
+                var productImageDto = new ProductImageDto
                 {
                     Id = Guid.NewGuid(),
                     ProductId = productId,
@@ -385,8 +389,7 @@ namespace Bll.MasterData.ProductServiceBll
                     FileSize = storageResult.FileSize,
                     MimeType = GetMimeTypeFromExtension(fileExtension),
                     // Lưu thumbnail vào ImageData để hiển thị ngay trong list view (tương tự EmployeeBll)
-                    // Convert byte[] sang Binary như EmployeeBll.UpdateAvatarOnly
-                    ImageData = thumbnailData != null ? new System.Data.Linq.Binary(thumbnailData) : null,
+                    ImageData = thumbnailData,
                     FileExists = true,
                     CreateDate = DateTime.Now,
                     CreateBy = Guid.Empty, // Set from context if available
@@ -395,11 +398,11 @@ namespace Bll.MasterData.ProductServiceBll
                 };
 
                 // 7. Lưu metadata vào database
-                GetDataAccess().SaveOrUpdate(productImage);
+                GetDataAccess().SaveOrUpdate(productImageDto);
 
-                _logger.Info($"Đã lưu hình ảnh sản phẩm, ProductId={productId}, ImageId={productImage.Id}, RelativePath={storageResult.RelativePath}");
+                _logger.Info($"Đã lưu hình ảnh sản phẩm, ProductId={productId}, ImageId={productImageDto.Id}, RelativePath={storageResult.RelativePath}");
 
-                return productImage;
+                return productImageDto;
             }
             catch (Exception ex)
             {
@@ -411,10 +414,12 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Lưu hình ảnh từ file (synchronous version - backward compatibility)
         /// </summary>
-        public ProductImage SaveImageFromFile(Guid productId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null)
+        public ProductImageDto SaveImageFromFile(Guid productId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null)
         {
             return SaveImageFromFileAsync(productId, imageFilePath, isPrimary, caption, altText).GetAwaiter().GetResult();
         }
+
+        #region ========== UPDATE OPERATIONS ==========
 
         /// <summary>
         /// Cập nhật hình ảnh chính cho sản phẩm/dịch vụ
@@ -422,8 +427,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="productId">ID sản phẩm/dịch vụ</param>
         /// <param name="imageFilePath">Đường dẫn file ảnh mới</param>
-        /// <returns>ProductImage đã cập nhật</returns>
-        public async Task<ProductImage> UpdatePrimaryImageAsync(Guid productId, string imageFilePath)
+        /// <returns>ProductImageDto đã cập nhật</returns>
+        public async Task<ProductImageDto> UpdatePrimaryImageAsync(Guid productId, string imageFilePath)
         {
             try
             {
@@ -469,7 +474,7 @@ namespace Bll.MasterData.ProductServiceBll
                 // 5. Kiểm tra xem đã có hình ảnh chính chưa
                 var existingPrimary = GetDataAccess().GetPrimaryByProductId(productId);
                 
-                ProductImage productImage;
+                ProductImageDto productImageDto;
                 if (existingPrimary != null)
                 {
                     // Xóa file cũ từ storage nếu có
@@ -486,23 +491,23 @@ namespace Bll.MasterData.ProductServiceBll
                     }
 
                     // Cập nhật hình ảnh chính hiện có
-                    productImage = existingPrimary;
-                    productImage.FileName = storageResult.FileName;
-                    productImage.RelativePath = storageResult.RelativePath;
-                    productImage.FullPath = storageResult.FullPath;
-                    productImage.StorageType = "NAS";
-                    productImage.FileExtension = "jpg";
-                    productImage.Checksum = storageResult.Checksum;
-                    productImage.FileSize = storageResult.FileSize;
-                    productImage.MimeType = "image/jpeg";
-                    productImage.ImageData = null; // KHÔNG lưu ImageData
-                    productImage.ModifiedDate = DateTime.Now;
-                    productImage.FileExists = true;
+                    productImageDto = existingPrimary;
+                    productImageDto.FileName = storageResult.FileName;
+                    productImageDto.RelativePath = storageResult.RelativePath;
+                    productImageDto.FullPath = storageResult.FullPath;
+                    productImageDto.StorageType = "NAS";
+                    productImageDto.FileExtension = "jpg";
+                    productImageDto.Checksum = storageResult.Checksum;
+                    productImageDto.FileSize = storageResult.FileSize;
+                    productImageDto.MimeType = "image/jpeg";
+                    productImageDto.ImageData = null; // KHÔNG lưu ImageData
+                    productImageDto.ModifiedDate = DateTime.Now;
+                    productImageDto.FileExists = true;
                 }
                 else
                 {
                     // Tạo mới hình ảnh chính
-                    productImage = new ProductImage
+                    productImageDto = new ProductImageDto
                     {
                         Id = Guid.NewGuid(),
                         ProductId = productId,
@@ -524,11 +529,11 @@ namespace Bll.MasterData.ProductServiceBll
                 }
 
                 // 6. Lưu metadata vào database
-                GetDataAccess().SaveOrUpdate(productImage);
+                GetDataAccess().SaveOrUpdate(productImageDto);
 
-                _logger.Info($"Đã cập nhật hình ảnh chính, ProductId={productId}, ImageId={productImage.Id}");
+                _logger.Info($"Đã cập nhật hình ảnh chính, ProductId={productId}, ImageId={productImageDto.Id}");
 
-                return productImage;
+                return productImageDto;
             }
             catch (Exception ex)
             {
@@ -540,10 +545,12 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Cập nhật hình ảnh chính (synchronous version - backward compatibility)
         /// </summary>
-        public ProductImage UpdatePrimaryImage(Guid productId, string imageFilePath)
+        public ProductImageDto UpdatePrimaryImage(Guid productId, string imageFilePath)
         {
             return UpdatePrimaryImageAsync(productId, imageFilePath).GetAwaiter().GetResult();
         }
+
+        #region ========== DELETE OPERATIONS ==========
 
         /// <summary>
         /// Xóa hình ảnh
@@ -635,39 +642,6 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
-        /// Xóa thumbnail nếu tồn tại
-        /// </summary>
-        /// <param name="imageInfo">Thông tin hình ảnh</param>
-        private void DeleteThumbnailIfExists(ProductImage imageInfo)
-        {
-            try
-            {
-                if (imageInfo?.ProductId == null) return;
-
-                var thumbnailDirectory = GetThumbnailDirectory();
-                var thumbnailPattern = $"{imageInfo.ProductId}_thumb_*";
-                var thumbnailFiles = Directory.GetFiles(thumbnailDirectory, thumbnailPattern);
-
-                foreach (var thumbnailFile in thumbnailFiles)
-                {
-                    try
-                    {
-                        File.Delete(thumbnailFile);
-                        System.Diagnostics.Debug.WriteLine($"Đã xóa thumbnail: {thumbnailFile}");
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Không thể xóa thumbnail '{thumbnailFile}': {ex.Message}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Lỗi khi xóa thumbnail: {ex.Message}");
-            }
-        }
-
-        /// <summary>
         /// Cập nhật ProductService sau khi xóa ảnh chính
         /// </summary>
         /// <param name="productId">ID sản phẩm</param>
@@ -720,6 +694,10 @@ namespace Bll.MasterData.ProductServiceBll
             DeleteImage(imageId);
         }
 
+        #endregion
+
+        #region ========== BUSINESS LOGIC METHODS ==========
+
         /// <summary>
         /// Đặt hình ảnh làm hình ảnh chính
         /// </summary>
@@ -737,52 +715,13 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
-        /// Tạo thumbnail cho hình ảnh
-        /// </summary>
-        /// <param name="productId">ID sản phẩm</param>
-        /// <param name="imageFilePath">Đường dẫn file ảnh gốc</param>
-        /// <returns>Đường dẫn file thumbnail</returns>
-        public string CreateThumbnail(Guid productId, string imageFilePath)
-        {
-            try
-            {
-                if (!File.Exists(imageFilePath))
-                    throw new BusinessLogicException($"File ảnh không tồn tại: {imageFilePath}");
-
-                // Tạo thư mục thumbnail nếu chưa có
-                var thumbnailDirectory = GetThumbnailDirectory();
-                if (!Directory.Exists(thumbnailDirectory))
-                    Directory.CreateDirectory(thumbnailDirectory);
-
-                // Tạo tên file thumbnail
-                var thumbnailFileName = string.Format(ApplicationConstants.THUMBNAIL_FILENAME_FORMAT, 
-                    productId, 
-                    DateTime.Now, 
-                    Guid.NewGuid().ToString("N").Substring(0, 8));
-                var thumbnailFilePath = Path.Combine(thumbnailDirectory, thumbnailFileName);
-
-                // Tạo thumbnail với kích thước và chất lượng phù hợp
-                using (var thumbnailImage = CompressImage(imageFilePath, ApplicationConstants.THUMBNAIL_COMPRESSION_QUALITY, ApplicationConstants.THUMBNAIL_MAX_DIMENSION))
-                {
-                    SaveImageSafely(thumbnailImage, thumbnailFilePath);
-                }
-
-                return thumbnailFilePath;
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi tạo thumbnail cho hình ảnh '{imageFilePath}': {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Nén hình ảnh mà không thay đổi kích thước (dimensions)
+        /// Nén hình ảnh từ file (sử dụng trong UpdatePrimaryImageAsync)
         /// </summary>
         /// <param name="imageFilePath">Đường dẫn file ảnh gốc</param>
         /// <param name="quality">Chất lượng nén (0-100). Mặc định sử dụng ApplicationConstants.DEFAULT_COMPRESSION_QUALITY</param>
         /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định sử dụng ApplicationConstants.DEFAULT_MAX_DIMENSION</param>
         /// <returns>Đối tượng Image đã được nén và resize nếu cần</returns>
-        public Image CompressImage(string imageFilePath, long quality = -1, int maxDimension = -1)
+        private Image CompressImage(string imageFilePath, long quality = -1, int maxDimension = -1)
         {
             try
             {
@@ -804,13 +743,13 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         /// <summary>
-        /// Nén hình ảnh mà không thay đổi kích thước (dimensions)
+        /// Nén hình ảnh từ Image object (sử dụng trong CompressImage từ file)
         /// </summary>
         /// <param name="originalImage">Đối tượng Image gốc</param>
         /// <param name="quality">Chất lượng nén (0-100). Mặc định sử dụng ApplicationConstants.DEFAULT_COMPRESSION_QUALITY</param>
         /// <param name="maxDimension">Kích thước tối đa cho mỗi chiều (pixel). Mặc định sử dụng ApplicationConstants.DEFAULT_MAX_DIMENSION</param>
         /// <returns>Đối tượng Image đã được nén và resize nếu cần</returns>
-        public Image CompressImage(Image originalImage, long quality = -1, int maxDimension = -1)
+        private Image CompressImage(Image originalImage, long quality = -1, int maxDimension = -1)
         {
             try
             {
@@ -939,143 +878,6 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Lấy đường dẫn thư mục PHOTO/PRODUCTSERVICE
-        /// </summary>
-        /// <returns>Đường dẫn thư mục</returns>
-        private string GetPhotoDirectory()
-        {
-            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.PRODUCTSERVICE_PHOTO_DIRECTORY);
-        }
-
-        /// <summary>
-        /// Lấy đường dẫn thư mục cho ảnh biến thể sản phẩm
-        /// </summary>
-        /// <returns>Đường dẫn thư mục</returns>
-        private string GetProductVariantPhotoDirectory()
-        {
-            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.PRODUCTVARIANT_PHOTO_DIRECTORY);
-        }
-
-        /// <summary>
-        /// Lấy đường dẫn thư mục thumbnail
-        /// </summary>
-        /// <returns>Đường dẫn thư mục</returns>
-        private string GetThumbnailDirectory()
-        {
-            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.THUMBNAIL_PHOTO_DIRECTORY);
-        }
-
-        /// <summary>
-        /// Lấy đường dẫn thư mục ảnh đã nén
-        /// </summary>
-        /// <returns>Đường dẫn thư mục</returns>
-        private string GetCompressedPhotoDirectory()
-        {
-            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.COMPRESSED_PHOTO_DIRECTORY);
-        }
-
-        /// <summary>
-        /// Lấy đường dẫn thư mục dựa trên loại ảnh
-        /// </summary>
-        /// <param name="imageType">Loại ảnh (Product, Variant, Thumbnail, Compressed)</param>
-        /// <returns>Đường dẫn thư mục</returns>
-        private string GetPhotoDirectoryByType(string imageType)
-        {
-            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            
-            return imageType?.ToUpper() switch
-            {
-                "VARIANT" => Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.PRODUCTVARIANT_PHOTO_DIRECTORY),
-                "THUMBNAIL" => Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.THUMBNAIL_PHOTO_DIRECTORY),
-                "COMPRESSED" => Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.COMPRESSED_PHOTO_DIRECTORY),
-                _ => Path.Combine(appDirectory, ApplicationConstants.PHOTO_ROOT_DIRECTORY, ApplicationConstants.PRODUCTSERVICE_PHOTO_DIRECTORY)
-            };
-        }
-
-        /// <summary>
-        /// Tạo tên file theo định dạng chuẩn
-        /// </summary>
-        /// <param name="productId">ID sản phẩm</param>
-        /// <param name="imageType">Loại ảnh (primary, thumb, normal)</param>
-        /// <param name="fileExtension">Extension file</param>
-        /// <returns>Tên file</returns>
-        private string GenerateFileName(Guid productId, string imageType, string fileExtension = ".jpg")
-        {
-            var timestamp = DateTime.Now;
-            var uniqueId = Guid.NewGuid().ToString("N").Substring(0, 8);
-            
-            return imageType?.ToLower() switch
-            {
-                "primary" => string.Format(ApplicationConstants.PRIMARY_IMAGE_FILENAME_FORMAT, productId, timestamp, uniqueId),
-                "thumb" => string.Format(ApplicationConstants.THUMBNAIL_FILENAME_FORMAT, productId, timestamp, uniqueId),
-                _ => string.Format(ApplicationConstants.PRODUCT_IMAGE_FILENAME_FORMAT, productId, timestamp, uniqueId, fileExtension)
-            };
-        }
-
-        /// <summary>
-        /// Lưu ảnh an toàn vào file với error handling
-        /// </summary>
-        /// <param name="image">Ảnh cần lưu</param>
-        /// <param name="filePath">Đường dẫn file đích</param>
-        private void SaveImageSafely(Image image, string filePath)
-        {
-            try
-            {
-                // Tạo bản sao của ảnh để tránh lỗi GDI+
-                using (var imageCopy = new Bitmap(image))
-                {
-                    // Lấy JPEG codec
-                    var jpegCodec = GetEncoder(ImageFormat.Jpeg);
-                    if (jpegCodec != null)
-                    {
-                        // Sử dụng JPEG codec với chất lượng cao
-                        var encoderParams = new EncoderParameters(1);
-                        encoderParams.Param[0] = new EncoderParameter(Encoder.Quality, 95L);
-                        
-                        imageCopy.Save(filePath, jpegCodec, encoderParams);
-                    }
-                    else
-                    {
-                        // Fallback nếu không có JPEG codec
-                        imageCopy.Save(filePath, ImageFormat.Jpeg);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException($"Lỗi khi lưu ảnh vào file '{filePath}': {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy thông tin kích thước ảnh
-        /// </summary>
-        /// <param name="imagePath">Đường dẫn file ảnh</param>
-        /// <returns>Thông tin kích thước</returns>
-        private (int Width, int Height) GetImageInfo(string imagePath)
-        {
-            try
-            {
-                using (var image = Image.FromFile(imagePath))
-                {
-                    return (image.Width, image.Height);
-                }
-            }
-            catch
-            {
-                return (0, 0);
-            }
-        }
-
         /// <summary>
         /// Lấy MimeType từ file extension
         /// </summary>
@@ -1100,13 +902,13 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="productIds">Danh sách ID sản phẩm/dịch vụ</param>
         /// <returns>Danh sách hình ảnh phù hợp</returns>
-        public List<ProductImage> SearchByProductIds(List<Guid> productIds)
+        public List<ProductImageDto> SearchByProductIds(List<Guid> productIds)
         {
             try
             {
                 if (productIds == null || !productIds.Any())
                 {
-                    return new List<ProductImage>();
+                    return new List<ProductImageDto>();
                 }
 
                 return GetDataAccess().SearchByProductIds(productIds);
@@ -1122,13 +924,13 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="productIds">Danh sách ID sản phẩm/dịch vụ</param>
         /// <returns>Danh sách hình ảnh phù hợp</returns>
-        public async Task<List<ProductImage>> SearchByProductIdsAsync(List<Guid> productIds)
+        public async Task<List<ProductImageDto>> SearchByProductIdsAsync(List<Guid> productIds)
         {
             try
             {
                 if (productIds == null || !productIds.Any())
                 {
-                    return new List<ProductImage>();
+                    return new List<ProductImageDto>();
                 }
 
                 return await Task.Run(() => GetDataAccess().SearchByProductIds(productIds));
@@ -1144,13 +946,13 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="searchKeyword">Từ khóa tìm kiếm</param>
         /// <returns>Danh sách hình ảnh phù hợp</returns>
-        public async Task<List<ProductImage>> SearchAsync(string searchKeyword)
+        public async Task<List<ProductImageDto>> SearchAsync(string searchKeyword)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(searchKeyword))
                 {
-                    return new List<ProductImage>();
+                    return new List<ProductImageDto>();
                 }
 
                 // Tìm kiếm sản phẩm/dịch vụ trước
@@ -1159,7 +961,7 @@ namespace Bll.MasterData.ProductServiceBll
                 
                 if (!searchResults.Any())
                 {
-                    return new List<ProductImage>();
+                    return new List<ProductImageDto>();
                 }
 
                 // Lấy danh sách ProductId từ kết quả tìm kiếm
@@ -1175,5 +977,130 @@ namespace Bll.MasterData.ProductServiceBll
         }
 
         #endregion
-    }
-}
+
+        #region ========== HELPER METHODS (Image Storage & Processing) ==========
+
+        /// <summary>
+        /// Kiểm tra file hình ảnh có tồn tại trên storage (NAS/Local) không
+        /// </summary>
+        /// <param name="relativePath">Đường dẫn tương đối</param>
+        /// <returns>True nếu file tồn tại</returns>
+        public async Task<bool> CheckImageFileExistsAsync(string relativePath)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(relativePath))
+                {
+                    return false;
+                }
+
+                return await GetImageStorage().ImageExistsAsync(relativePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning($"Lỗi khi kiểm tra file tồn tại '{relativePath}': {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu hình ảnh từ storage (NAS/Local) theo RelativePath
+        /// </summary>
+        /// <param name="relativePath">Đường dẫn tương đối</param>
+        /// <returns>Dữ liệu hình ảnh (byte array) hoặc null</returns>
+        public async Task<byte[]> GetImageDataByRelativePathAsync(string relativePath)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(relativePath))
+                {
+                    _logger.Warning("RelativePath không được để trống");
+                    return null;
+                }
+
+                // Lấy từ storage
+                var imageData = await GetImageStorage().GetImageAsync(relativePath);
+                
+                if (imageData == null)
+                {
+                    _logger.Warning($"Không thể đọc file từ storage, RelativePath={relativePath}");
+                }
+
+                return imageData;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lấy dữ liệu hình ảnh từ RelativePath '{relativePath}': {ex.Message}", ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Lấy dữ liệu hình ảnh từ storage (NAS/Local)
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        /// <returns>Dữ liệu hình ảnh (byte array) hoặc null</returns>
+        public async Task<byte[]> GetImageDataAsync(Guid imageId)
+        {
+            try
+            {
+                var productImage = GetDataAccess().GetById(imageId);
+                if (productImage == null)
+                {
+                    _logger.Warning($"Không tìm thấy hình ảnh với ID '{imageId}'");
+                    return null;
+                }
+
+                // Sử dụng RelativePath
+                var relativePath = productImage.RelativePath;
+                
+                if (string.IsNullOrEmpty(relativePath))
+                {
+                    _logger.Warning($"Hình ảnh '{imageId}' không có RelativePath hoặc ImagePath");
+                    return null;
+                }
+
+                // Lấy từ storage
+                return await GetImageDataByRelativePathAsync(relativePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lấy dữ liệu hình ảnh '{imageId}': {ex.Message}", ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Lấy thumbnail từ storage
+        /// </summary>
+        /// <param name="imageId">ID hình ảnh</param>
+        /// <returns>Dữ liệu thumbnail (byte array) hoặc null</returns>
+        public async Task<byte[]> GetThumbnailDataAsync(Guid imageId)
+        {
+            try
+            {
+                var productImage = GetDataAccess().GetById(imageId);
+                if (productImage == null)
+                {
+                    return null;
+                }
+
+                // ThumbnailPath không còn tồn tại, generate thumbnail từ original image
+                var relativePath = productImage.RelativePath;
+                if (!string.IsNullOrEmpty(relativePath))
+                {
+                    return await GetImageStorage().GetThumbnailAsync(relativePath);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lấy thumbnail '{imageId}': {ex.Message}", ex);
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region ========== PRIVATE HELPER METHODS ==========

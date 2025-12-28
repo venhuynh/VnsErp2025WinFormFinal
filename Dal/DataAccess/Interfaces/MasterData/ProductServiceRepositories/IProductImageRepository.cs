@@ -1,93 +1,77 @@
 using System;
 using System.Collections.Generic;
-using Dal.DataContext;
+using DTO.MasterData.ProductService;
 
 namespace Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 
 /// <summary>
-/// Data Access Layer cho ProductImage
+/// Interface cho Data Access Layer của ProductImage
 /// </summary>
 public interface IProductImageRepository
 {
-    #region Read Operations
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật ProductImage
+    /// </summary>
+    /// <param name="dto">ProductImageDto</param>
+    void SaveOrUpdate(ProductImageDto dto);
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy tất cả hình ảnh
     /// </summary>
-    /// <returns>Danh sách tất cả ProductImage</returns>
-    List<ProductImage> GetAll();
+    /// <returns>Danh sách tất cả ProductImageDto</returns>
+    List<ProductImageDto> GetAll();
 
     /// <summary>
     /// Lấy danh sách hình ảnh theo ProductId
     /// </summary>
     /// <param name="productId">Id của ProductService</param>
-    /// <returns>Danh sách ProductImage</returns>
-    List<ProductImage> GetByProductId(Guid productId);
+    /// <returns>Danh sách ProductImageDto</returns>
+    List<ProductImageDto> GetByProductId(Guid productId);
 
     /// <summary>
     /// Lấy ProductImage theo Id
     /// </summary>
     /// <param name="imageId">Id của ProductImage</param>
-    /// <returns>ProductImage hoặc null nếu không tìm thấy</returns>
-    ProductImage GetById(Guid imageId);
-
-    /// <summary>
-    /// Lấy dữ liệu hình ảnh (byte array) theo imageId
-    /// </summary>
-    /// <param name="imageId">Id của ProductImage</param>
-    /// <returns>Byte array của hình ảnh hoặc null</returns>
-    byte[] GetImageData(Guid imageId);
+    /// <returns>ProductImageDto hoặc null nếu không tìm thấy</returns>
+    ProductImageDto GetById(Guid imageId);
 
     /// <summary>
     /// Lấy hình ảnh chính (primary) của ProductService
     /// </summary>
     /// <param name="productId">Id của ProductService</param>
-    /// <returns>ProductImage chính hoặc null</returns>
-    ProductImage GetPrimaryByProductId(Guid productId);
+    /// <returns>ProductImageDto chính hoặc null</returns>
+    ProductImageDto GetPrimaryByProductId(Guid productId);
 
     /// <summary>
     /// Tìm kiếm ProductImage theo danh sách ProductIds
     /// </summary>
     /// <param name="productIds">Danh sách ProductService Ids</param>
-    /// <returns>Danh sách ProductImage</returns>
-    List<ProductImage> SearchByProductIds(List<Guid> productIds);
+    /// <returns>Danh sách ProductImageDto</returns>
+    List<ProductImageDto> SearchByProductIds(List<Guid> productIds);
 
     #endregion
 
-    #region Create/Update Operations
-
-    /// <summary>
-    /// Lưu hoặc cập nhật ProductImage
-    /// </summary>
-    /// <param name="productImage">ProductImage cần lưu hoặc cập nhật</param>
-    void SaveOrUpdate(ProductImage productImage);
-
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
     #endregion
 
-    #region Delete Operations
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
-    /// Xóa ProductImage (soft delete - đánh dấu IsDeleted = true)
+    /// Xóa ProductImage
     /// </summary>
     /// <param name="imageId">Id của ProductImage cần xóa</param>
     void Delete(Guid imageId);
 
-    /// <summary>
-    /// Xóa vĩnh viễn ProductImage khỏi database
-    /// </summary>
-    /// <param name="imageId">Id của ProductImage cần xóa vĩnh viễn</param>
-    void DeletePermanent(Guid imageId);
-
     #endregion
 
-    #region Utility Operations
-
-    /// <summary>
-    /// Kiểm tra ProductService có hình ảnh chính hay chưa
-    /// </summary>
-    /// <param name="productId">Id của ProductService</param>
-    /// <returns>True nếu có hình ảnh chính</returns>
-    bool HasPrimaryImage(Guid productId);
+    #region ========== BUSINESS LOGIC METHODS ==========
 
     /// <summary>
     /// Đặt hình ảnh làm hình chính cho ProductService

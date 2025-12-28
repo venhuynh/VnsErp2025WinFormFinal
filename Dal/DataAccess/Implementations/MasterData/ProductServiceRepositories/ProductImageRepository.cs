@@ -4,7 +4,9 @@ using System.Data.Linq;
 using System.Linq;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -46,7 +48,7 @@ public class ProductImageRepository : IProductImageRepository
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -56,8 +58,9 @@ public class ProductImageRepository : IProductImageRepository
     {
         var context = new VnsErp2025DataContext(_connectionString);
 
-        // Configure eager loading cho navigation properties
+        // Configure eager loading cho navigation properties nếu cần
         var loadOptions = new DataLoadOptions();
+        // Note: ProductImage không có navigation properties cần eager load
         context.LoadOptions = loadOptions;
 
         return context;
@@ -65,13 +68,71 @@ public class ProductImageRepository : IProductImageRepository
 
     #endregion
 
-    #region Public Methods
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật hình ảnh
+    /// </summary>
+    /// <param name="dto">ProductImageDto</param>
+    public void SaveOrUpdate(ProductImageDto dto)
+    {
+        try
+        {
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
+            using var context = CreateNewContext();
+
+            var existing = dto.Id != Guid.Empty ? 
+                context.ProductImages.FirstOrDefault(x => x.Id == dto.Id) : null;
+
+            if (existing == null)
+            {
+                // Thêm mới
+                var entity = dto.ToEntity();
+                if (entity.Id == Guid.Empty)
+                    entity.Id = Guid.NewGuid();
+                
+                // Thiết lập giá trị mặc định
+                if (entity.CreateDate == default(DateTime))
+                    entity.CreateDate = DateTime.Now;
+                if (entity.CreateBy == Guid.Empty)
+                    entity.CreateBy = Guid.Empty; // Cần set từ context user
+                if (entity.ModifiedBy == Guid.Empty)
+                    entity.ModifiedBy = Guid.Empty; // Cần set từ context user
+
+                context.ProductImages.InsertOnSubmit(entity);
+                context.SubmitChanges();
+                
+                _logger.Info($"Đã thêm mới hình ảnh: {entity.Id} - {entity.FileName ?? entity.RelativePath ?? "N/A"}");
+            }
+            else
+            {
+                // Cập nhật - Sử dụng converter để cập nhật entity từ DTO
+                dto.ToEntity(existing);
+                existing.ModifiedDate = DateTime.Now;
+                
+                context.SubmitChanges();
+                
+                _logger.Info($"Đã cập nhật hình ảnh: {existing.Id} - {existing.FileName ?? existing.RelativePath ?? "N/A"}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lưu hình ảnh '{dto?.FileName ?? dto?.RelativePath ?? "N/A"}': {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lưu hình ảnh: {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy tất cả hình ảnh
     /// </summary>
     /// <returns>Danh sách tất cả hình ảnh metadata</returns>
-    public List<ProductImage> GetAll()
+    public List<ProductImageDto> GetAll()
     {
         try
         {
@@ -83,8 +144,11 @@ public class ProductImageRepository : IProductImageRepository
                 .ThenBy(x => x.CreateDate)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {entities.Count} hình ảnh từ tất cả sản phẩm");
-            return entities;
+            // Chuyển đổi sang DTO
+            var dtos = entities.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} hình ảnh từ tất cả sản phẩm");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -98,7 +162,7 @@ public class ProductImageRepository : IProductImageRepository
     /// </summary>
     /// <param name="productId">ID sản phẩm/dịch vụ</param>
     /// <returns>Danh sách hình ảnh metadata</returns>
-    public List<ProductImage> GetByProductId(Guid productId)
+    public List<ProductImageDto> GetByProductId(Guid productId)
     {
         try
         {
@@ -110,8 +174,18 @@ public class ProductImageRepository : IProductImageRepository
                 .OrderBy(x => x.CreateDate)
                 .ToList();
             
-            _logger.Debug($"Đã lấy {entities.Count} hình ảnh cho sản phẩm: {productId}");
-            return entities;
+            // Chuyển đổi sang DTO và tính toán ImageSequenceNumber
+            var dtos = new List<ProductImageDto>();
+            int sequenceNumber = 1;
+            foreach (var entity in entities)
+            {
+                var dto = entity.ToDto(imageSequenceNumber: sequenceNumber);
+                dtos.Add(dto);
+                sequenceNumber++;
+            }
+            
+            _logger.Debug($"Đã lấy {dtos.Count} hình ảnh cho sản phẩm: {productId}");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -125,7 +199,7 @@ public class ProductImageRepository : IProductImageRepository
     /// </summary>
     /// <param name="imageId">ID hình ảnh</param>
     /// <returns>Hình ảnh hoặc null</returns>
-    public ProductImage GetById(Guid imageId)
+    public ProductImageDto GetById(Guid imageId)
     {
         try
         {
@@ -142,7 +216,7 @@ public class ProductImageRepository : IProductImageRepository
             }
             
             _logger.Debug($"Đã lấy hình ảnh theo ID: {imageId} - {entity.FileName ?? entity.RelativePath ?? "N/A"}");
-            return entity;
+            return entity.ToDto();
         }
         catch (Exception ex)
         {
@@ -152,44 +226,11 @@ public class ProductImageRepository : IProductImageRepository
     }
 
     /// <summary>
-    /// Lấy ImageData của một hình ảnh cụ thể (lazy loading)
-    /// </summary>
-    /// <param name="imageId">ID hình ảnh</param>
-    /// <returns>ImageData binary</returns>
-    public byte[] GetImageData(Guid imageId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var imageData = context.ProductImages
-                .Where(x => x.Id == imageId)
-                .Select(x => x.ImageData != null ? x.ImageData.ToArray() : null)
-                .FirstOrDefault();
-            
-            if (imageData != null)
-            {
-                _logger.Debug($"Đã lấy ImageData cho hình ảnh: {imageId} ({imageData.Length} bytes)");
-            }
-            else
-            {
-                _logger.Debug($"Không tìm thấy ImageData cho hình ảnh: {imageId}");
-            }
-            
-            return imageData;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy ImageData cho hình ảnh '{imageId}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy ImageData cho hình ảnh '{imageId}': {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
     /// Lấy hình ảnh chính của sản phẩm/dịch vụ (lấy hình ảnh đầu tiên)
     /// </summary>
     /// <param name="productId">ID sản phẩm/dịch vụ</param>
     /// <returns>Hình ảnh chính hoặc null</returns>
-    public ProductImage GetPrimaryByProductId(Guid productId)
+    public ProductImageDto GetPrimaryByProductId(Guid productId)
     {
         try
         {
@@ -208,7 +249,7 @@ public class ProductImageRepository : IProductImageRepository
             }
             
             _logger.Debug($"Đã lấy hình ảnh đầu tiên cho sản phẩm: {productId} - {entity.FileName ?? entity.RelativePath ?? "N/A"}");
-            return entity;
+            return entity.ToDto(imageSequenceNumber: 1);
         }
         catch (Exception ex)
         {
@@ -218,70 +259,48 @@ public class ProductImageRepository : IProductImageRepository
     }
 
     /// <summary>
-    /// Lưu hoặc cập nhật hình ảnh
+    /// Tìm kiếm hình ảnh theo danh sách ProductId
     /// </summary>
-    /// <param name="productImage">Hình ảnh cần lưu</param>
-    public void SaveOrUpdate(ProductImage productImage)
+    /// <param name="productIds">Danh sách ID sản phẩm/dịch vụ</param>
+    /// <returns>Danh sách hình ảnh phù hợp</returns>
+    public List<ProductImageDto> SearchByProductIds(List<Guid> productIds)
     {
         try
         {
-            if (productImage == null)
-                throw new ArgumentNullException(nameof(productImage));
+            if (productIds == null || !productIds.Any())
+            {
+                _logger.Debug("SearchByProductIds: Danh sách productIds rỗng");
+                return new List<ProductImageDto>();
+            }
 
             using var context = CreateNewContext();
-
-            var existing = productImage.Id != Guid.Empty ? 
-                context.ProductImages.FirstOrDefault(x => x.Id == productImage.Id) : null;
-
-            if (existing == null)
-            {
-                // Thêm mới
-                if (productImage.Id == Guid.Empty)
-                    productImage.Id = Guid.NewGuid();
-                
-                // Thiết lập giá trị mặc định
-                if (productImage.CreateDate == default(DateTime))
-                    productImage.CreateDate = DateTime.Now;
-                if (productImage.CreateBy == Guid.Empty)
-                    productImage.CreateBy = Guid.Empty; // Cần set từ context user
-                if (productImage.ModifiedBy == Guid.Empty)
-                    productImage.ModifiedBy = Guid.Empty; // Cần set từ context user
-
-                context.ProductImages.InsertOnSubmit(productImage);
-                context.SubmitChanges();
-                
-                _logger.Info($"Đã thêm mới hình ảnh: {productImage.Id} - {productImage.FileName ?? productImage.RelativePath ?? "N/A"}");
-            }
-            else
-            {
-                // Cập nhật
-                existing.ProductId = productImage.ProductId;
-                existing.ImageData = productImage.ImageData;
-                existing.FileName = productImage.FileName;
-                existing.RelativePath = productImage.RelativePath;
-                existing.FullPath = productImage.FullPath;
-                existing.StorageType = productImage.StorageType;
-                existing.FileSize = productImage.FileSize;
-                existing.FileExtension = productImage.FileExtension;
-                existing.MimeType = productImage.MimeType;
-                existing.Checksum = productImage.Checksum;
-                existing.FileExists = productImage.FileExists;
-                existing.LastVerified = productImage.LastVerified;
-                existing.MigrationStatus = productImage.MigrationStatus;
-                existing.ModifiedDate = DateTime.Now;
-                existing.ModifiedBy = productImage.ModifiedBy;
-                
-                context.SubmitChanges();
-                
-                _logger.Info($"Đã cập nhật hình ảnh: {existing.Id} - {existing.FileName ?? existing.RelativePath ?? "N/A"}");
-            }
+            
+            // Load entities trực tiếp từ database
+            var entities = context.ProductImages
+                .Where(x => productIds.Contains(x.ProductId.Value))
+                .OrderBy(x => x.CreateDate)
+                .ToList();
+            
+            // Chuyển đổi sang DTO
+            var dtos = entities.Select(e => e.ToDto()).ToList();
+            
+            _logger.Debug($"Đã tìm kiếm {dtos.Count} hình ảnh cho {productIds.Count} sản phẩm");
+            return dtos;
         }
         catch (Exception ex)
         {
-            _logger.Error($"Lỗi khi lưu hình ảnh '{productImage?.FileName ?? productImage?.RelativePath ?? "N/A"}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lưu hình ảnh: {ex.Message}", ex);
+            _logger.Error($"Lỗi tìm kiếm hình ảnh theo sản phẩm: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi tìm kiếm hình ảnh theo sản phẩm: {ex.Message}", ex);
         }
     }
+
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa hình ảnh (hard delete - vì không có IsActive property)
@@ -312,38 +331,9 @@ public class ProductImageRepository : IProductImageRepository
         }
     }
 
-    /// <summary>
-    /// Xóa vĩnh viễn hình ảnh
-    /// </summary>
-    /// <param name="imageId">ID hình ảnh</param>
-    public void DeletePermanent(Guid imageId)
-    {
-        // Vì không có soft delete, Delete và DeletePermanent giống nhau
-        Delete(imageId);
-    }
+    #endregion
 
-    /// <summary>
-    /// Kiểm tra xem sản phẩm có hình ảnh chính chưa (kiểm tra xem có hình ảnh nào không)
-    /// </summary>
-    /// <param name="productId">ID sản phẩm</param>
-    /// <returns>True nếu đã có hình ảnh</returns>
-    public bool HasPrimaryImage(Guid productId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var result = context.ProductImages
-                .Any(x => x.ProductId == productId);
-            
-            _logger.Debug($"HasPrimaryImage check cho productId {productId}: {result}");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi kiểm tra hình ảnh chính cho sản phẩm '{productId}': {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi kiểm tra hình ảnh chính cho sản phẩm '{productId}': {ex.Message}", ex);
-        }
-    }
+    #region ========== BUSINESS LOGIC METHODS ==========
 
     /// <summary>
     /// Đặt hình ảnh làm hình ảnh chính (không có IsPrimary property, chỉ log)
@@ -369,39 +359,6 @@ public class ProductImageRepository : IProductImageRepository
         {
             _logger.Error($"Lỗi khi đặt hình ảnh làm chính '{imageId}': {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi đặt hình ảnh làm chính '{imageId}': {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Tìm kiếm hình ảnh theo danh sách ProductId
-    /// </summary>
-    /// <param name="productIds">Danh sách ID sản phẩm/dịch vụ</param>
-    /// <returns>Danh sách hình ảnh phù hợp</returns>
-    public List<ProductImage> SearchByProductIds(List<Guid> productIds)
-    {
-        try
-        {
-            if (productIds == null || !productIds.Any())
-            {
-                _logger.Debug("SearchByProductIds: Danh sách productIds rỗng");
-                return new List<ProductImage>();
-            }
-
-            using var context = CreateNewContext();
-            
-            // Load entities trực tiếp từ database
-            var entities = context.ProductImages
-                .Where(x => productIds.Contains(x.ProductId.Value))
-                .OrderBy(x => x.CreateDate)
-                .ToList();
-            
-            _logger.Debug($"Đã tìm kiếm {entities.Count} hình ảnh cho {productIds.Count} sản phẩm");
-            return entities;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi tìm kiếm hình ảnh theo sản phẩm: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi tìm kiếm hình ảnh theo sản phẩm: {ex.Message}", ex);
         }
     }
 
