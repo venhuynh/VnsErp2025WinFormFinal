@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.CustomerPartner;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -49,7 +51,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -83,155 +85,19 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         return context;
     }
 
-        /// <summary>
-        /// Materialize navigation properties để tránh lỗi "Cannot access a disposed object"
-        /// Force load EntitySet và navigation properties trước khi dispose DataContext
-        /// </summary>
-        /// <param name="partner">BusinessPartner entity</param>
-        private void MaterializeNavigationProperties(BusinessPartner partner)
-        {
-            if (partner == null) return;
-
-            _logger.Debug($"[Materialize] Bắt đầu materialize navigation properties cho partner {partner.Id} ({partner.PartnerCode})");
-
-            try
-            {
-                // Force load ApplicationUser (CreatedBy) - materialize toàn bộ object
-                try
-                {
-                    _logger.Debug($"[Materialize] Đang materialize ApplicationUser cho partner {partner.Id}");
-                    var createdByUser = partner.ApplicationUser;
-                    if (createdByUser != null)
-                    {
-                        // Materialize tất cả properties cần thiết
-                        var userName = createdByUser.UserName;
-                        var userId = createdByUser.Id;
-                        _logger.Debug($"[Materialize] Đã materialize ApplicationUser: {userName} (Id: {userId})");
-                    }
-                    else
-                    {
-                        _logger.Debug($"[Materialize] ApplicationUser là null cho partner {partner.Id}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error($"[Materialize] LỖI khi materialize ApplicationUser cho partner {partner.Id}: {ex.Message}", ex);
-                    _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
-                }
-
-                // Force load ApplicationUser2 (ModifiedBy) - materialize toàn bộ object
-                try
-                {
-                    _logger.Debug($"[Materialize] Đang materialize ApplicationUser2 cho partner {partner.Id}");
-                    var modifiedByUser = partner.ApplicationUser2;
-                    if (modifiedByUser != null)
-                    {
-                        // Materialize tất cả properties cần thiết
-                        var userName = modifiedByUser.UserName;
-                        var userId = modifiedByUser.Id;
-                        _logger.Debug($"[Materialize] Đã materialize ApplicationUser2: {userName} (Id: {userId})");
-                    }
-                    else
-                    {
-                        _logger.Debug($"[Materialize] ApplicationUser2 là null cho partner {partner.Id}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error($"[Materialize] LỖI khi materialize ApplicationUser2 cho partner {partner.Id}: {ex.Message}", ex);
-                    _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
-                }
-
-                // Force load BusinessPartner_BusinessPartnerCategories (EntitySet)
-                try
-                {
-                    _logger.Debug($"[Materialize] Đang materialize BusinessPartner_BusinessPartnerCategories cho partner {partner.Id}");
-                    var categories = partner.BusinessPartner_BusinessPartnerCategories;
-                    if (categories != null)
-                    {
-                        // Force load toàn bộ collection
-                        var categoriesList = categories.ToList();
-                        _logger.Debug($"[Materialize] Đã load {categoriesList.Count} categories cho partner {partner.Id}");
-                        
-                        // Force load BusinessPartnerCategory cho mỗi mapping
-                        int index = 0;
-                        foreach (var mapping in categoriesList)
-                        {
-                            try
-                            {
-                                _logger.Debug($"[Materialize] Đang materialize category mapping {index} cho partner {partner.Id}");
-                                var category = mapping.BusinessPartnerCategory;
-                                if (category != null)
-                                {
-                                    // Materialize tất cả category properties cần thiết
-                                    var categoryName = category.CategoryName;
-                                    var categoryCode = category.CategoryCode;
-                                    var parentId = category.ParentId;
-                                    var categoryId = category.Id;
-                                    _logger.Debug($"[Materialize] Đã materialize category: {categoryName} (Id: {categoryId}, ParentId: {parentId})");
-                                }
-                                else
-                                {
-                                    _logger.Warning($"[Materialize] BusinessPartnerCategory là null cho mapping {index}");
-                                }
-                                index++;
-                            }
-                            catch (Exception ex)
-                            {
-                                _logger.Error($"[Materialize] LỖI khi materialize BusinessPartnerCategory cho mapping {index}: {ex.Message}", ex);
-                                _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        _logger.Debug($"[Materialize] BusinessPartner_BusinessPartnerCategories là null cho partner {partner.Id}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error($"[Materialize] LỖI khi materialize BusinessPartner_BusinessPartnerCategories cho partner {partner.Id}: {ex.Message}", ex);
-                    _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
-                }
-
-                // Force load BusinessPartnerSites nếu cần
-                try
-                {
-                    _logger.Debug($"[Materialize] Đang materialize BusinessPartnerSites cho partner {partner.Id}");
-                    var sites = partner.BusinessPartnerSites;
-                    if (sites != null)
-                    {
-                        var sitesList = sites.ToList();
-                        _logger.Debug($"[Materialize] Đã load {sitesList.Count} sites cho partner {partner.Id}");
-                        foreach (var site in sitesList)
-                        {
-                            var siteName = site.SiteName; // Materialize
-                        }
-                    }
-                    else
-                    {
-                        _logger.Debug($"[Materialize] BusinessPartnerSites là null cho partner {partner.Id}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error($"[Materialize] LỖI khi materialize BusinessPartnerSites cho partner {partner.Id}: {ex.Message}", ex);
-                    _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
-                }
-
-                _logger.Debug($"[Materialize] Hoàn thành materialize navigation properties cho partner {partner.Id}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"[Materialize] LỖI TỔNG QUÁT khi materialize navigation properties cho partner {partner.Id}: {ex.Message}", ex);
-                _logger.Error($"[Materialize] StackTrace: {ex.StackTrace}");
-                // Không throw exception, chỉ log warning vì có thể một số properties chưa được load
-            }
-        }
+    /// <summary>
+    /// Tạo DataContext mới cho Lookup (không load navigation properties để tối ưu hiệu năng)
+    /// </summary>
+    /// <returns>DataContext mới không có LoadOptions</returns>
+    private VnsErp2025DataContext CreateLookupContext()
+    {
+        // Tạo context mới nhưng KHÔNG set LoadOptions để tránh load navigation properties không cần thiết
+        return new VnsErp2025DataContext(_connectionString);
+    }
 
     #endregion
 
-    #region Create
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
     /// Thêm đối tác mới với validation cơ bản (mã/code duy nhất, tên bắt buộc).
@@ -241,8 +107,8 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <param name="partnerType">Loại đối tác</param>
     /// <param name="isActive">Trạng thái</param>
     /// <param name="createdBy">ID người tạo (optional)</param>
-    /// <returns>Đối tác đã tạo</returns>
-    public BusinessPartner AddNewPartner(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null)
+    /// <returns>BusinessPartnerDetailDto đã tạo</returns>
+    public BusinessPartnerDetailDto AddNewPartner(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null)
     {
         try
         {
@@ -275,7 +141,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             context.SubmitChanges();
             
             _logger.Info($"Đã thêm mới đối tác: {entity.PartnerCode} - {entity.PartnerName}");
-            return entity;
+            return entity.ToDetailDto();
         }
         catch (SqlException sqlEx) when (sqlEx.Number == 2627)
         {
@@ -310,7 +176,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <param name="partnerType">Loại đối tác</param>
     /// <param name="isActive">Trạng thái</param>
     /// <param name="createdBy">ID người tạo (optional)</param>
-    public async Task<BusinessPartner> AddNewPartnerAsync(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null)
+    public async Task<BusinessPartnerDetailDto> AddNewPartnerAsync(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null)
     {
         try
         {
@@ -343,7 +209,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             await Task.Run(() => context.SubmitChanges());
             
             _logger.Info($"Đã thêm mới đối tác (async): {entity.PartnerCode} - {entity.PartnerName}");
-            return entity;
+            return entity.ToDetailDto();
         }
         catch (SqlException sqlEx) when (sqlEx.Number == 2627)
         {
@@ -370,14 +236,83 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         }
     }
 
+    /// <summary>
+    /// Thêm mới hoặc cập nhật đầy đủ thông tin đối tác.
+    /// Nếu Id tồn tại -> cập nhật tất cả trường theo DTO truyền vào.
+    /// Nếu không tồn tại -> thêm mới.
+    /// </summary>
+    /// <param name="dto">BusinessPartnerDetailDto</param>
+    /// <param name="userId">ID người dùng thực hiện (optional, dùng cho audit fields)</param>
+    public void SaveOrUpdate(BusinessPartnerDetailDto dto, Guid? userId = null)
+    {
+        if (dto == null) throw new ArgumentNullException(nameof(dto));
+        try
+        {
+            using var context = CreateNewContext();
+            var existing = context.BusinessPartners.FirstOrDefault(x => x.Id == dto.Id && !x.IsDeleted);
+            if (existing == null || dto.Id == Guid.Empty)
+            {
+                // Thêm mới - Chuyển đổi DTO sang Entity
+                var entity = dto.ToEntity();
+                if (entity.Id == Guid.Empty) entity.Id = Guid.NewGuid();
+                entity.CreatedDate = DateTime.Now;
+                entity.CreatedBy = userId;
+                entity.ModifiedBy = null;
+                entity.IsDeleted = false;
+                entity.DeletedBy = null;
+                entity.DeletedDate = null;
+                context.BusinessPartners.InsertOnSubmit(entity);
+                
+                // Tạo BusinessPartnerSite là trụ sở chính
+                var mainSite = new BusinessPartnerSite
+                {
+                    Id = Guid.NewGuid(),
+                    PartnerId = entity.Id,
+                    SiteCode = $"{entity.PartnerCode}-MAIN",
+                    SiteName = $"Trụ sở chính - {entity.PartnerName}",
+                    Address = entity.Address,
+                    City = entity.City,
+                    Province = entity.City,
+                    Country = entity.Country,
+                    Phone = entity.Phone,
+                    Email = entity.Email,
+                    IsDefault = true,
+                    IsActive = entity.IsActive,
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = null
+                };
+                
+                context.BusinessPartnerSites.InsertOnSubmit(mainSite);
+                context.SubmitChanges();
+                
+                _logger.Info($"Đã thêm mới đối tác và trụ sở chính (SaveOrUpdate): {entity.PartnerCode} - {entity.PartnerName}");
+            }
+            else
+            {
+                // Cập nhật - Sử dụng converter để cập nhật entity từ DTO
+                dto.ToEntity(existing);
+                existing.UpdatedDate = DateTime.Now;
+                
+                context.SubmitChanges();
+                
+                _logger.Info($"Đã cập nhật đối tác (SaveOrUpdate): {existing.PartnerCode} - {existing.PartnerName}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lưu/cập nhật đối tác: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lưu/cập nhật đối tác: {ex.Message}", ex);
+        }
+    }
+
     #endregion
 
-    #region Read
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy đối tác theo Id (chỉ lấy các đối tác chưa bị xóa).
     /// </summary>
-    public BusinessPartner GetById(Guid id)
+    public BusinessPartnerDetailDto GetById(Guid id)
     {
         try
         {
@@ -386,27 +321,26 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             
             if (partner != null)
             {
-                // Materialize navigation properties trước khi dispose context
-                MaterializeNavigationProperties(partner);
-                
                 _logger.Debug($"Đã lấy đối tác theo ID: {id} - {partner.PartnerName}");
+                return partner.ToDetailDto();
             }
             
-            return partner;
+            return null;
         }
         catch (SqlException sqlEx) when (sqlEx.Number == 1205)
         {
             // Deadlock retry
             System.Threading.Thread.Sleep(100);
             using var context = CreateNewContext();
-            var partner = context.BusinessPartners.FirstOrDefault(x => x.Id == id);
+            var partner = context.BusinessPartners.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
             
             if (partner != null)
             {
                 _logger.Debug($"Đã lấy đối tác theo ID (retry): {id} - {partner.PartnerName}");
+                return partner.ToDetailDto();
             }
             
-            return partner;
+            return null;
         }
         catch (Exception ex)
         {
@@ -418,7 +352,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Lấy đối tác theo Id (Async) - chỉ lấy các đối tác chưa bị xóa.
     /// </summary>
-    public async Task<BusinessPartner> GetByIdAsync(Guid id)
+    public async Task<BusinessPartnerDetailDto> GetByIdAsync(Guid id)
     {
         try
         {
@@ -427,27 +361,26 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             
             if (partner != null)
             {
-                // Materialize navigation properties trước khi dispose context
-                await Task.Run(() => MaterializeNavigationProperties(partner));
-                
                 _logger.Debug($"Đã lấy đối tác theo ID (async): {id} - {partner.PartnerName}");
+                return partner.ToDetailDto();
             }
             
-            return partner;
+            return null;
         }
         catch (SqlException sqlEx) when (sqlEx.Number == 1205)
         {
             // Deadlock retry
             await Task.Delay(100);
             using var context = CreateNewContext();
-            var partner = await Task.Run(() => context.BusinessPartners.FirstOrDefault(x => x.Id == id));
+            var partner = await Task.Run(() => context.BusinessPartners.FirstOrDefault(x => x.Id == id && !x.IsDeleted));
             
             if (partner != null)
             {
                 _logger.Debug($"Đã lấy đối tác theo ID (async retry): {id} - {partner.PartnerName}");
+                return partner.ToDetailDto();
             }
             
-            return partner;
+            return null;
         }
         catch (Exception ex)
         {
@@ -459,7 +392,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Lấy đối tác theo mã (chỉ lấy các đối tác chưa bị xóa).
     /// </summary>
-    public BusinessPartner GetByCode(string code)
+    public BusinessPartnerDetailDto GetByCode(string code)
     {
         try
         {
@@ -471,9 +404,10 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             if (partner != null)
             {
                 _logger.Debug($"Đã lấy đối tác theo mã: {code} - {partner.PartnerName}");
+                return partner.ToDetailDto();
             }
             
-            return partner;
+            return null;
         }
         catch (Exception ex)
         {
@@ -485,7 +419,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Lấy đối tác theo mã (Async) - chỉ lấy các đối tác chưa bị xóa.
     /// </summary>
-    public async Task<BusinessPartner> GetByCodeAsync(string code)
+    public async Task<BusinessPartnerDetailDto> GetByCodeAsync(string code)
     {
         try
         {
@@ -497,9 +431,10 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
             if (partner != null)
             {
                 _logger.Debug($"Đã lấy đối tác theo mã (async): {code} - {partner.PartnerName}");
+                return partner.ToDetailDto();
             }
             
-            return partner;
+            return null;
         }
         catch (Exception ex)
         {
@@ -511,11 +446,16 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Tìm kiếm đối tác theo tên (contains, case-insensitive) - chỉ lấy các đối tác chưa bị xóa.
     /// </summary>
-    public List<BusinessPartner> SearchByName(string keyword)
+    public List<BusinessPartnerListDto> SearchByName(string keyword)
     {
         try
         {
             using var context = CreateNewContext();
+            
+            // Lấy tất cả categories để tính FullPath
+            var allCategories = context.BusinessPartnerCategories.ToList();
+            var categoryDict = allCategories.ToDictionary(c => c.Id);
+            
             List<BusinessPartner> results;
             
             if (string.IsNullOrWhiteSpace(keyword))
@@ -533,13 +473,10 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                 _logger.Debug($"Đã tìm kiếm đối tác theo keyword '{keyword}': {results.Count} kết quả");
             }
             
-            // Materialize navigation properties cho tất cả partners trước khi dispose context
-            foreach (var partner in results)
-            {
-                MaterializeNavigationProperties(partner);
-            }
+            // Chuyển đổi sang DTO - Lấy thông tin từ navigation properties trước khi dispose
+            var dtos = results.Select(p => p.ToListDto(categoryDict)).ToList();
             
-            return results;
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -551,21 +488,23 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Lấy danh sách đối tác đang hoạt động (chỉ lấy các đối tác chưa bị xóa).
     /// </summary>
-    public List<BusinessPartner> GetActivePartners()
+    public List<BusinessPartnerListDto> GetActivePartners()
     {
         try
         {
             using var context = CreateNewContext();
+            
+            // Lấy tất cả categories để tính FullPath
+            var allCategories = context.BusinessPartnerCategories.ToList();
+            var categoryDict = allCategories.ToDictionary(c => c.Id);
+            
             var partners = context.BusinessPartners.Where(x => x.IsActive == true && !x.IsDeleted).ToList();
             
-            // Materialize navigation properties cho tất cả partners trước khi dispose context
-            foreach (var partner in partners)
-            {
-                MaterializeNavigationProperties(partner);
-            }
+            // Chuyển đổi sang DTO - Lấy thông tin từ navigation properties trước khi dispose
+            var dtos = partners.Select(p => p.ToListDto(categoryDict)).ToList();
             
-            _logger.Debug($"Đã lấy {partners.Count} đối tác đang hoạt động");
-            return partners;
+            _logger.Debug($"Đã lấy {dtos.Count} đối tác đang hoạt động");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -577,44 +516,31 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Lấy danh sách đối tác đang hoạt động (Async) - chỉ lấy các đối tác chưa bị xóa.
     /// </summary>
-    public async Task<List<BusinessPartner>> GetActivePartnersAsync()
+    public async Task<List<BusinessPartnerListDto>> GetActivePartnersAsync()
     {
         try
         {
             _logger.Debug("[GetActivePartnersAsync] Bắt đầu lấy danh sách đối tác active");
             
-            // Sử dụng Task.Run để chạy trên thread pool, nhưng đảm bảo materialize đầy đủ
+            // Sử dụng Task.Run để chạy trên thread pool
             return await Task.Run(() =>
             {
                 _logger.Debug("[GetActivePartnersAsync] Tạo DataContext mới");
                 using var context = CreateNewContext();
                 
+                // Lấy tất cả categories để tính FullPath
+                var allCategories = context.BusinessPartnerCategories.ToList();
+                var categoryDict = allCategories.ToDictionary(c => c.Id);
+                
                 _logger.Debug("[GetActivePartnersAsync] Đang query database");
                 var partners = context.BusinessPartners.Where(x => x.IsActive == true && !x.IsDeleted).ToList();
                 _logger.Debug($"[GetActivePartnersAsync] Đã query được {partners.Count} đối tác");
                 
-                // Materialize navigation properties cho tất cả partners TRƯỚC KHI dispose context
-                int index = 0;
-                foreach (var partner in partners)
-                {
-                    try
-                    {
-                        _logger.Debug($"[GetActivePartnersAsync] Đang materialize partner {index + 1}/{partners.Count}: {partner.PartnerCode}");
-                        MaterializeNavigationProperties(partner);
-                        _logger.Debug($"[GetActivePartnersAsync] Đã materialize xong partner {index + 1}: {partner.PartnerCode}");
-                        index++;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error($"[GetActivePartnersAsync] LỖI khi materialize partner {index + 1} ({partner.PartnerCode}): {ex.Message}", ex);
-                        _logger.Error($"[GetActivePartnersAsync] StackTrace: {ex.StackTrace}");
-                    }
-                }
+                // Chuyển đổi sang DTO - Lấy thông tin từ navigation properties trước khi dispose
+                var dtos = partners.Select(p => p.ToListDto(categoryDict)).ToList();
                 
-                _logger.Debug($"[GetActivePartnersAsync] Hoàn thành materialize, chuẩn bị dispose context");
-                // Context sẽ được dispose ở đây khi ra khỏi using block
-                _logger.Debug($"[GetActivePartnersAsync] Đã lấy {partners.Count} đối tác đang hoạt động (async)");
-                return partners;
+                _logger.Debug($"[GetActivePartnersAsync] Đã lấy {dtos.Count} đối tác đang hoạt động (async)");
+                return dtos;
             });
         }
         catch (Exception ex)
@@ -626,21 +552,11 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     }
 
     /// <summary>
-    /// Tạo DataContext mới cho Lookup (không load navigation properties để tối ưu hiệu năng)
-    /// </summary>
-    /// <returns>DataContext mới không có LoadOptions</returns>
-    private VnsErp2025DataContext CreateLookupContext()
-    {
-        // Tạo context mới nhưng KHÔNG set LoadOptions để tránh load navigation properties không cần thiết
-        return new VnsErp2025DataContext(_connectionString);
-    }
-
-    /// <summary>
     /// Lấy danh sách đối tác đang hoạt động cho Lookup (chỉ load các trường cần thiết).
     /// Không load navigation properties để tối ưu hiệu năng.
     /// LINQ to SQL sẽ tự động chỉ select các trường được sử dụng (Id, PartnerCode, PartnerType, PartnerName, LogoThumbnailData).
     /// </summary>
-    public List<BusinessPartner> GetActivePartnersForLookup()
+    public List<BusinessPartnerLookupDto> GetActivePartnersForLookup()
     {
         try
         {
@@ -655,20 +571,11 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                 .Where(x => x.IsActive == true && !x.IsDeleted)
                 .ToList();
             
-            // Materialize chỉ các trường cần thiết để đảm bảo chúng được load từ DB
-            // Các trường khác sẽ là null/default nhưng không ảnh hưởng vì ta chỉ dùng các trường này
-            foreach (var partner in partners)
-            {
-                // Force materialize các trường cần thiết
-                var _ = partner.Id;
-                var __ = partner.PartnerCode;
-                var ___ = partner.PartnerType;
-                var ____ = partner.PartnerName;
-                var _____ = partner.LogoThumbnailData;
-            }
+            // Chuyển đổi sang DTO
+            var dtos = partners.Select(p => p.ToLookupDto()).ToList();
             
-            _logger.Debug($"[GetActivePartnersForLookup] Đã lấy {partners.Count} đối tác cho lookup");
-            return partners;
+            _logger.Debug($"[GetActivePartnersForLookup] Đã lấy {dtos.Count} đối tác cho lookup");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -680,7 +587,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
     /// <summary>
     /// Lấy danh sách đối tác đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
     /// </summary>
-    public async Task<List<BusinessPartner>> GetActivePartnersForLookupAsync()
+    public async Task<List<BusinessPartnerLookupDto>> GetActivePartnersForLookupAsync()
     {
         try
         {
@@ -695,18 +602,11 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
                     .Where(x => x.IsActive == true && !x.IsDeleted)
                     .ToList();
                 
-                // Materialize chỉ các trường cần thiết
-                foreach (var partner in partners)
-                {
-                    var _ = partner.Id;
-                    var __ = partner.PartnerCode;
-                    var ___ = partner.PartnerType;
-                    var ____ = partner.PartnerName;
-                    var _____ = partner.LogoThumbnailData;
-                }
+                // Chuyển đổi sang DTO
+                var dtos = partners.Select(p => p.ToLookupDto()).ToList();
                 
-                _logger.Debug($"[GetActivePartnersForLookupAsync] Đã lấy {partners.Count} đối tác cho lookup (async)");
-                return partners;
+                _logger.Debug($"[GetActivePartnersForLookupAsync] Đã lấy {dtos.Count} đối tác cho lookup (async)");
+                return dtos;
             });
         }
         catch (Exception ex)
@@ -718,7 +618,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
 
     #endregion
 
-    #region Update
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Cập nhật thông tin liên hệ (điện thoại, email) cho đối tác.
@@ -782,7 +682,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
 
     #endregion
 
-    #region Delete
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa đối tác theo Id (Soft Delete - đánh dấu IsDeleted = true).
@@ -844,7 +744,7 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
 
     #endregion
 
-    #region Exists Checks
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra tồn tại theo Id (chỉ kiểm tra các đối tác chưa bị xóa).
@@ -916,101 +816,6 @@ public class BusinessPartnerRepository : IBusinessPartnerRepository
         {
             _logger.Error($"Lỗi khi kiểm tra mã đối tác '{code}': {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi kiểm tra mã đối tác '{code}': {ex.Message}", ex);
-        }
-    }
-
-    #endregion
-
-    #region Save/Update Full Entity
-
-    /// <summary>
-    /// Thêm mới hoặc cập nhật đầy đủ thông tin đối tác.
-    /// Nếu Id tồn tại -> cập nhật tất cả trường theo entity truyền vào.
-    /// Nếu không tồn tại -> thêm mới.
-    /// </summary>
-    /// <param name="source">Entity đối tác</param>
-    /// <param name="userId">ID người dùng thực hiện (optional, dùng cho audit fields)</param>
-    public void SaveOrUpdate(BusinessPartner source, Guid? userId = null)
-    {
-        if (source == null) throw new ArgumentNullException(nameof(source));
-        try
-        {
-            using var context = CreateNewContext();
-            var existing = context.BusinessPartners.FirstOrDefault(x => x.Id == source.Id && !x.IsDeleted);
-            if (existing == null || source.Id == Guid.Empty)
-            {
-                // ensure new Id
-                if (source.Id == Guid.Empty) source.Id = Guid.NewGuid();
-                source.CreatedDate = DateTime.Now;
-                source.CreatedBy = userId;
-                source.ModifiedBy = null;
-                source.IsDeleted = false;
-                source.DeletedBy = null;
-                source.DeletedDate = null;
-                context.BusinessPartners.InsertOnSubmit(source);
-                
-                // Tạo BusinessPartnerSite là trụ sở chính
-                var mainSite = new BusinessPartnerSite
-                {
-                    Id = Guid.NewGuid(),
-                    PartnerId = source.Id,
-                    SiteCode = $"{source.PartnerCode}-MAIN",
-                    SiteName = $"Trụ sở chính - {source.PartnerName}",
-                    Address = source.Address,
-                    City = source.City,
-                    Province = source.City, // Sử dụng City làm Province cho trụ sở chính
-                    Country = source.Country,
-                    Phone = source.Phone,
-                    Email = source.Email,
-                    IsDefault = true, // Đánh dấu là trụ sở chính
-                    IsActive = source.IsActive,
-                    CreatedDate = DateTime.Now,
-                    UpdatedDate = null
-                };
-                
-                context.BusinessPartnerSites.InsertOnSubmit(mainSite);
-                context.SubmitChanges();
-                
-                _logger.Info($"Đã thêm mới đối tác và trụ sở chính (SaveOrUpdate): {source.PartnerCode} - {source.PartnerName}");
-            }
-            else
-            {
-                // copy fields
-                existing.PartnerCode = source.PartnerCode;
-                existing.PartnerName = source.PartnerName;
-                existing.PartnerType = source.PartnerType;
-                existing.TaxCode = source.TaxCode;
-                existing.Phone = source.Phone;
-                existing.Email = source.Email;
-                existing.Website = source.Website;
-                existing.Address = source.Address;
-                existing.City = source.City;
-                existing.Country = source.Country;
-                existing.IsActive = source.IsActive;
-                
-                // Copy Logo fields (metadata only, Logo binary field not in DataContext)
-                existing.LogoFileName = source.LogoFileName;
-                existing.LogoRelativePath = source.LogoRelativePath;
-                existing.LogoFullPath = source.LogoFullPath;
-                existing.LogoStorageType = source.LogoStorageType;
-                existing.LogoFileSize = source.LogoFileSize;
-                existing.LogoChecksum = source.LogoChecksum;
-                
-                // Copy LogoThumbnailData (binary data stored in database)
-                existing.LogoThumbnailData = source.LogoThumbnailData;
-                
-                existing.UpdatedDate = DateTime.Now;
-                
-                
-                context.SubmitChanges();
-                
-                _logger.Info($"Đã cập nhật đối tác (SaveOrUpdate): {existing.PartnerCode} - {existing.PartnerName}");
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lưu/cập nhật đối tác: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lưu/cập nhật đối tác: {ex.Message}", ex);
         }
     }
 

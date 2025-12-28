@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 
 namespace Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 
@@ -11,7 +11,7 @@ namespace Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 /// </summary>
 public interface IBusinessPartnerRepository
 {
-    #region Create
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
     /// Thêm đối tác mới với validation cơ bản (mã/code duy nhất, tên bắt buộc).
@@ -21,8 +21,8 @@ public interface IBusinessPartnerRepository
     /// <param name="partnerType">Loại đối tác</param>
     /// <param name="isActive">Trạng thái</param>
     /// <param name="createdBy">ID người tạo (optional)</param>
-    /// <returns>Đối tác đã tạo</returns>
-    BusinessPartner AddNewPartner(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null);
+    /// <returns>BusinessPartnerDetailDto đã tạo</returns>
+    BusinessPartnerDetailDto AddNewPartner(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null);
 
     /// <summary>
     /// Thêm đối tác mới (Async).
@@ -32,61 +32,70 @@ public interface IBusinessPartnerRepository
     /// <param name="partnerType">Loại đối tác</param>
     /// <param name="isActive">Trạng thái</param>
     /// <param name="createdBy">ID người tạo (optional)</param>
-    Task<BusinessPartner> AddNewPartnerAsync(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null);
+    Task<BusinessPartnerDetailDto> AddNewPartnerAsync(string code, string name, int partnerType, bool isActive = true, Guid? createdBy = null);
+
+    /// <summary>
+    /// Thêm mới hoặc cập nhật đầy đủ thông tin đối tác.
+    /// Nếu Id tồn tại -> cập nhật tất cả trường theo DTO truyền vào.
+    /// Nếu không tồn tại -> thêm mới.
+    /// </summary>
+    /// <param name="dto">BusinessPartnerDetailDto</param>
+    /// <param name="userId">ID người dùng thực hiện (optional, dùng cho audit fields)</param>
+    void SaveOrUpdate(BusinessPartnerDetailDto dto, Guid? userId = null);
 
     #endregion
 
-    #region Read
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy đối tác theo Id.
     /// </summary>
-    BusinessPartner GetById(Guid id);
+    BusinessPartnerDetailDto GetById(Guid id);
 
     /// <summary>
     /// Lấy đối tác theo Id (Async).
     /// </summary>
-    Task<BusinessPartner> GetByIdAsync(Guid id);
+    Task<BusinessPartnerDetailDto> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Lấy đối tác theo mã.
     /// </summary>
-    BusinessPartner GetByCode(string code);
+    BusinessPartnerDetailDto GetByCode(string code);
 
     /// <summary>
     /// Lấy đối tác theo mã (Async).
     /// </summary>
-    Task<BusinessPartner> GetByCodeAsync(string code);
+    Task<BusinessPartnerDetailDto> GetByCodeAsync(string code);
 
     /// <summary>
     /// Tìm kiếm đối tác theo tên (contains, case-insensitive).
     /// </summary>
-    List<BusinessPartner> SearchByName(string keyword);
+    List<BusinessPartnerListDto> SearchByName(string keyword);
 
     /// <summary>
     /// Lấy danh sách đối tác đang hoạt động.
     /// </summary>
-    List<BusinessPartner> GetActivePartners();
+    List<BusinessPartnerListDto> GetActivePartners();
 
     /// <summary>
     /// Lấy danh sách đối tác đang hoạt động (Async).
     /// </summary>
-    Task<List<BusinessPartner>> GetActivePartnersAsync();
+    Task<List<BusinessPartnerListDto>> GetActivePartnersAsync();
 
     /// <summary>
     /// Lấy danh sách đối tác đang hoạt động cho Lookup (chỉ load các trường cần thiết: Id, PartnerCode, PartnerType, PartnerName, LogoThumbnailData).
     /// Không load navigation properties để tối ưu hiệu năng.
     /// </summary>
-    List<BusinessPartner> GetActivePartnersForLookup();
+    List<BusinessPartnerLookupDto> GetActivePartnersForLookup();
 
     /// <summary>
     /// Lấy danh sách đối tác đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
     /// </summary>
-    Task<List<BusinessPartner>> GetActivePartnersForLookupAsync();
+    Task<List<BusinessPartnerLookupDto>> GetActivePartnersForLookupAsync();
 
     #endregion
 
-    #region Update
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Cập nhật thông tin liên hệ (điện thoại, email) cho đối tác.
@@ -107,7 +116,7 @@ public interface IBusinessPartnerRepository
 
     #endregion
 
-    #region Delete
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa đối tác theo Id (Soft Delete - đánh dấu IsDeleted = true).
@@ -125,7 +134,7 @@ public interface IBusinessPartnerRepository
 
     #endregion
 
-    #region Exists Checks
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra tồn tại theo Id.
@@ -141,19 +150,6 @@ public interface IBusinessPartnerRepository
     /// Kiểm tra tồn tại mã đối tác (Async).
     /// </summary>
     Task<bool> IsPartnerCodeExistsAsync(string code);
-
-    #endregion
-
-    #region Save/Update Full Entity
-
-    /// <summary>
-    /// Thêm mới hoặc cập nhật đầy đủ thông tin đối tác.
-    /// Nếu Id tồn tại -> cập nhật tất cả trường theo entity truyền vào.
-    /// Nếu không tồn tại -> thêm mới.
-    /// </summary>
-    /// <param name="source">Entity đối tác</param>
-    /// <param name="userId">ID người dùng thực hiện (optional, dùng cho audit fields)</param>
-    void SaveOrUpdate(BusinessPartner source, Guid? userId = null);
 
     #endregion
 }

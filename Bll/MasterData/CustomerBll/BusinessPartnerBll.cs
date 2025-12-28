@@ -1,7 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
-using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,8 +20,7 @@ using Logger.Interfaces;
 namespace Bll.MasterData.CustomerBll
 {
     /// <summary>
-    /// Business logic layer cho BusinessPartner. Trả về entity để UI tự chuyển đổi sang DTO.
-    /// Tránh phụ thuộc ngược sang project MasterData (DTO) để không tạo vòng tham chiếu.
+    /// Business logic layer cho BusinessPartner
     /// </summary>
     public class BusinessPartnerBll
     {
@@ -49,7 +48,7 @@ namespace Bll.MasterData.CustomerBll
 
         #endregion
 
-        #region Helper Methods
+        #region ========== HELPER METHODS ==========
 
         /// <summary>
         /// Lấy hoặc khởi tạo Repository (lazy initialization)
@@ -118,36 +117,18 @@ namespace Bll.MasterData.CustomerBll
 
         #endregion
 
+        #region ========== READ OPERATIONS ==========
 
         /// <summary>
-        /// Lấy toàn bộ đối tác (entities) - Async.
+        /// Lấy toàn bộ đối tác - Async.
         /// </summary>
-        public async Task<List<BusinessPartner>> GetAllAsync()
+        public async Task<List<BusinessPartnerListDto>> GetAllAsync()
         {
             try
             {
                 _logger.Debug("[BLL] GetAllAsync: Bắt đầu gọi repository");
                 var result = await GetDataAccess().GetActivePartnersAsync();
-                _logger.Debug($"[BLL] GetAllAsync: Đã nhận được {result?.Count ?? 0} entities từ repository");
-                
-                // Log thông tin về navigation properties của entities đầu tiên (nếu có)
-                if (result != null && result.Count > 0)
-                {
-                    var firstPartner = result[0];
-                    try
-                    {
-                        var hasApplicationUser = firstPartner.ApplicationUser != null;
-                        var hasApplicationUser2 = firstPartner.ApplicationUser2 != null;
-                        var categoriesCount = firstPartner.BusinessPartner_BusinessPartnerCategories?.Count ?? 0;
-                        _logger.Debug($"[BLL] GetAllAsync: Entity đầu tiên - ApplicationUser: {hasApplicationUser}, ApplicationUser2: {hasApplicationUser2}, Categories: {categoriesCount}");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error($"[BLL] GetAllAsync: LỖI khi kiểm tra navigation properties của entity đầu tiên: {ex.Message}", ex);
-                        _logger.Error($"[BLL] GetAllAsync: StackTrace: {ex.StackTrace}");
-                    }
-                }
-                
+                _logger.Debug($"[BLL] GetAllAsync: Đã nhận được {result?.Count ?? 0} DTOs từ repository");
                 return result;
             }
             catch (Exception ex)
@@ -159,25 +140,32 @@ namespace Bll.MasterData.CustomerBll
         }
 
         /// <summary>
-        /// Lấy toàn bộ đối tác (entities) - Sync.
+        /// Lấy toàn bộ đối tác - Sync.
         /// </summary>
-        public List<BusinessPartner> GetAll()
+        public List<BusinessPartnerListDto> GetAll()
         {
-            // TODO: IBusinessPartnerRepository không có GetAll(), sử dụng GetActivePartners() tạm thời
-            return GetDataAccess().GetActivePartners();
+            try
+            {
+                return GetDataAccess().GetActivePartners();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lấy danh sách đối tác: {ex.Message}", ex);
+                throw;
+            }
         }
 
         /// <summary>
         /// Lấy danh sách đối tác đang hoạt động cho Lookup (chỉ load các trường cần thiết).
         /// Tối ưu hiệu năng bằng cách không load navigation properties.
         /// </summary>
-        public List<BusinessPartner> GetActivePartnersForLookup()
+        public List<BusinessPartnerLookupDto> GetActivePartnersForLookup()
         {
             try
             {
                 _logger.Debug("[BLL] GetActivePartnersForLookup: Bắt đầu gọi repository");
                 var result = GetDataAccess().GetActivePartnersForLookup();
-                _logger.Debug($"[BLL] GetActivePartnersForLookup: Đã nhận được {result?.Count ?? 0} entities từ repository");
+                _logger.Debug($"[BLL] GetActivePartnersForLookup: Đã nhận được {result?.Count ?? 0} DTOs từ repository");
                 return result;
             }
             catch (Exception ex)
@@ -190,13 +178,13 @@ namespace Bll.MasterData.CustomerBll
         /// <summary>
         /// Lấy danh sách đối tác đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
         /// </summary>
-        public async Task<List<BusinessPartner>> GetActivePartnersForLookupAsync()
+        public async Task<List<BusinessPartnerLookupDto>> GetActivePartnersForLookupAsync()
         {
             try
             {
                 _logger.Debug("[BLL] GetActivePartnersForLookupAsync: Bắt đầu gọi repository");
                 var result = await GetDataAccess().GetActivePartnersForLookupAsync();
-                _logger.Debug($"[BLL] GetActivePartnersForLookupAsync: Đã nhận được {result?.Count ?? 0} entities từ repository");
+                _logger.Debug($"[BLL] GetActivePartnersForLookupAsync: Đã nhận được {result?.Count ?? 0} DTOs từ repository");
                 return result;
             }
             catch (Exception ex)
@@ -207,71 +195,62 @@ namespace Bll.MasterData.CustomerBll
         }
 
         /// <summary>
-        /// Lấy dictionary chứa tất cả BusinessPartnerCategory để tính FullPath
+        /// Lấy đối tác theo Id.
         /// </summary>
-        /// <returns>Dictionary với Key là CategoryId, Value là BusinessPartnerCategory</returns>
-        public async Task<Dictionary<Guid, BusinessPartnerCategory>> GetCategoryDictAsync()
+        public BusinessPartnerDetailDto GetById(Guid id)
         {
             try
             {
-                _logger.Debug("[BLL] GetCategoryDictAsync: Bắt đầu lấy tất cả categories");
-                var categoryBll = new BusinessPartnerCategoryBll();
-                var categories = await categoryBll.GetAllAsync();
-                var categoryDict = categories.ToDictionary(c => c.Id);
-                _logger.Debug($"[BLL] GetCategoryDictAsync: Đã lấy được {categoryDict.Count} categories");
-                return categoryDict;
+                return GetDataAccess().GetById(id);
             }
             catch (Exception ex)
             {
-                _logger.Error($"[BLL] GetCategoryDictAsync: LỖI: {ex.Message}", ex);
-                _logger.Error($"[BLL] GetCategoryDictAsync: StackTrace: {ex.StackTrace}");
+                _logger.Error($"Lỗi khi lấy đối tác theo ID: {ex.Message}", ex);
                 throw;
             }
         }
 
         /// <summary>
-        /// Tồn tại mã?
+        /// Lấy đối tác theo Id (Async).
         /// </summary>
-        public bool IsCodeExists(string code)
+        public async Task<BusinessPartnerDetailDto> GetByIdAsync(Guid id)
         {
-            return GetDataAccess().IsPartnerCodeExists(code);
+            try
+            {
+                return await GetDataAccess().GetByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lấy đối tác theo ID (async): {ex.Message}", ex);
+                throw;
+            }
         }
 
-        /// <summary>
-        /// Xóa đối tác theo Id (Soft Delete).
-        /// </summary>
-        /// <param name="id">ID đối tác</param>
-        /// <param name="deletedBy">ID người xóa (optional)</param>
-        public void Delete(Guid id, Guid? deletedBy = null)
-        {
-            GetDataAccess().DeletePartner(id, deletedBy);
-        }
+        #endregion
 
-        /// <summary>
-        /// Lấy đối tác theo Id (entity).
-        /// </summary>
-        public BusinessPartner GetById(Guid id)
-        {
-            return GetDataAccess().GetById(id);
-        }
-
-        /// <summary>
-        /// Lấy đối tác theo Id (Async, entity).
-        /// </summary>
-        public Task<BusinessPartner> GetByIdAsync(Guid id)
-        {
-            return GetDataAccess().GetByIdAsync(id);
-        }
+        #region ========== CREATE OPERATIONS ==========
 
         /// <summary>
         /// Lưu/cập nhật đầy đủ thông tin đối tác.
         /// </summary>
-        /// <param name="entity">Entity đối tác</param>
+        /// <param name="dto">BusinessPartnerDetailDto</param>
         /// <param name="userId">ID người dùng thực hiện (optional, dùng cho audit fields)</param>
-        public void SaveOrUpdate(BusinessPartner entity, Guid? userId = null)
+        public void SaveOrUpdate(BusinessPartnerDetailDto dto, Guid? userId = null)
         {
-            GetDataAccess().SaveOrUpdate(entity, userId);
+            try
+            {
+                GetDataAccess().SaveOrUpdate(dto, userId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi lưu/cập nhật đối tác: {ex.Message}", ex);
+                throw;
+            }
         }
+
+        #endregion
+
+        #region ========== UPDATE OPERATIONS ==========
 
         /// <summary>
         /// Upload logo từ file và lưu lên NAS, đồng thời tạo thumbnail lưu vào database.
@@ -279,8 +258,8 @@ namespace Bll.MasterData.CustomerBll
         /// <param name="partnerId">ID đối tác</param>
         /// <param name="logoFilePath">Đường dẫn file logo</param>
         /// <param name="userId">ID người dùng thực hiện (optional, sẽ lấy từ GetCurrentUser nếu null)</param>
-        /// <returns>BusinessPartner entity đã được cập nhật</returns>
-        public async Task<BusinessPartner> UploadLogoAsync(Guid partnerId, string logoFilePath, Guid? userId = null)
+        /// <returns>BusinessPartnerDetailDto đã được cập nhật</returns>
+        public async Task<BusinessPartnerDetailDto> UploadLogoAsync(Guid partnerId, string logoFilePath, Guid? userId = null)
         {
             try
             {
@@ -329,8 +308,8 @@ namespace Bll.MasterData.CustomerBll
                 }
 
                 // 5. Lấy đối tác từ database
-                var partner = GetDataAccess().GetById(partnerId);
-                if (partner == null)
+                var partnerDto = GetDataAccess().GetById(partnerId);
+                if (partnerDto == null)
                 {
                     throw new InvalidOperationException($"Không tìm thấy đối tác với Id: {partnerId}");
                 }
@@ -342,29 +321,28 @@ namespace Bll.MasterData.CustomerBll
                     userId = currentUser?.Id ?? Guid.Empty;
                 }
 
-                // 7. Cập nhật thông tin logo và thumbnail
-                partner.LogoFileName = storageResult.FileName;
-                partner.LogoRelativePath = storageResult.RelativePath;
-                partner.LogoFullPath = storageResult.FullPath;
-                partner.LogoStorageType = "NAS"; // Hoặc từ config
-                partner.LogoFileSize = storageResult.FileSize;
-                partner.LogoChecksum = storageResult.Checksum;
+                // 7. Cập nhật thông tin logo và thumbnail trong DTO
+                partnerDto.LogoFileName = storageResult.FileName;
+                partnerDto.LogoRelativePath = storageResult.RelativePath;
+                partnerDto.LogoFullPath = storageResult.FullPath;
+                partnerDto.LogoStorageType = "NAS"; // Hoặc từ config
+                partnerDto.LogoFileSize = storageResult.FileSize;
+                partnerDto.LogoChecksum = storageResult.Checksum;
                 
                 // Lưu thumbnail vào database (LogoThumbnailData)
                 if (thumbnailData != null && thumbnailData.Length > 0)
                 {
-                    partner.LogoThumbnailData = new System.Data.Linq.Binary(thumbnailData);
+                    partnerDto.LogoThumbnailData = thumbnailData;
                 }
 
-                partner.UpdatedDate = DateTime.Now;
-                // Không set ModifiedBy trực tiếp - SaveOrUpdate sẽ tự xử lý để tránh ForeignKeyReferenceAlreadyHasValueException
+                partnerDto.UpdatedDate = DateTime.Now;
 
                 // 8. Lưu vào database
-                GetDataAccess().SaveOrUpdate(partner, userId);
+                GetDataAccess().SaveOrUpdate(partnerDto, userId);
 
-                _logger.Info($"Đã upload logo và tạo thumbnail cho đối tác, PartnerId={partnerId}, PartnerName={partner.PartnerName}, RelativePath={storageResult.RelativePath}");
+                _logger.Info($"Đã upload logo và tạo thumbnail cho đối tác, PartnerId={partnerId}, PartnerName={partnerDto.PartnerName}, RelativePath={storageResult.RelativePath}");
                 
-                return partner;
+                return partnerDto;
             }
             catch (FileNotFoundException)
             {
@@ -388,8 +366,8 @@ namespace Bll.MasterData.CustomerBll
         /// <param name="logoData">Dữ liệu logo (byte array)</param>
         /// <param name="fileName">Tên file logo (optional, sẽ tự tạo nếu null)</param>
         /// <param name="userId">ID người dùng thực hiện (optional, sẽ lấy từ GetCurrentUser nếu null)</param>
-        /// <returns>BusinessPartner entity đã được cập nhật</returns>
-        public async Task<BusinessPartner> UploadLogoFromBytesAsync(Guid partnerId, byte[] logoData, string fileName = null, Guid? userId = null)
+        /// <returns>BusinessPartnerDetailDto đã được cập nhật</returns>
+        public async Task<BusinessPartnerDetailDto> UploadLogoFromBytesAsync(Guid partnerId, byte[] logoData, string fileName = null, Guid? userId = null)
         {
             try
             {
@@ -455,8 +433,8 @@ namespace Bll.MasterData.CustomerBll
                 }
 
                 // 3. Lấy đối tác từ database
-                var partner = GetDataAccess().GetById(partnerId);
-                if (partner == null)
+                var partnerDto = GetDataAccess().GetById(partnerId);
+                if (partnerDto == null)
                 {
                     throw new InvalidOperationException($"Không tìm thấy đối tác với Id: {partnerId}");
                 }
@@ -468,29 +446,28 @@ namespace Bll.MasterData.CustomerBll
                     userId = currentUser?.Id ?? Guid.Empty;
                 }
 
-                // 5. Cập nhật thông tin logo và thumbnail
-                partner.LogoFileName = storageResult.FileName;
-                partner.LogoRelativePath = storageResult.RelativePath;
-                partner.LogoFullPath = storageResult.FullPath;
-                partner.LogoStorageType = "NAS"; // Hoặc từ config
-                partner.LogoFileSize = storageResult.FileSize;
-                partner.LogoChecksum = storageResult.Checksum;
+                // 5. Cập nhật thông tin logo và thumbnail trong DTO
+                partnerDto.LogoFileName = storageResult.FileName;
+                partnerDto.LogoRelativePath = storageResult.RelativePath;
+                partnerDto.LogoFullPath = storageResult.FullPath;
+                partnerDto.LogoStorageType = "NAS"; // Hoặc từ config
+                partnerDto.LogoFileSize = storageResult.FileSize;
+                partnerDto.LogoChecksum = storageResult.Checksum;
                 
                 // Lưu thumbnail vào database (LogoThumbnailData)
                 if (thumbnailData != null && thumbnailData.Length > 0)
                 {
-                    partner.LogoThumbnailData = new System.Data.Linq.Binary(thumbnailData);
+                    partnerDto.LogoThumbnailData = thumbnailData;
                 }
 
-                partner.UpdatedDate = DateTime.Now;
-                // Không set ModifiedBy trực tiếp - SaveOrUpdate sẽ tự xử lý để tránh ForeignKeyReferenceAlreadyHasValueException
+                partnerDto.UpdatedDate = DateTime.Now;
 
                 // 6. Lưu vào database
-                GetDataAccess().SaveOrUpdate(partner, userId);
+                GetDataAccess().SaveOrUpdate(partnerDto, userId);
 
-                _logger.Info($"Đã upload logo và tạo thumbnail cho đối tác (từ bytes), PartnerId={partnerId}, PartnerName={partner.PartnerName}, RelativePath={storageResult.RelativePath}");
+                _logger.Info($"Đã upload logo và tạo thumbnail cho đối tác (từ bytes), PartnerId={partnerId}, PartnerName={partnerDto.PartnerName}, RelativePath={storageResult.RelativePath}");
                 
-                return partner;
+                return partnerDto;
             }
             catch (ArgumentException)
             {
@@ -516,8 +493,8 @@ namespace Bll.MasterData.CustomerBll
         /// <param name="thumbnailMaxDimension">Kích thước tối đa cho thumbnail (pixels). Mặc định 120px để phù hợp với cột logo trong GridView</param>
         /// <param name="fileName">Tên file logo (optional, sẽ tự tạo nếu null)</param>
         /// <param name="userId">ID người dùng thực hiện (optional, sẽ lấy từ GetCurrentUser nếu null)</param>
-        /// <returns>BusinessPartner entity đã được cập nhật</returns>
-        public async Task<BusinessPartner> UploadLogoFromBytesAsync(Guid partnerId, byte[] logoData, int thumbnailMaxDimension, string fileName = null, Guid? userId = null)
+        /// <returns>BusinessPartnerDetailDto đã được cập nhật</returns>
+        public async Task<BusinessPartnerDetailDto> UploadLogoFromBytesAsync(Guid partnerId, byte[] logoData, int thumbnailMaxDimension, string fileName = null, Guid? userId = null)
         {
             try
             {
@@ -588,8 +565,8 @@ namespace Bll.MasterData.CustomerBll
                 }
 
                 // 3. Lấy đối tác từ database
-                var partner = GetDataAccess().GetById(partnerId);
-                if (partner == null)
+                var partnerDto = GetDataAccess().GetById(partnerId);
+                if (partnerDto == null)
                 {
                     throw new InvalidOperationException($"Không tìm thấy đối tác với Id: {partnerId}");
                 }
@@ -601,29 +578,28 @@ namespace Bll.MasterData.CustomerBll
                     userId = currentUser?.Id ?? Guid.Empty;
                 }
 
-                // 5. Cập nhật thông tin logo và thumbnail
-                partner.LogoFileName = storageResult.FileName;
-                partner.LogoRelativePath = storageResult.RelativePath;
-                partner.LogoFullPath = storageResult.FullPath;
-                partner.LogoStorageType = "NAS"; // Hoặc từ config
-                partner.LogoFileSize = storageResult.FileSize;
-                partner.LogoChecksum = storageResult.Checksum;
+                // 5. Cập nhật thông tin logo và thumbnail trong DTO
+                partnerDto.LogoFileName = storageResult.FileName;
+                partnerDto.LogoRelativePath = storageResult.RelativePath;
+                partnerDto.LogoFullPath = storageResult.FullPath;
+                partnerDto.LogoStorageType = "NAS"; // Hoặc từ config
+                partnerDto.LogoFileSize = storageResult.FileSize;
+                partnerDto.LogoChecksum = storageResult.Checksum;
                 
                 // Lưu thumbnail vào database (LogoThumbnailData) với kích thước phù hợp với thiết kế cột
                 if (thumbnailData != null && thumbnailData.Length > 0)
                 {
-                    partner.LogoThumbnailData = new System.Data.Linq.Binary(thumbnailData);
+                    partnerDto.LogoThumbnailData = thumbnailData;
                 }
 
-                partner.UpdatedDate = DateTime.Now;
-                // Không set ModifiedBy trực tiếp - SaveOrUpdate sẽ tự xử lý để tránh ForeignKeyReferenceAlreadyHasValueException
+                partnerDto.UpdatedDate = DateTime.Now;
 
                 // 6. Lưu vào database
-                GetDataAccess().SaveOrUpdate(partner, userId);
+                GetDataAccess().SaveOrUpdate(partnerDto, userId);
 
-                _logger.Info($"Đã upload logo và tạo thumbnail ({thumbnailMaxDimension}px) cho đối tác, PartnerId={partnerId}, PartnerName={partner.PartnerName}, RelativePath={storageResult.RelativePath}");
+                _logger.Info($"Đã upload logo và tạo thumbnail ({thumbnailMaxDimension}px) cho đối tác, PartnerId={partnerId}, PartnerName={partnerDto.PartnerName}, RelativePath={storageResult.RelativePath}");
                 
-                return partner;
+                return partnerDto;
             }
             catch (ArgumentException)
             {
@@ -639,6 +615,52 @@ namespace Bll.MasterData.CustomerBll
                 throw;
             }
         }
+
+        #endregion
+
+        #region ========== DELETE OPERATIONS ==========
+
+        /// <summary>
+        /// Xóa đối tác theo Id (Soft Delete).
+        /// </summary>
+        /// <param name="id">ID đối tác</param>
+        /// <param name="deletedBy">ID người xóa (optional)</param>
+        public void Delete(Guid id, Guid? deletedBy = null)
+        {
+            try
+            {
+                GetDataAccess().DeletePartner(id, deletedBy);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi xóa đối tác: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region ========== VALIDATION & EXISTS CHECKS ==========
+
+        /// <summary>
+        /// Kiểm tra mã đối tác có tồn tại không
+        /// </summary>
+        public bool IsCodeExists(string code)
+        {
+            try
+            {
+                return GetDataAccess().IsPartnerCodeExists(code);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Lỗi khi kiểm tra mã đối tác: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region ========== BUSINESS LOGIC METHODS (Logo Management) ==========
 
         /// <summary>
         /// Lấy dữ liệu logo từ storage (NAS/Local) bằng RelativePath
@@ -688,15 +710,15 @@ namespace Bll.MasterData.CustomerBll
             try
             {
                 // 1. Query database để lấy metadata (RelativePath)
-                var partner = GetDataAccess().GetById(partnerId);
-                if (partner == null)
+                var partnerDto = GetDataAccess().GetById(partnerId);
+                if (partnerDto == null)
                 {
                     _logger.Warning($"Không tìm thấy đối tác với ID '{partnerId}'");
                     return null;
                 }
 
                 // 2. Lấy RelativePath từ metadata
-                var relativePath = partner.LogoRelativePath;
+                var relativePath = partnerDto.LogoRelativePath;
                 
                 if (string.IsNullOrEmpty(relativePath))
                 {
@@ -726,14 +748,14 @@ namespace Bll.MasterData.CustomerBll
             try
             {
                 // 1. Lấy thông tin đối tác trước khi xóa
-                var partner = GetDataAccess().GetById(partnerId);
-                if (partner == null)
+                var partnerDto = GetDataAccess().GetById(partnerId);
+                if (partnerDto == null)
                 {
                     _logger.Warning($"Không tìm thấy đối tác với ID '{partnerId}'");
                     return;
                 }
 
-                var relativePath = partner.LogoRelativePath;
+                var relativePath = partnerDto.LogoRelativePath;
 
                 // 2. Xóa file từ storage (NAS/Local) nếu có RelativePath
                 if (!string.IsNullOrEmpty(relativePath))
@@ -765,17 +787,16 @@ namespace Bll.MasterData.CustomerBll
                 }
 
                 // 4. Xóa metadata trong database (set các field về null)
-                partner.LogoFileName = null;
-                partner.LogoRelativePath = null;
-                partner.LogoFullPath = null;
-                partner.LogoStorageType = null;
-                partner.LogoFileSize = null;
-                partner.LogoChecksum = null;
-                partner.LogoThumbnailData = null;
-                partner.UpdatedDate = DateTime.Now;
-                // Không set ModifiedBy trực tiếp - SaveOrUpdate sẽ tự xử lý để tránh ForeignKeyReferenceAlreadyHasValueException
+                partnerDto.LogoFileName = null;
+                partnerDto.LogoRelativePath = null;
+                partnerDto.LogoFullPath = null;
+                partnerDto.LogoStorageType = null;
+                partnerDto.LogoFileSize = null;
+                partnerDto.LogoChecksum = null;
+                partnerDto.LogoThumbnailData = null;
+                partnerDto.UpdatedDate = DateTime.Now;
 
-                GetDataAccess().SaveOrUpdate(partner, userId);
+                GetDataAccess().SaveOrUpdate(partnerDto, userId);
 
                 _logger.Info($"Đã xóa logo cho đối tác, PartnerId={partnerId}");
             }
