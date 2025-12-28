@@ -61,6 +61,9 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
 
     private Guid _stockInOutMasterId = Guid.Empty;
 
+    private Guid _selectedWarehouseId = Guid.Empty;
+    
+    private Guid _selectedPartnerSiteId = Guid.Empty;
     #endregion
 
     #region ========== CONSTRUCTOR ==========
@@ -412,15 +415,14 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
         {
             if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
             {
-                // Cập nhật WarehouseId vào Entity
-                _stockOutMaster.WarehouseId = warehouseId;
+                _selectedWarehouseId = warehouseId;
 
                 // Xóa lỗi validation nếu có
                 dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, string.Empty);
             }
             else
             {
-                _stockOutMaster.WarehouseId = Guid.Empty;
+                _selectedWarehouseId = Guid.Empty;
             }
         }
         catch (Exception ex)
@@ -436,14 +438,14 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
             if (CustomerNameSearchLookupEdit.EditValue is Guid customerId && customerId != Guid.Empty)
             {
                 // Cập nhật PartnerSiteId vào Entity (dùng để lưu CustomerId)
-                _stockOutMaster.PartnerSiteId = customerId;
+                _selectedPartnerSiteId = customerId;
 
                 // Xóa lỗi validation nếu có
                 dxErrorProvider1.SetError(CustomerNameSearchLookupEdit, string.Empty);
             }
             else
             {
-                _stockOutMaster.PartnerSiteId = null;
+                _selectedPartnerSiteId = Guid.Empty;
             }
         }
         catch (Exception ex)
@@ -517,6 +519,9 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
     {
         try
         {
+            //Tạo một entity mới
+            _stockOutMaster = new StockInOutMaster();
+            
             // Cập nhật từ TextEdit
             if (StockOutNumberTextEdit != null)
             {
@@ -541,7 +546,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
             {
                 if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
                 {
-                    _stockOutMaster.WarehouseId = warehouseId;
+                    _stockOutMaster.WarehouseId = _selectedWarehouseId;
                 }
                 else
                 {
@@ -554,7 +559,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
             {
                 if (CustomerNameSearchLookupEdit.EditValue is Guid customerId && customerId != Guid.Empty)
                 {
-                    _stockOutMaster.PartnerSiteId = customerId; // Dùng PartnerSiteId để lưu CustomerId
+                    _stockOutMaster.PartnerSiteId = _selectedPartnerSiteId; 
                 }
                 else
                 {

@@ -8,7 +8,6 @@ using DevExpress.XtraReports.UI;
 using DTO.Inventory.InventoryManagement;
 using DTO.Inventory.StockIn;
 using Inventory.OverlayForm;
-using Inventory.StockIn.InPhieu;
 using Inventory.StockIn.NhapBaoHanh;
 using Inventory.StockIn.NhapHangThuongMai;
 using Inventory.StockIn.NhapLuuChuyenKho;
@@ -292,39 +291,7 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
                 return;
             }
 
-            // Dựa vào LoaiNhapXuatKho để in đúng loại phiếu
-            using (OverlayManager.ShowScope(this))
-            {
-                try
-                {
-                    // Tạo report dựa vào loại nhập xuất
-                    XtraReport report = selectedDto.LoaiNhapXuatKho switch
-                    {
-                        // Các trường hợp Nhập
-                        LoaiNhapXuatKhoEnum.NhapHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.NhapThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.NhapNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.NhapHangBaoHanh => new InPhieuBaoHanh(_selectedStockInOutMasterId.Value),
-                        
-                        // Các trường hợp Xuất - sử dụng report chung cho cả nhập và xuất
-                        LoaiNhapXuatKhoEnum.XuatHangThuongMai => new InPhieuNhapKho(_selectedStockInOutMasterId.Value), // Report nhập cũng dùng được cho xuất
-                        LoaiNhapXuatKhoEnum.XuatThietBiMuonThue => new InPhieuNhapXuatThietBiChoMuon(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.XuatNoiBo => new InPhieuNhapXuatNoiBo(_selectedStockInOutMasterId.Value),
-                        LoaiNhapXuatKhoEnum.XuatHangBaoHanh => new InPhieuBaoHanh(_selectedStockInOutMasterId.Value),
-                        
-                        // Trường hợp mặc định
-                        _ => new InPhieuNhapKho(_selectedStockInOutMasterId.Value) // Default: dùng InPhieuNhapKho cho NhapLuuChuyenKho, XuatLuuChuyenKho và các loại khác
-                    };
-
-                    // Hiển thị preview bằng ReportPrintTool
-                    PrintReport(report);
-                }
-                catch (Exception printEx)
-                {
-                    _logger.Error($"InPhieuBarButtonItem_ItemClick: Lỗi in phiếu: {printEx.Message}", printEx);
-                    MsgBox.ShowError($"Lỗi in phiếu: {printEx.Message}");
-                }
-            }
+            // TODO: Implement print functionality
         }
         catch (Exception ex)
         {

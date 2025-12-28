@@ -2,7 +2,6 @@
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.XtraReports.UI;
-using Inventory.StockIn.InPhieu;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -448,27 +447,7 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
                 return;
             }
 
-            // In phiếu xuất thiết bị cho mượn với preview
-            try
-            {
-                _logger.Debug("InPhieuBarButtonItem_ItemClick: Bắt đầu in phiếu, StockInOutMasterId={0}", stockInOutMasterId);
-
-                // Tạo và load report
-                var report = new InPhieuNhapXuatThietBiChoMuon(stockInOutMasterId);
-
-                // Hiển thị preview bằng ReportPrintTool
-                using (var printTool = new ReportPrintTool(report))
-                {
-                    printTool.ShowPreviewDialog();
-                }
-
-                _logger.Info("InPhieuBarButtonItem_ItemClick: In phiếu thành công, StockInOutMasterId={0}", stockInOutMasterId);
-            }
-            catch (Exception printEx)
-            {
-                _logger.Error($"InPhieuBarButtonItem_ItemClick: Lỗi in phiếu: {printEx.Message}", printEx);
-                MsgBox.ShowError($"Lỗi in phiếu: {printEx.Message}");
-            }
+            // TODO: Implement print functionality
 
         }
         catch (Exception ex)
@@ -980,15 +959,11 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
                 return false;
             }
 
-            // ========== BƯỚC 3: CHUYỂN ĐỔI MASTER DTO SANG ENTITY ==========
-            // Convert Master DTO sang entity để truyền vào BLL
-            // Detail entities đã được lấy trực tiếp từ GetDetails()
-            var masterEntity = MapMasterDtoToEntity(masterDto);
-
-            // ========== BƯỚC 4: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
+            // ========== BƯỚC 3: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
             // Tất cả validation đã được thực hiện ở bước 1 và 2
-            // StockInBll.SaveAsync sẽ có thêm validation layer nhưng chủ yếu là double-check
-            var savedMasterId = await _stockInBll.SaveAsync(masterEntity, detailEntities);
+            // Truyền DTO trực tiếp vào BLL để tránh lỗi tham chiếu khóa ngoại
+            // BLL sẽ tự động map DTO sang entity (không có navigation properties)
+            var savedMasterId = await _stockInBll.SaveAsync(masterDto, detailEntities);
 
             // ========== BƯỚC 5: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
             // Cập nhật ID sau khi lưu

@@ -83,46 +83,253 @@ namespace Bll.Inventory.StockInOut
         #region Save Operations
 
         /// <summary>
-        /// Lưu phiếu nhập kho (master và detail) với transaction
-        /// Đảm bảo validation đã được thực hiện trước khi gọi method này
-        /// Method này nhận entities để có thể được sử dụng bởi nhiều màn hình khác nhau với các DTO khác nhau
+        /// Lưu phiếu nhập/xuất kho (master và detail) với DTO
+        /// Method này nhận DTO để tránh lỗi tham chiếu khóa ngoại khi entity có navigation properties đã được load
         /// </summary>
-        /// <param name="masterEntity">Entity phiếu nhập kho (master)</param>
-        /// <param name="detailEntities">Danh sách entity chi tiết phiếu nhập kho</param>
-        /// <returns>ID phiếu nhập kho đã lưu</returns>
-        public async Task<Guid> SaveAsync(StockInOutMaster masterEntity, List<StockInOutDetail> detailEntities)
+        /// <param name="masterDto">DTO phiếu nhập/xuất kho (master) - có thể là bất kỳ loại Master DTO nào</param>
+        /// <param name="detailEntities">Danh sách entity chi tiết phiếu nhập/xuất kho</param>
+        /// <returns>ID phiếu nhập/xuất kho đã lưu</returns>
+        public async Task<Guid> SaveAsync(object masterDto, List<StockInOutDetail> detailEntities)
         {
-            if (masterEntity == null)
-                throw new ArgumentNullException(nameof(masterEntity));
+            if (masterDto == null)
+                throw new ArgumentNullException(nameof(masterDto));
 
             if (detailEntities == null || detailEntities.Count == 0)
-                throw new ArgumentException("Danh sách chi tiết không được để trống", nameof(detailEntities));
+                throw new ArgumentException(@"Danh sách chi tiết không được để trống", nameof(detailEntities));
 
             try
             {
-                _logger.Debug("SaveAsync: Bắt đầu lưu phiếu nhập kho, MasterId={0}, DetailCount={1}", 
-                    masterEntity.Id, detailEntities.Count);
+                _logger.Debug("SaveAsync (DTO): Bắt đầu lưu phiếu, MasterDtoType={0}, DetailCount={1}", 
+                    masterDto.GetType().Name, detailEntities.Count);
 
-                // 0. Validate dữ liệu trước khi lưu
+                // Map DTO sang entity (không có navigation properties)
+                var masterEntity = MapMasterDtoToEntity(masterDto);
+
+                // Validate dữ liệu trước khi lưu
                 ValidateBeforeSave(masterEntity, detailEntities);
 
-                // 1. Lưu qua Repository
-                var savedMasterId = await GetDataAccess().SaveAsync(masterEntity, detailEntities);
+                // Gọi method riêng biệt cho Create hoặc Update
+                Guid savedMasterId;
+                if (masterEntity.Id == Guid.Empty)
+                {
+                    // Tạo mới
+                    savedMasterId = await GetDataAccess().CreateMasterAsync(masterEntity);
+                }
+                else
+                {
+                    // Cập nhật
+                    savedMasterId = await GetDataAccess().UpdateMasterAsync(masterEntity);
+                }
 
-                _logger.Info("SaveAsync: Lưu phiếu nhập kho thành công, MasterId={0}", savedMasterId);
+                // Sau đó lưu details qua SaveDetailsAsync
+                await GetDataAccess().SaveDetailsAsync(savedMasterId, detailEntities, deleteExisting: true);
+
+                _logger.Info("SaveAsync (DTO): Lưu phiếu thành công, MasterId={0}", savedMasterId);
                 return savedMasterId;
             }
             catch (Exception ex)
             {
-                _logger.Error($"SaveAsync: Lỗi lưu phiếu nhập kho: {ex.Message}", ex);
-                throw new Exception($"Lỗi lưu phiếu nhập kho: {ex.Message}", ex);
+                _logger.Error($"SaveAsync (DTO): Lỗi lưu phiếu: {ex.Message}", ex);
+                throw new Exception($"Lỗi lưu phiếu: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Map Master DTO sang StockInOutMaster entity
+        /// Hỗ trợ nhiều loại Master DTO khác nhau
+        /// </summary>
+        private StockInOutMaster MapMasterDtoToEntity(object masterDto)
+        {
+            // Xử lý theo từng loại DTO
+            switch (masterDto)
+            {
+                case DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiMasterDto xuatHangDto:
+                    return MapXuatHangThuongMaiDtoToEntity(xuatHangDto);
+                
+                case XuatHangThuongMaiMasterDto nhapHangDto:
+                    return MapNhapHangThuongMaiDtoToEntity(nhapHangDto);
+                
+                default:
+                    // Thử dùng reflection để map các property chung
+                    return MapMasterDtoToEntityByReflection(masterDto);
             }
         }
 
         /// <summary>
         /// Map XuatHangThuongMaiMasterDto sang StockInOutMaster entity
+        /// </summary>
+        private StockInOutMaster MapXuatHangThuongMaiDtoToEntity(DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiMasterDto dto)
+        {
+            var entity = new StockInOutMaster
+            {
+                Id = dto.Id,
+                StockInOutDate = dto.StockOutDate,
+                VocherNumber = dto.StockOutNumber,
+                StockInOutType = (int)dto.LoaiNhapXuatKho,
+                VoucherStatus = (int)dto.TrangThai,
+                WarehouseId = dto.WarehouseId,
+                PurchaseOrderId = dto.SalesOrderId, // Dùng PurchaseOrderId để lưu SalesOrderId
+                PartnerSiteId = dto.CustomerId, // Dùng PartnerSiteId để lưu CustomerId
+                Notes = dto.Notes ?? string.Empty,
+                TotalQuantity = dto.TotalQuantity,
+                TotalAmount = dto.TotalAmount,
+                TotalVat = dto.TotalVat,
+                TotalAmountIncludedVat = dto.TotalAmountIncludedVat,
+                NguoiNhanHang = dto.NguoiNhanHang ?? string.Empty,
+                NguoiGiaoHang = dto.NguoiGiaoHang ?? string.Empty
+            };
+
+            // Set DiscountAmount và TotalAmountAfterDiscount nếu DTO có các property này
+            var dtoType = dto.GetType();
+            var discountAmountProp = dtoType.GetProperty("DiscountAmount");
+            if (discountAmountProp != null)
+            {
+                var discountValue = discountAmountProp.GetValue(dto);
+                if (discountValue != null && discountValue is decimal discount)
+                {
+                    entity.DiscountAmount = discount;
+                }
+            }
+
+            var totalAmountAfterDiscountProp = dtoType.GetProperty("TotalAmountAfterDiscount");
+            if (totalAmountAfterDiscountProp != null)
+            {
+                var totalAfterDiscountValue = totalAmountAfterDiscountProp.GetValue(dto);
+                if (totalAfterDiscountValue != null && totalAfterDiscountValue is decimal totalAfterDiscount)
+                {
+                    entity.TotalAmountAfterDiscount = totalAfterDiscount;
+                }
+            }
+
+            return entity;
+        }
+
+        /// <summary>
+        /// Map NhapHangThuongMaiMasterDto (XuatHangThuongMaiMasterDto trong namespace StockIn) sang StockInOutMaster entity
+        /// </summary>
+        private StockInOutMaster MapNhapHangThuongMaiDtoToEntity(XuatHangThuongMaiMasterDto dto)
+        {
+            return new StockInOutMaster
+            {
+                Id = dto.Id,
+                StockInOutDate = dto.StockInDate,
+                VocherNumber = dto.StockInNumber,
+                StockInOutType = (int)dto.LoaiNhapXuatKho,
+                VoucherStatus = (int)dto.TrangThai,
+                WarehouseId = dto.WarehouseId,
+                PurchaseOrderId = dto.PurchaseOrderId,
+                PartnerSiteId = dto.SupplierId,
+                Notes = dto.Notes ?? string.Empty,
+                TotalQuantity = dto.TotalQuantity,
+                TotalAmount = dto.TotalAmount,
+                TotalVat = dto.TotalVat,
+                TotalAmountIncludedVat = dto.TotalAmountIncludedVat,
+                NguoiNhanHang = dto.NguoiNhanHang,
+                NguoiGiaoHang = dto.NguoiGiaoHang,
+                DiscountAmount = dto.DiscountAmount,
+                TotalAmountAfterDiscount = dto.TotalAmountAfterDiscount
+            };
+        }
+
+        /// <summary>
+        /// Map Master DTO sang entity bằng reflection (fallback cho các DTO chưa được hỗ trợ cụ thể)
+        /// </summary>
+        private StockInOutMaster MapMasterDtoToEntityByReflection(object masterDto)
+        {
+            var entity = new StockInOutMaster();
+            var dtoType = masterDto.GetType();
+            var entityType = typeof(StockInOutMaster);
+
+            // Map các property chung bằng reflection
+            var commonMappings = new Dictionary<string, (string dtoProp, Func<object, object> converter)>
+            {
+                { "Id", ("Id", v => v) },
+                { "StockInOutDate", ("StockInDate", v => v) },
+                { "StockInOutDate", ("StockOutDate", v => v) },
+                { "VocherNumber", ("StockInNumber", v => v) },
+                { "VocherNumber", ("StockOutNumber", v => v) },
+                { "StockInOutType", ("LoaiNhapXuatKho", v => (int)v) },
+                { "VoucherStatus", ("TrangThai", v => (int)v) },
+                { "WarehouseId", ("WarehouseId", v => v) },
+                { "Notes", ("Notes", v => v ?? string.Empty) },
+                { "TotalQuantity", ("TotalQuantity", v => v) },
+                { "TotalAmount", ("TotalAmount", v => v) },
+                { "TotalVat", ("TotalVat", v => v) },
+                { "TotalAmountIncludedVat", ("TotalAmountIncludedVat", v => v) },
+                { "NguoiNhanHang", ("NguoiNhanHang", v => v ?? string.Empty) },
+                { "NguoiGiaoHang", ("NguoiGiaoHang", v => v ?? string.Empty) },
+                { "DiscountAmount", ("DiscountAmount", v => v) },
+                { "TotalAmountAfterDiscount", ("TotalAmountAfterDiscount", v => v) }
+            };
+
+            foreach (var mapping in commonMappings)
+            {
+                var entityProp = entityType.GetProperty(mapping.Key);
+                if (entityProp == null) continue;
+
+                // Thử các tên property DTO khác nhau
+                var dtoPropNames = new[] { mapping.Value.dtoProp, mapping.Key };
+                object value = null;
+
+                foreach (var propName in dtoPropNames)
+                {
+                    var dtoProp = dtoType.GetProperty(propName);
+                    if (dtoProp != null)
+                    {
+                        value = dtoProp.GetValue(masterDto);
+                        if (value != null)
+                        {
+                            value = mapping.Value.converter(value);
+                            entityProp.SetValue(entity, value);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Map các property đặc biệt
+            MapSpecialProperties(masterDto, entity);
+
+            return entity;
+        }
+
+        /// <summary>
+        /// Map các property đặc biệt (PurchaseOrderId, PartnerSiteId, etc.)
+        /// </summary>
+        private void MapSpecialProperties(object masterDto, StockInOutMaster entity)
+        {
+            var dtoType = masterDto.GetType();
+
+            // PurchaseOrderId / SalesOrderId
+            var purchaseOrderProp = dtoType.GetProperty("PurchaseOrderId") ?? dtoType.GetProperty("SalesOrderId");
+            if (purchaseOrderProp != null)
+            {
+                var value = purchaseOrderProp.GetValue(masterDto);
+                if (value != null && value is Guid guidValue && guidValue != Guid.Empty)
+                {
+                    entity.PurchaseOrderId = guidValue;
+                }
+            }
+
+            // PartnerSiteId / SupplierId / CustomerId
+            var partnerSiteProp = dtoType.GetProperty("PartnerSiteId") ?? 
+                                 dtoType.GetProperty("SupplierId") ?? 
+                                 dtoType.GetProperty("CustomerId");
+            if (partnerSiteProp != null)
+            {
+                var value = partnerSiteProp.GetValue(masterDto);
+                if (value != null && value is Guid guidValue && guidValue != Guid.Empty)
+                {
+                    entity.PartnerSiteId = guidValue;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Map XuatHangThuongMaiMasterDto sang StockInOutMaster entity (legacy method, kept for backward compatibility)
         /// Helper method để convert DTO sang entity (dùng cho các màn hình sử dụng XuatHangThuongMaiMasterDto)
         /// </summary>
+        [Obsolete("Use SaveAsync(object masterDto, List<StockInOutDetail> detailEntities) instead")]
         public static StockInOutMaster MapMasterDtoToEntity(XuatHangThuongMaiMasterDto dto)
         {
             return new StockInOutMaster

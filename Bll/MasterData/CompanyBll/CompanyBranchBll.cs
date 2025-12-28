@@ -1,7 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.CompanyRepository;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
-using Dal.DataContext;
+using DTO.MasterData.Company;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -75,7 +75,7 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy tất cả chi nhánh công ty (Async).
         /// </summary>
         /// <returns>Danh sách tất cả chi nhánh công ty</returns>
-        public async Task<List<CompanyBranch>> GetAllAsync()
+        public async Task<List<CompanyBranchDto>> GetAllAsync()
         {
             try
             {
@@ -92,7 +92,7 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy tất cả chi nhánh công ty (Sync).
         /// </summary>
         /// <returns>Danh sách tất cả chi nhánh công ty</returns>
-        public List<CompanyBranch> GetAll()
+        public List<CompanyBranchDto> GetAll()
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Bll.MasterData.CompanyBll
         /// </summary>
         /// <param name="id">ID của chi nhánh công ty</param>
         /// <returns>Chi nhánh công ty hoặc null nếu không tìm thấy</returns>
-        public CompanyBranch GetById(Guid id)
+        public CompanyBranchDto GetById(Guid id)
         {
             try
             {
@@ -127,7 +127,7 @@ namespace Bll.MasterData.CompanyBll
         /// </summary>
         /// <param name="branchCode">Mã chi nhánh</param>
         /// <returns>Chi nhánh công ty hoặc null nếu không tìm thấy</returns>
-        public CompanyBranch GetByBranchCode(string branchCode)
+        public CompanyBranchDto GetByBranchCode(string branchCode)
         {
             try
             {
@@ -147,7 +147,7 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy danh sách chi nhánh công ty đang hoạt động.
         /// </summary>
         /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
-        public async Task<List<CompanyBranch>> GetActiveBranchesAsync()
+        public async Task<List<CompanyBranchDto>> GetActiveBranchesAsync()
         {
             try
             {
@@ -163,7 +163,7 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy danh sách chi nhánh công ty đang hoạt động (Sync).
         /// </summary>
         /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
-        public List<CompanyBranch> GetActiveBranches()
+        public List<CompanyBranchDto> GetActiveBranches()
         {
             try
             {
@@ -180,7 +180,7 @@ namespace Bll.MasterData.CompanyBll
         /// Tối ưu hiệu năng bằng cách không load navigation properties.
         /// </summary>
         /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
-        public List<CompanyBranch> GetActiveBranchesForLookup()
+        public List<CompanyBranchDto> GetActiveBranchesForLookup()
         {
             try
             {
@@ -196,7 +196,7 @@ namespace Bll.MasterData.CompanyBll
         /// Lấy danh sách chi nhánh công ty đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
         /// </summary>
         /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
-        public async Task<List<CompanyBranch>> GetActiveBranchesForLookupAsync()
+        public async Task<List<CompanyBranchDto>> GetActiveBranchesForLookupAsync()
         {
             try
             {
@@ -213,7 +213,7 @@ namespace Bll.MasterData.CompanyBll
         /// </summary>
         /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
         /// <returns>Danh sách chi nhánh của công ty</returns>
-        public List<CompanyBranch> GetByCompanyId(Guid companyId)
+        public List<CompanyBranchDto> GetByCompanyId(Guid companyId)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace Bll.MasterData.CompanyBll
         /// </summary>
         /// <param name="companyBranch">Chi nhánh công ty cần thêm</param>
         /// <returns>ID của chi nhánh công ty vừa thêm</returns>
-        public Guid Insert(CompanyBranch companyBranch)
+        public Guid Insert(CompanyBranchDto companyBranch)
         {
             try
             {
@@ -262,7 +262,7 @@ namespace Bll.MasterData.CompanyBll
         /// Cập nhật chi nhánh công ty.
         /// </summary>
         /// <param name="companyBranch">Chi nhánh công ty cần cập nhật</param>
-        public void Update(CompanyBranch companyBranch)
+        public void Update(CompanyBranchDto companyBranch)
         {
             try
             {
@@ -412,7 +412,7 @@ namespace Bll.MasterData.CompanyBll
         /// Validate dữ liệu chi nhánh công ty.
         /// </summary>
         /// <param name="companyBranch">Chi nhánh công ty cần validate</param>
-        private void ValidateCompanyBranch(CompanyBranch companyBranch)
+        private void ValidateCompanyBranch(CompanyBranchDto companyBranch)
         {
             if (companyBranch == null)
                 throw new Exception("Thông tin chi nhánh công ty không được để trống");
@@ -423,14 +423,14 @@ namespace Bll.MasterData.CompanyBll
             if (string.IsNullOrWhiteSpace(companyBranch.BranchName))
                 throw new Exception("Tên chi nhánh không được để trống");
 
-            if (companyBranch.BranchCode.Trim().Length > 20)
-                throw new Exception("Mã chi nhánh không được vượt quá 20 ký tự");
+            if (companyBranch.BranchCode.Trim().Length > 50)
+                throw new Exception("Mã chi nhánh không được vượt quá 50 ký tự");
 
-            if (companyBranch.BranchName.Trim().Length > 100)
-                throw new Exception("Tên chi nhánh không được vượt quá 100 ký tự");
+            if (companyBranch.BranchName.Trim().Length > 255)
+                throw new Exception("Tên chi nhánh không được vượt quá 255 ký tự");
 
-            if (!string.IsNullOrWhiteSpace(companyBranch.Phone) && companyBranch.Phone.Trim().Length > 20)
-                throw new Exception("Số điện thoại không được vượt quá 20 ký tự");
+            if (!string.IsNullOrWhiteSpace(companyBranch.Phone) && companyBranch.Phone.Trim().Length > 50)
+                throw new Exception("Số điện thoại không được vượt quá 50 ký tự");
 
             if (!string.IsNullOrWhiteSpace(companyBranch.Email) && companyBranch.Email.Trim().Length > 100)
                 throw new Exception("Email không được vượt quá 100 ký tự");

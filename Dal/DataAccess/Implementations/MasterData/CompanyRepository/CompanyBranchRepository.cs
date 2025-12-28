@@ -1,13 +1,15 @@
+using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using Dal.DataContext;
+using Dal.Exceptions;
+using DTO.MasterData.Company;
+using Logger;
+using Logger.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
-using Dal.DataContext;
-using Dal.Exceptions;
-using Logger;
-using Logger.Configuration;
+using Dal.DtoConverter;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations.MasterData.CompanyRepository;
@@ -77,19 +79,54 @@ public class CompanyBranchRepository : ICompanyBranchRepository
 
     #endregion
 
-    #region ========== QUẢN LÝ DỮ LIỆU ==========
+    #region Create
+
+
+    /// <summary>
+    /// Thêm mới chi nhánh công ty.
+    /// </summary>
+    /// <param name="companyBranch">Chi nhánh công ty cần thêm</param>
+    /// <returns>ID của chi nhánh công ty vừa thêm</returns>
+    public Guid Insert(CompanyBranchDto companyBranch)
+    {
+        try
+        {
+            if (companyBranch == null)
+                throw new ArgumentNullException(nameof(companyBranch));
+
+            // Chuyển đổi DTO sang Entity
+            var entity = companyBranch.ToEntity();
+
+            using var context = CreateNewContext();
+            context.CompanyBranches.InsertOnSubmit(entity);
+            context.SubmitChanges();
+
+            _logger.Info($"Đã thêm mới chi nhánh công ty: {entity.BranchCode} - {entity.BranchName}");
+            return entity.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi thêm mới chi nhánh công ty: {ex.Message}", ex);
+            throw new DataAccessException("Lỗi thêm mới chi nhánh công ty", ex);
+        }
+    }
+
+    #endregion
+
+    #region Retrieve
+
 
     /// <summary>
     /// Lấy chi nhánh công ty theo ID.
     /// </summary>
     /// <param name="id">ID của chi nhánh công ty</param>
     /// <returns>Chi nhánh công ty hoặc null nếu không tìm thấy</returns>
-    public CompanyBranch GetById(Guid id)
+    public CompanyBranchDto GetById(Guid id)
     {
         try
         {
             using var context = CreateNewContext();
-            return context.CompanyBranches.FirstOrDefault(x => x.Id == id);
+            return context.CompanyBranches.FirstOrDefault(x => x.Id == id)?.ToDto();
         }
         catch (Exception ex)
         {
@@ -124,7 +161,7 @@ public class CompanyBranchRepository : ICompanyBranchRepository
     /// <param name="branchCode">Mã chi nhánh</param>
     /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
     /// <returns>Chi nhánh công ty hoặc null nếu không tìm thấy</returns>
-    public CompanyBranch GetByBranchCodeAndCompany(string branchCode, Guid companyId)
+    public CompanyBranchDto GetByBranchCodeAndCompany(string branchCode, Guid companyId)
     {
         try
         {
@@ -132,7 +169,7 @@ public class CompanyBranchRepository : ICompanyBranchRepository
                 return null;
 
             using var context = CreateNewContext();
-                
+
             // Nếu companyId là Guid.Empty, lấy từ Company duy nhất
             if (companyId == Guid.Empty)
             {
@@ -142,8 +179,9 @@ public class CompanyBranchRepository : ICompanyBranchRepository
                 companyId = company.Id;
             }
 
-            return context.CompanyBranches.FirstOrDefault(x => 
+            var entity = context.CompanyBranches.FirstOrDefault(x =>
                 x.BranchCode == branchCode.Trim() && x.CompanyId == companyId);
+            return entity?.ToDto();
         }
         catch (Exception ex)
         {
@@ -156,22 +194,23 @@ public class CompanyBranchRepository : ICompanyBranchRepository
     /// </summary>
     /// <param name="companyId">ID công ty (nếu Guid.Empty thì lấy từ Company duy nhất)</param>
     /// <returns>Danh sách chi nhánh của công ty</returns>
-    public List<CompanyBranch> GetByCompanyId(Guid companyId)
+    public List<CompanyBranchDto> GetByCompanyId(Guid companyId)
     {
         try
         {
             using var context = CreateNewContext();
-                
+
             // Nếu companyId là Guid.Empty, lấy từ Company duy nhất
             if (companyId == Guid.Empty)
             {
                 var company = context.Companies.FirstOrDefault();
                 if (company == null)
-                    return new List<CompanyBranch>();
+                    return new List<CompanyBranchDto>();
                 companyId = company.Id;
             }
 
-            return context.CompanyBranches.Where(x => x.CompanyId == companyId).ToList();
+            var result = context.CompanyBranches.Where(x => x.CompanyId == companyId).ToList();
+            return result.Select(x => x.ToDto()).ToList();
         }
         catch (Exception ex)
         {
@@ -189,7 +228,7 @@ public class CompanyBranchRepository : ICompanyBranchRepository
         try
         {
             using var context = CreateNewContext();
-                
+
             // Nếu companyId là Guid.Empty, lấy từ Company duy nhất
             if (companyId == Guid.Empty)
             {
@@ -200,9 +239,9 @@ public class CompanyBranchRepository : ICompanyBranchRepository
             }
 
             // Tìm trụ sở chính (có thể dựa vào tên hoặc mã đặc biệt)
-            return context.CompanyBranches.FirstOrDefault(x => 
-                x.CompanyId == companyId && 
-                (x.BranchCode.ToUpper().Contains("MAIN") || 
+            return context.CompanyBranches.FirstOrDefault(x =>
+                x.CompanyId == companyId &&
+                (x.BranchCode.ToUpper().Contains("MAIN") ||
                  x.BranchCode.ToUpper().Contains("HEAD") ||
                  x.BranchName.ToUpper().Contains("TRỤ SỞ CHÍNH") ||
                  x.BranchName.ToUpper().Contains("HEADQUARTERS")));
@@ -217,12 +256,13 @@ public class CompanyBranchRepository : ICompanyBranchRepository
     /// Lấy danh sách chi nhánh công ty đang hoạt động (Async).
     /// </summary>
     /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
-    public async Task<List<CompanyBranch>> GetActiveBranchesAsync()
+    public async Task<List<CompanyBranchDto>> GetActiveBranchesAsync()
     {
         try
         {
             using var context = CreateNewContext();
-            return await Task.Run(() => context.CompanyBranches.Where(x => x.IsActive).ToList());
+            var entities = await Task.Run(() => context.CompanyBranches.Where(x => x.IsActive).ToList());
+            return entities.Select(x => x.ToDto()).ToList();
         }
         catch (Exception ex)
         {
@@ -234,12 +274,13 @@ public class CompanyBranchRepository : ICompanyBranchRepository
     /// Lấy danh sách chi nhánh công ty đang hoạt động (Sync).
     /// </summary>
     /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
-    public List<CompanyBranch> GetActiveBranches()
+    public List<CompanyBranchDto> GetActiveBranches()
     {
         try
         {
             using var context = CreateNewContext();
-            return context.CompanyBranches.Where(x => x.IsActive).ToList();
+            var entities = context.CompanyBranches.Where(x => x.IsActive).ToList();
+            return entities.Select(x => x.ToDto()).ToList();
         }
         catch (Exception ex)
         {
@@ -253,18 +294,18 @@ public class CompanyBranchRepository : ICompanyBranchRepository
     /// LINQ to SQL sẽ tự động chỉ select các trường được sử dụng (Id, CompanyId, BranchCode, BranchName, IsActive).
     /// </summary>
     /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
-    public List<CompanyBranch> GetActiveBranchesForLookup()
+    public List<CompanyBranchDto> GetActiveBranchesForLookup()
     {
         try
         {
             using var context = CreateLookupContext();
-            
+
             // Query CompanyBranch entities nhưng không load navigation properties
             // LINQ to SQL sẽ chỉ select các trường được truy cập sau khi ToList()
             var branches = context.CompanyBranches
                 .Where(x => x.IsActive)
                 .ToList();
-            
+
             // Materialize chỉ các trường cần thiết để đảm bảo chúng được load từ DB
             // Các trường khác sẽ là null/default nhưng không ảnh hưởng vì ta chỉ dùng các trường này
             foreach (var branch in branches)
@@ -276,8 +317,9 @@ public class CompanyBranchRepository : ICompanyBranchRepository
                 var ____ = branch.BranchName;
                 var _____ = branch.IsActive;
             }
-            
-            return branches;
+
+            // Chuyển đổi sang DTO
+            return branches.Select(x => x.ToDto()).ToList();
         }
         catch (Exception ex)
         {
@@ -289,19 +331,19 @@ public class CompanyBranchRepository : ICompanyBranchRepository
     /// Lấy danh sách chi nhánh công ty đang hoạt động cho Lookup (Async) - chỉ load các trường cần thiết.
     /// </summary>
     /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
-    public async Task<List<CompanyBranch>> GetActiveBranchesForLookupAsync()
+    public async Task<List<CompanyBranchDto>> GetActiveBranchesForLookupAsync()
     {
         try
         {
             return await Task.Run(() =>
             {
                 using var context = CreateLookupContext();
-                
+
                 // Query CompanyBranch entities nhưng không load navigation properties
                 var branches = context.CompanyBranches
                     .Where(x => x.IsActive)
                     .ToList();
-                
+
                 // Materialize chỉ các trường cần thiết
                 foreach (var branch in branches)
                 {
@@ -311,8 +353,9 @@ public class CompanyBranchRepository : ICompanyBranchRepository
                     var ____ = branch.BranchName;
                     var _____ = branch.IsActive;
                 }
-                
-                return branches;
+
+                // Chuyển đổi sang DTO
+                return branches.Select(x => x.ToDto()).ToList();
             });
         }
         catch (Exception ex)
@@ -321,41 +364,17 @@ public class CompanyBranchRepository : ICompanyBranchRepository
         }
     }
 
+
     #endregion
 
-    #region ========== XỬ LÝ DỮ LIỆU ==========
+    #region Update
 
-    /// <summary>
-    /// Thêm mới chi nhánh công ty.
-    /// </summary>
-    /// <param name="companyBranch">Chi nhánh công ty cần thêm</param>
-    /// <returns>ID của chi nhánh công ty vừa thêm</returns>
-    public Guid Insert(CompanyBranch companyBranch)
-    {
-        try
-        {
-            if (companyBranch == null)
-                throw new ArgumentNullException(nameof(companyBranch));
-
-            using var context = CreateNewContext();
-            context.CompanyBranches.InsertOnSubmit(companyBranch);
-            context.SubmitChanges();
-            
-            _logger.Info($"Đã thêm mới chi nhánh công ty: {companyBranch.BranchCode} - {companyBranch.BranchName}");
-            return companyBranch.Id;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi thêm mới chi nhánh công ty: {ex.Message}", ex);
-            throw new DataAccessException("Lỗi thêm mới chi nhánh công ty", ex);
-        }
-    }
 
     /// <summary>
     /// Cập nhật chi nhánh công ty.
     /// </summary>
     /// <param name="companyBranch">Chi nhánh công ty cần cập nhật</param>
-    public void Update(CompanyBranch companyBranch)
+    public void Update(CompanyBranchDto companyBranch)
     {
         try
         {
@@ -364,24 +383,17 @@ public class CompanyBranchRepository : ICompanyBranchRepository
 
             using var context = CreateNewContext();
             var existingBranch = context.CompanyBranches.FirstOrDefault(x => x.Id == companyBranch.Id);
-            
+
             if (existingBranch == null)
             {
                 throw new DataAccessException("Không tìm thấy chi nhánh công ty để cập nhật");
             }
 
-            // Cập nhật các thuộc tính
-            existingBranch.CompanyId = companyBranch.CompanyId;
-            existingBranch.BranchCode = companyBranch.BranchCode;
-            existingBranch.BranchName = companyBranch.BranchName;
-            existingBranch.Address = companyBranch.Address;
-            existingBranch.Phone = companyBranch.Phone;
-            existingBranch.Email = companyBranch.Email;
-            existingBranch.ManagerName = companyBranch.ManagerName;
-            existingBranch.IsActive = companyBranch.IsActive;
+            // Sử dụng converter để cập nhật entity từ DTO
+            companyBranch.ToEntity(existingBranch);
 
             context.SubmitChanges();
-            
+
             _logger.Info($"Đã cập nhật chi nhánh công ty: {existingBranch.BranchCode} - {existingBranch.BranchName}");
         }
         catch (DataAccessException)
@@ -394,6 +406,22 @@ public class CompanyBranchRepository : ICompanyBranchRepository
             throw new DataAccessException("Lỗi cập nhật chi nhánh công ty", ex);
         }
     }
+
+
+    #endregion
+
+    #region Delete
+
+
+
+    #endregion
+
+    #region ========== QUẢN LÝ DỮ LIỆU ==========
+
+    #endregion
+
+    #region ========== XỬ LÝ DỮ LIỆU ==========
+
 
     /// <summary>
     /// Kiểm tra mã chi nhánh có tồn tại không.
@@ -522,7 +550,7 @@ public class CompanyBranchRepository : ICompanyBranchRepository
                 return true;
 
             // Tạo trụ sở chính mặc định
-            var mainBranch = new CompanyBranch
+            var mainBranchDto = new CompanyBranchDto
             {
                 Id = Guid.NewGuid(),
                 CompanyId = companyId,
@@ -532,7 +560,7 @@ public class CompanyBranchRepository : ICompanyBranchRepository
                 IsActive = true
             };
 
-            Insert(mainBranch);
+            Insert(mainBranchDto);
             return true;
         }
         catch (Exception ex)

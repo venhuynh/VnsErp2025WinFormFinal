@@ -126,6 +126,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VnsErp2025.dbml</DependentUpon>
     </Compile>
+    <Compile Include="DtoConverter\CompanyBranchConverters.cs" />
     <Compile Include="Exceptions\ConnectionException.cs" />
     <Compile Include="Exceptions\DataAccessException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -194,6 +195,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{68e56ab6-1ada-40de-9edd-0be2b8f35c3a}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>
+      <Name>DTO</Name>
     </ProjectReference>
     <ProjectReference Include="..\Logger\Logger.csproj">
       <Project>{12f9fb39-92bf-45d5-bbb2-5353e33700f0}</Project>

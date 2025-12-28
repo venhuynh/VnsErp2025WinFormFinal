@@ -81,23 +81,23 @@
             // 
             this.layoutControl1.Controls.Add(this.StockInOutMasterHistoryDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1371, 718);
+            this.layoutControl1.Size = new System.Drawing.Size(1371, 746);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
             // StockInOutMasterHistoryDtoGridControl
             // 
             this.StockInOutMasterHistoryDtoGridControl.DataSource = this.stockInOutMasterHistoryDtoBindingSource;
-            this.StockInOutMasterHistoryDtoGridControl.Location = new System.Drawing.Point(16, 16);
+            this.StockInOutMasterHistoryDtoGridControl.Location = new System.Drawing.Point(12, 12);
             this.StockInOutMasterHistoryDtoGridControl.MainView = this.StockInOutMasterHistoryDtoGridView;
             this.StockInOutMasterHistoryDtoGridControl.MenuManager = this.barManager1;
             this.StockInOutMasterHistoryDtoGridControl.Name = "StockInOutMasterHistoryDtoGridControl";
             this.StockInOutMasterHistoryDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlRepositoryItemHypertextLabel});
-            this.StockInOutMasterHistoryDtoGridControl.Size = new System.Drawing.Size(1339, 686);
+            this.StockInOutMasterHistoryDtoGridControl.Size = new System.Drawing.Size(1347, 722);
             this.StockInOutMasterHistoryDtoGridControl.TabIndex = 4;
             this.StockInOutMasterHistoryDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.StockInOutMasterHistoryDtoGridView});
@@ -347,14 +347,14 @@
             // 
             this.InPhieuGiaoHangBarButtonItem.Caption = "Phiếu giao hàng";
             this.InPhieuGiaoHangBarButtonItem.Id = 16;
+            this.InPhieuGiaoHangBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.productshipments_16x16;
             this.InPhieuGiaoHangBarButtonItem.Name = "InPhieuGiaoHangBarButtonItem";
             // 
             // InPhieuNhapXuatBarButtonItem
             // 
-            this.InPhieuNhapXuatBarButtonItem.Caption = "In phiếu";
+            this.InPhieuNhapXuatBarButtonItem.Caption = "Nhập - Xuất";
             this.InPhieuNhapXuatBarButtonItem.Id = 2;
-            this.InPhieuNhapXuatBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.print_16x16;
-            this.InPhieuNhapXuatBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.print_32x32;
+            this.InPhieuNhapXuatBarButtonItem.ImageOptions.SvgImage = global::Inventory.Properties.Resources.Send;
             this.InPhieuNhapXuatBarButtonItem.Name = "InPhieuNhapXuatBarButtonItem";
             // 
             // ThemHinhAnhBarButtonItem
@@ -422,31 +422,31 @@
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1371, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1371, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 757);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 770);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1371, 35);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1371, 22);
             // 
             // barDockControlLeft
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 718);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 746);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1371, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1371, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 718);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 746);
             // 
             // Root
             // 
@@ -455,7 +455,7 @@
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1371, 718);
+            this.Root.Size = new System.Drawing.Size(1371, 746);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -463,7 +463,7 @@
             this.layoutControlItem1.Control = this.StockInOutMasterHistoryDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1345, 692);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1351, 726);
             this.layoutControlItem1.TextVisible = false;
             // 
             // FrmStockInOutMasterHistory

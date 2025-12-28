@@ -173,24 +173,6 @@
     <Compile Include="Report\RpPhieuNhapXuat.Designer.cs">
       <DependentUpon>RpPhieuNhapXuat.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\InPhieu\InPhieuBaoHanh.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="StockIn\InPhieu\InPhieuBaoHanh.Designer.cs">
-      <DependentUpon>InPhieuBaoHanh.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StockIn\InPhieu\InPhieuNhapXuatNoiBo.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="StockIn\InPhieu\InPhieuNhapXuatNoiBo.Designer.cs">
-      <DependentUpon>InPhieuNhapXuatNoiBo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StockIn\InPhieu\InPhieuNhapXuatThietBiChoMuon.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="StockIn\InPhieu\InPhieuNhapXuatThietBiChoMuon.Designer.cs">
-      <DependentUpon>InPhieuNhapXuatThietBiChoMuon.cs</DependentUpon>
-    </Compile>
     <Compile Include="StockIn\NhapBaoHanh\FrmNhapBaoHanh.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -275,13 +257,6 @@
     <Compile Include="StockIn\NhapThietBiMuon\FrmNhapThietBiMuon.Designer.cs">
       <DependentUpon>FrmNhapThietBiMuon.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\InPhieu\InPhieuNhapKho.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="StockIn\InPhieu\InPhieuNhapKho.Designer.cs">
-      <DependentUpon>InPhieuNhapKho.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StockIn\InPhieu\StockInReportHelper.cs" />
     <Compile Include="StockIn\NhapHangThuongMai\UcNhapHangThuongMaiDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -469,15 +444,6 @@
     <EmbeddedResource Include="Report\RpPhieuNhapXuat.resx">
       <DependentUpon>RpPhieuNhapXuat.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\InPhieu\InPhieuBaoHanh.resx">
-      <DependentUpon>InPhieuBaoHanh.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\InPhieu\InPhieuNhapXuatNoiBo.resx">
-      <DependentUpon>InPhieuNhapXuatNoiBo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\InPhieu\InPhieuNhapXuatThietBiChoMuon.resx">
-      <DependentUpon>InPhieuNhapXuatThietBiChoMuon.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapBaoHanh\FrmNhapBaoHanh.resx">
       <DependentUpon>FrmNhapBaoHanh.cs</DependentUpon>
     </EmbeddedResource>
@@ -489,9 +455,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapHangThuongMai\FrmNhapKhoThuongMai.resx">
       <DependentUpon>FrmNhapKhoThuongMai.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\InPhieu\InPhieuNhapKho.resx">
-      <DependentUpon>InPhieuNhapKho.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapHangThuongMai\UcNhapHangThuongMaiDetail.resx">
       <DependentUpon>UcNhapHangThuongMaiDetail.cs</DependentUpon>
@@ -646,9 +609,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="StockIn\InPhieu\README_IN_PHIEU_NHAP_KHO.md" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="StockIn\InPhieu\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
       <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
@@ -799,6 +763,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\QRCode.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Send.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\productshipments_16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

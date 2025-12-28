@@ -101,7 +101,22 @@ public class StockInRepository : IStockInRepository
                     context.Transaction = transaction;
 
                     // 1. Lưu hoặc cập nhật Master
-                    var savedMaster = SaveMaster(context, master);
+                    StockInOutMaster savedMaster;
+                    if (master.Id != Guid.Empty)
+                    {
+                        // Update existing - Master đã được lưu bởi UpdateMasterAsync, chỉ cần load lại
+                        savedMaster = context.StockInOutMasters.FirstOrDefault(m => m.Id == master.Id);
+                        if (savedMaster == null)
+                        {
+                            throw new Exception($"Không tìm thấy phiếu nhập kho với ID: {master.Id}");
+                        }
+                    }
+                    else
+                    {
+                        // Create new - Master đã được lưu bởi CreateMasterAsync, chỉ cần load lại
+                        // Hoặc nếu chưa được lưu, tạo mới
+                        savedMaster = SaveMaster(context, master);
+                    }
                     var masterId = savedMaster.Id;
 
                     _logger.Debug("SaveAsync: Master đã được lưu, MasterId={0}", masterId);
@@ -160,62 +175,259 @@ public class StockInRepository : IStockInRepository
     }
 
     /// <summary>
-    /// Lưu hoặc cập nhật Master entity
+    /// Tạo mới Master entity (Create) - Public method
+    /// </summary>
+    public async Task<Guid> CreateMasterAsync(StockInOutMaster master)
+    {
+        if (master == null)
+            throw new ArgumentNullException(nameof(master));
+
+        if (master.Id != Guid.Empty)
+            throw new ArgumentException("Id phải là Guid.Empty khi tạo mới", nameof(master));
+
+        return await Task.Run(() =>
+        {
+            using var context = CreateNewContext();
+            try
+            {
+                _logger.Debug("CreateMasterAsync: Bắt đầu tạo mới master");
+
+                context.Connection.Open();
+                using var transaction = context.Connection.BeginTransaction();
+                try
+                {
+                    context.Transaction = transaction;
+
+                    var savedMaster = SaveMaster(context, master);
+                    var masterId = savedMaster.Id;
+
+                    transaction.Commit();
+                    context.SubmitChanges();
+
+                    _logger.Info("CreateMasterAsync: Tạo mới master thành công, MasterId={0}", masterId);
+                    return masterId;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error("CreateMasterAsync: Lỗi trong transaction, đang rollback", ex);
+                    try
+                    {
+                        if (transaction.Connection != null && transaction.Connection.State == ConnectionState.Open)
+                        {
+                            transaction.Rollback();
+                        }
+                    }
+                    catch (Exception rollbackEx)
+                    {
+                        _logger.Error("CreateMasterAsync: Lỗi khi rollback transaction", rollbackEx);
+                    }
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"CreateMasterAsync: Lỗi tạo master: {ex.Message}", ex);
+                throw;
+            }
+        });
+    }
+
+    /// <summary>
+    /// Lưu Master entity mới (Create) - Private helper
     /// </summary>
     private StockInOutMaster SaveMaster(VnsErp2025DataContext context, StockInOutMaster master)
     {
         var currentTime = DateTime.Now;
-        StockInOutMaster masterEntity;
+        
+        // Create new
+        master.Id = Guid.NewGuid();
+        master.CreatedDate = currentTime;
+        master.UpdatedDate = currentTime;
+        // CreatedBy và UpdatedBy sẽ được set sau khi có authentication
 
-        if (master.Id != Guid.Empty)
+        context.StockInOutMasters.InsertOnSubmit(master);
+        _logger.Debug("SaveMaster: Tạo mới master, Id={0}", master.Id);
+        
+        return master;
+    }
+
+    /// <summary>
+    /// Cập nhật Master entity (Update) - Public method
+    /// Tạo context mới không có LoadOptions để tránh lỗi foreign key reference
+    /// </summary>
+    public async Task<Guid> UpdateMasterAsync(StockInOutMaster master)
+    {
+        if (master == null)
+            throw new ArgumentNullException(nameof(master));
+
+        if (master.Id == Guid.Empty)
+            throw new ArgumentException("Id không được là Guid.Empty khi cập nhật", nameof(master));
+
+        return await Task.Run(() =>
         {
-            // Update existing
-            masterEntity = context.StockInOutMasters.FirstOrDefault(m => m.Id == master.Id);
-            if (masterEntity == null)
+            // Tạo context mới không có LoadOptions (không sử dụng CreateNewContext)
+            using var context = new VnsErp2025DataContext(_connectionString);
+            // Không set LoadOptions cho context này để tránh lỗi foreign key reference
+            
+            try
             {
-                throw new Exception($"Không tìm thấy phiếu nhập kho với ID: {master.Id}");
+                _logger.Debug("UpdateMasterAsync: Bắt đầu cập nhật master, Id={0}", master.Id);
+
+                context.Connection.Open();
+                using var transaction = context.Connection.BeginTransaction();
+                try
+                {
+                    context.Transaction = transaction;
+
+                    var updatedMaster = UpdateMaster(context, master);
+                    var masterId = updatedMaster.Id;
+
+                    transaction.Commit();
+                    context.SubmitChanges();
+
+                    _logger.Info("UpdateMasterAsync: Cập nhật master thành công, MasterId={0}", masterId);
+                    return masterId;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error("UpdateMasterAsync: Lỗi trong transaction, đang rollback", ex);
+                    try
+                    {
+                        if (transaction.Connection != null && transaction.Connection.State == ConnectionState.Open)
+                        {
+                            transaction.Rollback();
+                        }
+                    }
+                    catch (Exception rollbackEx)
+                    {
+                        _logger.Error("UpdateMasterAsync: Lỗi khi rollback transaction", rollbackEx);
+                    }
+                    throw;
+                }
             }
+            catch (Exception ex)
+            {
+                _logger.Error($"UpdateMasterAsync: Lỗi cập nhật master: {ex.Message}", ex);
+                throw;
+            }
+        });
+    }
 
-            // Cập nhật các trường
-            masterEntity.StockInOutDate = master.StockInOutDate;
-            masterEntity.VocherNumber = master.VocherNumber;
-            masterEntity.StockInOutType = master.StockInOutType;
-            masterEntity.VoucherStatus = master.VoucherStatus;
-            masterEntity.WarehouseId = master.WarehouseId;
-            masterEntity.PurchaseOrderId = master.PurchaseOrderId;
-            masterEntity.PartnerSiteId = master.PartnerSiteId;
-            masterEntity.Notes = master.Notes;
-            masterEntity.TotalQuantity = master.TotalQuantity;
-            masterEntity.TotalAmount = master.TotalAmount;
-            masterEntity.TotalVat = master.TotalVat;
-            masterEntity.TotalAmountIncludedVat = master.TotalAmountIncludedVat;
-            masterEntity.NguoiNhanHang = master.NguoiNhanHang;
-            masterEntity.NguoiGiaoHang = master.NguoiGiaoHang;
-            masterEntity.DiscountAmount = master.DiscountAmount;
-            masterEntity.TotalAmountAfterDiscount = master.TotalAmountAfterDiscount;
-            masterEntity.UpdatedDate = currentTime;
-            // UpdatedBy sẽ được set sau khi có authentication
-
-            _logger.Debug("SaveMaster: Cập nhật master, Id={0}", masterEntity.Id);
-        }
-        else
+    /// <summary>
+    /// Cập nhật Master entity (Update) - Private helper
+    /// </summary>
+    private StockInOutMaster UpdateMaster(VnsErp2025DataContext context, StockInOutMaster master)
+    {
+        var currentTime = DateTime.Now;
+        
+        // Load entity từ context (không có LoadOptions nên không có navigation properties)
+        var masterEntity = context.StockInOutMasters.FirstOrDefault(m => m.Id == master.Id);
+        if (masterEntity == null)
         {
-            // Create new
-            master.Id = Guid.NewGuid();
-            master.CreatedDate = currentTime;
-            master.UpdatedDate = currentTime;
-            // CreatedBy và UpdatedBy sẽ được set sau khi có authentication
-
-            context.StockInOutMasters.InsertOnSubmit(master);
-            masterEntity = master;
-            _logger.Debug("SaveMaster: Tạo mới master, Id={0}", masterEntity.Id);
+            throw new Exception($"Không tìm thấy phiếu nhập kho với ID: {master.Id}");
         }
 
+        // Cập nhật tất cả các trường từ master (đã được map từ DTO, không có navigation properties)
+        masterEntity.StockInOutDate = master.StockInOutDate;
+        masterEntity.VocherNumber = master.VocherNumber;
+        masterEntity.StockInOutType = master.StockInOutType;
+        masterEntity.VoucherStatus = master.VoucherStatus;
+        masterEntity.WarehouseId = master.WarehouseId; // Có thể set vì không có navigation properties
+        masterEntity.PurchaseOrderId = master.PurchaseOrderId;
+        masterEntity.PartnerSiteId = master.PartnerSiteId;
+        masterEntity.Notes = master.Notes;
+        masterEntity.TotalQuantity = master.TotalQuantity;
+        masterEntity.TotalAmount = master.TotalAmount;
+        masterEntity.TotalVat = master.TotalVat;
+        masterEntity.TotalAmountIncludedVat = master.TotalAmountIncludedVat;
+        masterEntity.NguoiNhanHang = master.NguoiNhanHang;
+        masterEntity.NguoiGiaoHang = master.NguoiGiaoHang;
+        masterEntity.DiscountAmount = master.DiscountAmount;
+        masterEntity.TotalAmountAfterDiscount = master.TotalAmountAfterDiscount;
+        masterEntity.UpdatedDate = currentTime;
+        // UpdatedBy sẽ được set sau khi có authentication
+
+        _logger.Debug("UpdateMaster: Cập nhật master thành công, Id={0}", masterEntity.Id);
         return masterEntity;
     }
 
     /// <summary>
-    /// Lưu các Detail entities
+    /// Lưu danh sách Detail entities cho một Master đã tồn tại - Public method
+    /// </summary>
+    public async Task SaveDetailsAsync(Guid masterId, List<StockInOutDetail> details, bool deleteExisting = true)
+    {
+        if (masterId == Guid.Empty)
+            throw new ArgumentException("MasterId không được là Guid.Empty", nameof(masterId));
+
+        if (details == null || details.Count == 0)
+            throw new ArgumentException("Danh sách chi tiết không được để trống", nameof(details));
+
+        await Task.Run(() =>
+        {
+            using var context = CreateNewContext();
+            try
+            {
+                _logger.Debug("SaveDetailsAsync: Bắt đầu lưu details, MasterId={0}, DetailCount={1}, DeleteExisting={2}", 
+                    masterId, details.Count, deleteExisting);
+
+                context.Connection.Open();
+                using var transaction = context.Connection.BeginTransaction();
+                try
+                {
+                    context.Transaction = transaction;
+
+                    // Xóa các detail cũ nếu cần
+                    if (deleteExisting)
+                    {
+                        var existingDetails = context.StockInOutDetails
+                            .Where(d => d.StockInOutMasterId == masterId)
+                            .ToList();
+
+                        if (existingDetails.Any())
+                        {
+                            context.StockInOutDetails.DeleteAllOnSubmit(existingDetails);
+                            _logger.Debug("SaveDetailsAsync: Đã xóa {0} detail cũ", existingDetails.Count);
+                        }
+                    }
+
+                    // Lưu các Detail mới
+                    SaveDetails(context, masterId, details);
+
+                    _logger.Debug("SaveDetailsAsync: Đã lưu {0} detail", details.Count);
+
+                    // Commit transaction
+                    transaction.Commit();
+                    context.SubmitChanges();
+
+                    _logger.Info("SaveDetailsAsync: Lưu details thành công, MasterId={0}", masterId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error("SaveDetailsAsync: Lỗi trong transaction, đang rollback", ex);
+                    try
+                    {
+                        if (transaction.Connection != null && transaction.Connection.State == ConnectionState.Open)
+                        {
+                            transaction.Rollback();
+                        }
+                    }
+                    catch (Exception rollbackEx)
+                    {
+                        _logger.Error("SaveDetailsAsync: Lỗi khi rollback transaction", rollbackEx);
+                    }
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"SaveDetailsAsync: Lỗi lưu details: {ex.Message}", ex);
+                throw;
+            }
+        });
+    }
+
+    /// <summary>
+    /// Lưu các Detail entities - Private helper
     /// </summary>
     private void SaveDetails(VnsErp2025DataContext context, Guid masterId, List<StockInOutDetail> details)
     {

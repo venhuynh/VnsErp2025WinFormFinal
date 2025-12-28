@@ -4,7 +4,6 @@ using Dal.DataContext;
 using DevExpress.XtraReports.UI;
 using DTO.Inventory.StockIn.NhapLapRap;
 using Inventory.OverlayForm;
-using Inventory.StockIn.InPhieu;
 using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
 using Logger.Configuration;
@@ -774,15 +773,11 @@ namespace Inventory.StockIn.NhapLapRap
                     return false;
                 }
 
-                // ========== BƯỚC 3: CHUYỂN ĐỔI MASTER DTO SANG ENTITY ==========
-                // Convert Master DTO sang entity để truyền vào BLL
-                // Detail entities đã được trả về trực tiếp từ GetDetails(), không cần convert
-                var masterEntity = MapMasterDtoToEntity(masterDto);
-
-                // ========== BƯỚC 4: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
+                // ========== BƯỚC 3: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
                 // Tất cả validation đã được thực hiện ở bước 1 và 2
-                // StockInBll.SaveAsync sẽ có thêm validation layer nhưng chủ yếu là double-check
-                var savedMasterId = await _stockInBll.SaveAsync(masterEntity, detailEntities);
+                // Truyền DTO trực tiếp vào BLL để tránh lỗi tham chiếu khóa ngoại
+                // BLL sẽ tự động map DTO sang entity (không có navigation properties)
+                var savedMasterId = await _stockInBll.SaveAsync(masterDto, detailEntities);
 
                 // ========== BƯỚC 5: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
                 // Cập nhật ID sau khi lưu
