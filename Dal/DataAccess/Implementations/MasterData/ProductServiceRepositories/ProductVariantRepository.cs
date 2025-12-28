@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -125,51 +127,63 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
 
         #endregion
 
-        #region Create
-
-        #endregion
-
-        #region Read
+        #region ========== READ OPERATIONS ==========
 
         /// <summary>
         /// Lấy biến thể theo ID
         /// </summary>
         /// <param name="id">ID biến thể</param>
-        /// <returns>ProductVariant entity</returns>
-        public ProductVariant GetById(Guid id)
+        /// <returns>ProductVariantDto</returns>
+        public ProductVariantDto GetById(Guid id)
         {
             try
             {
                 using var context = CreateNewContext();
-                return context.ProductVariants.FirstOrDefault(x => x.Id == id);
+                var entity = context.ProductVariants.FirstOrDefault(x => x.Id == id);
+                if (entity == null) return null;
+
+                // Lấy thông tin liên quan
+                var product = entity.ProductService;
+                var unit = entity.UnitOfMeasure;
+
+                return entity.ToDto(
+                    productCode: product?.Code,
+                    productName: product?.Name,
+                    unitCode: unit?.Code,
+                    unitName: unit?.Name,
+                    productThumbnailImage: product?.ThumbnailImage?.ToArray()
+                );
             }
             catch (Exception ex)
             {
                 throw new DataAccessException($"Lỗi lấy biến thể: {ex.Message}", ex);
             }
-        }
-
-        /// <summary>
-        /// Override GetById từ BaseDataAccess để sử dụng Guid thay vì object.
-        /// </summary>
-        protected ProductVariant GetById(object id)
-        {
-            if (id is Guid guidId)
-                return GetById(guidId);
-            return null;
         }
 
         /// <summary>
         /// Lấy biến thể theo ID (Async)
         /// </summary>
         /// <param name="id">ID biến thể</param>
-        /// <returns>ProductVariant entity</returns>
-        public async Task<ProductVariant> GetByIdAsync(Guid id)
+        /// <returns>ProductVariantDto</returns>
+        public async Task<ProductVariantDto> GetByIdAsync(Guid id)
         {
             try
             {
                 using var context = CreateNewContext();
-                return await Task.Run(() => context.ProductVariants.FirstOrDefault(x => x.Id == id));
+                var entity = await Task.Run(() => context.ProductVariants.FirstOrDefault(x => x.Id == id));
+                if (entity == null) return null;
+
+                // Lấy thông tin liên quan
+                var product = entity.ProductService;
+                var unit = entity.UnitOfMeasure;
+
+                return entity.ToDto(
+                    productCode: product?.Code,
+                    productName: product?.Name,
+                    unitCode: unit?.Code,
+                    unitName: unit?.Name,
+                    productThumbnailImage: product?.ThumbnailImage?.ToArray()
+                );
             }
             catch (Exception ex)
             {
@@ -178,41 +192,23 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
         }
 
         /// <summary>
-        /// Lấy tất cả biến thể
+        /// Lấy tất cả biến thể (Async)
         /// </summary>
-        public List<ProductVariant> GetAll()
+        public async Task<List<ProductVariantDto>> GetAllAsync()
         {
             try
             {
                 using var context = CreateNewContext();
-                return context.ProductVariants
-                    .OrderBy(pv => pv.VariantCode)
-                    .ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy tất cả biến thể: {ex.Message}", ex);
-            }
-        }
 
-        /// <summary>
-        /// Lấy tất cả biến thể (Async)
-        /// </summary>
-        public async Task<List<ProductVariant>> GetAllAsync()
-        {
-            try
-            {
-                using var context = new VnsErp2025DataContext(_connectionString);
-
-                //// Cấu hình DataLoadOptions để preload navigation properties
-                var loadOptions = new DataLoadOptions();
-                loadOptions.LoadWith<ProductVariant>(pv => pv.ProductService);
-                loadOptions.LoadWith<ProductVariant>(pv => pv.UnitOfMeasure);
-                context.LoadOptions = loadOptions;
-
-                return await Task.Run(() => context.ProductVariants
+                var entities = await Task.Run(() => context.ProductVariants
                     .OrderBy(pv => pv.VariantCode)
                     .ToList());
+
+                // Tạo dictionaries cho hiệu quả
+                var productDict = context.ProductServices.ToDictionary(p => p.Id);
+                var unitDict = context.UnitOfMeasures.ToDictionary(u => u.Id);
+
+                return entities.ToDtos(productDict, unitDict);
             }
             catch (Exception ex)
             {
@@ -224,19 +220,23 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
         /// Lấy tất cả biến thể với thông tin đầy đủ (Async)
         /// Bao gồm thông tin sản phẩm gốc, đơn vị tính và các thông tin liên quan
         /// </summary>
-        /// <returns>Danh sách biến thể với thông tin đầy đủ</returns>
-        public async Task<List<ProductVariant>> GetAllWithDetailsAsync()
+        /// <returns>Danh sách ProductVariantDto với thông tin đầy đủ</returns>
+        public async Task<List<ProductVariantDto>> GetAllWithDetailsAsync()
         {
             try
             {
                 using var context = CreateNewContext();
 
-                
-
-                return await Task.Run(() => context.ProductVariants
+                var entities = await Task.Run(() => context.ProductVariants
                     .OrderBy(pv => pv.ProductService.Name)
                     .ThenBy(pv => pv.VariantCode)
                     .ToList());
+
+                // Tạo dictionaries cho hiệu quả
+                var productDict = context.ProductServices.ToDictionary(p => p.Id);
+                var unitDict = context.UnitOfMeasures.ToDictionary(u => u.Id);
+
+                return entities.ToDtos(productDict, unitDict);
             }
             catch (Exception ex)
             {
@@ -248,16 +248,22 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
         /// Lấy danh sách biến thể theo ProductId
         /// </summary>
         /// <param name="productId">ID sản phẩm</param>
-        /// <returns>Danh sách biến thể</returns>
-        public List<ProductVariant> GetByProductId(Guid productId)
+        /// <returns>Danh sách ProductVariantDto</returns>
+        public List<ProductVariantDto> GetByProductId(Guid productId)
         {
             try
             {
                 using var context = CreateNewContext();
-                return context.ProductVariants
+                var entities = context.ProductVariants
                     .Where(x => x.ProductId == productId)
                     .OrderBy(x => x.VariantCode)
                     .ToList();
+
+                // Tạo dictionaries cho hiệu quả
+                var productDict = context.ProductServices.ToDictionary(p => p.Id);
+                var unitDict = context.UnitOfMeasures.ToDictionary(u => u.Id);
+
+                return entities.ToDtos(productDict, unitDict);
             }
             catch (Exception ex)
             {
@@ -265,110 +271,6 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             }
         }
 
-        /// <summary>
-        /// Lấy danh sách biến thể theo ProductId (Async)
-        /// </summary>
-        /// <param name="productId">ID sản phẩm</param>
-        /// <returns>Danh sách biến thể</returns>
-        public async Task<List<ProductVariant>> GetByProductIdAsync(Guid productId)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return await Task.Run(() => context.ProductVariants
-                    .Where(x => x.ProductId == productId)
-                    .OrderBy(x => x.VariantCode)
-                    .ToList());
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy danh sách biến thể: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể theo mã
-        /// </summary>
-        /// <param name="variantCode">Mã biến thể</param>
-        /// <returns>ProductVariant entity</returns>
-        public ProductVariant GetByVariantCode(string variantCode)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(variantCode))
-                    return null;
-
-                using var context = CreateNewContext();
-                return context.ProductVariants.FirstOrDefault(x => x.VariantCode == variantCode.Trim());
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể theo mã: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể theo mã (Async)
-        /// </summary>
-        /// <param name="variantCode">Mã biến thể</param>
-        /// <returns>ProductVariant entity</returns>
-        public async Task<ProductVariant> GetByVariantCodeAsync(string variantCode)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(variantCode))
-                    return null;
-
-                using var context = CreateNewContext();
-                return await Task.Run(() => context.ProductVariants.FirstOrDefault(x => x.VariantCode == variantCode.Trim()));
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể theo mã: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể theo trạng thái hoạt động
-        /// </summary>
-        /// <param name="isActive">Trạng thái hoạt động</param>
-        /// <returns>Danh sách biến thể</returns>
-        public List<ProductVariant> GetByStatus(bool isActive)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ProductVariants
-                    .Where(x => x.IsActive == isActive)
-                    .OrderBy(x => x.VariantCode)
-                    .ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể theo trạng thái: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể theo trạng thái hoạt động (Async)
-        /// </summary>
-        /// <param name="isActive">Trạng thái hoạt động</param>
-        /// <returns>Danh sách biến thể</returns>
-        public async Task<List<ProductVariant>> GetByStatusAsync(bool isActive)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return await Task.Run(() => context.ProductVariants
-                    .Where(x => x.IsActive == isActive)
-                    .OrderBy(x => x.VariantCode)
-                    .ToList());
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể theo trạng thái: {ex.Message}", ex);
-            }
-        }
 
 
         /// <summary>
@@ -470,7 +372,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
 
         #endregion
 
-        #region Validation & Business Rules
+        #region ========== VALIDATION & EXISTS CHECKS ==========
 
         /// <summary>
         /// Kiểm tra mã biến thể có trùng không
@@ -502,39 +404,6 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
         }
 
         /// <summary>
-        /// Kiểm tra mã biến thể có trùng không (Async)
-        /// </summary>
-        /// <param name="variantCode">Mã biến thể</param>
-        /// <param name="excludeId">ID biến thể cần loại trừ</param>
-        /// <returns>True nếu trùng</returns>
-        public async Task<bool> IsVariantCodeExistsAsync(string variantCode, Guid? excludeId = null)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(variantCode))
-                    return false;
-
-                using var context = CreateNewContext();
-                var query = context.ProductVariants.Where(x => x.VariantCode == variantCode.Trim());
-
-                if (excludeId.HasValue)
-                {
-                    query = query.Where(x => x.Id != excludeId.Value);
-                }
-
-                return await Task.Run(() => query.Any());
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi kiểm tra mã biến thể: {ex.Message}", ex);
-            }
-        }
-
-        #endregion
-
-        #region Statistics Methods
-
-        /// <summary>
         /// Đếm tổng số biến thể
         /// </summary>
         /// <returns>Số lượng biến thể</returns>
@@ -551,190 +420,6 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             }
         }
 
-        /// <summary>
-        /// Đếm số biến thể theo sản phẩm
-        /// </summary>
-        /// <param name="productId">ID sản phẩm</param>
-        /// <returns>Số lượng biến thể</returns>
-        public int GetCountByProduct(Guid productId)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ProductVariants.Count(x => x.ProductId == productId);
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi đếm số biến thể theo sản phẩm: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Đếm số biến thể theo trạng thái
-        /// </summary>
-        /// <param name="isActive">Trạng thái hoạt động</param>
-        /// <returns>Số lượng biến thể</returns>
-        public int GetCountByStatus(bool isActive)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ProductVariants.Count(x => x.IsActive == isActive);
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi đếm số biến thể theo trạng thái: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Đếm số biến thể theo đơn vị tính
-        /// </summary>
-        /// <param name="unitOfMeasureId">ID đơn vị tính</param>
-        /// <returns>Số lượng biến thể</returns>
-        public int GetCountByUnitOfMeasure(Guid unitOfMeasureId)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ProductVariants.Count(x => x.UnitId == unitOfMeasureId);
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi đếm số biến thể theo đơn vị tính: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể theo khoảng thời gian tạo
-        /// </summary>
-        /// <param name="fromDate">Từ ngày</param>
-        /// <param name="toDate">Đến ngày</param>
-        /// <returns>Danh sách biến thể</returns>
-        public List<ProductVariant> GetByCreatedDateRange(DateTime fromDate, DateTime toDate)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ProductVariants
-                    .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
-                    .OrderByDescending(x => x.CreatedDate)
-                    .ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể theo khoảng thời gian tạo: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể theo khoảng thời gian tạo (Async)
-        /// </summary>
-        /// <param name="fromDate">Từ ngày</param>
-        /// <param name="toDate">Đến ngày</param>
-        /// <returns>Danh sách biến thể</returns>
-        public async Task<List<ProductVariant>> GetByCreatedDateRangeAsync(DateTime fromDate, DateTime toDate)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return await Task.Run(() => context.ProductVariants
-                    .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
-                    .OrderByDescending(x => x.CreatedDate)
-                    .ToList());
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể theo khoảng thời gian tạo: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể theo khoảng thời gian cập nhật
-        /// </summary>
-        /// <param name="fromDate">Từ ngày</param>
-        /// <param name="toDate">Đến ngày</param>
-        /// <returns>Danh sách biến thể</returns>
-        public List<ProductVariant> GetByModifiedDateRange(DateTime fromDate, DateTime toDate)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ProductVariants
-                    .Where(x => x.ModifiedDate >= fromDate && x.ModifiedDate <= toDate)
-                    .OrderByDescending(x => x.ModifiedDate)
-                    .ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể theo khoảng thời gian cập nhật: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể theo khoảng thời gian cập nhật (Async)
-        /// </summary>
-        /// <param name="fromDate">Từ ngày</param>
-        /// <param name="toDate">Đến ngày</param>
-        /// <returns>Danh sách biến thể</returns>
-        public async Task<List<ProductVariant>> GetByModifiedDateRangeAsync(DateTime fromDate, DateTime toDate)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return await Task.Run(() => context.ProductVariants
-                    .Where(x => x.ModifiedDate >= fromDate && x.ModifiedDate <= toDate)
-                    .OrderByDescending(x => x.ModifiedDate)
-                    .ToList());
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể theo khoảng thời gian cập nhật: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể được tạo gần đây nhất
-        /// </summary>
-        /// <param name="count">Số lượng biến thể cần lấy</param>
-        /// <returns>Danh sách biến thể</returns>
-        public List<ProductVariant> GetRecentlyCreated(int count = 10)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ProductVariants
-                    .OrderByDescending(x => x.CreatedDate)
-                    .Take(count)
-                    .ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể được tạo gần đây: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy biến thể được cập nhật gần đây nhất
-        /// </summary>
-        /// <param name="count">Số lượng biến thể cần lấy</param>
-        /// <returns>Danh sách biến thể</returns>
-        public List<ProductVariant> GetRecentlyModified(int count = 10)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ProductVariants
-                    .OrderByDescending(x => x.ModifiedDate)
-                    .Take(count)
-                    .ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy biến thể được cập nhật gần đây: {ex.Message}", ex);
-            }
-        }
-
         #endregion
 
         #region Helper Methods
@@ -742,8 +427,8 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
         /// <summary>
         /// Lưu hoặc cập nhật biến thể
         /// </summary>
-        /// <param name="variant">Biến thể cần lưu hoặc cập nhật</param>
-        public void SaveOrUpdate(ProductVariant variant)
+        /// <param name="variant">Biến thể DTO cần lưu hoặc cập nhật</param>
+        public void SaveOrUpdate(ProductVariantDto variant)
         {
             try
             {
@@ -753,44 +438,30 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 using var context = CreateNewContext();
                 var existing = variant.Id != Guid.Empty ? context.ProductVariants.FirstOrDefault(x => x.Id == variant.Id) : null;
 
+                // Convert DTO to Entity
+                var entity = variant.ToEntity(existing);
+
                 if (existing == null)
                 {
                     // Thêm mới
-                    if (variant.Id == Guid.Empty)
-                        variant.Id = Guid.NewGuid();
+                    if (entity.Id == Guid.Empty)
+                        entity.Id = Guid.NewGuid();
 
                     // Thiết lập CreatedDate và ModifiedDate cho biến thể mới
-                    variant.CreatedDate = DateTime.Now;
-                    variant.ModifiedDate = DateTime.Now;
+                    entity.CreatedDate = DateTime.Now;
+                    entity.ModifiedDate = DateTime.Now;
 
                     // Tạo VariantNameForReport (chỉ tên sản phẩm và các thuộc tính, không có HTML tags)
-                    variant.VariantNameForReport = BuildVariantNameForReport(context, variant);
+                    entity.VariantNameForReport = BuildVariantNameForReport(context, entity);
 
-                    context.ProductVariants.InsertOnSubmit(variant);
+                    context.ProductVariants.InsertOnSubmit(entity);
                 }
                 else
                 {
-                    // Cập nhật
-                    existing.ProductId = variant.ProductId;
-                    existing.VariantCode = variant.VariantCode;
-                    existing.UnitId = variant.UnitId;
-                    existing.IsActive = variant.IsActive;
-                    existing.ThumbnailImage = variant.ThumbnailImage;
-                    
-                    // Cập nhật các field thumbnail khác (nếu có)
-                    existing.ThumbnailFileName = variant.ThumbnailFileName;
-                    existing.ThumbnailRelativePath = variant.ThumbnailRelativePath;
-                    existing.ThumbnailFullPath = variant.ThumbnailFullPath;
-                    existing.ThumbnailStorageType = variant.ThumbnailStorageType;
-                    existing.ThumbnailFileSize = variant.ThumbnailFileSize;
-                    existing.ThumbnailChecksum = variant.ThumbnailChecksum;
-                    
-                    existing.VariantFullName = variant.VariantFullName; // Cập nhật VariantFullName
-                    // Cập nhật VariantNameForReport (chỉ tên sản phẩm và các thuộc tính, không có HTML tags)
-                    existing.VariantNameForReport = BuildVariantNameForReport(context, existing);
-
                     // Cập nhật ModifiedDate
                     existing.ModifiedDate = DateTime.Now;
+                    // Cập nhật VariantNameForReport (chỉ tên sản phẩm và các thuộc tính, không có HTML tags)
+                    existing.VariantNameForReport = BuildVariantNameForReport(context, existing);
                 }
 
                 context.SubmitChanges();
@@ -804,10 +475,10 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
         /// <summary>
         /// Lưu biến thể và giá trị thuộc tính
         /// </summary>
-        /// <param name="variant">Biến thể</param>
+        /// <param name="variant">Biến thể DTO</param>
         /// <param name="attributeValues">Danh sách giá trị thuộc tính (AttributeId, Value)</param>
         /// <returns>ID biến thể đã lưu</returns>
-        public async Task<Guid> SaveAsync(ProductVariant variant, List<(Guid AttributeId, string Value)> attributeValues)
+        public async Task<Guid> SaveAsync(ProductVariantDto variant, List<(Guid AttributeId, string Value)> attributeValues)
         {
             try
             {
@@ -816,43 +487,33 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
 
                 // Lưu hoặc cập nhật biến thể
                 var existingVariant = context.ProductVariants.FirstOrDefault(x => x.Id == variant.Id);
-                if (existingVariant != null)
+                
+                // Convert DTO to Entity
+                var entity = variant.ToEntity(existingVariant);
+                
+                if (existingVariant == null)
                 {
-                    // Cập nhật
-                    existingVariant.ProductId = variant.ProductId;
-                    existingVariant.VariantCode = variant.VariantCode;
-                    existingVariant.UnitId = variant.UnitId;
-                    existingVariant.IsActive = variant.IsActive;
-                    existingVariant.ThumbnailImage = variant.ThumbnailImage;
-                    
-                    // Cập nhật các field thumbnail khác (nếu có)
-                    existingVariant.ThumbnailFileName = variant.ThumbnailFileName;
-                    existingVariant.ThumbnailRelativePath = variant.ThumbnailRelativePath;
-                    existingVariant.ThumbnailFullPath = variant.ThumbnailFullPath;
-                    existingVariant.ThumbnailStorageType = variant.ThumbnailStorageType;
-                    existingVariant.ThumbnailFileSize = variant.ThumbnailFileSize;
-                    existingVariant.ThumbnailChecksum = variant.ThumbnailChecksum;
+                    // Tạo mới
+                    if (entity.Id == Guid.Empty)
+                        entity.Id = Guid.NewGuid();
 
+                    // Thiết lập CreatedDate và ModifiedDate cho biến thể mới
+                    entity.CreatedDate = currentTime;
+                    entity.ModifiedDate = currentTime;
+
+                    context.ProductVariants.InsertOnSubmit(entity);
+                }
+                else
+                {
                     // Cập nhật ModifiedDate
                     existingVariant.ModifiedDate = currentTime;
 
                     // Xóa các VariantAttribute cũ trước khi thêm mới (chỉ khi có attributeValues)
                     if (attributeValues != null)
                     {
-                        var oldVariantAttributes = context.VariantAttributes.Where(x => x.VariantId == variant.Id).ToList();
+                        var oldVariantAttributes = context.VariantAttributes.Where(x => x.VariantId == entity.Id).ToList();
                         context.VariantAttributes.DeleteAllOnSubmit(oldVariantAttributes);
                     }
-                }
-                else
-                {
-                    // Tạo mới
-                    variant.Id = Guid.NewGuid();
-
-                    // Thiết lập CreatedDate và ModifiedDate cho biến thể mới
-                    variant.CreatedDate = currentTime;
-                    variant.ModifiedDate = currentTime;
-
-                    context.ProductVariants.InsertOnSubmit(variant);
                 }
 
                 // Lưu giá trị thuộc tính mới và tính toán VariantFullName
@@ -874,7 +535,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                         // Tạo VariantAttribute
                         var variantAttribute = new VariantAttribute
                         {
-                            VariantId = variant.Id,
+                            VariantId = entity.Id,
                             AttributeId = attributeId,
                             AttributeValueId = attributeValue.Id
                         };
@@ -892,25 +553,15 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 // Cập nhật VariantFullName cho biến thể
                 string variantFullNameValue = variantFullNameParts.Any()
                     ? string.Join(", ", variantFullNameParts)
-                    : variant.VariantCode;
+                    : entity.VariantCode;
 
-                if (existingVariant != null)
-                {
-                    // Cập nhật cho biến thể hiện có
-                    existingVariant.VariantFullName = variantFullNameValue;
-                    // Lưu VariantNameForReport (chỉ tên sản phẩm và các thuộc tính, không có HTML tags)
-                    existingVariant.VariantNameForReport = BuildVariantNameForReport(context, existingVariant);
-                }
-                else
-                {
-                    // Cập nhật cho biến thể mới
-                    variant.VariantFullName = variantFullNameValue;
-                    // Lưu VariantNameForReport (chỉ tên sản phẩm và các thuộc tính, không có HTML tags)
-                    variant.VariantNameForReport = BuildVariantNameForReport(context, variant);
-                }
+                var targetVariant = existingVariant ?? entity;
+                targetVariant.VariantFullName = variantFullNameValue;
+                // Lưu VariantNameForReport (chỉ tên sản phẩm và các thuộc tính, không có HTML tags)
+                targetVariant.VariantNameForReport = BuildVariantNameForReport(context, targetVariant);
 
                 await Task.Run(() => context.SubmitChanges());
-                return variant.Id;
+                return entity.Id;
             }
             catch (Exception ex)
             {
@@ -944,31 +595,6 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             }
         }
 
-        /// <summary>
-        /// Lấy danh sách giá trị thuộc tính của biến thể (Async)
-        /// </summary>
-        /// <param name="variantId">ID biến thể</param>
-        /// <returns>Danh sách giá trị thuộc tính (AttributeId, AttributeName, Value)</returns>
-        public async Task<List<(Guid AttributeId, string AttributeName, string Value)>> GetAttributeValuesAsync(Guid variantId)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-
-                var query = from va in context.VariantAttributes
-                            join av in context.AttributeValues on va.AttributeValueId equals av.Id
-                            join a in context.Attributes on va.AttributeId equals a.Id
-                            where va.VariantId == variantId
-                            select new { a.Id, a.Name, av.Value };
-
-                var results = await Task.Run(() => query.ToList());
-                return results.Select(x => (x.Id, x.Name, x.Value)).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy giá trị thuộc tính: {ex.Message}", ex);
-            }
-        }
 
         /// <summary>
         /// Lấy DataContext để sử dụng với LinqServerModeSource
@@ -985,10 +611,6 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 throw new DataAccessException($"Lỗi lấy DataContext: {ex.Message}", ex);
             }
         }
-
-        #endregion
-
-        #region LinqInstantFeedbackSource Support
 
         /// <summary>
         /// Lấy queryable cho LinqInstantFeedbackSource (chỉ trả về Entity)
@@ -1008,43 +630,6 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
             catch (Exception ex)
             {
                 throw new DataAccessException($"Lỗi lấy queryable cho LinqInstantFeedbackSource: {ex.Message}", ex);
-            }
-        }
-
-
-        /// <summary>
-        /// Lấy queryable của ProductServices để join trong BLL
-        /// </summary>
-        /// <returns>IQueryable của ProductService entity</returns>
-        public IQueryable<ProductService> GetProductServicesQueryable()
-        {
-            try
-            {
-                // Không sử dụng 'using' để tránh dispose context sớm
-                var context = CreateNewContext();
-                return context.ProductServices;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy queryable ProductServices: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy queryable của UnitOfMeasures để join trong BLL
-        /// </summary>
-        /// <returns>IQueryable của UnitOfMeasure entity</returns>
-        public IQueryable<UnitOfMeasure> GetUnitOfMeasuresQueryable()
-        {
-            try
-            {
-                // Không sử dụng 'using' để tránh dispose context sớm
-                var context = CreateNewContext();
-                return context.UnitOfMeasures;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi lấy queryable UnitOfMeasures: {ex.Message}", ex);
             }
         }
 

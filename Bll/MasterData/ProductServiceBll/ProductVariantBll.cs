@@ -2,6 +2,7 @@ using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
+using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
@@ -123,8 +124,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy biến thể theo ID
         /// </summary>
         /// <param name="id">ID biến thể</param>
-        /// <returns>ProductVariant entity</returns>
-        public ProductVariant GetById(Guid id)
+        /// <returns>ProductVariantDto</returns>
+        public ProductVariantDto GetById(Guid id)
         {
             try
             {
@@ -140,8 +141,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy biến thể theo ID (Async)
         /// </summary>
         /// <param name="id">ID biến thể</param>
-        /// <returns>ProductVariant entity</returns>
-        public async Task<ProductVariant> GetByIdAsync(Guid id)
+        /// <returns>ProductVariantDto</returns>
+        public async Task<ProductVariantDto> GetByIdAsync(Guid id)
         {
             try
             {
@@ -157,8 +158,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy danh sách biến thể theo ProductId
         /// </summary>
         /// <param name="productId">ID sản phẩm</param>
-        /// <returns>Danh sách biến thể</returns>
-        public List<ProductVariant> GetByProductId(Guid productId)
+        /// <returns>Danh sách ProductVariantDto</returns>
+        public List<ProductVariantDto> GetByProductId(Guid productId)
         {
             try
             {
@@ -173,8 +174,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Lấy tất cả biến thể sản phẩm
         /// </summary>
-        /// <returns>Danh sách biến thể</returns>
-        public async Task<List<ProductVariant>> GetAllAsync()
+        /// <returns>Danh sách ProductVariantDto</returns>
+        public async Task<List<ProductVariantDto>> GetAllAsync()
         {
             try
             {
@@ -189,21 +190,13 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Lấy tất cả biến thể sản phẩm với thông tin đầy đủ
         /// Bao gồm thông tin sản phẩm gốc, đơn vị tính, thuộc tính và hình ảnh
-        /// Tuân thủ quy tắc: Dal -> Bll (chỉ trả về Entity)
         /// </summary>
-        /// <returns>Danh sách ProductVariant entity với thông tin đầy đủ</returns>
-        public async Task<List<ProductVariant>> GetAllWithDetailsAsync()
+        /// <returns>Danh sách ProductVariantDto với thông tin đầy đủ</returns>
+        public async Task<List<ProductVariantDto>> GetAllWithDetailsAsync()
         {
             try
             {
-                // Lấy dữ liệu từ DAL với thông tin liên quan đã được preload
-                var variants = await GetDataAccess().GetAllWithDetailsAsync();
-                
-                // DAL đã preload tất cả navigation properties thông qua DataLoadOptions
-                // Bao gồm: ProductService, UnitOfMeasure, ProductVariantAttributes, ProductVariantImages
-                // Và cả thông tin sản phẩm gốc: ProductServiceCategory, ProductServiceAttributes, ProductServiceImages
-                
-                return variants;
+                return await GetDataAccess().GetAllWithDetailsAsync();
             }
             catch (Exception ex)
             {
@@ -214,27 +207,18 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Lấy tất cả biến thể sản phẩm đang hoạt động với thông tin đầy đủ
         /// Tương tự như GetAllWithDetailsAsync nhưng chỉ lấy các record có IsActive = true
-        /// Bao gồm thông tin sản phẩm gốc, đơn vị tính, thuộc tính và hình ảnh
-        /// Tuân thủ quy tắc: Dal -> Bll (chỉ trả về Entity)
         /// </summary>
-        /// <returns>Danh sách ProductVariant entity đang hoạt động với thông tin đầy đủ</returns>
-        public async Task<List<ProductVariant>> GetAllInUseWithDetailsAsync()
+        /// <returns>Danh sách ProductVariantDto đang hoạt động với thông tin đầy đủ</returns>
+        public async Task<List<ProductVariantDto>> GetAllInUseWithDetailsAsync()
         {
             try
             {
-                // Lấy dữ liệu từ DAL với thông tin liên quan đã được preload
                 var variants = await GetDataAccess().GetAllWithDetailsAsync();
                 
                 // Filter chỉ lấy các record đang hoạt động (IsActive = true)
-                var activeVariants = variants
+                return variants
                     .Where(v => v.IsActive)
                     .ToList();
-                
-                // DAL đã preload tất cả navigation properties thông qua DataLoadOptions
-                // Bao gồm: ProductService, UnitOfMeasure, ProductVariantAttributes, ProductVariantImages
-                // Và cả thông tin sản phẩm gốc: ProductServiceCategory, ProductServiceAttributes, ProductServiceImages
-                
-                return activeVariants;
             }
             catch (Exception ex)
             {
@@ -270,10 +254,10 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Lưu biến thể (tạo mới hoặc cập nhật)
         /// </summary>
-        /// <param name="variant">Entity biến thể</param>
+        /// <param name="variant">ProductVariantDto</param>
         /// <param name="attributeValues">Danh sách giá trị thuộc tính (AttributeId, Value)</param>
         /// <returns>ID biến thể đã lưu</returns>
-        public async Task<Guid> SaveAsync(ProductVariant variant, List<(Guid AttributeId, string Value)> attributeValues)
+        public async Task<Guid> SaveAsync(ProductVariantDto variant, List<(Guid AttributeId, string Value)> attributeValues)
         {
             try
             {
@@ -361,8 +345,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="variantId">ID biến thể sản phẩm</param>
         /// <param name="imageBytes">Byte array của hình ảnh gốc (null để xóa)</param>
         /// <param name="thumbnailMaxDimension">Kích thước tối đa của thumbnail (mặc định 120px)</param>
-        /// <returns>ProductVariant entity đã được cập nhật</returns>
-        public async Task<ProductVariant> UpdateThumbnailImageAsync(Guid variantId, byte[] imageBytes, int thumbnailMaxDimension = 120)
+        /// <returns>ProductVariantDto đã được cập nhật</returns>
+        public async Task<ProductVariantDto> UpdateThumbnailImageAsync(Guid variantId, byte[] imageBytes, int thumbnailMaxDimension = 120)
         {
             try
             {
@@ -372,132 +356,11 @@ namespace Bll.MasterData.ProductServiceBll
                     throw new Exception($"Không tìm thấy biến thể sản phẩm với ID {variantId}");
                 }
 
-                // Xử lý xóa thumbnail
-                if (imageBytes == null || imageBytes.Length == 0)
-                {
-                    // Xóa file trên NAS nếu có
-                    if (!string.IsNullOrWhiteSpace(variant.ThumbnailRelativePath))
-                    {
-                        try
-                        {
-                            await GetImageStorage().DeleteImageAsync(variant.ThumbnailRelativePath);
-                            _logger.Info($"Đã xóa file thumbnail từ storage, RelativePath={variant.ThumbnailRelativePath}");
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Warning($"Không thể xóa file thumbnail từ storage: {ex.Message}");
-                        }
-                    }
+                // Sử dụng UpdateThumbnailImageOnlyAsync để xử lý
+                await UpdateThumbnailImageOnlyAsync(variantId, imageBytes, thumbnailMaxDimension);
 
-                    // Xóa thông tin trong database
-                    variant.ThumbnailImage = null;
-                    variant.ThumbnailFileName = null;
-                    variant.ThumbnailRelativePath = null;
-                    variant.ThumbnailFullPath = null;
-                    variant.ThumbnailStorageType = null;
-                    variant.ThumbnailFileSize = null;
-                    variant.ThumbnailChecksum = null;
-                }
-                else
-                {
-                    // Xử lý upload thumbnail mới
-                    if (thumbnailMaxDimension <= 0)
-                    {
-                        thumbnailMaxDimension = 120; // Default 120px cho cột thumbnail
-                    }
-
-                    // 1. Tạo tên file
-                    var fileExtension = ".jpg"; // Mặc định JPEG
-                    try
-                    {
-                        using (var ms = new MemoryStream(imageBytes))
-                        using (var img = Image.FromStream(ms))
-                        {
-                            if (img.RawFormat.Equals(ImageFormat.Png))
-                                fileExtension = ".png";
-                            else if (img.RawFormat.Equals(ImageFormat.Gif))
-                                fileExtension = ".gif";
-                        }
-                    }
-                    catch
-                    {
-                        // Nếu không detect được, dùng .jpg mặc định
-                    }
-
-                    var fileName = $"PV_{variantId}_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
-
-                    // 2. Lưu ảnh gốc lên NAS
-                    var storageResult = await GetImageStorage().SaveImageAsync(
-                        imageData: imageBytes,
-                        fileName: fileName,
-                        category: ImageCategory.ProductVariant, // Sử dụng ProductVariant category
-                        entityId: variantId,
-                        generateThumbnail: false // Không tạo thumbnail trên NAS, sẽ tạo và lưu vào database
-                    );
-
-                    if (!storageResult.Success)
-                    {
-                        throw new InvalidOperationException(
-                            $"Không thể lưu hình ảnh vào storage: {storageResult.ErrorMessage}");
-                    }
-
-                    // 3. Tạo thumbnail từ ảnh gốc với kích thước tùy chỉnh
-                    byte[] thumbnailData = null;
-                    try
-                    {
-                        thumbnailData = _imageCompression.CompressImage(
-                            imageData: imageBytes,
-                            targetSize: 50000, // Target size: ~50KB
-                            maxDimension: thumbnailMaxDimension, // Sử dụng kích thước tùy chỉnh (120px cho cột thumbnail)
-                            format: ImageFormat.Jpeg
-                        );
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Warning($"Không thể tạo thumbnail cho biến thể {variantId}: {ex.Message}");
-                        // Tiếp tục lưu ảnh dù không tạo được thumbnail
-                    }
-
-                    // 4. Xóa file cũ trên NAS nếu có
-                    if (!string.IsNullOrWhiteSpace(variant.ThumbnailRelativePath) && 
-                        variant.ThumbnailRelativePath != storageResult.RelativePath)
-                    {
-                        try
-                        {
-                            await GetImageStorage().DeleteImageAsync(variant.ThumbnailRelativePath);
-                            _logger.Info($"Đã xóa file thumbnail cũ từ storage, RelativePath={variant.ThumbnailRelativePath}");
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Warning($"Không thể xóa file thumbnail cũ từ storage: {ex.Message}");
-                        }
-                    }
-
-                    // 5. Cập nhật thông tin trong entity
-                    variant.ThumbnailFileName = storageResult.FileName;
-                    variant.ThumbnailRelativePath = storageResult.RelativePath;
-                    variant.ThumbnailFullPath = storageResult.FullPath;
-                    variant.ThumbnailStorageType = "NAS";
-                    variant.ThumbnailFileSize = storageResult.FileSize;
-                    variant.ThumbnailChecksum = storageResult.Checksum;
-
-                    // Lưu thumbnail đã resize vào database
-                    if (thumbnailData != null && thumbnailData.Length > 0)
-                    {
-                        variant.ThumbnailImage = new Binary(thumbnailData);
-                    }
-                    else
-                    {
-                        // Nếu không tạo được thumbnail, lưu ảnh gốc đã resize nhỏ
-                        variant.ThumbnailImage = new Binary(imageBytes);
-                    }
-                }
-
-                // 6. Lưu vào database - sử dụng SaveOrUpdate để tránh xóa VariantAttribute
-                // Vì chỉ cập nhật thumbnail, không cần thay đổi attribute values
-                await Task.Run(() => GetDataAccess().SaveOrUpdate(variant));
-
-                return variant;
+                // Lấy lại variant đã cập nhật
+                return GetById(variantId);
             }
             catch (Exception ex)
             {
@@ -528,21 +391,7 @@ namespace Bll.MasterData.ProductServiceBll
                 // Xử lý xóa thumbnail
                 if (imageBytes == null || imageBytes.Length == 0)
                 {
-                    // Xóa file trên NAS nếu có
-                    if (!string.IsNullOrWhiteSpace(variant.ThumbnailRelativePath))
-                    {
-                        try
-                        {
-                            await GetImageStorage().DeleteImageAsync(variant.ThumbnailRelativePath);
-                            _logger.Info($"Đã xóa file thumbnail từ storage, RelativePath={variant.ThumbnailRelativePath}");
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Warning($"Không thể xóa file thumbnail từ storage: {ex.Message}");
-                        }
-                    }
-
-                    // Xóa thông tin trong database
+                    // Xóa thông tin trong database (không cần xóa file trên NAS vì không có thông tin trong DTO)
                     await GetDataAccess().UpdateThumbnailOnlyAsync(
                         variantId: variantId,
                         thumbnailImage: null,
@@ -615,22 +464,7 @@ namespace Bll.MasterData.ProductServiceBll
                     // Tiếp tục lưu ảnh dù không tạo được thumbnail
                 }
 
-                // 4. Xóa file cũ trên NAS nếu có
-                if (!string.IsNullOrWhiteSpace(variant.ThumbnailRelativePath) && 
-                    variant.ThumbnailRelativePath != storageResult.RelativePath)
-                {
-                    try
-                    {
-                        await GetImageStorage().DeleteImageAsync(variant.ThumbnailRelativePath);
-                        _logger.Info($"Đã xóa file thumbnail cũ từ storage, RelativePath={variant.ThumbnailRelativePath}");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Warning($"Không thể xóa file thumbnail cũ từ storage: {ex.Message}");
-                    }
-                }
-
-                // 5. Lưu thumbnail đã resize vào database
+                // 4. Lưu thumbnail đã resize vào database
                 Binary thumbnailBinary = null;
                 if (thumbnailData != null && thumbnailData.Length > 0)
                 {
