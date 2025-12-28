@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 
 namespace Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 
@@ -11,48 +11,58 @@ namespace Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 /// </summary>
 public interface IBusinessPartnerCategoryRepository
 {
-    #region Create
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
     /// Thêm danh mục đối tác mới với validation cơ bản.
     /// </summary>
     /// <param name="categoryName">Tên danh mục</param>
     /// <param name="description">Mô tả</param>
-    /// <returns>Danh mục đã tạo</returns>
-    BusinessPartnerCategory AddNewCategory(string categoryName, string description = null);
+    /// <returns>BusinessPartnerCategoryDto đã tạo</returns>
+    BusinessPartnerCategoryDto AddNewCategory(string categoryName, string description = null);
 
     /// <summary>
     /// Thêm danh mục đối tác mới (Async).
     /// </summary>
-    Task<BusinessPartnerCategory> AddNewCategoryAsync(string categoryName, string description = null);
+    Task<BusinessPartnerCategoryDto> AddNewCategoryAsync(string categoryName, string description = null);
+
+    /// <summary>
+    /// Lưu/cập nhật đầy đủ thông tin danh mục.
+    /// </summary>
+    void SaveOrUpdate(BusinessPartnerCategoryDto dto);
+
+    /// <summary>
+    /// Lưu/cập nhật đầy đủ thông tin danh mục (Async).
+    /// </summary>
+    Task SaveOrUpdateAsync(BusinessPartnerCategoryDto dto);
 
     #endregion
 
-    #region Read
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy danh mục theo Id.
     /// </summary>
-    BusinessPartnerCategory GetById(Guid id);
+    BusinessPartnerCategoryDto GetById(Guid id);
 
     /// <summary>
     /// Lấy tất cả danh mục.
     /// </summary>
-    List<BusinessPartnerCategory> GetAll();
+    List<BusinessPartnerCategoryDto> GetAll();
 
     /// <summary>
     /// Lấy tất cả danh mục (Async).
     /// </summary>
-    Task<List<BusinessPartnerCategory>> GetAllAsync();
+    Task<List<BusinessPartnerCategoryDto>> GetAllAsync();
 
     /// <summary>
     /// Tìm kiếm danh mục theo tên (contains, case-insensitive).
     /// </summary>
-    List<BusinessPartnerCategory> SearchByName(string keyword);
+    List<BusinessPartnerCategoryDto> SearchByName(string keyword);
 
     #endregion
 
-    #region Update
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Cập nhật thông tin danh mục.
@@ -66,7 +76,7 @@ public interface IBusinessPartnerCategoryRepository
 
     #endregion
 
-    #region Delete
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa danh mục theo Id. Nếu có partners, chuyển sang category "Chưa phân loại".
@@ -80,7 +90,7 @@ public interface IBusinessPartnerCategoryRepository
 
     #endregion
 
-    #region Exists Checks
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra tồn tại theo Id.
@@ -99,7 +109,7 @@ public interface IBusinessPartnerCategoryRepository
 
     #endregion
 
-    #region Partner Count Methods
+    #region ========== BUSINESS LOGIC METHODS ==========
 
     /// <summary>
     /// Kiểm tra xem danh mục có đối tác nào không.
@@ -140,20 +150,6 @@ public interface IBusinessPartnerCategoryRepository
     /// Lấy mã các đối tác theo từng danh mục (bao gồm cả đối tác của sub-categories).
     /// </summary>
     Dictionary<Guid, string> GetPartnerCodesByCategory();
-
-    #endregion
-
-    #region Save/Update Full Entity
-
-    /// <summary>
-    /// Lưu/cập nhật đầy đủ thông tin danh mục.
-    /// </summary>
-    void SaveOrUpdate(BusinessPartnerCategory entity);
-
-    /// <summary>
-    /// Lưu/cập nhật đầy đủ thông tin danh mục (Async).
-    /// </summary>
-    Task SaveOrUpdateAsync(BusinessPartnerCategory entity);
 
     #endregion
 }

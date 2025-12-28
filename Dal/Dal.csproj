@@ -126,6 +126,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VnsErp2025.dbml</DependentUpon>
     </Compile>
+    <Compile Include="DtoConverter\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="DtoConverter\CompanyBranchConverters.cs" />
     <Compile Include="DtoConverter\CompanyConverter.cs" />
     <Compile Include="DtoConverter\DepartmentConverters.cs" />
@@ -182,7 +183,6 @@
     <Content Include="DataContext\SeedData\MasterData\Customer\97.Create_BusinessPartner_And_Mapping.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\98.Create_Test_Mappings.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\99.Check_Data.sql" />
-    <Content Include="DataContext\SeedData\MasterData\Customer\Seed_BusinessPartnerCategory_TestData.sql" />
     <Content Include="DataContext\SeedData\MasterData\Customer\03.Seed_BusinessPartnerContact_TestData.sql" />
     <Content Include="Doc\Promt\Prompt cho AI Cursor %28CRUD DataAccess Class%29.txt" />
     <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />

@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.CustomerPartner;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -49,7 +51,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -66,17 +68,150 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
         return context;
     }
 
+    /// <summary>
+    /// Lấy tất cả sub-categories của một category (đệ quy).
+    /// </summary>
+    private List<Guid> GetSubCategories(Guid categoryId, Dictionary<Guid, BusinessPartnerCategory> categoryDict)
+    {
+        var result = new List<Guid>();
+        var directChildren = categoryDict.Values.Where(c => c.ParentId == categoryId).ToList();
+        
+        foreach (var child in directChildren)
+        {
+            result.Add(child.Id);
+            // Đệ quy lấy các cháu
+            var grandChildren = GetSubCategories(child.Id, categoryDict);
+            result.AddRange(grandChildren);
+        }
+        
+        return result;
+    }
+
+    /// <summary>
+    /// Chuyển tất cả partners từ category này sang category "Chưa phân loại".
+    /// </summary>
+    private void MovePartnersToUncategorizedCategory(Guid categoryId, VnsErp2025DataContext context)
+    {
+        // Tìm hoặc tạo category "Chưa phân loại"
+        var uncategorizedCategory = context.BusinessPartnerCategories
+            .FirstOrDefault(x => x.CategoryName.Trim().ToLower() == "chưa phân loại");
+
+        if (uncategorizedCategory == null)
+        {
+            // Tạo category "Chưa phân loại" nếu chưa có
+            uncategorizedCategory = new BusinessPartnerCategory
+            {
+                Id = Guid.NewGuid(),
+                CategoryName = "Chưa phân loại",
+                Description = "Danh mục mặc định cho các đối tác chưa được phân loại",
+                ParentId = null
+            };
+            context.BusinessPartnerCategories.InsertOnSubmit(uncategorizedCategory);
+            context.SubmitChanges(); // Submit để có ID
+        }
+
+        // Chuyển tất cả partners từ category cũ sang "Chưa phân loại"
+        // Lưu ý: Không thể cập nhật CategoryId vì nó là phần của composite primary key
+        // Cần tạo record mới và xóa record cũ
+        var oldMappings = context.BusinessPartner_BusinessPartnerCategories
+            .Where(m => m.CategoryId == categoryId).ToList();
+
+        foreach (var oldMapping in oldMappings)
+        {
+            // Kiểm tra xem mapping mới đã tồn tại chưa (tránh duplicate)
+            var existingMapping = context.BusinessPartner_BusinessPartnerCategories
+                .FirstOrDefault(m => m.PartnerId == oldMapping.PartnerId && 
+                                    m.CategoryId == uncategorizedCategory.Id);
+            
+            if (existingMapping == null)
+            {
+                // Tạo mapping mới
+                var newMapping = new BusinessPartner_BusinessPartnerCategory
+                {
+                    PartnerId = oldMapping.PartnerId,
+                    CategoryId = uncategorizedCategory.Id,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = oldMapping.CreatedBy
+                };
+                context.BusinessPartner_BusinessPartnerCategories.InsertOnSubmit(newMapping);
+            }
+            
+            // Xóa mapping cũ
+            context.BusinessPartner_BusinessPartnerCategories.DeleteOnSubmit(oldMapping);
+        }
+        
+        context.SubmitChanges();
+        _logger.Info($"Đã chuyển {oldMappings.Count} partners từ category {categoryId} sang 'Chưa phân loại'");
+    }
+
+    /// <summary>
+    /// Chuyển tất cả partners từ category này sang category "Chưa phân loại" (Async).
+    /// </summary>
+    private async Task MovePartnersToUncategorizedCategoryAsync(Guid categoryId, VnsErp2025DataContext context)
+    {
+        // Tìm hoặc tạo category "Chưa phân loại"
+        var uncategorizedCategory = context.BusinessPartnerCategories
+            .FirstOrDefault(x => x.CategoryName.Trim().ToLower() == "chưa phân loại");
+
+        if (uncategorizedCategory == null)
+        {
+            // Tạo category "Chưa phân loại" nếu chưa có
+            uncategorizedCategory = new BusinessPartnerCategory
+            {
+                Id = Guid.NewGuid(),
+                CategoryName = "Chưa phân loại",
+                Description = "Danh mục mặc định cho các đối tác chưa được phân loại",
+                ParentId = null
+            };
+            context.BusinessPartnerCategories.InsertOnSubmit(uncategorizedCategory);
+            await Task.Run(() => context.SubmitChanges()); // Submit để có ID
+        }
+
+        // Chuyển tất cả partners từ category cũ sang "Chưa phân loại"
+        // Lưu ý: Không thể cập nhật CategoryId vì nó là phần của composite primary key
+        // Cần tạo record mới và xóa record cũ
+        var oldMappings = context.BusinessPartner_BusinessPartnerCategories
+            .Where(m => m.CategoryId == categoryId).ToList();
+
+        foreach (var oldMapping in oldMappings)
+        {
+            // Kiểm tra xem mapping mới đã tồn tại chưa (tránh duplicate)
+            var existingMapping = context.BusinessPartner_BusinessPartnerCategories
+                .FirstOrDefault(m => m.PartnerId == oldMapping.PartnerId && 
+                                    m.CategoryId == uncategorizedCategory.Id);
+            
+            if (existingMapping == null)
+            {
+                // Tạo mapping mới
+                var newMapping = new BusinessPartner_BusinessPartnerCategory
+                {
+                    PartnerId = oldMapping.PartnerId,
+                    CategoryId = uncategorizedCategory.Id,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = oldMapping.CreatedBy
+                };
+                context.BusinessPartner_BusinessPartnerCategories.InsertOnSubmit(newMapping);
+            }
+            
+            // Xóa mapping cũ
+            context.BusinessPartner_BusinessPartnerCategories.DeleteOnSubmit(oldMapping);
+        }
+        
+        await Task.Run(() => context.SubmitChanges());
+        _logger.Info($"Đã chuyển {oldMappings.Count} partners từ category {categoryId} sang 'Chưa phân loại' (async)");
+    }
+
     #endregion
 
-    #region Create
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
     /// Thêm danh mục đối tác mới với validation cơ bản.
     /// </summary>
     /// <param name="categoryName">Tên danh mục</param>
     /// <param name="description">Mô tả</param>
-    /// <returns>Danh mục đã tạo</returns>
-    public BusinessPartnerCategory AddNewCategory(string categoryName, string description = null)
+    /// <returns>BusinessPartnerCategoryDto đã tạo</returns>
+    public BusinessPartnerCategoryDto AddNewCategory(string categoryName, string description = null)
     {
         try
         {
@@ -100,7 +235,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
             context.SubmitChanges();
             
             _logger.Info($"Đã thêm mới danh mục: {entity.CategoryName}");
-            return entity;
+            return entity.ToDto();
         }
         catch (SqlException sqlEx) when (sqlEx.Number == 2627)
         {
@@ -130,7 +265,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
     /// <summary>
     /// Thêm danh mục đối tác mới (Async).
     /// </summary>
-    public async Task<BusinessPartnerCategory> AddNewCategoryAsync(string categoryName, string description = null)
+    public async Task<BusinessPartnerCategoryDto> AddNewCategoryAsync(string categoryName, string description = null)
     {
         try
         {
@@ -154,7 +289,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
             await Task.Run(() => context.SubmitChanges());
             
             _logger.Info($"Đã thêm mới danh mục (async): {entity.CategoryName}");
-            return entity;
+            return entity.ToDto();
         }
         catch (SqlException sqlEx) when (sqlEx.Number == 2627)
         {
@@ -183,12 +318,12 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
 
     #endregion
 
-    #region Read
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy danh mục theo Id.
     /// </summary>
-    public BusinessPartnerCategory GetById(Guid id)
+    public BusinessPartnerCategoryDto GetById(Guid id)
     {
         try
         {
@@ -198,9 +333,10 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
             if (category != null)
             {
                 _logger.Debug($"Đã lấy danh mục theo ID: {id} - {category.CategoryName}");
+                return category.ToDto();
             }
             
-            return category;
+            return null;
         }
         catch (Exception ex)
         {
@@ -212,15 +348,18 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
     /// <summary>
     /// Lấy tất cả danh mục.
     /// </summary>
-    public List<BusinessPartnerCategory> GetAll()
+    public List<BusinessPartnerCategoryDto> GetAll()
     {
         try
         {
             using var context = CreateNewContext();
             var categories = context.BusinessPartnerCategories.ToList();
             
-            _logger.Debug($"Đã lấy {categories.Count} danh mục");
-            return categories;
+            // Chuyển đổi sang DTO
+            var dtos = categories.Select(c => c.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} danh mục");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -232,15 +371,18 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
     /// <summary>
     /// Lấy tất cả danh mục (Async).
     /// </summary>
-    public async Task<List<BusinessPartnerCategory>> GetAllAsync()
+    public async Task<List<BusinessPartnerCategoryDto>> GetAllAsync()
     {
         try
         {
             using var context = CreateNewContext();
             var categories = await Task.Run(() => context.BusinessPartnerCategories.ToList());
             
-            _logger.Debug($"Đã lấy {categories.Count} danh mục (async)");
-            return categories;
+            // Chuyển đổi sang DTO
+            var dtos = categories.Select(c => c.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} danh mục (async)");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -252,7 +394,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
     /// <summary>
     /// Tìm kiếm danh mục theo tên (contains, case-insensitive).
     /// </summary>
-    public List<BusinessPartnerCategory> SearchByName(string keyword)
+    public List<BusinessPartnerCategoryDto> SearchByName(string keyword)
     {
         try
         {
@@ -261,7 +403,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
             {
                 var all = context.BusinessPartnerCategories.ToList();
                 _logger.Debug($"Đã tìm kiếm danh mục (không có keyword): {all.Count} kết quả");
-                return all;
+                return all.Select(c => c.ToDto()).ToList();
             }
             
             var lower = keyword.ToLower();
@@ -269,8 +411,11 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
                 .Where(x => x.CategoryName.ToLower().Contains(lower))
                 .ToList();
             
-            _logger.Debug($"Đã tìm kiếm danh mục theo keyword '{keyword}': {results.Count} kết quả");
-            return results;
+            // Chuyển đổi sang DTO
+            var dtos = results.Select(c => c.ToDto()).ToList();
+            
+            _logger.Debug($"Đã tìm kiếm danh mục theo keyword '{keyword}': {dtos.Count} kết quả");
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -281,7 +426,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
 
     #endregion
 
-    #region Update
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Cập nhật thông tin danh mục.
@@ -413,123 +558,9 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
         }
     }
 
-    /// <summary>
-    /// Chuyển tất cả partners từ category này sang category "Chưa phân loại".
-    /// </summary>
-    private void MovePartnersToUncategorizedCategory(Guid categoryId, VnsErp2025DataContext context)
-    {
-        // Tìm hoặc tạo category "Chưa phân loại"
-        var uncategorizedCategory = context.BusinessPartnerCategories
-            .FirstOrDefault(x => x.CategoryName.Trim().ToLower() == "chưa phân loại");
-
-        if (uncategorizedCategory == null)
-        {
-            // Tạo category "Chưa phân loại" nếu chưa có
-            uncategorizedCategory = new BusinessPartnerCategory
-            {
-                Id = Guid.NewGuid(),
-                CategoryName = "Chưa phân loại",
-                Description = "Danh mục mặc định cho các đối tác chưa được phân loại",
-                ParentId = null
-            };
-            context.BusinessPartnerCategories.InsertOnSubmit(uncategorizedCategory);
-            context.SubmitChanges(); // Submit để có ID
-        }
-
-        // Chuyển tất cả partners từ category cũ sang "Chưa phân loại"
-        // Lưu ý: Không thể cập nhật CategoryId vì nó là phần của composite primary key
-        // Cần tạo record mới và xóa record cũ
-        var oldMappings = context.BusinessPartner_BusinessPartnerCategories
-            .Where(m => m.CategoryId == categoryId).ToList();
-
-        foreach (var oldMapping in oldMappings)
-        {
-            // Kiểm tra xem mapping mới đã tồn tại chưa (tránh duplicate)
-            var existingMapping = context.BusinessPartner_BusinessPartnerCategories
-                .FirstOrDefault(m => m.PartnerId == oldMapping.PartnerId && 
-                                    m.CategoryId == uncategorizedCategory.Id);
-            
-            if (existingMapping == null)
-            {
-                // Tạo mapping mới
-                var newMapping = new BusinessPartner_BusinessPartnerCategory
-                {
-                    PartnerId = oldMapping.PartnerId,
-                    CategoryId = uncategorizedCategory.Id,
-                    CreatedDate = DateTime.Now,
-                    CreatedBy = oldMapping.CreatedBy
-                };
-                context.BusinessPartner_BusinessPartnerCategories.InsertOnSubmit(newMapping);
-            }
-            
-            // Xóa mapping cũ
-            context.BusinessPartner_BusinessPartnerCategories.DeleteOnSubmit(oldMapping);
-        }
-        
-        context.SubmitChanges();
-        _logger.Info($"Đã chuyển {oldMappings.Count} partners từ category {categoryId} sang 'Chưa phân loại'");
-    }
-
-    /// <summary>
-    /// Chuyển tất cả partners từ category này sang category "Chưa phân loại" (Async).
-    /// </summary>
-    private async Task MovePartnersToUncategorizedCategoryAsync(Guid categoryId, VnsErp2025DataContext context)
-    {
-        // Tìm hoặc tạo category "Chưa phân loại"
-        var uncategorizedCategory = context.BusinessPartnerCategories
-            .FirstOrDefault(x => x.CategoryName.Trim().ToLower() == "chưa phân loại");
-
-        if (uncategorizedCategory == null)
-        {
-            // Tạo category "Chưa phân loại" nếu chưa có
-            uncategorizedCategory = new BusinessPartnerCategory
-            {
-                Id = Guid.NewGuid(),
-                CategoryName = "Chưa phân loại",
-                Description = "Danh mục mặc định cho các đối tác chưa được phân loại",
-                ParentId = null
-            };
-            context.BusinessPartnerCategories.InsertOnSubmit(uncategorizedCategory);
-            await Task.Run(() => context.SubmitChanges()); // Submit để có ID
-        }
-
-        // Chuyển tất cả partners từ category cũ sang "Chưa phân loại"
-        // Lưu ý: Không thể cập nhật CategoryId vì nó là phần của composite primary key
-        // Cần tạo record mới và xóa record cũ
-        var oldMappings = context.BusinessPartner_BusinessPartnerCategories
-            .Where(m => m.CategoryId == categoryId).ToList();
-
-        foreach (var oldMapping in oldMappings)
-        {
-            // Kiểm tra xem mapping mới đã tồn tại chưa (tránh duplicate)
-            var existingMapping = context.BusinessPartner_BusinessPartnerCategories
-                .FirstOrDefault(m => m.PartnerId == oldMapping.PartnerId && 
-                                    m.CategoryId == uncategorizedCategory.Id);
-            
-            if (existingMapping == null)
-            {
-                // Tạo mapping mới
-                var newMapping = new BusinessPartner_BusinessPartnerCategory
-                {
-                    PartnerId = oldMapping.PartnerId,
-                    CategoryId = uncategorizedCategory.Id,
-                    CreatedDate = DateTime.Now,
-                    CreatedBy = oldMapping.CreatedBy
-                };
-                context.BusinessPartner_BusinessPartnerCategories.InsertOnSubmit(newMapping);
-            }
-            
-            // Xóa mapping cũ
-            context.BusinessPartner_BusinessPartnerCategories.DeleteOnSubmit(oldMapping);
-        }
-        
-        await Task.Run(() => context.SubmitChanges());
-        _logger.Info($"Đã chuyển {oldMappings.Count} partners từ category {categoryId} sang 'Chưa phân loại' (async)");
-    }
-
     #endregion
 
-    #region Exists Checks
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra tồn tại theo Id.
@@ -597,7 +628,7 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
 
     #endregion
 
-    #region Partner Count Methods
+    #region ========== BUSINESS LOGIC METHODS ==========
 
     /// <summary>
     /// Kiểm tra xem danh mục có đối tác nào không.
@@ -846,26 +877,6 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
     }
 
     /// <summary>
-    /// Lấy tất cả sub-categories của một category (đệ quy).
-    /// </summary>
-    private List<Guid> GetSubCategories(Guid categoryId, Dictionary<Guid, BusinessPartnerCategory> categoryDict)
-    {
-        var result = new List<Guid>();
-        var directChildren = categoryDict.Values.Where(c => c.ParentId == categoryId).ToList();
-        
-        foreach (var child in directChildren)
-        {
-            result.Add(child.Id);
-            // Đệ quy lấy các cháu
-            var grandChildren = GetSubCategories(child.Id, categoryDict);
-            result.AddRange(grandChildren);
-        }
-        
-        return result;
-    }
-
-
-    /// <summary>
     /// Đếm số lượng đối tác theo từng danh mục (Async).
     /// </summary>
     public async Task<Dictionary<Guid, int>> GetPartnerCountByCategoryAsync()
@@ -887,28 +898,34 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
 
     #endregion
 
-    #region Save/Update Full Entity
+    #region ========== CREATE OPERATIONS (SaveOrUpdate) ==========
 
     /// <summary>
     /// Lưu/cập nhật đầy đủ thông tin danh mục.
     /// </summary>
-    public void SaveOrUpdate(BusinessPartnerCategory entity)
+    public void SaveOrUpdate(BusinessPartnerCategoryDto dto)
     {
         try
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity), "Entity không được null");
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto), "DTO không được null");
 
             using var context = CreateNewContext();
-            var existing = context.BusinessPartnerCategories.FirstOrDefault(x => x.Id == entity.Id);
+            var existing = context.BusinessPartnerCategories.FirstOrDefault(x => x.Id == dto.Id);
             
             if (existing == null)
             {
                 // Thêm mới
-                if (IsCategoryNameExists(entity.CategoryName))
-                    throw new DataAccessException($"Tên danh mục '{entity.CategoryName}' đã tồn tại");
+                if (IsCategoryNameExists(dto.CategoryName))
+                    throw new DataAccessException($"Tên danh mục '{dto.CategoryName}' đã tồn tại");
                 
-                entity.Id = Guid.NewGuid();
+                // Chuyển đổi DTO sang Entity
+                var entity = dto.ToEntity();
+                if (entity.Id == Guid.Empty)
+                {
+                    entity.Id = Guid.NewGuid();
+                }
+                
                 context.BusinessPartnerCategories.InsertOnSubmit(entity);
                 context.SubmitChanges();
                 
@@ -917,16 +934,11 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
             else
             {
                 // Cập nhật
-                if (IsCategoryNameExists(entity.CategoryName, entity.Id))
-                    throw new DataAccessException($"Tên danh mục '{entity.CategoryName}' đã tồn tại");
+                if (IsCategoryNameExists(dto.CategoryName, dto.Id))
+                    throw new DataAccessException($"Tên danh mục '{dto.CategoryName}' đã tồn tại");
 
-                existing.ParentId = entity.ParentId;
-                existing.CategoryName = entity.CategoryName;
-                existing.Description = entity.Description;
-                existing.CategoryCode = entity.CategoryCode;
-                existing.IsActive = entity.IsActive;
-                existing.SortOrder = entity.SortOrder;
-                existing.ModifiedDate = DateTime.Now;
+                // Sử dụng converter để cập nhật entity từ DTO
+                dto.ToEntity(existing);
                 context.SubmitChanges();
                 
                 _logger.Info($"Đã cập nhật danh mục (SaveOrUpdate): {existing.CategoryName}");
@@ -942,23 +954,29 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
     /// <summary>
     /// Lưu/cập nhật đầy đủ thông tin danh mục (Async).
     /// </summary>
-    public async Task SaveOrUpdateAsync(BusinessPartnerCategory entity)
+    public async Task SaveOrUpdateAsync(BusinessPartnerCategoryDto dto)
     {
         try
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity), "Entity không được null");
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto), "DTO không được null");
 
             using var context = CreateNewContext();
-            var existing = context.BusinessPartnerCategories.FirstOrDefault(x => x.Id == entity.Id);
+            var existing = context.BusinessPartnerCategories.FirstOrDefault(x => x.Id == dto.Id);
             
             if (existing == null)
             {
                 // Thêm mới
-                if (await IsCategoryNameExistsAsync(entity.CategoryName))
-                    throw new DataAccessException($"Tên danh mục '{entity.CategoryName}' đã tồn tại");
+                if (await IsCategoryNameExistsAsync(dto.CategoryName))
+                    throw new DataAccessException($"Tên danh mục '{dto.CategoryName}' đã tồn tại");
                 
-                entity.Id = Guid.NewGuid();
+                // Chuyển đổi DTO sang Entity
+                var entity = dto.ToEntity();
+                if (entity.Id == Guid.Empty)
+                {
+                    entity.Id = Guid.NewGuid();
+                }
+                
                 context.BusinessPartnerCategories.InsertOnSubmit(entity);
                 await Task.Run(() => context.SubmitChanges());
                 
@@ -967,15 +985,11 @@ public class BusinessPartnerCategoryRepository : IBusinessPartnerCategoryReposit
             else
             {
                 // Cập nhật
-                if (await IsCategoryNameExistsAsync(entity.CategoryName, entity.Id))
-                    throw new DataAccessException($"Tên danh mục '{entity.CategoryName}' đã tồn tại");
+                if (await IsCategoryNameExistsAsync(dto.CategoryName, dto.Id))
+                    throw new DataAccessException($"Tên danh mục '{dto.CategoryName}' đã tồn tại");
                 
-                existing.CategoryName = entity.CategoryName;
-                existing.Description = entity.Description;
-                existing.CategoryCode = entity.CategoryCode;
-                existing.IsActive = entity.IsActive;
-                existing.SortOrder = entity.SortOrder;
-                existing.ModifiedDate = DateTime.Now;
+                // Sử dụng converter để cập nhật entity từ DTO
+                dto.ToEntity(existing);
                 await Task.Run(() => context.SubmitChanges());
                 
                 _logger.Info($"Đã cập nhật danh mục (SaveOrUpdateAsync): {existing.CategoryName}");

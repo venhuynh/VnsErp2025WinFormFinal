@@ -44,7 +44,7 @@ public class StockInRepository : IStockInRepository
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -67,9 +67,100 @@ public class StockInRepository : IStockInRepository
         return context;
     }
 
+    /// <summary>
+    /// Lưu Master entity mới (Create) - Private helper
+    /// </summary>
+    private StockInOutMaster SaveMaster(VnsErp2025DataContext context, StockInOutMaster master)
+    {
+        var currentTime = DateTime.Now;
+        
+        // Create new
+        master.Id = Guid.NewGuid();
+        master.CreatedDate = currentTime;
+        master.UpdatedDate = currentTime;
+        // CreatedBy và UpdatedBy sẽ được set sau khi có authentication
+
+        context.StockInOutMasters.InsertOnSubmit(master);
+        _logger.Debug("SaveMaster: Tạo mới master, Id={0}", master.Id);
+        
+        return master;
+    }
+
+    /// <summary>
+    /// Cập nhật Master entity (Update) - Private helper
+    /// </summary>
+    private StockInOutMaster UpdateMaster(VnsErp2025DataContext context, StockInOutMaster master)
+    {
+        var currentTime = DateTime.Now;
+        
+        // Load entity từ context (không có LoadOptions nên không có navigation properties)
+        var masterEntity = context.StockInOutMasters.FirstOrDefault(m => m.Id == master.Id);
+        if (masterEntity == null)
+        {
+            throw new Exception($"Không tìm thấy phiếu nhập kho với ID: {master.Id}");
+        }
+
+        // Cập nhật tất cả các trường từ master (đã được map từ DTO, không có navigation properties)
+        masterEntity.StockInOutDate = master.StockInOutDate;
+        masterEntity.VocherNumber = master.VocherNumber;
+        masterEntity.StockInOutType = master.StockInOutType;
+        masterEntity.VoucherStatus = master.VoucherStatus;
+        masterEntity.WarehouseId = master.WarehouseId; // Có thể set vì không có navigation properties
+        masterEntity.PurchaseOrderId = master.PurchaseOrderId;
+        masterEntity.PartnerSiteId = master.PartnerSiteId;
+        masterEntity.Notes = master.Notes;
+        masterEntity.TotalQuantity = master.TotalQuantity;
+        masterEntity.TotalAmount = master.TotalAmount;
+        masterEntity.TotalVat = master.TotalVat;
+        masterEntity.TotalAmountIncludedVat = master.TotalAmountIncludedVat;
+        masterEntity.NguoiNhanHang = master.NguoiNhanHang;
+        masterEntity.NguoiGiaoHang = master.NguoiGiaoHang;
+        masterEntity.DiscountAmount = master.DiscountAmount;
+        masterEntity.TotalAmountAfterDiscount = master.TotalAmountAfterDiscount;
+        masterEntity.UpdatedDate = currentTime;
+        // UpdatedBy sẽ được set sau khi có authentication
+
+        _logger.Debug("UpdateMaster: Cập nhật master thành công, Id={0}", masterEntity.Id);
+        return masterEntity;
+    }
+
+    /// <summary>
+    /// Lưu các Detail entities - Private helper
+    /// </summary>
+    private void SaveDetails(VnsErp2025DataContext context, Guid masterId, List<StockInOutDetail> details)
+    {
+        var detailEntities = new List<StockInOutDetail>();
+
+        foreach (var detail in details)
+        {
+            var detailEntity = new StockInOutDetail
+            {
+                Id = detail.Id == Guid.Empty ? Guid.NewGuid() : detail.Id,
+                StockInOutMasterId = masterId,
+                ProductVariantId = detail.ProductVariantId,
+                StockInQty = detail.StockInQty,
+                StockOutQty = detail.StockOutQty,
+                UnitPrice = detail.UnitPrice,
+                Vat = detail.Vat,
+                VatAmount = detail.VatAmount,
+                TotalAmount = detail.TotalAmount,
+                TotalAmountIncludedVat = detail.TotalAmountIncludedVat,
+                DiscountPercentage = detail.DiscountPercentage,
+                DiscountAmount = detail.DiscountAmount,
+                TotalAmountAfterDiscount = detail.TotalAmountAfterDiscount,
+                GhiChu = detail.GhiChu
+            };
+
+            detailEntities.Add(detailEntity);
+        }
+
+        context.StockInOutDetails.InsertAllOnSubmit(detailEntities);
+        _logger.Debug("SaveDetails: Đã chuẩn bị {0} detail entities để insert", detailEntities.Count);
+    }
+
     #endregion
 
-    #region Save Operations
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
     /// Lưu phiếu nhập kho (master và detail) với transaction
@@ -177,6 +268,8 @@ public class StockInRepository : IStockInRepository
     /// <summary>
     /// Tạo mới Master entity (Create) - Public method
     /// </summary>
+    /// <param name="master">Entity phiếu nhập kho (master)</param>
+    /// <returns>ID phiếu nhập kho đã tạo</returns>
     public async Task<Guid> CreateMasterAsync(StockInOutMaster master)
     {
         if (master == null)

@@ -1,7 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
-using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -72,11 +72,26 @@ namespace Bll.MasterData.CustomerBll
 
         #endregion
 
+        #region ========== CREATE OPERATIONS ==========
+
+        /// <summary>
+        /// Thêm mới danh mục đối tác.
+        /// </summary>
+        /// <param name="category">BusinessPartnerCategoryDto cần thêm</param>
+        public void Insert(BusinessPartnerCategoryDto category)
+        {
+            GetDataAccess().SaveOrUpdate(category);
+        }
+
+        #endregion
+
+        #region ========== READ OPERATIONS ==========
+
         /// <summary>
         /// Lấy tất cả danh mục đối tác.
         /// </summary>
-        /// <returns>Danh sách BusinessPartnerCategory</returns>
-        public List<BusinessPartnerCategory> GetAll()
+        /// <returns>Danh sách BusinessPartnerCategoryDto</returns>
+        public List<BusinessPartnerCategoryDto> GetAll()
         {
             return GetDataAccess().GetAll();
         }
@@ -84,8 +99,8 @@ namespace Bll.MasterData.CustomerBll
         /// <summary>
         /// Lấy tất cả danh mục đối tác (Async).
         /// </summary>
-        /// <returns>Task chứa danh sách BusinessPartnerCategory</returns>
-        public Task<List<BusinessPartnerCategory>> GetAllAsync()
+        /// <returns>Task chứa danh sách BusinessPartnerCategoryDto</returns>
+        public Task<List<BusinessPartnerCategoryDto>> GetAllAsync()
         {
             return GetDataAccess().GetAllAsync();
         }
@@ -94,11 +109,78 @@ namespace Bll.MasterData.CustomerBll
         /// Lấy danh mục đối tác theo ID.
         /// </summary>
         /// <param name="id">ID của danh mục</param>
-        /// <returns>BusinessPartnerCategory hoặc null</returns>
-        public BusinessPartnerCategory GetById(Guid id)
+        /// <returns>BusinessPartnerCategoryDto hoặc null</returns>
+        public BusinessPartnerCategoryDto GetById(Guid id)
         {
             return GetDataAccess().GetById(id);
         }
+
+        /// <summary>
+        /// Lấy danh sách danh mục với số lượng đối tác (để sử dụng với converter).
+        /// </summary>
+        /// <returns>Tuple chứa danh sách categories và dictionary đếm số lượng</returns>
+        public (List<BusinessPartnerCategoryDto> Categories, Dictionary<Guid, int> Counts) GetCategoriesWithCounts()
+        {
+            var categories = GetAll();
+            var counts = GetPartnerCountByCategory();
+            return (categories, counts);
+        }
+
+        /// <summary>
+        /// Lấy danh sách danh mục với số lượng đối tác (Async).
+        /// </summary>
+        /// <returns>Task chứa Tuple với danh sách categories và dictionary đếm số lượng</returns>
+        public async Task<(List<BusinessPartnerCategoryDto> Categories, Dictionary<Guid, int> Counts)> GetCategoriesWithCountsAsync()
+        {
+            var categories = await GetAllAsync();
+            var counts = await GetPartnerCountByCategoryAsync();
+            return (categories, counts);
+        }
+
+        #endregion
+
+        #region ========== UPDATE OPERATIONS ==========
+
+        /// <summary>
+        /// Cập nhật danh mục đối tác.
+        /// </summary>
+        /// <param name="category">BusinessPartnerCategoryDto cần cập nhật</param>
+        public void Update(BusinessPartnerCategoryDto category)
+        {
+            GetDataAccess().SaveOrUpdate(category);
+        }
+
+        #endregion
+
+        #region ========== DELETE OPERATIONS ==========
+
+        /// <summary>
+        /// Xóa danh mục đối tác theo ID.
+        /// </summary>
+        /// <param name="id">ID của danh mục cần xóa</param>
+        public void Delete(Guid id)
+        {
+            GetDataAccess().DeleteCategory(id);
+        }
+
+        #endregion
+
+        #region ========== VALIDATION & EXISTS CHECKS ==========
+
+        /// <summary>
+        /// Kiểm tra tên danh mục có tồn tại không.
+        /// </summary>
+        /// <param name="categoryName">Tên danh mục cần kiểm tra</param>
+        /// <param name="excludeId">ID danh mục cần loại trừ (khi cập nhật)</param>
+        /// <returns>True nếu tồn tại, False nếu không</returns>
+        public bool IsCategoryNameExists(string categoryName, Guid excludeId)
+        {
+            return GetDataAccess().IsCategoryNameExists(categoryName, excludeId);
+        }
+
+        #endregion
+
+        #region ========== BUSINESS LOGIC METHODS ==========
 
         /// <summary>
         /// Đếm số lượng đối tác theo từng danh mục.
@@ -117,29 +199,6 @@ namespace Bll.MasterData.CustomerBll
         {
             return GetDataAccess().GetPartnerCountByCategoryAsync();
         }
-
-        /// <summary>
-        /// Lấy danh sách danh mục với số lượng đối tác (để sử dụng với converter).
-        /// </summary>
-        /// <returns>Tuple chứa danh sách categories và dictionary đếm số lượng</returns>
-        public (List<BusinessPartnerCategory> Categories, Dictionary<Guid, int> Counts) GetCategoriesWithCounts()
-        {
-            var categories = GetAll();
-            var counts = GetPartnerCountByCategory();
-            return (categories, counts);
-        }
-
-        /// <summary>
-        /// Lấy danh sách danh mục với số lượng đối tác (Async).
-        /// </summary>
-        /// <returns>Task chứa Tuple với danh sách categories và dictionary đếm số lượng</returns>
-        public async Task<(List<BusinessPartnerCategory> Categories, Dictionary<Guid, int> Counts)> GetCategoriesWithCountsAsync()
-        {
-            var categories = await GetAllAsync();
-            var counts = await GetPartnerCountByCategoryAsync();
-            return (categories, counts);
-        }
-
 
         /// <summary>
         /// Kiểm tra xem danh mục có đối tác nào không.
@@ -161,42 +220,6 @@ namespace Bll.MasterData.CustomerBll
             return GetDataAccess().GetPartnerCount(categoryId);
         }
 
-        /// <summary>
-        /// Thêm mới danh mục đối tác.
-        /// </summary>
-        /// <param name="category">Danh mục cần thêm</param>
-        public void Insert(BusinessPartnerCategory category)
-        {
-            GetDataAccess().SaveOrUpdate(category);
-        }
-
-        /// <summary>
-        /// Cập nhật danh mục đối tác.
-        /// </summary>
-        /// <param name="category">Danh mục cần cập nhật</param>
-        public void Update(BusinessPartnerCategory category)
-        {
-            GetDataAccess().SaveOrUpdate(category);
-        }
-
-        /// <summary>
-        /// Kiểm tra tên danh mục có tồn tại không.
-        /// </summary>
-        /// <param name="categoryName">Tên danh mục cần kiểm tra</param>
-        /// <param name="excludeId">ID danh mục cần loại trừ (khi cập nhật)</param>
-        /// <returns>True nếu tồn tại, False nếu không</returns>
-        public bool IsCategoryNameExists(string categoryName, Guid excludeId)
-        {
-            return GetDataAccess().IsCategoryNameExists(categoryName, excludeId);
-        }
-
-        /// <summary>
-        /// Xóa danh mục đối tác theo ID.
-        /// </summary>
-        /// <param name="id">ID của danh mục cần xóa</param>
-        public void Delete(Guid id)
-        {
-            GetDataAccess().DeleteCategory(id);
-        }
+        #endregion
     }
 }
