@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -48,7 +50,7 @@ public class ProductServiceCategoryRepository : IProductServiceCategoryRepositor
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -99,143 +101,40 @@ public class ProductServiceCategoryRepository : IProductServiceCategoryRepositor
 
     #endregion
 
-    #region Read
-
-    /// <summary>
-    /// Lấy danh mục theo Id.
-    /// </summary>
-    public ProductServiceCategory GetById(Guid id)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var category = context.ProductServiceCategories.FirstOrDefault(x => x.Id == id);
-            
-            if (category != null)
-            {
-                _logger.Debug($"Đã lấy danh mục theo ID: {id} - {category.CategoryName}");
-            }
-            else
-            {
-                _logger.Debug($"Không tìm thấy danh mục với ID: {id}");
-            }
-            
-            return category;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy danh mục theo Id {id}: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy danh mục theo Id {id}: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh mục theo Id (Async).
-    /// </summary>
-    public async Task<ProductServiceCategory> GetByIdAsync(Guid id)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var category = await Task.Run(() => context.ProductServiceCategories.FirstOrDefault(x => x.Id == id));
-            
-            if (category != null)
-            {
-                _logger.Debug($"Đã lấy danh mục theo ID (async): {id} - {category.CategoryName}");
-            }
-            else
-            {
-                _logger.Debug($"Không tìm thấy danh mục với ID (async): {id}");
-            }
-            
-            return category;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy danh mục theo Id {id}: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy danh mục theo Id {id}: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy tất cả danh mục.
-    /// </summary>
-    public List<ProductServiceCategory> GetAll()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var categories = context.ProductServiceCategories.ToList();
-            
-            _logger.Debug($"Đã lấy {categories.Count} danh mục");
-            return categories;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy tất cả danh mục: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy tất cả danh mục: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy tất cả danh mục (Async).
-    /// </summary>
-    public async Task<List<ProductServiceCategory>> GetAllAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var categories = await Task.Run(() => context.ProductServiceCategories.ToList());
-            
-            _logger.Debug($"Đã lấy {categories.Count} danh mục (async)");
-            return categories;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy tất cả danh mục: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy tất cả danh mục: {ex.Message}", ex);
-        }
-    }
-
-    #endregion
-
-    #region Create/Update
+    #region ========== CREATE OPERATIONS ==========
 
     /// <summary>
     /// Lưu hoặc cập nhật danh mục sản phẩm/dịch vụ.
     /// </summary>
-    /// <param name="category">Danh mục cần lưu hoặc cập nhật</param>
-    public void SaveOrUpdate(ProductServiceCategory category)
+    /// <param name="dto">ProductServiceCategoryDto</param>
+    public void SaveOrUpdate(ProductServiceCategoryDto dto)
     {
         try
         {
-            if (category == null) 
-                throw new ArgumentNullException(nameof(category));
+            if (dto == null) 
+                throw new ArgumentNullException(nameof(dto));
             
             using var context = CreateNewContext();
-            var existing = category.Id != Guid.Empty 
-                ? context.ProductServiceCategories.FirstOrDefault(x => x.Id == category.Id) 
+            var existing = dto.Id != Guid.Empty 
+                ? context.ProductServiceCategories.FirstOrDefault(x => x.Id == dto.Id) 
                 : null;
             
             if (existing == null)
             {
                 // Thêm mới
-                if (category.Id == Guid.Empty)
-                    category.Id = Guid.NewGuid();
+                var entity = dto.ToEntity();
+                if (entity.Id == Guid.Empty)
+                    entity.Id = Guid.NewGuid();
                     
-                context.ProductServiceCategories.InsertOnSubmit(category);
+                context.ProductServiceCategories.InsertOnSubmit(entity);
                 context.SubmitChanges();
                 
-                _logger.Info($"Đã thêm mới danh mục: {category.CategoryName}");
+                _logger.Info($"Đã thêm mới danh mục: {entity.CategoryName}");
             }
             else
             {
-                // Cập nhật
-                existing.CategoryName = category.CategoryName;
-                existing.Description = category.Description;
-                existing.ParentId = category.ParentId;
-                existing.CategoryCode = category.CategoryCode;
-                
+                // Cập nhật - Sử dụng converter để cập nhật entity từ DTO
+                dto.ToEntity(existing);
                 context.SubmitChanges();
                 
                 _logger.Info($"Đã cập nhật danh mục: {existing.CategoryName}");
@@ -250,7 +149,279 @@ public class ProductServiceCategoryRepository : IProductServiceCategoryRepositor
 
     #endregion
 
-    #region Delete
+    #region ========== READ OPERATIONS ==========
+
+    /// <summary>
+    /// Lấy danh mục theo Id.
+    /// </summary>
+    public ProductServiceCategoryDto GetById(Guid id)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var category = context.ProductServiceCategories.FirstOrDefault(x => x.Id == id);
+            
+            if (category != null)
+            {
+                _logger.Debug($"Đã lấy danh mục theo ID: {id} - {category.CategoryName}");
+                return category.ToDto();
+            }
+            else
+            {
+                _logger.Debug($"Không tìm thấy danh mục với ID: {id}");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục theo Id {id}: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục theo Id {id}: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh mục theo Id (Async).
+    /// </summary>
+    public async Task<ProductServiceCategoryDto> GetByIdAsync(Guid id)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var category = await Task.Run(() => context.ProductServiceCategories.FirstOrDefault(x => x.Id == id));
+            
+            if (category != null)
+            {
+                _logger.Debug($"Đã lấy danh mục theo ID (async): {id} - {category.CategoryName}");
+                return category.ToDto();
+            }
+            else
+            {
+                _logger.Debug($"Không tìm thấy danh mục với ID (async): {id}");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục theo Id {id}: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục theo Id {id}: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả danh mục.
+    /// </summary>
+    public List<ProductServiceCategoryDto> GetAll()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = context.ProductServiceCategories.ToList();
+            
+            // Chuyển đổi sang DTO
+            var dtos = categories.Select(c => c.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} danh mục");
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy tất cả danh mục: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy tất cả danh mục: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả danh mục (Async).
+    /// </summary>
+    public async Task<List<ProductServiceCategoryDto>> GetAllAsync()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = await Task.Run(() => context.ProductServiceCategories.ToList());
+            
+            // Chuyển đổi sang DTO
+            var dtos = categories.Select(c => c.ToDto()).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} danh mục (async)");
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy tất cả danh mục: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy tất cả danh mục: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Đếm số lượng sản phẩm/dịch vụ theo từng danh mục.
+    /// </summary>
+    /// <returns>Dictionary với Key là CategoryId, Value là số lượng sản phẩm/dịch vụ</returns>
+    public Dictionary<Guid, int> GetProductCountByCategory()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var result = context.ProductServices
+                .Where(x => x.CategoryId.HasValue)
+                .GroupBy(x => x.CategoryId.Value)
+                .ToDictionary(g => g.Key, g => g.Count());
+            
+            _logger.Debug($"GetProductCountByCategory: Found {result.Count} categories with products");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi đếm sản phẩm/dịch vụ theo danh mục: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi đếm sản phẩm/dịch vụ theo danh mục: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Đếm số lượng sản phẩm/dịch vụ theo từng danh mục (Async).
+    /// </summary>
+    /// <returns>Task chứa Dictionary với Key là CategoryId, Value là số lượng sản phẩm/dịch vụ</returns>
+    public async Task<Dictionary<Guid, int>> GetProductCountByCategoryAsync()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var result = await Task.Run(() => context.ProductServices
+                .Where(x => x.CategoryId.HasValue)
+                .GroupBy(x => x.CategoryId.Value)
+                .ToDictionary(g => g.Key, g => g.Count()));
+            
+            _logger.Debug($"GetProductCountByCategoryAsync: Found {result.Count} categories with products");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi đếm sản phẩm/dịch vụ theo danh mục: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi đếm sản phẩm/dịch vụ theo danh mục: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả danh mục đang hoạt động (IsActive = true).
+    /// </summary>
+    /// <returns>Danh sách danh mục active sắp xếp theo SortOrder</returns>
+    public List<ProductServiceCategoryDto> GetActiveCategories()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = context.ProductServiceCategories
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList();
+            
+            // Chuyển đổi sang DTO
+            var dtos = categories.Select(c => c.ToDto()).ToList();
+            
+            _logger.Debug($"GetActiveCategories: Found {dtos.Count} active categories");
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả danh mục đang hoạt động (Async).
+    /// </summary>
+    /// <returns>Task chứa danh sách danh mục active</returns>
+    public async Task<List<ProductServiceCategoryDto>> GetActiveCategoriesAsync()
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = await Task.Run(() => context.ProductServiceCategories
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList());
+            
+            // Chuyển đổi sang DTO
+            var dtos = categories.Select(c => c.ToDto()).ToList();
+            
+            _logger.Debug($"GetActiveCategoriesAsync: Found {dtos.Count} active categories");
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh mục con của danh mục cha.
+    /// </summary>
+    /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
+    /// <returns>Danh sách danh mục con sắp xếp theo SortOrder</returns>
+    public List<ProductServiceCategoryDto> GetCategoriesByParent(Guid? parentId)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = context.ProductServiceCategories
+                .Where(x => x.ParentId == parentId)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList();
+            
+            // Chuyển đổi sang DTO
+            var dtos = categories.Select(c => c.ToDto()).ToList();
+            
+            _logger.Debug($"GetCategoriesByParent: Found {dtos.Count} categories for ParentId={parentId}");
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh mục con của danh mục cha (Async).
+    /// </summary>
+    /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
+    /// <returns>Task chứa danh sách danh mục con</returns>
+    public async Task<List<ProductServiceCategoryDto>> GetCategoriesByParentAsync(Guid? parentId)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var categories = await Task.Run(() => context.ProductServiceCategories
+                .Where(x => x.ParentId == parentId)
+                .OrderBy(x => x.SortOrder ?? int.MaxValue)
+                .ThenBy(x => x.CategoryName)
+                .ToList());
+            
+            // Chuyển đổi sang DTO
+            var dtos = categories.Select(c => c.ToDto()).ToList();
+            
+            _logger.Debug($"GetCategoriesByParentAsync: Found {dtos.Count} categories for ParentId={parentId}");
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa danh mục theo ID với logic di chuyển sản phẩm/dịch vụ sang danh mục mặc định.
@@ -309,7 +480,7 @@ public class ProductServiceCategoryRepository : IProductServiceCategoryRepositor
 
     #endregion
 
-    #region Validation & Business Rules
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra tên danh mục có tồn tại không.
@@ -431,156 +602,5 @@ public class ProductServiceCategoryRepository : IProductServiceCategoryRepositor
         }
     }
 
-    /// <summary>
-    /// Đếm số lượng sản phẩm/dịch vụ theo từng danh mục.
-    /// </summary>
-    /// <returns>Dictionary với Key là CategoryId, Value là số lượng sản phẩm/dịch vụ</returns>
-    public Dictionary<Guid, int> GetProductCountByCategory()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var result = context.ProductServices
-                .Where(x => x.CategoryId.HasValue)
-                .GroupBy(x => x.CategoryId.Value)
-                .ToDictionary(g => g.Key, g => g.Count());
-            
-            _logger.Debug($"GetProductCountByCategory: Found {result.Count} categories with products");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi đếm sản phẩm/dịch vụ theo danh mục: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi đếm sản phẩm/dịch vụ theo danh mục: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Đếm số lượng sản phẩm/dịch vụ theo từng danh mục (Async).
-    /// </summary>
-    /// <returns>Task chứa Dictionary với Key là CategoryId, Value là số lượng sản phẩm/dịch vụ</returns>
-    public async Task<Dictionary<Guid, int>> GetProductCountByCategoryAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var result = await Task.Run(() => context.ProductServices
-                .Where(x => x.CategoryId.HasValue)
-                .GroupBy(x => x.CategoryId.Value)
-                .ToDictionary(g => g.Key, g => g.Count()));
-            
-            _logger.Debug($"GetProductCountByCategoryAsync: Found {result.Count} categories with products");
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi đếm sản phẩm/dịch vụ theo danh mục: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi đếm sản phẩm/dịch vụ theo danh mục: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy tất cả danh mục đang hoạt động (IsActive = true).
-    /// </summary>
-    /// <returns>Danh sách danh mục active sắp xếp theo SortOrder</returns>
-    public List<ProductServiceCategory> GetActiveCategories()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var categories = context.ProductServiceCategories
-                .Where(x => x.IsActive)
-                .OrderBy(x => x.SortOrder ?? int.MaxValue)
-                .ThenBy(x => x.CategoryName)
-                .ToList();
-            
-            _logger.Debug($"GetActiveCategories: Found {categories.Count} active categories");
-            return categories;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy tất cả danh mục đang hoạt động (Async).
-    /// </summary>
-    /// <returns>Task chứa danh sách danh mục active</returns>
-    public async Task<List<ProductServiceCategory>> GetActiveCategoriesAsync()
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var categories = await Task.Run(() => context.ProductServiceCategories
-                .Where(x => x.IsActive)
-                .OrderBy(x => x.SortOrder ?? int.MaxValue)
-                .ThenBy(x => x.CategoryName)
-                .ToList());
-            
-            _logger.Debug($"GetActiveCategoriesAsync: Found {categories.Count} active categories");
-            return categories;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy danh mục hoạt động: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh mục con của danh mục cha.
-    /// </summary>
-    /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
-    /// <returns>Danh sách danh mục con sắp xếp theo SortOrder</returns>
-    public List<ProductServiceCategory> GetCategoriesByParent(Guid? parentId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var categories = context.ProductServiceCategories
-                .Where(x => x.ParentId == parentId)
-                .OrderBy(x => x.SortOrder ?? int.MaxValue)
-                .ThenBy(x => x.CategoryName)
-                .ToList();
-            
-            _logger.Debug($"GetCategoriesByParent: Found {categories.Count} categories for ParentId={parentId}");
-            return categories;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh mục con của danh mục cha (Async).
-    /// </summary>
-    /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
-    /// <returns>Task chứa danh sách danh mục con</returns>
-    public async Task<List<ProductServiceCategory>> GetCategoriesByParentAsync(Guid? parentId)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var categories = await Task.Run(() => context.ProductServiceCategories
-                .Where(x => x.ParentId == parentId)
-                .OrderBy(x => x.SortOrder ?? int.MaxValue)
-                .ThenBy(x => x.CategoryName)
-                .ToList());
-            
-            _logger.Debug($"GetCategoriesByParentAsync: Found {categories.Count} categories for ParentId={parentId}");
-            return categories;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy danh mục con: {ex.Message}", ex);
-        }
-    }
-
     #endregion
 }
-

@@ -1,7 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories;
 using Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
-using Dal.DataContext;
+using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,13 +72,13 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Retrieval Methods - Basic
+        #region ========== READ OPERATIONS ==========
 
         /// <summary>
         /// Lấy tất cả danh mục sản phẩm/dịch vụ.
         /// </summary>
-        /// <returns>Danh sách ProductServiceCategory</returns>
-        public List<ProductServiceCategory> GetAll()
+        /// <returns>Danh sách ProductServiceCategoryDto</returns>
+        public List<ProductServiceCategoryDto> GetAll()
         {
             return GetDataAccess().GetAll();
         }
@@ -86,8 +86,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Lấy tất cả danh mục sản phẩm/dịch vụ (Async).
         /// </summary>
-        /// <returns>Task chứa danh sách ProductServiceCategory</returns>
-        public Task<List<ProductServiceCategory>> GetAllAsync()
+        /// <returns>Task chứa danh sách ProductServiceCategoryDto</returns>
+        public Task<List<ProductServiceCategoryDto>> GetAllAsync()
         {
             return GetDataAccess().GetAllAsync();
         }
@@ -96,8 +96,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy danh mục sản phẩm/dịch vụ theo ID.
         /// </summary>
         /// <param name="id">ID của danh mục</param>
-        /// <returns>ProductServiceCategory hoặc null</returns>
-        public ProductServiceCategory GetById(Guid id)
+        /// <returns>ProductServiceCategoryDto hoặc null</returns>
+        public ProductServiceCategoryDto GetById(Guid id)
         {
             return GetDataAccess().GetById(id);
         }
@@ -106,15 +106,11 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy danh mục sản phẩm/dịch vụ theo ID (Async).
         /// </summary>
         /// <param name="id">ID của danh mục</param>
-        /// <returns>Task chứa ProductServiceCategory hoặc null</returns>
-        public Task<ProductServiceCategory> GetByIdAsync(Guid id)
+        /// <returns>Task chứa ProductServiceCategoryDto hoặc null</returns>
+        public Task<ProductServiceCategoryDto> GetByIdAsync(Guid id)
         {
             return GetDataAccess().GetByIdAsync(id);
         }
-
-        #endregion
-
-        #region Retrieval Methods - Aggregation
 
         /// <summary>
         /// Đếm số lượng sản phẩm/dịch vụ theo từng danh mục.
@@ -138,7 +134,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy danh sách danh mục với số lượng sản phẩm/dịch vụ (để sử dụng với converter).
         /// </summary>
         /// <returns>Tuple chứa danh sách categories và dictionary đếm số lượng</returns>
-        public (List<ProductServiceCategory> Categories, Dictionary<Guid, int> Counts) GetCategoriesWithCounts()
+        public (List<ProductServiceCategoryDto> Categories, Dictionary<Guid, int> Counts) GetCategoriesWithCounts()
         {
             var categories = GetAll();
             var counts = GetProductCountByCategory();
@@ -149,23 +145,19 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy danh sách danh mục với số lượng sản phẩm/dịch vụ (Async).
         /// </summary>
         /// <returns>Task chứa Tuple với danh sách categories và dictionary đếm số lượng</returns>
-        public async Task<(List<ProductServiceCategory> Categories, Dictionary<Guid, int> Counts)> GetCategoriesWithCountsAsync()
+        public async Task<(List<ProductServiceCategoryDto> Categories, Dictionary<Guid, int> Counts)> GetCategoriesWithCountsAsync()
         {
             var categories = await GetAllAsync();
             var counts = await GetProductCountByCategoryAsync();
             return (categories, counts);
         }
 
-        #endregion
-
-        #region Retrieval Methods - Filtering
-
         /// <summary>
         /// Lấy danh mục con của danh mục cha.
         /// </summary>
         /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
         /// <returns>Danh sách danh mục con</returns>
-        public List<ProductServiceCategory> GetCategoriesByParent(Guid? parentId)
+        public List<ProductServiceCategoryDto> GetCategoriesByParent(Guid? parentId)
         {
             return GetDataAccess().GetCategoriesByParent(parentId);
         }
@@ -175,7 +167,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// </summary>
         /// <param name="parentId">ID danh mục cha (null cho danh mục cấp 1)</param>
         /// <returns>Task chứa danh sách danh mục con</returns>
-        public Task<List<ProductServiceCategory>> GetCategoriesByParentAsync(Guid? parentId)
+        public Task<List<ProductServiceCategoryDto>> GetCategoriesByParentAsync(Guid? parentId)
         {
             return GetDataAccess().GetCategoriesByParentAsync(parentId);
         }
@@ -184,7 +176,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy tất cả danh mục đang hoạt động (IsActive = true).
         /// </summary>
         /// <returns>Danh sách danh mục active</returns>
-        public List<ProductServiceCategory> GetActiveCategories()
+        public List<ProductServiceCategoryDto> GetActiveCategories()
         {
             return GetDataAccess().GetActiveCategories();
         }
@@ -193,20 +185,16 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy tất cả danh mục đang hoạt động (Async).
         /// </summary>
         /// <returns>Task chứa danh sách danh mục active</returns>
-        public Task<List<ProductServiceCategory>> GetActiveCategoriesAsync()
+        public Task<List<ProductServiceCategoryDto>> GetActiveCategoriesAsync()
         {
             return GetDataAccess().GetActiveCategoriesAsync();
         }
-
-        #endregion
-
-        #region Retrieval Methods - Hierarchy
 
         /// <summary>
         /// Lấy danh mục cấp 1 (root categories).
         /// </summary>
         /// <returns>Danh sách danh mục root</returns>
-        public List<ProductServiceCategory> GetRootCategories()
+        public List<ProductServiceCategoryDto> GetRootCategories()
         {
             return GetCategoriesByParent(null);
         }
@@ -215,7 +203,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy danh mục cấp 1 (Async).
         /// </summary>
         /// <returns>Task chứa danh sách danh mục root</returns>
-        public Task<List<ProductServiceCategory>> GetRootCategoriesAsync()
+        public Task<List<ProductServiceCategoryDto>> GetRootCategoriesAsync()
         {
             return GetCategoriesByParentAsync(null);
         }
@@ -224,7 +212,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy danh mục cấp 1 đang hoạt động.
         /// </summary>
         /// <returns>Danh sách danh mục root active</returns>
-        public List<ProductServiceCategory> GetActiveRootCategories()
+        public List<ProductServiceCategoryDto> GetActiveRootCategories()
         {
             var active = GetActiveCategories();
             return active.Where(x => x.ParentId == null)
@@ -237,7 +225,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy danh mục cấp 1 đang hoạt động (Async).
         /// </summary>
         /// <returns>Task chứa danh sách danh mục root active</returns>
-        public async Task<List<ProductServiceCategory>> GetActiveRootCategoriesAsync()
+        public async Task<List<ProductServiceCategoryDto>> GetActiveRootCategoriesAsync()
         {
             var active = await GetActiveCategoriesAsync();
             return await Task.Run(() => active.Where(x => x.ParentId == null)
@@ -250,10 +238,10 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy cây phân cấp danh mục đầy đủ (root + children).
         /// </summary>
         /// <returns>Dictionary với Key là danh mục root, Value là danh sách con</returns>
-        public Dictionary<ProductServiceCategory, List<ProductServiceCategory>> GetCategoryHierarchy()
+        public Dictionary<ProductServiceCategoryDto, List<ProductServiceCategoryDto>> GetCategoryHierarchy()
         {
             var allCategories = GetAll();
-            var result = new Dictionary<ProductServiceCategory, List<ProductServiceCategory>>();
+            var result = new Dictionary<ProductServiceCategoryDto, List<ProductServiceCategoryDto>>();
             var roots = allCategories.Where(x => x.ParentId == null)
                 .OrderBy(x => x.SortOrder ?? int.MaxValue)
                 .ToList();
@@ -274,12 +262,12 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy cây phân cấp danh mục đầy đủ (Async).
         /// </summary>
         /// <returns>Task chứa Dictionary với Key là danh mục root, Value là danh sách con</returns>
-        public async Task<Dictionary<ProductServiceCategory, List<ProductServiceCategory>>> GetCategoryHierarchyAsync()
+        public async Task<Dictionary<ProductServiceCategoryDto, List<ProductServiceCategoryDto>>> GetCategoryHierarchyAsync()
         {
             var allCategories = await GetAllAsync();
             return await Task.Run(() =>
             {
-                var result = new Dictionary<ProductServiceCategory, List<ProductServiceCategory>>();
+                var result = new Dictionary<ProductServiceCategoryDto, List<ProductServiceCategoryDto>>();
                 var roots = allCategories.Where(x => x.ParentId == null)
                     .OrderBy(x => x.SortOrder ?? int.MaxValue)
                     .ToList();
@@ -299,38 +287,38 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Persistence Methods - Create/Update
+        #region ========== CREATE OPERATIONS ==========
 
         /// <summary>
         /// Thêm mới danh mục sản phẩm/dịch vụ.
         /// </summary>
-        /// <param name="category">Danh mục cần thêm</param>
-        public void Insert(ProductServiceCategory category)
+        /// <param name="dto">ProductServiceCategoryDto</param>
+        public void Insert(ProductServiceCategoryDto dto)
         {
-            GetDataAccess().SaveOrUpdate(category);
+            GetDataAccess().SaveOrUpdate(dto);
         }
+
+        #endregion
+
+        #region ========== UPDATE OPERATIONS ==========
 
         /// <summary>
         /// Cập nhật danh mục sản phẩm/dịch vụ.
         /// </summary>
-        /// <param name="category">Danh mục cần cập nhật</param>
-        public void Update(ProductServiceCategory category)
+        /// <param name="dto">ProductServiceCategoryDto</param>
+        public void Update(ProductServiceCategoryDto dto)
         {
-            GetDataAccess().SaveOrUpdate(category);
+            GetDataAccess().SaveOrUpdate(dto);
         }
 
         /// <summary>
         /// Lưu hoặc cập nhật danh mục sản phẩm/dịch vụ.
         /// </summary>
-        /// <param name="category">Danh mục cần lưu hoặc cập nhật</param>
-        public void SaveOrUpdate(ProductServiceCategory category)
+        /// <param name="dto">ProductServiceCategoryDto</param>
+        public void SaveOrUpdate(ProductServiceCategoryDto dto)
         {
-            GetDataAccess().SaveOrUpdate(category);
+            GetDataAccess().SaveOrUpdate(dto);
         }
-
-        #endregion
-
-        #region Status Methods
 
         /// <summary>
         /// Cập nhật trạng thái IsActive của danh mục.
@@ -394,7 +382,7 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Validation Methods
+        #region ========== VALIDATION & EXISTS CHECKS ==========
 
         /// <summary>
         /// Kiểm tra tên danh mục có tồn tại không.
@@ -442,7 +430,7 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Delete Methods
+        #region ========== DELETE OPERATIONS ==========
 
         /// <summary>
         /// Xóa danh mục sản phẩm/dịch vụ theo ID.
@@ -489,7 +477,7 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region Private Helper Methods
+        #region ========== HELPER METHODS ==========
 
         /// <summary>
         /// Tính level của category trong cây phân cấp.
@@ -497,8 +485,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="category">Danh mục cần tính</param>
         /// <param name="categoryDict">Dictionary các danh mục</param>
         /// <returns>Level trong cây phân cấp (0 = root)</returns>
-        private int CalculateCategoryLevel(ProductServiceCategory category, 
-            Dictionary<Guid, ProductServiceCategory> categoryDict)
+        private int CalculateCategoryLevel(ProductServiceCategoryDto category, 
+            Dictionary<Guid, ProductServiceCategoryDto> categoryDict)
         {
             int level = 0;
             var current = category;

@@ -1,43 +1,52 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.MasterData.ProductService;
 
 namespace Dal.DataAccess.Interfaces.MasterData.ProductServiceRepositories;
 
 /// <summary>
-/// Data Access cho thực thể ProductServiceCategory (LINQ to SQL trên VnsErp2025DataContext).
-/// Cung cấp CRUD đầy đủ, phương thức đặc thù và phiên bản đồng bộ/bất đồng bộ.
+/// Interface cho Data Access Layer của ProductServiceCategory
 /// </summary>
 public interface IProductServiceCategoryRepository
 {
-    #region Read Operations
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật ProductServiceCategory
+    /// </summary>
+    /// <param name="dto">ProductServiceCategoryDto</param>
+    void SaveOrUpdate(ProductServiceCategoryDto dto);
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy ProductServiceCategory theo Id
     /// </summary>
     /// <param name="id">Id của category</param>
-    /// <returns>ProductServiceCategory hoặc null nếu không tìm thấy</returns>
-    ProductServiceCategory GetById(Guid id);
+    /// <returns>ProductServiceCategoryDto hoặc null nếu không tìm thấy</returns>
+    ProductServiceCategoryDto GetById(Guid id);
 
     /// <summary>
     /// Lấy ProductServiceCategory theo Id (Async)
     /// </summary>
     /// <param name="id">Id của category</param>
-    /// <returns>ProductServiceCategory hoặc null nếu không tìm thấy</returns>
-    Task<ProductServiceCategory> GetByIdAsync(Guid id);
+    /// <returns>ProductServiceCategoryDto hoặc null nếu không tìm thấy</returns>
+    Task<ProductServiceCategoryDto> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Lấy tất cả ProductServiceCategory
     /// </summary>
-    /// <returns>Danh sách tất cả ProductServiceCategory</returns>
-    List<ProductServiceCategory> GetAll();
+    /// <returns>Danh sách tất cả ProductServiceCategoryDto</returns>
+    List<ProductServiceCategoryDto> GetAll();
 
     /// <summary>
     /// Lấy tất cả ProductServiceCategory (Async)
     /// </summary>
-    /// <returns>Danh sách tất cả ProductServiceCategory</returns>
-    Task<List<ProductServiceCategory>> GetAllAsync();
+    /// <returns>Danh sách tất cả ProductServiceCategoryDto</returns>
+    Task<List<ProductServiceCategoryDto>> GetAllAsync();
 
     /// <summary>
     /// Lấy số lượng sản phẩm theo từng category
@@ -54,42 +63,36 @@ public interface IProductServiceCategoryRepository
     /// <summary>
     /// Lấy tất cả ProductServiceCategory đang hoạt động (IsActive = true)
     /// </summary>
-    /// <returns>Danh sách ProductServiceCategory active</returns>
-    List<ProductServiceCategory> GetActiveCategories();
+    /// <returns>Danh sách ProductServiceCategoryDto active</returns>
+    List<ProductServiceCategoryDto> GetActiveCategories();
 
     /// <summary>
     /// Lấy tất cả ProductServiceCategory đang hoạt động (Async)
     /// </summary>
-    /// <returns>Danh sách ProductServiceCategory active</returns>
-    Task<List<ProductServiceCategory>> GetActiveCategoriesAsync();
+    /// <returns>Danh sách ProductServiceCategoryDto active</returns>
+    Task<List<ProductServiceCategoryDto>> GetActiveCategoriesAsync();
 
     /// <summary>
     /// Lấy danh mục con của một danh mục cha
     /// </summary>
     /// <param name="parentId">Id của danh mục cha (null cho danh mục cấp 1)</param>
     /// <returns>Danh sách danh mục con</returns>
-    List<ProductServiceCategory> GetCategoriesByParent(Guid? parentId);
+    List<ProductServiceCategoryDto> GetCategoriesByParent(Guid? parentId);
 
     /// <summary>
     /// Lấy danh mục con của một danh mục cha (Async)
     /// </summary>
     /// <param name="parentId">Id của danh mục cha (null cho danh mục cấp 1)</param>
     /// <returns>Danh sách danh mục con</returns>
-    Task<List<ProductServiceCategory>> GetCategoriesByParentAsync(Guid? parentId);
+    Task<List<ProductServiceCategoryDto>> GetCategoriesByParentAsync(Guid? parentId);
 
     #endregion
 
-    #region Create/Update Operations
-
-    /// <summary>
-    /// Lưu hoặc cập nhật ProductServiceCategory
-    /// </summary>
-    /// <param name="category">ProductServiceCategory cần lưu hoặc cập nhật</param>
-    void SaveOrUpdate(ProductServiceCategory category);
-
+    #region ========== UPDATE OPERATIONS ==========
+    // Update operations are handled by SaveOrUpdate method
     #endregion
 
-    #region Delete Operations
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa ProductServiceCategory theo Id
@@ -100,7 +103,7 @@ public interface IProductServiceCategoryRepository
 
     #endregion
 
-    #region Validation Operations
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra tên category đã tồn tại chưa (loại trừ Id khi cập nhật)
