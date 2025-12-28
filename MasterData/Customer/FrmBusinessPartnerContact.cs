@@ -178,9 +178,8 @@ namespace MasterData.Customer
         {
             try
             {
-                // Lấy dữ liệu từ BLL
-                var contacts = _contactBll.GetAll();
-                var contactDtos = contacts.Select(e => e.ToDto()).ToList();
+                // GetAll() already returns List<BusinessPartnerContactDto>
+                var contactDtos = _contactBll.GetAll();
 
                 // Bind dữ liệu vào GridControl
                 BindGrid(contactDtos);
@@ -534,9 +533,8 @@ namespace MasterData.Customer
                     {
                         _ = ExecuteWithWaitingFormAsync(async () =>
                         {
-                            // Convert DTO to Entity và cập nhật
-                            var entity = dto.ToEntity();
-                            _contactBll.SaveOrUpdate(entity);
+                            // SaveOrUpdate expects BusinessPartnerContactDto, not Entity
+                            _contactBll.SaveOrUpdate(dto);
 
                             // Refresh data để đảm bảo đồng bộ
                             await LoadDataAsync();

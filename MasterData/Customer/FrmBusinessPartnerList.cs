@@ -124,16 +124,9 @@ namespace MasterData.Customer
             try
             {
                 System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu gọi BLL.GetAllAsync()");
-                var entities = await _businessPartnerBll.GetAllAsync();
-                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã nhận được {entities?.Count ?? 0} entities từ BLL");
-                
-                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu lấy categoryDict");
-                var categoryDict = await _businessPartnerBll.GetCategoryDictAsync();
-                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã lấy được {categoryDict?.Count ?? 0} categories");
-                
-                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu convert sang DTO với categoryDict");
-                var dtoList = entities.ToBusinessPartnerListDtos(categoryDict).ToList();
-                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã convert được {dtoList.Count} DTOs");
+                // GetAllAsync() already returns List<BusinessPartnerListDto>
+                var dtoList = await _businessPartnerBll.GetAllAsync();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã nhận được {dtoList?.Count ?? 0} DTOs từ BLL");
                 
                 System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu bind vào grid");
                 BindGrid(dtoList);

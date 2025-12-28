@@ -132,8 +132,43 @@ namespace MasterData.Customer
         {
             try
             {
-                var entities = await Task.Run(() => _businessPartnerSiteBll.GetAll());
-                _dataList = entities.ToSiteListDtos().ToList();
+                // GetAll() already returns List<BusinessPartnerSiteDto>
+                var sites = await Task.Run(() => _businessPartnerSiteBll.GetAll());
+                
+                // Convert BusinessPartnerSiteDto to BusinessPartnerSiteListDto manually
+                _dataList = sites
+                    .Select(s => new BusinessPartnerSiteListDto
+                    {
+                        Id = s.Id,
+                        PartnerId = s.PartnerId,
+                        SiteCode = s.SiteCode,
+                        PartnerName = s.PartnerName,
+                        PartnerCode = s.PartnerCode,
+                        PartnerType = s.PartnerType,
+                        PartnerTypeName = s.PartnerTypeName,
+                        PartnerTaxCode = s.PartnerTaxCode,
+                        PartnerWebsite = s.PartnerWebsite,
+                        PartnerPhone = s.PartnerPhone,
+                        PartnerEmail = s.PartnerEmail,
+                        SiteName = s.SiteName,
+                        Address = s.Address,
+                        City = s.City,
+                        Province = s.Province,
+                        Country = s.Country,
+                        PostalCode = s.PostalCode,
+                        District = s.District,
+                        Phone = s.Phone,
+                        Email = s.Email,
+                        IsDefault = s.IsDefault,
+                        IsActive = s.IsActive,
+                        SiteType = s.SiteType,
+                        SiteTypeName = s.SiteTypeName,
+                        Notes = s.Notes,
+                        GoogleMapUrl = s.GoogleMapUrl,
+                        CreatedDate = s.CreatedDate,
+                        UpdatedDate = s.UpdatedDate
+                    })
+                    .ToList();
                 
                 BindGrid(_dataList);
             }

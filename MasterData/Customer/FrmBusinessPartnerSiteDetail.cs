@@ -128,9 +128,8 @@ namespace MasterData.Customer
         {
             try
             {
-                // Sử dụng method tối ưu chỉ load các trường cần thiết cho LookupDto
-                var partners = await _businessPartnerBll.GetActivePartnersForLookupAsync();
-                var partnerLookupDtos = partners.ToLookupDtos().ToList();
+                // GetActivePartnersForLookupAsync() already returns List<BusinessPartnerLookupDto>
+                var partnerLookupDtos = await _businessPartnerBll.GetActivePartnersForLookupAsync();
 
                 businessPartnerLookupDtoBindingSource.DataSource = partnerLookupDtos;
             }
@@ -147,10 +146,11 @@ namespace MasterData.Customer
         {
             try
             {
+                // GetById() already returns BusinessPartnerSiteDto
                 var site = await Task.Run(() => _businessPartnerSiteBll.GetById(_siteId));
                 if (site != null)
                 {
-                    _currentSite = site.ToSiteDto();
+                    _currentSite = site;
                     BindDataToControls();
                 }
                 else
@@ -350,69 +350,74 @@ namespace MasterData.Customer
             var siteDto = GetDataFromControls();
             System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] _isEditMode: {_isEditMode}, siteDto.Id: {siteDto.Id}, siteDto.SiteCode: {siteDto.SiteCode}");
 
-            // Bước 2: Convert DTO -> Entity
-            BusinessPartnerSite entity;
-            if (_isEditMode)
-            {
-                // Edit mode: lấy existing entity và update
-                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] EDIT MODE - Lấy existing entity với Id: {siteDto.Id}");
-                var existing = _businessPartnerSiteBll.GetById(siteDto.Id);
-                if (existing == null)
-                {
-                    throw new Exception("Không tìm thấy chi nhánh để cập nhật.");
-                }
-                entity = siteDto.ToEntity(existing);
-                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] EDIT MODE - Entity sau ToEntity: Id={entity.Id}, SiteCode={entity.SiteCode}");
-            }
-            else
-            {
-                // Create mode: tạo entity mới, đảm bảo Id = Guid.Empty
-                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] CREATE MODE - Tạo entity mới, siteDto.Id: {siteDto.Id}");
-                entity = siteDto.ToEntity(null);
-                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] CREATE MODE - Entity sau ToEntity(null): Id={entity.Id} (IsEmpty: {entity.Id == Guid.Empty})");
-                entity.Id = Guid.Empty; // Đảm bảo Id là Empty để CreateSite biết đây là tạo mới
-                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] CREATE MODE - Entity sau khi set Guid.Empty: Id={entity.Id} (IsEmpty: {entity.Id == Guid.Empty})");
-            }
-
-            // Bước 3: Lưu entity qua BLL
+            // Bước 2: CreateSite and UpdateSite expect BusinessPartnerSiteDto directly
             Guid savedSiteId;
             if (_isEditMode)
             {
-                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] Gọi UpdateSite với entity.Id: {entity.Id}");
-                var success = await Task.Run(() => _businessPartnerSiteBll.UpdateSite(entity));
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] EDIT MODE - Gọi UpdateSite với siteDto.Id: {siteDto.Id}");
+                var success = await Task.Run(() => _businessPartnerSiteBll.UpdateSite(siteDto));
                 if (!success)
                 {
                     throw new Exception("Không thể cập nhật chi nhánh. Có thể mã chi nhánh đã tồn tại.");
                 }
-                savedSiteId = entity.Id;
+                savedSiteId = siteDto.Id;
                 System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] UpdateSite thành công, savedSiteId: {savedSiteId}");
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] Gọi CreateSite với entity.Id: {entity.Id} (IsEmpty: {entity.Id == Guid.Empty})");
-                var success = await Task.Run(() => _businessPartnerSiteBll.CreateSite(entity));
+                // Create mode: đảm bảo Id = Guid.Empty để CreateSite biết đây là tạo mới
+                siteDto.Id = Guid.Empty;
+                System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] CREATE MODE - Gọi CreateSite với siteDto.Id: {siteDto.Id} (IsEmpty: {siteDto.Id == Guid.Empty})");
+                var success = await Task.Run(() => _businessPartnerSiteBll.CreateSite(siteDto));
                 if (!success)
                 {
                     throw new Exception("Không thể tạo mới chi nhánh. Có thể mã chi nhánh đã tồn tại.");
                 }
-                // Entity.Id đã được set trong SaveOrUpdate (trong CreateSite)
-                savedSiteId = entity.Id;
+                // Get the saved ID by querying with SiteCode
+                var savedSite = await Task.Run(() => _businessPartnerSiteBll.GetAll().FirstOrDefault(s => s.SiteCode == siteDto.SiteCode && s.PartnerId == siteDto.PartnerId));
+                savedSiteId = savedSite?.Id ?? Guid.Empty;
                 System.Diagnostics.Debug.WriteLine($"[SaveBusinessPartnerSiteAsync] CreateSite thành công, savedSiteId: {savedSiteId}");
             }
 
-            // Bước 4: Lấy lại entity đã lưu và convert sang BusinessPartnerSiteListDto để trigger event
-            var savedEntity = await Task.Run(() => _businessPartnerSiteBll.GetById(savedSiteId));
-            if (savedEntity != null)
+            // Bước 3: Lấy lại DTO đã lưu và convert sang BusinessPartnerSiteListDto để trigger event
+            var savedDto = await Task.Run(() => _businessPartnerSiteBll.GetById(savedSiteId));
+            if (savedDto != null)
             {
-                // Convert single entity sang ListDto (sử dụng ToSiteListDtos với một phần tử)
-                var listDtos = new[] { savedEntity }.ToSiteListDtos().ToList();
-                var listDto = listDtos.FirstOrDefault();
+                // Convert BusinessPartnerSiteDto to BusinessPartnerSiteListDto manually
+                var listDto = new BusinessPartnerSiteListDto
+                {
+                    Id = savedDto.Id,
+                    PartnerId = savedDto.PartnerId,
+                    SiteCode = savedDto.SiteCode,
+                    PartnerName = savedDto.PartnerName,
+                    PartnerCode = savedDto.PartnerCode,
+                    PartnerType = savedDto.PartnerType,
+                    PartnerTypeName = savedDto.PartnerTypeName,
+                    PartnerTaxCode = savedDto.PartnerTaxCode,
+                    PartnerWebsite = savedDto.PartnerWebsite,
+                    PartnerPhone = savedDto.PartnerPhone,
+                    PartnerEmail = savedDto.PartnerEmail,
+                    SiteName = savedDto.SiteName,
+                    Address = savedDto.Address,
+                    City = savedDto.City,
+                    Province = savedDto.Province,
+                    Country = savedDto.Country,
+                    PostalCode = savedDto.PostalCode,
+                    District = savedDto.District,
+                    Phone = savedDto.Phone,
+                    Email = savedDto.Email,
+                    IsDefault = savedDto.IsDefault,
+                    IsActive = savedDto.IsActive,
+                    SiteType = savedDto.SiteType,
+                    SiteTypeName = savedDto.SiteTypeName,
+                    Notes = savedDto.Notes,
+                    GoogleMapUrl = savedDto.GoogleMapUrl,
+                    CreatedDate = savedDto.CreatedDate,
+                    UpdatedDate = savedDto.UpdatedDate
+                };
                 
                 // Trigger event để form cha có thể update datasource
-                if (listDto != null)
-                {
-                    SiteSaved?.Invoke(listDto);
-                }
+                SiteSaved?.Invoke(listDto);
             }
         }
 
@@ -523,8 +528,9 @@ namespace MasterData.Customer
                 var allSites = _businessPartnerSiteBll.GetAll();
 
                 // Lọc các chi nhánh của đối tác này
+                // allSites is List<BusinessPartnerSiteDto>, use PartnerCode property
                 var partnerSites = allSites.Where(s =>
-                        s.BusinessPartner?.PartnerCode == partnerCode)
+                        s.PartnerCode == partnerCode)
                     .Select(s => s.SiteCode)
                     .Where(code => !string.IsNullOrWhiteSpace(code))
                     .ToList();

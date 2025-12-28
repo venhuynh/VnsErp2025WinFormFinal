@@ -106,50 +106,47 @@ namespace MasterData.Customer
         {
             try
             {
+                // GetCategoriesWithCounts() already returns List<BusinessPartnerCategoryDto>
                 var (categories, counts) = _businessPartnerCategoryBll.GetCategoriesWithCounts();
                 
-                // Chuyển đổi sang DTO với hierarchy
-                var dtos = categories.Select(c =>
+                // Set PartnerCount and calculate hierarchy properties for DTOs
+                var categoryDict = categories.ToDictionary(c => c.Id);
+                var dtoList = categories.Select(dto =>
                 {
-                    var count = counts.TryGetValue(c.Id, out var count1) ? count1 : 0;
-                    return c.ToDtoWithCount(count);
-                }).ToList();
+                    // Set PartnerCount from counts dictionary
+                    dto.PartnerCount = counts.TryGetValue(dto.Id, out var count) ? count : 0;
 
-                // Tính toán FullPath và Level cho hierarchical display
-                var entityDict = categories.ToDictionary(e => e.Id);
-                var dtoList = dtos.Select(dto =>
-                {
-                    var entity = categories.FirstOrDefault(e => e.Id == dto.Id);
-                    if (entity != null)
+                    // Calculate Level
+                    int level = 0;
+                    var current = dto;
+                    while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
                     {
-                        // Tính Level
-                        int level = 0;
-                        var current = entity;
-                        while (current.ParentId.HasValue && entityDict.ContainsKey(current.ParentId.Value))
-                        {
-                            level++;
-                            current = entityDict[current.ParentId.Value];
-                            if (level > 10) break; // Tránh infinite loop
-                        }
-                        dto.Level = level;
-
-                        // Tính FullPath
-                        var pathParts = new System.Collections.Generic.List<string> { entity.CategoryName };
-                        current = entity;
-                        while (current.ParentId.HasValue && entityDict.ContainsKey(current.ParentId.Value))
-                        {
-                            current = entityDict[current.ParentId.Value];
-                            pathParts.Insert(0, current.CategoryName);
-                            if (pathParts.Count > 10) break; // Tránh infinite loop
-                        }
-                        dto.FullPath = string.Join(" > ", pathParts);
-
-                        // Lấy tên parent category
-                        if (entity.ParentId.HasValue && entityDict.TryGetValue(entity.ParentId.Value, out var value))
-                        {
-                            dto.ParentCategoryName = value.CategoryName;
-                        }
+                        level++;
+                        current = categoryDict[current.ParentId.Value];
+                        if (level > 10) break; // Tránh infinite loop
                     }
+                    dto.Level = level;
+
+                    // Calculate FullPath
+                    var pathParts = new System.Collections.Generic.List<string> { dto.CategoryName };
+                    current = dto;
+                    while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
+                    {
+                        current = categoryDict[current.ParentId.Value];
+                        pathParts.Insert(0, current.CategoryName);
+                        if (pathParts.Count > 10) break; // Tránh infinite loop
+                    }
+                    dto.FullPath = string.Join(" > ", pathParts);
+
+                    // Set ParentCategoryName
+                    if (dto.ParentId.HasValue && categoryDict.TryGetValue(dto.ParentId.Value, out var parent))
+                    {
+                        dto.ParentCategoryName = parent.CategoryName;
+                    }
+
+                    // Calculate HasChildren
+                    dto.HasChildren = categories.Any(c => c.ParentId == dto.Id);
+
                     return dto;
                 }).ToList();
 
@@ -200,6 +197,7 @@ namespace MasterData.Customer
         {
             try
             {
+                // GetById() already returns BusinessPartnerCategoryDto
                 var category = _businessPartnerCategoryBll.GetById(_categoryId);
                 if (category == null)
                 {
@@ -208,8 +206,7 @@ namespace MasterData.Customer
                     return;
                 }
 
-                var dto = category.ToDto();
-                BindDataToControls(dto);
+                BindDataToControls(category);
             }
             catch (Exception ex)
             {
@@ -247,7 +244,8 @@ namespace MasterData.Customer
         {
             var dto = new BusinessPartnerCategoryDto
             {
-                Id = _categoryId,
+                // Set ID: use existing ID for edit mode, generate new for create mode
+                Id = IsEditMode ? _categoryId : Guid.NewGuid(),
                 CategoryCode = CategoryCodeTextEdit?.Text?.Trim(),
                 CategoryName = CategoryNameTextEdit?.Text?.Trim(),
                 Description = DescriptionMemoEdit?.Text?.Trim(),
@@ -307,18 +305,18 @@ namespace MasterData.Customer
             try
             {
                 var dto = GetDataFromControls();
-                var entity = dto.ToEntity();
 
+                // Insert and Update expect BusinessPartnerCategoryDto, not Entity
                 if (IsEditMode)
                 {
                     // Cập nhật danh mục hiện có
-                    _businessPartnerCategoryBll.Update(entity);
+                    _businessPartnerCategoryBll.Update(dto);
                     ShowInfo("Cập nhật danh mục đối tác thành công!");
                 }
                 else
                 {
                     // Thêm danh mục mới
-                    _businessPartnerCategoryBll.Insert(entity);
+                    _businessPartnerCategoryBll.Insert(dto);
                     ShowInfo("Thêm mới danh mục đối tác thành công!");
                 }
 

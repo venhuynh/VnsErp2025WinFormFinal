@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
 
 namespace MasterData.Customer
 {
@@ -345,17 +344,17 @@ namespace MasterData.Customer
         {
             try
             {
-                // Gọi BLL để lấy entity từ database
-                var entity = await _bll.GetByIdAsync(id);
-                if (entity == null)
+                // GetByIdAsync() already returns BusinessPartnerDetailDto
+                var dto = await _bll.GetByIdAsync(id);
+                if (dto == null)
                 {
                     return;
                 }
 
                 // Map dữ liệu vào các controls
-                LoadBasicInformation(entity);
-                LoadPartnerType(entity);
-                LoadLogo(entity);
+                LoadBasicInformation(dto);
+                LoadPartnerType(dto);
+                LoadLogo(dto);
             }
             catch (Exception ex)
             {
@@ -366,26 +365,26 @@ namespace MasterData.Customer
         /// <summary>
         /// Load thông tin cơ bản vào các controls
         /// </summary>
-        /// <param name="entity">Entity đối tác chứa dữ liệu</param>
-        private void LoadBasicInformation(BusinessPartner entity)
+        /// <param name="dto">BusinessPartnerDetailDto chứa dữ liệu</param>
+        private void LoadBasicInformation(BusinessPartnerDetailDto dto)
         {
-            if (PartnerCodeTextEdit != null) PartnerCodeTextEdit.EditValue = entity.PartnerCode;
-            if (PartnerNameTextEdit != null) PartnerNameTextEdit.EditValue = entity.PartnerName;
-            if (TaxCodeTextEdit != null) TaxCodeTextEdit.EditValue = entity.TaxCode;
-            if (PhoneTextEdit != null) PhoneTextEdit.EditValue = entity.Phone;
-            if (EmailTextEdit != null) EmailTextEdit.EditValue = entity.Email;
-            if (WebsiteTextEdit != null) WebsiteTextEdit.EditValue = entity.Website;
-            if (AddressTextEdit != null) AddressTextEdit.EditValue = entity.Address;
-            if (CityTextEdit != null) CityTextEdit.EditValue = entity.City;
-            if (CountryTextEdit != null) CountryTextEdit.EditValue = entity.Country;
-            if (IsActiveToggleSwitch != null) IsActiveToggleSwitch.EditValue = entity.IsActive;
+            if (PartnerCodeTextEdit != null) PartnerCodeTextEdit.EditValue = dto.PartnerCode;
+            if (PartnerNameTextEdit != null) PartnerNameTextEdit.EditValue = dto.PartnerName;
+            if (TaxCodeTextEdit != null) TaxCodeTextEdit.EditValue = dto.TaxCode;
+            if (PhoneTextEdit != null) PhoneTextEdit.EditValue = dto.Phone;
+            if (EmailTextEdit != null) EmailTextEdit.EditValue = dto.Email;
+            if (WebsiteTextEdit != null) WebsiteTextEdit.EditValue = dto.Website;
+            if (AddressTextEdit != null) AddressTextEdit.EditValue = dto.Address;
+            if (CityTextEdit != null) CityTextEdit.EditValue = dto.City;
+            if (CountryTextEdit != null) CountryTextEdit.EditValue = dto.Country;
+            if (IsActiveToggleSwitch != null) IsActiveToggleSwitch.EditValue = dto.IsActive;
         }
 
         /// <summary>
         /// Load loại đối tác vào ComboBox
         /// </summary>
-        /// <param name="entity">Entity đối tác chứa dữ liệu</param>
-        private void LoadPartnerType(BusinessPartner entity)
+        /// <param name="dto">BusinessPartnerDetailDto chứa dữ liệu</param>
+        private void LoadPartnerType(BusinessPartnerDetailDto dto)
         {
             if (PartnerTypeNameComboBoxEdit == null)
             {
@@ -393,7 +392,7 @@ namespace MasterData.Customer
             }
 
             // Map PartnerType (1, 2, 3) sang SelectedIndex (0, 1, 2)
-            switch (entity.PartnerType)
+            switch (dto.PartnerType)
             {
                 case 1: PartnerTypeNameComboBoxEdit.SelectedIndex = 0; break; // Khách hàng
                 case 2: PartnerTypeNameComboBoxEdit.SelectedIndex = 1; break; // Nhà cung cấp
@@ -405,10 +404,10 @@ namespace MasterData.Customer
         /// <summary>
         /// Load logo thumbnail vào PictureEdit
         /// </summary>
-        /// <param name="entity">Entity đối tác chứa dữ liệu</param>
-        private void LoadLogo(BusinessPartner entity)
+        /// <param name="dto">BusinessPartnerDetailDto chứa dữ liệu</param>
+        private void LoadLogo(BusinessPartnerDetailDto dto)
         {
-            if (LogoThumbnailDataPictureEdit == null || entity.LogoThumbnailData == null)
+            if (LogoThumbnailDataPictureEdit == null || dto.LogoThumbnailData == null || dto.LogoThumbnailData.Length == 0)
             {
                 return;
             }
@@ -418,8 +417,8 @@ namespace MasterData.Customer
                 // Đánh dấu đang load logo để tránh trigger event ImageChanged
                 _isLoadingLogo = true;
 
-                // Chuyển đổi Binary sang byte array
-                var thumbnailBytes = entity.LogoThumbnailData.ToArray();
+                // BusinessPartnerDetailDto.LogoThumbnailData is already byte[]
+                var thumbnailBytes = dto.LogoThumbnailData;
                 if (thumbnailBytes != null && thumbnailBytes.Length > 0)
                 {
                     // Load ảnh từ byte array và clone để tránh lỗi GDI+ khi stream bị dispose
@@ -475,11 +474,12 @@ namespace MasterData.Customer
                 // Đánh dấu đang load logo để tránh trigger event ImageChanged
                 _isLoadingLogo = true;
 
-                // Lấy lại entity từ database
-                var entity = await _bll.GetByIdAsync(_businessPartnerId);
-                if (entity?.LogoThumbnailData != null)
+                // GetByIdAsync() already returns BusinessPartnerDetailDto
+                var dto = await _bll.GetByIdAsync(_businessPartnerId);
+                if (dto?.LogoThumbnailData != null && dto.LogoThumbnailData.Length > 0)
                 {
-                    var thumbnailBytes = entity.LogoThumbnailData.ToArray();
+                    // BusinessPartnerDetailDto.LogoThumbnailData is already byte[]
+                    var thumbnailBytes = dto.LogoThumbnailData;
                     if (thumbnailBytes != null && thumbnailBytes.Length > 0)
                     {
                         // Load ảnh từ byte array và clone để tránh lỗi GDI+ khi stream bị dispose
@@ -537,34 +537,40 @@ namespace MasterData.Customer
             // Bước 1: Thu thập dữ liệu từ form và build DTO
             var detailDto = BuildDetailDtoFromForm();
 
-            // Bước 2: Convert DTO -> Entity
-            var existing = IsEditMode ? _bll.GetById(detailDto.Id) : null;
-            var entity = detailDto.ToEntity(existing);
+            // Bước 2: SaveOrUpdate expects BusinessPartnerDetailDto directly
+            _bll.SaveOrUpdate(detailDto);
 
-            // Bước 3: Lưu entity qua BLL (Repository sẽ tự động set Id nếu là tạo mới)
-            _bll.SaveOrUpdate(entity);
-
-            // Bước 4: Upload logo nếu có (khi tạo mới, logo sẽ được upload sau khi có Id)
-            if (LogoThumbnailDataPictureEdit?.Image != null && entity.Id != Guid.Empty)
+            // Bước 3: Upload logo nếu có (khi tạo mới, logo sẽ được upload sau khi có Id)
+            if (LogoThumbnailDataPictureEdit?.Image != null && detailDto.Id != Guid.Empty)
             {
-                await UploadLogoIfValidAsync(entity.Id);
+                await UploadLogoIfValidAsync(detailDto.Id);
             }
 
-            // Bước 5: Lấy lại entity đã lưu và convert sang BusinessPartnerListDto để trigger event
-            var savedEntity = await _bll.GetByIdAsync(entity.Id);
-            if (savedEntity != null)
+            // Bước 4: Lấy lại DTO đã lưu và convert sang BusinessPartnerListDto để trigger event
+            var savedDto = await _bll.GetByIdAsync(detailDto.Id);
+            if (savedDto != null)
             {
-                // Lấy categoryDict để convert entity sang DTO
-                var categoryDict = await _bll.GetCategoryDictAsync();
-                
-                // Convert single entity sang DTO
-                var listDto = savedEntity.ToListDto(categoryDict);
+                // Convert BusinessPartnerDetailDto to BusinessPartnerListDto manually
+                var listDto = new BusinessPartnerListDto
+                {
+                    Id = savedDto.Id,
+                    PartnerCode = savedDto.PartnerCode,
+                    PartnerName = savedDto.PartnerName,
+                    PartnerType = savedDto.PartnerType,
+                    TaxCode = savedDto.TaxCode,
+                    Phone = savedDto.Phone,
+                    Email = savedDto.Email,
+                    Website = savedDto.Website,
+                    Address = savedDto.Address,
+                    City = savedDto.City,
+                    Country = savedDto.Country,
+                    IsActive = savedDto.IsActive,
+                    CreatedDate = savedDto.CreatedDate,
+                    UpdatedDate = savedDto.UpdatedDate
+                };
                 
                 // Trigger event để form cha có thể update datasource
-                if (listDto != null)
-                {
-                    PartnerSaved?.Invoke(listDto);
-                }
+                PartnerSaved?.Invoke(listDto);
             }
         }
 

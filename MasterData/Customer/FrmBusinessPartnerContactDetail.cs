@@ -1,5 +1,4 @@
-﻿using Dal.DataContext;
-using DevExpress.XtraBars;
+﻿using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData.CustomerPartner;
@@ -121,10 +120,43 @@ namespace MasterData.Customer
         private async Task LoadBusinessPartnerSitesDataSourceAsync()
         {
             var siteBll = new BusinessPartnerSiteBll();
+            // GetAll() already returns List<BusinessPartnerSiteDto>
             var sites = await Task.Run(() => siteBll.GetAll());
             
-            // Lọc chỉ các chi nhánh đang hoạt động và có thông tin đầy đủ
-            var list = sites.ToSiteListDtos()
+            // Convert BusinessPartnerSiteDto to BusinessPartnerSiteListDto manually
+            // because ToSiteListDtos() expects entities, not DTOs
+            var list = sites
+                .Select(s => new BusinessPartnerSiteListDto
+                {
+                    Id = s.Id,
+                    PartnerId = s.PartnerId,
+                    SiteCode = s.SiteCode,
+                    PartnerName = s.PartnerName,
+                    PartnerCode = s.PartnerCode,
+                    PartnerType = s.PartnerType,
+                    PartnerTypeName = s.PartnerTypeName,
+                    PartnerTaxCode = s.PartnerTaxCode,
+                    PartnerWebsite = s.PartnerWebsite,
+                    PartnerPhone = s.PartnerPhone,
+                    PartnerEmail = s.PartnerEmail,
+                    SiteName = s.SiteName,
+                    Address = s.Address,
+                    City = s.City,
+                    Province = s.Province,
+                    Country = s.Country,
+                    PostalCode = s.PostalCode,
+                    District = s.District,
+                    Phone = s.Phone,
+                    Email = s.Email,
+                    IsDefault = s.IsDefault,
+                    IsActive = s.IsActive,
+                    SiteType = s.SiteType,
+                    SiteTypeName = s.SiteTypeName,
+                    Notes = s.Notes,
+                    GoogleMapUrl = s.GoogleMapUrl,
+                    CreatedDate = s.CreatedDate,
+                    UpdatedDate = s.UpdatedDate
+                })
                 .Where(s => s.IsActive && !string.IsNullOrWhiteSpace(s.SiteName))
                 .OrderBy(s => s.PartnerName)
                 .ThenBy(s => s.SiteName)
@@ -159,36 +191,28 @@ namespace MasterData.Customer
                 
                 await ExecuteWithWaitingFormAsync(() =>
                 {
-                    var entity = GetDataFromControls();
+                    var dto = GetDataFromControls();
                     
                     // Kiểm tra và validate avatar trước khi lưu
-                    byte[] avatarBytes = null;
-                    if (AvatarThumbnailDataPictureEdit?.Image != null)
+                    if (dto.Avatar != null && dto.Avatar.Length > 0)
                     {
-                        avatarBytes = ImageToByteArray(AvatarThumbnailDataPictureEdit.Image);
-                        if (avatarBytes != null && avatarBytes.Length > 0)
+                        // Kiểm tra kích thước hình ảnh (tối đa 10MB)
+                        const int maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+                        if (dto.Avatar.Length > maxSizeInBytes)
                         {
-                            // Kiểm tra kích thước hình ảnh (tối đa 10MB)
-                            const int maxSizeInBytes = 10 * 1024 * 1024; // 10MB
-                            if (avatarBytes.Length > maxSizeInBytes)
-                            {
-                                throw new Exception("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 10MB.");
-                            }
-                            
-                            // Kiểm tra format hình ảnh
-                            if (!IsValidImageFormat(avatarBytes))
-                            {
-                                throw new Exception("Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
-                            }
-                            
-                            // Set avatar vào entity để lưu cùng lúc
-                            entity.AvatarThumbnailData = new System.Data.Linq.Binary(avatarBytes);
+                            throw new Exception("Hình ảnh quá lớn! Vui lòng chọn hình ảnh nhỏ hơn 10MB.");
+                        }
+                        
+                        // Kiểm tra format hình ảnh
+                        if (!IsValidImageFormat(dto.Avatar))
+                        {
+                            throw new Exception("Định dạng hình ảnh không được hỗ trợ! Vui lòng chọn file JPG, PNG hoặc GIF.");
                         }
                     }
                     
-                    // Lưu entity (thêm mới) - Id sẽ được tạo tự động trong Add method
-                    // Avatar đã được set vào entity, nên sẽ được lưu cùng lúc
-                    var savedId = _bll.Add(entity);
+                    // Lưu DTO (thêm mới) - Id sẽ được tạo tự động trong Add method
+                    // Avatar đã được set vào DTO, nên sẽ được lưu cùng lúc
+                    var savedId = _bll.Add(dto);
                     return Task.CompletedTask;
                 });
                 
@@ -239,15 +263,15 @@ namespace MasterData.Customer
         #region ========== XỬ LÝ DỮ LIỆU ==========
 
         /// <summary>
-        /// Thu thập dữ liệu từ các control để tạo entity lưu xuống DB.
+        /// Thu thập dữ liệu từ các control để tạo DTO lưu xuống DB.
         /// </summary>
-        private BusinessPartnerContact GetDataFromControls()
+        private BusinessPartnerContactDto GetDataFromControls()
         {
             // Không set Id ở đây - để Add method trong BLL tự động tạo Id mới
-            // Nếu đang edit mode, Id sẽ được set từ entity hiện có
-            var entity = new BusinessPartnerContact
+            // If in edit mode, Id will be set from existing DTO
+            var dto = new BusinessPartnerContactDto
             {
-                Id = Guid.Empty, // Để BLL tự động tạo Id mới khi thêm mới
+                Id = Guid.Empty, // BLL will auto-generate new Id when adding
                 SiteId = _selectedSiteId ?? Guid.Empty,
                 FullName = FullNameTextEdit?.EditValue?.ToString(),
                 Position = PositionTextEdit?.EditValue?.ToString(),
@@ -257,18 +281,18 @@ namespace MasterData.Customer
                 IsActive = IsActiveToggleSwitch?.EditValue as bool? ?? true
             };
             
-            // Xử lý avatar từ PictureEdit
+            // Xử lý avatar từ PictureEdit - BusinessPartnerContactDto uses byte[] for Avatar
             if (AvatarThumbnailDataPictureEdit?.Image != null)
             {
                 var imageBytes = ImageToByteArray(AvatarThumbnailDataPictureEdit.Image);
-                entity.AvatarThumbnailData = imageBytes != null ? new System.Data.Linq.Binary(imageBytes) : null;
+                dto.Avatar = imageBytes;
             }
             else
             {
-                entity.AvatarThumbnailData = null;
+                dto.Avatar = null;
             }
             
-            return entity;
+            return dto;
         }
         
         /// <summary>
