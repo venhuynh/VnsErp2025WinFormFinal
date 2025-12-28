@@ -1,13 +1,14 @@
 using Dal.DataAccess.Interfaces;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.VersionAndUserManagementDto;
 using Logger;
 using Logger.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Dal.DataAccess.Implementations
 {
@@ -42,7 +43,7 @@ namespace Dal.DataAccess.Implementations
 
         #endregion
 
-        #region Helper Methods
+        #region ========== HELPER METHODS ==========
 
         /// <summary>
         /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -63,57 +64,206 @@ namespace Dal.DataAccess.Implementations
             return context;
         }
 
+        /// <summary>
+        /// Tạo dictionary chứa thông tin Employee để truyền vào converter
+        /// </summary>
+        private Dictionary<Guid, (string EmployeeCode, string EmployeeFullName, string DepartmentName, string PositionName)> GetEmployeeDict(VnsErp2025DataContext context, IEnumerable<ApplicationUser> users)
+        {
+            var employeeDict = new Dictionary<Guid, (string, string, string, string)>();
+            
+            var employeeIds = users
+                .Where(u => u.EmployeeId.HasValue)
+                .Select(u => u.EmployeeId.Value)
+                .Distinct()
+                .ToList();
+
+            if (employeeIds.Any())
+            {
+                var employees = context.Employees
+                    .Where(e => employeeIds.Contains(e.Id))
+                    .ToList();
+
+                foreach (var employee in employees)
+                {
+                    string departmentName = null;
+                    string positionName = null;
+
+                    if (employee.DepartmentId.HasValue)
+                    {
+                        try
+                        {
+                            var department = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                            departmentName = department?.DepartmentName;
+                        }
+                        catch
+                        {
+                            // Ignore
+                        }
+                    }
+
+                    if (employee.PositionId.HasValue)
+                    {
+                        try
+                        {
+                            var position = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                            positionName = position?.PositionName;
+                        }
+                        catch
+                        {
+                            // Ignore
+                        }
+                    }
+
+                    employeeDict[employee.Id] = (employee.EmployeeCode, employee.FullName, departmentName, positionName);
+                }
+            }
+
+            return employeeDict;
+        }
+
         #endregion
 
-        #region CRUD - Create
+        #region ========== READ OPERATIONS ==========
+
+        /// <summary>
+        /// Lấy tất cả người dùng
+        /// </summary>
+        public List<ApplicationUserDto> GetAll()
+        {
+            try
+            {
+                using var context = CreateNewContext();
+                var entities = context.ApplicationUsers
+                    .OrderBy(u => u.UserName)
+                    .ToList();
+                
+                // Tạo dictionary chứa thông tin Employee
+                var employeeDict = GetEmployeeDict(context, entities);
+                
+                return entities.ToDtos(employeeDict);
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy tất cả người dùng: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lấy user theo ID
+        /// </summary>
+        public ApplicationUserDto GetById(Guid id)
+        {
+            try
+            {
+                using var context = CreateNewContext();
+                var entity = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+                
+                if (entity == null)
+                    return null;
+
+                // Load Employee info nếu có
+                string employeeCode = null;
+                string employeeFullName = null;
+                string departmentName = null;
+                string positionName = null;
+
+                if (entity.EmployeeId.HasValue)
+                {
+                    try
+                    {
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == entity.EmployeeId.Value);
+                        if (employee != null)
+                        {
+                            employeeCode = employee.EmployeeCode;
+                            employeeFullName = employee.FullName;
+
+                            if (employee.DepartmentId.HasValue)
+                            {
+                                var department = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                                departmentName = department?.DepartmentName;
+                            }
+
+                            if (employee.PositionId.HasValue)
+                            {
+                                var position = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                                positionName = position?.PositionName;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore nếu không thể load Employee
+                    }
+                }
+
+                return entity.ToDto(employeeCode, employeeFullName, departmentName, positionName);
+            }
+            catch (Exception ex)
+            {
+                throw new DataAccessException($"Lỗi khi lấy user theo ID: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== CREATE OPERATIONS ==========
 
         /// <summary>
         /// Tạo user mới
         /// </summary>
-        public ApplicationUser Create(ApplicationUser user)
+        public ApplicationUserDto Create(ApplicationUserDto dto)
         {
             try
             {
-                if (user == null)
-                    throw new ArgumentNullException(nameof(user));
-
-                if (user.Id == Guid.Empty)
-                    user.Id = Guid.NewGuid();
+                if (dto == null)
+                    throw new ArgumentNullException(nameof(dto));
 
                 // Validate UserName
-                if (string.IsNullOrWhiteSpace(user.UserName))
-                    throw new ArgumentException("UserName không được để trống", nameof(user));
-
-                if (IsUserNameExists(user.UserName))
-                    throw new DataAccessException($"UserName '{user.UserName}' đã tồn tại");
+                if (string.IsNullOrWhiteSpace(dto.UserName))
+                    throw new ArgumentException("UserName không được để trống", nameof(dto));
 
                 using var context = CreateNewContext();
-                context.ApplicationUsers.InsertOnSubmit(user);
+                
+                // Kiểm tra duplicate UserName
+                if (context.ApplicationUsers.Any(u => u.UserName == dto.UserName))
+                    throw new DataAccessException($"UserName '{dto.UserName}' đã tồn tại");
+
+                // Convert DTO to Entity
+                var entity = dto.ToEntity();
+                
+                if (entity.Id == Guid.Empty)
+                    entity.Id = Guid.NewGuid();
+
+                context.ApplicationUsers.InsertOnSubmit(entity);
                 context.SubmitChanges();
                 
-                // Load Employee và navigation properties trước khi dispose DataContext
-                // để tránh ObjectDisposedException khi ToDto() truy cập navigation properties
-                if (user.EmployeeId.HasValue)
+                // Load Employee info để trả về DTO đầy đủ
+                string employeeCode = null;
+                string employeeFullName = null;
+                string departmentName = null;
+                string positionName = null;
+
+                if (entity.EmployeeId.HasValue)
                 {
                     try
                     {
-                        // Load Employee để trigger eager load
-                        var employee = context.Employees.FirstOrDefault(e => e.Id == user.EmployeeId.Value);
+                        var employee = context.Employees.FirstOrDefault(e => e.Id == entity.EmployeeId.Value);
                         if (employee != null)
                         {
-                            // Load navigation properties trong cùng context
+                            employeeCode = employee.EmployeeCode;
+                            employeeFullName = employee.FullName;
+
                             if (employee.DepartmentId.HasValue)
                             {
-                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                                var department = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                                departmentName = department?.DepartmentName;
                             }
+
                             if (employee.PositionId.HasValue)
                             {
-                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                                var position = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                                positionName = position?.PositionName;
                             }
-                            
-                            // Gán Employee vào entity để có thể truy cập sau khi context dispose
-                            // LINQ to SQL sẽ giữ reference đến các navigation properties đã được load
-                            user.Employee = employee;
                         }
                     }
                     catch
@@ -122,11 +272,11 @@ namespace Dal.DataAccess.Implementations
                     }
                 }
                 
-                return user;
+                return entity.ToDto(employeeCode, employeeFullName, departmentName, positionName);
             }
             catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 2627) // Duplicate key
             {
-                throw new DataAccessException($"UserName '{user.UserName}' đã tồn tại trong hệ thống", sqlEx)
+                throw new DataAccessException($"UserName '{dto.UserName}' đã tồn tại trong hệ thống", sqlEx)
                 {
                     SqlErrorNumber = sqlEx.Number,
                     ThoiGianLoi = DateTime.Now
@@ -134,7 +284,7 @@ namespace Dal.DataAccess.Implementations
             }
             catch (System.Data.SqlClient.SqlException sqlEx)
             {
-                throw new DataAccessException($"Lỗi SQL khi tạo user '{user.UserName}': {sqlEx.Message}", sqlEx)
+                throw new DataAccessException($"Lỗi SQL khi tạo user '{dto.UserName}': {sqlEx.Message}", sqlEx)
                 {
                     SqlErrorNumber = sqlEx.Number,
                     ThoiGianLoi = DateTime.Now
@@ -146,437 +296,41 @@ namespace Dal.DataAccess.Implementations
             }
         }
 
-        /// <summary>
-        /// Tạo user mới (async)
-        /// </summary>
-        public async Task<ApplicationUser> CreateAsync(ApplicationUser user)
-        {
-            return await Task.Run(() => Create(user));
-        }
-
-        /// <summary>
-        /// Thêm user mới với validation.
-        /// </summary>
-        public ApplicationUser AddNewUser(string userName, string password, bool active = true)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(userName))
-                    throw new ArgumentException(@"UserName không được rỗng", nameof(userName));
-
-                if (string.IsNullOrWhiteSpace(password))
-                    throw new ArgumentException(@"Mật khẩu không được rỗng", nameof(password));
-
-                if (IsUserNameExists(userName))
-                    throw new DataAccessException($"UserName '{userName}' đã tồn tại");
-
-                using var context = CreateNewContext();
-                var user = new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = userName,
-                    HashPassword = password,
-                    Active = active,
-                    EmployeeId = null // Có thể set EmployeeId sau
-                };
-
-                context.ApplicationUsers.InsertOnSubmit(user);
-                context.SubmitChanges();
-
-                return user;
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 2627) // Duplicate key
-            {
-                throw new DataAccessException($"UserName '{userName}' đã tồn tại trong hệ thống", sqlEx)
-                {
-                    SqlErrorNumber = sqlEx.Number,
-                    ThoiGianLoi = DateTime.Now
-                };
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx)
-            {
-                throw new DataAccessException($"Lỗi SQL khi thêm user '{userName}': {sqlEx.Message}", sqlEx)
-                {
-                    SqlErrorNumber = sqlEx.Number,
-                    ThoiGianLoi = DateTime.Now
-                };
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi thêm user mới '{userName}': {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Thêm user mới với validation (Async).
-        /// </summary>
-        public async Task<ApplicationUser> AddNewUserAsync(string userName, string password, bool active = true)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(userName))
-                    throw new ArgumentException("UserName không được rỗng", nameof(userName));
-
-                if (string.IsNullOrWhiteSpace(password))
-                    throw new ArgumentException("Mật khẩu không được rỗng", nameof(password));
-
-                if (await IsUserNameExistsAsync(userName))
-                    throw new DataAccessException($"UserName '{userName}' đã tồn tại");
-
-                using var context = CreateNewContext();
-                var user = new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = userName,
-                    HashPassword = password,
-                    Active = active,
-                    EmployeeId = null // Có thể set EmployeeId sau
-                };
-
-                context.ApplicationUsers.InsertOnSubmit(user);
-                await Task.Run(() => context.SubmitChanges());
-
-                return user;
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 2627) // Duplicate key
-            {
-                throw new DataAccessException($"UserName '{userName}' đã tồn tại trong hệ thống", sqlEx)
-                {
-                    SqlErrorNumber = sqlEx.Number,
-                    ThoiGianLoi = DateTime.Now
-                };
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx)
-            {
-                throw new DataAccessException($"Lỗi SQL khi thêm user '{userName}': {sqlEx.Message}", sqlEx)
-                {
-                    SqlErrorNumber = sqlEx.Number,
-                    ThoiGianLoi = DateTime.Now
-                };
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi thêm user mới '{userName}': {ex.Message}", ex);
-            }
-        }
-
         #endregion
 
-        #region CRUD - Read
-
-        /// <summary>
-        /// Lấy tất cả người dùng
-        /// </summary>
-        public List<ApplicationUser> GetAll()
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                var users = context.ApplicationUsers
-                    .OrderBy(u => u.UserName)
-                    .ToList();
-                
-                // Load Employee và navigation properties cho tất cả users trước khi dispose
-                foreach (var user in users.Where(u => u.EmployeeId.HasValue))
-                {
-                    try
-                    {
-                        var employee = context.Employees.FirstOrDefault(e => e.Id == user.EmployeeId.Value);
-                        if (employee != null)
-                        {
-                            // Load navigation properties
-                            if (employee.DepartmentId.HasValue)
-                            {
-                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
-                            }
-                            if (employee.PositionId.HasValue)
-                            {
-                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
-                            }
-                            
-                            user.Employee = employee;
-                        }
-                    }
-                    catch
-                    {
-                        // Ignore nếu không thể load Employee cho user này
-                    }
-                }
-                
-                return users;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy tất cả người dùng: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy tất cả người dùng (async)
-        /// </summary>
-        public async Task<List<ApplicationUser>> GetAllAsync()
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                var users = await Task.Run(() => 
-                    context.ApplicationUsers
-                        .OrderBy(u => u.UserName)
-                        .ToList());
-                
-                return users;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy tất cả người dùng (async): {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy user theo ID
-        /// </summary>
-        public ApplicationUser GetById(Guid id)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
-                
-                // Load Employee và navigation properties trước khi dispose DataContext
-                if (user != null && user.EmployeeId.HasValue)
-                {
-                    try
-                    {
-                        var employee = context.Employees.FirstOrDefault(e => e.Id == user.EmployeeId.Value);
-                        if (employee != null)
-                        {
-                            // Load navigation properties
-                            if (employee.DepartmentId.HasValue)
-                            {
-                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
-                            }
-                            if (employee.PositionId.HasValue)
-                            {
-                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
-                            }
-                            
-                            user.Employee = employee;
-                        }
-                    }
-                    catch
-                    {
-                        // Ignore nếu không thể load Employee
-                    }
-                }
-                
-                return user;
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy user theo ID: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy user theo ID (async)
-        /// </summary>
-        public async Task<ApplicationUser> GetByIdAsync(Guid id)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return await Task.Run(() => context.ApplicationUsers.FirstOrDefault(u => u.Id == id));
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy user theo ID (async): {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy user theo UserName.
-        /// </summary>
-        /// <param name="userName">Tên đăng nhập</param>
-        /// <returns>ApplicationUser hoặc null</returns>
-        public ApplicationUser GetByUserName(string userName)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(userName))
-                    return null;
-
-                using var context = CreateNewContext();
-                return context.ApplicationUsers.FirstOrDefault(u => u.UserName == userName);
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 1205) // Deadlock
-            {
-                System.Threading.Thread.Sleep(100);
-                using var context = CreateNewContext();
-                return context.ApplicationUsers.FirstOrDefault(u => u.UserName == userName);
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx)
-            {
-                throw new DataAccessException($"Lỗi SQL khi lấy user '{userName}': {sqlEx.Message}", sqlEx)
-                {
-                    SqlErrorNumber = sqlEx.Number,
-                    ThoiGianLoi = DateTime.Now
-                };
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy ApplicationUser theo UserName '{userName}': {ex.Message}",
-                    ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy user theo UserName (Async).
-        /// </summary>
-        /// <param name="userName">Tên đăng nhập</param>
-        /// <returns>ApplicationUser hoặc null</returns>
-        public async Task<ApplicationUser> GetByUserNameAsync(string userName)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(userName))
-                    return null;
-
-                using var context = CreateNewContext();
-                return await Task.Run(() => context.ApplicationUsers.FirstOrDefault(u => u.UserName == userName));
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 1205) // Deadlock
-            {
-                await Task.Delay(100);
-                using var context = CreateNewContext();
-                return await Task.Run(() => context.ApplicationUsers.FirstOrDefault(u => u.UserName == userName));
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx)
-            {
-                throw new DataAccessException($"Lỗi SQL khi lấy user '{userName}': {sqlEx.Message}", sqlEx)
-                {
-                    SqlErrorNumber = sqlEx.Number,
-                    ThoiGianLoi = DateTime.Now
-                };
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy ApplicationUser theo UserName '{userName}': {ex.Message}",
-                    ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy danh sách user đang active.
-        /// </summary>
-        public List<ApplicationUser> GetActiveUsers()
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ApplicationUsers.Where(u => u.Active == true).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy danh sách user active: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Lấy danh sách user không active.
-        /// </summary>
-        public List<ApplicationUser> GetInactiveUsers()
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                return context.ApplicationUsers.Where(u => u.Active == false).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi lấy danh sách user không active: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Kiểm tra UserName có tồn tại hay không.
-        /// </summary>
-        public bool IsUserNameExists(string userName)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(userName))
-                    return false;
-
-                using var context = CreateNewContext();
-                return context.ApplicationUsers.Any(u => u.UserName == userName);
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi kiểm tra UserName '{userName}': {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Kiểm tra UserName có tồn tại hay không (Async).
-        /// </summary>
-        public async Task<bool> IsUserNameExistsAsync(string userName)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(userName))
-                    return false;
-
-                using var context = CreateNewContext();
-                return await Task.Run(() => context.ApplicationUsers.Any(u => u.UserName == userName));
-            }
-            catch (System.Data.SqlClient.SqlException sqlEx)
-            {
-                throw new DataAccessException($"Lỗi SQL khi kiểm tra UserName '{userName}': {sqlEx.Message}", sqlEx)
-                {
-                    SqlErrorNumber = sqlEx.Number,
-                    ThoiGianLoi = DateTime.Now
-                };
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi kiểm tra UserName '{userName}': {ex.Message}", ex);
-            }
-        }
-
-
-        #endregion
-
-        #region CRUD - Update
+        #region ========== UPDATE OPERATIONS ==========
 
         /// <summary>
         /// Cập nhật user
         /// </summary>
-        public ApplicationUser Update(ApplicationUser user)
+        public ApplicationUserDto Update(ApplicationUserDto dto)
         {
             try
             {
-                if (user == null)
-                    throw new ArgumentNullException(nameof(user));
+                if (dto == null)
+                    throw new ArgumentNullException(nameof(dto));
 
                 using var context = CreateNewContext();
-                var existing = context.ApplicationUsers.FirstOrDefault(u => u.Id == user.Id);
+                var existing = context.ApplicationUsers.FirstOrDefault(u => u.Id == dto.Id);
 
                 if (existing == null)
-                    throw new DataAccessException($"Không tìm thấy user với ID: {user.Id}");
+                    throw new DataAccessException($"Không tìm thấy user với ID: {dto.Id}");
 
                 // Validate UserName nếu thay đổi
-                if (existing.UserName != user.UserName && IsUserNameExists(user.UserName))
-                    throw new DataAccessException($"UserName '{user.UserName}' đã tồn tại");
+                if (existing.UserName != dto.UserName && context.ApplicationUsers.Any(u => u.UserName == dto.UserName))
+                    throw new DataAccessException($"UserName '{dto.UserName}' đã tồn tại");
 
-                // Cập nhật các thuộc tính
-                existing.UserName = user.UserName;
-                existing.HashPassword = user.HashPassword;
-                existing.Active = user.Active;
-                existing.EmployeeId = user.EmployeeId;
+                // Convert DTO to Entity (update existing)
+                dto.ToEntity(existing);
 
                 context.SubmitChanges();
                 
-                // Load Employee và navigation properties trước khi dispose DataContext
+                // Load Employee info để trả về DTO đầy đủ
+                string employeeCode = null;
+                string employeeFullName = null;
+                string departmentName = null;
+                string positionName = null;
+
                 if (existing.EmployeeId.HasValue)
                 {
                     try
@@ -584,18 +338,20 @@ namespace Dal.DataAccess.Implementations
                         var employee = context.Employees.FirstOrDefault(e => e.Id == existing.EmployeeId.Value);
                         if (employee != null)
                         {
-                            // Load navigation properties trong cùng context
+                            employeeCode = employee.EmployeeCode;
+                            employeeFullName = employee.FullName;
+
                             if (employee.DepartmentId.HasValue)
                             {
-                                _ = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                                var department = context.Departments.FirstOrDefault(d => d.Id == employee.DepartmentId.Value);
+                                departmentName = department?.DepartmentName;
                             }
+
                             if (employee.PositionId.HasValue)
                             {
-                                _ = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                                var position = context.Positions.FirstOrDefault(p => p.Id == employee.PositionId.Value);
+                                positionName = position?.PositionName;
                             }
-                            
-                            // Gán Employee vào entity
-                            existing.Employee = employee;
                         }
                     }
                     catch
@@ -604,11 +360,11 @@ namespace Dal.DataAccess.Implementations
                     }
                 }
                 
-                return existing;
+                return existing.ToDto(employeeCode, employeeFullName, departmentName, positionName);
             }
             catch (System.Data.SqlClient.SqlException sqlEx) when (sqlEx.Number == 2627) // Duplicate key
             {
-                throw new DataAccessException($"UserName '{user.UserName}' đã tồn tại trong hệ thống", sqlEx)
+                throw new DataAccessException($"UserName '{dto.UserName}' đã tồn tại trong hệ thống", sqlEx)
                 {
                     SqlErrorNumber = sqlEx.Number,
                     ThoiGianLoi = DateTime.Now
@@ -628,86 +384,9 @@ namespace Dal.DataAccess.Implementations
             }
         }
 
-        /// <summary>
-        /// Cập nhật user (async)
-        /// </summary>
-        public async Task<ApplicationUser> UpdateAsync(ApplicationUser user)
-        {
-            return await Task.Run(() => Update(user));
-        }
-
-        /// <summary>
-        /// Kích hoạt user.
-        /// </summary>
-        public void ActivateUser(Guid id)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
-
-                if (user == null)
-                    throw new DataAccessException($"Không tìm thấy user với ID: {id}");
-
-                user.Active = true;
-                context.SubmitChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi kích hoạt user {id}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Vô hiệu hóa user.
-        /// </summary>
-        public void DeactivateUser(Guid id)
-        {
-            try
-            {
-                using var context = CreateNewContext();
-                var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
-
-                if (user == null)
-                    throw new DataAccessException($"Không tìm thấy user với ID: {id}");
-
-                user.Active = false;
-                context.SubmitChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi vô hiệu hóa user {id}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Đổi mật khẩu user.
-        /// </summary>
-        public void ChangePassword(Guid id, string newPassword)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(newPassword))
-                    throw new ArgumentException("Mật khẩu mới không được rỗng", nameof(newPassword));
-
-                using var context = CreateNewContext();
-                var user = context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
-
-                if (user == null)
-                    throw new DataAccessException($"Không tìm thấy user với ID: {id}");
-
-                user.HashPassword = newPassword;
-                context.SubmitChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new DataAccessException($"Lỗi khi đổi mật khẩu user {id}: {ex.Message}", ex);
-            }
-        }
-
         #endregion
 
-        #region CRUD - Delete
+        #region ========== DELETE OPERATIONS ==========
 
         /// <summary>
         /// Xóa user
@@ -728,51 +407,6 @@ namespace Dal.DataAccess.Implementations
             catch (Exception ex)
             {
                 throw new DataAccessException($"Lỗi khi xóa user: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Xóa user (async)
-        /// </summary>
-        public async Task DeleteAsync(Guid id)
-        {
-            await Task.Run(() => Delete(id));
-        }
-
-        #endregion
-
-        #region Transactional Operations
-
-        /// <summary>
-        /// Chuyển dữ liệu giữa hai user trong một transaction.
-        /// </summary>
-        public void TransferUserData(Guid fromUserId, Guid toUserId, string newUserName)
-        {
-            using var context = CreateNewContext();
-            using var transaction = context.Connection.BeginTransaction();
-            try
-            {
-                var fromUser = context.ApplicationUsers.FirstOrDefault(u => u.Id == fromUserId);
-                var toUser = context.ApplicationUsers.FirstOrDefault(u => u.Id == toUserId);
-
-                if (fromUser == null)
-                    throw new DataAccessException($"Không tìm thấy user nguồn với ID: {fromUserId}");
-                if (toUser == null)
-                    throw new DataAccessException($"Không tìm thấy user đích với ID: {toUserId}");
-
-                toUser.UserName = newUserName;
-                toUser.HashPassword = fromUser.HashPassword;
-                toUser.Active = fromUser.Active;
-
-                fromUser.Active = false;
-
-                context.SubmitChanges();
-                transaction.Commit();
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
             }
         }
 

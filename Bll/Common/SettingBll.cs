@@ -75,7 +75,7 @@ public class SettingBll
 
     #endregion
 
-    #region Public Methods
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy giá trị setting theo category và key
@@ -120,25 +120,21 @@ public class SettingBll
     }
 
     /// <summary>
-    /// Lưu hoặc cập nhật giá trị setting
+    /// Lấy setting entity theo category và key
     /// </summary>
     /// <param name="category">Category của setting</param>
     /// <param name="settingKey">Key của setting</param>
-    /// <param name="settingValue">Giá trị setting</param>
-    /// <param name="valueType">Loại dữ liệu (String, Int, Bool, DateTime, Decimal, JSON)</param>
-    /// <param name="updatedBy">Người cập nhật</param>
-    /// <param name="encrypt">Có mã hóa giá trị không (mặc định false)</param>
-    public void SetValue(string category, string settingKey, string settingValue, string valueType = "String", string updatedBy = null, bool encrypt = false)
+    /// <returns>Setting entity hoặc null</returns>
+    public Setting GetByCategoryAndKey(string category, string settingKey)
     {
         try
         {
-            _logger?.Info($"Lưu setting {category}.{settingKey}");
-            GetDataAccess().SetValue(category, settingKey, settingValue, valueType, updatedBy, encrypt);
-            _logger?.Info($"Đã lưu setting {category}.{settingKey} thành công");
+            _logger?.Debug($"Lấy setting entity {category}.{settingKey}");
+            return GetDataAccess().GetByCategoryAndKey(category, settingKey);
         }
         catch (Exception ex)
         {
-            _logger?.Error($"Lỗi khi lưu setting {category}.{settingKey}: {ex.Message}", ex);
+            _logger?.Error($"Lỗi khi lấy setting entity {category}.{settingKey}: {ex.Message}", ex);
             throw;
         }
     }
@@ -185,21 +181,48 @@ public class SettingBll
     }
 
     /// <summary>
-    /// Lấy setting entity theo category và key
+    /// Kiểm tra setting có tồn tại không
     /// </summary>
     /// <param name="category">Category của setting</param>
     /// <param name="settingKey">Key của setting</param>
-    /// <returns>Setting entity hoặc null</returns>
-    public Setting GetByCategoryAndKey(string category, string settingKey)
+    /// <returns>True nếu tồn tại</returns>
+    public bool Exists(string category, string settingKey)
     {
         try
         {
-            _logger?.Debug($"Lấy setting entity {category}.{settingKey}");
-            return GetDataAccess().GetByCategoryAndKey(category, settingKey);
+            return GetDataAccess().Exists(category, settingKey);
         }
         catch (Exception ex)
         {
-            _logger?.Error($"Lỗi khi lấy setting entity {category}.{settingKey}: {ex.Message}", ex);
+            _logger?.Error($"Lỗi khi kiểm tra tồn tại setting {category}.{settingKey}: {ex.Message}", ex);
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật giá trị setting
+    /// </summary>
+    /// <param name="category">Category của setting</param>
+    /// <param name="settingKey">Key của setting</param>
+    /// <param name="settingValue">Giá trị setting</param>
+    /// <param name="valueType">Loại dữ liệu (String, Int, Bool, DateTime, Decimal, JSON)</param>
+    /// <param name="updatedBy">Người cập nhật</param>
+    /// <param name="encrypt">Có mã hóa giá trị không (mặc định false)</param>
+    public void SetValue(string category, string settingKey, string settingValue, string valueType = "String", string updatedBy = null, bool encrypt = false)
+    {
+        try
+        {
+            _logger?.Info($"Lưu setting {category}.{settingKey}");
+            GetDataAccess().SetValue(category, settingKey, settingValue, valueType, updatedBy, encrypt);
+            _logger?.Info($"Đã lưu setting {category}.{settingKey} thành công");
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Lỗi khi lưu setting {category}.{settingKey}: {ex.Message}", ex);
             throw;
         }
     }
@@ -207,8 +230,8 @@ public class SettingBll
     /// <summary>
     /// Lưu nhiều settings cùng lúc
     /// </summary>
-    /// <param name="settings">Dictionary chứa các settings cần lưu (key: settingKey, value: settingValue)</param>
     /// <param name="category">Category của settings</param>
+    /// <param name="settings">Dictionary chứa các settings cần lưu (key: settingKey, value: settingValue)</param>
     /// <param name="valueType">Loại dữ liệu mặc định</param>
     /// <param name="updatedBy">Người cập nhật</param>
     public void SetMultipleValues(string category, Dictionary<string, string> settings, string valueType = "String", string updatedBy = null)
@@ -233,6 +256,10 @@ public class SettingBll
             throw;
         }
     }
+
+    #endregion
+
+    #region ========== BUSINESS LOGIC METHODS ==========
 
     /// <summary>
     /// Lấy tất cả NAS settings
@@ -334,25 +361,6 @@ public class SettingBll
         {
             _logger?.Error($"Lỗi khi lấy ImageStorage settings: {ex.Message}", ex);
             throw;
-        }
-    }
-
-    /// <summary>
-    /// Kiểm tra setting có tồn tại không
-    /// </summary>
-    /// <param name="category">Category của setting</param>
-    /// <param name="settingKey">Key của setting</param>
-    /// <returns>True nếu tồn tại</returns>
-    public bool Exists(string category, string settingKey)
-    {
-        try
-        {
-            return GetDataAccess().Exists(category, settingKey);
-        }
-        catch (Exception ex)
-        {
-            _logger?.Error($"Lỗi khi kiểm tra tồn tại setting {category}.{settingKey}: {ex.Message}", ex);
-            return false;
         }
     }
 

@@ -126,7 +126,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VnsErp2025.dbml</DependentUpon>
     </Compile>
+    <Compile Include="DtoConverter\ApplicationUserDtoExtensions.cs" />
     <Compile Include="DtoConverter\ApplicationVersionDtoConverter.cs" />
+    <Compile Include="DtoConverter\AssetDtoConverter.cs" />
     <Compile Include="DtoConverter\AttributeConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerContactConverters.cs" />

@@ -1,4 +1,3 @@
-using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,8 +25,7 @@ namespace DTO.VersionAndUserManagementDto
         [StringLength(500, ErrorMessage = "Mật khẩu không được vượt quá 500 ký tự")]
         public string HashPassword { get; set; }
 
-        [DisplayName("Đang hoạt động")]
-        public bool Active { get; set; }
+        [DisplayName("Đang hoạt động")] public bool Active { get; set; }
 
         [DisplayName("ID Nhân viên")]
         [Description("ID nhân viên liên kết với người dùng này (1-1 relationship)")]
@@ -92,10 +90,12 @@ namespace DTO.VersionAndUserManagementDto
                     {
                         employeeInfo.Add($"<b>{EmployeeCode}</b>");
                     }
+
                     if (!string.IsNullOrWhiteSpace(EmployeeFullName))
                     {
                         employeeInfo.Add(EmployeeFullName);
                     }
+
                     if (employeeInfo.Any())
                     {
                         infoParts.Add($"<color='#757575'>Nhân viên:</color> {string.Join(" - ", employeeInfo)}");
@@ -139,160 +139,5 @@ namespace DTO.VersionAndUserManagementDto
                 return string.Empty;
             }
         }
-    }
-
-    /// <summary>
-    /// Extension methods cho ApplicationUser entities và DTOs.
-    /// Cung cấp conversion, transformation, và utility methods.
-    /// </summary>
-    public static class ApplicationUserDtoExtensions
-    {
-        #region ========== CONVERSION METHODS ==========
-
-        /// <summary>
-        /// Convert ApplicationUser entity to ApplicationUserDto.
-        /// Load Employee navigation property và các thông tin liên quan (Department, Position).
-        /// </summary>
-        /// <param name="entity">ApplicationUser entity</param>
-        /// <returns>ApplicationUserDto</returns>
-        public static ApplicationUserDto ToDto(this ApplicationUser entity)
-        {
-            if (entity == null)
-                return null;
-
-            var dto = new ApplicationUserDto
-            {
-                Id = entity.Id,
-                UserName = entity.UserName,
-                HashPassword = entity.HashPassword,
-                Active = entity.Active,
-                EmployeeId = entity.EmployeeId
-            };
-
-            // Load thông tin Employee nếu có
-            // Lưu ý: Kiểm tra an toàn để tránh ObjectDisposedException khi DataContext đã bị dispose
-            if (entity.EmployeeId.HasValue)
-            {
-                try
-                {
-                    // Thử truy cập Employee, nếu DataContext đã dispose sẽ throw exception
-                    var employee = entity.Employee;
-                    if (employee != null)
-                    {
-                        dto.EmployeeCode = employee.EmployeeCode;
-                        dto.EmployeeFullName = employee.FullName;
-
-                        // Load thông tin Department nếu có
-                        if (employee.DepartmentId.HasValue)
-                        {
-                            try
-                            {
-                                var department = employee.Department;
-                                if (department != null)
-                                {
-                                    dto.DepartmentName = department.DepartmentName;
-                                }
-                            }
-                            catch
-                            {
-                                // Ignore nếu không thể load Department (DataContext đã dispose)
-                            }
-                        }
-
-                        // Load thông tin Position nếu có
-                        if (employee.PositionId.HasValue)
-                        {
-                            try
-                            {
-                                var position = employee.Position;
-                                if (position != null)
-                                {
-                                    dto.PositionName = position.PositionName;
-                                }
-                            }
-                            catch
-                            {
-                                // Ignore nếu không thể load Position (DataContext đã dispose)
-                            }
-                        }
-                    }
-                }
-                catch (System.ObjectDisposedException)
-                {
-                    // DataContext đã bị dispose, không thể load Employee
-                    // Chỉ có EmployeeId, không có thông tin Employee
-                }
-                catch
-                {
-                    // Ignore các lỗi khác khi load Employee
-                }
-            }
-
-            return dto;
-        }
-
-        /// <summary>
-        /// Convert ApplicationUserDto to ApplicationUser entity.
-        /// </summary>
-        /// <param name="dto">ApplicationUserDto</param>
-        /// <param name="existingEntity">Existing entity to update (optional, for edit mode)</param>
-        /// <returns>ApplicationUser entity</returns>
-        public static ApplicationUser ToEntity(this ApplicationUserDto dto, ApplicationUser existingEntity = null)
-        {
-            if (dto == null)
-                return null;
-
-            ApplicationUser entity;
-            if (existingEntity != null)
-            {
-                // Update existing entity
-                entity = existingEntity;
-            }
-            else
-            {
-                // Create new entity
-                entity = new ApplicationUser();
-                if (dto.Id != Guid.Empty)
-                {
-                    entity.Id = dto.Id;
-                }
-            }
-
-            // Map properties
-            entity.UserName = dto.UserName;
-            entity.HashPassword = dto.HashPassword;
-            entity.Active = dto.Active;
-            entity.EmployeeId = dto.EmployeeId;
-
-            return entity;
-        }
-
-        /// <summary>
-        /// Convert collection of ApplicationUser entities to ApplicationUserDto list.
-        /// </summary>
-        /// <param name="entities">Collection of ApplicationUser entities</param>
-        /// <returns>List of ApplicationUserDto</returns>
-        public static List<ApplicationUserDto> ToDtos(this IEnumerable<ApplicationUser> entities)
-        {
-            if (entities == null)
-                return new List<ApplicationUserDto>();
-
-            return entities.Select(ToDto).ToList();
-        }
-
-        /// <summary>
-        /// Convert collection of ApplicationUserDto to ApplicationUser entities list.
-        /// </summary>
-        /// <param name="dtos">Collection of ApplicationUserDto</param>
-        /// <returns>List of ApplicationUser entities</returns>
-        public static List<ApplicationUser> ToEntities(this IEnumerable<ApplicationUserDto> dtos)
-        {
-            if (dtos == null)
-                return new List<ApplicationUser>();
-
-            return dtos.Select(dto => dto.ToEntity()).ToList();
-        }
-
-        #endregion
     }
 }
