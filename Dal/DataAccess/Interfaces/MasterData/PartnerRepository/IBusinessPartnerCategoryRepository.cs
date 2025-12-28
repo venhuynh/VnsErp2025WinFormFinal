@@ -83,19 +83,9 @@ public interface IBusinessPartnerCategoryRepository
     /// </summary>
     void DeleteCategory(Guid id);
 
-    /// <summary>
-    /// Xóa danh mục theo Id (Async). Nếu có partners, chuyển sang category "Chưa phân loại".
-    /// </summary>
-    Task DeleteCategoryAsync(Guid id);
-
     #endregion
 
     #region ========== VALIDATION & EXISTS CHECKS ==========
-
-    /// <summary>
-    /// Kiểm tra tồn tại theo Id.
-    /// </summary>
-    bool Exists(Guid id);
 
     /// <summary>
     /// Kiểm tra tồn tại tên danh mục.
@@ -117,19 +107,9 @@ public interface IBusinessPartnerCategoryRepository
     bool HasPartners(Guid categoryId);
 
     /// <summary>
-    /// Kiểm tra xem danh mục có đối tác nào không (Async).
-    /// </summary>
-    Task<bool> HasPartnersAsync(Guid categoryId);
-
-    /// <summary>
     /// Lấy số lượng đối tác của một danh mục cụ thể.
     /// </summary>
     int GetPartnerCount(Guid categoryId);
-
-    /// <summary>
-    /// Lấy số lượng đối tác của một danh mục cụ thể (Async).
-    /// </summary>
-    Task<int> GetPartnerCountAsync(Guid categoryId);
 
     /// <summary>
     /// Đếm số lượng đối tác theo từng danh mục (bao gồm cả đối tác của sub-categories).
@@ -140,16 +120,6 @@ public interface IBusinessPartnerCategoryRepository
     /// Đếm số lượng đối tác theo từng danh mục (Async).
     /// </summary>
     Task<Dictionary<Guid, int>> GetPartnerCountByCategoryAsync();
-
-    /// <summary>
-    /// Lấy tên các đối tác theo từng danh mục (bao gồm cả đối tác của sub-categories).
-    /// </summary>
-    Dictionary<Guid, string> GetPartnerNamesByCategory();
-
-    /// <summary>
-    /// Lấy mã các đối tác theo từng danh mục (bao gồm cả đối tác của sub-categories).
-    /// </summary>
-    Dictionary<Guid, string> GetPartnerCodesByCategory();
 
     #endregion
 }

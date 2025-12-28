@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 
 namespace Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 
@@ -10,31 +10,52 @@ namespace Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 /// </summary>
 public interface IBusinessPartnerContactRepository
 {
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật BusinessPartnerContact
+    /// </summary>
+    /// <param name="dto">BusinessPartnerContactDto</param>
+    /// <returns>ID của entity đã lưu</returns>
+    Guid SaveOrUpdate(BusinessPartnerContactDto dto);
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
+
     /// <summary>
     /// Lấy tất cả BusinessPartnerContact với thông tin BusinessPartnerSite
     /// </summary>
-    /// <returns>Danh sách BusinessPartnerContact</returns>
-    List<BusinessPartnerContact> GetAll();
+    /// <returns>Danh sách BusinessPartnerContactDto</returns>
+    List<BusinessPartnerContactDto> GetAll();
 
     /// <summary>
     /// Lấy tất cả BusinessPartnerContact với thông tin BusinessPartnerSite (Async)
     /// </summary>
-    /// <returns>Danh sách BusinessPartnerContact</returns>
-    Task<List<BusinessPartnerContact>> GetAllAsync();
+    /// <returns>Danh sách BusinessPartnerContactDto</returns>
+    Task<List<BusinessPartnerContactDto>> GetAllAsync();
 
     /// <summary>
     /// Lấy BusinessPartnerContact theo ID
     /// </summary>
     /// <param name="id">ID của BusinessPartnerContact</param>
-    /// <returns>BusinessPartnerContact hoặc null</returns>
-    BusinessPartnerContact GetById(Guid id);
+    /// <returns>BusinessPartnerContactDto hoặc null</returns>
+    BusinessPartnerContactDto GetById(Guid id);
+
+    #endregion
+
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
-    /// Lưu hoặc cập nhật BusinessPartnerContact
+    /// Cập nhật chỉ avatar thumbnail của BusinessPartnerContact (chỉ xử lý hình ảnh thumbnail)
     /// </summary>
-    /// <param name="entity">BusinessPartnerContact entity</param>
-    /// <returns>ID của entity đã lưu</returns>
-    Guid SaveOrUpdate(BusinessPartnerContact entity);
+    /// <param name="contactId">ID của liên hệ</param>
+    /// <param name="avatarThumbnailBytes">Dữ liệu hình ảnh thumbnail</param>
+    void UpdateAvatarOnly(Guid contactId, byte[] avatarThumbnailBytes);
+
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
 
     /// <summary>
     /// Xóa BusinessPartnerContact theo ID
@@ -42,6 +63,16 @@ public interface IBusinessPartnerContactRepository
     /// <param name="id">ID của BusinessPartnerContact</param>
     /// <returns>True nếu xóa thành công</returns>
     bool Delete(Guid id);
+
+    /// <summary>
+    /// Xóa chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
+    /// </summary>
+    /// <param name="contactId">ID của liên hệ</param>
+    void DeleteAvatarOnly(Guid contactId);
+
+    #endregion
+
+    #region ========== VALIDATION & EXISTS CHECKS ==========
 
     /// <summary>
     /// Kiểm tra Phone có tồn tại không
@@ -59,16 +90,5 @@ public interface IBusinessPartnerContactRepository
     /// <returns>True nếu đã tồn tại</returns>
     bool IsEmailExists(string email, Guid? excludeId = null);
 
-    /// <summary>
-    /// Cập nhật chỉ avatar thumbnail của BusinessPartnerContact (chỉ xử lý hình ảnh thumbnail)
-    /// </summary>
-    /// <param name="contactId">ID của liên hệ</param>
-    /// <param name="avatarThumbnailBytes">Dữ liệu hình ảnh thumbnail</param>
-    void UpdateAvatarOnly(Guid contactId, byte[] avatarThumbnailBytes);
-
-    /// <summary>
-    /// Xóa chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
-    /// </summary>
-    /// <param name="contactId">ID của liên hệ</param>
-    void DeleteAvatarOnly(Guid contactId);
+    #endregion
 }

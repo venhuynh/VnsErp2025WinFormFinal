@@ -1,7 +1,7 @@
 using Dal.Connection;
 using Dal.DataAccess.Implementations.MasterData.PartnerRepository;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
-using Dal.DataContext;
+using DTO.MasterData.CustomerPartner;
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +31,7 @@ namespace Bll.MasterData.CustomerBll
 
         #endregion
 
-        #region Helper Methods
+        #region ========== HELPER METHODS ==========
 
         /// <summary>
         /// Lấy hoặc khởi tạo Repository (lazy initialization)
@@ -70,11 +70,59 @@ namespace Bll.MasterData.CustomerBll
 
         #endregion
 
+        #region ========== CREATE OPERATIONS ==========
+
+        /// <summary>
+        /// Thêm mới BusinessPartnerContact
+        /// </summary>
+        /// <param name="dto">BusinessPartnerContactDto</param>
+        /// <returns>ID của entity đã thêm</returns>
+        public Guid Add(BusinessPartnerContactDto dto)
+        {
+            try
+            {
+                if (dto.Id == Guid.Empty)
+                {
+                    dto.Id = Guid.NewGuid();
+                }
+                return GetDataAccess().SaveOrUpdate(dto);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi thêm mới BusinessPartnerContact: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Lưu hoặc cập nhật BusinessPartnerContact
+        /// </summary>
+        /// <param name="dto">BusinessPartnerContactDto</param>
+        /// <returns>ID của entity đã lưu</returns>
+        public Guid SaveOrUpdate(BusinessPartnerContactDto dto)
+        {
+            try
+            {
+                if (dto.Id == Guid.Empty)
+                {
+                    dto.Id = Guid.NewGuid();
+                }
+                return GetDataAccess().SaveOrUpdate(dto);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lưu BusinessPartnerContact: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== READ OPERATIONS ==========
+
         /// <summary>
         /// Lấy tất cả BusinessPartnerContact
         /// </summary>
-        /// <returns>Danh sách BusinessPartnerContact</returns>
-        public List<BusinessPartnerContact> GetAll()
+        /// <returns>Danh sách BusinessPartnerContactDto</returns>
+        public List<BusinessPartnerContactDto> GetAll()
         {
             try
             {
@@ -90,8 +138,8 @@ namespace Bll.MasterData.CustomerBll
         /// Lấy BusinessPartnerContact theo ID
         /// </summary>
         /// <param name="id">ID của BusinessPartnerContact</param>
-        /// <returns>BusinessPartnerContact hoặc null</returns>
-        public BusinessPartnerContact GetById(Guid id)
+        /// <returns>BusinessPartnerContactDto hoặc null</returns>
+        public BusinessPartnerContactDto GetById(Guid id)
         {
             try
             {
@@ -103,47 +151,30 @@ namespace Bll.MasterData.CustomerBll
             }
         }
 
+        #endregion
+
+        #region ========== UPDATE OPERATIONS ==========
+
         /// <summary>
-        /// Thêm mới BusinessPartnerContact
+        /// Cập nhật chỉ avatar thumbnail của BusinessPartnerContact (chỉ xử lý hình ảnh thumbnail)
         /// </summary>
-        /// <param name="entity">BusinessPartnerContact entity</param>
-        /// <returns>ID của entity đã thêm</returns>
-        public Guid Add(BusinessPartnerContact entity)
+        /// <param name="contactId">ID của liên hệ</param>
+        /// <param name="avatarThumbnailBytes">Dữ liệu hình ảnh thumbnail</param>
+        public void UpdateAvatarOnly(Guid contactId, byte[] avatarThumbnailBytes)
         {
             try
             {
-                if (entity.Id == Guid.Empty)
-                {
-                    entity.Id = Guid.NewGuid();
-                }
-                return GetDataAccess().SaveOrUpdate(entity);
+                GetDataAccess().UpdateAvatarOnly(contactId, avatarThumbnailBytes);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Lỗi khi thêm mới BusinessPartnerContact: {ex.Message}", ex);
+                throw new Exception($"Lỗi khi cập nhật avatar thumbnail cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
             }
         }
 
-        /// <summary>
-        /// Lưu hoặc cập nhật BusinessPartnerContact
-        /// </summary>
-        /// <param name="entity">BusinessPartnerContact entity</param>
-        /// <returns>ID của entity đã lưu</returns>
-        public Guid SaveOrUpdate(BusinessPartnerContact entity)
-        {
-            try
-            {
-                if (entity.Id == Guid.Empty)
-                {
-                    entity.Id = Guid.NewGuid();
-                }
-                return GetDataAccess().SaveOrUpdate(entity);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi khi lưu BusinessPartnerContact: {ex.Message}", ex);
-            }
-        }
+        #endregion
+
+        #region ========== DELETE OPERATIONS ==========
 
         /// <summary>
         /// Xóa BusinessPartnerContact theo ID
@@ -163,6 +194,26 @@ namespace Bll.MasterData.CustomerBll
         }
 
         /// <summary>
+        /// Xóa chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
+        /// </summary>
+        /// <param name="contactId">ID của liên hệ</param>
+        public void DeleteAvatarOnly(Guid contactId)
+        {
+            try
+            {
+                GetDataAccess().DeleteAvatarOnly(contactId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi xóa avatar cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region ========== VALIDATION & EXISTS CHECKS ==========
+
+        /// <summary>
         /// Kiểm tra Phone có tồn tại không
         /// </summary>
         /// <param name="phone">Phone cần kiểm tra</param>
@@ -180,85 +231,6 @@ namespace Bll.MasterData.CustomerBll
             }
         }
 
-        /// <summary>
-        /// Cập nhật chỉ avatar thumbnail của BusinessPartnerContact (chỉ xử lý hình ảnh thumbnail)
-        /// </summary>
-        /// <param name="contactId">ID của liên hệ</param>
-        /// <param name="avatarThumbnailBytes">Dữ liệu hình ảnh thumbnail</param>
-        public void UpdateAvatarOnly(Guid contactId, byte[] avatarThumbnailBytes)
-        {
-            try
-            {
-                GetDataAccess().UpdateAvatarOnly(contactId, avatarThumbnailBytes);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi khi cập nhật avatar thumbnail cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Xóa chỉ avatar của BusinessPartnerContact (chỉ xử lý hình ảnh)
-        /// </summary>
-        /// <param name="contactId">ID của liên hệ</param>
-        public void DeleteAvatarOnly(Guid contactId)
-        {
-            try
-            {
-                GetDataAccess().DeleteAvatarOnly(contactId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi khi xóa avatar cho BusinessPartnerContact với ID {contactId}: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật entity mà không thay đổi avatar (giữ nguyên các trường Avatar metadata và thumbnail)
-        /// </summary>
-        /// <param name="entity">BusinessPartnerContact entity</param>
-        public void UpdateEntityWithoutAvatar(BusinessPartnerContact entity)
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
-
-            try
-            {
-                // Retrieve the existing entity from the database
-                var existingEntity = GetDataAccess().GetById(entity.Id);
-                if (existingEntity == null) throw new InvalidOperationException($"Entity with ID {entity.Id} does not exist.");
-
-                // Update fields except for the Avatar fields (metadata and thumbnail)
-                existingEntity.SiteId = entity.SiteId;
-                existingEntity.FullName = entity.FullName;
-                existingEntity.Position = entity.Position;
-                existingEntity.Phone = entity.Phone;
-                existingEntity.Email = entity.Email;
-                existingEntity.IsPrimary = entity.IsPrimary;
-                existingEntity.IsActive = entity.IsActive;
-                
-                // Cập nhật các fields mới
-                existingEntity.Mobile = entity.Mobile;
-                existingEntity.Fax = entity.Fax;
-                existingEntity.Department = entity.Department;
-                existingEntity.BirthDate = entity.BirthDate;
-                existingEntity.Gender = entity.Gender;
-                existingEntity.LinkedIn = entity.LinkedIn;
-                existingEntity.Skype = entity.Skype;
-                existingEntity.WeChat = entity.WeChat;
-                existingEntity.Notes = entity.Notes;
-                
-                // Không cập nhật các trường Avatar (giữ nguyên giá trị hiện có):
-                // - AvatarFileName, AvatarRelativePath, AvatarFullPath
-                // - AvatarStorageType, AvatarFileSize, AvatarChecksum
-                // - AvatarThumbnailData
-
-                // Save changes to the database
-                GetDataAccess().SaveOrUpdate(existingEntity);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi khi cập nhật entity không có avatar: {ex.Message}", ex);
-            }
-        }
+        #endregion
     }
 }

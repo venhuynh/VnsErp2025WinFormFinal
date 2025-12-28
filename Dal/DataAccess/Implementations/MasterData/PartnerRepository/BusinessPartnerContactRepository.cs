@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.MasterData.PartnerRepository;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Dal.Exceptions;
+using DTO.MasterData.CustomerPartner;
 using Logger;
 using Logger.Configuration;
 using CustomLogger = Logger.Interfaces.ILogger;
@@ -48,7 +50,7 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
 
     #endregion
 
-    #region Helper Methods
+    #region ========== HELPER METHODS ==========
 
     /// <summary>
     /// Tạo DataContext mới cho mỗi operation để tránh cache issue
@@ -69,13 +71,83 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
 
     #endregion
 
-    #region Public Methods
+    #region ========== CREATE OPERATIONS ==========
+
+    /// <summary>
+    /// Lưu hoặc cập nhật BusinessPartnerContact
+    /// </summary>
+    /// <param name="dto">BusinessPartnerContactDto</param>
+    /// <returns>ID của entity đã lưu</returns>
+    public Guid SaveOrUpdate(BusinessPartnerContactDto dto)
+    {
+        try
+        {
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
+            using var context = CreateNewContext();
+
+            // Kiểm tra xem entity có tồn tại trong DB không (nếu có Id)
+            BusinessPartnerContact existingEntity = null;
+            if (dto.Id != Guid.Empty)
+            {
+                existingEntity = context.BusinessPartnerContacts.FirstOrDefault(c => c.Id == dto.Id);
+            }
+
+            if (existingEntity == null || dto.Id == Guid.Empty)
+            {
+                // Thêm mới - Chuyển đổi DTO sang Entity
+                var entity = dto.ToEntity();
+                if (entity.Id == Guid.Empty)
+                {
+                    entity.Id = Guid.NewGuid();
+                }
+                if (entity.CreatedDate == default(DateTime))
+                {
+                    entity.CreatedDate = DateTime.Now;
+                }
+                context.BusinessPartnerContacts.InsertOnSubmit(entity);
+                context.SubmitChanges();
+                
+                _logger.Info($"Đã thêm mới BusinessPartnerContact: {entity.FullName}");
+                return entity.Id;
+            }
+            else
+            {
+                // Cập nhật - Sử dụng converter để cập nhật entity từ DTO
+                dto.ToEntity(existingEntity);
+                existingEntity.ModifiedDate = DateTime.Now;
+                
+                context.SubmitChanges();
+                _logger.Info($"Đã cập nhật BusinessPartnerContact: {existingEntity.FullName}");
+                return existingEntity.Id;
+            }
+        }
+        catch (SqlException sqlEx)
+        {
+            _logger.Error($"Lỗi SQL khi lưu BusinessPartnerContact: {sqlEx.Message}", sqlEx);
+            throw new DataAccessException($"Lỗi SQL khi lưu BusinessPartnerContact: {sqlEx.Message}", sqlEx)
+            {
+                SqlErrorNumber = sqlEx.Number,
+                ThoiGianLoi = DateTime.Now
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi lưu BusinessPartnerContact: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lưu BusinessPartnerContact: {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== READ OPERATIONS ==========
 
     /// <summary>
     /// Lấy tất cả BusinessPartnerContact với thông tin BusinessPartnerSite
     /// </summary>
-    /// <returns>Danh sách BusinessPartnerContact</returns>
-    public List<BusinessPartnerContact> GetAll()
+    /// <returns>Danh sách BusinessPartnerContactDto</returns>
+    public List<BusinessPartnerContactDto> GetAll()
     {
         try
         {
@@ -86,8 +158,16 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
                 .OrderBy(c => c.FullName)
                 .ToList();
 
-            _logger.Debug($"Đã lấy {contacts.Count} BusinessPartnerContact");
-            return contacts;
+            // Chuyển đổi sang DTO - Lấy thông tin SiteName và PartnerName từ navigation properties trước khi dispose
+            var dtos = contacts.Select(c =>
+            {
+                var siteName = c.BusinessPartnerSite?.SiteName;
+                var partnerName = c.BusinessPartnerSite?.BusinessPartner?.PartnerName;
+                return c.ToDto(siteName, partnerName);
+            }).ToList();
+
+            _logger.Debug($"Đã lấy {dtos.Count} BusinessPartnerContact");
+            return dtos;
         }
         catch (SqlException sqlEx)
         {
@@ -108,8 +188,8 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
     /// <summary>
     /// Lấy tất cả BusinessPartnerContact với thông tin BusinessPartnerSite (Async)
     /// </summary>
-    /// <returns>Danh sách BusinessPartnerContact</returns>
-    public async Task<List<BusinessPartnerContact>> GetAllAsync()
+    /// <returns>Danh sách BusinessPartnerContactDto</returns>
+    public async Task<List<BusinessPartnerContactDto>> GetAllAsync()
     {
         try
         {
@@ -119,8 +199,16 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
                 .OrderBy(c => c.FullName)
                 .ToList());
             
-            _logger.Debug($"Đã lấy {contacts.Count} BusinessPartnerContact (async)");
-            return contacts;
+            // Chuyển đổi sang DTO - Lấy thông tin SiteName và PartnerName từ navigation properties trước khi dispose
+            var dtos = contacts.Select(c =>
+            {
+                var siteName = c.BusinessPartnerSite?.SiteName;
+                var partnerName = c.BusinessPartnerSite?.BusinessPartner?.PartnerName;
+                return c.ToDto(siteName, partnerName);
+            }).ToList();
+            
+            _logger.Debug($"Đã lấy {dtos.Count} BusinessPartnerContact (async)");
+            return dtos;
         }
         catch (SqlException sqlEx)
         {
@@ -142,8 +230,8 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
     /// Lấy BusinessPartnerContact theo ID
     /// </summary>
     /// <param name="id">ID của BusinessPartnerContact</param>
-    /// <returns>BusinessPartnerContact hoặc null</returns>
-    public BusinessPartnerContact GetById(Guid id)
+    /// <returns>BusinessPartnerContactDto hoặc null</returns>
+    public BusinessPartnerContactDto GetById(Guid id)
     {
         try
         {
@@ -153,9 +241,13 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
             if (contact != null)
             {
                 _logger.Debug($"Đã lấy BusinessPartnerContact theo ID: {id} - {contact.FullName}");
+                // Lấy thông tin SiteName và PartnerName từ navigation properties trước khi dispose
+                var siteName = contact.BusinessPartnerSite?.SiteName;
+                var partnerName = contact.BusinessPartnerSite?.BusinessPartner?.PartnerName;
+                return contact.ToDto(siteName, partnerName);
             }
             
-            return contact;
+            return null;
         }
         catch (SqlException sqlEx)
         {
@@ -173,249 +265,9 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
         }
     }
 
-    /// <summary>
-    /// Lưu hoặc cập nhật BusinessPartnerContact
-    /// </summary>
-    /// <param name="entity">BusinessPartnerContact entity</param>
-    /// <returns>ID của entity đã lưu</returns>
-    public Guid SaveOrUpdate(BusinessPartnerContact entity)
-    {
-        try
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
+    #endregion
 
-            using var context = CreateNewContext();
-
-            // Kiểm tra xem entity có tồn tại trong DB không (nếu có Id)
-            BusinessPartnerContact existingEntity = null;
-            if (entity.Id != Guid.Empty)
-            {
-                existingEntity = context.BusinessPartnerContacts.FirstOrDefault(c => c.Id == entity.Id);
-            }
-
-            if (existingEntity == null || entity.Id == Guid.Empty)
-            {
-                // Thêm mới
-                if (entity.Id == Guid.Empty)
-                {
-                    entity.Id = Guid.NewGuid();
-                }
-                if (entity.CreatedDate == default(DateTime))
-                {
-                    entity.CreatedDate = DateTime.Now;
-                }
-                context.BusinessPartnerContacts.InsertOnSubmit(entity);
-                context.SubmitChanges();
-                
-                _logger.Info($"Đã thêm mới BusinessPartnerContact: {entity.FullName}");
-            }
-            else
-            {
-                // Cập nhật
-                existingEntity.SiteId = entity.SiteId;
-                existingEntity.FullName = entity.FullName;
-                existingEntity.Position = entity.Position;
-                existingEntity.Phone = entity.Phone;
-                existingEntity.Email = entity.Email;
-                existingEntity.IsPrimary = entity.IsPrimary;
-                existingEntity.IsActive = entity.IsActive;
-                
-                // Cập nhật các fields mới
-                existingEntity.Mobile = entity.Mobile;
-                existingEntity.Fax = entity.Fax;
-                existingEntity.Department = entity.Department;
-                existingEntity.BirthDate = entity.BirthDate;
-                existingEntity.Gender = entity.Gender;
-                existingEntity.LinkedIn = entity.LinkedIn;
-                existingEntity.Skype = entity.Skype;
-                existingEntity.WeChat = entity.WeChat;
-                existingEntity.Notes = entity.Notes;
-                
-                // Copy Avatar fields (metadata only, Avatar binary field not in DataContext)
-                existingEntity.AvatarFileName = entity.AvatarFileName;
-                existingEntity.AvatarRelativePath = entity.AvatarRelativePath;
-                existingEntity.AvatarFullPath = entity.AvatarFullPath;
-                existingEntity.AvatarStorageType = entity.AvatarStorageType;
-                existingEntity.AvatarFileSize = entity.AvatarFileSize;
-                existingEntity.AvatarChecksum = entity.AvatarChecksum;
-                
-                // Copy AvatarThumbnailData (binary data stored in database)
-                existingEntity.AvatarThumbnailData = entity.AvatarThumbnailData;
-                
-                existingEntity.ModifiedDate = DateTime.Now;
-                
-                context.SubmitChanges();
-                _logger.Info($"Đã cập nhật BusinessPartnerContact: {existingEntity.FullName}");
-            }
-
-            return entity.Id;
-        }
-        catch (SqlException sqlEx)
-        {
-            _logger.Error($"Lỗi SQL khi lưu BusinessPartnerContact: {sqlEx.Message}", sqlEx);
-            throw new DataAccessException($"Lỗi SQL khi lưu BusinessPartnerContact: {sqlEx.Message}", sqlEx)
-            {
-                SqlErrorNumber = sqlEx.Number,
-                ThoiGianLoi = DateTime.Now
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lưu BusinessPartnerContact: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lưu BusinessPartnerContact: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Xóa BusinessPartnerContact theo ID
-    /// </summary>
-    /// <param name="id">ID của BusinessPartnerContact</param>
-    /// <returns>True nếu xóa thành công</returns>
-    public bool Delete(Guid id)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var entity = context.BusinessPartnerContacts.FirstOrDefault(c => c.Id == id);
-            if (entity == null)
-            {
-                _logger.Warning($"Không tìm thấy BusinessPartnerContact để xóa: {id}");
-                return false;
-            }
-
-            var entityName = entity.FullName;
-            var entityId = entity.Id;
-            
-            _logger.Debug($"Bắt đầu xóa BusinessPartnerContact: {entityId} - {entityName}");
-            
-            // DeleteOnSubmit và SubmitChanges
-            context.BusinessPartnerContacts.DeleteOnSubmit(entity);
-            
-            try
-            {
-                context.SubmitChanges();
-                _logger.Info($"Đã xóa BusinessPartnerContact thành công: {entityId} - {entityName}");
-                
-                // Verify deletion bằng cách query lại
-                using var verifyContext = CreateNewContext();
-                var verifyEntity = verifyContext.BusinessPartnerContacts.FirstOrDefault(c => c.Id == id);
-                if (verifyEntity != null)
-                {
-                    _logger.Error($"Xóa BusinessPartnerContact không thành công - Entity vẫn còn trong database: {entityId} - {entityName}");
-                    return false;
-                }
-                
-                _logger.Debug($"Đã xác nhận xóa BusinessPartnerContact: {entityId} - {entityName}");
-                return true;
-            }
-            catch (SqlException sqlEx)
-            {
-                _logger.Error($"Lỗi SQL khi SubmitChanges xóa BusinessPartnerContact: {sqlEx.Message} (Error Number: {sqlEx.Number})", sqlEx);
-                throw new DataAccessException($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message}", sqlEx)
-                {
-                    SqlErrorNumber = sqlEx.Number,
-                    ThoiGianLoi = DateTime.Now
-                };
-            }
-        }
-        catch (SqlException sqlEx)
-        {
-            _logger.Error($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message} (Error Number: {sqlEx.Number})", sqlEx);
-            throw new DataAccessException($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message}", sqlEx)
-            {
-                SqlErrorNumber = sqlEx.Number,
-                ThoiGianLoi = DateTime.Now
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi xóa BusinessPartnerContact: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi xóa BusinessPartnerContact: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Kiểm tra Phone có tồn tại không
-    /// </summary>
-    /// <param name="phone">Phone cần kiểm tra</param>
-    /// <param name="excludeId">ID cần loại trừ (cho trường hợp update)</param>
-    /// <returns>True nếu đã tồn tại</returns>
-    public bool IsPhoneExists(string phone, Guid? excludeId = null)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(phone))
-                return false;
-
-            using var context = CreateNewContext();
-            var query = context.BusinessPartnerContacts.Where(c => c.Phone == phone);
-
-            if (excludeId.HasValue)
-            {
-                query = query.Where(c => c.Id != excludeId.Value);
-            }
-
-            var result = query.Any();
-            _logger.Debug($"IsPhoneExists: Phone='{phone}', ExcludeId={excludeId}, Result={result}");
-            return result;
-        }
-        catch (SqlException sqlEx)
-        {
-            _logger.Error($"Lỗi SQL khi kiểm tra Phone: {sqlEx.Message}", sqlEx);
-            throw new DataAccessException($"Lỗi SQL khi kiểm tra Phone: {sqlEx.Message}", sqlEx)
-            {
-                SqlErrorNumber = sqlEx.Number,
-                ThoiGianLoi = DateTime.Now
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi kiểm tra Phone: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi kiểm tra Phone: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Kiểm tra Email có tồn tại không
-    /// </summary>
-    /// <param name="email">Email cần kiểm tra</param>
-    /// <param name="excludeId">ID cần loại trừ (cho trường hợp update)</param>
-    /// <returns>True nếu đã tồn tại</returns>
-    public bool IsEmailExists(string email, Guid? excludeId = null)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return false;
-
-            using var context = CreateNewContext();
-            var query = context.BusinessPartnerContacts.Where(c => c.Email == email);
-
-            if (excludeId.HasValue)
-            {
-                query = query.Where(c => c.Id != excludeId.Value);
-            }
-
-            var result = query.Any();
-            _logger.Debug($"IsEmailExists: Email='{email}', ExcludeId={excludeId}, Result={result}");
-            return result;
-        }
-        catch (SqlException sqlEx)
-        {
-            _logger.Error($"Lỗi SQL khi kiểm tra Email: {sqlEx.Message}", sqlEx);
-            throw new DataAccessException($"Lỗi SQL khi kiểm tra Email: {sqlEx.Message}", sqlEx)
-            {
-                SqlErrorNumber = sqlEx.Number,
-                ThoiGianLoi = DateTime.Now
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi kiểm tra Email: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi kiểm tra Email: {ex.Message}", ex);
-        }
-    }
+    #region ========== UPDATE OPERATIONS ==========
 
     /// <summary>
     /// Cập nhật chỉ avatar thumbnail của BusinessPartnerContact (chỉ xử lý hình ảnh thumbnail)
@@ -503,6 +355,164 @@ public class BusinessPartnerContactRepository : IBusinessPartnerContactRepositor
         {
             _logger.Error($"Lỗi khi xóa avatar: {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi xóa avatar: {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== VALIDATION & EXISTS CHECKS ==========
+
+    /// <summary>
+    /// Kiểm tra Phone có tồn tại không
+    /// </summary>
+    /// <param name="phone">Phone cần kiểm tra</param>
+    /// <param name="excludeId">ID cần loại trừ (cho trường hợp update)</param>
+    /// <returns>True nếu đã tồn tại</returns>
+    public bool IsPhoneExists(string phone, Guid? excludeId = null)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(phone))
+                return false;
+
+            using var context = CreateNewContext();
+            var query = context.BusinessPartnerContacts.Where(c => c.Phone == phone);
+
+            if (excludeId.HasValue)
+            {
+                query = query.Where(c => c.Id != excludeId.Value);
+            }
+
+            var result = query.Any();
+            _logger.Debug($"IsPhoneExists: Phone='{phone}', ExcludeId={excludeId}, Result={result}");
+            return result;
+        }
+        catch (SqlException sqlEx)
+        {
+            _logger.Error($"Lỗi SQL khi kiểm tra Phone: {sqlEx.Message}", sqlEx);
+            throw new DataAccessException($"Lỗi SQL khi kiểm tra Phone: {sqlEx.Message}", sqlEx)
+            {
+                SqlErrorNumber = sqlEx.Number,
+                ThoiGianLoi = DateTime.Now
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi kiểm tra Phone: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi kiểm tra Phone: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Kiểm tra Email có tồn tại không
+    /// </summary>
+    /// <param name="email">Email cần kiểm tra</param>
+    /// <param name="excludeId">ID cần loại trừ (cho trường hợp update)</param>
+    /// <returns>True nếu đã tồn tại</returns>
+    public bool IsEmailExists(string email, Guid? excludeId = null)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            using var context = CreateNewContext();
+            var query = context.BusinessPartnerContacts.Where(c => c.Email == email);
+
+            if (excludeId.HasValue)
+            {
+                query = query.Where(c => c.Id != excludeId.Value);
+            }
+
+            var result = query.Any();
+            _logger.Debug($"IsEmailExists: Email='{email}', ExcludeId={excludeId}, Result={result}");
+            return result;
+        }
+        catch (SqlException sqlEx)
+        {
+            _logger.Error($"Lỗi SQL khi kiểm tra Email: {sqlEx.Message}", sqlEx);
+            throw new DataAccessException($"Lỗi SQL khi kiểm tra Email: {sqlEx.Message}", sqlEx)
+            {
+                SqlErrorNumber = sqlEx.Number,
+                ThoiGianLoi = DateTime.Now
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi kiểm tra Email: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi kiểm tra Email: {ex.Message}", ex);
+        }
+    }
+
+    #endregion
+
+    #region ========== DELETE OPERATIONS ==========
+
+    /// <summary>
+    /// Xóa BusinessPartnerContact theo ID
+    /// </summary>
+    /// <param name="id">ID của BusinessPartnerContact</param>
+    /// <returns>True nếu xóa thành công</returns>
+    public bool Delete(Guid id)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+            var entity = context.BusinessPartnerContacts.FirstOrDefault(c => c.Id == id);
+            if (entity == null)
+            {
+                _logger.Warning($"Không tìm thấy BusinessPartnerContact để xóa: {id}");
+                return false;
+            }
+
+            var entityName = entity.FullName;
+            var entityId = entity.Id;
+            
+            _logger.Debug($"Bắt đầu xóa BusinessPartnerContact: {entityId} - {entityName}");
+            
+            // DeleteOnSubmit và SubmitChanges
+            context.BusinessPartnerContacts.DeleteOnSubmit(entity);
+            
+            try
+            {
+                context.SubmitChanges();
+                _logger.Info($"Đã xóa BusinessPartnerContact thành công: {entityId} - {entityName}");
+                
+                // Verify deletion bằng cách query lại
+                using var verifyContext = CreateNewContext();
+                var verifyEntity = verifyContext.BusinessPartnerContacts.FirstOrDefault(c => c.Id == id);
+                if (verifyEntity != null)
+                {
+                    _logger.Error($"Xóa BusinessPartnerContact không thành công - Entity vẫn còn trong database: {entityId} - {entityName}");
+                    return false;
+                }
+                
+                _logger.Debug($"Đã xác nhận xóa BusinessPartnerContact: {entityId} - {entityName}");
+                return true;
+            }
+            catch (SqlException sqlEx)
+            {
+                _logger.Error($"Lỗi SQL khi SubmitChanges xóa BusinessPartnerContact: {sqlEx.Message} (Error Number: {sqlEx.Number})", sqlEx);
+                throw new DataAccessException($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message}", sqlEx)
+                {
+                    SqlErrorNumber = sqlEx.Number,
+                    ThoiGianLoi = DateTime.Now
+                };
+            }
+        }
+        catch (SqlException sqlEx)
+        {
+            _logger.Error($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message} (Error Number: {sqlEx.Number})", sqlEx);
+            throw new DataAccessException($"Lỗi SQL khi xóa BusinessPartnerContact: {sqlEx.Message}", sqlEx)
+            {
+                SqlErrorNumber = sqlEx.Number,
+                ThoiGianLoi = DateTime.Now
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Lỗi khi xóa BusinessPartnerContact: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi xóa BusinessPartnerContact: {ex.Message}", ex);
         }
     }
 
