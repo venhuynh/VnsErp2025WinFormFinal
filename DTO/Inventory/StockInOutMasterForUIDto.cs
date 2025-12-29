@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTO.Inventory
 {
-    internal class StockInOutForUIDto
+    internal class StockInOutMasterForUIDto
     {
     }
 }
