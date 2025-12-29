@@ -326,21 +326,22 @@ namespace MasterData.ProductService
                 // Reset trước khi load dữ liệu mới
                 ResetImageSelection();
                 
-                List<ProductImage> images;
+                // GetAll() and GetByProductId() already return List<ProductImageDto>
+                List<ProductImageDto> imageDtos;
                 
                 if (!_currentProductId.HasValue)
                 {
                     // Nếu không có ProductId, load tất cả hình ảnh
-                    images = _productImageBll.GetAll();
+                    imageDtos = _productImageBll.GetAll();
                 }
                 else
                 {
                     // Nếu có ProductId, chỉ load hình ảnh của sản phẩm đó
-                    images = _productImageBll.GetByProductId(_currentProductId.Value);
+                    imageDtos = _productImageBll.GetByProductId(_currentProductId.Value);
                 }
 
-                // Map entities sang DTOs - ImageData (thumbnail) được load trực tiếp từ entity để tăng tốc độ và UX
-                _imageList = MapEntitiesToDtos(images);
+                // Already DTOs, no conversion needed
+                _imageList = imageDtos;
 
                 // Hiển thị thông tin trong DataSummaryBarStaticItem
                 ShowImageSummary();
@@ -375,22 +376,23 @@ namespace MasterData.ProductService
         }
 
         /// <summary>
-        /// Map entities sang DTOs
-        /// ImageData (thumbnail) được load trực tiếp từ entity để tăng tốc độ hiển thị và cải thiện UX
+        /// Map entities sang DTOs (DEPRECATED - BLL already returns DTOs)
+        /// ImageData (thumbnail) được load trực tiếp từ DTO để tăng tốc độ hiển thị và cải thiện UX
         /// Thumbnail đã được lưu trong database, không cần load từ NAS/Local storage
         /// </summary>
-        private List<ProductImageDto> MapEntitiesToDtos(List<ProductImage> entities)
+        private List<ProductImageDto> MapEntitiesToDtos(List<ProductImageDto> dtos)
         {
-            if (entities == null)
+            if (dtos == null)
                 return new List<ProductImageDto>();
 
             // Load tất cả ProductService để tránh truy cập navigation property sau khi DataContext bị dispose
             // Tạo dictionary để lookup nhanh theo ProductId
-            var productServiceDict = new Dictionary<Guid, Dal.DataContext.ProductService>();
+            var productServiceDict = new Dictionary<Guid, ProductServiceDto>();
             try
             {
                 if (_productServiceBll != null)
                 {
+                    // GetAll() already returns List<ProductServiceDto>
                     var productServices = _productServiceBll.GetAll();
                     foreach (var ps in productServices)
                     {
@@ -408,80 +410,41 @@ namespace MasterData.ProductService
             }
 
             // Group theo ProductId để tính số thứ tự hình ảnh trong mỗi sản phẩm
-            var groupedByProduct = entities
-                .GroupBy(e => e.ProductId)
+            var groupedByProduct = dtos
+                .GroupBy(d => d.ProductId)
                 .ToList();
 
-            var dtos = new List<ProductImageDto>();
+            var processedDtos = new List<ProductImageDto>();
 
             foreach (var group in groupedByProduct)
             {
                 // Sắp xếp theo CreateDate để xác định số thứ tự
-                var sortedImages = group.OrderBy(e => e.CreateDate).ToList();
+                var sortedImages = group.OrderBy(d => d.CreateDate).ToList();
                 
                 for (int i = 0; i < sortedImages.Count; i++)
                 {
-                    var entity = sortedImages[i];
+                    var dto = sortedImages[i];
                     
                     // Lấy ProductService từ dictionary thay vì navigation property để tránh lỗi DataContext disposed
-                    Dal.DataContext.ProductService productService = null;
-                    if (entity.ProductId.HasValue && productServiceDict.TryGetValue(entity.ProductId.Value, out var value))
+                    ProductServiceDto productService = null;
+                    if (dto.ProductId != Guid.Empty && productServiceDict.TryGetValue(dto.ProductId, out var value))
                     {
                         productService = value;
                     }
 
-                    // Convert Binary ImageData sang byte[] để hiển thị thumbnail ngay lập tức
-                    // ImageData trong ProductImage chứa thumbnail đã được tối ưu, giúp tăng tốc độ truy vấn và UX
-                    byte[] thumbnailData = null;
-                    if (entity.ImageData != null)
-                    {
-                        try
-                        {
-                            thumbnailData = entity.ImageData.ToArray();
-                        }
-                        catch (Exception ex)
-                        {
-                            // Log lỗi nhưng không throw để không chặn việc load các hình ảnh khác
-                            System.Diagnostics.Debug.WriteLine($"Lỗi khi convert ImageData cho hình ảnh {entity.Id}: {ex.Message}");
-                        }
-                    }
+                    // ImageData in DTO is already byte[], no conversion needed
+                    // Update DTO with additional information
+                    dto.ProductCode = productService?.Code;
+                    dto.ProductName = productService?.Name;
+                    // Số thứ tự hình ảnh trong sản phẩm (bắt đầu từ 1)
+                    dto.ImageSequenceNumber = i + 1;
 
-                    var dto = new ProductImageDto
-                    {
-                        Id = entity.Id,
-                        ProductId = entity.ProductId ?? Guid.Empty,
-                        // Load thumbnail từ ImageData trong database để hiển thị ngay, không cần load từ storage
-                        // Điều này tăng tốc độ truy vấn và cải thiện UX đáng kể
-                        ImageData = thumbnailData,
-                        FileName = entity.FileName,
-                        RelativePath = entity.RelativePath,
-                        FullPath = entity.FullPath,
-                        StorageType = entity.StorageType,
-                        FileSize = entity.FileSize,
-                        FileExtension = entity.FileExtension,
-                        MimeType = entity.MimeType,
-                        Checksum = entity.Checksum,
-                        FileExists = entity.FileExists,
-                        LastVerified = entity.LastVerified,
-                        MigrationStatus = entity.MigrationStatus,
-                        CreateDate = entity.CreateDate,
-                        CreateBy = entity.CreateBy,
-                        ModifiedDate = entity.ModifiedDate,
-                        ModifiedBy = entity.ModifiedBy,
-                        // Thông tin từ ProductService
-                        ProductCode = productService?.Code,
-                        ProductName = productService?.Name,
-                        // Số thứ tự hình ảnh trong sản phẩm (bắt đầu từ 1)
-                        ImageSequenceNumber = i + 1,
-                        // Legacy properties để backward compatibility
-                    };
-
-                    dtos.Add(dto);
+                    processedDtos.Add(dto);
                 }
             }
 
             // Sắp xếp theo sản phẩm để tạo separator tự nhiên
-            return dtos.OrderBy(x => x.ProductName ?? "").ThenBy(x => x.ImageSequenceNumber).ToList();
+            return processedDtos.OrderBy(x => x.ProductName ?? "").ThenBy(x => x.ImageSequenceNumber).ToList();
         }
 
         /// <summary>

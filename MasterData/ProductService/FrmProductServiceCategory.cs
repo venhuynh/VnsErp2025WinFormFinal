@@ -122,8 +122,47 @@ namespace MasterData.ProductService
                     _logger.Debug("Category: {0}, Count: {1}", category?.CategoryName ?? "Unknown", count.Value);
                 }
 
-                // Tạo cấu trúc cây hierarchical
-                var dtoList = categories.ToDtosWithHierarchy(counts).ToList();
+                // GetCategoriesWithCountsAsync() already returns List<ProductServiceCategoryDto>
+                // Calculate hierarchy properties manually on DTOs
+                var categoryDict = categories.ToDictionary(c => c.Id);
+                var dtoList = categories.Select(dto =>
+                {
+                    // Set ProductCount from counts dictionary
+                    dto.ProductCount = counts.TryGetValue(dto.Id, out var count) ? count : 0;
+
+                    // Calculate Level
+                    int level = 0;
+                    var current = dto;
+                    while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
+                    {
+                        level++;
+                        current = categoryDict[current.ParentId.Value];
+                        if (level > 10) break; // Tránh infinite loop
+                    }
+                    dto.Level = level;
+
+                    // Calculate FullPath
+                    var pathParts = new System.Collections.Generic.List<string> { dto.CategoryName };
+                    current = dto;
+                    while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
+                    {
+                        current = categoryDict[current.ParentId.Value];
+                        pathParts.Insert(0, current.CategoryName);
+                        if (pathParts.Count > 10) break; // Tránh infinite loop
+                    }
+                    dto.FullPath = string.Join(" > ", pathParts);
+
+                    // Set ParentCategoryName
+                    if (dto.ParentId.HasValue && categoryDict.TryGetValue(dto.ParentId.Value, out var parent))
+                    {
+                        dto.ParentCategoryName = parent.CategoryName;
+                    }
+
+                    // Calculate HasChildren
+                    dto.HasChildren = categories.Any(c => c.ParentId == dto.Id);
+
+                    return dto;
+                }).ToList();
 
                 // Log: Kiểm tra DTOs
                 foreach (var dto in dtoList)

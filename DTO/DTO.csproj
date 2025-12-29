@@ -127,6 +127,11 @@
   <ItemGroup>
     <None Include="Inventory\StockIn\README_STOCK_IN_HISTORY_QUERY.md" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{68E56AB6-1ADA-40DE-9EDD-0BE2B8F35C3A}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

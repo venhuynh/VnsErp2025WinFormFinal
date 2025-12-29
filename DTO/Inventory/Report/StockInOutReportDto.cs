@@ -1,5 +1,4 @@
 ﻿using Common.Helpers;
-using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

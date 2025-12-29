@@ -201,12 +201,11 @@ namespace MasterData.ProductService
 		/// </summary>
 		private async Task LoadProductServicesDataSourceAsync()
 		{
-			var entities = await _productServiceBll.GetFilteredAsync(
+			// GetFilteredAsync() already returns List<ProductServiceDto>
+			var dtos = await _productServiceBll.GetFilteredAsync(
 				isActive: true,
 				orderBy: "Name",
 				orderDirection: "ASC");
-
-			var dtos = entities.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId));
 			productServiceDtoBindingSource.DataSource = dtos;
 		}
 
@@ -215,8 +214,8 @@ namespace MasterData.ProductService
 		/// </summary>
 		private async Task LoadUnitOfMeasureDataSourceAsync()
 		{
-			var units = await Task.Run(() => _unitOfMeasureBll.GetByStatus(true));
-			var unitDtos = units.ToDtoList()
+			// GetByStatus() already returns List<UnitOfMeasureDto>
+			var unitDtos = await Task.Run(() => _unitOfMeasureBll.GetByStatus(true))
 				.OrderBy(u => u.Name)
 				.ToList();
 			unitOfMeasureDtoBindingSource.DataSource = unitDtos;
@@ -227,8 +226,8 @@ namespace MasterData.ProductService
 		/// </summary>
 		private async Task LoadAttributesDataSourceAsync()
 		{
-			var attributes = await Task.Run(() => _attributeBll.GetAll());
-			var attributeDtos = attributes.ToDtoList()
+			// GetAll() already returns List<AttributeDto>
+			var attributeDtos = await Task.Run(() => _attributeBll.GetAll())
 				.OrderBy(a => a.Name)
 				.ToList();
 			attributeDtoBindingSource.DataSource = attributeDtos;
@@ -1009,11 +1008,11 @@ namespace MasterData.ProductService
 						return;
 					}
 
-					// Tạo ProductVariant entity từ form data
-					var variant = CreateVariantEntityFromForm();
+					// Create ProductVariantDto from form data
+					var variant = CreateVariantDtoFromForm();
 					var attributeValues = GetAttributeValuesForSave();
 
-					// Lưu biến thể
+					// SaveAsync expects ProductVariantDto
 					var savedId = await _productVariantBll.SaveAsync(variant, attributeValues);
 
 					// Cập nhật _productVariantId nếu đang tạo mới
@@ -1062,7 +1061,7 @@ namespace MasterData.ProductService
 		/// <summary>
 		/// Tạo ProductVariant entity từ dữ liệu form
 		/// </summary>
-		private ProductVariant CreateVariantEntityFromForm()
+		private ProductVariantDto CreateVariantDtoFromForm()
 		{
 			try
 			{
@@ -1087,7 +1086,7 @@ namespace MasterData.ProductService
 				// Tính toán VariantFullName từ các thuộc tính đã chọn
 				var variantFullName = BuildVariantFullNameFromForm();
 
-				var variant = new ProductVariant
+				var variant = new ProductVariantDto
 				{
 					Id = _productVariantId,
 					ProductId = productId,

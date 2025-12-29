@@ -117,7 +117,7 @@ namespace MasterData.ProductService
                     // Map RelativePath và FullPath để sử dụng cho việc load từ storage
                     RelativePath = imageEntity.RelativePath,
                     FullPath = imageEntity.FullPath,
-                    ImageData = imageEntity.ImageData?.ToArray(), // Thumbnail từ database
+                    ImageData = imageEntity.ImageData, // Thumbnail từ database (already byte[])
                     ModifiedDate = imageEntity.ModifiedDate,
                     FileName = imageEntity.FileName
                 };

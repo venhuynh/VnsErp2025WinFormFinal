@@ -70,7 +70,7 @@ namespace MasterData.ProductService
         /// <summary>
         /// Cache danh sách sản phẩm/dịch vụ đang hoạt động
         /// </summary>
-        private List<Dal.DataContext.ProductService> _activeProductServicesCache;
+        private List<ProductServiceDto> _activeProductServicesCache;
 
         #endregion
 
@@ -171,7 +171,8 @@ namespace MasterData.ProductService
                     orderBy: "Name",
                     orderDirection: "ASC");
 
-                _activeProductServicesCache = activeProductServices ?? new List<Dal.DataContext.ProductService>();
+                // GetFilteredAsync() already returns List<ProductServiceDto>
+                _activeProductServicesCache = activeProductServices ?? new List<ProductServiceDto>();
             }
             catch (Exception ex)
             {
@@ -186,10 +187,49 @@ namespace MasterData.ProductService
         {
             try
             {
+                // GetCategoriesWithCountsAsync() already returns List<ProductServiceCategoryDto>
                 var (categories, counts) = await _productServiceCategoryBll.GetCategoriesWithCountsAsync();
                 
-                // Tạo cấu trúc cây hierarchical với FullPath đầy đủ (giống FrmProductServiceCategory)
-                var dtos = categories.ToDtosWithHierarchy(counts).ToList();
+                // Calculate hierarchy properties manually on DTOs
+                var categoryDict = categories.ToDictionary(c => c.Id);
+                var dtos = categories.Select(dto =>
+                {
+                    // Set ProductCount from counts dictionary
+                    dto.ProductCount = counts.TryGetValue(dto.Id, out var count) ? count : 0;
+
+                    // Calculate Level
+                    int level = 0;
+                    var current = dto;
+                    while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
+                    {
+                        level++;
+                        current = categoryDict[current.ParentId.Value];
+                        if (level > 10) break; // Tránh infinite loop
+                    }
+                    dto.Level = level;
+
+                    // Calculate FullPath
+                    var pathParts = new System.Collections.Generic.List<string> { dto.CategoryName };
+                    current = dto;
+                    while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
+                    {
+                        current = categoryDict[current.ParentId.Value];
+                        pathParts.Insert(0, current.CategoryName);
+                        if (pathParts.Count > 10) break; // Tránh infinite loop
+                    }
+                    dto.FullPath = string.Join(" > ", pathParts);
+
+                    // Set ParentCategoryName
+                    if (dto.ParentId.HasValue && categoryDict.TryGetValue(dto.ParentId.Value, out var parent))
+                    {
+                        dto.ParentCategoryName = parent.CategoryName;
+                    }
+
+                    // Calculate HasChildren
+                    dto.HasChildren = categories.Any(c => c.ParentId == dto.Id);
+
+                    return dto;
+                }).ToList();
                 
                 // Thiết lập BindingSource
                 productServiceCategoryDtoBindingSource.DataSource = dtos;
@@ -210,6 +250,7 @@ namespace MasterData.ProductService
         {
             try
             {
+                // GetById() already returns ProductServiceDto
                 var productService = _productServiceBll.GetById(_productServiceId);
                 if (productService == null)
                 {
@@ -218,10 +259,7 @@ namespace MasterData.ProductService
                     return;
                 }
 
-                // Lấy category dictionary để tối ưu performance
-                var categoryDict = await _productServiceBll.GetCategoryDictAsync();
-                var dto = productService.ToDto(categoryDict);
-                BindDataToControls(dto);
+                BindDataToControls(productService);
                 
                 // Load hình ảnh từ bảng ProductImage nếu có
                 LoadProductImagesFromDatabase();
@@ -631,16 +669,15 @@ namespace MasterData.ProductService
         private Task SaveProductServiceAsync()
         {
             var dto = GetDataFromControls();
-            var entity = dto.ToEntity();
 
-            // Bước 1: Lưu sản phẩm/dịch vụ với ảnh thumbnail vào bảng ProductService
-            _productServiceBll.SaveOrUpdate(entity);
+            // SaveOrUpdate expects ProductServiceDto directly
+            _productServiceBll.SaveOrUpdate(dto);
 
             // Nếu có thay đổi ảnh và đã lưu thành công, cập nhật lại ảnh hiển thị
             if (_hasImageChanged && ThumbnailImagePictureEdit.Image != null)
             {
-                // Cập nhật lại ảnh hiển thị với ảnh đã lưu từ database
-                var savedProduct = _productServiceBll.GetById(entity.Id);
+                // GetById() already returns ProductServiceDto
+                var savedProduct = _productServiceBll.GetById(dto.Id);
                 if (savedProduct != null && savedProduct.ThumbnailImage != null)
                 {
                     var compressedImage = LoadThumbnailImage(savedProduct.ThumbnailImage.ToArray());

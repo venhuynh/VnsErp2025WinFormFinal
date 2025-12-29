@@ -1,11 +1,9 @@
+using DTO.DeviceAssetManagement;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Dal.DataContext;
-using DTO.DeviceAssetManagement;
-using DTO.Inventory.StockIn.NhapNoiBo;
 
 namespace DTO.Inventory.StockIn.NhapBaoHanh;
 

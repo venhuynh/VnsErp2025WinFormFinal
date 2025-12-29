@@ -636,19 +636,9 @@ namespace MasterData.ProductService
             try
             {
                 System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu gọi BLL.GetAllAsync()");
-                // Get all data
-                var entities = await _productServiceBll.GetAllAsync();
-                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã nhận được {entities?.Count ?? 0} entities từ BLL");
-
-                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu lấy categoryDict");
-                // Load tất cả categories một lần vào dictionary để tối ưu hiệu suất
-                var categoryDict = await _productServiceBll.GetCategoryDictAsync();
-                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã lấy được {categoryDict?.Count ?? 0} categories");
-
-                System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu convert sang DTO với categoryDict");
-                // Convert to DTOs với categoryDict (tối ưu hơn resolver functions)
-                var dtoList = entities.ToDtoList(categoryDict).ToList();
-                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã convert được {dtoList.Count} DTOs");
+                // GetAllAsync() already returns List<ProductServiceDto>
+                var dtoList = await _productServiceBll.GetAllAsync();
+                System.Diagnostics.Debug.WriteLine($"[Form] LoadDataAsyncWithoutSplash: Đã nhận được {dtoList?.Count ?? 0} DTOs từ BLL");
 
                 System.Diagnostics.Debug.WriteLine("[Form] LoadDataAsyncWithoutSplash: Bắt đầu bind vào grid");
                 BindGrid(dtoList);

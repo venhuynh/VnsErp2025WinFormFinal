@@ -147,6 +147,8 @@
     <Compile Include="DtoConverter\ProductServiceCategoryConverters.cs" />
     <Compile Include="DtoConverter\ProductServiceConverters.cs" />
     <Compile Include="DtoConverter\ProductVariantListConverters.cs" />
+    <Compile Include="DtoConverter\WarrantyCheckListDtoConverter.cs" />
+    <Compile Include="DtoConverter\WarrantyDtoConverter.cs" />
     <Compile Include="Exceptions\ConnectionException.cs" />
     <Compile Include="Exceptions\DataAccessException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

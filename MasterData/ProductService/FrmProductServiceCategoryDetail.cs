@@ -113,50 +113,47 @@ namespace MasterData.ProductService
         {
             try
             {
+                // GetCategoriesWithCounts() already returns List<ProductServiceCategoryDto>
                 var (categories, counts) = _productServiceCategoryBll.GetCategoriesWithCounts();
                 
-                // Chuyển đổi sang DTO với hierarchy
-                var dtos = categories.Select(c =>
+                // Calculate hierarchy properties manually on DTOs
+                var categoryDict = categories.ToDictionary(c => c.Id);
+                var dtoList = categories.Select(dto =>
                 {
-                    var count = counts.TryGetValue(c.Id, out var count1) ? count1 : 0;
-                    return c.ToDtoWithCount(count);
-                }).ToList();
+                    // Set ProductCount from counts dictionary
+                    dto.ProductCount = counts.TryGetValue(dto.Id, out var count) ? count : 0;
 
-                // Tính toán FullPath và Level cho hierarchical display
-                var entityDict = categories.ToDictionary(e => e.Id);
-                var dtoList = dtos.Select(dto =>
-                {
-                    var entity = categories.FirstOrDefault(e => e.Id == dto.Id);
-                    if (entity != null)
+                    // Calculate Level
+                    int level = 0;
+                    var current = dto;
+                    while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
                     {
-                        // Tính Level
-                        int level = 0;
-                        var current = entity;
-                        while (current.ParentId.HasValue && entityDict.ContainsKey(current.ParentId.Value))
-                        {
-                            level++;
-                            current = entityDict[current.ParentId.Value];
-                            if (level > 10) break; // Tránh infinite loop
-                        }
-                        dto.Level = level;
-
-                        // Tính FullPath
-                        var pathParts = new System.Collections.Generic.List<string> { entity.CategoryName };
-                        current = entity;
-                        while (current.ParentId.HasValue && entityDict.ContainsKey(current.ParentId.Value))
-                        {
-                            current = entityDict[current.ParentId.Value];
-                            pathParts.Insert(0, current.CategoryName);
-                            if (pathParts.Count > 10) break; // Tránh infinite loop
-                        }
-                        dto.FullPath = string.Join(" > ", pathParts);
-
-                        // Lấy tên parent category
-                        if (entity.ParentId.HasValue && entityDict.TryGetValue(entity.ParentId.Value, out var value))
-                        {
-                            dto.ParentCategoryName = value.CategoryName;
-                        }
+                        level++;
+                        current = categoryDict[current.ParentId.Value];
+                        if (level > 10) break; // Tránh infinite loop
                     }
+                    dto.Level = level;
+
+                    // Calculate FullPath
+                    var pathParts = new System.Collections.Generic.List<string> { dto.CategoryName };
+                    current = dto;
+                    while (current.ParentId.HasValue && categoryDict.ContainsKey(current.ParentId.Value))
+                    {
+                        current = categoryDict[current.ParentId.Value];
+                        pathParts.Insert(0, current.CategoryName);
+                        if (pathParts.Count > 10) break; // Tránh infinite loop
+                    }
+                    dto.FullPath = string.Join(" > ", pathParts);
+
+                    // Set ParentCategoryName
+                    if (dto.ParentId.HasValue && categoryDict.TryGetValue(dto.ParentId.Value, out var parent))
+                    {
+                        dto.ParentCategoryName = parent.CategoryName;
+                    }
+
+                    // Calculate HasChildren
+                    dto.HasChildren = categories.Any(c => c.ParentId == dto.Id);
+
                     return dto;
                 }).ToList();
 
@@ -204,6 +201,7 @@ namespace MasterData.ProductService
         {
             try
             {
+                // GetById() already returns ProductServiceCategoryDto
                 var category = _productServiceCategoryBll.GetById(_categoryId);
                 if (category == null)
                 {
@@ -212,8 +210,7 @@ namespace MasterData.ProductService
                     return;
                 }
 
-                var dto = category.ToDto();
-                BindDataToControls(dto);
+                BindDataToControls(category);
             }
             catch (Exception ex)
             {
@@ -429,10 +426,9 @@ namespace MasterData.ProductService
             try
             {
                 var dto = GetDataFromControls();
-                var entity = dto.ToEntity();
 
-                // Sử dụng SaveOrUpdate thay vì Insert/Update riêng biệt
-                _productServiceCategoryBll.SaveOrUpdate(entity);
+                // SaveOrUpdate expects ProductServiceCategoryDto directly
+                _productServiceCategoryBll.SaveOrUpdate(dto);
 
                 var message = IsEditMode ? "Cập nhật danh mục sản phẩm/dịch vụ thành công!" : "Thêm mới danh mục sản phẩm/dịch vụ thành công!";
                 ShowInfo(message);

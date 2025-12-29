@@ -182,3 +182,4 @@ namespace DTO.MasterData.CustomerPartner
             }
         }
     }
+}

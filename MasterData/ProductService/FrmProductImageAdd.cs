@@ -198,13 +198,8 @@ namespace MasterData.ProductService
             {
                 LogTextBoxHelper.AppendInfo(LogTextBox, "Đang tải danh sách sản phẩm/dịch vụ...");
 
-                // Get all data
-                var entities = await _productServiceBll.GetAllAsync();
-
-                // Convert to DTOs (without counting to improve performance)
-                var dtoList = entities.ToDtoList(
-                    categoryId => _productServiceBll.GetCategoryName(categoryId)
-                ).ToList();
+                // GetAllAsync() already returns List<ProductServiceDto>
+                var dtoList = await _productServiceBll.GetAllAsync();
                 
                 // Bind trực tiếp vào productServiceDtoBindingSource
                 productServiceDtoBindingSource.DataSource = dtoList;

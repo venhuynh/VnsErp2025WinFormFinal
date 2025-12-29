@@ -604,11 +604,10 @@ namespace MasterData.ProductService
         {
             try
             {
-                // Lấy dữ liệu Entity từ BLL (tuân thủ Bll -> Entity)
-                // Sử dụng GetAllAsync để tránh lỗi ObjectDisposedException
+                // GetAllAsync() already returns List<ProductVariantDto>
                 var variants = await _productVariantBll.GetAllAsync();
                 
-                // Convert Entity sang ProductVariantListDto trong GUI (tuân thủ Entity -> DTO)
+                // Convert ProductVariantDto to ProductVariantListDto
                 var variantListDtos = await ConvertToVariantListDtosAsync(variants);
                 
                 // Bind dữ liệu vào grid
@@ -629,15 +628,29 @@ namespace MasterData.ProductService
 
 
         /// <summary>
-        /// Convert Entity sang ProductVariantListDto (Async)
-        /// Sử dụng converter trong DTO và resize thumbnail images về kích thước cố định
+        /// Convert ProductVariantDto sang ProductVariantListDto (Async)
+        /// Resize thumbnail images về kích thước cố định
         /// </summary>
-        private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
+        private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariantDto> variants)
         {
             try
             {
-                // Sử dụng converter extension method từ ProductVariantListConverters
-                var result = variants.ToListDtoList();
+                // Manually convert ProductVariantDto to ProductVariantListDto
+                var result = variants.Select(v => new ProductVariantListDto
+                {
+                    Id = v.Id,
+                    ProductId = v.ProductId,
+                    VariantCode = v.VariantCode,
+                    VariantName = v.VariantName,
+                    SKU = v.SKU,
+                    Barcode = v.Barcode,
+                    Price = v.Price,
+                    Cost = v.Cost,
+                    StockQuantity = v.StockQuantity,
+                    IsActive = v.IsActive,
+                    ThumbnailImage = v.ThumbnailImage,
+                    // Add other properties as needed
+                }).ToList();
                 
                 // Resize tất cả thumbnail images về kích thước cố định (60x60 pixels)
                 const int thumbnailSize = 60;

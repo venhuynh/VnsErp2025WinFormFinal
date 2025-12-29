@@ -1,12 +1,9 @@
 using DTO.Inventory.InventoryManagement;
-using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DTO.Inventory.StockIn.NhapLapRap
 {

@@ -517,10 +517,9 @@ namespace MasterData.ProductService
                 return false;
             }
 
-            // Lưu xuống database qua BLL
-            var entity = _current.ToEntity();
-            _attributeBll.SaveOrUpdate(entity);
-            _current.Id = entity.Id; // Cập nhật ID nếu là bản ghi mới
+            // SaveOrUpdate expects AttributeDto directly
+            _attributeBll.SaveOrUpdate(_current);
+            // ID will be updated by BLL if it's a new record
 
             AttributeGridView.RefreshData();
             return true;
@@ -853,8 +852,8 @@ namespace MasterData.ProductService
         {
             try
             {
-                var entities = _attributeBll.GetAll();
-                var dtos = entities.ToDtoList();
+                // GetAll() already returns List<AttributeDto>
+                var dtos = _attributeBll.GetAll();
                 SetData(dtos);
             }
             catch (Exception ex)
