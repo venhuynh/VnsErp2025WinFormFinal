@@ -60,6 +60,7 @@
     <Compile Include="DeviceAssetManagement\WarrantyDto.cs" />
     <Compile Include="Inventory\Query\StockInOutImageDto.cs" />
     <Compile Include="Inventory\Report\StockInOutReportDto.cs" />
+    <Compile Include="Inventory\StockInOutForUIDto.cs" />
     <Compile Include="Inventory\StockIn\NhapBaoHanh\NhapBaoHanhDetailDto.cs" />
     <Compile Include="Inventory\StockIn\NhapBaoHanh\NhapBaoHanhMasterDto.cs" />
     <Compile Include="Inventory\StockIn\NhapHangThuongMai\NhapHangThuongMaiDetailDto.cs" />
