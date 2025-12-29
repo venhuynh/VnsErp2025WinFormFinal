@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Dal.DataContext;
 
 namespace DTO.MasterData.Company
 {
@@ -11,20 +10,15 @@ namespace DTO.MasterData.Company
     /// </summary>
     public class CompanyBranchLookupDto
     {
-        [DisplayName("ID")]
-        public Guid Id { get; set; }
+        [DisplayName("ID")] public Guid Id { get; set; }
 
-        [DisplayName("ID công ty")]
-        public Guid CompanyId { get; set; }
+        [DisplayName("ID công ty")] public Guid CompanyId { get; set; }
 
-        [DisplayName("Mã chi nhánh")]
-        public string BranchCode { get; set; }
+        [DisplayName("Mã chi nhánh")] public string BranchCode { get; set; }
 
-        [DisplayName("Tên chi nhánh")]
-        public string BranchName { get; set; }
+        [DisplayName("Tên chi nhánh")] public string BranchName { get; set; }
 
-        [DisplayName("Trạng thái hoạt động")]
-        public bool IsActive { get; set; }
+        [DisplayName("Trạng thái hoạt động")] public bool IsActive { get; set; }
 
         /// <summary>
         /// Thông tin chi nhánh dưới dạng HTML theo format DevExpress
@@ -60,45 +54,6 @@ namespace DTO.MasterData.Company
 
                 return html;
             }
-        }
-    }
-
-    /// <summary>
-    /// Converter cho CompanyBranch Entity và CompanyBranchLookupDto
-    /// </summary>
-    public static class CompanyBranchLookupConverters
-    {
-        /// <summary>
-        /// Chuyển đổi CompanyBranch Entity sang CompanyBranchLookupDto
-        /// DTO tối giản chỉ chứa thông tin cần thiết cho SearchLookUpEdit
-        /// </summary>
-        /// <param name="entity">CompanyBranch Entity</param>
-        /// <returns>CompanyBranchLookupDto</returns>
-        public static CompanyBranchLookupDto ToLookupDto(this CompanyBranch entity)
-        {
-            if (entity == null) return null;
-
-            return new CompanyBranchLookupDto
-            {
-                Id = entity.Id,
-                CompanyId = entity.CompanyId,
-                BranchCode = entity.BranchCode,
-                BranchName = entity.BranchName,
-                IsActive = entity.IsActive
-            };
-        }
-
-        /// <summary>
-        /// Chuyển đổi danh sách CompanyBranch Entity sang danh sách CompanyBranchLookupDto
-        /// </summary>
-        /// <param name="entities">Danh sách CompanyBranch Entity</param>
-        /// <returns>Danh sách CompanyBranchLookupDto</returns>
-        public static IEnumerable<CompanyBranchLookupDto> ToLookupDtos(
-            this IEnumerable<CompanyBranch> entities)
-        {
-            if (entities == null) return [];
-
-            return entities.Select(entity => entity.ToLookupDto());
         }
     }
 }

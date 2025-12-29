@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Common.Utils;
 
 namespace DTO.DeviceAssetManagement;
 
@@ -40,19 +41,6 @@ public class DeviceTransactionHistoryDto
     [Display(Order = 10)]
     [Required(ErrorMessage = "Loại thao tác không được để trống")]
     public DeviceOperationTypeEnum OperationType { get; set; }
-
-    /// <summary>
-    /// Tên loại thao tác (từ enum) - tự động lấy từ OperationType
-    /// </summary>
-    [DisplayName("Tên loại thao tác")]
-    [Display(Order = 11)]
-    public string OperationTypeName
-    {
-        get
-        {
-            return DeviceTransactionHistoryDtoHelper.GetOperationTypeName(OperationType);
-        }
-    }
 
     /// <summary>
     /// Ngày giờ thực hiện thao tác
@@ -199,14 +187,6 @@ public class DeviceTransactionHistoryDto
         {
             var html = string.Empty;
 
-            // Loại thao tác (nổi bật nhất)
-            var operationName = OperationTypeName;
-            var operationColor = GetOperationTypeColor();
-            if (!string.IsNullOrWhiteSpace(operationName))
-            {
-                html += $"<b><color='{operationColor}'>{operationName}</color></b>";
-            }
-
             // Ngày thực hiện
             if (OperationDate != default(DateTime))
             {
@@ -318,15 +298,6 @@ public class DeviceTransactionHistoryDto
         {
             ReferenceTypeName = null;
         }
-    }
-
-    /// <summary>
-    /// Lấy màu sắc tương ứng với loại thao tác (tên màu)
-    /// </summary>
-    /// <returns>Tên màu (green, blue, red, orange, purple, grey, black, v.v.)</returns>
-    private string GetOperationTypeColor()
-    {
-        return DeviceTransactionHistoryDtoHelper.GetOperationTypeColor(OperationType);
     }
 
     #endregion

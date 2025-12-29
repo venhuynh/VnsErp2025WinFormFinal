@@ -591,15 +591,49 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatNoiBo.XuatNoiBoDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto1.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.DepartmentDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.DepartmentLookupDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.EmployeeDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.PositionDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerContactDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerDetailDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerListDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerLookupDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.AttributeDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.AttributeDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.AttributeValueDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.AttributeValueDto1.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductImageDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductServiceCategoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductServiceDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductServiceDto1.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantAttributeDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantListDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantListDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.UnitOfMeasureDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.UnitOfMeasureDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.VariantAttributeDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.VariantAttributeDto1.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.AllowedMacAddressDto.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.ApplicationUserDto.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.ApplicationVersionDto.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.PermissionDto.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.RoleDto.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.RolePermissionDto.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.UserPermissionDto.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.UserPermissionSummaryDto.datasource" />
+    <None Include="Properties\DataSources\DTO.VersionAndUserManagementDto.UserRoleDto.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -610,9 +644,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="StockIn\InPhieu\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
       <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>

@@ -89,7 +89,7 @@ namespace Inventory.Query
             StockInOutImageDtoWinExplorerView.OptionsImageLoad.AsyncLoad = true;
             StockInOutImageDtoWinExplorerView.OptionsImageLoad.CacheThumbnails = true;
             
-            // Cấu hình group theo GroupCaption để nhóm các hình ảnh theo: StockInOutDate - LoaiNhapXuatKhoText - VocherNumber - CustomerInfo
+            // Cấu hình group theo GroupCaption để nhóm các hình ảnh theo: StockInOutDate - LoaiNhapXuatKhoText - VoucherNumber - CustomerInfo
             // Sử dụng ColumnSet.GroupColumn và GroupCount như trong demo
             StockInOutImageDtoWinExplorerView.ColumnSet.GroupColumn = colGroupCaption;
             StockInOutImageDtoWinExplorerView.GroupCount = 1;

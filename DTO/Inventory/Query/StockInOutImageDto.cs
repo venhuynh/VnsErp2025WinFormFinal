@@ -1,9 +1,8 @@
-﻿using System;
+﻿using DTO.Inventory.InventoryManagement;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using DTO.Inventory.InventoryManagement;
-using DTO.Inventory.StockIn;
 
 namespace DTO.Inventory.Query
 {
@@ -39,7 +38,7 @@ namespace DTO.Inventory.Query
 
         /// <summary>
         /// Số phiếu nhập/xuất kho
-        /// Map với: StockInOutMaster.VocherNumber
+        /// Map với: StockInOutMaster.VoucherNumber
         /// </summary>
         [DisplayName("Số phiếu")]
         [Display(Order = 1)]
@@ -106,7 +105,7 @@ namespace DTO.Inventory.Query
         }
 
         /// <summary>
-        /// Group Caption để nhóm các hình ảnh: "StockInOutDate - LoaiNhapXuatKhoText - VocherNumber - CustomerInfo"
+        /// Group Caption để nhóm các hình ảnh: "StockInOutDate - LoaiNhapXuatKhoText - VoucherNumber - CustomerInfo"
         /// Ví dụ: "01/12/2025 - Nhập hàng thương mại - NK001 - Công ty ABC"
         /// </summary>
         [DisplayName("Group Caption")]
@@ -129,7 +128,7 @@ namespace DTO.Inventory.Query
                     parts.Add(LoaiNhapXuatKhoText);
                 }
 
-                // VocherNumber
+                // VoucherNumber
                 if (!string.IsNullOrWhiteSpace(VocherNumber))
                 {
                     parts.Add(VocherNumber);

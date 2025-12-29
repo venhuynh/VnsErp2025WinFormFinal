@@ -207,7 +207,7 @@ namespace MasterData.ProductService
             // colVocherNumber
             // 
             this.colVocherNumber.Caption = "Số phiếu";
-            this.colVocherNumber.FieldName = "VocherNumber";
+            this.colVocherNumber.FieldName = "VoucherNumber";
             this.colVocherNumber.Name = "colVocherNumber";
             this.colVocherNumber.Visible = true;
             this.colVocherNumber.VisibleIndex = 2;

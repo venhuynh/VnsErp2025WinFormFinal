@@ -1,4 +1,3 @@
-using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,30 +19,23 @@ namespace DTO.VersionAndUserManagementDto
         [Required(ErrorMessage = "ID Người dùng không được để trống")]
         public Guid UserId { get; set; }
 
-        [DisplayName("Tên người dùng")]
-        public string UserName { get; set; }
+        [DisplayName("Tên người dùng")] public string UserName { get; set; }
 
         [DisplayName("ID Vai trò")]
         [Required(ErrorMessage = "ID Vai trò không được để trống")]
         public Guid RoleId { get; set; }
 
-        [DisplayName("Tên vai trò")]
-        public string RoleName { get; set; }
+        [DisplayName("Tên vai trò")] public string RoleName { get; set; }
 
-        [DisplayName("Mô tả vai trò")]
-        public string RoleDescription { get; set; }
+        [DisplayName("Mô tả vai trò")] public string RoleDescription { get; set; }
 
-        [DisplayName("Đang hoạt động")]
-        public bool IsActive { get; set; }
+        [DisplayName("Đang hoạt động")] public bool IsActive { get; set; }
 
-        [DisplayName("Ngày gán")]
-        public DateTime? AssignedDate { get; set; }
+        [DisplayName("Ngày gán")] public DateTime? AssignedDate { get; set; }
 
-        [DisplayName("Người gán")]
-        public Guid? AssignedBy { get; set; }
+        [DisplayName("Người gán")] public Guid? AssignedBy { get; set; }
 
-        [DisplayName("Tên người gán")]
-        public string AssignedByName { get; set; }
+        [DisplayName("Tên người gán")] public string AssignedByName { get; set; }
 
         /// <summary>
         /// Thông tin UserRole dưới dạng HTML theo format DevExpress
@@ -98,131 +90,6 @@ namespace DTO.VersionAndUserManagementDto
 
                 return html;
             }
-        }
-    }
-
-    /// <summary>
-    /// Extension methods cho UserRole entities và DTOs
-    /// </summary>
-    public static class UserRoleDtoExtensions
-    {
-        /// <summary>
-        /// Convert UserRole entity to UserRoleDto
-        /// </summary>
-        public static UserRoleDto ToDto(this UserRole entity)
-        {
-            if (entity == null)
-                return null;
-
-            var dto = new UserRoleDto
-            {
-                Id = entity.Id,
-                UserId = entity.UserId,
-                RoleId = entity.RoleId,
-                IsActive = entity.IsActive,
-                AssignedDate = entity.AssignedDate,
-                AssignedBy = entity.AssignedBy
-            };
-
-            // Load thông tin User
-            try
-            {
-                var user = entity.ApplicationUser;
-                if (user != null)
-                {
-                    dto.UserName = user.UserName;
-                }
-            }
-            catch
-            {
-                // Ignore nếu không thể load
-            }
-
-            // Load thông tin Role
-            try
-            {
-                var role = entity.Role;
-                if (role != null)
-                {
-                    dto.RoleName = role.Name;
-                    dto.RoleDescription = role.Description;
-                }
-            }
-            catch
-            {
-                // Ignore nếu không thể load
-            }
-
-            // Load thông tin AssignedBy
-            if (entity.AssignedBy.HasValue)
-            {
-                try
-                {
-                    var assignedByUser = entity.ApplicationUser1; // Navigation property từ AssignedBy
-                    if (assignedByUser != null)
-                    {
-                        dto.AssignedByName = assignedByUser.UserName;
-                    }
-                }
-                catch
-                {
-                    // Ignore nếu không thể load
-                }
-            }
-
-            return dto;
-        }
-
-        /// <summary>
-        /// Convert UserRoleDto to UserRole entity
-        /// </summary>
-        public static UserRole ToEntity(this UserRoleDto dto, UserRole existingEntity = null)
-        {
-            if (dto == null)
-                return null;
-
-            UserRole entity;
-            if (existingEntity != null)
-            {
-                entity = existingEntity;
-            }
-            else
-            {
-                entity = new UserRole();
-                if (dto.Id != Guid.Empty)
-                {
-                    entity.Id = dto.Id;
-                }
-            }
-
-            entity.UserId = dto.UserId;
-            entity.RoleId = dto.RoleId;
-            entity.IsActive = dto.IsActive;
-            entity.AssignedBy = dto.AssignedBy;
-
-            return entity;
-        }
-
-        /// <summary>
-        /// Convert collection of UserRole entities to UserRoleDto list
-        /// </summary>
-        public static List<UserRoleDto> ToDtos(this IEnumerable<UserRole> entities)
-        {
-            if (entities == null)
-                return new List<UserRoleDto>();
-
-            return entities.Select(ToDto).ToList();
-        }
-
-        /// <summary>
-        /// Convert collection of UserRoleDto to UserRole entities list
-        /// </summary>
-        public static List<UserRole> ToEntities(this IEnumerable<UserRoleDto> dtos)
-        {
-            if (dtos == null)
-                return new List<UserRole>();
-
-            return dtos.Select(dto => dto.ToEntity()).ToList();
         }
     }
 }

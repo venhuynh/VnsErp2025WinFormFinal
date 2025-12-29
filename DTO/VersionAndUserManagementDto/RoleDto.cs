@@ -1,4 +1,3 @@
-using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,26 +28,19 @@ namespace DTO.VersionAndUserManagementDto
         [Description("Vai trò hệ thống không thể xóa")]
         public bool IsSystemRole { get; set; }
 
-        [DisplayName("Đang hoạt động")]
-        public bool IsActive { get; set; }
+        [DisplayName("Đang hoạt động")] public bool IsActive { get; set; }
 
-        [DisplayName("Ngày tạo")]
-        public DateTime? CreatedDate { get; set; }
+        [DisplayName("Ngày tạo")] public DateTime? CreatedDate { get; set; }
 
-        [DisplayName("Người tạo")]
-        public Guid? CreatedBy { get; set; }
+        [DisplayName("Người tạo")] public Guid? CreatedBy { get; set; }
 
-        [DisplayName("Tên người tạo")]
-        public string CreatedByName { get; set; }
+        [DisplayName("Tên người tạo")] public string CreatedByName { get; set; }
 
-        [DisplayName("Ngày cập nhật")]
-        public DateTime? ModifiedDate { get; set; }
+        [DisplayName("Ngày cập nhật")] public DateTime? ModifiedDate { get; set; }
 
-        [DisplayName("Người cập nhật")]
-        public Guid? ModifiedBy { get; set; }
+        [DisplayName("Người cập nhật")] public Guid? ModifiedBy { get; set; }
 
-        [DisplayName("Tên người cập nhật")]
-        public string ModifiedByName { get; set; }
+        [DisplayName("Tên người cập nhật")] public string ModifiedByName { get; set; }
 
         [DisplayName("Số lượng người dùng")]
         [Description("Số lượng người dùng có vai trò này")]
@@ -111,144 +103,6 @@ namespace DTO.VersionAndUserManagementDto
 
                 return html;
             }
-        }
-    }
-
-    /// <summary>
-    /// Extension methods cho Role entities và DTOs
-    /// </summary>
-    public static class RoleDtoExtensions
-    {
-        /// <summary>
-        /// Convert Role entity to RoleDto
-        /// </summary>
-        public static RoleDto ToDto(this Role entity)
-        {
-            if (entity == null)
-                return null;
-
-            var dto = new RoleDto
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description,
-                IsSystemRole = entity.IsSystemRole,
-                IsActive = entity.IsActive,
-                CreatedDate = entity.CreatedDate,
-                CreatedBy = entity.CreatedBy,
-                ModifiedDate = entity.ModifiedDate,
-                ModifiedBy = entity.ModifiedBy
-            };
-
-            // Load thông tin CreatedBy nếu có
-            if (entity.CreatedBy.HasValue)
-            {
-                try
-                {
-                    var createdByUser = entity.ApplicationUser; // Navigation property từ CreatedBy
-                    if (createdByUser != null)
-                    {
-                        dto.CreatedByName = createdByUser.UserName;
-                    }
-                }
-                catch
-                {
-                    // Ignore nếu không thể load
-                }
-            }
-
-            // Load thông tin ModifiedBy nếu có
-            if (entity.ModifiedBy.HasValue)
-            {
-                try
-                {
-                    var modifiedByUser = entity.ApplicationUser1; // Navigation property từ ModifiedBy
-                    if (modifiedByUser != null)
-                    {
-                        dto.ModifiedByName = modifiedByUser.UserName;
-                    }
-                }
-                catch
-                {
-                    // Ignore nếu không thể load
-                }
-            }
-
-            // Đếm số lượng UserRole
-            try
-            {
-                dto.UserCount = entity.UserRoles?.Count(ur => ur.IsActive) ?? 0;
-            }
-            catch
-            {
-                dto.UserCount = 0;
-            }
-
-            // Đếm số lượng RolePermission
-            try
-            {
-                dto.PermissionCount = entity.RolePermissions?.Count(rp => rp.IsGranted) ?? 0;
-            }
-            catch
-            {
-                dto.PermissionCount = 0;
-            }
-
-            return dto;
-        }
-
-        /// <summary>
-        /// Convert RoleDto to Role entity
-        /// </summary>
-        public static Role ToEntity(this RoleDto dto, Role existingEntity = null)
-        {
-            if (dto == null)
-                return null;
-
-            Role entity;
-            if (existingEntity != null)
-            {
-                entity = existingEntity;
-            }
-            else
-            {
-                entity = new Role();
-                if (dto.Id != Guid.Empty)
-                {
-                    entity.Id = dto.Id;
-                }
-            }
-
-            entity.Name = dto.Name;
-            entity.Description = dto.Description;
-            entity.IsSystemRole = dto.IsSystemRole;
-            entity.IsActive = dto.IsActive;
-            entity.ModifiedDate = DateTime.Now;
-            entity.ModifiedBy = dto.ModifiedBy;
-
-            return entity;
-        }
-
-        /// <summary>
-        /// Convert collection of Role entities to RoleDto list
-        /// </summary>
-        public static List<RoleDto> ToDtos(this IEnumerable<Role> entities)
-        {
-            if (entities == null)
-                return new List<RoleDto>();
-
-            return entities.Select(ToDto).ToList();
-        }
-
-        /// <summary>
-        /// Convert collection of RoleDto to Role entities list
-        /// </summary>
-        public static List<Role> ToEntities(this IEnumerable<RoleDto> dtos)
-        {
-            if (dtos == null)
-                return new List<Role>();
-
-            return dtos.Select(dto => dto.ToEntity()).ToList();
         }
     }
 }

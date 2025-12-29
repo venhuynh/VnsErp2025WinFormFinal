@@ -1,12 +1,10 @@
-using Dal.DataContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Xml.Linq;
-using Attribute = Dal.DataContext.Attribute;
+
 
 namespace DTO.MasterData.ProductService;
 
@@ -232,110 +230,4 @@ public class AttributeValueDto : INotifyPropertyChanged
         return GetDisplay();
     }
     #endregion
-}
-
-/// <summary>
-/// Converter giữa AttributeValue entity và AttributeValueDto
-/// </summary>
-public static class AttributeValueConverters
-{
-    /// <summary>
-    /// Chuyển đổi AttributeValue entity sang DTO
-    /// </summary>
-    public static AttributeValueDto ToDto(this AttributeValue entity)
-    {
-        if (entity == null) return null;
-        return new AttributeValueDto
-        {
-            Id = entity.Id,
-            AttributeId = entity.AttributeId,
-            Value = entity.Value,
-            AttributeName = entity.Attribute?.Name,
-            AttributeDataType = entity.Attribute?.DataType,
-            AttributeDescription = entity.Attribute?.Description
-        };
-    }
-
-    /// <summary>
-    /// Chuyển đổi AttributeValue sang DTO với truyền sẵn thông tin Attribute để tránh lazy-load khi DataContext đã dispose
-    /// </summary>
-    public static AttributeValueDto ToDto(this AttributeValue entity, string attributeName)
-    {
-        if (entity == null) return null;
-        return new AttributeValueDto
-        {
-            Id = entity.Id,
-            AttributeId = entity.AttributeId,
-            Value = entity.Value,
-            AttributeName = attributeName ?? entity.Attribute?.Name,
-            AttributeDataType = entity.Attribute?.DataType,
-            AttributeDescription = entity.Attribute?.Description
-        };
-    }
-
-    /// <summary>
-    /// Chuyển đổi AttributeValue sang DTO với truyền sẵn đầy đủ thông tin Attribute để tránh lazy-load khi DataContext đã dispose
-    /// </summary>
-    public static AttributeValueDto ToDto(this AttributeValue entity, Attribute attribute)
-    {
-        if (entity == null) return null;
-        return new AttributeValueDto
-        {
-            Id = entity.Id,
-            AttributeId = entity.AttributeId,
-            Value = entity.Value,
-            AttributeName = attribute?.Name,
-            AttributeDataType = attribute?.DataType,
-            AttributeDescription = attribute?.Description
-        };
-    }
-
-    /// <summary>
-    /// Chuyển đổi danh sách AttributeValue sang danh sách DTO
-    /// </summary>
-    public static List<AttributeValueDto> ToDtoList(this IEnumerable<AttributeValue> entities)
-    {
-        if (entities == null) return new List<AttributeValueDto>();
-        return entities.Select(e => e.ToDto()).ToList();
-    }
-
-    /// <summary>
-    /// Chuyển đổi danh sách AttributeValue sang danh sách DTO với dictionary Attribute để tránh lazy-load
-    /// </summary>
-    /// <param name="entities">Danh sách AttributeValue entities</param>
-    /// <param name="attributeDictionary">Dictionary chứa Attribute theo AttributeId để tránh lazy-load</param>
-    public static List<AttributeValueDto> ToDtoList(this IEnumerable<AttributeValue> entities, Dictionary<Guid, Attribute> attributeDictionary)
-    {
-        if (entities == null) return new List<AttributeValueDto>();
-        return entities.Select(e =>
-        {
-            var attribute = attributeDictionary?.ContainsKey(e.AttributeId) == true 
-                ? attributeDictionary[e.AttributeId] 
-                : null;
-            return e.ToDto(attribute);
-        }).ToList();
-    }
-
-    /// <summary>
-    /// Chuyển đổi AttributeValueDto sang Entity
-    /// </summary>
-    public static AttributeValue ToEntity(this AttributeValueDto dto)
-    {
-        if (dto == null) return null;
-        return new AttributeValue
-        {
-            Id = dto.Id,
-            AttributeId = dto.AttributeId,
-            Value = dto.Value
-        };
-    }
-
-    /// <summary>
-    /// Chuyển đổi danh sách AttributeValueDto sang danh sách Entity
-    /// </summary>
-    public static List<AttributeValue> ToEntityList(this IEnumerable<AttributeValueDto> dtos)
-    {
-        if (dtos == null) return new List<AttributeValue>();
-        return dtos.Select(d => d.ToEntity()).ToList();
-    }
 }

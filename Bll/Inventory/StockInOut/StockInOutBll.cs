@@ -1,17 +1,12 @@
-using Bll.Inventory.InventoryManagement;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.Inventory.StockIn;
-using Dal.DataContext;
-using DTO.DeviceAssetManagement;
-using DTO.Inventory.InventoryManagement;
+using Dal.DtoConverter.Inventory;
+using DTO.Inventory;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Bll.Inventory.StockInOut
 {
@@ -87,8 +82,34 @@ namespace Bll.Inventory.StockInOut
 
         #region Retrieve
 
-        
+        /// <summary>
+        /// Lấy thông tin master phiếu nhập/xuất kho theo ID và chuyển đổi sang DTO
+        /// </summary>
+        /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+        /// <returns>StockInOutMasterForUIDto nếu tìm thấy, null nếu không tìm thấy</returns>
+        public StockInOutMasterForUIDto GetStockInOutMasterForUIDtoById(Guid stockInOutMasterId)
+        {
+            try
+            {
+                if (stockInOutMasterId == Guid.Empty)
+                {
+                    _logger?.Warning("GetMasterById: stockInOutMasterId là Guid.Empty");
+                    return null;
+                }
+
+                // Lấy entity từ repository
+                return GetDataAccess().GetStockInOutMasterForUIDtoById(stockInOutMasterId);
+                
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"GetMasterById: Lỗi lấy thông tin master: {ex.Message}", ex);
+                throw;
+            }
+        }
 
         #endregion
+
+
     }
 }

@@ -19648,7 +19648,7 @@ namespace Dal.DataContext
 					this.OnVocherNumberChanging(value);
 					this.SendPropertyChanging();
 					this._VocherNumber = value;
-					this.SendPropertyChanged("VocherNumber");
+					this.SendPropertyChanged("VoucherNumber");
 					this.OnVocherNumberChanged();
 				}
 			}

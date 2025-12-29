@@ -19,11 +19,11 @@ namespace DTO.Inventory
         /// <summary>
         /// Số phiếu xuất kho
         /// </summary>
-        [DisplayName("Số phiếu xuất")]
+        [DisplayName("Số phiếu")]
         [Display(Order = 1)]
         [Required(ErrorMessage = "Số phiếu xuất không được để trống")]
         [StringLength(50, ErrorMessage = "Số phiếu xuất không được vượt quá 50 ký tự")]
-        public string StockOutNumber { get; set; }
+        public string VoucherNumber { get; set; }
 
         /// <summary>
         /// Ngày xuất kho

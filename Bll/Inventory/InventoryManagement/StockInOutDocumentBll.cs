@@ -225,14 +225,14 @@ namespace Bll.Inventory.InventoryManagement
 
             if (stockInOutMasterId.HasValue)
             {
-                // Lấy thông tin StockInOutMaster để lấy VocherNumber
+                // Lấy thông tin StockInOutMaster để lấy VoucherNumber
                 var dataAccess = GetDataAccess();
                 var existingDocuments = dataAccess.GetByStockInOutMasterId(stockInOutMasterId.Value);
                 
                 // Tính số thứ tự file (bắt đầu từ 1)
                 var sequenceNumber = existingDocuments.Count + 1;
                 
-                // Lấy VocherNumber từ StockInOutMaster
+                // Lấy VoucherNumber từ StockInOutMaster
                 // Thử lấy từ existingDocuments trước (nếu có document đã load StockInOutMaster)
                 string vocherNumber = "P";
                 try
@@ -255,7 +255,7 @@ namespace Bll.Inventory.InventoryManagement
                 }
                 catch (Exception ex)
                 {
-                    _logger.Warning($"Không thể lấy VocherNumber từ StockInOutMaster: {ex.Message}");
+                    _logger.Warning($"Không thể lấy VoucherNumber từ StockInOutMaster: {ex.Message}");
                 }
                 
                 // Tạo tên file: VocherNumber_SequenceNumber.extension

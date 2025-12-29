@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using DTO.Inventory.StockIn;
 
 namespace DTO.Inventory.InventoryManagement;
 
@@ -44,7 +43,7 @@ public class StockInOutDocumentDto
 
     /// <summary>
     /// Số phiếu nhập/xuất kho
-    /// Map với: StockInOutMaster.VocherNumber
+    /// Map với: StockInOutMaster.VoucherNumber
     /// </summary>
     [DisplayName("Số phiếu")]
     [Display(Order = 3)]

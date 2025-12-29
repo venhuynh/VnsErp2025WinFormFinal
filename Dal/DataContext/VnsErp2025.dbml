@@ -813,7 +813,7 @@
     <Type Name="StockInOutMaster">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="StockInOutDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="VocherNumber" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="VoucherNumber" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="StockInOutType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="VoucherStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="WarehouseId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />

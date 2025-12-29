@@ -113,10 +113,10 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
     #region Public Methods
 
     /// <summary>
-    /// Lấy VocherNumber từ StockInOutMaster theo ID
+    /// Lấy VoucherNumber từ StockInOutMaster theo ID
     /// </summary>
     /// <param name="id">ID của StockInOutMaster</param>
-    /// <returns>VocherNumber hoặc null nếu không tìm thấy</returns>
+    /// <returns>VoucherNumber hoặc null nếu không tìm thấy</returns>
     public string GetVocherNumber(Guid id)
     {
         using var context = CreateNewContext();
@@ -127,7 +127,7 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
         }
         catch (Exception ex)
         {
-            _logger.Error($"GetVocherNumber: Lỗi lấy VocherNumber cho ID={id}: {ex.Message}", ex);
+            _logger.Error($"GetVocherNumber: Lỗi lấy VoucherNumber cho ID={id}: {ex.Message}", ex);
             throw;
         }
     }
