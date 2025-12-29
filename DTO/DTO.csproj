@@ -60,35 +60,11 @@
     <Compile Include="DeviceAssetManagement\WarrantyDto.cs" />
     <Compile Include="Inventory\Query\StockInOutImageDto.cs" />
     <Compile Include="Inventory\Report\StockInOutReportDto.cs" />
+    <Compile Include="Inventory\StockInOutDetailForUIDto.cs" />
     <Compile Include="Inventory\StockInOutMasterForUIDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapBaoHanh\NhapBaoHanhDetailDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapBaoHanh\NhapBaoHanhMasterDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapHangThuongMai\NhapHangThuongMaiDetailDto.cs" />
     <Compile Include="DeviceAssetManagement\DeviceIdentifierEnum.cs" />
     <Compile Include="DeviceAssetManagement\DeviceDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapLapRap\NhapLapRapDetailDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapLapRap\NhapLapRapMasterDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapLuuChuyenKho\NhapLuuChuyenKhoDetailDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapLuuChuyenKho\NhapLuuChuyenKhoMasterDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapNoiBo\NhapNoiBoDetailDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapNoiBo\NhapNoiBoMasterDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapThietBiMuon\NhapThietBiMuonDetailDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapThietBiMuon\NhapThietBiMuonMasterDto.cs" />
     <Compile Include="Inventory\InventoryManagement\InventoryEnums.cs" />
-    <Compile Include="Inventory\StockIn\NhapHangThuongMai\XuatHangThuongMaiMasterDto.cs" />
-    <Compile Include="Inventory\StockIn\NhapHangThuongMai\StockInReportDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatBaoHanh\XuatBaoHanhDetailDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatBaoHanh\XuatBaoHanhMasterDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatHangThuongMai\XuatHangThuongMaiDetailDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatHangThuongMai\XuatHangThuongMaiMasterDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatLapRap\XuatLapRapDetailDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatLapRap\XuatLapRapMasterDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoDetailDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatLuuChuyenKho\XuatLuuChuyenKhoMasterDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatNoiBo\XuatNoiBoDetailDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatNoiBo\XuatNoiBoMasterDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatThietBiChoThueMuon\XuatThietBiChoThueMuonDetailDto.cs" />
-    <Compile Include="Inventory\StockOut\XuatThietBiChoThueMuon\XuatThietBiChoThueMuonMasterDto.cs" />
     <Compile Include="MasterData\Company\CompanyBranchDto.cs" />
     <Compile Include="MasterData\Company\CompanyBranchLookupDto.cs" />
     <Compile Include="MasterData\Company\CompanyDto.cs" />
@@ -124,9 +100,6 @@
     <Compile Include="VersionAndUserManagementDto\UserPermissionDto.cs" />
     <Compile Include="VersionAndUserManagementDto\UserPermissionSummaryDto.cs" />
     <Compile Include="VersionAndUserManagementDto\UserRoleDto.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Inventory\StockIn\README_STOCK_IN_HISTORY_QUERY.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
