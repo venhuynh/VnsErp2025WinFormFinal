@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bll.Common.ImageStorage;
 using Bll.Common.ImageService;
+using Bll.MasterData.ProductServiceBll;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;

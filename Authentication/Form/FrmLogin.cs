@@ -6,6 +6,7 @@ using BllValidation = Common.Validation;
 using DevExpress.XtraEditors.DXErrorProvider;
 using System;
 using System.Windows.Forms;
+using DTO.VersionAndUserManagementDto;
 
 
 namespace Authentication.Form

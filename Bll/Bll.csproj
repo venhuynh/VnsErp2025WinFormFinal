@@ -71,8 +71,6 @@
     <Compile Include="Common\ApplicationVersionBll.cs" />
     <Compile Include="Common\ImageService\ImageCleanupService.cs" />
     <Compile Include="Common\ImageService\ImageCompressionService.cs" />
-    <Compile Include="Common\ImageService\IImageService.cs" />
-    <Compile Include="Common\ImageService\ImageService.cs" />
     <Compile Include="Common\ImageService\ImageServiceConfiguration.cs" />
     <Compile Include="Common\ImageService\ImageValidationService.cs" />
     <Compile Include="Common\ImageStorage\FileCategory.cs" />

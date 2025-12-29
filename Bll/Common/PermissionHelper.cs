@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dal.DataContext;
+using DTO.VersionAndUserManagementDto;
 
 namespace Bll.Common;
 
@@ -164,22 +164,24 @@ public static class PermissionHelper
     /// <summary>
     /// Lấy tất cả quyền của user
     /// </summary>
-    public static List<Permission> GetUserPermissions(Guid userId)
+    public static List<PermissionDto> GetUserPermissions(Guid userId)
     {
         if (userId == Guid.Empty)
-            return new List<Permission>();
+            return new List<PermissionDto>();
 
+        // GetUserPermissions() already returns List<PermissionDto>
         return GetPermissionBll().GetUserPermissions(userId);
     }
 
     /// <summary>
     /// Lấy quyền của user theo entity
     /// </summary>
-    public static List<Permission> GetUserPermissionsByEntity(Guid userId, string entityName)
+    public static List<PermissionDto> GetUserPermissionsByEntity(Guid userId, string entityName)
     {
         if (userId == Guid.Empty || string.IsNullOrWhiteSpace(entityName))
-            return new List<Permission>();
+            return new List<PermissionDto>();
 
+        // GetUserPermissionsByEntity() already returns List<PermissionDto>
         return GetPermissionBll().GetUserPermissionsByEntity(userId, entityName);
     }
 
