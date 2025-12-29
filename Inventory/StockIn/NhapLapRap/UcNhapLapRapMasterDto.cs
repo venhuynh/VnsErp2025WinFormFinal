@@ -8,6 +8,7 @@ using DTO.Inventory;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockIn.NhapLapRap
 {
@@ -412,7 +413,7 @@ namespace Inventory.StockIn.NhapLapRap
                 {
                     // Thông tin cơ bản
                     Id = _stockInOutMasterId,
-                    VocherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
+                    VoucherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
                     StockOutDate = StockInDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
                     LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapSanPhamLapRap,
                     TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
@@ -481,7 +482,7 @@ namespace Inventory.StockIn.NhapLapRap
 
                 // Set dữ liệu cho các control đơn giản (không cần datasource)
                 StockInDateDateEdit.EditValue = masterDto.StockOutDate;
-                StockInNumberTextEdit.EditValue = masterDto.VocherNumber;
+                StockInNumberTextEdit.EditValue = masterDto.VoucherNumber;
                 
                 NotesTextEdit.EditValue = masterDto.Notes;
                 NguoiNhanHangTextEdit.EditValue = masterDto.NguoiNhanHang;

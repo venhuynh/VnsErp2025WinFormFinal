@@ -8,6 +8,7 @@ using DTO.Inventory;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockIn.NhapLuuChuyenKho;
 
@@ -85,7 +86,7 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
             // Setup Warehouse Stock-In SearchLookUpEdit
             WarehouseStockInNameSearchLookupEdit.Properties.DataSource = companyBranchDtoBindingSource;
             WarehouseStockInNameSearchLookupEdit.Properties.ValueMember = "Id";
-            WarehouseStockInNameSearchLookupEdit.Properties.DisplayMember = "BranchInfoHtml";
+            WarehouseStockInNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
             WarehouseStockInNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             WarehouseStockInNameSearchLookupEdit.Properties.PopupView = CompanyBranchDtoSearchLookUpEdit1View;
 
@@ -503,7 +504,7 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
             {
                 // Thông tin cơ bản
                 Id = _stockInOutMasterId,
-                VocherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
+                VoucherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
                 StockOutDate = StockInDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
                 LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapLuuChuyenKho,
                 TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
@@ -581,7 +582,7 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
 
             // Set dữ liệu cho các control đơn giản (không cần datasource)
             StockInDateDateEdit.EditValue = masterDto.StockOutDate;
-            StockInNumberTextEdit.EditValue = masterDto.VocherNumber;
+            StockInNumberTextEdit.EditValue = masterDto.VoucherNumber;
             
             NotesTextEdit.EditValue = masterDto.Notes;
             NguoiNhanHangTextEdit.EditValue = masterDto.NguoiNhanHang;

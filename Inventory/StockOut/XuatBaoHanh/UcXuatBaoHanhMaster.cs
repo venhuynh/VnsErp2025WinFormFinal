@@ -1,22 +1,14 @@
 ﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.StockInOut;
 using Bll.MasterData.CompanyBll;
 using Bll.MasterData.CustomerBll;
 using Common;
 using Common.Utils;
-using Dal.DataContext;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.DXErrorProvider;
-using DTO.Inventory.StockIn;
-using DTO.Inventory.StockOut.XuatBaoHanh;
-using DTO.MasterData.Company;
-using DTO.MasterData.CustomerPartner;
+using DTO.Inventory;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
 using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockOut.XuatBaoHanh;
@@ -24,11 +16,6 @@ namespace Inventory.StockOut.XuatBaoHanh;
 public partial class UcXuatBaoHanhMaster : XtraUserControl
 {
     #region ========== KHAI BÁO BIẾN ==========
-
-    /// <summary>
-    /// StockInOutMaster entity
-    /// </summary>
-    private StockInOutMaster _stockInMaster;
 
     /// <summary>
     /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
@@ -41,26 +28,20 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     private readonly BusinessPartnerSiteBll _businessPartnerSiteBll = new();
 
     /// <summary>
-    /// Business Logic Layer cho StockIn (dùng để lấy master entity)
+    /// Business Logic Layer cho StockIn (dùng để lấy master DTO)
     /// </summary>
-    private readonly StockInOutBll _stockInBll = new();
+    private readonly StockInOutBll _stockInOutBll = new();
 
     /// <summary>
     /// Business Logic Layer cho StockInOutMaster (dùng để tạo số phiếu)
     /// </summary>
     private readonly StockInOutMasterBll _stockInOutMasterBll = new();
 
-    /// <summary>
-    /// Flag đánh dấu Warehouse datasource đã được load chưa
-    /// </summary>
-    private bool _isWarehouseDataSourceLoaded;
-
-    /// <summary>
-    /// Flag đánh dấu Supplier datasource đã được load chưa
-    /// </summary>
-    private bool _isSupplierDataSourceLoaded;
-
     private Guid _stockInOutMasterId = Guid.Empty;
+
+    private Guid _selectedWarehouseId = Guid.Empty;
+
+    private Guid _selectedPartnerSiteId = Guid.Empty;
 
     #endregion
 
@@ -83,15 +64,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Khởi tạo Entity
-            InitializeEntity();
-
-
             // Setup SearchLookUpEdit cho Warehouse
-            //SetupLookupEdits();
-
-            // Đánh dấu các trường bắt buộc
-            MarkRequiredFields();
+            SetupLookupEdits();
 
             // Setup events
             SetupEvents();
@@ -105,31 +79,6 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
         {
             ShowError(ex, "Lỗi khởi tạo control");
         }
-    }
-
-    /// <summary>
-    /// Khởi tạo Entity
-    /// </summary>
-    private void InitializeEntity()
-    {
-        _stockInMaster = new StockInOutMaster
-        {
-            Id = Guid.Empty,
-            VocherNumber = null,
-            StockInOutDate = DateTime.Now,
-            StockInOutType = (int)LoaiNhapXuatKhoEnum.XuatHangBaoHanh,
-            VoucherStatus = (int)TrangThaiPhieuNhapEnum.TaoMoi,
-            WarehouseId = Guid.Empty,
-            PurchaseOrderId = null,
-            PartnerSiteId = null,
-            Notes = null,
-            TotalQuantity = 0,
-            TotalAmount = 0,
-            TotalVat = 0,
-            TotalAmountIncludedVat = 0,
-            NguoiNhanHang = null,
-            NguoiGiaoHang = null
-        };
     }
 
 
@@ -161,47 +110,6 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
         }
     }
 
-    /// <summary>
-    /// Đánh dấu các trường bắt buộc
-    /// </summary>
-    private void MarkRequiredFields()
-    {
-        try
-        {
-            RequiredFieldHelper.MarkRequiredFields(
-                this,
-                typeof(XuatBaoHanhMasterDto),
-                nullValuePrompt: "Bắt buộc nhập",
-                logger: (msg, ex) => System.Diagnostics.Debug.WriteLine($"{msg}: {ex?.Message}")
-            );
-
-            // Xử lý đặc biệt cho WarehouseId (control là WarehouseNameSearchLookupEdit)
-            // Vì RequiredFieldHelper có thể không tự động match WarehouseId với WarehouseNameSearchLookupEdit
-            if (ItemForWarehouseName != null && !ItemForWarehouseName.Text.Contains("*"))
-            {
-                ItemForWarehouseName.AllowHtmlStringInCaption = true;
-                var baseCaption = string.IsNullOrWhiteSpace(ItemForWarehouseName.Text)
-                    ? "Kho xuất"
-                    : ItemForWarehouseName.Text;
-                ItemForWarehouseName.Text = baseCaption + @" <color=red>*</color>";
-            }
-
-            // Xử lý đặc biệt cho SupplierId (control là SupplierNameSearchLookupEdit)
-            // Vì trong DTO có Required với message: "Nhà cung cấp hoặc khách hàng không được để trống"
-            if (ItemForSupplierName != null && !ItemForSupplierName.Text.Contains("*"))
-            {
-                ItemForSupplierName.AllowHtmlStringInCaption = true;
-                var baseCaption = string.IsNullOrWhiteSpace(ItemForSupplierName.Text)
-                    ? "Khách hàng"
-                    : ItemForSupplierName.Text;
-                ItemForSupplierName.Text = baseCaption + @" <color=red>*</color>";
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi đánh dấu trường bắt buộc");
-        }
-    }
 
     /// <summary>
     /// Thiết lập sự kiện
@@ -221,12 +129,6 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             SupplierNameSearchLookupEdit.EditValueChanged += SupplierNameTextEdit_EditValueChanged;
 
             StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
-
-            StockInNumberTextEdit.EditValueChanged += StockInNumberTextEdit_EditValueChanged;
-
-            // Sự kiện của NguoiNhanHangTextEdit và NguoiGiaoHangTextEdit
-            NguoiNhanHangTextEdit.EditValueChanged += NguoiNhanHangTextEdit_EditValueChanged;
-            NguoiGiaoHangTextEdit.EditValueChanged += NguoiGiaoHangTextEdit_EditValueChanged;
         }
         catch (Exception ex)
         {
@@ -238,15 +140,7 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Chỉ load nếu chưa load hoặc datasource rỗng
-            if (!_isSupplierDataSourceLoaded ||
-                businessPartnerSiteListDtoBindingSource.DataSource == null ||
-                (businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> list &&
-                 list.Count == 0))
-            {
-                await LoadSupplierDataSourceAsync();
-                _isSupplierDataSourceLoaded = true;
-            }
+            await LoadSupplierDataSourceAsync();
         }
         catch (Exception ex)
         {
@@ -258,14 +152,7 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Chỉ load nếu chưa load hoặc datasource rỗng
-            if (_isWarehouseDataSourceLoaded &&
-                companyBranchDtoBindingSource.DataSource != null &&
-                companyBranchDtoBindingSource.DataSource is not List<CompanyBranchDto> { Count: 0 }) return;
-
             await LoadWarehouseDataSourceAsync();
-
-            _isWarehouseDataSourceLoaded = true;
         }
         catch (Exception ex)
         {
@@ -419,10 +306,6 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Reset flags để đảm bảo load lại khi form load
-            _isWarehouseDataSourceLoaded = false;
-            _isSupplierDataSourceLoaded = false;
-
             // Load cả 2 datasource song song để tối ưu performance
             await Task.WhenAll(
                 LoadWarehouseDataSourceAsync(forceRefresh: true),
@@ -443,25 +326,8 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Nếu đã load và không force refresh, không load lại
-            if (_isWarehouseDataSourceLoaded && !forceRefresh &&
-                companyBranchDtoBindingSource.DataSource != null &&
-                companyBranchDtoBindingSource.DataSource is List<CompanyBranchDto> existingList &&
-                existingList.Count > 0)
-            {
-                return;
-            }
-
             // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
-            var branches = await Task.Run(() => _companyBranchBll.GetAll());
-            var warehouseDtos = branches
-                .Where(b => b.IsActive) // Chỉ lấy các chi nhánh đang hoạt động
-                .Select(b => b.ToDto())
-                .OrderBy(b => b.BranchName)
-                .ToList();
-
-            companyBranchDtoBindingSource.DataSource = warehouseDtos;
-            _isWarehouseDataSourceLoaded = true;
+            companyBranchDtoBindingSource.DataSource = await Task.Run(() => _companyBranchBll.GetAll());
         }
         catch (Exception ex)
         {
@@ -478,181 +344,12 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Nếu đã load và không force refresh, không load lại
-            if (_isSupplierDataSourceLoaded && !forceRefresh &&
-                businessPartnerSiteListDtoBindingSource.DataSource != null &&
-                businessPartnerSiteListDtoBindingSource.DataSource is List<BusinessPartnerSiteListDto> existingList &&
-                existingList.Count > 0)
-            {
-                return;
-            }
-
-            // Load danh sách BusinessPartnerSite từ BusinessPartnerSiteBll (dùng cho Supplier lookup)
-            var sites = await Task.Run(() => _businessPartnerSiteBll.GetAll());
-            var siteDtos = sites
-                .Where(s => s.IsActive) // Chỉ lấy các chi nhánh đang hoạt động
-                .ToSiteListDtos()
-                .OrderBy(s => s.SiteName)
-                .ToList();
-
-            businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
-            _isSupplierDataSourceLoaded = true;
+            businessPartnerSiteListDtoBindingSource.DataSource = await Task.Run(() => _businessPartnerSiteBll.GetAll());
         }
         catch (Exception ex)
         {
             ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
             throw;
-        }
-    }
-
-    /// <summary>
-    /// Load single Warehouse record theo ID và set vào datasource
-    /// Chỉ load đúng 1 record để tối ưu performance
-    /// </summary>
-    /// <param name="warehouseId">ID của Warehouse (CompanyBranch)</param>
-    private async Task LoadSingleWarehouseByIdAsync(Guid warehouseId)
-    {
-        try
-        {
-            if (warehouseId == Guid.Empty)
-            {
-                // Nếu ID rỗng, set datasource rỗng
-                companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
-                // Không đánh dấu đã load vì datasource rỗng
-                _isWarehouseDataSourceLoaded = false;
-                return;
-            }
-
-            // Load chỉ 1 record theo ID
-            var branch = await Task.Run(() => _companyBranchBll.GetById(warehouseId));
-            if (branch != null)
-            {
-                var warehouseDto = branch.ToDto();
-                // Set datasource chỉ chứa 1 record
-                companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto> { warehouseDto };
-                // Đánh dấu chưa load full list (khi popup sẽ load full)
-                _isWarehouseDataSourceLoaded = false;
-            }
-            else
-            {
-                // Nếu không tìm thấy, set datasource rỗng
-                companyBranchDtoBindingSource.DataSource = new List<CompanyBranchDto>();
-                _isWarehouseDataSourceLoaded = false;
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi tải dữ liệu kho");
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Load single Supplier record theo ID và set vào datasource
-    /// Chỉ load đúng 1 record để tối ưu performance
-    /// </summary>
-    /// <param name="supplierId">ID của Supplier (BusinessPartnerSite)</param>
-    private async Task LoadSingleSupplierByIdAsync(Guid supplierId)
-    {
-        try
-        {
-            if (supplierId == Guid.Empty)
-            {
-                // Nếu ID rỗng, set datasource rỗng
-                businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
-                // Không đánh dấu đã load vì datasource rỗng
-                _isSupplierDataSourceLoaded = false;
-                return;
-            }
-
-            // Load chỉ 1 record theo ID
-            var site = await Task.Run(() => _businessPartnerSiteBll.GetById(supplierId));
-            if (site != null)
-            {
-                // Sử dụng ToSiteListDtos() với list chứa 1 phần tử, sau đó lấy phần tử đầu tiên
-                var siteDtos = new List<Dal.DataContext.BusinessPartnerSite> { site }.ToSiteListDtos().ToList();
-                // Set datasource chỉ chứa 1 record
-                businessPartnerSiteListDtoBindingSource.DataSource = siteDtos;
-                // Đánh dấu đã load (nhưng chỉ có 1 record, khi popup sẽ load full)
-                _isSupplierDataSourceLoaded = false; // Set false để popup sẽ load full list
-            }
-            else
-            {
-                // Nếu không tìm thấy, set datasource rỗng
-                businessPartnerSiteListDtoBindingSource.DataSource = new List<BusinessPartnerSiteListDto>();
-                _isSupplierDataSourceLoaded = false;
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi tải dữ liệu nhà cung cấp");
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Map StockInOutMaster entity sang XuatBaoHanhMasterDto
-    /// </summary>
-    private XuatBaoHanhMasterDto MapEntityToDto(StockInOutMaster entity)
-    {
-        if (entity == null) return null;
-
-        var dto = new XuatBaoHanhMasterDto
-        {
-            Id = entity.Id,
-            StockInNumber = entity.VocherNumber ?? string.Empty,
-            StockInDate = entity.StockInOutDate,
-            LoaiNhapXuatKho = (LoaiNhapXuatKhoEnum)entity.StockInOutType,
-            TrangThai = (TrangThaiPhieuNhapEnum)entity.VoucherStatus,
-            WarehouseId = entity.WarehouseId,
-            WarehouseCode = entity.CompanyBranch?.BranchCode ?? string.Empty,
-            WarehouseName = entity.CompanyBranch?.BranchName ?? string.Empty,
-            PurchaseOrderId = entity.PurchaseOrderId,
-            PurchaseOrderNumber = string.Empty, // TODO: Lấy từ PurchaseOrder entity nếu cần
-            SupplierId = entity.PartnerSiteId,
-            SupplierName = entity.BusinessPartnerSite?.BusinessPartner?.PartnerName ??
-                           entity.BusinessPartnerSite?.SiteName ??
-                           string.Empty,
-            Notes = entity.Notes ?? string.Empty,
-            NguoiNhanHang = entity.NguoiNhanHang ?? string.Empty,
-            NguoiGiaoHang = entity.NguoiGiaoHang ?? string.Empty
-        };
-
-        // Gán các giá trị tổng hợp từ entity
-        dto.SetTotals(
-            entity.TotalQuantity,
-            entity.TotalAmount,
-            entity.TotalVat,
-            entity.TotalAmountIncludedVat
-        );
-
-        return dto;
-    }
-
-    /// <summary>
-    /// Refresh tất cả data bindings
-    /// </summary>
-    private void RefreshAllBindings()
-    {
-        var controls = new Control[]
-        {
-            StockInNumberTextEdit,
-            StockInDateDateEdit,
-            PurchaseOrderSearchLookupEdit,
-            NotesTextEdit,
-            NguoiNhanHangTextEdit,
-            NguoiGiaoHangTextEdit
-        };
-
-        foreach (var control in controls)
-        {
-            if (control != null)
-            {
-                foreach (Binding binding in control.DataBindings)
-                {
-                    binding.ReadValue();
-                }
-            }
         }
     }
 
@@ -670,21 +367,17 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            if (StockInDateDateEdit.EditValue is DateTime selectedDate)
-            {
-                // Cập nhật ngày vào Entity
-                _stockInMaster.StockInOutDate = selectedDate;
-
-                // Tạo số phiếu nhập tự động
-                GenerateStockInNumber(selectedDate);
-
-                // Xóa lỗi validation nếu có
-                dxErrorProvider1.SetError(StockInDateDateEdit, string.Empty);
-            }
+            if (StockInDateDateEdit.EditValue is not DateTime selectedDate) return;
+            
+            // Tạo số phiếu xuất tự động
+            GenerateStockInNumber(selectedDate);
+                    
+            // Xóa lỗi validation nếu có
+            dxErrorProvider1.SetError(StockInDateDateEdit, string.Empty);
         }
         catch (Exception ex)
         {
-            ShowError(ex, "Lỗi tạo số phiếu nhập");
+            ShowError(ex, "Lỗi tạo số phiếu xuất");
         }
     }
 
@@ -694,15 +387,15 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
         {
             if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
             {
-                // Cập nhật WarehouseId vào Entity
-                _stockInMaster.WarehouseId = warehouseId;
-
+                // Cập nhật WarehouseId vào _selectedWarehouseId
+                _selectedWarehouseId = warehouseId;
+                    
                 // Xóa lỗi validation nếu có
                 dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, string.Empty);
             }
             else
             {
-                _stockInMaster.WarehouseId = Guid.Empty;
+                _selectedWarehouseId = Guid.Empty;
             }
         }
         catch (Exception ex)
@@ -717,15 +410,15 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
         {
             if (SupplierNameSearchLookupEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
             {
-                // Cập nhật PartnerSiteId vào Entity
-                _stockInMaster.PartnerSiteId = supplierId;
-
+                // Cập nhật PartnerSiteId vào _selectedPartnerSiteId
+                _selectedPartnerSiteId = supplierId;
+                    
                 // Xóa lỗi validation nếu có
                 dxErrorProvider1.SetError(SupplierNameSearchLookupEdit, string.Empty);
             }
             else
             {
-                _stockInMaster.PartnerSiteId = null;
+                _selectedPartnerSiteId = Guid.Empty;
             }
         }
         catch (Exception ex)
@@ -734,139 +427,9 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
         }
     }
 
-    private void StockInNumberTextEdit_EditValueChanged(object sender, EventArgs e)
-    {
-        try
-        {
-            if (StockInNumberTextEdit != null)
-            {
-                _stockInMaster.VocherNumber = StockInNumberTextEdit.Text?.Trim();
-
-                // Xóa lỗi validation nếu có
-                dxErrorProvider1.SetError(StockInNumberTextEdit, string.Empty);
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi xử lý thay đổi số phiếu nhập");
-        }
-    }
-
-    private void NguoiNhanHangTextEdit_EditValueChanged(object sender, EventArgs e)
-    {
-        try
-        {
-            if (NguoiNhanHangTextEdit != null)
-            {
-                _stockInMaster.NguoiNhanHang = NguoiNhanHangTextEdit.Text?.Trim();
-
-                // Xóa lỗi validation nếu có
-                dxErrorProvider1.SetError(NguoiNhanHangTextEdit, string.Empty);
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi xử lý thay đổi người nhận hàng");
-        }
-    }
-
-    private void NguoiGiaoHangTextEdit_EditValueChanged(object sender, EventArgs e)
-    {
-        try
-        {
-            if (NguoiGiaoHangTextEdit != null)
-            {
-                _stockInMaster.NguoiGiaoHang = NguoiGiaoHangTextEdit.Text?.Trim();
-
-                // Xóa lỗi validation nếu có
-                dxErrorProvider1.SetError(NguoiGiaoHangTextEdit, string.Empty);
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi xử lý thay đổi người giao hàng");
-        }
-    }
-
     #endregion
 
     #region ========== VALIDATION ==========
-
-    /// <summary>
-    /// Cập nhật DTO từ controls
-    /// </summary>
-    private void UpdateDtoFromControls()
-    {
-        try
-        {
-            // Cập nhật từ TextEdit
-            if (StockInNumberTextEdit != null)
-            {
-                _stockInMaster.VocherNumber = StockInNumberTextEdit.Text?.Trim();
-            }
-
-            // Cập nhật từ DateEdit
-            if (StockInDateDateEdit is { EditValue: DateTime date })
-            {
-                _stockInMaster.StockInOutDate = date;
-            }
-
-            // Cập nhật từ PurchaseOrder SearchLookUpEdit
-            if (PurchaseOrderSearchLookupEdit != null)
-            {
-                if (PurchaseOrderSearchLookupEdit.EditValue is Guid purchaseOrderId && purchaseOrderId != Guid.Empty)
-                {
-                    _stockInMaster.PurchaseOrderId = purchaseOrderId;
-                }
-                else
-                {
-                    _stockInMaster.PurchaseOrderId = null;
-                }
-            }
-
-            // Cập nhật từ Warehouse SearchLookUpEdit
-            if (WarehouseNameSearchLookupEdit != null)
-            {
-                if (WarehouseNameSearchLookupEdit.EditValue is Guid warehouseId && warehouseId != Guid.Empty)
-                {
-                    _stockInMaster.WarehouseId = warehouseId;
-                }
-                else
-                {
-                    _stockInMaster.WarehouseId = Guid.Empty;
-                }
-            }
-
-            // Cập nhật từ Supplier SearchLookUpEdit
-            if (SupplierNameSearchLookupEdit != null)
-            {
-                if (SupplierNameSearchLookupEdit.EditValue is Guid supplierId && supplierId != Guid.Empty)
-                {
-                    _stockInMaster.PartnerSiteId = supplierId;
-                }
-                else
-                {
-                    _stockInMaster.PartnerSiteId = null;
-                }
-            }
-
-            // Cập nhật từ NguoiNhanHangTextEdit
-            if (NguoiNhanHangTextEdit != null)
-            {
-                _stockInMaster.NguoiNhanHang = NguoiNhanHangTextEdit.Text?.Trim();
-            }
-
-            // Cập nhật từ NguoiGiaoHangTextEdit
-            if (NguoiGiaoHangTextEdit != null)
-            {
-                _stockInMaster.NguoiGiaoHang = NguoiGiaoHangTextEdit.Text?.Trim();
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi cập nhật dữ liệu từ controls");
-        }
-    }
 
     /// <summary>
     /// Validate dữ liệu input và hiển thị lỗi bằng dxErrorProvider
@@ -877,45 +440,47 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
         {
             dxErrorProvider1.ClearErrors();
 
-            // Convert Entity sang DTO để validate (vì DataAnnotations chỉ hoạt động với DTO)
-            var dto = MapEntityToDto(_stockInMaster);
-            if (dto == null)
+            //Ngày tháng không được để trống
+            if (StockInDateDateEdit.EditValue is null)
             {
-                ShowError("Không thể convert entity sang DTO để validate");
+                // Hiển thị lỗi
+                dxErrorProvider1.SetError(StockInDateDateEdit, "Ngày xuất không được để trống");
                 return false;
             }
 
-            // Validate bằng DataAnnotations trên DTO
-            var context = new ValidationContext(dto, serviceProvider: null, items: null);
-            var results = new List<ValidationResult>();
-            bool isValid = Validator.TryValidateObject(dto, context, results, validateAllProperties: true);
-
-            if (!isValid)
+            // Số phiếu xuất kho không được để trống
+            if (string.IsNullOrWhiteSpace(StockInNumberTextEdit.Text))
             {
-                // Hiển thị lỗi cho từng field
-                foreach (var result in results)
-                {
-                    foreach (var memberName in result.MemberNames)
-                    {
-                        var control = FindControlByPropertyName(memberName);
-                        if (control != null)
-                        {
-                            dxErrorProvider1.SetError(control, result.ErrorMessage, ErrorType.Critical);
-                        }
-                    }
-                }
+                dxErrorProvider1.SetError(StockInNumberTextEdit, "Số phiếu xuất không được để trống");
+                return false;
+            }
 
-                // Focus vào control đầu tiên có lỗi
-                var firstErrorControl = results
-                    .SelectMany(r => r.MemberNames)
-                    .Select(FindControlByPropertyName)
-                    .FirstOrDefault(c => c != null);
+            // Kiểm tra độ dài số phiếu xuất kho (tối đa 50 ký tự)
+            if (StockInNumberTextEdit.Text.Length > 50)
+            {
+                dxErrorProvider1.SetError(StockInNumberTextEdit, "Số phiếu xuất không được vượt quá 50 ký tự");
+                return false;
+            }
 
-                if (firstErrorControl != null)
-                {
-                    firstErrorControl.Focus();
-                }
+            // Kho xuất không được để trống
+            var warehouseId = _selectedWarehouseId != Guid.Empty 
+                ? _selectedWarehouseId 
+                : (WarehouseNameSearchLookupEdit.EditValue is Guid wId ? wId : Guid.Empty);
+            
+            if (warehouseId == Guid.Empty)
+            {
+                dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, "Kho xuất không được để trống");
+                return false;
+            }
 
+            // Khách hàng không được để trống
+            var supplierId = _selectedPartnerSiteId != Guid.Empty 
+                ? _selectedPartnerSiteId 
+                : (SupplierNameSearchLookupEdit.EditValue is Guid sId ? sId : Guid.Empty);
+            
+            if (supplierId == Guid.Empty)
+            {
+                dxErrorProvider1.SetError(SupplierNameSearchLookupEdit, "Khách hàng không được để trống");
                 return false;
             }
 
@@ -928,55 +493,97 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
         }
     }
 
-    /// <summary>
-    /// Tìm control theo tên property trong DTO
-    /// </summary>
-    private Control FindControlByPropertyName(string propertyName)
-    {
-        return propertyName switch
-        {
-            nameof(XuatBaoHanhMasterDto.StockInNumber) => StockInNumberTextEdit,
-            nameof(XuatBaoHanhMasterDto.StockInDate) => StockInDateDateEdit,
-            nameof(XuatBaoHanhMasterDto.WarehouseId) => WarehouseNameSearchLookupEdit,
-            nameof(XuatBaoHanhMasterDto.WarehouseCode) => WarehouseNameSearchLookupEdit,
-            nameof(XuatBaoHanhMasterDto.WarehouseName) => WarehouseNameSearchLookupEdit,
-            nameof(XuatBaoHanhMasterDto.SupplierId) => SupplierNameSearchLookupEdit,
-            nameof(XuatBaoHanhMasterDto.SupplierName) => SupplierNameSearchLookupEdit,
-            nameof(XuatBaoHanhMasterDto.PurchaseOrderNumber) => PurchaseOrderSearchLookupEdit,
-            nameof(XuatBaoHanhMasterDto.Notes) => NotesTextEdit,
-            nameof(XuatBaoHanhMasterDto.NguoiNhanHang) => NguoiNhanHangTextEdit,
-            nameof(XuatBaoHanhMasterDto.NguoiGiaoHang) => NguoiGiaoHangTextEdit,
-            _ => null
-        };
-    }
-
     #endregion
 
     #region ========== PUBLIC METHODS ==========
 
     /// <summary>
-    /// Lấy DTO từ Entity sau khi validate các trường bắt buộc
+    /// Lấy DTO từ các control sau khi validate các trường bắt buộc
     /// </summary>
-    /// <returns>XuatBaoHanhMasterDto nếu validation thành công, null nếu có lỗi</returns>
-    public XuatBaoHanhMasterDto GetDto()
+    /// <returns>StockInOutMasterForUIDto nếu validation thành công, null nếu có lỗi</returns>
+    public StockInOutMasterForUIDto GetDto()
     {
         try
         {
-            // Cập nhật Entity từ controls trước khi validate
-            UpdateDtoFromControls();
-
             // Validate các trường bắt buộc
             if (!ValidateInput())
             {
                 return null; // Validation thất bại
             }
 
-            // Cập nhật lại Id và LoaiNhapXuatKho vào Entity
-            _stockInMaster.Id = _stockInOutMasterId;
-            _stockInMaster.StockInOutType = (int)LoaiNhapXuatKhoEnum.XuatHangBaoHanh;
+            // Khai báo DTO và gán các giá trị
+            var dto = new StockInOutMasterForUIDto
+            {
+                // Thông tin cơ bản
+                Id = _stockInOutMasterId,
+                VoucherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
+                StockOutDate = StockInDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
+                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangBaoHanh,
+                TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
-            // Convert Entity sang DTO để trả về
-            return MapEntityToDto(_stockInMaster);
+                // Thông tin bổ sung
+                Notes = NotesTextEdit.Text?.Trim() ?? string.Empty,
+                NguoiNhanHang = NguoiNhanHangTextEdit.Text?.Trim() ?? string.Empty,
+                NguoiGiaoHang = NguoiGiaoHangTextEdit.Text?.Trim() ?? string.Empty
+            };
+
+            // Lấy thông tin Warehouse từ selected item trong SearchLookUpEdit
+            var warehouseId = _selectedWarehouseId != Guid.Empty 
+                ? _selectedWarehouseId 
+                : (WarehouseNameSearchLookupEdit.EditValue is Guid wId ? wId : Guid.Empty);
+
+            if (warehouseId != Guid.Empty)
+            {
+                dto.WarehouseId = warehouseId;
+
+                // Lấy thông tin chi tiết từ selected row hoặc binding source
+                var warehouse = WarehouseNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.Company.CompanyBranchDto;
+                if (warehouse == null && companyBranchDtoBindingSource.DataSource is System.Collections.IList warehouseList)
+                {
+                    warehouse = warehouseList.Cast<DTO.MasterData.Company.CompanyBranchDto>()
+                        .FirstOrDefault(w => w.Id == warehouseId);
+                }
+
+                if (warehouse != null)
+                {
+                    dto.WarehouseCode = warehouse.BranchCode ?? string.Empty;
+                    dto.WarehouseName = warehouse.BranchName ?? string.Empty;
+                }
+            }
+
+            // Lấy thông tin Customer/Supplier từ selected item trong SearchLookUpEdit
+            var supplierId = _selectedPartnerSiteId != Guid.Empty 
+                ? _selectedPartnerSiteId 
+                : (SupplierNameSearchLookupEdit.EditValue is Guid sId ? sId : Guid.Empty);
+
+            if (supplierId != Guid.Empty)
+            {
+                dto.CustomerId = supplierId;
+
+                // Lấy thông tin chi tiết từ selected row hoặc binding source
+                var supplier = SupplierNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto;
+                if (supplier == null && businessPartnerSiteListDtoBindingSource.DataSource is System.Collections.IList supplierList)
+                {
+                    supplier = supplierList.Cast<DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto>()
+                        .FirstOrDefault(s => s.Id == supplierId);
+                }
+
+                if (supplier != null)
+                {
+                    dto.CustomerName = supplier.SiteName ?? string.Empty;
+                }
+            }
+
+            // PurchaseOrderId nếu có
+            if (PurchaseOrderSearchLookupEdit.EditValue is Guid purchaseOrderId)
+            {
+                dto.SalesOrderId = purchaseOrderId;
+            }
+
+            // Khởi tạo tổng hợp với giá trị 0 (sẽ được cập nhật từ detail sau)
+            dto.SetTotals(0, 0, 0, 0);
+
+            return dto;
         }
         catch (Exception ex)
         {
@@ -994,44 +601,50 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
         try
         {
             _stockInOutMasterId = stockInOutMasterId;
-
-            // Lấy master entity từ BLL
-            var masterEntity = _stockInBll.GetMasterById(stockInOutMasterId);
-            if (masterEntity == null)
+            
+            // Lấy master DTO từ BLL
+            var masterDto = _stockInOutBll.GetStockInOutMasterForUIDtoById(stockInOutMasterId);
+            if (masterDto == null)
             {
-                throw new InvalidOperationException($"Không tìm thấy phiếu nhập kho với ID: {stockInOutMasterId}");
+                throw new InvalidOperationException($"Không tìm thấy phiếu xuất kho với ID: {stockInOutMasterId}");
             }
 
-            // Gán entity vào _stockInMaster
-            _stockInMaster = masterEntity;
-
             // Set dữ liệu cho các control đơn giản (không cần datasource)
-            StockInDateDateEdit.EditValue = masterEntity.StockInOutDate;
-            StockInNumberTextEdit.EditValue = masterEntity.VocherNumber;
-            PurchaseOrderSearchLookupEdit.EditValue = masterEntity.PurchaseOrderId;
-            NotesTextEdit.EditValue = masterEntity.Notes;
-            NguoiNhanHangTextEdit.EditValue = masterEntity.NguoiNhanHang;
-            NguoiGiaoHangTextEdit.EditValue = masterEntity.NguoiGiaoHang;
+            StockInDateDateEdit.EditValue = masterDto.StockOutDate;
+            StockInNumberTextEdit.EditValue = masterDto.VoucherNumber;
+            
+            NotesTextEdit.EditValue = masterDto.Notes;
+            NguoiNhanHangTextEdit.EditValue = masterDto.NguoiNhanHang;
+            NguoiGiaoHangTextEdit.EditValue = masterDto.NguoiGiaoHang;
 
             // Load datasource cho Warehouse trước khi set EditValue
-            await LoadSingleWarehouseByIdAsync(masterEntity.WarehouseId);
-            WarehouseNameSearchLookupEdit.EditValue = masterEntity.WarehouseId;
+            await LoadWarehouseDataSourceAsync();
+            WarehouseNameSearchLookupEdit.EditValue = masterDto.WarehouseId;
 
-            // Load datasource cho Supplier nếu có PartnerSiteId
-            if (masterEntity.PartnerSiteId.HasValue)
+            // Load datasource cho Supplier nếu có CustomerId
+            if (masterDto.CustomerId.HasValue)
             {
-                await LoadSingleSupplierByIdAsync(masterEntity.PartnerSiteId.Value);
-                SupplierNameSearchLookupEdit.EditValue = masterEntity.PartnerSiteId;
+                await LoadSupplierDataSourceAsync();
+                SupplierNameSearchLookupEdit.EditValue = masterDto.CustomerId;
             }
             else
             {
                 SupplierNameSearchLookupEdit.EditValue = null;
             }
 
+            // PurchaseOrderId nếu có
+            if (masterDto.SalesOrderId.HasValue)
+            {
+                PurchaseOrderSearchLookupEdit.EditValue = masterDto.SalesOrderId;
+            }
+            else
+            {
+                PurchaseOrderSearchLookupEdit.EditValue = null;
+            }
         }
         catch (Exception ex)
         {
-            ShowError(ex, "Lỗi tải dữ liệu phiếu nhập kho");
+            ShowError(ex, "Lỗi tải dữ liệu phiếu xuất kho");
             throw;
         }
     }
@@ -1043,9 +656,6 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Khởi tạo lại Entity
-            InitializeEntity();
-
             // Reset tất cả các controls về giá trị mặc định
             // Reset SearchLookUpEdit - phải set EditValue = null để xóa selection
             if (WarehouseNameSearchLookupEdit != null)
@@ -1058,22 +668,22 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
                 SupplierNameSearchLookupEdit.EditValue = null;
             }
 
+            if (PurchaseOrderSearchLookupEdit != null)
+            {
+                PurchaseOrderSearchLookupEdit.EditValue = null;
+            }
+
             // Reset TextEdit
             if (StockInNumberTextEdit != null)
             {
                 StockInNumberTextEdit.Text = string.Empty;
             }
 
-            if (PurchaseOrderSearchLookupEdit != null)
-            {
-                PurchaseOrderSearchLookupEdit.Text = string.Empty;
-            }
-
             // Reset DateEdit
             if (StockInDateDateEdit != null)
             {
                 StockInDateDateEdit.EditValue = DateTime.Now;
-                // Tạo lại số phiếu nhập kho sau khi reset ngày
+                // Tạo lại số phiếu xuất kho sau khi reset ngày
                 GenerateStockInNumber(DateTime.Now);
             }
 
@@ -1093,9 +703,6 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
             {
                 NguoiGiaoHangTextEdit.Text = string.Empty;
             }
-
-            // Refresh bindings để đảm bảo UI được cập nhật
-            RefreshAllBindings();
 
             // Clear errors
             dxErrorProvider1.ClearErrors();
@@ -1118,12 +725,6 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Cập nhật trực tiếp vào Entity
-            _stockInMaster.TotalQuantity = totalQuantity;
-            _stockInMaster.TotalAmount = totalAmount;
-            _stockInMaster.TotalVat = totalVat;
-            _stockInMaster.TotalAmountIncludedVat = totalAmountIncludedVat;
-
             // Cập nhật trực tiếp vào các SimpleLabelItem để hiển thị
             UpdateTotalQuantityLabel(totalQuantity);
         }
@@ -1174,21 +775,12 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Chỉ tạo số phiếu nếu chưa có hoặc đang ở trạng thái tạo mới
-            if (!string.IsNullOrWhiteSpace(_stockInMaster.VocherNumber) &&
-                _stockInMaster.VoucherStatus != (int)TrangThaiPhieuNhapEnum.TaoMoi)
-            {
-                return;
-            }
-
-            // Lấy loại nhập/xuất kho từ Entity
-            var loaiNhapXuatKho = (LoaiNhapXuatKhoEnum)_stockInMaster.StockInOutType;
+            // Lấy loại nhập/xuất kho
+            var loaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangBaoHanh;
 
             // Gọi BLL để tạo số phiếu tự động (tự động xác định PNK hay PXK)
             var voucherNumber = _stockInOutMasterBll.GenerateVoucherNumber(stockInDate, loaiNhapXuatKho);
 
-            // Cập nhật vào Entity và control
-            _stockInMaster.VocherNumber = voucherNumber;
             if (StockInNumberTextEdit != null)
             {
                 StockInNumberTextEdit.Text = voucherNumber;

@@ -502,7 +502,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
                 {
                     // Thông tin cơ bản
                     Id = _stockInOutMasterId,
-                    VocherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
+                    VoucherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
                     StockOutDate = StockInDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
                     LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapHangThuongMai,
                     TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
@@ -597,7 +597,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
 
                 // Set dữ liệu cho các control đơn giản (không cần datasource)
                 StockInDateDateEdit.EditValue = masterDto.StockOutDate;
-                StockInNumberTextEdit.EditValue = masterDto.VocherNumber;
+                StockInNumberTextEdit.EditValue = masterDto.VoucherNumber;
                 
                 NotesTextEdit.EditValue = masterDto.Notes;
                 NguoiNhanHangTextEdit.EditValue = masterDto.NguoiNhanHang;
