@@ -2,6 +2,7 @@
 using System.Data.Linq;
 using System.Linq;
 using Dal.DataAccess.Interfaces.MasterData.CompanyRepository;
+using Dal.DataContext;
 using Dal.DtoConverter;
 using Dal.Exceptions;
 using DTO.MasterData.Company;

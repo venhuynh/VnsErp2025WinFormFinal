@@ -88,18 +88,28 @@ public class ProductImageRepository : IProductImageRepository
 
             if (existing == null)
             {
-                // Thêm mới
-                var entity = dto.ToEntity();
-                if (entity.Id == Guid.Empty)
-                    entity.Id = Guid.NewGuid();
-                
-                // Thiết lập giá trị mặc định
-                if (entity.CreateDate == default(DateTime))
-                    entity.CreateDate = DateTime.Now;
-                if (entity.CreateBy == Guid.Empty)
-                    entity.CreateBy = Guid.Empty; // Cần set từ context user
-                if (entity.ModifiedBy == Guid.Empty)
-                    entity.ModifiedBy = Guid.Empty; // Cần set từ context user
+                // Thêm mới - Map trực tiếp từ DTO sang Entity
+                var entity = new ProductImage
+                {
+                    Id = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid(),
+                    ProductId = dto.ProductId,
+                    ImageData = dto.ImageData != null ? new System.Data.Linq.Binary(dto.ImageData) : null,
+                    FileName = dto.FileName,
+                    RelativePath = dto.RelativePath,
+                    FullPath = dto.FullPath,
+                    StorageType = dto.StorageType,
+                    FileSize = dto.FileSize,
+                    FileExtension = dto.FileExtension,
+                    MimeType = dto.MimeType,
+                    Checksum = dto.Checksum,
+                    FileExists = dto.FileExists,
+                    LastVerified = dto.LastVerified,
+                    MigrationStatus = dto.MigrationStatus,
+                    CreateDate = dto.CreateDate != default(DateTime) ? dto.CreateDate : DateTime.Now,
+                    CreateBy = dto.CreateBy != Guid.Empty ? dto.CreateBy : Guid.Empty,
+                    ModifiedDate = dto.ModifiedDate,
+                    ModifiedBy = dto.ModifiedBy
+                };
 
                 context.ProductImages.InsertOnSubmit(entity);
                 context.SubmitChanges();
@@ -108,9 +118,22 @@ public class ProductImageRepository : IProductImageRepository
             }
             else
             {
-                // Cập nhật - Sử dụng converter để cập nhật entity từ DTO
-                dto.ToEntity(existing);
+                // Cập nhật - Map trực tiếp từ DTO sang Entity
+                existing.ProductId = dto.ProductId;
+                existing.ImageData = dto.ImageData != null ? new System.Data.Linq.Binary(dto.ImageData) : existing.ImageData;
+                existing.FileName = dto.FileName;
+                existing.RelativePath = dto.RelativePath;
+                existing.FullPath = dto.FullPath;
+                existing.StorageType = dto.StorageType;
+                existing.FileSize = dto.FileSize;
+                existing.FileExtension = dto.FileExtension;
+                existing.MimeType = dto.MimeType;
+                existing.Checksum = dto.Checksum;
+                existing.FileExists = dto.FileExists;
+                existing.LastVerified = dto.LastVerified;
+                existing.MigrationStatus = dto.MigrationStatus;
                 existing.ModifiedDate = DateTime.Now;
+                existing.ModifiedBy = dto.ModifiedBy != Guid.Empty ? dto.ModifiedBy : existing.ModifiedBy;
                 
                 context.SubmitChanges();
                 

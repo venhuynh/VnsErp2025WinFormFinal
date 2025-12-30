@@ -72,7 +72,19 @@ public class PermissionRepository : IPermissionRepository
                 p.Action == action && 
                 p.IsActive);
             
-            return entity?.ToDto();
+            if (entity == null)
+                return null;
+            
+            // Map trực tiếp từ Entity sang DTO
+            return new PermissionDto
+            {
+                Id = entity.Id,
+                EntityName = entity.EntityName,
+                Action = entity.Action,
+                Description = entity.Description,
+                IsActive = entity.IsActive,
+                CreatedDate = entity.CreatedDate
+            };
         }
         catch (Exception ex)
         {
@@ -120,7 +132,16 @@ public class PermissionRepository : IPermissionRepository
                 .OrderBy(p => p.Action)
                 .ToList();
             
-            return entities.ToDtos();
+            // Map trực tiếp từ Entity sang DTO
+            return entities.Select(e => new PermissionDto
+            {
+                Id = e.Id,
+                EntityName = e.EntityName,
+                Action = e.Action,
+                Description = e.Description,
+                IsActive = e.IsActive,
+                CreatedDate = e.CreatedDate
+            }).ToList();
         }
         catch (Exception ex)
         {
@@ -159,7 +180,23 @@ public class PermissionRepository : IPermissionRepository
 
             using var context = CreateNewContext();
             var entity = context.Roles.FirstOrDefault(r => r.Name == name);
-            return entity?.ToDto();
+            
+            if (entity == null)
+                return null;
+            
+            // Map trực tiếp từ Entity sang DTO
+            return new RoleDto
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                IsSystemRole = entity.IsSystemRole,
+                IsActive = entity.IsActive,
+                CreatedDate = entity.CreatedDate,
+                CreatedBy = entity.CreatedBy,
+                ModifiedDate = entity.ModifiedDate,
+                ModifiedBy = entity.ModifiedBy
+            };
         }
         catch (Exception ex)
         {
@@ -212,17 +249,38 @@ public class PermissionRepository : IPermissionRepository
 
             using var context = CreateNewContext();
             
-            // Convert DTO to Entity
-            var entity = dto.ToEntity();
-            
-            if (entity.Id == Guid.Empty)
-                entity.Id = Guid.NewGuid();
+            // Map trực tiếp từ DTO sang Entity
+            var entity = new Role
+            {
+                Id = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid(),
+                Name = dto.Name,
+                Description = dto.Description,
+                IsSystemRole = dto.IsSystemRole,
+                IsActive = dto.IsActive,
+                CreatedDate = dto.CreatedDate ?? DateTime.Now,
+                CreatedBy = dto.CreatedBy,
+                ModifiedDate = dto.ModifiedDate,
+                ModifiedBy = dto.ModifiedBy
+            };
 
             context.Roles.InsertOnSubmit(entity);
             context.SubmitChanges();
 
             _logger.Info($"Đã tạo Role: {entity.Name}");
-            return entity.ToDto();
+            
+            // Map trực tiếp từ Entity sang DTO
+            return new RoleDto
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                IsSystemRole = entity.IsSystemRole,
+                IsActive = entity.IsActive,
+                CreatedDate = entity.CreatedDate,
+                CreatedBy = entity.CreatedBy,
+                ModifiedDate = entity.ModifiedDate,
+                ModifiedBy = entity.ModifiedBy
+            };
         }
         catch (Exception ex)
         {
@@ -355,7 +413,19 @@ public class PermissionRepository : IPermissionRepository
                 .Where(r => r.IsActive)
                 .ToList();
             
-            return entities.ToDtos();
+            // Map trực tiếp từ Entity sang DTO
+            return entities.Select(e => new RoleDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                IsSystemRole = e.IsSystemRole,
+                IsActive = e.IsActive,
+                CreatedDate = e.CreatedDate,
+                CreatedBy = e.CreatedBy,
+                ModifiedDate = e.ModifiedDate,
+                ModifiedBy = e.ModifiedBy
+            }).ToList();
         }
         catch (Exception ex)
         {
@@ -457,7 +527,16 @@ public class PermissionRepository : IPermissionRepository
                 .Where(p => p.IsActive)
                 .ToList();
             
-            return entities.ToDtos();
+            // Map trực tiếp từ Entity sang DTO
+            return entities.Select(e => new PermissionDto
+            {
+                Id = e.Id,
+                EntityName = e.EntityName,
+                Action = e.Action,
+                Description = e.Description,
+                IsActive = e.IsActive,
+                CreatedDate = e.CreatedDate
+            }).ToList();
         }
         catch (Exception ex)
         {
@@ -582,7 +661,16 @@ public class PermissionRepository : IPermissionRepository
                 .Union(rolePermissions.Where(rp => !userPermissions.Any(up => up.Id == rp.Id)))
                 .ToList();
 
-            return allPermissions.ToDtos();
+            // Map trực tiếp từ Entity sang DTO
+            return allPermissions.Select(e => new PermissionDto
+            {
+                Id = e.Id,
+                EntityName = e.EntityName,
+                Action = e.Action,
+                Description = e.Description,
+                IsActive = e.IsActive,
+                CreatedDate = e.CreatedDate
+            }).ToList();
         }
         catch (Exception ex)
         {

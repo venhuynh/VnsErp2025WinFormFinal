@@ -1,15 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Linq;
-using System.Linq;
-using System.Threading.Tasks;
 using Dal.DataAccess.Interfaces.VersionAndUserManagementDal;
 using Dal.DataContext;
-using Dal.DtoConverter;
 using Dal.Exceptions;
 using DTO.VersionAndUserManagementDto;
 using Logger;
 using Logger.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Data.Linq;
+using System.Linq;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations.VersionAndUserManagementDal;
@@ -110,7 +108,22 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
                 .ToList();
             
             _logger.Debug($"GetAll: Found {entities.Count} MAC addresses");
-            return entities.ToDtos();
+            
+            // Map trực tiếp từ Entity sang DTO
+            var dtos = entities.Select(e => new AllowedMacAddressDto
+            {
+                Id = e.Id,
+                MacAddress = e.MacAddress,
+                ComputerName = e.ComputerName,
+                Description = e.Description,
+                IsActive = e.IsActive,
+                CreateDate = e.CreateDate,
+                CreateBy = e.CreateBy,
+                ModifiedDate = e.ModifiedDate,
+                ModifiedBy = e.ModifiedBy
+            }).ToList();
+            
+            return dtos;
         }
         catch (Exception ex)
         {
@@ -135,20 +148,38 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
 
             using var context = CreateNewContext();
             
-            // Convert DTO to Entity
-            var entity = dto.ToEntity();
-            
-            if (entity.Id == Guid.Empty)
-                entity.Id = Guid.NewGuid();
-
-            if (entity.CreateDate == default(DateTime))
-                entity.CreateDate = DateTime.Now;
+            // Map trực tiếp từ DTO sang Entity
+            var entity = new AllowedMacAddress
+            {
+                Id = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid(),
+                MacAddress = dto.MacAddress,
+                ComputerName = dto.ComputerName,
+                Description = dto.Description,
+                IsActive = dto.IsActive,
+                CreateDate = dto.CreateDate != default(DateTime) ? dto.CreateDate : DateTime.Now,
+                CreateBy = dto.CreateBy,
+                ModifiedDate = dto.ModifiedDate,
+                ModifiedBy = dto.ModifiedBy
+            };
 
             context.GetTable<AllowedMacAddress>().InsertOnSubmit(entity);
             context.SubmitChanges();
             
             _logger.Info($"Đã tạo MAC address mới: {entity.MacAddress} (ID: {entity.Id})");
-            return entity.ToDto();
+            
+            // Map trực tiếp từ Entity sang DTO
+            return new AllowedMacAddressDto
+            {
+                Id = entity.Id,
+                MacAddress = entity.MacAddress,
+                ComputerName = entity.ComputerName,
+                Description = entity.Description,
+                IsActive = entity.IsActive,
+                CreateDate = entity.CreateDate,
+                CreateBy = entity.CreateBy,
+                ModifiedDate = entity.ModifiedDate,
+                ModifiedBy = entity.ModifiedBy
+            };
         }
         catch (Exception ex)
         {
@@ -178,13 +209,31 @@ public class AllowedMacAddressRepository : IAllowedMacAddressRepository
             if (existing == null)
                 throw new DataAccessException($"Không tìm thấy MAC address với ID: {dto.Id}");
 
-            // Convert DTO to Entity (update existing)
-            dto.ToEntity(existing);
+            // Map trực tiếp từ DTO sang Entity (update existing)
+            existing.MacAddress = dto.MacAddress;
+            existing.ComputerName = dto.ComputerName;
+            existing.Description = dto.Description;
+            existing.IsActive = dto.IsActive;
+            existing.ModifiedDate = DateTime.Now;
+            existing.ModifiedBy = dto.ModifiedBy;
 
             context.SubmitChanges();
             
             _logger.Info($"Đã cập nhật MAC address: {dto.MacAddress} (ID: {dto.Id})");
-            return existing.ToDto();
+            
+            // Map trực tiếp từ Entity sang DTO
+            return new AllowedMacAddressDto
+            {
+                Id = existing.Id,
+                MacAddress = existing.MacAddress,
+                ComputerName = existing.ComputerName,
+                Description = existing.Description,
+                IsActive = existing.IsActive,
+                CreateDate = existing.CreateDate,
+                CreateBy = existing.CreateBy,
+                ModifiedDate = existing.ModifiedDate,
+                ModifiedBy = existing.ModifiedBy
+            };
         }
         catch (Exception ex)
         {

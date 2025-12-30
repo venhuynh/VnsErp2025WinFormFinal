@@ -140,6 +140,8 @@
     <Compile Include="DtoConverter\Inventory\StockInOutDetailForUIConverter.cs" />
     <Compile Include="DtoConverter\Inventory\StockInOutMasterForUIConverter.cs" />
     <Compile Include="DtoConverter\PermissionDtoExtensions.cs" />
+    <Compile Include="DtoConverter\ProductImageConverter.cs" />
+    <Compile Include="DtoConverter\RoleDtoConverter.cs" />
     <Compile Include="DtoConverter\UnitOfMeasureConverters.cs" />
     <Compile Include="DtoConverter\CompanyBranchConverters.cs" />
     <Compile Include="DtoConverter\CompanyConverter.cs" />

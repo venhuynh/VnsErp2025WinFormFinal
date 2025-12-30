@@ -82,6 +82,17 @@ namespace Dal.DtoConverter
             return entities.Select(e => e.ToDto()).ToList();
         }
 
+        /// <summary>
+        /// Chuyển đổi danh sách ProductImage Entity sang danh sách ProductImageDto (alias cho ToDtoList)
+        /// </summary>
+        /// <param name="entities">Danh sách ProductImage Entity</param>
+        /// <returns>Danh sách ProductImageDto</returns>
+        public static List<ProductImageDto> ToDtos(this IEnumerable<ProductImage> entities)
+        {
+            if (entities == null) return new List<ProductImageDto>();
+            return entities.Select(e => e.ToDto()).ToList();
+        }
+
         #endregion
 
         #region ProductImageDto -> ProductImage
@@ -96,49 +107,68 @@ namespace Dal.DtoConverter
         {
             if (dto == null) return null;
 
-            var entity = existingEntity ?? new ProductImage();
-
-            // Chỉ set ID nếu là entity đã tồn tại (edit mode)
-            // Khi tạo mới (existingEntity == null), không set Id từ dto để đảm bảo Id = Guid.Empty
-            if (existingEntity != null)
+            if (existingEntity == null)
             {
-                // Edit mode: giữ nguyên Id của existing entity
-                // Không cần set lại vì entity đã là existingEntity
+                // Tạo mới
+                var entity = new ProductImage
+                {
+                    Id = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid(),
+                    ProductId = dto.ProductId,
+                    FileName = dto.FileName,
+                    RelativePath = dto.RelativePath,
+                    FullPath = dto.FullPath,
+                    StorageType = dto.StorageType,
+                    FileSize = dto.FileSize,
+                    FileExtension = dto.FileExtension,
+                    MimeType = dto.MimeType,
+                    Checksum = dto.Checksum,
+                    FileExists = dto.FileExists,
+                    LastVerified = dto.LastVerified,
+                    MigrationStatus = dto.MigrationStatus,
+                    CreateDate = dto.CreateDate != default(DateTime) ? dto.CreateDate : DateTime.Now,
+                    CreateBy = dto.CreateBy != Guid.Empty ? dto.CreateBy : Guid.Empty,
+                    ModifiedDate = dto.ModifiedDate,
+                    ModifiedBy = dto.ModifiedBy != Guid.Empty ? dto.ModifiedBy : Guid.Empty
+                };
+
+                // Convert ImageData từ byte[] sang Binary
+                if (dto.ImageData != null)
+                {
+                    entity.ImageData = new System.Data.Linq.Binary(dto.ImageData);
+                }
+                else
+                {
+                    entity.ImageData = null;
+                }
+
+                return entity;
             }
             else
             {
-                // Create mode: đảm bảo Id = Guid.Empty (default của new ProductImage())
-                entity.Id = Guid.Empty;
-            }
+                // Cập nhật entity hiện có
+                existingEntity.ProductId = dto.ProductId;
+                existingEntity.FileName = dto.FileName;
+                existingEntity.RelativePath = dto.RelativePath;
+                existingEntity.FullPath = dto.FullPath;
+                existingEntity.StorageType = dto.StorageType;
+                existingEntity.FileSize = dto.FileSize;
+                existingEntity.FileExtension = dto.FileExtension;
+                existingEntity.MimeType = dto.MimeType;
+                existingEntity.Checksum = dto.Checksum;
+                existingEntity.FileExists = dto.FileExists;
+                existingEntity.LastVerified = dto.LastVerified;
+                existingEntity.MigrationStatus = dto.MigrationStatus;
+                existingEntity.ModifiedDate = DateTime.Now;
+                existingEntity.ModifiedBy = dto.ModifiedBy != Guid.Empty ? dto.ModifiedBy : existingEntity.ModifiedBy;
 
-            entity.ProductId = dto.ProductId;
-            entity.FileName = dto.FileName;
-            entity.RelativePath = dto.RelativePath;
-            entity.FullPath = dto.FullPath;
-            entity.StorageType = dto.StorageType;
-            entity.FileSize = dto.FileSize;
-            entity.FileExtension = dto.FileExtension;
-            entity.MimeType = dto.MimeType;
-            entity.Checksum = dto.Checksum;
-            entity.FileExists = dto.FileExists;
-            entity.LastVerified = dto.LastVerified;
-            entity.MigrationStatus = dto.MigrationStatus;
-            entity.CreateDate = dto.CreateDate;
-            entity.CreateBy = dto.CreateBy;
-            entity.ModifiedDate = dto.ModifiedDate;
-            entity.ModifiedBy = dto.ModifiedBy;
+                // Convert ImageData từ byte[] sang Binary (chỉ update nếu có giá trị mới)
+                if (dto.ImageData != null)
+                {
+                    existingEntity.ImageData = new System.Data.Linq.Binary(dto.ImageData);
+                }
 
-            // Convert ImageData từ byte[] sang Binary
-            if (dto.ImageData != null)
-            {
-                entity.ImageData = new System.Data.Linq.Binary(dto.ImageData);
+                return existingEntity;
             }
-            else
-            {
-                entity.ImageData = null;
-            }
-
-            return entity;
         }
 
         #endregion

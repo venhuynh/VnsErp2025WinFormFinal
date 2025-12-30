@@ -93,26 +93,26 @@ namespace Dal.DtoConverter
                 // Tạo mới
                 return new Role
                 {
-                    Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
+                    Id = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid(),
                     Name = dto.Name,
                     Description = dto.Description,
                     IsSystemRole = dto.IsSystemRole,
                     IsActive = dto.IsActive,
                     CreatedDate = dto.CreatedDate ?? DateTime.Now,
                     CreatedBy = dto.CreatedBy,
-                    ModifiedDate = DateTime.Now,
-                    ModifiedBy = dto.ModifiedBy
+                    ModifiedDate = null, // Khi tạo mới, ModifiedDate nên là null
+                    ModifiedBy = null    // Khi tạo mới, ModifiedBy nên là null
                 };
             }
             else
             {
-                // Cập nhật
+                // Cập nhật - không thay đổi IsSystemRole vì đây là property hệ thống
+                // IsSystemRole chỉ được set khi tạo mới, không được thay đổi khi update
                 destination.Name = dto.Name;
                 destination.Description = dto.Description;
-                destination.IsSystemRole = dto.IsSystemRole;
                 destination.IsActive = dto.IsActive;
-                destination.ModifiedDate = DateTime.Now;
-                destination.ModifiedBy = dto.ModifiedBy;
+                // ModifiedDate và ModifiedBy sẽ được set bởi repository layer
+                // Không set ở đây để tránh duplicate
                 return destination;
             }
         }
