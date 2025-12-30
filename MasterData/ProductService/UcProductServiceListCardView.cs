@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Common;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Utils;
@@ -17,6 +9,13 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData.ProductService;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MasterData.ProductService
 {
@@ -539,12 +538,8 @@ namespace MasterData.ProductService
         {
             try
             {
-                // Get all data
-                var entities = await _productServiceBll.GetAllAsync();
-
-                // Convert to DTOs (without counting to improve performance)
-                var dtoList = entities.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId)
-                ).ToList();
+                // Get all data (BLL đã trả về DTOs)
+                var dtoList = await _productServiceBll.GetAllAsync();
 
                 BindGrid(dtoList);
                 _currentPageIndex = 0;
@@ -570,10 +565,8 @@ namespace MasterData.ProductService
                     pageIndex, _pageSize);
 
                 // Convert to DTOs (without counting to improve performance)
-                var dtoList = entities.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId)
-                ).ToList();
 
-                BindGrid(dtoList);
+                BindGrid(entities);
                 _currentPageIndex = pageIndex;
 
                 // Update pagination control - removed for CardView
@@ -831,11 +824,8 @@ namespace MasterData.ProductService
 
                 // Tìm kiếm trong database với từ khóa đầu tiên (hoặc từ khóa chính)
                 var primaryKeyword = searchKeywords.FirstOrDefault() ?? searchKeyword.Trim();
-                var searchResults = await _productServiceBll.SearchAsync(primaryKeyword);
-
-                // Convert to DTOs
-                var dtoList = searchResults.ToDtoList(categoryId => _productServiceBll.GetCategoryName(categoryId)
-                ).ToList();
+                // SearchAsync đã trả về DTOs, không cần convert
+                var dtoList = await _productServiceBll.SearchAsync(primaryKeyword);
 
                 // Thực hiện tìm kiếm bổ sung với tất cả từ khóa
                 var filteredResults = PerformAdvancedClientSideFiltering(dtoList, searchKeywords);

@@ -126,8 +126,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VnsErp2025.dbml</DependentUpon>
     </Compile>
+    <Compile Include="DtoConverter\AllowedMacAddressConverters.cs" />
     <Compile Include="DtoConverter\ApplicationUserDtoExtensions.cs" />
     <Compile Include="DtoConverter\ApplicationVersionDtoConverter.cs" />
+    <Compile Include="DtoConverter\AssetConverters.cs" />
     <Compile Include="DtoConverter\AssetDtoConverter.cs" />
     <Compile Include="DtoConverter\AttributeConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerCategoryConverters.cs" />
@@ -139,8 +141,10 @@
     <Compile Include="DtoConverter\InventoryBalanceDtoConverter.cs" />
     <Compile Include="DtoConverter\Inventory\StockInOutDetailForUIConverter.cs" />
     <Compile Include="DtoConverter\Inventory\StockInOutMasterForUIConverter.cs" />
-    <Compile Include="DtoConverter\PermissionDtoExtensions.cs" />
-    <Compile Include="DtoConverter\ProductImageConverter.cs" />
+    <Compile Include="DtoConverter\PermissionDtoConverter.cs" />
+    <Compile Include="DtoConverter\ProductImageDtoConverter.cs" />
+    <Compile Include="DtoConverter\ProductVariantConverters.cs" />
+    <Compile Include="DtoConverter\RoleConverters.cs" />
     <Compile Include="DtoConverter\RoleDtoConverter.cs" />
     <Compile Include="DtoConverter\UnitOfMeasureConverters.cs" />
     <Compile Include="DtoConverter\CompanyBranchConverters.cs" />

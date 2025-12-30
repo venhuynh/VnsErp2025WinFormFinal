@@ -117,36 +117,41 @@ public class AttributeRepository : IAttributeRepository
         }
     }
 
+    public AttributeDto GetById(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
     #endregion
 
     #region ========== READ OPERATIONS ==========
 
-    /// <summary>
-    /// Lấy Attribute theo Id
-    /// </summary>
-    /// <param name="id">Id của Attribute</param>
-    /// <returns>AttributeDto hoặc null</returns>
-    public AttributeDto GetById(Guid id)
-    {
-        try
-        {
-            using var context = CreateNewContext();
-            var attribute = context.Attributes.FirstOrDefault(x => x.Id == id);
+    ///// <summary>
+    ///// Lấy Attribute theo Id
+    ///// </summary>
+    ///// <param name="id">Id của Attribute</param>
+    ///// <returns>AttributeDto hoặc null</returns>
+    //public AttributeDto GetById(Guid id)
+    //{
+    //    try
+    //    {
+    //        using var context = CreateNewContext();
+    //        var attribute = context.Attributes.FirstOrDefault(x => x.Id == id);
             
-            if (attribute != null)
-            {
-                _logger.Debug($"Đã lấy Attribute theo ID: {id} - {attribute.Name}");
-                return attribute.ToDto();
-            }
+    //        if (attribute != null)
+    //        {
+    //            _logger.Debug($"Đã lấy Attribute theo ID: {id} - {attribute.Name}");
+    //            return attribute.ToDto();
+    //        }
             
-            return null;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Lỗi khi lấy Attribute theo Id {id}: {ex.Message}", ex);
-            throw new DataAccessException($"Lỗi khi lấy Attribute theo Id {id}: {ex.Message}", ex);
-        }
-    }
+    //        return null;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _logger.Error($"Lỗi khi lấy Attribute theo Id {id}: {ex.Message}", ex);
+    //        throw new DataAccessException($"Lỗi khi lấy Attribute theo Id {id}: {ex.Message}", ex);
+    //    }
+    //}
 
     /// <summary>
     /// Lấy tất cả Attribute
@@ -161,16 +166,18 @@ public class AttributeRepository : IAttributeRepository
                 .OrderBy(x => x.Name)
                 .ToList();
             
-            var dtos = attributes.Select(a => a.ToDto()).ToList();
+            ////var dtos = attributes.Select(a => a.ToDto()).ToList();
             
-            _logger.Debug($"Đã lấy {dtos.Count} Attribute");
-            return dtos;
+            //_logger.Debug($"Đã lấy {dtos.Count} Attribute");
+            //return dtos;
         }
         catch (Exception ex)
         {
             _logger.Error($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
         }
+
+        return null;
     }
 
     #endregion

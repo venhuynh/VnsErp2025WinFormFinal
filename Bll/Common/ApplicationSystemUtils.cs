@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Common.Utils;
+using DTO.VersionAndUserManagementDto;
 
 namespace Bll.Common
 {
@@ -30,7 +31,7 @@ namespace Bll.Common
         /// <summary>
         /// Thông tin user hiện tại đã đăng nhập
         /// </summary>
-        private static ApplicationUser _currentUser;
+        private static ApplicationUserDto _currentUser;
 
         #endregion
 
@@ -40,7 +41,7 @@ namespace Bll.Common
         /// Thiết lập user hiện tại đã đăng nhập
         /// </summary>
         /// <param name="user">Thông tin user</param>
-        public static void SetCurrentUser(ApplicationUser user)
+        public static void SetCurrentUser(ApplicationUserDto user)
         {
             _currentUser = user;
         }
@@ -53,7 +54,7 @@ namespace Bll.Common
         {
             if (userInfo != null)
             {
-                _currentUser = new ApplicationUser
+                _currentUser = new ApplicationUserDto
                 {
                     Id = userInfo.Id,
                     UserName = userInfo.UserName,
@@ -67,7 +68,7 @@ namespace Bll.Common
         /// Lấy thông tin user hiện tại
         /// </summary>
         /// <returns>Thông tin user hiện tại hoặc null nếu chưa đăng nhập</returns>
-        public static ApplicationUser GetCurrentUser()
+        public static ApplicationUserDto GetCurrentUser()
         {
             return _currentUser;
         }

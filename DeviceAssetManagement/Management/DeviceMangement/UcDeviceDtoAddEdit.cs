@@ -1,4 +1,16 @@
-﻿using System;
+using Bll.Inventory.InventoryManagement;
+using Bll.MasterData.ProductServiceBll;
+using Common.Common;
+using Common.Helpers;
+using Common.Utils;
+using DevExpress.Data;
+using DevExpress.XtraGrid.Views.Grid;
+using DTO.DeviceAssetManagement;
+using DTO.MasterData.ProductService;
+using Logger;
+using Logger.Configuration;
+using Logger.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -6,20 +18,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.InventoryManagement;
-using Bll.MasterData.ProductServiceBll;
-using Common.Common;
-using Common.Helpers;
-using Common.Utils;
-using Dal.DataContext;
-using DevExpress.Data;
-using DevExpress.XtraGrid.Views.Grid;
-using DTO.DeviceAssetManagement;
-using DTO.Inventory.InventoryManagement;
-using DTO.MasterData.ProductService;
-using Logger;
-using Logger.Configuration;
-using Logger.Interfaces;
 
 namespace DeviceAssetManagement.Management.DeviceMangement
 {
@@ -259,34 +257,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                 MsgBox.ShowError($"Lỗi tải dữ liệu biến thể sản phẩm: {ex.Message}");
             }
         }
-
-        /// <summary>
-        /// Convert Entity sang ProductVariantListDto (Async)
-        /// Sử dụng extension method ToListDto() có sẵn trong DTO và bổ sung các field còn thiếu
-        /// </summary>
-        private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
-        {
-            try
-            {
-                var result = new List<ProductVariantListDto>();
-
-                foreach (var variant in variants)
-                {
-                    // Sử dụng extension method ToListDto() có sẵn trong DTO
-                    var dto = variant.ToListDto();
-                    if (dto == null) continue;
-
-                    result.Add(dto);
-                }
-
-                return Task.FromResult(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("ConvertToVariantListDtosAsync: Exception occurred", ex);
-                throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
-            }
-        }
+         
 
         #endregion
 
@@ -852,14 +823,11 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                 {
                     // Tạo DeviceDto từ dữ liệu đã nhập
                     var deviceDto = CreateDeviceDtoFromInput();
-
-                    // Convert DTO sang Entity
-                    var device = deviceDto.ToEntity();
-
+                     
                     // Lưu qua BLL
                     await Task.Run(() =>
                     {
-                        _deviceBll.SaveOrUpdate(device);
+                        _deviceBll.SaveOrUpdate(deviceDto);
                     });
 
                     _logger.Info("SaveDataAsync: Save operation completed successfully");
@@ -1105,6 +1073,42 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                     title: @"<b><color=Green>💾 Lưu thiết bị</color></b>",
                     content: @"Lưu <b>thông tin thiết bị</b> vào database.<br/><br/><b>Chức năng:</b><br/>• Validate toàn bộ dữ liệu trước khi lưu<br/>• Tạo DeviceDto từ dữ liệu đã nhập<br/>• Convert DTO sang Entity<br/>• Lưu vào database qua BLL<br/>• Trigger event DeviceSaved để form cha refresh<br/><br/><b>Validation:</b><br/>• Kiểm tra đã chọn hàng hóa dịch vụ<br/>• Kiểm tra có ít nhất một định danh<br/>• Validate từng định danh (loại và giá trị)<br/>• Kiểm tra tính duy nhất của định danh<br/><br/><b>Dữ liệu lưu:</b><br/>• ProductVariantId<br/>• Các định danh (SerialNumber, IMEI, MAC, v.v.)<br/>• Trạng thái mặc định (Available - Đang trong kho VNS)<br/>• Loại thiết bị mặc định (Hardware)<br/>• Ngày tạo, người tạo<br/><br/><b>Xử lý lỗi:</b><br/>• Hiển thị danh sách lỗi validation nếu có<br/>• Hiển thị thông báo lỗi chi tiết nếu lưu thất bại<br/><br/><color=Gray>Lưu ý:</color> Sau khi lưu thành công, form cha sẽ tự động refresh danh sách thiết bị."
                 );
+            }
+        }
+
+        #endregion
+
+        #region ========== HELPER METHODS ==========
+
+        /// <summary>
+        /// Chuyển đổi danh sách ProductVariantDto sang ProductVariantListDto
+        /// </summary>
+        /// <param name="variants">Danh sách ProductVariantDto</param>
+        /// <returns>Danh sách ProductVariantListDto</returns>
+        private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariantDto> variants)
+        {
+            try
+            {
+                // Manually convert ProductVariantDto to ProductVariantListDto
+                var result = variants.Select(v => new ProductVariantListDto
+                {
+                    Id = v.Id,
+                    ProductCode = v.ProductCode,
+                    ProductName = v.ProductName,
+                    VariantCode = v.VariantCode,
+                    VariantFullName = v.VariantName, // Map VariantName to VariantFullName
+                    UnitName = v.UnitName,
+                    IsActive = v.IsActive,
+                    ThumbnailImage = v.ThumbnailImage,
+                    ImageCount = v.ImageCount,
+                    FullVariantInfo = v // Store full variant info for later use
+                }).ToList();
+
+                return Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
             }
         }
 

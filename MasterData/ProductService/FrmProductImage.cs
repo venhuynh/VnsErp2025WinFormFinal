@@ -1,3 +1,13 @@
+using Bll.MasterData.ProductServiceBll;
+using Common.Common;
+using Common.Utils;
+using DevExpress.Data;
+using DevExpress.Utils;
+using DevExpress.XtraEditors;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.WinExplorer;
+using DevExpress.XtraSplashScreen;
+using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,19 +16,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Common;
-using Bll.MasterData.ProductServiceBll;
-using Common.Common;
-using Common.Utils;
-using Dal.DataContext;
-using DevExpress.Data;
-using DevExpress.Utils;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Controls;
-using DevExpress.XtraGrid.Columns;
-using DevExpress.XtraGrid.Views.WinExplorer;
-using DevExpress.XtraSplashScreen;
-using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {
@@ -427,7 +424,7 @@ namespace MasterData.ProductService
                     
                     // Lấy ProductService từ dictionary thay vì navigation property để tránh lỗi DataContext disposed
                     ProductServiceDto productService = null;
-                    if (dto.ProductId != Guid.Empty && productServiceDict.TryGetValue(dto.ProductId, out var value))
+                    if (dto.ProductId != Guid.Empty && productServiceDict.TryGetValue(dto.ProductId.Value, out var value))
                     {
                         productService = value;
                     }

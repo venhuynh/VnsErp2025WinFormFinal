@@ -155,17 +155,9 @@ namespace VersionAndUserManagement.UserManagement
             {
                 await ExecuteWithWaitingFormAsync(async () =>
                 {
-                    // Load danh sách Employee từ BLL
-                    var employees = await Task.Run(() => _employeeBll.GetAll());
-                    
-                    // Convert sang EmployeeDto
-                    // Lưu ý: Không truy cập navigation properties (Company, Department, Position) 
-                    // vì DataContext có thể đã bị dispose sau khi repository method kết thúc
-                    // Chỉ load thông tin cơ bản, navigation properties sẽ được load khi cần
-                    var employeeDtos = employees.Select(e => e.ToDto()).ToList();
-
+                  
                     // Gán vào binding source
-                    employeeDtoBindingSource.DataSource = employeeDtos;
+                    employeeDtoBindingSource.DataSource = await _employeeBll.GetAllAsync();
                 });
             }
             catch (Exception ex)

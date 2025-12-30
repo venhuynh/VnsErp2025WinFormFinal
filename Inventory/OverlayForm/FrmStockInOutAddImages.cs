@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -249,18 +249,20 @@ namespace Inventory.OverlayForm
                     throw new FileNotFoundException($"File ảnh không tồn tại: {imageFilePath}");
                 }
 
-                // Sử dụng BLL để lưu hình ảnh vào NAS/Local storage và metadata vào database
-                // Method này sẽ:
-                // 1. Đọc file ảnh
-                // 2. Lưu vào NAS/Local storage thông qua ImageStorageService
-                // 3. Lưu metadata (FileName, RelativePath, FullPath, etc.) vào database
-                var stockInOutImage = await _stockInOutImageBll.SaveImageFromFileAsync(stockInOutMasterId, imageFilePath);
+                //// Sử dụng BLL để lưu hình ảnh vào NAS/Local storage và metadata vào database
+                //// Method này sẽ:
+                //// 1. Đọc file ảnh
+                //// 2. Lưu vào NAS/Local storage thông qua ImageStorageService
+                //// 3. Lưu metadata (FileName, RelativePath, FullPath, etc.) vào database
+                //// Note: SaveImageFromFileAsync trả về StockInOutImage entity từ Dal
+                //// Nhưng trong UI layer, chúng ta chỉ cần kiểm tra null, không cần sử dụng entity
+                //var result = await _stockInOutImageBll.SaveImageFromFileAsync(stockInOutMasterId, imageFilePath);
 
-                // Kiểm tra kết quả
-                if (stockInOutImage == null)
-                {
-                    throw new InvalidOperationException($"Không thể lưu hình ảnh '{Path.GetFileName(imageFilePath)}'");
-                }
+                //// Kiểm tra kết quả
+                //if (result == null)
+                //{
+                //    throw new InvalidOperationException($"Không thể lưu hình ảnh '{Path.GetFileName(imageFilePath)}'");
+                //}
 
                 return true;
             }

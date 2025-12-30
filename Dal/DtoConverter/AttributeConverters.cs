@@ -11,60 +11,7 @@ namespace Dal.DtoConverter
     /// </summary>
     public static class AttributeConverters
     {
-        #region Attribute -> AttributeDto
-
-        /// <summary>
-        /// Chuyển đổi Attribute Entity sang AttributeDto
-        /// </summary>
-        /// <param name="entity">Attribute Entity</param>
-        /// <returns>AttributeDto</returns>
-        public static AttributeDto ToDto(this Attribute entity)
-        {
-            if (entity == null) return null;
-
-            var dto = new AttributeDto
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                DataType = entity.DataType,
-                Description = entity.Description
-            };
-
-            // Load AttributeValues từ navigation property trước khi context bị dispose
-            try
-            {
-                if (entity.AttributeValues != null)
-                {
-                    dto.AttributeValues = entity.AttributeValues
-                        .Select(v => AttributeValueConverters.ToDto(v, entity))
-                        .ToList();
-                }
-                else
-                {
-                    dto.AttributeValues = new List<AttributeValueDto>();
-                }
-            }
-            catch
-            {
-                // Navigation property chưa được load hoặc đã bị dispose
-                dto.AttributeValues = new List<AttributeValueDto>();
-            }
-
-            return dto;
-        }
-
-        /// <summary>
-        /// Chuyển đổi danh sách Attribute Entity sang danh sách AttributeDto
-        /// </summary>
-        /// <param name="entities">Danh sách Attribute Entity</param>
-        /// <returns>Danh sách AttributeDto</returns>
-        public static List<AttributeDto> ToDtoList(this IEnumerable<Attribute> entities)
-        {
-            if (entities == null) return new List<AttributeDto>();
-            return entities.Select(e => e.ToDto()).ToList();
-        }
-
-        #endregion
+        
 
         #region AttributeDto -> Attribute
 

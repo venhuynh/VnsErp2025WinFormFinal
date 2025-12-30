@@ -1,3 +1,13 @@
+using Bll.MasterData.ProductServiceBll;
+using Common.Common;
+using Common.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraGrid.Views.Base;
+using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraSplashScreen;
+using DTO.MasterData.ProductService;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,18 +18,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Bll.Common;
-using Bll.MasterData.ProductServiceBll;
-using Common.Common;
-using Common.Utils;
-using Dal.DataContext;
-using DevExpress.XtraBars;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Controls;
-using DevExpress.XtraGrid.Views.Base;
-using DevExpress.XtraGrid.Views.Grid;
-using DevExpress.XtraSplashScreen;
-using DTO.MasterData.ProductService;
 
 namespace MasterData.ProductService
 {
@@ -215,10 +213,9 @@ namespace MasterData.ProductService
 		private async Task LoadUnitOfMeasureDataSourceAsync()
 		{
 			// GetByStatus() already returns List<UnitOfMeasureDto>
-			var unitDtos = await Task.Run(() => _unitOfMeasureBll.GetByStatus(true))
-				.OrderBy(u => u.Name)
-				.ToList();
-			unitOfMeasureDtoBindingSource.DataSource = unitDtos;
+			var unitDtos = await Task.Run(() => _unitOfMeasureBll.GetByStatus(true));
+			var orderedDtos = unitDtos.OrderBy(u => u.Name).ToList();
+			unitOfMeasureDtoBindingSource.DataSource = orderedDtos;
 		}
 
 		/// <summary>
@@ -227,10 +224,9 @@ namespace MasterData.ProductService
 		private async Task LoadAttributesDataSourceAsync()
 		{
 			// GetAll() already returns List<AttributeDto>
-			var attributeDtos = await Task.Run(() => _attributeBll.GetAll())
-				.OrderBy(a => a.Name)
-				.ToList();
-			attributeDtoBindingSource.DataSource = attributeDtos;
+			var attributeDtos = await Task.Run(() => _attributeBll.GetAll());
+			var orderedDtos = attributeDtos.OrderBy(a => a.Name).ToList();
+			attributeDtoBindingSource.DataSource = orderedDtos;
 		}
 
 		/// <summary>
@@ -1083,8 +1079,8 @@ namespace MasterData.ProductService
 					unitId = (Guid)selectedUnit;
 				}
 
-				// Tính toán VariantFullName từ các thuộc tính đã chọn
-				var variantFullName = BuildVariantFullNameFromForm();
+				// Note: VariantFullName sẽ được BLL tự động cập nhật sau khi save
+				// Không cần set trong DTO vì ProductVariantDto không có property này
 
 				var variant = new ProductVariantDto
 				{
@@ -1092,8 +1088,7 @@ namespace MasterData.ProductService
 					ProductId = productId,
 					VariantCode = VariantCodeTextEdit.Text?.Trim(),
 					UnitId = unitId,
-					IsActive = IsActiveToggleSwitch.IsOn,
-					VariantFullName = variantFullName
+					IsActive = IsActiveToggleSwitch.IsOn
 				};
 
 				return variant;

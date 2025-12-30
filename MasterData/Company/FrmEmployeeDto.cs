@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.MasterData.CompanyBll;
+﻿using Bll.MasterData.CompanyBll;
 using Common.Common;
 using Common.Utils;
 using DevExpress.Data;
@@ -22,7 +12,16 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Card;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData.Company;
-using Dal.DataContext;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MasterData.Company
 {

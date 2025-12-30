@@ -74,6 +74,18 @@ namespace Dal.DtoConverter
             return entities.Select(entity => entity.ToDto()).ToList();
         }
 
+        /// <summary>
+        /// Chuyển đổi danh sách Role entities thành danh sách RoleDto (alias cho ToDtos)
+        /// </summary>
+        /// <param name="entities">Danh sách Role entities</param>
+        /// <returns>Danh sách RoleDto</returns>
+        public static List<RoleDto> ToDtoList(this IEnumerable<Role> entities)
+        {
+            if (entities == null) return new List<RoleDto>();
+
+            return entities.Select(entity => entity.ToDto()).ToList();
+        }
+
         #endregion
 
         #region DTO to Entity
@@ -90,31 +102,67 @@ namespace Dal.DtoConverter
 
             if (destination == null)
             {
-                // Tạo mới
-                return new Role
+                // Tạo mới entity
+                var entity = new Role
                 {
+                    // ID: Sử dụng dto.Id nếu không rỗng, ngược lại tạo mới
                     Id = dto.Id != Guid.Empty ? dto.Id : Guid.NewGuid(),
+
+                    // Thông tin cơ bản
                     Name = dto.Name,
                     Description = dto.Description,
                     IsSystemRole = dto.IsSystemRole,
                     IsActive = dto.IsActive,
+
+                    // Thông tin hệ thống - Create
                     CreatedDate = dto.CreatedDate ?? DateTime.Now,
                     CreatedBy = dto.CreatedBy,
-                    ModifiedDate = null, // Khi tạo mới, ModifiedDate nên là null
-                    ModifiedBy = null    // Khi tạo mới, ModifiedBy nên là null
+
+                    // Thông tin hệ thống - Modified (null cho entity mới)
+                    ModifiedDate = null,
+                    ModifiedBy = null
                 };
+
+                return entity;
             }
             else
             {
-                // Cập nhật - không thay đổi IsSystemRole vì đây là property hệ thống
+                // Cập nhật entity hiện có
+                // Không thay đổi Id và CreatedDate, CreatedBy (thông tin audit tạo)
+                // Không thay đổi IsSystemRole vì đây là property hệ thống
                 // IsSystemRole chỉ được set khi tạo mới, không được thay đổi khi update
+
                 destination.Name = dto.Name;
                 destination.Description = dto.Description;
                 destination.IsActive = dto.IsActive;
+
                 // ModifiedDate và ModifiedBy sẽ được set bởi repository layer
-                // Không set ở đây để tránh duplicate
+                // Không set ở đây để tránh duplicate logic
+
                 return destination;
             }
+        }
+
+        /// <summary>
+        /// Chuyển đổi danh sách RoleDto sang danh sách Role entities
+        /// </summary>
+        /// <param name="dtos">Danh sách RoleDto</param>
+        /// <returns>Danh sách Role entities</returns>
+        public static List<Role> ToEntityList(this IEnumerable<RoleDto> dtos)
+        {
+            if (dtos == null) return new List<Role>();
+            return dtos.Select(d => d.ToEntity()).Where(e => e != null).ToList();
+        }
+
+        /// <summary>
+        /// Chuyển đổi danh sách RoleDto sang danh sách Role entities (alias cho ToEntityList)
+        /// </summary>
+        /// <param name="dtos">Danh sách RoleDto</param>
+        /// <returns>Danh sách Role entities</returns>
+        public static List<Role> ToEntities(this IEnumerable<RoleDto> dtos)
+        {
+            if (dtos == null) return new List<Role>();
+            return dtos.Select(d => d.ToEntity()).Where(e => e != null).ToList();
         }
 
         #endregion

@@ -1,10 +1,13 @@
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
+using Dal.DtoConverter.Inventory;
+using DTO.Inventory;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dal.Connection;
 using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 
@@ -83,8 +86,8 @@ namespace Bll.Inventory.InventoryManagement
         /// <param name="fromDate">Từ ngày</param>
         /// <param name="toDate">Đến ngày</param>
         /// <param name="keyword">Từ khóa tìm kiếm (tìm trong mã hàng, tên hàng, số phiếu)</param>
-        /// <returns>Danh sách StockInOutDetail entities</returns>
-        public List<StockInOutDetail> QueryProductHistory(DateTime fromDate, DateTime toDate, string keyword = null)
+        /// <returns>Danh sách StockInOutDetailForUIDto</returns>
+        public List<StockInOutDetailForUIDto> QueryProductHistory(DateTime fromDate, DateTime toDate, string keyword = null)
         {
             try
             {
@@ -92,8 +95,11 @@ namespace Bll.Inventory.InventoryManagement
                     "QueryProductHistory: Bắt đầu query lịch sử sản phẩm, FromDate={0}, ToDate={1}, Keyword={2}",
                     fromDate, toDate, keyword ?? "null");
 
-                // Gọi Repository để thực hiện query
-                var result = GetStockInOutDetailRepository().QueryProductHistory(fromDate, toDate, keyword);
+                // Gọi Repository để thực hiện query (trả về entities)
+                var entities = GetStockInOutDetailRepository().QueryProductHistory(fromDate, toDate, keyword);
+
+                // Convert entities sang DTOs
+                var result = entities.Select((entity, index) => entity.ToDto(index + 1)).ToList();
 
                 _logger.Info("QueryProductHistory: Query thành công, ResultCount={0}", result.Count);
                 return result;
@@ -159,15 +165,19 @@ namespace Bll.Inventory.InventoryManagement
         /// Query StockInOutDetail theo danh sách ProductVariantId
         /// </summary>
         /// <param name="productVariantIds">Danh sách ProductVariantId</param>
-        /// <returns>Danh sách StockInOutDetail entities</returns>
-        public List<StockInOutDetail> QueryByProductVariantIds(List<Guid> productVariantIds)
+        /// <returns>Danh sách StockInOutDetailForUIDto</returns>
+        public List<StockInOutDetailForUIDto> QueryByProductVariantIds(List<Guid> productVariantIds)
         {
             try
             {
                 _logger.Debug("QueryByProductVariantIds: Bắt đầu query, ProductVariantIds count={0}", 
                     productVariantIds?.Count ?? 0);
 
-                var result = GetStockInOutDetailRepository().QueryByProductVariantIds(productVariantIds);
+                // Gọi Repository để thực hiện query (trả về entities)
+                var entities = GetStockInOutDetailRepository().QueryByProductVariantIds(productVariantIds);
+
+                // Convert entities sang DTOs
+                var result = entities.Select((entity, index) => entity.ToDto(index + 1)).ToList();
 
                 _logger.Info("QueryByProductVariantIds: Query thành công, ResultCount={0}", result.Count);
                 return result;

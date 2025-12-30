@@ -1,4 +1,6 @@
 ﻿using Bll.MasterData.CompanyBll;
+using Common.Common;
+using Common.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraSplashScreen;
@@ -10,9 +12,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Common.Common;
-using Common.Utils;
-using Dal.DataContext;
 
 namespace MasterData.Company
 {

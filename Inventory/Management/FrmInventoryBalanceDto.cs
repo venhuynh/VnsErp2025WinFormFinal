@@ -1,17 +1,15 @@
-﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.BandedGrid;
-using DevExpress.Data;
+using DevExpress.XtraGrid.Views.Grid;
 using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using DevExpress.XtraGrid.Views.Grid;
 
 namespace Inventory.Management
 {
@@ -432,16 +430,12 @@ namespace Inventory.Management
                     }
 
                     // Query tồn kho theo kỳ (UI -> BLL -> DAL)
-                    // Repository đã tự động load navigation properties qua DataLoadOptions
-                    var entities = _inventoryBalanceBll.QueryBalances(
+                    // BLL đã trả về DTOs, không cần convert
+                    var dtos = _inventoryBalanceBll.QueryBalances(
                         warehouseId: null,
                         productVariantId: null,
                         periodYear: periodYear,
                         periodMonth: periodMonth);
-
-                    // Convert entities sang DTOs sử dụng converter
-                    // Converter tự động map navigation properties từ entity sang DTO
-                    var dtos = entities.ToDtoList();
 
                     // Set data source
                     LoadData(dtos);
@@ -529,14 +523,13 @@ namespace Inventory.Management
                 }
 
                 // Query tồn kho theo kỳ (UI -> BLL -> DAL)
-                var entities = _inventoryBalanceBll.QueryBalances(
+                // Query tồn kho theo kỳ (UI -> BLL -> DAL)
+                // BLL đã trả về DTOs, không cần convert
+                var dtos = _inventoryBalanceBll.QueryBalances(
                     warehouseId: null,
                     productVariantId: null,
                     periodYear: periodYear,
                     periodMonth: periodMonth);
-
-                // Convert entities sang DTOs sử dụng converter
-                var dtos = entities.ToDtoList();
 
                 // Set data source
                 LoadData(dtos);

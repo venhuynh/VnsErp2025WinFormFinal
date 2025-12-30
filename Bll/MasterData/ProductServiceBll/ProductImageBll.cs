@@ -120,7 +120,6 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region ========== READ OPERATIONS ==========
 
         /// <summary>
         /// Lấy tất cả hình ảnh
@@ -151,7 +150,8 @@ namespace Bll.MasterData.ProductServiceBll
             }
             catch (Exception ex)
             {
-                throw new BusinessLogicException($"Lỗi khi lấy danh sách hình ảnh cho sản phẩm '{productId}': {ex.Message}", ex);
+                throw new BusinessLogicException(
+                    $"Lỗi khi lấy danh sách hình ảnh cho sản phẩm '{productId}': {ex.Message}", ex);
             }
         }
 
@@ -212,7 +212,7 @@ namespace Bll.MasterData.ProductServiceBll
 
                 // Lấy từ storage
                 var imageData = await GetImageStorage().GetImageAsync(relativePath);
-                
+
                 if (imageData == null)
                 {
                     _logger.Warning($"Không thể đọc file từ storage, RelativePath={relativePath}");
@@ -227,71 +227,6 @@ namespace Bll.MasterData.ProductServiceBll
             }
         }
 
-        /// <summary>
-        /// Lấy dữ liệu hình ảnh từ storage (NAS/Local)
-        /// </summary>
-        /// <param name="imageId">ID hình ảnh</param>
-        /// <returns>Dữ liệu hình ảnh (byte array) hoặc null</returns>
-        public async Task<byte[]> GetImageDataAsync(Guid imageId)
-        {
-            try
-            {
-                var productImage = GetDataAccess().GetById(imageId);
-                if (productImage == null)
-                {
-                    _logger.Warning($"Không tìm thấy hình ảnh với ID '{imageId}'");
-                    return null;
-                }
-
-                // Sử dụng RelativePath
-                var relativePath = productImage.RelativePath;
-                
-                if (string.IsNullOrEmpty(relativePath))
-                {
-                    _logger.Warning($"Hình ảnh '{imageId}' không có RelativePath hoặc ImagePath");
-                    return null;
-                }
-
-                // Lấy từ storage
-                return await GetImageDataByRelativePathAsync(relativePath);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Lỗi khi lấy dữ liệu hình ảnh '{imageId}': {ex.Message}", ex);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Lấy thumbnail từ storage
-        /// </summary>
-        /// <param name="imageId">ID hình ảnh</param>
-        /// <returns>Dữ liệu thumbnail (byte array) hoặc null</returns>
-        public async Task<byte[]> GetThumbnailDataAsync(Guid imageId)
-        {
-            try
-            {
-                var productImage = GetDataAccess().GetById(imageId);
-                if (productImage == null)
-                {
-                    return null;
-                }
-
-                // ThumbnailPath không còn tồn tại, generate thumbnail từ original image
-                var relativePath = productImage.RelativePath;
-                if (!string.IsNullOrEmpty(relativePath))
-                {
-                    return await GetImageStorage().GetThumbnailAsync(relativePath);
-                }
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Lỗi khi lấy thumbnail '{imageId}': {ex.Message}", ex);
-                return null;
-            }
-        }
 
         /// <summary>
         /// Lấy hình ảnh chính của sản phẩm/dịch vụ
@@ -306,11 +241,11 @@ namespace Bll.MasterData.ProductServiceBll
             }
             catch (Exception ex)
             {
-                throw new BusinessLogicException($"Lỗi khi lấy hình ảnh chính cho sản phẩm '{productId}': {ex.Message}", ex);
+                throw new BusinessLogicException($"Lỗi khi lấy hình ảnh chính cho sản phẩm '{productId}': {ex.Message}",
+                    ex);
             }
         }
 
-        #region ========== CREATE OPERATIONS ==========
 
         /// <summary>
         /// Lưu hình ảnh từ file và thông tin metadata
@@ -322,7 +257,8 @@ namespace Bll.MasterData.ProductServiceBll
         /// <param name="caption">Chú thích</param>
         /// <param name="altText">Alt text</param>
         /// <returns>ProductImageDto đã lưu</returns>
-        public async Task<ProductImageDto> SaveImageFromFileAsync(Guid productId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null)
+        public async Task<ProductImageDto> SaveImageFromFileAsync(Guid productId, string imageFilePath,
+            bool isPrimary = false, string caption = null, string altText = null)
         {
             try
             {
@@ -334,10 +270,10 @@ namespace Bll.MasterData.ProductServiceBll
 
                 // 2. Tạo tên file mới để tránh trùng lặp
                 var fileExtension = Path.GetExtension(imageFilePath);
-                var fileName = string.Format(ApplicationConstants.PRODUCT_IMAGE_FILENAME_FORMAT, 
-                    productId, 
-                    DateTime.Now, 
-                    Guid.NewGuid().ToString("N").Substring(0, 8), 
+                var fileName = string.Format(ApplicationConstants.PRODUCT_IMAGE_FILENAME_FORMAT,
+                    productId,
+                    DateTime.Now,
+                    Guid.NewGuid().ToString("N").Substring(0, 8),
                     fileExtension);
 
                 // 3. Lưu vào storage (NAS/Local) thông qua ImageStorageService
@@ -400,7 +336,8 @@ namespace Bll.MasterData.ProductServiceBll
                 // 7. Lưu metadata vào database
                 GetDataAccess().SaveOrUpdate(productImageDto);
 
-                _logger.Info($"Đã lưu hình ảnh sản phẩm, ProductId={productId}, ImageId={productImageDto.Id}, RelativePath={storageResult.RelativePath}");
+                _logger.Info(
+                    $"Đã lưu hình ảnh sản phẩm, ProductId={productId}, ImageId={productImageDto.Id}, RelativePath={storageResult.RelativePath}");
 
                 return productImageDto;
             }
@@ -414,12 +351,13 @@ namespace Bll.MasterData.ProductServiceBll
         /// <summary>
         /// Lưu hình ảnh từ file (synchronous version - backward compatibility)
         /// </summary>
-        public ProductImageDto SaveImageFromFile(Guid productId, string imageFilePath, bool isPrimary = false, string caption = null, string altText = null)
+        public ProductImageDto SaveImageFromFile(Guid productId, string imageFilePath, bool isPrimary = false,
+            string caption = null, string altText = null)
         {
-            return SaveImageFromFileAsync(productId, imageFilePath, isPrimary, caption, altText).GetAwaiter().GetResult();
+            return SaveImageFromFileAsync(productId, imageFilePath, isPrimary, caption, altText).GetAwaiter()
+                .GetResult();
         }
 
-        #region ========== UPDATE OPERATIONS ==========
 
         /// <summary>
         /// Cập nhật hình ảnh chính cho sản phẩm/dịch vụ
@@ -437,7 +375,9 @@ namespace Bll.MasterData.ProductServiceBll
 
                 // 1. Nén ảnh trước khi lưu để đảm bảo kích thước hợp lý
                 byte[] imageData;
-                using (var compressedImage = CompressImage(imageFilePath, ApplicationConstants.DEFAULT_COMPRESSION_QUALITY, ApplicationConstants.DEFAULT_MAX_DIMENSION))
+                using (var compressedImage = CompressImage(imageFilePath,
+                           ApplicationConstants.DEFAULT_COMPRESSION_QUALITY,
+                           ApplicationConstants.DEFAULT_MAX_DIMENSION))
                 {
                     // Convert Image to byte array
                     using (var ms = new MemoryStream())
@@ -448,9 +388,9 @@ namespace Bll.MasterData.ProductServiceBll
                 }
 
                 // 2. Tạo tên file mới với extension .jpg
-                var fileName = string.Format(ApplicationConstants.PRIMARY_IMAGE_FILENAME_FORMAT, 
-                    productId, 
-                    DateTime.Now, 
+                var fileName = string.Format(ApplicationConstants.PRIMARY_IMAGE_FILENAME_FORMAT,
+                    productId,
+                    DateTime.Now,
                     Guid.NewGuid().ToString("N").Substring(0, 8));
 
                 // 3. Lưu vào storage (NAS/Local)
@@ -473,7 +413,7 @@ namespace Bll.MasterData.ProductServiceBll
 
                 // 5. Kiểm tra xem đã có hình ảnh chính chưa
                 var existingPrimary = GetDataAccess().GetPrimaryByProductId(productId);
-                
+
                 ProductImageDto productImageDto;
                 if (existingPrimary != null)
                 {
@@ -538,7 +478,8 @@ namespace Bll.MasterData.ProductServiceBll
             catch (Exception ex)
             {
                 _logger.Error($"Lỗi khi cập nhật hình ảnh chính cho sản phẩm '{productId}': {ex.Message}", ex);
-                throw new BusinessLogicException($"Lỗi khi cập nhật hình ảnh chính cho sản phẩm '{productId}': {ex.Message}", ex);
+                throw new BusinessLogicException(
+                    $"Lỗi khi cập nhật hình ảnh chính cho sản phẩm '{productId}': {ex.Message}", ex);
             }
         }
 
@@ -654,9 +595,10 @@ namespace Bll.MasterData.ProductServiceBll
                 // 1. Xóa đường dẫn ảnh chính trong ProductService
                 // 2. Đặt ảnh chính mới nếu có ảnh khác
                 // 3. Cập nhật trạng thái sản phẩm
-                
-                System.Diagnostics.Debug.WriteLine($"Cần cập nhật ProductService cho sản phẩm '{productId}' sau khi xóa ảnh chính");
-                
+
+                System.Diagnostics.Debug.WriteLine(
+                    $"Cần cập nhật ProductService cho sản phẩm '{productId}' sau khi xóa ảnh chính");
+
                 // Tạm thời chỉ log - cần implement logic cụ thể
             }
             catch (Exception ex)
@@ -681,7 +623,8 @@ namespace Bll.MasterData.ProductServiceBll
             }
             catch (Exception ex)
             {
-                throw new BusinessLogicException($"Lỗi khi xóa tất cả hình ảnh của sản phẩm '{productId}': {ex.Message}", ex);
+                throw new BusinessLogicException(
+                    $"Lỗi khi xóa tất cả hình ảnh của sản phẩm '{productId}': {ex.Message}", ex);
             }
         }
 
@@ -733,7 +676,7 @@ namespace Bll.MasterData.ProductServiceBll
                 var actualMaxDimension = maxDimension == -1 ? ApplicationConstants.DEFAULT_MAX_DIMENSION : maxDimension;
 
                 using var originalImage = Image.FromFile(imageFilePath);
-                
+
                 return CompressImage(originalImage, actualQuality, actualMaxDimension);
             }
             catch (Exception ex)
@@ -762,7 +705,7 @@ namespace Bll.MasterData.ProductServiceBll
 
                 // Tính toán kích thước mới nếu ảnh quá lớn
                 var newSize = CalculateNewSize(originalImage.Width, originalImage.Height, actualMaxDimension);
-                
+
                 // Tạo ảnh mới với kích thước đã tính toán
                 using (var resizedImage = new Bitmap(newSize.Width, newSize.Height))
                 {
@@ -815,10 +758,10 @@ namespace Bll.MasterData.ProductServiceBll
                 {
                     // Nén ảnh
                     using var ms = new MemoryStream();
-                    
+
                     imageCopy.Save(ms, jpegCodec, encoderParams);
                     ms.Position = 0;
-                    
+
                     // Tạo ảnh mới từ MemoryStream
                     return new Bitmap(ms);
                 }
@@ -846,7 +789,7 @@ namespace Bll.MasterData.ProductServiceBll
 
             // Tính tỷ lệ để giảm kích thước
             double ratio = Math.Min((double)maxDimension / originalWidth, (double)maxDimension / originalHeight);
-            
+
             return new Size(
                 (int)(originalWidth * ratio),
                 (int)(originalHeight * ratio)
@@ -870,6 +813,7 @@ namespace Bll.MasterData.ProductServiceBll
                         return codec;
                     }
                 }
+
                 return null;
             }
             catch
@@ -958,7 +902,7 @@ namespace Bll.MasterData.ProductServiceBll
                 // Tìm kiếm sản phẩm/dịch vụ trước
                 var productServiceBll = new ProductServiceBll();
                 var searchResults = await productServiceBll.SearchAsync(searchKeyword.Trim());
-                
+
                 if (!searchResults.Any())
                 {
                     return new List<ProductImageDto>();
@@ -966,7 +910,7 @@ namespace Bll.MasterData.ProductServiceBll
 
                 // Lấy danh sách ProductId từ kết quả tìm kiếm
                 var productIds = searchResults.Select(x => x.Id).ToList();
-                
+
                 // Tìm kiếm hình ảnh theo danh sách ProductId
                 return await SearchByProductIdsAsync(productIds);
             }
@@ -978,62 +922,6 @@ namespace Bll.MasterData.ProductServiceBll
 
         #endregion
 
-        #region ========== HELPER METHODS (Image Storage & Processing) ==========
-
-        /// <summary>
-        /// Kiểm tra file hình ảnh có tồn tại trên storage (NAS/Local) không
-        /// </summary>
-        /// <param name="relativePath">Đường dẫn tương đối</param>
-        /// <returns>True nếu file tồn tại</returns>
-        public async Task<bool> CheckImageFileExistsAsync(string relativePath)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(relativePath))
-                {
-                    return false;
-                }
-
-                return await GetImageStorage().ImageExistsAsync(relativePath);
-            }
-            catch (Exception ex)
-            {
-                _logger.Warning($"Lỗi khi kiểm tra file tồn tại '{relativePath}': {ex.Message}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Lấy dữ liệu hình ảnh từ storage (NAS/Local) theo RelativePath
-        /// </summary>
-        /// <param name="relativePath">Đường dẫn tương đối</param>
-        /// <returns>Dữ liệu hình ảnh (byte array) hoặc null</returns>
-        public async Task<byte[]> GetImageDataByRelativePathAsync(string relativePath)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(relativePath))
-                {
-                    _logger.Warning("RelativePath không được để trống");
-                    return null;
-                }
-
-                // Lấy từ storage
-                var imageData = await GetImageStorage().GetImageAsync(relativePath);
-                
-                if (imageData == null)
-                {
-                    _logger.Warning($"Không thể đọc file từ storage, RelativePath={relativePath}");
-                }
-
-                return imageData;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Lỗi khi lấy dữ liệu hình ảnh từ RelativePath '{relativePath}': {ex.Message}", ex);
-                return null;
-            }
-        }
 
         /// <summary>
         /// Lấy dữ liệu hình ảnh từ storage (NAS/Local)
@@ -1053,7 +941,7 @@ namespace Bll.MasterData.ProductServiceBll
 
                 // Sử dụng RelativePath
                 var relativePath = productImage.RelativePath;
-                
+
                 if (string.IsNullOrEmpty(relativePath))
                 {
                     _logger.Warning($"Hình ảnh '{imageId}' không có RelativePath hoặc ImagePath");
@@ -1100,7 +988,5 @@ namespace Bll.MasterData.ProductServiceBll
                 return null;
             }
         }
-
-        #endregion
-
-        #region ========== PRIVATE HELPER METHODS ==========
+    }
+}

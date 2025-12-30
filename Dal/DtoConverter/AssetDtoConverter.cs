@@ -245,25 +245,6 @@ namespace Dal.DtoConverter
             return entity;
         }
 
-        /// <summary>
-        /// Chuyển đổi danh sách AssetDto thành danh sách Asset entities
-        /// </summary>
-        /// <param name="dtos">Danh sách AssetDto</param>
-        /// <returns>Danh sách Asset entities</returns>
-        public static List<Asset> ToEntityList(this IEnumerable<AssetDto> dtos)
-        {
-            if (dtos == null) return [];
-
-            List<Asset> list = [];
-            foreach (var dto in dtos)
-            {
-                var entity = dto.ToEntity();
-                if (entity != null) list.Add(entity);
-            }
-
-            return list;
-        }
-
         #endregion
     }
 

@@ -142,10 +142,6 @@
       <Project>{68e56ab6-1ada-40de-9edd-0be2b8f35c3a}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Dal\Dal.csproj">
-      <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
-      <Name>Dal</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DTO\DTO.csproj">
       <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>
       <Name>DTO</Name>

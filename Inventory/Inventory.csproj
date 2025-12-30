@@ -94,12 +94,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Management\FrmAssetDtoManagement.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Management\FrmAssetDtoManagement.Designer.cs">
-      <DependentUpon>FrmAssetDtoManagement.cs</DependentUpon>
-    </Compile>
     <Compile Include="Management\FrmInventoryBalanceDto.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,12 +141,6 @@
     </Compile>
     <Compile Include="Query\FrmStockInOutProductHistory.Designer.cs">
       <DependentUpon>FrmStockInOutProductHistory.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OverlayForm\FrmWarranty.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OverlayForm\FrmWarranty.Designer.cs">
-      <DependentUpon>FrmWarranty.cs</DependentUpon>
     </Compile>
     <Compile Include="Query\FrmWarrantyCheck.cs">
       <SubType>Form</SubType>
@@ -395,9 +383,6 @@
     <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.Designer.cs">
       <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Management\FrmAssetDtoManagement.resx">
-      <DependentUpon>FrmAssetDtoManagement.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Management\FrmInventoryBalanceDto.resx">
       <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
     </EmbeddedResource>
@@ -421,9 +406,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Query\FrmStockInOutProductHistory.resx">
       <DependentUpon>FrmStockInOutProductHistory.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OverlayForm\FrmWarranty.resx">
-      <DependentUpon>FrmWarranty.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Query\FrmWarrantyCheck.resx">
       <DependentUpon>FrmWarrantyCheck.cs</DependentUpon>

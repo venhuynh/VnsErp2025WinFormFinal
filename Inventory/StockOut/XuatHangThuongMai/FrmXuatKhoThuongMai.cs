@@ -522,11 +522,11 @@ public partial class FrmXuatKhoThuongMai : XtraForm
             // Mở form nhập bảo hành với StockInOutMasterId (sử dụng OverlayManager để hiển thị)
             using (OverlayManager.ShowScope(this))
             {
-                using (var frmWarranty = new FrmWarranty(stockInOutMasterId))
-                {
-                    frmWarranty.StartPosition = FormStartPosition.CenterParent;
-                    frmWarranty.ShowDialog(this);
-                }
+                //using (var frmWarranty = new FrmWarranty(stockInOutMasterId))
+                //{
+                //    frmWarranty.StartPosition = FormStartPosition.CenterParent;
+                //    frmWarranty.ShowDialog(this);
+                //}
             }
         }
         catch (Exception ex)

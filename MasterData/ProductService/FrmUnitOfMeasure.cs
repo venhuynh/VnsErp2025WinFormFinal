@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows.Forms;
 using Bll.MasterData.ProductServiceBll;
 using Common.Helpers;
 using Common.Utils;
@@ -12,6 +7,11 @@ using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DTO.MasterData.ProductService;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace MasterData.ProductService;
 
@@ -534,10 +534,9 @@ public partial class FrmUnitOfMeasure : XtraForm
             return false;
         }
 
-        // Lưu xuống database qua BLL
-        var entity = _current.ToEntity();
-        _unitBll.SaveOrUpdate(entity);
-        _current.Id = entity.Id; // Cập nhật ID nếu là bản ghi mới
+        
+        _unitBll.SaveOrUpdate(_current);
+        
 
         AttributeGridView.RefreshData();
         return true;
@@ -904,8 +903,8 @@ public partial class FrmUnitOfMeasure : XtraForm
     {
         try
         {
-            var entities = _unitBll.GetAll();
-            var dtos = entities.ToDtoList();
+            // GetAll() đã trả về DTOs, không cần convert
+            var dtos = _unitBll.GetAll();
             SetData(dtos);
         }
         catch (Exception ex)

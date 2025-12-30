@@ -2,10 +2,10 @@ using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
-using Dal.DataContext;
 using DevExpress.Data;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
+using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraSplashScreen;
 using DTO.MasterData.ProductService;
@@ -16,7 +16,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DevExpress.XtraGrid;
 
 namespace MasterData.ProductService
 {
@@ -639,17 +638,15 @@ namespace MasterData.ProductService
                 var result = variants.Select(v => new ProductVariantListDto
                 {
                     Id = v.Id,
-                    ProductId = v.ProductId,
+                    ProductCode = v.ProductCode,
+                    ProductName = v.ProductName,
                     VariantCode = v.VariantCode,
-                    VariantName = v.VariantName,
-                    SKU = v.SKU,
-                    Barcode = v.Barcode,
-                    Price = v.Price,
-                    Cost = v.Cost,
-                    StockQuantity = v.StockQuantity,
+                    VariantFullName = v.VariantName, // Map VariantName to VariantFullName
+                    UnitName = v.UnitName,
                     IsActive = v.IsActive,
                     ThumbnailImage = v.ThumbnailImage,
-                    // Add other properties as needed
+                    ImageCount = v.ImageCount,
+                    FullVariantInfo = v // Store full variant info for later use
                 }).ToList();
                 
                 // Resize tất cả thumbnail images về kích thước cố định (60x60 pixels)

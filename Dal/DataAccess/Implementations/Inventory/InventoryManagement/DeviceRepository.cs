@@ -109,7 +109,7 @@ public class DeviceRepository : IDeviceRepository
             return new Dictionary<Guid, (DateTime?, DateTime?, int?)>();
 
         var warranties = context.Warranties
-            .Where(w => deviceIds.Contains(w.DeviceId) && w.IsActive)
+            .Where(w => deviceIds.Contains(w.DeviceId.Value) && w.IsActive)
             .GroupBy(w => w.DeviceId)
             .Select(g => new
             {
@@ -121,7 +121,7 @@ public class DeviceRepository : IDeviceRepository
         return warranties
             .Where(w => w.LatestWarranty != null)
             .ToDictionary(
-                w => w.DeviceId,
+                w => w.DeviceId.Value,
                 w => (w.LatestWarranty.WarrantyFrom, w.LatestWarranty.WarrantyUntil, (int?)w.LatestWarranty.WarrantyType)
             );
     }

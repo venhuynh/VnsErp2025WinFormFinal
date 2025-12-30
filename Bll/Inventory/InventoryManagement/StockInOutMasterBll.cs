@@ -3,14 +3,15 @@ using Dal.DataAccess.Implementations.Inventory.InventoryManagement;
 using Dal.DataAccess.Implementations.Inventory.StockIn;
 using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
-using DTO.Inventory.StockIn;
+using Dal.DtoConverter.Inventory;
+using DTO.Inventory;
+using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DTO.Inventory.InventoryManagement;
 
 namespace Bll.Inventory.InventoryManagement
 {
@@ -118,70 +119,7 @@ namespace Bll.Inventory.InventoryManagement
     #endregion
 
     #region Query Operations
-
-    /// <summary>
-    /// Query lịch sử nhập xuất kho với filter
-    /// </summary>
-    /// <param name="query">Query criteria</param>
-    /// <returns>Danh sách StockInOutMaster entities</returns>
-    public List<StockInOutMaster> QueryHistory(StockInHistoryQueryCriteria query)
-    {
-        try
-        {
-            _logger.Debug("QueryHistory: Bắt đầu query lịch sử, FromDate={0}, ToDate={1}", query.FromDate, query.ToDate);
-
-            var entities = GetStockInRepository().QueryHistory(query);
-
-            _logger.Info("QueryHistory: Query thành công, ResultCount={0}", entities.Count);
-            return entities;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"QueryHistory: Lỗi query lịch sử: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Đếm số lượng bản ghi theo query (không phân trang)
-    /// </summary>
-    /// <param name="query">Query criteria</param>
-    /// <returns>Tổng số bản ghi</returns>
-    public int CountHistory(StockInHistoryQueryCriteria query)
-    {
-        try
-        {
-            _logger.Debug("CountHistory: Bắt đầu đếm, FromDate={0}, ToDate={1}", query.FromDate, query.ToDate);
-
-            var count = GetStockInRepository().CountHistory(query);
-
-            _logger.Info("CountHistory: Đếm thành công, Count={0}", count);
-            return count;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"CountHistory: Lỗi đếm: {ex.Message}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Lấy danh sách phiếu nhập lắp ráp theo thứ tự ngày nhập mới nhất
-    /// </summary>
-    /// <returns>Danh sách StockInOutMaster entities (phiếu nhập lắp ráp)</returns>
-    public List<StockInOutMaster> GetPhieuNhapLapRap()
-    {
-        try
-        {
-            return GetStockInRepository().GetPhieuNhapLapRap(16);
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"GetPhieuNhapLapRap: Lỗi lấy danh sách phiếu nhập lắp ráp: {ex.Message}", ex);
-            throw;
-        }
-    }
-
+         
     #endregion
 
     #region Voucher Number Generation
@@ -247,13 +185,17 @@ namespace Bll.Inventory.InventoryManagement
     /// </summary>
     /// <param name="masterIds">Danh sách ID của StockInOutMaster</param>
     /// <returns>Danh sách StockInOutMaster entities với navigation properties đã load</returns>
-    public List<StockInOutMaster> GetMastersByIds(List<Guid> masterIds)
+    public List<StockInOutMasterForUIDto> GetMastersByIds(List<Guid> masterIds)
     {
         try
         {
             _logger.Debug("GetMastersByIds: Bắt đầu query, MasterIds count={0}", masterIds?.Count ?? 0);
 
-            var result = GetDataAccess().GetMastersByIds(masterIds);
+            // Gọi Repository để lấy entities
+            var entities = GetDataAccess().GetMastersByIds(masterIds);
+
+            // Convert entities sang DTOs
+            var result = entities.Select(e => e.ToDto()).Where(dto => dto != null).ToList();
 
             _logger.Info("GetMastersByIds: Query thành công, ResultCount={0}", result.Count);
             return result;

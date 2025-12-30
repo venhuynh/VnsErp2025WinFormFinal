@@ -2,9 +2,9 @@ using Authentication.Form;
 using Bll.Common;
 using Common.Common;
 using Common.Utils;
-using Dal.Connection;
-using Dal.DataContext;
 using DevExpress.XtraBars;
+using DeviceAssetManagement.Management.DeviceMangement;
+using DTO.VersionAndUserManagementDto;
 using Inventory.Management;
 using Inventory.Query;
 using Inventory.StockIn.NhapBaoHanh;
@@ -25,7 +25,7 @@ using MasterData.ProductService;
 using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
-using DeviceAssetManagement.Management.DeviceMangement;
+using Dal.Connection;
 using VersionAndUserManagement.AllowedMacAddress;
 using VersionAndUserManagement.ApplicationVersion;
 using VersionAndUserManagement.UserManagement;
@@ -54,7 +54,7 @@ namespace VnsErp2025.Form
         /// <summary>
         /// Thông tin user hiện tại đã đăng nhập vào hệ thống
         /// </summary>
-        private ApplicationUser _currentUser;
+        private ApplicationUserDto _currentUser;
 
         /// <summary>
         /// Timer tự động refresh thông tin database định kỳ
@@ -123,13 +123,36 @@ namespace VnsErp2025.Form
         {
             try
             {
-                _currentUser = ApplicationSystemUtils.GetCurrentUser();
+                // GetCurrentUser() trả về ApplicationUser entity, cần convert sang DTO
+                var userEntity = ApplicationSystemUtils.GetCurrentUser();
                 
-                // Tạo user demo nếu chưa có user nào đăng nhập (chỉ dùng cho môi trường phát triển)
-                if (_currentUser == null)
+                if (userEntity != null)
                 {
+                    // Convert entity sang DTO
+                    _currentUser = new ApplicationUserDto
+                    {
+                        Id = userEntity.Id,
+                        UserName = userEntity.UserName,
+                        HashPassword = userEntity.HashPassword ?? string.Empty,
+                        Active = userEntity.Active,
+                        EmployeeId = userEntity.EmployeeId
+                    };
+                }
+                else
+                {
+                    // Tạo user demo nếu chưa có user nào đăng nhập (chỉ dùng cho môi trường phát triển)
                     _currentUser = CreateDemoUser();
-                    ApplicationSystemUtils.SetCurrentUser(_currentUser);
+                    
+                    // Set user entity vào ApplicationSystemUtils (convert DTO sang entity)
+                    var demoUserEntity = new ApplicationUserDto()
+                    {
+                        Id = _currentUser.Id,
+                        UserName = _currentUser.UserName,
+                        HashPassword = _currentUser.HashPassword ?? string.Empty,
+                        Active = _currentUser.Active,
+                        EmployeeId = _currentUser.EmployeeId
+                    };
+                    ApplicationSystemUtils.SetCurrentUser(demoUserEntity);
                 }
             }
             catch (Exception ex)
@@ -142,9 +165,9 @@ namespace VnsErp2025.Form
         /// Tạo user demo cho môi trường phát triển
         /// </summary>
         /// <returns>User demo với thông tin cơ bản</returns>
-        private ApplicationUser CreateDemoUser()
+        private ApplicationUserDto CreateDemoUser()
         {
-            return new ApplicationUser
+            return new ApplicationUserDto
             {
                 Id = Guid.NewGuid(),
                 UserName = "admin",
@@ -242,7 +265,7 @@ namespace VnsErp2025.Form
                 System.Diagnostics.Debug.WriteLine($"Lỗi load thông tin phiên bản: {ex.Message}");
                 if (ReleaserVersionAndDateBarStaticItem != null)
                 {
-                    ReleaserVersionAndDateBarStaticItem.Caption = "@<color=#757575>Phiên bản:</color> <color=#F44336>Không xác định</color>";
+                    ReleaserVersionAndDateBarStaticItem.Caption = "@<color='blue'>Phiên bản:</color> <color=#F44336>Không xác định</color>";
                 }
             }
         }

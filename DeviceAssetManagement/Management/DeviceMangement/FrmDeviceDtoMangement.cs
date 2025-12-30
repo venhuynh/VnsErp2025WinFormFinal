@@ -99,14 +99,14 @@ namespace DeviceAssetManagement.Management.DeviceMangement
             ucDeviceDtoAddEdit1.DeviceSaved += UcDeviceDtoAddEdit1_DeviceSaved;
 
             // Đăng ký event WarrantySaved và WarrantyClosed từ ucDeviceWarranty1
-            ucDeviceWarranty1.WarrantySaved += UcDeviceWarranty1_WarrantySaved;
-            ucDeviceWarranty1.WarrantyClosed += UcDeviceWarranty1_WarrantyClosed;
+            //ucDeviceWarranty1.WarrantySaved += UcDeviceWarranty1_WarrantySaved;
+            //ucDeviceWarranty1.WarrantyClosed += UcDeviceWarranty1_WarrantyClosed;
 
             // Đăng ký event ImageSaved từ ucDeviceImageAdd1
             ucDeviceImageAdd1.ImageSaved += UcDeviceImageAdd1_ImageSaved;
 
             // Đăng ký event HistorySaved từ ucDeviceDtoAddStockInOutHistory1
-            ucDeviceDtoAddStockInOutHistory1.HistorySaved += UcDeviceDtoAddStockInOutHistory1_HistorySaved;
+            //ucDeviceDtoAddStockInOutHistory1.HistorySaved += UcDeviceDtoAddStockInOutHistory1_HistorySaved;
 
             // Event khi selection thay đổi trong GridView
             DeviceDtoGridView.SelectionChanged += DeviceDtoGridView_SelectionChanged;
@@ -306,7 +306,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                 SetDockPanelTitle(@"Lịch sử nhập - xuất thiết bị", selectedDevices.Count);
 
                 // Load danh sách thiết bị đã chọn vào SearchLookUpEdit
-                ucDeviceDtoAddStockInOutHistory1.LoadSelectedDevices(selectedDevices);
+                //ucDeviceDtoAddStockInOutHistory1.LoadSelectedDevices(selectedDevices);
             }
             catch (Exception ex)
             {
@@ -420,7 +420,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                 SetDockPanelTitle(@"Quản lý bảo hành thiết bị", selectedDevices.Count);
 
                 // Load danh sách thiết bị đã chọn vào UserControl
-                ucDeviceWarranty1.LoadSelectedDevices(selectedDevices);
+                //ucDeviceWarranty1.LoadSelectedDevices(selectedDevices);
             }
             catch (Exception ex)
             {
@@ -926,7 +926,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                         }
 
                         // Cập nhật Status và Notes (convert enum to int)
-                        device.Status = (int)deviceDto.Status;
+                        device.Status = deviceDto.Status;
                         device.Notes = deviceDto.Notes;
                         device.UpdatedDate = DateTime.Now;
 
@@ -969,18 +969,11 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                 {
                     await Task.Run(() =>
                     {
-                        // Lấy tất cả các entity từ BLL (UI -> BLL -> Repository)
-                        // Repository đã eager load Warranties cho Device
-                        var devices = _deviceBll.GetAll();
-
-                        // Convert entities sang DTO với thông tin bảo hành
-                        // Warranty đã được eager load trong repository, converter sẽ sử dụng entity.Warranties
-                        var deviceDtos = devices.ToDtoList();
-
+                        
                         // Update UI thread
                         BeginInvoke(new Action(() =>
                         {
-                            deviceDtoBindingSource.DataSource = deviceDtos;
+                            deviceDtoBindingSource.DataSource = _deviceBll.GetAll();
                             deviceDtoBindingSource.ResetBindings(false);
                             DeviceDtoGridView.RefreshData();
                             UpdateStatusBar();

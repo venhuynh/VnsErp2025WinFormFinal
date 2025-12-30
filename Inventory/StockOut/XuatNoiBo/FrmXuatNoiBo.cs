@@ -840,35 +840,6 @@ public partial class FrmXuatNoiBo : DevExpress.XtraEditors.XtraForm
 
     #endregion
 
-    #region Helper Methods - DTO to Entity Conversion
-
-    /// <summary>
-    /// Map XuatNoiBoMasterDto sang StockInOutMaster entity
-    /// </summary>
-    private StockInOutMaster MapMasterDtoToEntity(XuatNoiBoMasterDto dto)
-    {
-        return new StockInOutMaster
-        {
-            Id = dto.Id,
-            StockInOutDate = dto.StockOutDate,
-            VocherNumber = dto.StockOutNumber,
-            StockInOutType = (int)dto.LoaiNhapXuatKho,
-            VoucherStatus = (int)dto.TrangThai,
-            WarehouseId = dto.WarehouseId,
-            PurchaseOrderId = null, // Xuất nội bộ không có PurchaseOrder
-            PartnerSiteId = null, // Xuất nội bộ không có nhà cung cấp/khách hàng
-            Notes = dto.Notes ?? string.Empty,
-            TotalQuantity = dto.TotalQuantity,
-            TotalAmount = 0, // Xuất nội bộ không có giá trị tiền
-            TotalVat = 0, // Xuất nội bộ không có VAT
-            TotalAmountIncludedVat = 0, // Xuất nội bộ không có tổng tiền
-            NguoiNhanHang = dto.NguoiNhanHang ?? string.Empty,
-            NguoiGiaoHang = dto.NguoiGiaoHang ?? string.Empty
-        };
-    }
-
-    #endregion
-
     #region Save Operations
 
     /// <summary>

@@ -43,6 +43,19 @@ public class DeviceTransactionHistoryDto
     public DeviceOperationTypeEnum OperationType { get; set; }
 
     /// <summary>
+    /// Tên loại thao tác (hiển thị, lấy từ enum Description)
+    /// </summary>
+    [DisplayName("Tên loại thao tác")]
+    [Display(Order = 11)]
+    public string OperationTypeName
+    {
+        get
+        {
+            return Common.Utils.ApplicationEnumUtils.GetDescription(OperationType);
+        }
+    }
+
+    /// <summary>
     /// Ngày giờ thực hiện thao tác
     /// </summary>
     [DisplayName("Ngày thực hiện")]

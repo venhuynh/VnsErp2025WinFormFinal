@@ -10,7 +10,7 @@ namespace Dal.DtoConverter
     /// <summary>
     /// Extension methods cho Permission entities và DTOs
     /// </summary>
-    public static class PermissionDtoExtensions
+    public static class PermissionDtoConverter
     {
         /// <summary>
         /// Convert Permission entity to PermissionDto

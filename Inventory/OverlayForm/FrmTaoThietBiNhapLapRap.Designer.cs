@@ -397,7 +397,6 @@ namespace Inventory.OverlayForm
             // 
             // xuatLapRapMasterListDtoBindingSource
             // 
-            this.xuatLapRapMasterListDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapLapRap.NhapLapRapMasterListDto);
             // 
             // searchLookUpEdit1View
             // 

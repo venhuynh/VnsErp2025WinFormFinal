@@ -660,7 +660,6 @@ namespace Bll.MasterData.CustomerBll
 
         #endregion
 
-        #region ========== BUSINESS LOGIC METHODS (Logo Management) ==========
 
         /// <summary>
         /// Lấy dữ liệu logo từ storage (NAS/Local) bằng RelativePath

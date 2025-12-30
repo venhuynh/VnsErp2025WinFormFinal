@@ -1,5 +1,5 @@
 ﻿using Bll.MasterData.CompanyBll;
-using Dal.DataContext;
+using Common.Utils;
 using DevExpress.XtraEditors;
 using DTO.MasterData.Company;
 using System;
@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Common.Utils;
 using static Common.Utils.AlertHelper;
 
 namespace MasterData.Company

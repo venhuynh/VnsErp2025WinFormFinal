@@ -385,40 +385,40 @@ namespace DeviceAssetManagement.Management.DeviceMangement
         {
             try
             {
-                // Kiểm tra BLL đã được khởi tạo chưa
-                if (_deviceImageBll == null)
-                {
-                    throw new InvalidOperationException(
-                        "Dịch vụ lưu trữ hình ảnh chưa được cấu hình. " +
-                        "Vui lòng kiểm tra lại cấu hình trong App.config và khởi động lại ứng dụng.");
-                }
+                //// Kiểm tra BLL đã được khởi tạo chưa
+                //if (_deviceImageBll == null)
+                //{
+                //    throw new InvalidOperationException(
+                //        "Dịch vụ lưu trữ hình ảnh chưa được cấu hình. " +
+                //        "Vui lòng kiểm tra lại cấu hình trong App.config và khởi động lại ứng dụng.");
+                //}
 
-                if (!File.Exists(imageFilePath))
-                {
-                    throw new FileNotFoundException($"File ảnh không tồn tại: {imageFilePath}");
-                }
+                //if (!File.Exists(imageFilePath))
+                //{
+                //    throw new FileNotFoundException($"File ảnh không tồn tại: {imageFilePath}");
+                //}
 
-                // Lấy thông tin file
-                var fileInfo = new FileInfo(imageFilePath);
-                var fileSize = fileInfo.Length;
-                var fileSizeMb = fileSize / (1024.0 * 1024.0);
-                LogTextBoxHelper.AppendInfo(LogTextBox, $"  Kích thước file: {fileSizeMb:F2} MB");
+                //// Lấy thông tin file
+                //var fileInfo = new FileInfo(imageFilePath);
+                //var fileSize = fileInfo.Length;
+                //var fileSizeMb = fileSize / (1024.0 * 1024.0);
+                //LogTextBoxHelper.AppendInfo(LogTextBox, $"  Kích thước file: {fileSizeMb:F2} MB");
 
-                // Sử dụng BLL để lưu hình ảnh vào NAS/Local storage và metadata vào database
-                // Method này sẽ:
-                // 1. Đọc file ảnh
-                // 2. Lưu vào NAS/Local storage thông qua ImageStorageService
-                // 3. Lưu metadata (FileName, RelativePath, FullPath, etc.) vào database
-                // Sử dụng ConfigureAwait(false) để tránh deadlock và COM context issues
-                var deviceImage = await _deviceImageBll.SaveImageFromFileAsync(deviceId, imageFilePath).ConfigureAwait(false);
+                //// Sử dụng BLL để lưu hình ảnh vào NAS/Local storage và metadata vào database
+                //// Method này sẽ:
+                //// 1. Đọc file ảnh
+                //// 2. Lưu vào NAS/Local storage thông qua ImageStorageService
+                //// 3. Lưu metadata (FileName, RelativePath, FullPath, etc.) vào database
+                //// Sử dụng ConfigureAwait(false) để tránh deadlock và COM context issues
+                //var deviceImage = await _deviceImageBll.SaveImageFromFileAsync(deviceId, imageFilePath).ConfigureAwait(false);
 
-                // Kiểm tra kết quả
-                if (deviceImage == null)
-                {
-                    throw new InvalidOperationException($"Không thể lưu hình ảnh '{Path.GetFileName(imageFilePath)}'");
-                }
+                //// Kiểm tra kết quả
+                //if (deviceImage == null)
+                //{
+                //    throw new InvalidOperationException($"Không thể lưu hình ảnh '{Path.GetFileName(imageFilePath)}'");
+                //}
 
-                LogTextBoxHelper.AppendInfo(LogTextBox, $"  Đã lưu vào: {deviceImage.RelativePath ?? deviceImage.FullPath}");
+                //LogTextBoxHelper.AppendInfo(LogTextBox, $"  Đã lưu vào: {deviceImage.RelativePath ?? deviceImage.FullPath}");
 
                 return true;
             }

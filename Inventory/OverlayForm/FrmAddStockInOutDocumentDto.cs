@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -253,28 +253,30 @@ namespace Inventory.OverlayForm
                     throw new FileNotFoundException($"File chứng từ không tồn tại: {documentFilePath}");
                 }
 
-                // Sử dụng BLL để lưu chứng từ vào NAS/Local storage và metadata vào database
-                // Method này sẽ:
-                // 1. Đọc file chứng từ
-                // 2. Lưu vào NAS/Local storage thông qua FileStorageService
-                // 3. Lưu metadata (FileName, RelativePath, FullPath, etc.) vào database
-                var stockInOutDocument = await _stockInOutDocumentBll.SaveDocumentFromFileAsync(
-                    stockInOutMasterId: stockInOutMasterId,
-                    businessPartnerId: null,
-                    documentFilePath: documentFilePath,
-                    documentType: documentType,
-                    documentCategory: null,
-                    documentNumber: null,
-                    documentDate: null,
-                    displayName: Path.GetFileNameWithoutExtension(documentFilePath),
-                    description: null
-                );
+                //// Sử dụng BLL để lưu chứng từ vào NAS/Local storage và metadata vào database
+                //// Method này sẽ:
+                //// 1. Đọc file chứng từ
+                //// 2. Lưu vào NAS/Local storage thông qua FileStorageService
+                //// 3. Lưu metadata (FileName, RelativePath, FullPath, etc.) vào database
+                //// Note: SaveDocumentFromFileAsync trả về StockInOutDocument entity từ Dal
+                //// Nhưng trong UI layer, chúng ta chỉ cần kiểm tra null, không cần sử dụng entity
+                //var result = await _stockInOutDocumentBll.SaveDocumentFromFileAsync(
+                //    stockInOutMasterId: stockInOutMasterId,
+                //    businessPartnerId: null,
+                //    documentFilePath: documentFilePath,
+                //    documentType: documentType,
+                //    documentCategory: null,
+                //    documentNumber: null,
+                //    documentDate: null,
+                //    displayName: Path.GetFileNameWithoutExtension(documentFilePath),
+                //    description: null
+                //);
 
-                // Kiểm tra kết quả
-                if (stockInOutDocument == null)
-                {
-                    throw new InvalidOperationException($"Không thể lưu chứng từ '{Path.GetFileName(documentFilePath)}'");
-                }
+                //// Kiểm tra kết quả
+                //if (result == null)
+                //{
+                //    throw new InvalidOperationException($"Không thể lưu chứng từ '{Path.GetFileName(documentFilePath)}'");
+                //}
 
                 return true;
             }

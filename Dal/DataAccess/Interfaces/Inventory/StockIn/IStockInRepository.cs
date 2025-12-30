@@ -32,6 +32,15 @@ public interface IStockInRepository
     /// </returns>
     List<StockInOutDetailForUIDto> GetStockInOutDetailsByMasterId(Guid stockInOutMasterId);
     
+    /// <summary>
+    /// Lấy số thứ tự tiếp theo cho số phiếu nhập/xuất kho
+    /// Dựa trên ngày và loại nhập/xuất kho để tìm số thứ tự cao nhất và trả về số tiếp theo
+    /// </summary>
+    /// <param name="stockInOutDate">Ngày của phiếu nhập/xuất kho</param>
+    /// <param name="loaiNhapKhoInt">Loại nhập/xuất kho (số nguyên)</param>
+    /// <returns>Số thứ tự tiếp theo (bắt đầu từ 1 nếu chưa có phiếu nào trong tháng/năm đó)</returns>
+    int GetNextSequenceNumber(DateTime stockInOutDate, int loaiNhapKhoInt);
+    
     #endregion
     
     #region Save/Update

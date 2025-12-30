@@ -346,6 +346,86 @@ public class StockInRepository : IStockInRepository
         }
     }
 
+    /// <summary>
+    /// Lấy số thứ tự tiếp theo cho số phiếu nhập/xuất kho
+    /// Dựa trên ngày và loại nhập/xuất kho để tìm số thứ tự cao nhất và trả về số tiếp theo
+    /// </summary>
+    /// <param name="stockInOutDate">Ngày của phiếu nhập/xuất kho</param>
+    /// <param name="loaiNhapKhoInt">Loại nhập/xuất kho (số nguyên)</param>
+    /// <returns>Số thứ tự tiếp theo (bắt đầu từ 1 nếu chưa có phiếu nào trong tháng/năm đó)</returns>
+    public int GetNextSequenceNumber(DateTime stockInOutDate, int loaiNhapKhoInt)
+    {
+        try
+        {
+            using var context = CreateNewContext();
+
+            // Lấy tháng và năm từ ngày
+            var month = stockInOutDate.Month;
+            var year = stockInOutDate.Year;
+
+            // Tìm tất cả các phiếu trong cùng tháng/năm và cùng loại nhập/xuất kho
+            var existingMasters = context.StockInOutMasters
+                .Where(m => m.StockInOutDate.Year == year 
+                         && m.StockInOutDate.Month == month 
+                         && m.StockInOutType == loaiNhapKhoInt
+                         && !string.IsNullOrEmpty(m.VocherNumber))
+                .ToList();
+
+            if (existingMasters == null || existingMasters.Count == 0)
+            {
+                _logger.Info("GetNextSequenceNumber: Không có phiếu nào trong tháng {0}/{1}, loại {2}. Trả về số 1", month, year, loaiNhapKhoInt);
+                return 1;
+            }
+
+            // Parse sequence numbers từ các voucher numbers
+            // Format: PNK-MMYY-NNXXX hoặc PXK-MMYY-NNXXX, trong đó XXX là sequence number (3 chữ số cuối)
+            var sequenceNumbers = new List<int>();
+            
+            foreach (var master in existingMasters)
+            {
+                if (string.IsNullOrEmpty(master.VocherNumber))
+                    continue;
+
+                // Tách voucher number theo dấu '-'
+                var parts = master.VocherNumber.Split('-');
+                if (parts.Length >= 3)
+                {
+                    // Phần cuối cùng chứa loại nhập/xuất kho (2 chữ số) + sequence number (3 chữ số)
+                    var lastPart = parts[2];
+                    if (lastPart.Length >= 3)
+                    {
+                        // Lấy 3 chữ số cuối làm sequence number
+                        var sequenceStr = lastPart.Substring(lastPart.Length - 3);
+                        if (int.TryParse(sequenceStr, out int seqNum))
+                        {
+                            sequenceNumbers.Add(seqNum);
+                        }
+                    }
+                }
+            }
+
+            if (sequenceNumbers.Count == 0)
+            {
+                _logger.Info("GetNextSequenceNumber: Không thể parse sequence number từ các voucher numbers. Trả về số 1");
+                return 1;
+            }
+
+            // Tìm số thứ tự cao nhất
+            var maxSequence = sequenceNumbers.Max();
+            var nextSequence = maxSequence + 1;
+
+            _logger.Info("GetNextSequenceNumber: Tháng {0}/{1}, loại {2}, max sequence={3}, next sequence={4}", 
+                month, year, loaiNhapKhoInt, maxSequence, nextSequence);
+
+            return nextSequence;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetNextSequenceNumber: Lỗi lấy số thứ tự tiếp theo: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy số thứ tự tiếp theo cho phiếu nhập/xuất kho: {ex.Message}", ex);
+        }
+    }
+
     #endregion
 
 }

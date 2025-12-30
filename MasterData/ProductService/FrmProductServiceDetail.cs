@@ -685,13 +685,13 @@ namespace MasterData.ProductService
                     {
                         ThumbnailImagePictureEdit.Image = compressedImage;
                     }
+                    // Bước 2: Thêm hình ảnh vào bảng ProductImage nếu có thay đổi
+                    if (_hasImageChanged)
+                    {
+                        SaveProductImages(savedProduct.Id);
+                    }
                 }
-            }
-
-            // Bước 2: Thêm hình ảnh vào bảng ProductImage nếu có thay đổi
-            if (_hasImageChanged)
-            {
-                SaveProductImages(entity.Id);
+                
             }
 
             return Task.CompletedTask;

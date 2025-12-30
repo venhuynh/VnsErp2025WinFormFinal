@@ -146,7 +146,8 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 var product = entity.ProductService;
                 var unit = entity.UnitOfMeasure;
 
-                return entity.ToDto(
+                return ProductVariantConverters.ToDto(
+                    entity,
                     productCode: product?.Code,
                     productName: product?.Name,
                     unitCode: unit?.Code,
@@ -177,7 +178,8 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 var product = entity.ProductService;
                 var unit = entity.UnitOfMeasure;
 
-                return entity.ToDto(
+                return ProductVariantConverters.ToDto(
+                    entity,
                     productCode: product?.Code,
                     productName: product?.Name,
                     unitCode: unit?.Code,
@@ -436,10 +438,10 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     throw new ArgumentNullException(nameof(variant));
 
                 using var context = CreateNewContext();
-                var existing = variant.Id != Guid.Empty ? context.ProductVariants.FirstOrDefault(x => x.Id == variant.Id) : null;
+                ProductVariant existing = variant.Id != Guid.Empty ? context.ProductVariants.FirstOrDefault(x => x.Id == variant.Id) : null;
 
                 // Convert DTO to Entity
-                var entity = variant.ToEntity(existing);
+                ProductVariant entity = ProductVariantConverters.ToEntity(variant, existing);
 
                 if (existing == null)
                 {
@@ -486,10 +488,10 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 var currentTime = DateTime.Now;
 
                 // Lưu hoặc cập nhật biến thể
-                var existingVariant = context.ProductVariants.FirstOrDefault(x => x.Id == variant.Id);
+                ProductVariant existingVariant = context.ProductVariants.FirstOrDefault(x => x.Id == variant.Id);
                 
                 // Convert DTO to Entity
-                var entity = variant.ToEntity(existingVariant);
+                ProductVariant entity = ProductVariantConverters.ToEntity(variant, existingVariant);
                 
                 if (existingVariant == null)
                 {
@@ -553,9 +555,9 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                 // Cập nhật VariantFullName cho biến thể
                 string variantFullNameValue = variantFullNameParts.Any()
                     ? string.Join(", ", variantFullNameParts)
-                    : entity.VariantCode;
+                    : (entity?.VariantCode ?? string.Empty);
 
-                var targetVariant = existingVariant ?? entity;
+                ProductVariant targetVariant = existingVariant ?? entity;
                 targetVariant.VariantFullName = variantFullNameValue;
                 // Lưu VariantNameForReport (chỉ tên sản phẩm và các thuộc tính, không có HTML tags)
                 targetVariant.VariantNameForReport = BuildVariantNameForReport(context, targetVariant);
