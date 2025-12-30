@@ -788,26 +788,7 @@ namespace Inventory.StockIn.NhapLapRap
 
                 try
                 {
-                    // Lấy ProductVariantDto từ BLL
-                    var variantDtos = await _productVariantBll.GetAllInUseWithDetailsAsync();
-                    
-                    // Convert ProductVariantDto sang ProductVariantListDto
-                    var variantListDtos = variantDtos
-                        .Where(v => v != null)
-                        .Select(dto => new ProductVariantListDto
-                        {
-                            Id = dto.Id,
-                            ProductCode = dto.ProductCode ?? string.Empty,
-                            ProductName = dto.ProductName ?? string.Empty,
-                            VariantCode = dto.VariantCode ?? string.Empty,
-                            VariantFullName = dto.VariantName ?? string.Empty,
-                            UnitName = dto.UnitName ?? string.Empty,
-                            IsActive = dto.IsActive,
-                            ThumbnailImage = dto.ThumbnailImage
-                        })
-                        .ToList();
-                    
-                    productVariantListDtoBindingSource.DataSource = variantListDtos;
+                    productVariantListDtoBindingSource.DataSource = await _productVariantBll.GetAllInUseWithDetailsAsync();
                     productVariantListDtoBindingSource.ResetBindings(false);
 
                     _isProductVariantDataSourceLoaded = true;
@@ -890,24 +871,8 @@ namespace Inventory.StockIn.NhapLapRap
                     }
                 }
 
-                // Convert ProductVariantDto sang ProductVariantListDto
-                var variantListDtos = variantDtos
-                    .Where(v => v != null)
-                    .Select(dto => new ProductVariantListDto
-                    {
-                        Id = dto.Id,
-                        ProductCode = dto.ProductCode ?? string.Empty,
-                        ProductName = dto.ProductName ?? string.Empty,
-                        VariantCode = dto.VariantCode ?? string.Empty,
-                        VariantFullName = dto.VariantName ?? string.Empty,
-                        UnitName = dto.UnitName ?? string.Empty,
-                        IsActive = dto.IsActive,
-                        ThumbnailImage = dto.ThumbnailImage
-                    })
-                    .ToList();
-
                 // Bind dữ liệu vào BindingSource
-                productVariantListDtoBindingSource.DataSource = variantListDtos;
+                productVariantListDtoBindingSource.DataSource = variantDtos;
                 productVariantListDtoBindingSource.ResetBindings(false);
             }
             catch (Exception ex)

@@ -31,7 +31,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.XuatLuuChuyenKhoDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.xuatLuuChuyenKhoDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.XuatLuuChuyenKhoDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
@@ -43,28 +42,29 @@
             this.StockInDetailProductNameHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colUnitOfMeasureName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colStockOutQty = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.StockOutQtyTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
+            this.StockInQtyTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.colGhiChu = new DevExpress.XtraGrid.Columns.GridColumn();
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
+            this.stockInOutDetailForUIDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.XuatLuuChuyenKhoDetailDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatLuuChuyenKhoDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLuuChuyenKhoDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantDtoSearchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductFullNameHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailProductNameHtmlHypertextLabel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StockOutQtyTextEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInQtyTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // XuatLuuChuyenKhoDetailDtoGridControl
             // 
-            this.XuatLuuChuyenKhoDetailDtoGridControl.DataSource = this.xuatLuuChuyenKhoDetailDtoBindingSource;
+            this.XuatLuuChuyenKhoDetailDtoGridControl.DataSource = this.stockInOutDetailForUIDtoBindingSource;
             this.XuatLuuChuyenKhoDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XuatLuuChuyenKhoDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
             this.XuatLuuChuyenKhoDetailDtoGridControl.MainView = this.XuatLuuChuyenKhoDetailDtoGridView;
@@ -72,7 +72,7 @@
             this.XuatLuuChuyenKhoDetailDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.ProductVariantSearchLookUpEdit,
             this.StockInDetailProductNameHtmlHypertextLabel,
-            this.StockOutQtyTextEdit,
+            this.StockInQtyTextEdit,
             this.UnitPriceTextEdit,
             this.VatTextEdit,
             this.GhiChuMemoEdit});
@@ -81,10 +81,6 @@
             this.XuatLuuChuyenKhoDetailDtoGridControl.UseEmbeddedNavigator = true;
             this.XuatLuuChuyenKhoDetailDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.XuatLuuChuyenKhoDetailDtoGridView});
-            // 
-            // xuatLuuChuyenKhoDetailDtoBindingSource
-            // 
-            this.xuatLuuChuyenKhoDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockOut.XuatLuuChuyenKho.XuatLuuChuyenKhoDetailDto);
             // 
             // XuatLuuChuyenKhoDetailDtoGridView
             // 
@@ -260,7 +256,7 @@
             this.colStockOutQty.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colStockOutQty.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colStockOutQty.Caption = "Số lượng xuất";
-            this.colStockOutQty.ColumnEdit = this.StockOutQtyTextEdit;
+            this.colStockOutQty.ColumnEdit = this.StockInQtyTextEdit;
             this.colStockOutQty.DisplayFormat.FormatString = "N2";
             this.colStockOutQty.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.colStockOutQty.FieldName = "StockOutQty";
@@ -271,15 +267,15 @@
             this.colStockOutQty.VisibleIndex = 3;
             this.colStockOutQty.Width = 118;
             // 
-            // StockOutQtyTextEdit
+            // StockInQtyTextEdit
             // 
-            this.StockOutQtyTextEdit.AutoHeight = false;
-            this.StockOutQtyTextEdit.DisplayFormat.FormatString = "N2";
-            this.StockOutQtyTextEdit.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.StockOutQtyTextEdit.EditFormat.FormatString = "N2";
-            this.StockOutQtyTextEdit.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.StockOutQtyTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
-            this.StockOutQtyTextEdit.Name = "StockInQtyTextEdit";
+            this.StockInQtyTextEdit.AutoHeight = false;
+            this.StockInQtyTextEdit.DisplayFormat.FormatString = "N2";
+            this.StockInQtyTextEdit.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.StockInQtyTextEdit.EditFormat.FormatString = "N2";
+            this.StockInQtyTextEdit.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.StockInQtyTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
+            this.StockInQtyTextEdit.Name = "StockInQtyTextEdit";
             // 
             // colGhiChu
             // 
@@ -325,6 +321,10 @@
             this.VatTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.VatTextEdit.Name = "VatTextEdit";
             // 
+            // stockInOutDetailForUIDtoBindingSource
+            // 
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
+            // 
             // UcXuatLuuChuyenKhoDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -333,17 +333,17 @@
             this.Name = "UcXuatLuuChuyenKhoDetail";
             this.Size = new System.Drawing.Size(1267, 704);
             ((System.ComponentModel.ISupportInitialize)(this.XuatLuuChuyenKhoDetailDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatLuuChuyenKhoDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLuuChuyenKhoDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantDtoSearchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductFullNameHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailProductNameHtmlHypertextLabel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.StockOutQtyTextEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.StockInQtyTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -368,7 +368,7 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
-        
-        private System.Windows.Forms.BindingSource xuatLuuChuyenKhoDetailDtoBindingSource;
+        private System.Windows.Forms.BindingSource stockInOutDetailForUIDtoBindingSource;
+        private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit StockInQtyTextEdit;
     }
 }

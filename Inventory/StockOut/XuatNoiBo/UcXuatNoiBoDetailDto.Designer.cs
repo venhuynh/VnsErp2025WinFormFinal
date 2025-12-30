@@ -48,7 +48,7 @@
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.xuatNoiBoDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.stockInOutDetailForUIDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.XuatNoiBoDetailDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatNoiBoDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
@@ -60,12 +60,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatNoiBoDetailDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // XuatNoiBoDetailDtoGridControl
             // 
-            this.XuatNoiBoDetailDtoGridControl.DataSource = this.xuatNoiBoDetailDtoBindingSource;
+            this.XuatNoiBoDetailDtoGridControl.DataSource = this.stockInOutDetailForUIDtoBindingSource;
             this.XuatNoiBoDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XuatNoiBoDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
             this.XuatNoiBoDetailDtoGridControl.MainView = this.XuatNoiBoDetailDtoGridView;
@@ -322,9 +322,9 @@
             this.VatTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.VatTextEdit.Name = "VatTextEdit";
             // 
-            // xuatNoiBoDetailDtoBindingSource
+            // stockInOutDetailForUIDtoBindingSource
             // 
-            this.xuatNoiBoDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockOut.XuatNoiBo.XuatNoiBoDetailDto);
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
             // 
             // UcXuatNoiBoDetailDto
             // 
@@ -344,7 +344,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatNoiBoDetailDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -369,7 +369,6 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
-        
-        private System.Windows.Forms.BindingSource xuatNoiBoDetailDtoBindingSource;
+        private System.Windows.Forms.BindingSource stockInOutDetailForUIDtoBindingSource;
     }
 }

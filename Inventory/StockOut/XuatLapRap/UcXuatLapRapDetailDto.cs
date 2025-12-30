@@ -3,9 +3,11 @@ using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
+using Dal.Connection;
 using Dal.DataContext;
+using Dal.DtoConverter.Inventory;
 using DevExpress.Data;
-using DTO.Inventory.StockOut.XuatLapRap;
+using DTO.Inventory;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
@@ -16,7 +18,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
 
 namespace Inventory.StockOut.XuatLapRap
 {
@@ -96,7 +97,7 @@ namespace Inventory.StockOut.XuatLapRap
                 // GridView đã được khai báo trong Designer, property public sẽ expose nó
 
                 // Khởi tạo binding source với danh sách rỗng
-                xuatLapRapDetailDtoBindingSource.DataSource = new List<XuatLapRapDetailDto>();
+                stockInOutDetailForUIDtoBindingSource.DataSource = new List<StockInOutDetailForUIDto>();
 
                 // Setup events
                 InitializeEvents();
@@ -176,24 +177,27 @@ namespace Inventory.StockOut.XuatLapRap
                 //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
                 var details = new List<StockInOutDetail>();
 
-                foreach (var item in xuatLapRapDetailDtoBindingSource)
+                foreach (var item in stockInOutDetailForUIDtoBindingSource)
                 {
-                        if (item is not XuatLapRapDetailDto detailDto) continue;
+                    if (item is not StockInOutDetailForUIDto detailDto) continue;
 
-                    details.Add(new StockInOutDetail
-                    {
-                        Id = default,
-                        StockInOutMasterId = _stockOutMasterId,
-                        ProductVariantId = detailDto.ProductVariantId,
-                        StockInQty = 0,
-                        StockOutQty = detailDto.StockOutQty,
-                        UnitPrice = 0,
-                        Vat = 0,
-                        VatAmount = 0,
-                        TotalAmount = 0,
-                        TotalAmountIncludedVat = 0,
-                        GhiChu = detailDto.GhiChu,
-                    });
+                    // Sử dụng extension method ToEntity() để convert từ DTO sang Entity
+                    var entity = detailDto.ToEntity();
+                    if (entity == null) continue;
+
+                    // Cập nhật các giá trị cần thiết
+                    entity.Id = detailDto.Id == Guid.Empty ? Guid.NewGuid() : detailDto.Id;
+                    entity.StockInOutMasterId = _stockOutMasterId;
+                    entity.StockInQty = 0; // Xuất lắp ráp chỉ có xuất, không có nhập
+                    entity.StockOutQty = detailDto.StockOutQty;
+                    entity.UnitPrice = 0;
+                    entity.Vat = 0;
+                    entity.VatAmount = 0;
+                    entity.TotalAmount = 0;
+                    entity.TotalAmountIncludedVat = 0;
+                    entity.GhiChu = detailDto.GhiChu ?? string.Empty;
+
+                    details.Add(entity);
                 }
 
                 return details;
@@ -213,8 +217,8 @@ namespace Inventory.StockOut.XuatLapRap
         {
             try
             {
-                xuatLapRapDetailDtoBindingSource.DataSource = new List<XuatLapRapDetailDto>();
-                xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                stockInOutDetailForUIDtoBindingSource.DataSource = new List<StockInOutDetailForUIDto>();
+                stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
                 _stockOutMasterId = Guid.Empty;
 
                 // Reset cache flag để load lại khi cần
@@ -239,15 +243,16 @@ namespace Inventory.StockOut.XuatLapRap
                 // Set master ID
                 _stockOutMasterId = stockInOutMasterId;
 
-                // Lấy detail entities từ BLL
-                var stockInBll = new StockInOutBll();
-                var detailEntities = stockInBll.GetDetailsByMasterId(stockInOutMasterId);
+                // Lấy detail entities từ DataContext
+                using var context = new VnsErp2025DataContext(ApplicationStartupManager.Instance.GetGlobalConnectionString());
+                var detailEntities = context.StockInOutDetails
+                    .Where(d => d.StockInOutMasterId == stockInOutMasterId)
+                    .ToList();
 
-                // Convert detail entities sang DTOs sử dụng extension method từ XuatLapRap namespace
-                // Chỉ định rõ ràng namespace để tránh ambiguous call
+                // Convert detail entities sang DTOs sử dụng extension method
                 var detailDtos = detailEntities
                     .Where(e => e != null)
-                    .Select(entity => entity.ToXuatLapRapDetailDto()) // Extension method từ XuatLapRap namespace
+                    .Select((entity, index) => entity.ToDto(index + 1)) // Extension method từ StockInOutDetailForUIConverter
                     .Where(dto => dto != null)
                     .ToList();
 
@@ -280,7 +285,7 @@ namespace Inventory.StockOut.XuatLapRap
                 _stockOutMasterId = stockOutMasterId;
 
                 // Cập nhật StockInOutMasterId cho tất cả các dòng hiện có
-                var details = xuatLapRapDetailDtoBindingSource.Cast<XuatLapRapDetailDto>().ToList();
+                var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
                 foreach (var detail in details)
                 {
                     if (detail.StockInOutMasterId == Guid.Empty)
@@ -303,7 +308,7 @@ namespace Inventory.StockOut.XuatLapRap
         {
             try
             {
-                var details = xuatLapRapDetailDtoBindingSource.Cast<XuatLapRapDetailDto>().ToList();
+                var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
 
                 if (details.Count == 0)
                 {
@@ -401,7 +406,7 @@ namespace Inventory.StockOut.XuatLapRap
                 }
 
                 // Lấy row data từ GridView
-                if (XuatLapRapDetailDtoGridView.GetRow(rowHandle) is not XuatLapRapDetailDto rowData)
+                if (XuatLapRapDetailDtoGridView.GetRow(rowHandle) is not StockInOutDetailForUIDto rowData)
                 {
                     _logger.Warning("CellValueChanged: Row data is null, RowHandle={0}", rowHandle);
                     return;
@@ -486,7 +491,7 @@ namespace Inventory.StockOut.XuatLapRap
         {
             try
             {
-                if (XuatLapRapDetailDtoGridView.GetRow(e.RowHandle) is not XuatLapRapDetailDto rowData)
+                if (XuatLapRapDetailDtoGridView.GetRow(e.RowHandle) is not StockInOutDetailForUIDto rowData)
                 {
                     _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
                     return;
@@ -572,7 +577,7 @@ namespace Inventory.StockOut.XuatLapRap
         {
             try
             {
-                if (e.Row is not XuatLapRapDetailDto rowData)
+                if (e.Row is not StockInOutDetailForUIDto rowData)
                 {
                     _logger.Warning("ValidateRow: Row data is null");
                     e.Valid = false;
@@ -828,14 +833,7 @@ namespace Inventory.StockOut.XuatLapRap
 
                 try
                 {
-                    // Lấy dữ liệu Entity từ BLL với thông tin đầy đủ
-                    var variants = await _productVariantBll.GetAllInUseWithDetailsAsync();
-
-                    // Convert Entity sang ProductVariantListDto
-                    var variantListDtos = await ConvertToVariantListDtosAsync(variants);
-
-                    // Bind dữ liệu vào BindingSource
-                    productVariantListDtoBindingSource.DataSource = variantListDtos;
+                    productVariantListDtoBindingSource.DataSource = await _productVariantBll.GetAllInUseWithDetailsAsync();
                     productVariantListDtoBindingSource.ResetBindings(false);
 
                     _isProductVariantDataSourceLoaded = true;
@@ -902,8 +900,8 @@ namespace Inventory.StockOut.XuatLapRap
         /// Load chỉ các ProductVariant theo danh sách ID từ details
         /// Chỉ load các ProductVariant cần thiết để tối ưu performance
         /// </summary>
-        /// <param name="details">Danh sách XuatLapRapDetailDto chứa ProductVariantId</param>
-        private async Task LoadProductVariantsByIdsAsync(List<XuatLapRapDetailDto> details)
+        /// <param name="details">Danh sách StockInOutDetailForUIDto chứa ProductVariantId</param>
+        private async Task LoadProductVariantsByIdsAsync(List<StockInOutDetailForUIDto> details)
         {
             try
             {
@@ -924,18 +922,19 @@ namespace Inventory.StockOut.XuatLapRap
                     return;
                 }
 
-                var variants = new List<ProductVariant>();
+                var variantDtos = new List<ProductVariantDto>();
                 foreach (var productVariantId in productVariantIds)
                 {
-                    // Lấy dữ liệu Entity từ BLL với thông tin đầy đủ
-                    variants.Add(await _productVariantBll.GetByIdAsync(productVariantId));
+                    // Lấy dữ liệu DTO từ BLL với thông tin đầy đủ
+                    var variant = await _productVariantBll.GetByIdAsync(productVariantId);
+                    if (variant != null)
+                    {
+                        variantDtos.Add(variant);
+                    }
                 }
 
-                // Convert Entity sang ProductVariantListDto
-                var variantListDtos = await ConvertToVariantListDtosAsync(variants);
-
                 // Bind dữ liệu vào BindingSource
-                productVariantListDtoBindingSource.DataSource = variantListDtos;
+                productVariantListDtoBindingSource.DataSource = variantDtos;
                 productVariantListDtoBindingSource.ResetBindings(false);
             }
             catch (Exception ex)
@@ -945,76 +944,6 @@ namespace Inventory.StockOut.XuatLapRap
             }
         }
 
-    /// <summary>
-    /// Convert Entity sang ProductVariantListDto (Async)
-    /// Sử dụng extension method ToListDto() có sẵn trong DTO và bổ sung các field còn thiếu
-    /// </summary>
-    private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
-    {
-        try
-        {
-            var result = new List<ProductVariantListDto>();
-
-            foreach (var variant in variants)
-            {
-                // Sử dụng extension method ToListDto() có sẵn trong DTO
-                var dto = variant.ToListDto();
-                if (dto == null) continue;
-
-                result.Add(dto);
-            }
-
-            return Task.FromResult(result);
-        }
-        catch (Exception ex)
-        {
-            _logger.Error("ConvertToVariantListDtosAsync: Exception occurred", ex);
-            throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
-        }
-    }
-
-        /// <summary>
-        /// Xây dựng tên đầy đủ của biến thể từ các thuộc tính (Async)
-        /// Format: Attribute1: Value1, Attribute2: Value2, ...
-        /// </summary>
-        private Task<string> BuildVariantFullNameAsync(ProductVariant variant)
-        {
-            try
-            {
-                // Load thông tin thuộc tính từ BLL
-                var attributeValues = _productVariantBll.GetAttributeValues(variant.Id);
-
-                if (attributeValues == null || !attributeValues.Any())
-                {
-                    return Task.FromResult(variant.VariantCode ??
-                                           string.Empty); // Nếu không có thuộc tính, trả về mã biến thể
-                }
-
-                var attributeParts = new List<string>();
-
-                foreach (var (_, attributeName, value) in attributeValues)
-                {
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        attributeParts.Add($"{attributeName}: {value}");
-                    }
-                }
-
-                if (attributeParts.Any())
-                {
-                    return Task.FromResult(string.Join(", ", attributeParts));
-                }
-
-                return
-                    Task.FromResult(variant.VariantCode ??
-                                    string.Empty); // Fallback về mã biến thể nếu không có giá trị thuộc tính
-            }
-            catch (Exception)
-            {
-                // Nếu có lỗi, trả về mã biến thể
-                return Task.FromResult(variant.VariantCode ?? string.Empty);
-            }
-        }
 
         #endregion
 
@@ -1023,11 +952,11 @@ namespace Inventory.StockOut.XuatLapRap
         /// <summary>
         /// Load danh sách chi tiết từ danh sách DTO
         /// </summary>
-        private async void LoadDetails(List<XuatLapRapDetailDto> details)
+        private async void LoadDetails(List<StockInOutDetailForUIDto> details)
         {
             try
             {
-                details ??= new List<XuatLapRapDetailDto>();
+                details ??= new List<StockInOutDetailForUIDto>();
 
                 // Gán StockInOutMasterId cho các dòng chưa có
                 foreach (var detail in details)
@@ -1038,8 +967,8 @@ namespace Inventory.StockOut.XuatLapRap
                     }
                 }
 
-                xuatLapRapDetailDtoBindingSource.DataSource = details;
-                xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                stockInOutDetailForUIDtoBindingSource.DataSource = details;
+                stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
 
                 // Load ProductVariant datasource chỉ cho các ProductVariantId có trong details
                 await LoadProductVariantsByIdsAsync(details);
@@ -1071,8 +1000,6 @@ namespace Inventory.StockOut.XuatLapRap
             if (_isCalculating) return;
             _isCalculating = true;
 
-            var details = xuatLapRapDetailDtoBindingSource.Cast<XuatLapRapDetailDto>().ToList();
-           
             XuatLapRapDetailDtoGridView.RefreshData();
 
             // Cập nhật tổng số lượng lên master
@@ -1096,7 +1023,7 @@ namespace Inventory.StockOut.XuatLapRap
     {
         try
         {
-            var details = xuatLapRapDetailDtoBindingSource.Cast<XuatLapRapDetailDto>().ToList();
+            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
 
             var totalQuantity = details.Sum(d => d.StockOutQty);
 
@@ -1169,7 +1096,7 @@ namespace Inventory.StockOut.XuatLapRap
             else
             {
                 // Existing row: Cập nhật trực tiếp vào row data
-                if (XuatLapRapDetailDtoGridView.GetRow(rowHandle) is XuatLapRapDetailDto rowData)
+                if (XuatLapRapDetailDtoGridView.GetRow(rowHandle) is StockInOutDetailForUIDto rowData)
                 {
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
@@ -1364,37 +1291,38 @@ namespace Inventory.StockOut.XuatLapRap
                     // Nếu chưa có, cần load ProductVariant vào datasource
                     _logger.Debug("AddDetailFromDeviceOrWarranty: ProductVariant chưa có trong datasource, cần load");
                     
-                // Load ProductVariant từ BLL
-                var productVariantEntity = await _productVariantBll.GetByIdAsync(productVariantId);
-                
-                if (productVariantEntity == null)
-                {
-                    _logger.Warning("AddDetailFromDeviceOrWarranty: Không tìm thấy ProductVariant, ProductVariantId={0}", productVariantId);
-                    MsgBox.ShowWarning("Không tìm thấy thông tin sản phẩm");
-                    return;
-                }
+                    // Load ProductVariant từ BLL
+                    var productVariantDto = await _productVariantBll.GetByIdAsync(productVariantId);
+                    
+                    if (productVariantDto == null)
+                    {
+                        _logger.Warning("AddDetailFromDeviceOrWarranty: Không tìm thấy ProductVariant, ProductVariantId={0}", productVariantId);
+                        MsgBox.ShowWarning("Không tìm thấy thông tin sản phẩm");
+                        return;
+                    }
 
-                // Sử dụng extension method ToListDto() có sẵn trong DTO
-                variant = productVariantEntity.ToListDto();
-                if (variant == null)
-                {
-                    _logger.Warning("AddDetailFromDeviceOrWarranty: Không thể convert ProductVariant sang DTO, ProductVariantId={0}", productVariantId);
-                    MsgBox.ShowWarning("Không thể xử lý thông tin sản phẩm");
-                    return;
-                }
-
-                    // Thêm vào datasource nếu chưa có
-                    var existingList = productVariantListDtoBindingSource.DataSource as List<ProductVariantListDto> ?? new List<ProductVariantListDto>();
+                    // Thêm vào datasource nếu chưa có (gán trực tiếp như mẫu)
+                    var existingList = productVariantListDtoBindingSource.DataSource as List<ProductVariantDto> ?? new List<ProductVariantDto>();
                     if (existingList.All(v => v.Id != productVariantId))
                     {
-                        existingList.Add(variant);
+                        existingList.Add(productVariantDto);
                         productVariantListDtoBindingSource.DataSource = existingList;
                         productVariantListDtoBindingSource.ResetBindings(false);
                     }
+                    
+                    // Tạo ProductVariantListDto từ ProductVariantDto để sử dụng
+                    variant = new ProductVariantListDto
+                    {
+                        Id = productVariantDto.Id,
+                        VariantCode = productVariantDto.VariantCode,
+                        VariantFullName = productVariantDto.VariantFullName,
+                        ProductName = productVariantDto.ProductName,
+                        UnitName = productVariantDto.UnitName
+                    };
                 }
 
                 // Tạo detail DTO mới
-                var detailDto = new XuatLapRapDetailDto
+                var detailDto = new StockInOutDetailForUIDto
                 {
                     Id = Guid.NewGuid(),
                     StockInOutMasterId = _stockOutMasterId,
@@ -1403,7 +1331,7 @@ namespace Inventory.StockOut.XuatLapRap
                     ProductVariantName = $"{variant.VariantFullName}",
                     UnitOfMeasureName = variant.UnitName,
                     StockOutQty = 1, // Mặc định số lượng là 1
-                    LineNumber = xuatLapRapDetailDtoBindingSource.Count + 1
+                    LineNumber = stockInOutDetailForUIDtoBindingSource.Count + 1
                 };
 
                 // Thêm ghi chú nếu có thông tin từ Device hoặc Warranty
@@ -1444,10 +1372,10 @@ namespace Inventory.StockOut.XuatLapRap
                 }
 
                 // Thêm vào binding source
-                var details = xuatLapRapDetailDtoBindingSource.DataSource as List<XuatLapRapDetailDto> ?? new List<XuatLapRapDetailDto>();
+                var details = stockInOutDetailForUIDtoBindingSource.DataSource as List<StockInOutDetailForUIDto> ?? new List<StockInOutDetailForUIDto>();
                 details.Add(detailDto);
-                xuatLapRapDetailDtoBindingSource.DataSource = details;
-                xuatLapRapDetailDtoBindingSource.ResetBindings(false);
+                stockInOutDetailForUIDtoBindingSource.DataSource = details;
+                stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
 
                 // Cập nhật LineNumber cho tất cả các dòng
                 for (int i = 0; i < details.Count; i++)

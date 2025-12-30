@@ -6,8 +6,10 @@ using DTO.Inventory;
 using Logger;
 using Logger.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
+using System.Threading.Tasks;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations.Inventory.StockIn;
@@ -71,7 +73,163 @@ public class StockInRepository : IStockInRepository
 
     #region Create
 
+    /// <summary>
+    /// Lưu phiếu nhập/xuất kho mới (Insert)
+    /// Tạo mới master và tất cả details trong database
+    /// </summary>
+    /// <param name="masterDto">Thông tin master của phiếu nhập/xuất kho (DTO)</param>
+    /// <param name="detailDtos">Danh sách chi tiết của phiếu nhập/xuất kho (DTOs)</param>
+    /// <returns>ID của master đã được lưu thành công</returns>
+    /// <exception cref="ArgumentNullException">Khi masterDto hoặc detailDtos là null</exception>
+    /// <exception cref="ArgumentException">Khi detailDtos rỗng</exception>
+    /// <exception cref="DataAccessException">Khi có lỗi xảy ra trong quá trình lưu vào database</exception>
+    public Task<Guid> SaveAsync(StockInOutMasterForUIDto masterDto, List<StockInOutDetailForUIDto> detailDtos)
+    {
+        try
+        {
+            if (masterDto == null)
+            {
+                throw new ArgumentNullException(nameof(masterDto), @"Master DTO không được null");
+            }
 
+            if (detailDtos == null || detailDtos.Count == 0)
+            {
+                throw new ArgumentException(@"Danh sách chi tiết không được rỗng", nameof(detailDtos));
+            }
+
+            using var context = CreateNewContext();
+
+            // Convert DTO sang Entity
+            var masterEntity = masterDto.ToEntity();
+            
+            // Tạo ID mới nếu chưa có
+            if (masterEntity.Id == Guid.Empty)
+            {
+                masterEntity.Id = Guid.NewGuid();
+            }
+
+            // Convert detail DTOs sang entities
+            var detailEntities = detailDtos.Select(dto =>
+            {
+                var detailEntity = dto.ToEntity();
+                // Gán master ID cho detail
+                detailEntity.StockInOutMasterId = masterEntity.Id;
+                // Tạo ID mới nếu chưa có
+                if (detailEntity.Id == Guid.Empty)
+                {
+                    detailEntity.Id = Guid.NewGuid();
+                }
+                return detailEntity;
+            }).ToList();
+
+            // Insert master và details vào database
+            context.StockInOutMasters.InsertOnSubmit(masterEntity);
+            context.StockInOutDetails.InsertAllOnSubmit(detailEntities);
+            
+            context.SubmitChanges();
+
+            _logger.Info(@"SaveAsync: Đã lưu phiếu nhập/xuất kho mới, MasterId={0}, DetailCount={1}", 
+                masterEntity.Id, detailEntities.Count);
+
+            return Task.FromResult(masterEntity.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($@"SaveAsync: Lỗi lưu phiếu nhập/xuất kho: {ex.Message}", ex);
+            throw new DataAccessException($@"Lỗi khi lưu phiếu nhập/xuất kho: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Cập nhật phiếu nhập/xuất kho (Update)
+    /// Cập nhật thông tin master và thay thế toàn bộ details (xóa cũ, thêm mới)
+    /// </summary>
+    /// <param name="masterDto">Thông tin master của phiếu nhập/xuất kho (DTO) - phải có Id hợp lệ</param>
+    /// <param name="detailDtos">Danh sách chi tiết mới của phiếu nhập/xuất kho (DTOs)</param>
+    /// <returns>ID của master đã được cập nhật thành công</returns>
+    /// <exception cref="ArgumentNullException">Khi masterDto hoặc detailDtos là null</exception>
+    /// <exception cref="ArgumentException">Khi masterDto.Id rỗng hoặc detailDtos rỗng</exception>
+    /// <exception cref="DataAccessException">Khi không tìm thấy master với Id đã cho hoặc có lỗi xảy ra trong quá trình cập nhật</exception>
+    public Task<Guid> UpdateAsync(StockInOutMasterForUIDto masterDto, List<StockInOutDetailForUIDto> detailDtos)
+    {
+        try
+        {
+            if (masterDto == null)
+            {
+                throw new ArgumentNullException(nameof(masterDto), @"Master DTO không được null");
+            }
+
+            if (masterDto.Id == Guid.Empty)
+            {
+                throw new ArgumentException(@"Master ID không được rỗng khi cập nhật", nameof(masterDto));
+            }
+
+            if (detailDtos == null || detailDtos.Count == 0)
+            {
+                throw new ArgumentException(@"Danh sách chi tiết không được rỗng", nameof(detailDtos));
+            }
+
+            using var context = CreateNewContext();
+
+            // Lấy master entity hiện tại
+            var existingMaster = context.StockInOutMasters.FirstOrDefault(m => m.Id == masterDto.Id);
+            if (existingMaster == null)
+            {
+                throw new DataAccessException($@"Không tìm thấy phiếu nhập/xuất kho với ID: {masterDto.Id}");
+            }
+
+            // Cập nhật thông tin master từ DTO
+            var masterEntity = masterDto.ToEntity();
+            existingMaster.StockInOutDate = masterEntity.StockInOutDate;
+            existingMaster.VocherNumber = masterEntity.VocherNumber;
+            existingMaster.StockInOutType = masterEntity.StockInOutType;
+            existingMaster.VoucherStatus = masterEntity.VoucherStatus;
+            existingMaster.WarehouseId = masterEntity.WarehouseId;
+            existingMaster.PurchaseOrderId = masterEntity.PurchaseOrderId;
+            existingMaster.PartnerSiteId = masterEntity.PartnerSiteId;
+            existingMaster.Notes = masterEntity.Notes;
+            existingMaster.NguoiNhanHang = masterEntity.NguoiNhanHang;
+            existingMaster.NguoiGiaoHang = masterEntity.NguoiGiaoHang;
+            existingMaster.TotalQuantity = masterEntity.TotalQuantity;
+            existingMaster.TotalAmount = masterEntity.TotalAmount;
+            existingMaster.TotalVat = masterEntity.TotalVat;
+            existingMaster.TotalAmountIncludedVat = masterEntity.TotalAmountIncludedVat;
+
+            // Xóa tất cả details cũ
+            var existingDetails = context.StockInOutDetails
+                .Where(d => d.StockInOutMasterId == masterDto.Id)
+                .ToList();
+            context.StockInOutDetails.DeleteAllOnSubmit(existingDetails);
+
+            // Thêm details mới
+            var detailEntities = detailDtos.Select(dto =>
+            {
+                var detailEntity = dto.ToEntity();
+                // Gán master ID cho detail
+                detailEntity.StockInOutMasterId = masterDto.Id;
+                // Tạo ID mới nếu chưa có
+                if (detailEntity.Id == Guid.Empty)
+                {
+                    detailEntity.Id = Guid.NewGuid();
+                }
+                return detailEntity;
+            }).ToList();
+
+            context.StockInOutDetails.InsertAllOnSubmit(detailEntities);
+            
+            context.SubmitChanges();
+
+            _logger.Info(@"UpdateAsync: Đã cập nhật phiếu nhập/xuất kho, MasterId={0}, DetailCount={1}", 
+                masterDto.Id, detailEntities.Count);
+
+            return Task.FromResult(masterDto.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($@"UpdateAsync: Lỗi cập nhật phiếu nhập/xuất kho: {ex.Message}", ex);
+            throw new DataAccessException($@"Lỗi khi cập nhật phiếu nhập/xuất kho: {ex.Message}", ex);
+        }
+    }
 
     #endregion
 

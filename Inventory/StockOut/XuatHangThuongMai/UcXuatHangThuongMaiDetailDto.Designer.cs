@@ -1,6 +1,4 @@
-﻿using DTO.Inventory.StockOut.XuatHangThuongMai;
-
-namespace Inventory.StockOut.XuatHangThuongMai
+﻿namespace Inventory.StockOut.XuatHangThuongMai
 {
     partial class UcXuatHangThuongMaiDetailDto
     {
@@ -33,12 +31,12 @@ namespace Inventory.StockOut.XuatHangThuongMai
         {
             this.components = new System.ComponentModel.Container();
             this.XuatHangThuongMaiDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.xuatHangThuongMaiDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.XuatHangThuongMaiDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colVariantFullName1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colProductVariantName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.XuatHangThuongMaiDetailProductNameHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -52,9 +50,8 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.colVatAmount = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTotalAmount = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTotalAmountIncludedVat = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colVariantFullName1 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.stockInOutDetailForUIDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.XuatHangThuongMaiDetailDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatHangThuongMaiDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatHangThuongMaiDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
@@ -64,11 +61,12 @@ namespace Inventory.StockOut.XuatHangThuongMai
             ((System.ComponentModel.ISupportInitialize)(this.StockOutQtyTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // XuatHangThuongMaiDetailDtoGridControl
             // 
-            this.XuatHangThuongMaiDetailDtoGridControl.DataSource = this.xuatHangThuongMaiDetailDtoBindingSource;
+            this.XuatHangThuongMaiDetailDtoGridControl.DataSource = this.stockInOutDetailForUIDtoBindingSource;
             this.XuatHangThuongMaiDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XuatHangThuongMaiDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
             this.XuatHangThuongMaiDetailDtoGridControl.MainView = this.XuatHangThuongMaiDetailDtoGridView;
@@ -84,10 +82,6 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.XuatHangThuongMaiDetailDtoGridControl.UseEmbeddedNavigator = true;
             this.XuatHangThuongMaiDetailDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.XuatHangThuongMaiDetailDtoGridView});
-            // 
-            // xuatHangThuongMaiDetailDtoBindingSource
-            // 
-            this.xuatHangThuongMaiDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiDetailDto);
             // 
             // XuatHangThuongMaiDetailDtoGridView
             // 
@@ -172,6 +166,14 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowIndicator = false;
+            // 
+            // colVariantFullName1
+            // 
+            this.colVariantFullName1.ColumnEdit = this.ProductFullNameHypertextLabel;
+            this.colVariantFullName1.FieldName = "VariantFullName";
+            this.colVariantFullName1.Name = "colVariantFullName1";
+            this.colVariantFullName1.Visible = true;
+            this.colVariantFullName1.VisibleIndex = 0;
             // 
             // ProductFullNameHypertextLabel
             // 
@@ -426,13 +428,9 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.colTotalAmountIncludedVat.VisibleIndex = 8;
             this.colTotalAmountIncludedVat.Width = 156;
             // 
-            // colVariantFullName1
+            // stockInOutDetailForUIDtoBindingSource
             // 
-            this.colVariantFullName1.ColumnEdit = this.ProductFullNameHypertextLabel;
-            this.colVariantFullName1.FieldName = "VariantFullName";
-            this.colVariantFullName1.Name = "colVariantFullName1";
-            this.colVariantFullName1.Visible = true;
-            this.colVariantFullName1.VisibleIndex = 0;
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
             // 
             // UcXuatHangThuongMaiDetailDto
             // 
@@ -442,7 +440,6 @@ namespace Inventory.StockOut.XuatHangThuongMai
             this.Name = "UcXuatHangThuongMaiDetailDto";
             this.Size = new System.Drawing.Size(1267, 704);
             ((System.ComponentModel.ISupportInitialize)(this.XuatHangThuongMaiDetailDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatHangThuongMaiDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatHangThuongMaiDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
@@ -452,6 +449,7 @@ namespace Inventory.StockOut.XuatHangThuongMai
             ((System.ComponentModel.ISupportInitialize)(this.StockOutQtyTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -461,7 +459,6 @@ namespace Inventory.StockOut.XuatHangThuongMai
         private DevExpress.XtraGrid.GridControl XuatHangThuongMaiDetailDtoGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView XuatHangThuongMaiDetailDtoGridView;
         
-        private System.Windows.Forms.BindingSource xuatHangThuongMaiDetailDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantCode;
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantName;
         private DevExpress.XtraGrid.Columns.GridColumn colUnitOfMeasureName;
@@ -481,5 +478,6 @@ namespace Inventory.StockOut.XuatHangThuongMai
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit UnitPriceTextEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName1;
+        private System.Windows.Forms.BindingSource stockInOutDetailForUIDtoBindingSource;
     }
 }

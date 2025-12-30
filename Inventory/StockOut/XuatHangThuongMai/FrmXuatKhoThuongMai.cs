@@ -1,8 +1,8 @@
-﻿using Common.Common;
+﻿using Bll.Inventory.StockInOut;
+using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
 using DevExpress.XtraEditors;
-using DTO.Inventory.StockOut.XuatHangThuongMai;
+using Inventory.OverlayForm;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -11,8 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
-using Inventory.OverlayForm;
 
 namespace Inventory.StockOut.XuatHangThuongMai;
 
@@ -813,31 +811,6 @@ public partial class FrmXuatKhoThuongMai : XtraForm
     #region ========== DATA OPERATIONS ==========
 
     #region Helper Methods - DTO to Entity Conversion
-
-    /// <summary>
-    /// Map XuatHangThuongMaiMasterDto sang StockInOutMaster entity
-    /// </summary>
-    private StockInOutMaster MapMasterDtoToEntity(XuatHangThuongMaiMasterDto dto)
-    {
-        return new StockInOutMaster
-        {
-            Id = dto.Id,
-            StockInOutDate = dto.StockOutDate,
-            VocherNumber = dto.StockOutNumber,
-            StockInOutType = (int)dto.LoaiNhapXuatKho,
-            VoucherStatus = (int)dto.TrangThai,
-            WarehouseId = dto.WarehouseId,
-            PurchaseOrderId = dto.SalesOrderId, // Dùng PurchaseOrderId để lưu SalesOrderId
-            PartnerSiteId = dto.CustomerId, // Dùng PartnerSiteId để lưu CustomerId
-            Notes = dto.Notes ?? string.Empty,
-            TotalQuantity = dto.TotalQuantity,
-            TotalAmount = dto.TotalAmount,
-            TotalVat = dto.TotalVat,
-            TotalAmountIncludedVat = dto.TotalAmountIncludedVat,
-            NguoiNhanHang = dto.NguoiNhanHang ?? string.Empty,
-            NguoiGiaoHang = dto.NguoiGiaoHang ?? string.Empty
-        };
-    }
 
     #endregion
 

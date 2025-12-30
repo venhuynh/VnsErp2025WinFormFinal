@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
+﻿using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
-using DevExpress.XtraReports.UI;
-using DTO.Inventory.StockIn.NhapBaoHanh;
 using Inventory.OverlayForm;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Inventory.StockIn.NhapBaoHanh
 {
@@ -36,9 +33,9 @@ namespace Inventory.StockIn.NhapBaoHanh
         private bool _hasUnsavedChanges;
 
         /// <summary>
-        /// ID phiếu nhập kho hiện tại (nếu đang edit)
+        /// ID phiếu nhập bảo hành hiện tại (nếu đang edit)
         /// </summary>
-        private Guid _currentStockInId;
+        private Guid _currentStockInOutMaster;
 
         /// <summary>
         /// Flag đánh dấu đang trong quá trình đóng form sau khi lưu thành công
@@ -56,21 +53,21 @@ namespace Inventory.StockIn.NhapBaoHanh
         public FrmNhapBaoHanh()
         {
             InitializeComponent();
-            Load += FrmNhapKhoThuongMai02_Load;
-            _currentStockInId = Guid.Empty;
+            Load += FrmNhapBaoHanh_Load;
+            _currentStockInOutMaster = Guid.Empty;
         }
 
         /// <summary>
-        /// Constructor với ID phiếu nhập kho (mở để xem/sửa)
+        /// Constructor với ID phiếu nhập bảo hành (mở để xem/sửa)
         /// </summary>
-        /// <param name="stockInId">ID phiếu nhập kho</param>
-        public FrmNhapBaoHanh(Guid stockInId)
+        /// <param name="stockInOutMaster">ID phiếu nhập bảo hành</param>
+        public FrmNhapBaoHanh(Guid stockInOutMaster)
         {
             InitializeComponent();
-            Load += FrmNhapKhoThuongMai02_Load;
+            Load += FrmNhapBaoHanh_Load;
 
-            // Gán ID phiếu nhập kho hiện tại
-            _currentStockInId = stockInId;
+            // Gán ID phiếu nhập bảo hành hiện tại
+            _currentStockInOutMaster = stockInOutMaster;
         }
 
         #endregion
@@ -80,7 +77,7 @@ namespace Inventory.StockIn.NhapBaoHanh
         /// <summary>
         /// Event handler khi form được load
         /// </summary>
-        private async void FrmNhapKhoThuongMai02_Load(object sender, EventArgs e)
+        private async void FrmNhapBaoHanh_Load(object sender, EventArgs e)
         {
             try
             {
@@ -95,16 +92,16 @@ namespace Inventory.StockIn.NhapBaoHanh
                 // Load datasource với SplashScreen (với owner là form này)
                 //await LoadDataSourcesAsync();
 
-                // Nếu _currentStockInId có giá trị thì load dữ liệu vào UI của 2 UserControl
-                if (_currentStockInId != Guid.Empty)
+                // Nếu _currentStockInOutMaster có giá trị thì load dữ liệu vào UI của 2 UserControl
+                if (_currentStockInOutMaster != Guid.Empty)
                 {
 
                     // Load dữ liệu từ ID vào các user controls
-                    //await LoadDataAsync(_currentStockInId);
+                    //await LoadDataAsync(_currentStockInOutMaster);
 
-                    //FIXME: Tạo hàm LoadDataAsync trong user controls để load dữ liệu từ _currentStockInId
-                    await ucNhapBaoHanhMaster1.LoadDataAsync(_currentStockInId);
-                    await ucNhapBaoHanhDetail1.LoadDataAsyncForEdit(_currentStockInId);
+                    //FIXME: Tạo hàm LoadDataAsync trong user controls để load dữ liệu từ _currentStockInOutMaster
+                    await ucNhapBaoHanhMaster1.LoadDataAsync(_currentStockInOutMaster);
+                    await ucNhapBaoHanhDetail1.LoadDataAsyncForEdit(_currentStockInOutMaster);
                 }
                 else
                 {
@@ -115,7 +112,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             }
             catch (Exception ex)
             {
-                _logger.Error("FrmNhapKhoThuongMai02_Load: Exception occurred", ex);
+                _logger.Error("FrmNhapBaoHanh_Load: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi khởi tạo form: {ex.Message}");
             }
         }
@@ -135,8 +132,8 @@ namespace Inventory.StockIn.NhapBaoHanh
                 CloseBarButtonItem.ItemClick += CloseBarButtonItem_ItemClick;
 
                 // Form events
-                FormClosing += FrmNhapKhoThuongMai02_FormClosing;
-                KeyDown += FrmNhapKhoThuongMai02_KeyDown;
+                FormClosing += FrmNhapBaoHanh_FormClosing;
+                KeyDown += FrmNhapBaoHanh_KeyDown;
                 KeyPreview = true; // Cho phép form xử lý phím tắt trước
 
                 // Detail control events - theo dõi thay đổi để đánh dấu có thay đổi chưa lưu và cập nhật tổng lên master
@@ -361,13 +358,13 @@ namespace Inventory.StockIn.NhapBaoHanh
         {
             try
             {
-                // Lấy StockInOutMasterId từ _currentStockInId (phải đã được lưu)
+                // Lấy StockInOutMasterId từ _currentStockInOutMaster (phải đã được lưu)
                 Guid stockInOutMasterId = Guid.Empty;
 
                 // Kiểm tra phiếu đã được lưu chưa
-                if (_currentStockInId != Guid.Empty)
+                if (_currentStockInOutMaster != Guid.Empty)
                 {
-                    stockInOutMasterId = _currentStockInId;
+                    stockInOutMasterId = _currentStockInOutMaster;
                 }
                 else
                 {
@@ -405,7 +402,7 @@ namespace Inventory.StockIn.NhapBaoHanh
                 if (stockInOutMasterId == Guid.Empty)
                 {
                     MsgBox.ShowWarning(
-                        "Không thể lấy ID phiếu nhập kho. Vui lòng thử lại.",
+                        "Không thể lấy ID phiếu nhập bảo hành. Vui lòng thử lại.",
                         "Cảnh báo",
                         this);
                     _logger.Warning("ThemHinhAnhBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
@@ -448,7 +445,7 @@ namespace Inventory.StockIn.NhapBaoHanh
         /// <summary>
         /// Event handler xử lý phím tắt
         /// </summary>
-        private void FrmNhapKhoThuongMai02_KeyDown(object sender, KeyEventArgs e)
+        private void FrmNhapBaoHanh_KeyDown(object sender, KeyEventArgs e)
         {
             try
             {
@@ -489,7 +486,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             }
             catch (Exception ex)
             {
-                _logger.Error("FrmNhapKhoThuongMai02_KeyDown: Exception occurred", ex);
+                _logger.Error("FrmNhapBaoHanh_KeyDown: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi xử lý phím tắt: {ex.Message}");
             }
         }
@@ -521,7 +518,7 @@ namespace Inventory.StockIn.NhapBaoHanh
         /// Event handler khi form đang đóng
         /// Sử dụng ShowYesNoCancel để đơn giản hóa logic: Yes = Lưu và đóng, No = Đóng không lưu, Cancel = Hủy
         /// </summary>
-        private async void FrmNhapKhoThuongMai02_FormClosing(object sender, FormClosingEventArgs e)
+        private async void FrmNhapBaoHanh_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
@@ -573,13 +570,13 @@ namespace Inventory.StockIn.NhapBaoHanh
                                 else
                                 {
                                     // Lưu thất bại, giữ form mở
-                                    _logger.Warning("FrmNhapKhoThuongMai02_FormClosing: Save failed, form will remain open");
+                                    _logger.Warning("FrmNhapBaoHanh_FormClosing: Save failed, form will remain open");
                                     e.Cancel = true;
                                 }
                             }
                             catch (Exception saveEx)
                             {
-                                _logger.Error("FrmNhapKhoThuongMai02_FormClosing: Exception during save operation", saveEx);
+                                _logger.Error("FrmNhapBaoHanh_FormClosing: Exception during save operation", saveEx);
                                 // Lỗi khi lưu, giữ form mở
                                 e.Cancel = true;
                             }
@@ -605,7 +602,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             }
             catch (Exception ex)
             {
-                _logger.Error("FrmNhapKhoThuongMai02_FormClosing: Exception occurred", ex);
+                _logger.Error("FrmNhapBaoHanh_FormClosing: Exception occurred", ex);
                 // Nếu có lỗi, vẫn cho phép đóng form (không cancel)
                 e.Cancel = false;
             }
@@ -614,35 +611,6 @@ namespace Inventory.StockIn.NhapBaoHanh
         #endregion
 
         #region ========== DATA OPERATIONS ==========
-
-        #region Helper Methods - DTO to Entity Conversion
-
-        /// <summary>
-        /// Map NhapBaoHanhMasterDto sang StockInOutMaster entity
-        /// </summary>
-        private StockInOutMaster MapMasterDtoToEntity(NhapBaoHanhMasterDto dto)
-        {
-            return new StockInOutMaster
-            {
-                Id = dto.Id,
-                StockInOutDate = dto.StockInDate,
-                VocherNumber = dto.StockInNumber,
-                StockInOutType = (int)dto.LoaiNhapXuatKho,
-                VoucherStatus = (int)dto.TrangThai,
-                WarehouseId = dto.WarehouseId,
-                PurchaseOrderId = dto.PurchaseOrderId,
-                PartnerSiteId = dto.SupplierId,
-                Notes = dto.Notes ?? string.Empty,
-                TotalQuantity = dto.TotalQuantity,
-                TotalAmount = dto.TotalAmount,
-                TotalVat = dto.TotalVat,
-                TotalAmountIncludedVat = dto.TotalAmountIncludedVat,
-                NguoiNhanHang = dto.NguoiNhanHang ?? string.Empty,
-                NguoiGiaoHang = dto.NguoiGiaoHang ?? string.Empty
-            };
-        }
-
-        #endregion
 
         /// <summary>
         /// Reset form về trạng thái ban đầu
@@ -661,7 +629,7 @@ namespace Inventory.StockIn.NhapBaoHanh
                 ucNhapBaoHanhMaster1.UpdateTotals(0, 0, 0, 0);
 
                 // Reset state
-                _currentStockInId = Guid.Empty;
+                _currentStockInOutMaster = Guid.Empty;
                 _isClosingAfterSave = false; // Reset flag khi reset form
                 MarkAsSaved();
             }
@@ -690,14 +658,6 @@ namespace Inventory.StockIn.NhapBaoHanh
                     return false;
                 }
 
-                // Validate thêm business rules cho Master
-                if (masterDto.WarehouseId == Guid.Empty)
-                {
-                    _logger.Warning("SaveDataAsync: Master validation failed - WarehouseId is Empty");
-                    MsgBox.ShowWarning("Vui lòng chọn kho nhập", "Cảnh báo", this);
-                    return false;
-                }
-
                 // ========== BƯỚC 2: VALIDATE VÀ LẤY DỮ LIỆU TỪ DETAIL CONTROL ==========
                 // Validate tất cả các rows trong grid
                 if (!ucNhapBaoHanhDetail1.ValidateAll())
@@ -707,29 +667,29 @@ namespace Inventory.StockIn.NhapBaoHanh
                     return false;
                 }
 
-                // Lấy danh sách detail entities (GetDetails() trả về List<StockInOutDetail>)
-                var detailEntities = ucNhapBaoHanhDetail1.GetDetails();
-                if (detailEntities == null || detailEntities.Count == 0)
+                // Lấy danh sách detail DTOs (GetDetails() trả về List<StockInOutDetailForUIDto>)
+                var detailDtos = ucNhapBaoHanhDetail1.GetDetails();
+                if (detailDtos == null || detailDtos.Count == 0)
                 {
                     _logger.Warning("SaveDataAsync: No details found");
                     MsgBox.ShowWarning("Vui lòng thêm ít nhất một dòng chi tiết", "Cảnh báo", this);
                     return false;
                 }
 
-                // Validate thêm business rules cho từng detail entity
+                // Validate thêm business rules cho từng detail DTO
                 // Lưu ý: Nhập bảo hành không có giá tiền, chỉ kiểm tra số lượng và hàng hóa
                 var validationErrors = new List<string>();
-                for (var i = 0; i < detailEntities.Count; i++)
+                for (var i = 0; i < detailDtos.Count; i++)
                 {
-                    var detail = detailEntities[i];
-                    var lineNumber = i + 1; // Entity không có LineNumber, tính từ index
+                    var detailDto = detailDtos[i];
+                    var lineNumber = i + 1; // DTO có LineNumber nhưng tính từ index để đảm bảo
 
-                    if (detail.ProductVariantId == Guid.Empty)
+                    if (detailDto.ProductVariantId == Guid.Empty)
                     {
                         validationErrors.Add($"Dòng {lineNumber}: Vui lòng chọn hàng hóa");
                     }
 
-                    if (detail.StockInQty <= 0)
+                    if (detailDto.StockInQty <= 0)
                     {
                         validationErrors.Add($"Dòng {lineNumber}: Số lượng nhập phải lớn hơn 0");
                     }
@@ -744,18 +704,34 @@ namespace Inventory.StockIn.NhapBaoHanh
                 }
 
                 // ========== BƯỚC 3: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
-                // Tất cả validation đã được thực hiện ở bước 1 và 2
-                // Truyền DTO trực tiếp vào BLL để tránh lỗi tham chiếu khóa ngoại
-                // BLL sẽ tự động map DTO sang entity (không có navigation properties)
-                var savedMasterId = await _stockInBll.SaveAsync(masterDto, detailEntities);
+                // Dựa vào giá trị của _currentStockInOutMaster để xác định là Insert hay Update
+                // Nếu _currentStockInOutMaster == Guid.Empty: Tạo mới (Insert)
+                // Nếu _currentStockInOutMaster != Guid.Empty: Cập nhật (Update)
+                
+                Guid savedMasterId;
+                
+                if (_currentStockInOutMaster == Guid.Empty)
+                {
+                    // Trường hợp tạo mới: Gọi SaveAsync để insert
+                    _logger.Info("SaveDataAsync: Creating new warranty input voucher");
+                    savedMasterId = await _stockInBll.SaveAsync(masterDto, detailDtos);
+                }
+                else
+                {
+                    // Trường hợp cập nhật: Set ID vào masterDto và gọi UpdateAsync để update
+                    _logger.Info("SaveDataAsync: Updating existing warranty input voucher, Id={0}", _currentStockInOutMaster);
+                    masterDto.Id = _currentStockInOutMaster;
+                    savedMasterId = await _stockInBll.UpdateAsync(masterDto, detailDtos);
+                }
 
-                // ========== BƯỚC 5: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
+                // ========== BƯỚC 4: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
                 // Cập nhật ID sau khi lưu
                 masterDto.Id = savedMasterId;
-                _currentStockInId = savedMasterId;
+                _currentStockInOutMaster = savedMasterId;
 
                 // Set master ID cho detail control để đồng bộ
                 ucNhapBaoHanhDetail1.SetStockInMasterId(savedMasterId);
+                
                 return true;
             }
             catch (ArgumentException argEx)

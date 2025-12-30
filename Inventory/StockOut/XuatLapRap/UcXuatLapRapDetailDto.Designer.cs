@@ -33,7 +33,6 @@ namespace Inventory.StockOut.XuatLapRap
         {
             this.components = new System.ComponentModel.Container();
             this.XuatLapRapDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.xuatLapRapDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.XuatLapRapDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
@@ -62,7 +61,6 @@ namespace Inventory.StockOut.XuatLapRap
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatLapRapDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
@@ -87,7 +85,6 @@ namespace Inventory.StockOut.XuatLapRap
             // 
             // XuatLapRapDetailDtoGridControl
             // 
-            this.XuatLapRapDetailDtoGridControl.DataSource = this.xuatLapRapDetailDtoBindingSource;
             this.XuatLapRapDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XuatLapRapDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
             this.XuatLapRapDetailDtoGridControl.MainView = this.XuatLapRapDetailDtoGridView;
@@ -465,7 +462,6 @@ namespace Inventory.StockOut.XuatLapRap
             this.Name = "UcXuatLapRapDetailDto";
             this.Size = new System.Drawing.Size(1079, 704);
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.xuatLapRapDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
@@ -509,7 +505,6 @@ namespace Inventory.StockOut.XuatLapRap
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
-        private System.Windows.Forms.BindingSource xuatLapRapDetailDtoBindingSource;
         private DevExpress.XtraBars.Docking.DockManager dockManager1;
         private DevExpress.XtraBars.Docking.DockPanel dockPanel;
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
