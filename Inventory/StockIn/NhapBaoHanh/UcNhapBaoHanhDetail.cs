@@ -1,4 +1,3 @@
-using Bll.Inventory.StockInOut;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
@@ -76,8 +75,6 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     {
         try
         {
-            // GridView đã được khai báo trong Designer, property public sẽ expose nó
-
             // Khởi tạo binding source với danh sách rỗng
             stockInOutDetailForUIDtoBindingSource.DataSource = new List<StockInOutDetailForUIDto>();
 
@@ -125,18 +122,18 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     /// <summary>
     /// Lấy danh sách chi tiết từ grid
     /// </summary>
-    public List<StockInOutDetail> GetDetails()
+    public List<StockInOutDetailForUIDto> GetDetails()
     {
         try
         {
             //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
-            var details = new List<StockInOutDetail>();
+            var details = new List<StockInOutDetailForUIDto>();
 
             foreach (var item in stockInOutDetailForUIDtoBindingSource)
             {
                 if(item is not StockInOutDetailForUIDto detailDto) continue;
 
-                details.Add(new StockInOutDetail
+                details.Add(new StockInOutDetailForUIDto
                 {
                     Id = default,
                     StockInOutMasterId = _stockInMasterId,
@@ -145,9 +142,8 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
                     StockOutQty = 0,
                     UnitPrice = 0,
                     Vat = 0,
-                    VatAmount = 0,
-                    TotalAmount = 0,
-                    TotalAmountIncludedVat = 0,
+                    // VatAmount, TotalAmount, TotalAmountIncludedVat là computed properties (read-only)
+                    // Chúng sẽ tự động tính toán từ StockOutQty, UnitPrice, Vat
                     GhiChu = detailDto.GhiChu,
                 });
             }
@@ -158,7 +154,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return new List<StockInOutDetail>();
+            return new List<StockInOutDetailForUIDto>();
         }
     }
 
@@ -537,7 +533,6 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
         {
             var column = NhapBaoHanhDetailDtoGridView.FocusedColumn;
             var fieldName = column?.FieldName;
-            var rowHandle = NhapBaoHanhDetailDtoGridView.FocusedRowHandle;
 
             if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -916,46 +911,6 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
         }
     }
 
-    /// <summary>
-    /// Xây dựng tên đầy đủ của biến thể từ các thuộc tính (Async)
-    /// Format: Attribute1: Value1, Attribute2: Value2, ...
-    /// </summary>
-    private Task<string> BuildVariantFullNameAsync(ProductVariant variant)
-    {
-        try
-        {
-            // Load thông tin thuộc tính từ BLL
-            var attributeValues = _productVariantBll.GetAttributeValues(variant.Id);
-
-            if (attributeValues == null || !attributeValues.Any())
-            {
-                return Task.FromResult(variant.VariantCode ?? string.Empty); // Nếu không có thuộc tính, trả về mã biến thể
-            }
-
-            var attributeParts = new List<string>();
-
-            foreach (var (_, attributeName, value) in attributeValues)
-            {
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    attributeParts.Add($"{attributeName}: {value}");
-                }
-            }
-
-            if (attributeParts.Any())
-            {
-                return Task.FromResult(string.Join(", ", attributeParts));
-            }
-
-            return Task.FromResult(variant.VariantCode ?? string.Empty); // Fallback về mã biến thể nếu không có giá trị thuộc tính
-        }
-        catch (Exception)
-        {
-            // Nếu có lỗi, trả về mã biến thể
-            return Task.FromResult(variant.VariantCode ?? string.Empty);
-        }
-    }
-
     #endregion
 
     #region ========== DATA MANAGEMENT ==========
@@ -1007,8 +962,6 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
         {
             if (_isCalculating) return;
             _isCalculating = true;
-
-            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
 
             NhapBaoHanhDetailDtoGridView.RefreshData();
 
@@ -1140,15 +1093,6 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     {
         _logger.Error("ShowError: {0}", ex, message);
         MsgBox.ShowError($"{message}: {ex.Message}");
-    }
-
-    /// <summary>
-    /// Hiển thị cảnh báo
-    /// </summary>
-    private void ShowWarning(string message)
-    {
-        _logger.Warning("ShowWarning: {0}", message);
-        MsgBox.ShowWarning(message);
     }
 
     #endregion

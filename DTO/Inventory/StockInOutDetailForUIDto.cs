@@ -131,13 +131,13 @@ namespace DTO.Inventory
 
         /// <summary>
         /// Tổng tiền (chưa VAT) - Computed property
-        /// Tính toán: StockOutQty * UnitPrice
+        /// Tính toán: (StockInQty + StockOutQty) * UnitPrice
         /// Map với: StockInOutDetail.TotalAmount (lưu vào DB khi save)
         /// </summary>
         [DisplayName("Tổng tiền")]
         [Display(Order = 25)]
         [Range(0, double.MaxValue, ErrorMessage = "Tổng tiền phải lớn hơn hoặc bằng 0")]
-        public decimal TotalAmount => StockOutQty * UnitPrice;
+        public decimal TotalAmount => (StockInQty + StockOutQty) * UnitPrice;
 
         /// <summary>
         /// Số tiền VAT - Computed property
