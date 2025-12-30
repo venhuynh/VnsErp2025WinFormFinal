@@ -4,13 +4,11 @@ using Common.Helpers;
 using Common.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
-using DTO.Inventory.InventoryManagement;
+using DTO.DeviceAssetManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using DTO.DeviceAssetManagement;
 
 namespace Inventory.Management
 {
