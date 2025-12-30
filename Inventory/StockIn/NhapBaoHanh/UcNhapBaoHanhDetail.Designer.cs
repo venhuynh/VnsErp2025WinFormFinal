@@ -84,7 +84,6 @@
             // 
             // nhapBaoHanhDetailDtoBindingSource
             // 
-            this.nhapBaoHanhDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapBaoHanh.NhapBaoHanhDetailDto);
             // 
             // NhapBaoHanhDetailDtoGridView
             // 
@@ -354,7 +353,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
         
-        private System.Windows.Forms.BindingSource nhapBaoHanhDetailDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
     }
 }
