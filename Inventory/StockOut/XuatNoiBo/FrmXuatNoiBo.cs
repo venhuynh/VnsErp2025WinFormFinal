@@ -1,11 +1,7 @@
+using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
-using DevExpress.XtraBars;
-using DevExpress.XtraReports.UI;
-using DTO.Inventory.StockOut.XuatNoiBo;
 using Inventory.OverlayForm;
-using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -14,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
 
 namespace Inventory.StockOut.XuatNoiBo;
 

@@ -70,7 +70,7 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     public UcXuatHangThuongMaiDetailDto()
     {
         InitializeComponent();
-        
+
         // Chỉ khởi tạo control khi không ở design mode
         if (!DesignMode)
         {
@@ -138,7 +138,8 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
         XuatHangThuongMaiDetailDtoGridView.ValidatingEditor += XuatHangThuongMaiDetailDtoGridView_ValidatingEditor;
 
         // Event custom draw row indicator
-        XuatHangThuongMaiDetailDtoGridView.CustomDrawRowIndicator += XuatHangThuongMaiDetailDtoGridView_CustomDrawRowIndicator;
+        XuatHangThuongMaiDetailDtoGridView.CustomDrawRowIndicator +=
+            XuatHangThuongMaiDetailDtoGridView_CustomDrawRowIndicator;
 
         // Event xử lý phím tắt cho GridView (Insert, Delete, Enter)
         XuatHangThuongMaiDetailDtoGridView.KeyDown += XuatHangThuongMaiDetailDtoGridView_KeyDown;
@@ -154,7 +155,8 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// <summary>
     /// Custom draw row indicator để hiển thị số thứ tự
     /// </summary>
-    private void XuatHangThuongMaiDetailDtoGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
+    private void XuatHangThuongMaiDetailDtoGridView_CustomDrawRowIndicator(object sender,
+        DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
     {
         GridViewHelper.CustomDrawRowIndicator(XuatHangThuongMaiDetailDtoGridView, e);
     }
@@ -163,7 +165,8 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// Xử lý sự kiện khi giá trị cell thay đổi trong GridView
     /// Xử lý cả việc cập nhật ProductVariant và tính toán tự động
     /// </summary>
-    private void XuatHangThuongMaiDetailDtoGridView_CellValueChanged(object sender, DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+    private void XuatHangThuongMaiDetailDtoGridView_CellValueChanged(object sender,
+        DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
     {
         try
         {
@@ -256,7 +259,8 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// <summary>
     /// Xử lý sự kiện khi thêm dòng mới
     /// </summary>
-    private void XuatHangThuongMaiDetailDtoGridView_InitNewRow(object sender, DevExpress.XtraGrid.Views.Grid.InitNewRowEventArgs e)
+    private void XuatHangThuongMaiDetailDtoGridView_InitNewRow(object sender,
+        DevExpress.XtraGrid.Views.Grid.InitNewRowEventArgs e)
     {
         try
         {
@@ -311,13 +315,13 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// <summary>
     /// Xử lý sự kiện validate editor (trước khi commit giá trị)
     /// </summary>
-    private void XuatHangThuongMaiDetailDtoGridView_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+    private void XuatHangThuongMaiDetailDtoGridView_ValidatingEditor(object sender,
+        DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
     {
         try
         {
             var column = XuatHangThuongMaiDetailDtoGridView.FocusedColumn;
             var fieldName = column?.FieldName;
-            var rowHandle = XuatHangThuongMaiDetailDtoGridView.FocusedRowHandle;
 
             if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -352,7 +356,8 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// <summary>
     /// Validate row data (sau khi commit giá trị)
     /// </summary>
-    private void XuatHangThuongMaiDetailDtoGridView_ValidateRow(object sender, DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+    private void XuatHangThuongMaiDetailDtoGridView_ValidateRow(object sender,
+        DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
     {
         try
         {
@@ -446,6 +451,7 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
                         }
 
                     }
+
                     break;
 
                 case Keys.Delete:
@@ -461,6 +467,7 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
                             gridView.DeleteRow(focusedRowHandle);
                         }
                     }
+
                     break;
 
                 case Keys.Enter:
@@ -510,6 +517,7 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
                             }
                         }
                     }
+
                     break;
             }
         }
@@ -551,8 +559,8 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
 
             try
             {
-                
-                productVariantListDtoBindingSource.DataSource = await _productVariantBll.GetAllInUseWithDetailsAsync(); 
+
+                productVariantListDtoBindingSource.DataSource = await _productVariantBll.GetAllInUseWithDetailsAsync();
                 productVariantListDtoBindingSource.ResetBindings(false);
 
                 _isProductVariantDataSourceLoaded = true;
@@ -830,8 +838,6 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
             if (_isCalculating) return;
             _isCalculating = true;
 
-            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
-
             XuatHangThuongMaiDetailDtoGridView.RefreshData();
 
             // Cập nhật tổng tiền lên master
@@ -852,7 +858,8 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// <summary>
     /// Tính tổng số lượng, tổng tiền từ danh sách chi tiết
     /// </summary>
-    public (decimal TotalQuantity, decimal TotalAmount, decimal TotalVat, decimal TotalAmountIncludedVat) CalculateTotals()
+    public (decimal TotalQuantity, decimal TotalAmount, decimal TotalVat, decimal TotalAmountIncludedVat)
+        CalculateTotals()
     {
         try
         {
@@ -925,8 +932,10 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
             // Các giá trị này sẽ được commit khi row được thêm vào binding source
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
             XuatHangThuongMaiDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
-            XuatHangThuongMaiDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            XuatHangThuongMaiDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullName}");
+            XuatHangThuongMaiDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode",
+                selectedVariant.VariantCode);
+            XuatHangThuongMaiDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName",
+                $"{selectedVariant.VariantFullName}");
             XuatHangThuongMaiDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
@@ -979,7 +988,7 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     }
 
     /// <summary>
-    /// Validate UnitPrice: Cho phép >= 0, chỉ từ chối khi < 0
+    /// Validate UnitPrice: 
     /// </summary>
     private void ValidateUnitPrice(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
     {
@@ -999,6 +1008,7 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
                 e.Valid = false;
                 return;
             }
+
             // Cho phép đơn giá = 0 và > 0
             e.Valid = true;
         }
@@ -1083,7 +1093,8 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
 
                 if (detail.StockOutQty > 0) continue;
 
-                _logger.Warning("ValidateAll: Row {0} has StockOutQty <= 0, value={1}", detail.LineNumber, detail.StockOutQty);
+                _logger.Warning("ValidateAll: Row {0} has StockOutQty <= 0, value={1}", detail.LineNumber,
+                    detail.StockOutQty);
                 MsgBox.ShowError($"Dòng {detail.LineNumber}: Số lượng xuất phải lớn hơn 0");
                 return false;
             }
@@ -1126,15 +1137,6 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     {
         _logger.Error("ShowError: {0}", ex, message);
         MsgBox.ShowError($"{message}: {ex.Message}");
-    }
-
-    /// <summary>
-    /// Hiển thị cảnh báo
-    /// </summary>
-    private void ShowWarning(string message)
-    {
-        _logger.Warning("ShowWarning: {0}", message);
-        MsgBox.ShowWarning(message);
     }
 
     #endregion

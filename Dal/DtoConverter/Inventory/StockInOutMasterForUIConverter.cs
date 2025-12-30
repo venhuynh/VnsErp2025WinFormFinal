@@ -27,7 +27,7 @@ namespace Dal.DtoConverter.Inventory
             {
                 // Thông tin cơ bản
                 Id = entity.Id,
-                StockOutNumber = entity.VocherNumber ?? string.Empty,
+                VoucherNumber = entity.VocherNumber ?? string.Empty,
                 StockOutDate = entity.StockInOutDate,
 
                 // Loại và trạng thái - chuyển đổi từ int sang enum
@@ -102,7 +102,7 @@ namespace Dal.DtoConverter.Inventory
             var entity = new StockInOutMaster
             {
                 Id = dto.Id,
-                VocherNumber = dto.StockOutNumber ?? string.Empty,
+                VocherNumber = dto.VoucherNumber ?? string.Empty,
                 StockInOutDate = dto.StockOutDate,
                 StockInOutType = (int)dto.LoaiNhapXuatKho, // Chuyển đổi enum sang int
                 VoucherStatus = (int)dto.TrangThai, // Chuyển đổi enum sang int

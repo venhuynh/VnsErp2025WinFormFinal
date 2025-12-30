@@ -166,29 +166,7 @@ public interface IUnitOfWork : IDisposable
 
     #endregion
 
-    #region ProductVariant Statistics Methods
-
-    /// <summary>
-    /// Đếm tổng số ProductVariant
-    /// </summary>
-    /// <returns>Số lượng ProductVariant</returns>
-    int GetProductVariantCount();
-
-    /// <summary>
-    /// Đếm số ProductVariant theo sản phẩm
-    /// </summary>
-    /// <param name="productId">ID sản phẩm</param>
-    /// <returns>Số lượng ProductVariant</returns>
-    int GetProductVariantCountByProduct(Guid productId);
-
-    /// <summary>
-    /// Đếm số ProductVariant theo trạng thái hoạt động
-    /// </summary>
-    /// <param name="isActive">Trạng thái hoạt động (true = đang hoạt động, false = không hoạt động)</param>
-    /// <returns>Số lượng ProductVariant</returns>
-    int GetProductVariantCountByStatus(bool isActive);
-
-    #endregion
+    
 
     #endregion
 

@@ -3,11 +3,11 @@ using Bll.Inventory.StockInOut;
 using Bll.MasterData.CompanyBll;
 using Common;
 using Common.Utils;
-using DevExpress.XtraEditors;
 using DTO.Inventory;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockOut.XuatLuuChuyenKho;
 
@@ -265,7 +265,7 @@ public partial class UcXuatChuyenKhoMaster : DevExpress.XtraEditors.XtraUserCont
         try
         {
             // Load warehouse datasource
-            await LoadWarehouseDataSourceAsync(forceRefresh: true);
+            await LoadWarehouseDataSourceAsync();
         }
         catch (Exception ex)
         {
@@ -276,8 +276,7 @@ public partial class UcXuatChuyenKhoMaster : DevExpress.XtraEditors.XtraUserCont
     /// <summary>
     /// Load datasource cho Warehouse (CompanyBranch) - Load toàn bộ danh sách
     /// </summary>
-    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-    private async Task LoadWarehouseDataSourceAsync(bool forceRefresh = false)
+    private async Task LoadWarehouseDataSourceAsync()
     {
         try
         {
@@ -780,26 +779,6 @@ public partial class UcXuatChuyenKhoMaster : DevExpress.XtraEditors.XtraUserCont
         {
             // Fallback nếu có lỗi khi hiển thị MsgBox
             System.Diagnostics.Debug.WriteLine($"Lỗi: {message}: {ex?.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Hiển thị lỗi
-    /// </summary>
-    private void ShowError(string message)
-    {
-        try
-        {
-            // Tìm parent form để làm owner cho MsgBox
-            var parentForm = this.FindForm();
-
-            // Sử dụng MsgBox.ShowError
-            MsgBox.ShowError(message, "Lỗi", parentForm);
-        }
-        catch
-        {
-            // Fallback nếu có lỗi khi hiển thị MsgBox
-            System.Diagnostics.Debug.WriteLine($"Lỗi: {message}");
         }
     }
 

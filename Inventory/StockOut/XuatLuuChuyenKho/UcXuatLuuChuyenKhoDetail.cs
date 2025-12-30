@@ -38,11 +38,6 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     private readonly ILogger _logger = LoggerFactory.CreateLogger(LogCategory.UI);
 
     /// <summary>
-    /// Trạng thái đang tải dữ liệu (guard tránh gọi LoadProductVariantsAsync song song)
-    /// </summary>
-    private bool _isLoadingProductVariants;
-
-    /// <summary>
     /// Flag đánh dấu ProductVariant datasource đã được load chưa
     /// </summary>
     private bool _isProductVariantDataSourceLoaded;
@@ -478,7 +473,6 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
         {
             var column = XuatLuuChuyenKhoDetailDtoGridView.FocusedColumn;
             var fieldName = column?.FieldName;
-            var rowHandle = XuatLuuChuyenKhoDetailDtoGridView.FocusedRowHandle;
 
             if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -741,8 +735,7 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     /// Method này được gọi từ form khi FormLoad
     /// Sử dụng SplashScreen để tăng trải nghiệm người dùng và ngăn người dùng thao tác khi đang load data
     /// </summary>
-    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-    private async Task LoadProductVariantsAsync(bool forceRefresh = false)
+    private async Task LoadProductVariantsAsync()
     {
         // Hiển thị SplashScreen để thông báo đang load dữ liệu
         SplashScreenHelper.ShowWaitingSplashScreen();
@@ -770,7 +763,7 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         try
         {
-            await LoadProductVariantsAsync(forceRefresh: true);
+            await LoadProductVariantsAsync();
         }
         catch (Exception ex)
         {
@@ -903,8 +896,6 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
             if (_isCalculating) return;
             _isCalculating = true;
 
-            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
-
             XuatLuuChuyenKhoDetailDtoGridView.RefreshData();
 
             // Cập nhật tổng tiền lên master
@@ -1036,15 +1027,6 @@ public partial class UcXuatLuuChuyenKhoDetail : DevExpress.XtraEditors.XtraUserC
     {
         _logger.Error("ShowError: {0}", ex, message);
         MsgBox.ShowError($"{message}: {ex.Message}");
-    }
-
-    /// <summary>
-    /// Hiển thị cảnh báo
-    /// </summary>
-    private void ShowWarning(string message)
-    {
-        _logger.Warning("ShowWarning: {0}", message);
-        MsgBox.ShowWarning(message);
     }
 
     #endregion

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DTO.Inventory;
 
 namespace Inventory.StockIn.NhapLuuChuyenKho;
 
@@ -227,32 +228,33 @@ public partial class FrmNhapLuuChuyenKho : DevExpress.XtraEditors.XtraForm
         }
     }
 
-        /// <summary>
-        /// Thiết lập SuperToolTip cho các BarButtonItem
-        /// </summary>
-        private void SetupSuperToolTips()
+    /// <summary>
+    /// Thiết lập SuperToolTip cho các BarButtonItem
+    /// </summary>
+    private void SetupSuperToolTips()
+    {
+        try
         {
-            try
+            // SuperToolTip cho ReloadDataSourceBarButtonItem
+            if (ReloadDataSourceBarButtonItem != null)
             {
-                // SuperToolTip cho ReloadDataSourceBarButtonItem
-                if (ReloadDataSourceBarButtonItem != null)
-                {
-                    SuperToolTipHelper.SetBarButtonSuperTip(
-                        ReloadDataSourceBarButtonItem,
-                        title: "<b><color=Blue>🔄 Làm mới dữ liệu</color></b>",
-                        content: "Làm mới lại các datasource trong form.<br/><br/><b>Chức năng:</b><br/>• Reload danh sách biến thể sản phẩm trong chi tiết<br/>• Reload danh sách kho và nhà cung cấp trong master<br/><br/><color=Gray>Lưu ý:</color> Sử dụng khi dữ liệu lookup đã thay đổi trong database và cần cập nhật lại."
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    ReloadDataSourceBarButtonItem,
+                    title: "<b><color=Blue>🔄 Làm mới dữ liệu</color></b>",
+                    content:
+                    "Làm mới lại các datasource trong form.<br/><br/><b>Chức năng:</b><br/>• Reload danh sách biến thể sản phẩm trong chi tiết<br/>• Reload danh sách kho và nhà cung cấp trong master<br/><br/><color=Gray>Lưu ý:</color> Sử dụng khi dữ liệu lookup đã thay đổi trong database và cần cập nhật lại."
+                );
             }
         }
+        catch (Exception ex)
+        {
+            _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+        }
+    }
 
-        #endregion
+    #endregion
 
-        #region ========== EVENT HANDLERS ==========
+    #region ========== EVENT HANDLERS ==========
 
     /// <summary>
     /// Event handler cho nút Nhập lại
@@ -506,7 +508,7 @@ public partial class FrmNhapLuuChuyenKho : DevExpress.XtraEditors.XtraForm
 
             // Tính tổng số lượng từ detail
             var details = ucNhapLuuChuyenKhoDetail1.GetDetails();
-            var totalQuantity = Enumerable.Sum<StockInOutDetail>(details, d => d.StockInQty);
+            var totalQuantity = Enumerable.Sum<StockInOutDetailForUIDto>(details, d => d.StockInQty);
 
             // Cập nhật tổng lên master (chỉ có totalQuantity)
             ucNhapLuuChuyenKhoMaster1.UpdateTotals(totalQuantity, 0, 0, 0);
@@ -725,9 +727,9 @@ public partial class FrmNhapLuuChuyenKho : DevExpress.XtraEditors.XtraForm
             // Dựa vào giá trị của _currentStockInOutMaster để xác định là Insert hay Update
             // Nếu _currentStockInOutMaster == Guid.Empty: Tạo mới (Insert)
             // Nếu _currentStockInOutMaster != Guid.Empty: Cập nhật (Update)
-            
+
             Guid savedMasterId;
-            
+
             if (_currentStockInOutMaster == Guid.Empty)
             {
                 // Trường hợp tạo mới: Gọi SaveAsync để insert
@@ -737,7 +739,8 @@ public partial class FrmNhapLuuChuyenKho : DevExpress.XtraEditors.XtraForm
             else
             {
                 // Trường hợp cập nhật: Set ID vào masterDto và gọi UpdateAsync để update
-                _logger.Info("SaveDataAsync: Updating existing transfer stock input voucher, Id={0}", _currentStockInOutMaster);
+                _logger.Info("SaveDataAsync: Updating existing transfer stock input voucher, Id={0}",
+                    _currentStockInOutMaster);
                 masterDto.Id = _currentStockInOutMaster;
                 savedMasterId = await _stockInBll.UpdateAsync(masterDto, detailEntities);
             }
@@ -749,7 +752,7 @@ public partial class FrmNhapLuuChuyenKho : DevExpress.XtraEditors.XtraForm
 
             // Set master ID cho detail control để đồng bộ
             ucNhapLuuChuyenKhoDetail1.SetStockInMasterId(savedMasterId);
-            
+
             return true;
         }
         catch (ArgumentException argEx)

@@ -9,6 +9,7 @@ using DTO.Inventory;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockIn.NhapThietBiMuon;
 
@@ -290,8 +291,8 @@ public partial class UcNhapThietBiMuonMaster : XtraUserControl
         {
             // Load cả 2 datasource song song để tối ưu performance
             await Task.WhenAll(
-                LoadWarehouseDataSourceAsync(forceRefresh: true),
-                LoadSupplierDataSourceAsync(forceRefresh: true)
+                LoadWarehouseDataSourceAsync(),
+                LoadSupplierDataSourceAsync()
             );
         }
         catch (Exception ex)
@@ -303,8 +304,7 @@ public partial class UcNhapThietBiMuonMaster : XtraUserControl
     /// <summary>
     /// Load datasource cho Warehouse (CompanyBranch) - Load toàn bộ danh sách
     /// </summary>
-    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-    private async Task LoadWarehouseDataSourceAsync(bool forceRefresh = false)
+    private async Task LoadWarehouseDataSourceAsync()
     {
         try
         {
@@ -321,8 +321,7 @@ public partial class UcNhapThietBiMuonMaster : XtraUserControl
     /// <summary>
     /// Load datasource cho Supplier (BusinessPartnerSite) - Load toàn bộ danh sách
     /// </summary>
-    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-    private async Task LoadSupplierDataSourceAsync(bool forceRefresh = false)
+    private async Task LoadSupplierDataSourceAsync()
     {
         try
         {
@@ -699,14 +698,6 @@ public partial class UcNhapThietBiMuonMaster : XtraUserControl
         return value.ToString(ApplicationConstants.QUANTITY_FORMAT);
     }
 
-    /// <summary>
-    /// Format tiền tệ (không có chữ số thập phân)
-    /// </summary>
-    private string FormatCurrency(decimal value)
-    {
-        return value.ToString(ApplicationConstants.CURRENCY_FORMAT);
-    }
-
     #endregion
 
     #region ========== HELPER METHODS ==========
@@ -761,26 +752,6 @@ public partial class UcNhapThietBiMuonMaster : XtraUserControl
         {
             // Fallback nếu có lỗi khi hiển thị MsgBox
             System.Diagnostics.Debug.WriteLine($"Lỗi: {message}: {ex?.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Hiển thị lỗi
-    /// </summary>
-    private void ShowError(string message)
-    {
-        try
-        {
-            // Tìm parent form để làm owner cho MsgBox
-            var parentForm = this.FindForm();
-
-            // Sử dụng MsgBox.ShowError
-            MsgBox.ShowError(message, "Lỗi", parentForm);
-        }
-        catch
-        {
-            // Fallback nếu có lỗi khi hiển thị MsgBox
-            System.Diagnostics.Debug.WriteLine($"Lỗi: {message}");
         }
     }
 

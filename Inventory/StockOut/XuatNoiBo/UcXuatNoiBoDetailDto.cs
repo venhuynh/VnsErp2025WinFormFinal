@@ -479,7 +479,6 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
         {
             var column = XuatNoiBoDetailDtoGridView.FocusedColumn;
             var fieldName = column?.FieldName;
-            var rowHandle = XuatNoiBoDetailDtoGridView.FocusedRowHandle;
 
             if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -927,8 +926,6 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
             if (_isCalculating) return;
             _isCalculating = true;
 
-            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
-
             XuatNoiBoDetailDtoGridView.RefreshData();
 
             // Cập nhật tổng tiền lên master
@@ -1059,15 +1056,6 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
     {
         _logger.Error("ShowError: {0}", ex, message);
         MsgBox.ShowError($"{message}: {ex.Message}");
-    }
-
-    /// <summary>
-    /// Hiển thị cảnh báo
-    /// </summary>
-    private void ShowWarning(string message)
-    {
-        _logger.Warning("ShowWarning: {0}", message);
-        MsgBox.ShowWarning(message);
     }
 
     #endregion

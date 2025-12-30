@@ -1,7 +1,6 @@
 ﻿using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockInOut;
 using Bll.MasterData.CompanyBll;
-using Bll.MasterData.CustomerBll;
 using Common;
 using Common.Utils;
 using DevExpress.XtraEditors;
@@ -21,11 +20,6 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     /// Business Logic Layer cho CompanyBranch (dùng cho Warehouse lookup)
     /// </summary>
     private readonly CompanyBranchBll _companyBranchBll = new();
-
-    /// <summary>
-    /// Business Logic Layer cho BusinessPartnerSite (dùng cho Supplier lookup)
-    /// </summary>
-    private readonly BusinessPartnerSiteBll _businessPartnerSiteBll = new();
 
     /// <summary>
     /// Business Logic Layer cho StockIn (dùng để lấy master entity)
@@ -267,7 +261,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
         {
 
             // Load warehouse datasource (nhập nội bộ không cần supplier)
-            await LoadWarehouseDataSourceAsync(forceRefresh: true);
+            await LoadWarehouseDataSourceAsync();
         }
         catch (Exception ex)
         {
@@ -278,8 +272,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     /// <summary>
     /// Load datasource cho Warehouse (CompanyBranch) - Load toàn bộ danh sách
     /// </summary>
-    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-    private async Task LoadWarehouseDataSourceAsync(bool forceRefresh = false)
+    private async Task LoadWarehouseDataSourceAsync()
     {
         try
         {
@@ -477,7 +470,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     /// Load dữ liệu master từ ID phiếu nhập xuất kho
     /// </summary>
     /// <param name="stockInOutMasterId">ID phiếu nhập xuất kho</param>
-    public async Task LoadDataAsync(Guid stockInOutMasterId)
+    public Task LoadDataAsync(Guid stockInOutMasterId)
     {
         try
         {
@@ -508,6 +501,8 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
             ShowError(ex, "Lỗi tải dữ liệu phiếu nhập kho");
             throw;
         }
+
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -570,10 +565,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
     /// Cập nhật các giá trị tổng hợp từ detail
     /// </summary>
     /// <param name="totalQuantity">Tổng số lượng</param>
-    /// <param name="totalAmount">Tổng tiền chưa VAT</param>
-    /// <param name="totalVat">Tổng VAT</param>
-    /// <param name="totalAmountIncludedVat">Tổng tiền bao gồm VAT</param>
-    public void UpdateTotals(decimal totalQuantity, decimal totalAmount, decimal totalVat, decimal totalAmountIncludedVat)
+    public void UpdateTotals(decimal totalQuantity)
     {
         try
         {
@@ -607,14 +599,6 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
         return value.ToString(ApplicationConstants.QUANTITY_FORMAT);
     }
 
-    /// <summary>
-    /// Format tiền tệ (không có chữ số thập phân)
-    /// </summary>
-    private string FormatCurrency(decimal value)
-    {
-        return value.ToString(ApplicationConstants.CURRENCY_FORMAT);
-    }
-
     #endregion
 
     #region ========== HELPER METHODS ==========
@@ -631,7 +615,7 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
 
 
             // Lấy loại nhập/xuất kho từ Entity
-            var loaiNhapXuatKho = (LoaiNhapXuatKhoEnum)LoaiNhapXuatKhoEnum.NhapNoiBo;
+            var loaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapNoiBo;
 
             // Gọi BLL để tạo số phiếu tự động (tự động xác định PNK hay PXK)
             var voucherNumber = _stockInOutMasterBll.GenerateVoucherNumber(stockInDate, loaiNhapXuatKho);
@@ -671,26 +655,6 @@ public partial class UcNhapNoiBoMaster : XtraUserControl
         {
             // Fallback nếu có lỗi khi hiển thị MsgBox
             System.Diagnostics.Debug.WriteLine($"Lỗi: {message}: {ex?.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Hiển thị lỗi
-    /// </summary>
-    private void ShowError(string message)
-    {
-        try
-        {
-            // Tìm parent form để làm owner cho MsgBox
-            var parentForm = this.FindForm();
-
-            // Sử dụng MsgBox.ShowError
-            MsgBox.ShowError(message, "Lỗi", parentForm);
-        }
-        catch
-        {
-            // Fallback nếu có lỗi khi hiển thị MsgBox
-            System.Diagnostics.Debug.WriteLine($"Lỗi: {message}");
         }
     }
 

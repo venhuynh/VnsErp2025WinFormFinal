@@ -39,12 +39,8 @@ namespace Dal.DtoConverter.Inventory
                 Vat = entity.Vat,
 
                 // Tình trạng sản phẩm (mặc định)
-                TinhTrangSanPham = "Bình thường",
+                GhiChu = "Bình thường",
 
-                // Khởi tạo danh sách rỗng cho Warranties và Devices
-                // (sẽ được populate từ repository nếu cần)
-                Warranties = new List<WarrantyDto>(),
-                Devices = new List<DeviceDto>()
             };
 
             // Map thông tin từ ProductVariant nếu đã được load
@@ -111,17 +107,7 @@ namespace Dal.DtoConverter.Inventory
             var dto = entity.ToDto(lineNumber);
 
             if (dto == null) return null;
-
-            // Gán Devices và Warranties nếu có
-            if (devices != null)
-            {
-                dto.Devices = devices;
-            }
-
-            if (warranties != null)
-            {
-                dto.Warranties = warranties;
-            }
+             
 
             return dto;
         }

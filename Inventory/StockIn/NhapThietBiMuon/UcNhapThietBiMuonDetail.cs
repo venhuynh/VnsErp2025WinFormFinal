@@ -480,7 +480,6 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
         {
             var column = NhapThietBiMuonDetailDtoGridView.FocusedColumn;
             var fieldName = column?.FieldName;
-            var rowHandle = NhapThietBiMuonDetailDtoGridView.FocusedRowHandle;
 
             if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -928,8 +927,6 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             if (_isCalculating) return;
             _isCalculating = true;
 
-            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
-
             NhapThietBiMuonDetailDtoGridView.RefreshData();
 
             // Cập nhật tổng tiền lên master
@@ -1060,15 +1057,6 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
     {
         _logger.Error("ShowError: {0}", ex, message);
         MsgBox.ShowError($"{message}: {ex.Message}");
-    }
-
-    /// <summary>
-    /// Hiển thị cảnh báo
-    /// </summary>
-    private void ShowWarning(string message)
-    {
-        _logger.Warning("ShowWarning: {0}", message);
-        MsgBox.ShowWarning(message);
     }
 
     #endregion

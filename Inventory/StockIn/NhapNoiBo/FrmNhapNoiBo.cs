@@ -1,8 +1,7 @@
+using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
-using DevExpress.XtraBars;
-using DevExpress.XtraReports.UI;
+using Inventory.OverlayForm;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -11,10 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
-using DTO.Inventory.StockIn.NhapNoiBo;
-using Inventory.OverlayForm;
-using Inventory.StockIn.NhapThietBiMuon;
 
 namespace Inventory.StockIn.NhapNoiBo;
 
@@ -232,37 +227,38 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
         }
     }
 
-        /// <summary>
-        /// Thiết lập SuperToolTip cho các BarButtonItem
-        /// </summary>
-        private void SetupSuperToolTips()
+    /// <summary>
+    /// Thiết lập SuperToolTip cho các BarButtonItem
+    /// </summary>
+    private void SetupSuperToolTips()
+    {
+        try
         {
-            try
+            // SuperToolTip cho ReloadDataSourceBarButtonItem
+            if (ReloadDataSourceBarButtonItem != null)
             {
-                // SuperToolTip cho ReloadDataSourceBarButtonItem
-                if (ReloadDataSourceBarButtonItem != null)
-                {
-                    SuperToolTipHelper.SetBarButtonSuperTip(
-                        ReloadDataSourceBarButtonItem,
-                        title: "<b><color=Blue>🔄 Làm mới dữ liệu</color></b>",
-                        content: "Làm mới lại các datasource trong form.<br/><br/><b>Chức năng:</b><br/>• Reload danh sách biến thể sản phẩm trong chi tiết<br/>• Reload danh sách kho và nhà cung cấp trong master<br/><br/><color=Gray>Lưu ý:</color> Sử dụng khi dữ liệu lookup đã thay đổi trong database và cần cập nhật lại."
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    ReloadDataSourceBarButtonItem,
+                    title: "<b><color=Blue>🔄 Làm mới dữ liệu</color></b>",
+                    content:
+                    "Làm mới lại các datasource trong form.<br/><br/><b>Chức năng:</b><br/>• Reload danh sách biến thể sản phẩm trong chi tiết<br/>• Reload danh sách kho và nhà cung cấp trong master<br/><br/><color=Gray>Lưu ý:</color> Sử dụng khi dữ liệu lookup đã thay đổi trong database và cần cập nhật lại."
+                );
             }
         }
+        catch (Exception ex)
+        {
+            _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+        }
+    }
 
-        #endregion
+    #endregion
 
-        #region ========== EVENT HANDLERS ==========
+    #region ========== EVENT HANDLERS ==========
 
-        /// <summary>
-        /// Event handler cho nút Nhập lại
-        /// </summary>
-        private void NhapLaiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    /// <summary>
+    /// Event handler cho nút Nhập lại
+    /// </summary>
+    private void NhapLaiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
         try
         {
@@ -647,56 +643,6 @@ public partial class FrmNhapNoiBo : DevExpress.XtraEditors.XtraForm
             _logger.Error("ResetForm: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi reset form: {ex.Message}");
         }
-    }
-
-    #endregion
-
-    #region Helper Methods - DTO to Entity Conversion
-
-    /// <summary>
-    /// Map NhapNoiBoMasterDto sang StockInOutMaster entity
-    /// </summary>
-    private StockInOutMaster MapMasterDtoToEntity(NhapNoiBoMasterDto dto)
-    {
-        return new StockInOutMaster
-        {
-            Id = dto.Id,
-            StockInOutDate = dto.StockInDate,
-            VocherNumber = dto.StockInNumber,
-            StockInOutType = (int)dto.LoaiNhapXuatKho,
-            VoucherStatus = (int)dto.TrangThai,
-            WarehouseId = dto.WarehouseId,
-            PurchaseOrderId = null, // Nhập nội bộ không có PurchaseOrder
-            PartnerSiteId = null, // Nhập nội bộ không có nhà cung cấp/khách hàng
-            Notes = dto.Notes ?? string.Empty,
-            TotalQuantity = dto.TotalQuantity,
-            TotalAmount = 0, // Nhập nội bộ không có giá trị tiền
-            TotalVat = 0, // Nhập nội bộ không có VAT
-            TotalAmountIncludedVat = 0, // Nhập nội bộ không có tổng tiền
-            NguoiNhanHang = dto.NguoiNhanHang ?? string.Empty,
-            NguoiGiaoHang = dto.NguoiGiaoHang ?? string.Empty
-        };
-    }
-
-    /// <summary>
-    /// Map NhapNoiBoDetailDto sang StockInOutDetail entity
-    /// </summary>
-    private StockInOutDetail MapDetailDtoToEntity(NhapNoiBoDetailDto dto)
-    {
-        return new StockInOutDetail
-        {
-            Id = dto.Id,
-            StockInOutMasterId = dto.StockInOutMasterId,
-            ProductVariantId = dto.ProductVariantId,
-            StockInQty = dto.StockInQty,
-            StockOutQty = 0, // Nhập nội bộ chỉ có nhập, không có xuất
-            UnitPrice = 0, // Nhập nội bộ không có giá
-            Vat = 0, // Nhập nội bộ không có VAT
-            VatAmount = 0, // Nhập nội bộ không có VAT
-            TotalAmount = 0, // Nhập nội bộ không có tổng tiền
-            TotalAmountIncludedVat = 0, // Nhập nội bộ không có tổng tiền
-            GhiChu = dto.GhiChu ?? "Bình thường"
-        };
     }
 
     #endregion

@@ -1,7 +1,7 @@
-﻿using Common.Common;
+﻿using Bll.Inventory.StockInOut;
+using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
-using DevExpress.XtraReports.UI;
+using Inventory.OverlayForm;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -10,9 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
-using Inventory.OverlayForm;
-using Inventory.StockIn.NhapThietBiMuon;
 
 namespace Inventory.StockOut.XuatChoThueMuon;
 
@@ -444,7 +441,6 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
                     this);
                 _logger.Warning(
                     "InPhieuBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
-                return;
             }
 
             // TODO: Implement print functionality
@@ -852,36 +848,6 @@ public partial class FrmXuatThietBiChoThueMuon : DevExpress.XtraEditors.XtraForm
             _logger.Error("ResetForm: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi reset form: {ex.Message}");
         }
-    }
-
-    #endregion
-
-    #region Helper Methods - DTO to Entity Conversion
-
-    /// <summary>
-    /// Map XuatThietBiChoThueMuonMasterDto sang StockInOutMaster entity
-    /// </summary>
-    private StockInOutMaster MapMasterDtoToEntity(
-        DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonMasterDto dto)
-    {
-        return new StockInOutMaster
-        {
-            Id = dto.Id,
-            StockInOutDate = dto.StockOutDate,
-            VocherNumber = dto.StockOutNumber,
-            StockInOutType = (int)dto.LoaiNhapXuatKho,
-            VoucherStatus = (int)dto.TrangThai,
-            WarehouseId = dto.WarehouseId,
-            PurchaseOrderId = null, // XuatThietBiChoThueMuon không có PurchaseOrder
-            PartnerSiteId = dto.CustomerId,
-            Notes = dto.Notes ?? string.Empty,
-            TotalQuantity = dto.TotalQuantity,
-            TotalAmount = 0, // XuatThietBiChoThueMuon không có giá trị tiền
-            TotalVat = 0, // XuatThietBiChoThueMuon không có VAT
-            TotalAmountIncludedVat = 0, // XuatThietBiChoThueMuon không có tổng tiền
-            NguoiNhanHang = dto.NguoiNhanHang ?? string.Empty,
-            NguoiGiaoHang = dto.NguoiGiaoHang ?? string.Empty
-        };
     }
 
     #endregion

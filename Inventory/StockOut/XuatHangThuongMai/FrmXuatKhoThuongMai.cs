@@ -427,7 +427,6 @@ public partial class FrmXuatKhoThuongMai : XtraForm
                     "Cảnh báo",
                     this);
                 _logger.Warning("InPhieuBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
-                return;
             }
 
             // In phiếu nhập kho với preview
@@ -674,7 +673,7 @@ public partial class FrmXuatKhoThuongMai : XtraForm
 
                 case Keys.Escape:
                     // ESC: Đóng form (chỉ khi không đang edit trong grid)
-                    if (!(ActiveControl is DevExpress.XtraEditors.BaseEdit baseEdit && baseEdit.IsEditorActive))
+                    if (!(ActiveControl is BaseEdit baseEdit && baseEdit.IsEditorActive))
                     {
                         e.Handled = true;
                         CloseBarButtonItem_ItemClick(null, null);

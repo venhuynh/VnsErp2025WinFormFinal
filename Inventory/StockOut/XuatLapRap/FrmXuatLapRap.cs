@@ -1,25 +1,15 @@
+using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
-using DevExpress.XtraBars;
-using DevExpress.XtraEditors;
-using DevExpress.XtraReports.UI;
-using DTO.Inventory.StockOut.XuatLapRap;
 using Inventory.OverlayForm;
-using Inventory.StockIn.NhapThietBiMuon;
 using Logger;
+using Logger.Configuration;
 using Logger.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
-using Logger.Configuration;
 
 namespace Inventory.StockOut.XuatLapRap
 {
@@ -438,7 +428,6 @@ namespace Inventory.StockOut.XuatLapRap
                         this);
                     _logger.Warning(
                         "InPhieuBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
-                    return;
                 }
 
                 // TODO: Implement print functionality
@@ -846,35 +835,6 @@ namespace Inventory.StockOut.XuatLapRap
                 _logger.Error("ResetForm: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi reset form: {ex.Message}");
             }
-        }
-
-        #endregion
-
-        #region Helper Methods - DTO to Entity Conversion
-
-        /// <summary>
-        /// Map XuatLapRapMasterDto sang StockInOutMaster entity
-        /// </summary>
-        private StockInOutMaster MapMasterDtoToEntity(XuatLapRapMasterDto dto)
-        {
-            return new StockInOutMaster
-            {
-                Id = dto.Id,
-                StockInOutDate = dto.StockOutDate,
-                VocherNumber = dto.StockOutNumber,
-                StockInOutType = (int)dto.LoaiNhapXuatKho,
-                VoucherStatus = (int)dto.TrangThai,
-                WarehouseId = dto.WarehouseId,
-                PurchaseOrderId = null, // Xuất linh kiện lắp ráp không có PurchaseOrder
-                PartnerSiteId = null, // Xuất linh kiện lắp ráp không có nhà cung cấp/khách hàng
-                Notes = dto.Notes ?? string.Empty,
-                TotalQuantity = dto.TotalQuantity,
-                TotalAmount = 0, // Xuất linh kiện lắp ráp không có giá trị tiền
-                TotalVat = 0, // Xuất linh kiện lắp ráp không có VAT
-                TotalAmountIncludedVat = 0, // Xuất linh kiện lắp ráp không có tổng tiền
-                NguoiNhanHang = dto.NguoiNhanHang ?? string.Empty,
-                NguoiGiaoHang = dto.NguoiGiaoHang ?? string.Empty
-            };
         }
 
         #endregion

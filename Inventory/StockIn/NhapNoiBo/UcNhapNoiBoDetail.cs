@@ -3,9 +3,6 @@ using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
-using Dal.Connection;
-using Dal.DataContext;
-using Dal.DtoConverter.Inventory;
 using DevExpress.Data;
 using DTO.Inventory;
 using DTO.MasterData.ProductService;
@@ -132,37 +129,39 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     /// <summary>
     /// Lấy danh sách chi tiết từ grid
     /// </summary>
-    public List<StockInOutDetail> GetDetails()
+    public List<StockInOutDetailForUIDto> GetDetails()
     {
         try
         {
             //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
-            var details = new List<StockInOutDetail>();
+            var details = new List<StockInOutDetailForUIDto>();
 
             foreach (var item in stockInOutDetailForUIDtoBindingSource)
             {
-                if(item is not StockInOutDetailForUIDto detailDto) continue;
+                if (item is not StockInOutDetailForUIDto detailDto) continue;
 
-                // Sử dụng extension method ToEntity() để convert từ DTO sang Entity
-                var entity = detailDto.ToEntity();
-                if (entity != null)
+                details.Add(new StockInOutDetailForUIDto
                 {
-                    // Cập nhật StockInOutMasterId nếu chưa có
-                    if (entity.StockInOutMasterId == Guid.Empty)
-                    {
-                        entity.StockInOutMasterId = _stockInMasterId;
-                    }
-                    details.Add(entity);
-                }
+                    Id = default,
+                    StockInOutMasterId = _stockInMasterId,
+                    ProductVariantId = detailDto.ProductVariantId,
+                    StockInQty = detailDto.StockInQty,
+                    StockOutQty = 0,
+                    UnitPrice = 0,
+                    Vat = 0,
+                    // VatAmount, TotalAmount, TotalAmountIncludedVat là computed properties (read-only)
+                    // Chúng sẽ tự động tính toán từ StockOutQty, UnitPrice, Vat
+                    GhiChu = detailDto.GhiChu,
+                });
             }
-            
+
             return details;
         }
         catch (Exception ex)
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return [];
+            return new List<StockInOutDetailForUIDto>();
         }
     }
 
@@ -480,7 +479,6 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
         {
             var column = NhapNoiBoDetailDtoGridView.FocusedColumn;
             var fieldName = column?.FieldName;
-            var rowHandle = NhapNoiBoDetailDtoGridView.FocusedRowHandle;
 
             if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -1057,15 +1055,6 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
     {
         _logger.Error("ShowError: {0}", ex, message);
         MsgBox.ShowError($"{message}: {ex.Message}");
-    }
-
-    /// <summary>
-    /// Hiển thị cảnh báo
-    /// </summary>
-    private void ShowWarning(string message)
-    {
-        _logger.Warning("ShowWarning: {0}", message);
-        MsgBox.ShowWarning(message);
     }
 
     #endregion

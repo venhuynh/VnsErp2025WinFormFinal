@@ -269,7 +269,7 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
         try
         {
             // Load warehouse datasource (nhập nội bộ không cần supplier)
-            await LoadWarehouseDataSourceAsync(forceRefresh: true);
+            await LoadWarehouseDataSourceAsync();
         }
         catch (Exception ex)
         {
@@ -280,8 +280,7 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
     /// <summary>
     /// Load datasource cho Warehouse (CompanyBranch) - Load toàn bộ danh sách
     /// </summary>
-    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-    private async Task LoadWarehouseDataSourceAsync(bool forceRefresh = false)
+    private async Task LoadWarehouseDataSourceAsync()
     {
         try
         {
@@ -758,26 +757,6 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
         {
             // Fallback nếu có lỗi khi hiển thị MsgBox
             System.Diagnostics.Debug.WriteLine($"Lỗi: {message}: {ex?.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Hiển thị lỗi
-    /// </summary>
-    private void ShowError(string message)
-    {
-        try
-        {
-            // Tìm parent form để làm owner cho MsgBox
-            var parentForm = this.FindForm();
-
-            // Sử dụng MsgBox.ShowError
-            MsgBox.ShowError(message, "Lỗi", parentForm);
-        }
-        catch
-        {
-            // Fallback nếu có lỗi khi hiển thị MsgBox
-            System.Diagnostics.Debug.WriteLine($"Lỗi: {message}");
         }
     }
 

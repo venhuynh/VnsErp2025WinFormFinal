@@ -1,9 +1,7 @@
+using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
-using Dal.DataContext;
-using DevExpress.XtraBars;
-using DevExpress.XtraReports.UI;
-using DTO.Inventory.StockOut.XuatLuuChuyenKho;
+using Inventory.OverlayForm;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -12,9 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
-using Inventory.OverlayForm;
-using Inventory.StockIn.NhapThietBiMuon;
 
 namespace Inventory.StockOut.XuatLuuChuyenKho;
 
@@ -234,37 +229,38 @@ public partial class FrmXuatLuuChuyenKho : DevExpress.XtraEditors.XtraForm
         }
     }
 
-        /// <summary>
-        /// Thiết lập SuperToolTip cho các BarButtonItem
-        /// </summary>
-        private void SetupSuperToolTips()
+    /// <summary>
+    /// Thiết lập SuperToolTip cho các BarButtonItem
+    /// </summary>
+    private void SetupSuperToolTips()
+    {
+        try
         {
-            try
+            // SuperToolTip cho ReloadDataSourceBarButtonItem
+            if (ReloadDataSourceBarButtonItem != null)
             {
-                // SuperToolTip cho ReloadDataSourceBarButtonItem
-                if (ReloadDataSourceBarButtonItem != null)
-                {
-                    SuperToolTipHelper.SetBarButtonSuperTip(
-                        ReloadDataSourceBarButtonItem,
-                        title: "<b><color=Blue>🔄 Làm mới dữ liệu</color></b>",
-                        content: "Làm mới lại các datasource trong form.<br/><br/><b>Chức năng:</b><br/>• Reload danh sách biến thể sản phẩm trong chi tiết<br/>• Reload danh sách kho và nhà cung cấp trong master<br/><br/><color=Gray>Lưu ý:</color> Sử dụng khi dữ liệu lookup đã thay đổi trong database và cần cập nhật lại."
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    ReloadDataSourceBarButtonItem,
+                    title: "<b><color=Blue>🔄 Làm mới dữ liệu</color></b>",
+                    content:
+                    "Làm mới lại các datasource trong form.<br/><br/><b>Chức năng:</b><br/>• Reload danh sách biến thể sản phẩm trong chi tiết<br/>• Reload danh sách kho và nhà cung cấp trong master<br/><br/><color=Gray>Lưu ý:</color> Sử dụng khi dữ liệu lookup đã thay đổi trong database và cần cập nhật lại."
+                );
             }
         }
+        catch (Exception ex)
+        {
+            _logger.Error("SetupSuperToolTips: Exception occurred", ex);
+        }
+    }
 
-        #endregion
+    #endregion
 
-        #region ========== EVENT HANDLERS ==========
+    #region ========== EVENT HANDLERS ==========
 
-        /// <summary>
-        /// Event handler cho nút Nhập lại
-        /// </summary>
-        private void NhapLaiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+    /// <summary>
+    /// Event handler cho nút Nhập lại
+    /// </summary>
+    private void NhapLaiBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
     {
         try
         {
@@ -437,7 +433,6 @@ public partial class FrmXuatLuuChuyenKho : DevExpress.XtraEditors.XtraForm
                     this);
                 _logger.Warning(
                     "InPhieuBarButtonItem_ItemClick: StockInOutMasterId is still Empty after save attempt");
-                return;
             }
 
             // TODO: Implement print functionality
@@ -709,7 +704,7 @@ public partial class FrmXuatLuuChuyenKho : DevExpress.XtraEditors.XtraForm
 
             // Tính tổng số lượng từ detail (xuất lưu chuyển kho dùng StockOutQty)
             var details = ucXuatLuuChuyenKhoDetail1.GetDetails();
-            var totalQuantity = Enumerable.Sum<StockInOutDetail>(details, d => d.StockOutQty);
+            var totalQuantity = details.Sum(d => d.StockOutQty);
 
             // Cập nhật tổng lên master (chỉ có totalQuantity)
             ucXuatChuyenKhoMaster1.UpdateTotals(totalQuantity, 0, 0, 0);
@@ -851,35 +846,6 @@ public partial class FrmXuatLuuChuyenKho : DevExpress.XtraEditors.XtraForm
 
     #endregion
 
-    #region Helper Methods - DTO to Entity Conversion
-
-    /// <summary>
-    /// Map XuatLuuChuyenKhoMasterDto sang StockInOutMaster entity
-    /// </summary>
-    private StockInOutMaster MapMasterDtoToEntity(XuatLuuChuyenKhoMasterDto dto)
-    {
-        return new StockInOutMaster
-        {
-            Id = dto.Id,
-            StockInOutDate = dto.StockOutDate,
-            VocherNumber = dto.StockOutNumber,
-            StockInOutType = (int)dto.LoaiNhapXuatKho,
-            VoucherStatus = (int)dto.TrangThai,
-            WarehouseId = dto.WarehouseStockOutId, // Kho xuất (kho nguồn)
-            PurchaseOrderId = null, // Xuất lưu chuyển kho không có PurchaseOrder
-            PartnerSiteId = dto.WarehouseStockInId != Guid.Empty ? dto.WarehouseStockInId : (Guid?)null, // Kho nhập (kho đích) - có thể map sang PartnerSiteId nếu cần
-            Notes = dto.Notes ?? string.Empty,
-            TotalQuantity = dto.TotalQuantity,
-            TotalAmount = 0, // Xuất lưu chuyển kho không có giá trị tiền
-            TotalVat = 0, // Xuất lưu chuyển kho không có VAT
-            TotalAmountIncludedVat = 0, // Xuất lưu chuyển kho không có tổng tiền
-            NguoiNhanHang = dto.NguoiNhanHang ?? string.Empty,
-            NguoiGiaoHang = dto.NguoiGiaoHang ?? string.Empty
-        };
-    }
-
-    #endregion
-
     #region Save Operations
 
     /// <summary>
@@ -899,22 +865,7 @@ public partial class FrmXuatLuuChuyenKho : DevExpress.XtraEditors.XtraForm
                 MsgBox.ShowWarning("Vui lòng kiểm tra và điền đầy đủ thông tin phiếu xuất kho", "Cảnh báo", this);
                 return false;
             }
-
-            // Validate thêm business rules cho Master
-            if (masterDto.WarehouseStockOutId == Guid.Empty)
-            {
-                _logger.Warning("SaveDataAsync: Master validation failed - WarehouseStockOutId is Empty");
-                MsgBox.ShowWarning("Vui lòng chọn kho xuất", "Cảnh báo", this);
-                return false;
-            }
-
-            if (masterDto.WarehouseStockInId == Guid.Empty)
-            {
-                _logger.Warning("SaveDataAsync: Master validation failed - WarehouseStockInId is Empty");
-                MsgBox.ShowWarning("Vui lòng chọn kho nhập", "Cảnh báo", this);
-                return false;
-            }
-
+             
             // ========== BƯỚC 2: VALIDATE VÀ LẤY DỮ LIỆU TỪ DETAIL CONTROL ==========
             // Validate tất cả các rows trong grid
             if (!ucXuatLuuChuyenKhoDetail1.ValidateAll())

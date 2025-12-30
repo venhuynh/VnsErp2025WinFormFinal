@@ -8,6 +8,7 @@ using DTO.Inventory;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockOut.XuatNoiBo;
 
@@ -253,7 +254,7 @@ public partial class UcXuatNoiBoMasterDto : XtraUserControl
         try
         {
             // Load warehouse datasource (xuất nội bộ không cần customer)
-            await LoadWarehouseDataSourceAsync(forceRefresh: true);
+            await LoadWarehouseDataSourceAsync();
         }
         catch (Exception ex)
         {
@@ -264,8 +265,7 @@ public partial class UcXuatNoiBoMasterDto : XtraUserControl
     /// <summary>
     /// Load datasource cho Warehouse (CompanyBranch) - Load toàn bộ danh sách
     /// </summary>
-    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
-    private async Task LoadWarehouseDataSourceAsync(bool forceRefresh = false)
+    private async Task LoadWarehouseDataSourceAsync()
     {
         try
         {
@@ -549,11 +549,7 @@ public partial class UcXuatNoiBoMasterDto : XtraUserControl
     /// Cập nhật các giá trị tổng hợp từ detail
     /// </summary>
     /// <param name="totalQuantity">Tổng số lượng</param>
-    /// <param name="totalAmount">Tổng tiền chưa VAT</param>
-    /// <param name="totalVat">Tổng VAT</param>
-    /// <param name="totalAmountIncludedVat">Tổng tiền bao gồm VAT</param>
-    public void UpdateTotals(decimal totalQuantity, decimal totalAmount, decimal totalVat,
-        decimal totalAmountIncludedVat)
+    public void UpdateTotals(decimal totalQuantity)
     {
         try
         {
@@ -640,26 +636,6 @@ public partial class UcXuatNoiBoMasterDto : XtraUserControl
         {
             // Fallback nếu có lỗi khi hiển thị MsgBox
             System.Diagnostics.Debug.WriteLine($"Lỗi: {message}: {ex?.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Hiển thị lỗi
-    /// </summary>
-    private void ShowError(string message)
-    {
-        try
-        {
-            // Tìm parent form để làm owner cho MsgBox
-            var parentForm = this.FindForm();
-
-            // Sử dụng MsgBox.ShowError
-            MsgBox.ShowError(message, "Lỗi", parentForm);
-        }
-        catch
-        {
-            // Fallback nếu có lỗi khi hiển thị MsgBox
-            System.Diagnostics.Debug.WriteLine($"Lỗi: {message}");
         }
     }
 
