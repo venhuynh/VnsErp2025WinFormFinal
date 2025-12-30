@@ -788,7 +788,26 @@ namespace Inventory.StockIn.NhapLapRap
 
                 try
                 {
-                    productVariantListDtoBindingSource.DataSource = await _productVariantBll.GetAllInUseWithDetailsAsync();
+                    // Lấy ProductVariantDto từ BLL
+                    var variantDtos = await _productVariantBll.GetAllInUseWithDetailsAsync();
+                    
+                    // Convert ProductVariantDto sang ProductVariantListDto
+                    var variantListDtos = variantDtos
+                        .Where(v => v != null)
+                        .Select(dto => new ProductVariantListDto
+                        {
+                            Id = dto.Id,
+                            ProductCode = dto.ProductCode ?? string.Empty,
+                            ProductName = dto.ProductName ?? string.Empty,
+                            VariantCode = dto.VariantCode ?? string.Empty,
+                            VariantFullName = dto.VariantName ?? string.Empty,
+                            UnitName = dto.UnitName ?? string.Empty,
+                            IsActive = dto.IsActive,
+                            ThumbnailImage = dto.ThumbnailImage
+                        })
+                        .ToList();
+                    
+                    productVariantListDtoBindingSource.DataSource = variantListDtos;
                     productVariantListDtoBindingSource.ResetBindings(false);
 
                     _isProductVariantDataSourceLoaded = true;
@@ -871,8 +890,24 @@ namespace Inventory.StockIn.NhapLapRap
                     }
                 }
 
+                // Convert ProductVariantDto sang ProductVariantListDto
+                var variantListDtos = variantDtos
+                    .Where(v => v != null)
+                    .Select(dto => new ProductVariantListDto
+                    {
+                        Id = dto.Id,
+                        ProductCode = dto.ProductCode ?? string.Empty,
+                        ProductName = dto.ProductName ?? string.Empty,
+                        VariantCode = dto.VariantCode ?? string.Empty,
+                        VariantFullName = dto.VariantName ?? string.Empty,
+                        UnitName = dto.UnitName ?? string.Empty,
+                        IsActive = dto.IsActive,
+                        ThumbnailImage = dto.ThumbnailImage
+                    })
+                    .ToList();
+
                 // Bind dữ liệu vào BindingSource
-                productVariantListDtoBindingSource.DataSource = variantDtos;
+                productVariantListDtoBindingSource.DataSource = variantListDtos;
                 productVariantListDtoBindingSource.ResetBindings(false);
             }
             catch (Exception ex)
@@ -888,25 +923,25 @@ namespace Inventory.StockIn.NhapLapRap
         #region ========== DATA MANAGEMENT ==========
 
         /// <summary>
-        /// Load danh sách chi tiết từ danh sách DTO
-        /// </summary>
-        private async void LoadDetails(List<NhapLapRapDetailDto> details)
+    /// Load danh sách chi tiết từ danh sách DTO
+    /// </summary>
+    private async void LoadDetails(List<StockInOutDetailForUIDto> details)
+    {
+        try
         {
-            try
+            details ??= new List<StockInOutDetailForUIDto>();
+
+            // Gán StockInOutMasterId cho các dòng chưa có
+            foreach (var detail in details)
             {
-                details ??= [];
-
-                // Gán StockInOutMasterId cho các dòng chưa có
-                foreach (var detail in details)
+                if (detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty)
                 {
-                    if (detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty)
-                    {
-                        detail.StockInOutMasterId = _stockInMasterId;
-                    }
+                    detail.StockInOutMasterId = _stockInMasterId;
                 }
+            }
 
-                nhapLapRapDetailDtoBindingSource.DataSource = details;
-                nhapLapRapDetailDtoBindingSource.ResetBindings(false);
+            stockInOutDetailForUIDtoBindingSource.DataSource = details;
+            stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
 
                 // Load ProductVariant datasource chỉ cho các ProductVariantId có trong details
                 await LoadProductVariantsByIdsAsync(details);
@@ -934,8 +969,6 @@ namespace Inventory.StockIn.NhapLapRap
             {
                 if (_isCalculating) return;
                 _isCalculating = true;
-
-                var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
 
                 NhapLapRapDetailDtoGridView.RefreshData();
 
@@ -1010,7 +1043,7 @@ namespace Inventory.StockIn.NhapLapRap
             else
             {
                 // Existing row: Cập nhật trực tiếp vào row data
-                if (NhapLapRapDetailDtoGridView.GetRow(rowHandle) is NhapLapRapDetailDto rowData)
+                if (NhapLapRapDetailDtoGridView.GetRow(rowHandle) is StockInOutDetailForUIDto rowData)
                 {
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;

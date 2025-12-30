@@ -1,6 +1,4 @@
-﻿using DTO.Inventory.StockIn.NhapHangThuongMai;
-
-namespace Inventory.StockIn.NhapThietBiMuon
+﻿namespace Inventory.StockIn.NhapThietBiMuon
 {
     partial class UcNhapThietBiMuonDetail
     {
@@ -33,7 +31,6 @@ namespace Inventory.StockIn.NhapThietBiMuon
         {
             this.components = new System.ComponentModel.Container();
             this.NhapThietBiMuonDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.nhapThietBiMuonDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.NhapThietBiMuonDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
@@ -47,11 +44,11 @@ namespace Inventory.StockIn.NhapThietBiMuon
             this.colStockInQty = new DevExpress.XtraGrid.Columns.GridColumn();
             this.StockInQtyTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.colGhiChu = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.stockInOutDetailForUIDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nhapThietBiMuonDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
@@ -59,14 +56,15 @@ namespace Inventory.StockIn.NhapThietBiMuon
             ((System.ComponentModel.ISupportInitialize)(this.ProductFullNameHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailProductNameHtmlHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInQtyTextEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // NhapThietBiMuonDetailDtoGridControl
             // 
-            this.NhapThietBiMuonDetailDtoGridControl.DataSource = this.nhapThietBiMuonDetailDtoBindingSource;
+            this.NhapThietBiMuonDetailDtoGridControl.DataSource = this.stockInOutDetailForUIDtoBindingSource;
             this.NhapThietBiMuonDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NhapThietBiMuonDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
             this.NhapThietBiMuonDetailDtoGridControl.MainView = this.NhapThietBiMuonDetailDtoGridView;
@@ -83,10 +81,6 @@ namespace Inventory.StockIn.NhapThietBiMuon
             this.NhapThietBiMuonDetailDtoGridControl.UseEmbeddedNavigator = true;
             this.NhapThietBiMuonDetailDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.NhapThietBiMuonDetailDtoGridView});
-            // 
-            // nhapThietBiMuonDetailDtoBindingSource
-            // 
-            this.nhapThietBiMuonDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapThietBiMuon.NhapThietBiMuonDetailDto);
             // 
             // NhapThietBiMuonDetailDtoGridView
             // 
@@ -303,6 +297,10 @@ namespace Inventory.StockIn.NhapThietBiMuon
             this.colGhiChu.Visible = true;
             this.colGhiChu.VisibleIndex = 4;
             // 
+            // GhiChuMemoEdit
+            // 
+            this.GhiChuMemoEdit.Name = "GhiChuMemoEdit";
+            // 
             // UnitPriceTextEdit
             // 
             this.UnitPriceTextEdit.AutoHeight = false;
@@ -323,9 +321,9 @@ namespace Inventory.StockIn.NhapThietBiMuon
             this.VatTextEdit.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.VatTextEdit.Name = "VatTextEdit";
             // 
-            // repositoryItemMemoEdit1
+            // stockInOutDetailForUIDtoBindingSource
             // 
-            this.GhiChuMemoEdit.Name = "GhiChuMemoEdit";
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
             // 
             // UcNhapThietBiMuonDetail
             // 
@@ -335,7 +333,6 @@ namespace Inventory.StockIn.NhapThietBiMuon
             this.Name = "UcNhapThietBiMuonDetail";
             this.Size = new System.Drawing.Size(1267, 704);
             ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nhapThietBiMuonDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NhapThietBiMuonDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
@@ -343,9 +340,10 @@ namespace Inventory.StockIn.NhapThietBiMuon
             ((System.ComponentModel.ISupportInitialize)(this.ProductFullNameHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailProductNameHtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInQtyTextEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -369,8 +367,8 @@ namespace Inventory.StockIn.NhapThietBiMuon
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit UnitPriceTextEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         
-        private System.Windows.Forms.BindingSource nhapThietBiMuonDetailDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
+        private System.Windows.Forms.BindingSource stockInOutDetailForUIDtoBindingSource;
     }
 }

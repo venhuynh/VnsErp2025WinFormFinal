@@ -2,9 +2,11 @@ using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
+using Dal.Connection;
 using Dal.DataContext;
+using Dal.DtoConverter.Inventory;
 using DevExpress.Data;
-using DTO.Inventory.StockIn.NhapThietBiMuon;
+using DTO.Inventory;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
@@ -15,8 +17,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
-using DTO.Inventory.StockIn.NhapNoiBo;
 
 namespace Inventory.StockIn.NhapThietBiMuon;
 
@@ -78,7 +78,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             // GridView đã được khai báo trong Designer, property public sẽ expose nó
 
             // Khởi tạo binding source với danh sách rỗng
-            nhapThietBiMuonDetailDtoBindingSource.DataSource = new List<NhapNoiBoDetailDto>();
+            stockInOutDetailForUIDtoBindingSource.DataSource = new List<StockInOutDetailForUIDto>();
 
             // Setup events
             InitializeEvents();
@@ -131,24 +131,21 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
             var details = new List<StockInOutDetail>();
 
-            foreach (var item in nhapThietBiMuonDetailDtoBindingSource)
+            foreach (var item in stockInOutDetailForUIDtoBindingSource)
             {
-                if (item is not NhapThietBiMuonDetailDto detailDto) continue;
+                if (item is not StockInOutDetailForUIDto detailDto) continue;
 
-                details.Add(new StockInOutDetail
+                // Sử dụng extension method ToEntity() để convert từ DTO sang Entity
+                var entity = detailDto.ToEntity();
+                if (entity != null)
                 {
-                    Id = default,
-                    StockInOutMasterId = _stockInMasterId,
-                    ProductVariantId = detailDto.ProductVariantId,
-                    StockInQty = detailDto.StockInQty,
-                    StockOutQty = 0,
-                    UnitPrice = 0,
-                    Vat = 0,
-                    VatAmount = 0,
-                    TotalAmount = 0,
-                    TotalAmountIncludedVat = 0,
-                    GhiChu = detailDto.GhiChu,
-                });
+                    // Cập nhật StockInOutMasterId nếu chưa có
+                    if (entity.StockInOutMasterId == Guid.Empty)
+                    {
+                        entity.StockInOutMasterId = _stockInMasterId;
+                    }
+                    details.Add(entity);
+                }
             }
             return details;
         }
@@ -167,8 +164,8 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
     {
         try
         {
-            nhapThietBiMuonDetailDtoBindingSource.DataSource = new List<NhapThietBiMuonDetailDto>();
-            nhapThietBiMuonDetailDtoBindingSource.ResetBindings(false);
+            stockInOutDetailForUIDtoBindingSource.DataSource = new List<StockInOutDetailForUIDto>();
+            stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
             _stockInMasterId = Guid.Empty;
 
             // Reset cache flag để load lại khi cần
@@ -193,15 +190,16 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             // Set master ID
             _stockInMasterId = stockInOutMasterId;
 
-            // Lấy detail entities từ BLL
-            var stockInBll = new StockInOutBll();
-            var detailEntities = stockInBll.GetDetailsByMasterId(stockInOutMasterId);
+            // Lấy detail entities từ DataContext
+            using var context = new VnsErp2025DataContext(ApplicationStartupManager.Instance.GetGlobalConnectionString());
+            var detailEntities = context.StockInOutDetails
+                .Where(d => d.StockInOutMasterId == stockInOutMasterId)
+                .ToList();
 
-            // Convert detail entities sang DTOs sử dụng extension method từ NhapNoiBo namespace
-            // Chỉ định rõ ràng namespace để tránh ambiguous call
+            // Convert detail entities sang DTOs sử dụng extension method
             var detailDtos = detailEntities
                 .Where(e => e != null)
-                .Select(entity => entity.ToNhapThietBiMuonDetailDto()) // Static method từ NhapNoiBo namespace
+                .Select((entity, index) => entity.ToDto(index + 1)) // Extension method từ StockInOutDetailForUIConverter
                 .Where(dto => dto != null)
                 .ToList();
 
@@ -234,7 +232,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             _stockInMasterId = stockInMasterId;
 
             // Cập nhật StockInOutMasterId cho tất cả các dòng hiện có
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapThietBiMuonDetailDto>().ToList();
+            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
             foreach (var detail in details)
             {
                 if (detail.StockInOutMasterId == Guid.Empty)
@@ -257,7 +255,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
     {
         try
         {
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
 
             if (details.Count == 0)
             {
@@ -351,7 +349,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             }
 
             // Lấy row data từ GridView
-            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is not NhapNoiBoDetailDto rowData)
+            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is not StockInOutDetailForUIDto rowData)
             {
                 _logger.Warning("CellValueChanged: Row data is null, RowHandle={0}", rowHandle);
                 return;
@@ -435,7 +433,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
     {
         try
         {
-            var rowData = NhapThietBiMuonDetailDtoGridView.GetRow(e.RowHandle) as NhapNoiBoDetailDto;
+            var rowData = NhapThietBiMuonDetailDtoGridView.GetRow(e.RowHandle) as StockInOutDetailForUIDto;
             if (rowData == null)
             {
                 _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
@@ -521,7 +519,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
     {
         try
         {
-            var rowData = e.Row as NhapNoiBoDetailDto;
+            var rowData = e.Row as StockInOutDetailForUIDto;
             if (rowData == null)
             {
                 _logger.Warning("ValidateRow: Row data is null");
@@ -775,13 +773,25 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
 
             try
             {
-                // Lấy dữ liệu Entity từ BLL với thông tin đầy đủ
-                var variants = await _productVariantBll.GetAllInUseWithDetailsAsync();
-
-                // Convert Entity sang ProductVariantListDto
-                var variantListDtos = await ConvertToVariantListDtosAsync(variants);
-
-                // Bind dữ liệu vào BindingSource
+                // Lấy ProductVariantDto từ BLL
+                var variantDtos = await _productVariantBll.GetAllInUseWithDetailsAsync();
+                
+                // Convert ProductVariantDto sang ProductVariantListDto
+                var variantListDtos = variantDtos
+                    .Where(v => v != null)
+                    .Select(dto => new ProductVariantListDto
+                    {
+                        Id = dto.Id,
+                        ProductCode = dto.ProductCode ?? string.Empty,
+                        ProductName = dto.ProductName ?? string.Empty,
+                        VariantCode = dto.VariantCode ?? string.Empty,
+                        VariantFullName = dto.VariantName ?? string.Empty,
+                        UnitName = dto.UnitName ?? string.Empty,
+                        IsActive = dto.IsActive,
+                        ThumbnailImage = dto.ThumbnailImage
+                    })
+                    .ToList();
+                
                 productVariantListDtoBindingSource.DataSource = variantListDtos;
                 productVariantListDtoBindingSource.ResetBindings(false);
 
@@ -848,8 +858,8 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
     /// Load chỉ các ProductVariant theo danh sách ID từ details
     /// Chỉ load các ProductVariant cần thiết để tối ưu performance
     /// </summary>
-    /// <param name="details">Danh sách NhapThietBiMuonDetailDto chứa ProductVariantId</param>
-    private async Task LoadProductVariantsByIdsAsync(List<NhapThietBiMuonDetailDto> details)
+    /// <param name="details">Danh sách StockInOutDetailForUIDto chứa ProductVariantId</param>
+    private async Task LoadProductVariantsByIdsAsync(List<StockInOutDetailForUIDto> details)
     {
         try
         {
@@ -870,15 +880,32 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
                 return;
             }
 
-            var variants = new List<ProductVariant>();
+            var variantDtos = new List<ProductVariantDto>();
             foreach (var productVariantId in productVariantIds)
             {
-                // Lấy dữ liệu Entity từ BLL với thông tin đầy đủ
-                variants.Add(await _productVariantBll.GetByIdAsync(productVariantId));
+                // Lấy dữ liệu DTO từ BLL với thông tin đầy đủ
+                var variant = await _productVariantBll.GetByIdAsync(productVariantId);
+                if (variant != null)
+                {
+                    variantDtos.Add(variant);
+                }
             }
 
-            // Convert Entity sang ProductVariantListDto
-            var variantListDtos = await ConvertToVariantListDtosAsync(variants);
+            // Convert ProductVariantDto sang ProductVariantListDto
+            var variantListDtos = variantDtos
+                .Where(v => v != null)
+                .Select(dto => new ProductVariantListDto
+                {
+                    Id = dto.Id,
+                    ProductCode = dto.ProductCode ?? string.Empty,
+                    ProductName = dto.ProductName ?? string.Empty,
+                    VariantCode = dto.VariantCode ?? string.Empty,
+                    VariantFullName = dto.VariantName ?? string.Empty,
+                    UnitName = dto.UnitName ?? string.Empty,
+                    IsActive = dto.IsActive,
+                    ThumbnailImage = dto.ThumbnailImage
+                })
+                .ToList();
 
             // Bind dữ liệu vào BindingSource
             productVariantListDtoBindingSource.DataSource = variantListDtos;
@@ -891,81 +918,6 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
         }
     }
 
-    /// <summary>
-    /// Convert Entity sang ProductVariantListDto (Async)
-    /// </summary>
-    private async Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariant> variants)
-    {
-        try
-        {
-            var result = new List<ProductVariantListDto>();
-
-            foreach (var variant in variants)
-            {
-                var dto = new ProductVariantListDto
-                {
-                    Id = variant.Id,
-                    ProductCode = variant.ProductService?.Code ?? string.Empty,
-                    ProductName = variant.ProductService?.Name ?? string.Empty,
-                    VariantCode = variant.VariantCode ?? string.Empty,
-                    VariantFullName = !string.IsNullOrWhiteSpace(variant.VariantFullName)
-                        ? variant.VariantFullName
-                        : await BuildVariantFullNameAsync(variant), // Fallback nếu VariantFullName chưa được cập nhật
-                    UnitName = variant.UnitOfMeasure?.Name ?? string.Empty,
-                    IsActive = variant.IsActive
-                };
-
-                result.Add(dto);
-            }
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error("ConvertToVariantListDtosAsync: Exception occurred", ex);
-            throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Xây dựng tên đầy đủ của biến thể từ các thuộc tính (Async)
-    /// Format: Attribute1: Value1, Attribute2: Value2, ...
-    /// </summary>
-    private Task<string> BuildVariantFullNameAsync(ProductVariant variant)
-    {
-        try
-        {
-            // Load thông tin thuộc tính từ BLL
-            var attributeValues = _productVariantBll.GetAttributeValues(variant.Id);
-
-            if (attributeValues == null || !attributeValues.Any())
-            {
-                return Task.FromResult(variant.VariantCode ?? string.Empty); // Nếu không có thuộc tính, trả về mã biến thể
-            }
-
-            var attributeParts = new List<string>();
-
-            foreach (var (_, attributeName, value) in attributeValues)
-            {
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    attributeParts.Add($"{attributeName}: {value}");
-                }
-            }
-
-            if (attributeParts.Any())
-            {
-                return Task.FromResult(string.Join(", ", attributeParts));
-            }
-
-            return Task.FromResult(variant.VariantCode ?? string.Empty); // Fallback về mã biến thể nếu không có giá trị thuộc tính
-        }
-        catch (Exception)
-        {
-            // Nếu có lỗi, trả về mã biến thể
-            return Task.FromResult(variant.VariantCode ?? string.Empty);
-        }
-    }
 
     #endregion
 
@@ -974,11 +926,11 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
     /// <summary>
     /// Load danh sách chi tiết từ danh sách DTO
     /// </summary>
-    private async void LoadDetails(List<NhapThietBiMuonDetailDto> details)
+    private async void LoadDetails(List<StockInOutDetailForUIDto> details)
     {
         try
         {
-            details ??= new List<NhapThietBiMuonDetailDto>();
+            details ??= new List<StockInOutDetailForUIDto>();
 
             // Gán StockInOutMasterId cho các dòng chưa có
             foreach (var detail in details)
@@ -989,8 +941,8 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
                 }
             }
 
-            nhapThietBiMuonDetailDtoBindingSource.DataSource = details;
-            nhapThietBiMuonDetailDtoBindingSource.ResetBindings(false);
+            stockInOutDetailForUIDtoBindingSource.DataSource = details;
+            stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
 
             // Load ProductVariant datasource chỉ cho các ProductVariantId có trong details
             await LoadProductVariantsByIdsAsync(details);
@@ -1019,7 +971,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             if (_isCalculating) return;
             _isCalculating = true;
 
-            var details = nhapThietBiMuonDetailDtoBindingSource.Cast<NhapNoiBoDetailDto>().ToList();
+            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
 
             NhapThietBiMuonDetailDtoGridView.RefreshData();
 
@@ -1094,7 +1046,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
         else
         {
             // Existing row: Cập nhật trực tiếp vào row data
-            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is NhapNoiBoDetailDto rowData)
+            if (NhapThietBiMuonDetailDtoGridView.GetRow(rowHandle) is StockInOutDetailForUIDto rowData)
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
