@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
@@ -166,18 +166,16 @@ public class AttributeRepository : IAttributeRepository
                 .OrderBy(x => x.Name)
                 .ToList();
             
-            ////var dtos = attributes.Select(a => a.ToDto()).ToList();
+            var dtos = attributes.Select(a => a.ToDto()).ToList();
             
-            //_logger.Debug($"Đã lấy {dtos.Count} Attribute");
-            //return dtos;
+            _logger.Debug($"Đã lấy {dtos.Count} Attribute");
+            return dtos;
         }
         catch (Exception ex)
         {
             _logger.Error($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
             throw new DataAccessException($"Lỗi khi lấy tất cả Attribute: {ex.Message}", ex);
         }
-
-        return null;
     }
 
     #endregion

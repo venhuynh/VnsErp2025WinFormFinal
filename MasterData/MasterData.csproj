@@ -360,6 +360,7 @@
     <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerLookupDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductImageDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductServiceCategoryDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantListDto.datasource" />
     <None Include="Resources\list_16x16.png" />
   </ItemGroup>
   <ItemGroup>

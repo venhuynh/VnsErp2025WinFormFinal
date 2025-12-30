@@ -88,6 +88,7 @@
     <Compile Include="MasterData\ProductService\ProductVariantDetailDto.cs" />
     <Compile Include="MasterData\ProductService\ProductVariantDto.cs" />
     <Compile Include="MasterData\ProductService\ProductVariantListDto.cs" />
+    <Compile Include="MasterData\ProductService\ProductVariantSimpleDto.cs" />
     <Compile Include="MasterData\ProductService\UnitOfMeasureDto.cs" />
     <Compile Include="MasterData\ProductService\VariantAttributeDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -106,6 +107,9 @@
       <Project>{68E56AB6-1ADA-40DE-9EDD-0BE2B8F35C3A}</Project>
       <Name>Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantSimpleDto.datasource" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -29,7 +29,7 @@ public interface IProductVariantRepository
     /// <summary>
     /// Lấy tất cả biến thể (Async)
     /// </summary>
-    Task<List<ProductVariantDto>> GetAllAsync();
+    Task<List<ProductVariantSimpleDto>> GetAllAsync();
 
     /// <summary>
     /// Lấy tất cả biến thể với thông tin đầy đủ (Async)

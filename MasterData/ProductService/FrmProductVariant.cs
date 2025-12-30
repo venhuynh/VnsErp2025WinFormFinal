@@ -606,11 +606,9 @@ namespace MasterData.ProductService
                 // GetAllAsync() already returns List<ProductVariantDto>
                 var variants = await _productVariantBll.GetAllAsync();
                 
-                // Convert ProductVariantDto to ProductVariantListDto
-                var variantListDtos = await ConvertToVariantListDtosAsync(variants);
                 
                 // Bind dữ liệu vào grid
-                BindGrid(variantListDtos);
+                BindGrid(variants);
                 
                 // Clear selection và cập nhật UI sau khi load dữ liệu mới
                 _selectedVariantIds.Clear();
@@ -641,7 +639,7 @@ namespace MasterData.ProductService
                     ProductCode = v.ProductCode,
                     ProductName = v.ProductName,
                     VariantCode = v.VariantCode,
-                    VariantFullName = v.VariantName, // Map VariantName to VariantFullName
+                    VariantFullName = v.FullNameHtml, // Map VariantName to VariantFullName
                     UnitName = v.UnitName,
                     IsActive = v.IsActive,
                     ThumbnailImage = v.ThumbnailImage,
@@ -749,17 +747,17 @@ namespace MasterData.ProductService
 
 
         /// <summary>
-        /// Bind danh sách ProductVariantListDto vào Grid và cấu hình hiển thị.
+        /// Bind danh sách ProductVariantSimpleDto vào Grid và cấu hình hiển thị.
         /// </summary>
-        private void BindGrid(List<ProductVariantListDto> data)
+        private void BindGrid(List<ProductVariantSimpleDto> data)
         {
             try
             {
                 // Bind dữ liệu vào BindingSource
-                productVariantListDtoBindingSource.DataSource = data;
+                productVariantSimpleDtoBindingSource.DataSource = data;
                 
                 // Bind vào GridControl
-                ProductVariantListGridControl.DataSource = productVariantListDtoBindingSource;
+                ProductVariantListGridControl.DataSource = productVariantSimpleDtoBindingSource;
                 
                 // Cấu hình grid
                 ProductVariantListGridView.BestFitColumns();
@@ -977,7 +975,7 @@ namespace MasterData.ProductService
             {
                 if (DataSummaryBarStaticItem == null) return;
 
-                var currentData = productVariantListDtoBindingSource.DataSource as List<ProductVariantListDto>;
+                var currentData = productVariantSimpleDtoBindingSource.DataSource as List<ProductVariantSimpleDto>;
                 if (currentData == null || !currentData.Any())
                 {
                     DataSummaryBarStaticItem.Caption = @"Chưa có dữ liệu";
@@ -987,12 +985,11 @@ namespace MasterData.ProductService
                 var variantCount = currentData.Count;
                 var activeVariantCount = currentData.Count(x => x.IsActive);
                 var inactiveVariantCount = currentData.Count(x => !x.IsActive);
-                var totalImageCount = currentData.Sum(x => x.ImageCount);
+
 
                 var summary = $"<b>Biến thể: {variantCount}</b> | " +
-                             $"<color=green>Hoạt động: {activeVariantCount}</color> | " +
-                             $"<color=red>Không hoạt động: {inactiveVariantCount}</color> | " +
-                             $"<b>Hình ảnh: {totalImageCount}</b>";
+                              $"<color=green>Hoạt động: {activeVariantCount}</color> | " +
+                              $"<color=red>Không hoạt động: {inactiveVariantCount}</color> ";
 
                 DataSummaryBarStaticItem.Caption = summary;
             }

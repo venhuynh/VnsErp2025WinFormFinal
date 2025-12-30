@@ -196,7 +196,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
         /// <summary>
         /// Lấy tất cả biến thể (Async)
         /// </summary>
-        public async Task<List<ProductVariantDto>> GetAllAsync()
+        public async Task<List<ProductVariantSimpleDto>> GetAllAsync()
         {
             try
             {
@@ -206,11 +206,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     .OrderBy(pv => pv.VariantCode)
                     .ToList());
 
-                // Tạo dictionaries cho hiệu quả
-                var productDict = context.ProductServices.ToDictionary(p => p.Id);
-                var unitDict = context.UnitOfMeasures.ToDictionary(u => u.Id);
-
-                return entities.ToDtos(productDict, unitDict);
+                return entities.Select(x=>x.ToProductVariantSimpleDto()).ToList();
             }
             catch (Exception ex)
             {

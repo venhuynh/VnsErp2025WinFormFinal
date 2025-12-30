@@ -175,7 +175,7 @@ namespace Bll.MasterData.ProductServiceBll
         /// Lấy tất cả biến thể sản phẩm
         /// </summary>
         /// <returns>Danh sách ProductVariantDto</returns>
-        public async Task<List<ProductVariantDto>> GetAllAsync()
+        public async Task<List<ProductVariantSimpleDto>> GetAllAsync()
         {
             try
             {

@@ -131,7 +131,7 @@
     <Compile Include="DtoConverter\ApplicationVersionDtoConverter.cs" />
     <Compile Include="DtoConverter\AssetConverters.cs" />
     <Compile Include="DtoConverter\AssetDtoConverter.cs" />
-    <Compile Include="DtoConverter\AttributeConverters.cs" />
+    <Compile Include="DtoConverter\AttributeDtoConverter.cs" />
     <Compile Include="DtoConverter\BusinessPartnerCategoryConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerContactConverters.cs" />
     <Compile Include="DtoConverter\BusinessPartnerConverters.cs" />

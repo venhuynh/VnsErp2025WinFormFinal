@@ -14,6 +14,22 @@ namespace Dal.DtoConverter
     {
         #region Entity to DTO
 
+        public static ProductVariantSimpleDto ToProductVariantSimpleDto(this ProductVariant entity)
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            return new ProductVariantSimpleDto
+            {
+                Id = entity.Id,
+                ProductName = entity.ProductService?.Name,
+                VariantFullName = entity.VariantFullName,
+                VariantFullNamePlain = entity.VariantNameForReport,
+                UnitName = entity.UnitOfMeasure?.Name,
+                IsActive = entity.IsActive,
+                ThumbnailImage = entity.ThumbnailImage?.ToArray()
+            };
+        }
+
         /// <summary>
         /// Chuyển đổi ProductVariant entity thành ProductVariantDto
         /// </summary>
