@@ -1,5 +1,3 @@
-using DTO.Inventory.StockIn.NhapHangThuongMai;
-
 namespace Inventory.StockIn.NhapHangThuongMai
 {
     partial class UcNhapHangThuongMaiDetail
@@ -32,7 +30,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
         {
             this.components = new System.ComponentModel.Container();
             this.StockInDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.stockInDetailDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.StockInDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
@@ -54,8 +51,8 @@ namespace Inventory.StockIn.NhapHangThuongMai
             this.colTotalAmountIncludedVat = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colGhiChu = new DevExpress.XtraGrid.Columns.GridColumn();
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.stockInOutDetailForUIDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
@@ -66,11 +63,12 @@ namespace Inventory.StockIn.NhapHangThuongMai
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // StockInDetailDtoGridControl
             // 
-            this.StockInDetailDtoGridControl.DataSource = this.stockInDetailDtoBindingSource;
+            this.StockInDetailDtoGridControl.DataSource = this.stockInOutDetailForUIDtoBindingSource;
             this.StockInDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.StockInDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
             this.StockInDetailDtoGridControl.MainView = this.StockInDetailDtoGridView;
@@ -87,10 +85,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
             this.StockInDetailDtoGridControl.UseEmbeddedNavigator = true;
             this.StockInDetailDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.StockInDetailDtoGridView});
-            // 
-            // stockInDetailDtoBindingSource
-            // 
-            this.stockInDetailDtoBindingSource.DataSource = typeof(DTO.Inventory.StockIn.NhapHangThuongMai.NhapHangThuongMaiDetailDto);
             // 
             // StockInDetailDtoGridView
             // 
@@ -463,6 +457,10 @@ namespace Inventory.StockIn.NhapHangThuongMai
             // 
             this.GhiChuMemoEdit.Name = "GhiChuMemoEdit";
             // 
+            // stockInOutDetailForUIDtoBindingSource
+            // 
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
+            // 
             // UcNhapHangThuongMaiDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -471,7 +469,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
             this.Name = "UcNhapHangThuongMaiDetail";
             this.Size = new System.Drawing.Size(1542, 759);
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.stockInDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StockInDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
@@ -482,6 +479,7 @@ namespace Inventory.StockIn.NhapHangThuongMai
             ((System.ComponentModel.ISupportInitialize)(this.UnitPriceTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VatTextEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.GhiChuMemoEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -491,7 +489,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
         private DevExpress.XtraGrid.GridControl StockInDetailDtoGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView StockInDetailDtoGridView;
         
-        private System.Windows.Forms.BindingSource stockInDetailDtoBindingSource;
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantCode;
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantName;
         private DevExpress.XtraGrid.Columns.GridColumn colUnitOfMeasureName;
@@ -513,5 +510,6 @@ namespace Inventory.StockIn.NhapHangThuongMai
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
+        private System.Windows.Forms.BindingSource stockInOutDetailForUIDtoBindingSource;
     }
 }

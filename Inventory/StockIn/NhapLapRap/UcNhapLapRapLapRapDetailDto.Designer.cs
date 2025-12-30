@@ -29,12 +29,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.NhapLapRapDetailDtoGridControl = new DevExpress.XtraGrid.GridControl();
-            this.nhapLapRapDetailDtoBindingSource = new System.Windows.Forms.BindingSource();
             this.NhapLapRapDetailDtoGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colProductVariantCode = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
-            this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource();
+            this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.colFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -47,7 +47,7 @@
             this.GhiChuMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.UnitPriceTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.VatTextEdit = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager();
+            this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.dockPanel = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
@@ -58,8 +58,8 @@
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.stockInOutDetailForUIDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.NhapLapRapDetailDtoGridControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nhapLapRapDetailDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NhapLapRapDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).BeginInit();
@@ -80,11 +80,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // NhapLapRapDetailDtoGridControl
             // 
-            this.NhapLapRapDetailDtoGridControl.DataSource = this.nhapLapRapDetailDtoBindingSource;
+            this.NhapLapRapDetailDtoGridControl.DataSource = this.stockInOutDetailForUIDtoBindingSource;
             this.NhapLapRapDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NhapLapRapDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
             this.NhapLapRapDetailDtoGridControl.MainView = this.NhapLapRapDetailDtoGridView;
@@ -465,6 +466,10 @@
             this.layoutControlItem3.TextLocation = DevExpress.Utils.Locations.Top;
             this.layoutControlItem3.TextVisible = false;
             // 
+            // stockInOutDetailForUIDtoBindingSource
+            // 
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
+            // 
             // UcNhapLapRapLapRapDetailDto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -474,7 +479,6 @@
             this.Name = "UcNhapLapRapLapRapDetailDto";
             this.Size = new System.Drawing.Size(1079, 704);
             ((System.ComponentModel.ISupportInitialize)(this.NhapLapRapDetailDtoGridControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nhapLapRapDetailDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NhapLapRapDetailDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.productVariantListDtoBindingSource)).EndInit();
@@ -495,6 +499,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -519,7 +524,7 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
-        private System.Windows.Forms.BindingSource nhapLapRapDetailDtoBindingSource;
+        
         private DevExpress.XtraBars.Docking.DockManager dockManager1;
         private DevExpress.XtraBars.Docking.DockPanel dockPanel;
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
@@ -531,5 +536,6 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
+        private System.Windows.Forms.BindingSource stockInOutDetailForUIDtoBindingSource;
     }
 }

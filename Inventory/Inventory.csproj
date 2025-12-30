@@ -580,6 +580,7 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInMasterDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockIn.StockInReportDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.StockInOutDetailForUIDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatBaoHanh.XuatBaoHanhMasterDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatHangThuongMai.XuatHangThuongMaiDetailDto.datasource" />

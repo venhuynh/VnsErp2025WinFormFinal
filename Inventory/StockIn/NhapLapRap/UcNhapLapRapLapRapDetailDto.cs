@@ -1,10 +1,10 @@
+using Bll.Inventory.StockInOut;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using Dal.DataContext;
 using DevExpress.Data;
-using DTO.Inventory.StockIn.NhapLapRap;
 using DTO.MasterData.ProductService;
 using Logger;
 using Logger.Configuration;
@@ -15,7 +15,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bll.Inventory.StockInOut;
 
 namespace Inventory.StockIn.NhapLapRap
 {
@@ -77,7 +76,7 @@ namespace Inventory.StockIn.NhapLapRap
                 // GridView đã được khai báo trong Designer, property public sẽ expose nó
 
                 // Khởi tạo binding source với danh sách rỗng
-                nhapLapRapDetailDtoBindingSource.DataSource = new List<NhapLapRapDetailDto>();
+                stockInOutDetailForUIDtoBindingSource.DataSource = new List<StockInOutDetailForUIDto>();
 
                 // Setup events
                 InitializeEvents();

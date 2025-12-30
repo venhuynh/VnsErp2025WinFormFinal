@@ -162,23 +162,9 @@ namespace DTO.Inventory
         /// <summary>
         /// Tình trạng sản phẩm (dùng cho report)
         /// </summary>
-        [DisplayName("Tình trạng")]
+        [DisplayName("Ghi chú")]
         [Display(Order = 27)]
-        public string TinhTrangSanPham { get; set; } = "Bình thường";
-
-        /// <summary>
-        /// Danh sách thông tin bảo hành cho sản phẩm này
-        /// </summary>
-        [DisplayName("Thông tin bảo hành")]
-        [Display(Order = 28)]
-        public List<WarrantyDto> Warranties { get; set; } = [];
-
-        /// <summary>
-        /// Danh sách thông tin định danh thiết bị (Device) cho sản phẩm này
-        /// </summary>
-        [DisplayName("Thông tin định danh thiết bị")]
-        [Display(Order = 29)]
-        public List<DeviceDto> Devices { get; set; } = [];
+        public string GhiChu { get; set; } = "Bình thường";
 
         /// <summary>
         /// Thông tin chi tiết phiếu xuất dưới dạng HTML theo format DevExpress
