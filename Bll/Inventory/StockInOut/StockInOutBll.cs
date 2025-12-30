@@ -214,6 +214,32 @@ namespace Bll.Inventory.StockInOut
             }
         }
 
+        /// <summary>
+        /// Lấy danh sách chi tiết của phiếu nhập/xuất kho theo ID master
+        /// </summary>
+        /// <param name="stockInOutMasterId">ID phiếu nhập/xuất kho</param>
+        /// <returns>Danh sách StockInOutDetailForUIDto</returns>
+        public List<StockInOutDetailForUIDto> GetStockInOutDetailsByMasterId(Guid stockInOutMasterId)
+        {
+            try
+            {
+                if (stockInOutMasterId == Guid.Empty)
+                {
+                    _logger?.Warning("GetStockInOutDetailsByMasterId: stockInOutMasterId là Guid.Empty");
+                    return new List<StockInOutDetailForUIDto>();
+                }
+
+                // Lấy details từ repository
+                return GetDataAccess().GetStockInOutDetailsByMasterId(stockInOutMasterId);
+                
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"GetStockInOutDetailsByMasterId: Lỗi lấy thông tin details: {ex.Message}", ex);
+                throw;
+            }
+        }
+
         #endregion
 
 

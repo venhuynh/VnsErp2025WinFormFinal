@@ -1,11 +1,8 @@
-using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.StockInOut;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
-using Dal.Connection;
-using Dal.DataContext;
-using Dal.DtoConverter.Inventory;
 using DevExpress.Data;
 using DTO.Inventory;
 using DTO.MasterData.ProductService;
@@ -30,15 +27,12 @@ namespace Inventory.StockOut.XuatLapRap
         /// </summary>
         private readonly ProductVariantBll _productVariantBll = new();
 
-        /// <summary>
-        /// Business Logic Layer cho Device
-        /// </summary>
-        private readonly DeviceBll _deviceBll = new();
 
         /// <summary>
-        /// Business Logic Layer cho Warranty
+        /// Business Logic Layer cho nhập xuất kho
         /// </summary>
-        private readonly WarrantyBll _warrantyBll = new();
+        private readonly StockInOutBll _stockInOutBll = new StockInOutBll();
+
 
         /// <summary>
         /// Logger để ghi log các sự kiện
@@ -64,6 +58,11 @@ namespace Inventory.StockOut.XuatLapRap
         /// ID phiếu xuất kho master (dùng để bind vào các detail rows)
         /// </summary>
         private Guid _stockOutMasterId = Guid.Empty;
+
+        /// <summary>
+        /// Public property để truy cập GridView từ bên ngoài
+        /// </summary>
+        public DevExpress.XtraGrid.Views.Grid.GridView DetailGridView => XuatLapRapDetailDtoGridView;
 
         #endregion
 
@@ -170,34 +169,30 @@ namespace Inventory.StockOut.XuatLapRap
         /// <summary>
         /// Lấy danh sách chi tiết từ grid
         /// </summary>
-        public List<StockInOutDetail> GetDetails()
+        public List<StockInOutDetailForUIDto> GetDetails()
         {
             try
             {
                 //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
-                var details = new List<StockInOutDetail>();
+                var details = new List<StockInOutDetailForUIDto>();
 
                 foreach (var item in stockInOutDetailForUIDtoBindingSource)
                 {
                     if (item is not StockInOutDetailForUIDto detailDto) continue;
 
-                    // Sử dụng extension method ToEntity() để convert từ DTO sang Entity
-                    var entity = detailDto.ToEntity();
-                    if (entity == null) continue;
-
-                    // Cập nhật các giá trị cần thiết
-                    entity.Id = detailDto.Id == Guid.Empty ? Guid.NewGuid() : detailDto.Id;
-                    entity.StockInOutMasterId = _stockOutMasterId;
-                    entity.StockInQty = 0; // Xuất lắp ráp chỉ có xuất, không có nhập
-                    entity.StockOutQty = detailDto.StockOutQty;
-                    entity.UnitPrice = 0;
-                    entity.Vat = 0;
-                    entity.VatAmount = 0;
-                    entity.TotalAmount = 0;
-                    entity.TotalAmountIncludedVat = 0;
-                    entity.GhiChu = detailDto.GhiChu ?? string.Empty;
-
-                    details.Add(entity);
+                    details.Add(new StockInOutDetailForUIDto
+                    {
+                        Id = default,
+                        StockInOutMasterId = _stockOutMasterId,
+                        ProductVariantId = detailDto.ProductVariantId,
+                        StockInQty = 0,
+                        StockOutQty = detailDto.StockOutQty,
+                        UnitPrice = 0,
+                        Vat = 0,
+                        // VatAmount, TotalAmount, TotalAmountIncludedVat là computed properties (read-only)
+                        // Chúng sẽ tự động tính toán từ StockOutQty, UnitPrice, Vat
+                        GhiChu = detailDto.GhiChu,
+                    });
                 }
 
                 return details;
@@ -206,7 +201,7 @@ namespace Inventory.StockOut.XuatLapRap
             {
                 _logger.Error("GetDetails: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-                return [];
+                return new List<StockInOutDetailForUIDto>();
             }
         }
 
@@ -232,10 +227,10 @@ namespace Inventory.StockOut.XuatLapRap
         }
 
         /// <summary>
-        /// Load dữ liệu detail từ ID phiếu xuất kho, sử dụng trong trường hợp được gọi từ nút "Chi Tiết" <br/>
-        /// từ màn hình lịch sử xuất kho
+        /// Load dữ liệu detail từ ID phiếu nhập xuất kho, sử dụng trong trường hợp được gọi từ nút "Chi Tiết" <br/>
+        /// từ màn hình lịch sử nhập xuất
         /// </summary>
-        /// <param name="stockInOutMasterId">ID phiếu xuất kho</param>
+        /// <param name="stockInOutMasterId">ID phiếu nhập xuất kho</param>
         public Task LoadDataAsyncForEdit(Guid stockInOutMasterId)
         {
             try
@@ -243,24 +238,8 @@ namespace Inventory.StockOut.XuatLapRap
                 // Set master ID
                 _stockOutMasterId = stockInOutMasterId;
 
-                // Lấy detail entities từ DataContext
-                using var context = new VnsErp2025DataContext(ApplicationStartupManager.Instance.GetGlobalConnectionString());
-                var detailEntities = context.StockInOutDetails
-                    .Where(d => d.StockInOutMasterId == stockInOutMasterId)
-                    .ToList();
-
-                // Convert detail entities sang DTOs sử dụng extension method
-                var detailDtos = detailEntities
-                    .Where(e => e != null)
-                    .Select((entity, index) => entity.ToDto(index + 1)) // Extension method từ StockInOutDetailForUIConverter
-                    .Where(dto => dto != null)
-                    .ToList();
-
-                // Set line numbers cho các detail DTOs
-                for (int i = 0; i < detailDtos.Count; i++)
-                {
-                    detailDtos[i].LineNumber = i + 1;
-                }
+                // Lấy detail DTOs từ BLL (không sử dụng DataContext trực tiếp tại UI layer)
+                var detailDtos = _stockInOutBll.GetStockInOutDetailsByMasterId(stockInOutMasterId);
 
                 // Load details vào UI
                 LoadDetails(detailDtos);
@@ -677,89 +656,38 @@ namespace Inventory.StockOut.XuatLapRap
                         break;
 
                     case Keys.Enter:
-                        // Enter: Di chuyển sang cột tiếp theo hoặc xuống dòng (chỉ commit row khi ở cột cuối cùng)
+                        // Enter: Hoàn thành nhập dòng (commit row)
                         if (!e.Control && !e.Shift && !e.Alt)
                         {
-                            e.Handled = true;
                             var focusedRowHandle = gridView.FocusedRowHandle;
-                            var focusedColumn = gridView.FocusedColumn;
-                            var visibleColumns = gridView.VisibleColumns;
 
-                            if (visibleColumns == null || visibleColumns.Count == 0)
+                            // Nếu đang ở new row (rowHandle < 0), commit row
+                            if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
                             {
-                                return;
-                            }
-
-                            // Tìm vị trí cột hiện tại trong danh sách các cột hiển thị
-                            var currentColumnIndex = -1;
-                            for (int i = 0; i < visibleColumns.Count; i++)
-                            {
-                                if (visibleColumns[i] == focusedColumn)
+                                e.Handled = true;
+                                // Validate row trước khi commit
+                                if (gridView.PostEditor())
                                 {
-                                    currentColumnIndex = i;
-                                    break;
+                                    gridView.UpdateCurrentRow();
                                 }
                             }
-
-                            // Nếu không tìm thấy cột, không xử lý
-                            if (currentColumnIndex < 0)
+                            // Nếu đang ở dòng đã có, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
+                            else if (focusedRowHandle >= 0)
                             {
-                                return;
-                            }
+                                // Nếu đang ở cột cuối cùng, di chuyển xuống dòng tiếp theo
+                                var focusedColumn = gridView.FocusedColumn;
+                                var lastColumn = gridView.VisibleColumns[gridView.VisibleColumns.Count - 1];
 
-                            var lastColumnIndex = visibleColumns.Count - 1;
-                            var isLastColumn = currentColumnIndex >= lastColumnIndex;
-
-                            // Nếu đang ở cột cuối cùng
-                            if (isLastColumn)
-                            {
-                                // Post editor để lưu giá trị hiện tại
-                                if (!gridView.PostEditor())
+                                if (focusedColumn == lastColumn)
                                 {
-                                    return; // Validation failed, không di chuyển
-                                }
+                                    e.Handled = true;
 
-                                // Nếu đang ở new row, commit row trước
-                                if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
-                                {
-                                    // Validate và commit row
-                                    if (gridView.UpdateCurrentRow())
-                                    {
-                                        // Sau khi commit, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
-                                        var rowCount = gridView.RowCount;
-                                        if (rowCount > 0)
-                                        {
-                                            // Di chuyển đến dòng cuối cùng (dòng vừa commit)
-                                            gridView.FocusedRowHandle = rowCount - 1;
-
-                                            // Di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
-                                            var nextRowHandle = rowCount;
-                                            if (nextRowHandle < gridView.RowCount)
-                                            {
-                                                gridView.FocusedRowHandle = nextRowHandle;
-                                            }
-                                            else
-                                            {
-                                                // Thêm dòng mới
-                                                gridView.AddNewRow();
-                                            }
-
-                                            // Focus vào cột đầu tiên
-                                            if (visibleColumns.Count > 0)
-                                            {
-                                                gridView.FocusedColumn = visibleColumns[0];
-                                            }
-                                        }
-                                    }
-                                }
-                                // Nếu đang ở dòng đã có, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
-                                else if (focusedRowHandle >= 0)
-                                {
+                                    // Di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
                                     var nextRowHandle = focusedRowHandle + 1;
                                     if (nextRowHandle < gridView.RowCount)
                                     {
                                         gridView.FocusedRowHandle = nextRowHandle;
-                                        gridView.FocusedColumn = visibleColumns[0]; // Focus vào cột đầu tiên
+                                        gridView.FocusedColumn = gridView.Columns[0]; // Focus vào cột đầu tiên
                                     }
                                     else
                                     {
@@ -770,34 +698,16 @@ namespace Inventory.StockOut.XuatLapRap
                                         {
                                             gridView.FocusedColumn = productVariantColumn;
                                         }
-                                        else if (visibleColumns.Count > 0)
-                                        {
-                                            gridView.FocusedColumn = visibleColumns[0];
-                                        }
                                     }
                                 }
                             }
-                            // Nếu không phải cột cuối cùng, di chuyển sang cột tiếp theo (không commit row)
-                            else
-                            {
-                                // Post editor để lưu giá trị hiện tại (nhưng không commit row)
-                                gridView.PostEditor();
-
-                                // Di chuyển sang cột tiếp theo
-                                var nextColumnIndex = currentColumnIndex + 1;
-                                if (nextColumnIndex < visibleColumns.Count)
-                                {
-                                    gridView.FocusedColumn = visibleColumns[nextColumnIndex];
-                                }
-                            }
                         }
-
                         break;
                 }
             }
             catch (Exception ex)
             {
-                _logger.Error("StockInDetailDtoGridView_KeyDown: Exception occurred", ex);
+                _logger.Error("StockOutDetailDtoGridView_KeyDown: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi xử lý phím tắt: {ex.Message}");
             }
         }
@@ -1017,23 +927,26 @@ namespace Inventory.StockOut.XuatLapRap
     }
 
     /// <summary>
-    /// Tính tổng số lượng từ danh sách chi tiết
+    /// Tính tổng số lượng, tổng tiền từ danh sách chi tiết
     /// </summary>
-    public decimal CalculateTotalQuantity()
+    public (decimal TotalQuantity, decimal TotalAmount, decimal TotalVat, decimal TotalAmountIncludedVat) CalculateTotals()
     {
         try
         {
             var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
 
             var totalQuantity = details.Sum(d => d.StockOutQty);
+            var totalAmount = details.Sum(d => d.TotalAmount);
+            var totalVat = details.Sum(d => d.VatAmount);
+            var totalAmountIncludedVat = details.Sum(d => d.TotalAmountIncludedVat);
 
-            return totalQuantity;
+            return (totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
         }
         catch (Exception ex)
         {
-            _logger.Error("CalculateTotalQuantity: Exception occurred", ex);
+            _logger.Error("CalculateTotals: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi tính tổng: {ex.Message}");
-            return 0;
+            return (0, 0, 0, 0);
         }
     }
 
@@ -1188,240 +1101,82 @@ namespace Inventory.StockOut.XuatLapRap
         /// Xử lý mã BarCode và thêm vào grid
         /// Tìm trong bảng Device hoặc Warranty để lấy thông tin linh kiện
         /// </summary>
-        private async Task ProcessBarCodeAndAddToGrid()
+        private Task ProcessBarCodeAndAddToGrid()
         {
-            try
-            {
-                // Lấy mã BarCode từ BarCodeTextEdit
-                var barCode = BarCodeTextEdit.Text?.Trim();
-                if (string.IsNullOrWhiteSpace(barCode))
-                {
-                    MsgBox.ShowWarning("Vui lòng nhập mã vạch");
-                    BarCodeTextEdit.Focus();
-                    return;
-                }
+            return Task.CompletedTask;
+            //try
+            //{
+            //    // Lấy mã BarCode từ BarCodeTextEdit
+            //    var barCode = BarCodeTextEdit.Text?.Trim();
+            //    if (string.IsNullOrWhiteSpace(barCode))
+            //    {
+            //        MsgBox.ShowWarning("Vui lòng nhập mã vạch");
+            //        BarCodeTextEdit.Focus();
+            //        return;
+            //    }
 
-                _logger.Debug("ProcessBarCodeAndAddToGrid: Bắt đầu xử lý mã vạch, BarCode={0}", barCode);
+            //    _logger.Debug("ProcessBarCodeAndAddToGrid: Bắt đầu xử lý mã vạch, BarCode={0}", barCode);
 
-                // Ghi log vào LogTextBox
-                AppendLog($"Đang tìm kiếm mã vạch: {barCode}");
+            //    // Ghi log vào LogTextBox
+            //    AppendLog($"Đang tìm kiếm mã vạch: {barCode}");
 
-                // Bước 1: Tìm trong bảng Device trước
-                var device = _deviceBll.FindByBarCode(barCode);
-                if (device != null)
-                {
-                    _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Device, DeviceId={0}, ProductVariantId={1}", 
-                        device.Id, device.ProductVariantId);
-                    AppendLog($"✓ Tìm thấy thiết bị: {device.ProductVariant?.ProductService?.Name ?? "N/A"}");
+            //    // Bước 1: Tìm trong bảng Device trước
+            //    var device = _deviceBll.FindByBarCode(barCode);
+            //    if (device != null)
+            //    {
+            //        _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Device, DeviceId={0}, ProductVariantId={1}", 
+            //            device.Id, device.ProductVariantId);
+            //        AppendLog($"✓ Tìm thấy thiết bị: {device.ProductVariant?.ProductService?.Name ?? "N/A"}");
 
-                    // Thêm vào grid với ProductVariantId từ Device
-                    await AddDetailFromDeviceOrWarranty(device.ProductVariantId, device);
+            //        // Thêm vào grid với ProductVariantId từ Device
+            //        await AddDetailFromDeviceOrWarranty(device.ProductVariantId, device);
 
-                    // Clear BarCode text
-                    BarCodeTextEdit.Text = string.Empty;
-                    BarCodeTextEdit.Focus();
-                    return;
-                }
+            //        // Clear BarCode text
+            //        BarCodeTextEdit.Text = string.Empty;
+            //        BarCodeTextEdit.Focus();
+            //        return;
+            //    }
 
-                // Bước 2: Nếu không tìm thấy trong Device, tìm trong Warranty
-                var warranty = _warrantyBll.FindByDeviceInfo(barCode);
-                if (warranty != null)
-                {
-                    _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Warranty, WarrantyId={0}, DeviceId={1}", 
-                        warranty.Id, warranty.DeviceId);
+            //    // Bước 2: Nếu không tìm thấy trong Device, tìm trong Warranty
+            //    var warranty = _warrantyBll.FindByDeviceInfo(barCode);
+            //    if (warranty != null)
+            //    {
+            //        _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Warranty, WarrantyId={0}, DeviceId={1}", 
+            //            warranty.Id, warranty.DeviceId);
                     
-                    // Lấy ProductVariantId từ Device của Warranty
-                    if (warranty.DeviceId.HasValue && warranty.Device?.ProductVariantId != null)
-                    {
-                        var productVariantId = warranty.Device.ProductVariantId;
-                        AppendLog($"✓ Tìm thấy bảo hành: {warranty.Device.ProductVariant?.ProductService?.Name ?? "N/A"}");
+            //        // Lấy ProductVariantId từ Device của Warranty
+            //        if (warranty.DeviceId.HasValue && warranty.Device?.ProductVariantId != null)
+            //        {
+            //            var productVariantId = warranty.Device.ProductVariantId;
+            //            AppendLog($"✓ Tìm thấy bảo hành: {warranty.Device.ProductVariant?.ProductService?.Name ?? "N/A"}");
 
-                        // Thêm vào grid với ProductVariantId từ Warranty
-                        await AddDetailFromDeviceOrWarranty(productVariantId, null, warranty);
+            //            // Thêm vào grid với ProductVariantId từ Warranty
+            //            await AddDetailFromDeviceOrWarranty(productVariantId, null, warranty);
 
-                        // Clear BarCode text
-                        BarCodeTextEdit.Text = string.Empty;
-                        BarCodeTextEdit.Focus();
-                        return;
-                    }
-                    else
-                    {
-                        AppendLog("⚠ Bảo hành không có thông tin sản phẩm");
-                        MsgBox.ShowWarning("Bảo hành không có thông tin sản phẩm. Vui lòng kiểm tra lại.");
-                        return;
-                    }
-                }
+            //            // Clear BarCode text
+            //            BarCodeTextEdit.Text = string.Empty;
+            //            BarCodeTextEdit.Focus();
+            //            return;
+            //        }
+            //        else
+            //        {
+            //            AppendLog("⚠ Bảo hành không có thông tin sản phẩm");
+            //            MsgBox.ShowWarning("Bảo hành không có thông tin sản phẩm. Vui lòng kiểm tra lại.");
+            //            return;
+            //        }
+            //    }
 
-                // Không tìm thấy trong cả Device và Warranty
-                _logger.Warning("ProcessBarCodeAndAddToGrid: Không tìm thấy thiết bị hoặc bảo hành với mã vạch, BarCode={0}", barCode);
-                AppendLog($"✗ Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
-                MsgBox.ShowWarning($"Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("ProcessBarCodeAndAddToGrid: Exception occurred", ex);
-                AppendLog($"✗ Lỗi: {ex.Message}");
-                MsgBox.ShowError($"Lỗi xử lý mã vạch: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Thêm dòng chi tiết vào grid từ Device hoặc Warranty
-        /// </summary>
-        /// <param name="productVariantId">ID biến thể sản phẩm</param>
-        /// <param name="device">Device entity (nếu có)</param>
-        /// <param name="warranty">Warranty entity (nếu có)</param>
-        private async Task AddDetailFromDeviceOrWarranty(Guid productVariantId, Device device = null, Warranty warranty = null)
-        {
-            try
-            {
-                if (productVariantId == Guid.Empty)
-                {
-                    _logger.Warning("AddDetailFromDeviceOrWarranty: ProductVariantId is Empty");
-                    MsgBox.ShowWarning("Không có thông tin sản phẩm");
-                    return;
-                }
-
-                // Kiểm tra xem ProductVariant đã có trong datasource chưa
-                var variant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
-                    .FirstOrDefault(v => v.Id == productVariantId);
-
-                if (variant == null)
-                {
-                    // Nếu chưa có, cần load ProductVariant vào datasource
-                    _logger.Debug("AddDetailFromDeviceOrWarranty: ProductVariant chưa có trong datasource, cần load");
-                    
-                    // Load ProductVariant từ BLL
-                    var productVariantDto = await _productVariantBll.GetByIdAsync(productVariantId);
-                    
-                    if (productVariantDto == null)
-                    {
-                        _logger.Warning("AddDetailFromDeviceOrWarranty: Không tìm thấy ProductVariant, ProductVariantId={0}", productVariantId);
-                        MsgBox.ShowWarning("Không tìm thấy thông tin sản phẩm");
-                        return;
-                    }
-
-                    // Thêm vào datasource nếu chưa có (gán trực tiếp như mẫu)
-                    var existingList = productVariantListDtoBindingSource.DataSource as List<ProductVariantDto> ?? new List<ProductVariantDto>();
-                    if (existingList.All(v => v.Id != productVariantId))
-                    {
-                        existingList.Add(productVariantDto);
-                        productVariantListDtoBindingSource.DataSource = existingList;
-                        productVariantListDtoBindingSource.ResetBindings(false);
-                    }
-                    
-                    // Tạo ProductVariantListDto từ ProductVariantDto để sử dụng
-                    variant = new ProductVariantListDto
-                    {
-                        Id = productVariantDto.Id,
-                        VariantCode = productVariantDto.VariantCode,
-                        VariantFullName = productVariantDto.VariantFullName,
-                        ProductName = productVariantDto.ProductName,
-                        UnitName = productVariantDto.UnitName
-                    };
-                }
-
-                // Tạo detail DTO mới
-                var detailDto = new StockInOutDetailForUIDto
-                {
-                    Id = Guid.NewGuid(),
-                    StockInOutMasterId = _stockOutMasterId,
-                    ProductVariantId = productVariantId,
-                    ProductVariantCode = variant.VariantCode,
-                    ProductVariantName = $"{variant.VariantFullName}",
-                    UnitOfMeasureName = variant.UnitName,
-                    StockOutQty = 1, // Mặc định số lượng là 1
-                    LineNumber = stockInOutDetailForUIDtoBindingSource.Count + 1
-                };
-
-                // Thêm ghi chú nếu có thông tin từ Device hoặc Warranty
-                var ghiChuParts = new List<string>();
-                if (device != null)
-                {
-                    if (!string.IsNullOrWhiteSpace(device.SerialNumber))
-                        ghiChuParts.Add($"Serial: {device.SerialNumber}");
-                    if (!string.IsNullOrWhiteSpace(device.IMEI))
-                        ghiChuParts.Add($"IMEI: {device.IMEI}");
-                    if (!string.IsNullOrWhiteSpace(device.MACAddress))
-                        ghiChuParts.Add($"MAC: {device.MACAddress}");
-                }
-                // Thêm thông tin bảo hành từ DeviceInfo
-                if (warranty != null && warranty.Device != null)
-                {
-                    var warrantyDeviceInfoParts = new List<string>();
-                    if (!string.IsNullOrWhiteSpace(warranty.Device.SerialNumber))
-                        warrantyDeviceInfoParts.Add($"S/N: {warranty.Device.SerialNumber}");
-                    if (!string.IsNullOrWhiteSpace(warranty.Device.IMEI))
-                        warrantyDeviceInfoParts.Add($"IMEI: {warranty.Device.IMEI}");
-                    if (!string.IsNullOrWhiteSpace(warranty.Device.MACAddress))
-                        warrantyDeviceInfoParts.Add($"MAC: {warranty.Device.MACAddress}");
-                    if (!string.IsNullOrWhiteSpace(warranty.Device.AssetTag))
-                        warrantyDeviceInfoParts.Add($"Asset: {warranty.Device.AssetTag}");
-                    if (!string.IsNullOrWhiteSpace(warranty.Device.LicenseKey))
-                        warrantyDeviceInfoParts.Add($"License: {warranty.Device.LicenseKey}");
-                    
-                    if (warrantyDeviceInfoParts.Any())
-                    {
-                        ghiChuParts.Add($"Bảo hành: {string.Join(" | ", warrantyDeviceInfoParts)}");
-                    }
-                }
-                
-                if (ghiChuParts.Any())
-                {
-                    detailDto.GhiChu = string.Join(", ", ghiChuParts);
-                }
-
-                // Thêm vào binding source
-                var details = stockInOutDetailForUIDtoBindingSource.DataSource as List<StockInOutDetailForUIDto> ?? new List<StockInOutDetailForUIDto>();
-                details.Add(detailDto);
-                stockInOutDetailForUIDtoBindingSource.DataSource = details;
-                stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
-
-                // Cập nhật LineNumber cho tất cả các dòng
-                for (int i = 0; i < details.Count; i++)
-                {
-                    details[i].LineNumber = i + 1;
-                }
-
-                // Refresh grid
-                XuatLapRapDetailDtoGridView.RefreshData();
-
-                // Trigger event để cập nhật tổng lên master
-                OnDetailDataChanged();
-
-                _logger.Info("AddDetailFromDeviceOrWarranty: Đã thêm dòng chi tiết, ProductVariantId={0}", productVariantId);
-                AppendLog($"✓ Đã thêm vào danh sách: {detailDto.ProductVariantName}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("AddDetailFromDeviceOrWarranty: Exception occurred", ex);
-                AppendLog($"✗ Lỗi thêm vào danh sách: {ex.Message}");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Thêm log vào LogTextBox
-        /// </summary>
-        private void AppendLog(string message)
-        {
-            try
-            {
-                if (LogTextBox == null) return;
-
-                var timestamp = DateTime.Now.ToString("HH:mm:ss");
-                var logMessage = $"[{timestamp}] {message}\r\n";
-                
-                LogTextBox.AppendText(logMessage);
-                
-                // Auto scroll to bottom
-                LogTextBox.SelectionStart = LogTextBox.Text.Length;
-                LogTextBox.ScrollToCaret();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("AppendLog: Exception occurred", ex);
-            }
+            //    // Không tìm thấy trong cả Device và Warranty
+            //    _logger.Warning("ProcessBarCodeAndAddToGrid: Không tìm thấy thiết bị hoặc bảo hành với mã vạch, BarCode={0}", barCode);
+            //    AppendLog($"✗ Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
+            //    MsgBox.ShowWarning($"Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.Error("ProcessBarCodeAndAddToGrid: Exception occurred", ex);
+            //    AppendLog($"✗ Lỗi: {ex.Message}");
+            //    MsgBox.ShowError($"Lỗi xử lý mã vạch: {ex.Message}");
+            //}
         }
 
         #endregion
@@ -1435,15 +1190,6 @@ namespace Inventory.StockOut.XuatLapRap
         {
             _logger.Error("ShowError: {0}", ex, message);
             MsgBox.ShowError($"{message}: {ex.Message}");
-        }
-
-        /// <summary>
-        /// Hiển thị cảnh báo
-        /// </summary>
-        private void ShowWarning(string message)
-        {
-            _logger.Warning("ShowWarning: {0}", message);
-            MsgBox.ShowWarning(message);
         }
 
         #endregion

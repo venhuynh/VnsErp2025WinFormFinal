@@ -38,6 +38,7 @@ namespace Inventory.StockOut.XuatLapRap
             this.ProductVariantSearchLookUpEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit();
             this.productVariantListDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ProductVariantDtoSearchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.ProductFullNameHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colProductVariantName = new DevExpress.XtraGrid.Columns.GridColumn();
             this.StockOutDetailProductNameHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
@@ -59,7 +60,7 @@ namespace Inventory.StockOut.XuatLapRap
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colVariantFullName = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.stockInOutDetailForUIDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XuatLapRapDetailDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantSearchLookUpEdit)).BeginInit();
@@ -81,10 +82,12 @@ namespace Inventory.StockOut.XuatLapRap
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // XuatLapRapDetailDtoGridControl
             // 
+            this.XuatLapRapDetailDtoGridControl.DataSource = this.stockInOutDetailForUIDtoBindingSource;
             this.XuatLapRapDetailDtoGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XuatLapRapDetailDtoGridControl.Location = new System.Drawing.Point(0, 0);
             this.XuatLapRapDetailDtoGridControl.MainView = this.XuatLapRapDetailDtoGridView;
@@ -181,6 +184,17 @@ namespace Inventory.StockOut.XuatLapRap
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowAutoFilterRow = true;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
             this.ProductVariantDtoSearchLookUpEdit1View.OptionsView.ShowIndicator = false;
+            // 
+            // colVariantFullName
+            // 
+            this.colVariantFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
+            this.colVariantFullName.FieldName = "VariantFullName";
+            this.colVariantFullName.Name = "colVariantFullName";
+            this.colVariantFullName.OptionsColumn.AllowEdit = false;
+            this.colVariantFullName.OptionsColumn.ReadOnly = true;
+            this.colVariantFullName.Visible = true;
+            this.colVariantFullName.VisibleIndex = 0;
+            this.colVariantFullName.Width = 600;
             // 
             // ProductFullNameHypertextLabel
             // 
@@ -442,16 +456,9 @@ namespace Inventory.StockOut.XuatLapRap
             this.layoutControlItem3.TextLocation = DevExpress.Utils.Locations.Top;
             this.layoutControlItem3.TextVisible = false;
             // 
-            // colVariantFullName
+            // stockInOutDetailForUIDtoBindingSource
             // 
-            this.colVariantFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
-            this.colVariantFullName.FieldName = "VariantFullName";
-            this.colVariantFullName.Name = "colVariantFullName";
-            this.colVariantFullName.OptionsColumn.AllowEdit = false;
-            this.colVariantFullName.OptionsColumn.ReadOnly = true;
-            this.colVariantFullName.Visible = true;
-            this.colVariantFullName.VisibleIndex = 0;
-            this.colVariantFullName.Width = 600;
+            this.stockInOutDetailForUIDtoBindingSource.DataSource = typeof(DTO.Inventory.StockInOutDetailForUIDto);
             // 
             // UcXuatLapRapDetailDto
             // 
@@ -482,6 +489,7 @@ namespace Inventory.StockOut.XuatLapRap
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.stockInOutDetailForUIDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -517,5 +525,6 @@ namespace Inventory.StockOut.XuatLapRap
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
         private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
+        private System.Windows.Forms.BindingSource stockInOutDetailForUIDtoBindingSource;
     }
 }

@@ -293,6 +293,59 @@ public class StockInRepository : IStockInRepository
         }
     }
 
+    /// <summary>
+    /// Lấy danh sách chi tiết của phiếu nhập/xuất kho dựa trên ID master
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID duy nhất của phiếu nhập/xuất kho</param>
+    /// <returns>Danh sách StockInOutDetailForUIDto</returns>
+    public List<StockInOutDetailForUIDto> GetStockInOutDetailsByMasterId(Guid stockInOutMasterId)
+    {
+        try
+        {
+            if (stockInOutMasterId == Guid.Empty)
+            {
+                _logger.Warning("GetStockInOutDetailsByMasterId: stockInOutMasterId là Guid.Empty");
+                return new List<StockInOutDetailForUIDto>();
+            }
+
+            using var context = CreateNewContext();
+
+            // Lấy danh sách detail entities từ database
+            var detailEntities = context.StockInOutDetails
+                .Where(d => d.StockInOutMasterId == stockInOutMasterId)
+                .OrderBy(d => d.Id) // Sắp xếp để đảm bảo thứ tự nhất quán
+                .ToList();
+
+            if (detailEntities == null || detailEntities.Count == 0)
+            {
+                _logger.Info("GetStockInOutDetailsByMasterId: Không tìm thấy details, MasterId={0}", stockInOutMasterId);
+                return new List<StockInOutDetailForUIDto>();
+            }
+
+            // Chuyển đổi entities sang DTOs sử dụng extension method
+            var detailDtos = detailEntities
+                .Where(e => e != null)
+                .Select((entity, index) => entity.ToDto(index + 1)) // Extension method từ StockInOutDetailForUIConverter
+                .Where(dto => dto != null)
+                .ToList();
+
+            // Set line numbers cho các detail DTOs
+            for (int i = 0; i < detailDtos.Count; i++)
+            {
+                detailDtos[i].LineNumber = i + 1;
+            }
+
+            _logger.Info("GetStockInOutDetailsByMasterId: Lấy được {0} details thành công, MasterId={1}", detailDtos.Count, stockInOutMasterId);
+            
+            return detailDtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetStockInOutDetailsByMasterId: Lỗi lấy thông tin details: {ex.Message}", ex);
+            throw new DataAccessException($"Lỗi khi lấy thông tin chi tiết phiếu nhập/xuất kho: {ex.Message}", ex);
+        }
+    }
+
     #endregion
 
 }

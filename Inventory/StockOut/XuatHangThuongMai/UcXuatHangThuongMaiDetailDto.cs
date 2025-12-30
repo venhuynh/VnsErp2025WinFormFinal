@@ -1,10 +1,8 @@
+using Bll.Inventory.StockInOut;
 using Bll.MasterData.ProductServiceBll;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
-using Dal.Connection;
-using Dal.DataContext;
-using Dal.DtoConverter.Inventory;
 using DevExpress.Data;
 using DTO.Inventory;
 using DTO.MasterData.ProductService;
@@ -28,6 +26,12 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// Business Logic Layer cho biến thể sản phẩm
     /// </summary>
     private readonly ProductVariantBll _productVariantBll = new ProductVariantBll();
+
+
+    /// <summary>
+    /// Business Logic Layer cho nhập xuất kho
+    /// </summary>
+    private readonly StockInOutBll _stockInOutBll = new StockInOutBll();
 
     /// <summary>
     /// Logger để ghi log các sự kiện
@@ -700,37 +704,39 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     /// <summary>
     /// Lấy danh sách chi tiết từ grid
     /// </summary>
-    public List<StockInOutDetail> GetDetails()
+    public List<StockInOutDetailForUIDto> GetDetails()
     {
         try
         {
             //Không cast trực tiếp mà lặp từng phần tử trong binding source để tránh lỗi ambiguous call
-            var details = new List<StockInOutDetail>();
+            var details = new List<StockInOutDetailForUIDto>();
 
             foreach (var item in stockInOutDetailForUIDtoBindingSource)
             {
                 if (item is not StockInOutDetailForUIDto detailDto) continue;
 
-                // Sử dụng extension method ToEntity() để convert từ DTO sang Entity
-                var entity = detailDto.ToEntity();
-                if (entity == null) continue;
-
-                // Cập nhật các giá trị cần thiết
-                entity.Id = detailDto.Id == Guid.Empty ? Guid.NewGuid() : detailDto.Id;
-                entity.StockInOutMasterId = _stockOutMasterId;
-                entity.StockInQty = 0; // Xuất hàng thương mại chỉ có xuất, không có nhập
-                entity.StockOutQty = detailDto.StockOutQty;
-                entity.GhiChu = detailDto.GhiChu ?? "Bình thường";
-
-                details.Add(entity);
+                details.Add(new StockInOutDetailForUIDto
+                {
+                    Id = default,
+                    StockInOutMasterId = _stockOutMasterId,
+                    ProductVariantId = detailDto.ProductVariantId,
+                    StockInQty = detailDto.StockInQty,
+                    StockOutQty = 0,
+                    UnitPrice = 0,
+                    Vat = 0,
+                    // VatAmount, TotalAmount, TotalAmountIncludedVat là computed properties (read-only)
+                    // Chúng sẽ tự động tính toán từ StockOutQty, UnitPrice, Vat
+                    GhiChu = detailDto.GhiChu,
+                });
             }
+
             return details;
         }
         catch (Exception ex)
         {
             _logger.Error("GetDetails: Exception occurred", ex);
             MsgBox.ShowError($"Lỗi lấy danh sách chi tiết: {ex.Message}");
-            return new List<StockInOutDetail>();
+            return new List<StockInOutDetailForUIDto>();
         }
     }
 
@@ -756,10 +762,10 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
     }
 
     /// <summary>
-    /// Load dữ liệu detail từ ID phiếu xuất kho, sử dụng trong trường hợp được gọi từ nút "Chi Tiết" <br/>
-    /// từ màn hình lịch sử xuất kho
+    /// Load dữ liệu detail từ ID phiếu nhập xuất kho, sử dụng trong trường hợp được gọi từ nút "Chi Tiết" <br/>
+    /// từ màn hình lịch sử nhập xuất
     /// </summary>
-    /// <param name="stockInOutMasterId">ID phiếu xuất kho</param>
+    /// <param name="stockInOutMasterId">ID phiếu nhập xuất kho</param>
     public Task LoadDataAsyncForEdit(Guid stockInOutMasterId)
     {
         try
@@ -767,24 +773,8 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
             // Set master ID
             _stockOutMasterId = stockInOutMasterId;
 
-            // Lấy detail entities từ DataContext
-            using var context = new VnsErp2025DataContext(ApplicationStartupManager.Instance.GetGlobalConnectionString());
-            var detailEntities = context.StockInOutDetails
-                .Where(d => d.StockInOutMasterId == stockInOutMasterId)
-                .ToList();
-
-            // Convert detail entities sang DTOs sử dụng extension method
-            var detailDtos = detailEntities
-                .Where(e => e != null)
-                .Select((entity, index) => entity.ToDto(index + 1)) // Extension method từ StockInOutDetailForUIConverter
-                .Where(dto => dto != null)
-                .ToList();
-
-            // Set line numbers cho các detail DTOs
-            for (int i = 0; i < detailDtos.Count; i++)
-            {
-                detailDtos[i].LineNumber = i + 1;
-            }
+            // Lấy detail DTOs từ BLL (không sử dụng DataContext trực tiếp tại UI layer)
+            var detailDtos = _stockInOutBll.GetStockInOutDetailsByMasterId(stockInOutMasterId);
 
             // Load details vào UI
             LoadDetails(detailDtos);

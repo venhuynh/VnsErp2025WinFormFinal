@@ -1,4 +1,4 @@
-﻿using DTO.Inventory;
+using DTO.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,6 +21,16 @@ public interface IStockInRepository
     /// ngược lại, trả về <c>null</c>.
     /// </returns>
     StockInOutMasterForUIDto GetStockInOutMasterForUIDtoById(Guid stockInOutMasterId);
+    
+    /// <summary>
+    /// Lấy danh sách chi tiết của phiếu nhập/xuất kho dựa trên ID master
+    /// và chuyển đổi sang danh sách Data Transfer Objects (DTOs).
+    /// </summary>
+    /// <param name="stockInOutMasterId">ID duy nhất của phiếu nhập/xuất kho.</param>
+    /// <returns>
+    /// Danh sách <see cref="StockInOutDetailForUIDto"/> chứa thông tin chi tiết của phiếu nhập/xuất kho.
+    /// </returns>
+    List<StockInOutDetailForUIDto> GetStockInOutDetailsByMasterId(Guid stockInOutMasterId);
     
     #endregion
     
