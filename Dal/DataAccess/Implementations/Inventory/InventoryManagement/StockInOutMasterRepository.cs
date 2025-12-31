@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using DTO.Inventory.InventoryManagement;
+using DTO.Inventory.Report;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement;
@@ -235,6 +236,49 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
         catch (Exception ex)
         {
             _logger.Error($"GetStockInOutMasterHistoryDtoByDates: Lỗi query: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy StockInOutReportDto theo ID của StockInOutMaster
+    /// Bao gồm cả master data và detail data với tất cả navigation properties
+    /// </summary>
+    /// <param name="masterId">ID của StockInOutMaster</param>
+    /// <returns>StockInOutReportDto đầy đủ thông tin hoặc null nếu không tìm thấy</returns>
+    public StockInOutReportDto GetStockInOutReportDtoByMasterId(Guid masterId)
+    {
+        using var context = CreateNewContextForMasterWithDetails();
+        try
+        {
+            _logger.Debug("GetStockInOutReportDtoByMasterId: Bắt đầu query, MasterId={0}", masterId);
+
+            // Lấy StockInOutMaster với tất cả navigation properties
+            var master = context.StockInOutMasters.FirstOrDefault(m => m.Id == masterId);
+
+            if (master == null)
+            {
+                _logger.Warning("GetStockInOutReportDtoByMasterId: Không tìm thấy StockInOutMaster với Id={0}", masterId);
+                return null;
+            }
+
+            // Convert entity sang DTO sử dụng converter
+            var reportDto = master.ToReportDto();
+
+            if (reportDto == null)
+            {
+                _logger.Warning("GetStockInOutReportDtoByMasterId: Converter trả về null cho MasterId={0}", masterId);
+                return null;
+            }
+
+            _logger.Info("GetStockInOutReportDtoByMasterId: Query và convert thành công, MasterId={0}, DetailCount={1}",
+                masterId, reportDto.ChiTietNhapXuatKhos?.Count ?? 0);
+
+            return reportDto;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetStockInOutReportDtoByMasterId: Lỗi query hoặc convert cho MasterId={masterId}: {ex.Message}", ex);
             throw;
         }
     }

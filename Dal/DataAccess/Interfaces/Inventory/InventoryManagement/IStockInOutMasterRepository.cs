@@ -1,7 +1,8 @@
 ﻿using Dal.DataContext;
+using DTO.Inventory.InventoryManagement;
+using DTO.Inventory.Report;
 using System;
 using System.Collections.Generic;
-using DTO.Inventory.InventoryManagement;
 
 namespace Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 
@@ -29,4 +30,5 @@ public interface IStockInOutMasterRepository
     StockInOutMaster GetMasterByIdWithDetails(Guid id);
 
     List<StockInOutMasterHistoryDto> GetStockInOutMasterHistoryDtoByDates(DateTime fromDate, DateTime toDate);
+    StockInOutReportDto GetStockInOutReportDtoByMasterId(Guid masterId);
 }

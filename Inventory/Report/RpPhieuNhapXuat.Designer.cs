@@ -1,4 +1,4 @@
-﻿namespace Inventory.Report
+namespace Inventory.Report
 {
     partial class RpPhieuNhapXuat
     {
@@ -64,6 +64,7 @@
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
             this.VoucherId = new DevExpress.XtraReports.Parameters.Parameter();
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
+            this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
             this.xrTable2 = new DevExpress.XtraReports.UI.XRTable();
             this.xrTableRow2 = new DevExpress.XtraReports.UI.XRTableRow();
             this.xrTableCell7 = new DevExpress.XtraReports.UI.XRTableCell();
@@ -254,15 +255,14 @@
             // BottomMargin
             // 
             this.BottomMargin.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrTable6,
             this.xrTable5});
-            this.BottomMargin.HeightF = 194.3168F;
+            this.BottomMargin.HeightF = 50F;
             this.BottomMargin.Name = "BottomMargin";
             // 
             // xrTable6
             // 
             this.xrTable6.Font = new DevExpress.Drawing.DXFont("Times New Roman", 9.75F);
-            this.xrTable6.LocationFloat = new DevExpress.Utils.PointFloat(24.06438F, 0F);
+            this.xrTable6.LocationFloat = new DevExpress.Utils.PointFloat(24.06438F, 7.899399F);
             this.xrTable6.Name = "xrTable6";
             this.xrTable6.Padding = new DevExpress.XtraPrinting.PaddingInfo(2F, 2F, 0F, 0F, 100F);
             this.xrTable6.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
@@ -417,7 +417,7 @@
             // xrTable5
             // 
             this.xrTable5.Borders = DevExpress.XtraPrinting.BorderSide.Top;
-            this.xrTable5.LocationFloat = new DevExpress.Utils.PointFloat(24.06438F, 158.6654F);
+            this.xrTable5.LocationFloat = new DevExpress.Utils.PointFloat(24.06438F, 0F);
             this.xrTable5.Name = "xrTable5";
             this.xrTable5.Padding = new DevExpress.XtraPrinting.PaddingInfo(2F, 2F, 0F, 0F, 100F);
             this.xrTable5.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
@@ -958,6 +958,13 @@
             this.ReportHeader1.HeightF = 77.77779F;
             this.ReportHeader1.Name = "ReportHeader1";
             // 
+            // ReportFooter
+            // 
+            this.ReportFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrTable6});
+            this.ReportFooter.HeightF = 130F;
+            this.ReportFooter.Name = "ReportFooter";
+            // 
             // xrTable1
             // 
             this.xrTable1.Font = new DevExpress.Drawing.DXFont("Times New Roman", 9.75F);
@@ -1244,12 +1251,13 @@
             this.BottomMargin,
             this.Detail,
             this.ReportHeader,
-            this.DetailReport});
+            this.DetailReport,
+            this.ReportFooter});
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
             this.bindingSource1});
             this.DataSource = this.bindingSource1;
             this.Font = new DevExpress.Drawing.DXFont("Times New Roman", 9.75F);
-            this.Margins = new DevExpress.Drawing.DXMargins(35F, 35F, 112.54F, 194.3168F);
+            this.Margins = new DevExpress.Drawing.DXMargins(35F, 35F, 112.54F, 50F);
             this.PageHeightF = 1169.291F;
             this.PageWidthF = 826.7717F;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.A4;
@@ -1346,6 +1354,7 @@
         private DevExpress.XtraReports.UI.XRTableCell xrTableCell26;
         private DevExpress.XtraReports.UI.XRTableCell xrTableCell21;
         private DevExpress.XtraReports.UI.ReportFooterBand ReportFooter1;
+        private DevExpress.XtraReports.UI.ReportFooterBand ReportFooter;
         private DevExpress.XtraReports.UI.XRTable xrTable7;
         private DevExpress.XtraReports.UI.XRTableRow xrTableRow20;
         private DevExpress.XtraReports.UI.XRTableCell xrTableCell47;
