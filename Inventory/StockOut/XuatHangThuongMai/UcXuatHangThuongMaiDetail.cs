@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace Inventory.StockOut.XuatHangThuongMai;
 
-public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraUserControl
+public partial class UcXuatHangThuongMaiDetail : DevExpress.XtraEditors.XtraUserControl
 {
     #region ========== FIELDS & PROPERTIES ==========
 
@@ -67,7 +67,7 @@ public partial class UcXuatHangThuongMaiDetailDto : DevExpress.XtraEditors.XtraU
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcXuatHangThuongMaiDetailDto()
+    public UcXuatHangThuongMaiDetail()
     {
         InitializeComponent();
 

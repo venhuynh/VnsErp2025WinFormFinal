@@ -51,9 +51,9 @@ namespace Inventory.StockOut.XuatNoiBo
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.ucXuatNoiBoMasterDto1 = new Inventory.StockOut.XuatNoiBo.UcXuatNoiBoMasterDto();
+            this.ucXuatNoiBoMasterDto1 = new Inventory.StockOut.XuatNoiBo.UcXuatNoiBoMaster();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ucXuatNoiBoDetailDto1 = new Inventory.StockOut.XuatNoiBo.UcXuatNoiBoDetailDto();
+            this.ucXuatNoiBoDetailDto1 = new Inventory.StockOut.XuatNoiBo.UcXuatNoiBoDetail();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -371,9 +371,9 @@ namespace Inventory.StockOut.XuatNoiBo
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;
-        private UcXuatNoiBoMasterDto ucXuatNoiBoMasterDto1;
+        private UcXuatNoiBoMaster ucXuatNoiBoMasterDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private UcXuatNoiBoDetailDto ucXuatNoiBoDetailDto1;
+        private UcXuatNoiBoDetail ucXuatNoiBoDetailDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
     }
 }

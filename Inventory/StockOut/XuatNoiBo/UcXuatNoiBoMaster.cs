@@ -12,7 +12,7 @@ using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockOut.XuatNoiBo;
 
-public partial class UcXuatNoiBoMasterDto : XtraUserControl
+public partial class UcXuatNoiBoMaster : XtraUserControl
 {
     #region ========== KHAI BÁO BIẾN ==========
 
@@ -39,7 +39,7 @@ public partial class UcXuatNoiBoMasterDto : XtraUserControl
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcXuatNoiBoMasterDto()
+    public UcXuatNoiBoMaster()
     {
         InitializeComponent();
         InitializeControl();

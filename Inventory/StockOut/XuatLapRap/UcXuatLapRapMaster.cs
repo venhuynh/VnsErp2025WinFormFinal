@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Inventory.StockOut.XuatLapRap
 {
-    public partial class UcXuatLapRapMasterDto : DevExpress.XtraEditors.XtraUserControl
+    public partial class UcXuatLapRapMaster : DevExpress.XtraEditors.XtraUserControl
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -38,7 +38,7 @@ namespace Inventory.StockOut.XuatLapRap
 
         #region ========== CONSTRUCTOR ==========
 
-        public UcXuatLapRapMasterDto()
+        public UcXuatLapRapMaster()
         {
             InitializeComponent();
             InitializeControl();

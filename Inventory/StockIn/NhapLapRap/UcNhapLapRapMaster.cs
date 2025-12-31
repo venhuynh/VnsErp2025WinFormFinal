@@ -12,7 +12,7 @@ using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockIn.NhapLapRap
 {
-    public partial class UcNhapLapRapMasterDto : DevExpress.XtraEditors.XtraUserControl
+    public partial class UcNhapLapRapMaster : DevExpress.XtraEditors.XtraUserControl
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -39,7 +39,7 @@ namespace Inventory.StockIn.NhapLapRap
 
         #region ========== CONSTRUCTOR ==========
 
-        public UcNhapLapRapMasterDto()
+        public UcNhapLapRapMaster()
         {
             InitializeComponent();
             InitializeControl();

@@ -32,7 +32,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapLapRapLapRapDetailDto1 = new Inventory.StockIn.NhapLapRap.UcNhapLapRapLapRapDetailDto();
+            this.ucNhapLapRapLapRapDetailDto1 = new Inventory.StockIn.NhapLapRap.UcNhapLapRapLapRapDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
@@ -51,7 +51,7 @@
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucNhapLapRapMasterDto1 = new Inventory.StockIn.NhapLapRap.UcNhapLapRapMasterDto();
+            this.ucNhapLapRapMasterDto1 = new Inventory.StockIn.NhapLapRap.UcNhapLapRapMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
@@ -348,9 +348,9 @@
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;
-        private UcNhapLapRapLapRapDetailDto ucNhapLapRapLapRapDetailDto1;
+        private UcNhapLapRapLapRapDetail ucNhapLapRapLapRapDetailDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-        private UcNhapLapRapMasterDto ucNhapLapRapMasterDto1;
+        private UcNhapLapRapMaster ucNhapLapRapMasterDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
     }
 }

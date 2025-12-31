@@ -13,7 +13,7 @@ using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockOut.XuatHangThuongMai;
 
-public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
+public partial class UcXuatHangThuongMaiMaster : XtraUserControl
 {
     #region ========== KHAI BÁO BIẾN ==========
 
@@ -47,7 +47,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcXuatHangThuongMaiMasterDto()
+    public UcXuatHangThuongMaiMaster()
     {
         InitializeComponent();
         InitializeControl();

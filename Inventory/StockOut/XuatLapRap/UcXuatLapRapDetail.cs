@@ -16,9 +16,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Inventory.StockIn.NhapLapRap
+namespace Inventory.StockOut.XuatLapRap
 {
-    public partial class UcNhapLapRapLapRapDetailDto : DevExpress.XtraEditors.XtraUserControl
+    public partial class UcXuatLapRapDetail : DevExpress.XtraEditors.XtraUserControl
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -32,7 +32,8 @@ namespace Inventory.StockIn.NhapLapRap
         /// Business Logic Layer cho nhập xuất kho
         /// </summary>
         private readonly StockInOutBll _stockInOutBll = new StockInOutBll();
-        
+
+
         /// <summary>
         /// Logger để ghi log các sự kiện
         /// </summary>
@@ -54,18 +55,28 @@ namespace Inventory.StockIn.NhapLapRap
         private bool _isCalculating;
 
         /// <summary>
-        /// ID phiếu nhập lắp ráp master (dùng để bind vào các detail rows)
+        /// ID phiếu xuất kho master (dùng để bind vào các detail rows)
         /// </summary>
-        private Guid _stockInMasterId = Guid.Empty;
+        private Guid _stockOutMasterId = Guid.Empty;
+
+        /// <summary>
+        /// Public property để truy cập GridView từ bên ngoài
+        /// </summary>
+        public DevExpress.XtraGrid.Views.Grid.GridView DetailGridView => XuatLapRapDetailDtoGridView;
 
         #endregion
 
         #region ========== CONSTRUCTOR ==========
 
-        public UcNhapLapRapLapRapDetailDto()
+        public UcXuatLapRapDetail()
         {
             InitializeComponent();
-            InitializeControl();
+            
+            // Chỉ khởi tạo control khi không ở design mode
+            if (!DesignMode)
+            {
+                InitializeControl();
+            }
         }
 
         #endregion
@@ -79,6 +90,9 @@ namespace Inventory.StockIn.NhapLapRap
         {
             try
             {
+                // Không chạy trong design mode để tránh lỗi load type
+                if (DesignMode) return;
+
                 // GridView đã được khai báo trong Designer, property public sẽ expose nó
 
                 // Khởi tạo binding source với danh sách rỗng
@@ -87,11 +101,18 @@ namespace Inventory.StockIn.NhapLapRap
                 // Setup events
                 InitializeEvents();
 
+                // Setup BarCode scanning events
+                SetupBarCodeEvents();
+
                 // Không load dữ liệu ProductVariant ở đây, sẽ được gọi từ form khi FormLoad
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi khởi tạo control");
+                // Trong design mode, không hiển thị lỗi
+                if (!DesignMode)
+                {
+                    ShowError(ex, "Lỗi khởi tạo control");
+                }
             }
         }
 
@@ -101,24 +122,44 @@ namespace Inventory.StockIn.NhapLapRap
         private void InitializeEvents()
         {
             // Event khi thay đổi cell value (xử lý cả ProductVariant và tính toán)
-            NhapLapRapDetailDtoGridView.CellValueChanged += StockInDetailDtoGridView_CellValueChanged;
+            XuatLapRapDetailDtoGridView.CellValueChanged += StockOutDetailDtoGridView_CellValueChanged;
 
             // Event khi thêm/xóa dòng để cập nhật LineNumber
-            NhapLapRapDetailDtoGridView.InitNewRow += StockInDetailDtoGridView_InitNewRow;
-            NhapLapRapDetailDtoGridView.RowDeleted += StockInDetailDtoGridView_RowDeleted;
+            XuatLapRapDetailDtoGridView.InitNewRow += StockOutDetailDtoGridView_InitNewRow;
+            XuatLapRapDetailDtoGridView.RowDeleted += StockOutDetailDtoGridView_RowDeleted;
 
             // Event khi validate cell và row
-            NhapLapRapDetailDtoGridView.ValidateRow += StockInDetailDtoGridView_ValidateRow;
-            NhapLapRapDetailDtoGridView.ValidatingEditor += StockInDetailDtoGridView_ValidatingEditor;
+            XuatLapRapDetailDtoGridView.ValidateRow += StockOutDetailDtoGridView_ValidateRow;
+            XuatLapRapDetailDtoGridView.ValidatingEditor += StockOutDetailDtoGridView_ValidatingEditor;
 
             // Event custom draw row indicator
-            NhapLapRapDetailDtoGridView.CustomDrawRowIndicator += StockInDetailDtoGridView_CustomDrawRowIndicator;
+            XuatLapRapDetailDtoGridView.CustomDrawRowIndicator += StockOutDetailDtoGridView_CustomDrawRowIndicator;
 
             // Event xử lý phím tắt cho GridView (Insert, Delete, Enter)
-            NhapLapRapDetailDtoGridView.KeyDown += StockInDetailDtoGridView_KeyDown;
+            XuatLapRapDetailDtoGridView.KeyDown += StockOutDetailDtoGridView_KeyDown;
 
             // Event Popup cho ProductVariantSearchLookUpEdit (RepositoryItem)
             ProductVariantSearchLookUpEdit.Popup += ProductVariantSearchLookUpEdit_Popup;
+        }
+
+        /// <summary>
+        /// Setup các event handlers cho BarCode scanning
+        /// </summary>
+        private void SetupBarCodeEvents()
+        {
+            try
+            {
+                // Event KeyDown cho BarCodeTextEdit (Enter để thêm vào grid)
+                BarCodeTextEdit.KeyDown += BarCodeTextEdit_KeyDown;
+
+                // Event Click cho AddBarCodeHyperlinkLabelControl
+                AddBarCodeHyperlinkLabelControl.Click += AddBarCodeHyperlinkLabelControl_Click;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SetupBarCodeEvents: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi setup BarCode events: {ex.Message}");
+            }
         }
 
         #endregion
@@ -142,7 +183,6 @@ namespace Inventory.StockIn.NhapLapRap
                     details.Add(new StockInOutDetailForUIDto
                     {
                         Id = default,
-                        StockInOutMasterId = _stockInMasterId,
                         ProductVariantId = detailDto.ProductVariantId,
                         StockInQty = detailDto.StockInQty,
                         StockOutQty = detailDto.StockOutQty,
@@ -172,7 +212,7 @@ namespace Inventory.StockIn.NhapLapRap
             {
                 stockInOutDetailForUIDtoBindingSource.DataSource = new List<StockInOutDetailForUIDto>();
                 stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
-                _stockInMasterId = Guid.Empty;
+                _stockOutMasterId = Guid.Empty;
 
                 // Reset cache flag để load lại khi cần
                 _isProductVariantDataSourceLoaded = false;
@@ -194,7 +234,7 @@ namespace Inventory.StockIn.NhapLapRap
             try
             {
                 // Set master ID
-                _stockInMasterId = stockInOutMasterId;
+                _stockOutMasterId = stockInOutMasterId;
 
                 // Lấy detail DTOs từ BLL (không sử dụng DataContext trực tiếp tại UI layer)
                 var detailDtos = _stockInOutBll.GetStockInOutDetailsByMasterId(stockInOutMasterId);
@@ -213,13 +253,13 @@ namespace Inventory.StockIn.NhapLapRap
         }
 
         /// <summary>
-        /// Set StockInMasterId để bind vào các detail rows
+        /// Set StockOutMasterId để bind vào các detail rows
         /// </summary>
-        public void SetStockInMasterId(Guid stockInMasterId)
+        public void SetStockOutMasterId(Guid stockOutMasterId)
         {
             try
             {
-                _stockInMasterId = stockInMasterId;
+                _stockOutMasterId = stockOutMasterId;
 
                 // Cập nhật StockInOutMasterId cho tất cả các dòng hiện có
                 var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
@@ -227,30 +267,14 @@ namespace Inventory.StockIn.NhapLapRap
                 {
                     if (detail.StockInOutMasterId == Guid.Empty)
                     {
-                        detail.StockInOutMasterId = stockInMasterId;
+                        detail.StockInOutMasterId = stockOutMasterId;
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.Error("SetStockInMasterId: Exception occurred, masterId={0}", ex, stockInMasterId);
+                _logger.Error("SetStockOutMasterId: Exception occurred, masterId={0}", ex, stockOutMasterId);
                 MsgBox.ShowError($"Lỗi set master ID: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Reload ProductVariant datasource (public method để gọi từ Form)
-        /// </summary>
-        public async Task ReloadProductVariantDataSourceAsync()
-        {
-            try
-            {
-                await LoadProductVariantsAsync(forceRefresh: true);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("ReloadProductVariantDataSourceAsync: Exception occurred", ex);
-                throw;
             }
         }
 
@@ -279,7 +303,8 @@ namespace Inventory.StockIn.NhapLapRap
                     if (!isValid)
                     {
                         var errors = string.Join("\n", validationResults.Select(r => r.ErrorMessage));
-                        _logger.Warning("ValidateAll: Row {0} validation failed, Errors={1}", detail.LineNumber, errors);
+                        _logger.Warning("ValidateAll: Row {0} validation failed, Errors={1}", detail.LineNumber,
+                            errors);
                         MsgBox.ShowError($"Dòng {detail.LineNumber} có lỗi:\n{errors}");
                         return false;
                     }
@@ -292,10 +317,11 @@ namespace Inventory.StockIn.NhapLapRap
                         return false;
                     }
 
-                    if (detail.StockInQty > 0) continue;
+                    if (detail.StockOutQty > 0) continue;
 
-                    _logger.Warning("ValidateAll: Row {0} has StockInQty <= 0, value={1}", detail.LineNumber, detail.StockInQty);
-                    MsgBox.ShowError($"Dòng {detail.LineNumber}: Số lượng nhập phải lớn hơn 0");
+                    _logger.Warning("ValidateAll: Row {0} has StockOutQty <= 0, value={1}", detail.LineNumber,
+                        detail.StockOutQty);
+                    MsgBox.ShowError($"Dòng {detail.LineNumber}: Số lượng xuất phải lớn hơn 0");
                     return false;
                 }
 
@@ -333,16 +359,18 @@ namespace Inventory.StockIn.NhapLapRap
         /// <summary>
         /// Custom draw row indicator để hiển thị số thứ tự
         /// </summary>
-        private void StockInDetailDtoGridView_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
+        private void StockOutDetailDtoGridView_CustomDrawRowIndicator(object sender,
+            DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
         {
-            GridViewHelper.CustomDrawRowIndicator(NhapLapRapDetailDtoGridView, e);
+            GridViewHelper.CustomDrawRowIndicator(XuatLapRapDetailDtoGridView, e);
         }
 
         /// <summary>
         /// Xử lý sự kiện khi giá trị cell thay đổi trong GridView
         /// Xử lý cả việc cập nhật ProductVariant và tính toán tự động
         /// </summary>
-        private void StockInDetailDtoGridView_CellValueChanged(object sender, DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+        private void StockOutDetailDtoGridView_CellValueChanged(object sender,
+            DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
         {
             try
             {
@@ -355,7 +383,7 @@ namespace Inventory.StockIn.NhapLapRap
                 }
 
                 // Lấy row data từ GridView
-                if (NhapLapRapDetailDtoGridView.GetRow(rowHandle) is not StockInOutDetailForUIDto rowData)
+                if (XuatLapRapDetailDtoGridView.GetRow(rowHandle) is not StockInOutDetailForUIDto rowData)
                 {
                     _logger.Warning("CellValueChanged: Row data is null, RowHandle={0}", rowHandle);
                     return;
@@ -394,15 +422,15 @@ namespace Inventory.StockIn.NhapLapRap
                         return;
                     }
 
-                    // Cập nhật các thông tin liên quan
-                    rowData.ProductVariantId = selectedVariant.Id;
-                    rowData.ProductVariantCode = selectedVariant.VariantCode;
-                    rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantFullName}";
-                    rowData.UnitOfMeasureName = selectedVariant.UnitName;
-                }
+                // Cập nhật các thông tin liên quan
+                rowData.ProductVariantId = selectedVariant.Id;
+                rowData.ProductVariantCode = selectedVariant.VariantCode;
+                rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
+                rowData.UnitOfMeasureName = selectedVariant.UnitName;
+            }
 
                 // Xử lý tính toán tự động khi thay đổi số lượng
-                if (fieldName == "StockInQty")
+                if (fieldName == "StockOutQty")
                 {
                     if (_isCalculating)
                     {
@@ -423,7 +451,7 @@ namespace Inventory.StockIn.NhapLapRap
                 }
 
                 // Refresh grid để hiển thị thay đổi
-                NhapLapRapDetailDtoGridView.RefreshRow(rowHandle);
+                XuatLapRapDetailDtoGridView.RefreshRow(rowHandle);
             }
             catch (Exception ex)
             {
@@ -435,11 +463,12 @@ namespace Inventory.StockIn.NhapLapRap
         /// <summary>
         /// Xử lý sự kiện khi thêm dòng mới
         /// </summary>
-        private void StockInDetailDtoGridView_InitNewRow(object sender, DevExpress.XtraGrid.Views.Grid.InitNewRowEventArgs e)
+        private void StockOutDetailDtoGridView_InitNewRow(object sender,
+            DevExpress.XtraGrid.Views.Grid.InitNewRowEventArgs e)
         {
             try
             {
-                if (NhapLapRapDetailDtoGridView.GetRow(e.RowHandle) is not StockInOutDetailForUIDto rowData)
+                if (XuatLapRapDetailDtoGridView.GetRow(e.RowHandle) is not StockInOutDetailForUIDto rowData)
                 {
                     _logger.Warning("InitNewRow: Row data is null, RowHandle={0}", e.RowHandle);
                     return;
@@ -452,9 +481,9 @@ namespace Inventory.StockIn.NhapLapRap
                 }
 
                 // Gán StockInOutMasterId nếu chưa có
-                if (rowData.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty)
+                if (rowData.StockInOutMasterId == Guid.Empty && _stockOutMasterId != Guid.Empty)
                 {
-                    rowData.StockInOutMasterId = _stockInMasterId;
+                    rowData.StockInOutMasterId = _stockOutMasterId;
                 }
 
                 // Trigger event để cập nhật tổng lên master khi thêm dòng mới
@@ -470,7 +499,7 @@ namespace Inventory.StockIn.NhapLapRap
         /// <summary>
         /// Xử lý sự kiện khi xóa dòng
         /// </summary>
-        private void StockInDetailDtoGridView_RowDeleted(object sender, RowDeletedEventArgs rowDeletedEventArgs)
+        private void StockOutDetailDtoGridView_RowDeleted(object sender, RowDeletedEventArgs rowDeletedEventArgs)
         {
             try
             {
@@ -487,13 +516,13 @@ namespace Inventory.StockIn.NhapLapRap
         /// <summary>
         /// Xử lý sự kiện validate editor (trước khi commit giá trị)
         /// </summary>
-        private void StockInDetailDtoGridView_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        private void StockOutDetailDtoGridView_ValidatingEditor(object sender,
+            DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
         {
             try
             {
-                var column = NhapLapRapDetailDtoGridView.FocusedColumn;
+                var column = XuatLapRapDetailDtoGridView.FocusedColumn;
                 var fieldName = column?.FieldName;
-                var rowHandle = NhapLapRapDetailDtoGridView.FocusedRowHandle;
 
                 if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -503,9 +532,9 @@ namespace Inventory.StockIn.NhapLapRap
                     case "ProductVariantId":
                         HandleProductVariantIdChange(e);
                         break;
-                    // Validate StockInQty: Phải lớn hơn 0
-                    case "StockInQty":
-                        ValidateStockInQty(e);
+                    // Validate StockOutQty: Phải lớn hơn 0
+                    case "StockOutQty":
+                        ValidateStockOutQty(e);
                         break;
                 }
             }
@@ -520,7 +549,8 @@ namespace Inventory.StockIn.NhapLapRap
         /// <summary>
         /// Validate row data (sau khi commit giá trị)
         /// </summary>
-        private void StockInDetailDtoGridView_ValidateRow(object sender, DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+        private void StockOutDetailDtoGridView_ValidateRow(object sender,
+            DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
         {
             try
             {
@@ -555,11 +585,11 @@ namespace Inventory.StockIn.NhapLapRap
                     return;
                 }
 
-                if (rowData.StockInQty <= 0)
+                if (rowData.StockOutQty <= 0)
                 {
-                    _logger.Warning("ValidateRow: StockInQty <= 0, value={0}", rowData.StockInQty);
+                    _logger.Warning("ValidateRow: StockOutQty <= 0, value={0}", rowData.StockOutQty);
                     e.Valid = false;
-                    e.ErrorText = "Số lượng nhập phải lớn hơn 0";
+                    e.ErrorText = "Số lượng xuất phải lớn hơn 0";
                     return;
                 }
 
@@ -579,11 +609,11 @@ namespace Inventory.StockIn.NhapLapRap
         /// <summary>
         /// Event handler xử lý phím tắt trong GridView
         /// </summary>
-        private void StockInDetailDtoGridView_KeyDown(object sender, KeyEventArgs e)
+        private void StockOutDetailDtoGridView_KeyDown(object sender, KeyEventArgs e)
         {
             try
             {
-                var gridView = NhapLapRapDetailDtoGridView;
+                var gridView = XuatLapRapDetailDtoGridView;
                 if (gridView == null) return;
 
                 switch (e.KeyCode)
@@ -604,6 +634,7 @@ namespace Inventory.StockIn.NhapLapRap
                                 gridView.FocusedColumn = productVariantColumn;
                             }
                         }
+
                         break;
 
                     case Keys.Delete:
@@ -619,92 +650,42 @@ namespace Inventory.StockIn.NhapLapRap
                                 gridView.DeleteRow(focusedRowHandle);
                             }
                         }
+
                         break;
 
                     case Keys.Enter:
-                        // Enter: Di chuyển sang cột tiếp theo hoặc xuống dòng (chỉ commit row khi ở cột cuối cùng)
+                        // Enter: Hoàn thành nhập dòng (commit row)
                         if (!e.Control && !e.Shift && !e.Alt)
                         {
-                            e.Handled = true;
                             var focusedRowHandle = gridView.FocusedRowHandle;
-                            var focusedColumn = gridView.FocusedColumn;
-                            var visibleColumns = gridView.VisibleColumns;
 
-                            if (visibleColumns == null || visibleColumns.Count == 0)
+                            // Nếu đang ở new row (rowHandle < 0), commit row
+                            if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
                             {
-                                return;
-                            }
-
-                            // Tìm vị trí cột hiện tại trong danh sách các cột hiển thị
-                            var currentColumnIndex = -1;
-                            for (int i = 0; i < visibleColumns.Count; i++)
-                            {
-                                if (visibleColumns[i] == focusedColumn)
+                                e.Handled = true;
+                                // Validate row trước khi commit
+                                if (gridView.PostEditor())
                                 {
-                                    currentColumnIndex = i;
-                                    break;
+                                    gridView.UpdateCurrentRow();
                                 }
                             }
-
-                            // Nếu không tìm thấy cột, không xử lý
-                            if (currentColumnIndex < 0)
+                            // Nếu đang ở dòng đã có, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
+                            else if (focusedRowHandle >= 0)
                             {
-                                return;
-                            }
+                                // Nếu đang ở cột cuối cùng, di chuyển xuống dòng tiếp theo
+                                var focusedColumn = gridView.FocusedColumn;
+                                var lastColumn = gridView.VisibleColumns[gridView.VisibleColumns.Count - 1];
 
-                            var lastColumnIndex = visibleColumns.Count - 1;
-                            var isLastColumn = currentColumnIndex >= lastColumnIndex;
-
-                            // Nếu đang ở cột cuối cùng
-                            if (isLastColumn)
-                            {
-                                // Post editor để lưu giá trị hiện tại
-                                if (!gridView.PostEditor())
+                                if (focusedColumn == lastColumn)
                                 {
-                                    return; // Validation failed, không di chuyển
-                                }
+                                    e.Handled = true;
 
-                                // Nếu đang ở new row, commit row trước
-                                if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
-                                {
-                                    // Validate và commit row
-                                    if (gridView.UpdateCurrentRow())
-                                    {
-                                        // Sau khi commit, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
-                                        var rowCount = gridView.RowCount;
-                                        if (rowCount > 0)
-                                        {
-                                            // Di chuyển đến dòng cuối cùng (dòng vừa commit)
-                                            gridView.FocusedRowHandle = rowCount - 1;
-
-                                            // Di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
-                                            var nextRowHandle = rowCount;
-                                            if (nextRowHandle < gridView.RowCount)
-                                            {
-                                                gridView.FocusedRowHandle = nextRowHandle;
-                                            }
-                                            else
-                                            {
-                                                // Thêm dòng mới
-                                                gridView.AddNewRow();
-                                            }
-
-                                            // Focus vào cột đầu tiên
-                                            if (visibleColumns.Count > 0)
-                                            {
-                                                gridView.FocusedColumn = visibleColumns[0];
-                                            }
-                                        }
-                                    }
-                                }
-                                // Nếu đang ở dòng đã có, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
-                                else if (focusedRowHandle >= 0)
-                                {
+                                    // Di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
                                     var nextRowHandle = focusedRowHandle + 1;
                                     if (nextRowHandle < gridView.RowCount)
                                     {
                                         gridView.FocusedRowHandle = nextRowHandle;
-                                        gridView.FocusedColumn = visibleColumns[0]; // Focus vào cột đầu tiên
+                                        gridView.FocusedColumn = gridView.Columns[0]; // Focus vào cột đầu tiên
                                     }
                                     else
                                     {
@@ -715,24 +696,7 @@ namespace Inventory.StockIn.NhapLapRap
                                         {
                                             gridView.FocusedColumn = productVariantColumn;
                                         }
-                                        else if (visibleColumns.Count > 0)
-                                        {
-                                            gridView.FocusedColumn = visibleColumns[0];
-                                        }
                                     }
-                                }
-                            }
-                            // Nếu không phải cột cuối cùng, di chuyển sang cột tiếp theo (không commit row)
-                            else
-                            {
-                                // Post editor để lưu giá trị hiện tại (nhưng không commit row)
-                                gridView.PostEditor();
-
-                                // Di chuyển sang cột tiếp theo
-                                var nextColumnIndex = currentColumnIndex + 1;
-                                if (nextColumnIndex < visibleColumns.Count)
-                                {
-                                    gridView.FocusedColumn = visibleColumns[nextColumnIndex];
                                 }
                             }
                         }
@@ -741,7 +705,7 @@ namespace Inventory.StockIn.NhapLapRap
             }
             catch (Exception ex)
             {
-                _logger.Error("StockInDetailDtoGridView_KeyDown: Exception occurred", ex);
+                _logger.Error("StockOutDetailDtoGridView_KeyDown: Exception occurred", ex);
                 MsgBox.ShowError($"Lỗi xử lý phím tắt: {ex.Message}");
             }
         }
@@ -801,6 +765,22 @@ namespace Inventory.StockIn.NhapLapRap
         }
 
         /// <summary>
+        /// Reload ProductVariant datasource (public method để gọi từ form)
+        /// </summary>
+        public async Task ReloadProductVariantDataSourceAsync()
+        {
+            try
+            {
+                await LoadProductVariantsAsync(forceRefresh: true);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("ReloadProductVariantDataSourceAsync: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi reload datasource biến thể sản phẩm: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Event handler khi ProductVariantSearchLookUpEdit popup
         /// Chỉ load dữ liệu nếu chưa load hoặc datasource rỗng
         /// </summary>
@@ -811,7 +791,8 @@ namespace Inventory.StockIn.NhapLapRap
                 // Chỉ load nếu chưa load hoặc datasource rỗng
                 if (!_isProductVariantDataSourceLoaded ||
                     productVariantListDtoBindingSource.DataSource == null ||
-                    (productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> list && list.Count == 0))
+                    (productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> list &&
+                     list.Count == 0))
                 {
                     await LoadProductVariantsAsync();
                 }
@@ -827,8 +808,8 @@ namespace Inventory.StockIn.NhapLapRap
         /// Load chỉ các ProductVariant theo danh sách ID từ details
         /// Chỉ load các ProductVariant cần thiết để tối ưu performance
         /// </summary>
-    /// <param name="details">Danh sách StockInOutDetailForUIDto chứa ProductVariantId</param>
-    private async Task LoadProductVariantsByIdsAsync(List<StockInOutDetailForUIDto> details)
+        /// <param name="details">Danh sách StockInOutDetailForUIDto chứa ProductVariantId</param>
+        private async Task LoadProductVariantsByIdsAsync(List<StockInOutDetailForUIDto> details)
         {
             try
             {
@@ -877,30 +858,33 @@ namespace Inventory.StockIn.NhapLapRap
         #region ========== DATA MANAGEMENT ==========
 
         /// <summary>
-    /// Load danh sách chi tiết từ danh sách DTO
-    /// </summary>
-    private async void LoadDetails(List<StockInOutDetailForUIDto> details)
-    {
-        try
+        /// Load danh sách chi tiết từ danh sách DTO
+        /// </summary>
+        private async void LoadDetails(List<StockInOutDetailForUIDto> details)
         {
-            details ??= new List<StockInOutDetailForUIDto>();
-
-            // Gán StockInOutMasterId cho các dòng chưa có
-            foreach (var detail in details)
+            try
             {
-                if (detail.StockInOutMasterId == Guid.Empty && _stockInMasterId != Guid.Empty)
-                {
-                    detail.StockInOutMasterId = _stockInMasterId;
-                }
-            }
+                details ??= new List<StockInOutDetailForUIDto>();
 
-            stockInOutDetailForUIDtoBindingSource.DataSource = details;
-            stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
+                // Gán StockInOutMasterId cho các dòng chưa có
+                foreach (var detail in details)
+                {
+                    if (detail.StockInOutMasterId == Guid.Empty && _stockOutMasterId != Guid.Empty)
+                    {
+                        detail.StockInOutMasterId = _stockOutMasterId;
+                    }
+                }
+
+                stockInOutDetailForUIDtoBindingSource.DataSource = details;
+                stockInOutDetailForUIDtoBindingSource.ResetBindings(false);
 
                 // Load ProductVariant datasource chỉ cho các ProductVariantId có trong details
                 await LoadProductVariantsByIdsAsync(details);
 
-                // Tính toán lại tất cả
+                // Refresh GridView để hiển thị dữ liệu đã load, đặc biệt là các computed properties
+                XuatLapRapDetailDtoGridView.RefreshData();
+
+                // Tính toán lại tất cả (để đảm bảo các computed properties được tính đúng)
                 RecalculateAll();
             }
             catch (Exception ex)
@@ -912,42 +896,67 @@ namespace Inventory.StockIn.NhapLapRap
 
         #endregion
 
-        #region ========== CALCULATION ==========
+    #region ========== CALCULATION ==========
 
-        /// <summary>
-        /// Tính toán lại tất cả các dòng
-        /// </summary>
-        private void RecalculateAll()
+    /// <summary>
+    /// Tính toán lại tất cả các dòng
+    /// </summary>
+    private void RecalculateAll()
+    {
+        try
         {
-            try
-            {
-                if (_isCalculating) return;
-                _isCalculating = true;
+            if (_isCalculating) return;
+            _isCalculating = true;
 
-                NhapLapRapDetailDtoGridView.RefreshData();
+            XuatLapRapDetailDtoGridView.RefreshData();
 
-                // Cập nhật tổng tiền lên master
-                OnDetailDataChanged();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("RecalculateAll: Exception occurred", ex);
-                MsgBox.ShowError($"Lỗi tính toán lại: {ex.Message}");
-            }
-            finally
-            {
-                _isCalculating = false;
-            }
+            // Cập nhật tổng số lượng lên master
+            OnDetailDataChanged();
         }
+        catch (Exception ex)
+        {
+            _logger.Error("RecalculateAll: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi tính toán lại: {ex.Message}");
+        }
+        finally
+        {
+            _isCalculating = false;
+        }
+    }
 
-        #endregion
+    /// <summary>
+    /// Tính tổng số lượng, tổng tiền từ danh sách chi tiết
+    /// </summary>
+    public (decimal TotalQuantity, decimal TotalAmount, decimal TotalVat, decimal TotalAmountIncludedVat) CalculateTotals()
+    {
+        try
+        {
+            var details = stockInOutDetailForUIDtoBindingSource.Cast<StockInOutDetailForUIDto>().ToList();
+
+            var totalQuantity = details.Sum(d => d.StockOutQty);
+            var totalAmount = details.Sum(d => d.TotalAmount);
+            var totalVat = details.Sum(d => d.VatAmount);
+            var totalAmountIncludedVat = details.Sum(d => d.TotalAmountIncludedVat);
+
+            return (totalQuantity, totalAmount, totalVat, totalAmountIncludedVat);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("CalculateTotals: Exception occurred", ex);
+            MsgBox.ShowError($"Lỗi tính tổng: {ex.Message}");
+            return (0, 0, 0, 0);
+        }
+    }
+
+    #endregion
 
         #region ========== VALIDATION ==========
 
         /// <summary>
         /// Xử lý khi thay đổi ProductVariantId: Cập nhật tên và đơn vị tính
         /// </summary>
-        private void HandleProductVariantIdChange(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        private void HandleProductVariantIdChange(
+            DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
         {
             // Lấy ProductVariantId mới từ editor value
             Guid productVariantId;
@@ -981,7 +990,7 @@ namespace Inventory.StockIn.NhapLapRap
                 return;
             }
 
-            var rowHandle = NhapLapRapDetailDtoGridView.FocusedRowHandle;
+            var rowHandle = XuatLapRapDetailDtoGridView.FocusedRowHandle;
 
             // Xử lý cả new row (rowHandle < 0) và existing row (rowHandle >= 0)
             if (rowHandle < 0)
@@ -989,15 +998,16 @@ namespace Inventory.StockIn.NhapLapRap
                 // New row: Sử dụng SetFocusedRowCellValue để set giá trị vào các cell
                 // Các giá trị này sẽ được commit khi row được thêm vào binding source
                 // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
-                NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
-                NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-                NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullName}");
-                NhapLapRapDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
+                XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
+                XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
+                XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName",
+                    $"{selectedVariant.VariantFullName}");
+                XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
             }
             else
             {
                 // Existing row: Cập nhật trực tiếp vào row data
-                if (NhapLapRapDetailDtoGridView.GetRow(rowHandle) is StockInOutDetailForUIDto rowData)
+                if (XuatLapRapDetailDtoGridView.GetRow(rowHandle) is StockInOutDetailForUIDto rowData)
                 {
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
@@ -1005,42 +1015,166 @@ namespace Inventory.StockIn.NhapLapRap
                     rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                     // Refresh grid để hiển thị thay đổi
-                    NhapLapRapDetailDtoGridView.RefreshRow(rowHandle);
+                    XuatLapRapDetailDtoGridView.RefreshRow(rowHandle);
                 }
             }
         }
 
         /// <summary>
-        /// Validate StockInQty: Phải lớn hơn 0
+        /// Validate StockOutQty: Phải lớn hơn 0
         /// </summary>
-        private void ValidateStockInQty(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        private void ValidateStockOutQty(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
         {
             if (e.Value == null)
             {
-                e.ErrorText = "Số lượng nhập không được để trống";
+                e.ErrorText = "Số lượng xuất không được để trống";
                 e.Valid = false;
                 return;
             }
 
-            if (decimal.TryParse(e.Value.ToString(), out var stockInQty))
+            if (decimal.TryParse(e.Value.ToString(), out var stockOutQty))
             {
-                if (stockInQty <= 0)
+                if (stockOutQty <= 0)
                 {
-                    _logger.Warning("ValidateStockInQty: Value <= 0, value={0}", stockInQty);
-                    e.ErrorText = "Số lượng nhập phải lớn hơn 0";
+                    _logger.Warning("ValidateStockOutQty: Value <= 0, value={0}", stockOutQty);
+                    e.ErrorText = "Số lượng xuất phải lớn hơn 0";
                     e.Valid = false;
                     return;
                 }
             }
             else
             {
-                _logger.Warning("ValidateStockInQty: Invalid number format, value={0}", e.Value);
-                e.ErrorText = "Số lượng nhập phải là số hợp lệ";
+                _logger.Warning("ValidateStockOutQty: Invalid number format, value={0}", e.Value);
+                e.ErrorText = "Số lượng xuất phải là số hợp lệ";
                 e.Valid = false;
                 return;
             }
 
             e.Valid = true;
+        }
+
+        #endregion
+
+        #region ========== BARCODE SCANNING ==========
+
+        /// <summary>
+        /// Event handler khi nhấn phím trong BarCodeTextEdit
+        /// </summary>
+        private async void BarCodeTextEdit_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                // Khi nhấn Enter, thêm vào grid
+                if (e.KeyCode == Keys.Enter)
+                {
+                    e.Handled = true;
+                    e.SuppressKeyPress = true; // Ngăn tiếng beep
+                    await ProcessBarCodeAndAddToGrid();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("BarCodeTextEdit_KeyDown: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi xử lý mã vạch: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler khi click vào nút "Thêm vào"
+        /// </summary>
+        private async void AddBarCodeHyperlinkLabelControl_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await ProcessBarCodeAndAddToGrid();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("AddBarCodeHyperlinkLabelControl_Click: Exception occurred", ex);
+                MsgBox.ShowError($"Lỗi thêm mã vạch: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý mã BarCode và thêm vào grid
+        /// Tìm trong bảng Device hoặc Warranty để lấy thông tin linh kiện
+        /// </summary>
+        private Task ProcessBarCodeAndAddToGrid()
+        {
+            return Task.CompletedTask;
+            //try
+            //{
+            //    // Lấy mã BarCode từ BarCodeTextEdit
+            //    var barCode = BarCodeTextEdit.Text?.Trim();
+            //    if (string.IsNullOrWhiteSpace(barCode))
+            //    {
+            //        MsgBox.ShowWarning("Vui lòng nhập mã vạch");
+            //        BarCodeTextEdit.Focus();
+            //        return;
+            //    }
+
+            //    _logger.Debug("ProcessBarCodeAndAddToGrid: Bắt đầu xử lý mã vạch, BarCode={0}", barCode);
+
+            //    // Ghi log vào LogTextBox
+            //    AppendLog($"Đang tìm kiếm mã vạch: {barCode}");
+
+            //    // Bước 1: Tìm trong bảng Device trước
+            //    var device = _deviceBll.FindByBarCode(barCode);
+            //    if (device != null)
+            //    {
+            //        _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Device, DeviceId={0}, ProductVariantId={1}", 
+            //            device.Id, device.ProductVariantId);
+            //        AppendLog($"✓ Tìm thấy thiết bị: {device.ProductVariant?.ProductService?.Name ?? "N/A"}");
+
+            //        // Thêm vào grid với ProductVariantId từ Device
+            //        await AddDetailFromDeviceOrWarranty(device.ProductVariantId, device);
+
+            //        // Clear BarCode text
+            //        BarCodeTextEdit.Text = string.Empty;
+            //        BarCodeTextEdit.Focus();
+            //        return;
+            //    }
+
+            //    // Bước 2: Nếu không tìm thấy trong Device, tìm trong Warranty
+            //    var warranty = _warrantyBll.FindByDeviceInfo(barCode);
+            //    if (warranty != null)
+            //    {
+            //        _logger.Info("ProcessBarCodeAndAddToGrid: Tìm thấy Warranty, WarrantyId={0}, DeviceId={1}", 
+            //            warranty.Id, warranty.DeviceId);
+                    
+            //        // Lấy ProductVariantId từ Device của Warranty
+            //        if (warranty.DeviceId.HasValue && warranty.Device?.ProductVariantId != null)
+            //        {
+            //            var productVariantId = warranty.Device.ProductVariantId;
+            //            AppendLog($"✓ Tìm thấy bảo hành: {warranty.Device.ProductVariant?.ProductService?.Name ?? "N/A"}");
+
+            //            // Thêm vào grid với ProductVariantId từ Warranty
+            //            await AddDetailFromDeviceOrWarranty(productVariantId, null, warranty);
+
+            //            // Clear BarCode text
+            //            BarCodeTextEdit.Text = string.Empty;
+            //            BarCodeTextEdit.Focus();
+            //            return;
+            //        }
+            //        else
+            //        {
+            //            AppendLog("⚠ Bảo hành không có thông tin sản phẩm");
+            //            MsgBox.ShowWarning("Bảo hành không có thông tin sản phẩm. Vui lòng kiểm tra lại.");
+            //            return;
+            //        }
+            //    }
+
+            //    // Không tìm thấy trong cả Device và Warranty
+            //    _logger.Warning("ProcessBarCodeAndAddToGrid: Không tìm thấy thiết bị hoặc bảo hành với mã vạch, BarCode={0}", barCode);
+            //    AppendLog($"✗ Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
+            //    MsgBox.ShowWarning($"Không tìm thấy thiết bị hoặc bảo hành với mã vạch: {barCode}");
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.Error("ProcessBarCodeAndAddToGrid: Exception occurred", ex);
+            //    AppendLog($"✗ Lỗi: {ex.Message}");
+            //    MsgBox.ShowError($"Lỗi xử lý mã vạch: {ex.Message}");
+            //}
         }
 
         #endregion
@@ -1054,15 +1188,6 @@ namespace Inventory.StockIn.NhapLapRap
         {
             _logger.Error("ShowError: {0}", ex, message);
             MsgBox.ShowError($"{message}: {ex.Message}");
-        }
-
-        /// <summary>
-        /// Hiển thị cảnh báo
-        /// </summary>
-        private void ShowWarning(string message)
-        {
-            _logger.Warning("ShowWarning: {0}", message);
-            MsgBox.ShowWarning(message);
         }
 
         #endregion

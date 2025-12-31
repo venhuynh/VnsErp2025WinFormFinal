@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace Inventory.StockOut.XuatNoiBo;
 
-public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserControl
+public partial class UcXuatNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
 {
     #region ========== FIELDS & PROPERTIES ==========
 
@@ -63,7 +63,7 @@ public partial class UcXuatNoiBoDetailDto : DevExpress.XtraEditors.XtraUserContr
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcXuatNoiBoDetailDto()
+    public UcXuatNoiBoDetail()
     {
         InitializeComponent();
         InitializeControl();

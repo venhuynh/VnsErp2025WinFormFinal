@@ -191,17 +191,17 @@
     <Compile Include="StockIn\NhapLapRap\FrmNhapLapRap.Designer.cs">
       <DependentUpon>FrmNhapLapRap.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.cs">
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.Designer.cs">
-      <DependentUpon>UcNhapLapRapLapRapDetailDto.cs</DependentUpon>
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetail.Designer.cs">
+      <DependentUpon>UcNhapLapRapLapRapDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMasterDto.cs">
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMasterDto.Designer.cs">
-      <DependentUpon>UcNhapLapRapMasterDto.cs</DependentUpon>
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMaster.Designer.cs">
+      <DependentUpon>UcNhapLapRapMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\NhapLuuChuyenKho\FrmNhapLuuChuyenKho.cs">
       <SubType>Form</SubType>
@@ -311,17 +311,17 @@
     <Compile Include="StockOut\XuatHangThuongMai\FrmXuatKhoThuongMai.Designer.cs">
       <DependentUpon>FrmXuatKhoThuongMai.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetailDto.cs">
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetailDto.Designer.cs">
-      <DependentUpon>UcXuatHangThuongMaiDetailDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetail.Designer.cs">
+      <DependentUpon>UcXuatHangThuongMaiDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMasterDto.cs">
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMasterDto.Designer.cs">
-      <DependentUpon>UcXuatHangThuongMaiMasterDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMaster.Designer.cs">
+      <DependentUpon>UcXuatHangThuongMaiMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="StockOut\XuatLapRap\FrmXuatLapRap.cs">
       <SubType>Form</SubType>
@@ -329,17 +329,17 @@
     <Compile Include="StockOut\XuatLapRap\FrmXuatLapRap.Designer.cs">
       <DependentUpon>FrmXuatLapRap.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.cs">
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.Designer.cs">
-      <DependentUpon>UcXuatLapRapDetailDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetail.Designer.cs">
+      <DependentUpon>UcXuatLapRapDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapMasterDto.cs">
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapMasterDto.Designer.cs">
-      <DependentUpon>UcXuatLapRapMasterDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapMaster.Designer.cs">
+      <DependentUpon>UcXuatLapRapMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.cs">
       <SubType>Form</SubType>
@@ -371,17 +371,17 @@
     <Compile Include="StockOut\XuatNoiBo\FrmXuatNoiBo.Designer.cs">
       <DependentUpon>FrmXuatNoiBo.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.cs">
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.Designer.cs">
-      <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetail.Designer.cs">
+      <DependentUpon>UcXuatNoiBoDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.cs">
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.Designer.cs">
-      <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMaster.Designer.cs">
+      <DependentUpon>UcXuatNoiBoMaster.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Management\FrmInventoryBalanceDto.resx">
       <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
@@ -447,11 +447,11 @@
     <EmbeddedResource Include="StockIn\NhapLapRap\FrmNhapLapRap.resx">
       <DependentUpon>FrmNhapLapRap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.resx">
-      <DependentUpon>UcNhapLapRapLapRapDetailDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetail.resx">
+      <DependentUpon>UcNhapLapRapLapRapDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapMasterDto.resx">
-      <DependentUpon>UcNhapLapRapMasterDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapMaster.resx">
+      <DependentUpon>UcNhapLapRapMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapLuuChuyenKho\FrmNhapLuuChuyenKho.resx">
       <DependentUpon>FrmNhapLuuChuyenKho.cs</DependentUpon>
@@ -501,20 +501,20 @@
     <EmbeddedResource Include="StockOut\XuatHangThuongMai\FrmXuatKhoThuongMai.resx">
       <DependentUpon>FrmXuatKhoThuongMai.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMasterDto.resx">
-      <DependentUpon>UcXuatHangThuongMaiMasterDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMaster.resx">
+      <DependentUpon>UcXuatHangThuongMaiMaster.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetailDto.resx">
-      <DependentUpon>UcXuatHangThuongMaiDetailDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetail.resx">
+      <DependentUpon>UcXuatHangThuongMaiDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatLapRap\FrmXuatLapRap.resx">
       <DependentUpon>FrmXuatLapRap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.resx">
-      <DependentUpon>UcXuatLapRapDetailDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapDetail.resx">
+      <DependentUpon>UcXuatLapRapDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapMasterDto.resx">
-      <DependentUpon>UcXuatLapRapMasterDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapMaster.resx">
+      <DependentUpon>UcXuatLapRapMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.resx">
       <DependentUpon>FrmXuatLuuChuyenKho.cs</DependentUpon>
@@ -531,11 +531,11 @@
     <EmbeddedResource Include="StockOut\XuatNoiBo\FrmXuatNoiBo.resx">
       <DependentUpon>FrmXuatNoiBo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.resx">
-      <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoDetail.resx">
+      <DependentUpon>UcXuatNoiBoDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.resx">
-      <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoMaster.resx">
+      <DependentUpon>UcXuatNoiBoMaster.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Doc\DatabaseSchema_StockInOutDocument_Proposal.md" />
