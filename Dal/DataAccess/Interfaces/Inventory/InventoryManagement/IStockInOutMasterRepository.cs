@@ -1,6 +1,7 @@
 ﻿using Dal.DataContext;
 using System;
 using System.Collections.Generic;
+using DTO.Inventory.InventoryManagement;
 
 namespace Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 
@@ -26,4 +27,6 @@ public interface IStockInOutMasterRepository
     /// <param name="id">ID của StockInOutMaster</param>
     /// <returns>StockInOutMaster entity với tất cả navigation properties đã load hoặc null nếu không tìm thấy</returns>
     StockInOutMaster GetMasterByIdWithDetails(Guid id);
+
+    List<StockInOutMasterHistoryDto> GetStockInOutMasterHistoryDtoByDates(DateTime fromDate, DateTime toDate);
 }

@@ -146,6 +146,7 @@
     <Compile Include="DtoConverter\ProductVariantConverters.cs" />
     <Compile Include="DtoConverter\RoleConverters.cs" />
     <Compile Include="DtoConverter\RoleDtoConverter.cs" />
+    <Compile Include="DtoConverter\StockInOutMasterHistoryDtoConverter.cs" />
     <Compile Include="DtoConverter\UnitOfMeasureConverters.cs" />
     <Compile Include="DtoConverter\CompanyBranchConverters.cs" />
     <Compile Include="DtoConverter\CompanyConverter.cs" />

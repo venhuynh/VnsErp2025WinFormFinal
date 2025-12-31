@@ -2,6 +2,7 @@ using Bll.Inventory.StockInOut;
 using Common.Common;
 using Common.Utils;
 using Inventory.OverlayForm;
+using Inventory.StockIn.NhapBaoHanh;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -683,39 +684,12 @@ namespace Inventory.StockIn.NhapLapRap
                     return false;
                 }
 
-                // Lấy danh sách detail entities (GetDetails() trả về List<StockInOutDetail>)
-                var detailEntities = ucNhapLapRapLapRapDetailDto1.GetDetails();
-                if (detailEntities == null || detailEntities.Count == 0)
+                // Lấy danh sách detail DTOs (GetDetails() trả về List<StockInOutDetailForUIDto>)
+                var detailDtos = ucNhapLapRapLapRapDetailDto1.GetDetails();
+                if (detailDtos == null || detailDtos.Count == 0)
                 {
                     _logger.Warning("SaveDataAsync: No details found");
                     MsgBox.ShowWarning("Vui lòng thêm ít nhất một dòng chi tiết", "Cảnh báo", this);
-                    return false;
-                }
-
-                // Validate thêm business rules cho từng detail entity
-                var validationErrors = new List<string>();
-                for (var i = 0; i < detailEntities.Count; i++)
-                {
-                    var detail = detailEntities[i];
-                    var lineNumber = i + 1; // Entity không có LineNumber, tính từ index
-
-                    if (detail.ProductVariantId == Guid.Empty)
-                    {
-                        validationErrors.Add($"Dòng {lineNumber}: Vui lòng chọn hàng hóa");
-                    }
-
-                    if (detail.StockInQty <= 0)
-                    {
-                        validationErrors.Add($"Dòng {lineNumber}: Số lượng nhập phải lớn hơn 0");
-                    }
-                }
-
-                if (validationErrors.Any())
-                {
-                    _logger.Warning("SaveDataAsync: Detail business rules validation failed, Errors={0}",
-                        string.Join("; ", validationErrors));
-                    MsgBox.ShowError($"Có lỗi trong dữ liệu chi tiết:\n\n{string.Join("\n", validationErrors)}",
-                        "Lỗi validation", this);
                     return false;
                 }
 
@@ -723,21 +697,21 @@ namespace Inventory.StockIn.NhapLapRap
                 // Dựa vào giá trị của _currentStockInOutMaster để xác định là Insert hay Update
                 // Nếu _currentStockInOutMaster == Guid.Empty: Tạo mới (Insert)
                 // Nếu _currentStockInOutMaster != Guid.Empty: Cập nhật (Update)
-                
+
                 Guid savedMasterId;
-                
+
                 if (_currentStockInOutMaster == Guid.Empty)
                 {
                     // Trường hợp tạo mới: Gọi SaveAsync để insert
-                    _logger.Info("SaveDataAsync: Creating new assembly input voucher");
-                    savedMasterId = await _stockInBll.SaveAsync(masterDto, detailEntities);
+                    _logger.Info("SaveDataAsync: Creating new warranty input voucher");
+                    savedMasterId = await _stockInBll.SaveAsync(masterDto, detailDtos);
                 }
                 else
                 {
                     // Trường hợp cập nhật: Set ID vào masterDto và gọi UpdateAsync để update
-                    _logger.Info("SaveDataAsync: Updating existing assembly input voucher, Id={0}", _currentStockInOutMaster);
+                    _logger.Info("SaveDataAsync: Updating existing warranty input voucher, Id={0}", _currentStockInOutMaster);
                     masterDto.Id = _currentStockInOutMaster;
-                    savedMasterId = await _stockInBll.UpdateAsync(masterDto, detailEntities);
+                    savedMasterId = await _stockInBll.UpdateAsync(masterDto, detailDtos);
                 }
 
                 // ========== BƯỚC 4: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========

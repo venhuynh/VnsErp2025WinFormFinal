@@ -10,6 +10,7 @@ using DTO.Inventory.InventoryManagement;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DTO.MasterData.Company;
 
 namespace Inventory.StockIn.NhapBaoHanh;
 
@@ -488,7 +489,6 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
     {
         try
         {
-            
             // Validate các trường bắt buộc
             if (!ValidateInput())
             {
@@ -502,7 +502,7 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
                 Id = _stockInOutMasterId,
                 VoucherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
                 StockOutDate = StockInDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapHangBaoHanh,
+                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
                 TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                 // Thông tin bổ sung
@@ -512,52 +512,16 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
             };
 
             // Lấy thông tin Warehouse từ selected item trong SearchLookUpEdit
-            var warehouseId = _selectedWarehouseId != Guid.Empty 
-                ? _selectedWarehouseId 
+            var warehouseId = _selectedWarehouseId != Guid.Empty
+                ? _selectedWarehouseId
                 : (WarehouseNameSearchLookupEdit.EditValue is Guid wId ? wId : Guid.Empty);
 
             if (warehouseId != Guid.Empty)
             {
                 dto.WarehouseId = warehouseId;
-
-                // Lấy thông tin chi tiết từ selected row hoặc binding source
-                var warehouse = WarehouseNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.Company.CompanyBranchLookupDto;
-                if (warehouse == null && companyBranchLookupDtoBindingSource.DataSource is System.Collections.IList warehouseList)
-                {
-                    warehouse = warehouseList.Cast<DTO.MasterData.Company.CompanyBranchLookupDto>()
-                        .FirstOrDefault(w => w.Id == warehouseId);
-                }
-
-                if (warehouse != null)
-                {
-                    dto.WarehouseCode = warehouse.BranchCode ?? string.Empty;
-                    dto.WarehouseName = warehouse.BranchName ?? string.Empty;
-                }
+                //Cập nhật luôn kho xuất
+                dto.CustomerId = warehouseId;
             }
-
-            // Lấy thông tin Customer/Supplier từ selected item trong SearchLookUpEdit
-            var supplierId = _selectedPartnerSiteId != Guid.Empty 
-                ? _selectedPartnerSiteId 
-                : (SupplierNameSearchLookupEdit.EditValue is Guid sId ? sId : Guid.Empty);
-
-            if (supplierId != Guid.Empty)
-            {
-                dto.CustomerId = supplierId;
-
-                // Lấy thông tin chi tiết từ selected row hoặc binding source
-                var supplier = SupplierNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto;
-                if (supplier == null && businessPartnerSiteListDtoBindingSource.DataSource is System.Collections.IList supplierList)
-                {
-                    supplier = supplierList.Cast<DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto>()
-                        .FirstOrDefault(s => s.Id == supplierId);
-                }
-
-                if (supplier != null)
-                {
-                    dto.CustomerName = supplier.SiteName ?? string.Empty;
-                }
-            }
-             
 
             // Khởi tạo tổng hợp với giá trị 0 (sẽ được cập nhật từ detail sau)
             dto.SetTotals(0, 0, 0, 0);

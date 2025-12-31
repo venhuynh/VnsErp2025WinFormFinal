@@ -367,11 +367,10 @@ public class StockInRepository : IStockInRepository
             var existingMasters = context.StockInOutMasters
                 .Where(m => m.StockInOutDate.Year == year 
                          && m.StockInOutDate.Month == month 
-                         && m.StockInOutType == loaiNhapKhoInt
-                         && !string.IsNullOrEmpty(m.VocherNumber))
+                         && m.StockInOutType == loaiNhapKhoInt)
                 .ToList();
 
-            if (existingMasters == null || existingMasters.Count == 0)
+            if (existingMasters.Count == 0)
             {
                 _logger.Info("GetNextSequenceNumber: Không có phiếu nào trong tháng {0}/{1}, loại {2}. Trả về số 1", month, year, loaiNhapKhoInt);
                 return 1;

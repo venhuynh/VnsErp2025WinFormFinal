@@ -3,6 +3,7 @@ using Common.Common;
 using Common.Utils;
 using DevExpress.XtraEditors;
 using Inventory.OverlayForm;
+using Inventory.StockIn.NhapBaoHanh;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -36,7 +37,7 @@ public partial class FrmXuatKhoThuongMai : XtraForm
     /// <summary>
     /// ID phiếu xuất kho hiện tại (nếu đang edit)
     /// </summary>
-    private Guid _currentStockOutId;
+    private Guid _currentStockInOutMaster;
 
     /// <summary>
     /// Flag đánh dấu đang trong quá trình đóng form sau khi lưu thành công
@@ -55,20 +56,20 @@ public partial class FrmXuatKhoThuongMai : XtraForm
     {
         InitializeComponent();
         Load += FrmXuatKhoThuongMai_Load;
-        _currentStockOutId = Guid.Empty;
+        _currentStockInOutMaster = Guid.Empty;
     }
 
     /// <summary>
     /// Constructor với ID phiếu xuất kho (mở để xem/sửa)
     /// </summary>
-    /// <param name="stockOutId">ID phiếu xuất kho</param>
-    public FrmXuatKhoThuongMai(Guid stockOutId)
+    /// <param name="stockInOutMaster">ID phiếu xuất kho</param>
+    public FrmXuatKhoThuongMai(Guid stockInOutMaster)
     {
         InitializeComponent();
         Load += FrmXuatKhoThuongMai_Load;
 
         // Gán ID phiếu xuất kho hiện tại
-        _currentStockOutId = stockOutId;
+        _currentStockInOutMaster = stockInOutMaster;
     }
 
     #endregion
@@ -93,13 +94,13 @@ public partial class FrmXuatKhoThuongMai : XtraForm
             // Load datasource với SplashScreen (với owner là form này)
             //await LoadDataSourcesAsync();
 
-            // Nếu _currentStockOutId có giá trị thì load dữ liệu vào UI của 2 UserControl
-            if (_currentStockOutId != Guid.Empty)
+            // Nếu _currentStockInOutMaster có giá trị thì load dữ liệu vào UI của 2 UserControl
+            if (_currentStockInOutMaster != Guid.Empty)
             {
 
                 // Load dữ liệu từ ID vào các user controls
-                await ucXuatHangThuongMaiMasterDto1.LoadDataAsync(_currentStockOutId);
-                await ucXuatHangThuongMaiDetailDto1.LoadDataAsyncForEdit(_currentStockOutId);
+                await ucXuatHangThuongMaiMasterDto1.LoadDataAsync(_currentStockInOutMaster);
+                await ucXuatHangThuongMaiDetailDto1.LoadDataAsyncForEdit(_currentStockInOutMaster);
             }
             else
             {
@@ -359,13 +360,13 @@ public partial class FrmXuatKhoThuongMai : XtraForm
         try
         {
 
-            // Lấy StockInOutMasterId từ _currentStockOutId (phải đã được lưu)
+            // Lấy StockInOutMasterId từ _currentStockInOutMaster (phải đã được lưu)
             Guid stockInOutMasterId;
 
             // Kiểm tra phiếu đã được lưu chưa
-            if (_currentStockOutId != Guid.Empty)
+            if (_currentStockInOutMaster != Guid.Empty)
             {
-                stockInOutMasterId = _currentStockOutId;
+                stockInOutMasterId = _currentStockInOutMaster;
             }
             else
             {
@@ -384,15 +385,15 @@ public partial class FrmXuatKhoThuongMai : XtraForm
                         // Đợi cho đến khi lưu hoàn tất (tối đa 10 giây)
                         var timeout = TimeSpan.FromSeconds(10);
                         var startTime = DateTime.Now;
-                        while (_currentStockOutId == Guid.Empty && (DateTime.Now - startTime) < timeout)
+                        while (_currentStockInOutMaster == Guid.Empty && (DateTime.Now - startTime) < timeout)
                         {
                             await Task.Delay(100);
                         }
 
                         // Kiểm tra lại sau khi lưu
-                        if (_currentStockOutId != Guid.Empty)
+                        if (_currentStockInOutMaster != Guid.Empty)
                         {
-                            stockInOutMasterId = _currentStockOutId;
+                            stockInOutMasterId = _currentStockInOutMaster;
                         }
                         else
                         {
@@ -448,13 +449,13 @@ public partial class FrmXuatKhoThuongMai : XtraForm
         try
         {
 
-            // Lấy StockInOutMasterId từ _currentStockOutId (phải đã được lưu)
+            // Lấy StockInOutMasterId từ _currentStockInOutMaster (phải đã được lưu)
             Guid stockInOutMasterId;
 
             // Kiểm tra phiếu đã được lưu chưa
-            if (_currentStockOutId != Guid.Empty)
+            if (_currentStockInOutMaster != Guid.Empty)
             {
-                stockInOutMasterId = _currentStockOutId;
+                stockInOutMasterId = _currentStockInOutMaster;
             }
             else
             {
@@ -473,15 +474,15 @@ public partial class FrmXuatKhoThuongMai : XtraForm
                         // Đợi cho đến khi lưu hoàn tất (tối đa 10 giây)
                         var timeout = TimeSpan.FromSeconds(10);
                         var startTime = DateTime.Now;
-                        while (_currentStockOutId == Guid.Empty && (DateTime.Now - startTime) < timeout)
+                        while (_currentStockInOutMaster == Guid.Empty && (DateTime.Now - startTime) < timeout)
                         {
                             await Task.Delay(100);
                         }
 
                         // Kiểm tra lại sau khi lưu
-                        if (_currentStockOutId != Guid.Empty)
+                        if (_currentStockInOutMaster != Guid.Empty)
                         {
-                            stockInOutMasterId = _currentStockOutId;
+                            stockInOutMasterId = _currentStockInOutMaster;
                         }
                         else
                         {
@@ -543,13 +544,13 @@ public partial class FrmXuatKhoThuongMai : XtraForm
     {
         try
         {
-            // Lấy StockInOutMasterId từ _currentStockOutId (phải đã được lưu)
+            // Lấy StockInOutMasterId từ _currentStockInOutMaster (phải đã được lưu)
             Guid stockInOutMasterId = Guid.Empty;
 
             // Kiểm tra phiếu đã được lưu chưa
-            if (_currentStockOutId != Guid.Empty)
+            if (_currentStockInOutMaster != Guid.Empty)
             {
-                stockInOutMasterId = _currentStockOutId;
+                stockInOutMasterId = _currentStockInOutMaster;
             }
             else
             {
@@ -830,7 +831,7 @@ public partial class FrmXuatKhoThuongMai : XtraForm
             ucXuatHangThuongMaiMasterDto1.UpdateTotals(0, 0, 0, 0);
 
             // Reset state
-            _currentStockOutId = Guid.Empty;
+            _currentStockInOutMaster = Guid.Empty;
             _isClosingAfterSave = false; // Reset flag khi reset form
             MarkAsSaved();
         }
@@ -876,61 +877,41 @@ public partial class FrmXuatKhoThuongMai : XtraForm
                 return false;
             }
 
-            // Lấy danh sách detail entities (GetDetails() trả về List<StockInOutDetail>)
-            var detailEntities = ucXuatHangThuongMaiDetailDto1.GetDetails();
-            if (detailEntities == null || detailEntities.Count == 0)
+            // Lấy danh sách detail DTOs (GetDetails() trả về List<StockInOutDetailForUIDto>)
+            var detailDtos = ucXuatHangThuongMaiDetailDto1.GetDetails();
+            if (detailDtos == null || detailDtos.Count == 0)
             {
                 _logger.Warning("SaveDataAsync: No details found");
                 MsgBox.ShowWarning("Vui lòng thêm ít nhất một dòng chi tiết", "Cảnh báo", this);
                 return false;
             }
 
-            // Validate thêm business rules cho từng detail entity
-            var validationErrors = new List<string>();
-            for (var i = 0; i < detailEntities.Count; i++)
-            {
-                var detail = detailEntities[i];
-                var lineNumber = i + 1; // Entity không có LineNumber, tính từ index
-
-                if (detail.ProductVariantId == Guid.Empty)
-                {
-                    validationErrors.Add($"Dòng {lineNumber}: Vui lòng chọn hàng hóa");
-                }
-
-                if (detail.StockOutQty <= 0)
-                {
-                    validationErrors.Add($"Dòng {lineNumber}: Số lượng xuất phải lớn hơn 0");
-                }
-
-                if (detail.UnitPrice < 0)
-                {
-                    validationErrors.Add($"Dòng {lineNumber}: Đơn giá không được âm");
-                }
-
-                if (detail.Vat < 0 || detail.Vat > 100)
-                {
-                    validationErrors.Add($"Dòng {lineNumber}: VAT phải từ 0 đến 100");
-                }
-            }
-
-            if (validationErrors.Any())
-            {
-                _logger.Warning("SaveDataAsync: Detail business rules validation failed, Errors={0}",
-                    string.Join("; ", validationErrors));
-                MsgBox.ShowError($"Có lỗi trong dữ liệu chi tiết:\n\n{string.Join("\n", validationErrors)}", "Lỗi validation", this);
-                return false;
-            }
-
             // ========== BƯỚC 3: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
-            // Tất cả validation đã được thực hiện ở bước 1 và 2
-            // Truyền DTO trực tiếp vào BLL để tránh lỗi tham chiếu khóa ngoại
-            // BLL sẽ tự động map DTO sang entity (không có navigation properties)
-            var savedMasterId = await _stockInBll.SaveAsync(masterDto, detailEntities);
+            // Dựa vào giá trị của _currentStockInOutMaster để xác định là Insert hay Update
+            // Nếu _currentStockInOutMaster == Guid.Empty: Tạo mới (Insert)
+            // Nếu _currentStockInOutMaster != Guid.Empty: Cập nhật (Update)
 
-            // ========== BƯỚC 5: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
+            Guid savedMasterId;
+
+            if (_currentStockInOutMaster == Guid.Empty)
+            {
+                // Trường hợp tạo mới: Gọi SaveAsync để insert
+                _logger.Info("SaveDataAsync: Creating new warranty input voucher");
+                savedMasterId = await _stockInBll.SaveAsync(masterDto, detailDtos);
+            }
+            else
+            {
+                // Trường hợp cập nhật: Set ID vào masterDto và gọi UpdateAsync để update
+                _logger.Info("SaveDataAsync: Updating existing warranty input voucher, Id={0}", _currentStockInOutMaster);
+                masterDto.Id = _currentStockInOutMaster;
+                savedMasterId = await _stockInBll.UpdateAsync(masterDto, detailDtos);
+            }
+
+            // ========== BƯỚC 4: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
             // Cập nhật ID sau khi lưu
             masterDto.Id = savedMasterId;
-            _currentStockOutId = savedMasterId;
+            _currentStockInOutMaster = savedMasterId;
+
 
             // Set master ID cho detail control để đồng bộ
             ucXuatHangThuongMaiDetailDto1.SetStockOutMasterId(savedMasterId);

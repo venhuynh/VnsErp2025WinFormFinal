@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -217,11 +217,40 @@ public class StockInOutMasterHistoryDto
             // - Tổng hợp: màu xám cho label, đen/xanh cho value
 
             var html = string.Empty;
-
-            // Số phiếu (nổi bật nhất)
+            // Xác định màu dựa trên prefix VocherNumber hoặc LoaiNhapXuatKhoEnum
+            string vocherColor = "blue"; // Mặc định màu xanh dương (blue)
+            
+            // Số phiếu (nổi bật nhất) - Format màu dựa trên loại phiếu
             if (!string.IsNullOrWhiteSpace(vocherNumber))
             {
-                html += $"<b><color='blue'>{vocherNumber}</color></b>";
+                
+                
+                // Kiểm tra prefix của VocherNumber
+                var upperVocher = vocherNumber.ToUpper();
+                if (upperVocher.StartsWith("PXK"))
+                {
+                    vocherColor = "red"; // PXK (Phiếu xuất kho) - màu đỏ
+                }
+                else if (upperVocher.StartsWith("PNK"))
+                {
+                    vocherColor = "blue"; // PNK (Phiếu nhập kho) - màu xanh lá
+                }
+                else
+                {
+                    // Nếu không có prefix, dựa vào LoaiNhapXuatKhoEnum hoặc StockInOutType
+                    // Logic: LoaiNhapXuatKhoEnum < 10 = Nhập kho (PNK), >= 10 = Xuất kho (PXK)
+                    var stockInOutTypeValue = StockInOutType;
+                    if (stockInOutTypeValue >= 10)
+                    {
+                        vocherColor = "red"; // Xuất kho - màu đỏ
+                    }
+                    else if (stockInOutTypeValue > 0)
+                    {
+                        vocherColor = "blue"; // Nhập kho - màu xanh lá
+                    }
+                }
+                
+                html += $"<b><color='{vocherColor}'>{vocherNumber}</color></b>";
             }
 
             // Ngày nhập xuất
@@ -229,11 +258,11 @@ public class StockInOutMasterHistoryDto
             {
                 if (!string.IsNullOrWhiteSpace(vocherNumber))
                 {
-                    html += $" <color='blue'>({StockInOutDate:dd/MM/yyyy})</color>";
+                    html += $" <color='{vocherColor}'>({StockInOutDate:dd/MM/yyyy})</color>";
                 }
                 else
                 {
-                    html += $"<b><color='blue'>{StockInOutDate:dd/MM/yyyy}</color></b>";
+                    html += $"<b><color='{vocherColor}'>{StockInOutDate:dd/MM/yyyy}</color></b>";
                 }
             }
 
@@ -245,11 +274,11 @@ public class StockInOutMasterHistoryDto
             // Loại nhập xuất (sử dụng LoaiNhapXuatKhoName nếu có, fallback về StockInOutType)
             if (!string.IsNullOrWhiteSpace(LoaiNhapXuatKhoName))
             {
-                html += $"<color='#757575'> | Loại:</color> <color='blue'><b>{LoaiNhapXuatKhoName}</b></color>";
+                html += $"<color='{vocherColor}'> | Loại:</color> <color='{vocherColor}'><b>{LoaiNhapXuatKhoName}</b></color>";
             }
             else if (StockInOutType != 0)
             {
-                html += $"<color='#757575'>Loại:</color> <color='blue'><b>{StockInOutType}</b></color>";
+                html += $"<color='{vocherColor}'>Loại:</color> <color='{vocherColor}'><b>{StockInOutType}</b></color>";
             }
 
             if (!string.IsNullOrWhiteSpace(LoaiNhapXuatKhoName) || StockInOutType != 0)

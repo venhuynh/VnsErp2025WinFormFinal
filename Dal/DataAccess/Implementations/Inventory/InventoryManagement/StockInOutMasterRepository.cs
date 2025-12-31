@@ -1,11 +1,13 @@
-﻿using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
+using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
+using Dal.DtoConverter;
 using Logger;
 using Logger.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
+using DTO.Inventory.InventoryManagement;
 using CustomLogger = Logger.Interfaces.ILogger;
 
 namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement;
@@ -193,6 +195,46 @@ public class StockInOutMasterRepository : IStockInOutMasterRepository
         catch (Exception ex)
         {
             _logger.Error($"GetMasterByIdWithDetails: Lỗi query: {ex.Message}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách StockInOutMasterHistoryDto trong khoảng thời gian từ fromDate đến toDate
+    /// </summary>
+    /// <param name="fromDate">Từ ngày</param>
+    /// <param name="toDate">Đến ngày</param>
+    /// <returns>Danh sách StockInOutMasterHistoryDto</returns>
+    public List<StockInOutMasterHistoryDto> GetStockInOutMasterHistoryDtoByDates(DateTime fromDate, DateTime toDate)
+    {
+        using var context = CreateNewContextForMasterWithDetails();
+        try
+        {
+            _logger.Debug("GetStockInOutMasterHistoryDtoByDates: Bắt đầu query, FromDate={0}, ToDate={1}", 
+                fromDate, toDate);
+
+            // Query StockInOutMaster trong khoảng thời gian
+            var masters = context.StockInOutMasters
+                .Where(m => m.StockInOutDate >= fromDate.Date && 
+                           m.StockInOutDate <= toDate.Date.AddDays(1).AddTicks(-1))
+                .OrderByDescending(m => m.StockInOutDate)
+                .ThenByDescending(m => m.VocherNumber ?? string.Empty)
+                .ToList();
+
+            _logger.Debug("GetStockInOutMasterHistoryDtoByDates: Query thành công, Masters count={0}", masters.Count);
+
+            // Convert entities sang DTOs
+            var dtos = masters
+                .Select(m => m.ToStockInOutMasterHistoryDto())
+                .Where(dto => dto != null)
+                .ToList();
+
+            _logger.Info("GetStockInOutMasterHistoryDtoByDates: Convert thành công, DTOs count={0}", dtos.Count);
+            return dtos;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"GetStockInOutMasterHistoryDtoByDates: Lỗi query: {ex.Message}", ex);
             throw;
         }
     }

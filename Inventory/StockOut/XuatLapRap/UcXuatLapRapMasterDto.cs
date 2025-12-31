@@ -415,7 +415,7 @@ namespace Inventory.StockOut.XuatLapRap
                     Id = _stockInOutMasterId,
                     VoucherNumber = StockOutNumberTextEdit.Text?.Trim() ?? string.Empty,
                     StockOutDate = StockOutDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                    LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatLinhKienLapRap,
+                    LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
                     TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                     // Thông tin bổ sung
@@ -432,23 +432,9 @@ namespace Inventory.StockOut.XuatLapRap
                 if (warehouseId != Guid.Empty)
                 {
                     dto.WarehouseId = warehouseId;
-
-                    // Lấy thông tin chi tiết từ selected row hoặc binding source
-                    var warehouse =
-                        WarehouseNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.Company.CompanyBranchDto;
-                    if (warehouse == null &&
-                        companyBranchDtoBindingSource.DataSource is System.Collections.IList warehouseList)
-                    {
-                        warehouse = warehouseList.Cast<DTO.MasterData.Company.CompanyBranchDto>()
-                            .FirstOrDefault(w => w.Id == warehouseId);
-                    }
-
-                    if (warehouse != null)
-                    {
-                        dto.WarehouseCode = warehouse.BranchCode ?? string.Empty;
-                        dto.WarehouseName = warehouse.BranchName ?? string.Empty;
-                    }
+                    dto.CustomerId = warehouseId;
                 }
+                 
 
                 // Khởi tạo tổng hợp với giá trị 0 (sẽ được cập nhật từ detail sau)
                 dto.SetTotals(0, 0, 0, 0);

@@ -183,14 +183,12 @@ namespace Inventory.StockOut.XuatLapRap
                     details.Add(new StockInOutDetailForUIDto
                     {
                         Id = default,
-                        StockInOutMasterId = _stockOutMasterId,
                         ProductVariantId = detailDto.ProductVariantId,
-                        StockInQty = 0,
+                        StockInQty = detailDto.StockInQty,
                         StockOutQty = detailDto.StockOutQty,
-                        UnitPrice = 0,
-                        Vat = 0,
-                        // VatAmount, TotalAmount, TotalAmountIncludedVat là computed properties (read-only)
-                        // Chúng sẽ tự động tính toán từ StockOutQty, UnitPrice, Vat
+                        UnitPrice = detailDto.UnitPrice,
+                        Vat = detailDto.Vat,
+
                         GhiChu = detailDto.GhiChu,
                     });
                 }

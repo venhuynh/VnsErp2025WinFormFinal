@@ -534,6 +534,9 @@
     <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.resx">
       <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.resx">
+      <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Doc\DatabaseSchema_StockInOutDocument_Proposal.md" />
     <None Include="Doc\Inventory.mmap" />

@@ -509,7 +509,7 @@ public partial class UcXuatChuyenKhoMaster : DevExpress.XtraEditors.XtraUserCont
                 Id = _stockInOutMasterId,
                 VoucherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
                 StockOutDate = StockInDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatLuuChuyenKho,
+                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
                 TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                 // Thông tin bổ sung
@@ -518,53 +518,25 @@ public partial class UcXuatChuyenKhoMaster : DevExpress.XtraEditors.XtraUserCont
                 NguoiGiaoHang = NguoiGiaoHangTextEdit.Text?.Trim() ?? string.Empty
             };
 
-            // Lấy thông tin Kho xuất (kho nguồn) từ selected item trong SearchLookUpEdit
-            var warehouseOutId = _selectedWarehouseOutId != Guid.Empty 
-                ? _selectedWarehouseOutId 
-                : (WarehouseStockOutNameSearchLookupEdit.EditValue is Guid wOutId ? wOutId : Guid.Empty);
+            // Lấy thông tin Warehouse từ selected item trong SearchLookUpEdit
+            var warehouseId = _selectedWarehouseInId != Guid.Empty
+                ? _selectedWarehouseInId
+                : (WarehouseStockInNameSearchLookupEdit.EditValue is Guid wId ? wId : Guid.Empty);
 
-            if (warehouseOutId != Guid.Empty)
+            if (warehouseId != Guid.Empty)
             {
-                dto.WarehouseId = warehouseOutId; // Kho xuất lưu vào WarehouseId
+                dto.WarehouseId = warehouseId;
 
-                // Lấy thông tin chi tiết từ selected row hoặc binding source
-                var warehouse = WarehouseStockOutNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.Company.CompanyBranchDto;
-                if (warehouse == null && companyBranchDtoBindingSource.DataSource is System.Collections.IList warehouseList)
-                {
-                    warehouse = warehouseList.Cast<DTO.MasterData.Company.CompanyBranchDto>()
-                        .FirstOrDefault(w => w.Id == warehouseOutId);
-                }
-
-                if (warehouse != null)
-                {
-                    dto.WarehouseCode = warehouse.BranchCode ?? string.Empty;
-                    dto.WarehouseName = warehouse.BranchName ?? string.Empty;
-                }
             }
 
-            // Lấy thông tin Kho nhận (kho đích) từ selected item trong SearchLookUpEdit
-            // Lưu ý: Kho nhận sẽ được lưu vào CustomerId (PartnerSiteId) trong entity
-            var warehouseInId = _selectedWarehouseInId != Guid.Empty 
-                ? _selectedWarehouseInId 
-                : (WarehouseStockInNameSearchLookupEdit.EditValue is Guid wInId ? wInId : Guid.Empty);
+            // Lấy thông tin Customer từ selected item trong SearchLookUpEdit
+            var customerId = _selectedWarehouseOutId != Guid.Empty
+                ? _selectedWarehouseOutId
+                : (WarehouseStockOutNameSearchLookupEdit.EditValue is Guid cId ? cId : Guid.Empty);
 
-            if (warehouseInId != Guid.Empty)
+            if (customerId != Guid.Empty)
             {
-                // Lưu kho nhận vào CustomerId (sẽ được convert sang PartnerSiteId khi save)
-                dto.CustomerId = warehouseInId;
-
-                // Lấy thông tin chi tiết từ selected row hoặc binding source
-                var warehouse = WarehouseStockInNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.Company.CompanyBranchDto;
-                if (warehouse == null && companyBranchDtoBindingSource.DataSource is System.Collections.IList warehouseList)
-                {
-                    warehouse = warehouseList.Cast<DTO.MasterData.Company.CompanyBranchDto>()
-                        .FirstOrDefault(w => w.Id == warehouseInId);
-                }
-
-                if (warehouse != null)
-                {
-                    dto.CustomerName = warehouse.BranchName ?? string.Empty;
-                }
+                dto.CustomerId = customerId;
             }
 
             // Khởi tạo tổng hợp với giá trị 0 (sẽ được cập nhật từ detail sau)

@@ -2,6 +2,7 @@
 using Common.Common;
 using Common.Utils;
 using Inventory.OverlayForm;
+using Inventory.StockIn.NhapBaoHanh;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -892,53 +893,41 @@ public partial class FrmXuatBaoHanh : DevExpress.XtraEditors.XtraForm
                 return false;
             }
 
-            // Lấy danh sách detail entities (GetDetails() trả về List<StockInOutDetail>)
-            var detailEntities = ucXuatBaoHanhDetail1.GetDetails();
-            if (detailEntities == null || detailEntities.Count == 0)
+            // Lấy danh sách detail DTOs (GetDetails() trả về List<StockInOutDetailForUIDto>)
+            var detailDtos = ucXuatBaoHanhDetail1.GetDetails();
+            if (detailDtos == null || detailDtos.Count == 0)
             {
                 _logger.Warning("SaveDataAsync: No details found");
                 MsgBox.ShowWarning("Vui lòng thêm ít nhất một dòng chi tiết", "Cảnh báo", this);
                 return false;
             }
 
-            // Validate thêm business rules cho từng detail entity
-            // Lưu ý: Xuất bảo hành không có giá tiền, chỉ kiểm tra số lượng và hàng hóa
-            var validationErrors = new List<string>();
-            for (var i = 0; i < detailEntities.Count; i++)
-            {
-                var detail = detailEntities[i];
-                var lineNumber = i + 1; // Entity không có LineNumber, tính từ index
-
-                if (detail.ProductVariantId == Guid.Empty)
-                {
-                    validationErrors.Add($"Dòng {lineNumber}: Vui lòng chọn hàng hóa");
-                }
-
-                if (detail.StockInQty <= 0)
-                {
-                    validationErrors.Add($"Dòng {lineNumber}: Số lượng xuất phải lớn hơn 0");
-                }
-            }
-
-            if (validationErrors.Any())
-            {
-                _logger.Warning("SaveDataAsync: Detail business rules validation failed, Errors={0}",
-                    string.Join("; ", validationErrors));
-                MsgBox.ShowError($"Có lỗi trong dữ liệu chi tiết:\n\n{string.Join("\n", validationErrors)}",
-                    "Lỗi validation", this);
-                return false;
-            }
-
             // ========== BƯỚC 3: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
-            // Tất cả validation đã được thực hiện ở bước 1 và 2
-            // Truyền DTO trực tiếp vào BLL để tránh lỗi tham chiếu khóa ngoại
-            // BLL sẽ tự động map DTO sang entity (không có navigation properties)
-            var savedMasterId = await _stockInBll.SaveAsync(masterDto, detailEntities);
+            // Dựa vào giá trị của _currentStockInOutMaster để xác định là Insert hay Update
+            // Nếu _currentStockInOutMaster == Guid.Empty: Tạo mới (Insert)
+            // Nếu _currentStockInOutMaster != Guid.Empty: Cập nhật (Update)
 
-            // ========== BƯỚC 5: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
+            Guid savedMasterId;
+
+            if (_currentStockInId == Guid.Empty)
+            {
+                // Trường hợp tạo mới: Gọi SaveAsync để insert
+                _logger.Info("SaveDataAsync: Creating new warranty input voucher");
+                savedMasterId = await _stockInBll.SaveAsync(masterDto, detailDtos);
+            }
+            else
+            {
+                // Trường hợp cập nhật: Set ID vào masterDto và gọi UpdateAsync để update
+                _logger.Info("SaveDataAsync: Updating existing warranty input voucher, Id={0}", _currentStockInId);
+                masterDto.Id = _currentStockInId;
+                savedMasterId = await _stockInBll.UpdateAsync(masterDto, detailDtos);
+            }
+
+            // ========== BƯỚC 4: CẬP NHẬT STATE SAU KHI LƯU THÀNH CÔNG ==========
             // Cập nhật ID sau khi lưu
             masterDto.Id = savedMasterId;
             _currentStockInId = savedMasterId;
+
 
             // Set master ID cho detail control để đồng bộ
             ucXuatBaoHanhDetail1.SetStockInMasterId(savedMasterId);
