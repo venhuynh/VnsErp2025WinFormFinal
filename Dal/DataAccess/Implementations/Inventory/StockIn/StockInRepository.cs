@@ -97,7 +97,7 @@ public class StockInRepository : IStockInRepository
                 throw new ArgumentException(@"Danh sách chi tiết không được rỗng", nameof(detailDtos));
             }
 
-            using var context = CreateNewContext();
+            var context = new VnsErp2025DataContext(_connectionString);
 
             // Convert DTO sang Entity
             var masterEntity = masterDto.ToEntity();
@@ -169,7 +169,7 @@ public class StockInRepository : IStockInRepository
                 throw new ArgumentException(@"Danh sách chi tiết không được rỗng", nameof(detailDtos));
             }
 
-            using var context = CreateNewContext();
+            var context = new VnsErp2025DataContext(_connectionString);
 
             // Lấy master entity hiện tại
             var existingMaster = context.StockInOutMasters.FirstOrDefault(m => m.Id == masterDto.Id);
