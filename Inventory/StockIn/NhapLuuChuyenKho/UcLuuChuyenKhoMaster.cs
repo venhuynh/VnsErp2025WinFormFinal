@@ -1,14 +1,13 @@
-﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockInOut;
 using Bll.MasterData.CompanyBll;
 using Common;
 using Common.Utils;
 using DevExpress.XtraEditors;
 using DTO.Inventory;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using DTO.Inventory.InventoryManagement;
+using System;
+using System.Threading.Tasks;
 
 namespace Inventory.StockIn.NhapLuuChuyenKho;
 
@@ -77,14 +76,14 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
 
 
     /// <summary>
-    /// Setup SearchLookUpEdit cho Warehouse (cả kho nhận và kho xuất)
+    /// Setup SearchLookUpEdit cho Warehouse (kho nhận và kho xuất có datasource riêng)
     /// </summary>
     private void SetupLookupEdits()
     {
         try
         {
-            // Setup Warehouse Stock-In SearchLookUpEdit
-            WarehouseStockInNameSearchLookupEdit.Properties.DataSource = companyBranchDtoBindingSource;
+            // Setup Warehouse Stock-In SearchLookUpEdit (Kho nhận)
+            WarehouseStockInNameSearchLookupEdit.Properties.DataSource = companyBranchStockInDtoBindingSource;
             WarehouseStockInNameSearchLookupEdit.Properties.ValueMember = "Id";
             WarehouseStockInNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
             WarehouseStockInNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
@@ -98,12 +97,12 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
                 colThongTinHtml.VisibleIndex = 0;
             }
 
-            // Setup Warehouse Stock-Out SearchLookUpEdit
-            WarehouseStockOutNameSearchLookupEdit.Properties.DataSource = companyBranchDtoBindingSource;
+            // Setup Warehouse Stock-Out SearchLookUpEdit (Kho xuất)
+            WarehouseStockOutNameSearchLookupEdit.Properties.DataSource = companyBranchStockOutDtoBindingSource;
             WarehouseStockOutNameSearchLookupEdit.Properties.ValueMember = "Id";
             WarehouseStockOutNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
             WarehouseStockOutNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            WarehouseStockOutNameSearchLookupEdit.Properties.PopupView = CompanyBranchDtoSearchLookUpEdit1View;
+            WarehouseStockOutNameSearchLookupEdit.Properties.PopupView = searchLookUpEdit1View;
         }
         catch (Exception ex)
         {
@@ -261,15 +260,18 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
     #region ========== DATA LOADING ==========
 
     /// <summary>
-    /// Load dữ liệu lookup (Warehouse)
+    /// Load dữ liệu lookup (Warehouse cho cả kho nhận và kho xuất)
     /// Method này được gọi từ form khi FormLoad
     /// </summary>
     public async Task LoadLookupDataAsync()
     {
         try
         {
-            // Load warehouse datasource (nhập nội bộ không cần supplier)
-            await LoadWarehouseDataSourceAsync();
+            // Load cả 2 datasource song song để tối ưu performance
+            await Task.WhenAll(
+                LoadWarehouseStockInDataSourceAsync(forceRefresh: true),
+                LoadWarehouseStockOutDataSourceAsync(forceRefresh: true)
+            );
         }
         catch (Exception ex)
         {
@@ -278,18 +280,37 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
     }
 
     /// <summary>
-    /// Load datasource cho Warehouse (CompanyBranch) - Load toàn bộ danh sách
+    /// Load datasource cho Warehouse Stock-In (Kho nhận) - Load toàn bộ danh sách
     /// </summary>
-    private async Task LoadWarehouseDataSourceAsync()
+    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
+    private async Task LoadWarehouseStockInDataSourceAsync(bool forceRefresh = false)
     {
         try
         {
-            // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
-            companyBranchDtoBindingSource.DataSource = await Task.Run(() => _companyBranchBll.GetAll());
+            // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse nhận)
+            companyBranchStockInDtoBindingSource.DataSource = await Task.Run(() => _companyBranchBll.GetAll());
         }
         catch (Exception ex)
         {
-            ShowError(ex, "Lỗi tải dữ liệu kho");
+            ShowError(ex, "Lỗi tải dữ liệu kho nhận");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Load datasource cho Warehouse Stock-Out (Kho xuất) - Load toàn bộ danh sách
+    /// </summary>
+    /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
+    private async Task LoadWarehouseStockOutDataSourceAsync(bool forceRefresh = false)
+    {
+        try
+        {
+            // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse xuất)
+            companyBranchStockOutDtoBindingSource.DataSource = await Task.Run(() => _companyBranchBll.GetAll());
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex, "Lỗi tải dữ liệu kho xuất");
             throw;
         }
     }
@@ -331,19 +352,29 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
                 // Cập nhật WarehouseId vào _selectedWarehouseInId
                 _selectedWarehouseInId = warehouseId;
 
+                // Lấy kho xuất hiện tại để kiểm tra
+                var warehouseOutId = _selectedWarehouseOutId != Guid.Empty
+                    ? _selectedWarehouseOutId
+                    : (WarehouseStockOutNameSearchLookupEdit.EditValue is Guid wOutId ? wOutId : Guid.Empty);
+
                 // Kiểm tra không được trùng với kho xuất
-                if (_selectedWarehouseOutId != Guid.Empty && _selectedWarehouseOutId == warehouseId)
+                if (warehouseOutId != Guid.Empty && warehouseOutId == warehouseId)
                 {
+                    // Hiển thị lỗi cho cả 2 kho
                     dxErrorProvider1.SetError(WarehouseStockInNameSearchLookupEdit, "Kho nhận và kho xuất không được trùng nhau");
+                    dxErrorProvider1.SetError(WarehouseStockOutNameSearchLookupEdit, "Kho nhận và kho xuất không được trùng nhau");
                     return;
                 }
 
-                // Xóa lỗi validation nếu có
+                // Xóa lỗi validation của cả 2 kho nếu không còn trùng
                 dxErrorProvider1.SetError(WarehouseStockInNameSearchLookupEdit, string.Empty);
+                dxErrorProvider1.SetError(WarehouseStockOutNameSearchLookupEdit, string.Empty);
             }
             else
             {
                 _selectedWarehouseInId = Guid.Empty;
+                // Xóa lỗi validation nếu có
+                dxErrorProvider1.SetError(WarehouseStockInNameSearchLookupEdit, string.Empty);
             }
         }
         catch (Exception ex)
@@ -361,19 +392,29 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
                 // Cập nhật WarehouseOutId vào _selectedWarehouseOutId
                 _selectedWarehouseOutId = warehouseId;
 
+                // Lấy kho nhận hiện tại để kiểm tra
+                var warehouseInId = _selectedWarehouseInId != Guid.Empty
+                    ? _selectedWarehouseInId
+                    : (WarehouseStockInNameSearchLookupEdit.EditValue is Guid wInId ? wInId : Guid.Empty);
+
                 // Kiểm tra không được trùng với kho nhận
-                if (_selectedWarehouseInId != Guid.Empty && _selectedWarehouseInId == warehouseId)
+                if (warehouseInId != Guid.Empty && warehouseInId == warehouseId)
                 {
+                    // Hiển thị lỗi cho cả 2 kho
+                    dxErrorProvider1.SetError(WarehouseStockInNameSearchLookupEdit, "Kho nhận và kho xuất không được trùng nhau");
                     dxErrorProvider1.SetError(WarehouseStockOutNameSearchLookupEdit, "Kho nhận và kho xuất không được trùng nhau");
                     return;
                 }
 
-                // Xóa lỗi validation nếu có
+                // Xóa lỗi validation của cả 2 kho nếu không còn trùng
+                dxErrorProvider1.SetError(WarehouseStockInNameSearchLookupEdit, string.Empty);
                 dxErrorProvider1.SetError(WarehouseStockOutNameSearchLookupEdit, string.Empty);
             }
             else
             {
                 _selectedWarehouseOutId = Guid.Empty;
+                // Xóa lỗi validation nếu có
+                dxErrorProvider1.SetError(WarehouseStockOutNameSearchLookupEdit, string.Empty);
             }
         }
         catch (Exception ex)
@@ -386,11 +427,11 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
     {
         try
         {
-            await LoadWarehouseDataSourceAsync();
+            await LoadWarehouseStockOutDataSourceAsync();
         }
         catch (Exception ex)
         {
-            ShowError(ex, "Lỗi tải dữ liệu kho");
+            ShowError(ex, "Lỗi tải dữ liệu kho xuất");
         }
     }
 
@@ -398,11 +439,11 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
     {
         try
         {
-            await LoadWarehouseDataSourceAsync();
+            await LoadWarehouseStockInDataSourceAsync();
         }
         catch (Exception ex)
         {
-            ShowError(ex, "Lỗi tải dữ liệu kho");
+            ShowError(ex, "Lỗi tải dữ liệu kho nhận");
         }
     }
 
@@ -564,7 +605,10 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
             NguoiGiaoHangTextEdit.EditValue = masterDto.NguoiGiaoHang;
 
             // Load datasource cho Warehouse trước khi set EditValue
-            await LoadWarehouseDataSourceAsync();
+            await Task.WhenAll(
+                LoadWarehouseStockInDataSourceAsync(),
+                LoadWarehouseStockOutDataSourceAsync()
+            );
             WarehouseStockInNameSearchLookupEdit.EditValue = masterDto.WarehouseId;
 
             // Kho xuất được lưu trong CustomerId (PartnerSiteId trong DB)
@@ -592,11 +636,13 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
             if (WarehouseStockInNameSearchLookupEdit != null)
             {
                 WarehouseStockInNameSearchLookupEdit.EditValue = null;
+                _selectedWarehouseInId = Guid.Empty; // Reset warehouse ID
             }
 
             if (WarehouseStockOutNameSearchLookupEdit != null)
             {
                 WarehouseStockOutNameSearchLookupEdit.EditValue = null;
+                _selectedWarehouseOutId = Guid.Empty; // Reset warehouse ID
             }
 
             // Reset TextEdit
