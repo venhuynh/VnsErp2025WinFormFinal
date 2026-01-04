@@ -218,8 +218,13 @@ public class ProductServiceRepository : IProductServiceRepository
             
             if (productService != null)
             {
+                // Load categories để có CategoryFullPath
+                var categoryDict = context.ProductServiceCategories
+                    .ToList()
+                    .ToDictionary(c => c.Id);
+                
                 _logger.Debug($"Đã lấy sản phẩm/dịch vụ theo ID: {id} - {productService.Name}");
-                return productService.ToDto();
+                return productService.ToDto(categoryDict);
             }
             else
             {
@@ -246,8 +251,13 @@ public class ProductServiceRepository : IProductServiceRepository
             
             if (productService != null)
             {
+                // Load categories để có CategoryFullPath
+                var categoryDict = await Task.Run(() => context.ProductServiceCategories
+                    .ToList()
+                    .ToDictionary(c => c.Id));
+                
                 _logger.Debug($"Đã lấy sản phẩm/dịch vụ theo ID (async): {id} - {productService.Name}");
-                return productService.ToDto();
+                return productService.ToDto(categoryDict);
             }
             else
             {
@@ -274,8 +284,13 @@ public class ProductServiceRepository : IProductServiceRepository
                 .OrderBy(ps => ps.Code)
                 .ToList();
             
-            // Chuyển đổi sang DTO
-            var dtos = products.Select(p => p.ToDto()).ToList();
+            // Load tất cả categories vào dictionary để tối ưu hiệu suất
+            var categoryDict = context.ProductServiceCategories
+                .ToList()
+                .ToDictionary(c => c.Id);
+            
+            // Chuyển đổi sang DTO với categoryDict để có CategoryFullPath
+            var dtos = products.Select(p => p.ToDto(categoryDict)).ToList();
             
             _logger.Debug($"Đã lấy {dtos.Count} sản phẩm/dịch vụ");
             return dtos;
@@ -299,8 +314,13 @@ public class ProductServiceRepository : IProductServiceRepository
                 .OrderBy(ps => ps.Code)
                 .ToList());
             
-            // Chuyển đổi sang DTO
-            var dtos = products.Select(p => p.ToDto()).ToList();
+            // Load tất cả categories vào dictionary để tối ưu hiệu suất
+            var categoryDict = await Task.Run(() => context.ProductServiceCategories
+                .ToList()
+                .ToDictionary(c => c.Id));
+            
+            // Chuyển đổi sang DTO với categoryDict để có CategoryFullPath
+            var dtos = products.Select(p => p.ToDto(categoryDict)).ToList();
             
             _logger.Debug($"Đã lấy {dtos.Count} sản phẩm/dịch vụ (async)");
             return dtos;
@@ -333,8 +353,13 @@ public class ProductServiceRepository : IProductServiceRepository
                 .OrderBy(ps => ps.Name)
                 .ToList();
             
-            // Chuyển đổi sang DTO
-            var dtos = results.Select(p => p.ToDto()).ToList();
+            // Load categories để có CategoryFullPath
+            var categoryDict = context.ProductServiceCategories
+                .ToList()
+                .ToDictionary(c => c.Id);
+            
+            // Chuyển đổi sang DTO với categoryDict
+            var dtos = results.Select(p => p.ToDto(categoryDict)).ToList();
             
             _logger.Debug($"Tìm kiếm với từ khóa '{keyword}': tìm thấy {dtos.Count} kết quả");
             return dtos;
@@ -367,10 +392,15 @@ public class ProductServiceRepository : IProductServiceRepository
                            context.ProductServiceCategories.Any(c => c.Id == x.CategoryId && c.CategoryName.ToLower().Contains(searchTerm)))
                 .OrderBy(x => x.Name);
 
-            var results = await Task.FromResult(query.ToList());
+            var results = await Task.Run(() => query.ToList());
             
-            // Chuyển đổi sang DTO
-            var dtos = results.Select(p => p.ToDto()).ToList();
+            // Load categories để có CategoryFullPath
+            var categoryDict = await Task.Run(() => context.ProductServiceCategories
+                .ToList()
+                .ToDictionary(c => c.Id));
+            
+            // Chuyển đổi sang DTO với categoryDict
+            var dtos = results.Select(p => p.ToDto(categoryDict)).ToList();
             
             _logger.Debug($"SearchAsync: SearchText='{searchText}', ResultCount={dtos.Count}");
             return dtos;
@@ -481,8 +511,13 @@ public class ProductServiceRepository : IProductServiceRepository
                 .Take(pageSize)
                 .ToList();
 
-            // Chuyển đổi sang DTO
-            var dtos = results.Select(p => p.ToDto()).ToList();
+            // Load categories để có CategoryFullPath
+            var categoryDict = context.ProductServiceCategories
+                .ToList()
+                .ToDictionary(c => c.Id);
+
+            // Chuyển đổi sang DTO với categoryDict
+            var dtos = results.Select(p => p.ToDto(categoryDict)).ToList();
 
             _logger.Debug($"GetPagedAsync: PageIndex={pageIndex}, PageSize={pageSize}, ResultCount={dtos.Count}");
             return await Task.FromResult(dtos);
@@ -589,10 +624,15 @@ public class ProductServiceRepository : IProductServiceRepository
                     break;
             }
 
-            var results = await Task.FromResult(query.ToList());
+            var results = await Task.Run(() => query.ToList());
             
-            // Chuyển đổi sang DTO
-            var dtos = results.Select(p => p.ToDto()).ToList();
+            // Load categories để có CategoryFullPath
+            var categoryDict = await Task.Run(() => context.ProductServiceCategories
+                .ToList()
+                .ToDictionary(c => c.Id));
+            
+            // Chuyển đổi sang DTO với categoryDict
+            var dtos = results.Select(p => p.ToDto(categoryDict)).ToList();
             
             _logger.Debug($"GetFilteredAsync: ResultCount={dtos.Count}, OrderBy={orderBy}, OrderDirection={orderDirection}");
             return dtos;

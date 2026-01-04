@@ -129,7 +129,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.colProductVariantCode.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colProductVariantCode.Caption = "Mã hàng";
             this.colProductVariantCode.ColumnEdit = this.ProductVariantSearchLookUpEdit;
-            this.colProductVariantCode.FieldName = "ProductVariantName";
+            this.colProductVariantCode.FieldName = "ProductVariantId";
             this.colProductVariantCode.Name = "colProductVariantCode";
             this.colProductVariantCode.Visible = true;
             this.colProductVariantCode.VisibleIndex = 0;
@@ -345,17 +345,16 @@ namespace Inventory.StockIn.NhapBaoHanh
         private DevExpress.XtraEditors.Repository.RepositoryItemSearchLookUpEdit ProductVariantSearchLookUpEdit;
         private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantDtoSearchLookUpEdit1View;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel ProductFullNameHypertextLabel;
-
-        private System.Windows.Forms.BindingSource productVariantListDtoBindingSource;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel StockInDetailProductNameHtmlHypertextLabel;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit StockInQtyTextEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit UnitPriceTextEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;
         private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit GhiChuMemoEdit;
-        
+
         private DevExpress.XtraGrid.Columns.GridColumn colVariantFullName;
-        
+
         private System.Windows.Forms.BindingSource stockInOutDetailForUIDtoBindingSource;
+        private System.Windows.Forms.BindingSource productVariantListDtoBindingSource;
     }
 }

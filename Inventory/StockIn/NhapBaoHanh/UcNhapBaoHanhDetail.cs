@@ -31,7 +31,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     /// Business Logic Layer cho nhập xuất kho
     /// </summary>
     private readonly StockInOutBll _stockInOutBll = new StockInOutBll();
-    
+
     /// <summary>
     /// Logger để ghi log các sự kiện
     /// </summary>
@@ -78,9 +78,13 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     {
         try
         {
-            
+            // Khởi tạo binding source với danh sách rỗng
+            stockInOutDetailForUIDtoBindingSource.DataSource = new List<StockInOutDetailForUIDto>();
+
             // Setup events
             InitializeEvents();
+
+            // Không load dữ liệu ProductVariant ở đây, sẽ được gọi từ form khi FormLoad
         }
         catch (Exception ex)
         {
@@ -130,7 +134,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
 
             foreach (var item in stockInOutDetailForUIDtoBindingSource)
             {
-                if(item is not StockInOutDetailForUIDto detailDto) continue;
+                if (item is not StockInOutDetailForUIDto detailDto) continue;
 
                 details.Add(new StockInOutDetailForUIDto
                 {
@@ -146,7 +150,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
                     GhiChu = detailDto.GhiChu,
                 });
             }
-            
+
             return details;
         }
         catch (Exception ex)
@@ -799,8 +803,8 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
 
             try
             {
-                
-                productVariantListDtoBindingSource.DataSource = await _productVariantBll.GetAllInUseWithDetailsAsync(); 
+
+                productVariantListDtoBindingSource.DataSource = await _productVariantBll.GetAllInUseWithDetailsAsync();
                 productVariantListDtoBindingSource.ResetBindings(false);
 
                 _isProductVariantDataSourceLoaded = true;

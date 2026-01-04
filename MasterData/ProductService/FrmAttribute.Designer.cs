@@ -70,6 +70,8 @@ namespace MasterData.ProductService
             this.AttributeGridControl = new DevExpress.XtraGrid.GridControl();
             this.attributeDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ThongTinHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.NameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.DataTypeTextEdit = new DevExpress.XtraEditors.TextEdit();
@@ -80,8 +82,6 @@ namespace MasterData.ProductService
             this.ItemForDataType = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForDescription = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.ThongTinHtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -89,6 +89,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.attributeDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinHtmlHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NameTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataTypeTextEdit.Properties)).BeginInit();
@@ -99,7 +100,6 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDataType)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDescription)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThongTinHtmlHypertextLabel)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -181,7 +181,7 @@ namespace MasterData.ProductService
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(666, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(666, 24);
             // 
             // barDockControlBottom
             // 
@@ -195,17 +195,17 @@ namespace MasterData.ProductService
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 621);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 636);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(666, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(666, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 621);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 636);
             // 
             // dxErrorProvider1
             // 
@@ -288,24 +288,24 @@ namespace MasterData.ProductService
             this.dataLayoutControl1.Controls.Add(this.DataTypeTextEdit);
             this.dataLayoutControl1.Controls.Add(this.DescriptionTextEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 621);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 636);
             this.dataLayoutControl1.TabIndex = 15;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
             // AttributeGridControl
             // 
             this.AttributeGridControl.DataSource = this.attributeDtoBindingSource;
-            this.AttributeGridControl.Location = new System.Drawing.Point(16, 118);
+            this.AttributeGridControl.Location = new System.Drawing.Point(12, 84);
             this.AttributeGridControl.MainView = this.AttributeGridView;
             this.AttributeGridControl.MenuManager = this.barManager1;
             this.AttributeGridControl.Name = "AttributeGridControl";
             this.AttributeGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemMemoEdit1,
             this.ThongTinHtmlHypertextLabel});
-            this.AttributeGridControl.Size = new System.Drawing.Size(634, 487);
+            this.AttributeGridControl.Size = new System.Drawing.Size(642, 540);
             this.AttributeGridControl.TabIndex = 4;
             this.AttributeGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.AttributeGridView});
@@ -326,6 +326,7 @@ namespace MasterData.ProductService
             this.AttributeGridView.IndicatorWidth = 50;
             this.AttributeGridView.Name = "AttributeGridView";
             this.AttributeGridView.OptionsDetail.EnableMasterViewMode = false;
+            this.AttributeGridView.OptionsFind.AlwaysVisible = true;
             this.AttributeGridView.OptionsSelection.MultiSelect = true;
             this.AttributeGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.AttributeGridView.OptionsView.ColumnAutoWidth = false;
@@ -336,99 +337,6 @@ namespace MasterData.ProductService
             this.AttributeGridView.OptionsView.ShowGroupPanel = false;
             this.AttributeGridView.OptionsView.ShowViewCaption = true;
             this.AttributeGridView.ViewCaption = "BẢNG QUẢN LÝ THUỘC TÍNH";
-            // 
-            // repositoryItemMemoEdit1
-            // 
-            this.repositoryItemMemoEdit1.Appearance.Options.UseTextOptions = true;
-            this.repositoryItemMemoEdit1.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
-            // 
-            // NameTextEdit
-            // 
-            this.NameTextEdit.Location = new System.Drawing.Point(101, 16);
-            this.NameTextEdit.MenuManager = this.barManager1;
-            this.NameTextEdit.Name = "NameTextEdit";
-            this.NameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.NameTextEdit.Size = new System.Drawing.Size(549, 28);
-            this.NameTextEdit.StyleController = this.dataLayoutControl1;
-            this.NameTextEdit.TabIndex = 0;
-            // 
-            // DataTypeTextEdit
-            // 
-            this.DataTypeTextEdit.Location = new System.Drawing.Point(101, 50);
-            this.DataTypeTextEdit.MenuManager = this.barManager1;
-            this.DataTypeTextEdit.Name = "DataTypeTextEdit";
-            this.DataTypeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.DataTypeTextEdit.Size = new System.Drawing.Size(549, 28);
-            this.DataTypeTextEdit.StyleController = this.dataLayoutControl1;
-            this.DataTypeTextEdit.TabIndex = 2;
-            // 
-            // DescriptionTextEdit
-            // 
-            this.DescriptionTextEdit.Location = new System.Drawing.Point(101, 84);
-            this.DescriptionTextEdit.MenuManager = this.barManager1;
-            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
-            this.DescriptionTextEdit.Size = new System.Drawing.Size(549, 28);
-            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
-            this.DescriptionTextEdit.TabIndex = 3;
-            // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlGroup1,
-            this.layoutControlItem1});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(666, 621);
-            this.Root.TextVisible = false;
-            // 
-            // layoutControlGroup1
-            // 
-            this.layoutControlGroup1.AllowDrawBackground = false;
-            this.layoutControlGroup1.GroupBordersVisible = false;
-            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.ItemForName,
-            this.ItemForDataType,
-            this.ItemForDescription});
-            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(640, 102);
-            // 
-            // ItemForName
-            // 
-            this.ItemForName.Control = this.NameTextEdit;
-            this.ItemForName.Location = new System.Drawing.Point(0, 0);
-            this.ItemForName.Name = "ItemForName";
-            this.ItemForName.Size = new System.Drawing.Size(640, 34);
-            this.ItemForName.Text = "Tên thuộc tính";
-            this.ItemForName.TextSize = new System.Drawing.Size(69, 13);
-            // 
-            // ItemForDataType
-            // 
-            this.ItemForDataType.Control = this.DataTypeTextEdit;
-            this.ItemForDataType.Location = new System.Drawing.Point(0, 34);
-            this.ItemForDataType.Name = "ItemForDataType";
-            this.ItemForDataType.Size = new System.Drawing.Size(640, 34);
-            this.ItemForDataType.Text = "Kiểu dữ liệu";
-            this.ItemForDataType.TextSize = new System.Drawing.Size(69, 13);
-            // 
-            // ItemForDescription
-            // 
-            this.ItemForDescription.Control = this.DescriptionTextEdit;
-            this.ItemForDescription.Location = new System.Drawing.Point(0, 68);
-            this.ItemForDescription.Name = "ItemForDescription";
-            this.ItemForDescription.Size = new System.Drawing.Size(640, 34);
-            this.ItemForDescription.Text = "Mô tả";
-            this.ItemForDescription.TextSize = new System.Drawing.Size(69, 13);
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.AttributeGridControl;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 102);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(640, 493);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // colThongTinHtml
             // 
@@ -452,13 +360,106 @@ namespace MasterData.ProductService
             this.colThongTinHtml.OptionsColumn.AllowEdit = false;
             this.colThongTinHtml.OptionsColumn.ReadOnly = true;
             this.colThongTinHtml.Visible = true;
-            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.VisibleIndex = 1;
             this.colThongTinHtml.Width = 600;
             // 
             // ThongTinHtmlHypertextLabel
             // 
             this.ThongTinHtmlHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.ThongTinHtmlHypertextLabel.Name = "ThongTinHtmlHypertextLabel";
+            // 
+            // repositoryItemMemoEdit1
+            // 
+            this.repositoryItemMemoEdit1.Appearance.Options.UseTextOptions = true;
+            this.repositoryItemMemoEdit1.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
+            // 
+            // NameTextEdit
+            // 
+            this.NameTextEdit.Location = new System.Drawing.Point(93, 12);
+            this.NameTextEdit.MenuManager = this.barManager1;
+            this.NameTextEdit.Name = "NameTextEdit";
+            this.NameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.NameTextEdit.Size = new System.Drawing.Size(561, 20);
+            this.NameTextEdit.StyleController = this.dataLayoutControl1;
+            this.NameTextEdit.TabIndex = 0;
+            // 
+            // DataTypeTextEdit
+            // 
+            this.DataTypeTextEdit.Location = new System.Drawing.Point(93, 36);
+            this.DataTypeTextEdit.MenuManager = this.barManager1;
+            this.DataTypeTextEdit.Name = "DataTypeTextEdit";
+            this.DataTypeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.DataTypeTextEdit.Size = new System.Drawing.Size(561, 20);
+            this.DataTypeTextEdit.StyleController = this.dataLayoutControl1;
+            this.DataTypeTextEdit.TabIndex = 2;
+            // 
+            // DescriptionTextEdit
+            // 
+            this.DescriptionTextEdit.Location = new System.Drawing.Point(93, 60);
+            this.DescriptionTextEdit.MenuManager = this.barManager1;
+            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
+            this.DescriptionTextEdit.Size = new System.Drawing.Size(561, 20);
+            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
+            this.DescriptionTextEdit.TabIndex = 3;
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlGroup1,
+            this.layoutControlItem1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(666, 636);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlGroup1
+            // 
+            this.layoutControlGroup1.AllowDrawBackground = false;
+            this.layoutControlGroup1.GroupBordersVisible = false;
+            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.ItemForName,
+            this.ItemForDataType,
+            this.ItemForDescription});
+            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlGroup1.Name = "autoGeneratedGroup0";
+            this.layoutControlGroup1.Size = new System.Drawing.Size(646, 72);
+            // 
+            // ItemForName
+            // 
+            this.ItemForName.Control = this.NameTextEdit;
+            this.ItemForName.Location = new System.Drawing.Point(0, 0);
+            this.ItemForName.Name = "ItemForName";
+            this.ItemForName.Size = new System.Drawing.Size(646, 24);
+            this.ItemForName.Text = "Tên thuộc tính";
+            this.ItemForName.TextSize = new System.Drawing.Size(69, 13);
+            // 
+            // ItemForDataType
+            // 
+            this.ItemForDataType.Control = this.DataTypeTextEdit;
+            this.ItemForDataType.Location = new System.Drawing.Point(0, 24);
+            this.ItemForDataType.Name = "ItemForDataType";
+            this.ItemForDataType.Size = new System.Drawing.Size(646, 24);
+            this.ItemForDataType.Text = "Kiểu dữ liệu";
+            this.ItemForDataType.TextSize = new System.Drawing.Size(69, 13);
+            // 
+            // ItemForDescription
+            // 
+            this.ItemForDescription.Control = this.DescriptionTextEdit;
+            this.ItemForDescription.Location = new System.Drawing.Point(0, 48);
+            this.ItemForDescription.Name = "ItemForDescription";
+            this.ItemForDescription.Size = new System.Drawing.Size(646, 24);
+            this.ItemForDescription.Text = "Mô tả";
+            this.ItemForDescription.TextSize = new System.Drawing.Size(69, 13);
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.AttributeGridControl;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 72);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(646, 544);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // FrmAttribute
             // 
@@ -481,6 +482,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.attributeDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ThongTinHtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataTypeTextEdit.Properties)).EndInit();
@@ -491,7 +493,6 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDataType)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForDescription)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ThongTinHtmlHypertextLabel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

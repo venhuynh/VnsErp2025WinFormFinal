@@ -115,11 +115,13 @@ namespace MasterData.ProductService
             new DevExpress.XtraGrid.GridGroupSummaryItem(DevExpress.Data.SummaryItemType.Count, "VariantCode", null, " [Có {0} biến thể]")});
             this.ProductVariantListGridView.IndicatorWidth = 50;
             this.ProductVariantListGridView.Name = "ProductVariantListGridView";
+            this.ProductVariantListGridView.OptionsFind.AlwaysVisible = true;
             this.ProductVariantListGridView.OptionsScrollAnnotations.ShowSelectedRows = DevExpress.Utils.DefaultBoolean.True;
             this.ProductVariantListGridView.OptionsSelection.MultiSelect = true;
             this.ProductVariantListGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.ProductVariantListGridView.OptionsView.GroupDrawMode = DevExpress.XtraGrid.Views.Grid.GroupDrawMode.Office;
             this.ProductVariantListGridView.OptionsView.RowAutoHeight = true;
+            this.ProductVariantListGridView.OptionsView.ShowAutoFilterRow = true;
             this.ProductVariantListGridView.OptionsView.ShowChildrenInGroupPanel = true;
             this.ProductVariantListGridView.OptionsView.ShowGroupedColumns = true;
             this.ProductVariantListGridView.OptionsView.ShowGroupPanel = false;

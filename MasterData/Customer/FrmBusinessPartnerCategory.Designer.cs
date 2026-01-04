@@ -42,6 +42,11 @@ namespace MasterData.Customer
             this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.DeleteBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.ExportBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.bar1 = new DevExpress.XtraBars.Bar();
+            this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
+            this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarButtonItem();
+            this.barHeaderItem2 = new DevExpress.XtraBars.BarHeaderItem();
+            this.CurrentSelectBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -60,11 +65,6 @@ namespace MasterData.Customer
             this.IsActiveCheckEdit = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.bar1 = new DevExpress.XtraBars.Bar();
-            this.DataSummaryBarStaticItem = new DevExpress.XtraBars.BarButtonItem();
-            this.CurrentSelectBarStaticItem = new DevExpress.XtraBars.BarStaticItem();
-            this.barHeaderItem1 = new DevExpress.XtraBars.BarHeaderItem();
-            this.barHeaderItem2 = new DevExpress.XtraBars.BarHeaderItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -161,6 +161,49 @@ namespace MasterData.Customer
             this.ExportBarButtonItem.ImageOptions.LargeImage = global::MasterData.Properties.Resources.exporttoxls_32x32;
             this.ExportBarButtonItem.Name = "ExportBarButtonItem";
             // 
+            // bar1
+            // 
+            this.bar1.BarName = "Custom 3";
+            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
+            this.bar1.DockCol = 0;
+            this.bar1.DockRow = 0;
+            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
+            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem1),
+            new DevExpress.XtraBars.LinkPersistInfo(this.DataSummaryBarStaticItem),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem2),
+            new DevExpress.XtraBars.LinkPersistInfo(this.CurrentSelectBarStaticItem)});
+            this.bar1.OptionsBar.AllowQuickCustomization = false;
+            this.bar1.OptionsBar.DrawDragBorder = false;
+            this.bar1.OptionsBar.UseWholeRow = true;
+            this.bar1.Text = "Custom 3";
+            // 
+            // barHeaderItem1
+            // 
+            this.barHeaderItem1.Caption = "Tổng kết:";
+            this.barHeaderItem1.Id = 8;
+            this.barHeaderItem1.Name = "barHeaderItem1";
+            // 
+            // DataSummaryBarStaticItem
+            // 
+            this.DataSummaryBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.DataSummaryBarStaticItem.Caption = "Chưa có dữ liệu";
+            this.DataSummaryBarStaticItem.Id = 6;
+            this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
+            // 
+            // barHeaderItem2
+            // 
+            this.barHeaderItem2.Caption = "Đang chọn:";
+            this.barHeaderItem2.Id = 9;
+            this.barHeaderItem2.Name = "barHeaderItem2";
+            // 
+            // CurrentSelectBarStaticItem
+            // 
+            this.CurrentSelectBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.CurrentSelectBarStaticItem.Caption = "Chưa chọn dòng nào";
+            this.CurrentSelectBarStaticItem.Id = 7;
+            this.CurrentSelectBarStaticItem.Name = "CurrentSelectBarStaticItem";
+            // 
             // barDockControlTop
             // 
             this.barDockControlTop.CausesValidation = false;
@@ -239,6 +282,7 @@ namespace MasterData.Customer
             this.BusinessPartnerCategoryDtoGridView.GridControl = this.BusinessPartnerCategoryDtoGridControl;
             this.BusinessPartnerCategoryDtoGridView.IndicatorWidth = 50;
             this.BusinessPartnerCategoryDtoGridView.Name = "BusinessPartnerCategoryDtoGridView";
+            this.BusinessPartnerCategoryDtoGridView.OptionsFind.AlwaysVisible = true;
             this.BusinessPartnerCategoryDtoGridView.OptionsSelection.MultiSelect = true;
             this.BusinessPartnerCategoryDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.BusinessPartnerCategoryDtoGridView.OptionsView.ColumnAutoWidth = false;
@@ -364,49 +408,6 @@ namespace MasterData.Customer
             this.layoutControlItem1.Name = "layoutControlItem1";
             this.layoutControlItem1.Size = new System.Drawing.Size(1111, 488);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // bar1
-            // 
-            this.bar1.BarName = "Custom 3";
-            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
-            this.bar1.DockCol = 0;
-            this.bar1.DockRow = 0;
-            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
-            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem1),
-            new DevExpress.XtraBars.LinkPersistInfo(this.DataSummaryBarStaticItem),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barHeaderItem2),
-            new DevExpress.XtraBars.LinkPersistInfo(this.CurrentSelectBarStaticItem)});
-            this.bar1.OptionsBar.AllowQuickCustomization = false;
-            this.bar1.OptionsBar.DrawDragBorder = false;
-            this.bar1.OptionsBar.UseWholeRow = true;
-            this.bar1.Text = "Custom 3";
-            // 
-            // DataSummaryBarStaticItem
-            // 
-            this.DataSummaryBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.DataSummaryBarStaticItem.Caption = "Chưa có dữ liệu";
-            this.DataSummaryBarStaticItem.Id = 6;
-            this.DataSummaryBarStaticItem.Name = "DataSummaryBarStaticItem";
-            // 
-            // CurrentSelectBarStaticItem
-            // 
-            this.CurrentSelectBarStaticItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.CurrentSelectBarStaticItem.Caption = "Chưa chọn dòng nào";
-            this.CurrentSelectBarStaticItem.Id = 7;
-            this.CurrentSelectBarStaticItem.Name = "CurrentSelectBarStaticItem";
-            // 
-            // barHeaderItem1
-            // 
-            this.barHeaderItem1.Caption = "Tổng kết:";
-            this.barHeaderItem1.Id = 8;
-            this.barHeaderItem1.Name = "barHeaderItem1";
-            // 
-            // barHeaderItem2
-            // 
-            this.barHeaderItem2.Caption = "Đang chọn:";
-            this.barHeaderItem2.Id = 9;
-            this.barHeaderItem2.Name = "barHeaderItem2";
             // 
             // FrmBusinessPartnerCategory
             // 

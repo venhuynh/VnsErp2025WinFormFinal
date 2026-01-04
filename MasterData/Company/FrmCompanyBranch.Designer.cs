@@ -62,11 +62,11 @@ namespace MasterData.Company
             this.CompanyBranchGridControl = new DevExpress.XtraGrid.GridControl();
             this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.CompanyBranchGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.repositoryItemPictureEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
@@ -75,8 +75,8 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             this.SuspendLayout();
@@ -214,31 +214,31 @@ namespace MasterData.Company
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 592);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 605);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 35);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 22);
             // 
             // barDockControlLeft
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 553);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 581);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 553);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 581);
             // 
             // repositoryItemComboBox1
             // 
@@ -258,10 +258,10 @@ namespace MasterData.Company
             // 
             this.layoutControl1.Controls.Add(this.CompanyBranchGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 553);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 581);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -269,14 +269,14 @@ namespace MasterData.Company
             // 
             this.CompanyBranchGridControl.DataSource = this.companyBranchDtoBindingSource;
             this.CompanyBranchGridControl.EmbeddedNavigator.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
-            this.CompanyBranchGridControl.Location = new System.Drawing.Point(16, 16);
+            this.CompanyBranchGridControl.Location = new System.Drawing.Point(12, 12);
             this.CompanyBranchGridControl.MainView = this.CompanyBranchGridView;
             this.CompanyBranchGridControl.MenuManager = this.barManager1;
             this.CompanyBranchGridControl.Name = "CompanyBranchGridControl";
             this.CompanyBranchGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemPictureEdit1,
             this.repositoryItemHypertextLabel1});
-            this.CompanyBranchGridControl.Size = new System.Drawing.Size(1043, 521);
+            this.CompanyBranchGridControl.Size = new System.Drawing.Size(1051, 557);
             this.CompanyBranchGridControl.TabIndex = 5;
             this.CompanyBranchGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.CompanyBranchGridView});
@@ -296,6 +296,7 @@ namespace MasterData.Company
             this.CompanyBranchGridView.GridControl = this.CompanyBranchGridControl;
             this.CompanyBranchGridView.IndicatorWidth = 40;
             this.CompanyBranchGridView.Name = "CompanyBranchGridView";
+            this.CompanyBranchGridView.OptionsFind.AlwaysVisible = true;
             this.CompanyBranchGridView.OptionsSelection.MultiSelect = true;
             this.CompanyBranchGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.CompanyBranchGridView.OptionsView.ColumnAutoWidth = false;
@@ -308,33 +309,6 @@ namespace MasterData.Company
             this.CompanyBranchGridView.OptionsView.ShowGroupPanel = false;
             this.CompanyBranchGridView.OptionsView.ShowViewCaption = true;
             this.CompanyBranchGridView.ViewCaption = "BẢNG DANH SÁCH CÁC CHI NHÁNH";
-            // 
-            // repositoryItemPictureEdit1
-            // 
-            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
-            // 
-            // repositoryItemHypertextLabel1
-            // 
-            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
-            // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 553);
-            this.Root.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.CompanyBranchGridControl;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // colThongTinHtml
             // 
@@ -356,8 +330,35 @@ namespace MasterData.Company
             this.colThongTinHtml.MinWidth = 300;
             this.colThongTinHtml.Name = "colThongTinHtml";
             this.colThongTinHtml.Visible = true;
-            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.VisibleIndex = 1;
             this.colThongTinHtml.Width = 500;
+            // 
+            // repositoryItemHypertextLabel1
+            // 
+            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
+            // 
+            // repositoryItemPictureEdit1
+            // 
+            this.repositoryItemPictureEdit1.Name = "repositoryItemPictureEdit1";
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(1075, 581);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.CompanyBranchGridControl;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(1055, 561);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // FrmCompanyBranch
             // 
@@ -379,8 +380,8 @@ namespace MasterData.Company
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemHypertextLabel1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemPictureEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);
