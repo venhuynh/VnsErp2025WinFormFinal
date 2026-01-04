@@ -65,9 +65,6 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
     {
         try
         {
-            // Setup SearchLookUpEdit cho Warehouse
-            SetupLookupEdits();
-
             // Setup events
             SetupEvents();
 
@@ -82,34 +79,6 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
         }
     }
 
-
-    /// <summary>
-    /// Setup SearchLookUpEdit cho Warehouse
-    /// </summary>
-    private void SetupLookupEdits()
-    {
-        try
-        {
-            // Setup Warehouse SearchLookUpEdit
-            WarehouseNameSearchLookupEdit.Properties.DataSource = companyBranchLookupDtoBindingSource;
-            WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
-            WarehouseNameSearchLookupEdit.Properties.DisplayMember = "BranchInfoHtml";
-            WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            WarehouseNameSearchLookupEdit.Properties.PopupView = CompanyBranchDtoSearchLookUpEdit1View;
-                
-            // Đảm bảo column BranchInfoHtml được cấu hình đúng (đã có sẵn trong Designer)
-            if (colBranchInfoHtml != null)
-            {
-                colBranchInfoHtml.FieldName = "BranchInfoHtml";
-                colBranchInfoHtml.Visible = true;
-                colBranchInfoHtml.VisibleIndex = 0;
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex, "Lỗi thiết lập lookup edits");
-        }
-    }
 
     /// <summary>
     /// Thiết lập sự kiện
@@ -310,10 +279,6 @@ public partial class UcNhapBaoHanhMaster : XtraUserControl
     {
         try
         {
-            
-            // Load danh sách CompanyBranchLookupDto từ CompanyBranchBll (dùng làm Warehouse)
-            var branches = 
-            
             companyBranchLookupDtoBindingSource.DataSource = await Task.Run(() => _companyBranchBll.GetAll());
         }
         catch (Exception ex)

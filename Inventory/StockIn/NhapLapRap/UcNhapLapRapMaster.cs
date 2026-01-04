@@ -1,4 +1,4 @@
-﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockInOut;
 using Bll.MasterData.CompanyBll;
 using Common;
@@ -56,9 +56,6 @@ namespace Inventory.StockIn.NhapLapRap
         {
             try
             {
-                // Setup SearchLookUpEdit cho Warehouse
-                SetupLookupEdits();
-
                 // Setup events
                 SetupEvents();
 
@@ -66,39 +63,15 @@ namespace Inventory.StockIn.NhapLapRap
                 SetupSuperToolTips();
 
                 // Không load dữ liệu lookup ở đây, sẽ được gọi từ form khi FormLoad
+                // WarehouseNameSearchLookupEdit đã được cấu hình đầy đủ trong Designer:
+                // - DataSource: companyBranchDtoBindingSource
+                // - DisplayMember: "ThongTinHtml"
+                // - ValueMember: "Id"
+                // - PopupView: CompanyBranchDtoSearchLookUpEdit1View với colThongTinHtml
             }
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi khởi tạo control");
-            }
-        }
-
-
-        /// <summary>
-        /// Setup SearchLookUpEdit cho Warehouse
-        /// </summary>
-        private void SetupLookupEdits()
-        {
-            try
-            {
-                // Setup Warehouse SearchLookUpEdit
-                WarehouseNameSearchLookupEdit.Properties.DataSource = companyBranchDtoBindingSource;
-                WarehouseNameSearchLookupEdit.Properties.ValueMember = "Id";
-                WarehouseNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
-                WarehouseNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-                WarehouseNameSearchLookupEdit.Properties.PopupView = CompanyBranchDtoSearchLookUpEdit1View;
-
-                // Đảm bảo column ThongTinHtml được cấu hình đúng (đã có sẵn trong Designer)
-                if (colThongTinHtml != null)
-                {
-                    colThongTinHtml.FieldName = "ThongTinHtml";
-                    colThongTinHtml.Visible = true;
-                    colThongTinHtml.VisibleIndex = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError(ex, "Lỗi thiết lập lookup edits");
             }
         }
 
@@ -278,7 +251,7 @@ namespace Inventory.StockIn.NhapLapRap
         {
             try
             {
-                // Load danh sách CompanyBranchLookupDto từ CompanyBranchBll (dùng làm Warehouse)
+                // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
                 companyBranchDtoBindingSource.DataSource = await Task.Run(() => _companyBranchBll.GetAll());
             }
             catch (Exception ex)
@@ -415,7 +388,7 @@ namespace Inventory.StockIn.NhapLapRap
                     Id = _stockInOutMasterId,
                     VoucherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
                     StockOutDate = StockInDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                    LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
+                    LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapSanPhamLapRap,
                     TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                     // Thông tin bổ sung
@@ -498,6 +471,7 @@ namespace Inventory.StockIn.NhapLapRap
                 if (WarehouseNameSearchLookupEdit != null)
                 {
                     WarehouseNameSearchLookupEdit.EditValue = null;
+                    _selectedWarehouseId = Guid.Empty; // Reset warehouse ID
                 }
 
                 // Reset TextEdit
