@@ -1,6 +1,6 @@
 ﻿namespace Inventory.StockOut.XuatChoThueMuon
 {
-    partial class UcXuatThietBiChoThueMuonMasterDto
+    partial class UcXuatThietBiChoThueMuonMaster
     {
         /// <summary> 
         /// Required designer variable.

@@ -51,9 +51,9 @@
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.ucXuatThietBiChoThueMuonMasterDto1 = new Inventory.StockOut.XuatChoThueMuon.UcXuatThietBiChoThueMuonMasterDto();
+            this.ucXuatThietBiChoThueMuonMasterDto1 = new Inventory.StockOut.XuatChoThueMuon.UcXuatThietBiChoThueMuonMaster();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ucXuatThietBiChoThueMuonDetailDto1 = new Inventory.StockOut.XuatChoThueMuon.UcXuatThietBiChoThueMuonDetailDto();
+            this.ucXuatThietBiChoThueMuonDetailDto1 = new Inventory.StockOut.XuatChoThueMuon.UcXuatThietBiChoThueMuonDetail();
             this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -371,9 +371,9 @@
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;
-        private UcXuatThietBiChoThueMuonMasterDto ucXuatThietBiChoThueMuonMasterDto1;
+        private UcXuatThietBiChoThueMuonMaster ucXuatThietBiChoThueMuonMasterDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private UcXuatThietBiChoThueMuonDetailDto ucXuatThietBiChoThueMuonDetailDto1;
+        private UcXuatThietBiChoThueMuonDetail ucXuatThietBiChoThueMuonDetailDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
     }
 }

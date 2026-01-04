@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Inventory.StockOut.XuatChoThueMuon;
 
-public partial class UcXuatThietBiChoThueMuonMasterDto : DevExpress.XtraEditors.XtraUserControl
+public partial class UcXuatThietBiChoThueMuonMaster : DevExpress.XtraEditors.XtraUserControl
 {
     #region ========== KHAI BÁO BIẾN ==========
 
@@ -46,7 +46,7 @@ public partial class UcXuatThietBiChoThueMuonMasterDto : DevExpress.XtraEditors.
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcXuatThietBiChoThueMuonMasterDto()
+    public UcXuatThietBiChoThueMuonMaster()
     {
         InitializeComponent();
         InitializeControl();

@@ -284,17 +284,17 @@
     <Compile Include="StockOut\XuatChoThueMuon\FrmXuatThietBiChoThueMuon.Designer.cs">
       <DependentUpon>FrmXuatThietBiChoThueMuon.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetailDto.cs">
+    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetailDto.Designer.cs">
-      <DependentUpon>UcXuatThietBiChoThueMuonDetailDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetail.Designer.cs">
+      <DependentUpon>UcXuatThietBiChoThueMuonDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMasterDto.cs">
+    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMasterDto.Designer.cs">
-      <DependentUpon>UcXuatThietBiChoThueMuonMasterDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMaster.Designer.cs">
+      <DependentUpon>UcXuatThietBiChoThueMuonMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="StockOut\XuatHangThuongMai\FrmXuatKhoThuongMai.cs">
       <SubType>Form</SubType>
@@ -483,11 +483,11 @@
     <EmbeddedResource Include="StockOut\XuatChoThueMuon\FrmXuatThietBiChoThueMuon.resx">
       <DependentUpon>FrmXuatThietBiChoThueMuon.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetailDto.resx">
-      <DependentUpon>UcXuatThietBiChoThueMuonDetailDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonDetail.resx">
+      <DependentUpon>UcXuatThietBiChoThueMuonDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMasterDto.resx">
-      <DependentUpon>UcXuatThietBiChoThueMuonMasterDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatChoThueMuon\UcXuatThietBiChoThueMuonMaster.resx">
+      <DependentUpon>UcXuatThietBiChoThueMuonMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatHangThuongMai\FrmXuatKhoThuongMai.resx">
       <DependentUpon>FrmXuatKhoThuongMai.cs</DependentUpon>
