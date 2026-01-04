@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockOut.XuatLuuChuyenKho
+namespace Inventory.StockOut.XuatLuuChuyenKho
 {
     partial class UcXuatChuyenKhoMaster
     {
@@ -47,6 +47,7 @@
             this.dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
             this.WarehouseStockOutNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtmlStockOut = new DevExpress.XtraGrid.Columns.GridColumn();
             this.StockInNumberTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.StockInDateDateEdit = new DevExpress.XtraEditors.DateEdit();
             this.WarehouseStockInNameSearchLookupEdit = new DevExpress.XtraEditors.SearchLookUpEdit();
@@ -62,7 +63,8 @@
             this.ItemForNotes = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForNguoiNhanHang = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForKhoXuat = new DevExpress.XtraLayout.LayoutControlItem();
-            this.companyBranchDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.companyBranchStockOutDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.companyBranchStockInDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.HtmlContentRepositoryItemHypertextLabel01)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CompanyBranchRepositoryItemHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -93,7 +95,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNotes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNguoiNhanHang)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForKhoXuat)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchStockOutDtoBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchStockInDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // HtmlContentRepositoryItemHypertextLabel01
@@ -239,7 +242,7 @@
             this.WarehouseStockOutNameSearchLookupEdit.Name = "WarehouseStockOutNameSearchLookupEdit";
             this.WarehouseStockOutNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.WarehouseStockOutNameSearchLookupEdit.Properties.DataSource = this.companyBranchDtoBindingSource;
+            this.WarehouseStockOutNameSearchLookupEdit.Properties.DataSource = this.companyBranchStockOutDtoBindingSource;
             this.WarehouseStockOutNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
             this.WarehouseStockOutNameSearchLookupEdit.Properties.NullText = "";
             this.WarehouseStockOutNameSearchLookupEdit.Properties.PopupView = this.searchLookUpEdit1View;
@@ -250,10 +253,22 @@
             // 
             // searchLookUpEdit1View
             // 
+            this.searchLookUpEdit1View.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.colThongTinHtmlStockOut});
             this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.searchLookUpEdit1View.Name = "searchLookUpEdit1View";
             this.searchLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.searchLookUpEdit1View.OptionsView.ColumnHeaderAutoHeight = DevExpress.Utils.DefaultBoolean.True;
+            this.searchLookUpEdit1View.OptionsView.RowAutoHeight = true;
             this.searchLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            // 
+            // colThongTinHtmlStockOut
+            // 
+            this.colThongTinHtmlStockOut.ColumnEdit = this.CompanyBranchRepositoryItemHypertextLabel;
+            this.colThongTinHtmlStockOut.FieldName = "ThongTinHtml";
+            this.colThongTinHtmlStockOut.Name = "colThongTinHtmlStockOut";
+            this.colThongTinHtmlStockOut.Visible = true;
+            this.colThongTinHtmlStockOut.VisibleIndex = 0;
             // 
             // StockInNumberTextEdit
             // 
@@ -286,7 +301,7 @@
             this.WarehouseStockInNameSearchLookupEdit.Properties.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.WarehouseStockInNameSearchLookupEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.WarehouseStockInNameSearchLookupEdit.Properties.DataSource = this.companyBranchDtoBindingSource;
+            this.WarehouseStockInNameSearchLookupEdit.Properties.DataSource = this.companyBranchStockInDtoBindingSource;
             this.WarehouseStockInNameSearchLookupEdit.Properties.DisplayMember = "ThongTinHtml";
             this.WarehouseStockInNameSearchLookupEdit.Properties.NullText = "";
             this.WarehouseStockInNameSearchLookupEdit.Properties.PopupView = this.CompanyBranchDtoSearchLookUpEdit1View;
@@ -415,9 +430,13 @@
             this.ItemForKhoXuat.Text = "Kho xuất <color=\'red\'>*</color>";
             this.ItemForKhoXuat.TextSize = new System.Drawing.Size(82, 13);
             // 
-            // companyBranchDtoBindingSource
+            // companyBranchStockOutDtoBindingSource
             // 
-            this.companyBranchDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchDto);
+            this.companyBranchStockOutDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchDto);
+            // 
+            // companyBranchStockInDtoBindingSource
+            // 
+            this.companyBranchStockInDtoBindingSource.DataSource = typeof(DTO.MasterData.Company.CompanyBranchDto);
             // 
             // UcXuatChuyenKhoMaster
             // 
@@ -456,7 +475,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNotes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForNguoiNhanHang)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ItemForKhoXuat)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.companyBranchDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchStockOutDtoBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.companyBranchStockInDtoBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -480,6 +500,7 @@
         private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
         private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
         private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtml;
+        private DevExpress.XtraGrid.Columns.GridColumn colThongTinHtmlStockOut;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel CompanyBranchRepositoryItemHypertextLabel;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel HtmlContentRepositoryItemHypertextLabel01;
         private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem1;
@@ -488,7 +509,8 @@
         private DevExpress.XtraLayout.LayoutControlItem ItemForNguoiNhanHang;
         private DevExpress.XtraEditors.TextEdit NguoiGiaoHangTextEdit;
         private DevExpress.XtraLayout.LayoutControlItem ItemForNguoiGiaoHang;
-        private System.Windows.Forms.BindingSource companyBranchDtoBindingSource;
+        private System.Windows.Forms.BindingSource companyBranchStockOutDtoBindingSource;
+        private System.Windows.Forms.BindingSource companyBranchStockInDtoBindingSource;
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup3;
         private DevExpress.XtraEditors.SearchLookUpEdit WarehouseStockOutNameSearchLookupEdit;
         private DevExpress.XtraGrid.Views.Grid.GridView searchLookUpEdit1View;

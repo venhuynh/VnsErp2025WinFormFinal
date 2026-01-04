@@ -240,7 +240,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.colPartnerInfoHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colPartnerInfoHtml.Caption = "Thông tin đối tác";
             this.colPartnerInfoHtml.ColumnEdit = this.repositoryItemHypertextLabel2;
-            this.colPartnerInfoHtml.FieldName = "PartnerInfoHtml";
+            this.colPartnerInfoHtml.FieldName = "ThongTinHtml";
             this.colPartnerInfoHtml.Name = "colPartnerInfoHtml";
             this.colPartnerInfoHtml.Visible = true;
             this.colPartnerInfoHtml.VisibleIndex = 0;

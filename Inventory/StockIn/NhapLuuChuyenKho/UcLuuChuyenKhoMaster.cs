@@ -403,6 +403,8 @@ public partial class UcNhapLuuChuyenKhoMaster : XtraUserControl
                     // Hiển thị lỗi cho cả 2 kho
                     dxErrorProvider1.SetError(WarehouseStockInNameSearchLookupEdit, "Kho nhận và kho xuất không được trùng nhau");
                     dxErrorProvider1.SetError(WarehouseStockOutNameSearchLookupEdit, "Kho nhận và kho xuất không được trùng nhau");
+
+                    WarehouseStockOutNameSearchLookupEdit.EditValue = null;
                     return;
                 }
 
