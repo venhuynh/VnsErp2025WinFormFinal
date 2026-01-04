@@ -1,4 +1,4 @@
-﻿using DevExpress.XtraBars;
+using DevExpress.XtraBars;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
@@ -475,7 +475,6 @@ namespace MasterData.ProductService
         private BarButtonItem CountVariantAndImageBarButtonItem;
         
         private BindingSource productServiceDtoBindingSource;
-        private RepositoryItemPictureEdit repositoryItemPictureEdit1;
         private Bar bar1;
         private BarHeaderItem barHeaderItem1;
         private BarStaticItem DataSummaryBarStaticItem;

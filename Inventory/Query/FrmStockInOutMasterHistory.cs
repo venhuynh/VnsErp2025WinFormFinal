@@ -1,8 +1,10 @@
-﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.InventoryManagement;
 using Common.Common;
 using Common.Helpers;
 using Common.Utils;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraPrinting;
+using DevExpress.XtraReports.UI;
 using DTO.Inventory.InventoryManagement;
 using Inventory.OverlayForm;
 using Inventory.Report;
@@ -290,7 +292,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
                     var report = new RpPhieuNhapXuat(_selectedStockInOutMasterId.Value);
 
                     // Hiển thị preview bằng ReportPrintTool
-                    using var printTool = new DevExpress.XtraReports.UI.ReportPrintTool(report);
+                    using var printTool = new ReportPrintTool(report);
                     printTool.ShowPreviewDialog();
                 }
                 catch (Exception printEx)
@@ -366,7 +368,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
                     var report = new RpPhieuGiaoHang(_selectedStockInOutMasterId.Value);
 
                     // Hiển thị preview bằng ReportPrintTool
-                    using var printTool = new DevExpress.XtraReports.UI.ReportPrintTool(report);
+                    using var printTool = new ReportPrintTool(report);
                     printTool.ShowPreviewDialog();
                 }
                 catch (Exception printEx)
