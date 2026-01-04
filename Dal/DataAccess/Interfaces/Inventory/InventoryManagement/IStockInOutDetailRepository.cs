@@ -1,4 +1,5 @@
-﻿using Dal.DataContext;
+using Dal.DataContext;
+using DTO.Inventory.InventoryManagement;
 using System;
 using System.Collections.Generic;
 
@@ -18,6 +19,16 @@ public interface IStockInOutDetailRepository
     /// <param name="keyword">Từ khóa tìm kiếm (tìm trong mã hàng, tên hàng, số phiếu)</param>
     /// <returns>Danh sách StockInOutDetail entities</returns>
     List<StockInOutDetail> QueryProductHistory(DateTime fromDate, DateTime toDate, string keyword = null);
+
+    /// <summary>
+    /// Query lịch sử sản phẩm nhập xuất kho với filter và trả về DTO
+    /// Tìm kiếm trong StockInOutDetail và các bảng liên quan (ProductVariant, ProductService, StockInOutMaster)
+    /// </summary>
+    /// <param name="fromDate">Từ ngày</param>
+    /// <param name="toDate">Đến ngày</param>
+    /// <param name="keyword">Từ khóa tìm kiếm (tìm trong mã hàng, tên hàng, số phiếu)</param>
+    /// <returns>Danh sách StockInOutProductHistoryDto</returns>
+    List<StockInOutProductHistoryDto> QueryProductHistoryDto(DateTime fromDate, DateTime toDate, string keyword = null);
 
     /// <summary>
     /// Xóa StockInOutDetail theo ID

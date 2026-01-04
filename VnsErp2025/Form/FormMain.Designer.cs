@@ -59,7 +59,6 @@ namespace VnsErp2025.Form
             this.InventoryBalanceBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutMasterHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutProductHistoryBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.WarrantyCheckBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutImagesBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.StockInOutDocumentBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
@@ -137,7 +136,6 @@ namespace VnsErp2025.Form
             this.InventoryBalanceBarButtonItem,
             this.StockInOutMasterHistoryBarButtonItem,
             this.StockInOutProductHistoryBarButtonItem,
-            this.WarrantyCheckBarButtonItem,
             this.StockInOutImagesBarButtonItem,
             this.StockInOutDocumentBarButtonItem,
             this.barSubItem1,
@@ -166,7 +164,7 @@ namespace VnsErp2025.Form
             this.XuatNhapTonKhoRibbonPage,
             this.ribbonPage2});
             this.ribbon.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office365;
-            this.ribbon.Size = new System.Drawing.Size(1150, 201);
+            this.ribbon.Size = new System.Drawing.Size(1150, 161);
             this.ribbon.StatusBar = this.ribbonStatusBar;
             // 
             // DBInfoBarStaticItem
@@ -425,15 +423,6 @@ namespace VnsErp2025.Form
             this.StockInOutProductHistoryBarButtonItem.Name = "StockInOutProductHistoryBarButtonItem";
             this.StockInOutProductHistoryBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.StockInOutProductHistoryBarButtonItem_ItemClick);
             // 
-            // WarrantyCheckBarButtonItem
-            // 
-            this.WarrantyCheckBarButtonItem.Caption = "Bảo hành";
-            this.WarrantyCheckBarButtonItem.Id = 31;
-            this.WarrantyCheckBarButtonItem.ImageOptions.SvgImage = global::VnsErp2025.Properties.Resources.insurance;
-            this.WarrantyCheckBarButtonItem.Name = "WarrantyCheckBarButtonItem";
-            this.WarrantyCheckBarButtonItem.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText;
-            this.WarrantyCheckBarButtonItem.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.WarrantyCheckBarButtonItem_ItemClick);
-            // 
             // StockInOutImagesBarButtonItem
             // 
             this.StockInOutImagesBarButtonItem.Caption = "Hình ảnh";
@@ -677,7 +666,6 @@ namespace VnsErp2025.Form
             // 
             this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.barSubItem1);
             this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.barButtonItem1);
-            this.QuanLyKhoRibbonPageGroup.ItemLinks.Add(this.barButtonItem2);
             this.QuanLyKhoRibbonPageGroup.Name = "QuanLyKhoRibbonPageGroup";
             this.QuanLyKhoRibbonPageGroup.Text = "Quản lý kho";
             // 
@@ -685,7 +673,6 @@ namespace VnsErp2025.Form
             // 
             this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutMasterHistoryBarButtonItem);
             this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutProductHistoryBarButtonItem);
-            this.StockInOutRibbonPageGroup.ItemLinks.Add(this.WarrantyCheckBarButtonItem);
             this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutImagesBarButtonItem);
             this.StockInOutRibbonPageGroup.ItemLinks.Add(this.StockInOutDocumentBarButtonItem);
             this.StockInOutRibbonPageGroup.Name = "StockInOutRibbonPageGroup";
@@ -710,10 +697,10 @@ namespace VnsErp2025.Form
             // ribbonStatusBar
             // 
             this.ribbonStatusBar.ItemLinks.Add(this.ReleaserVersionAndDateBarStaticItem);
-            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 674);
+            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 687);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbon;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(1150, 37);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(1150, 24);
             // 
             // documentManager1
             // 
@@ -728,8 +715,8 @@ namespace VnsErp2025.Form
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1150, 711);
-            this.Controls.Add(this.ribbonStatusBar);
             this.Controls.Add(this.ribbon);
+            this.Controls.Add(this.ribbonStatusBar);
             this.IsMdiContainer = true;
             this.Name = "FormMain";
             this.Ribbon = this.ribbon;
@@ -787,7 +774,6 @@ namespace VnsErp2025.Form
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup StockInOutRibbonPageGroup;
         private DevExpress.XtraBars.BarButtonItem StockInOutMasterHistoryBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem StockInOutProductHistoryBarButtonItem;
-        private DevExpress.XtraBars.BarButtonItem WarrantyCheckBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem StockInOutImagesBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem StockInOutDocumentBarButtonItem;
         private DevExpress.XtraBars.BarSubItem barSubItem1;

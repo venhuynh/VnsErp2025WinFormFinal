@@ -410,7 +410,7 @@ public partial class UcXuatNoiBoMaster : XtraUserControl
                 Id = _stockInOutMasterId,
                 VoucherNumber = StockOutNumberTextEdit.Text?.Trim() ?? string.Empty,
                 StockOutDate = StockOutDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
+                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatNoiBo,
                 TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                 // Thông tin bổ sung

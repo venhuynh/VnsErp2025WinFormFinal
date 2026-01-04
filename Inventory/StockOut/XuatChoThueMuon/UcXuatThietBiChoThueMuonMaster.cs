@@ -387,7 +387,7 @@ public partial class UcXuatThietBiChoThueMuonMaster : DevExpress.XtraEditors.Xtr
                 Id = _stockInOutMasterId,
                 VoucherNumber = StockOutNumberTextEdit.Text?.Trim() ?? string.Empty,
                 StockOutDate = StockOutDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
+                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatThietBiMuonThue,
                 TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                 // Thông tin bổ sung

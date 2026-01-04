@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
 
 namespace DTO.Inventory.InventoryManagement;
 
@@ -95,67 +92,6 @@ public class StockInOutProductHistoryDto
     [DisplayName("Tên biến thể")]
     [Display(Order = 13)]
     public string ProductVariantFullName { get; set; }
-
-    /// <summary>
-    /// Thông tin biến thể sản phẩm dưới dạng HTML theo format DevExpress
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
-    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
-    /// Format tương tự ProductVariantListDto.FullNameHtml để đảm bảo consistency
-    /// </summary>
-    [DisplayName("Thông tin sản phẩm HTML")]
-    [Display(Order = 14)]
-    [Description("Thông tin biến thể sản phẩm dưới dạng HTML")]
-    public string ProductVariantFullNameHtml
-    {
-        get
-        {
-            var productName = ProductName ?? string.Empty;
-            var productCode = ProductCode ?? string.Empty;
-            var variantCode = ProductVariantCode ?? string.Empty;
-            var variantFullName = ProductVariantFullName ?? string.Empty;
-            var unitName = UnitOfMeasureName ?? UnitOfMeasureCode ?? string.Empty;
-
-            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo ProductVariantListDto.FullNameHtml)
-            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
-            // - Mã sản phẩm: font nhỏ hơn, màu xám
-            // - Mã biến thể: font nhỏ hơn, màu cam (#FF9800)
-            // - Tên biến thể đầy đủ: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
-
-            var html = $"<size=12><b><color='blue'>{productName}</color></b></size>";
-
-            if (!string.IsNullOrWhiteSpace(productCode))
-            {
-                html += $" <size=9><color='#757575'>({productCode})</color></size>";
-            }
-
-            html += "<br>";
-
-            if (!string.IsNullOrWhiteSpace(variantCode))
-            {
-                html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size>";
-            }
-
-            if (!string.IsNullOrWhiteSpace(variantFullName))
-            {
-                if (!string.IsNullOrWhiteSpace(variantCode))
-                    html += " | ";
-                html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantFullName}</b></color></size>";
-            }
-
-            if (!string.IsNullOrWhiteSpace(variantCode) || !string.IsNullOrWhiteSpace(variantFullName))
-            {
-                html += "<br>";
-            }
-
-            if (!string.IsNullOrWhiteSpace(unitName))
-            {
-                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitName}</b></color></size>";
-            }
-
-            return html;
-        }
-    }
 
     /// <summary>
     /// ID đơn vị tính
@@ -251,7 +187,7 @@ public class StockInOutProductHistoryDto
 
     /// <summary>
     /// Thông tin kho nhập xuất dưới dạng HTML theo format DevExpress
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// Format tương tự CompanyBranchDto.ThongTinHtml để đảm bảo consistency
     /// </summary>
@@ -270,16 +206,16 @@ public class StockInOutProductHistoryDto
             // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo CompanyBranchDto.ThongTinHtml)
             // - Tên kho: font lớn, bold, màu xanh đậm (primary)
             // - Loại nhập xuất: font nhỏ hơn, màu xám, không bold (secondary)
-            var html = $"<size=12><b><color='blue'>{warehouseName}</color></b></size>";
+            var html = $"<b><color='blue'>{warehouseName}</color></b>";
 
             // Thêm loại nhập xuất nếu có
             var loaiNhapXuatKhoName = LoaiNhapXuatKhoName ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(loaiNhapXuatKhoName))
             {
                 html += "<br>";
-                html += $"<size=9><color='#757575'>Loại:</color></size> <size=9><color='#757575'><i>{loaiNhapXuatKhoName}</i></color></size>";
+                html += $"<color='#757575'>Loại:</color> <color='#757575'><i>{loaiNhapXuatKhoName}</i></color>";
                 html += "<br>";
-                html += $"<size=9><color='#757575'>Số phiếu:</color></size> <size=9><color='#757575'><i>{VocherNumber}</i></color></size>";
+                html += $"<color='#757575'>Số phiếu:</color> <color='#757575'><i>{VocherNumber}</i></color>";
             }
 
             return html;
@@ -295,7 +231,7 @@ public class StockInOutProductHistoryDto
 
     /// <summary>
     /// Thông tin khách hàng dưới dạng HTML theo format DevExpress
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// Format tương tự BusinessPartnerListDto.ThongTinHtml để đảm bảo consistency
     /// </summary>
@@ -313,7 +249,7 @@ public class StockInOutProductHistoryDto
 
             // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo BusinessPartnerListDto.ThongTinHtml)
             // - Tên khách hàng: font lớn, bold, màu xanh đậm (primary)
-            var html = $"<size=12><b><color='blue'>{customerName}</color></b></size>";
+            var html = $"<b><color='blue'>{customerName}</color></b>";
 
             return html;
         }

@@ -1,5 +1,7 @@
-﻿using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
+using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
+using Dal.DtoConverter;
+using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;
 using System;
@@ -132,6 +134,74 @@ namespace Dal.DataAccess.Implementations.Inventory.InventoryManagement
             catch (Exception ex)
             {
                 _logger.Error($"QueryProductHistory: Lỗi query lịch sử sản phẩm: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Query lịch sử sản phẩm nhập xuất kho với filter và trả về DTO
+        /// Tìm kiếm trong StockInOutDetail và các bảng liên quan (ProductVariant, ProductService, StockInOutMaster)
+        /// </summary>
+        /// <param name="fromDate">Từ ngày</param>
+        /// <param name="toDate">Đến ngày</param>
+        /// <param name="keyword">Từ khóa tìm kiếm (tìm trong mã hàng, tên hàng, số phiếu)</param>
+        /// <returns>Danh sách StockInOutProductHistoryDto</returns>
+        public List<StockInOutProductHistoryDto> QueryProductHistoryDto(DateTime fromDate, DateTime toDate, string keyword = null)
+        {
+            using var context = CreateNewContext();
+            try
+            {
+                _logger.Debug("QueryProductHistoryDto: Bắt đầu query lịch sử sản phẩm, FromDate={0}, ToDate={1}, Keyword={2}", 
+                    fromDate, toDate, keyword ?? "null");
+
+                // Query entities (sử dụng logic tương tự QueryProductHistory)
+                var queryable = context.StockInOutDetails.AsQueryable();
+
+                // Filter theo thời gian thông qua StockInOutMaster
+                queryable = queryable.Where(d => d.StockInOutMaster != null &&
+                                                 d.StockInOutMaster.StockInOutDate >= fromDate.Date &&
+                                                 d.StockInOutMaster.StockInOutDate <= toDate.Date.AddDays(1).AddTicks(-1));
+
+                // Filter theo từ khóa nếu có
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    var searchText = keyword.Trim();
+                    queryable = queryable.Where(d =>
+                        (d.StockInOutMaster != null && d.StockInOutMaster.VocherNumber != null && 
+                         d.StockInOutMaster.VocherNumber.Contains(searchText)) ||
+                        (d.ProductVariant != null && d.ProductVariant.VariantCode != null && 
+                         d.ProductVariant.VariantCode.Contains(searchText)) ||
+                        (d.ProductVariant != null && d.ProductVariant.VariantFullName != null && 
+                         d.ProductVariant.VariantFullName.Contains(searchText)) ||
+                        (d.ProductVariant != null && d.ProductVariant.ProductService != null && 
+                         d.ProductVariant.ProductService.Name != null && 
+                         d.ProductVariant.ProductService.Name.Contains(searchText)) ||
+                        (d.ProductVariant != null && d.ProductVariant.ProductService != null && 
+                         d.ProductVariant.ProductService.Code != null && 
+                         d.ProductVariant.ProductService.Code.Contains(searchText))
+                    );
+                }
+
+                // Sắp xếp và lấy kết quả
+                var entities = queryable
+                    .OrderByDescending(d => d.StockInOutMaster.StockInOutDate)
+                    .ThenByDescending(d => d.StockInOutMaster.VocherNumber ?? string.Empty)
+                    .ToList();
+
+                _logger.Debug("QueryProductHistoryDto: Query thành công, Entities count={0}", entities.Count);
+
+                // Convert entities sang DTOs
+                var dtos = entities
+                    .Select(entity => entity.ToDto())
+                    .Where(dto => dto != null)
+                    .ToList();
+
+                _logger.Info("QueryProductHistoryDto: Convert thành công, DTOs count={0}", dtos.Count);
+                return dtos;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"QueryProductHistoryDto: Lỗi query lịch sử sản phẩm: {ex.Message}", ex);
                 throw;
             }
         }

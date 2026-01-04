@@ -516,7 +516,7 @@ public partial class UcXuatBaoHanhMaster : XtraUserControl
                 Id = _stockInOutMasterId,
                 VoucherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
                 StockOutDate = StockInDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
+                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangBaoHanh,
                 TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                 // Thông tin bổ sung

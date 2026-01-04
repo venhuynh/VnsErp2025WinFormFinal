@@ -666,15 +666,7 @@ namespace VnsErp2025.Form
                         content: "Xem lịch sử nhập/xuất kho theo từng sản phẩm/dịch vụ.<br/><br/><b>Chức năng:</b><br/>• Xem lịch sử nhập/xuất của sản phẩm<br/>• Theo dõi số lượng tồn kho<br/>• Xem chi tiết các phiếu liên quan<br/><br/><color=Gray>Lưu ý:</color> Module này giúp tra cứu lịch sử giao dịch của từng sản phẩm/dịch vụ."
                     );
                 }
-
-                if (WarrantyCheckBarButtonItem != null)
-                {
-                    SuperToolTipHelper.SetBarButtonSuperTip(
-                        WarrantyCheckBarButtonItem,
-                        title: "<b><color=DarkBlue>🛡️ Bảo hành</color></b>",
-                        content: "Kiểm tra và quản lý thông tin bảo hành của sản phẩm/thiết bị.<br/><br/><b>Chức năng:</b><br/>• Tra cứu thông tin bảo hành<br/>• Kiểm tra thời hạn bảo hành<br/>• Xem lịch sử bảo hành<br/><br/><color=Gray>Lưu ý:</color> Module này giúp quản lý và theo dõi bảo hành hiệu quả."
-                    );
-                }
+                 
 
                 if (StockInOutImagesBarButtonItem != null)
                 {
