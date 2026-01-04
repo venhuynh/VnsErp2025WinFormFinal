@@ -199,7 +199,7 @@ namespace Inventory.StockIn.NhapLapRap
             this.colFullName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colFullName.Caption = "Thông tin sản phẩm";
             this.colFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
-            this.colFullName.FieldName = "FullNameHtml";
+            this.colFullName.FieldName = "VariantFullName";
             this.colFullName.Name = "colFullName";
             this.colFullName.Visible = true;
             this.colFullName.VisibleIndex = 0;

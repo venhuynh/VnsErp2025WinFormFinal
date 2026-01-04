@@ -141,7 +141,7 @@ namespace Inventory.StockIn.NhapBaoHanh
             this.ProductVariantSearchLookUpEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.ProductVariantSearchLookUpEdit.DataSource = this.productVariantListDtoBindingSource;
-            this.ProductVariantSearchLookUpEdit.DisplayMember = "VariantFullName";
+            this.ProductVariantSearchLookUpEdit.DisplayMember = "VariantCode";
             this.ProductVariantSearchLookUpEdit.KeyMember = "Id";
             this.ProductVariantSearchLookUpEdit.Name = "ProductVariantSearchLookUpEdit";
             this.ProductVariantSearchLookUpEdit.NullText = "";
