@@ -32,56 +32,54 @@ namespace Dal.DtoConverter
 
         /// <summary>
         /// Chuyển đổi ProductVariant entity thành ProductVariantDto
+        /// Chỉ map từ ProductVariant entity, không lấy dữ liệu từ entity khác
         /// </summary>
         /// <param name="entity">ProductVariant entity</param>
         /// <param name="productCode">Mã sản phẩm (để tránh DataContext disposed errors)</param>
         /// <param name="productName">Tên sản phẩm (để tránh DataContext disposed errors)</param>
         /// <param name="unitCode">Mã đơn vị (để tránh DataContext disposed errors)</param>
         /// <param name="unitName">Tên đơn vị (để tránh DataContext disposed errors)</param>
-        /// <param name="productThumbnailImage">Ảnh thumbnail sản phẩm (để tránh DataContext disposed errors)</param>
         /// <returns>ProductVariantDto</returns>
         public static ProductVariantDto ToDto(
             this ProductVariant entity,
             string productCode = null,
             string productName = null,
             string unitCode = null,
-            string unitName = null,
-            byte[] productThumbnailImage = null)
+            string unitName = null)
         {
             if (entity == null) return null;
 
             var dto = new ProductVariantDto
             {
+                // Các thuộc tính cơ bản
                 Id = entity.Id,
                 ProductId = entity.ProductId,
-                ProductCode = productCode,
-                ProductName = productName,
-                VariantCode = entity.VariantCode,
+                ProductCode = productCode, // Có thể null nếu không có giá trị
+                ProductName = productName, // Có thể null nếu không có giá trị
+                VariantCode = entity.VariantCode, // Có thể null nếu không có giá trị
                 UnitId = entity.UnitId,
-                UnitCode = unitCode,
-                UnitName = unitName,
+                UnitCode = unitCode, // Có thể null nếu không có giá trị
+                UnitName = unitName, // Có thể null nếu không có giá trị
                 IsActive = entity.IsActive,
-                ThumbnailImage = entity.ThumbnailImage?.ToArray(),
-                ProductThumbnailImage = productThumbnailImage,
-                AttributeCount = 0,
-                ImageCount = 0,
-                Attributes = new List<ProductVariantAttributeDto>(),
-                Images = new List<ProductImageDto>()
-            };
 
-            // Convert attributes nếu có eager loading
-            if (entity.VariantAttributes != null && entity.VariantAttributes.Any())
-            {
-                dto.Attributes = entity.VariantAttributes.Select(va => new ProductVariantAttributeDto
-                {
-                    AttributeId = va.AttributeId,
-                    AttributeName = va.Attribute?.Name,
-                    AttributeValueId = va.AttributeValueId,
-                    AttributeValue = va.AttributeValue?.Value,
-                    Description = va.Attribute?.Description,
-                }).ToList();
-                dto.AttributeCount = dto.Attributes.Count;
-            }
+                // Các thuộc tính về hình ảnh
+                ThumbnailImage = entity.ThumbnailImage?.ToArray(), // Chỉ lấy từ ProductVariant entity
+                ProductThumbnailImage = null, // Không lấy từ entity khác, chỉ map từ entity chính
+                ThumbnailFileName = entity.ThumbnailFileName,
+                ThumbnailRelativePath = entity.ThumbnailRelativePath,
+                ThumbnailFullPath = entity.ThumbnailFullPath,
+                ThumbnailStorageType = entity.ThumbnailStorageType,
+                ThumbnailFileSize = entity.ThumbnailFileSize,
+                ThumbnailChecksum = entity.ThumbnailChecksum,
+
+                // Các thuộc tính về ngày tháng
+                CreatedDate = entity.CreatedDate,
+                ModifiedDate = entity.ModifiedDate,
+
+                // Các thuộc tính về tên
+                VariantFullName = entity.VariantFullName,
+                VariantNameForReport = entity.VariantNameForReport
+            };
 
             return dto;
         }
@@ -104,12 +102,11 @@ namespace Dal.DtoConverter
             {
                 string productCode = null;
                 string productName = null;
-                byte[] productThumbnailImage = null;
                 if (productDict != null && productDict.TryGetValue(entity.ProductId, out var product))
                 {
                     productCode = product.Code;
                     productName = product.Name;
-                    productThumbnailImage = product.ThumbnailImage?.ToArray();
+                    // Không lấy ProductThumbnailImage từ ProductService, chỉ map từ ProductVariant entity
                 }
 
                 string unitCode = null;
@@ -120,7 +117,7 @@ namespace Dal.DtoConverter
                     unitName = unit.Name;
                 }
 
-                return entity.ToDto(productCode, productName, unitCode, unitName, productThumbnailImage);
+                return entity.ToDto(productCode, productName, unitCode, unitName);
             }).ToList();
         }
 
@@ -148,7 +145,17 @@ namespace Dal.DtoConverter
                     VariantCode = dto.VariantCode,
                     UnitId = dto.UnitId,
                     IsActive = dto.IsActive,
-                    ThumbnailImage = dto.ThumbnailImage != null ? new Binary(dto.ThumbnailImage) : null
+                    ThumbnailImage = dto.ThumbnailImage != null ? new Binary(dto.ThumbnailImage) : null,
+                    CreatedDate = dto.CreatedDate != default(DateTime) ? dto.CreatedDate : DateTime.Now,
+                    ModifiedDate = dto.ModifiedDate != default(DateTime) ? dto.ModifiedDate : DateTime.Now,
+                    VariantFullName = dto.VariantFullName,
+                    VariantNameForReport = dto.VariantNameForReport,
+                    ThumbnailFileName = dto.ThumbnailFileName,
+                    ThumbnailRelativePath = dto.ThumbnailRelativePath,
+                    ThumbnailFullPath = dto.ThumbnailFullPath,
+                    ThumbnailStorageType = dto.ThumbnailStorageType,
+                    ThumbnailFileSize = dto.ThumbnailFileSize,
+                    ThumbnailChecksum = dto.ThumbnailChecksum
                 };
             }
             else
@@ -162,6 +169,15 @@ namespace Dal.DtoConverter
                 {
                     destination.ThumbnailImage = new Binary(dto.ThumbnailImage);
                 }
+                destination.ModifiedDate = DateTime.Now; // Cập nhật ngày sửa
+                destination.VariantFullName = dto.VariantFullName;
+                destination.VariantNameForReport = dto.VariantNameForReport;
+                destination.ThumbnailFileName = dto.ThumbnailFileName;
+                destination.ThumbnailRelativePath = dto.ThumbnailRelativePath;
+                destination.ThumbnailFullPath = dto.ThumbnailFullPath;
+                destination.ThumbnailStorageType = dto.ThumbnailStorageType;
+                destination.ThumbnailFileSize = dto.ThumbnailFileSize;
+                destination.ThumbnailChecksum = dto.ThumbnailChecksum;
             }
 
             return destination;
@@ -170,4 +186,3 @@ namespace Dal.DtoConverter
         #endregion
     }
 }
-

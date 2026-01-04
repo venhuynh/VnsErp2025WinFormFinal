@@ -425,7 +425,7 @@ namespace Inventory.StockOut.XuatLapRap
                 // Cập nhật các thông tin liên quan
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.VariantName}";
+                rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
             }
 
@@ -1001,7 +1001,7 @@ namespace Inventory.StockOut.XuatLapRap
                 XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
                 XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
                 XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName",
-                    $"{selectedVariant.VariantName}");
+                    $"{selectedVariant.VariantFullName}");
                 XuatLapRapDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
             }
             else
@@ -1011,7 +1011,7 @@ namespace Inventory.StockOut.XuatLapRap
                 {
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
-                    rowData.ProductVariantName = $"{selectedVariant.VariantName}";
+                    rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
                     rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                     // Refresh grid để hiển thị thay đổi

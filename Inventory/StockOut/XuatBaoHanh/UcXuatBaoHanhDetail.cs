@@ -434,7 +434,7 @@ namespace Inventory.StockOut.XuatBaoHanh
                     // Cập nhật các thông tin liên quan
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
-                    rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantName}";
+                    rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantFullName}";
                     rowData.UnitOfMeasureName = selectedVariant.UnitName;
                 }
 
@@ -1040,7 +1040,7 @@ namespace Inventory.StockOut.XuatBaoHanh
                 XuatBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
                 XuatBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
                 XuatBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName",
-                    $"{selectedVariant.VariantName}");
+                    $"{selectedVariant.VariantFullName}");
                 XuatBaoHanhDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
             }
             else
@@ -1050,7 +1050,7 @@ namespace Inventory.StockOut.XuatBaoHanh
                 {
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
-                    rowData.ProductVariantName = $"{selectedVariant.VariantName}";
+                    rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
                     rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                     // Refresh grid để hiển thị thay đổi
