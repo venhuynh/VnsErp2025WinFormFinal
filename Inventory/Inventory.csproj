@@ -594,8 +594,6 @@
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto1.datasource" />
-    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantListDto.datasource" />
-    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantListDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.UnitOfMeasureDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.UnitOfMeasureDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.VariantAttributeDto.datasource" />

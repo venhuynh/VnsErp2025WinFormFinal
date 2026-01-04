@@ -366,8 +366,8 @@ public partial class UcXuatThietBiChoThueMuonDetailDto : DevExpress.XtraEditors.
                     return;
                 }
 
-                // Tìm ProductVariantListDto trong binding source
-                var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+                // Tìm ProductVariantDto trong binding source
+                var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
                     .FirstOrDefault(v => v.Id == productVariantId);
 
                 if (selectedVariant == null)
@@ -379,7 +379,7 @@ public partial class UcXuatThietBiChoThueMuonDetailDto : DevExpress.XtraEditors.
                 // Cập nhật các thông tin liên quan
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantFullName}";
+                rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantName}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
             }
 
@@ -749,7 +749,7 @@ public partial class UcXuatThietBiChoThueMuonDetailDto : DevExpress.XtraEditors.
             // Nếu đã load và không force refresh, không load lại
             if (_isProductVariantDataSourceLoaded && !forceRefresh &&
                 productVariantListDtoBindingSource.DataSource != null &&
-                productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> existingList &&
+                productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> existingList &&
                 existingList.Count > 0)
             {
                 return;
@@ -763,23 +763,12 @@ public partial class UcXuatThietBiChoThueMuonDetailDto : DevExpress.XtraEditors.
                 // Lấy ProductVariantDto từ BLL
                 var variantDtos = await _productVariantBll.GetAllInUseWithDetailsAsync();
                 
-                // Convert ProductVariantDto sang ProductVariantListDto
-                var variantListDtos = variantDtos
+                // Sử dụng ProductVariantDto trực tiếp (không cần convert)
+                var filteredVariants = variantDtos
                     .Where(v => v != null)
-                    .Select(dto => new ProductVariantListDto
-                    {
-                        Id = dto.Id,
-                        ProductCode = dto.ProductCode ?? string.Empty,
-                        ProductName = dto.ProductName ?? string.Empty,
-                        VariantCode = dto.VariantCode ?? string.Empty,
-                        VariantFullName = dto.VariantName ?? string.Empty,
-                        UnitName = dto.UnitName ?? string.Empty,
-                        IsActive = dto.IsActive,
-                        ThumbnailImage = dto.ThumbnailImage
-                    })
                     .ToList();
                 
-                productVariantListDtoBindingSource.DataSource = variantListDtos;
+                productVariantListDtoBindingSource.DataSource = filteredVariants;
                 productVariantListDtoBindingSource.ResetBindings(false);
 
                 _isProductVariantDataSourceLoaded = true;
@@ -813,7 +802,7 @@ public partial class UcXuatThietBiChoThueMuonDetailDto : DevExpress.XtraEditors.
             // Chỉ load nếu chưa load hoặc datasource rỗng
             if (!_isProductVariantDataSourceLoaded ||
                 productVariantListDtoBindingSource.DataSource == null ||
-                (productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> list && list.Count == 0))
+                (productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> list && list.Count == 0))
             {
                 await LoadProductVariantsAsync();
             }
@@ -971,8 +960,8 @@ public partial class UcXuatThietBiChoThueMuonDetailDto : DevExpress.XtraEditors.
             return;
         }
 
-        // Tìm ProductVariantListDto trong binding source
-        var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+        // Tìm ProductVariantDto trong binding source
+        var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
             .FirstOrDefault(v => v.Id == productVariantId);
 
         if (selectedVariant == null)
@@ -993,7 +982,7 @@ public partial class UcXuatThietBiChoThueMuonDetailDto : DevExpress.XtraEditors.
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
             XuatThietBiChoThueMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
             XuatThietBiChoThueMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            XuatThietBiChoThueMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullName}");
+            XuatThietBiChoThueMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantName}");
             XuatThietBiChoThueMuonDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
@@ -1003,7 +992,7 @@ public partial class UcXuatThietBiChoThueMuonDetailDto : DevExpress.XtraEditors.
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
+                rowData.ProductVariantName = $"{selectedVariant.VariantName}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                 // Refresh grid để hiển thị thay đổi

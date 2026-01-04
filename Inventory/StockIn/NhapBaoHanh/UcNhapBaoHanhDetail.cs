@@ -78,13 +78,9 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
     {
         try
         {
-            // Khởi tạo binding source với danh sách rỗng
-            stockInOutDetailForUIDtoBindingSource.DataSource = new List<StockInOutDetailForUIDto>();
-
+            
             // Setup events
             InitializeEvents();
-
-            // Không load dữ liệu ProductVariant ở đây, sẽ được gọi từ form khi FormLoad
         }
         catch (Exception ex)
         {
@@ -411,8 +407,8 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
                     return;
                 }
 
-                // Tìm ProductVariantListDto trong binding source
-                var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+                // Tìm ProductVariantDto trong binding source
+                var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
                     .FirstOrDefault(v => v.Id == productVariantId);
 
                 if (selectedVariant == null)
@@ -424,7 +420,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
                 // Cập nhật các thông tin liên quan
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantFullName}";
+                rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantName}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
             }
 
@@ -792,7 +788,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
             // Nếu đã load và không force refresh, không load lại
             if (_isProductVariantDataSourceLoaded && !forceRefresh &&
                 productVariantListDtoBindingSource.DataSource != null &&
-                productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> existingList &&
+                productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> existingList &&
                 existingList.Count > 0)
             {
                 return;
@@ -838,7 +834,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
             // Chỉ load nếu chưa load hoặc datasource rỗng
             if (!_isProductVariantDataSourceLoaded ||
                 productVariantListDtoBindingSource.DataSource == null ||
-                (productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> list && list.Count == 0))
+                (productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> list && list.Count == 0))
             {
                 await LoadProductVariantsAsync();
             }
@@ -995,8 +991,8 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
             return;
         }
 
-        // Tìm ProductVariantListDto trong binding source
-        var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+        // Tìm ProductVariantDto trong binding source
+        var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
             .FirstOrDefault(v => v.Id == productVariantId);
 
         if (selectedVariant == null)
@@ -1017,7 +1013,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
             NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
             NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullName}");
+            NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantName}");
             NhapBaoHanhDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
@@ -1027,7 +1023,7 @@ public partial class UcNhapBaoHanhDetail : DevExpress.XtraEditors.XtraUserContro
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
+                rowData.ProductVariantName = $"{selectedVariant.VariantName}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                 // Refresh grid để hiển thị thay đổi

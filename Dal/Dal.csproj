@@ -156,7 +156,6 @@
     <Compile Include="DtoConverter\PositionConverter.cs" />
     <Compile Include="DtoConverter\ProductServiceCategoryConverters.cs" />
     <Compile Include="DtoConverter\ProductServiceConverters.cs" />
-    <Compile Include="DtoConverter\ProductVariantListConverters.cs" />
     <Compile Include="DtoConverter\WarrantyCheckListDtoConverter.cs" />
     <Compile Include="DtoConverter\WarrantyDtoConverter.cs" />
     <Compile Include="Exceptions\ConnectionException.cs" />

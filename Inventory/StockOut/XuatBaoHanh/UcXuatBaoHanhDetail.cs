@@ -421,8 +421,8 @@ namespace Inventory.StockOut.XuatBaoHanh
                         return;
                     }
 
-                    // Tìm ProductVariantListDto trong binding source
-                    var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+                    // Tìm ProductVariantDto trong binding source
+                    var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
                         .FirstOrDefault(v => v.Id == productVariantId);
 
                     if (selectedVariant == null)
@@ -434,7 +434,7 @@ namespace Inventory.StockOut.XuatBaoHanh
                     // Cập nhật các thông tin liên quan
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
-                    rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantFullName}";
+                    rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantName}";
                     rowData.UnitOfMeasureName = selectedVariant.UnitName;
                 }
 
@@ -811,7 +811,7 @@ namespace Inventory.StockOut.XuatBaoHanh
                 // Nếu đã load và không force refresh, không load lại
                 if (_isProductVariantDataSourceLoaded && !forceRefresh &&
                     productVariantListDtoBindingSource.DataSource != null &&
-                    productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> existingList &&
+                    productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> existingList &&
                     existingList.Count > 0)
                 {
                     return;
@@ -857,7 +857,7 @@ namespace Inventory.StockOut.XuatBaoHanh
                 // Chỉ load nếu chưa load hoặc datasource rỗng
                 if (!_isProductVariantDataSourceLoaded ||
                     productVariantListDtoBindingSource.DataSource == null ||
-                    (productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> list &&
+                    (productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> list &&
                      list.Count == 0))
                 {
                     await LoadProductVariantsAsync();
@@ -1017,8 +1017,8 @@ namespace Inventory.StockOut.XuatBaoHanh
                 return;
             }
 
-            // Tìm ProductVariantListDto trong binding source
-            var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+            // Tìm ProductVariantDto trong binding source
+            var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
                 .FirstOrDefault(v => v.Id == productVariantId);
 
             if (selectedVariant == null)
@@ -1040,7 +1040,7 @@ namespace Inventory.StockOut.XuatBaoHanh
                 XuatBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
                 XuatBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
                 XuatBaoHanhDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName",
-                    $"{selectedVariant.VariantFullName}");
+                    $"{selectedVariant.VariantName}");
                 XuatBaoHanhDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
             }
             else
@@ -1050,7 +1050,7 @@ namespace Inventory.StockOut.XuatBaoHanh
                 {
                     rowData.ProductVariantId = selectedVariant.Id;
                     rowData.ProductVariantCode = selectedVariant.VariantCode;
-                    rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
+                    rowData.ProductVariantName = $"{selectedVariant.VariantName}";
                     rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                     // Refresh grid để hiển thị thay đổi

@@ -1,4 +1,4 @@
-﻿namespace DeviceAssetManagement.Management.DeviceMangement
+namespace DeviceAssetManagement.Management.DeviceMangement
 {
     partial class UcDeviceDtoAddEdit
     {
@@ -206,7 +206,7 @@
             // 
             // productVariantListDtoBindingSource
             // 
-            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantListDto);
+            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantDto);
             // 
             // ProductVariantSearchLookUpEdit1View
             // 

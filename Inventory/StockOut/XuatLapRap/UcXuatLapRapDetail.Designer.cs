@@ -171,7 +171,7 @@ namespace Inventory.StockOut.XuatLapRap
             // 
             // productVariantListDtoBindingSource
             // 
-            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantListDto);
+            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantDto);
             // 
             // ProductVariantDtoSearchLookUpEdit1View
             // 

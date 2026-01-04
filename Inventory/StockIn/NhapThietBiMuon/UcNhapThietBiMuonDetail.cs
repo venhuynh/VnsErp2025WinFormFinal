@@ -368,8 +368,8 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
                     return;
                 }
 
-                // Tìm ProductVariantListDto trong binding source
-                var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+                // Tìm ProductVariantDto trong binding source
+                var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
                     .FirstOrDefault(v => v.Id == productVariantId);
 
                 if (selectedVariant == null)
@@ -381,7 +381,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
                 // Cập nhật các thông tin liên quan
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantFullName}";
+                rowData.ProductVariantName = $"{selectedVariant.ProductName} - {selectedVariant.VariantName}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
             }
 
@@ -751,7 +751,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             // Nếu đã load và không force refresh, không load lại
             if (_isProductVariantDataSourceLoaded && !forceRefresh &&
                 productVariantListDtoBindingSource.DataSource != null &&
-                productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> existingList &&
+                productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> existingList &&
                 existingList.Count > 0)
             {
                 return;
@@ -812,7 +812,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             // Chỉ load nếu chưa load hoặc datasource rỗng
             if (!_isProductVariantDataSourceLoaded ||
                 productVariantListDtoBindingSource.DataSource == null ||
-                (productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> list && list.Count == 0))
+                (productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> list && list.Count == 0))
             {
                 await LoadProductVariantsAsync();
             }
@@ -970,8 +970,8 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             return;
         }
 
-        // Tìm ProductVariantListDto trong binding source
-        var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+        // Tìm ProductVariantDto trong binding source
+        var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
             .FirstOrDefault(v => v.Id == productVariantId);
 
         if (selectedVariant == null)
@@ -992,7 +992,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             // Quan trọng: Phải set ProductVariantId trước để khi validate row, giá trị này đã có
             NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantId", selectedVariant.Id);
             NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantCode", selectedVariant.VariantCode);
-            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantFullName}");
+            NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("ProductVariantName", $"{selectedVariant.VariantName}");
             NhapThietBiMuonDetailDtoGridView.SetFocusedRowCellValue("UnitOfMeasureName", selectedVariant.UnitName);
         }
         else
@@ -1002,7 +1002,7 @@ public partial class UcNhapThietBiMuonDetail : DevExpress.XtraEditors.XtraUserCo
             {
                 rowData.ProductVariantId = selectedVariant.Id;
                 rowData.ProductVariantCode = selectedVariant.VariantCode;
-                rowData.ProductVariantName = $"{selectedVariant.VariantFullName}";
+                rowData.ProductVariantName = $"{selectedVariant.VariantName}";
                 rowData.UnitOfMeasureName = selectedVariant.UnitName;
 
                 // Refresh grid để hiển thị thay đổi

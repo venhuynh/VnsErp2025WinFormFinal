@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockIn.NhapLapRap
+namespace Inventory.StockIn.NhapLapRap
 {
     partial class UcNhapLapRapLapRapDetail
     {
@@ -169,7 +169,7 @@
             // 
             // productVariantListDtoBindingSource
             // 
-            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantListDto);
+            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantDto);
             // 
             // ProductVariantDtoSearchLookUpEdit1View
             // 

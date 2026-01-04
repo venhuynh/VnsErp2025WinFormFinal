@@ -21,7 +21,7 @@ using System.Windows.Forms;
 
 namespace DeviceAssetManagement.Management.DeviceMangement
 {
-    public partial class UcDeviceDtoAddEdit : DevExpress.XtraEditors.XtraUserControl
+    public abstract partial class UcDeviceDtoAddEdit : DevExpress.XtraEditors.XtraUserControl
     {
         #region ========== FIELDS & PROPERTIES ==========
 
@@ -77,7 +77,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
             [DisplayName("Giá trị")]
             [Required(ErrorMessage = "Vui lòng nhập giá trị định danh")]
             [StringLength(255, ErrorMessage = "Giá trị định danh không được vượt quá 255 ký tự")]
-            public string Value { get; set; }
+            public string Value => null;
         }
 
         #endregion
@@ -178,7 +178,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                 // Nếu đã load và không force refresh, không load lại
                 if (_isProductVariantDataSourceLoaded && !forceRefresh &&
                     productVariantListDtoBindingSource.DataSource != null &&
-                    productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> existingList &&
+                    productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> existingList &&
                     existingList.Count > 0)
                 {
                     return;
@@ -192,11 +192,8 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                     // Lấy dữ liệu Entity từ BLL với thông tin đầy đủ
                     var variants = await _productVariantBll.GetAllInUseWithDetailsAsync();
 
-                    // Convert Entity sang ProductVariantListDto
-                    var variantListDtos = await ConvertToVariantListDtosAsync(variants);
-
-                    // Bind dữ liệu vào BindingSource
-                    productVariantListDtoBindingSource.DataSource = variantListDtos;
+                    // Bind dữ liệu vào BindingSource (không cần convert vì đã dùng ProductVariantDto trực tiếp)
+                    productVariantListDtoBindingSource.DataSource = variants;
                     productVariantListDtoBindingSource.ResetBindings(false);
 
                     _isProductVariantDataSourceLoaded = true;
@@ -246,7 +243,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                 // Chỉ load nếu chưa load hoặc datasource rỗng
                 if (!_isProductVariantDataSourceLoaded ||
                     productVariantListDtoBindingSource.DataSource == null ||
-                    (productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> list && list.Count == 0))
+                    (productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> list && list.Count == 0))
                 {
                     await LoadProductVariantsAsync();
                 }
@@ -358,7 +355,6 @@ namespace DeviceAssetManagement.Management.DeviceMangement
         {
             try
             {
-                var fieldName = e.Column?.FieldName;
                 var rowHandle = e.RowHandle;
 
                 if (rowHandle < 0)
@@ -367,7 +363,7 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                 }
 
                 // Lấy row data từ GridView
-                if (IdentifierValueGridView.GetRow(rowHandle) is not DeviceIdentifierItem rowData)
+                if (IdentifierValueGridView.GetRow(rowHandle) is not DeviceIdentifierItem)
                 {
                     _logger.Warning("CellValueChanged: Row data is null, RowHandle={0}", rowHandle);
                     return;
@@ -1073,42 +1069,6 @@ namespace DeviceAssetManagement.Management.DeviceMangement
                     title: @"<b><color=Green>💾 Lưu thiết bị</color></b>",
                     content: @"Lưu <b>thông tin thiết bị</b> vào database.<br/><br/><b>Chức năng:</b><br/>• Validate toàn bộ dữ liệu trước khi lưu<br/>• Tạo DeviceDto từ dữ liệu đã nhập<br/>• Convert DTO sang Entity<br/>• Lưu vào database qua BLL<br/>• Trigger event DeviceSaved để form cha refresh<br/><br/><b>Validation:</b><br/>• Kiểm tra đã chọn hàng hóa dịch vụ<br/>• Kiểm tra có ít nhất một định danh<br/>• Validate từng định danh (loại và giá trị)<br/>• Kiểm tra tính duy nhất của định danh<br/><br/><b>Dữ liệu lưu:</b><br/>• ProductVariantId<br/>• Các định danh (SerialNumber, IMEI, MAC, v.v.)<br/>• Trạng thái mặc định (Available - Đang trong kho VNS)<br/>• Loại thiết bị mặc định (Hardware)<br/>• Ngày tạo, người tạo<br/><br/><b>Xử lý lỗi:</b><br/>• Hiển thị danh sách lỗi validation nếu có<br/>• Hiển thị thông báo lỗi chi tiết nếu lưu thất bại<br/><br/><color=Gray>Lưu ý:</color> Sau khi lưu thành công, form cha sẽ tự động refresh danh sách thiết bị."
                 );
-            }
-        }
-
-        #endregion
-
-        #region ========== HELPER METHODS ==========
-
-        /// <summary>
-        /// Chuyển đổi danh sách ProductVariantDto sang ProductVariantListDto
-        /// </summary>
-        /// <param name="variants">Danh sách ProductVariantDto</param>
-        /// <returns>Danh sách ProductVariantListDto</returns>
-        private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariantDto> variants)
-        {
-            try
-            {
-                // Manually convert ProductVariantDto to ProductVariantListDto
-                var result = variants.Select(v => new ProductVariantListDto
-                {
-                    Id = v.Id,
-                    ProductCode = v.ProductCode,
-                    ProductName = v.ProductName,
-                    VariantCode = v.VariantCode,
-                    VariantFullName = v.VariantName, // Map VariantName to VariantFullName
-                    UnitName = v.UnitName,
-                    IsActive = v.IsActive,
-                    ThumbnailImage = v.ThumbnailImage,
-                    ImageCount = v.ImageCount,
-                    FullVariantInfo = v // Store full variant info for later use
-                }).ToList();
-
-                return Task.FromResult(result);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockOut.XuatBaoHanh
+namespace Inventory.StockOut.XuatBaoHanh
 {
     partial class UcXuatBaoHanhDetail
     {
@@ -148,7 +148,7 @@
             // 
             // productVariantListDtoBindingSource
             // 
-            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantListDto);
+            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantDto);
             // 
             // ProductVariantDtoSearchLookUpEdit1View
             // 
