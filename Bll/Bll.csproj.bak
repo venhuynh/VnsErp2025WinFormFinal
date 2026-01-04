@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{50F0876E-DB49-4C11-9158-E3146AB3AD93}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bll</RootNamespace>
+    <AssemblyName>Bll</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.AIIntegration.WinForms.SemanticSearch.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.Desktop.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.BonusSkins.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Resources.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Resources.Extensions.4.6.0\lib\netstandard2.0\System.Resources.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Authentication\LoginBll.cs" />
+    <Compile Include="Common\AllowedMacAddressBll.cs" />
+    <Compile Include="Common\ApplicationSecurityService.cs" />
+    <Compile Include="Common\ApplicationSystemUtils.cs" />
+    <Compile Include="Common\ApplicationUserBll.cs" />
+    <Compile Include="Common\ApplicationVersionBll.cs" />
+    <Compile Include="Common\ImageService\ImageCleanupService.cs" />
+    <Compile Include="Common\ImageService\ImageCompressionService.cs" />
+    <Compile Include="Common\ImageService\ImageServiceConfiguration.cs" />
+    <Compile Include="Common\ImageService\ImageValidationService.cs" />
+    <Compile Include="Common\ImageStorage\FileCategory.cs" />
+    <Compile Include="Common\ImageStorage\FileStorageResult.cs" />
+    <Compile Include="Common\ImageStorage\IFileStorageService.cs" />
+    <Compile Include="Common\ImageStorage\IImageStorageService.cs" />
+    <Compile Include="Common\ImageStorage\ImageCategory.cs" />
+    <Compile Include="Common\ImageStorage\ImageStorageConfiguration.cs" />
+    <Compile Include="Common\ImageStorage\ImageStorageFactory.cs" />
+    <Compile Include="Common\ImageStorage\ImageStorageResult.cs" />
+    <Compile Include="Common\ImageStorage\LocalImageStorageService.cs" />
+    <Compile Include="Common\ImageStorage\NASImageStorageService.cs" />
+    <Compile Include="Common\PermissionBll.cs" />
+    <Compile Include="Common\PermissionHelper.cs" />
+    <Compile Include="Common\SettingBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\AssetBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\DeviceBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\DeviceImageBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\DeviceTransactionHistoryBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\InventoryBalanceBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\StockInOutDocumentBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\StockInOutMasterBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\StockInOutDetailBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\StockInOutReportBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\WarrantyBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\StockInOutImageBll.cs" />
+    <Compile Include="Inventory\StockInOut\StockInOutBll.cs" />
+    <Compile Include="MasterData\CompanyBll\CompanyBll.cs" />
+    <Compile Include="MasterData\CompanyBll\CompanyBranchBll.cs" />
+    <Compile Include="MasterData\CompanyBll\DepartmentBll.cs" />
+    <Compile Include="MasterData\CompanyBll\EmployeeBll.cs" />
+    <Compile Include="MasterData\CompanyBll\PositionBll.cs" />
+    <Compile Include="MasterData\CustomerBll\BusinessPartnerBll.cs" />
+    <Compile Include="MasterData\CustomerBll\BusinessPartnerCategoryBll.cs" />
+    <Compile Include="MasterData\CustomerBll\BusinessPartnerContactBll.cs" />
+    <Compile Include="MasterData\CustomerBll\BusinessPartnerSiteBll.cs" />
+    <Compile Include="MasterData\ProductServiceBll\AttributeBll.cs" />
+    <Compile Include="MasterData\ProductServiceBll\ProductImageBll.cs" />
+    <Compile Include="MasterData\ProductServiceBll\ProductServiceBll.cs" />
+    <Compile Include="MasterData\ProductServiceBll\ProductServiceCategoryBll.cs" />
+    <Compile Include="MasterData\ProductServiceBll\ProductVariantBll.cs" />
+    <Compile Include="MasterData\ProductServiceBll\UnitOfMeasureBll.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Common\PermissionSystem_README.md" />
+    <None Include="Doc\BllFolderStructure.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{68E56AB6-1ADA-40DE-9EDD-0BE2B8F35C3A}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dal\Dal.csproj">
+      <Project>{2a5a6a1e-6435-45e2-8f3d-62d70cb8fa76}</Project>
+      <Name>Dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{77B6B4B6-D129-4A78-BD8D-9FCA5F9B4A1C}</Project>
+      <Name>DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{12f9fb39-92bf-45d5-bbb2-5353e33700f0}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Doc\Promt\Prompt refactor chung cho các file CRUD %28DAL%29.TXT" />
+    <Content Include="Doc\Promt\Prompt refactor chung cho Project Dal.txt" />
+    <None Include="Resources\User1.svg" />
+    <None Include="Resources\security_warningcircled21.svg" />
+    <None Include="Resources\Search1.svg" />
+    <None Include="Resources\Logo1.svg" />
+    <None Include="Resources\Info1.svg" />
+    <None Include="Resources\Forward1.svg" />
+    <None Include="Resources\DisconnectDrive1.svg" />
+    <None Include="Resources\Close1.svg" />
+    <None Include="Resources\check1.svg" />
+    <None Include="Resources\caution1.svg" />
+    <None Include="Resources\Back1.svg" />
+    <None Include="Resources\AttendanceMachine %286%291.svg" />
+    <None Include="Resources\AttendanceMachine %283%291.svg" />
+    <None Include="Resources\AttendanceMachine %281%291.svg" />
+    <None Include="Resources\Add1.svg" />
+    <None Include="Resources\about1.svg" />
+    <None Include="Resources\User.svg" />
+    <None Include="Resources\security_warningcircled2.svg" />
+    <None Include="Resources\Search.svg" />
+    <None Include="Resources\Logo.svg" />
+    <None Include="Resources\Info.svg" />
+    <None Include="Resources\Forward.svg" />
+    <None Include="Resources\DisconnectDrive.svg" />
+    <None Include="Resources\Close.svg" />
+    <None Include="Resources\check.svg" />
+    <None Include="Resources\caution.svg" />
+    <None Include="Resources\Back.svg" />
+    <None Include="Resources\AttendanceMachine %286%29.svg" />
+    <None Include="Resources\AttendanceMachine %283%29.svg" />
+    <None Include="Resources\AttendanceMachine %281%29.svg" />
+    <None Include="Resources\Add.svg" />
+    <None Include="Resources\about.svg" />
+    <None Include="Resources\Ven - Solutions logo_GoogleBZ_H480.jpg" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

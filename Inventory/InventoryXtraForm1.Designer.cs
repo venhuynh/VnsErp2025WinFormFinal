@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.xtraOpenFileDialog1 = new DevExpress.XtraEditors.XtraOpenFileDialog(this.components);
             this.stockInReportDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.ucXuatHangThuongMaiMasterDto1 = new Inventory.StockOut.XuatHangThuongMai.UcXuatHangThuongMaiMasterDto();
+            this.ucXuatHangThuongMaiMasterDto1 = new Inventory.StockOut.XuatHangThuongMai.UcXuatHangThuongMaiMaster();
             ((System.ComponentModel.ISupportInitialize)(this.stockInReportDtoBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,6 +67,6 @@
 
         private DevExpress.XtraEditors.XtraOpenFileDialog xtraOpenFileDialog1;
         private System.Windows.Forms.BindingSource stockInReportDtoBindingSource;
-        private StockOut.XuatHangThuongMai.UcXuatHangThuongMaiMasterDto ucXuatHangThuongMaiMasterDto1;
+        private StockOut.XuatHangThuongMai.UcXuatHangThuongMaiMaster ucXuatHangThuongMaiMasterDto1;
     }
 }

@@ -3,15 +3,16 @@ using Bll.Inventory.StockInOut;
 using Bll.MasterData.CompanyBll;
 using Common;
 using Common.Utils;
+using DevExpress.XtraEditors;
 using DTO.Inventory;
-using DTO.Inventory.InventoryManagement;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DTO.Inventory.InventoryManagement;
 
-namespace Inventory.StockOut.XuatLapRap
+namespace Inventory.StockIn.NhapLapRap
 {
-    public partial class UcXuatLapRapMasterDto : DevExpress.XtraEditors.XtraUserControl
+    public partial class UcNhapLapRapMaster : DevExpress.XtraEditors.XtraUserControl
     {
         #region ========== KHAI BÁO BIẾN ==========
 
@@ -38,7 +39,7 @@ namespace Inventory.StockOut.XuatLapRap
 
         #region ========== CONSTRUCTOR ==========
 
-        public UcXuatLapRapMasterDto()
+        public UcNhapLapRapMaster()
         {
             InitializeComponent();
             InitializeControl();
@@ -72,6 +73,7 @@ namespace Inventory.StockOut.XuatLapRap
             }
         }
 
+
         /// <summary>
         /// Setup SearchLookUpEdit cho Warehouse
         /// </summary>
@@ -100,6 +102,7 @@ namespace Inventory.StockOut.XuatLapRap
             }
         }
 
+
         /// <summary>
         /// Thiết lập sự kiện
         /// </summary>
@@ -107,13 +110,13 @@ namespace Inventory.StockOut.XuatLapRap
         {
             try
             {
-                Load += UcXuatLapRapMasterDto_Load;
+                Load += UcNhapLapRapMasterDto_Load;
 
                 //Sự kiện của WarehouseNameSearchLookupEdit
                 WarehouseNameSearchLookupEdit.Popup += WarehouseNameSearchLookupEdit_Popup;
                 WarehouseNameSearchLookupEdit.EditValueChanged += WarehouseNameSearchLookupEdit_EditValueChanged;
 
-                StockOutDateDateEdit.EditValueChanged += StockOutDateDateEdit_EditValueChanged;
+                StockInDateDateEdit.EditValueChanged += StockInDateDateEdit_EditValueChanged;
             }
             catch (Exception ex)
             {
@@ -160,14 +163,14 @@ namespace Inventory.StockOut.XuatLapRap
         /// </summary>
         private void SetupTextEditSuperTips()
         {
-            // SuperTip cho Số phiếu xuất nội bộ
-            if (StockOutNumberTextEdit != null)
+            // SuperTip cho Số phiếu nhập lắp ráp
+            if (StockInNumberTextEdit != null)
             {
                 SuperToolTipHelper.SetTextEditSuperTip(
-                    StockOutNumberTextEdit,
-                    title: @"<b><color=DarkBlue>📄 Số phiếu xuất lắp ráp</color></b>",
+                    StockInNumberTextEdit,
+                    title: @"<b><color=DarkBlue>📄 Số phiếu nhập lắp ráp</color></b>",
                     content:
-                    @"Số phiếu xuất lắp ráp được tạo tự động theo format: <b>PXK-MMYY-NNXXX</b><br/><br/><b>Format:</b><br/>• PXK: Phiếu xuất kho<br/>• MM: Tháng (2 ký tự)<br/>• YY: Năm (2 ký tự cuối)<br/>• NN: Index của Loại xuất kho (2 ký tự)<br/>• XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)<br/><br/><b>Chức năng:</b><br/>• Tự động tạo khi thay đổi ngày xuất lắp ráp<br/>• Tự động tạo khi thay đổi loại xuất kho<br/>• Query database để lấy số thứ tự tiếp theo<br/>• Đảm bảo số phiếu duy nhất trong cùng tháng/năm/loại<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Số phiếu xuất lắp ráp sẽ được lưu vào database khi lưu phiếu xuất."
+                    @"Số phiếu nhập lắp ráp được tạo tự động theo format: <b>PNK-MMYY-NNXXX</b><br/><br/><b>Format:</b><br/>• PNK: Phiếu nhập kho<br/>• MM: Tháng (2 ký tự)<br/>• YY: Năm (2 ký tự cuối)<br/>• NN: Index của Loại nhập kho (2 ký tự)<br/>• XXX: Số thứ tự phiếu (3 ký tự từ 001 đến 999)<br/><br/><b>Chức năng:</b><br/>• Tự động tạo khi thay đổi ngày nhập lắp ráp<br/>• Tự động tạo khi thay đổi loại nhập kho<br/>• Query database để lấy số thứ tự tiếp theo<br/>• Đảm bảo số phiếu duy nhất trong cùng tháng/năm/loại<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Tối đa 50 ký tự<br/><br/><color=Gray>Lưu ý:</color> Số phiếu nhập lắp ráp sẽ được lưu vào database khi lưu phiếu nhập."
                 );
             }
 
@@ -179,7 +182,7 @@ namespace Inventory.StockOut.XuatLapRap
                     NguoiNhanHangTextEdit,
                     title: @"<b><color=DarkBlue>👤 Người nhận hàng</color></b>",
                     content:
-                    @"Nhập tên người nhận hàng lắp ráp tại kho.<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người nhận hàng lắp ráp<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu xuất lắp ráp."
+                    @"Nhập tên người nhận hàng lắp ráp tại kho.<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người nhận hàng lắp ráp<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập lắp ráp."
                 );
             }
 
@@ -190,7 +193,7 @@ namespace Inventory.StockOut.XuatLapRap
                     NguoiGiaoHangTextEdit,
                     title: @"<b><color=DarkBlue>🚚 Người giao hàng</color></b>",
                     content:
-                    @"Nhập tên người giao hàng lắp ráp (từ chi nhánh/đơn vị).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người giao hàng lắp ráp<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu xuất lắp ráp."
+                    @"Nhập tên người giao hàng lắp ráp (từ chi nhánh/đơn vị).<br/><br/><b>Chức năng:</b><br/>• Ghi nhận thông tin người giao hàng lắp ráp<br/>• Hỗ trợ tra cứu và theo dõi<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Thông tin này sẽ được lưu vào database khi lưu phiếu nhập lắp ráp."
                 );
             }
         }
@@ -200,14 +203,14 @@ namespace Inventory.StockOut.XuatLapRap
         /// </summary>
         private void SetupDateEditSuperTips()
         {
-            // SuperTip cho Ngày xuất nội bộ
-            if (StockOutDateDateEdit != null)
+            // SuperTip cho Ngày nhập lắp ráp
+            if (StockInDateDateEdit != null)
             {
                 SuperToolTipHelper.SetBaseEditSuperTip(
-                    StockOutDateDateEdit,
-                    title: @"<b><color=DarkBlue>📅 Ngày xuất lắp ráp</color></b>",
+                    StockInDateDateEdit,
+                    title: @"<b><color=DarkBlue>📅 Ngày nhập lắp ráp</color></b>",
                     content:
-                    @"Chọn ngày xuất lắp ráp cho phiếu xuất.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm xuất lắp ráp<br/>• Tự động tạo số phiếu xuất lắp ráp dựa trên ngày<br/>• Format số phiếu: PXK-MMYY-NNXXX (MM, YY từ ngày này)<br/>• Query database để lấy số thứ tự tiếp theo trong tháng/năm<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Mặc định: Ngày hiện tại<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày xuất lắp ráp, hệ thống sẽ tự động tạo lại số phiếu xuất lắp ráp theo format mới."
+                    @"Chọn ngày nhập lắp ráp cho phiếu nhập.<br/><br/><b>Chức năng:</b><br/>• Xác định thời điểm nhập lắp ráp<br/>• Tự động tạo số phiếu nhập lắp ráp dựa trên ngày<br/>• Format số phiếu: PNK-MMYY-NNXXX (MM, YY từ ngày này)<br/>• Query database để lấy số thứ tự tiếp theo trong tháng/năm<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc nhập</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Mặc định: Ngày hiện tại<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Khi thay đổi ngày nhập lắp ráp, hệ thống sẽ tự động tạo lại số phiếu nhập lắp ráp theo format mới."
                 );
             }
         }
@@ -217,14 +220,14 @@ namespace Inventory.StockOut.XuatLapRap
         /// </summary>
         private void SetupSearchLookupEditSuperTips()
         {
-            // SuperTip cho Kho xuất
+            // SuperTip cho Kho nhập
             if (WarehouseNameSearchLookupEdit != null)
             {
                 SuperToolTipHelper.SetBaseEditSuperTip(
                     WarehouseNameSearchLookupEdit,
-                    title: @"<b><color=DarkBlue>🏢 Kho xuất</color></b>",
+                    title: @"<b><color=DarkBlue>🏢 Kho nhập</color></b>",
                     content:
-                    @"Chọn kho xuất lắp ráp từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho xuất lắp ráp<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật WarehouseId vào Entity<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho xuất lắp ráp sẽ được lưu vào database khi lưu phiếu xuất lắp ráp."
+                    @"Chọn kho nhập lắp ráp từ danh sách chi nhánh (Company Branch) đang hoạt động.<br/><br/><b>Chức năng:</b><br/>• Chọn kho nhập lắp ráp<br/>• Hiển thị thông tin kho dạng HTML (mã, tên)<br/>• Tự động cập nhật WarehouseId vào Entity<br/><br/><b>Ràng buộc:</b><br/>• <b>Bắt buộc chọn</b> (có dấu * đỏ)<br/>• Không được để trống<br/>• Chỉ hiển thị các chi nhánh đang hoạt động (IsActive = true)<br/><br/><b>Data Source:</b><br/>• Load từ CompanyBranchBll.GetAll()<br/>• Filter chỉ lấy các chi nhánh đang hoạt động<br/>• Sắp xếp theo tên chi nhánh<br/><br/><b>Validation:</b><br/>• Kiểm tra rỗng khi validating<br/>• Hiển thị lỗi qua ErrorProvider nếu không hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Kho nhập lắp ráp sẽ được lưu vào database khi lưu phiếu nhập lắp ráp."
                 );
             }
         }
@@ -241,7 +244,7 @@ namespace Inventory.StockOut.XuatLapRap
                     NotesTextEdit,
                     title: @"<b><color=DarkBlue>📝 Ghi chú</color></b>",
                     content:
-                    @"Nhập ghi chú hoặc mô tả bổ sung cho phiếu xuất lắp ráp.<br/><br/><b>Chức năng:</b><br/>• Lưu thông tin bổ sung về phiếu xuất lắp ráp<br/>• Ghi chú về lý do xuất lắp ráp, điều kiện chuyển kho, đích đến hàng hóa, v.v.<br/>• Hỗ trợ nhiều dòng văn bản<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Ghi chú sẽ được lưu vào database khi lưu phiếu xuất lắp ráp."
+                    @"Nhập ghi chú hoặc mô tả bổ sung cho phiếu nhập lắp ráp.<br/><br/><b>Chức năng:</b><br/>• Lưu thông tin bổ sung về phiếu nhập lắp ráp<br/>• Ghi chú về lý do nhập lắp ráp, điều kiện nhập kho, nguồn gốc hàng hóa, v.v.<br/>• Hỗ trợ nhiều dòng văn bản<br/><br/><b>Ràng buộc:</b><br/>• Không bắt buộc (có thể để trống)<br/>• Tối đa 500 ký tự<br/><br/><color=Gray>Lưu ý:</color> Ghi chú sẽ được lưu vào database khi lưu phiếu nhập lắp ráp."
                 );
             }
         }
@@ -258,8 +261,8 @@ namespace Inventory.StockOut.XuatLapRap
         {
             try
             {
-                // Load warehouse datasource (xuất lắp ráp không cần customer)
-                await LoadWarehouseDataSourceAsync();
+                // Load warehouse datasource (nhập lắp ráp không cần customer)
+                await LoadWarehouseDataSourceAsync(forceRefresh: true);
             }
             catch (Exception ex)
             {
@@ -270,11 +273,12 @@ namespace Inventory.StockOut.XuatLapRap
         /// <summary>
         /// Load datasource cho Warehouse (CompanyBranch) - Load toàn bộ danh sách
         /// </summary>
-        private async Task LoadWarehouseDataSourceAsync()
+        /// <param name="forceRefresh">Nếu true, sẽ load lại từ database ngay cả khi đã load trước đó</param>
+        private async Task LoadWarehouseDataSourceAsync(bool forceRefresh = false)
         {
             try
             {
-                // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
+                // Load danh sách CompanyBranchLookupDto từ CompanyBranchBll (dùng làm Warehouse)
                 companyBranchDtoBindingSource.DataSource = await Task.Run(() => _companyBranchBll.GetAll());
             }
             catch (Exception ex)
@@ -288,27 +292,27 @@ namespace Inventory.StockOut.XuatLapRap
 
         #region ========== EVENT HANDLERS ==========
 
-        private void UcXuatLapRapMasterDto_Load(object sender, EventArgs e)
+        private void UcNhapLapRapMasterDto_Load(object sender, EventArgs e)
         {
             // Control đã được load
-            StockOutDateDateEdit.EditValue = DateTime.Now;
+            StockInDateDateEdit.EditValue = DateTime.Now;
         }
 
-        private void StockOutDateDateEdit_EditValueChanged(object sender, EventArgs e)
+        private void StockInDateDateEdit_EditValueChanged(object sender, EventArgs e)
         {
             try
             {
-                if (StockOutDateDateEdit.EditValue is not DateTime selectedDate) return;
-
-                // Tạo số phiếu xuất tự động
-                GenerateStockOutNumber(selectedDate);
-
+                if (StockInDateDateEdit.EditValue is not DateTime selectedDate) return;
+                
+                // Tạo số phiếu nhập tự động
+                GenerateStockInNumber(selectedDate);
+                        
                 // Xóa lỗi validation nếu có
-                dxErrorProvider1.SetError(StockOutDateDateEdit, string.Empty);
+                dxErrorProvider1.SetError(StockInDateDateEdit, string.Empty);
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi tạo số phiếu xuất");
+                ShowError(ex, "Lỗi tạo số phiếu nhập");
             }
         }
 
@@ -320,7 +324,7 @@ namespace Inventory.StockOut.XuatLapRap
                 {
                     // Cập nhật WarehouseId vào _selectedWarehouseId
                     _selectedWarehouseId = warehouseId;
-
+                        
                     // Xóa lỗi validation nếu có
                     dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, string.Empty);
                 }
@@ -349,35 +353,31 @@ namespace Inventory.StockOut.XuatLapRap
                 dxErrorProvider1.ClearErrors();
 
                 //Ngày tháng không được để trống
-                if (StockOutDateDateEdit.EditValue is null)
+                if (StockInDateDateEdit.EditValue is null)
                 {
                     // Hiển thị lỗi
-                    dxErrorProvider1.SetError(StockOutDateDateEdit, "Ngày xuất không được để trống");
+                    dxErrorProvider1.SetError(StockInDateDateEdit, "Ngày nhập không được để trống");
                     return false;
                 }
 
-                // Số phiếu xuất kho không được để trống
-                if (string.IsNullOrWhiteSpace(StockOutNumberTextEdit.Text))
+                // Số phiếu nhập kho không được để trống
+                if (string.IsNullOrWhiteSpace(StockInNumberTextEdit.Text))
                 {
-                    dxErrorProvider1.SetError(StockOutNumberTextEdit, "Số phiếu xuất không được để trống");
+                    dxErrorProvider1.SetError(StockInNumberTextEdit, "Số phiếu nhập không được để trống");
                     return false;
                 }
 
-                // Kiểm tra độ dài số phiếu xuất kho (tối đa 50 ký tự)
-                if (StockOutNumberTextEdit.Text.Length > 50)
+                // Kiểm tra độ dài số phiếu nhập kho (tối đa 50 ký tự)
+                if (StockInNumberTextEdit.Text.Length > 50)
                 {
-                    dxErrorProvider1.SetError(StockOutNumberTextEdit, "Số phiếu xuất không được vượt quá 50 ký tự");
+                    dxErrorProvider1.SetError(StockInNumberTextEdit, "Số phiếu nhập không được vượt quá 50 ký tự");
                     return false;
                 }
 
-                // Kho xuất không được để trống
-                var warehouseId = _selectedWarehouseId != Guid.Empty
-                    ? _selectedWarehouseId
-                    : (WarehouseNameSearchLookupEdit.EditValue is Guid wId ? wId : Guid.Empty);
-
-                if (warehouseId == Guid.Empty)
+                // Kho nhập không được để trống
+                if (WarehouseNameSearchLookupEdit.EditValue is not Guid warehouseId || warehouseId == Guid.Empty)
                 {
-                    dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, "Kho xuất không được để trống");
+                    dxErrorProvider1.SetError(WarehouseNameSearchLookupEdit, "Kho nhập không được để trống");
                     return false;
                 }
 
@@ -413,9 +413,9 @@ namespace Inventory.StockOut.XuatLapRap
                 {
                     // Thông tin cơ bản
                     Id = _stockInOutMasterId,
-                    VoucherNumber = StockOutNumberTextEdit.Text?.Trim() ?? string.Empty,
-                    StockOutDate = StockOutDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                    LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatLinhKienLapRap,
+                    VoucherNumber = StockInNumberTextEdit.Text?.Trim() ?? string.Empty,
+                    StockOutDate = StockInDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
+                    LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
                     TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                     // Thông tin bổ sung
@@ -432,22 +432,7 @@ namespace Inventory.StockOut.XuatLapRap
                 if (warehouseId != Guid.Empty)
                 {
                     dto.WarehouseId = warehouseId;
-
-                    // Lấy thông tin chi tiết từ selected row hoặc binding source
-                    var warehouse =
-                        WarehouseNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.Company.CompanyBranchDto;
-                    if (warehouse == null &&
-                        companyBranchDtoBindingSource.DataSource is System.Collections.IList warehouseList)
-                    {
-                        warehouse = warehouseList.Cast<DTO.MasterData.Company.CompanyBranchDto>()
-                            .FirstOrDefault(w => w.Id == warehouseId);
-                    }
-
-                    if (warehouse != null)
-                    {
-                        dto.WarehouseCode = warehouse.BranchCode ?? string.Empty;
-                        dto.WarehouseName = warehouse.BranchName ?? string.Empty;
-                    }
+                    dto.CustomerId = warehouseId;
                 }
 
                 // Khởi tạo tổng hợp với giá trị 0 (sẽ được cập nhật từ detail sau)
@@ -463,26 +448,26 @@ namespace Inventory.StockOut.XuatLapRap
         }
 
         /// <summary>
-        /// Load dữ liệu master từ ID phiếu nhập xuất kho
+        /// Load dữ liệu master từ ID phiếu nhập kho
         /// </summary>
-        /// <param name="stockInOutMasterId">ID phiếu nhập xuất kho</param>
+        /// <param name="stockInOutMasterId">ID phiếu nhập kho</param>
         public async Task LoadDataAsync(Guid stockInOutMasterId)
         {
             try
             {
                 _stockInOutMasterId = stockInOutMasterId;
-
+                
                 // Lấy master DTO từ BLL
                 var masterDto = _stockInOutBll.GetStockInOutMasterForUIDtoById(stockInOutMasterId);
                 if (masterDto == null)
                 {
-                    throw new InvalidOperationException($"Không tìm thấy phiếu xuất kho với ID: {stockInOutMasterId}");
+                    throw new InvalidOperationException($"Không tìm thấy phiếu nhập kho với ID: {stockInOutMasterId}");
                 }
 
                 // Set dữ liệu cho các control đơn giản (không cần datasource)
-                StockOutDateDateEdit.EditValue = masterDto.StockOutDate;
-                StockOutNumberTextEdit.EditValue = masterDto.VoucherNumber;
-
+                StockInDateDateEdit.EditValue = masterDto.StockOutDate;
+                StockInNumberTextEdit.EditValue = masterDto.VoucherNumber;
+                
                 NotesTextEdit.EditValue = masterDto.Notes;
                 NguoiNhanHangTextEdit.EditValue = masterDto.NguoiNhanHang;
                 NguoiGiaoHangTextEdit.EditValue = masterDto.NguoiGiaoHang;
@@ -490,10 +475,13 @@ namespace Inventory.StockOut.XuatLapRap
                 // Load datasource cho Warehouse trước khi set EditValue
                 await LoadWarehouseDataSourceAsync();
                 WarehouseNameSearchLookupEdit.EditValue = masterDto.WarehouseId;
+
+                // Cập nhật tổng hợp
+                UpdateTotals(masterDto.TotalQuantity);
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi tải dữ liệu phiếu xuất kho");
+                ShowError(ex, "Lỗi tải dữ liệu phiếu nhập kho");
                 throw;
             }
         }
@@ -513,17 +501,17 @@ namespace Inventory.StockOut.XuatLapRap
                 }
 
                 // Reset TextEdit
-                if (StockOutNumberTextEdit != null)
+                if (StockInNumberTextEdit != null)
                 {
-                    StockOutNumberTextEdit.Text = string.Empty;
+                    StockInNumberTextEdit.Text = string.Empty;
                 }
 
                 // Reset DateEdit
-                if (StockOutDateDateEdit != null)
+                if (StockInDateDateEdit != null)
                 {
-                    StockOutDateDateEdit.EditValue = DateTime.Now;
-                    // Tạo lại số phiếu xuất kho sau khi reset ngày
-                    GenerateStockOutNumber(DateTime.Now);
+                    StockInDateDateEdit.EditValue = DateTime.Now;
+                    // Tạo lại số phiếu nhập kho sau khi reset ngày
+                    GenerateStockInNumber(DateTime.Now);
                 }
 
                 // Reset MemoEdit
@@ -561,22 +549,14 @@ namespace Inventory.StockOut.XuatLapRap
             try
             {
                 // Cập nhật trực tiếp vào các SimpleLabelItem để hiển thị
-                UpdateTotalQuantityLabel(totalQuantity);
+                if (TotalQuantitySimpleLabelItem != null)
+                {
+                    TotalQuantitySimpleLabelItem.Text = FormatQuantity(totalQuantity);
+                }
             }
             catch (Exception ex)
             {
                 ShowError(ex, "Lỗi cập nhật tổng hợp");
-            }
-        }
-
-        /// <summary>
-        /// Cập nhật label tổng số lượng
-        /// </summary>
-        private void UpdateTotalQuantityLabel(decimal value)
-        {
-            if (TotalQuantitySimpleLabelItem != null)
-            {
-                TotalQuantitySimpleLabelItem.Text = FormatQuantity(value);
             }
         }
 
@@ -594,28 +574,28 @@ namespace Inventory.StockOut.XuatLapRap
         #region ========== HELPER METHODS ==========
 
         /// <summary>
-        /// Tạo số phiếu xuất kho tự động
+        /// Tạo số phiếu nhập kho tự động
         /// Sử dụng BLL để tự động xác định PNK hay PXK dựa trên LoaiNhapXuatKhoEnum
         /// </summary>
-        /// <param name="stockOutDate">Ngày xuất kho</param>
-        private void GenerateStockOutNumber(DateTime stockOutDate)
+        /// <param name="stockInDate">Ngày nhập kho</param>
+        private void GenerateStockInNumber(DateTime stockInDate)
         {
             try
             {
                 // Lấy loại nhập/xuất kho
-                var loaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatLinhKienLapRap;
+                var loaiNhapXuatKho = LoaiNhapXuatKhoEnum.NhapSanPhamLapRap;
 
                 // Gọi BLL để tạo số phiếu tự động (tự động xác định PNK hay PXK)
-                var voucherNumber = _stockInOutMasterBll.GenerateVoucherNumber(stockOutDate, loaiNhapXuatKho);
+                var voucherNumber = _stockInOutMasterBll.GenerateVoucherNumber(stockInDate, loaiNhapXuatKho);
 
-                if (StockOutNumberTextEdit != null)
+                if (StockInNumberTextEdit != null)
                 {
-                    StockOutNumberTextEdit.Text = voucherNumber;
+                    StockInNumberTextEdit.Text = voucherNumber;
                 }
             }
             catch (Exception ex)
             {
-                ShowError(ex, "Lỗi tạo số phiếu xuất");
+                ShowError(ex, "Lỗi tạo số phiếu nhập");
             }
         }
 
@@ -628,7 +608,7 @@ namespace Inventory.StockOut.XuatLapRap
             {
                 // Tìm parent form để làm owner cho MsgBox
                 var parentForm = this.FindForm();
-
+                    
                 // Sử dụng MsgBox.ShowException hoặc ShowError với thông báo chi tiết
                 if (ex != null)
                 {
@@ -643,6 +623,26 @@ namespace Inventory.StockOut.XuatLapRap
             {
                 // Fallback nếu có lỗi khi hiển thị MsgBox
                 System.Diagnostics.Debug.WriteLine($"Lỗi: {message}: {ex?.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị lỗi
+        /// </summary>
+        private void ShowError(string message)
+        {
+            try
+            {
+                // Tìm parent form để làm owner cho MsgBox
+                var parentForm = this.FindForm();
+                    
+                // Sử dụng MsgBox.ShowError
+                MsgBox.ShowError(message, "Lỗi", parentForm);
+            }
+            catch
+            {
+                // Fallback nếu có lỗi khi hiển thị MsgBox
+                System.Diagnostics.Debug.WriteLine($"Lỗi: {message}");
             }
         }
 

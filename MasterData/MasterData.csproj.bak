@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A15B1F9F-65D1-4723-A1E2-675F5BDC8641}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MasterData</RootNamespace>
+    <AssemblyName>MasterData</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Data.Desktop.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Dialogs.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Drawing.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraDialogs.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraTreeList.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Resources.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Resources.Extensions.4.6.0\lib\netstandard2.0\System.Resources.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Company\FrmCompanyBranchDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmCompanyBranchDetail.Designer.cs">
+      <DependentUpon>FrmCompanyBranchDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmDepartmentDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmDepartmentDetail.Designer.cs">
+      <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmEmployeeDto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmEmployeeDto.Designer.cs">
+      <DependentUpon>FrmEmployeeDto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmEmployeeDtoDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmEmployeeDtoDetail.Designer.cs">
+      <DependentUpon>FrmEmployeeDtoDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmPositionDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmPositionDetail.Designer.cs">
+      <DependentUpon>FrmPositionDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmCompany.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmCompany.Designer.cs">
+      <DependentUpon>FrmCompany.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmCompanyBranch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmCompanyBranch.Designer.cs">
+      <DependentUpon>FrmCompanyBranch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmDepartment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmDepartment.Designer.cs">
+      <DependentUpon>FrmDepartment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Company\FrmPosition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Company\FrmPosition.Designer.cs">
+      <DependentUpon>FrmPosition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerCategoryDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerContactDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerContactDetail.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerContactDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerDetail.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerSiteDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerSiteDetail.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerSiteDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerCategory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerCategory.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerCategory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerContact.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerContact.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerContact.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerList.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerSite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer\FrmBusinessPartnerSite.Designer.cs">
+      <DependentUpon>FrmBusinessPartnerSite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductImageAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductImageAdd.Designer.cs">
+      <DependentUpon>FrmProductImageAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductImageDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductImageDetail.Designer.cs">
+      <DependentUpon>FrmProductImageDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceCategoryDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceCategoryDetail.Designer.cs">
+      <DependentUpon>FrmProductServiceCategoryDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceDetail.Designer.cs">
+      <DependentUpon>FrmProductServiceDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmAttribute.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmAttribute.Designer.cs">
+      <DependentUpon>FrmAttribute.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductVariantDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductVariantDetail.Designer.cs">
+      <DependentUpon>FrmProductVariantDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductImage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductImage.Designer.cs">
+      <DependentUpon>FrmProductImage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceCategory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceCategory.Designer.cs">
+      <DependentUpon>FrmProductServiceCategory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductServiceList.Designer.cs">
+      <DependentUpon>FrmProductServiceList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmUnitOfMeasure.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmUnitOfMeasure.Designer.cs">
+      <DependentUpon>FrmUnitOfMeasure.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\UcProductServiceListCardView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProductService\UcProductServiceListCardView.Designer.cs">
+      <DependentUpon>UcProductServiceListCardView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductService\FrmProductVariant.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductService\FrmProductVariant.Designer.cs">
+      <DependentUpon>FrmProductVariant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Company\FrmCompanyBranchDetail.resx">
+      <DependentUpon>FrmCompanyBranchDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmDepartmentDetail.resx">
+      <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmEmployeeDto.resx">
+      <DependentUpon>FrmEmployeeDto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmEmployeeDtoDetail.resx">
+      <DependentUpon>FrmEmployeeDtoDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmPositionDetail.resx">
+      <DependentUpon>FrmPositionDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmCompany.resx">
+      <DependentUpon>FrmCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmCompanyBranch.resx">
+      <DependentUpon>FrmCompanyBranch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmDepartment.resx">
+      <DependentUpon>FrmDepartment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Company\FrmPosition.resx">
+      <DependentUpon>FrmPosition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerCategoryDetail.resx">
+      <DependentUpon>FrmBusinessPartnerCategoryDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerContactDetail.resx">
+      <DependentUpon>FrmBusinessPartnerContactDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerDetail.resx">
+      <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerSiteDetail.resx">
+      <DependentUpon>FrmBusinessPartnerSiteDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerCategory.resx">
+      <DependentUpon>FrmBusinessPartnerCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerContact.resx">
+      <DependentUpon>FrmBusinessPartnerContact.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerList.resx">
+      <DependentUpon>FrmBusinessPartnerList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer\FrmBusinessPartnerSite.resx">
+      <DependentUpon>FrmBusinessPartnerSite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductImageAdd.resx">
+      <DependentUpon>FrmProductImageAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductImageDetail.resx">
+      <DependentUpon>FrmProductImageDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductServiceCategoryDetail.resx">
+      <DependentUpon>FrmProductServiceCategoryDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductServiceDetail.resx">
+      <DependentUpon>FrmProductServiceDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmAttribute.resx">
+      <DependentUpon>FrmAttribute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductVariantDetail.resx">
+      <DependentUpon>FrmProductVariantDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductImage.resx">
+      <DependentUpon>FrmProductImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductServiceCategory.resx">
+      <DependentUpon>FrmProductServiceCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductServiceList.resx">
+      <DependentUpon>FrmProductServiceList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmUnitOfMeasure.resx">
+      <DependentUpon>FrmUnitOfMeasure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\UcProductServiceListCardView.resx">
+      <DependentUpon>UcProductServiceListCardView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductService\FrmProductVariant.resx">
+      <DependentUpon>FrmProductVariant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Company\DepartmentTreeList_Implementation.md" />
+    <None Include="Company\FrmBusinessPartnerCategory_Developer_Guide.md" />
+    <None Include="Company\FrmBusinessPartnerCategory_User_Guide.md" />
+    <None Include="Company\FrmCompanyBranch_Developer_Guide.md" />
+    <None Include="Company\FrmCompanyBranch_User_Guide.md" />
+    <None Include="Company\FrmCompany_Developer_Guide.md" />
+    <None Include="Company\FrmCompany_User_Guide.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Company\FrmDepartmentDetail_Developer_Guide.md" />
+    <None Include="Company\FrmDepartmentDetail_User_Guide.md" />
+    <None Include="Doc\BusinessPartner_Database_Schema.md" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.DepartmentLookupDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.EmployeeDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.Company.PositionDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerCategoryDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.CustomerPartner.BusinessPartnerLookupDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductImageDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductServiceCategoryDto.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantListDto.datasource" />
+    <None Include="Resources\list_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\list_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\addnewdatasource_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\addnewdatasource_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edittask_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edittask_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\deletelist_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\deletelist_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxls_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxls_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bll\Bll.csproj">
+      <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
+      <Name>Bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{68E56AB6-1ADA-40DE-9EDD-0BE2B8F35C3A}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>
+      <Name>DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{12f9fb39-92bf-45d5-bbb2-5353e33700f0}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Doc\Prompt cho AI Cursor %28Refactor code-behind WinForms GUI%29.txt" />
+    <Content Include="Doc\Prompt cho AI Cursor %28Refactor DTOs với Notation tiếng Việt%29.txt" />
+    <None Include="Resources\updatetableofcontents_32x32.png" />
+    <None Include="Resources\updatetableofcontents_16x16.png" />
+    <None Include="Resources\download_16x16.png" />
+    <None Include="Resources\loadfrom_16x16.png" />
+    <None Include="Resources\apply_16x16.png" />
+    <None Include="Resources\recurrence_32x32.png" />
+    <None Include="Resources\recurrence_16x16.png" />
+    <None Include="Resources\crossdatasourcefiltering _16x16.png" />
+    <None Include="Resources\functionsum_32x32.png" />
+    <None Include="Resources\functionsum_16x16.png" />
+    <None Include="Resources\cancel_32x32.png" />
+    <None Include="Resources\cancel_16x16.png" />
+    <None Include="Resources\save_32x32.png" />
+    <None Include="Resources\save_16x16.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

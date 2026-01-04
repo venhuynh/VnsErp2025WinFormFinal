@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockOut.XuatLuuChuyenKho
+namespace Inventory.StockOut.XuatLuuChuyenKho
 {
     partial class UcXuatLuuChuyenKhoDetail
     {
@@ -363,7 +363,6 @@
 
         private System.Windows.Forms.BindingSource productVariantListDtoBindingSource;
         private DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel StockInDetailProductNameHtmlHypertextLabel;
-        private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit StockOutQtyTextEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit UnitPriceTextEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit VatTextEdit;
         private DevExpress.XtraGrid.Columns.GridColumn colGhiChu;

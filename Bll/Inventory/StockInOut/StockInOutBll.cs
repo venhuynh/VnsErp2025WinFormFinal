@@ -143,26 +143,26 @@ namespace Bll.Inventory.StockInOut
                 if (masterDto == null)
                 {
                     _logger?.Warning("UpdateAsync: masterDto is null");
-                    throw new ArgumentNullException(nameof(masterDto), "Master DTO không được null");
+                    throw new ArgumentNullException(nameof(masterDto), @"Master DTO không được null");
                 }
 
                 if (masterDto.Id == Guid.Empty)
                 {
                     _logger?.Warning("UpdateAsync: masterDto.Id is Empty");
-                    throw new ArgumentException("Master ID không được rỗng khi cập nhật", nameof(masterDto));
+                    throw new ArgumentException(@"Master ID không được rỗng khi cập nhật", nameof(masterDto));
                 }
 
                 if (detailDtos == null || detailDtos.Count == 0)
                 {
                     _logger?.Warning("UpdateAsync: detailDtos is null or empty");
-                    throw new ArgumentException("Danh sách chi tiết không được rỗng", nameof(detailDtos));
+                    throw new ArgumentException(@"Danh sách chi tiết không được rỗng", nameof(detailDtos));
                 }
 
                 // Validate business rules
                 if (masterDto.WarehouseId == Guid.Empty)
                 {
                     _logger?.Warning("UpdateAsync: WarehouseId is Empty");
-                    throw new ArgumentException("Vui lòng chọn kho", nameof(masterDto));
+                    throw new ArgumentException(@"Vui lòng chọn kho", nameof(masterDto));
                 }
 
                 // Gọi repository để cập nhật

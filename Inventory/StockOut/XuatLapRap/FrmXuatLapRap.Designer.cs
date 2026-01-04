@@ -31,7 +31,7 @@ namespace Inventory.StockOut.XuatLapRap
         {
             this.components = new System.ComponentModel.Container();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucXuatLapRapDetailDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapDetailDto();
+            this.ucXuatLapRapDetailDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapDetail();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
@@ -53,7 +53,7 @@ namespace Inventory.StockOut.XuatLapRap
             this.dockPanel2 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel2_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
-            this.ucXuatLapRapMasterDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapMasterDto();
+            this.ucXuatLapRapMasterDto1 = new Inventory.StockOut.XuatLapRap.UcXuatLapRapMaster();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
@@ -382,9 +382,9 @@ namespace Inventory.StockOut.XuatLapRap
         private DevExpress.XtraBars.BarButtonItem ThemHinhAnhBarButtonItem;
         private DevExpress.XtraBars.BarStaticItem HotKeyBarStaticItem;
         private DevExpress.XtraBars.BarButtonItem ReloadDataSourceBarButtonItem;
-        private UcXuatLapRapMasterDto ucXuatLapRapMasterDto1;
+        private UcXuatLapRapMaster ucXuatLapRapMasterDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-        private UcXuatLapRapDetailDto ucXuatLapRapDetailDto1;
+        private UcXuatLapRapDetail ucXuatLapRapDetailDto1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private DevExpress.XtraBars.BarButtonItem barButtonItem1;
     }

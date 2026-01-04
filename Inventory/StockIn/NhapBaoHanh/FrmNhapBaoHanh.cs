@@ -676,33 +676,6 @@ namespace Inventory.StockIn.NhapBaoHanh
                     return false;
                 }
 
-                // Validate thêm business rules cho từng detail DTO
-                // Lưu ý: Nhập bảo hành không có giá tiền, chỉ kiểm tra số lượng và hàng hóa
-                var validationErrors = new List<string>();
-                for (var i = 0; i < detailDtos.Count; i++)
-                {
-                    var detailDto = detailDtos[i];
-                    var lineNumber = i + 1; // DTO có LineNumber nhưng tính từ index để đảm bảo
-
-                    if (detailDto.ProductVariantId == Guid.Empty)
-                    {
-                        validationErrors.Add($"Dòng {lineNumber}: Vui lòng chọn hàng hóa");
-                    }
-
-                    if (detailDto.StockInQty <= 0)
-                    {
-                        validationErrors.Add($"Dòng {lineNumber}: Số lượng nhập phải lớn hơn 0");
-                    }
-                }
-
-                if (validationErrors.Any())
-                {
-                    _logger.Warning("SaveDataAsync: Detail business rules validation failed, Errors={0}",
-                        string.Join("; ", validationErrors));
-                    MsgBox.ShowError($"Có lỗi trong dữ liệu chi tiết:\n\n{string.Join("\n", validationErrors)}", "Lỗi validation", this);
-                    return false;
-                }
-
                 // ========== BƯỚC 3: TẤT CẢ VALIDATION ĐÃ PASS - GỌI BLL ĐỂ LƯU ==========
                 // Dựa vào giá trị của _currentStockInOutMaster để xác định là Insert hay Update
                 // Nếu _currentStockInOutMaster == Guid.Empty: Tạo mới (Insert)

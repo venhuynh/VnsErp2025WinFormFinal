@@ -262,13 +262,13 @@ namespace MasterData.ProductService
                     detailText += $"📅 Ngày sửa: {_currentImageDto.ModifiedDate.Value:dd/MM/yyyy HH:mm:ss}{Environment.NewLine}";
                 }
 
-                if (!string.IsNullOrEmpty(_currentImageDto.ImagePath))
+                if (!string.IsNullOrEmpty(_currentImageDto.RelativePath) || !string.IsNullOrEmpty(_currentImageDto.FullPath))
                 {
-                    detailText += $"📂 Đường dẫn: {_currentImageDto.ImagePath}{Environment.NewLine}";
+                    detailText += $"📂 Đường dẫn: {_currentImageDto.RelativePath ?? _currentImageDto.FullPath ?? "N/A"}{Environment.NewLine}";
                 }
 
                 detailText += $"{Environment.NewLine}📊 THỐNG KÊ:{Environment.NewLine}" +
-                            $"• Trạng thái: {(_currentImageDto.IsActive ? "Hoạt động" : "Không hoạt động")}{Environment.NewLine}" +
+                            $"• Trạng thái: Hoạt động{Environment.NewLine}" +
                             $"• Có dữ liệu ảnh: {(_currentImageDto.ImageData != null && _currentImageDto.ImageData.Length > 0 ? "Có" : "Không")}{Environment.NewLine}";
 
                 if (_currentImageDto.ImageData != null && _currentImageDto.ImageData.Length > 0)
@@ -425,7 +425,6 @@ namespace MasterData.ProductService
         /// <summary>
         /// Xử lý sự kiện click nút "Xóa Ảnh"
         /// </summary>
-        [Obsolete("Obsolete")]
         private void DeleteImageSimpleButton_Click(object sender, EventArgs e)
         {
             try
@@ -433,7 +432,7 @@ namespace MasterData.ProductService
                 if (_currentImageDto == null) return;
 
                 // Kiểm tra xem có phải ảnh chính không
-                var isPrimary = _currentImageDto.IsPrimary;
+                var isPrimary = _currentImageDto.ImageSequenceNumber == 1;
                 var warningMessage = isPrimary 
                     ? "Bạn có chắc chắn muốn xóa hình ảnh chính này? Hành động này sẽ:\n• Xóa ảnh khỏi database\n• Xóa file ảnh khỏi thư mục lưu trữ\n• Cập nhật thông tin sản phẩm"
                     : "Bạn có chắc chắn muốn xóa hình ảnh này? Hành động này sẽ:\n• Xóa ảnh khỏi database\n• Xóa file ảnh khỏi thư mục lưu trữ";

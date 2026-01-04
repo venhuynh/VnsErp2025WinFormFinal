@@ -724,14 +724,13 @@ namespace MasterData.ProductService
                 
                 // Thêm các columns theo thứ tự ưu tiên
                 ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "Id", Visible = false });
-                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "Caption", Caption = @"Tên hình ảnh" });
-                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "AltText", Caption = @"Mô tả" });
+                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "DisplayCaption", Caption = @"Tên hình ảnh" });
+                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "FileName", Caption = @"Mô tả" });
                 ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "ImageData", Caption = @"Hình ảnh" });
-                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "IsPrimary", Caption = @"Ảnh chính" });
+                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "ImageSequenceNumber", Caption = @"Thứ tự/Ảnh chính", Visible = false });
                 ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "ProductName", Caption = @"Sản phẩm", Visible = false });
-                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "ImageType", Caption = @"Loại ảnh", Visible = false });
-                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "ImageSize", Caption = @"Kích thước", Visible = false });
-                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "SortOrder", Caption = @"Thứ tự", Visible = false });
+                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "FileExtension", Caption = @"Loại ảnh", Visible = false });
+                ProductImageDtoWinExplorerView.Columns.Add(new GridColumn { FieldName = "FileSize", Caption = @"Kích thước", Visible = false });
 
                 // Cấu hình ColumnSet theo DevExpress demo pattern
                 ConfigureColumnSet();
@@ -756,10 +755,11 @@ namespace MasterData.ProductService
                 ProductImageDtoWinExplorerView.ColumnSet.SmallImageColumn = ProductImageDtoWinExplorerView.Columns["ImageData"];
                 
                 // Cấu hình description column
-                ProductImageDtoWinExplorerView.ColumnSet.DescriptionColumn = ProductImageDtoWinExplorerView.Columns["AltText"];
+                ProductImageDtoWinExplorerView.ColumnSet.DescriptionColumn = ProductImageDtoWinExplorerView.Columns["FileName"];
                 
-                // Cấu hình checkbox column cho ảnh chính
-                ProductImageDtoWinExplorerView.ColumnSet.CheckBoxColumn = ProductImageDtoWinExplorerView.Columns["IsPrimary"];
+                // Cấu hình checkbox column cho ảnh chính - sử dụng ImageSequenceNumber == 1
+                // Note: CheckBoxColumn không còn phù hợp với logic mới, có thể bỏ qua hoặc tạo unbound column
+                // ProductImageDtoWinExplorerView.ColumnSet.CheckBoxColumn = null; // Không còn IsPrimary property
                 
                 // Cấu hình group column để nhóm theo sản phẩm
                 ProductImageDtoWinExplorerView.ColumnSet.GroupColumn = ProductImageDtoWinExplorerView.Columns["ProductName"];
@@ -851,7 +851,7 @@ namespace MasterData.ProductService
                 var imageCount = selectedImages.Count;
                 var confirmMessage = imageCount == 1
                     ? $"Bạn có chắc chắn muốn xóa hình ảnh này?\n\n" +
-                      $"• Tên: {selectedImages[0].FileName ?? selectedImages[0].Caption ?? "N/A"}\n" +
+                      $"• Tên: {selectedImages[0].FileName ?? selectedImages[0].DisplayCaption ?? "N/A"}\n" +
                       $"• Hình ảnh sẽ bị xóa khỏi database và storage (NAS/Local)\n" +
                       $"• Thao tác này không thể hoàn tác"
                     : $"Bạn có chắc chắn muốn xóa {imageCount} hình ảnh đã chọn?\n\n" +
@@ -898,7 +898,7 @@ namespace MasterData.ProductService
                 catch (Exception ex)
                 {
                     errorCount++;
-                    var fileName = imageDto.FileName ?? imageDto.Caption ?? imageDto.Id.ToString();
+                    var fileName = imageDto.FileName ?? imageDto.DisplayCaption ?? imageDto.Id.ToString();
                     errorMessages.Add($"{fileName}: {ex.Message}");
                 }
             }
@@ -1055,7 +1055,7 @@ namespace MasterData.ProductService
                     // ProductDisplayName là computed property, không cần set
 
                     // Sắp xếp theo sản phẩm để tạo separator tự nhiên
-                    _imageList = _imageList.OrderBy(x => x.ProductName).ThenBy(x => x.SortOrder).ToList();
+                    _imageList = _imageList.OrderBy(x => x.ProductName).ThenBy(x => x.ImageSequenceNumber).ToList();
 
                     // Bind data
                     BindGrid(_imageList);
@@ -1087,8 +1087,8 @@ namespace MasterData.ProductService
                 }
 
                 var productGroups = _imageList.GroupBy(x => x.ProductName).ToList();
-                var totalSize = _imageList.Sum(x => x.ImageSize);
-                var primaryImages = _imageList.Count(x => x.IsPrimary);
+                var totalSize = _imageList.Sum(x => x.FileSize ?? 0);
+                var primaryImages = _imageList.Count(x => x.ImageSequenceNumber == 1);
                 var averageSize = _imageList.Any() ? totalSize / _imageList.Count : 0;
 
                 var message = $"📊 Thông tin hình ảnh{Environment.NewLine}{Environment.NewLine}" +
@@ -1101,8 +1101,8 @@ namespace MasterData.ProductService
 
                 foreach (var group in productGroups.OrderBy(g => g.Key))
                 {
-                    var groupSize = group.Sum(x => x.ImageSize);
-                    var groupPrimary = group.Count(x => x.IsPrimary);
+                    var groupSize = group.Sum(x => x.FileSize ?? 0);
+                    var groupPrimary = group.Count(x => x.ImageSequenceNumber == 1);
                     message += $"• {group.Key}: {group.Count()} hình ảnh";
                     if (groupPrimary > 0) message += $" ({groupPrimary} ảnh chính)";
                     message += $" - {(groupSize / 1024.0):F1} KB{Environment.NewLine}";
@@ -1422,28 +1422,27 @@ namespace MasterData.ProductService
                 if (imageDto == null) return;
 
                 var consoleMessage = "=== THÔNG TIN CHI TIẾT HÌNH ẢNH ===" + Environment.NewLine +
-                                   $"Tên: {imageDto.Caption ?? "Không có"}" + Environment.NewLine +
-                                   $"Mô tả: {imageDto.AltText ?? "Không có"}" + Environment.NewLine +
+                                   $"Tên: {imageDto.DisplayCaption ?? imageDto.FileName ?? "Không có"}" + Environment.NewLine +
+                                   $"Mô tả: {imageDto.FileName ?? "Không có"}" + Environment.NewLine +
                                    $"Sản phẩm: {imageDto.ProductName ?? "Không xác định"}" + Environment.NewLine +
                                    $"ID: {imageDto.Id}" + Environment.NewLine +
-                                   $"Ảnh chính: {(imageDto.IsPrimary ? "Có" : "Không")}" + Environment.NewLine +
-                                   $"Kích thước: {imageDto.ImageWidth}x{imageDto.ImageHeight} pixels" + Environment.NewLine +
-                                   $"Dung lượng: {(imageDto.ImageSize / 1024.0):F1} KB" + Environment.NewLine +
-                                   $"Loại file: {imageDto.ImageType ?? "Không xác định"}" + Environment.NewLine +
-                                   $"Thứ tự: {imageDto.SortOrder}" + Environment.NewLine +
-                                   $"Ngày tạo: {imageDto.CreatedDate:dd/MM/yyyy HH:mm:ss}" + Environment.NewLine;
+                                   $"Ảnh chính: {(imageDto.ImageSequenceNumber == 1 ? "Có" : "Không")}" + Environment.NewLine +
+                                   $"Dung lượng: {((imageDto.FileSize ?? 0) / 1024.0):F1} KB" + Environment.NewLine +
+                                   $"Loại file: {imageDto.FileExtension ?? imageDto.MimeType ?? "Không xác định"}" + Environment.NewLine +
+                                   $"Thứ tự: {imageDto.ImageSequenceNumber}" + Environment.NewLine +
+                                   $"Ngày tạo: {imageDto.CreateDate:dd/MM/yyyy HH:mm:ss}" + Environment.NewLine;
 
                 if (imageDto.ModifiedDate.HasValue)
                 {
                     consoleMessage += $"Ngày sửa: {imageDto.ModifiedDate.Value:dd/MM/yyyy HH:mm:ss}" + Environment.NewLine;
                 }
 
-                if (!string.IsNullOrEmpty(imageDto.ImagePath))
+                if (!string.IsNullOrEmpty(imageDto.RelativePath) || !string.IsNullOrEmpty(imageDto.FullPath))
                 {
-                    consoleMessage += $"Đường dẫn: {imageDto.ImagePath}" + Environment.NewLine;
+                    consoleMessage += $"Đường dẫn: {imageDto.RelativePath ?? imageDto.FullPath ?? "N/A"}" + Environment.NewLine;
                 }
 
-                consoleMessage += $"Trạng thái: {(imageDto.IsActive ? "Hoạt động" : "Không hoạt động")}" + Environment.NewLine +
+                consoleMessage += $"Trạng thái: Hoạt động" + Environment.NewLine +
                                  $"Có dữ liệu ảnh: {(imageDto.ImageData != null && imageDto.ImageData.Length > 0 ? "Có" : "Không")}" + Environment.NewLine;
 
                 if (imageDto.ImageData != null && imageDto.ImageData.Length > 0)
@@ -1605,7 +1604,7 @@ namespace MasterData.ProductService
                 // Tạo form FrmProductImageDetail với ID hình ảnh
                 using var detailForm = new FrmProductImageDetail(imageDto.Id);
                 // Cấu hình form
-                detailForm.Text = $@"Chi tiết hình ảnh: {imageDto.Caption ?? "Không có tên"}";
+                detailForm.Text = $@"Chi tiết hình ảnh: {imageDto.DisplayCaption ?? imageDto.FileName ?? "Không có tên"}";
                 detailForm.StartPosition = FormStartPosition.CenterParent;
                 detailForm.TopMost = true; // Đặt form ở topmost
                 detailForm.WindowState = FormWindowState.Normal;

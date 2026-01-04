@@ -13,7 +13,7 @@ using DTO.Inventory.InventoryManagement;
 
 namespace Inventory.StockOut.XuatHangThuongMai;
 
-public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
+public partial class UcXuatHangThuongMaiMaster : XtraUserControl
 {
     #region ========== KHAI BÁO BIẾN ==========
 
@@ -47,7 +47,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcXuatHangThuongMaiMasterDto()
+    public UcXuatHangThuongMaiMaster()
     {
         InitializeComponent();
         InitializeControl();
@@ -398,21 +398,6 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
             {
                 dto.WarehouseId = warehouseId;
 
-                // Lấy thông tin chi tiết từ selected row hoặc binding source
-                var warehouse =
-                    WarehouseNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.Company.CompanyBranchDto;
-                if (warehouse == null &&
-                    companyBranchDtoBindingSource.DataSource is System.Collections.IList warehouseList)
-                {
-                    warehouse = warehouseList.Cast<DTO.MasterData.Company.CompanyBranchDto>()
-                        .FirstOrDefault(w => w.Id == warehouseId);
-                }
-
-                if (warehouse != null)
-                {
-                    dto.WarehouseCode = warehouse.BranchCode ?? string.Empty;
-                    dto.WarehouseName = warehouse.BranchName ?? string.Empty;
-                }
             }
 
             // Lấy thông tin Customer từ selected item trong SearchLookUpEdit
@@ -423,26 +408,7 @@ public partial class UcXuatHangThuongMaiMasterDto : XtraUserControl
             if (customerId != Guid.Empty)
             {
                 dto.CustomerId = customerId;
-
-                // Lấy thông tin chi tiết từ selected row hoặc binding source
-                var customer =
-                    CustomerNameSearchLookupEdit.GetSelectedDataRow() as
-                        DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto;
-                if (customer == null &&
-                    businessPartnerSiteListDtoBindingSource.DataSource is System.Collections.IList customerList)
-                {
-                    customer = customerList.Cast<DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto>()
-                        .FirstOrDefault(c => c.Id == customerId);
-                }
-
-                if (customer != null)
-                {
-                    dto.CustomerName = customer.SiteName ?? string.Empty;
-                }
             }
-
-            // SalesOrderId nếu có (SalesOrderSearchLookupEdit là TextEdit, không lưu ID)
-            // TODO: Nếu cần lưu SalesOrderId, cần thay đổi thành SearchLookUpEdit
 
             // Khởi tạo tổng hợp với giá trị 0 (sẽ được cập nhật từ detail sau)
             dto.SetTotals(0, 0, 0, 0);

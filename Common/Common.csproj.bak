@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{68E56AB6-1ADA-40DE-9EDD-0BE2B8F35C3A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Common</RootNamespace>
+    <AssemblyName>Common</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.BonusSkins.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.Desktop.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Drawing.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Spreadsheet.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraSpreadsheet.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Resources.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Resources.Extensions.4.6.0\lib\netstandard2.0\System.Resources.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Appconfig\AuthenticationMethod.cs" />
+    <Compile Include="Appconfig\DatabaseConfigDto.cs" />
+    <Compile Include="Appconfig\DatabaseConnectionHelper.cs" />
+    <Compile Include="Appconfig\DatabaseConnectionManager.cs" />
+    <Compile Include="Appconfig\NASConfigData.cs" />
+    <Compile Include="Appconfig\VntaCrypto.cs" />
+    <Compile Include="ApplicationConstants.cs" />
+    <Compile Include="Common\OverlayManager.cs" />
+    <Compile Include="Enums\LoaiBaoHanhEnum.cs" />
+    <Compile Include="Enums\TrangThaiBaoHanhEnum.cs" />
+    <Compile Include="Common\SplashScreenHelper.cs" />
+    <Compile Include="Common\UserControlManager.cs" />
+    <Compile Include="Common\VnsSplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Common\VnsSplashScreen.Designer.cs">
+      <DependentUpon>VnsSplashScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Common\WaitForm1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Common\WaitForm1.Designer.cs">
+      <DependentUpon>WaitForm1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\AppConfigHelper.cs" />
+    <Compile Include="Helpers\EmployeeInfoColumnFormatter.cs" />
+    <Compile Include="Helpers\GridViewColumnHelper.cs" />
+    <Compile Include="Helpers\GridViewHelper.cs" />
+    <Compile Include="Helpers\LogTextBoxHelper.cs" />
+    <Compile Include="Helpers\NumberToWordsHelper.cs" />
+    <Compile Include="Helpers\SimpleValidationHelper.cs" />
+    <Compile Include="Helpers\ValidationHelper.cs" />
+    <Compile Include="Helpers\XmlHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\AlertHelper.cs" />
+    <Compile Include="Utils\ApplicationEnumUtils.cs" />
+    <Compile Include="Utils\InputBoxHelper.cs" />
+    <Compile Include="Utils\MsgBox.cs" />
+    <Compile Include="Utils\RequiredFieldHelper.cs" />
+    <Compile Include="Utils\SecurityHelper.cs" />
+    <Compile Include="Utils\SkinHelper.cs" />
+    <Compile Include="Utils\SuperToolTipHelper.cs" />
+    <Compile Include="Utils\ApplicationVersionService.cs" />
+    <Compile Include="Utils\UpdateChecker.cs" />
+    <Compile Include="Utils\ApplicationIconHelper.cs" />
+    <Compile Include="Validation\ValidationHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Common\VnsSplashScreen.resx">
+      <DependentUpon>VnsSplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Common\WaitForm1.resx">
+      <DependentUpon>WaitForm1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\about.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Add.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AttendanceMachine %281%29.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AttendanceMachine %283%29.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AttendanceMachine %286%29.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Back.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\caution.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\check.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Close.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DisconnectDrive.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Forward.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Info.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Logo.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Search.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\security_warningcircled2.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\User.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Ven - Solutions logo_1438x617_background_transfer.jpg" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

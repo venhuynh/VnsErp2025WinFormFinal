@@ -149,73 +149,73 @@
     <value>..\Resources\home_32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="cooperation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\cooperation.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\cooperation.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="remote" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\remote.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\remote.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="location" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\location.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\location.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="address-book" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\address-book.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\address-book.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="home (1)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\home (1).svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\home (1).svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="branch (1)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\branch (1).svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\branch (1).svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="hierarchical-structure" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\hierarchical-structure.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\hierarchical-structure.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="job-position" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\job-position.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\job-position.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="bo_employee" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bo_employee.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\bo_employee.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="product-management" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\product-management.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\product-management.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="product-image" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\product-image.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\product-image.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="brand-image" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\brand-image.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\brand-image.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="cost" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\cost.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\cost.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="variant" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\variant.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\variant.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="team" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\team.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\team.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="inventory" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\inventory.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\inventory.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="inventory1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\inventory.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="insurance" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\insurance.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\insurance.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="replacement" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\replacement.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\replacement.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="supplier" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\supplier.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\supplier.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="inventory (1)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\inventory (1).svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\inventory (1).svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="hardware" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\hardware.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\hardware.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="invoice" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\invoice.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\invoice.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="attachment_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\attachment_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -233,21 +233,21 @@
     <value>..\Resources\pivot_32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="dashboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\dashboard.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\dashboard.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="electronics_desktopmac" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\electronics_desktopmac.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\electronics_desktopmac.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="bo_user" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bo_user.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\bo_user.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="version-control" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\version-control.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\version-control.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="datasource" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\datasource.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\datasource.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="data-classification" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\data-classification.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>..\Resources\data-classification.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
 </root>

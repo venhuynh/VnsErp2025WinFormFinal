@@ -37,40 +37,31 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
-    <Reference Include="DevExpress.BonusSkins.v25.1" />
-    <Reference Include="DevExpress.Charts.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Data.Desktop.v25.1" />
-    <Reference Include="DevExpress.Data.v25.1" />
-    <Reference Include="DevExpress.Dialogs.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Docs.Barcode.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Docs.Core.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Docs.Pdf.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Docs.Presentation.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Docs.Spreadsheet.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Docs.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Docs.Word.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Office.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Pdf.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.PivotGrid.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.RichEdit.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.RichEdit.v25.1.Export, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.Utils.v25.1" />
-    <Reference Include="DevExpress.Sparkline.v25.1.Core" />
-    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraCharts.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraDialogs.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraEditors.v25.1" />
-    <Reference Include="DevExpress.Printing.v25.1.Core" />
-    <Reference Include="DevExpress.Drawing.v25.1" />
-    <Reference Include="DevExpress.XtraGauges.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraReports.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraReports.v25.1.CodeCompletion, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraReports.v25.1.Design.Tool, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraReports.v25.1.Extensions, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.XtraTreeList.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.BonusSkins.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Charts.v25.2.Core, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.Desktop.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Docs.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Drawing.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Office.v25.2.Core, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Pdf.v25.2.Core, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.PivotGrid.v25.2.Core, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Printing.v25.2.Core, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v25.2.Core, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v25.2.Export, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Sparkline.v25.2.Core, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v25.2.UI, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraDialogs.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGauges.v25.2.Core, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraTreeList.v25.2, Version=25.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -191,17 +182,17 @@
     <Compile Include="StockIn\NhapLapRap\FrmNhapLapRap.Designer.cs">
       <DependentUpon>FrmNhapLapRap.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.cs">
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.Designer.cs">
-      <DependentUpon>UcNhapLapRapLapRapDetailDto.cs</DependentUpon>
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetail.Designer.cs">
+      <DependentUpon>UcNhapLapRapLapRapDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMasterDto.cs">
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMasterDto.Designer.cs">
-      <DependentUpon>UcNhapLapRapMasterDto.cs</DependentUpon>
+    <Compile Include="StockIn\NhapLapRap\UcNhapLapRapMaster.Designer.cs">
+      <DependentUpon>UcNhapLapRapMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="StockIn\NhapLuuChuyenKho\FrmNhapLuuChuyenKho.cs">
       <SubType>Form</SubType>
@@ -311,17 +302,17 @@
     <Compile Include="StockOut\XuatHangThuongMai\FrmXuatKhoThuongMai.Designer.cs">
       <DependentUpon>FrmXuatKhoThuongMai.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetailDto.cs">
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetailDto.Designer.cs">
-      <DependentUpon>UcXuatHangThuongMaiDetailDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetail.Designer.cs">
+      <DependentUpon>UcXuatHangThuongMaiDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMasterDto.cs">
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMasterDto.Designer.cs">
-      <DependentUpon>UcXuatHangThuongMaiMasterDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMaster.Designer.cs">
+      <DependentUpon>UcXuatHangThuongMaiMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="StockOut\XuatLapRap\FrmXuatLapRap.cs">
       <SubType>Form</SubType>
@@ -329,17 +320,17 @@
     <Compile Include="StockOut\XuatLapRap\FrmXuatLapRap.Designer.cs">
       <DependentUpon>FrmXuatLapRap.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.cs">
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.Designer.cs">
-      <DependentUpon>UcXuatLapRapDetailDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapDetail.Designer.cs">
+      <DependentUpon>UcXuatLapRapDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapMasterDto.cs">
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapMasterDto.Designer.cs">
-      <DependentUpon>UcXuatLapRapMasterDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatLapRap\UcXuatLapRapMaster.Designer.cs">
+      <DependentUpon>UcXuatLapRapMaster.cs</DependentUpon>
     </Compile>
     <Compile Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.cs">
       <SubType>Form</SubType>
@@ -371,17 +362,17 @@
     <Compile Include="StockOut\XuatNoiBo\FrmXuatNoiBo.Designer.cs">
       <DependentUpon>FrmXuatNoiBo.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.cs">
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.Designer.cs">
-      <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoDetail.Designer.cs">
+      <DependentUpon>UcXuatNoiBoDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.cs">
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMaster.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMasterDto.Designer.cs">
-      <DependentUpon>UcXuatNoiBoMasterDto.cs</DependentUpon>
+    <Compile Include="StockOut\XuatNoiBo\UcXuatNoiBoMaster.Designer.cs">
+      <DependentUpon>UcXuatNoiBoMaster.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Management\FrmInventoryBalanceDto.resx">
       <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
@@ -447,11 +438,11 @@
     <EmbeddedResource Include="StockIn\NhapLapRap\FrmNhapLapRap.resx">
       <DependentUpon>FrmNhapLapRap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetailDto.resx">
-      <DependentUpon>UcNhapLapRapLapRapDetailDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapLapRapDetail.resx">
+      <DependentUpon>UcNhapLapRapLapRapDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapMasterDto.resx">
-      <DependentUpon>UcNhapLapRapMasterDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockIn\NhapLapRap\UcNhapLapRapMaster.resx">
+      <DependentUpon>UcNhapLapRapMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockIn\NhapLuuChuyenKho\FrmNhapLuuChuyenKho.resx">
       <DependentUpon>FrmNhapLuuChuyenKho.cs</DependentUpon>
@@ -501,20 +492,20 @@
     <EmbeddedResource Include="StockOut\XuatHangThuongMai\FrmXuatKhoThuongMai.resx">
       <DependentUpon>FrmXuatKhoThuongMai.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMasterDto.resx">
-      <DependentUpon>UcXuatHangThuongMaiMasterDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiMaster.resx">
+      <DependentUpon>UcXuatHangThuongMaiMaster.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetailDto.resx">
-      <DependentUpon>UcXuatHangThuongMaiDetailDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatHangThuongMai\UcXuatHangThuongMaiDetail.resx">
+      <DependentUpon>UcXuatHangThuongMaiDetail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatLapRap\FrmXuatLapRap.resx">
       <DependentUpon>FrmXuatLapRap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapDetailDto.resx">
-      <DependentUpon>UcXuatLapRapDetailDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapDetail.resx">
+      <DependentUpon>UcXuatLapRapDetail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapMasterDto.resx">
-      <DependentUpon>UcXuatLapRapMasterDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatLapRap\UcXuatLapRapMaster.resx">
+      <DependentUpon>UcXuatLapRapMaster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockOut\XuatLuuChuyenKho\FrmXuatLuuChuyenKho.resx">
       <DependentUpon>FrmXuatLuuChuyenKho.cs</DependentUpon>
@@ -531,8 +522,11 @@
     <EmbeddedResource Include="StockOut\XuatNoiBo\FrmXuatNoiBo.resx">
       <DependentUpon>FrmXuatNoiBo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoDetailDto.resx">
-      <DependentUpon>UcXuatNoiBoDetailDto.cs</DependentUpon>
+    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoDetail.resx">
+      <DependentUpon>UcXuatNoiBoDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StockOut\XuatNoiBo\UcXuatNoiBoMaster.resx">
+      <DependentUpon>UcXuatNoiBoMaster.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Doc\DatabaseSchema_StockInOutDocument_Proposal.md" />
@@ -627,7 +621,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bll\Bll.csproj">
       <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
@@ -636,6 +632,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{68E56AB6-1ADA-40DE-9EDD-0BE2B8F35C3A}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DeviceAssetManagement\DeviceAssetManagement.csproj">
+      <Project>{36EB8BA4-C5D4-4D12-95F5-BF7900D86EF6}</Project>
+      <Name>DeviceAssetManagement</Name>
     </ProjectReference>
     <ProjectReference Include="..\DTO\DTO.csproj">
       <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>

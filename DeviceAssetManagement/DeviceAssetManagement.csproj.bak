@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{36EB8BA4-C5D4-4D12-95F5-BF7900D86EF6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DeviceAssetManagement</RootNamespace>
+    <AssemblyName>DeviceAssetManagement</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Data.Desktop.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Docs.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Drawing.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraDialogs.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraTreeList.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Management\DeviceMangement\FrmDeviceDtoMangement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\FrmDeviceDtoMangement.Designer.cs">
+      <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.Designer.cs">
+      <DependentUpon>FrmDeviceQrManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.Designer.cs">
+      <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.Designer.cs">
+      <DependentUpon>UcDeviceDtoAddStockInOutHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.Designer.cs">
+      <DependentUpon>UcDeviceImageAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.Designer.cs">
+      <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceWarranty\FrmDeviceWarranty.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceWarranty\FrmDeviceWarranty.Designer.cs">
+      <DependentUpon>FrmDeviceWarranty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\DeviceWarranty\UcDeviceWarrantyAddEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Management\DeviceWarranty\UcDeviceWarrantyAddEdit.Designer.cs">
+      <DependentUpon>UcDeviceWarrantyAddEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="XtraForm1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XtraForm1.Designer.cs">
+      <DependentUpon>XtraForm1.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Management\DeviceMangement\FrmDeviceDtoMangement.resx">
+      <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\FrmDeviceQrManagement.resx">
+      <DependentUpon>FrmDeviceQrManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddEdit.resx">
+      <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.resx">
+      <DependentUpon>UcDeviceDtoAddStockInOutHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceImageAdd.resx">
+      <DependentUpon>UcDeviceImageAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceMangement\UcDeviceWarranty.resx">
+      <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceWarranty\FrmDeviceWarranty.resx">
+      <DependentUpon>FrmDeviceWarranty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Management\DeviceWarranty\UcDeviceWarrantyAddEdit.resx">
+      <DependentUpon>UcDeviceWarrantyAddEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XtraForm1.resx">
+      <DependentUpon>XtraForm1.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bll\Bll.csproj">
+      <Project>{50f0876e-db49-4c11-9158-e3146ab3ad93}</Project>
+      <Name>Bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{68e56ab6-1ada-40de-9edd-0be2b8f35c3a}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{77b6b4b6-d129-4a78-bd8d-9fca5f9b4a1c}</Project>
+      <Name>DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{12f9fb39-92bf-45d5-bbb2-5353e33700f0}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.AssetDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.AssetDtoConverter.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceDtoConverter.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceTransactionHistoryDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceTransactionHistoryDtoConverter.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.DeviceTransactionHistoryDtoHelper.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.WarrantyCheckListDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.WarrantyCheckListDtoConverter.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.WarrantyDto.datasource" />
+    <None Include="Properties\DataSources\DTO.DeviceAssetManagement.WarrantyDtoConverter.datasource" />
+    <None Include="Resources\listnumbers_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\listnumbers_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clear_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clear_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxls_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exporttoxls_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cancel_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cancel_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit_32x32.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

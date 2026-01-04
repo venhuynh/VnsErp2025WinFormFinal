@@ -387,7 +387,7 @@ public partial class UcXuatThietBiChoThueMuonMasterDto : DevExpress.XtraEditors.
                 Id = _stockInOutMasterId,
                 VoucherNumber = StockOutNumberTextEdit.Text?.Trim() ?? string.Empty,
                 StockOutDate = StockOutDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatThietBiMuonThue,
+                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
                 TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                 // Thông tin bổ sung
@@ -397,50 +397,24 @@ public partial class UcXuatThietBiChoThueMuonMasterDto : DevExpress.XtraEditors.
             };
 
             // Lấy thông tin Warehouse từ selected item trong SearchLookUpEdit
-            var warehouseId = _selectedWarehouseId != Guid.Empty 
-                ? _selectedWarehouseId 
+            var warehouseId = _selectedWarehouseId != Guid.Empty
+                ? _selectedWarehouseId
                 : (WarehouseNameSearchLookupEdit.EditValue is Guid wId ? wId : Guid.Empty);
 
             if (warehouseId != Guid.Empty)
             {
                 dto.WarehouseId = warehouseId;
 
-                // Lấy thông tin chi tiết từ selected row hoặc binding source
-                var warehouse = WarehouseNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.Company.CompanyBranchDto;
-                if (warehouse == null && companyBranchDtoBindingSource.DataSource is System.Collections.IList warehouseList)
-                {
-                    warehouse = warehouseList.Cast<DTO.MasterData.Company.CompanyBranchDto>()
-                        .FirstOrDefault(w => w.Id == warehouseId);
-                }
-
-                if (warehouse != null)
-                {
-                    dto.WarehouseCode = warehouse.BranchCode ?? string.Empty;
-                    dto.WarehouseName = warehouse.BranchName ?? string.Empty;
-                }
             }
 
             // Lấy thông tin Customer từ selected item trong SearchLookUpEdit
-            var customerId = _selectedPartnerSiteId != Guid.Empty 
-                ? _selectedPartnerSiteId 
+            var customerId = _selectedPartnerSiteId != Guid.Empty
+                ? _selectedPartnerSiteId
                 : (CustomerNameSearchLookupEdit.EditValue is Guid cId ? cId : Guid.Empty);
 
             if (customerId != Guid.Empty)
             {
                 dto.CustomerId = customerId;
-
-                // Lấy thông tin chi tiết từ selected row hoặc binding source
-                var customer = CustomerNameSearchLookupEdit.GetSelectedDataRow() as DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto;
-                if (customer == null && businessPartnerSiteListDtoBindingSource.DataSource is System.Collections.IList customerList)
-                {
-                    customer = customerList.Cast<DTO.MasterData.CustomerPartner.BusinessPartnerSiteListDto>()
-                        .FirstOrDefault(c => c.Id == customerId);
-                }
-
-                if (customer != null)
-                {
-                    dto.CustomerName = customer.SiteName ?? string.Empty;
-                }
             }
 
             // Khởi tạo tổng hợp với giá trị 0 (sẽ được cập nhật từ detail sau)

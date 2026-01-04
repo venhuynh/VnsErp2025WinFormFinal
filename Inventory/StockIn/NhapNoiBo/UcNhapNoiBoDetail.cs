@@ -143,14 +143,12 @@ public partial class UcNhapNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
                 details.Add(new StockInOutDetailForUIDto
                 {
                     Id = default,
-                    StockInOutMasterId = _stockInMasterId,
                     ProductVariantId = detailDto.ProductVariantId,
                     StockInQty = detailDto.StockInQty,
-                    StockOutQty = 0,
-                    UnitPrice = 0,
-                    Vat = 0,
-                    // VatAmount, TotalAmount, TotalAmountIncludedVat là computed properties (read-only)
-                    // Chúng sẽ tự động tính toán từ StockOutQty, UnitPrice, Vat
+                    StockOutQty = detailDto.StockOutQty,
+                    UnitPrice = detailDto.UnitPrice,
+                    Vat = detailDto.Vat,
+
                     GhiChu = detailDto.GhiChu,
                 });
             }
