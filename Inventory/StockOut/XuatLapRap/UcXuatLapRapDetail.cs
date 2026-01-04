@@ -412,8 +412,8 @@ namespace Inventory.StockOut.XuatLapRap
                         return;
                     }
 
-                    // Tìm ProductVariantListDto trong binding source
-                    var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+                    // Tìm ProductVariantDto trong binding source
+                    var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
                         .FirstOrDefault(v => v.Id == productVariantId);
 
                     if (selectedVariant == null)
@@ -730,7 +730,7 @@ namespace Inventory.StockOut.XuatLapRap
                 // Nếu đã load và không force refresh, không load lại
                 if (_isProductVariantDataSourceLoaded && !forceRefresh &&
                     productVariantListDtoBindingSource.DataSource != null &&
-                    productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> existingList &&
+                    productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> existingList &&
                     existingList.Count > 0)
                 {
                     return;
@@ -791,7 +791,7 @@ namespace Inventory.StockOut.XuatLapRap
                 // Chỉ load nếu chưa load hoặc datasource rỗng
                 if (!_isProductVariantDataSourceLoaded ||
                     productVariantListDtoBindingSource.DataSource == null ||
-                    (productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> list &&
+                    (productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> list &&
                      list.Count == 0))
                 {
                     await LoadProductVariantsAsync();
@@ -978,8 +978,8 @@ namespace Inventory.StockOut.XuatLapRap
                 return;
             }
 
-            // Tìm ProductVariantListDto trong binding source
-            var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+            // Tìm ProductVariantDto trong binding source
+            var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
                 .FirstOrDefault(v => v.Id == productVariantId);
 
             if (selectedVariant == null)

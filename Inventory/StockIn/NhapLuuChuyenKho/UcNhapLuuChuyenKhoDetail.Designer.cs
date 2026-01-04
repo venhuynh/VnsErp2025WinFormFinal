@@ -1,4 +1,4 @@
-﻿namespace Inventory.StockIn.NhapLuuChuyenKho
+namespace Inventory.StockIn.NhapLuuChuyenKho
 {
     partial class UcNhapLuuChuyenKhoDetail
     {
@@ -148,7 +148,7 @@
             // 
             // productVariantListDtoBindingSource
             // 
-            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantListDto);
+            this.productVariantListDtoBindingSource.DataSource = typeof(DTO.MasterData.ProductService.ProductVariantDto);
             // 
             // ProductVariantDtoSearchLookUpEdit1View
             // 
@@ -178,7 +178,7 @@
             this.colFullName.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colFullName.Caption = "Thông tin sản phẩm";
             this.colFullName.ColumnEdit = this.ProductFullNameHypertextLabel;
-            this.colFullName.FieldName = "FullNameHtml";
+            this.colFullName.FieldName = "VariantFullName";
             this.colFullName.Name = "colFullName";
             this.colFullName.Visible = true;
             this.colFullName.VisibleIndex = 0;

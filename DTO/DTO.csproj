@@ -86,7 +86,6 @@
     <Compile Include="MasterData\ProductService\ProductVariantAttributeDto.cs" />
     <Compile Include="MasterData\ProductService\ProductVariantDetailDto.cs" />
     <Compile Include="MasterData\ProductService\ProductVariantDto.cs" />
-    <Compile Include="MasterData\ProductService\ProductVariantListDto.cs" />
     <Compile Include="MasterData\ProductService\ProductVariantSimpleDto.cs" />
     <Compile Include="MasterData\ProductService\UnitOfMeasureDto.cs" />
     <Compile Include="MasterData\ProductService\VariantAttributeDto.cs" />

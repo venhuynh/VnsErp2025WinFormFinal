@@ -71,8 +71,9 @@ namespace MasterData.ProductService
             this.AttributeGridControl = new DevExpress.XtraGrid.GridControl();
             this.unitOfMeasureDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.AttributeGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.colDisplayHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlContentHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
+            this.repositoryItemMemoEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.CodeTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.NameTextEdit = new DevExpress.XtraEditors.TextEdit();
             this.DescriptionTextEdit = new DevExpress.XtraEditors.TextEdit();
@@ -84,7 +85,6 @@ namespace MasterData.ProductService
             this.ItemForDescription = new DevExpress.XtraLayout.LayoutControlItem();
             this.ItemForIsActive = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colDisplayHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dxErrorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataLayoutControl1)).BeginInit();
@@ -92,6 +92,7 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.unitOfMeasureDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HtmlContentHypertextLabel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.CodeTextEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NameTextEdit.Properties)).BeginInit();
@@ -185,7 +186,7 @@ namespace MasterData.ProductService
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(666, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(666, 24);
             // 
             // barDockControlBottom
             // 
@@ -199,17 +200,17 @@ namespace MasterData.ProductService
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 621);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 636);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(666, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(666, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 621);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 636);
             // 
             // dxErrorProvider1
             // 
@@ -293,24 +294,24 @@ namespace MasterData.ProductService
             this.dataLayoutControl1.Controls.Add(this.DescriptionTextEdit);
             this.dataLayoutControl1.Controls.Add(this.IsActiveCheckEdit);
             this.dataLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.dataLayoutControl1.Location = new System.Drawing.Point(0, 24);
             this.dataLayoutControl1.Name = "dataLayoutControl1";
             this.dataLayoutControl1.Root = this.Root;
-            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 621);
+            this.dataLayoutControl1.Size = new System.Drawing.Size(666, 636);
             this.dataLayoutControl1.TabIndex = 15;
             this.dataLayoutControl1.Text = "dataLayoutControl1";
             // 
             // AttributeGridControl
             // 
             this.AttributeGridControl.DataSource = this.unitOfMeasureDtoBindingSource;
-            this.AttributeGridControl.Location = new System.Drawing.Point(16, 146);
+            this.AttributeGridControl.Location = new System.Drawing.Point(12, 108);
             this.AttributeGridControl.MainView = this.AttributeGridView;
             this.AttributeGridControl.MenuManager = this.barManager1;
             this.AttributeGridControl.Name = "AttributeGridControl";
             this.AttributeGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemMemoEdit1,
             this.HtmlContentHypertextLabel});
-            this.AttributeGridControl.Size = new System.Drawing.Size(634, 459);
+            this.AttributeGridControl.Size = new System.Drawing.Size(642, 516);
             this.AttributeGridControl.TabIndex = 4;
             this.AttributeGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.AttributeGridView});
@@ -327,124 +328,12 @@ namespace MasterData.ProductService
             this.AttributeGridView.IndicatorWidth = 50;
             this.AttributeGridView.Name = "AttributeGridView";
             this.AttributeGridView.OptionsDetail.EnableMasterViewMode = false;
+            this.AttributeGridView.OptionsFind.AlwaysVisible = true;
             this.AttributeGridView.OptionsSelection.MultiSelect = true;
             this.AttributeGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.AttributeGridView.OptionsView.RowAutoHeight = true;
             this.AttributeGridView.OptionsView.ShowAutoFilterRow = true;
             this.AttributeGridView.OptionsView.ShowGroupPanel = false;
-            // 
-            // repositoryItemMemoEdit1
-            // 
-            this.repositoryItemMemoEdit1.Appearance.Options.UseTextOptions = true;
-            this.repositoryItemMemoEdit1.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
-            // 
-            // CodeTextEdit
-            // 
-            this.CodeTextEdit.Location = new System.Drawing.Point(81, 16);
-            this.CodeTextEdit.MenuManager = this.barManager1;
-            this.CodeTextEdit.Name = "CodeTextEdit";
-            this.CodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.CodeTextEdit.Size = new System.Drawing.Size(569, 28);
-            this.CodeTextEdit.StyleController = this.dataLayoutControl1;
-            this.CodeTextEdit.TabIndex = 0;
-            // 
-            // NameTextEdit
-            // 
-            this.NameTextEdit.Location = new System.Drawing.Point(81, 50);
-            this.NameTextEdit.MenuManager = this.barManager1;
-            this.NameTextEdit.Name = "NameTextEdit";
-            this.NameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.NameTextEdit.Size = new System.Drawing.Size(569, 28);
-            this.NameTextEdit.StyleController = this.dataLayoutControl1;
-            this.NameTextEdit.TabIndex = 2;
-            // 
-            // DescriptionTextEdit
-            // 
-            this.DescriptionTextEdit.Location = new System.Drawing.Point(81, 84);
-            this.DescriptionTextEdit.MenuManager = this.barManager1;
-            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
-            this.DescriptionTextEdit.Size = new System.Drawing.Size(569, 28);
-            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
-            this.DescriptionTextEdit.TabIndex = 3;
-            // 
-            // IsActiveCheckEdit
-            // 
-            this.IsActiveCheckEdit.Location = new System.Drawing.Point(81, 118);
-            this.IsActiveCheckEdit.MenuManager = this.barManager1;
-            this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
-            this.IsActiveCheckEdit.Properties.Caption = "Hoạt động";
-            this.IsActiveCheckEdit.Size = new System.Drawing.Size(569, 22);
-            this.IsActiveCheckEdit.StyleController = this.dataLayoutControl1;
-            this.IsActiveCheckEdit.TabIndex = 5;
-            // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlGroup1,
-            this.layoutControlItem1});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(666, 621);
-            this.Root.TextVisible = false;
-            // 
-            // layoutControlGroup1
-            // 
-            this.layoutControlGroup1.AllowDrawBackground = false;
-            this.layoutControlGroup1.GroupBordersVisible = false;
-            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.ItemForCode,
-            this.ItemForName,
-            this.ItemForDescription,
-            this.ItemForIsActive});
-            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlGroup1.Name = "autoGeneratedGroup0";
-            this.layoutControlGroup1.Size = new System.Drawing.Size(640, 130);
-            // 
-            // ItemForCode
-            // 
-            this.ItemForCode.Control = this.CodeTextEdit;
-            this.ItemForCode.Location = new System.Drawing.Point(0, 0);
-            this.ItemForCode.Name = "ItemForCode";
-            this.ItemForCode.Size = new System.Drawing.Size(640, 34);
-            this.ItemForCode.Text = "Mã ĐVT";
-            this.ItemForCode.TextSize = new System.Drawing.Size(49, 13);
-            // 
-            // ItemForName
-            // 
-            this.ItemForName.Control = this.NameTextEdit;
-            this.ItemForName.Location = new System.Drawing.Point(0, 34);
-            this.ItemForName.Name = "ItemForName";
-            this.ItemForName.Size = new System.Drawing.Size(640, 34);
-            this.ItemForName.Text = "Tên ĐVT";
-            this.ItemForName.TextSize = new System.Drawing.Size(49, 13);
-            // 
-            // ItemForDescription
-            // 
-            this.ItemForDescription.Control = this.DescriptionTextEdit;
-            this.ItemForDescription.Location = new System.Drawing.Point(0, 68);
-            this.ItemForDescription.Name = "ItemForDescription";
-            this.ItemForDescription.Size = new System.Drawing.Size(640, 34);
-            this.ItemForDescription.Text = "Mô tả";
-            this.ItemForDescription.TextSize = new System.Drawing.Size(49, 13);
-            // 
-            // ItemForIsActive
-            // 
-            this.ItemForIsActive.Control = this.IsActiveCheckEdit;
-            this.ItemForIsActive.Location = new System.Drawing.Point(0, 102);
-            this.ItemForIsActive.Name = "ItemForIsActive";
-            this.ItemForIsActive.Size = new System.Drawing.Size(640, 28);
-            this.ItemForIsActive.Text = "Trạng thái";
-            this.ItemForIsActive.TextSize = new System.Drawing.Size(49, 13);
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.AttributeGridControl;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 130);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(640, 465);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // colDisplayHtml
             // 
@@ -466,13 +355,126 @@ namespace MasterData.ProductService
             this.colDisplayHtml.MinWidth = 300;
             this.colDisplayHtml.Name = "colDisplayHtml";
             this.colDisplayHtml.Visible = true;
-            this.colDisplayHtml.VisibleIndex = 0;
+            this.colDisplayHtml.VisibleIndex = 1;
             this.colDisplayHtml.Width = 500;
             // 
             // HtmlContentHypertextLabel
             // 
             this.HtmlContentHypertextLabel.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
             this.HtmlContentHypertextLabel.Name = "HtmlContentHypertextLabel";
+            // 
+            // repositoryItemMemoEdit1
+            // 
+            this.repositoryItemMemoEdit1.Appearance.Options.UseTextOptions = true;
+            this.repositoryItemMemoEdit1.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.repositoryItemMemoEdit1.Name = "repositoryItemMemoEdit1";
+            // 
+            // CodeTextEdit
+            // 
+            this.CodeTextEdit.Location = new System.Drawing.Point(73, 12);
+            this.CodeTextEdit.MenuManager = this.barManager1;
+            this.CodeTextEdit.Name = "CodeTextEdit";
+            this.CodeTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.CodeTextEdit.Size = new System.Drawing.Size(581, 20);
+            this.CodeTextEdit.StyleController = this.dataLayoutControl1;
+            this.CodeTextEdit.TabIndex = 0;
+            // 
+            // NameTextEdit
+            // 
+            this.NameTextEdit.Location = new System.Drawing.Point(73, 36);
+            this.NameTextEdit.MenuManager = this.barManager1;
+            this.NameTextEdit.Name = "NameTextEdit";
+            this.NameTextEdit.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.NameTextEdit.Size = new System.Drawing.Size(581, 20);
+            this.NameTextEdit.StyleController = this.dataLayoutControl1;
+            this.NameTextEdit.TabIndex = 2;
+            // 
+            // DescriptionTextEdit
+            // 
+            this.DescriptionTextEdit.Location = new System.Drawing.Point(73, 60);
+            this.DescriptionTextEdit.MenuManager = this.barManager1;
+            this.DescriptionTextEdit.Name = "DescriptionTextEdit";
+            this.DescriptionTextEdit.Size = new System.Drawing.Size(581, 20);
+            this.DescriptionTextEdit.StyleController = this.dataLayoutControl1;
+            this.DescriptionTextEdit.TabIndex = 3;
+            // 
+            // IsActiveCheckEdit
+            // 
+            this.IsActiveCheckEdit.Location = new System.Drawing.Point(73, 84);
+            this.IsActiveCheckEdit.MenuManager = this.barManager1;
+            this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
+            this.IsActiveCheckEdit.Properties.Caption = "Hoạt động";
+            this.IsActiveCheckEdit.Size = new System.Drawing.Size(581, 20);
+            this.IsActiveCheckEdit.StyleController = this.dataLayoutControl1;
+            this.IsActiveCheckEdit.TabIndex = 5;
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlGroup1,
+            this.layoutControlItem1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(666, 636);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlGroup1
+            // 
+            this.layoutControlGroup1.AllowDrawBackground = false;
+            this.layoutControlGroup1.GroupBordersVisible = false;
+            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.ItemForCode,
+            this.ItemForName,
+            this.ItemForDescription,
+            this.ItemForIsActive});
+            this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlGroup1.Name = "autoGeneratedGroup0";
+            this.layoutControlGroup1.Size = new System.Drawing.Size(646, 96);
+            // 
+            // ItemForCode
+            // 
+            this.ItemForCode.Control = this.CodeTextEdit;
+            this.ItemForCode.Location = new System.Drawing.Point(0, 0);
+            this.ItemForCode.Name = "ItemForCode";
+            this.ItemForCode.Size = new System.Drawing.Size(646, 24);
+            this.ItemForCode.Text = "Mã ĐVT";
+            this.ItemForCode.TextSize = new System.Drawing.Size(49, 13);
+            // 
+            // ItemForName
+            // 
+            this.ItemForName.Control = this.NameTextEdit;
+            this.ItemForName.Location = new System.Drawing.Point(0, 24);
+            this.ItemForName.Name = "ItemForName";
+            this.ItemForName.Size = new System.Drawing.Size(646, 24);
+            this.ItemForName.Text = "Tên ĐVT";
+            this.ItemForName.TextSize = new System.Drawing.Size(49, 13);
+            // 
+            // ItemForDescription
+            // 
+            this.ItemForDescription.Control = this.DescriptionTextEdit;
+            this.ItemForDescription.Location = new System.Drawing.Point(0, 48);
+            this.ItemForDescription.Name = "ItemForDescription";
+            this.ItemForDescription.Size = new System.Drawing.Size(646, 24);
+            this.ItemForDescription.Text = "Mô tả";
+            this.ItemForDescription.TextSize = new System.Drawing.Size(49, 13);
+            // 
+            // ItemForIsActive
+            // 
+            this.ItemForIsActive.Control = this.IsActiveCheckEdit;
+            this.ItemForIsActive.Location = new System.Drawing.Point(0, 72);
+            this.ItemForIsActive.Name = "ItemForIsActive";
+            this.ItemForIsActive.Size = new System.Drawing.Size(646, 24);
+            this.ItemForIsActive.Text = "Trạng thái";
+            this.ItemForIsActive.TextSize = new System.Drawing.Size(49, 13);
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.AttributeGridControl;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 96);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(646, 520);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // FrmUnitOfMeasure
             // 
@@ -495,8 +497,8 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.unitOfMeasureDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttributeGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlContentHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMemoEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.CodeTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NameTextEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DescriptionTextEdit.Properties)).EndInit();

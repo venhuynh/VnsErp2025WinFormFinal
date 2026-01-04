@@ -59,10 +59,10 @@ namespace MasterData.Company
             this.PositionGridControl = new DevExpress.XtraGrid.GridControl();
             this.positionDtoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.PositionGridView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemHypertextLabel1 = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
@@ -209,31 +209,31 @@ namespace MasterData.Company
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 592);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 605);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 35);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 22);
             // 
             // barDockControlLeft
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 553);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 581);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 553);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 581);
             // 
             // repositoryItemComboBox1
             // 
@@ -253,10 +253,10 @@ namespace MasterData.Company
             // 
             this.layoutControl1.Controls.Add(this.PositionGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 553);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 581);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
@@ -264,13 +264,13 @@ namespace MasterData.Company
             // 
             this.PositionGridControl.DataSource = this.positionDtoBindingSource;
             this.PositionGridControl.EmbeddedNavigator.AllowHtmlTextInToolTip = DevExpress.Utils.DefaultBoolean.True;
-            this.PositionGridControl.Location = new System.Drawing.Point(16, 16);
+            this.PositionGridControl.Location = new System.Drawing.Point(12, 12);
             this.PositionGridControl.MainView = this.PositionGridView;
             this.PositionGridControl.MenuManager = this.barManager1;
             this.PositionGridControl.Name = "PositionGridControl";
             this.PositionGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemHypertextLabel1});
-            this.PositionGridControl.Size = new System.Drawing.Size(1043, 521);
+            this.PositionGridControl.Size = new System.Drawing.Size(1051, 557);
             this.PositionGridControl.TabIndex = 5;
             this.PositionGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.PositionGridView});
@@ -290,6 +290,7 @@ namespace MasterData.Company
             this.PositionGridView.GridControl = this.PositionGridControl;
             this.PositionGridView.IndicatorWidth = 50;
             this.PositionGridView.Name = "PositionGridView";
+            this.PositionGridView.OptionsFind.AlwaysVisible = true;
             this.PositionGridView.OptionsSelection.MultiSelect = true;
             this.PositionGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.PositionGridView.OptionsView.ColumnAutoWidth = false;
@@ -299,29 +300,6 @@ namespace MasterData.Company
             this.PositionGridView.OptionsView.ShowGroupPanel = false;
             this.PositionGridView.OptionsView.ShowViewCaption = true;
             this.PositionGridView.ViewCaption = "BẢNG DANH SÁCH CÁC CHỨC VỤ";
-            // 
-            // repositoryItemHypertextLabel1
-            // 
-            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
-            // 
-            // Root
-            // 
-            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-            this.Root.GroupBordersVisible = false;
-            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
-            this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 553);
-            this.Root.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.PositionGridControl;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // colThongTinHtml
             // 
@@ -346,8 +324,31 @@ namespace MasterData.Company
             this.colThongTinHtml.OptionsColumn.FixedWidth = true;
             this.colThongTinHtml.OptionsColumn.ReadOnly = true;
             this.colThongTinHtml.Visible = true;
-            this.colThongTinHtml.VisibleIndex = 0;
+            this.colThongTinHtml.VisibleIndex = 1;
             this.colThongTinHtml.Width = 500;
+            // 
+            // repositoryItemHypertextLabel1
+            // 
+            this.repositoryItemHypertextLabel1.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.repositoryItemHypertextLabel1.Name = "repositoryItemHypertextLabel1";
+            // 
+            // Root
+            // 
+            this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.Root.GroupBordersVisible = false;
+            this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
+            this.Root.Name = "Root";
+            this.Root.Size = new System.Drawing.Size(1075, 581);
+            this.Root.TextVisible = false;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.PositionGridControl;
+            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Size = new System.Drawing.Size(1055, 561);
+            this.layoutControlItem1.TextVisible = false;
             // 
             // FrmPosition
             // 

@@ -55,10 +55,10 @@ namespace MasterData.Customer
             this.colThongTinHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HtmlHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colLogoThumbnailData = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.PartnerLogoRepositoryItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             this.colCategoryPathHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.PartnerLogoRepositoryItemPictureEdit = new DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
@@ -66,9 +66,9 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PartnerLogoRepositoryItemPictureEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PartnerLogoRepositoryItemPictureEdit)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager1
@@ -152,7 +152,7 @@ namespace MasterData.Customer
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 24);
             // 
             // barDockControlBottom
             // 
@@ -166,40 +166,40 @@ namespace MasterData.Customer
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 588);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 603);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 588);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 603);
             // 
             // layoutControl1
             // 
             this.layoutControl1.Controls.Add(this.BusinessPartnerListGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 588);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 603);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
             // BusinessPartnerListGridControl
             // 
             this.BusinessPartnerListGridControl.DataSource = this.businessPartnerListDtoBindingSource;
-            this.BusinessPartnerListGridControl.Location = new System.Drawing.Point(16, 16);
+            this.BusinessPartnerListGridControl.Location = new System.Drawing.Point(12, 12);
             this.BusinessPartnerListGridControl.MainView = this.BusinessPartnerListGridView;
             this.BusinessPartnerListGridControl.MenuManager = this.barManager1;
             this.BusinessPartnerListGridControl.Name = "BusinessPartnerListGridControl";
             this.BusinessPartnerListGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlHypertextLabel,
             this.PartnerLogoRepositoryItemPictureEdit});
-            this.BusinessPartnerListGridControl.Size = new System.Drawing.Size(1043, 556);
+            this.BusinessPartnerListGridControl.Size = new System.Drawing.Size(1051, 579);
             this.BusinessPartnerListGridControl.TabIndex = 5;
             this.BusinessPartnerListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.BusinessPartnerListGridView});
@@ -221,6 +221,7 @@ namespace MasterData.Customer
             this.BusinessPartnerListGridView.GridControl = this.BusinessPartnerListGridControl;
             this.BusinessPartnerListGridView.IndicatorWidth = 40;
             this.BusinessPartnerListGridView.Name = "BusinessPartnerListGridView";
+            this.BusinessPartnerListGridView.OptionsFind.AlwaysVisible = true;
             this.BusinessPartnerListGridView.OptionsSelection.MultiSelect = true;
             this.BusinessPartnerListGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.BusinessPartnerListGridView.OptionsView.ColumnAutoWidth = false;
@@ -286,6 +287,14 @@ namespace MasterData.Customer
             this.colLogoThumbnailData.VisibleIndex = 1;
             this.colLogoThumbnailData.Width = 120;
             // 
+            // PartnerLogoRepositoryItemPictureEdit
+            // 
+            this.PartnerLogoRepositoryItemPictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.PartnerLogoRepositoryItemPictureEdit.Name = "PartnerLogoRepositoryItemPictureEdit";
+            this.PartnerLogoRepositoryItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            this.PartnerLogoRepositoryItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+            this.PartnerLogoRepositoryItemPictureEdit.ImageChanged += new System.EventHandler(this.PartnerLogoRepositoryItemPictureEdit_ImageChanged);
+            // 
             // colCategoryPathHtml
             // 
             this.colCategoryPathHtml.AppearanceCell.Options.UseTextOptions = true;
@@ -316,7 +325,7 @@ namespace MasterData.Customer
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 588);
+            this.Root.Size = new System.Drawing.Size(1075, 603);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -324,16 +333,8 @@ namespace MasterData.Customer
             this.layoutControlItem1.Control = this.BusinessPartnerListGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 562);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1055, 583);
             this.layoutControlItem1.TextVisible = false;
-            // 
-            // PartnerLogoRepositoryItemPictureEdit
-            // 
-            this.PartnerLogoRepositoryItemPictureEdit.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.PartnerLogoRepositoryItemPictureEdit.Name = "PartnerLogoRepositoryItemPictureEdit";
-            this.PartnerLogoRepositoryItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            this.PartnerLogoRepositoryItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
-            this.PartnerLogoRepositoryItemPictureEdit.ImageChanged += new System.EventHandler(this.PartnerLogoRepositoryItemPictureEdit_ImageChanged);
             // 
             // FrmBusinessPartnerList
             // 
@@ -354,9 +355,9 @@ namespace MasterData.Customer
             ((System.ComponentModel.ISupportInitialize)(this.businessPartnerListDtoBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BusinessPartnerListGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PartnerLogoRepositoryItemPictureEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PartnerLogoRepositoryItemPictureEdit)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

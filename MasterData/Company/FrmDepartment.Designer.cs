@@ -163,7 +163,7 @@ namespace MasterData.Company
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(834, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(834, 24);
             // 
             // barDockControlBottom
             // 
@@ -177,17 +177,17 @@ namespace MasterData.Company
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 450);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 465);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(834, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(834, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 450);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 465);
             // 
             // repositoryItemComboBox1
             // 
@@ -207,24 +207,24 @@ namespace MasterData.Company
             // 
             this.layoutControl1.Controls.Add(this.DepartmentDtoGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(834, 450);
+            this.layoutControl1.Size = new System.Drawing.Size(834, 465);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
             // DepartmentDtoGridControl
             // 
             this.DepartmentDtoGridControl.DataSource = this.departmentDtoBindingSource;
-            this.DepartmentDtoGridControl.Location = new System.Drawing.Point(16, 16);
+            this.DepartmentDtoGridControl.Location = new System.Drawing.Point(12, 12);
             this.DepartmentDtoGridControl.MainView = this.DepartmentDtoGridView;
             this.DepartmentDtoGridControl.MenuManager = this.barManager1;
             this.DepartmentDtoGridControl.Name = "DepartmentDtoGridControl";
             this.DepartmentDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.ThongTinHtmlHypertextLabel,
             this.FullPathHtmlHypertextLabel});
-            this.DepartmentDtoGridControl.Size = new System.Drawing.Size(802, 418);
+            this.DepartmentDtoGridControl.Size = new System.Drawing.Size(810, 441);
             this.DepartmentDtoGridControl.TabIndex = 4;
             this.DepartmentDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.DepartmentDtoGridView});
@@ -245,6 +245,7 @@ namespace MasterData.Company
             this.DepartmentDtoGridView.GridControl = this.DepartmentDtoGridControl;
             this.DepartmentDtoGridView.IndicatorWidth = 50;
             this.DepartmentDtoGridView.Name = "DepartmentDtoGridView";
+            this.DepartmentDtoGridView.OptionsFind.AlwaysVisible = true;
             this.DepartmentDtoGridView.OptionsSelection.MultiSelect = true;
             this.DepartmentDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.DepartmentDtoGridView.OptionsView.ColumnAutoWidth = false;
@@ -324,7 +325,7 @@ namespace MasterData.Company
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(834, 450);
+            this.Root.Size = new System.Drawing.Size(834, 465);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -332,7 +333,7 @@ namespace MasterData.Company
             this.layoutControlItem1.Control = this.DepartmentDtoGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(808, 424);
+            this.layoutControlItem1.Size = new System.Drawing.Size(814, 445);
             this.layoutControlItem1.TextVisible = false;
             // 
             // treeListBand1

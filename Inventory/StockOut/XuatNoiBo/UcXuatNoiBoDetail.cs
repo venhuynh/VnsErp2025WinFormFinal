@@ -368,8 +368,8 @@ public partial class UcXuatNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
                     return;
                 }
 
-                // Tìm ProductVariantListDto trong binding source
-                var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+                // Tìm ProductVariantDto trong binding source
+                var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
                     .FirstOrDefault(v => v.Id == productVariantId);
 
                 if (selectedVariant == null)
@@ -605,89 +605,38 @@ public partial class UcXuatNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
                     break;
 
                 case Keys.Enter:
-                    // Enter: Di chuyển sang cột tiếp theo hoặc xuống dòng (chỉ commit row khi ở cột cuối cùng)
+                    // Enter: Hoàn thành nhập dòng (commit row)
                     if (!e.Control && !e.Shift && !e.Alt)
                     {
-                        e.Handled = true;
                         var focusedRowHandle = gridView.FocusedRowHandle;
-                        var focusedColumn = gridView.FocusedColumn;
-                        var visibleColumns = gridView.VisibleColumns;
-
-                        if (visibleColumns == null || visibleColumns.Count == 0)
+                            
+                        // Nếu đang ở new row (rowHandle < 0), commit row
+                        if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
                         {
-                            return;
-                        }
-
-                        // Tìm vị trí cột hiện tại trong danh sách các cột hiển thị
-                        var currentColumnIndex = -1;
-                        for (int i = 0; i < visibleColumns.Count; i++)
-                        {
-                            if (visibleColumns[i] == focusedColumn)
+                            e.Handled = true;
+                            // Validate row trước khi commit
+                            if (gridView.PostEditor())
                             {
-                                currentColumnIndex = i;
-                                break;
+                                gridView.UpdateCurrentRow();
                             }
                         }
-
-                        // Nếu không tìm thấy cột, không xử lý
-                        if (currentColumnIndex < 0)
+                        // Nếu đang ở dòng đã có, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
+                        else if (focusedRowHandle >= 0)
                         {
-                            return;
-                        }
-
-                        var lastColumnIndex = visibleColumns.Count - 1;
-                        var isLastColumn = currentColumnIndex >= lastColumnIndex;
-
-                        // Nếu đang ở cột cuối cùng
-                        if (isLastColumn)
-                        {
-                            // Post editor để lưu giá trị hiện tại
-                            if (!gridView.PostEditor())
+                            // Nếu đang ở cột cuối cùng, di chuyển xuống dòng tiếp theo
+                            var focusedColumn = gridView.FocusedColumn;
+                            var lastColumn = gridView.VisibleColumns[gridView.VisibleColumns.Count - 1];
+                                
+                            if (focusedColumn == lastColumn)
                             {
-                                return; // Validation failed, không di chuyển
-                            }
-
-                            // Nếu đang ở new row, commit row trước
-                            if (focusedRowHandle == DevExpress.XtraGrid.GridControl.NewItemRowHandle)
-                            {
-                                // Validate và commit row
-                                if (gridView.UpdateCurrentRow())
-                                {
-                                    // Sau khi commit, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
-                                    var rowCount = gridView.RowCount;
-                                    if (rowCount > 0)
-                                    {
-                                        // Di chuyển đến dòng cuối cùng (dòng vừa commit)
-                                        gridView.FocusedRowHandle = rowCount - 1;
-
-                                        // Di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
-                                        var nextRowHandle = rowCount;
-                                        if (nextRowHandle < gridView.RowCount)
-                                        {
-                                            gridView.FocusedRowHandle = nextRowHandle;
-                                        }
-                                        else
-                                        {
-                                            // Thêm dòng mới
-                                            gridView.AddNewRow();
-                                        }
-
-                                        // Focus vào cột đầu tiên
-                                        if (visibleColumns.Count > 0)
-                                        {
-                                            gridView.FocusedColumn = visibleColumns[0];
-                                        }
-                                    }
-                                }
-                            }
-                            // Nếu đang ở dòng đã có, di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
-                            else if (focusedRowHandle >= 0)
-                            {
+                                e.Handled = true;
+                                    
+                                // Di chuyển xuống dòng tiếp theo hoặc thêm dòng mới
                                 var nextRowHandle = focusedRowHandle + 1;
                                 if (nextRowHandle < gridView.RowCount)
                                 {
                                     gridView.FocusedRowHandle = nextRowHandle;
-                                    gridView.FocusedColumn = visibleColumns[0]; // Focus vào cột đầu tiên
+                                    gridView.FocusedColumn = gridView.Columns[0]; // Focus vào cột đầu tiên
                                 }
                                 else
                                 {
@@ -698,24 +647,7 @@ public partial class UcXuatNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
                                     {
                                         gridView.FocusedColumn = productVariantColumn;
                                     }
-                                    else if (visibleColumns.Count > 0)
-                                    {
-                                        gridView.FocusedColumn = visibleColumns[0];
-                                    }
                                 }
-                            }
-                        }
-                        // Nếu không phải cột cuối cùng, di chuyển sang cột tiếp theo (không commit row)
-                        else
-                        {
-                            // Post editor để lưu giá trị hiện tại (nhưng không commit row)
-                            gridView.PostEditor();
-
-                            // Di chuyển sang cột tiếp theo
-                            var nextColumnIndex = currentColumnIndex + 1;
-                            if (nextColumnIndex < visibleColumns.Count)
-                            {
-                                gridView.FocusedColumn = visibleColumns[nextColumnIndex];
                             }
                         }
                     }
@@ -749,7 +681,7 @@ public partial class UcXuatNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             // Nếu đã load và không force refresh, không load lại
             if (_isProductVariantDataSourceLoaded && !forceRefresh &&
                 productVariantListDtoBindingSource.DataSource != null &&
-                productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> existingList &&
+                productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> existingList &&
                 existingList.Count > 0)
             {
                 return;
@@ -811,7 +743,7 @@ public partial class UcXuatNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             // Chỉ load nếu chưa load hoặc datasource rỗng
             if (!_isProductVariantDataSourceLoaded ||
                 productVariantListDtoBindingSource.DataSource == null ||
-                (productVariantListDtoBindingSource.DataSource is List<ProductVariantListDto> list && list.Count == 0))
+                (productVariantListDtoBindingSource.DataSource is List<ProductVariantDto> list && list.Count == 0))
             {
                 await LoadProductVariantsAsync();
             }
@@ -969,8 +901,8 @@ public partial class UcXuatNoiBoDetail : DevExpress.XtraEditors.XtraUserControl
             return;
         }
 
-        // Tìm ProductVariantListDto trong binding source
-        var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantListDto>()
+        // Tìm ProductVariantDto trong binding source
+        var selectedVariant = productVariantListDtoBindingSource.Cast<ProductVariantDto>()
             .FirstOrDefault(v => v.Id == productVariantId);
 
         if (selectedVariant == null)

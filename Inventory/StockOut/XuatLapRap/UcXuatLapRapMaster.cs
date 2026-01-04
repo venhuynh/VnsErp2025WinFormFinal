@@ -415,7 +415,7 @@ namespace Inventory.StockOut.XuatLapRap
                     Id = _stockInOutMasterId,
                     VoucherNumber = StockOutNumberTextEdit.Text?.Trim() ?? string.Empty,
                     StockOutDate = StockOutDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                    LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
+                    LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatLinhKienLapRap,
                     TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                     // Thông tin bổ sung

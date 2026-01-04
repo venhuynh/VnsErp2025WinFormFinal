@@ -372,7 +372,10 @@ namespace MasterData.ProductService
         {
             try
             {
-                UpdateSelectedVariantIds();
+                // Sử dụng GridViewHelper để lấy selected IDs một cách đáng tin cậy
+                // Sử dụng ProductVariantSimpleDto vì đó là type thực tế được bind vào grid
+                _selectedVariantIds = GridViewHelper.GetSelectedRowColumnValues<Guid>(sender, nameof(ProductVariantSimpleDto.Id));
+                
                 UpdateButtonStates();
                 UpdateStatusBar();
             }
@@ -456,6 +459,7 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Xử lý sự kiện ImageChanged của RepositoryItemPictureEdit để cập nhật thumbnail biến thể sản phẩm
+        /// Tham khảo cách xử lý của PartnerLogoRepositoryItemPictureEdit_ImageChanged trong FrmBusinessPartnerList
         /// </summary>
         private async void ThumbnailItemPictureEdit_ImageChanged(object sender, EventArgs e)
         {
@@ -477,13 +481,29 @@ namespace MasterData.ProductService
                     return; // Không có row nào đang được edit
                 }
 
-                // Lấy DTO từ row
-                if (ProductVariantListGridView.GetRow(_editingRowHandle) is not ProductVariantListDto variantDto)
+                // Lấy DTO từ row - kiểm tra cả ProductVariantDto và ProductVariantSimpleDto
+                ProductVariantDto variantDto = null;
+                ProductVariantSimpleDto variantSimpleDto = null;
+                
+                var row = ProductVariantListGridView.GetRow(_editingRowHandle);
+                if (row is ProductVariantDto dto)
+                {
+                    variantDto = dto;
+                }
+                else if (row is ProductVariantSimpleDto simpleDto)
+                {
+                    variantSimpleDto = simpleDto;
+                }
+                else
                 {
                     return;
                 }
 
-                var variantId = variantDto.Id;
+                var variantId = variantDto?.Id ?? variantSimpleDto?.Id ?? Guid.Empty;
+                if (variantId == Guid.Empty)
+                {
+                    return;
+                }
 
                 // Xử lý upload thumbnail
                 await ExecuteWithWaitingFormAsync(async () =>
@@ -511,7 +531,6 @@ namespace MasterData.ProductService
 
                         // Upload thumbnail (lưu ảnh gốc lên NAS và thumbnail đã resize vào database)
                         // Sử dụng thumbnailMaxDimension = 120px để phù hợp với Width của cột thumbnail
-                        // Sử dụng method mới chỉ cập nhật thumbnail, không ảnh hưởng đến các trường khác
                         const int thumbnailMaxDimension = 120;
                         await _productVariantBll.UpdateThumbnailImageOnlyAsync(variantId, imageBytes, thumbnailMaxDimension);
 
@@ -522,14 +541,9 @@ namespace MasterData.ProductService
                     }
                     else
                     {
-                        // Trường hợp hình ảnh bị xóa - XÓA thumbnail
-                        // Sử dụng method mới chỉ xóa thumbnail, không ảnh hưởng đến các trường khác
-                        await _productVariantBll.UpdateThumbnailImageOnlyAsync(variantId, null);
-
-                        ShowInfo("Đã xóa ảnh đại diện biến thể sản phẩm thành công!");
-
-                        // Reload data để cập nhật
-                        await LoadDataAsyncWithoutSplash();
+                        // Trường hợp hình ảnh bị xóa - có thể xóa thumbnail nếu cần
+                        // Hiện tại không xóa, chỉ bỏ qua (giống FrmBusinessPartnerList)
+                        System.Diagnostics.Debug.WriteLine($"Thumbnail đã bị xóa cho biến thể {variantId}");
                     }
                 });
             }
@@ -548,13 +562,35 @@ namespace MasterData.ProductService
             {
                 _selectedVariantIds.Clear();
                 
+                // Lấy tất cả các rows đã được chọn
                 var selectedRows = ProductVariantListGridView.GetSelectedRows();
-                foreach (var rowHandle in selectedRows)
+                
+                // Nếu có rows được chọn, lấy IDs từ các rows đó
+                if (selectedRows != null && selectedRows.Length > 0)
                 {
-                    if (rowHandle >= 0)
+                    foreach (var rowHandle in selectedRows)
                     {
-                        var dto = ProductVariantListGridView.GetRow(rowHandle) as ProductVariantListDto;
-                        if (dto != null)
+                        // Chỉ xử lý data rows (rowHandle >= 0)
+                        if (rowHandle >= 0)
+                        {
+                            if (ProductVariantListGridView.GetRow(rowHandle) is ProductVariantDto dto)
+                            {
+                                if (!_selectedVariantIds.Contains(dto.Id))
+                                {
+                                    _selectedVariantIds.Add(dto.Id);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Nếu không có rows được chọn qua GetSelectedRows(), 
+                    // kiểm tra FocusedRowHandle như một fallback
+                    var focusedRowHandle = ProductVariantListGridView.FocusedRowHandle;
+                    if (focusedRowHandle >= 0)
+                    {
+                        if (ProductVariantListGridView.GetRow(focusedRowHandle) is ProductVariantDto dto)
                         {
                             _selectedVariantIds.Add(dto.Id);
                         }
@@ -597,7 +633,7 @@ namespace MasterData.ProductService
 
         /// <summary>
         /// Tải dữ liệu và bind vào Grid (Async, không hiển thị WaitForm).
-        /// Sử dụng ProductVariantListDto cho danh sách biến thể.
+        /// Sử dụng ProductVariantDto cho danh sách biến thể.
         /// </summary>
         private async Task LoadDataAsyncWithoutSplash()
         {
@@ -625,27 +661,14 @@ namespace MasterData.ProductService
 
 
         /// <summary>
-        /// Convert ProductVariantDto sang ProductVariantListDto (Async)
-        /// Resize thumbnail images về kích thước cố định
+        /// Resize thumbnail images của ProductVariantDto về kích thước cố định (Async)
         /// </summary>
-        private Task<List<ProductVariantListDto>> ConvertToVariantListDtosAsync(List<ProductVariantDto> variants)
+        private Task<List<ProductVariantDto>> ConvertToVariantListDtosAsync(List<ProductVariantDto> variants)
         {
             try
             {
-                // Manually convert ProductVariantDto to ProductVariantListDto
-                var result = variants.Select(v => new ProductVariantListDto
-                {
-                    Id = v.Id,
-                    ProductCode = v.ProductCode,
-                    ProductName = v.ProductName,
-                    VariantCode = v.VariantCode,
-                    VariantFullName = v.FullNameHtml, // Map VariantName to VariantFullName
-                    UnitName = v.UnitName,
-                    IsActive = v.IsActive,
-                    ThumbnailImage = v.ThumbnailImage,
-                    ImageCount = v.ImageCount,
-                    FullVariantInfo = v // Store full variant info for later use
-                }).ToList();
+                // Tạo bản sao danh sách để tránh thay đổi dữ liệu gốc
+                var result = variants.ToList();
                 
                 // Resize tất cả thumbnail images về kích thước cố định (60x60 pixels)
                 const int thumbnailSize = 60;
@@ -669,7 +692,7 @@ namespace MasterData.ProductService
             }
             catch (Exception ex)
             {
-                throw new Exception($"Lỗi convert sang ProductVariantListDto: {ex.Message}", ex);
+                throw new Exception($"Lỗi resize thumbnail images: {ex.Message}", ex);
             }
         }
 

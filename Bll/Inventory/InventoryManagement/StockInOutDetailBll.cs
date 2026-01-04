@@ -2,6 +2,7 @@ using Dal.DataAccess.Interfaces.Inventory.InventoryManagement;
 using Dal.DataContext;
 using Dal.DtoConverter.Inventory;
 using DTO.Inventory;
+using DTO.Inventory.InventoryManagement;
 using Logger;
 using Logger.Configuration;
 using Logger.Interfaces;
@@ -107,6 +108,35 @@ namespace Bll.Inventory.InventoryManagement
             catch (Exception ex)
             {
                 _logger.Error($"QueryProductHistory: Lỗi query lịch sử sản phẩm: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Query lịch sử sản phẩm nhập xuất kho với filter và trả về StockInOutProductHistoryDto
+        /// Tìm kiếm trong StockInOutDetail và các bảng liên quan (ProductVariant, ProductService, StockInOutMaster)
+        /// </summary>
+        /// <param name="fromDate">Từ ngày</param>
+        /// <param name="toDate">Đến ngày</param>
+        /// <param name="keyword">Từ khóa tìm kiếm (tìm trong mã hàng, tên hàng, số phiếu)</param>
+        /// <returns>Danh sách StockInOutProductHistoryDto</returns>
+        public List<StockInOutProductHistoryDto> QueryProductHistoryDto(DateTime fromDate, DateTime toDate, string keyword = null)
+        {
+            try
+            {
+                _logger.Debug(
+                    "QueryProductHistoryDto: Bắt đầu query lịch sử sản phẩm, FromDate={0}, ToDate={1}, Keyword={2}",
+                    fromDate, toDate, keyword ?? "null");
+
+                // Gọi Repository để thực hiện query (trả về DTOs trực tiếp)
+                var result = GetStockInOutDetailRepository().QueryProductHistoryDto(fromDate, toDate, keyword);
+
+                _logger.Info("QueryProductHistoryDto: Query thành công, ResultCount={0}", result.Count);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"QueryProductHistoryDto: Lỗi query lịch sử sản phẩm: {ex.Message}", ex);
                 throw;
             }
         }

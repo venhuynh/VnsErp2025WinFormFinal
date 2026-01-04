@@ -1,4 +1,4 @@
-﻿using DTO.MasterData.ProductService;
+using DTO.MasterData.ProductService;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
@@ -13,7 +13,7 @@ namespace Dal.DtoConverter
     public static class ProductServiceConverters
     {
         /// <summary>
-        /// Chuyển đổi ProductService entity sang ProductServiceDto
+        /// Chuyển đổi ProductService entity sang ProductServiceDto (không có tham số)
         /// </summary>
         /// <param name="entity">ProductService entity</param>
         /// <returns>ProductServiceDto</returns>
@@ -21,13 +21,28 @@ namespace Dal.DtoConverter
         {
             if (entity == null) return null;
 
+            // Lấy CategoryName từ navigation property nếu có
+            string categoryName = null;
+            if (entity.CategoryId.HasValue)
+            {
+                try
+                {
+                    categoryName = entity.ProductServiceCategory?.CategoryName;
+                }
+                catch
+                {
+                    // Navigation property có thể không được load hoặc DataContext đã disposed
+                    categoryName = null;
+                }
+            }
+
             return new ProductServiceDto
             {
                 Id = entity.Id,
                 Code = entity.Code,
                 Name = entity.Name,
                 CategoryId = entity.CategoryId,
-                CategoryName = null, // Sẽ được resolve riêng nếu cần
+                CategoryName = categoryName,
                 IsService = entity.IsService,
                 Description = entity.Description,
                 IsActive = entity.IsActive,
@@ -89,12 +104,26 @@ namespace Dal.DtoConverter
             string categoryName = null;
             string categoryFullPath = null;
 
-            if (entity.CategoryId.HasValue && categoryDict != null)
+            // Lấy CategoryName: ưu tiên từ categoryDict, nếu không có thì lấy từ navigation property
+            if (entity.CategoryId.HasValue)
             {
-                if (categoryDict.TryGetValue(entity.CategoryId.Value, out var category))
+                if (categoryDict != null && categoryDict.TryGetValue(entity.CategoryId.Value, out var category))
                 {
                     categoryName = category.CategoryName;
                     categoryFullPath = CalculateCategoryFullPath(category, categoryDict);
+                }
+                else
+                {
+                    // Fallback: lấy từ navigation property nếu có
+                    try
+                    {
+                        categoryName = entity.ProductServiceCategory?.CategoryName;
+                    }
+                    catch
+                    {
+                        // Navigation property có thể không được load hoặc DataContext đã disposed
+                        categoryName = null;
+                    }
                 }
             }
 

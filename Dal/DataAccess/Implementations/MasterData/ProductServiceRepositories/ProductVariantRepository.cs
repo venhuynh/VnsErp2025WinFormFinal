@@ -151,8 +151,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     productCode: product?.Code,
                     productName: product?.Name,
                     unitCode: unit?.Code,
-                    unitName: unit?.Name,
-                    productThumbnailImage: product?.ThumbnailImage?.ToArray()
+                    unitName: unit?.Name
                 );
             }
             catch (Exception ex)
@@ -183,8 +182,7 @@ namespace Dal.DataAccess.Implementations.MasterData.ProductServiceRepositories
                     productCode: product?.Code,
                     productName: product?.Name,
                     unitCode: unit?.Code,
-                    unitName: unit?.Name,
-                    productThumbnailImage: product?.ThumbnailImage?.ToArray()
+                    unitName: unit?.Name
                 );
             }
             catch (Exception ex)

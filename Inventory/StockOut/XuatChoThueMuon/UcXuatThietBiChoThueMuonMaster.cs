@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Inventory.StockOut.XuatChoThueMuon;
 
-public partial class UcXuatThietBiChoThueMuonMasterDto : DevExpress.XtraEditors.XtraUserControl
+public partial class UcXuatThietBiChoThueMuonMaster : DevExpress.XtraEditors.XtraUserControl
 {
     #region ========== KHAI BÁO BIẾN ==========
 
@@ -46,7 +46,7 @@ public partial class UcXuatThietBiChoThueMuonMasterDto : DevExpress.XtraEditors.
 
     #region ========== CONSTRUCTOR ==========
 
-    public UcXuatThietBiChoThueMuonMasterDto()
+    public UcXuatThietBiChoThueMuonMaster()
     {
         InitializeComponent();
         InitializeControl();
@@ -387,7 +387,7 @@ public partial class UcXuatThietBiChoThueMuonMasterDto : DevExpress.XtraEditors.
                 Id = _stockInOutMasterId,
                 VoucherNumber = StockOutNumberTextEdit.Text?.Trim() ?? string.Empty,
                 StockOutDate = StockOutDateDateEdit.EditValue is DateTime date ? date : DateTime.Now,
-                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatHangThuongMai,
+                LoaiNhapXuatKho = LoaiNhapXuatKhoEnum.XuatThietBiMuonThue,
                 TrangThai = TrangThaiPhieuNhapEnum.TaoMoi, // Mặc định là Tạo mới khi tạo mới
 
                 // Thông tin bổ sung

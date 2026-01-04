@@ -226,31 +226,31 @@ namespace MasterData.ProductService
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager1;
-            this.barDockControlTop.Size = new System.Drawing.Size(1075, 39);
+            this.barDockControlTop.Size = new System.Drawing.Size(1075, 24);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 592);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 605);
             this.barDockControlBottom.Manager = this.barManager1;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 35);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1075, 22);
             // 
             // barDockControlLeft
             // 
             this.barDockControlLeft.CausesValidation = false;
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 39);
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 24);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 553);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 581);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1075, 39);
+            this.barDockControlRight.Location = new System.Drawing.Point(1075, 24);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 553);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 581);
             // 
             // repositoryItemComboBox1
             // 
@@ -270,24 +270,24 @@ namespace MasterData.ProductService
             // 
             this.layoutControl1.Controls.Add(this.ProductServiceListGridControl);
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.layoutControl1.Location = new System.Drawing.Point(0, 39);
+            this.layoutControl1.Location = new System.Drawing.Point(0, 24);
             this.layoutControl1.Name = "layoutControl1";
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(1075, 553);
+            this.layoutControl1.Size = new System.Drawing.Size(1075, 581);
             this.layoutControl1.TabIndex = 4;
             this.layoutControl1.Text = "layoutControl1";
             // 
             // ProductServiceListGridControl
             // 
             this.ProductServiceListGridControl.DataSource = this.productServiceDtoBindingSource;
-            this.ProductServiceListGridControl.Location = new System.Drawing.Point(16, 16);
+            this.ProductServiceListGridControl.Location = new System.Drawing.Point(12, 12);
             this.ProductServiceListGridControl.MainView = this.ProductServiceGridView;
             this.ProductServiceListGridControl.MenuManager = this.barManager1;
             this.ProductServiceListGridControl.Name = "ProductServiceListGridControl";
             this.ProductServiceListGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlHypertextLabel,
             this.ProductThumbnailRepositoryItemPictureEdit});
-            this.ProductServiceListGridControl.Size = new System.Drawing.Size(1043, 521);
+            this.ProductServiceListGridControl.Size = new System.Drawing.Size(1051, 557);
             this.ProductServiceListGridControl.TabIndex = 5;
             this.ProductServiceListGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.ProductServiceGridView});
@@ -310,6 +310,7 @@ namespace MasterData.ProductService
             this.ProductServiceGridView.GridControl = this.ProductServiceListGridControl;
             this.ProductServiceGridView.IndicatorWidth = 40;
             this.ProductServiceGridView.Name = "ProductServiceGridView";
+            this.ProductServiceGridView.OptionsFind.AlwaysVisible = true;
             this.ProductServiceGridView.OptionsSelection.MultiSelect = true;
             this.ProductServiceGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.ProductServiceGridView.OptionsView.ColumnAutoWidth = false;
@@ -383,6 +384,7 @@ namespace MasterData.ProductService
             this.ProductThumbnailRepositoryItemPictureEdit.Name = "ProductThumbnailRepositoryItemPictureEdit";
             this.ProductThumbnailRepositoryItemPictureEdit.PictureInterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
             this.ProductThumbnailRepositoryItemPictureEdit.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
+            this.ProductThumbnailRepositoryItemPictureEdit.ImageChanged += new System.EventHandler(this.ProductThumbnailRepositoryItemPictureEdit_ImageChanged);
             // 
             // colCategoryFullPathHtml
             // 
@@ -414,7 +416,7 @@ namespace MasterData.ProductService
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(1075, 553);
+            this.Root.Size = new System.Drawing.Size(1075, 581);
             this.Root.TextVisible = false;
             // 
             // layoutControlItem1
@@ -422,7 +424,7 @@ namespace MasterData.ProductService
             this.layoutControlItem1.Control = this.ProductServiceListGridControl;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(1049, 527);
+            this.layoutControlItem1.Size = new System.Drawing.Size(1055, 561);
             this.layoutControlItem1.TextVisible = false;
             // 
             // FrmProductServiceList
@@ -447,7 +449,6 @@ namespace MasterData.ProductService
             ((System.ComponentModel.ISupportInitialize)(this.ProductServiceGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlHypertextLabel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ProductThumbnailRepositoryItemPictureEdit)).EndInit();
-            this.ProductThumbnailRepositoryItemPictureEdit.ImageChanged += new System.EventHandler(this.ProductThumbnailRepositoryItemPictureEdit_ImageChanged);
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             this.ResumeLayout(false);

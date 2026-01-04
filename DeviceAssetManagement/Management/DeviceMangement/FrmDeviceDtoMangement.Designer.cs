@@ -1,4 +1,4 @@
-﻿using DTO.DeviceAssetManagement;
+using DTO.DeviceAssetManagement;
 
 namespace DeviceAssetManagement.Management.DeviceMangement
 {
@@ -60,7 +60,8 @@ namespace DeviceAssetManagement.Management.DeviceMangement
             this.ucDeviceWarranty1 = new DeviceAssetManagement.Management.DeviceMangement.UcDeviceWarranty();
             this.ucDeviceImageAdd1 = new DeviceAssetManagement.Management.DeviceMangement.UcDeviceImageAdd();
             this.ucDeviceDtoAddStockInOutHistory1 = new DeviceAssetManagement.Management.DeviceMangement.UcDeviceDtoAddStockInOutHistory();
-            this.ucDeviceDtoAddEdit1 = new DeviceAssetManagement.Management.DeviceMangement.UcDeviceDtoAddEdit();
+            // Cannot instantiate abstract class - this.ucDeviceDtoAddEdit1 = new DeviceAssetManagement.Management.DeviceMangement.UcDeviceDtoAddEdit();
+            this.ucDeviceDtoAddEdit1 = null; // Abstract class - must be initialized with concrete implementation
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
