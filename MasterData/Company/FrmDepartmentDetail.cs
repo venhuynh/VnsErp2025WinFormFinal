@@ -1,4 +1,4 @@
-﻿using Bll.MasterData.CompanyBll;
+using Bll.MasterData.CompanyBll;
 using Common.Utils;
 using DevExpress.XtraEditors;
 using DTO.MasterData.Company;
@@ -149,18 +149,9 @@ namespace MasterData.Company
             try
             {
                 // GetActiveBranchesForLookup() already returns List<CompanyBranchDto>
-                // Convert to CompanyBranchLookupDto
                 var companyBranches = _companyBranchBll.GetActiveBranchesForLookup();
-                var companyBranchLookupDtos = companyBranches.Select(b => new CompanyBranchLookupDto
-                {
-                    Id = b.Id,
-                    CompanyId = b.CompanyId,
-                    BranchCode = b.BranchCode,
-                    BranchName = b.BranchName,
-                    IsActive = b.IsActive
-                }).ToList();
 
-                companyBranchLookupDtoBindingSource.DataSource = companyBranchLookupDtos;
+                companyBranchLookupDtoBindingSource.DataSource = companyBranches;
             }
             catch (Exception ex)
             {
@@ -248,7 +239,7 @@ namespace MasterData.Company
                 if (_currentDepartment.BranchId.HasValue)
                 {
                     var branchId = _currentDepartment.BranchId.Value;
-                    var branchExists = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>()
+                    var branchExists = companyBranchLookupDtoBindingSource.Cast<CompanyBranchDto>()
                         .Any(b => b.Id == branchId);
                     
                     if (!branchExists)
@@ -258,17 +249,9 @@ namespace MasterData.Company
                         var branch = _companyBranchBll.GetById(branchId);
                         if (branch != null)
                         {
-                            // Convert CompanyBranchDto to CompanyBranchLookupDto
-                            var branchLookupDto = new CompanyBranchLookupDto
-                            {
-                                Id = branch.Id,
-                                CompanyId = branch.CompanyId,
-                                BranchCode = branch.BranchCode,
-                                BranchName = branch.BranchName,
-                                IsActive = branch.IsActive
-                            };
-                            var currentList = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>().ToList();
-                            currentList.Add(branchLookupDto);
+                            // Use CompanyBranchDto directly
+                            var currentList = companyBranchLookupDtoBindingSource.Cast<CompanyBranchDto>().ToList();
+                            currentList.Add(branch);
                             companyBranchLookupDtoBindingSource.DataSource = currentList;
                         }
                     }
@@ -353,7 +336,7 @@ namespace MasterData.Company
                     var branchId = _currentDepartment.BranchId.Value;
                     
                     // Kiểm tra branch có tồn tại trong datasource không
-                    var branchExists = companyBranchLookupDtoBindingSource.Cast<CompanyBranchLookupDto>()
+                    var branchExists = companyBranchLookupDtoBindingSource.Cast<CompanyBranchDto>()
                         .Any(b => b.Id == branchId);
                     
                     if (branchExists)

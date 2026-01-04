@@ -97,7 +97,7 @@ namespace Bll.MasterData.CompanyBll
             try
             {
                 // Lấy tất cả chi nhánh từ công ty duy nhất (Guid.Empty)
-                return GetDataAccess().GetByCompanyId(Guid.Empty);
+                return GetDataAccess().GetAll();
             }
             catch (Exception ex)
             {

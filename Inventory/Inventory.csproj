@@ -569,8 +569,6 @@
     <None Include="Properties\DataSources\DTO.Inventory.StockOut.XuatThietBiChoThueMuon.XuatThietBiChoThueMuonDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchDto1.datasource" />
-    <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto.datasource" />
-    <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.DepartmentDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.DepartmentLookupDto.datasource" />

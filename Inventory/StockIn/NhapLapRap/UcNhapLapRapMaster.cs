@@ -1,4 +1,4 @@
-﻿using Bll.Inventory.InventoryManagement;
+using Bll.Inventory.InventoryManagement;
 using Bll.Inventory.StockInOut;
 using Bll.MasterData.CompanyBll;
 using Common;
@@ -278,7 +278,7 @@ namespace Inventory.StockIn.NhapLapRap
         {
             try
             {
-                // Load danh sách CompanyBranchLookupDto từ CompanyBranchBll (dùng làm Warehouse)
+                // Load danh sách CompanyBranchDto từ CompanyBranchBll (dùng làm Warehouse)
                 companyBranchDtoBindingSource.DataSource = await Task.Run(() => _companyBranchBll.GetAll());
             }
             catch (Exception ex)

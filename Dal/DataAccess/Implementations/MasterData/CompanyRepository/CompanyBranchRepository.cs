@@ -364,6 +364,20 @@ public class CompanyBranchRepository : ICompanyBranchRepository
         }
     }
 
+    /// <summary>
+    /// Retrieves all company branches from the data source.
+    /// </summary>
+    /// <returns>
+    /// A list of <see cref="CompanyBranchDto"/> representing all company branches.
+    /// </returns>
+    /// <exception cref="Exception">
+    /// Thrown when an error occurs while retrieving the company branches.
+    /// </exception>
+    public List<CompanyBranchDto> GetAll()
+    {
+        using var context = CreateNewContext();
+        return context.CompanyBranches.ToList().Select(x => x.ToDto()).ToList();
+    }
 
     #endregion
 

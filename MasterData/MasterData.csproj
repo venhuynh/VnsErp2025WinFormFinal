@@ -352,7 +352,6 @@
     <None Include="Company\FrmDepartmentDetail_Developer_Guide.md" />
     <None Include="Company\FrmDepartmentDetail_User_Guide.md" />
     <None Include="Doc\BusinessPartner_Database_Schema.md" />
-    <None Include="Properties\DataSources\DTO.MasterData.Company.CompanyBranchLookupDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.DepartmentLookupDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.EmployeeDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.Company.PositionDto.datasource" />

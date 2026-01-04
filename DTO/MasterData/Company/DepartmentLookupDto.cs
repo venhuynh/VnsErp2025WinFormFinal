@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -72,7 +72,7 @@ namespace DTO.MasterData.Company
         /// <summary>
         /// Thông tin phòng ban dưới dạng HTML theo format DevExpress
         /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
-        /// Format giống CompanyBranchLookupDto.BranchInfoHtml (không dùng &lt;size&gt;)
+        /// Format giống CompanyBranchDto.BranchInfoHtml (không dùng &lt;size&gt;)
         /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
         /// </summary>
         [DisplayName("Thông tin phòng ban HTML")]

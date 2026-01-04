@@ -3,8 +3,7 @@ using Bll.Common;
 using Common.Appconfig;
 using Common.Utils;
 using Dal.Connection;
-using DeviceAssetManagement.Management.DeviceWarranty;
-using Inventory.Query;
+using Inventory.StockIn.NhapBaoHanh;
 using Microsoft.Win32;
 using System;
 using System.Windows.Forms;
@@ -26,7 +25,7 @@ namespace VnsErp2025
 
             // Cấu hình DevExpress Skin
             SkinHelper.KhoiTaoSkin("WXI");
-            
+
             // 1) Kiểm tra xem có thông tin cấu hình database trong Registry không
             if (!KiemTraThongTinTuRegistry())
             {
@@ -36,7 +35,7 @@ namespace VnsErp2025
                     @"Cấu hình cơ sở dữ liệu",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
-                
+
                 using (var configForm = new FrmDatabaseConfig())
                 {
                     if (configForm.ShowDialog() != DialogResult.OK)
@@ -46,7 +45,7 @@ namespace VnsErp2025
                         return;
                     }
                 }
-                
+
                 // Kiểm tra lại sau khi người dùng cấu hình
                 if (!KiemTraThongTinTuRegistry())
                 {
@@ -59,7 +58,7 @@ namespace VnsErp2025
                     return;
                 }
             }
-            
+
             // 2) Tải connection string từ Registry
             var connectionManager = new ConnectionManager();
 
@@ -72,7 +71,7 @@ namespace VnsErp2025
                     @"Lỗi kết nối",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
-                
+
                 using (var configForm = new FrmDatabaseConfig())
                 {
                     if (configForm.ShowDialog() != DialogResult.OK)
@@ -118,10 +117,10 @@ namespace VnsErp2025
                         Application.Exit();
                         return;
                     }
-                    
+
                     System.Diagnostics.Debug.WriteLine($"Connection string từ ConnectionManager: {connectionString.Substring(0, Math.Min(50, connectionString.Length))}...");
                 }
-                
+
                 // Kiểm tra lại ApplicationStartupManager đã sẵn sàng chưa
                 if (!ApplicationStartupManager.Instance.IsApplicationReady())
                 {
@@ -179,7 +178,7 @@ namespace VnsErp2025
 
             //SeedData_Master_Company.DeleteAllCompanyData();
             //SeedData_Master_Company.CreateAllCompanyData();
-            
+
 
 
             Application.Run(new FormMain());
@@ -218,25 +217,25 @@ namespace VnsErp2025
             try
             {
                 const string registryKey = @"HKEY_CURRENT_USER\Software\Software\VietNhatSolutions\VnsErp2025";
-                
+
                 // Đọc các giá trị đã mã hóa từ Registry
                 var encryptedDns = (string)Registry.GetValue(registryKey, "dns", null);
                 var encryptedDatabase = (string)Registry.GetValue(registryKey, "database", null);
                 var encryptedUsername = (string)Registry.GetValue(registryKey, "username", null);
                 var encryptedPassword = (string)Registry.GetValue(registryKey, "password", null);
-                
+
                 // Kiểm tra xem có các giá trị không
                 if (string.IsNullOrEmpty(encryptedDns) || string.IsNullOrEmpty(encryptedDatabase))
                 {
                     return false;
                 }
-                
+
                 // Kiểm tra xem có username và password không (bắt buộc vì dùng SQL Authentication)
                 if (string.IsNullOrEmpty(encryptedUsername) || string.IsNullOrEmpty(encryptedPassword))
                 {
                     return false;
                 }
-                
+
                 // Thử giải mã tất cả các trường để đảm bảo chúng hợp lệ
                 try
                 {
@@ -244,7 +243,7 @@ namespace VnsErp2025
                     var decryptedDatabase = VntaCrypto.Decrypt(encryptedDatabase);
                     var decryptedUsername = VntaCrypto.Decrypt(encryptedUsername);
                     var decryptedPassword = VntaCrypto.Decrypt(encryptedPassword);
-                    
+
                     // Kiểm tra xem sau khi giải mã có giá trị hợp lệ không
                     if (string.IsNullOrEmpty(decryptedDns) || string.IsNullOrEmpty(decryptedDatabase) ||
                         string.IsNullOrEmpty(decryptedUsername) || string.IsNullOrEmpty(decryptedPassword))
@@ -259,7 +258,7 @@ namespace VnsErp2025
                     // Nhưng để đảm bảo an toàn, chúng ta yêu cầu tất cả phải được mã hóa
                     return false;
                 }
-                
+
                 return true;
             }
             catch (Exception)

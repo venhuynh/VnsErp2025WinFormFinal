@@ -71,7 +71,11 @@ namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
         /// <returns>Danh sách chi nhánh công ty đang hoạt động</returns>
         Task<List<CompanyBranchDto>> GetActiveBranchesForLookupAsync();
 
-
+        /// <summary>
+        /// Lấy danh sách tất cả các chi nhánh công ty.
+        /// </summary>
+        /// <returns>Danh sách tất cả các chi nhánh công ty.</returns>
+        List<CompanyBranchDto> GetAll();
 
         #endregion
 
@@ -85,10 +89,6 @@ namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
         /// <param name="companyBranch">Chi nhánh công ty cần cập nhật</param>
         void Update(CompanyBranchDto companyBranch);
 
-
-        #endregion
-
-        #region ========== QUẢN LÝ DỮ LIỆU ==========
 
         #endregion
 
@@ -125,5 +125,7 @@ namespace Dal.DataAccess.Interfaces.MasterData.CompanyRepository
         bool IsBranchNameExists(string branchName, Guid excludeId);
 
         #endregion
+
+        
     }
 }
