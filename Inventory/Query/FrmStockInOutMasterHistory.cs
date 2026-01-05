@@ -365,7 +365,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
             {
                 try
                 {
-                    var report = new RpPhieuGiaoHang(_selectedStockInOutMasterId.Value);
+                    var report = new RpPhieuGiaoHang02(_selectedStockInOutMasterId.Value);
 
                     // Hiển thị preview bằng ReportPrintTool
                     using var printTool = new ReportPrintTool(report);
