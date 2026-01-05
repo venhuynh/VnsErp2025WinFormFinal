@@ -654,10 +654,71 @@
       <Association Name="ProductVariant_Asset" Member="Assets" ThisKey="Id" OtherKey="ProductVariantId" Type="Asset" />
       <Association Name="ProductVariant_Device" Member="Devices" ThisKey="Id" OtherKey="ProductVariantId" Type="Device" />
       <Association Name="ProductVariant_InventoryBalance" Member="InventoryBalances" ThisKey="Id" OtherKey="ProductVariantId" Type="InventoryBalance" />
+      <Association Name="ProductVariant_ProductVariantIdentifier" Member="ProductVariantIdentifiers" ThisKey="Id" OtherKey="ProductVariantId" Type="ProductVariantIdentifier" />
+      <Association Name="ProductVariant_ProductVariantIdentifierHistory" Member="ProductVariantIdentifierHistories" ThisKey="Id" OtherKey="ProductVariantId" Type="ProductVariantIdentifierHistory" />
       <Association Name="ProductVariant_StockInOutDetail" Member="StockInOutDetails" ThisKey="Id" OtherKey="ProductVariantId" Type="StockInOutDetail" />
       <Association Name="ProductVariant_VariantAttribute" Member="VariantAttributes" ThisKey="Id" OtherKey="VariantId" Type="VariantAttribute" />
       <Association Name="ProductService_ProductVariant" Member="ProductService" ThisKey="ProductId" OtherKey="Id" Type="ProductService" IsForeignKey="true" />
       <Association Name="UnitOfMeasure_ProductVariant" Member="UnitOfMeasure" ThisKey="UnitId" OtherKey="Id" Type="UnitOfMeasure" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductVariantIdentifier" Member="ProductVariantIdentifiers">
+    <Type Name="ProductVariantIdentifier">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProductVariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="SerialNumber" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Barcode" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="QRCode" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="QRCodeImagePath" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="QRCodeImageFullPath" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="QRCodeImageFileName" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="QRCodeImageStorageType" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="QRCodeImageLocked" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="QRCodeImageLockedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="QRCodeImageLockedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="SKU" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="RFID" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="MACAddress" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="IMEI" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="AssetTag" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="LicenseKey" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="UPC" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="EAN" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ISBN" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="OtherIdentifier" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="StatusDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="StatusChangedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="StatusNotes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="SourceType" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SourceReference" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="ValidFrom" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ValidTo" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="CreatedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="UpdatedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Association Name="ProductVariantIdentifier_ProductVariantIdentifierHistory" Member="ProductVariantIdentifierHistories" ThisKey="Id" OtherKey="ProductVariantIdentifierId" Type="ProductVariantIdentifierHistory" />
+      <Association Name="ProductVariant_ProductVariantIdentifier" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductVariantIdentifierHistory" Member="ProductVariantIdentifierHistories">
+    <Type Name="ProductVariantIdentifierHistory">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProductVariantIdentifierId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ProductVariantId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ChangeType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ChangedBy" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="OldValue" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="NewValue" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="FieldName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="Notes" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Association Name="ProductVariant_ProductVariantIdentifierHistory" Member="ProductVariant" ThisKey="ProductVariantId" OtherKey="Id" Type="ProductVariant" IsForeignKey="true" />
+      <Association Name="ProductVariantIdentifier_ProductVariantIdentifierHistory" Member="ProductVariantIdentifier" ThisKey="ProductVariantIdentifierId" OtherKey="Id" Type="ProductVariantIdentifier" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.Role" Member="Roles">
@@ -813,7 +874,7 @@
     <Type Name="StockInOutMaster">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="StockInOutDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="VoucherNumber" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="VocherNumber" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="StockInOutType" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="VoucherStatus" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="WarehouseId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />

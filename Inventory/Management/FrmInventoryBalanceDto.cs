@@ -728,6 +728,7 @@ namespace Inventory.Management
         /// <summary>
         /// Xử lý hiển thị tùy chỉnh cho các cột trong GridView
         /// Ẩn các giá trị "0" trên các cột số lượng và giá trị để giao diện gọn gàng hơn
+        /// Format: Nếu giá trị không có phần thập phân thì không hiển thị thập phân
         /// </summary>
         private void InventoryBalanceDtoBandedGridView_CustomColumnDisplayText(object sender, DevExpress.XtraGrid.Views.Base.CustomColumnDisplayTextEventArgs e)
         {
@@ -743,19 +744,58 @@ namespace Inventory.Management
                     fieldName == "TotalOutQty" || fieldName == "ClosingBalance")
                 {
                     // Kiểm tra nếu giá trị là 0
-                    if (e.Value is decimal decimalValue && Math.Abs(decimalValue) < 0.001m)
+                    if (e.Value is decimal decimalValue)
                     {
-                        e.DisplayText = ""; // Ẩn giá trị 0
+                        if (Math.Abs(decimalValue) < 0.001m)
+                        {
+                            e.DisplayText = ""; // Ẩn giá trị 0
+                            return;
+                        }
+                        // Format: Nếu không có phần thập phân thì hiển thị không có thập phân
+                        if (decimalValue == Math.Truncate(decimalValue))
+                        {
+                            e.DisplayText = decimalValue.ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            e.DisplayText = decimalValue.ToString("N2", System.Globalization.CultureInfo.CurrentCulture);
+                        }
                         return;
                     }
-                    if (e.Value is double doubleValue && Math.Abs(doubleValue) < 0.001)
+                    if (e.Value is double doubleValue)
                     {
-                        e.DisplayText = ""; // Ẩn giá trị 0
+                        if (Math.Abs(doubleValue) < 0.001)
+                        {
+                            e.DisplayText = ""; // Ẩn giá trị 0
+                            return;
+                        }
+                        // Format: Nếu không có phần thập phân thì hiển thị không có thập phân
+                        if (doubleValue == Math.Truncate(doubleValue))
+                        {
+                            e.DisplayText = doubleValue.ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            e.DisplayText = doubleValue.ToString("N2", System.Globalization.CultureInfo.CurrentCulture);
+                        }
                         return;
                     }
-                    if (e.Value is float floatValue && Math.Abs(floatValue) < 0.001f)
+                    if (e.Value is float floatValue)
                     {
-                        e.DisplayText = ""; // Ẩn giá trị 0
+                        if (Math.Abs(floatValue) < 0.001f)
+                        {
+                            e.DisplayText = ""; // Ẩn giá trị 0
+                            return;
+                        }
+                        // Format: Nếu không có phần thập phân thì hiển thị không có thập phân
+                        if (floatValue == Math.Truncate(floatValue))
+                        {
+                            e.DisplayText = floatValue.ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            e.DisplayText = floatValue.ToString("N2", System.Globalization.CultureInfo.CurrentCulture);
+                        }
                         return;
                     }
                 }
@@ -781,6 +821,16 @@ namespace Inventory.Management
                             e.DisplayText = ""; // Ẩn giá trị 0
                             return;
                         }
+                        // Format: Nếu không có phần thập phân thì hiển thị không có thập phân
+                        if (decimalValue == Math.Truncate(decimalValue))
+                        {
+                            e.DisplayText = decimalValue.ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            e.DisplayText = decimalValue.ToString("N2", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        return;
                     }
                     // Xử lý nullable decimal
                     else if (e.Value is decimal?)
@@ -791,6 +841,16 @@ namespace Inventory.Management
                             e.DisplayText = ""; // Ẩn giá trị null hoặc 0
                             return;
                         }
+                        // Format: Nếu không có phần thập phân thì hiển thị không có thập phân
+                        if (nullableDec.Value == Math.Truncate(nullableDec.Value))
+                        {
+                            e.DisplayText = nullableDec.Value.ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            e.DisplayText = nullableDec.Value.ToString("N2", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        return;
                     }
                     // Xử lý double
                     else if (e.Value is double doubleValue)
@@ -800,6 +860,16 @@ namespace Inventory.Management
                             e.DisplayText = ""; // Ẩn giá trị 0
                             return;
                         }
+                        // Format: Nếu không có phần thập phân thì hiển thị không có thập phân
+                        if (doubleValue == Math.Truncate(doubleValue))
+                        {
+                            e.DisplayText = doubleValue.ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            e.DisplayText = doubleValue.ToString("N2", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        return;
                     }
                     // Xử lý float
                     else if (e.Value is float floatValue)
@@ -809,6 +879,16 @@ namespace Inventory.Management
                             e.DisplayText = ""; // Ẩn giá trị 0
                             return;
                         }
+                        // Format: Nếu không có phần thập phân thì hiển thị không có thập phân
+                        if (floatValue == Math.Truncate(floatValue))
+                        {
+                            e.DisplayText = floatValue.ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            e.DisplayText = floatValue.ToString("N2", System.Globalization.CultureInfo.CurrentCulture);
+                        }
+                        return;
                     }
                 }
             }

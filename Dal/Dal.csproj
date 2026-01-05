@@ -144,6 +144,7 @@
     <Compile Include="DtoConverter\PermissionDtoConverter.cs" />
     <Compile Include="DtoConverter\ProductImageDtoConverter.cs" />
     <Compile Include="DtoConverter\ProductVariantConverters.cs" />
+    <Compile Include="DtoConverter\ProductVariantIdentifierDtoConverter.cs" />
     <Compile Include="DtoConverter\RoleConverters.cs" />
     <Compile Include="DtoConverter\RoleDtoConverter.cs" />
     <Compile Include="DtoConverter\StockInOutMasterHistoryDtoConverter.cs" />

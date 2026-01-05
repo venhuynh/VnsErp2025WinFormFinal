@@ -172,7 +172,7 @@ public class InventoryBalanceDto
 
     /// <summary>
     /// Thông tin kỳ dưới dạng HTML theo format DevExpress
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// Format tương tự ProductVariantListDto.FullNameHtml để đảm bảo consistency
     /// </summary>
@@ -189,14 +189,14 @@ public class InventoryBalanceDto
             // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo ProductVariantListDto.FullNameHtml)
             // - Kỳ chính: font lớn (12), bold, màu xanh đậm (primary)
             // - Thông tin chi tiết: font nhỏ hơn (9), màu xám
-            var html = $"<size=12><color='#757575'>Tháng {PeriodMonth:D2}/{PeriodYear}</color></size>";
+            var html = $"<color='gray'>Tháng {PeriodMonth:D2}/{PeriodYear}</color>";
             return html;
         }
     }
 
     /// <summary>
     /// Thông tin kho dưới dạng HTML theo format DevExpress
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
+    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;
     /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
     /// Format tương tự ProductVariantListDto.FullNameHtml để đảm bảo consistency
     /// </summary>
@@ -216,116 +216,17 @@ public class InventoryBalanceDto
             // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo ProductVariantListDto.FullNameHtml)
             // - Tên kho: font lớn (12), bold, màu xanh đậm (primary)
             // - Mã kho: font nhỏ hơn (9), màu xám
-            var html = $"<size=12><b><color='blue'>{warehouseName}</color></b></size>";
+            var html = $"<b><color='blue'>{warehouseName}</color></b>";
 
             if (!string.IsNullOrWhiteSpace(warehouseCode))
             {
-                html += $" <size=9><color='#757575'>({warehouseCode})</color></size>";
+                html += $" <color='gray'>({warehouseCode})</color>";
             }
 
             return html;
         }
     }
 
-    /// <summary>
-    /// Thông tin biến thể sản phẩm dưới dạng HTML theo format DevExpress
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
-    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
-    /// Format tương tự StockInOutProductHistoryDto.ProductVariantFullNameHtml để đảm bảo consistency
-    /// </summary>
-    [DisplayName("Thông tin sản phẩm HTML")]
-    [Display(Order = 18)]
-    [Description("Thông tin biến thể sản phẩm dưới dạng HTML")]
-    public string ProductHtml
-    {
-        get
-        {
-            var productName = ProductName ?? string.Empty;
-            var productCode = ProductCode ?? string.Empty;
-            var variantCode = ProductVariantCode ?? string.Empty;
-            var variantFullName = ProductVariantFullName ?? string.Empty;
-            var unitName = UnitOfMeasureName ?? UnitOfMeasureCode ?? string.Empty;
-
-            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo StockInOutProductHistoryDto.ProductVariantFullNameHtml)
-            // - Tên sản phẩm: font lớn, bold, màu xanh đậm (primary)
-            // - Mã sản phẩm: font nhỏ hơn, màu xám
-            // - Mã biến thể: font nhỏ hơn, màu cam (#FF9800)
-            // - Tên biến thể đầy đủ: font nhỏ hơn, màu xám cho label, đen cho value
-            // - Đơn vị tính: font nhỏ hơn, màu xám cho label, đen cho value
-
-            var html = $"<size=12><b><color='blue'>{productName}</color></b></size>";
-
-            if (!string.IsNullOrWhiteSpace(productCode))
-            {
-                html += $" <size=9><color='#757575'>({productCode})</color></size>";
-            }
-
-            html += "<br>";
-
-            if (!string.IsNullOrWhiteSpace(variantCode))
-            {
-                html += $"<size=9><color='#757575'>Mã biến thể:</color></size> <size=10><color='#FF9800'><b>{variantCode}</b></color></size>";
-            }
-
-            if (!string.IsNullOrWhiteSpace(variantFullName))
-            {
-                if (!string.IsNullOrWhiteSpace(variantCode))
-                    html += "<br/>";
-                html += $"<size=9><color='#757575'>Tên biến thể:</color></size> <size=10><color='#212121'><b>{variantFullName}</b></color></size>";
-            }
-
-            if (!string.IsNullOrWhiteSpace(variantCode) || !string.IsNullOrWhiteSpace(variantFullName))
-            {
-                html += "<br>";
-            }
-
-            if (!string.IsNullOrWhiteSpace(unitName))
-            {
-                html += $"<size=9><color='#757575'>Đơn vị tính:</color></size> <size=10><color='#212121'><b>{unitName}</b></color></size>";
-            }
-
-            return html;
-        }
-    }
-
-    /// <summary>
-    /// Trạng thái khóa dưới dạng HTML theo format DevExpress
-    /// Sử dụng các tag HTML chuẩn của DevExpress: &lt;b&gt;, &lt;i&gt;, &lt;color&gt;, &lt;size&gt;
-    /// Tham khảo: https://docs.devexpress.com/WindowsForms/4874/common-features/html-text-formatting
-    /// Format tương tự ProductVariantListDto.FullNameHtml để đảm bảo consistency
-    /// </summary>
-    [DisplayName("Trạng thái HTML")]
-    [Display(Order = 19)]
-    [Description("Trạng thái khóa dưới dạng HTML")]
-    public string StatusHtml
-    {
-        get
-        {
-            var statusText = IsLocked ? "Khóa" : "Không khóa";
-            var statusColor = IsLocked ? "#FF9800" : "#4CAF50"; // Cam cho khóa, xanh lá cho không khóa
-
-            // Format chuyên nghiệp với visual hierarchy rõ ràng (tham khảo ProductVariantListDto.FullNameHtml)
-            // - Label: font nhỏ (9), màu xám
-            // - Value: font lớn hơn (10), bold, màu theo trạng thái
-            var html = $"<size=9><color='#757575'>Trạng thái:</color></size> <size=10><color='{statusColor}'><b>{statusText}</b></color></size>";
-
-            // Thêm thông tin người khóa và ngày khóa nếu đã khóa
-            if (IsLocked && LockedDate.HasValue)
-            {
-                html += "<br>";
-                var lockedDateStr = LockedDate.Value.ToString("dd/MM/yyyy");
-                html += $"<size=9><color='#757575'>Ngày khóa:</color></size> <size=9><color='#212121'><b>{lockedDateStr}</b></color></size>";
-                
-                if (!string.IsNullOrWhiteSpace(LockedByName))
-                {
-                    html += "<br>";
-                    html += $"<size=9><color='#757575'>Người khóa:</color></size> <size=9><color='#212121'><b>{LockedByName}</b></color></size>";
-                }
-            }
-
-            return html;
-        }
-    }
 
     #endregion
 

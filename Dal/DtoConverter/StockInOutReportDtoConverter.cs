@@ -52,8 +52,12 @@ namespace Dal.DtoConverter
                 WarehouseName = master.CompanyBranch?.BranchName ?? string.Empty,
 
                 // Thông tin đối tác
-                CustomerName = master.BusinessPartnerSite?.BusinessPartner?.PartnerName ??
-                              master.BusinessPartnerSite?.SiteName ?? string.Empty,
+                CustomerName = master.BusinessPartnerSite?.SiteName ??
+                               master.BusinessPartnerSite?.BusinessPartner?.PartnerName ?? string.Empty,
+
+                // Thông tin địa chỉ đối tác (từ BusinessPartnerSite)
+                CustomerAddress = master.BusinessPartnerSite?.Address ?? string.Empty,
+                
 
                 // Thông tin bổ sung
                 Notes = master.Notes ?? string.Empty,

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 
 namespace DTO.Inventory.Report;
@@ -56,6 +57,47 @@ public class StockInOutReportDto
     /// </summary>
     [DisplayName("Tên khách hàng")]
     public string CustomerName { get; set; }
+
+    /// <summary>
+    /// Địa chỉ (từ BusinessPartnerSite)
+    /// </summary>
+    [DisplayName("Địa chỉ")]
+    public string CustomerAddress { get; set; }
+
+    /// <summary>
+    /// Địa chỉ đầy đủ của khách hàng (tính từ các thành phần địa chỉ)
+    /// </summary>
+    [DisplayName("Địa chỉ đầy đủ")]
+    public string CustomerFullAddress
+    {
+        get
+        {
+            var addressParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(CustomerAddress))
+                addressParts.Add(CustomerAddress);
+            
+            return string.Join(", ", addressParts);
+        }
+    }
+
+    /// <summary>
+    /// Thông tin đầy đủ của khách hàng (kết hợp tên và địa chỉ)
+    /// Dùng cho report binding: [CustomerFullInfo]
+    /// </summary>
+    [DisplayName("Thông tin khách hàng đầy đủ")]
+    public string CustomerFullInfo
+    {
+        get
+        {
+            var infoParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(CustomerName))
+                infoParts.Add(CustomerName);
+            if (!string.IsNullOrWhiteSpace(CustomerAddress))
+                infoParts.Add(CustomerAddress);
+            
+            return string.Join(" - ", infoParts);
+        }
+    }
 
     /// <summary>
     /// Ghi chú
@@ -179,6 +221,80 @@ public class StockInOutReportDto
 
     #endregion
 
+    #region Properties - String Format Properties for Report Binding
+
+    /// <summary>
+    /// Tổng số lượng (dạng chuỗi)
+    /// Dùng cho report binding: [TotalQuantityString]
+    /// </summary>
+    [DisplayName("Tổng số lượng (chuỗi)")]
+    public string TotalQuantityString => FormatDecimal(TotalQuantity);
+
+    /// <summary>
+    /// Tổng tiền chưa VAT (dạng chuỗi)
+    /// Dùng cho report binding: [TotalAmountString]
+    /// </summary>
+    [DisplayName("Tổng tiền chưa VAT (chuỗi)")]
+    public string TotalAmountString => FormatDecimal(TotalAmount);
+
+    /// <summary>
+    /// Tổng VAT (dạng chuỗi)
+    /// Dùng cho report binding: [TotalVatString]
+    /// </summary>
+    [DisplayName("Tổng VAT (chuỗi)")]
+    public string TotalVatString => FormatDecimal(TotalVat);
+
+    /// <summary>
+    /// Tổng tiền bao gồm VAT (dạng chuỗi)
+    /// Dùng cho report binding: [TotalAmountIncludedVatString]
+    /// </summary>
+    [DisplayName("Tổng tiền bao gồm VAT (chuỗi)")]
+    public string TotalAmountIncludedVatString => FormatDecimal(TotalAmountIncludedVat);
+
+    /// <summary>
+    /// Số tiền giảm giá (dạng chuỗi)
+    /// Dùng cho report binding: [DiscountAmountString]
+    /// </summary>
+    [DisplayName("Số tiền giảm giá (chuỗi)")]
+    public string DiscountAmountString => FormatDecimal(DiscountAmount);
+
+    /// <summary>
+    /// Tổng tiền sau giảm giá (dạng chuỗi)
+    /// Dùng cho report binding: [TotalAmountAfterDiscountString]
+    /// </summary>
+    [DisplayName("Tổng tiền sau giảm giá (chuỗi)")]
+    public string TotalAmountAfterDiscountString => FormatDecimal(TotalAmountAfterDiscount);
+
+    /// <summary>
+    /// Tổng tiền hàng hóa (dạng chuỗi)
+    /// Dùng cho report binding: [TongTienHangHoaString]
+    /// </summary>
+    [DisplayName("Tổng tiền hàng hóa (chuỗi)")]
+    public string TongTienHangHoaString => FormatDecimal(TongTienHangHoa);
+
+    /// <summary>
+    /// Tổng tiền thuế VAT (dạng chuỗi)
+    /// Dùng cho report binding: [TongTienThueVATString]
+    /// </summary>
+    [DisplayName("Tổng tiền thuế VAT (chuỗi)")]
+    public string TongTienThueVATString => FormatDecimal(TongTienThueVAT);
+
+    /// <summary>
+    /// Tổng tiền bao gồm thuế VAT (dạng chuỗi)
+    /// Dùng cho report binding: [TongTienBaoGomThueVATString]
+    /// </summary>
+    [DisplayName("Tổng tiền bao gồm thuế VAT (chuỗi)")]
+    public string TongTienBaoGomThueVATString => FormatDecimal(TongTienBaoGomThueVAT);
+
+    /// <summary>
+    /// Tổng số dòng (dạng chuỗi)
+    /// Dùng cho report binding: [TongSoDongString]
+    /// </summary>
+    [DisplayName("Tổng số dòng (chuỗi)")]
+    public string TongSoDongString => TongSoDong.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"));
+
+    #endregion
+
     #region Helper Methods
 
     /// <summary>
@@ -194,6 +310,33 @@ public class StockInOutReportDto
 
         var descriptionAttribute = fieldInfo.GetCustomAttribute<DescriptionAttribute>();
         return descriptionAttribute?.Description ?? enumValue.ToString();
+    }
+
+    /// <summary>
+    /// Format số decimal thành chuỗi: nếu là số nguyên thì không hiển thị phần thập phân, ngược lại hiển thị 2 chữ số thập phân
+    /// </summary>
+    /// <param name="value">Giá trị số</param>
+    /// <returns>Chuỗi đã format theo chuẩn Việt Nam</returns>
+    private static string FormatDecimal(decimal value)
+    {
+        var culture = CultureInfo.GetCultureInfo("vi-VN");
+        // Kiểm tra nếu số là số nguyên (không có phần thập phân)
+        if (value == Math.Truncate(value))
+        {
+            return value.ToString("N0", culture);
+        }
+        return value.ToString("N2", culture);
+    }
+
+    /// <summary>
+    /// Format số decimal nullable thành chuỗi: nếu là số nguyên thì không hiển thị phần thập phân, ngược lại hiển thị 2 chữ số thập phân
+    /// </summary>
+    /// <param name="value">Giá trị số nullable</param>
+    /// <returns>Chuỗi đã format theo chuẩn Việt Nam hoặc chuỗi rỗng nếu null</returns>
+    private static string FormatDecimal(decimal? value)
+    {
+        if (!value.HasValue) return string.Empty;
+        return FormatDecimal(value.Value);
     }
 
     #endregion
@@ -312,6 +455,125 @@ public class StockInOutReportDetailDto
     // Lưu ý: Các computed properties (alias) đã được loại bỏ để tránh trùng lặp trong Field List của DevExpress Report Designer
     // Sử dụng trực tiếp các property gốc với tên property (ví dụ: [LineNumber], [ProductVariantName], [UnitPrice], v.v.)
     // hoặc sử dụng DisplayName trong report binding (ví dụ: [STT], [Tên hàng], [Đơn giá], v.v.)
+
+    #endregion
+
+    #region Properties - String Format Properties for Report Binding
+
+    /// <summary>
+    /// Thứ tự dòng (dạng chuỗi)
+    /// Dùng cho report binding: [LineNumberString]
+    /// </summary>
+    [DisplayName("STT (chuỗi)")]
+    public string LineNumberString => LineNumber.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"));
+
+    /// <summary>
+    /// Số lượng nhập (dạng chuỗi)
+    /// Dùng cho report binding: [StockInQtyString]
+    /// </summary>
+    [DisplayName("Số lượng nhập (chuỗi)")]
+    public string StockInQtyString => FormatDecimal(StockInQty);
+
+    /// <summary>
+    /// Số lượng xuất (dạng chuỗi)
+    /// Dùng cho report binding: [StockOutQtyString]
+    /// </summary>
+    [DisplayName("Số lượng xuất (chuỗi)")]
+    public string StockOutQtyString => FormatDecimal(StockOutQty);
+
+    /// <summary>
+    /// Số lượng (dạng chuỗi)
+    /// Dùng cho report binding: [QuantityString]
+    /// </summary>
+    [DisplayName("Số lượng (chuỗi)")]
+    public string QuantityString => FormatDecimal(Quantity);
+
+    /// <summary>
+    /// Đơn giá (dạng chuỗi)
+    /// Dùng cho report binding: [UnitPriceString]
+    /// </summary>
+    [DisplayName("Đơn giá (chuỗi)")]
+    public string UnitPriceString => FormatDecimal(UnitPrice);
+
+    /// <summary>
+    /// Thuế suất VAT (dạng chuỗi)
+    /// Dùng cho report binding: [VatString]
+    /// </summary>
+    [DisplayName("Thuế suất VAT (chuỗi)")]
+    public string VatString => FormatDecimal(Vat);
+
+    /// <summary>
+    /// Số tiền VAT (dạng chuỗi)
+    /// Dùng cho report binding: [VatAmountString]
+    /// </summary>
+    [DisplayName("Số tiền VAT (chuỗi)")]
+    public string VatAmountString => FormatDecimal(VatAmount);
+
+    /// <summary>
+    /// Thành tiền (dạng chuỗi)
+    /// Dùng cho report binding: [TotalAmountString]
+    /// </summary>
+    [DisplayName("Thành tiền (chuỗi)")]
+    public string TotalAmountString => FormatDecimal(TotalAmount);
+
+    /// <summary>
+    /// Thành tiền bao gồm VAT (dạng chuỗi)
+    /// Dùng cho report binding: [TotalAmountIncludedVatString]
+    /// </summary>
+    [DisplayName("Thành tiền bao gồm VAT (chuỗi)")]
+    public string TotalAmountIncludedVatString => FormatDecimal(TotalAmountIncludedVat);
+
+    /// <summary>
+    /// Số tiền giảm giá (dạng chuỗi)
+    /// Dùng cho report binding: [DiscountAmountString]
+    /// </summary>
+    [DisplayName("Số tiền giảm giá (chuỗi)")]
+    public string DiscountAmountString => FormatDecimal(DiscountAmount);
+
+    /// <summary>
+    /// Phần trăm giảm giá (dạng chuỗi)
+    /// Dùng cho report binding: [DiscountPercentageString]
+    /// </summary>
+    [DisplayName("Phần trăm giảm giá (chuỗi)")]
+    public string DiscountPercentageString => FormatDecimal(DiscountPercentage);
+
+    /// <summary>
+    /// Thành tiền sau giảm giá (dạng chuỗi)
+    /// Dùng cho report binding: [TotalAmountAfterDiscountString]
+    /// </summary>
+    [DisplayName("Thành tiền sau giảm giá (chuỗi)")]
+    public string TotalAmountAfterDiscountString => FormatDecimal(TotalAmountAfterDiscount);
+
+    #endregion
+
+    #region Helper Methods
+
+    /// <summary>
+    /// Format số decimal thành chuỗi: nếu là số nguyên thì không hiển thị phần thập phân, ngược lại hiển thị 2 chữ số thập phân
+    /// </summary>
+    /// <param name="value">Giá trị số</param>
+    /// <returns>Chuỗi đã format theo chuẩn Việt Nam</returns>
+    private static string FormatDecimal(decimal value)
+    {
+        var culture = CultureInfo.GetCultureInfo("vi-VN");
+        // Kiểm tra nếu số là số nguyên (không có phần thập phân)
+        if (value == Math.Truncate(value))
+        {
+            return value.ToString("N0", culture);
+        }
+        return value.ToString("N2", culture);
+    }
+
+    /// <summary>
+    /// Format số decimal nullable thành chuỗi: nếu là số nguyên thì không hiển thị phần thập phân, ngược lại hiển thị 2 chữ số thập phân
+    /// </summary>
+    /// <param name="value">Giá trị số nullable</param>
+    /// <returns>Chuỗi đã format theo chuẩn Việt Nam hoặc chuỗi rỗng nếu null</returns>
+    private static string FormatDecimal(decimal? value)
+    {
+        if (!value.HasValue) return string.Empty;
+        return FormatDecimal(value.Value);
+    }
 
     #endregion
 }

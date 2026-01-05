@@ -111,6 +111,12 @@ namespace Dal.DataContext
     partial void InsertProductVariant(ProductVariant instance);
     partial void UpdateProductVariant(ProductVariant instance);
     partial void DeleteProductVariant(ProductVariant instance);
+    partial void InsertProductVariantIdentifier(ProductVariantIdentifier instance);
+    partial void UpdateProductVariantIdentifier(ProductVariantIdentifier instance);
+    partial void DeleteProductVariantIdentifier(ProductVariantIdentifier instance);
+    partial void InsertProductVariantIdentifierHistory(ProductVariantIdentifierHistory instance);
+    partial void UpdateProductVariantIdentifierHistory(ProductVariantIdentifierHistory instance);
+    partial void DeleteProductVariantIdentifierHistory(ProductVariantIdentifierHistory instance);
     partial void InsertRole(Role instance);
     partial void UpdateRole(Role instance);
     partial void DeleteRole(Role instance);
@@ -392,6 +398,22 @@ namespace Dal.DataContext
 			get
 			{
 				return this.GetTable<ProductVariant>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ProductVariantIdentifier> ProductVariantIdentifiers
+		{
+			get
+			{
+				return this.GetTable<ProductVariantIdentifier>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ProductVariantIdentifierHistory> ProductVariantIdentifierHistories
+		{
+			get
+			{
+				return this.GetTable<ProductVariantIdentifierHistory>();
 			}
 		}
 		
@@ -15485,6 +15507,10 @@ namespace Dal.DataContext
 		
 		private EntitySet<InventoryBalance> _InventoryBalances;
 		
+		private EntitySet<ProductVariantIdentifier> _ProductVariantIdentifiers;
+		
+		private EntitySet<ProductVariantIdentifierHistory> _ProductVariantIdentifierHistories;
+		
 		private EntitySet<StockInOutDetail> _StockInOutDetails;
 		
 		private EntitySet<VariantAttribute> _VariantAttributes;
@@ -15536,6 +15562,8 @@ namespace Dal.DataContext
 			this._Assets = new EntitySet<Asset>(new Action<Asset>(this.attach_Assets), new Action<Asset>(this.detach_Assets));
 			this._Devices = new EntitySet<Device>(new Action<Device>(this.attach_Devices), new Action<Device>(this.detach_Devices));
 			this._InventoryBalances = new EntitySet<InventoryBalance>(new Action<InventoryBalance>(this.attach_InventoryBalances), new Action<InventoryBalance>(this.detach_InventoryBalances));
+			this._ProductVariantIdentifiers = new EntitySet<ProductVariantIdentifier>(new Action<ProductVariantIdentifier>(this.attach_ProductVariantIdentifiers), new Action<ProductVariantIdentifier>(this.detach_ProductVariantIdentifiers));
+			this._ProductVariantIdentifierHistories = new EntitySet<ProductVariantIdentifierHistory>(new Action<ProductVariantIdentifierHistory>(this.attach_ProductVariantIdentifierHistories), new Action<ProductVariantIdentifierHistory>(this.detach_ProductVariantIdentifierHistories));
 			this._StockInOutDetails = new EntitySet<StockInOutDetail>(new Action<StockInOutDetail>(this.attach_StockInOutDetails), new Action<StockInOutDetail>(this.detach_StockInOutDetails));
 			this._VariantAttributes = new EntitySet<VariantAttribute>(new Action<VariantAttribute>(this.attach_VariantAttributes), new Action<VariantAttribute>(this.detach_VariantAttributes));
 			this._ProductService = default(EntityRef<ProductService>);
@@ -15910,6 +15938,32 @@ namespace Dal.DataContext
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_ProductVariantIdentifier", Storage="_ProductVariantIdentifiers", ThisKey="Id", OtherKey="ProductVariantId")]
+		public EntitySet<ProductVariantIdentifier> ProductVariantIdentifiers
+		{
+			get
+			{
+				return this._ProductVariantIdentifiers;
+			}
+			set
+			{
+				this._ProductVariantIdentifiers.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_ProductVariantIdentifierHistory", Storage="_ProductVariantIdentifierHistories", ThisKey="Id", OtherKey="ProductVariantId")]
+		public EntitySet<ProductVariantIdentifierHistory> ProductVariantIdentifierHistories
+		{
+			get
+			{
+				return this._ProductVariantIdentifierHistories;
+			}
+			set
+			{
+				this._ProductVariantIdentifierHistories.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_StockInOutDetail", Storage="_StockInOutDetails", ThisKey="Id", OtherKey="ProductVariantId")]
 		public EntitySet<StockInOutDetail> StockInOutDetails
 		{
@@ -16060,6 +16114,30 @@ namespace Dal.DataContext
 			entity.ProductVariant = null;
 		}
 		
+		private void attach_ProductVariantIdentifiers(ProductVariantIdentifier entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = this;
+		}
+		
+		private void detach_ProductVariantIdentifiers(ProductVariantIdentifier entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = null;
+		}
+		
+		private void attach_ProductVariantIdentifierHistories(ProductVariantIdentifierHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = this;
+		}
+		
+		private void detach_ProductVariantIdentifierHistories(ProductVariantIdentifierHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariant = null;
+		}
+		
 		private void attach_StockInOutDetails(StockInOutDetail entity)
 		{
 			this.SendPropertyChanging();
@@ -16082,6 +16160,1361 @@ namespace Dal.DataContext
 		{
 			this.SendPropertyChanging();
 			entity.ProductVariant = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ProductVariantIdentifier")]
+	public partial class ProductVariantIdentifier : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _ProductVariantId;
+		
+		private string _SerialNumber;
+		
+		private string _Barcode;
+		
+		private string _QRCode;
+		
+		private string _QRCodeImagePath;
+		
+		private string _QRCodeImageFullPath;
+		
+		private string _QRCodeImageFileName;
+		
+		private string _QRCodeImageStorageType;
+		
+		private bool _QRCodeImageLocked;
+		
+		private System.Nullable<System.DateTime> _QRCodeImageLockedDate;
+		
+		private System.Nullable<System.Guid> _QRCodeImageLockedBy;
+		
+		private string _SKU;
+		
+		private string _RFID;
+		
+		private string _MACAddress;
+		
+		private string _IMEI;
+		
+		private string _AssetTag;
+		
+		private string _LicenseKey;
+		
+		private string _UPC;
+		
+		private string _EAN;
+		
+		private string _ISBN;
+		
+		private string _OtherIdentifier;
+		
+		private bool _IsActive;
+		
+		private int _Status;
+		
+		private System.Nullable<System.DateTime> _StatusDate;
+		
+		private System.Nullable<System.Guid> _StatusChangedBy;
+		
+		private string _StatusNotes;
+		
+		private System.Nullable<int> _SourceType;
+		
+		private string _SourceReference;
+		
+		private System.Nullable<System.DateTime> _ValidFrom;
+		
+		private System.Nullable<System.DateTime> _ValidTo;
+		
+		private string _Notes;
+		
+		private System.DateTime _CreatedDate;
+		
+		private System.Nullable<System.DateTime> _UpdatedDate;
+		
+		private System.Nullable<System.Guid> _CreatedBy;
+		
+		private System.Nullable<System.Guid> _UpdatedBy;
+		
+		private EntitySet<ProductVariantIdentifierHistory> _ProductVariantIdentifierHistories;
+		
+		private EntityRef<ProductVariant> _ProductVariant;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnProductVariantIdChanging(System.Guid value);
+    partial void OnProductVariantIdChanged();
+    partial void OnSerialNumberChanging(string value);
+    partial void OnSerialNumberChanged();
+    partial void OnBarcodeChanging(string value);
+    partial void OnBarcodeChanged();
+    partial void OnQRCodeChanging(string value);
+    partial void OnQRCodeChanged();
+    partial void OnQRCodeImagePathChanging(string value);
+    partial void OnQRCodeImagePathChanged();
+    partial void OnQRCodeImageFullPathChanging(string value);
+    partial void OnQRCodeImageFullPathChanged();
+    partial void OnQRCodeImageFileNameChanging(string value);
+    partial void OnQRCodeImageFileNameChanged();
+    partial void OnQRCodeImageStorageTypeChanging(string value);
+    partial void OnQRCodeImageStorageTypeChanged();
+    partial void OnQRCodeImageLockedChanging(bool value);
+    partial void OnQRCodeImageLockedChanged();
+    partial void OnQRCodeImageLockedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnQRCodeImageLockedDateChanged();
+    partial void OnQRCodeImageLockedByChanging(System.Nullable<System.Guid> value);
+    partial void OnQRCodeImageLockedByChanged();
+    partial void OnSKUChanging(string value);
+    partial void OnSKUChanged();
+    partial void OnRFIDChanging(string value);
+    partial void OnRFIDChanged();
+    partial void OnMACAddressChanging(string value);
+    partial void OnMACAddressChanged();
+    partial void OnIMEIChanging(string value);
+    partial void OnIMEIChanged();
+    partial void OnAssetTagChanging(string value);
+    partial void OnAssetTagChanged();
+    partial void OnLicenseKeyChanging(string value);
+    partial void OnLicenseKeyChanged();
+    partial void OnUPCChanging(string value);
+    partial void OnUPCChanged();
+    partial void OnEANChanging(string value);
+    partial void OnEANChanged();
+    partial void OnISBNChanging(string value);
+    partial void OnISBNChanged();
+    partial void OnOtherIdentifierChanging(string value);
+    partial void OnOtherIdentifierChanged();
+    partial void OnIsActiveChanging(bool value);
+    partial void OnIsActiveChanged();
+    partial void OnStatusChanging(int value);
+    partial void OnStatusChanged();
+    partial void OnStatusDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnStatusDateChanged();
+    partial void OnStatusChangedByChanging(System.Nullable<System.Guid> value);
+    partial void OnStatusChangedByChanged();
+    partial void OnStatusNotesChanging(string value);
+    partial void OnStatusNotesChanged();
+    partial void OnSourceTypeChanging(System.Nullable<int> value);
+    partial void OnSourceTypeChanged();
+    partial void OnSourceReferenceChanging(string value);
+    partial void OnSourceReferenceChanged();
+    partial void OnValidFromChanging(System.Nullable<System.DateTime> value);
+    partial void OnValidFromChanged();
+    partial void OnValidToChanging(System.Nullable<System.DateTime> value);
+    partial void OnValidToChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    partial void OnCreatedDateChanging(System.DateTime value);
+    partial void OnCreatedDateChanged();
+    partial void OnUpdatedDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnUpdatedDateChanged();
+    partial void OnCreatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnCreatedByChanged();
+    partial void OnUpdatedByChanging(System.Nullable<System.Guid> value);
+    partial void OnUpdatedByChanged();
+    #endregion
+		
+		public ProductVariantIdentifier()
+		{
+			this._ProductVariantIdentifierHistories = new EntitySet<ProductVariantIdentifierHistory>(new Action<ProductVariantIdentifierHistory>(this.attach_ProductVariantIdentifierHistories), new Action<ProductVariantIdentifierHistory>(this.detach_ProductVariantIdentifierHistories));
+			this._ProductVariant = default(EntityRef<ProductVariant>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductVariantId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ProductVariantId
+		{
+			get
+			{
+				return this._ProductVariantId;
+			}
+			set
+			{
+				if ((this._ProductVariantId != value))
+				{
+					if (this._ProductVariant.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductVariantIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductVariantId = value;
+					this.SendPropertyChanged("ProductVariantId");
+					this.OnProductVariantIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SerialNumber", DbType="NVarChar(100)")]
+		public string SerialNumber
+		{
+			get
+			{
+				return this._SerialNumber;
+			}
+			set
+			{
+				if ((this._SerialNumber != value))
+				{
+					this.OnSerialNumberChanging(value);
+					this.SendPropertyChanging();
+					this._SerialNumber = value;
+					this.SendPropertyChanged("SerialNumber");
+					this.OnSerialNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Barcode", DbType="NVarChar(255)")]
+		public string Barcode
+		{
+			get
+			{
+				return this._Barcode;
+			}
+			set
+			{
+				if ((this._Barcode != value))
+				{
+					this.OnBarcodeChanging(value);
+					this.SendPropertyChanging();
+					this._Barcode = value;
+					this.SendPropertyChanged("Barcode");
+					this.OnBarcodeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QRCode", DbType="NVarChar(500)")]
+		public string QRCode
+		{
+			get
+			{
+				return this._QRCode;
+			}
+			set
+			{
+				if ((this._QRCode != value))
+				{
+					this.OnQRCodeChanging(value);
+					this.SendPropertyChanging();
+					this._QRCode = value;
+					this.SendPropertyChanged("QRCode");
+					this.OnQRCodeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QRCodeImagePath", DbType="NVarChar(500)")]
+		public string QRCodeImagePath
+		{
+			get
+			{
+				return this._QRCodeImagePath;
+			}
+			set
+			{
+				if ((this._QRCodeImagePath != value))
+				{
+					this.OnQRCodeImagePathChanging(value);
+					this.SendPropertyChanging();
+					this._QRCodeImagePath = value;
+					this.SendPropertyChanged("QRCodeImagePath");
+					this.OnQRCodeImagePathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QRCodeImageFullPath", DbType="NVarChar(1000)")]
+		public string QRCodeImageFullPath
+		{
+			get
+			{
+				return this._QRCodeImageFullPath;
+			}
+			set
+			{
+				if ((this._QRCodeImageFullPath != value))
+				{
+					this.OnQRCodeImageFullPathChanging(value);
+					this.SendPropertyChanging();
+					this._QRCodeImageFullPath = value;
+					this.SendPropertyChanged("QRCodeImageFullPath");
+					this.OnQRCodeImageFullPathChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QRCodeImageFileName", DbType="NVarChar(255)")]
+		public string QRCodeImageFileName
+		{
+			get
+			{
+				return this._QRCodeImageFileName;
+			}
+			set
+			{
+				if ((this._QRCodeImageFileName != value))
+				{
+					this.OnQRCodeImageFileNameChanging(value);
+					this.SendPropertyChanging();
+					this._QRCodeImageFileName = value;
+					this.SendPropertyChanged("QRCodeImageFileName");
+					this.OnQRCodeImageFileNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QRCodeImageStorageType", DbType="NVarChar(20)")]
+		public string QRCodeImageStorageType
+		{
+			get
+			{
+				return this._QRCodeImageStorageType;
+			}
+			set
+			{
+				if ((this._QRCodeImageStorageType != value))
+				{
+					this.OnQRCodeImageStorageTypeChanging(value);
+					this.SendPropertyChanging();
+					this._QRCodeImageStorageType = value;
+					this.SendPropertyChanged("QRCodeImageStorageType");
+					this.OnQRCodeImageStorageTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QRCodeImageLocked", DbType="Bit NOT NULL")]
+		public bool QRCodeImageLocked
+		{
+			get
+			{
+				return this._QRCodeImageLocked;
+			}
+			set
+			{
+				if ((this._QRCodeImageLocked != value))
+				{
+					this.OnQRCodeImageLockedChanging(value);
+					this.SendPropertyChanging();
+					this._QRCodeImageLocked = value;
+					this.SendPropertyChanged("QRCodeImageLocked");
+					this.OnQRCodeImageLockedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QRCodeImageLockedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> QRCodeImageLockedDate
+		{
+			get
+			{
+				return this._QRCodeImageLockedDate;
+			}
+			set
+			{
+				if ((this._QRCodeImageLockedDate != value))
+				{
+					this.OnQRCodeImageLockedDateChanging(value);
+					this.SendPropertyChanging();
+					this._QRCodeImageLockedDate = value;
+					this.SendPropertyChanged("QRCodeImageLockedDate");
+					this.OnQRCodeImageLockedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QRCodeImageLockedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> QRCodeImageLockedBy
+		{
+			get
+			{
+				return this._QRCodeImageLockedBy;
+			}
+			set
+			{
+				if ((this._QRCodeImageLockedBy != value))
+				{
+					this.OnQRCodeImageLockedByChanging(value);
+					this.SendPropertyChanging();
+					this._QRCodeImageLockedBy = value;
+					this.SendPropertyChanged("QRCodeImageLockedBy");
+					this.OnQRCodeImageLockedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SKU", DbType="NVarChar(100)")]
+		public string SKU
+		{
+			get
+			{
+				return this._SKU;
+			}
+			set
+			{
+				if ((this._SKU != value))
+				{
+					this.OnSKUChanging(value);
+					this.SendPropertyChanging();
+					this._SKU = value;
+					this.SendPropertyChanged("SKU");
+					this.OnSKUChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RFID", DbType="NVarChar(100)")]
+		public string RFID
+		{
+			get
+			{
+				return this._RFID;
+			}
+			set
+			{
+				if ((this._RFID != value))
+				{
+					this.OnRFIDChanging(value);
+					this.SendPropertyChanging();
+					this._RFID = value;
+					this.SendPropertyChanged("RFID");
+					this.OnRFIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MACAddress", DbType="NVarChar(50)")]
+		public string MACAddress
+		{
+			get
+			{
+				return this._MACAddress;
+			}
+			set
+			{
+				if ((this._MACAddress != value))
+				{
+					this.OnMACAddressChanging(value);
+					this.SendPropertyChanging();
+					this._MACAddress = value;
+					this.SendPropertyChanged("MACAddress");
+					this.OnMACAddressChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IMEI", DbType="NVarChar(50)")]
+		public string IMEI
+		{
+			get
+			{
+				return this._IMEI;
+			}
+			set
+			{
+				if ((this._IMEI != value))
+				{
+					this.OnIMEIChanging(value);
+					this.SendPropertyChanging();
+					this._IMEI = value;
+					this.SendPropertyChanged("IMEI");
+					this.OnIMEIChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AssetTag", DbType="NVarChar(50)")]
+		public string AssetTag
+		{
+			get
+			{
+				return this._AssetTag;
+			}
+			set
+			{
+				if ((this._AssetTag != value))
+				{
+					this.OnAssetTagChanging(value);
+					this.SendPropertyChanging();
+					this._AssetTag = value;
+					this.SendPropertyChanged("AssetTag");
+					this.OnAssetTagChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LicenseKey", DbType="NVarChar(255)")]
+		public string LicenseKey
+		{
+			get
+			{
+				return this._LicenseKey;
+			}
+			set
+			{
+				if ((this._LicenseKey != value))
+				{
+					this.OnLicenseKeyChanging(value);
+					this.SendPropertyChanging();
+					this._LicenseKey = value;
+					this.SendPropertyChanged("LicenseKey");
+					this.OnLicenseKeyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UPC", DbType="NVarChar(50)")]
+		public string UPC
+		{
+			get
+			{
+				return this._UPC;
+			}
+			set
+			{
+				if ((this._UPC != value))
+				{
+					this.OnUPCChanging(value);
+					this.SendPropertyChanging();
+					this._UPC = value;
+					this.SendPropertyChanged("UPC");
+					this.OnUPCChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EAN", DbType="NVarChar(50)")]
+		public string EAN
+		{
+			get
+			{
+				return this._EAN;
+			}
+			set
+			{
+				if ((this._EAN != value))
+				{
+					this.OnEANChanging(value);
+					this.SendPropertyChanging();
+					this._EAN = value;
+					this.SendPropertyChanged("EAN");
+					this.OnEANChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ISBN", DbType="NVarChar(50)")]
+		public string ISBN
+		{
+			get
+			{
+				return this._ISBN;
+			}
+			set
+			{
+				if ((this._ISBN != value))
+				{
+					this.OnISBNChanging(value);
+					this.SendPropertyChanging();
+					this._ISBN = value;
+					this.SendPropertyChanged("ISBN");
+					this.OnISBNChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OtherIdentifier", DbType="NVarChar(255)")]
+		public string OtherIdentifier
+		{
+			get
+			{
+				return this._OtherIdentifier;
+			}
+			set
+			{
+				if ((this._OtherIdentifier != value))
+				{
+					this.OnOtherIdentifierChanging(value);
+					this.SendPropertyChanging();
+					this._OtherIdentifier = value;
+					this.SendPropertyChanged("OtherIdentifier");
+					this.OnOtherIdentifierChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsActive", DbType="Bit NOT NULL")]
+		public bool IsActive
+		{
+			get
+			{
+				return this._IsActive;
+			}
+			set
+			{
+				if ((this._IsActive != value))
+				{
+					this.OnIsActiveChanging(value);
+					this.SendPropertyChanging();
+					this._IsActive = value;
+					this.SendPropertyChanged("IsActive");
+					this.OnIsActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="Int NOT NULL")]
+		public int Status
+		{
+			get
+			{
+				return this._Status;
+			}
+			set
+			{
+				if ((this._Status != value))
+				{
+					this.OnStatusChanging(value);
+					this.SendPropertyChanging();
+					this._Status = value;
+					this.SendPropertyChanged("Status");
+					this.OnStatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StatusDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> StatusDate
+		{
+			get
+			{
+				return this._StatusDate;
+			}
+			set
+			{
+				if ((this._StatusDate != value))
+				{
+					this.OnStatusDateChanging(value);
+					this.SendPropertyChanging();
+					this._StatusDate = value;
+					this.SendPropertyChanged("StatusDate");
+					this.OnStatusDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StatusChangedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> StatusChangedBy
+		{
+			get
+			{
+				return this._StatusChangedBy;
+			}
+			set
+			{
+				if ((this._StatusChangedBy != value))
+				{
+					this.OnStatusChangedByChanging(value);
+					this.SendPropertyChanging();
+					this._StatusChangedBy = value;
+					this.SendPropertyChanged("StatusChangedBy");
+					this.OnStatusChangedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StatusNotes", DbType="NVarChar(1000)")]
+		public string StatusNotes
+		{
+			get
+			{
+				return this._StatusNotes;
+			}
+			set
+			{
+				if ((this._StatusNotes != value))
+				{
+					this.OnStatusNotesChanging(value);
+					this.SendPropertyChanging();
+					this._StatusNotes = value;
+					this.SendPropertyChanged("StatusNotes");
+					this.OnStatusNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SourceType", DbType="Int")]
+		public System.Nullable<int> SourceType
+		{
+			get
+			{
+				return this._SourceType;
+			}
+			set
+			{
+				if ((this._SourceType != value))
+				{
+					this.OnSourceTypeChanging(value);
+					this.SendPropertyChanging();
+					this._SourceType = value;
+					this.SendPropertyChanged("SourceType");
+					this.OnSourceTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SourceReference", DbType="NVarChar(255)")]
+		public string SourceReference
+		{
+			get
+			{
+				return this._SourceReference;
+			}
+			set
+			{
+				if ((this._SourceReference != value))
+				{
+					this.OnSourceReferenceChanging(value);
+					this.SendPropertyChanging();
+					this._SourceReference = value;
+					this.SendPropertyChanged("SourceReference");
+					this.OnSourceReferenceChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ValidFrom", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ValidFrom
+		{
+			get
+			{
+				return this._ValidFrom;
+			}
+			set
+			{
+				if ((this._ValidFrom != value))
+				{
+					this.OnValidFromChanging(value);
+					this.SendPropertyChanging();
+					this._ValidFrom = value;
+					this.SendPropertyChanged("ValidFrom");
+					this.OnValidFromChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ValidTo", DbType="DateTime")]
+		public System.Nullable<System.DateTime> ValidTo
+		{
+			get
+			{
+				return this._ValidTo;
+			}
+			set
+			{
+				if ((this._ValidTo != value))
+				{
+					this.OnValidToChanging(value);
+					this.SendPropertyChanging();
+					this._ValidTo = value;
+					this.SendPropertyChanged("ValidTo");
+					this.OnValidToChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreatedDate
+		{
+			get
+			{
+				return this._CreatedDate;
+			}
+			set
+			{
+				if ((this._CreatedDate != value))
+				{
+					this.OnCreatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedDate = value;
+					this.SendPropertyChanged("CreatedDate");
+					this.OnCreatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedDate", DbType="DateTime")]
+		public System.Nullable<System.DateTime> UpdatedDate
+		{
+			get
+			{
+				return this._UpdatedDate;
+			}
+			set
+			{
+				if ((this._UpdatedDate != value))
+				{
+					this.OnUpdatedDateChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedDate = value;
+					this.SendPropertyChanged("UpdatedDate");
+					this.OnUpdatedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> CreatedBy
+		{
+			get
+			{
+				return this._CreatedBy;
+			}
+			set
+			{
+				if ((this._CreatedBy != value))
+				{
+					this.OnCreatedByChanging(value);
+					this.SendPropertyChanging();
+					this._CreatedBy = value;
+					this.SendPropertyChanged("CreatedBy");
+					this.OnCreatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> UpdatedBy
+		{
+			get
+			{
+				return this._UpdatedBy;
+			}
+			set
+			{
+				if ((this._UpdatedBy != value))
+				{
+					this.OnUpdatedByChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedBy = value;
+					this.SendPropertyChanged("UpdatedBy");
+					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariantIdentifier_ProductVariantIdentifierHistory", Storage="_ProductVariantIdentifierHistories", ThisKey="Id", OtherKey="ProductVariantIdentifierId")]
+		public EntitySet<ProductVariantIdentifierHistory> ProductVariantIdentifierHistories
+		{
+			get
+			{
+				return this._ProductVariantIdentifierHistories;
+			}
+			set
+			{
+				this._ProductVariantIdentifierHistories.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_ProductVariantIdentifier", Storage="_ProductVariant", ThisKey="ProductVariantId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public ProductVariant ProductVariant
+		{
+			get
+			{
+				return this._ProductVariant.Entity;
+			}
+			set
+			{
+				ProductVariant previousValue = this._ProductVariant.Entity;
+				if (((previousValue != value) 
+							|| (this._ProductVariant.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ProductVariant.Entity = null;
+						previousValue.ProductVariantIdentifiers.Remove(this);
+					}
+					this._ProductVariant.Entity = value;
+					if ((value != null))
+					{
+						value.ProductVariantIdentifiers.Add(this);
+						this._ProductVariantId = value.Id;
+					}
+					else
+					{
+						this._ProductVariantId = default(System.Guid);
+					}
+					this.SendPropertyChanged("ProductVariant");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_ProductVariantIdentifierHistories(ProductVariantIdentifierHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariantIdentifier = this;
+		}
+		
+		private void detach_ProductVariantIdentifierHistories(ProductVariantIdentifierHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.ProductVariantIdentifier = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ProductVariantIdentifierHistory")]
+	public partial class ProductVariantIdentifierHistory : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _Id;
+		
+		private System.Guid _ProductVariantIdentifierId;
+		
+		private System.Guid _ProductVariantId;
+		
+		private int _ChangeType;
+		
+		private System.DateTime _ChangeDate;
+		
+		private System.Nullable<System.Guid> _ChangedBy;
+		
+		private string _OldValue;
+		
+		private string _NewValue;
+		
+		private string _FieldName;
+		
+		private string _Description;
+		
+		private string _Notes;
+		
+		private EntityRef<ProductVariant> _ProductVariant;
+		
+		private EntityRef<ProductVariantIdentifier> _ProductVariantIdentifier;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(System.Guid value);
+    partial void OnIdChanged();
+    partial void OnProductVariantIdentifierIdChanging(System.Guid value);
+    partial void OnProductVariantIdentifierIdChanged();
+    partial void OnProductVariantIdChanging(System.Guid value);
+    partial void OnProductVariantIdChanged();
+    partial void OnChangeTypeChanging(int value);
+    partial void OnChangeTypeChanged();
+    partial void OnChangeDateChanging(System.DateTime value);
+    partial void OnChangeDateChanged();
+    partial void OnChangedByChanging(System.Nullable<System.Guid> value);
+    partial void OnChangedByChanged();
+    partial void OnOldValueChanging(string value);
+    partial void OnOldValueChanged();
+    partial void OnNewValueChanging(string value);
+    partial void OnNewValueChanged();
+    partial void OnFieldNameChanging(string value);
+    partial void OnFieldNameChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnNotesChanging(string value);
+    partial void OnNotesChanged();
+    #endregion
+		
+		public ProductVariantIdentifierHistory()
+		{
+			this._ProductVariant = default(EntityRef<ProductVariant>);
+			this._ProductVariantIdentifier = default(EntityRef<ProductVariantIdentifier>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductVariantIdentifierId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ProductVariantIdentifierId
+		{
+			get
+			{
+				return this._ProductVariantIdentifierId;
+			}
+			set
+			{
+				if ((this._ProductVariantIdentifierId != value))
+				{
+					if (this._ProductVariantIdentifier.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductVariantIdentifierIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductVariantIdentifierId = value;
+					this.SendPropertyChanged("ProductVariantIdentifierId");
+					this.OnProductVariantIdentifierIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProductVariantId", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid ProductVariantId
+		{
+			get
+			{
+				return this._ProductVariantId;
+			}
+			set
+			{
+				if ((this._ProductVariantId != value))
+				{
+					if (this._ProductVariant.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnProductVariantIdChanging(value);
+					this.SendPropertyChanging();
+					this._ProductVariantId = value;
+					this.SendPropertyChanged("ProductVariantId");
+					this.OnProductVariantIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeType", DbType="Int NOT NULL")]
+		public int ChangeType
+		{
+			get
+			{
+				return this._ChangeType;
+			}
+			set
+			{
+				if ((this._ChangeType != value))
+				{
+					this.OnChangeTypeChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeType = value;
+					this.SendPropertyChanged("ChangeType");
+					this.OnChangeTypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeDate", DbType="DateTime NOT NULL")]
+		public System.DateTime ChangeDate
+		{
+			get
+			{
+				return this._ChangeDate;
+			}
+			set
+			{
+				if ((this._ChangeDate != value))
+				{
+					this.OnChangeDateChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeDate = value;
+					this.SendPropertyChanged("ChangeDate");
+					this.OnChangeDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangedBy", DbType="UniqueIdentifier")]
+		public System.Nullable<System.Guid> ChangedBy
+		{
+			get
+			{
+				return this._ChangedBy;
+			}
+			set
+			{
+				if ((this._ChangedBy != value))
+				{
+					this.OnChangedByChanging(value);
+					this.SendPropertyChanging();
+					this._ChangedBy = value;
+					this.SendPropertyChanged("ChangedBy");
+					this.OnChangedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OldValue", DbType="NVarChar(500)")]
+		public string OldValue
+		{
+			get
+			{
+				return this._OldValue;
+			}
+			set
+			{
+				if ((this._OldValue != value))
+				{
+					this.OnOldValueChanging(value);
+					this.SendPropertyChanging();
+					this._OldValue = value;
+					this.SendPropertyChanged("OldValue");
+					this.OnOldValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NewValue", DbType="NVarChar(500)")]
+		public string NewValue
+		{
+			get
+			{
+				return this._NewValue;
+			}
+			set
+			{
+				if ((this._NewValue != value))
+				{
+					this.OnNewValueChanging(value);
+					this.SendPropertyChanging();
+					this._NewValue = value;
+					this.SendPropertyChanged("NewValue");
+					this.OnNewValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FieldName", DbType="NVarChar(100)")]
+		public string FieldName
+		{
+			get
+			{
+				return this._FieldName;
+			}
+			set
+			{
+				if ((this._FieldName != value))
+				{
+					this.OnFieldNameChanging(value);
+					this.SendPropertyChanging();
+					this._FieldName = value;
+					this.SendPropertyChanged("FieldName");
+					this.OnFieldNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(1000)")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Notes", DbType="NVarChar(1000)")]
+		public string Notes
+		{
+			get
+			{
+				return this._Notes;
+			}
+			set
+			{
+				if ((this._Notes != value))
+				{
+					this.OnNotesChanging(value);
+					this.SendPropertyChanging();
+					this._Notes = value;
+					this.SendPropertyChanged("Notes");
+					this.OnNotesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariant_ProductVariantIdentifierHistory", Storage="_ProductVariant", ThisKey="ProductVariantId", OtherKey="Id", IsForeignKey=true)]
+		public ProductVariant ProductVariant
+		{
+			get
+			{
+				return this._ProductVariant.Entity;
+			}
+			set
+			{
+				ProductVariant previousValue = this._ProductVariant.Entity;
+				if (((previousValue != value) 
+							|| (this._ProductVariant.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ProductVariant.Entity = null;
+						previousValue.ProductVariantIdentifierHistories.Remove(this);
+					}
+					this._ProductVariant.Entity = value;
+					if ((value != null))
+					{
+						value.ProductVariantIdentifierHistories.Add(this);
+						this._ProductVariantId = value.Id;
+					}
+					else
+					{
+						this._ProductVariantId = default(System.Guid);
+					}
+					this.SendPropertyChanged("ProductVariant");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="ProductVariantIdentifier_ProductVariantIdentifierHistory", Storage="_ProductVariantIdentifier", ThisKey="ProductVariantIdentifierId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public ProductVariantIdentifier ProductVariantIdentifier
+		{
+			get
+			{
+				return this._ProductVariantIdentifier.Entity;
+			}
+			set
+			{
+				ProductVariantIdentifier previousValue = this._ProductVariantIdentifier.Entity;
+				if (((previousValue != value) 
+							|| (this._ProductVariantIdentifier.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._ProductVariantIdentifier.Entity = null;
+						previousValue.ProductVariantIdentifierHistories.Remove(this);
+					}
+					this._ProductVariantIdentifier.Entity = value;
+					if ((value != null))
+					{
+						value.ProductVariantIdentifierHistories.Add(this);
+						this._ProductVariantIdentifierId = value.Id;
+					}
+					else
+					{
+						this._ProductVariantIdentifierId = default(System.Guid);
+					}
+					this.SendPropertyChanged("ProductVariantIdentifier");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 	
@@ -19648,7 +21081,7 @@ namespace Dal.DataContext
 					this.OnVocherNumberChanging(value);
 					this.SendPropertyChanging();
 					this._VocherNumber = value;
-					this.SendPropertyChanged("VoucherNumber");
+					this.SendPropertyChanged("VocherNumber");
 					this.OnVocherNumberChanged();
 				}
 			}

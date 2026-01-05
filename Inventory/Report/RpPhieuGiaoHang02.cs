@@ -3,6 +3,9 @@ using Common.Utils;
 using DTO.Inventory.Report;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
+using System.Linq;
 
 namespace Inventory.Report
 {
@@ -23,7 +26,10 @@ namespace Inventory.Report
         {
             InitializeComponent();
             _stockInOutReportBll = new StockInOutReportBll();
+            LoadCompanyLogo();
         }
+
+        
 
         /// <summary>
         /// Constructor với VoucherId để tự động load dữ liệu
@@ -70,6 +76,58 @@ namespace Inventory.Report
                 throw;
             }
         }
+
+        /// <summary>
+        /// Load logo công ty từ đường dẫn tương đối
+        /// </summary>
+        private void LoadCompanyLogo()
+        {
+            try
+            {
+                //FIXME: Đã import file vào thư mục Resources của project này
+                // Thử các đường dẫn có thể có của logo
+                string[] possiblePaths = new string[]
+                {
+                    // Đường dẫn từ Application.StartupPath
+                    Path.Combine(Application.StartupPath, "Images", "Ven - Solutions logo_1438x617_background_transfer.jpg"),
+                    // Đường dẫn từ thư mục gốc của solution
+                    Path.Combine(Application.StartupPath, "..", "..", "VnsErp2025.Blazor.Server", "Images", "Ven - Solutions logo_1438x617_background_transfer.jpg"),
+                    // Đường dẫn tuyệt đối (fallback)
+                    @"C:\Users\Admin\source\Workspaces\2025\VnsErp2025\VnsErp2025.Blazor.Server\Images\Ven - Solutions logo_1438x617_background_transfer.jpg"
+                };
+
+                foreach (string logoPath in possiblePaths)
+                {
+                    if (File.Exists(logoPath))
+                    {
+                        xrPictureBox1.ImageUrl = logoPath;
+                        return;
+                    }
+                }
+
+                // Nếu không tìm thấy, thử tìm file logo với tên khác trong thư mục Images
+                string imagesFolder = Path.Combine(Application.StartupPath, "Images");
+                if (Directory.Exists(imagesFolder))
+                {
+                    string[] logoFiles = Directory.GetFiles(imagesFolder, "*logo*.jpg", SearchOption.TopDirectoryOnly);
+                    if (logoFiles.Length > 0)
+                    {
+                        xrPictureBox1.ImageUrl = logoFiles[0];
+                        return;
+                    }
+                }
+
+                // Nếu vẫn không tìm thấy, để trống (logo sẽ không hiển thị)
+                xrPictureBox1.ImageUrl = null;
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nhưng không throw để report vẫn có thể hiển thị
+                System.Diagnostics.Debug.WriteLine($"Không thể load logo công ty: {ex.Message}");
+                xrPictureBox1.ImageUrl = null;
+            }
+        }
+
 
         #endregion
 

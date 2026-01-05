@@ -268,7 +268,7 @@
             this.colProductHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colProductHtml.Caption = "Sản phẩm";
             this.colProductHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
-            this.colProductHtml.FieldName = "ProductHtml";
+            this.colProductHtml.FieldName = "ProductVariantFullName";
             this.colProductHtml.Name = "colProductHtml";
             this.colProductHtml.OptionsColumn.AllowEdit = false;
             this.colProductHtml.OptionsColumn.ReadOnly = true;
@@ -290,9 +290,8 @@
             this.colStatusHtml.AppearanceHeader.Options.UseTextOptions = true;
             this.colStatusHtml.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colStatusHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.colStatusHtml.Caption = "Trạng thái";
-            this.colStatusHtml.ColumnEdit = this.HtmlRepositoryItemHypertextLabel;
-            this.colStatusHtml.FieldName = "StatusHtml";
+            this.colStatusHtml.Caption = "Đã khóa";
+            this.colStatusHtml.FieldName = "IsLocked";
             this.colStatusHtml.Name = "colStatusHtml";
             this.colStatusHtml.OptionsColumn.AllowEdit = false;
             this.colStatusHtml.OptionsColumn.ReadOnly = true;

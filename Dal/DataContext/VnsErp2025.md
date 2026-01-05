@@ -1,7 +1,7 @@
 # VNS ERP 2025 - Tài Liệu Các Entity Classes (LINQ to SQL)
 
-**Ngày cập nhật:** 25/09/2025  
-**Phiên bản:** 1.0  
+**Ngày cập nhật:** 05/01/2025  
+**Phiên bản:** 2.0  
 **Nguồn:** Auto-generated từ LINQ to SQL Designer  
 
 ---
@@ -28,18 +28,208 @@ Các entity classes này được tự động tạo bởi LINQ to SQL Designer 
 - Cung cấp các Table properties để truy cập entities
 - Hỗ trợ CRUD operations thông qua LINQ
 
-**Connection String:** `VnsErp2025FinalConnectionString`
+**Connection String:** `VnsErp2025FinalConnectionString2`
 
-**Tables Properties:**
+**Tables Properties (41 tables):**
+- `AllowedMacAddresses` → Table<AllowedMacAddress>
+- `Warranties` → Table<Warranty>
 - `ApplicationUsers` → Table<ApplicationUser>
+- `Assets` → Table<Asset>
+- `Attributes` → Table<Attribute>
+- `AttributeValues` → Table<AttributeValue>
 - `BusinessPartners` → Table<BusinessPartner>
-- `BusinessPartnerContacts` → Table<BusinessPartnerContact>
 - `BusinessPartner_BusinessPartnerCategories` → Table<BusinessPartner_BusinessPartnerCategory>
 - `BusinessPartnerCategories` → Table<BusinessPartnerCategory>
+- `BusinessPartnerContacts` → Table<BusinessPartnerContact>
+- `BusinessPartnerSites` → Table<BusinessPartnerSite>
+- `Companies` → Table<Company>
+- `CompanyBranches` → Table<CompanyBranch>
+- `Departments` → Table<Department>
+- `Devices` → Table<Device>
+- `DeviceHistories` → Table<DeviceHistory>
+- `DeviceImages` → Table<DeviceImage>
+- `DeviceTransactionHistories` → Table<DeviceTransactionHistory>
+- `DeviceTransfers` → Table<DeviceTransfer>
+- `Employees` → Table<Employee>
+- `InventoryBalances` → Table<InventoryBalance>
+- `Permissions` → Table<Permission>
+- `Positions` → Table<Position>
+- `ProductImages` → Table<ProductImage>
+- `ProductServices` → Table<ProductService>
+- `ProductServiceCategories` → Table<ProductServiceCategory>
+- `ProductVariants` → Table<ProductVariant>
+- `ProductVariantIdentifiers` → Table<ProductVariantIdentifier> ⭐ **MỚI**
+- `ProductVariantIdentifierHistories` → Table<ProductVariantIdentifierHistory> ⭐ **MỚI**
+- `Roles` → Table<Role>
+- `RolePermissions` → Table<RolePermission>
+- `Settings` → Table<Setting>
+- `StockInOutDetails` → Table<StockInOutDetail>
+- `StockInOutDocuments` → Table<StockInOutDocument>
+- `StockInOutImages` → Table<StockInOutImage>
+- `StockInOutMasters` → Table<StockInOutMaster>
+- `UnitOfMeasures` → Table<UnitOfMeasure>
+- `UserPermissions` → Table<UserPermission>
+- `UserRoles` → Table<UserRole>
+- `VariantAttributes` → Table<VariantAttribute>
+- `VnsErpApplicationVersions` → Table<VnsErpApplicationVersion>
 
 ---
 
-## 👤 **1. ApplicationUser Entity**
+## 📦 **Danh Sách Entity Classes (41 entities)**
+
+1. **AllowedMacAddress** - Quản lý địa chỉ MAC được phép
+2. **Warranty** - Quản lý bảo hành
+3. **ApplicationUser** - Người dùng ứng dụng
+4. **Asset** - Tài sản
+5. **Attribute** - Thuộc tính
+6. **AttributeValue** - Giá trị thuộc tính
+7. **BusinessPartner** - Đối tác kinh doanh
+8. **BusinessPartner_BusinessPartnerCategory** - Junction table (nhiều-nhiều)
+9. **BusinessPartnerCategory** - Danh mục đối tác
+10. **BusinessPartnerContact** - Liên hệ đối tác
+11. **BusinessPartnerSite** - Địa điểm đối tác
+12. **Company** - Công ty
+13. **CompanyBranch** - Chi nhánh công ty
+14. **Department** - Phòng ban
+15. **Device** - Thiết bị
+16. **DeviceHistory** - Lịch sử thiết bị
+17. **DeviceImage** - Hình ảnh thiết bị
+18. **DeviceTransactionHistory** - Lịch sử giao dịch thiết bị
+19. **DeviceTransfer** - Chuyển giao thiết bị
+20. **Employee** - Nhân viên
+21. **InventoryBalance** - Tồn kho
+22. **Permission** - Quyền
+23. **Position** - Chức vụ
+24. **ProductImage** - Hình ảnh sản phẩm
+25. **ProductService** - Sản phẩm/Dịch vụ
+26. **ProductServiceCategory** - Danh mục sản phẩm/dịch vụ
+27. **ProductVariant** - Biến thể sản phẩm
+28. **ProductVariantIdentifier** ⭐ - Định danh biến thể sản phẩm (MỚI)
+29. **ProductVariantIdentifierHistory** ⭐ - Lịch sử định danh (MỚI)
+30. **Role** - Vai trò
+31. **RolePermission** - Quyền của vai trò
+32. **Setting** - Cài đặt
+33. **StockInOutDetail** - Chi tiết nhập/xuất kho
+34. **StockInOutDocument** - Tài liệu nhập/xuất kho
+35. **StockInOutImage** - Hình ảnh nhập/xuất kho
+36. **StockInOutMaster** - Phiếu nhập/xuất kho
+37. **UnitOfMeasure** - Đơn vị tính
+38. **UserPermission** - Quyền người dùng
+39. **UserRole** - Vai trò người dùng
+40. **VariantAttribute** - Thuộc tính biến thể
+41. **VnsErpApplicationVersion** - Phiên bản ứng dụng
+
+---
+
+## 🆕 **ProductVariantIdentifier Entity** ⭐
+
+**Namespace:** `Dal.DataContext`  
+**Table:** `dbo.ProductVariantIdentifier`
+
+### **Mô tả**
+Bảng quản lý các loại định danh cho ProductVariant. Mỗi loại định danh được khai báo thành cột riêng. Tương tự như bảng Device nhưng quản lý rộng hơn, không chỉ giới hạn cho thiết bị.
+
+### **Properties**
+
+#### **Định danh cơ bản:**
+| Property | Type | Database Column | Constraints | Mô tả |
+|----------|------|-----------------|-------------|-------|
+| `Id` | `System.Guid` | `Id` | Primary Key, NOT NULL | Unique identifier |
+| `ProductVariantId` | `System.Guid` | `ProductVariantId` | NOT NULL, Foreign Key | ID biến thể sản phẩm |
+| `SerialNumber` | `string` | `SerialNumber` | NULL, NVarChar(100) | Số serial |
+| `Barcode` | `string` | `Barcode` | NULL, NVarChar(255) | Mã vạch |
+| `QRCode` | `string` | `QRCode` | NULL, NVarChar(500) | Mã QR |
+| `SKU` | `string` | `SKU` | NULL, NVarChar(100) | Stock Keeping Unit |
+| `RFID` | `string` | `RFID` | NULL, NVarChar(100) | Radio Frequency Identification |
+| `MACAddress` | `string` | `MACAddress` | NULL, NVarChar(50) | Media Access Control Address |
+| `IMEI` | `string` | `IMEI` | NULL, NVarChar(50) | International Mobile Equipment Identity |
+| `AssetTag` | `string` | `AssetTag` | NULL, NVarChar(50) | Mã tài sản nội bộ |
+| `LicenseKey` | `string` | `LicenseKey` | NULL, NVarChar(255) | Khóa bản quyền |
+| `UPC` | `string` | `UPC` | NULL, NVarChar(50) | Universal Product Code |
+| `EAN` | `string` | `EAN` | NULL, NVarChar(50) | European Article Number |
+| `ISBN` | `string` | `ISBN` | NULL, NVarChar(50) | International Standard Book Number |
+| `OtherIdentifier` | `string` | `OtherIdentifier` | NULL, NVarChar(255) | Loại định danh khác |
+
+#### **Quản lý hình ảnh QR code:**
+| Property | Type | Database Column | Constraints | Mô tả |
+|----------|------|-----------------|-------------|-------|
+| `QRCodeImagePath` | `string` | `QRCodeImagePath` | NULL, NVarChar(500) | Đường dẫn tương đối hình ảnh QR code |
+| `QRCodeImageFullPath` | `string` | `QRCodeImageFullPath` | NULL, NVarChar(1000) | Đường dẫn đầy đủ hình ảnh QR code |
+| `QRCodeImageFileName` | `string` | `QRCodeImageFileName` | NULL, NVarChar(255) | Tên file hình ảnh QR code |
+| `QRCodeImageStorageType` | `string` | `QRCodeImageStorageType` | NULL, NVarChar(20), DEFAULT('NAS') | Loại lưu trữ: NAS, Local, Cloud |
+| `QRCodeImageLocked` | `bool` | `QRCodeImageLocked` | NOT NULL, Bit, DEFAULT(0) | Khóa hình ảnh (không cho chỉnh sửa/xóa) |
+| `QRCodeImageLockedDate` | `System.DateTime?` | `QRCodeImageLockedDate` | NULL, DateTime | Ngày khóa hình ảnh |
+| `QRCodeImageLockedBy` | `System.Guid?` | `QRCodeImageLockedBy` | NULL, UniqueIdentifier | Người khóa hình ảnh |
+
+#### **Tình trạng hàng hóa/sản phẩm:**
+| Property | Type | Database Column | Constraints | Mô tả |
+|----------|------|-----------------|-------------|-------|
+| `Status` | `int` | `Status` | NOT NULL, Int, DEFAULT(0) | Tình trạng: 0=Tại kho VNS, 1=Đã xuất cho KH, 2=Đang lắp đặt tại site KH, 3=Đang gửi Bảo hành NCC, 4=Đã hư hỏng (Tại kho VNS), 5=Đã thanh lý |
+| `StatusDate` | `System.DateTime?` | `StatusDate` | NULL, DateTime | Ngày thay đổi trạng thái |
+| `StatusChangedBy` | `System.Guid?` | `StatusChangedBy` | NULL, UniqueIdentifier | Người thay đổi trạng thái |
+| `StatusNotes` | `string` | `StatusNotes` | NULL, NVarChar(1000) | Ghi chú về trạng thái |
+
+#### **Thông tin khác:**
+| Property | Type | Database Column | Constraints | Mô tả |
+|----------|------|-----------------|-------------|-------|
+| `IsActive` | `bool` | `IsActive` | NOT NULL, Bit, DEFAULT(1) | Còn sử dụng không |
+| `SourceType` | `int?` | `SourceType` | NULL, Int | Nguồn: 0=Manual, 1=Import, 2=AutoGenerate, 3=Scanner, 4=Other |
+| `SourceReference` | `string` | `SourceReference` | NULL, NVarChar(255) | Tham chiếu nguồn |
+| `ValidFrom` | `System.DateTime?` | `ValidFrom` | NULL, DateTime | Ngày bắt đầu có hiệu lực |
+| `ValidTo` | `System.DateTime?` | `ValidTo` | NULL, DateTime | Ngày hết hiệu lực |
+| `Notes` | `string` | `Notes` | NULL, NVarChar(1000) | Ghi chú bổ sung |
+| `CreatedDate` | `System.DateTime` | `CreatedDate` | NOT NULL, DateTime, DEFAULT(GETDATE()) | Ngày tạo |
+| `UpdatedDate` | `System.DateTime?` | `UpdatedDate` | NULL, DateTime | Ngày cập nhật |
+| `CreatedBy` | `System.Guid?` | `CreatedBy` | NULL, UniqueIdentifier | Người tạo |
+| `UpdatedBy` | `System.Guid?` | `UpdatedBy` | NULL, UniqueIdentifier | Người cập nhật |
+
+### **Navigation Properties**
+- `ProductVariant` → `ProductVariant` (nhiều-1)
+- `ProductVariantIdentifierHistories` → `EntitySet<ProductVariantIdentifierHistory>` (1-nhiều)
+
+### **Relationships**
+- **Nhiều-1** với `ProductVariant` (ProductVariantId → Id)
+- **1-nhiều** với `ProductVariantIdentifierHistory` (Id → ProductVariantIdentifierId)
+- **CASCADE DELETE** khi ProductVariant bị xóa
+
+---
+
+## 📜 **ProductVariantIdentifierHistory Entity** ⭐
+
+**Namespace:** `Dal.DataContext`  
+**Table:** `dbo.ProductVariantIdentifierHistory`
+
+### **Mô tả**
+Bảng lưu trữ lịch sử thay đổi của các định danh ProductVariant.
+
+### **Properties**
+
+| Property | Type | Database Column | Constraints | Mô tả |
+|----------|------|-----------------|-------------|-------|
+| `Id` | `System.Guid` | `Id` | Primary Key, NOT NULL | Unique identifier |
+| `ProductVariantIdentifierId` | `System.Guid` | `ProductVariantIdentifierId` | NOT NULL, Foreign Key | ID định danh được thay đổi |
+| `ProductVariantId` | `System.Guid` | `ProductVariantId` | NOT NULL, Foreign Key | ID ProductVariant (để query nhanh) |
+| `ChangeType` | `int` | `ChangeType` | NOT NULL, Int | Loại thay đổi: 0=Created, 1=Updated, 2=Activated, 3=Deactivated, 4=Deleted |
+| `ChangeDate` | `System.DateTime` | `ChangeDate` | NOT NULL, DateTime | Ngày thay đổi |
+| `ChangedBy` | `System.Guid?` | `ChangedBy` | NULL, UniqueIdentifier | Người thay đổi |
+| `OldValue` | `string` | `OldValue` | NULL, NVarChar(500) | Giá trị cũ |
+| `NewValue` | `string` | `NewValue` | NULL, NVarChar(500) | Giá trị mới |
+| `FieldName` | `string` | `FieldName` | NULL, NVarChar(100) | Tên trường thay đổi |
+| `Description` | `string` | `Description` | NULL, NVarChar(1000) | Mô tả thay đổi |
+| `Notes` | `string` | `Notes` | NULL, NVarChar(1000) | Ghi chú bổ sung |
+
+### **Navigation Properties**
+- `ProductVariant` → `ProductVariant` (nhiều-1)
+- `ProductVariantIdentifier` → `ProductVariantIdentifier` (nhiều-1)
+
+### **Relationships**
+- **Nhiều-1** với `ProductVariant` (ProductVariantId → Id)
+- **Nhiều-1** với `ProductVariantIdentifier` (ProductVariantIdentifierId → Id)
+- **CASCADE DELETE** khi ProductVariantIdentifier bị xóa
+
+---
+
+## 👤 **ApplicationUser Entity**
 
 **Namespace:** `Dal.DataContext`  
 **Table:** `dbo.ApplicationUser`
@@ -58,7 +248,7 @@ Các entity classes này được tự động tạo bởi LINQ to SQL Designer 
 
 ---
 
-## 🤝 **2. BusinessPartner Entity**
+## 🤝 **BusinessPartner Entity**
 
 **Namespace:** `Dal.DataContext`  
 **Table:** `dbo.BusinessPartner`
@@ -97,7 +287,7 @@ Các entity classes này được tự động tạo bởi LINQ to SQL Designer 
 
 ---
 
-## 📞 **3. BusinessPartnerContact Entity**
+## 📞 **BusinessPartnerContact Entity**
 
 **Namespace:** `Dal.DataContext`  
 **Table:** `dbo.BusinessPartnerContact`
@@ -122,7 +312,7 @@ Các entity classes này được tự động tạo bởi LINQ to SQL Designer 
 
 ---
 
-## 🏷️ **4. BusinessPartnerCategory Entity**
+## 🏷️ **BusinessPartnerCategory Entity**
 
 **Namespace:** `Dal.DataContext`  
 **Table:** `dbo.BusinessPartnerCategory`
@@ -142,7 +332,7 @@ Các entity classes này được tự động tạo bởi LINQ to SQL Designer 
 
 ---
 
-## 🔗 **5. BusinessPartner_BusinessPartnerCategory Entity (Junction Table)**
+## 🔗 **BusinessPartner_BusinessPartnerCategory Entity (Junction Table)**
 
 **Namespace:** `Dal.DataContext`  
 **Table:** `dbo.BusinessPartner_BusinessPartnerCategory`
@@ -230,6 +420,34 @@ var categories = partner.BusinessPartner_BusinessPartnerCategories
     .Select(bpc => bpc.BusinessPartnerCategory).ToList();
 ```
 
+### **4. Sử dụng ProductVariantIdentifier (MỚI)**
+```csharp
+// Tạo định danh mới
+var identifier = new ProductVariantIdentifier
+{
+    Id = Guid.NewGuid(),
+    ProductVariantId = productVariantId,
+    SerialNumber = "SN123456789",
+    Barcode = "1234567890123",
+    QRCode = "QR123456",
+    Status = 0, // Tại kho VNS
+    IsActive = true,
+    CreatedDate = DateTime.Now
+};
+context.ProductVariantIdentifiers.InsertOnSubmit(identifier);
+context.SubmitChanges();
+
+// Tìm theo SerialNumber
+var found = context.ProductVariantIdentifiers
+    .FirstOrDefault(p => p.SerialNumber == "SN123456789");
+
+// Cập nhật tình trạng
+identifier.Status = 1; // Đã xuất cho KH
+identifier.StatusDate = DateTime.Now;
+identifier.StatusChangedBy = currentUserId;
+context.SubmitChanges();
+```
+
 ---
 
 ## ⚠️ **Lưu Ý Quan Trọng**
@@ -239,6 +457,7 @@ var categories = partner.BusinessPartner_BusinessPartnerCategories
 3. **Performance:** Sử dụng `DataLoadOptions` để control eager loading
 4. **Transactions:** Sử dụng `TransactionScope` cho complex operations
 5. **Connection Management:** DataContext tự động quản lý connection lifecycle
+6. **ProductVariantIdentifier:** Mỗi ProductVariant chỉ nên có một bản ghi ProductVariantIdentifier với nhiều loại định danh khác nhau
 
 ---
 
@@ -247,3 +466,17 @@ var categories = partner.BusinessPartner_BusinessPartnerCategories
 - [LINQ to SQL Documentation](https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql/linq/)
 - [Entity Framework vs LINQ to SQL](https://docs.microsoft.com/en-us/ef/efcore-and-ef6/features)
 - [Change Tracking in LINQ to SQL](https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql/linq/change-tracking)
+
+---
+
+## 📝 **Changelog**
+
+### Version 2.0 (05/01/2025)
+- ✅ Thêm ProductVariantIdentifier entity
+- ✅ Thêm ProductVariantIdentifierHistory entity
+- ✅ Cập nhật danh sách đầy đủ 41 entities
+- ✅ Cập nhật danh sách Tables Properties
+
+### Version 1.0 (25/09/2025)
+- ✅ Tạo tài liệu ban đầu
+- ✅ Mô tả các entity cơ bản

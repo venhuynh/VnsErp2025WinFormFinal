@@ -311,7 +311,7 @@ namespace MasterData.Customer
             this.colCategoryPathHtml.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colCategoryPathHtml.Caption = "Phân loại";
             this.colCategoryPathHtml.ColumnEdit = this.HtmlHypertextLabel;
-            this.colCategoryPathHtml.FieldName = "CategoryPathHtml";
+            this.colCategoryPathHtml.FieldName = "FullPathHtml";
             this.colCategoryPathHtml.MinWidth = 200;
             this.colCategoryPathHtml.Name = "colCategoryPathHtml";
             this.colCategoryPathHtml.Visible = true;
