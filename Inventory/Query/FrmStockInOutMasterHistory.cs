@@ -39,7 +39,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
     /// <summary>
     /// Business Logic Layer cho phiếu nhập xuất kho
     /// </summary>
-    private readonly StockInOutMasterBll _stockInOutMasterBll = new();
+    private readonly StockInOutMasterBll _stockInOutMasterBll = new StockInOutMasterBll();
 
     /// <summary>
     /// Logger để ghi log các sự kiện
@@ -705,7 +705,7 @@ public partial class FrmStockInOutMasterHistory : DevExpress.XtraEditors.XtraFor
                 BeginInvoke(new Action(() =>
                 {
                     stockInOutMasterHistoryDtoBindingSource.DataSource = 
-                        _stockInOutMasterBll.GetStockInOutMasterHistoryDtoByDates(fromDate, toDate); ;
+                        _stockInOutMasterBll.GetStockInOutMasterHistoryDtoByDates(fromDate, toDate); 
                     stockInOutMasterHistoryDtoBindingSource.ResetBindings(false);
 
                     // Reset selection

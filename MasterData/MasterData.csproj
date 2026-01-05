@@ -70,115 +70,171 @@
     <Compile Include="Company\FrmCompanyBranchDetail.Designer.cs">
       <DependentUpon>FrmCompanyBranchDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmDepartmentDetail.cs" />
+    <Compile Include="Company\FrmDepartmentDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Company\FrmDepartmentDetail.Designer.cs">
       <DependentUpon>FrmDepartmentDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmEmployeeDto.cs" />
+    <Compile Include="Company\FrmEmployeeDto.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Company\FrmEmployeeDto.Designer.cs">
       <DependentUpon>FrmEmployeeDto.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmEmployeeDtoDetail.cs" />
+    <Compile Include="Company\FrmEmployeeDtoDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Company\FrmEmployeeDtoDetail.Designer.cs">
       <DependentUpon>FrmEmployeeDtoDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmPositionDetail.cs" />
+    <Compile Include="Company\FrmPositionDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Company\FrmPositionDetail.Designer.cs">
       <DependentUpon>FrmPositionDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmCompany.cs" />
+    <Compile Include="Company\FrmCompany.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Company\FrmCompany.Designer.cs">
       <DependentUpon>FrmCompany.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmCompanyBranch.cs" />
+    <Compile Include="Company\FrmCompanyBranch.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Company\FrmCompanyBranch.Designer.cs">
       <DependentUpon>FrmCompanyBranch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmDepartment.cs" />
+    <Compile Include="Company\FrmDepartment.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Company\FrmDepartment.Designer.cs">
       <DependentUpon>FrmDepartment.cs</DependentUpon>
     </Compile>
-    <Compile Include="Company\FrmPosition.cs" />
+    <Compile Include="Company\FrmPosition.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Company\FrmPosition.Designer.cs">
       <DependentUpon>FrmPosition.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.cs" />
+    <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerCategoryDetail.Designer.cs">
       <DependentUpon>FrmBusinessPartnerCategoryDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\FrmBusinessPartnerContactDetail.cs" />
+    <Compile Include="Customer\FrmBusinessPartnerContactDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerContactDetail.Designer.cs">
       <DependentUpon>FrmBusinessPartnerContactDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\FrmBusinessPartnerDetail.cs" />
+    <Compile Include="Customer\FrmBusinessPartnerDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerDetail.Designer.cs">
       <DependentUpon>FrmBusinessPartnerDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\FrmBusinessPartnerSiteDetail.cs" />
+    <Compile Include="Customer\FrmBusinessPartnerSiteDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerSiteDetail.Designer.cs">
       <DependentUpon>FrmBusinessPartnerSiteDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\FrmBusinessPartnerCategory.cs" />
+    <Compile Include="Customer\FrmBusinessPartnerCategory.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerCategory.Designer.cs">
       <DependentUpon>FrmBusinessPartnerCategory.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\FrmBusinessPartnerContact.cs" />
+    <Compile Include="Customer\FrmBusinessPartnerContact.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerContact.Designer.cs">
       <DependentUpon>FrmBusinessPartnerContact.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\FrmBusinessPartnerList.cs" />
+    <Compile Include="Customer\FrmBusinessPartnerList.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerList.Designer.cs">
       <DependentUpon>FrmBusinessPartnerList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Customer\FrmBusinessPartnerSite.cs" />
+    <Compile Include="Customer\FrmBusinessPartnerSite.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Customer\FrmBusinessPartnerSite.Designer.cs">
       <DependentUpon>FrmBusinessPartnerSite.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductImageAdd.cs" />
+    <Compile Include="ProductService\FrmProductImageAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductImageAdd.Designer.cs">
       <DependentUpon>FrmProductImageAdd.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductImageDetail.cs" />
+    <Compile Include="ProductService\FrmProductImageDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductImageDetail.Designer.cs">
       <DependentUpon>FrmProductImageDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductServiceCategoryDetail.cs" />
+    <Compile Include="ProductService\FrmProductServiceCategoryDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductServiceCategoryDetail.Designer.cs">
       <DependentUpon>FrmProductServiceCategoryDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductServiceDetail.cs" />
+    <Compile Include="ProductService\FrmProductServiceDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductServiceDetail.Designer.cs">
       <DependentUpon>FrmProductServiceDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmAttribute.cs" />
+    <Compile Include="ProductService\FrmAttribute.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmAttribute.Designer.cs">
       <DependentUpon>FrmAttribute.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductVariantDetail.cs" />
+    <Compile Include="ProductService\FrmProductVariantDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductVariantDetail.Designer.cs">
       <DependentUpon>FrmProductVariantDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductImage.cs" />
+    <Compile Include="ProductService\FrmProductImage.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductImage.Designer.cs">
       <DependentUpon>FrmProductImage.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductServiceCategory.cs" />
+    <Compile Include="ProductService\FrmProductServiceCategory.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductServiceCategory.Designer.cs">
       <DependentUpon>FrmProductServiceCategory.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductServiceList.cs" />
+    <Compile Include="ProductService\FrmProductServiceList.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductServiceList.Designer.cs">
       <DependentUpon>FrmProductServiceList.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmUnitOfMeasure.cs" />
+    <Compile Include="ProductService\FrmUnitOfMeasure.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmUnitOfMeasure.Designer.cs">
       <DependentUpon>FrmUnitOfMeasure.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\UcProductServiceListCardView.cs" />
+    <Compile Include="ProductService\UcProductServiceListCardView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ProductService\UcProductServiceListCardView.Designer.cs">
       <DependentUpon>UcProductServiceListCardView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductService\FrmProductVariant.cs" />
+    <Compile Include="ProductService\FrmProductVariant.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProductService\FrmProductVariant.Designer.cs">
       <DependentUpon>FrmProductVariant.cs</DependentUpon>
     </Compile>

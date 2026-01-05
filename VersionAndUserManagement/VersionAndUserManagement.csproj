@@ -71,15 +71,11 @@
     <Compile Include="AllowedMacAddress\FrmAllowedMacAddressDto.Designer.cs">
       <DependentUpon>FrmAllowedMacAddressDto.cs</DependentUpon>
     </Compile>
-    <Compile Include="AllowedMacAddress\FrmAllowedMacAddressDtoAddEdit.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="AllowedMacAddress\FrmAllowedMacAddressDtoAddEdit.cs" />
     <Compile Include="AllowedMacAddress\FrmAllowedMacAddressDtoAddEdit.Designer.cs">
       <DependentUpon>FrmAllowedMacAddressDtoAddEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="ApplicationVersion\FrmApplicationVersionDto.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="ApplicationVersion\FrmApplicationVersionDto.cs" />
     <Compile Include="ApplicationVersion\FrmApplicationVersionDto.Designer.cs">
       <DependentUpon>FrmApplicationVersionDto.cs</DependentUpon>
     </Compile>
@@ -90,21 +86,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RoleManagement\FrmRoleManagement.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="RoleManagement\FrmRoleManagement.cs" />
     <Compile Include="RoleManagement\FrmRoleManagement.Designer.cs">
       <DependentUpon>FrmRoleManagement.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserManagement\FrmApplicationUserDto.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="UserManagement\FrmApplicationUserDto.cs" />
     <Compile Include="UserManagement\FrmApplicationUserDto.Designer.cs">
       <DependentUpon>FrmApplicationUserDto.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserManagement\FrmApplicationUserDtoAddEdit.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="UserManagement\FrmApplicationUserDtoAddEdit.cs" />
     <Compile Include="UserManagement\FrmApplicationUserDtoAddEdit.Designer.cs">
       <DependentUpon>FrmApplicationUserDtoAddEdit.cs</DependentUpon>
     </Compile>
@@ -208,7 +198,6 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.2\Components\Offline Packages\devexpress.data\25.2.3\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.2\Components\Offline Packages\devexpress.data\25.2.3\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>

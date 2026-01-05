@@ -60,35 +60,51 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="Management\DeviceMangement\FrmDeviceDtoMangement.cs" />
+    <Compile Include="Management\DeviceMangement\FrmDeviceDtoMangement.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Management\DeviceMangement\FrmDeviceDtoMangement.Designer.cs">
       <DependentUpon>FrmDeviceDtoMangement.cs</DependentUpon>
     </Compile>
-    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.cs" />
+    <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Management\DeviceMangement\FrmDeviceQrManagement.Designer.cs">
       <DependentUpon>FrmDeviceQrManagement.cs</DependentUpon>
     </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.cs" />
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Management\DeviceMangement\UcDeviceDtoAddEdit.Designer.cs">
       <DependentUpon>UcDeviceDtoAddEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.cs" />
+    <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Management\DeviceMangement\UcDeviceDtoAddStockInOutHistory.Designer.cs">
       <DependentUpon>UcDeviceDtoAddStockInOutHistory.cs</DependentUpon>
     </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.cs" />
+    <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Management\DeviceMangement\UcDeviceImageAdd.Designer.cs">
       <DependentUpon>UcDeviceImageAdd.cs</DependentUpon>
     </Compile>
-    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.cs" />
+    <Compile Include="Management\DeviceMangement\UcDeviceWarranty.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Management\DeviceMangement\UcDeviceWarranty.Designer.cs">
       <DependentUpon>UcDeviceWarranty.cs</DependentUpon>
     </Compile>
-    <Compile Include="Management\DeviceWarranty\FrmDeviceWarranty.cs" />
+    <Compile Include="Management\DeviceWarranty\FrmDeviceWarranty.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Management\DeviceWarranty\FrmDeviceWarranty.Designer.cs">
       <DependentUpon>FrmDeviceWarranty.cs</DependentUpon>
     </Compile>
-    <Compile Include="Management\DeviceWarranty\UcDeviceWarrantyAddEdit.cs" />
+    <Compile Include="Management\DeviceWarranty\UcDeviceWarrantyAddEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Management\DeviceWarranty\UcDeviceWarrantyAddEdit.Designer.cs">
       <DependentUpon>UcDeviceWarrantyAddEdit.cs</DependentUpon>
     </Compile>
