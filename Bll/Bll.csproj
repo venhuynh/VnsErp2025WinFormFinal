@@ -91,6 +91,7 @@
     <Compile Include="Inventory\InventoryManagement\DeviceImageBll.cs" />
     <Compile Include="Inventory\InventoryManagement\DeviceTransactionHistoryBll.cs" />
     <Compile Include="Inventory\InventoryManagement\InventoryBalanceBll.cs" />
+    <Compile Include="Inventory\InventoryManagement\ProductVariantIdentifierBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutDocumentBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutMasterBll.cs" />
     <Compile Include="Inventory\InventoryManagement\StockInOutDetailBll.cs" />
@@ -188,7 +189,6 @@
     <None Include="Resources\Ven - Solutions logo_GoogleBZ_H480.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.2\Components\Offline Packages\devexpress.data\25.2.3\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.2\Components\Offline Packages\devexpress.data\25.2.3\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>

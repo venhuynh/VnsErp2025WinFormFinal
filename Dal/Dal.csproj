@@ -59,6 +59,7 @@
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\DeviceRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\DeviceTransactionHistoryRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\InventoryBalanceRepository.cs" />
+    <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\ProductVariantIdentifierRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutDetailRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutDocumentRepository.cs" />
     <Compile Include="DataAccess\Implementations\Inventory\InventoryManagement\StockInOutImageRepository.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\ApplicationVersionRepository.cs" />
     <Compile Include="DataAccess\Implementations\VersionAndUserManagementDal\PermissionRepository.cs" />
     <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IDeviceImageRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\Inventory\InventoryManagement\IProductVariantIdentifierRepository.cs" />
     <Compile Include="DataAccess\Interfaces\ISettingRepository.cs" />
     <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IAllowedMacAddressRepository.cs" />
     <Compile Include="DataAccess\Interfaces\VersionAndUserManagementDal\IApplicationVersionRepository.cs" />

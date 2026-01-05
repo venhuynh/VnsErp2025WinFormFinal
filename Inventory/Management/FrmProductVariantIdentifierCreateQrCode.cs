@@ -1,0 +1,988 @@
+﻿using Bll.Inventory.InventoryManagement;
+using Common.Common;
+using Common.Helpers;
+using Common.Utils;
+using DevExpress.BarCodes;
+using DevExpress.Data;
+using DevExpress.Drawing.Extensions;
+using DevExpress.XtraGrid.Views.Grid;
+using DTO.Inventory.InventoryManagement;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using QRCodeCompactionMode = DevExpress.BarCodes.QRCodeCompactionMode;
+
+namespace Inventory.Management
+{
+    public partial class FrmProductVariantIdentifierCreateQrCode : DevExpress.XtraEditors.XtraForm
+    {
+        #region ========== FIELDS & PROPERTIES ==========
+
+        /// <summary>
+        /// Business Logic Layer cho ProductVariantIdentifier
+        /// </summary>
+        private readonly ProductVariantIdentifierBll _productVariantIdentifierBll = new ProductVariantIdentifierBll();
+
+        /// <summary>
+        /// Cache danh sách ID đã có trong database (lazy load)
+        /// </summary>
+        private HashSet<Guid> _existingIdsCache = null;
+
+        /// <summary>
+        /// Flag đánh dấu đã load cache chưa
+        /// </summary>
+        private bool _isIdsCacheLoaded = false;
+
+        #endregion
+
+        public FrmProductVariantIdentifierCreateQrCode()
+        {
+            InitializeComponent();
+            InitializeProductVariantIdentifierGrid();
+            InitializeQrCodePictureEdit();
+            InitializeBarButtonEvents();
+        }
+
+        /// <summary>
+        /// Khởi tạo các event handlers cho bar buttons
+        /// </summary>
+        private void InitializeBarButtonEvents()
+        {
+            try
+            {
+                TaoQcCodeBarButtonItem.ItemClick += TaoQcCodeBarButtonItem_ItemClick;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeBarButtonEvents: Exception occurred - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi click nút "Tạo QR"
+        /// </summary>
+        private void TaoQcCodeBarButtonItem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                //FIXME: Đảm bảo không có dòng nào chưa có dữ liệu và không có enum nào trùng nhau
+                
+                GenerateQrCode();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"TaoQcCodeBarButtonItem_ItemClick: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi tạo QR code: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Lấy Description từ ProductVariantIdentifierEnum value
+        /// </summary>
+        /// <param name="identifierType">Giá trị enum</param>
+        /// <returns>Description hoặc tên enum nếu không có Description</returns>
+        private string GetProductVariantIdentifierDescription(ProductVariantIdentifierEnum identifierType)
+        {
+            try
+            {
+                return ApplicationEnumUtils.GetDescription(identifierType);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GetProductVariantIdentifierDescription: Exception occurred for {identifierType} - {ex.Message}");
+                return identifierType.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Khởi tạo QrCodePictureEdit - vô hiệu hóa click phải chuột
+        /// </summary>
+        private void InitializeQrCodePictureEdit()
+        {
+            try
+            {
+                // Vô hiệu hóa context menu của DevExpress PictureEdit
+                QrCodePictureEdit.Properties.ContextMenuStrip = null;
+                
+                // Tạo một context menu rỗng để chặn context menu mặc định
+                var emptyContextMenu = new ContextMenuStrip();
+                QrCodePictureEdit.ContextMenuStrip = emptyContextMenu;
+                
+                // Vô hiệu hóa click phải chuột bằng cách xử lý sự kiện
+                QrCodePictureEdit.MouseDown += QrCodePictureEdit_MouseDown;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeQrCodePictureEdit: Exception occurred - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện MouseDown để vô hiệu hóa click phải chuột
+        /// </summary>
+        private void QrCodePictureEdit_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Vô hiệu hóa click phải chuột - không làm gì cả
+            if (e.Button == MouseButtons.Right)
+            {
+                // Không xử lý gì, ngăn context menu hiển thị
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Khởi tạo ProductVariantIdentifierGrid
+        /// </summary>
+        private void InitializeProductVariantIdentifierGrid()
+        {
+            try
+            {
+                // Khởi tạo binding source với danh sách rỗng
+                productVariantIdentifierItemBindingSource.DataSource = new List<ProductVariantIdentifierItem>();
+
+                // Load enum vào RepositoryItemComboBox
+                LoadProductVariantIdentifierEnumRepositoryComboBox();
+
+                // Setup events
+                InitializeGridEvents();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeProductVariantIdentifierGrid: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi khởi tạo grid: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Khởi tạo các event handlers cho grid
+        /// </summary>
+        private void InitializeGridEvents()
+        {
+            try
+            {
+                ProductVariantIdentifierGridView.CellValueChanged += ProductVariantIdentifierGridView_CellValueChanged;
+                ProductVariantIdentifierGridView.InitNewRow += ProductVariantIdentifierGridView_InitNewRow;
+                ProductVariantIdentifierGridView.RowDeleted += ProductVariantIdentifierGridView_RowDeleted;
+                ProductVariantIdentifierGridView.ValidateRow += ProductVariantIdentifierGridView_ValidateRow;
+                ProductVariantIdentifierGridView.ValidatingEditor += ProductVariantIdentifierGridView_ValidatingEditor;
+                ProductVariantIdentifierGridView.CustomDrawRowIndicator += ProductVariantIdentifierGridView_CustomDrawRowIndicator;
+                ProductVariantIdentifierGridView.KeyDown += ProductVariantIdentifierGridView_KeyDown;
+                ProductVariantIdentifierGridView.ShownEditor += ProductVariantIdentifierGridView_ShownEditor;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeGridEvents: Exception occurred - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Load danh sách ProductVariantIdentifierEnum vào RepositoryItemComboBox
+        /// </summary>
+        private void LoadProductVariantIdentifierEnumRepositoryComboBox()
+        {
+            try
+            {
+                ProductVariantIdentifierEnumComboBox.Items.Clear();
+
+                // Load tất cả các giá trị enum
+                foreach (ProductVariantIdentifierEnum value in Enum.GetValues(typeof(ProductVariantIdentifierEnum)))
+                {
+                    int index = ApplicationEnumUtils.GetValue(value);
+                    ProductVariantIdentifierEnumComboBox.Items.Insert(index, value);
+                }
+
+                // Cấu hình ComboBox
+                ProductVariantIdentifierEnumComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+                ProductVariantIdentifierEnumComboBox.ShowDropDown = DevExpress.XtraEditors.Controls.ShowDropDown.SingleClick;
+
+                // Sử dụng CustomDisplayText để hiển thị Description thay vì tên enum
+                ProductVariantIdentifierEnumComboBox.CustomDisplayText += ProductVariantIdentifierEnumRepositoryComboBox_CustomDisplayText;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"LoadProductVariantIdentifierEnumRepositoryComboBox: Exception occurred - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Event handler để hiển thị Description thay vì tên enum trong RepositoryItemComboBox
+        /// </summary>
+        private void ProductVariantIdentifierEnumRepositoryComboBox_CustomDisplayText(object sender, DevExpress.XtraEditors.Controls.CustomDisplayTextEventArgs e)
+        {
+            try
+            {
+                if (e.Value is ProductVariantIdentifierEnum enumValue)
+                {
+                    // Lấy Description từ helper method
+                    e.DisplayText = GetProductVariantIdentifierDescription(enumValue);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ProductVariantIdentifierEnumRepositoryComboBox_CustomDisplayText: Exception occurred - {ex.Message}");
+                // Nếu có lỗi, hiển thị tên enum mặc định
+                if (e.Value is ProductVariantIdentifierEnum enumValue)
+                {
+                    e.DisplayText = enumValue.ToString();
+                }
+            }
+        }
+
+        #region ========== GRIDVIEW EVENT HANDLERS ==========
+
+        /// <summary>
+        /// Custom draw row indicator để hiển thị số thứ tự
+        /// </summary>
+        private void ProductVariantIdentifierGridView_CustomDrawRowIndicator(object sender, RowIndicatorCustomDrawEventArgs e)
+        {
+            GridViewHelper.CustomDrawRowIndicator(ProductVariantIdentifierGridView, e);
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi giá trị cell thay đổi trong GridView
+        /// </summary>
+        private void ProductVariantIdentifierGridView_CellValueChanged(object sender, DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)
+        {
+            try
+            {
+                var rowHandle = e.RowHandle;
+
+                // Lấy row data từ GridView (bao gồm cả new row)
+                var rowData = ProductVariantIdentifierGridView.GetRow(rowHandle) as ProductVariantIdentifierItem;
+                if (rowData == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"CellValueChanged: Row data is null, RowHandle={rowHandle}");
+                    return;
+                }
+
+                // Nếu thay đổi là IdentifierType
+                if (e.Column != null && e.Column.FieldName == "IdentifierType")
+                {
+                    // Nếu chọn ID, tự động tạo GUID
+                    if (rowData.IdentifierType == ProductVariantIdentifierEnum.ID)
+                    {
+                        // Chỉ tạo GUID nếu Value chưa có hoặc đang rỗng
+                        if (string.IsNullOrWhiteSpace(rowData.Value))
+                        {
+                            // Tự động tạo GUID mới làm giá trị (đảm bảo không trùng)
+                            rowData.Value = GenerateUniqueGuidAsString();
+
+                            // Refresh để hiển thị giá trị mới
+                            ProductVariantIdentifierGridView.RefreshRow(rowHandle);
+                            
+                            // Focus vào cột Value để user có thể thấy giá trị đã được tạo
+                            var valueColumn = ProductVariantIdentifierGridView.Columns["Value"];
+                            if (valueColumn != null)
+                            {
+                                ProductVariantIdentifierGridView.FocusedColumn = valueColumn;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Với các loại khác (SerialNumber, Barcode, etc.), focus vào cột Value để user nhập
+                        if (string.IsNullOrWhiteSpace(rowData.Value))
+                        {
+                            var valueColumn = ProductVariantIdentifierGridView.Columns["Value"];
+                            if (valueColumn != null)
+                            {
+                                // Delay một chút để đảm bảo grid đã refresh
+                                System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                                timer.Interval = 100;
+                                timer.Tick += (s, args) =>
+                                {
+                                    timer.Stop();
+                                    timer.Dispose();
+                                    ProductVariantIdentifierGridView.FocusedColumn = valueColumn;
+                                    ProductVariantIdentifierGridView.ShowEditor();
+                                };
+                                timer.Start();
+                            }
+                        }
+                    }
+                }
+
+                // Refresh grid để hiển thị thay đổi (chỉ nếu không phải new row)
+                if (rowHandle >= 0)
+                {
+                    ProductVariantIdentifierGridView.RefreshRow(rowHandle);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"CellValueChanged: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi xử lý thay đổi cell: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi thêm dòng mới
+        /// </summary>
+        private void ProductVariantIdentifierGridView_InitNewRow(object sender, InitNewRowEventArgs e)
+        {
+            try
+            {
+                var rowData = ProductVariantIdentifierGridView.GetRow(e.RowHandle) as ProductVariantIdentifierItem;
+                if (rowData == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"InitNewRow: Row data is null, RowHandle={e.RowHandle}");
+                    return;
+                }
+
+                // Gán ID mới nếu chưa có
+                if (rowData.Id == Guid.Empty)
+                {
+                    rowData.Id = Guid.NewGuid();
+                }
+
+                // Set mặc định cho IdentifierType
+                if (rowData.IdentifierType == default(ProductVariantIdentifierEnum))
+                {
+                    rowData.IdentifierType = ProductVariantIdentifierEnum.SerialNumber;
+                }
+
+                // Nếu IdentifierType là ID, tự động tạo GUID cho Value
+                if (rowData.IdentifierType == ProductVariantIdentifierEnum.ID && string.IsNullOrWhiteSpace(rowData.Value))
+                {
+                    rowData.Value = GenerateUniqueGuidAsString();
+                    // Refresh để hiển thị giá trị mới
+                    ProductVariantIdentifierGridView.RefreshRow(e.RowHandle);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"InitNewRow: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi thêm dòng: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi xóa dòng
+        /// </summary>
+        private void ProductVariantIdentifierGridView_RowDeleted(object sender, RowDeletedEventArgs rowDeletedEventArgs)
+        {
+            try
+            {
+                // Có thể thêm logic xử lý khi xóa dòng ở đây
+                System.Diagnostics.Debug.WriteLine("RowDeleted: Row deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"RowDeleted: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi xóa dòng: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện validate editor (trước khi commit giá trị)
+        /// </summary>
+        private void ProductVariantIdentifierGridView_ValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        {
+            try
+            {
+                var column = ProductVariantIdentifierGridView.FocusedColumn;
+                var fieldName = column?.FieldName;
+
+                if (string.IsNullOrEmpty(fieldName)) return;
+
+                switch (fieldName)
+                {
+                    // Validate IdentifierType: Phải chọn loại định danh
+                    case "IdentifierType":
+                        ValidateIdentifierType(e);
+                        break;
+                    // Validate Value: Phải nhập giá trị
+                    case "Value":
+                        ValidateValue(e);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ValidatingEditor: Exception occurred - {ex.Message}");
+                e.ErrorText = $"Lỗi validate: {ex.Message}";
+                e.Valid = false;
+            }
+        }
+
+        /// <summary>
+        /// Validate row data (sau khi commit giá trị)
+        /// </summary>
+        private void ProductVariantIdentifierGridView_ValidateRow(object sender, DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+        {
+            try
+            {
+                var rowData = e.Row as ProductVariantIdentifierItem;
+                if (rowData == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("ValidateRow: Row data is null");
+                    e.Valid = false;
+                    e.ErrorText = "Dữ liệu không hợp lệ";
+                    return;
+                }
+
+                // Validate bằng DataAnnotations
+                var validationResults = new List<ValidationResult>();
+                var validationContext = new ValidationContext(rowData);
+                var isValid = Validator.TryValidateObject(rowData, validationContext, validationResults, true);
+
+                if (!isValid)
+                {
+                    var errors = string.Join("\n", validationResults.Select(r => r.ErrorMessage));
+                    System.Diagnostics.Debug.WriteLine($"ValidateRow: DataAnnotations validation failed, Errors={errors}");
+                    e.Valid = false;
+                    e.ErrorText = errors;
+                    return;
+                }
+
+                // Validate business rules
+                if (string.IsNullOrWhiteSpace(rowData.Value))
+                {
+                    System.Diagnostics.Debug.WriteLine("ValidateRow: Value is empty");
+                    e.Valid = false;
+                    e.ErrorText = "Vui lòng nhập giá trị định danh";
+                    return;
+                }
+
+                e.Valid = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ValidateRow: Exception occurred - {ex.Message}");
+                e.Valid = false;
+                e.ErrorText = $"Lỗi validate: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Event handler xử lý phím tắt trong GridView
+        /// </summary>
+        private void ProductVariantIdentifierGridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                var gridView = ProductVariantIdentifierGridView;
+                if (gridView == null) return;
+
+                switch (e.KeyCode)
+                {
+                    case Keys.Insert:
+                        // Insert: Thêm dòng mới
+                        if (!e.Control && !e.Shift && !e.Alt)
+                        {
+                            e.Handled = true;
+                            gridView.AddNewRow();
+                            // Focus vào cột IdentifierType
+                            var identifierTypeColumn = gridView.Columns["IdentifierType"];
+                            if (identifierTypeColumn != null)
+                            {
+                                gridView.FocusedColumn = identifierTypeColumn;
+                            }
+                        }
+                        break;
+
+                    case Keys.Delete:
+                        // Delete: Xóa dòng được chọn
+                        if (!e.Control && !e.Shift && !e.Alt)
+                        {
+                            e.Handled = true;
+                            var selectedRows = gridView.GetSelectedRows();
+                            if (selectedRows != null && selectedRows.Length > 0)
+                            {
+                                foreach (var rowHandle in selectedRows)
+                                {
+                                    if (rowHandle >= 0)
+                                    {
+                                        gridView.DeleteRow(rowHandle);
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"KeyDown: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi xử lý phím tắt: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý sự kiện khi editor được hiển thị
+        /// </summary>
+        private void ProductVariantIdentifierGridView_ShownEditor(object sender, EventArgs e)
+        {
+            try
+            {
+                var gridView = ProductVariantIdentifierGridView;
+                if (gridView == null) return;
+
+                var rowHandle = gridView.FocusedRowHandle;
+                var column = gridView.FocusedColumn;
+
+                // Chỉ xử lý khi đang edit cột IdentifierType
+                if (column != null && column.FieldName == "IdentifierType")
+                {
+                    var rowData = gridView.GetRow(rowHandle) as ProductVariantIdentifierItem;
+                    if (rowData != null && rowData.IdentifierType == ProductVariantIdentifierEnum.ID)
+                    {
+                        // Nếu đã chọn ID nhưng chưa có Value, tạo GUID
+                        if (string.IsNullOrWhiteSpace(rowData.Value))
+                        {
+                            rowData.Value = GenerateUniqueGuidAsString();
+                            gridView.RefreshRow(rowHandle);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ShownEditor: Exception occurred - {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Validate IdentifierType: Phải chọn loại định danh
+        /// </summary>
+        private void ValidateIdentifierType(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        {
+            if (e.Value == null)
+            {
+                e.ErrorText = "Vui lòng chọn kiểu định danh";
+                e.Valid = false;
+                return;
+            }
+
+            if (!(e.Value is ProductVariantIdentifierEnum))
+            {
+                e.ErrorText = "Kiểu định danh không hợp lệ";
+                e.Valid = false;
+                return;
+            }
+
+            e.Valid = true;
+        }
+
+        /// <summary>
+        /// Validate Value: Phải nhập giá trị
+        /// </summary>
+        private void ValidateValue(DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
+        {
+            if (e.Value == null || string.IsNullOrWhiteSpace(e.Value.ToString()))
+            {
+                e.ErrorText = "Vui lòng nhập giá trị định danh";
+                e.Valid = false;
+                return;
+            }
+
+            var value = e.Value.ToString().Trim();
+            if (value.Length > 500)
+            {
+                e.ErrorText = "Giá trị định danh không được vượt quá 500 ký tự";
+                e.Valid = false;
+                return;
+            }
+
+            e.Valid = true;
+        }
+
+        #endregion
+
+        #region ========== PUBLIC METHODS ==========
+
+        /// <summary>
+        /// Lấy danh sách ProductVariantIdentifierItem từ BindingSource
+        /// Tham khảo cách xử lý từ UcNhapHangThuongMaiDetail.GetDetails()
+        /// </summary>
+        public List<ProductVariantIdentifierItem> GetIdentifierItems()
+        {
+            try
+            {
+                var items = new List<ProductVariantIdentifierItem>();
+
+                foreach (var item in productVariantIdentifierItemBindingSource)
+                {
+                    if (item is ProductVariantIdentifierItem identifierItem)
+                    {
+                        items.Add(identifierItem);
+                    }
+                }
+
+                return items;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GetIdentifierItems: Exception occurred - {ex.Message}");
+                return new List<ProductVariantIdentifierItem>();
+            }
+        }
+
+        /// <summary>
+        /// Load danh sách ProductVariantIdentifierItem vào grid
+        /// </summary>
+        public void LoadIdentifierItems(List<ProductVariantIdentifierItem> items)
+        {
+            try
+            {
+                if (items == null)
+                {
+                    items = new List<ProductVariantIdentifierItem>();
+                }
+
+                productVariantIdentifierItemBindingSource.DataSource = items;
+                productVariantIdentifierItemBindingSource.ResetBindings(false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"LoadIdentifierItems: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi load dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Xóa tất cả các dòng trong grid
+        /// </summary>
+        public void ClearIdentifierItems()
+        {
+            try
+            {
+                productVariantIdentifierItemBindingSource.DataSource = new List<ProductVariantIdentifierItem>();
+                productVariantIdentifierItemBindingSource.ResetBindings(false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ClearIdentifierItems: Exception occurred - {ex.Message}");
+            }
+        }
+
+        #endregion
+
+        #region ========== GUID GENERATION ==========
+
+        /// <summary>
+        /// Load cache danh sách ID đã có trong database
+        /// </summary>
+        private void LoadExistingIdsCache()
+        {
+            if (_isIdsCacheLoaded)
+            {
+                return;
+            }
+
+            try
+            {
+                _existingIdsCache = new HashSet<Guid>();
+
+                // Lấy danh sách ID từ database
+                var allIdentifiers = _productVariantIdentifierBll.GetAll();
+                foreach (var identifier in allIdentifiers)
+                {
+                    _existingIdsCache.Add(identifier.Id);
+                }
+
+                _isIdsCacheLoaded = true;
+                System.Diagnostics.Debug.WriteLine($"LoadExistingIdsCache: Đã load {_existingIdsCache.Count} ID từ database");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"LoadExistingIdsCache: Exception occurred - {ex.Message}");
+                // Nếu có lỗi, khởi tạo empty set để tiếp tục
+                _existingIdsCache = new HashSet<Guid>();
+                _isIdsCacheLoaded = true;
+            }
+        }
+
+        /// <summary>
+        /// Lấy danh sách ID từ grid hiện tại (chưa lưu)
+        /// </summary>
+        /// <returns>HashSet chứa các ID trong grid</returns>
+        private HashSet<Guid> GetCurrentGridIds()
+        {
+            var gridIds = new HashSet<Guid>();
+
+            try
+            {
+                foreach (var item in productVariantIdentifierItemBindingSource)
+                {
+                    if (item is ProductVariantIdentifierItem identifierItem)
+                    {
+                        // Lấy ID từ Value nếu IdentifierType là ID
+                        if (identifierItem.IdentifierType == ProductVariantIdentifierEnum.ID &&
+                            !string.IsNullOrWhiteSpace(identifierItem.Value) &&
+                            Guid.TryParse(identifierItem.Value, out Guid valueGuid))
+                        {
+                            gridIds.Add(valueGuid);
+                        }
+
+                        // Cũng thêm Id của item vào để tránh trùng
+                        if (identifierItem.Id != Guid.Empty)
+                        {
+                            gridIds.Add(identifierItem.Id);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GetCurrentGridIds: Exception occurred - {ex.Message}");
+            }
+
+            return gridIds;
+        }
+
+        /// <summary>
+        /// Tạo GUID mới đảm bảo không trùng với ID có sẵn trong ProductVariantIdentifier
+        /// </summary>
+        /// <returns>GUID dưới dạng string</returns>
+        private string GenerateUniqueGuidAsString()
+        {
+            // Load cache nếu chưa load
+            LoadExistingIdsCache();
+
+            // Lấy danh sách ID từ grid hiện tại
+            var gridIds = GetCurrentGridIds();
+
+            // Hợp nhất tất cả ID đã có
+            var allExistingIds = new HashSet<Guid>(_existingIdsCache);
+            foreach (var gridId in gridIds)
+            {
+                allExistingIds.Add(gridId);
+            }
+
+            // Tạo GUID mới cho đến khi không trùng
+            Guid newGuid;
+            int maxAttempts = 100; // Giới hạn số lần thử để tránh vòng lặp vô hạn
+            int attempts = 0;
+
+            do
+            {
+                newGuid = Guid.NewGuid();
+                attempts++;
+
+                if (attempts >= maxAttempts)
+                {
+                    System.Diagnostics.Debug.WriteLine("GenerateUniqueGuidAsString: Đã đạt giới hạn số lần thử, sử dụng GUID cuối cùng");
+                    break;
+                }
+            }
+            while (allExistingIds.Contains(newGuid));
+
+            // Thêm GUID mới vào cache để tránh trùng trong cùng session
+            allExistingIds.Add(newGuid);
+            _existingIdsCache.Add(newGuid);
+
+            System.Diagnostics.Debug.WriteLine($"GenerateUniqueGuidAsString: Đã tạo GUID mới sau {attempts} lần thử");
+            return newGuid.ToString();
+        }
+
+        /// <summary>
+        /// Reset cache ID (dùng khi cần reload từ database)
+        /// </summary>
+        public void ResetIdsCache()
+        {
+            _isIdsCacheLoaded = false;
+            _existingIdsCache = null;
+        }
+
+        #endregion
+
+        #region ========== QR CODE GENERATION ==========
+
+        /// <summary>
+        /// Tạo chuỗi payload từ các giá trị trong grid (các giá trị cách nhau bởi |)
+        /// </summary>
+        /// <returns>Chuỗi payload hoặc string.Empty nếu không có dữ liệu</returns>
+        private string BuildQrCodePayload()
+        {
+            try
+            {
+                var items = GetIdentifierItems();
+                if (items == null || items.Count == 0)
+                {
+                    return string.Empty;
+                }
+
+                // Lọc các item có giá trị hợp lệ
+                var validItems = items
+                    .Where(item => item.IdentifierType != default(ProductVariantIdentifierEnum) &&
+                                   !string.IsNullOrWhiteSpace(item.Value))
+                    .OrderBy(item => ApplicationEnumUtils.GetValue(item.IdentifierType))
+                    .ToList();
+
+                if (validItems.Count == 0)
+                {
+                    return string.Empty;
+                }
+
+                // Tạo chuỗi: Value|Value|Value|... (chỉ lấy các giá trị, cách nhau bởi |)
+                var payloadBuilder = new StringBuilder();
+                for (int i = 0; i < validItems.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        payloadBuilder.Append("|");
+                    }
+                    payloadBuilder.Append(validItems[i].Value);
+                }
+
+                return payloadBuilder.ToString();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"BuildQrCodePayload: Exception occurred - {ex.Message}");
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Validate dữ liệu trước khi tạo QR code
+        /// Tham khảo cách xử lý từ UcNhapHangThuongMaiDetail.ValidateAll()
+        /// </summary>
+        /// <returns>Tuple (isValid, errorMessage)</returns>
+        private (bool isValid, string errorMessage) ValidateDataBeforeGenerateQrCode()
+        {
+            try
+            {
+                // Lấy dữ liệu từ BindingSource (không lấy từ GridView để tránh tính cả new row chưa commit)
+                var items = new List<ProductVariantIdentifierItem>();
+
+                foreach (var item in productVariantIdentifierItemBindingSource)
+                {
+                    if (item is ProductVariantIdentifierItem identifierItem)
+                    {
+                        if(!string.IsNullOrWhiteSpace(identifierItem.Value))
+                            return (false, $"Dòng {identifierItem.IdentifierType} chưa có giá trị");
+
+                        items.Add(identifierItem);
+                    }
+                }
+
+                // Kiểm tra có dữ liệu không
+                if (items.Count == 0)
+                {
+                    return (false, "Chưa có dữ liệu để tạo QR code. Vui lòng thêm ít nhất một định danh.");
+                }
+
+
+                // Kiểm tra có ít nhất một dòng có giá trị hợp lệ để tạo QR code
+                var validItems = items
+                    .Where(item => item.IdentifierType != default(ProductVariantIdentifierEnum) &&
+                                   !string.IsNullOrWhiteSpace(item.Value))
+                    .ToList();
+
+                if (validItems.Count == 0)
+                {
+                    return (false, "Chưa có dữ liệu hợp lệ để tạo QR code. Vui lòng nhập đầy đủ Kiểu định danh và Giá trị cho ít nhất một dòng.");
+                }
+
+                // Kiểm tra enum trùng nhau
+                var identifierTypeGroups = validItems
+                    .GroupBy(item => item.IdentifierType)
+                    .Where(g => g.Count() > 1)
+                    .ToList();
+
+                if (identifierTypeGroups.Count > 0)
+                {
+                    var duplicateTypes = identifierTypeGroups
+                        .Select(g => GetProductVariantIdentifierDescription(g.Key))
+                        .ToList();
+                    
+                    var duplicateTypesText = string.Join(", ", duplicateTypes);
+                    return (false, $"Có loại định danh bị trùng lặp: {duplicateTypesText}. Mỗi loại định danh chỉ được sử dụng một lần.");
+                }
+
+                return (true, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ValidateDataBeforeGenerateQrCode: Exception occurred - {ex.Message}");
+                return (false, $"Lỗi kiểm tra dữ liệu: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Tạo và hiển thị QR code từ dữ liệu trong grid
+        /// </summary>
+        private void GenerateQrCode()
+        {
+            try
+            {
+                // Validate dữ liệu trước khi tạo QR code
+                var (isValid, errorMessage) = ValidateDataBeforeGenerateQrCode();
+                if (!isValid)
+                {
+                    MsgBox.ShowWarning(errorMessage);
+                    
+                    // Xóa QR code nếu có
+                    if (QrCodePictureEdit.Image != null)
+                    {
+                        QrCodePictureEdit.Image.Dispose();
+                        QrCodePictureEdit.Image = null;
+                    }
+                    
+                    // Hiển thị thông báo lỗi
+                    if (QrValueSimpleLabelItem != null)
+                    {
+                        QrValueSimpleLabelItem.Text = $"Giá trị QR: {errorMessage}";
+                    }
+                    return;
+                }
+
+                var payload = BuildQrCodePayload();
+                
+                // Hiển thị payload lên QrValueSimpleLabelItem
+                if (QrValueSimpleLabelItem != null)
+                {
+                    QrValueSimpleLabelItem.Text = string.IsNullOrWhiteSpace(payload) 
+                        ? "Giá trị QR: (Chưa có dữ liệu)" 
+                        : $"Giá trị QR: {payload}";
+                }
+
+                // Nếu không có payload, xóa QR code
+                if (string.IsNullOrWhiteSpace(payload))
+                {
+                    if (QrCodePictureEdit.Image != null)
+                    {
+                        QrCodePictureEdit.Image.Dispose();
+                        QrCodePictureEdit.Image = null;
+                    }
+                    return;
+                }
+
+                // Tạo QR code
+                using var barCode = new BarCode();
+                barCode.Symbology = Symbology.QRCode;
+                barCode.BackColor = Color.White;
+                barCode.ForeColor = Color.Black;
+                barCode.RotationAngle = 0;
+                barCode.DpiX = 96;
+                barCode.DpiY = 96;
+                barCode.Module = 2; // Kích thước module
+                barCode.CodeBinaryData = Encoding.UTF8.GetBytes(payload);
+                barCode.Options.QRCode.CompactionMode = QRCodeCompactionMode.Byte;
+                barCode.Options.QRCode.ErrorLevel = QRCodeErrorLevel.Q; // Mức lỗi Q (25%)
+                barCode.Options.QRCode.ShowCodeText = false;
+
+                // Dispose image cũ nếu có
+                QrCodePictureEdit.Image?.Dispose();
+                
+                // Hiển thị QR code mới
+                QrCodePictureEdit.Image = barCode.BarCodeImage.ConvertToGdiPlusImage();
+                
+                System.Diagnostics.Debug.WriteLine($"GenerateQrCode: Đã tạo QR code thành công ({payload.Length} ký tự)");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GenerateQrCode: Exception occurred - {ex.Message}");
+                MsgBox.ShowError($"Lỗi tạo QR code: {ex.Message}");
+            }
+        }
+
+        #endregion
+    }
+}

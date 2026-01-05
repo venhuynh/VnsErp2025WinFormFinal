@@ -50,7 +50,7 @@ namespace Dal.DtoConverter
                 LicenseKey = entity.LicenseKey,
                 UPC = entity.UPC,
                 EAN = entity.EAN,
-                ISBN = entity.ISBN,
+                ID = entity.Id.ToString(),
                 OtherIdentifier = entity.OtherIdentifier,
 
                 // Quản lý hình ảnh QR code
@@ -172,7 +172,7 @@ namespace Dal.DtoConverter
             entity.LicenseKey = dto.LicenseKey;
             entity.UPC = dto.UPC;
             entity.EAN = dto.EAN;
-            entity.ISBN = dto.ISBN;
+            entity.Id = Guid.Parse(dto.ID);
             entity.OtherIdentifier = dto.OtherIdentifier;
 
             // Map properties - Quản lý hình ảnh QR code

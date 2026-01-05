@@ -80,10 +80,10 @@ namespace DTO.Inventory.InventoryManagement
         EAN = 10,
 
         /// <summary>
-        /// International Standard Book Number
+        /// ID
         /// </summary>
-        [Description("ISBN")]
-        ISBN = 11,
+        [Description("ID")]
+        ID = 11,
 
         /// <summary>
         /// Loại định danh khác
@@ -268,10 +268,10 @@ namespace DTO.Inventory.InventoryManagement
         /// <summary>
         /// International Standard Book Number
         /// </summary>
-        [DisplayName("ISBN")]
+        [DisplayName("ID")]
         [Display(Order = 21)]
-        [StringLength(50, ErrorMessage = "ISBN không được vượt quá 50 ký tự")]
-        public string ISBN { get; set; }
+        [StringLength(500, ErrorMessage = "ID không được vượt quá 500 ký tự")]
+        public string ID { get; set; }
 
         /// <summary>
         /// Loại định danh khác
@@ -310,7 +310,7 @@ namespace DTO.Inventory.InventoryManagement
                     (ProductVariantIdentifierEnum.LicenseKey, LicenseKey, "License Key"),
                     (ProductVariantIdentifierEnum.UPC, UPC, "UPC"),
                     (ProductVariantIdentifierEnum.EAN, EAN, "EAN"),
-                    (ProductVariantIdentifierEnum.ISBN, ISBN, "ISBN"),
+                    (ProductVariantIdentifierEnum.ID, ID, "ID"),
                     (ProductVariantIdentifierEnum.OtherIdentifier, OtherIdentifier, "Other")
                 };
 
@@ -561,7 +561,7 @@ namespace DTO.Inventory.InventoryManagement
                 ProductVariantIdentifierEnum.LicenseKey => LicenseKey,
                 ProductVariantIdentifierEnum.UPC => UPC,
                 ProductVariantIdentifierEnum.EAN => EAN,
-                ProductVariantIdentifierEnum.ISBN => ISBN,
+                ProductVariantIdentifierEnum.ID => ID,
                 ProductVariantIdentifierEnum.OtherIdentifier => OtherIdentifier,
                 _ => null
             };
@@ -609,8 +609,8 @@ namespace DTO.Inventory.InventoryManagement
                 case ProductVariantIdentifierEnum.EAN:
                     EAN = value;
                     break;
-                case ProductVariantIdentifierEnum.ISBN:
-                    ISBN = value;
+                case ProductVariantIdentifierEnum.ID:
+                    ID = value;
                     break;
                 case ProductVariantIdentifierEnum.OtherIdentifier:
                     OtherIdentifier = value;
@@ -648,8 +648,8 @@ namespace DTO.Inventory.InventoryManagement
                 identifiers[ProductVariantIdentifierEnum.UPC] = UPC;
             if (!string.IsNullOrWhiteSpace(EAN))
                 identifiers[ProductVariantIdentifierEnum.EAN] = EAN;
-            if (!string.IsNullOrWhiteSpace(ISBN))
-                identifiers[ProductVariantIdentifierEnum.ISBN] = ISBN;
+            if (!string.IsNullOrWhiteSpace(ID))
+                identifiers[ProductVariantIdentifierEnum.ID] = ID;
             if (!string.IsNullOrWhiteSpace(OtherIdentifier))
                 identifiers[ProductVariantIdentifierEnum.OtherIdentifier] = OtherIdentifier;
 
@@ -673,7 +673,7 @@ namespace DTO.Inventory.InventoryManagement
                    !string.IsNullOrWhiteSpace(LicenseKey) ||
                    !string.IsNullOrWhiteSpace(UPC) ||
                    !string.IsNullOrWhiteSpace(EAN) ||
-                   !string.IsNullOrWhiteSpace(ISBN) ||
+                   !string.IsNullOrWhiteSpace(ID) ||
                    !string.IsNullOrWhiteSpace(OtherIdentifier);
         }
 

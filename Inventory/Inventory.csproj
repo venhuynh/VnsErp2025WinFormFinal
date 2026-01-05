@@ -97,6 +97,13 @@
     <Compile Include="Management\FrmProductVariantIdentifier.Designer.cs">
       <DependentUpon>FrmProductVariantIdentifier.cs</DependentUpon>
     </Compile>
+    <Compile Include="Management\FrmProductVariantIdentifierCreateQrCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Management\FrmProductVariantIdentifierCreateQrCode.Designer.cs">
+      <DependentUpon>FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Management\ProductVariantIdentifierItem.cs" />
     <Compile Include="OverlayForm\FrmStockInOutAddImages.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -383,6 +390,9 @@
     <EmbeddedResource Include="Management\FrmInventoryBalanceDto.resx">
       <DependentUpon>FrmInventoryBalanceDto.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Management\FrmProductVariantIdentifierCreateQrCode.resx">
+      <DependentUpon>FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OverlayForm\FrmStockInOutAddImages.resx">
       <DependentUpon>FrmStockInOutAddImages.cs</DependentUpon>
     </EmbeddedResource>
@@ -543,6 +553,7 @@
     <None Include="Doc\NhapHang\NhapHangThuongMai_00_TongQuan.md" />
     <None Include="Doc\Quy trình - Visio\Nhập linh kiện ráp PC bán.vsdx" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.DeviceDto.datasource" />
+    <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.ProductVariantIdentifierDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutDocumentDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutMasterHistoryDto.datasource" />
     <None Include="Properties\DataSources\DTO.Inventory.InventoryManagement.StockInOutProductHistoryDto.datasource" />
@@ -785,6 +796,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Ven - Solutions logo_1438x617_background_transfer.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\download_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\download_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
