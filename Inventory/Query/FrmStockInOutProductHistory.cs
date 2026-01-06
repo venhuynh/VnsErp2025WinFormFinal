@@ -76,6 +76,9 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
 
             // Khởi tạo giá trị mặc định cho date pickers
             InitializeDateFilters();
+
+            // Setup SuperToolTips
+            SetupSuperToolTips();
         }
         catch (Exception ex)
         {
@@ -101,6 +104,130 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
         catch (Exception ex)
         {
             _logger.Error("InitializeDateFilters: Exception occurred", ex);
+        }
+    }
+
+    /// <summary>
+    /// Thiết lập SuperToolTip cho tất cả các controls trong form
+    /// </summary>
+    private void SetupSuperToolTips()
+    {
+        try
+        {
+            // SuperTip cho Từ khóa tìm kiếm
+            if (KeyWordBarEditItem != null)
+            {
+                var keywordSuperTip = SuperToolTipHelper.CreateSuperToolTip(
+                    title: @"<b><color=DarkBlue>🔍 Từ khóa tìm kiếm</color></b>",
+                    content: @"Nhập từ khóa để tìm kiếm trong lịch sử sản phẩm nhập xuất kho.<br/><br/><b>Chức năng:</b><br/>• Tìm kiếm theo từ khóa trong các trường: Mã sản phẩm, Tên sản phẩm, Mã biến thể, Tên biến thể, Số phiếu<br/>• Hỗ trợ tìm kiếm không dấu<br/>• Tìm kiếm không phân biệt hoa thường<br/><br/><b>Cách sử dụng:</b><br/>• Nhập từ khóa vào ô này<br/>• Click nút <b>Xem báo cáo</b> để thực hiện tìm kiếm<br/>• Để trống để xem tất cả dữ liệu trong khoảng thời gian<br/><br/><color=Gray>Lưu ý:</color> Tìm kiếm sẽ kết hợp với điều kiện lọc theo ngày."
+                );
+                KeyWordBarEditItem.SuperTip = keywordSuperTip;
+            }
+
+            // SuperTip cho Từ ngày
+            if (TuNgayBarEditItem != null)
+            {
+                var tuNgaySuperTip = SuperToolTipHelper.CreateSuperToolTip(
+                    title: @"<b><color=DarkBlue>📅 Từ ngày</color></b>",
+                    content: @"Chọn ngày bắt đầu để lọc lịch sử sản phẩm nhập xuất kho.<br/><br/><b>Chức năng:</b><br/>• Lọc dữ liệu từ ngày này trở đi<br/>• Mặc định: Đầu tháng hiện tại<br/>• Kết hợp với <b>Đến ngày</b> để tạo khoảng thời gian<br/><br/><b>Ràng buộc:</b><br/>• Phải nhỏ hơn hoặc bằng <b>Đến ngày</b><br/>• Không được để trống<br/><br/><color=Gray>Lưu ý:</color> Hệ thống sẽ tự động kiểm tra và cảnh báo nếu Từ ngày > Đến ngày."
+                );
+                TuNgayBarEditItem.SuperTip = tuNgaySuperTip;
+            }
+
+            // SuperTip cho Đến ngày
+            if (DenNgayBarEditItem != null)
+            {
+                var denNgaySuperTip = SuperToolTipHelper.CreateSuperToolTip(
+                    title: @"<b><color=DarkBlue>📅 Đến ngày</color></b>",
+                    content: @"Chọn ngày kết thúc để lọc lịch sử sản phẩm nhập xuất kho.<br/><br/><b>Chức năng:</b><br/>• Lọc dữ liệu đến ngày này<br/>• Mặc định: Ngày hiện tại<br/>• Kết hợp với <b>Từ ngày</b> để tạo khoảng thời gian<br/><br/><b>Ràng buộc:</b><br/>• Phải lớn hơn hoặc bằng <b>Từ ngày</b><br/>• Không được để trống<br/><br/><color=Gray>Lưu ý:</color> Hệ thống sẽ tự động kiểm tra và cảnh báo nếu Từ ngày > Đến ngày."
+                );
+                DenNgayBarEditItem.SuperTip = denNgaySuperTip;
+            }
+
+            // SuperTip cho nút Xem báo cáo
+            if (XemBaoCaoBarButtonItem != null)
+            {
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    XemBaoCaoBarButtonItem,
+                    title: @"<b><color=Blue>📊 Xem báo cáo</color></b>",
+                    content: @"Tải và hiển thị lịch sử sản phẩm nhập xuất kho theo điều kiện đã chọn.<br/><br/><b>Chức năng:</b><br/>• Tải dữ liệu từ database theo điều kiện:<br/>  - Khoảng thời gian (Từ ngày - Đến ngày)<br/>  - Từ khóa tìm kiếm (nếu có)<br/>• Hiển thị kết quả trong grid<br/>• Cập nhật thống kê tổng hợp<br/><br/><b>Quy trình:</b><br/>1. Validate điều kiện tìm kiếm<br/>2. Hiển thị SplashScreen trong khi tải<br/>3. Query dữ liệu từ database<br/>4. Hiển thị kết quả trong grid<br/>5. Cập nhật thống kê<br/><br/><color=Gray>Lưu ý:</color> Dữ liệu sẽ được tải bất đồng bộ để không block UI."
+                );
+            }
+
+            // SuperTip cho nút Chi tiết phiếu nhập xuất
+            if (ChiTietPhieuNhapXuatBarButtonItem != null)
+            {
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    ChiTietPhieuNhapXuatBarButtonItem,
+                    title: @"<b><color=Green>📄 Chi tiết phiếu nhập xuất</color></b>",
+                    content: @"Mở form chi tiết phiếu nhập xuất kho cho sản phẩm được chọn.<br/><br/><b>Chức năng:</b><br/>• Mở form chi tiết tương ứng với loại phiếu:<br/>  - Nhập hàng thương mại<br/>  - Nhập thiết bị mượn thuê<br/>  - Nhập nội bộ<br/>  - Nhập lưu chuyển kho<br/>  - Nhập hàng bảo hành<br/>  - Xuất hàng thương mại<br/>  - Xuất thiết bị cho thuê mượn<br/>  - Xuất nội bộ<br/>  - Xuất lưu chuyển kho<br/>  - Xuất hàng bảo hành<br/>• Load dữ liệu từ ID phiếu đã chọn<br/><br/><b>Yêu cầu:</b><br/>• Chỉ cho phép chọn 1 sản phẩm<br/>• Phải có StockInOutMasterId hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Form sẽ được mở với OverlayManager để tạo hiệu ứng overlay."
+                );
+            }
+
+            // SuperTip cho nút In phiếu
+            if (InPhieuBarButtonItem != null)
+            {
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    InPhieuBarButtonItem,
+                    title: @"<b><color=Orange>🖨️ In phiếu</color></b>",
+                    content: @"In phiếu nhập xuất kho cho sản phẩm được chọn.<br/><br/><b>Chức năng:</b><br/>• Tạo và hiển thị preview của phiếu nhập/xuất<br/>• Cho phép in hoặc xuất PDF<br/>• Hỗ trợ nhiều loại phiếu khác nhau<br/><br/><b>Yêu cầu:</b><br/>• Chỉ cho phép chọn 1 sản phẩm<br/>• Phải có StockInOutMasterId hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Chức năng này đang được phát triển."
+                );
+            }
+
+            // SuperTip cho nút Thêm hình ảnh
+            if (ThemHinhAnhBarButtonItem != null)
+            {
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    ThemHinhAnhBarButtonItem,
+                    title: @"<b><color=Purple>📷 Thêm hình ảnh</color></b>",
+                    content: @"Thêm hình ảnh cho phiếu nhập xuất kho.<br/><br/><b>Chức năng:</b><br/>• Mở form thêm hình ảnh cho phiếu<br/>• Upload và quản lý hình ảnh liên quan đến phiếu<br/>• Hỗ trợ nhiều định dạng hình ảnh<br/><br/><b>Yêu cầu:</b><br/>• Chỉ cho phép chọn 1 sản phẩm<br/>• Phải có StockInOutMasterId hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Form sẽ được mở với OverlayManager."
+                );
+            }
+
+            // SuperTip cho nút Xóa phiếu
+            if (XoaPhieuBarButtonItem != null)
+            {
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    XoaPhieuBarButtonItem,
+                    title: @"<b><color=Red>🗑️ Xóa phiếu</color></b>",
+                    content: @"Xóa các sản phẩm nhập xuất kho được chọn.<br/><br/><b>Chức năng:</b><br/>• Xóa các StockInOutDetail được chọn<br/>• Tự động xóa StockInOutMaster nếu không còn detail nào<br/>• Cho phép xóa nhiều dòng cùng lúc<br/><br/><b>Quy trình:</b><br/>1. Hiển thị xác nhận xóa<br/>2. Xóa từng detail được chọn<br/>3. Kiểm tra và xóa master nếu không còn detail<br/>4. Reload dữ liệu sau khi xóa<br/>5. Hiển thị kết quả<br/><br/><b>Yêu cầu:</b><br/>• Phải chọn ít nhất 1 sản phẩm<br/>• Phải có Id (StockInOutDetailId) hợp lệ<br/><br/><color=Red>⚠️ Cảnh báo:</color> Hành động này không thể hoàn tác!"
+                );
+            }
+
+            // SuperTip cho nút Nhập định danh sản phẩm
+            if (NhapDinhDanhSPBarButtonItem != null)
+            {
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    NhapDinhDanhSPBarButtonItem,
+                    title: @"<b><color=Teal>🏷️ Nhập định danh sản phẩm</color></b>",
+                    content: @"Nhập định danh sản phẩm (Serial Number, MAC, IMEI, v.v.).<br/><br/><b>Chức năng:</b><br/>• Mở form nhập định danh sản phẩm<br/>• Nhập các loại định danh: SerialNumber, PartNumber, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ID, OtherIdentifier<br/><br/><b>Yêu cầu:</b><br/>• Chỉ cho phép chọn 1 sản phẩm<br/>• Phải có ProductVariantId hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Chức năng này đang được phát triển."
+                );
+            }
+
+            // SuperTip cho nút Tạo Serial Number
+            if (CreateSerialNumberBarButtonItem != null)
+            {
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    CreateSerialNumberBarButtonItem,
+                    title: @"<b><color=Green>🔢 Tạo Serial Number</color></b>",
+                    content: @"Tạo serial numbers tự động cho sản phẩm được chọn.<br/><br/><b>Chức năng:</b><br/>• Mở form tạo serial numbers tự động<br/>• Tạo serial numbers theo format: <b>{VoucherNumber}-XXX</b><br/>• Tự động điền số lượng từ phiếu nhập/xuất<br/>• Lưu từng serial number vào database<br/><br/><b>Quy trình:</b><br/>1. Chọn sản phẩm từ grid<br/>2. Mở form FrmCreateNewSerialNumber<br/>3. Tự động tạo serial numbers<br/>4. Lưu vào bảng ProductVariantIdentifier<br/><br/><b>Yêu cầu:</b><br/>• Chỉ cho phép chọn 1 sản phẩm<br/>• Phải có ProductVariantId và Id hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Serial numbers sẽ được kiểm tra trùng lặp trước khi lưu."
+                );
+            }
+
+            // SuperTip cho nút Identifier
+            if (IdentifiterBarButtonItem != null)
+            {
+                SuperToolTipHelper.SetBarButtonSuperTip(
+                    IdentifiterBarButtonItem,
+                    title: @"<b><color=Blue>🔖 Quản lý định danh</color></b>",
+                    content: @"Quản lý các định danh sản phẩm (Serial Number, Part Number, QR Code, v.v.).<br/><br/><b>Chức năng:</b><br/>• Mở form quản lý định danh sản phẩm<br/>• Thêm/sửa/xóa các loại định danh:<br/>  - SerialNumber, PartNumber, QRCode<br/>  - SKU, RFID, MACAddress, IMEI<br/>  - AssetTag, LicenseKey, UPC, EAN<br/>  - ID, OtherIdentifier<br/>• Validate và kiểm tra trùng lặp<br/><br/><b>Yêu cầu:</b><br/>• Chỉ cho phép chọn 1 sản phẩm<br/>• Phải có ProductVariantId hợp lệ<br/><br/><color=Gray>Lưu ý:</color> Form sẽ được mở với OverlayManager. Bạn có thể quản lý nhiều loại định danh trong cùng một form."
+                );
+            }
+
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("SetupSuperToolTips: Exception occurred", ex);
         }
     }
 

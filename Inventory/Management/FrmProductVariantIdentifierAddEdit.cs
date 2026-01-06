@@ -50,12 +50,56 @@ namespace Inventory.Management
             InitializeProductVariantIdentifierGrid();
             InitializeBarButtonEvents();
             InitializeFormEvents();
-            
+            SetupSuperToolTips();
         }
 
         #endregion
 
         #region ========== INITIALIZATION ==========
+
+        /// <summary>
+        /// Thiết lập SuperToolTip cho tất cả các controls trong form
+        /// </summary>
+        private void SetupSuperToolTips()
+        {
+            try
+            {
+                // SuperTip cho nút Mới
+                if (NewIdentifierBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        NewIdentifierBarButtonItem,
+                        title: @"<b><color=Green>➕ Mới</color></b>",
+                        content: @"Reset lại toàn bộ dữ liệu và thêm dòng mới vào grid.<br/><br/><b>Chức năng:</b><br/>• Reset lại ProductVariantIdentifierId để thêm mới hoàn toàn<br/>• Xóa tất cả dữ liệu trong grid<br/>• Thêm dòng mới vào grid<br/>• Focus vào cột IdentifierType để bắt đầu nhập liệu<br/><br/><b>Quy trình:</b><br/>1. Reset _productVariantIdentifierId = Guid.Empty<br/>2. Xóa tất cả dữ liệu trong grid<br/>3. Refresh grid để cập nhật UI<br/>4. Reset cache ID<br/>5. Thêm dòng mới và focus vào cột IdentifierType<br/><br/><color=Gray>Lưu ý:</color> Tất cả dữ liệu chưa lưu sẽ bị mất khi click nút này."
+                    );
+                }
+
+                // SuperTip cho nút Lưu
+                if (SaveBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        SaveBarButtonItem,
+                        title: @"<b><color=Green>💾 Lưu</color></b>",
+                        content: @"Lưu tất cả định danh sản phẩm vào database.<br/><br/><b>Chức năng:</b><br/>• Validate dữ liệu trước khi lưu<br/>• Kiểm tra trùng lặp với database<br/>• Convert items từ grid sang DTO<br/>• Lưu vào bảng ProductVariantIdentifier<br/><br/><b>Quy trình:</b><br/>1. Validate dữ liệu (kiểm tra có dữ liệu, trùng lặp, enum trùng nhau)<br/>2. Lấy danh sách items từ grid<br/>3. Convert items sang DTO<br/>4. Gọi BLL.SaveOrUpdate() để lưu<br/>5. Hiển thị thông báo thành công<br/><br/><b>Validation:</b><br/>• Phải có ít nhất một định danh<br/>• Không được trùng lặp với database<br/>• Mỗi loại định danh chỉ được sử dụng một lần<br/>• Phải có ProductVariantId hợp lệ<br/><br/><b>Thông tin lưu:</b><br/>• ProductVariantId: Từ DTO đã chọn<br/>• Các định danh: SerialNumber, PartNumber, QRCode, SKU, RFID, MACAddress, IMEI, AssetTag, LicenseKey, UPC, EAN, ID, OtherIdentifier<br/><br/><color=Gray>Lưu ý:</color> Hệ thống sẽ kiểm tra trùng lặp và hiển thị cảnh báo nếu có."
+                    );
+                }
+
+                // SuperTip cho nút Đóng
+                if (CloseBarButtonItem != null)
+                {
+                    SuperToolTipHelper.SetBarButtonSuperTip(
+                        CloseBarButtonItem,
+                        title: @"<b><color=Red>❌ Đóng</color></b>",
+                        content: @"Đóng form và không lưu dữ liệu.<br/><br/><b>Chức năng:</b><br/>• Đóng form hiện tại<br/>• Không lưu dữ liệu vào database<br/>• Hủy bỏ mọi thay đổi chưa lưu<br/><br/><color=Gray>Lưu ý:</color> Nếu bạn đã chỉnh sửa định danh, hãy nhớ click <b>Lưu</b> trước khi đóng form."
+                    );
+                }
+
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SetupSuperToolTips: Exception occurred - {ex.Message}");
+            }
+        }
 
         /// <summary>
         /// Khởi tạo các event handlers cho form
