@@ -1,33 +1,32 @@
-﻿using Bll.Inventory.InventoryManagement;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Windows.Forms;
+using Bll.Inventory.InventoryManagement;
 using Common.Helpers;
 using Common.Utils;
 using DevExpress.Data;
+using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DTO.Inventory.InventoryManagement;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Common.Common;
+using Inventory.ProductVariantIdentifier;
 
-namespace Inventory.ProductVariantIdentifier
+namespace Inventory.Query
 {
-    public partial class FrmProductVariantIdentifierAddEdit : DevExpress.XtraEditors.XtraForm
+    public partial class FrmProductVariantIdentifierAddEditFromStockInOut : XtraForm
     {
         #region ========== FIELDS & PROPERTIES ==========
+
+        /// <summary>
+        /// DTO chứa thông tin sản phẩm được chọn
+        /// </summary>
+        private readonly StockInOutProductHistoryDto _selectedDto;
 
         /// <summary>
         /// Business Logic Layer cho ProductVariantIdentifier
         /// </summary>
         private readonly ProductVariantIdentifierBll _productVariantIdentifierBll = new ProductVariantIdentifierBll();
-
-        /// <summary>
-        /// Business Logic Layer cho ProductVariant
-        /// </summary>
-        private readonly Bll.MasterData.ProductServiceBll.ProductVariantBll _productVariantBll = new Bll.MasterData.ProductServiceBll.ProductVariantBll();
 
         /// <summary>
         /// Cache danh sách ID đã có trong database (lazy load)
@@ -39,22 +38,14 @@ namespace Inventory.ProductVariantIdentifier
         /// </summary>
         private bool _isIdsCacheLoaded = false;
 
-        /// <summary>
-        /// ID của ProductVariantIdentifier (dùng khi edit)
-        /// </summary>
         private Guid _productVariantIdentifierId = Guid.Empty;
-
-        /// <summary>
-        /// ID của ProductVariant được chọn từ SearchLookUpEdit
-        /// </summary>
-        private Guid _productVariantId = Guid.Empty;
         #endregion
 
         #region ========== CONSTRUCTOR ==========
 
-        public FrmProductVariantIdentifierAddEdit( Guid productVariantIdentifierId)
+        public FrmProductVariantIdentifierAddEditFromStockInOut(StockInOutProductHistoryDto selectedDto)
         {
-            _productVariantIdentifierId = productVariantIdentifierId;
+            _selectedDto = selectedDto;
             InitializeComponent();
             InitializeProductVariantIdentifierGrid();
             InitializeBarButtonEvents();
@@ -118,12 +109,6 @@ namespace Inventory.ProductVariantIdentifier
             try
             {
                 Load += FrmProductVariantIdentifierAddEdit_Load;
-                
-                // Event handler cho SearchLookUpEdit popup
-                ProductVariantSearchLookUpEdit.Popup += ProductVariantSearchLookUpEdit_Popup;
-                
-                // Event handler khi giá trị SearchLookUpEdit thay đổi
-                ProductVariantSearchLookUpEdit.EditValueChanged += ProductVariantSearchLookUpEdit_EditValueChanged;
             }
             catch (Exception ex)
             {
@@ -138,11 +123,12 @@ namespace Inventory.ProductVariantIdentifier
         {
             try
             {
+                // Load ProductVariantFullName khi form được load
+                LoadProductVariantInfo();
+
                 if (_productVariantIdentifierId != Guid.Empty)
-                {
-                    // Load dữ liệu từ database (sẽ tự động gọi SetEditMode() sau khi load xong)
+                    // Load dữ liệu từ database
                     LoadDataFromDatabase();
-                }
             }
             catch (Exception ex)
             {
@@ -283,10 +269,10 @@ namespace Inventory.ProductVariantIdentifier
 
                 // Reset lại toàn bộ dữ liệu của ProductVariantIdentifierGridView
                 ResetProductVariantIdentifierGrid();
-
+                
                 // Thêm dòng mới vào grid
                 ProductVariantIdentifierGridView.AddNewRow();
-
+                
                 // Focus vào cột IdentifierType
                 var identifierTypeColumn = ProductVariantIdentifierGridView.Columns["IdentifierType"];
                 if (identifierTypeColumn != null)
@@ -398,7 +384,7 @@ namespace Inventory.ProductVariantIdentifier
 
                             // Refresh để hiển thị giá trị mới
                             ProductVariantIdentifierGridView.RefreshRow(rowHandle);
-
+                            
                             // Focus vào cột Value để user có thể thấy giá trị đã được tạo
                             var valueColumn = ProductVariantIdentifierGridView.Columns["Value"];
                             if (valueColumn != null)
@@ -734,201 +720,49 @@ namespace Inventory.ProductVariantIdentifier
         /// <summary>
         /// Load dữ liệu từ database dựa vào ProductVariantId
         /// </summary>
-        private async void LoadDataFromDatabase()
+        private void LoadDataFromDatabase()
         {
             try
             {
-                if (_productVariantIdentifierId == Guid.Empty)
+                if (_selectedDto == null || _selectedDto.ProductVariantId == Guid.Empty)
                 {
-                    System.Diagnostics.Debug.WriteLine("LoadDataFromDatabase: ProductVariantIdentifierId is empty");
+                    System.Diagnostics.Debug.WriteLine("LoadDataFromDatabase: ProductVariantId is empty");
                     return;
                 }
 
-                // Hiển thị SplashScreen
-                SplashScreenHelper.ShowWaitingSplashScreen();
+                // Lấy danh sách identifier từ database
+                var dtos = _productVariantIdentifierBll.GetById(_productVariantIdentifierId);
 
-                try
-                {
-                    // Lấy identifier từ database
-                    var dto = _productVariantIdentifierBll.GetById(_productVariantIdentifierId);
-                    
-                    if (dto == null)
-                    {
-                        System.Diagnostics.Debug.WriteLine("LoadDataFromDatabase: DTO is null");
-                        MsgBox.ShowWarning("Không tìm thấy định danh trong database.");
-                        return;
-                    }
+                //// Convert DTOs sang Items
+                //var items = dtos.Select(dto => ConvertDtoToItem(dto)).Where(item => item != null).ToList();
 
-                    // Cập nhật ProductVariantId từ DTO
-                    if (dto.ProductVariantId != Guid.Empty)
-                    {
-                        _productVariantId = dto.ProductVariantId;
-                        
-                        // Load dữ liệu ProductVariant vào binding source trước khi set EditValue
-                        // Điều này cần thiết để SearchLookUpEdit có thể hiển thị giá trị đã chọn
-                        // Không hiển thị SplashScreen riêng vì đã có SplashScreen ở ngoài
-                        await LoadProductVariantDataSourceAsync(showSplashScreen: false);
-                        
-                        // Sau khi load xong dữ liệu, mới set EditValue
-                        ProductVariantSearchLookUpEdit.EditValue = _productVariantId;
-                    }
-
-                    // Convert DTO sang Items - một DTO có thể có nhiều identifier
-                    var items = ConvertDtoToItems(dto);
-                    
-                    // Load vào grid
-                    LoadIdentifierItems(items);
-                    
-                    // Sau khi load xong dữ liệu, thiết lập chế độ edit (disable ProductVariantSearchLookUpEdit)
-                    SetEditMode();
-                }
-                finally
-                {
-                    // Đóng SplashScreen
-                    SplashScreenHelper.CloseSplashScreen();
-                }
+                //// Load vào grid
+                //LoadIdentifierItems(items);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"LoadDataFromDatabase: Exception occurred - {ex.Message}");
-                SplashScreenHelper.CloseSplashScreen();
                 MsgBox.ShowError($"Lỗi tải dữ liệu từ database: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Thiết lập chế độ edit/add cho form
-        /// Trong chế độ edit, không cho phép thay đổi ProductVariant
+        /// Load và hiển thị ProductVariantFullName dựa vào ProductVariantId
         /// </summary>
-        private void SetEditMode()
+        private void LoadProductVariantInfo()
         {
             try
             {
-                bool isEditMode = _productVariantIdentifierId != Guid.Empty;
+                // Kiểm tra ProductVariantId
+                ProductVariantFullNameSimpleLabelItem.Text = _selectedDto?.ProductVariantFullName ?? "N/A";
 
-                // Nếu đang ở chế độ edit, disable ProductVariantSearchLookUpEdit
-                if (isEditMode)
-                {
-                    ProductVariantSearchLookUpEdit.Properties.ReadOnly = true;
-                    ProductVariantSearchLookUpEdit.Properties.Buttons[0].Enabled = false;
-                    System.Diagnostics.Debug.WriteLine("SetEditMode: Đang ở chế độ edit - ProductVariantSearchLookUpEdit đã được disable");
-                }
-                else
-                {
-                    ProductVariantSearchLookUpEdit.Properties.ReadOnly = false;
-                    ProductVariantSearchLookUpEdit.Properties.Buttons[0].Enabled = true;
-                    System.Diagnostics.Debug.WriteLine("SetEditMode: Đang ở chế độ add - ProductVariantSearchLookUpEdit có thể chỉnh sửa");
-                }
+                SoLuongNhapXuatBarStaticItem.Caption =
+                    $@"Số lượng nhập/xuất: <color='red'><b> {(_selectedDto?.StockInQty > 0 ? _selectedDto.StockInQty : _selectedDto?.StockOutQty ?? 0)}</color></b>";
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"SetEditMode: Exception occurred - {ex.Message}");
-            }
-        }
-
-
-        /// <summary>
-        /// Event handler khi SearchLookUpEdit popup - Load dữ liệu ProductVariant
-        /// </summary>
-        private async void ProductVariantSearchLookUpEdit_Popup(object sender, EventArgs e)
-        {
-            try
-            {
-                await LoadProductVariantDataSourceAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ProductVariantSearchLookUpEdit_Popup: Exception occurred - {ex.Message}");
-                MsgBox.ShowError($"Lỗi tải dữ liệu sản phẩm: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Event handler khi giá trị SearchLookUpEdit thay đổi - Cập nhật ProductVariantId
-        /// </summary>
-        private void ProductVariantSearchLookUpEdit_EditValueChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                var searchLookUpEdit = sender as DevExpress.XtraEditors.SearchLookUpEdit;
-                if (searchLookUpEdit == null) return;
-
-                // Lấy giá trị được chọn (ProductVariantId)
-                if (searchLookUpEdit.EditValue != null)
-                {
-                    // Convert EditValue sang Guid
-                    if (searchLookUpEdit.EditValue is Guid productVariantId)
-                    {
-                        _productVariantId = productVariantId;
-                        System.Diagnostics.Debug.WriteLine($"ProductVariantSearchLookUpEdit_EditValueChanged: ProductVariantId = {_productVariantId}");
-                    }
-                    else if (Guid.TryParse(searchLookUpEdit.EditValue.ToString(), out Guid parsedId))
-                    {
-                        _productVariantId = parsedId;
-                        System.Diagnostics.Debug.WriteLine($"ProductVariantSearchLookUpEdit_EditValueChanged: ProductVariantId = {_productVariantId} (parsed)");
-                    }
-                    else
-                    {
-                        _productVariantId = Guid.Empty;
-                        System.Diagnostics.Debug.WriteLine($"ProductVariantSearchLookUpEdit_EditValueChanged: Không thể parse ProductVariantId từ {searchLookUpEdit.EditValue}");
-                    }
-                }
-                else
-                {
-                    // Nếu giá trị là null, reset ProductVariantId
-                    _productVariantId = Guid.Empty;
-                    System.Diagnostics.Debug.WriteLine("ProductVariantSearchLookUpEdit_EditValueChanged: EditValue is null, reset ProductVariantId");
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ProductVariantSearchLookUpEdit_EditValueChanged: Exception occurred - {ex.Message}");
-                MsgBox.ShowError($"Lỗi cập nhật ProductVariantId: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Load danh sách ProductVariantSimpleDto vào binding source
-        /// </summary>
-        /// <param name="showSplashScreen">Có hiển thị SplashScreen hay không (mặc định là true)</param>
-        private async Task LoadProductVariantDataSourceAsync(bool showSplashScreen = true)
-        {
-            try
-            {
-                // Hiển thị SplashScreen nếu cần
-                if (showSplashScreen)
-                {
-                    SplashScreenHelper.ShowWaitingSplashScreen();
-                }
-
-                try
-                {
-                    // Lấy danh sách ProductVariant từ BLL
-                    var productVariants = await _productVariantBll.GetAllAsync();
-
-                    // Cập nhật binding source
-                    productVariantSimpleDtoBindingSource.DataSource = productVariants;
-                    productVariantSimpleDtoBindingSource.ResetBindings(false);
-
-                    System.Diagnostics.Debug.WriteLine($"LoadProductVariantDataSourceAsync: Đã load {productVariants?.Count ?? 0} sản phẩm");
-                }
-                finally
-                {
-                    // Đóng SplashScreen nếu đã mở
-                    if (showSplashScreen)
-                    {
-                        SplashScreenHelper.CloseSplashScreen();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"LoadProductVariantDataSourceAsync: Exception occurred - {ex.Message}");
-                if (showSplashScreen)
-                {
-                    SplashScreenHelper.CloseSplashScreen();
-                }
-                throw;
+                System.Diagnostics.Debug.WriteLine($"LoadProductVariantInfo: Exception occurred - {ex.Message}");
+                ProductVariantFullNameSimpleLabelItem.Text = $"Lỗi tải thông tin: {ex.Message}";
             }
         }
 
@@ -1047,14 +881,14 @@ namespace Inventory.ProductVariantIdentifier
 
                 // Kiểm tra trùng lặp với database
                 LoadExistingIdsCache();
-
+                
                 // Lấy tất cả identifier hiện có trong database để kiểm tra trùng lặp
                 var existingIdentifiers = _productVariantIdentifierBll.GetAll();
 
                 var dto = ConvertItemToDto(items);
-                if (dto == null)
+                if (dto == null) 
                     return (false, "Lỗi chuyển đổi dữ liệu.");
-
+                
                 // Kiểm tra từng item xem có trùng với database không
                 foreach (var item in items)
                 {
@@ -1089,7 +923,7 @@ namespace Inventory.ProductVariantIdentifier
                     var duplicateTypes = identifierTypeGroups
                         .Select(g => GetProductVariantIdentifierDescription(g.Key))
                         .ToList();
-
+                    
                     var duplicateTypesText = string.Join(", ", duplicateTypes);
                     return (false, $"Có loại định danh bị trùng lặp: {duplicateTypesText}. Mỗi loại định danh chỉ được sử dụng một lần.");
                 }
@@ -1173,16 +1007,10 @@ namespace Inventory.ProductVariantIdentifier
                     return null;
                 }
 
-                // Kiểm tra ProductVariantId trước khi tạo DTO
-                if (_productVariantId == Guid.Empty)
-                {
-                    throw new InvalidOperationException("Vui lòng chọn sản phẩm trước khi lưu.");
-                }
-
                 var dto = new ProductVariantIdentifierDto
                 {
                     Id = _productVariantIdentifierId == Guid.Empty ? Guid.NewGuid() : _productVariantIdentifierId,
-                    ProductVariantId = _productVariantId,
+                    ProductVariantId = _selectedDto.ProductVariantId,
                 };
 
                 foreach (var item in items)
@@ -1247,49 +1075,7 @@ namespace Inventory.ProductVariantIdentifier
         }
 
         /// <summary>
-        /// Convert ProductVariantIdentifierDto sang danh sách ProductVariantIdentifierItem
-        /// Một DTO có thể có nhiều identifier (SerialNumber, PartNumber, QRCode, etc.)
-        /// </summary>
-        /// <param name="dto">ProductVariantIdentifierDto</param>
-        /// <returns>Danh sách ProductVariantIdentifierItem</returns>
-        private List<ProductVariantIdentifierItem> ConvertDtoToItems(ProductVariantIdentifierDto dto)
-        {
-            try
-            {
-                if (dto == null)
-                {
-                    return new List<ProductVariantIdentifierItem>();
-                }
-
-                var items = new List<ProductVariantIdentifierItem>();
-
-                // Lấy tất cả các identifier từ DTO
-                var allIdentifiers = dto.GetAllIdentifiers();
-
-                // Convert mỗi identifier thành một Item
-                foreach (var kvp in allIdentifiers)
-                {
-                    var item = new ProductVariantIdentifierItem
-                    {
-                        Id = dto.Id,
-                        IdentifierType = kvp.Key,
-                        Value = kvp.Value
-                    };
-                    items.Add(item);
-                }
-
-                System.Diagnostics.Debug.WriteLine($"ConvertDtoToItems: Đã convert {items.Count} identifier từ DTO");
-                return items;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ConvertDtoToItems: Exception occurred - {ex.Message}");
-                return new List<ProductVariantIdentifierItem>();
-            }
-        }
-
-        /// <summary>
-        /// Convert ProductVariantIdentifierDto sang ProductVariantIdentifierItem (chỉ lấy identifier đầu tiên)
+        /// Convert ProductVariantIdentifierDto sang ProductVariantIdentifierItem
         /// </summary>
         /// <param name="dto">ProductVariantIdentifierDto</param>
         /// <returns>ProductVariantIdentifierItem hoặc null nếu không thể convert</returns>

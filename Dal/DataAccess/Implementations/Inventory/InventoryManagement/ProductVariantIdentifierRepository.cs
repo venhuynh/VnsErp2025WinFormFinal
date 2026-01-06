@@ -140,7 +140,6 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
             _logger.Debug("GetAll: Lấy tất cả định danh sản phẩm");
 
             var entities = context.ProductVariantIdentifiers
-                .Where(pvi => pvi.IsActive)
                 .ToList();
 
             // Fetch related data trước khi convert để tránh DataContext disposed errors
@@ -514,30 +513,32 @@ public class ProductVariantIdentifierRepository : IProductVariantIdentifierRepos
     public bool Delete(Guid id)
     {
         using var context = CreateNewContext();
+        var entity = context.ProductVariantIdentifiers.FirstOrDefault(pvi => pvi.Id == id);
+
         try
         {
             _logger.Debug("Delete: Xóa định danh sản phẩm, Id={0}", id);
 
-            var entity = context.ProductVariantIdentifiers.FirstOrDefault(pvi => pvi.Id == id);
             if (entity == null)
             {
                 _logger.Warning("Delete: Không tìm thấy định danh sản phẩm để xóa, Id={0}", id);
                 return false;
             }
 
+            context.ProductVariantIdentifiers.DeleteOnSubmit(entity);
+        }
+        catch (Exception ex)
+        {
             // Soft delete: Set IsActive = false thay vì xóa thực sự
             entity.IsActive = false;
             entity.UpdatedDate = DateTime.Now;
 
-            context.SubmitChanges();
-            _logger.Info("Delete: Xóa định danh sản phẩm thành công (soft delete), Id={0}", id);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Delete: Lỗi xóa định danh sản phẩm: {ex.Message}", ex);
             throw;
         }
+
+        context.SubmitChanges();
+        _logger.Info("Delete: Xóa định danh sản phẩm thành công (soft delete), Id={0}", id);
+        return true;
     }
 
     #endregion

@@ -597,7 +597,7 @@ public partial class FrmStockInOutProductHistory : DevExpress.XtraEditors.XtraFo
             // Mở form tạo QR code với OverlayManager
             using (OverlayManager.ShowScope(this))
             {
-                using var form = new FrmProductVariantIdentifierAddEdit(selectedDto,Guid.Empty);
+                using var form = new FrmProductVariantIdentifierAddEditFromStockInOut(selectedDto);
                 
                 form.ShowDialog(this);
             }

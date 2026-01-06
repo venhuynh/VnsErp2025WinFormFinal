@@ -40,16 +40,24 @@
             this.HtmlRepositoryItemHypertextLabel = new DevExpress.XtraEditors.Repository.RepositoryItemHypertextLabel();
             this.colIdentifiersHtml = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colStatus = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.ProductVariantIdentifierStatusEnumComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.colUpdatedDate = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colIsActive = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.IsActiveCheckEdit = new DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit();
             this.colNotes = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.NotesMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
-            this.LocToanBoBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
-            this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.FilterDataBarSubItem = new DevExpress.XtraBars.BarSubItem();
+            this.FilterShowAllBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.FilterByStatusBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.FilterByUpdateDateBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.FilterByProductVariantKeyWordBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.FilterByIdentifierValueBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.AddNewBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
+            this.ExportFileBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
+            this.EditBarButtonItem = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
             this.bar1 = new DevExpress.XtraBars.Bar();
@@ -64,7 +72,6 @@
             this.ThangRepositoryItemSpinEdit = new DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.ProductVariantIdentifierStatusEnumComboBox = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierDtoGridControl)).BeginInit();
@@ -72,12 +79,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierDtoGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).BeginInit();
             this.SuspendLayout();
             // 
             // layoutControl1
@@ -101,7 +110,9 @@
             this.ProductVariantIdentifierDtoGridControl.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.HtmlRepositoryItemHypertextLabel,
             this.QRCodeImagePictureEdit,
-            this.ProductVariantIdentifierStatusEnumComboBox});
+            this.ProductVariantIdentifierStatusEnumComboBox,
+            this.NotesMemoEdit,
+            this.IsActiveCheckEdit});
             this.ProductVariantIdentifierDtoGridControl.Size = new System.Drawing.Size(1333, 462);
             this.ProductVariantIdentifierDtoGridControl.TabIndex = 4;
             this.ProductVariantIdentifierDtoGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
@@ -128,7 +139,6 @@
             this.ProductVariantIdentifierDtoGridView.GridControl = this.ProductVariantIdentifierDtoGridControl;
             this.ProductVariantIdentifierDtoGridView.IndicatorWidth = 50;
             this.ProductVariantIdentifierDtoGridView.Name = "ProductVariantIdentifierDtoGridView";
-            this.ProductVariantIdentifierDtoGridView.OptionsBehavior.Editable = false;
             this.ProductVariantIdentifierDtoGridView.OptionsFind.AlwaysVisible = true;
             this.ProductVariantIdentifierDtoGridView.OptionsSelection.MultiSelect = true;
             this.ProductVariantIdentifierDtoGridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
@@ -246,11 +256,19 @@
             this.colStatus.ColumnEdit = this.ProductVariantIdentifierStatusEnumComboBox;
             this.colStatus.FieldName = "Status";
             this.colStatus.Name = "colStatus";
-            this.colStatus.OptionsColumn.ReadOnly = false;
-            this.colStatus.OptionsColumn.AllowEdit = true;
             this.colStatus.Visible = true;
             this.colStatus.VisibleIndex = 4;
             this.colStatus.Width = 150;
+            // 
+            // ProductVariantIdentifierStatusEnumComboBox
+            // 
+            this.ProductVariantIdentifierStatusEnumComboBox.AllowHtmlDraw = DevExpress.Utils.DefaultBoolean.True;
+            this.ProductVariantIdentifierStatusEnumComboBox.AutoHeight = false;
+            this.ProductVariantIdentifierStatusEnumComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.ProductVariantIdentifierStatusEnumComboBox.ContextButtonOptions.AllowHtmlText = true;
+            this.ProductVariantIdentifierStatusEnumComboBox.Name = "ProductVariantIdentifierStatusEnumComboBox";
+            this.ProductVariantIdentifierStatusEnumComboBox.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             // 
             // colUpdatedDate
             // 
@@ -292,13 +310,16 @@
             this.colIsActive.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colIsActive.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colIsActive.Caption = "Đang hoạt động";
+            this.colIsActive.ColumnEdit = this.IsActiveCheckEdit;
             this.colIsActive.FieldName = "IsActive";
             this.colIsActive.Name = "colIsActive";
-            this.colIsActive.OptionsColumn.AllowEdit = false;
-            this.colIsActive.OptionsColumn.ReadOnly = true;
             this.colIsActive.Visible = true;
             this.colIsActive.VisibleIndex = 6;
             this.colIsActive.Width = 120;
+            // 
+            // IsActiveCheckEdit
+            // 
+            this.IsActiveCheckEdit.Name = "IsActiveCheckEdit";
             // 
             // colNotes
             // 
@@ -315,13 +336,16 @@
             this.colNotes.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.colNotes.AppearanceHeader.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
             this.colNotes.Caption = "Ghi chú";
+            this.colNotes.ColumnEdit = this.NotesMemoEdit;
             this.colNotes.FieldName = "Notes";
             this.colNotes.Name = "colNotes";
-            this.colNotes.OptionsColumn.AllowEdit = false;
-            this.colNotes.OptionsColumn.ReadOnly = true;
             this.colNotes.Visible = true;
             this.colNotes.VisibleIndex = 7;
             this.colNotes.Width = 250;
+            // 
+            // NotesMemoEdit
+            // 
+            this.NotesMemoEdit.Name = "NotesMemoEdit";
             // 
             // barManager1
             // 
@@ -334,18 +358,23 @@
             this.barManager1.DockControls.Add(this.barDockControlRight);
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.LocToanBoBarButtonItem,
+            this.FilterShowAllBarButtonItem,
             this.barHeaderItem1,
             this.DataSummaryBarStaticItem,
             this.SelectedRowBarStaticItem,
             this.ExportFileBarButtonItem,
             this.barButtonItem1,
-            this.barButtonItem2,
-            this.barButtonItem3,
+            this.AddNewBarButtonItem,
+            this.EditBarButtonItem,
             this.barButtonItem4,
-            this.barButtonItem5});
+            this.barButtonItem5,
+            this.FilterDataBarSubItem,
+            this.FilterByStatusBarButtonItem,
+            this.FilterByUpdateDateBarButtonItem,
+            this.FilterByProductVariantKeyWordBarButtonItem,
+            this.FilterByIdentifierValueBarButtonItem});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 27;
+            this.barManager1.MaxItemId = 32;
             this.barManager1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.NamRepositoryItemSpinEdit,
             this.ThangRepositoryItemSpinEdit});
@@ -359,25 +388,73 @@
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.LocToanBoBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.FilterDataBarSubItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.AddNewBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.EditBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem1),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem2),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem3),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.ExportFileBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem4),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem5)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
             // 
-            // LocToanBoBarButtonItem
+            // FilterDataBarSubItem
             // 
-            this.LocToanBoBarButtonItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
-            this.LocToanBoBarButtonItem.Caption = "Toàn bộ";
-            this.LocToanBoBarButtonItem.Id = 9;
-            this.LocToanBoBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.filterbyseries_pie_16x16;
-            this.LocToanBoBarButtonItem.ImageOptions.LargeImage = global::Inventory.Properties.Resources.filterbyseries_pie_32x32;
-            this.LocToanBoBarButtonItem.Name = "LocToanBoBarButtonItem";
+            this.FilterDataBarSubItem.Caption = "Lọc dữ liệu";
+            this.FilterDataBarSubItem.Id = 27;
+            this.FilterDataBarSubItem.ImageOptions.Image = global::Inventory.Properties.Resources.filterbyseries_pie_16x16;
+            this.FilterDataBarSubItem.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.FilterShowAllBarButtonItem, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(this.FilterByStatusBarButtonItem),
+            new DevExpress.XtraBars.LinkPersistInfo(this.FilterByUpdateDateBarButtonItem),
+            new DevExpress.XtraBars.LinkPersistInfo(this.FilterByProductVariantKeyWordBarButtonItem),
+            new DevExpress.XtraBars.LinkPersistInfo(this.FilterByIdentifierValueBarButtonItem)});
+            this.FilterDataBarSubItem.Name = "FilterDataBarSubItem";
+            // 
+            // FilterShowAllBarButtonItem
+            // 
+            this.FilterShowAllBarButtonItem.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.FilterShowAllBarButtonItem.Caption = "Toàn bộ";
+            this.FilterShowAllBarButtonItem.Id = 9;
+            this.FilterShowAllBarButtonItem.Name = "FilterShowAllBarButtonItem";
+            // 
+            // FilterByStatusBarButtonItem
+            // 
+            this.FilterByStatusBarButtonItem.Caption = "Tình trạng";
+            this.FilterByStatusBarButtonItem.Id = 28;
+            this.FilterByStatusBarButtonItem.Name = "FilterByStatusBarButtonItem";
+            // 
+            // FilterByUpdateDateBarButtonItem
+            // 
+            this.FilterByUpdateDateBarButtonItem.Caption = "Ngày tháng cập nhật";
+            this.FilterByUpdateDateBarButtonItem.Id = 29;
+            this.FilterByUpdateDateBarButtonItem.Name = "FilterByUpdateDateBarButtonItem";
+            // 
+            // FilterByProductVariantKeyWordBarButtonItem
+            // 
+            this.FilterByProductVariantKeyWordBarButtonItem.Caption = "Tên sản phẩm";
+            this.FilterByProductVariantKeyWordBarButtonItem.Id = 30;
+            this.FilterByProductVariantKeyWordBarButtonItem.Name = "FilterByProductVariantKeyWordBarButtonItem";
+            // 
+            // FilterByIdentifierValueBarButtonItem
+            // 
+            this.FilterByIdentifierValueBarButtonItem.Caption = "Định danh";
+            this.FilterByIdentifierValueBarButtonItem.Id = 31;
+            this.FilterByIdentifierValueBarButtonItem.Name = "FilterByIdentifierValueBarButtonItem";
+            // 
+            // AddNewBarButtonItem
+            // 
+            this.AddNewBarButtonItem.Caption = "Thêm mới";
+            this.AddNewBarButtonItem.Id = 23;
+            this.AddNewBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.add_16x16;
+            this.AddNewBarButtonItem.Name = "AddNewBarButtonItem";
+            // 
+            // barButtonItem1
+            // 
+            this.barButtonItem1.Caption = "LS Nhập/Xuất";
+            this.barButtonItem1.Id = 22;
+            this.barButtonItem1.Name = "barButtonItem1";
             // 
             // ExportFileBarButtonItem
             // 
@@ -386,23 +463,12 @@
             this.ExportFileBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.exporttoxps_16x16;
             this.ExportFileBarButtonItem.Name = "ExportFileBarButtonItem";
             // 
-            // barButtonItem1
+            // EditBarButtonItem
             // 
-            this.barButtonItem1.Caption = "LS Nhập/Xuất";
-            this.barButtonItem1.Id = 22;
-            this.barButtonItem1.Name = "barButtonItem1";
-            // 
-            // barButtonItem2
-            // 
-            this.barButtonItem2.Caption = "Thêm mới";
-            this.barButtonItem2.Id = 23;
-            this.barButtonItem2.Name = "barButtonItem2";
-            // 
-            // barButtonItem3
-            // 
-            this.barButtonItem3.Caption = "Điều chỉnh";
-            this.barButtonItem3.Id = 24;
-            this.barButtonItem3.Name = "barButtonItem3";
+            this.EditBarButtonItem.Caption = "Điều chỉnh";
+            this.EditBarButtonItem.Id = 24;
+            this.EditBarButtonItem.ImageOptions.Image = global::Inventory.Properties.Resources.edit_16x16;
+            this.EditBarButtonItem.Name = "EditBarButtonItem";
             // 
             // barButtonItem4
             // 
@@ -538,13 +604,6 @@
             this.layoutControlItem1.Size = new System.Drawing.Size(1337, 466);
             this.layoutControlItem1.TextVisible = false;
             // 
-            // ProductVariantIdentifierStatusEnumComboBox
-            // 
-            this.ProductVariantIdentifierStatusEnumComboBox.AutoHeight = false;
-            this.ProductVariantIdentifierStatusEnumComboBox.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.ProductVariantIdentifierStatusEnumComboBox.Name = "ProductVariantIdentifierStatusEnumComboBox";
-            // 
             // FrmProductVariantIdentifier
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -564,12 +623,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierDtoGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.QRCodeImagePictureEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HtmlRepositoryItemHypertextLabel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IsActiveCheckEdit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NotesMemoEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NamRepositoryItemSpinEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThangRepositoryItemSpinEdit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ProductVariantIdentifierStatusEnumComboBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -589,7 +650,7 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit NamRepositoryItemSpinEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemSpinEdit ThangRepositoryItemSpinEdit;
-        private DevExpress.XtraBars.BarButtonItem LocToanBoBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem FilterShowAllBarButtonItem;
         private DevExpress.XtraBars.Bar bar1;
         private DevExpress.XtraBars.BarHeaderItem barHeaderItem1;
         private DevExpress.XtraBars.BarStaticItem DataSummaryBarStaticItem;
@@ -599,8 +660,8 @@
         private System.Windows.Forms.BindingSource productVariantIdentifierDtoBindingSource;
         private DevExpress.XtraGrid.Views.Grid.GridView ProductVariantIdentifierDtoGridView;
         private DevExpress.XtraBars.BarButtonItem barButtonItem1;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem2;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem3;
+        private DevExpress.XtraBars.BarButtonItem AddNewBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem EditBarButtonItem;
         private DevExpress.XtraBars.BarButtonItem barButtonItem4;
         private DevExpress.XtraBars.BarButtonItem barButtonItem5;
         private DevExpress.XtraGrid.Columns.GridColumn colProductVariantFullName;
@@ -612,5 +673,12 @@
         private DevExpress.XtraGrid.Columns.GridColumn colQRCodeImage;
         private DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit QRCodeImagePictureEdit;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox ProductVariantIdentifierStatusEnumComboBox;
+        private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit NotesMemoEdit;
+        private DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit IsActiveCheckEdit;
+        private DevExpress.XtraBars.BarSubItem FilterDataBarSubItem;
+        private DevExpress.XtraBars.BarButtonItem FilterByStatusBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem FilterByUpdateDateBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem FilterByProductVariantKeyWordBarButtonItem;
+        private DevExpress.XtraBars.BarButtonItem FilterByIdentifierValueBarButtonItem;
     }
 }

@@ -109,6 +109,12 @@
     <Compile Include="ProductVariantIdentifier\FrmProductVariantIdentifierAddEdit.Designer.cs">
       <DependentUpon>FrmProductVariantIdentifierAddEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Query\FrmProductVariantIdentifierAddEditFromStockInOut.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Query\FrmProductVariantIdentifierAddEditFromStockInOut.Designer.cs">
+      <DependentUpon>FrmProductVariantIdentifierAddEditFromStockInOut.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProductVariantIdentifier\FrmProductVariantIdentifierCreateQrCode.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -417,6 +423,9 @@
     <EmbeddedResource Include="ProductVariantIdentifier\FrmProductVariantIdentifierAddEdit.resx">
       <DependentUpon>FrmProductVariantIdentifierAddEdit.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Query\FrmProductVariantIdentifierAddEditFromStockInOut.resx">
+      <DependentUpon>FrmProductVariantIdentifierAddEditFromStockInOut.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProductVariantIdentifier\FrmProductVariantIdentifierCreateQrCode.resx">
       <DependentUpon>FrmProductVariantIdentifierCreateQrCode.cs</DependentUpon>
     </EmbeddedResource>
@@ -638,6 +647,7 @@
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDetailDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantDto1.datasource" />
+    <None Include="Properties\DataSources\DTO.MasterData.ProductService.ProductVariantSimpleDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.UnitOfMeasureDto.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.UnitOfMeasureDto1.datasource" />
     <None Include="Properties\DataSources\DTO.MasterData.ProductService.VariantAttributeDto.datasource" />
